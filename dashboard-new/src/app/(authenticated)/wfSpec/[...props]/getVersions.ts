@@ -1,19 +1,14 @@
 'use server'
 import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions'
+import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { getClient } from '@/lhConfig'
-import { WithBookmark } from '@/types'
+import { VersionList, WithBookmark } from '@/types'
 import { getServerSession } from 'next-auth'
 
 type GetWfSpecProps = {
   name: string
 } & WithBookmark
 
-type VersionList = {
-  versions: string[]
-  bookmark?: string
-}
-
-const VERSION_LIMIT = 10
 
 export const getWfSpecVersions = async (props: GetWfSpecProps): Promise<VersionList> => {
   const session = await getServerSession(authOptions)
@@ -21,14 +16,14 @@ export const getWfSpecVersions = async (props: GetWfSpecProps): Promise<VersionL
   const bookmark = props.bookmark ? Buffer.from(props.bookmark) : undefined
   const client = getClient({ tenantId, accessToken: session?.accessToken })
 
-  const specs = await client.searchWfSpec({ name, bookmark, limit: VERSION_LIMIT })
+  const specs = await client.searchWfSpec({ name, bookmark, limit: SEARCH_DEFAULT_LIMIT })
 
   const versions = specs.results.map(({ majorVersion, revision }) => {
     return `${majorVersion}.${revision}`
   })
 
   return {
-    bookmark: specs.bookmark?.toString(),
+    bookmark: specs.bookmark?.toString("base64"),
     versions,
   }
 }

@@ -1,51 +1,52 @@
 'use server'
+import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { lhClient } from '@/app/lhClient'
 import { WithBookmark } from '@/types'
 import { TaskDefIdList, UserTaskDefIdList, WfSpecIdList } from 'littlehorse-client/dist/proto/service'
 import { SearchType } from './Search'
 
-type Props = { prefix?: string } & WithBookmark
-const LIMIT = 10
+type Props = { prefix?: string; limit?: number } & WithBookmark
 
-const searchWfSpec = async ({ prefix, tenantId, bookmark }: Props): Promise<WfSpecIdList> => {
+const searchWfSpec = async ({ prefix, bookmark, limit, tenantId }: Props): Promise<WfSpecIdList> => {
   const client = await lhClient({ tenantId })
   return client.searchWfSpec({
     prefix,
     bookmark: bookmark ? Buffer.from(bookmark) : undefined,
-    limit: LIMIT,
+    limit: limit || SEARCH_DEFAULT_LIMIT,
   })
 }
 
-const searchTaskDef = async ({ prefix, tenantId, bookmark }: Props): Promise<TaskDefIdList> => {
+const searchTaskDef = async ({ prefix, bookmark, limit, tenantId }: Props): Promise<TaskDefIdList> => {
   const client = await lhClient({ tenantId })
 
   return client.searchTaskDef({
     prefix,
     bookmark: bookmark ? Buffer.from(bookmark) : undefined,
-    limit: LIMIT,
+    limit: limit || SEARCH_DEFAULT_LIMIT,
   })
 }
 
-const searchUserTaskDef = async ({ prefix, tenantId, bookmark }: Props): Promise<UserTaskDefIdList> => {
+type SearchProps = { type: SearchType } & Props
+const searchUserTaskDef = async ({ prefix, bookmark, limit, tenantId }: Props): Promise<UserTaskDefIdList> => {
   const client = await lhClient({ tenantId })
   return client.searchUserTaskDef({
     prefix,
     bookmark: bookmark ? Buffer.from(bookmark) : undefined,
-    limit: LIMIT,
+    limit: limit || SEARCH_DEFAULT_LIMIT,
   })
 }
 
-export const search = async ({ type, prefix, bookmark, tenantId }: SearchProps): Promise<SearchResponse> => {
-  let results: Results
+export const search = async ({ type, limit, prefix, bookmark, tenantId }: SearchProps): Promise<SearchResponse> => {
+  let results
   switch (type) {
     case 'taskDef':
-      results = await searchTaskDef({ prefix, tenantId, bookmark })
+      results = await searchTaskDef({ prefix, bookmark, limit, tenantId })
       break
     case 'userTaskDef':
-      results = await searchUserTaskDef({ prefix, tenantId, bookmark })
+      results = await searchUserTaskDef({ prefix, bookmark, limit, tenantId })
       break
     default:
-      results = await searchWfSpec({ prefix, tenantId, bookmark })
+      results = await searchWfSpec({ prefix, bookmark, limit, tenantId })
       break
   }
   return {
@@ -54,9 +55,6 @@ export const search = async ({ type, prefix, bookmark, tenantId }: SearchProps):
     bookmark: results.bookmark?.toString('base64'),
   }
 }
-
-type SearchProps = { type: SearchType; prefix?: string } & WithBookmark
-type Results = WfSpecIdList | TaskDefIdList
 
 interface SearchResult {
   type: SearchType

@@ -12,3 +12,8 @@ export type WithTenant = {
 export type WithBookmark = {
   bookmark?: string
 } & WithTenant
+
+export type VersionList = {
+  versions: string[]
+  bookmark?: string
+}

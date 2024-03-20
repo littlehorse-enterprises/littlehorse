@@ -1,5 +1,5 @@
 {
-  "name": "dashboard-new",
+  "name": "dashboard",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -19,7 +19,6 @@
     "react-dom": "^18"
   },
   "devDependencies": {
-    "@svgr/webpack": "^8.1.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

@@ -1,7 +1,7 @@
 'use client'
 import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
 import { FC } from 'react'
-import { VersionSelector } from './VersionSelector'
+import { Versions } from './Versions'
 
 type DetailsProps = Pick<WfSpec, 'id' | 'status'>
 
@@ -15,10 +15,10 @@ const statusColors: { [key in WfSpec['status']]: string } = {
 export const Details: FC<DetailsProps> = ({ id, status }) => {
   return (
     <div className="mb-4">
-      <span>WfSpec</span>
+      <span className='italic'>WfSpec</span>
       <h1 className="block text-2xl font-bold">{id?.name}</h1>
       <div className="flex flex-row gap-2 text-sm text-gray-500">
-        <VersionSelector wfSpecId={id} />
+        <Versions wfSpecId={id} />
         <div className="flex items-center">
           Status: <span className={`ml-2 rounded px-2 ${statusColors[status]}`}>{`${status}`}</span>
         </div>
