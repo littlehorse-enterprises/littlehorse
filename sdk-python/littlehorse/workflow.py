@@ -456,6 +456,87 @@ class WaitForThreadsNodeOutput(NodeOutput):
         self.node_name = node_name
         self.builder = builder
 
+    def handle_exception_on_child(
+        self, handler: ThreadInitializer, exception_name: Optional[str] = None
+    ) -> WaitForThreadsNodeOutput:
+        """
+        Specifies a Failure Handler to run in case any of the ThreadRun's
+        that we are waiting for in this WaitForThreadsNode fails with a
+        specific EXCEPTION.
+
+        Args:
+            handler (ThreadInitializer): the handler logic.
+            exception_name (Optional[str])): the specific EXCEPTION to handle.
+        """
+        self.builder._check_if_active()
+        thread_name = f"exn-handler-{self.node_name}" + (
+            f"-{exception_name}" if exception_name is not None else ""
+        )
+        thread_name = self.builder._workflow.add_sub_thread(thread_name, handler)
+        node = self.builder._find_node(self.node_name)
+        failure_handler: FailureHandlerDef
+        if exception_name is not None:
+            failure_handler = FailureHandlerDef(
+                handler_spec_name=thread_name,
+                specific_failure=exception_name,
+            )
+        else:
+            failure_handler = FailureHandlerDef(
+                handler_spec_name=thread_name,
+                any_failure_of_type=FailureHandlerDef.LHFailureType.FAILURE_TYPE_EXCEPTION,
+            )
+        node.sub_node.__getattribute__("per_thread_failure_handlers").append(
+            failure_handler,
+        )
+        return self
+
+    def handle_error_on_child(
+        self, handler: ThreadInitializer, error_type: Optional[LHErrorType] = None
+    ) -> WaitForThreadsNodeOutput:
+        """
+        Specifies a Failure Handler to run in case any of the ThreadRun's
+        that we are waiting for in this WaitForThreadsNode fails with a
+        specific ERROR.
+
+        Args:
+            handler (ThreadInitializer): the handler logic.
+            error_name (Optional[str])): the specific ERROR to handle.
+        """
+        self.builder._check_if_active()
+        thread_name = f"error-handler-{self.node_name}" + (
+            f"-{error_type.name}" if error_type is not None else ""
+        )
+        thread_name = self.builder._workflow.add_sub_thread(thread_name, handler)
+        node = self.builder._find_node(self.node_name)
+        failure_handler: FailureHandlerDef
+        if error_type is not None:
+            failure_handler = FailureHandlerDef(
+                handler_spec_name=thread_name,
+                specific_failure=error_type.name,
+            )
+        else:
+            failure_handler = FailureHandlerDef(
+                handler_spec_name=thread_name,
+                any_failure_of_type=FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR,
+            )
+        node.sub_node.__getattribute__("per_thread_failure_handlers").append(
+            failure_handler,
+        )
+        return self
+
+    def handle_any_failure_on_child(
+        self, handler: ThreadInitializer
+    ) -> WaitForThreadsNodeOutput:
+        self.builder._check_if_active()
+        thread_name = f"failure-handler-{self.node_name}-ANY_FAILURE"
+        thread_name = self.builder._workflow.add_sub_thread(thread_name, handler)
+        node = self.builder._find_node(self.node_name)
+        failure_handler = FailureHandlerDef(handler_spec_name=thread_name)
+        node.sub_node.__getattribute__("per_thread_failure_handlers").append(
+            failure_handler,
+        )
+        return self
+
 
 class WorkflowNode:
     def __init__(
@@ -549,7 +630,7 @@ class SpawnedThread:
 class SpawnedThreads:
     def __init__(
         self,
-        iterable: Optional[WfRunVariable],
+        iterable: Optional[WfRunVariable] = None,
         fixed_threads: Optional[list[SpawnedThread]] = None,
     ) -> None:
         self._iterable = iterable
@@ -571,7 +652,7 @@ class SpawnedThreads:
                     )
                     threads.append(thread_to_wait_for)
             return WaitForThreadsNode(
-                threads=WaitForThreadsNode.ThreadsToWaitFor(threads),
+                threads=WaitForThreadsNode.ThreadsToWaitFor(threads=threads),
             )
 
         def build_iterator_threads(
@@ -733,7 +814,7 @@ class WorkflowThread:
         self.mutate(thread_number, VariableMutationType.ASSIGN, NodeOutput(node_name))
         return SpawnedThreads(thread_number, None)
 
-    def wait_for_threads(self, wait_for: SpawnedThreads) -> NodeOutput:
+    def wait_for_threads(self, wait_for: SpawnedThreads) -> WaitForThreadsNodeOutput:
         """Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.
 
         Args:
