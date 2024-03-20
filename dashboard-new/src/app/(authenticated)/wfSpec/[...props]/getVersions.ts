@@ -9,7 +9,6 @@ type GetWfSpecProps = {
   name: string
 } & WithBookmark
 
-
 export const getWfSpecVersions = async (props: GetWfSpecProps): Promise<VersionList> => {
   const session = await getServerSession(authOptions)
   const { tenantId, name } = props
@@ -23,7 +22,7 @@ export const getWfSpecVersions = async (props: GetWfSpecProps): Promise<VersionL
   })
 
   return {
-    bookmark: specs.bookmark?.toString("base64"),
+    bookmark: specs.bookmark?.toString('base64'),
     versions,
   }
 }
