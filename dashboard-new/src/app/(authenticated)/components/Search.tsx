@@ -5,10 +5,11 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 import { TaskDefTable } from './TaskDefTable'
+import { UserTaskDefTable } from './UserTaskDefTable'
 import { WfSpecTable } from './WfSpecTable'
 import { SearchResponse, search } from './searchAction'
 
-export const SEARCH_ENTITIES = ['wfSpec', 'taskDef'] as const
+export const SEARCH_ENTITIES = ['wfSpec', 'taskDef', 'userTaskDef'] as const
 
 export type SearchType = (typeof SEARCH_ENTITIES)[number]
 export const Search: FC<{}> = () => {
@@ -55,6 +56,7 @@ export const Search: FC<{}> = () => {
       </div>
       {response?.type === 'wfSpec' && <WfSpecTable items={response.results} />}
       {response?.type === 'taskDef' && <TaskDefTable items={response.results} />}
+      {response?.type === 'userTaskDef' && <UserTaskDefTable items={response.results} />}
     </div>
   )
 }
