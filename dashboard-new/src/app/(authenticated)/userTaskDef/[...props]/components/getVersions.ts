@@ -1,11 +1,12 @@
 'use server'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { lhClient } from '@/app/lhClient'
-import { VersionList, WithBookmark } from '@/types'
+import { VersionList, WithBookmark, WithTenant } from '@/types'
 
 type Props = {
   name: string
-} & WithBookmark
+} & WithBookmark &
+  WithTenant
 
 export const getVersions = async (props: Props): Promise<VersionList> => {
   const { tenantId, name } = props

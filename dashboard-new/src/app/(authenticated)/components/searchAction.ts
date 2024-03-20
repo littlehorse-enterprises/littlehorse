@@ -1,82 +1,52 @@
 'use server'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { lhClient } from '@/app/lhClient'
-import { WithBookmark } from '@/types'
-import {
-  ExternalEventDefIdList,
-  TaskDefIdList,
-  UserTaskDefIdList,
-  WfSpecIdList,
-} from 'littlehorse-client/dist/proto/service'
+import { WithBookmark, WithTenant } from '@/types'
+import { WfSpecIdList } from 'littlehorse-client/dist/proto/service'
 import { SearchType } from './Search'
 
 type Props = { prefix?: string; limit?: number } & WithBookmark
 
-const searchWfSpec = async ({ prefix, bookmark, limit, tenantId }: Props): Promise<WfSpecIdList> => {
-  const client = await lhClient({ tenantId })
-  return client.searchWfSpec({
-    prefix,
-    bookmark: bookmark ? Buffer.from(bookmark) : undefined,
-    limit: limit || SEARCH_DEFAULT_LIMIT,
-  })
+const genericSearch = async <P, R>(props: P, fn: (props: P) => Promise<R>): Promise<R> => {
+  return fn(props)
 }
 
-const searchTaskDef = async ({ prefix, bookmark, limit, tenantId }: Props): Promise<TaskDefIdList> => {
+type SearchProps = { type: SearchType } & Props & WithTenant
+
+export const search = async ({ type, tenantId, bookmark, limit, prefix }: SearchProps): Promise<SearchResponse> => {
   const client = await lhClient({ tenantId })
-
-  return client.searchTaskDef({
+  const request = {
     prefix,
-    bookmark: bookmark ? Buffer.from(bookmark) : undefined,
+    bookmark: bookmarkFrom(bookmark),
     limit: limit || SEARCH_DEFAULT_LIMIT,
-  })
-}
+  }
 
-const searchExternalEventDef = async ({
-  prefix,
-  bookmark,
-  limit,
-  tenantId,
-}: Props): Promise<ExternalEventDefIdList> => {
-  const client = await lhClient({ tenantId })
-
-  return client.searchExternalEventDef({
-    prefix,
-    bookmark: bookmark ? Buffer.from(bookmark) : undefined,
-    limit: limit || SEARCH_DEFAULT_LIMIT,
-  })
-}
-
-type SearchProps = { type: SearchType } & Props
-const searchUserTaskDef = async ({ prefix, bookmark, limit, tenantId }: Props): Promise<UserTaskDefIdList> => {
-  const client = await lhClient({ tenantId })
-  return client.searchUserTaskDef({
-    prefix,
-    bookmark: bookmark ? Buffer.from(bookmark) : undefined,
-    limit: limit || SEARCH_DEFAULT_LIMIT,
-  })
-}
-
-export const search = async ({ type, ...props }: SearchProps): Promise<SearchResponse> => {
   let results
   switch (type) {
     case 'TaskDef':
-      results = await searchTaskDef(props)
+      results = await genericSearch(request, client.searchTaskDef)
       break
     case 'UserTaskDef':
-      results = await searchUserTaskDef(props)
+      results = await genericSearch(request, client.searchUserTaskDef)
       break
     case 'ExternalEventDef':
-      results = await searchExternalEventDef(props)
+      results = await genericSearch(request, client.searchExternalEventDef)
       break
     default:
-      results = await searchWfSpec(props)
+      results = await genericSearch(request, client.searchWfSpec)
       break
   }
+
   return {
     ...results,
     type,
     bookmark: results.bookmark?.toString('base64'),
   }
+}
+
+const bookmarkFrom = (bookmark?: string): Buffer | undefined => {
+  if (bookmark === undefined) return bookmark
+  return Buffer.from(bookmark, 'base64')
 }
 
 interface SearchResult {

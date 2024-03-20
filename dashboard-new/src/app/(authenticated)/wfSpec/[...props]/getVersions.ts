@@ -2,12 +2,13 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { getClient } from '@/lhConfig'
-import { VersionList, WithBookmark } from '@/types'
+import { VersionList, WithBookmark, WithTenant } from '@/types'
 import { getServerSession } from 'next-auth'
 
 type GetWfSpecProps = {
   name: string
-} & WithBookmark
+} & WithBookmark &
+  WithTenant
 
 export const getWfSpecVersions = async (props: GetWfSpecProps): Promise<VersionList> => {
   const session = await getServerSession(authOptions)
