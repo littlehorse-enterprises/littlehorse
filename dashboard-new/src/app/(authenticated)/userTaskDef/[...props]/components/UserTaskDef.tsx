@@ -10,7 +10,7 @@ type Props = {
 export const UserTaskDef: FC<Props> = ({ spec }) => {
   return (
     <>
-      <Navigation href="/?type=userTaskDef" title="Go back to UserTaskDefs" />
+      <Navigation href="/?type=UserTaskDef" title="Go back to UserTaskDefs" />
       <Details id={spec} />
       <Fields fields={spec.fields} />
     </>
