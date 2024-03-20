@@ -6,13 +6,13 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 import { SearchResponse, search } from './searchAction'
-import { TaskDefTable, UserTaskDefTable, WfSpecTable } from './tables'
+import { ExternalEventDefTable, TaskDefTable, UserTaskDefTable, WfSpecTable } from './tables'
 
-export const SEARCH_ENTITIES = ['WfSpec', 'TaskDef', 'UserTaskDef'] as const
+export const SEARCH_ENTITIES = ['WfSpec', 'TaskDef', 'UserTaskDef', 'ExternalEventDef'] as const
 
 export type SearchType = (typeof SEARCH_ENTITIES)[number]
 export const Search: FC<{}> = () => {
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(true)
   const [response, setResponse] = useState<SearchResponse>()
   const [prefix, setPrefix] = useState<string | undefined>()
   const searchParams = useSearchParams()
@@ -72,6 +72,7 @@ export const Search: FC<{}> = () => {
           {response?.type === 'WfSpec' && <WfSpecTable items={response.results} />}
           {response?.type === 'TaskDef' && <TaskDefTable items={response.results} />}
           {response?.type === 'UserTaskDef' && <UserTaskDefTable items={response.results} />}
+          {response?.type === 'ExternalEventDef' && <ExternalEventDefTable items={response.results} />}
         </>
       )}
     </div>

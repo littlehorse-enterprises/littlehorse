@@ -2,7 +2,12 @@
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { lhClient } from '@/app/lhClient'
 import { WithBookmark } from '@/types'
-import { TaskDefIdList, UserTaskDefIdList, WfSpecIdList } from 'littlehorse-client/dist/proto/service'
+import {
+  ExternalEventDefIdList,
+  TaskDefIdList,
+  UserTaskDefIdList,
+  WfSpecIdList,
+} from 'littlehorse-client/dist/proto/service'
 import { SearchType } from './Search'
 
 type Props = { prefix?: string; limit?: number } & WithBookmark
@@ -26,6 +31,21 @@ const searchTaskDef = async ({ prefix, bookmark, limit, tenantId }: Props): Prom
   })
 }
 
+const searchExternalEventDef = async ({
+  prefix,
+  bookmark,
+  limit,
+  tenantId,
+}: Props): Promise<ExternalEventDefIdList> => {
+  const client = await lhClient({ tenantId })
+
+  return client.searchExternalEventDef({
+    prefix,
+    bookmark: bookmark ? Buffer.from(bookmark) : undefined,
+    limit: limit || SEARCH_DEFAULT_LIMIT,
+  })
+}
+
 type SearchProps = { type: SearchType } & Props
 const searchUserTaskDef = async ({ prefix, bookmark, limit, tenantId }: Props): Promise<UserTaskDefIdList> => {
   const client = await lhClient({ tenantId })
@@ -36,17 +56,20 @@ const searchUserTaskDef = async ({ prefix, bookmark, limit, tenantId }: Props): 
   })
 }
 
-export const search = async ({ type, limit, prefix, bookmark, tenantId }: SearchProps): Promise<SearchResponse> => {
+export const search = async ({ type, ...props }: SearchProps): Promise<SearchResponse> => {
   let results
   switch (type) {
     case 'TaskDef':
-      results = await searchTaskDef({ prefix, bookmark, limit, tenantId })
+      results = await searchTaskDef(props)
       break
     case 'UserTaskDef':
-      results = await searchUserTaskDef({ prefix, bookmark, limit, tenantId })
+      results = await searchUserTaskDef(props)
+      break
+    case 'ExternalEventDef':
+      results = await searchExternalEventDef(props)
       break
     default:
-      results = await searchWfSpec({ prefix, bookmark, limit, tenantId })
+      results = await searchWfSpec(props)
       break
   }
   return {
@@ -77,4 +100,9 @@ type UserTaskDefList = SearchResult & {
   results: Pick<WfSpecIdList, 'results'>
 }
 
-export type SearchResponse = WfSpecList | TaskDefList | UserTaskDefList | SearchResult
+type ExternalEventDefList = SearchResult & {
+  type: 'ExternalEventDef'
+  results: Pick<WfSpecIdList, 'results'>
+}
+
+export type SearchResponse = WfSpecList | TaskDefList | UserTaskDefList | ExternalEventDefList | SearchResult
