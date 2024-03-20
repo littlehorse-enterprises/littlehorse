@@ -39,10 +39,10 @@ const searchUserTaskDef = async ({ prefix, bookmark, limit, tenantId }: Props): 
 export const search = async ({ type, limit, prefix, bookmark, tenantId }: SearchProps): Promise<SearchResponse> => {
   let results
   switch (type) {
-    case 'taskDef':
+    case 'TaskDef':
       results = await searchTaskDef({ prefix, bookmark, limit, tenantId })
       break
-    case 'userTaskDef':
+    case 'UserTaskDef':
       results = await searchUserTaskDef({ prefix, bookmark, limit, tenantId })
       break
     default:
@@ -63,17 +63,17 @@ interface SearchResult {
 }
 
 type WfSpecList = SearchResult & {
-  type: 'wfSpec'
+  type: 'WfSpec'
   results: Pick<WfSpecIdList, 'results'>
 }
 
 type TaskDefList = SearchResult & {
-  type: 'taskDef'
+  type: 'TaskDef'
   results: Pick<WfSpecIdList, 'results'>
 }
 
 type UserTaskDefList = SearchResult & {
-  type: 'userTaskDef'
+  type: 'UserTaskDef'
   results: Pick<WfSpecIdList, 'results'>
 }
 

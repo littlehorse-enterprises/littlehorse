@@ -1,20 +1,20 @@
 'use client'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { ArrowPathIcon } from '@heroicons/react/16/solid'
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
+import { MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 import { SearchResponse, search } from './searchAction'
 import { TaskDefTable, UserTaskDefTable, WfSpecTable } from './tables'
 
-export const SEARCH_ENTITIES = ['wfSpec', 'taskDef', 'userTaskDef'] as const
+export const SEARCH_ENTITIES = ['WfSpec', 'TaskDef', 'UserTaskDef'] as const
 
 export type SearchType = (typeof SEARCH_ENTITIES)[number]
 export const Search: FC<{}> = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [response, setResponse] = useState<SearchResponse>()
-  const [prefix, setPrefix] = useState<string|undefined>()
+  const [prefix, setPrefix] = useState<string | undefined>()
   const searchParams = useSearchParams()
   const type = getType(searchParams.get('type'))
   const bookmark = searchParams.get('bookmark') || undefined
@@ -47,12 +47,12 @@ export const Search: FC<{}> = () => {
         </div>
         <div className="relative w-80">
           <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
-            <MagnifyingGlassIcon className="h-5 w-5 fill-none stroke-teal-500" />
+            <MagnifyingGlassIcon className="h-5 w-5 fill-blue-500" />
           </div>
           <input
             type="text"
-            onChange={(e) => {
-              const {value} = e.target
+            onChange={e => {
+              const { value } = e.target
               if (!!value) {
                 setPrefix(value)
               } else {
@@ -69,9 +69,9 @@ export const Search: FC<{}> = () => {
         </div>
       ) : (
         <>
-          {response?.type === 'wfSpec' && <WfSpecTable items={response.results} />}
-          {response?.type === 'taskDef' && <TaskDefTable items={response.results} />}
-          {response?.type === 'userTaskDef' && <UserTaskDefTable items={response.results} />}
+          {response?.type === 'WfSpec' && <WfSpecTable items={response.results} />}
+          {response?.type === 'TaskDef' && <TaskDefTable items={response.results} />}
+          {response?.type === 'UserTaskDef' && <UserTaskDefTable items={response.results} />}
         </>
       )}
     </div>
@@ -79,7 +79,7 @@ export const Search: FC<{}> = () => {
 }
 
 const getType = (type: any | null): SearchType => {
-  if (!type) return 'wfSpec'
+  if (!type) return 'WfSpec'
 
-  return SEARCH_ENTITIES.includes(type) ? type : 'wfSpec'
+  return SEARCH_ENTITIES.includes(type) ? type : 'WfSpec'
 }

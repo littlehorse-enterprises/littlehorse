@@ -13,7 +13,6 @@ export const TaskDef: FC<Props> = ({ spec }) => {
       <Navigation href="/?type=taskDef" title="Go back to TaskDefs" />
       <Details id={spec.id} />
       <InputVars inputVars={spec.inputVars} />
-      {/* {JSON.stringify(spec, null, 2)} */}
     </>
   )
 }
