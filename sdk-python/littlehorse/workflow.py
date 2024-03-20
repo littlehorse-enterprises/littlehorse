@@ -4,7 +4,9 @@ from collections import deque
 from inspect import signature
 import inspect
 import logging
+import os
 from pathlib import Path
+from sys import stderr
 from typing import Any, Callable, List, Optional, Union
 import typing
 from google.protobuf.json_format import MessageToJson
@@ -491,7 +493,7 @@ class WaitForThreadsNodeOutput(NodeOutput):
         return self
 
     def handle_error_on_child(
-        self, handler: ThreadInitializer, error_type: Optional[LHErrorType] = None
+        self, handler: ThreadInitializer, error_type: Optional[str] = None
     ) -> WaitForThreadsNodeOutput:
         """
         Specifies a Failure Handler to run in case any of the ThreadRun's
@@ -504,7 +506,7 @@ class WaitForThreadsNodeOutput(NodeOutput):
         """
         self.builder._check_if_active()
         thread_name = f"error-handler-{self.node_name}" + (
-            f"-{error_type.name}" if error_type is not None else ""
+            f"-{error_type}" if error_type is not None else ""
         )
         thread_name = self.builder._workflow.add_sub_thread(thread_name, handler)
         node = self.builder._find_node(self.node_name)
@@ -512,7 +514,7 @@ class WaitForThreadsNodeOutput(NodeOutput):
         if error_type is not None:
             failure_handler = FailureHandlerDef(
                 handler_spec_name=thread_name,
-                specific_failure=error_type.name,
+                specific_failure=error_type,
             )
         else:
             failure_handler = FailureHandlerDef(
@@ -1058,7 +1060,7 @@ class WorkflowThread:
         self,
         node: NodeOutput,
         initializer: "ThreadInitializer",
-        error_type: Optional[LHErrorType] = None,
+        error_type: Optional[str] = None,
     ) -> None:
         """Adds Error Handler to the specified NodeOutput,
         allowing it to manage specific types of errors. If
@@ -1075,7 +1077,7 @@ class WorkflowThread:
         any_error = FailureHandlerDef.LHFailureType.Name(
             FailureHandlerDef.FAILURE_TYPE_ERROR
         )
-        failure_name = error_type.name if error_type is not None else any_error
+        failure_name = error_type if error_type is not None else any_error
         thread_name = f"exn-handler-{node.node_name}-{failure_name}"
         self._workflow.add_sub_thread(thread_name, initializer)
         failure_handler = FailureHandlerDef(

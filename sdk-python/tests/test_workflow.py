@@ -1496,7 +1496,7 @@ class TestWorkflow(unittest.TestCase):
 
         def my_entrypoint(thread: WorkflowThread) -> None:
             node = thread.execute("fail")
-            thread.handle_error(node, my_interrupt_handler, LHErrorType.TASK_ERROR)
+            thread.handle_error(node, my_interrupt_handler, "TASK_ERROR")
             thread.execute("my-task")
 
         wf = Workflow("my-wf", my_entrypoint)
@@ -2035,7 +2035,7 @@ class TestWaitForThreads(unittest.TestCase):
         def wf_func(wf: WorkflowThread) -> None:
             child = wf.spawn_thread(child_thread, "child")
             result = wf.wait_for_threads(SpawnedThreads(fixed_threads=[child]))
-            result.handle_error_on_child(error_handler, LHErrorType.TIMEOUT)
+            result.handle_error_on_child(error_handler, "TIMEOUT")
             result.handle_error_on_child(error_handler)
 
         wf_spec = Workflow("some-wf", wf_func).compile()
@@ -2049,7 +2049,7 @@ class TestWaitForThreads(unittest.TestCase):
         timeout_handler = wftn.per_thread_failure_handlers[0]
         any_error_handler = wftn.per_thread_failure_handlers[1]
 
-        self.assertEqual(timeout_handler.specific_failure, LHErrorType.TIMEOUT.name)
+        self.assertEqual(timeout_handler.specific_failure, "TIMEOUT")
         self.assertEqual(
             timeout_handler.handler_spec_name,
             "error-handler-2-threads-WAIT_FOR_THREADS-TIMEOUT",
