@@ -108,7 +108,7 @@ jobs:
       - name: Build Dashboard
         working-directory: ./dashboard
         run: |
-          pnpm install
+          pnpm install --frozen-lockfile
           pnpm build
 
       - name: Build and Publish
