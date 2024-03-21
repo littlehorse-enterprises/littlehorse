@@ -185,6 +185,62 @@ def entrypoint(wf: WorkflowThread) -> None:
   </TabItem>
 </Tabs>
 
+### More than one condition for the If Statement
+Here's an example of executing a `my-task` Task if `foo < 3 and foo > 1`:
+
+<Tabs>
+  <TabItem value="java" label="Java" default>
+
+```java
+WfRunVariable foo = wf.addVariable("foo", VariableType.INT);
+wf.doIf(wf.condition(foo, Comparator.GREATER_THAN, 1),
+        ifHandler -> {
+            wf.doIf(wf.condition(foo, Comparator.LESS_THAN, 3), ifBody -> {
+                ifBody.execute("my-task");
+            });
+});
+```
+
+  </TabItem>
+  <TabItem value="go" label="Go">
+
+```go
+wf.DoIf(
+		wf.Condition(foo, model.Comparator_LESS_THAN, 3),
+		func (ifBody *wflib.WorkflowThread) {
+			wf.DoIf(
+					wf.Condition(foo, model.Comparator.GREATER_THAN, 1),
+					func (ifBody *wflib.WorkflowThread) {
+						ifBody.Execute("my-task")
+					}
+			)
+		}
+	)
+```
+
+  </TabItem>
+  <TabItem value="python" label="Python">
+
+In python you have to use a first-class function, pay attention to `if_body` function.
+This is also applicable for methods.
+
+```python
+foo = wf.add_variable("foo", VariableType.INT)
+
+def if_body(wf: WorkflowThread) -> None:
+    wf.execute("my-task")
+
+def second_if(wf: WorkflowThread) -> None:
+    wf.do_if(wf.condition(foo, Comparator.GREATER_THAN, 1), if_body)
+
+def entrypoint(wf: WorkflowThread) -> None:
+    condition = wf.condition(foo, Comparator.LESS_THAN, 3)
+    wf.do_if(condition, second_if)
+```
+
+  </TabItem>
+</Tabs>
+
 ## If Else Statements
 
 To do an `if`/`else` statement, you can use `WorkflowThread::doIfElse()`, which is identical to `doIf()` but it takes an additional `IfElseBody` that is executed if the condition is false.
@@ -238,7 +294,7 @@ def entrypoint(wf: WorkflowThread) -> None:
     def else_body(wf: WorkflowThread) -> None:
         wf.execute("another-task")
         wf.execute("yet-another-task")
-      
+
     def if_body(wf: WorkflowThread) -> None:
         wf.execute("my-task")
 
