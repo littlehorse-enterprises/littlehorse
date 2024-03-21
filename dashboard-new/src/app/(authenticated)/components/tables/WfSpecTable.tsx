@@ -8,7 +8,7 @@ type Props = {
 }
 export const WfSpecTable: FC<Props> = ({ items }) => {
   if (items.length === 0) {
-    return <div className="flex min-h-[400px] items-center justify-center text-center italic">No WfSpecs</div>
+    return <div className="flex min-h-[360px] items-center justify-center text-center italic">No WfSpecs</div>
   }
 
   return (

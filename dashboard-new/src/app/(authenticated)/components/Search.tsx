@@ -1,16 +1,14 @@
 'use client'
+import { SEARCH_DEFAULT_LIMIT, SEARCH_ENTITIES, SEARCH_LIMITS, SearchType } from '@/app/constants'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { ArrowPathIcon } from '@heroicons/react/16/solid'
-import { MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
+import { SearchHeader } from './SearchHeader'
 import { SearchResponse, search } from './searchAction'
 import { ExternalEventDefTable, TaskDefTable, UserTaskDefTable, WfSpecTable } from './tables'
 
-export const SEARCH_ENTITIES = ['WfSpec', 'TaskDef', 'UserTaskDef', 'ExternalEventDef'] as const
-
-export type SearchType = (typeof SEARCH_ENTITIES)[number]
 export const Search: FC<{}> = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [response, setResponse] = useState<SearchResponse>()
@@ -18,63 +16,67 @@ export const Search: FC<{}> = () => {
   const searchParams = useSearchParams()
   const type = getType(searchParams.get('type'))
   const bookmark = searchParams.get('bookmark') || undefined
+  const [bookmarks, setBookmarks] = useState<string[]>([])
+  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
   // We use the tenantId from context to trigger render on change
   const { tenantId } = useWhoAmI()
 
   useEffect(() => {
     setLoading(true)
-    search({ type, prefix, bookmark, tenantId })
+    search({ type, prefix, bookmark, limit, tenantId })
       .then(data => {
         setResponse(data)
       })
       .finally(() => setLoading(false))
-  }, [tenantId, type, prefix, bookmark])
+  }, [tenantId, type, prefix, bookmark, limit])
+
+  useEffect(() => {
+    if (bookmark) {
+      setBookmarks([...bookmarks, bookmark])
+    }
+  }, [bookmark, bookmarks])
 
   return (
     <div className="flex flex-col">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Metadata Search</h2>
-        <div className="flex rounded-lg border-2">
-          {SEARCH_ENTITIES.map(entity => (
-            <Link
-              key={entity}
-              href={`/?type=${entity}`}
-              className={`block p-2 ${type === entity ? 'bg-gray-100' : ''}`}
-            >
-              {entity}
-            </Link>
-          ))}
-        </div>
-        <div className="relative w-80">
-          <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
-            <MagnifyingGlassIcon className="h-5 w-5 fill-blue-500" />
-          </div>
-          <input
-            type="text"
-            onChange={e => {
-              const { value } = e.target
-              if (!!value) {
-                setPrefix(value)
-              } else {
-                setPrefix(undefined)
-              }
-            }}
-            className="block w-full rounded-lg border border-gray-300 p-2 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-          />
-        </div>
-      </div>
+      <SearchHeader currentType={type} setPrefix={setPrefix} />
       {loading ? (
-        <div className="flex min-h-[400px] items-center justify-center text-center">
+        <div className="flex min-h-[360px] items-center justify-center text-center">
           <ArrowPathIcon className="h-8 w-8 animate-spin fill-blue-500 stroke-none" />
         </div>
       ) : (
-        <>
+        <div className="min-h-[360px]">
           {response?.type === 'WfSpec' && <WfSpecTable items={response.results} />}
           {response?.type === 'TaskDef' && <TaskDefTable items={response.results} />}
           {response?.type === 'UserTaskDef' && <UserTaskDefTable items={response.results} />}
           {response?.type === 'ExternalEventDef' && <ExternalEventDefTable items={response.results} />}
-        </>
+        </div>
       )}
+      <div className="flex justify-between">
+        <div className="flex items-center gap-2 text-gray-400">
+          Items per load:
+          <select
+            value={limit}
+            onChange={e => {
+              setLimit(parseInt(e.target.value))
+            }}
+            className="rounded bg-blue-500 px-2 text-white"
+          >
+            {SEARCH_LIMITS.map(searchLimit => (
+              <option key={searchLimit} value={searchLimit}>
+                {searchLimit}
+              </option>
+            ))}
+          </select>
+        </div>
+        {response?.bookmark && (
+          <Link
+            className="rounded bg-blue-500 px-4 py-2 text-white"
+            href={`/?type=${type}&bookmark=${response.bookmark}`}
+          >
+            Load More
+          </Link>
+        )}
+      </div>
     </div>
   )
 }

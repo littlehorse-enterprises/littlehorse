@@ -8,7 +8,7 @@ type Props = {
 }
 export const UserTaskDefTable: FC<Props> = ({ items }) => {
   if (items.length === 0) {
-    return <div className="flex min-h-[400px] items-center justify-center text-center italic">No UserTaskDefs</div>
+    return <div className="flex min-h-[360px] items-center justify-center text-center italic">No UserTaskDefs</div>
   }
 
   return (

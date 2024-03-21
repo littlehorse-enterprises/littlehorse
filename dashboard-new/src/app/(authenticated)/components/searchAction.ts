@@ -75,4 +75,4 @@ type ExternalEventDefList = SearchResult & {
   results: Pick<WfSpecIdList, 'results'>
 }
 
-export type SearchResponse = WfSpecList | TaskDefList | UserTaskDefList | ExternalEventDefList | SearchResult
+export type SearchResponse = WfSpecList | TaskDefList | UserTaskDefList | ExternalEventDefList
