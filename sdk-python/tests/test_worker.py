@@ -1,7 +1,6 @@
 from typing import Any
 import unittest
 import uuid
-import time
 from littlehorse.exceptions import TaskSchemaMismatchException
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import VariableDef
@@ -10,7 +9,6 @@ from littlehorse.model.service_pb2 import ScheduledTask
 from littlehorse.model.task_def_pb2 import TaskDef
 from littlehorse.model.task_run_pb2 import TaskNodeReference, TaskRunSource
 from littlehorse.model.user_tasks_pb2 import UserTaskTriggerReference
-from littlehorse.model.service_pb2 import RegisterTaskWorkerResponse
 
 
 from littlehorse.worker import LHTask, WorkerContext, LHLivenessController
@@ -324,28 +322,7 @@ class TestLHTask(unittest.TestCase):
 
 class TestLHLivenessController(unittest.TestCase):
     def test_keep_running_when_no_failure_detected(self):
-        controller = LHLivenessController(100)
-        self.assertTrue(controller.keep_worker_running())
-
-    def test_stop_running_after_timeout(self):
-        controller = LHLivenessController(100)
-        controller.notify_call_failure()
-        self.assertTrue(controller.keep_worker_running())
-        time.sleep(150 / 1000)
-        self.assertFalse(controller.keep_worker_running())
-
-    def test_recover_from_failure(self):
-        controller = LHLivenessController(100)
-        controller.notify_call_failure()
-        controller.notify_success_call(RegisterTaskWorkerResponse())
-        time.sleep(150 / 1000)
-        self.assertTrue(controller.keep_worker_running())
-
-    def test_keep_running_on_server_unhealthy(self):
-        reply = RegisterTaskWorkerResponse(is_cluster_healthy=False)
-        controller = LHLivenessController(100)
-        controller.notify_success_call(reply)
-        time.sleep(150 / 1000)
+        controller = LHLivenessController()
         self.assertTrue(controller.keep_worker_running())
 
 

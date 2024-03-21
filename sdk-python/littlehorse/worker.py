@@ -1,6 +1,6 @@
 from enum import Enum
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime
 import functools
 from inspect import Parameter, signature, iscoroutinefunction
 import logging
@@ -33,7 +33,6 @@ from littlehorse.utils import to_type
 
 REPORT_TASK_DEFAULT_RETRIES = 5
 HEARTBEAT_DEFAULT_INTERVAL = 5
-HEALTH_TIMEOUT = 60000
 
 
 class WorkerContext:
@@ -399,15 +398,13 @@ class LHConnection:
 
 
 class LHLivenessController:
-    def __init__(self, timeout_millis: int) -> None:
-        self.timeout_millis = timeout_millis
+    def __init__(self) -> None:
         self.running = True
         self.failure_occurred_at: Optional[datetime] = None
         self.cluster_healthy = True
 
     def notify_call_failure(self) -> None:
-        if self.failure_occurred_at is None:
-            self.failure_occurred_at = datetime.now()
+        self.failure_occurred_at = datetime.now()
 
     def notify_success_call(self, reply: RegisterTaskWorkerResponse) -> None:
         if reply.HasField("is_cluster_healthy"):
@@ -418,15 +415,7 @@ class LHLivenessController:
         return self.failure_occurred_at is not None
 
     def keep_worker_running(self) -> bool:
-        if not self.running:
-            return False
-
-        if self.failure_occurred_at is not None:
-            self.running = datetime.now() < (
-                self.failure_occurred_at + timedelta(milliseconds=self.timeout_millis)
-            )
-            return self.running
-        return True
+        return self.running
 
     def is_cluster_healthy(self) -> bool:
         return self.cluster_healthy
@@ -468,7 +457,7 @@ class LHTaskWorker:
 
         self._config = config
         self._connections: dict[str, LHConnection] = {}
-        self.liveness_controller = LHLivenessController(HEALTH_TIMEOUT)
+        self.liveness_controller = LHLivenessController()
 
         # get the task definition from the server
         stub = config.stub()

@@ -11,7 +11,7 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
-import io.littlehorse.sdk.worker.internal.ConnectionManagerLivenessController;
+import io.littlehorse.sdk.worker.internal.LHLivenessController;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.io.Closeable;
@@ -51,8 +51,6 @@ public class LHTaskWorker implements Closeable {
     private String taskDefName;
     private LittleHorseBlockingStub grpcClient;
 
-    private static final long KEEP_ALIVE_TIMEOUT = 60_000;
-
     /**
      * Creates an LHTaskWorker given an Object that has an annotated LHTaskMethod, and a
      * configuration Properties object.
@@ -88,12 +86,7 @@ public class LHTaskWorker implements Closeable {
         validateTaskDefAndExecutable();
         if (this.manager == null) {
             this.manager = new LHServerConnectionManager(
-                    taskMethod,
-                    taskDef,
-                    config,
-                    mappings,
-                    executable,
-                    new ConnectionManagerLivenessController(KEEP_ALIVE_TIMEOUT));
+                    taskMethod, taskDef, config, mappings, executable, new LHLivenessController());
         }
     }
 

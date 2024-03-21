@@ -2,17 +2,12 @@ package io.littlehorse.sdk.worker.internal;
 
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
-public class ConnectionManagerLivenessController {
+public class LHLivenessController {
 
-    private final long timeoutInMilliseconds;
     private LocalDateTime failureOccurredAt;
-    private boolean isClusterHealthy;
-
-    public ConnectionManagerLivenessController(long timeoutInMilliseconds) {
-        this.timeoutInMilliseconds = timeoutInMilliseconds;
-    }
+    private boolean isClusterHealthy = true;
+    private boolean isRunning = true;
 
     public void notifyCallFailure() {
         if (failureOccurredAt == null) {
@@ -29,11 +24,11 @@ public class ConnectionManagerLivenessController {
     }
 
     public boolean keepManagerRunning() {
-        if (failureOccurredAt == null) {
-            return true;
-        }
-        LocalDateTime upperLimit = this.failureOccurredAt.plus(timeoutInMilliseconds, ChronoUnit.MILLIS);
-        return LocalDateTime.now().isBefore(upperLimit);
+        return isRunning;
+    }
+
+    public void stop() {
+        isRunning = false;
     }
 
     public boolean isClusterHealthy() {

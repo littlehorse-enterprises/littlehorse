@@ -52,7 +52,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
 
     private static final long HEARTBEAT_INTERVAL_MS = 5000L;
 
-    private final ConnectionManagerLivenessController livenessController;
+    private final LHLivenessController livenessController;
 
     private static final int TOTAL_RETRIES = 5;
 
@@ -62,7 +62,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
             LHConfig config,
             List<VariableMapping> mappings,
             Object executable,
-            ConnectionManagerLivenessController livenessController) {
+            LHLivenessController livenessController) {
         this.executable = executable;
         this.taskMethod = taskMethod;
         taskMethod.setAccessible(true);
@@ -245,7 +245,9 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         this.rebalanceThread.start();
     }
 
-    public void close() {}
+    public void close() {
+        livenessController.stop();
+    }
 
     // Below is actual task execution logic
 
