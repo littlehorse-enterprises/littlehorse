@@ -5,13 +5,19 @@ from littlehorse.exceptions import TaskSchemaMismatchException
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import VariableDef
 from littlehorse.model.object_id_pb2 import NodeRunId, TaskRunId, WfRunId
-from littlehorse.model.service_pb2 import ScheduledTask
+from littlehorse.model.service_pb2 import ScheduledTask, RegisterTaskWorkerResponse
 from littlehorse.model.task_def_pb2 import TaskDef
 from littlehorse.model.task_run_pb2 import TaskNodeReference, TaskRunSource
 from littlehorse.model.user_tasks_pb2 import UserTaskTriggerReference
 
 
-from littlehorse.worker import LHTask, WorkerContext, LHLivenessController
+from littlehorse.worker import (
+    LHTask,
+    WorkerContext,
+    LHLivenessController,
+    LHTaskWorkerHealth,
+    TaskWorkerHealthReason,
+)
 
 
 class TestWorkerContext(unittest.TestCase):
@@ -323,7 +329,40 @@ class TestLHTask(unittest.TestCase):
 class TestLHLivenessController(unittest.TestCase):
     def test_keep_running_when_no_failure_detected(self):
         controller = LHLivenessController()
-        self.assertTrue(controller.keep_worker_running())
+        self.assertTrue(controller.keep_worker_running)
+
+    def test_get_health(self):
+        controller = LHLivenessController()
+
+        self.assertEqual(
+            controller.health(),
+            LHTaskWorkerHealth(True, TaskWorkerHealthReason.HEALTHY),
+        )
+
+        controller.notify_worker_failure()
+
+        self.assertEqual(
+            controller.health(),
+            LHTaskWorkerHealth(False, TaskWorkerHealthReason.UNHEALTHY),
+        )
+
+        controller.notify_success_call(
+            RegisterTaskWorkerResponse(is_cluster_healthy=True)
+        )
+
+        self.assertEqual(
+            controller.health(),
+            LHTaskWorkerHealth(True, TaskWorkerHealthReason.HEALTHY),
+        )
+
+        controller.notify_success_call(
+            RegisterTaskWorkerResponse(is_cluster_healthy=False)
+        )
+
+        self.assertEqual(
+            controller.health(),
+            LHTaskWorkerHealth(False, TaskWorkerHealthReason.SERVER_REBALANCING),
+        )
 
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ from inspect import Parameter, signature, iscoroutinefunction
 import logging
 import signal
 import traceback
-from typing import Any, AsyncIterator, Callable, Optional
+from typing import Any, AsyncIterator, Callable
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
     TaskSchemaMismatchException,
@@ -397,33 +397,6 @@ class LHConnection:
         self._ask_for_work_semaphore.release()
 
 
-class LHLivenessController:
-    def __init__(self) -> None:
-        self.running = True
-        self.failure_occurred_at: Optional[datetime] = None
-        self.cluster_healthy = True
-
-    def notify_call_failure(self) -> None:
-        self.failure_occurred_at = datetime.now()
-
-    def notify_success_call(self, reply: RegisterTaskWorkerResponse) -> None:
-        if reply.HasField("is_cluster_healthy"):
-            self.cluster_healthy = reply.is_cluster_healthy
-        self.failure_occurred_at = None
-
-    def was_failure_notified(self) -> bool:
-        return self.failure_occurred_at is not None
-
-    def keep_worker_running(self) -> bool:
-        return self.running
-
-    def is_cluster_healthy(self) -> bool:
-        return self.cluster_healthy
-
-    def stop(self) -> None:
-        self.running = False
-
-
 class TaskWorkerHealthReason(Enum):
     HEALTHY = "HEALTHY"
     UNHEALTHY = "UNHEALTHY"
@@ -434,6 +407,50 @@ class LHTaskWorkerHealth:
     def __init__(self, healthy: bool, reason: TaskWorkerHealthReason) -> None:
         self.healthy = healthy
         self.reason = reason
+
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, LHTaskWorkerHealth):
+            return self.healthy == other.healthy and self.reason == other.reason
+        return False
+
+
+class LHLivenessController:
+    def __init__(self) -> None:
+        self._is_worker_healthy = True
+        self._is_cluster_healthy = True
+        self._running = True
+
+    def notify_worker_failure(self) -> None:
+        self._is_worker_healthy = False
+
+    def notify_success_call(self, reply: RegisterTaskWorkerResponse) -> None:
+        if reply.HasField("is_cluster_healthy"):
+            self._is_cluster_healthy = reply.is_cluster_healthy
+        self._is_worker_healthy = True
+
+    @property
+    def is_worker_healthy(self) -> bool:
+        return self._is_worker_healthy
+
+    @property
+    def is_cluster_healthy(self) -> bool:
+        return self._is_cluster_healthy
+
+    @property
+    def keep_worker_running(self) -> bool:
+        return self._running
+
+    def stop(self) -> None:
+        self._running = False
+
+    def health(self) -> LHTaskWorkerHealth:
+        if not self.is_cluster_healthy:
+            return LHTaskWorkerHealth(False, TaskWorkerHealthReason.SERVER_REBALANCING)
+
+        if not self.is_worker_healthy:
+            return LHTaskWorkerHealth(False, TaskWorkerHealthReason.UNHEALTHY)
+
+        return LHTaskWorkerHealth(True, TaskWorkerHealthReason.HEALTHY)
 
 
 class LHTaskWorker:
@@ -467,7 +484,7 @@ class LHTaskWorker:
     async def _heartbeat(self) -> None:
         stub = self._config.stub(async_channel=True, name="heartbeat")
 
-        while self.liveness_controller.keep_worker_running():
+        while self.liveness_controller.keep_worker_running:
             self._log.debug(
                 "Sending heart beat (%s) at %s",
                 self._task.task_name,
@@ -490,7 +507,7 @@ class LHTaskWorker:
                     self._task.task_name,
                     e,
                 )
-                self.liveness_controller.notify_call_failure()
+                self.liveness_controller.notify_worker_failure()
                 await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
                 continue
 
@@ -539,18 +556,11 @@ class LHTaskWorker:
             await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
 
     def health(self) -> LHTaskWorkerHealth:
-        if not self.liveness_controller.is_cluster_healthy():
-            return LHTaskWorkerHealth(False, TaskWorkerHealthReason.SERVER_REBALANCING)
-        elif (
-            not self.liveness_controller.was_failure_notified()
-            and self.liveness_controller.is_cluster_healthy()
-        ):
-            return LHTaskWorkerHealth(True, TaskWorkerHealthReason.HEALTHY)
-        else:
-            return LHTaskWorkerHealth(False, TaskWorkerHealthReason.UNHEALTHY)
+        return self.liveness_controller.health()
 
+    @property
     def is_running(self) -> bool:
-        return self.liveness_controller.keep_worker_running()
+        return self.liveness_controller.keep_worker_running
 
     async def start(self) -> None:
         """Starts polling for and executing tasks."""

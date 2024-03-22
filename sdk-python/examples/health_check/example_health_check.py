@@ -47,7 +47,7 @@ async def main() -> None:
         running = True
         while running:
             for worker in workers:
-                running = worker.is_running()
+                running = worker.is_running
                 print(f"Current Health for worker: {worker.health().reason}")
             await asyncio.sleep(1)
 
@@ -55,6 +55,7 @@ async def main() -> None:
         asyncio.create_task(littlehorse.start(greet_task)),
         asyncio.create_task(show_worker_status(greet_task)),
     ]
+
     await asyncio.gather(*tasks)
 
 
