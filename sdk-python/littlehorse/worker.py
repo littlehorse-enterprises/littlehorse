@@ -526,7 +526,7 @@ class LHTaskWorker:
                 connection_to_be_removed = self._connections.pop(host)
                 connection_to_be_removed.stop()
 
-            # removing deads
+            # removing dead connections
             dead_connections = {
                 host
                 for host, connection in self._connections.items()
