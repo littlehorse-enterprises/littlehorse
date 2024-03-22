@@ -962,7 +962,11 @@ class WorkflowThread:
         ut_node: UserTaskNode = typing.cast(UserTaskNode, cur_node.sub_node)
         ut_node.actions.append(trigger)
 
-    def execute(self, task_name: str, *args: Any) -> NodeOutput:
+    def execute(
+        self,
+        task_name: str | LHFormatString | WfRunVariable,
+        *args: Any,
+    ) -> NodeOutput:
         """Adds a TASK node to the ThreadSpec.
 
         Args:
@@ -977,11 +981,29 @@ class WorkflowThread:
             NodeOutput: A NodeOutput for that TASK node.
         """
         self._check_if_active()
-        task_node = TaskNode(
-            task_def_id=TaskDefId(name=task_name),
-            variables=[to_variable_assignment(arg) for arg in args],
-        )
-        node_name = self.add_node(task_name, task_node)
+        task_node: TaskNode
+        readable_name: str
+        if isinstance(task_name, str):
+            readable_name = task_name
+            task_node = TaskNode(
+                task_def_id=TaskDefId(name=task_name),
+                variables=[to_variable_assignment(arg) for arg in args],
+            )
+        elif isinstance(task_name, LHFormatString):
+            readable_name = task_name._format
+            task_node = TaskNode(
+                dynamic_task=to_variable_assignment(task_name),
+                variables=[to_variable_assignment(arg) for arg in args],
+            )
+        else:
+            # WfRunVariable
+            readable_name = task_name.name
+            task_node = TaskNode(
+                dynamic_task=to_variable_assignment(task_name),
+                variables=[to_variable_assignment(arg) for arg in args],
+            )
+
+        node_name = self.add_node(readable_name, task_node)
         return NodeOutput(node_name)
 
     def handle_any_failure(
