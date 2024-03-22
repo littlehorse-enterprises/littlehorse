@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import MagicMock
-from littlehorse.model.common_enums_pb2 import VariableType
+from littlehorse.model.common_enums_pb2 import LHErrorType, VariableType
 from littlehorse.model.common_wfspec_pb2 import (
     Comparator,
     TaskNode,
@@ -34,7 +34,7 @@ from littlehorse.model.wf_spec_pb2 import (
     WfRunVariableAccessLevel,
     WorkflowRetentionPolicy,
 )
-from littlehorse.workflow import to_variable_assignment, LHErrorType
+from littlehorse.workflow import SpawnedThreads, to_variable_assignment
 
 from littlehorse.workflow import (
     NodeOutput,
@@ -1981,6 +1981,116 @@ class ThrowEventNodeTest(unittest.TestCase):
         self.assertEqual(second_throw.throw_event.event_def_id.name, "another-event")
         self.assertEqual(
             second_throw.throw_event.content.literal_value.str, "some-content"
+        )
+
+
+class TestWaitForThreads(unittest.TestCase):
+
+    def test_wait_for_threads_handle_exception_on_child(self):
+        def failure_handler(wf: WorkflowThread) -> None:
+            wf.execute("some-task")
+
+        def child_thread(wf: WorkflowThread) -> None:
+            wf.execute("some-task")
+
+        def wf_func(wf: WorkflowThread) -> None:
+            child = wf.spawn_thread(child_thread, "child")
+            result = wf.wait_for_threads(SpawnedThreads(fixed_threads=[child]))
+            result.handle_exception_on_child(failure_handler, "my-exception")
+            result.handle_exception_on_child(failure_handler)
+
+        wf_spec = Workflow("some-wf", wf_func).compile()
+
+        self.assertEqual(len(wf_spec.thread_specs), 4)
+        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        node = entrypoint.nodes["2-threads-WAIT_FOR_THREADS"]
+        wftn = node.wait_for_threads
+
+        self.assertEqual(len(wftn.per_thread_failure_handlers), 2)
+        specific_handler = wftn.per_thread_failure_handlers[0]
+        any_handler = wftn.per_thread_failure_handlers[1]
+
+        self.assertEqual(specific_handler.specific_failure, "my-exception")
+        self.assertEqual(
+            specific_handler.handler_spec_name,
+            "exn-handler-2-threads-WAIT_FOR_THREADS-my-exception",
+        )
+
+        self.assertEqual(
+            any_handler.any_failure_of_type,
+            FailureHandlerDef.LHFailureType.FAILURE_TYPE_EXCEPTION,
+        )
+        self.assertEqual(
+            any_handler.handler_spec_name,
+            "exn-handler-2-threads-WAIT_FOR_THREADS",
+        )
+
+    def test_wait_for_threads_handle_error_on_child(self):
+        def error_handler(wf: WorkflowThread) -> None:
+            wf.execute("some-task")
+
+        def child_thread(wf: WorkflowThread) -> None:
+            wf.execute("some-task")
+
+        def wf_func(wf: WorkflowThread) -> None:
+            child = wf.spawn_thread(child_thread, "child")
+            result = wf.wait_for_threads(SpawnedThreads(fixed_threads=[child]))
+            result.handle_error_on_child(error_handler, LHErrorType.TIMEOUT)
+            result.handle_error_on_child(error_handler)
+
+        wf_spec = Workflow("some-wf", wf_func).compile()
+
+        self.assertEqual(len(wf_spec.thread_specs), 4)
+        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        node = entrypoint.nodes["2-threads-WAIT_FOR_THREADS"]
+        wftn = node.wait_for_threads
+
+        self.assertEqual(len(wftn.per_thread_failure_handlers), 2)
+        timeout_handler = wftn.per_thread_failure_handlers[0]
+        any_error_handler = wftn.per_thread_failure_handlers[1]
+
+        self.assertEqual(
+            timeout_handler.specific_failure, LHErrorType.Name(LHErrorType.TIMEOUT)
+        )
+        self.assertEqual(
+            timeout_handler.handler_spec_name,
+            "error-handler-2-threads-WAIT_FOR_THREADS-TIMEOUT",
+        )
+
+        self.assertEqual(
+            any_error_handler.any_failure_of_type,
+            FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR,
+        )
+        self.assertEqual(
+            any_error_handler.handler_spec_name,
+            "error-handler-2-threads-WAIT_FOR_THREADS",
+        )
+
+    def test_wait_for_threads_handle_any_failure_on_child(self):
+        def failure_handler(wf: WorkflowThread) -> None:
+            wf.execute("some-task")
+
+        def child_thread(wf: WorkflowThread) -> None:
+            wf.execute("some-task")
+
+        def wf_func(wf: WorkflowThread) -> None:
+            child = wf.spawn_thread(child_thread, "child")
+            result = wf.wait_for_threads(SpawnedThreads(fixed_threads=[child]))
+            result.handle_any_failure_on_child(failure_handler)
+
+        wf_spec = Workflow("some-wf", wf_func).compile()
+
+        self.assertEqual(len(wf_spec.thread_specs), 3)
+        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        node = entrypoint.nodes["2-threads-WAIT_FOR_THREADS"]
+        wftn = node.wait_for_threads
+
+        self.assertEqual(len(wftn.per_thread_failure_handlers), 1)
+        any_failure_handler = wftn.per_thread_failure_handlers[0]
+
+        self.assertEqual(
+            any_failure_handler.handler_spec_name,
+            "failure-handler-2-threads-WAIT_FOR_THREADS-ANY_FAILURE",
         )
 
 
