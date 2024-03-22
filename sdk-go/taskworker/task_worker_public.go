@@ -5,6 +5,19 @@ import (
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 )
 
+type TaskWorkerHealthReason int32
+
+const (
+	Healthy TaskWorkerHealthReason = iota
+	Unhealthy
+	ServerRebalancing
+)
+
+type LHTaskWorkerHealth struct {
+	healthy bool
+	reason  TaskWorkerHealthReason
+}
+
 type LHTaskWorker struct {
 	config    *common.LHConfig
 	grpcStub  *model.LittleHorseClient
@@ -50,4 +63,25 @@ func (tw *LHTaskWorker) Start() error {
 
 func (tw *LHTaskWorker) Close() error {
 	return tw.close()
+}
+
+func (tw *LHTaskWorker) Health() LHTaskWorkerHealth {
+	if !tw.manager.clusterHealthy {
+		return LHTaskWorkerHealth{
+			healthy: false,
+			reason:  ServerRebalancing,
+		}
+	}
+
+	if !tw.manager.workerHealthy {
+		return LHTaskWorkerHealth{
+			healthy: false,
+			reason:  Unhealthy,
+		}
+	}
+
+	return LHTaskWorkerHealth{
+		healthy: true,
+		reason:  Healthy,
+	}
 }
