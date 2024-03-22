@@ -40,6 +40,7 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
+import io.littlehorse.sdk.wfsdk.LHFormatString;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
@@ -241,7 +242,9 @@ final class WorkflowThreadImpl implements WorkflowThread {
             Serializable... args) {
         checkIfIsActive();
         VariableAssignment assn = assignVariable(delaySeconds);
-        TaskNode taskNode = createTaskNode(taskDefName, args);
+        TaskNode taskNode = createTaskNode(
+                TaskNode.newBuilder().setTaskDefId(TaskDefId.newBuilder().setName(taskDefName)), args);
+        parent.addTaskDefName(taskDefName);
         UTATask utaTask = UTATask.newBuilder().setTask(taskNode).build();
 
         UserTaskOutputImpl utImpl = (UserTaskOutputImpl) ut;
@@ -265,15 +268,30 @@ final class WorkflowThreadImpl implements WorkflowThread {
     @Override
     public TaskNodeOutputImpl execute(String taskName, Serializable... args) {
         checkIfIsActive();
-        TaskNode taskNode = createTaskNode(taskName, args);
+        parent.addTaskDefName(taskName);
+        TaskNode taskNode = createTaskNode(
+                TaskNode.newBuilder().setTaskDefId(TaskDefId.newBuilder().setName(taskName)), args);
         String nodeName = addNode(taskName, NodeCase.TASK, taskNode);
         return new TaskNodeOutputImpl(nodeName, this);
     }
 
-    private TaskNode createTaskNode(String taskName, Serializable... args) {
-        TaskNode.Builder taskNode =
-                TaskNode.newBuilder().setTaskDefId(TaskDefId.newBuilder().setName(taskName));
-        parent.addTaskDefName(taskName);
+    @Override
+    public TaskNodeOutputImpl execute(WfRunVariable taskName, Serializable... args) {
+        checkIfIsActive();
+        TaskNode taskNode = createTaskNode(TaskNode.newBuilder().setDynamicTask(assignVariable(taskName)), args);
+        String nodeName = addNode(((WfRunVariableImpl) taskName).getName(), NodeCase.TASK, taskNode);
+        return new TaskNodeOutputImpl(nodeName, this);
+    }
+
+    @Override
+    public TaskNodeOutputImpl execute(LHFormatString taskName, Serializable... args) {
+        checkIfIsActive();
+        TaskNode taskNode = createTaskNode(TaskNode.newBuilder().setDynamicTask(assignVariable(taskName)), args);
+        String nodeName = addNode(((LHFormatStringImpl) taskName).getFormat(), NodeCase.TASK, taskNode);
+        return new TaskNodeOutputImpl(nodeName, this);
+    }
+
+    private TaskNode createTaskNode(TaskNode.Builder taskNode, Serializable... args) {
 
         for (Object var : args) {
             taskNode.addVariables(assignVariable(var));

@@ -38,6 +38,7 @@ import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.ServerACLs;
+import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -194,6 +195,7 @@ public class TestUtil {
     public static TaskNodeModel taskNode() {
         TaskNodeModel taskNode = new TaskNodeModel();
         taskNode.setTaskDefId(new TaskDefIdModel("test-task-def-name"));
+        taskNode.setTaskToExecuteType(TaskToExecuteCase.TASK_DEF_ID);
         return taskNode;
     }
 

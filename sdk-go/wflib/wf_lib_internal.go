@@ -90,10 +90,25 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 	return &l.spec, nil
 }
 
-func (t *WorkflowThread) createTaskNode(taskDefName string, args []interface{}) *model.TaskNode {
+func (t *WorkflowThread) createTaskNode(taskDefName interface{}, args []interface{}) *model.TaskNode {
+
 	taskNode := &model.TaskNode{
-		TaskDefId: &model.TaskDefId{Name: taskDefName},
 		Variables: make([]*model.VariableAssignment, 0),
+	}
+
+	taskDefNameStr, ok := taskDefName.(string)
+	if ok {
+		taskNode.TaskToExecute = &model.TaskNode_TaskDefId{
+			TaskDefId: &model.TaskDefId{Name: taskDefNameStr},
+		}
+	} else {
+		taskDefVarAssn, err := t.assignVariable(taskDefName)
+		if err != nil {
+			t.throwError(err)
+		}
+		taskNode.TaskToExecute = &model.TaskNode_DynamicTask{
+			DynamicTask: taskDefVarAssn,
+		}
 	}
 
 	for _, arg := range args {
@@ -106,12 +121,27 @@ func (t *WorkflowThread) createTaskNode(taskDefName string, args []interface{}) 
 	return taskNode
 }
 
-func (t *WorkflowThread) executeTask(name string, args []interface{}) NodeOutput {
+func (t *WorkflowThread) executeTask(taskDefName interface{}, args []interface{}) NodeOutput {
 	t.checkIfIsActive()
-	nodeName, node := t.createBlankNode(name, "TASK")
+
+	// Need to fancily determine the name for the node
+	var readableNodeName string
+	switch td := taskDefName.(type) {
+	case WfRunVariable:
+		readableNodeName = td.Name
+	case *WfRunVariable:
+		readableNodeName = td.Name
+	case string:
+		readableNodeName = td
+	case LHFormatString:
+		readableNodeName = td.format
+	case *LHFormatString:
+		readableNodeName = td.format
+	}
+	nodeName, node := t.createBlankNode(readableNodeName, "TASK")
 
 	node.Node = &model.Node_Task{
-		Task: t.createTaskNode(name, args),
+		Task: t.createTaskNode(taskDefName, args),
 	}
 
 	return NodeOutput{

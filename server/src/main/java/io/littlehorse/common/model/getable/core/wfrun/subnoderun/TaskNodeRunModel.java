@@ -16,6 +16,7 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.TaskNodeRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -93,7 +94,13 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
 
         TaskNodeModel node = nodeRun.getNode().getTaskNode();
 
-        TaskDefModel td = node.getTaskDef();
+        TaskDefModel td;
+        try {
+            td = node.getTaskDef(nodeRun.getThreadRun());
+        } catch (LHVarSubError exn) {
+            throw new NodeFailureException(new FailureModel(
+                    "Failed calculating dynamic task: " + exn.getMessage(), LHErrorType.VAR_SUB_ERROR.toString()));
+        }
         if (td == null) {
             // that means the TaskDef was deleted between now and the time that the
             // WfSpec was first created. Yikers!
@@ -119,7 +126,8 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
                 new TaskRunSourceModel(source, processorContext),
                 node,
                 processorContext,
-                this.taskRunId);
+                this.taskRunId,
+                td.getId());
         task.setId(taskRunId);
         task.dispatchTaskToQueue();
 
