@@ -39,7 +39,7 @@ def get_child_wf() -> Workflow:
 
 
 async def greeting(name: str, ctx: WorkerContext) -> str:
-    msg = f"Hello {name}!. WfRun {ctx.wf_run_id}"
+    msg = f"Hello {name}!. WfRun {ctx.wf_run_id.id}"
     print(msg)
     await asyncio.sleep(random.uniform(0.5, 1.5))
     return msg

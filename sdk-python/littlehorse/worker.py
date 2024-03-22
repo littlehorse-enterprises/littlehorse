@@ -33,6 +33,7 @@ from littlehorse.utils import to_type
 
 REPORT_TASK_DEFAULT_RETRIES = 5
 HEARTBEAT_DEFAULT_INTERVAL = 5
+GRPC_UNARY_CALL_TIMEOUT = 1
 
 
 class WorkerContext:
@@ -264,7 +265,7 @@ class LHConnection:
         self._log.debug(
             "Scheduling task '%s' for WfRun '%s'",
             task.task_def_id.name,
-            task.task_run_id.wf_run_id,
+            task.task_run_id.wf_run_id.id,
         )
         await self._schedule_task_semaphore.acquire()
         asyncio.create_task(self._execute_task(task))
@@ -321,8 +322,9 @@ class LHConnection:
     async def _report_task(self, task_result: ReportTaskRun, retries_left: int) -> None:
         if retries_left <= 0:
             self._log.error(
-                "Retries exhausted when reporting task: '%s'",
-                task_result.task_run_id,
+                "Retries exhausted when reporting task %s, and workflow %s",
+                task_result.task_run_id.task_guid,
+                task_result.task_run_id.wf_run_id.id,
             )
             return
 
@@ -332,7 +334,7 @@ class LHConnection:
         )
 
         try:
-            await self._stub.ReportTask(task_result)
+            await self._stub.ReportTask(task_result, timeout=GRPC_UNARY_CALL_TIMEOUT)
             self._log.debug("Task '%s' successfully reported", self._task.task_name)
         except Exception as e:
             retries_left -= 1
@@ -478,7 +480,9 @@ class LHTaskWorker:
 
         # get the task definition from the server
         stub = config.stub()
-        reply: TaskDef = stub.GetTaskDef(TaskDefId(name=task_def_name))
+        reply: TaskDef = stub.GetTaskDef(
+            TaskDefId(name=task_def_name), timeout=GRPC_UNARY_CALL_TIMEOUT
+        )
         self._task = LHTask(callable, reply)
 
     async def _heartbeat(self) -> None:
@@ -486,7 +490,7 @@ class LHTaskWorker:
 
         while self.liveness_controller.keep_worker_running:
             self._log.debug(
-                "Sending heart beat (%s) at %s",
+                "Sending heart beat for task %s at %s",
                 self._task.task_name,
                 datetime.now(),
             )
@@ -498,9 +502,13 @@ class LHTaskWorker:
             )
             try:
                 reply: RegisterTaskWorkerResponse = await stub.RegisterTaskWorker(
-                    request
+                    request, timeout=GRPC_UNARY_CALL_TIMEOUT
                 )
-
+                self._log.debug(
+                    "Heart beat received for task %s at %s",
+                    self._task.task_name,
+                    datetime.now(),
+                )
             except Exception as e:
                 self._log.error(
                     "Error when registering task worker: %s. %s",
