@@ -37,6 +37,30 @@ public interface WorkflowThread {
     TaskNodeOutput execute(String taskName, Serializable... args);
 
     /**
+     * Adds a TASK node to the ThreadSpec.
+     *
+     * @param taskName a WfRunVariable containing the name of the TaskDef to execute.
+     * @param args The input parameters to pass into the Task Run. If the type of an arg is a
+     *     `WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+     *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
+     *     pass that literal value in.
+     * @return A NodeOutput for that TASK node.
+     */
+    TaskNodeOutput execute(WfRunVariable taskName, Serializable... args);
+
+    /**
+     * Adds a TASK node to the ThreadSpec.
+     *
+     * @param taskName an LHFormatString containing the name of the TaskDef to execute.
+     * @param args The input parameters to pass into the Task Run. If the type of an arg is a
+     *     `WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+     *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
+     *     pass that literal value in.
+     * @return A NodeOutput for that TASK node.
+     */
+    TaskNodeOutput execute(LHFormatString taskName, Serializable... args);
+
+    /**
      * Adds a User Task Node, and assigns it to a specific user
      *
      * @param userTaskDefName is the UserTaskDef to assign.

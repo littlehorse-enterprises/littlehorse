@@ -21,6 +21,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.common.util.WfSpecUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.Node;
+import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
@@ -108,7 +109,8 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         List<String> names = new ArrayList<>();
         threadSpecs.forEach((s, threadSpec) -> {
             threadSpec.getNodes().values().forEach(node -> {
-                if (node.getType() == Node.NodeCase.TASK) {
+                if (node.getType() == Node.NodeCase.TASK
+                        && node.getTaskNode().getTaskToExecuteType() == TaskToExecuteCase.TASK_DEF_ID) {
                     names.add(node.getTaskNode().getTaskDefId().getName());
                 }
             });

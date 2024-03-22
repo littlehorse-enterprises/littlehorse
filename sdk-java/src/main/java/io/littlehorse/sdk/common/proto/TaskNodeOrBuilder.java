@@ -8,31 +8,34 @@ public interface TaskNodeOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * The type of TaskRun to schedule.
-   * </pre>
-   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return Whether the taskDefId field is set.
    */
   boolean hasTaskDefId();
   /**
-   * <pre>
-   * The type of TaskRun to schedule.
-   * </pre>
-   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return The taskDefId.
    */
   io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId();
   /**
-   * <pre>
-   * The type of TaskRun to schedule.
-   * </pre>
-   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
+
+  /**
+   * <code>.littlehorse.VariableAssignment dynamic_task = 6;</code>
+   * @return Whether the dynamicTask field is set.
+   */
+  boolean hasDynamicTask();
+  /**
+   * <code>.littlehorse.VariableAssignment dynamic_task = 6;</code>
+   * @return The dynamicTask.
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignment getDynamicTask();
+  /**
+   * <code>.littlehorse.VariableAssignment dynamic_task = 6;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getDynamicTaskOrBuilder();
 
   /**
    * <pre>
@@ -135,4 +138,6 @@ public interface TaskNodeOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getVariablesOrBuilder(
       int index);
+
+  io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase getTaskToExecuteCase();
 }

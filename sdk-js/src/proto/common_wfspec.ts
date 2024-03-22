@@ -412,9 +412,9 @@ export interface ExponentialBackoffRetryPolicy {
 
 /** Defines a TaskRun execution. Used in a Node and also in the UserTask Trigger Actions. */
 export interface TaskNode {
-  /** The type of TaskRun to schedule. */
-  taskDefId:
-    | TaskDefId
+  taskDefId?: TaskDefId | undefined;
+  dynamicTask?:
+    | VariableAssignment
     | undefined;
   /**
    * How long until LittleHorse determines that the Task Worker had a technical ERROR if
@@ -1131,13 +1131,23 @@ export const ExponentialBackoffRetryPolicy = {
 };
 
 function createBaseTaskNode(): TaskNode {
-  return { taskDefId: undefined, timeoutSeconds: 0, retries: 0, exponentialBackoff: undefined, variables: [] };
+  return {
+    taskDefId: undefined,
+    dynamicTask: undefined,
+    timeoutSeconds: 0,
+    retries: 0,
+    exponentialBackoff: undefined,
+    variables: [],
+  };
 }
 
 export const TaskNode = {
   encode(message: TaskNode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.taskDefId !== undefined) {
       TaskDefId.encode(message.taskDefId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.dynamicTask !== undefined) {
+      VariableAssignment.encode(message.dynamicTask, writer.uint32(50).fork()).ldelim();
     }
     if (message.timeoutSeconds !== 0) {
       writer.uint32(16).int32(message.timeoutSeconds);
@@ -1167,6 +1177,13 @@ export const TaskNode = {
           }
 
           message.taskDefId = TaskDefId.decode(reader, reader.uint32());
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.dynamicTask = VariableAssignment.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 16) {
@@ -1212,6 +1229,9 @@ export const TaskNode = {
     const message = createBaseTaskNode();
     message.taskDefId = (object.taskDefId !== undefined && object.taskDefId !== null)
       ? TaskDefId.fromPartial(object.taskDefId)
+      : undefined;
+    message.dynamicTask = (object.dynamicTask !== undefined && object.dynamicTask !== null)
+      ? VariableAssignment.fromPartial(object.dynamicTask)
       : undefined;
     message.timeoutSeconds = object.timeoutSeconds ?? 0;
     message.retries = object.retries ?? 0;

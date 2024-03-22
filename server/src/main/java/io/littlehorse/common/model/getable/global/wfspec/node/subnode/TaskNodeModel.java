@@ -18,6 +18,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssign
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.sdk.common.proto.TaskNode;
+import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -35,24 +36,20 @@ import lombok.Setter;
 @Setter
 public class TaskNodeModel extends SubNode<TaskNode> {
 
-    private TaskDefIdModel taskDefId;
+    private TaskToExecuteCase taskToExecuteType;
+    private TaskDefIdModel taskDefId; // BE CAREFUL WHEN USING THIS
+    private VariableAssignmentModel dynamicTask;
+
     private List<VariableAssignmentModel> variables;
     private int timeoutSeconds;
 
-    private TaskDefModel taskDef;
+    // private TaskDefModel taskDef;
     private WfService wfService;
     private ReadOnlyMetadataManager metadataManager;
     private ProcessorExecutionContext processorContext;
 
     private int simpleRetries;
     private ExponentialBackoffRetryPolicyModel exponentialBackoffRetryPolicy;
-
-    public TaskDefModel getTaskDef() {
-        if (taskDef == null) {
-            taskDef = metadataManager.get(taskDefId);
-        }
-        return taskDef;
-    }
 
     private NodeModel node;
 
@@ -71,7 +68,6 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         TaskNode p = (TaskNode) proto;
-        taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
 
         timeoutSeconds = p.getTimeoutSeconds();
         if (timeoutSeconds == 0) {
@@ -84,6 +80,18 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         this.metadataManager = context.metadataManager();
         this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
 
+        this.taskToExecuteType = p.getTaskToExecuteCase();
+        switch (taskToExecuteType) {
+            case TASK_DEF_ID:
+                taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
+                break;
+            case DYNAMIC_TASK:
+                dynamicTask = LHSerializable.fromProto(p.getDynamicTask(), VariableAssignmentModel.class, context);
+                break;
+            case TASKTOEXECUTE_NOT_SET:
+                throw new LHApiException(Status.INVALID_ARGUMENT, "Task Node did not set taskdef");
+        }
+
         simpleRetries = p.getRetries();
         if (p.hasExponentialBackoff()) {
             exponentialBackoffRetryPolicy = LHSerializable.fromProto(
@@ -92,13 +100,21 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     }
 
     public TaskNode.Builder toProto() {
-        TaskNode.Builder out = TaskNode.newBuilder()
-                .setTaskDefId(taskDefId.toProto())
-                .setTimeoutSeconds(timeoutSeconds)
-                .setRetries(simpleRetries);
+        TaskNode.Builder out =
+                TaskNode.newBuilder().setTimeoutSeconds(timeoutSeconds).setRetries(simpleRetries);
 
         for (VariableAssignmentModel va : variables) {
             out.addVariables(va.toProto());
+        }
+        switch (taskToExecuteType) {
+            case TASK_DEF_ID:
+                out.setTaskDefId(taskDefId.toProto());
+                break;
+            case DYNAMIC_TASK:
+                out.setDynamicTask(dynamicTask.toProto());
+                break;
+            case TASKTOEXECUTE_NOT_SET:
+                throw new LHApiException(Status.INVALID_ARGUMENT, "Task Node did not set taskdef");
         }
 
         if (exponentialBackoffRetryPolicy != null) {
@@ -109,40 +125,38 @@ public class TaskNodeModel extends SubNode<TaskNode> {
 
     @Override
     public void validate() throws LHApiException {
-        // Want to be able to release new versions of taskdef's and have old
-        // workflows automatically use the new version. We will enforce schema
-        // compatibility rules on the taskdef to ensure that this isn't an issue.
-        TaskDefModel taskDef = metadataManager.get(new TaskDefIdModel(taskDefId.getName()));
-        if (taskDef == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Refers to nonexistent TaskDef " + taskDefId);
-        }
+        // Can only validate the type of TaskDef if we know it ahead of time...
+        if (taskToExecuteType == TaskToExecuteCase.TASK_DEF_ID) {
+            TaskDefModel taskDef = metadataManager.get(new TaskDefIdModel(taskDefId.getName()));
+            if (taskDef == null) {
+                throw new LHApiException(Status.INVALID_ARGUMENT, "Refers to nonexistent TaskDef " + taskDefId);
+            }
 
-        // TODO: Validate retry policy; ensure that it is sensible.
-
-        // Now need to validate that all of the variables are provided.
-        if (variables.size() != taskDef.inputVars.size()) {
-            throw new LHApiException(
-                    Status.INVALID_ARGUMENT,
-                    "For TaskDef "
-                            + taskDef.getName()
-                            + " we need "
-                            + taskDef.inputVars.size()
-                            + " input vars, but we have "
-                            + variables.size());
-        }
-
-        // Currently, we don't do any type-checking for JSON_ARR or JSON_OBJ variables
-        // because they are not strongly-typed. Future versions of LittleHorse will
-        // include the ability to register a schema for JSON Variables. For strongly-
-        // typed JSON variables (i.e. those with a schema), we will also validate
-        // those as well.
-        for (int i = 0; i < variables.size(); i++) {
-            VariableDefModel taskDefVar = taskDef.getInputVars().get(i);
-            VariableAssignmentModel assn = variables.get(i);
-            if (!assn.canBeType(taskDefVar.getType(), this.node.getThreadSpec())) {
+            // Now need to validate that all of the variables are provided.
+            if (variables.size() != taskDef.inputVars.size()) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
-                        "Input variable " + i + " needs to be " + taskDefVar.getType() + " but cannot be!");
+                        "For TaskDef "
+                                + taskDef.getName()
+                                + " we need "
+                                + taskDef.inputVars.size()
+                                + " input vars, but we have "
+                                + variables.size());
+            }
+
+            // Currently, we don't do any type-checking for JSON_ARR or JSON_OBJ variables
+            // because they are not strongly-typed. Future versions of LittleHorse will
+            // include the ability to register a schema for JSON Variables. For strongly-
+            // typed JSON variables (i.e. those with a schema), we will also validate
+            // those as well.
+            for (int i = 0; i < variables.size(); i++) {
+                VariableDefModel taskDefVar = taskDef.getInputVars().get(i);
+                VariableAssignmentModel assn = variables.get(i);
+                if (!assn.canBeType(taskDefVar.getType(), this.node.getThreadSpec())) {
+                    throw new LHApiException(
+                            Status.INVALID_ARGUMENT,
+                            "Input variable " + i + " needs to be " + taskDefVar.getType() + " but cannot be!");
+                }
             }
         }
 
@@ -177,12 +191,33 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         for (VariableAssignmentModel assn : variables) {
             out.addAll(assn.getRequiredWfRunVarNames());
         }
+        if (dynamicTask != null) {
+            out.addAll(dynamicTask.getRequiredWfRunVarNames());
+        }
         return out;
     }
 
+    public TaskDefModel getTaskDef(ThreadRunModel thread) throws LHVarSubError {
+        switch (taskToExecuteType) {
+            case TASK_DEF_ID:
+                return metadataManager.get(taskDefId);
+            case DYNAMIC_TASK:
+                String taskDefName = thread.assignVariable(dynamicTask).asStr().getStrVal();
+                TaskDefModel out = metadataManager.get(new TaskDefIdModel(taskDefName));
+                if (out == null) {
+                    throw new LHVarSubError(null, "No TaskDef named %s!".formatted(taskDefName));
+                }
+                return out;
+            case TASKTOEXECUTE_NOT_SET:
+        }
+        throw new LHApiException(Status.INVALID_ARGUMENT, "Node does not specify Task to execute");
+    }
+
     public List<VarNameAndValModel> assignInputVars(ThreadRunModel thread) throws LHVarSubError {
+        TaskDefModel taskDef = getTaskDef(thread);
+
         List<VarNameAndValModel> out = new ArrayList<>();
-        if (getTaskDef().getInputVars().size() != variables.size()) {
+        if (getTaskDef(thread).getInputVars().size() != variables.size()) {
             throw new LHVarSubError(null, "Impossible: got different number of taskdef vars and node input vars");
         }
 

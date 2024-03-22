@@ -241,7 +241,10 @@ message ExponentialBackoffRetryPolicy {
 // Defines a TaskRun execution. Used in a Node and also in the UserTask Trigger Actions.
 message TaskNode {
   // The type of TaskRun to schedule.
-  TaskDefId task_def_id = 1;
+  oneof task_to_execute {
+    TaskDefId task_def_id = 1;
+    VariableAssignment dynamic_task = 6;
+  }
 
   // How long until LittleHorse determines that the Task Worker had a technical ERROR if
   // the worker does not yet reply to the Server. This is determined on a per-Attempt
