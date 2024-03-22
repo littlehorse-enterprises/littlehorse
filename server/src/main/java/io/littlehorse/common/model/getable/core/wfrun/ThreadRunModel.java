@@ -683,7 +683,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public List<VarNameAndValModel> assignVarsForNode(TaskNodeModel node) throws LHVarSubError {
         List<VarNameAndValModel> out = new ArrayList<>();
-        TaskDefModel taskDef = node.getTaskDef();
+        TaskDefModel taskDef = node.getTaskDef(this);
 
         if (taskDef.inputVars.size() != node.getVariables().size()) {
             throw new LHVarSubError(null, "Impossible: got different number of taskdef vars and node input vars");

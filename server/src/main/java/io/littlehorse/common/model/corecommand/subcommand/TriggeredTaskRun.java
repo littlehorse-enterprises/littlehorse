@@ -19,6 +19,7 @@ import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -104,9 +105,10 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
         try {
             List<VarNameAndValModel> inputVars = taskToSchedule.assignInputVars(thread);
             TaskRunIdModel taskRunId = new TaskRunIdModel(wfRunId, executionContext);
+            TaskDefIdModel id = taskToSchedule.getTaskDef(thread).getId();
 
             ScheduledTaskModel toSchedule = new ScheduledTaskModel(
-                    taskToSchedule.getTaskDef().getObjectId(), inputVars, userTaskRun, executionContext);
+                    taskToSchedule.getTaskDef(thread).getObjectId(), inputVars, userTaskRun, executionContext);
             toSchedule.setTaskRunId(taskRunId);
 
             TaskRunModel taskRun = new TaskRunModel(
@@ -115,7 +117,8 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
                             new UserTaskTriggerReferenceModel(userTaskRun, executionContext), executionContext),
                     taskToSchedule,
                     executionContext,
-                    taskRunId);
+                    taskRunId,
+                    id);
 
             executionContext.getableManager().put(taskRun);
 

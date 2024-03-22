@@ -12,6 +12,7 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
+import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
@@ -70,11 +71,12 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             TaskRunSourceModel source,
             TaskNodeModel node,
             ProcessorExecutionContext processorContext,
-            TaskRunIdModel id) {
+            TaskRunIdModel id,
+            TaskDefIdModel taskDefId) {
         this();
         this.inputVariables = inputVars;
         this.taskRunSource = source;
-        this.taskDefId = node.getTaskDefId();
+        this.taskDefId = taskDefId;
         this.timeoutSeconds = node.getTimeoutSeconds();
         this.executionContext = processorContext;
         this.processorContext = processorContext;

@@ -43,7 +43,7 @@ public class DynamicTaskTest {
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     Assertions.assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.ERROR);
                     Assertions.assertThat(nodeRun.getFailures(0).getFailureName())
-                            .isEqualTo(LHErrorType.VAR_SUB_ERROR);
+                            .isEqualTo(LHErrorType.VAR_SUB_ERROR.toString());
                     Assertions.assertThat(nodeRun.getFailures(0).getMessage()).contains("not-a-real-cluster");
                 })
                 .start();
