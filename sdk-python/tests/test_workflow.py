@@ -2111,7 +2111,10 @@ class DynamicTaskTest(unittest.TestCase):
         self.assertEqual(static_node.task.task_def_id.name, "some-static-task")
 
         format_str_node = entrypoint.nodes["2-some-dynamic-task-{0}-TASK"]
-        self.assertEqual(format_str_node.task.dynamic_task.format_string.format.literal_value.str, "some-dynamic-task-{0}")
+        self.assertEqual(
+            format_str_node.task.dynamic_task.format_string.format.literal_value.str,
+            "some-dynamic-task-{0}",
+        )
 
         var_node = entrypoint.nodes["3-my-var-TASK"]
         self.assertEqual(var_node.task.dynamic_task.variable_name, "my-var")

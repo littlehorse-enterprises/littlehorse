@@ -30,8 +30,7 @@ include(
         'hundred-tasks',
         'spawn-thread-foreach',
         'shared-variables',
-        'workflow-events',
-        'health-status'
+        'workflow-events'
 ].each { example ->
     include "example-$example"
     project(":example-$example").projectDir = new File(rootProject.projectDir, "examples/$example")

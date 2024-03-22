@@ -33,7 +33,7 @@ from littlehorse.utils import to_type
 
 REPORT_TASK_DEFAULT_RETRIES = 5
 HEARTBEAT_DEFAULT_INTERVAL = 5
-GRPC_UNARY_CALL_TIMEOUT = 1
+GRPC_UNARY_CALL_TIMEOUT = 20
 
 
 class WorkerContext:
