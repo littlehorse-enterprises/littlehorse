@@ -19,6 +19,7 @@ import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.worker.LHTaskWorkerHealth;
 import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.sdk.worker.internal.util.ReportTaskObserver;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
@@ -52,7 +53,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
 
     private static final long HEARTBEAT_INTERVAL_MS = 5000L;
 
-    private final ConnectionManagerLivenessController livenessController;
+    private final LHLivenessController livenessController;
 
     private static final int TOTAL_RETRIES = 5;
 
@@ -62,7 +63,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
             LHConfig config,
             List<VariableMapping> mappings,
             Object executable,
-            ConnectionManagerLivenessController livenessController) {
+            LHLivenessController livenessController) {
         this.executable = executable;
         this.taskMethod = taskMethod;
         taskMethod.setAccessible(true);
@@ -77,7 +78,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         this.threadPool = Executors.newFixedThreadPool(config.getWorkerThreads());
         this.livenessController = livenessController;
         this.rebalanceThread = new Thread(() -> {
-            while (this.livenessController.keepManagerRunning()) {
+            while (this.livenessController.keepWorkerRunning()) {
                 doHeartbeat();
                 try {
                     Thread.sleep(HEARTBEAT_INTERVAL_MS);
@@ -131,8 +132,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
     @Override
     public void onNext(RegisterTaskWorkerResponse next) {
         // Reconcile what's running
-        livenessController.establishClusterHealth(next);
-        livenessController.notifySuccessfulCall();
+        livenessController.notifySuccessCall(next);
 
         for (LHHostInfo host : next.getYourHostsList()) {
             if (!isAlreadyRunning(host)) {
@@ -181,7 +181,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
                 config.getApiBootstrapHost(),
                 config.getApiBootstrapPort(),
                 t);
-        livenessController.notifyCallFailure();
+        livenessController.notifyWorkerFailure();
         // We don't close the connections to other hosts here since they will do
         // that themselves if they can't connect.
     }
@@ -237,15 +237,13 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         return rebalanceThread.isAlive();
     }
 
-    public boolean wasThereAnyFailure() {
-        return livenessController.wasFailureNotified();
-    }
-
     public void start() {
-        this.rebalanceThread.start();
+        rebalanceThread.start();
     }
 
-    public void close() {}
+    public void close() {
+        livenessController.stop();
+    }
 
     // Below is actual task execution logic
 
@@ -356,7 +354,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
         return config.getWorkerThreads();
     }
 
-    public boolean isClusterHealthy() {
-        return livenessController.isClusterHealthy();
+    public LHTaskWorkerHealth healthStatus() {
+        return livenessController.healthStatus();
     }
 }

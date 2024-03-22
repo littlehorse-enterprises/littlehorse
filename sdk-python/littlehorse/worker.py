@@ -1,12 +1,12 @@
 from enum import Enum
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime
 import functools
 from inspect import Parameter, signature, iscoroutinefunction
 import logging
 import signal
 import traceback
-from typing import Any, AsyncIterator, Callable, Optional
+from typing import Any, AsyncIterator, Callable
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
     TaskSchemaMismatchException,
@@ -33,7 +33,7 @@ from littlehorse.utils import to_type
 
 REPORT_TASK_DEFAULT_RETRIES = 5
 HEARTBEAT_DEFAULT_INTERVAL = 5
-HEALTH_TIMEOUT = 60000
+GRPC_UNARY_CALL_TIMEOUT = 20
 
 
 class WorkerContext:
@@ -265,7 +265,7 @@ class LHConnection:
         self._log.debug(
             "Scheduling task '%s' for WfRun '%s'",
             task.task_def_id.name,
-            task.task_run_id.wf_run_id,
+            task.task_run_id.wf_run_id.id,
         )
         await self._schedule_task_semaphore.acquire()
         asyncio.create_task(self._execute_task(task))
@@ -322,8 +322,9 @@ class LHConnection:
     async def _report_task(self, task_result: ReportTaskRun, retries_left: int) -> None:
         if retries_left <= 0:
             self._log.error(
-                "Retries exhausted when reporting task: '%s'",
-                task_result.task_run_id,
+                "Retries exhausted when reporting task %s, and workflow %s",
+                task_result.task_run_id.task_guid,
+                task_result.task_run_id.wf_run_id.id,
             )
             return
 
@@ -333,7 +334,7 @@ class LHConnection:
         )
 
         try:
-            await self._stub.ReportTask(task_result)
+            await self._stub.ReportTask(task_result, timeout=GRPC_UNARY_CALL_TIMEOUT)
             self._log.debug("Task '%s' successfully reported", self._task.task_name)
         except Exception as e:
             retries_left -= 1
@@ -398,43 +399,6 @@ class LHConnection:
         self._ask_for_work_semaphore.release()
 
 
-class LHLivenessController:
-    def __init__(self, timeout_millis: int) -> None:
-        self.timeout_millis = timeout_millis
-        self.running = True
-        self.failure_occurred_at: Optional[datetime] = None
-        self.cluster_healthy = True
-
-    def notify_call_failure(self) -> None:
-        if self.failure_occurred_at is None:
-            self.failure_occurred_at = datetime.now()
-
-    def notify_success_call(self, reply: RegisterTaskWorkerResponse) -> None:
-        if reply.HasField("is_cluster_healthy"):
-            self.cluster_healthy = reply.is_cluster_healthy
-        self.failure_occurred_at = None
-
-    def was_failure_notified(self) -> bool:
-        return self.failure_occurred_at is not None
-
-    def keep_worker_running(self) -> bool:
-        if not self.running:
-            return False
-
-        if self.failure_occurred_at is not None:
-            self.running = datetime.now() < (
-                self.failure_occurred_at + timedelta(milliseconds=self.timeout_millis)
-            )
-            return self.running
-        return True
-
-    def is_cluster_healthy(self) -> bool:
-        return self.cluster_healthy
-
-    def stop(self) -> None:
-        self.running = False
-
-
 class TaskWorkerHealthReason(Enum):
     HEALTHY = "HEALTHY"
     UNHEALTHY = "UNHEALTHY"
@@ -445,6 +409,52 @@ class LHTaskWorkerHealth:
     def __init__(self, healthy: bool, reason: TaskWorkerHealthReason) -> None:
         self.healthy = healthy
         self.reason = reason
+
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, LHTaskWorkerHealth):
+            return self.healthy == other.healthy and self.reason == other.reason
+        return False
+
+
+class LHLivenessController:
+    def __init__(self) -> None:
+        self._is_worker_healthy = True
+        self._is_cluster_healthy = True
+        self._running = True
+
+    def notify_worker_failure(self) -> None:
+        self._is_worker_healthy = False
+
+    def notify_success_call(self, reply: RegisterTaskWorkerResponse) -> None:
+        if reply.HasField("is_cluster_healthy"):
+            self._is_cluster_healthy = reply.is_cluster_healthy
+        else:
+            self._is_cluster_healthy = True
+        self._is_worker_healthy = True
+
+    @property
+    def is_worker_healthy(self) -> bool:
+        return self._is_worker_healthy
+
+    @property
+    def is_cluster_healthy(self) -> bool:
+        return self._is_cluster_healthy
+
+    @property
+    def keep_worker_running(self) -> bool:
+        return self._running
+
+    def stop(self) -> None:
+        self._running = False
+
+    def health(self) -> LHTaskWorkerHealth:
+        if not self.is_cluster_healthy:
+            return LHTaskWorkerHealth(False, TaskWorkerHealthReason.SERVER_REBALANCING)
+
+        if not self.is_worker_healthy:
+            return LHTaskWorkerHealth(False, TaskWorkerHealthReason.UNHEALTHY)
+
+        return LHTaskWorkerHealth(True, TaskWorkerHealthReason.HEALTHY)
 
 
 class LHTaskWorker:
@@ -468,19 +478,21 @@ class LHTaskWorker:
 
         self._config = config
         self._connections: dict[str, LHConnection] = {}
-        self.liveness_controller = LHLivenessController(HEALTH_TIMEOUT)
+        self._liveness_controller = LHLivenessController()
 
         # get the task definition from the server
         stub = config.stub()
-        reply: TaskDef = stub.GetTaskDef(TaskDefId(name=task_def_name))
+        reply: TaskDef = stub.GetTaskDef(
+            TaskDefId(name=task_def_name), timeout=GRPC_UNARY_CALL_TIMEOUT
+        )
         self._task = LHTask(callable, reply)
 
     async def _heartbeat(self) -> None:
         stub = self._config.stub(async_channel=True, name="heartbeat")
 
-        while self.liveness_controller.keep_worker_running():
+        while self._liveness_controller.keep_worker_running:
             self._log.debug(
-                "Sending heart beat (%s) at %s",
+                "Sending heart beat for task %s at %s",
                 self._task.task_name,
                 datetime.now(),
             )
@@ -492,20 +504,24 @@ class LHTaskWorker:
             )
             try:
                 reply: RegisterTaskWorkerResponse = await stub.RegisterTaskWorker(
-                    request
+                    request, timeout=GRPC_UNARY_CALL_TIMEOUT
                 )
-
+                self._log.debug(
+                    "Heart beat received for task %s at %s",
+                    self._task.task_name,
+                    datetime.now(),
+                )
             except Exception as e:
                 self._log.error(
                     "Error when registering task worker: %s. %s",
                     self._task.task_name,
                     e,
                 )
-                self.liveness_controller.notify_call_failure()
+                self._liveness_controller.notify_worker_failure()
                 await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
                 continue
 
-            self.liveness_controller.notify_success_call(reply)
+            self._liveness_controller.notify_success_call(reply)
             hosts = [f"{host.host}:{host.port}" for host in reply.your_hosts]
 
             # remove invalid connections
@@ -520,7 +536,7 @@ class LHTaskWorker:
                 connection_to_be_removed = self._connections.pop(host)
                 connection_to_be_removed.stop()
 
-            # removing deads
+            # removing dead connections
             dead_connections = {
                 host
                 for host, connection in self._connections.items()
@@ -550,18 +566,11 @@ class LHTaskWorker:
             await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
 
     def health(self) -> LHTaskWorkerHealth:
-        if not self.liveness_controller.is_cluster_healthy():
-            return LHTaskWorkerHealth(False, TaskWorkerHealthReason.SERVER_REBALANCING)
-        elif (
-            not self.liveness_controller.was_failure_notified()
-            and self.liveness_controller.is_cluster_healthy()
-        ):
-            return LHTaskWorkerHealth(True, TaskWorkerHealthReason.HEALTHY)
-        else:
-            return LHTaskWorkerHealth(False, TaskWorkerHealthReason.UNHEALTHY)
+        return self._liveness_controller.health()
 
+    @property
     def is_running(self) -> bool:
-        return self.liveness_controller.keep_worker_running()
+        return self._liveness_controller.keep_worker_running
 
     async def start(self) -> None:
         """Starts polling for and executing tasks."""
@@ -572,7 +581,7 @@ class LHTaskWorker:
     def stop(self) -> None:
         """Cleanly shuts down the Task Worker."""
         self._log.info(f"Stopping worker '{self._task.task_name}'")
-        self.liveness_controller.stop()
+        self._liveness_controller.stop()
 
         for connection in self._connections.values():
             connection.stop()

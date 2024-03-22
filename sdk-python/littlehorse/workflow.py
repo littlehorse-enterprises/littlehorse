@@ -1706,26 +1706,32 @@ class Workflow:
         self._retention_policy = policy
 
 
-def create_workflow_spec(workflow: Workflow, config: LHConfig) -> None:
+def create_workflow_spec(
+    workflow: Workflow, config: LHConfig, timeout: Optional[int] = None
+) -> None:
     """Creates a given workflow spec at the LH Server.
 
     Args:
         workflow (Workflow): The workflow.
         config (LHConfig): The configuration to get connected to the LH Server.
+        timeout (Optional[int]): Timeout
     """
     stub = config.stub()
     request = workflow.compile()
     logging.info(f"Creating a new version of {workflow.name}:\n{workflow}")
-    stub.PutWfSpec(request)
+    stub.PutWfSpec(request, timeout=timeout)
 
 
-def create_task_def(task: Callable[..., Any], name: str, config: LHConfig) -> None:
+def create_task_def(
+    task: Callable[..., Any], name: str, config: LHConfig, timeout: Optional[int] = None
+) -> None:
     """Creates a new TaskDef at the LH Server.
 
     Args:
         task (Callable[..., Any]): The task.
         name (str): Name of the task.
         config (LHConfig): The configuration to get connected to the LH Server.
+        timeout (Optional[int]): Timeout
     """
     stub = config.stub()
     task_signature = signature(task)
@@ -1735,18 +1741,21 @@ def create_task_def(task: Callable[..., Any], name: str, config: LHConfig) -> No
         if param.annotation is not WorkerContext
     ]
     request = PutTaskDefRequest(name=name, input_vars=input_vars)
-    stub.PutTaskDef(request)
+    stub.PutTaskDef(request, timeout=timeout)
     logging.info(f"TaskDef {name} was created:\n{to_json(request)}")
 
 
-def create_external_event_def(name: str, config: LHConfig) -> None:
+def create_external_event_def(
+    name: str, config: LHConfig, timeout: Optional[int] = None
+) -> None:
     """Creates a new ExternalEventDef at the LH Server.
 
     Args:
         name (str): Name of the external event.
         config (LHConfig): The configuration to get connected to the LH Server.
+        timeout (Optional[int]): Timeout
     """
     stub = config.stub()
     request = PutExternalEventDefRequest(name=name)
-    stub.PutExternalEventDef(request)
+    stub.PutExternalEventDef(request, timeout=timeout)
     logging.info(f"ExternalEventDef {name} was created:\n{to_json(request)}")
