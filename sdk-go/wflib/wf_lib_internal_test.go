@@ -544,3 +544,35 @@ func TestThrowEvent(t *testing.T) {
 	assert.Equal(t, node.GetThrowEvent().Content.GetLiteralValue().GetStr(), "my-content")
 	assert.Equal(t, node.GetThrowEvent().EventDefId.Name, "another-event")
 }
+
+func TestDynamicTask(t *testing.T) {
+	wf := wflib.NewWorkflow(func(wf *wflib.WorkflowThread) {
+		myVar := wf.AddVariable("my-var", model.VariableType_STR)
+		wf.Execute("some-static-task")
+
+		formatStr := wf.Format("some-dynamic-task-{0}")
+		wf.Execute(formatStr, myVar)
+		wf.Execute(myVar)
+	}, "obiwan")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	staticNode := entrypoint.Nodes["1-some-static-task-TASK"]
+	assert.Equal(t, staticNode.GetTask().GetTaskDefId().Name, "some-static-task")
+
+	common.PrintProto(entrypoint)
+
+	formatStrNode := entrypoint.Nodes["2-some-dynamic-task-{0}-TASK"]
+	assert.Equal(
+		t,
+		formatStrNode.GetTask().GetDynamicTask().GetFormatString().GetFormat().GetLiteralValue().GetStr(),
+		"some-dynamic-task-{0}",
+	)
+
+	varNode := entrypoint.Nodes["3-my-var-TASK"]
+	assert.Equal(t, varNode.GetTask().GetDynamicTask().GetVariableName(), "my-var")
+}

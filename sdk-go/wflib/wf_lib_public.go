@@ -140,8 +140,8 @@ func (t *WorkflowThread) AddVariableWithDefault(
 	return t.addVariable(name, varType, defaultValue)
 }
 
-func (t *WorkflowThread) Execute(name string, args ...interface{}) NodeOutput {
-	return t.executeTask(name, args)
+func (t *WorkflowThread) Execute(taskDefName interface{}, args ...interface{}) NodeOutput {
+	return t.executeTask(taskDefName, args)
 }
 
 func (t *WorkflowThread) Mutate(
