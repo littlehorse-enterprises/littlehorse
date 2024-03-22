@@ -1,7 +1,6 @@
 import { Metadata } from 'next'
 import { getProviders } from 'next-auth/react'
 import Image from 'next/image'
-import React from 'react'
 import { LoginButton } from './LoginButton'
 import handsomeHorse from './handsome-horse.png'
 

@@ -1,8 +1,7 @@
 'use client'
 
-import Image from 'next/image'
 import { FC } from 'react'
-import LhLogo from '../../../../public/images/littlehorse.svg'
+import LhLogo from '@/littlehorse.svg'
 
 import { Principal } from './Principal'
 import { TenantSelector } from './TenantSelector'
@@ -12,7 +11,7 @@ export const Header: FC = () => {
     <nav className="mb-4 border-gray-200 bg-black dark:bg-gray-900">
       <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between py-4">
         <a href="/" className="flex items-center space-x-1 rtl:space-x-reverse">
-          <Image src={LhLogo} alt="littlehorse" width={60} />
+          <LhLogo className="h-8 fill-white" />
           <div className="hidden flex-col gap-0 space-y-[-10px] text-xl font-bold text-white md:flex">
             <span>LITTLE</span>
             <span>HORSE</span>
