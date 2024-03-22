@@ -1,6 +1,8 @@
 package taskworker
 
 import (
+	"fmt"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 )
@@ -13,9 +15,22 @@ const (
 	ServerRebalancing
 )
 
+func (e TaskWorkerHealthReason) String() string {
+	switch e {
+	case Healthy:
+		return "Healthy"
+	case Unhealthy:
+		return "Unhealthy"
+	case ServerRebalancing:
+		return "ServerRebalancing"
+	default:
+		return fmt.Sprintf("%d", int(e))
+	}
+}
+
 type LHTaskWorkerHealth struct {
-	healthy bool
-	reason  TaskWorkerHealthReason
+	Healthy bool
+	Reason  TaskWorkerHealthReason
 }
 
 type LHTaskWorker struct {
@@ -68,20 +83,20 @@ func (tw *LHTaskWorker) Close() error {
 func (tw *LHTaskWorker) Health() LHTaskWorkerHealth {
 	if !tw.manager.clusterHealthy {
 		return LHTaskWorkerHealth{
-			healthy: false,
-			reason:  ServerRebalancing,
+			Healthy: false,
+			Reason:  ServerRebalancing,
 		}
 	}
 
 	if !tw.manager.workerHealthy {
 		return LHTaskWorkerHealth{
-			healthy: false,
-			reason:  Unhealthy,
+			Healthy: false,
+			Reason:  Unhealthy,
 		}
 	}
 
 	return LHTaskWorkerHealth{
-		healthy: true,
-		reason:  Healthy,
+		Healthy: true,
+		Reason:  Healthy,
 	}
 }
