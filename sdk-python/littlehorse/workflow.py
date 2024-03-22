@@ -61,6 +61,7 @@ from littlehorse.utils import negate_comparator, to_variable_type, to_variable_v
 from littlehorse.worker import WorkerContext
 
 ENTRYPOINT = "entrypoint"
+GRPC_UNARY_CALL_TIMEOUT = 1
 
 NodeType = Union[
     TaskNode,
@@ -1694,7 +1695,7 @@ def create_workflow_spec(workflow: Workflow, config: LHConfig) -> None:
     stub = config.stub()
     request = workflow.compile()
     logging.info(f"Creating a new version of {workflow.name}:\n{workflow}")
-    stub.PutWfSpec(request)
+    stub.PutWfSpec(request, timeout=GRPC_UNARY_CALL_TIMEOUT)
 
 
 def create_task_def(task: Callable[..., Any], name: str, config: LHConfig) -> None:
@@ -1713,7 +1714,7 @@ def create_task_def(task: Callable[..., Any], name: str, config: LHConfig) -> No
         if param.annotation is not WorkerContext
     ]
     request = PutTaskDefRequest(name=name, input_vars=input_vars)
-    stub.PutTaskDef(request)
+    stub.PutTaskDef(request, timeout=GRPC_UNARY_CALL_TIMEOUT)
     logging.info(f"TaskDef {name} was created:\n{to_json(request)}")
 
 
@@ -1726,5 +1727,5 @@ def create_external_event_def(name: str, config: LHConfig) -> None:
     """
     stub = config.stub()
     request = PutExternalEventDefRequest(name=name)
-    stub.PutExternalEventDef(request)
+    stub.PutExternalEventDef(request, timeout=GRPC_UNARY_CALL_TIMEOUT)
     logging.info(f"ExternalEventDef {name} was created:\n{to_json(request)}")
