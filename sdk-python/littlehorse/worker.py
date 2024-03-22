@@ -428,6 +428,8 @@ class LHLivenessController:
     def notify_success_call(self, reply: RegisterTaskWorkerResponse) -> None:
         if reply.HasField("is_cluster_healthy"):
             self._is_cluster_healthy = reply.is_cluster_healthy
+        else:
+            self._is_cluster_healthy = True
         self._is_worker_healthy = True
 
     @property

@@ -25,7 +25,7 @@ def get_workflow() -> Workflow:
         the_name = wf.add_variable("input-name", VariableType.STR)
         wf.execute("greet", the_name)
 
-    return Workflow("example-health-check", my_entrypoint)
+    return Workflow("example-health-status", my_entrypoint)
 
 
 async def greeting(name: str, ctx: WorkerContext) -> str:

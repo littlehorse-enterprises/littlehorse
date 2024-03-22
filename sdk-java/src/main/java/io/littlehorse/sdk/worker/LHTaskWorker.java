@@ -193,12 +193,6 @@ public class LHTaskWorker implements Closeable {
     }
 
     public LHTaskWorkerHealth healthStatus() {
-        if (!manager.isClusterHealthy()) {
-            return new LHTaskWorkerHealth(false, LHTaskWorkerHealthReason.SERVER_REBALANCING);
-        } else if (!manager.wasThereAnyFailure() && manager.isClusterHealthy()) {
-            return new LHTaskWorkerHealth(true, LHTaskWorkerHealthReason.HEALTHY);
-        }
-
-        return new LHTaskWorkerHealth(false, LHTaskWorkerHealthReason.UNHEALTHY);
+        return manager.healthStatus();
     }
 }

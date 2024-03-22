@@ -1,19 +1,13 @@
 package io.littlehorse.sdk.worker;
 
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+
+@Builder
+@Getter
+@EqualsAndHashCode
 public class LHTaskWorkerHealth {
     private boolean isHealthy;
     private LHTaskWorkerHealthReason reason;
-
-    public LHTaskWorkerHealth(boolean isHealthy, LHTaskWorkerHealthReason reason) {
-        this.isHealthy = isHealthy;
-        this.reason = reason;
-    }
-
-    public boolean isHealthy() {
-        return isHealthy;
-    }
-
-    public LHTaskWorkerHealthReason getReason() {
-        return reason;
-    }
 }
