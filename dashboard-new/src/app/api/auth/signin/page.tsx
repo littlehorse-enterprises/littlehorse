@@ -1,9 +1,9 @@
-import { getProviders, signIn } from 'next-auth/react'
-import Image from 'next/image'
-import handsomeHorse from './handsome-horse.png'
-import lhLogo from './vertical-logo.svg'
-import { LoginButton } from './LoginButton'
 import { Metadata } from 'next'
+import { getProviders } from 'next-auth/react'
+import Image from 'next/image'
+import React from 'react'
+import { LoginButton } from './LoginButton'
+import handsomeHorse from './handsome-horse.png'
 
 export const metadata: Metadata = {
   title: 'Login - Littlehorse Dashboard',
@@ -18,9 +18,6 @@ export default async function Login() {
         <Image src={handsomeHorse} alt="LittleHorse" className="h-full w-full object-cover" />
       </div>
       <div className="sm:20 flex h-full w-full flex-col justify-between p-8 lg:w-1/2">
-        <div className="flex justify-end text-blue-500">
-          <Image src={lhLogo} alt="Littlehorse Logo" />
-        </div>
         <div className="flex flex-grow flex-col items-center justify-center justify-items-center ">
           <h1 className="mb-8 text-5xl font-bold">
             Welcome to your
