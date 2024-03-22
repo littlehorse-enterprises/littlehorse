@@ -476,7 +476,7 @@ class LHTaskWorker:
 
         self._config = config
         self._connections: dict[str, LHConnection] = {}
-        self.liveness_controller = LHLivenessController()
+        self._liveness_controller = LHLivenessController()
 
         # get the task definition from the server
         stub = config.stub()
@@ -488,7 +488,7 @@ class LHTaskWorker:
     async def _heartbeat(self) -> None:
         stub = self._config.stub(async_channel=True, name="heartbeat")
 
-        while self.liveness_controller.keep_worker_running:
+        while self._liveness_controller.keep_worker_running:
             self._log.debug(
                 "Sending heart beat for task %s at %s",
                 self._task.task_name,
@@ -515,11 +515,11 @@ class LHTaskWorker:
                     self._task.task_name,
                     e,
                 )
-                self.liveness_controller.notify_worker_failure()
+                self._liveness_controller.notify_worker_failure()
                 await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
                 continue
 
-            self.liveness_controller.notify_success_call(reply)
+            self._liveness_controller.notify_success_call(reply)
             hosts = [f"{host.host}:{host.port}" for host in reply.your_hosts]
 
             # remove invalid connections
@@ -564,11 +564,11 @@ class LHTaskWorker:
             await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
 
     def health(self) -> LHTaskWorkerHealth:
-        return self.liveness_controller.health()
+        return self._liveness_controller.health()
 
     @property
     def is_running(self) -> bool:
-        return self.liveness_controller.keep_worker_running
+        return self._liveness_controller.keep_worker_running
 
     async def start(self) -> None:
         """Starts polling for and executing tasks."""
@@ -579,7 +579,7 @@ class LHTaskWorker:
     def stop(self) -> None:
         """Cleanly shuts down the Task Worker."""
         self._log.info(f"Stopping worker '{self._task.task_name}'")
-        self.liveness_controller.stop()
+        self._liveness_controller.stop()
 
         for connection in self._connections.values():
             connection.stop()
