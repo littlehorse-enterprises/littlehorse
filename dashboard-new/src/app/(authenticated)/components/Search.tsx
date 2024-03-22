@@ -2,7 +2,6 @@
 import { SEARCH_DEFAULT_LIMIT, SEARCH_ENTITIES, SEARCH_LIMITS, SearchType } from '@/app/constants'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { ArrowPathIcon } from '@heroicons/react/16/solid'
-import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 import { SearchHeader } from './SearchHeader'
@@ -15,26 +14,36 @@ export const Search: FC<{}> = () => {
   const [prefix, setPrefix] = useState<string | undefined>()
   const searchParams = useSearchParams()
   const type = getType(searchParams.get('type'))
-  const bookmark = searchParams.get('bookmark') || undefined
-  const [bookmarks, setBookmarks] = useState<string[]>([])
+  const [bookmark, setBookmark] = useState<string>()
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
   // We use the tenantId from context to trigger render on change
   const { tenantId } = useWhoAmI()
 
+  // TODO: Add proper error handling
   useEffect(() => {
     setLoading(true)
-    search({ type, prefix, bookmark, limit, tenantId })
+    search({ type, limit, prefix, tenantId })
       .then(data => {
         setResponse(data)
       })
       .finally(() => setLoading(false))
-  }, [tenantId, type, prefix, bookmark, limit])
+    return () => {
+      setBookmark(undefined)
+    }
+  }, [type, prefix, limit, tenantId])
 
   useEffect(() => {
     if (bookmark) {
-      setBookmarks([...bookmarks, bookmark])
+      search({ type, limit, prefix, bookmark, tenantId }).then(data => {
+        setResponse({
+          ...data,
+          results: [...response?.results, ...data.results] as any, // it's impossible know at build time which type would contain response
+        })
+      })
     }
-  }, [bookmark, bookmarks])
+    // response is not really a dependency of this hook
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bookmark])
 
   return (
     <div className="flex flex-col">
@@ -69,12 +78,9 @@ export const Search: FC<{}> = () => {
           </select>
         </div>
         {response?.bookmark && (
-          <Link
-            className="rounded bg-blue-500 px-4 py-2 text-white"
-            href={`/?type=${type}&bookmark=${response.bookmark}`}
-          >
+          <button className="rounded bg-blue-500 px-4 py-2 text-white" onClick={() => setBookmark(response.bookmark)}>
             Load More
-          </Link>
+          </button>
         )}
       </div>
     </div>

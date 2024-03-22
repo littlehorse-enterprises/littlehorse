@@ -1,9 +1,8 @@
 'use server'
-import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import { SEARCH_DEFAULT_LIMIT, SearchType } from '@/app/constants'
 import { lhClient } from '@/app/lhClient'
 import { WithBookmark, WithTenant } from '@/types'
 import { WfSpecIdList } from 'littlehorse-client/dist/proto/service'
-import { SearchType } from './Search'
 
 type Props = { prefix?: string; limit?: number } & WithBookmark
 
