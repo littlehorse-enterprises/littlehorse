@@ -1,14 +1,17 @@
 from __future__ import annotations
-from enum import Enum
-from collections import deque
-from inspect import signature
+
 import inspect
 import logging
+import typing
+from collections import deque
+from enum import Enum
+from inspect import signature
 from pathlib import Path
 from typing import Any, Callable, List, Optional, Union
-import typing
+
 from google.protobuf.json_format import MessageToJson
 from google.protobuf.message import Message
+
 from littlehorse.config import LHConfig
 from littlehorse.model.common_enums_pb2 import LHErrorType, VariableType
 from littlehorse.model.common_wfspec_pb2 import (
@@ -19,6 +22,7 @@ from littlehorse.model.common_wfspec_pb2 import (
     VariableDef,
     VariableMutation,
     VariableMutationType,
+    ExponentialBackoffRetryPolicy,
 )
 from littlehorse.model.object_id_pb2 import (
     ExternalEventDefId,
@@ -488,7 +492,7 @@ class WaitForThreadsNodeOutput(NodeOutput):
 
         Args:
             handler (ThreadInitializer): the handler logic.
-            error_name (Optional[str])): the specific ERROR to handle.
+            error_type (Optional[str])): the specific ERROR to handle.
         """
         self.builder._check_if_active()
         thread_name = f"error-handler-{self.node_name}" + (
@@ -694,13 +698,23 @@ class UserTaskOutput(NodeOutput):
 
 
 class WorkflowThread:
-    def __init__(self, workflow: "Workflow", initializer: "ThreadInitializer") -> None:
+    def __init__(
+        self,
+        workflow: "Workflow",
+        initializer: "ThreadInitializer",
+        default_retries: Optional[int] = None,
+        default_exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = None,
+    ) -> None:
         """This is used to define the logic of a ThreadSpec in a ThreadInitializer.
 
         Args:
             workflow (Workflow): Parent.
             initializer (ThreadInitializer): Initializer.
         """
+        self._default_exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = (
+            default_exponential_backoff
+        )
+        self._default_retries: Optional[int] = default_retries
         self._wf_run_variables: list[WfRunVariable] = []
         self._wf_interruptions: list[WorkflowInterruption] = []
         self._nodes: list[WorkflowNode] = []
@@ -964,8 +978,10 @@ class WorkflowThread:
 
     def execute(
         self,
-        task_name: str | LHFormatString | WfRunVariable,
+        task_name: Union[str, LHFormatString, WfRunVariable],
         *args: Any,
+        retries: Optional[int] = None,
+        exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = None,
     ) -> NodeOutput:
         """Adds a TASK node to the ThreadSpec.
 
@@ -976,6 +992,8 @@ class WorkflowThread:
             WfRunVariable is passed in as the argument; otherwise, the
             library will attempt to cast the provided argument to a
             LittleHorse VariableValue and pass that literal value in.
+            retries(int): Retries in case an error
+            exponential_backoff (ExponentialBackoffRetryPolicy): Retries policy in case of error.
 
         Returns:
             NodeOutput: A NodeOutput for that TASK node.
@@ -988,12 +1006,24 @@ class WorkflowThread:
             task_node = TaskNode(
                 task_def_id=TaskDefId(name=task_name),
                 variables=[to_variable_assignment(arg) for arg in args],
+                retries=retries if retries is not None else self._default_retries,
+                exponential_backoff=(
+                    exponential_backoff
+                    if exponential_backoff is not None
+                    else self._default_exponential_backoff
+                ),
             )
         elif isinstance(task_name, LHFormatString):
             readable_name = task_name._format
             task_node = TaskNode(
                 dynamic_task=to_variable_assignment(task_name),
                 variables=[to_variable_assignment(arg) for arg in args],
+                retries=retries if retries is not None else self._default_retries,
+                exponential_backoff=(
+                    exponential_backoff
+                    if exponential_backoff is not None
+                    else self._default_exponential_backoff
+                ),
             )
         else:
             # WfRunVariable
@@ -1001,6 +1031,12 @@ class WorkflowThread:
             task_node = TaskNode(
                 dynamic_task=to_variable_assignment(task_name),
                 variables=[to_variable_assignment(arg) for arg in args],
+                retries=retries if retries is not None else self._default_retries,
+                exponential_backoff=(
+                    exponential_backoff
+                    if exponential_backoff is not None
+                    else self._default_exponential_backoff
+                ),
             )
 
         node_name = self.add_node(readable_name, task_node)
@@ -1325,7 +1361,7 @@ class WorkflowThread:
 
         Args:
             left_hand (WfRunVariable): It is a handle to the WfRunVariable to mutate.
-            type (VariableMutationType): It is the mutation type to use,
+            operation (VariableMutationType): It is the mutation type to use,
             for example, `VariableMutationType.ASSIGN`.
             right_hand (Any): It is either a literal value
             (which the Library casts to a Variable Value), a
@@ -1632,6 +1668,10 @@ class Workflow:
         self._allowed_updates: Optional[AllowedUpdateType] = None
         self._parent_wf: Optional[WfSpec.ParentWfSpecReference] = None
         self._retention_policy: Optional[WorkflowRetentionPolicy] = None
+        self._default_exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = (
+            None
+        )
+        self._default_retries: Optional[int] = None
         if parent_wf is not None:
             self._parent_wf = WfSpec.ParentWfSpecReference(wf_spec_name=parent_wf)
 
@@ -1667,14 +1707,21 @@ class Workflow:
     def __str__(self) -> str:
         return to_json(self.compile())
 
-    def with_update_type(self, update_type: AllowedUpdateType) -> None:
-        """
-        Defines the type of update to perform when saving the WfSpec:
-            AllowedUpdateType.ALL_UPDATES (Default): Creates a new WfSpec with a different version (either major or revision).
-            AllowedUpdateType.MINOR_REVISION_UPDATES: Creates a new WfSpec with a different revision if the change is a major version it fails.
-            AllowedUpdateType.NO_UPDATES: Fail with the ALREADY_EXISTS response code.
+    def with_update_type(self, update_type: AllowedUpdateType) -> Workflow:
+        """Defines the type of update to perform when saving the WfSpec:
+
+        Args:
+            update_type(AllowedUpdateType):
+                AllowedUpdateType.ALL_UPDATES (Default): Creates a new WfSpec with a different version
+                (either major or revision).
+                AllowedUpdateType.MINOR_REVISION_UPDATES: Creates a new WfSpec with a different revision
+                if the change is a major version it fails.
+                AllowedUpdateType.NO_UPDATES: Fail with the ALREADY_EXISTS response code.
+
+        Returns: This instance.
         """
         self._allowed_updates = update_type
+        return self
 
     def compile(self) -> PutWfSpecRequest:
         """Compile the workflow into Protobuf Objects.
@@ -1687,7 +1734,12 @@ class Workflow:
         thread_specs: dict[str, ThreadSpec] = {}
 
         for name, initializer in threads_iterator:
-            builder = WorkflowThread(self, initializer)
+            builder = WorkflowThread(
+                self,
+                initializer,
+                self._default_retries,
+                self._default_exponential_backoff,
+            )
             thread_specs[name] = builder.compile()
 
         self._thread_initializers = []
@@ -1702,8 +1754,34 @@ class Workflow:
             retention_policy=self._retention_policy,
         )
 
-    def with_retention_policy(self, policy: WorkflowRetentionPolicy) -> None:
+    def with_retention_policy(self, policy: WorkflowRetentionPolicy) -> Workflow:
+        """Sets the retention policy for all WfRun's created by this WfSpec.
+
+        Args:
+            policy(WorkflowRetentionPolicy): Workflow Retention Policy
+
+        Returns: This instance.
+        """
         self._retention_policy = policy
+        return self
+
+    def with_retries_policy(
+        self,
+        retries: Optional[int] = None,
+        exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = None,
+    ) -> Workflow:
+        """Configures the default retry behaviour of the tasks.
+
+        Args:
+            retries(Optional[int]): Number of retries.
+            exponential_backoff(Optional[ExponentialBackoffRetryPolicy]): Tells the Workflow to configure (by default)
+                the specified ExponentialBackoffRetryPolicy as the retry policy.
+
+        Returns: This instance.
+        """
+        self._default_retries = retries
+        self._default_exponential_backoff = exponential_backoff
+        return self
 
 
 def create_workflow_spec(
