@@ -64,11 +64,12 @@ async def retry_task(start_timestamp: int, ctx: WorkerContext) -> None:
 async def main() -> None:
     config = get_config()
     wf = get_workflow()
+    worker = LHTaskWorker(retry_task, TASK_NAME, config)
 
     littlehorse.create_task_def(retry_task, TASK_NAME, config)
     littlehorse.create_workflow_spec(wf, config)
 
-    await littlehorse.start(LHTaskWorker(retry_task, TASK_NAME, config))
+    await littlehorse.start(worker)
 
 
 if __name__ == "__main__":
