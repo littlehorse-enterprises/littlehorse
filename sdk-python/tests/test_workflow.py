@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import MagicMock
+
 from littlehorse.model.common_enums_pb2 import LHErrorType, VariableType
 from littlehorse.model.common_wfspec_pb2 import (
     Comparator,
@@ -9,13 +10,14 @@ from littlehorse.model.common_wfspec_pb2 import (
     VariableMutation,
     VariableMutationType,
     UTActionTrigger,
+    ExponentialBackoffRetryPolicy,
 )
-from littlehorse.model.service_pb2 import PutWfSpecRequest
-from littlehorse.model.variable_pb2 import VariableValue
 from littlehorse.model.object_id_pb2 import (
     ExternalEventDefId,
     TaskDefId,
 )
+from littlehorse.model.service_pb2 import PutWfSpecRequest
+from littlehorse.model.variable_pb2 import VariableValue
 from littlehorse.model.wf_spec_pb2 import (
     Edge,
     EdgeCondition,
@@ -34,14 +36,13 @@ from littlehorse.model.wf_spec_pb2 import (
     WfRunVariableAccessLevel,
     WorkflowRetentionPolicy,
 )
-from littlehorse.workflow import SpawnedThreads, to_variable_assignment
-
 from littlehorse.workflow import (
     NodeOutput,
     WorkflowThread,
     WfRunVariable,
     Workflow,
 )
+from littlehorse.workflow import SpawnedThreads, to_variable_assignment
 
 
 class TestNodeOutput(unittest.TestCase):
@@ -1656,6 +1657,202 @@ class TestWorkflow(unittest.TestCase):
                             "1-exit-EXIT": Node(exit=ExitNode()),
                         },
                     )
+                },
+            ),
+        )
+
+
+class TestRetries(unittest.TestCase):
+    def test_add_retries(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.execute("my-task", retries=4)
+
+        wf = Workflow("my-wf", my_entrypoint)
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        interrupt_defs=[],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-my-task-TASK")],
+                            ),
+                            "1-my-task-TASK": Node(
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="my-task"), retries=4
+                                ),
+                                outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
+                            ),
+                            "2-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    ),
+                },
+            ),
+        )
+
+    def test_add_retries_1_task(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.execute("my-task1", retries=4)
+            thread.execute("my-task2")
+
+        wf = Workflow("my-wf", my_entrypoint)
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        interrupt_defs=[],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-my-task1-TASK")],
+                            ),
+                            "1-my-task1-TASK": Node(
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="my-task1"), retries=4
+                                ),
+                                outgoing_edges=[Edge(sink_node_name="2-my-task2-TASK")],
+                            ),
+                            "2-my-task2-TASK": Node(
+                                task=TaskNode(task_def_id=TaskDefId(name="my-task2")),
+                                outgoing_edges=[Edge(sink_node_name="3-exit-EXIT")],
+                            ),
+                            "3-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    ),
+                },
+            ),
+        )
+
+    def test_add_retries_with_default(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.execute("my-task1")
+            thread.execute("my-task2")
+
+        wf = Workflow("my-wf", my_entrypoint)
+        wf.with_retries_policy(4)
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        interrupt_defs=[],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-my-task1-TASK")],
+                            ),
+                            "1-my-task1-TASK": Node(
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="my-task1"), retries=4
+                                ),
+                                outgoing_edges=[Edge(sink_node_name="2-my-task2-TASK")],
+                            ),
+                            "2-my-task2-TASK": Node(
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="my-task2"), retries=4
+                                ),
+                                outgoing_edges=[Edge(sink_node_name="3-exit-EXIT")],
+                            ),
+                            "3-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    ),
+                },
+            ),
+        )
+
+    def test_add_retries_with_default_policy(self):
+        policy = ExponentialBackoffRetryPolicy(
+            base_interval_ms=1000, max_delay_ms=10000, multiplier=4
+        )
+
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.execute("my-task1")
+            thread.execute("my-task2")
+
+        wf = Workflow("my-wf", my_entrypoint)
+        wf.with_retries_policy(2, exponential_backoff=policy)
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        interrupt_defs=[],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-my-task1-TASK")],
+                            ),
+                            "1-my-task1-TASK": Node(
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="my-task1"),
+                                    retries=2,
+                                    exponential_backoff=policy,
+                                ),
+                                outgoing_edges=[Edge(sink_node_name="2-my-task2-TASK")],
+                            ),
+                            "2-my-task2-TASK": Node(
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="my-task2"),
+                                    retries=2,
+                                    exponential_backoff=policy,
+                                ),
+                                outgoing_edges=[Edge(sink_node_name="3-exit-EXIT")],
+                            ),
+                            "3-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    ),
+                },
+            ),
+        )
+
+    def test_add_retries_with_policy(self):
+        policy = ExponentialBackoffRetryPolicy(
+            base_interval_ms=1000, max_delay_ms=5000, multiplier=2
+        )
+
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.execute(
+                "my-task",
+                retries=4,
+                exponential_backoff=policy,
+            )
+
+        wf = Workflow("my-wf", my_entrypoint)
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        interrupt_defs=[],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-my-task-TASK")],
+                            ),
+                            "1-my-task-TASK": Node(
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="my-task"),
+                                    retries=4,
+                                    exponential_backoff=policy,
+                                ),
+                                outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
+                            ),
+                            "2-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    ),
                 },
             ),
         )

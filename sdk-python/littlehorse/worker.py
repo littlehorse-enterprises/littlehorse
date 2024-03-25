@@ -31,9 +31,11 @@ from littlehorse.model.task_def_pb2 import TaskDef
 from littlehorse.utils import extract_value, to_variable_value
 from littlehorse.utils import to_type
 
-REPORT_TASK_DEFAULT_RETRIES = 5
-HEARTBEAT_DEFAULT_INTERVAL = 5
-GRPC_UNARY_CALL_TIMEOUT = 20
+REPORT_TASK_RETRIES_INTERVAL_SECONDS = 2
+REPORT_TASK_FAIL_RETRIES = 15
+HEARTBEAT_INTERVAL_SECONDS = 5
+POLL_TASK_INTERVAL_SECONDS = 5
+GRPC_UNARY_CALL_TIMEOUT_SECONDS = 30
 
 
 class WorkerContext:
@@ -317,7 +319,7 @@ class LHConnection:
             ),
         )
 
-        asyncio.create_task(self._report_task(task_result, REPORT_TASK_DEFAULT_RETRIES))
+        asyncio.create_task(self._report_task(task_result, REPORT_TASK_FAIL_RETRIES))
 
     async def _report_task(self, task_result: ReportTaskRun, retries_left: int) -> None:
         if retries_left <= 0:
@@ -334,7 +336,9 @@ class LHConnection:
         )
 
         try:
-            await self._stub.ReportTask(task_result, timeout=GRPC_UNARY_CALL_TIMEOUT)
+            await self._stub.ReportTask(
+                task_result, timeout=GRPC_UNARY_CALL_TIMEOUT_SECONDS
+            )
             self._log.debug("Task '%s' successfully reported", self._task.task_name)
         except Exception as e:
             retries_left -= 1
@@ -344,7 +348,7 @@ class LHConnection:
                 retries_left,
                 e,
             )
-            await asyncio.sleep(1.5)
+            await asyncio.sleep(REPORT_TASK_RETRIES_INTERVAL_SECONDS)
             await self._report_task(task_result, retries_left)
 
     async def _ask_for_work(self) -> None:
@@ -374,7 +378,7 @@ class LHConnection:
                         "likely due to server ('%s') restart.",
                         self.server,
                     )
-                    await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
+                    await asyncio.sleep(POLL_TASK_INTERVAL_SECONDS)
                 self._ask_for_work_semaphore.release()
         except Exception as e:
             self._log.error(
@@ -483,7 +487,7 @@ class LHTaskWorker:
         # get the task definition from the server
         stub = config.stub()
         reply: TaskDef = stub.GetTaskDef(
-            TaskDefId(name=task_def_name), timeout=GRPC_UNARY_CALL_TIMEOUT
+            TaskDefId(name=task_def_name), timeout=GRPC_UNARY_CALL_TIMEOUT_SECONDS
         )
         self._task = LHTask(callable, reply)
 
@@ -504,7 +508,7 @@ class LHTaskWorker:
             )
             try:
                 reply: RegisterTaskWorkerResponse = await stub.RegisterTaskWorker(
-                    request, timeout=GRPC_UNARY_CALL_TIMEOUT
+                    request, timeout=GRPC_UNARY_CALL_TIMEOUT_SECONDS
                 )
                 self._log.debug(
                     "Heart beat received for task %s at %s",
@@ -518,7 +522,7 @@ class LHTaskWorker:
                     e,
                 )
                 self._liveness_controller.notify_worker_failure()
-                await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
+                await asyncio.sleep(HEARTBEAT_INTERVAL_SECONDS)
                 continue
 
             self._liveness_controller.notify_success_call(reply)
@@ -563,7 +567,7 @@ class LHTaskWorker:
                 self._connections[host] = new_connection
                 asyncio.create_task(new_connection.start())
 
-            await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
+            await asyncio.sleep(HEARTBEAT_INTERVAL_SECONDS)
 
     def health(self) -> LHTaskWorkerHealth:
         return self._liveness_controller.health()
