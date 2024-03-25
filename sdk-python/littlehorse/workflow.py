@@ -1707,7 +1707,7 @@ class Workflow:
     def __str__(self) -> str:
         return to_json(self.compile())
 
-    def with_update_type(self, update_type: AllowedUpdateType) -> None:
+    def with_update_type(self, update_type: AllowedUpdateType) -> Workflow:
         """Defines the type of update to perform when saving the WfSpec:
 
         Args:
@@ -1717,8 +1717,11 @@ class Workflow:
                 AllowedUpdateType.MINOR_REVISION_UPDATES: Creates a new WfSpec with a different revision
                 if the change is a major version it fails.
                 AllowedUpdateType.NO_UPDATES: Fail with the ALREADY_EXISTS response code.
+
+        Returns: This instance.
         """
         self._allowed_updates = update_type
+        return self
 
     def compile(self) -> PutWfSpecRequest:
         """Compile the workflow into Protobuf Objects.
@@ -1751,28 +1754,34 @@ class Workflow:
             retention_policy=self._retention_policy,
         )
 
-    def with_retention_policy(self, policy: WorkflowRetentionPolicy) -> None:
+    def with_retention_policy(self, policy: WorkflowRetentionPolicy) -> Workflow:
         """Sets the retention policy for all WfRun's created by this WfSpec.
 
         Args:
             policy(WorkflowRetentionPolicy): Workflow Retention Policy
+
+        Returns: This instance.
         """
         self._retention_policy = policy
+        return self
 
     def with_retries_policy(
         self,
-        retries: int,
+        retries: Optional[int] = None,
         exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = None,
-    ) -> None:
+    ) -> Workflow:
         """Configures the default retry behaviour of the tasks.
 
         Args:
-            retries(int): Number of retries.
+            retries(Optional[int]): Number of retries.
             exponential_backoff(Optional[ExponentialBackoffRetryPolicy]): Tells the Workflow to configure (by default)
                 the specified ExponentialBackoffRetryPolicy as the retry policy.
+
+        Returns: This instance.
         """
         self._default_retries = retries
         self._default_exponential_backoff = exponential_backoff
+        return self
 
 
 def create_workflow_spec(

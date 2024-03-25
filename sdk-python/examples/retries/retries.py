@@ -7,6 +7,7 @@ import littlehorse
 from littlehorse.config import LHConfig
 from littlehorse.model.common_enums_pb2 import VariableType
 from littlehorse.model.common_wfspec_pb2 import ExponentialBackoffRetryPolicy
+
 from littlehorse.worker import LHTaskWorker, WorkerContext
 from littlehorse.workflow import WorkflowThread, Workflow
 
@@ -15,6 +16,10 @@ TIME_FORMAT = "%H:%M:%S"
 INPUT_NAME = "start-timestamp"
 WF_NAME = "example-retries"
 TASK_NAME = "retries"
+
+RETRY_POLICY = ExponentialBackoffRetryPolicy(
+    base_interval_ms=2000, multiplier=2, max_delay_ms=5000
+)
 MAX_RETRIES = 5
 
 logging.basicConfig(level=logging.INFO)
@@ -30,16 +35,15 @@ def get_config() -> LHConfig:
 
 def get_workflow() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
-        the_name = wf.add_variable(INPUT_NAME, VariableType.INT)
-
-        backoff_policy = ExponentialBackoffRetryPolicy(
-            base_interval_ms=1000, multiplier=2, max_delay_ms=5000
-        )
         wf.execute(
-            TASK_NAME, the_name, retries=MAX_RETRIES, exponential_backoff=backoff_policy
+            TASK_NAME,
+            wf.add_variable(INPUT_NAME, VariableType.INT),
+            retries=MAX_RETRIES,
         )
 
-    return Workflow(WF_NAME, my_entrypoint)
+    return Workflow(WF_NAME, my_entrypoint).with_retries_policy(
+        exponential_backoff=RETRY_POLICY
+    )
 
 
 async def retry_task(start_timestamp: int, ctx: WorkerContext) -> None:
