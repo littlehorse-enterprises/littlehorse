@@ -307,6 +307,7 @@ class LHConnection:
             task_exception = LHTaskException(
                 name=exn.exception_name,
                 message=exn.message,
+                content=exn.content,
             )
         except BaseException:
             output = None
