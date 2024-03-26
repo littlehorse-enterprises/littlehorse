@@ -17,6 +17,7 @@ class SerdeException(Exception):
 
 
 class LHTaskException(Exception):
-    def __init__(self, message: str):
+    def __init__(self, exception_name: str, message: str):
         self.message = message
+        self.exception_name = exception_name
         super().__init__(self.message)

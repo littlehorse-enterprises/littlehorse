@@ -6,13 +6,13 @@ from inspect import Parameter, signature, iscoroutinefunction
 import logging
 import signal
 import traceback
-from typing import Any, AsyncIterator, Callable
+from typing import Any, AsyncIterator, Callable, Optional
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
     TaskSchemaMismatchException,
-    LHTaskException,
+    LHTaskException as LHTaskPythonException,
 )
-from littlehorse.model.common_enums_pb2 import TaskStatus
+from littlehorse.model.common_enums_pb2 import LHErrorType, TaskStatus
 from littlehorse.model.object_id_pb2 import (
     NodeRunId,
     TaskDefId,
@@ -28,6 +28,8 @@ from littlehorse.model.service_pb2 import (
 )
 from google.protobuf.timestamp_pb2 import Timestamp
 from littlehorse.model.task_def_pb2 import TaskDef
+from littlehorse.model.task_run_pb2 import LHTaskError, LHTaskException
+from littlehorse.model.variable_pb2 import VariableValue
 from littlehorse.utils import extract_value, to_variable_value
 from littlehorse.utils import to_type
 
@@ -277,6 +279,11 @@ class LHConnection:
         if self._task.has_context():
             args.append(context)
 
+        output: Optional[VariableValue] = None
+        task_error: Optional[LHTaskError] = None
+        task_exception: Optional[LHTaskException] = None
+        status: TaskStatus
+
         try:
             raw_output = await self._task._callable(*args)
             try:
@@ -286,20 +293,30 @@ class LHConnection:
                 output = None
                 stacktrace = traceback.format_exc()
                 logging.error(stacktrace)
-                context.log(stacktrace)
                 status = TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR
-        except LHTaskException:
+                task_error = LHTaskError(
+                    type=LHErrorType.VAR_SUB_ERROR,
+                    message=f"Failed serializing output: {stacktrace}",
+                )
+
+        except LHTaskPythonException as exn:
             output = None
             stacktrace = traceback.format_exc()
             logging.error(stacktrace)
-            context.log(stacktrace)
             status = TaskStatus.TASK_EXCEPTION
+            task_exception = LHTaskException(
+                name=exn.exception_name,
+                message=exn.message,
+            )
         except BaseException:
             output = None
             stacktrace = traceback.format_exc()
             logging.error(stacktrace)
-            context.log(stacktrace)
             status = TaskStatus.TASK_FAILED
+            task_error = LHTaskError(
+                type=LHErrorType.TASK_ERROR,
+                message=stacktrace,
+            )
 
         self._schedule_task_semaphore.release()
 
@@ -312,6 +329,8 @@ class LHConnection:
             attempt_number=task.attempt_number,
             status=status,
             output=output,
+            error=task_error,
+            exception=task_exception,
             log_output=(
                 to_variable_value(context.log_output) if context.log_output else None
             ),
