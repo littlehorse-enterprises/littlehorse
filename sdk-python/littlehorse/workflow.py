@@ -1764,7 +1764,7 @@ class Workflow:
         self._retention_policy = policy
         return self
 
-    def with_retries_policy(
+    def with_retry_policy(
         self,
         retries: Optional[int] = None,
         exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = None,

@@ -41,7 +41,7 @@ def get_workflow() -> Workflow:
             retries=MAX_RETRIES,
         )
 
-    return Workflow(WF_NAME, my_entrypoint).with_retries_policy(
+    return Workflow(WF_NAME, my_entrypoint).with_retry_policy(
         exponential_backoff=RETRY_POLICY
     )
 
