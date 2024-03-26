@@ -2,6 +2,7 @@
 import { SEARCH_DEFAULT_LIMIT, SearchType } from '@/app/constants'
 import { lhClient } from '@/app/lhClient'
 import { WithBookmark, WithTenant } from '@/types'
+import { WfSpecId } from 'littlehorse-client/dist/proto/object_id'
 import { WfSpecIdList } from 'littlehorse-client/dist/proto/service'
 
 type Props = { prefix?: string; limit?: number } & WithBookmark
@@ -48,15 +49,15 @@ const bookmarkFrom = (bookmark?: string): Buffer | undefined => {
   return Buffer.from(bookmark, 'base64')
 }
 
-interface SearchResult {
+export interface SearchResult {
   type: SearchType
   bookmark?: string
   results: any
 }
 
-type WfSpecList = SearchResult & {
+export type WfSpecList = SearchResult & {
   type: 'WfSpec'
-  results: Pick<WfSpecIdList, 'results'>
+  results: WfSpecId[]
 }
 
 type TaskDefList = SearchResult & {

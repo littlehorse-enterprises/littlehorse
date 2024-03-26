@@ -3,9 +3,10 @@ import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
 import getWhoAmI from '../getWhoami'
 import { Header } from './components/Header'
+import { QueryProvider } from './components/QueryProvider'
 
 export const metadata: Metadata = {
-  title: 'Littlehorse | Dashboard',
+  title: 'LittleHorse | Dashboard',
 }
 
 export default async function RootLayout({
@@ -19,7 +20,9 @@ export default async function RootLayout({
   return (
     <WhoAmIContext user={user} tenants={tenants} tenantId={tenantId}>
       <Header />
-      <div className="mx-auto max-w-screen-xl">{children}</div>
+      <QueryProvider>
+        <div className="mx-auto max-w-screen-xl">{children}</div>
+      </QueryProvider>
     </WhoAmIContext>
   )
 }

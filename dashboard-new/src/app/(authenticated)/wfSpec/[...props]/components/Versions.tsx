@@ -3,7 +3,7 @@ import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { WfSpecId } from 'littlehorse-client/dist/proto/object_id'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useState } from 'react'
-import { getWfSpecVersions } from '../getVersions'
+import { getWfSpecVersions } from '../actions/getVersions'
 
 export const Versions: FC<{ wfSpecId?: WfSpecId }> = ({ wfSpecId }) => {
   const [versions, setVersions] = useState<string[]>([])
