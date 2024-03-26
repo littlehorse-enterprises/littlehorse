@@ -1736,7 +1736,7 @@ class TestRetries(unittest.TestCase):
             thread.execute("my-task2")
 
         wf = Workflow("my-wf", my_entrypoint)
-        wf.with_retries_policy(4)
+        wf.with_retry_policy(4)
         self.assertEqual(
             wf.compile(),
             PutWfSpecRequest(
@@ -1779,7 +1779,7 @@ class TestRetries(unittest.TestCase):
             thread.execute("my-task2")
 
         wf = Workflow("my-wf", my_entrypoint)
-        wf.with_retries_policy(2, exponential_backoff=policy)
+        wf.with_retry_policy(2, exponential_backoff=policy)
         self.assertEqual(
             wf.compile(),
             PutWfSpecRequest(

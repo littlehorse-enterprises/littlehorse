@@ -31,7 +31,6 @@ from littlehorse.model.object_id_pb2 import (
 )
 from littlehorse.model.service_pb2 import (
     PutExternalEventDefRequest,
-    PutTaskDefRequest,
     PutWfSpecRequest,
     AllowedUpdateType,
 )
@@ -61,8 +60,8 @@ from littlehorse.model.wf_spec_pb2 import (
     WfRunVariableAccessLevel,
     WorkflowRetentionPolicy,
 )
-from littlehorse.utils import negate_comparator, to_variable_type, to_variable_value
-from littlehorse.worker import WorkerContext
+from littlehorse.utils import negate_comparator, to_variable_value
+from littlehorse.worker import _create_task_def
 
 ENTRYPOINT = "entrypoint"
 
@@ -1765,7 +1764,7 @@ class Workflow:
         self._retention_policy = policy
         return self
 
-    def with_retries_policy(
+    def with_retry_policy(
         self,
         retries: Optional[int] = None,
         exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = None,
@@ -1811,16 +1810,7 @@ def create_task_def(
         config (LHConfig): The configuration to get connected to the LH Server.
         timeout (Optional[int]): Timeout
     """
-    stub = config.stub()
-    task_signature = signature(task)
-    input_vars = [
-        VariableDef(name=param.name, type=to_variable_type(param.annotation))
-        for param in task_signature.parameters.values()
-        if param.annotation is not WorkerContext
-    ]
-    request = PutTaskDefRequest(name=name, input_vars=input_vars)
-    stub.PutTaskDef(request, timeout=timeout)
-    logging.info(f"TaskDef {name} was created:\n{to_json(request)}")
+    _create_task_def(task, name, config, timeout=timeout)
 
 
 def create_external_event_def(

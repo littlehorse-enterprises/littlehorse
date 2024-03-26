@@ -6,13 +6,15 @@ from inspect import Parameter, signature, iscoroutinefunction
 import logging
 import signal
 import traceback
-from typing import Any, AsyncIterator, Callable
+from google.protobuf.json_format import MessageToJson
+from typing import Any, AsyncIterator, Callable, Optional
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
     TaskSchemaMismatchException,
-    LHTaskException,
+    LHTaskException as LHTaskPythonException,
 )
-from littlehorse.model.common_enums_pb2 import TaskStatus
+from littlehorse.model.common_enums_pb2 import LHErrorType, TaskStatus
+from littlehorse.model.common_wfspec_pb2 import VariableDef
 from littlehorse.model.object_id_pb2 import (
     NodeRunId,
     TaskDefId,
@@ -21,6 +23,7 @@ from littlehorse.model.object_id_pb2 import (
 )
 from littlehorse.model.service_pb2 import (
     PollTaskRequest,
+    PutTaskDefRequest,
     RegisterTaskWorkerRequest,
     RegisterTaskWorkerResponse,
     ReportTaskRun,
@@ -28,7 +31,9 @@ from littlehorse.model.service_pb2 import (
 )
 from google.protobuf.timestamp_pb2 import Timestamp
 from littlehorse.model.task_def_pb2 import TaskDef
-from littlehorse.utils import extract_value, to_variable_value
+from littlehorse.model.task_run_pb2 import LHTaskError, LHTaskException
+from littlehorse.model.variable_pb2 import VariableValue
+from littlehorse.utils import extract_value, to_variable_type, to_variable_value
 from littlehorse.utils import to_type
 
 REPORT_TASK_RETRIES_INTERVAL_SECONDS = 2
@@ -279,6 +284,11 @@ class LHConnection:
         if self._task.has_context():
             args.append(context)
 
+        output: Optional[VariableValue] = None
+        task_error: Optional[LHTaskError] = None
+        task_exception: Optional[LHTaskException] = None
+        status: TaskStatus
+
         try:
             raw_output = await self._task._callable(*args)
             try:
@@ -288,20 +298,31 @@ class LHConnection:
                 output = None
                 stacktrace = traceback.format_exc()
                 logging.error(stacktrace)
-                context.log(stacktrace)
                 status = TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR
-        except LHTaskException:
+                task_error = LHTaskError(
+                    type=LHErrorType.VAR_SUB_ERROR,
+                    message=f"Failed serializing output: {stacktrace}",
+                )
+
+        except LHTaskPythonException as exn:
             output = None
             stacktrace = traceback.format_exc()
             logging.error(stacktrace)
-            context.log(stacktrace)
             status = TaskStatus.TASK_EXCEPTION
+            task_exception = LHTaskException(
+                name=exn.exception_name,
+                message=exn.message,
+                content=exn.content,
+            )
         except BaseException:
             output = None
             stacktrace = traceback.format_exc()
             logging.error(stacktrace)
-            context.log(stacktrace)
             status = TaskStatus.TASK_FAILED
+            task_error = LHTaskError(
+                type=LHErrorType.TASK_ERROR,
+                message=stacktrace,
+            )
 
         self._schedule_task_semaphore.release()
 
@@ -314,6 +335,8 @@ class LHConnection:
             attempt_number=task.attempt_number,
             status=status,
             output=output,
+            error=task_error,
+            exception=task_exception,
             log_output=(
                 to_variable_value(context.log_output) if context.log_output else None
             ),
@@ -483,13 +506,9 @@ class LHTaskWorker:
         self._config = config
         self._connections: dict[str, LHConnection] = {}
         self._liveness_controller = LHLivenessController()
-
-        # get the task definition from the server
-        stub = config.stub()
-        reply: TaskDef = stub.GetTaskDef(
-            TaskDefId(name=task_def_name), timeout=GRPC_UNARY_CALL_TIMEOUT_SECONDS
-        )
-        self._task = LHTask(callable, reply)
+        self._task_def_name = task_def_name
+        self._callable = callable
+        self._task: LHTask
 
     async def _heartbeat(self) -> None:
         stub = self._config.stub(async_channel=True, name="heartbeat")
@@ -578,7 +597,14 @@ class LHTaskWorker:
 
     async def start(self) -> None:
         """Starts polling for and executing tasks."""
-        self._log.info(f"Starting worker '{self._task.task_name}'")
+        self._log.info(f"Starting worker '{self._task_def_name}'")
+
+        # get the task definition from the server
+        stub = self._config.stub()
+        reply: TaskDef = stub.GetTaskDef(
+            TaskDefId(name=self._task_def_name), timeout=GRPC_UNARY_CALL_TIMEOUT_SECONDS
+        )
+        self._task = LHTask(self._callable, reply)
 
         await self._heartbeat()
 
@@ -589,6 +615,24 @@ class LHTaskWorker:
 
         for connection in self._connections.values():
             connection.stop()
+
+    def register_task_def(self) -> None:
+        _create_task_def(self._callable, self._task_def_name, self._config)
+
+
+def _create_task_def(
+    task: Callable[..., Any], name: str, config: LHConfig, timeout: Optional[int] = None
+) -> None:
+    stub = config.stub()
+    task_signature = signature(task)
+    input_vars = [
+        VariableDef(name=param.name, type=to_variable_type(param.annotation))
+        for param in task_signature.parameters.values()
+        if param.annotation is not WorkerContext
+    ]
+    request = PutTaskDefRequest(name=name, input_vars=input_vars)
+    stub.PutTaskDef(request, timeout=timeout)
+    logging.info(f"TaskDef {name} was created:\n{MessageToJson(request)}")
 
 
 def shutdown_hook(*workers: LHTaskWorker) -> None:
