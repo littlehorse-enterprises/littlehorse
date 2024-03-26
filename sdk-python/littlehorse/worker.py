@@ -6,6 +6,7 @@ from inspect import Parameter, signature, iscoroutinefunction
 import logging
 import signal
 import traceback
+from google.protobuf.json_format import MessageToJson
 from typing import Any, AsyncIterator, Callable, Optional
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
@@ -13,6 +14,7 @@ from littlehorse.exceptions import (
     LHTaskException as LHTaskPythonException,
 )
 from littlehorse.model.common_enums_pb2 import LHErrorType, TaskStatus
+from littlehorse.model.common_wfspec_pb2 import VariableDef
 from littlehorse.model.object_id_pb2 import (
     NodeRunId,
     TaskDefId,
@@ -21,6 +23,7 @@ from littlehorse.model.object_id_pb2 import (
 )
 from littlehorse.model.service_pb2 import (
     PollTaskRequest,
+    PutTaskDefRequest,
     RegisterTaskWorkerRequest,
     RegisterTaskWorkerResponse,
     ReportTaskRun,
@@ -30,7 +33,7 @@ from google.protobuf.timestamp_pb2 import Timestamp
 from littlehorse.model.task_def_pb2 import TaskDef
 from littlehorse.model.task_run_pb2 import LHTaskError, LHTaskException
 from littlehorse.model.variable_pb2 import VariableValue
-from littlehorse.utils import extract_value, to_variable_value
+from littlehorse.utils import extract_value, to_variable_type, to_variable_value
 from littlehorse.utils import to_type
 
 REPORT_TASK_DEFAULT_RETRIES = 5
@@ -499,13 +502,9 @@ class LHTaskWorker:
         self._config = config
         self._connections: dict[str, LHConnection] = {}
         self._liveness_controller = LHLivenessController()
-
-        # get the task definition from the server
-        stub = config.stub()
-        reply: TaskDef = stub.GetTaskDef(
-            TaskDefId(name=task_def_name), timeout=GRPC_UNARY_CALL_TIMEOUT
-        )
-        self._task = LHTask(callable, reply)
+        self._task_def_name = task_def_name
+        self._callable = callable
+        self._task: LHTask
 
     async def _heartbeat(self) -> None:
         stub = self._config.stub(async_channel=True, name="heartbeat")
@@ -594,7 +593,14 @@ class LHTaskWorker:
 
     async def start(self) -> None:
         """Starts polling for and executing tasks."""
-        self._log.info(f"Starting worker '{self._task.task_name}'")
+        self._log.info(f"Starting worker '{self._task_def_name}'")
+
+        # get the task definition from the server
+        stub = self._config.stub()
+        reply: TaskDef = stub.GetTaskDef(
+            TaskDefId(name=self._task_def_name), timeout=GRPC_UNARY_CALL_TIMEOUT
+        )
+        self._task = LHTask(self._callable, reply)
 
         await self._heartbeat()
 
@@ -605,6 +611,24 @@ class LHTaskWorker:
 
         for connection in self._connections.values():
             connection.stop()
+
+    def register_task_def(self) -> None:
+        _create_task_def(self._callable, self._task_def_name, self._config)
+
+
+def _create_task_def(
+    task: Callable[..., Any], name: str, config: LHConfig, timeout: Optional[int] = None
+) -> None:
+    stub = config.stub()
+    task_signature = signature(task)
+    input_vars = [
+        VariableDef(name=param.name, type=to_variable_type(param.annotation))
+        for param in task_signature.parameters.values()
+        if param.annotation is not WorkerContext
+    ]
+    request = PutTaskDefRequest(name=name, input_vars=input_vars)
+    stub.PutTaskDef(request, timeout=timeout)
+    logging.info(f"TaskDef {name} was created:\n{MessageToJson(request)}")
 
 
 def shutdown_hook(*workers: LHTaskWorker) -> None:
