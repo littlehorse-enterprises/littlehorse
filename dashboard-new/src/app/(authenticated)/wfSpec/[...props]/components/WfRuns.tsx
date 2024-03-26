@@ -1,6 +1,6 @@
 'use client'
 import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
-import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { ArrowPathIcon } from '@heroicons/react/16/solid'
 import { useInfiniteQuery } from '@tanstack/react-query'
@@ -9,8 +9,8 @@ import { WfRunIdList } from 'littlehorse-client/dist/proto/service'
 import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { FC, useState } from 'react'
-import { WfRunSearchProps, searchWfRun } from '../actions/searchWfRun'
+import { FC, useMemo, useState } from 'react'
+import { searchWfRun } from '../actions/searchWfRun'
 import { WfRunsHeader } from './WfRunsHeader'
 
 type Props = Pick<WfSpec, 'id'>
@@ -18,33 +18,43 @@ export const WfRuns: FC<Props> = ({ id }) => {
   const searchParams = useSearchParams()
   const status = getStatus(searchParams.get('status')) || LHStatus.RUNNING
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
-  const [bookmark, setBookmark] = useState<string>()
-  const [searchProps, setSearchProps] = useState<WfRunSearchProps>({
-    wfSpecName: id!.name,
-    wfSpecMajorVersion: id!.majorVersion,
-    wfSpecRevision: id!.revision,
-    variableFilters: [],
-  })
+  const [window, setWindow] = useState<TimeRange>(TIME_RANGES[0])
   const { tenantId } = useWhoAmI()
 
+  const startTime = useMemo(() => {
+    const now = new Date()
+    const latestStart = now.toISOString()
+    const earliestStart = new Date(now.getTime() - window * 6e4).toISOString()
+
+    return {
+      latestStart,
+      earliestStart,
+    }
+  }, [window])
+
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ['wfRun', status, tenantId, limit],
+    queryKey: ['wfRun', status, tenantId, limit, startTime],
     initialPageParam: undefined,
     getNextPageParam: (lastPage: WfRunIdList) => lastPage.bookmark?.toString('base64'),
     queryFn: async ({ pageParam }) => {
+      console.log({ startTime })
       return await searchWfRun({
-        ...searchProps,
+        wfSpecName: id!.name,
+        wfSpecMajorVersion: id!.majorVersion,
+        wfSpecRevision: id!.revision,
+        variableFilters: [],
         limit,
         status,
         tenantId,
         bookmark: pageParam ? Buffer.from(pageParam, 'base64') : undefined,
+        ...startTime,
       })
     },
   })
 
   return (
     <div className="mb-4 flex flex-col">
-      <WfRunsHeader currentStatus={status} />
+      <WfRunsHeader currentStatus={status} currentWindow={window} setWindow={setWindow} />
       {isPending ? (
         <div className="flex min-h-[360px] items-center justify-center text-center">
           <ArrowPathIcon className="h-8 w-8 animate-spin fill-blue-500 stroke-none" />

@@ -23,4 +23,17 @@ const toTime = (minutes: number) => {
   return minutes * 60
 }
 
-export const TIME_RANGES = [5, 15, 30, 60, 180, 360, 720, 1440] as const
+export const TIME_RANGES = [5, 15, 30, 60, 180, 360, 720, 1440, 4320] as const
+export type TimeRange = (typeof TIME_RANGES)[number]
+
+export const TIME_RANGES_NAMES: { [key in TimeRange]: string } = {
+  5: '5 minutes',
+  15: '15 minutes',
+  30: '30 minutes',
+  60: '1 hour',
+  180: '3 hours',
+  360: '6 hours',
+  720: '12 hours',
+  1440: '1 day',
+  4320: '3 days',
+}
