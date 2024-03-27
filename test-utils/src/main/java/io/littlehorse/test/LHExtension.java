@@ -107,7 +107,6 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
                     .putPrincipal(PutPrincipalRequest.newBuilder()
                             .setId(principalId)
                             .setGlobalAcls(acls)
-                            .putPerTenantAcls(testContext.getConfig().getTenantId(), acls)
                             .build());
             // wait until the principal is propagated into the server
             Awaitility.await()

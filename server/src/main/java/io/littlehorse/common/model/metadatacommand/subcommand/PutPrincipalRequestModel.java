@@ -98,8 +98,9 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
 
             toSave.setCreatedAt(oldPrincipal.getCreatedAt());
         }
-
-        if (perTenantAcls.isEmpty()) {
+        boolean canWriteAdminPrincipals = requester.isAdmin();
+        if (perTenantAcls.isEmpty()
+                && !(canWriteAdminPrincipals && !globalAcls.getAcls().isEmpty())) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Must provide list of tenants");
         }
         ensureThatIsAllowedToWriteInRequestedTenants(requester);
