@@ -4,10 +4,13 @@ import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.StoredGetablePb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
+import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.storeinternals.index.TagsCache;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import lombok.Getter;
@@ -57,9 +60,15 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
         String keyToLookFor = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, storeKey));
         if (metadataCache != null) {
-            StoredGetablePb storedGetablePb = metadataCache.get(keyToLookFor);
-            if (storedGetablePb != null) {
-                return LHSerializable.fromProto(storedGetablePb, cls, executionContext);
+            MetadataCache.CachedRecord cachedRecord = metadataCache.get(keyToLookFor);
+            if (cachedRecord != null) {
+                if (cls.isAssignableFrom(StoredGetable.class)) {
+                    AbstractGetable s = (AbstractGetable) LHSerializable.fromProto(
+                            cachedRecord.record(), cachedRecord.clazzModel(), executionContext);
+                    StoredGetable storedGetable = new StoredGetable<>(s, new TagsCache());
+                    return (T) storedGetable;
+                }
+                return (T) LHSerializable.fromProto(cachedRecord.record(), cachedRecord.clazzModel(), executionContext);
             } else {
                 if (metadataCache.containsKey(keyToLookFor)) {
                     // we already know that the store does not contain this key
@@ -68,7 +77,13 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
                 // time to get things from the store
                 GeneratedMessageV3 stored = getFromNativeStore(keyToLookFor, cls);
                 if (stored instanceof StoredGetablePb storedGetable) {
-                    metadataCache.evictOrUpdate(storedGetable, keyToLookFor);
+                    StoredGetable storedGetable1 =
+                            LHSerializable.fromProto(storedGetable, StoredGetable.class, executionContext);
+                    metadataCache.evictOrUpdate(
+                            new MetadataCache.CachedRecord(
+                                    storedGetable1.getStoredObject().getClass(),
+                                    storedGetable1.getStoredObject().toProto().build()),
+                            keyToLookFor);
                 }
                 if (stored != null) {
                     return LHSerializable.fromProto(stored, cls, executionContext);

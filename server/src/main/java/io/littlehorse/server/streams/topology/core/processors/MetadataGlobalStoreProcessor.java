@@ -1,8 +1,9 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-import io.littlehorse.common.proto.StoredGetablePb;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
@@ -45,12 +46,18 @@ public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Vo
         try {
             if (value != null) {
                 store.put(key, value);
-                metadataCache.updateCache(key, StoredGetablePb.parseFrom(value.get()));
+                StoredGetable storedGetable =
+                        LHSerializable.fromBytes(value.get(), StoredGetable.class, new BackgroundContext());
+                metadataCache.updateCache(
+                        key,
+                        new MetadataCache.CachedRecord<>(
+                                storedGetable.getStoredClass(),
+                                storedGetable.getStoredObject().toProto().build()));
             } else {
                 store.delete(key);
                 metadataCache.updateMissingKey(key);
             }
-        } catch (InvalidProtocolBufferException e) {
+        } catch (Exception e) {
             log.error("unable to parse metadata object");
         }
     }

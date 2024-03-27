@@ -33,6 +33,12 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
         this.objectType = AbstractGetable.getTypeEnum((Class<? extends AbstractGetable<?>>) getable.getClass());
     }
 
+    public StoredGetable(T getable, TagsCache indexCache) {
+        this.storedObject = getable;
+        this.indexCache = indexCache;
+        this.objectType = AbstractGetable.getTypeEnum((Class<? extends AbstractGetable<?>>) getable.getClass());
+    }
+
     @Override
     public Class<StoredGetablePb> getProtoBaseClass() {
         return StoredGetablePb.class;
