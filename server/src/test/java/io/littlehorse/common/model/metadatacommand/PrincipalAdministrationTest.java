@@ -106,13 +106,50 @@ public class PrincipalAdministrationTest {
     @Test
     public void supportStorePrincipalWithGlobalAcls() {
         defaultStore.put(new StoredGetable<>(new TenantModel(tenantId)));
+        StoredGetable storedRequester =
+                defaultStore.get(new PrincipalIdModel(requesterId).getStoreableKey(), StoredGetable.class);
+        PrincipalModel requester = (PrincipalModel) storedRequester.getStoredObject();
+        requester.getPerTenantAcls().clear();
+        requester.setGlobalAcls(TestUtil.singleAdminAcl("tyler"));
+        defaultStore.put(new StoredGetable<>(requester));
+
         putPrincipalRequest.getPerTenantAcls().clear();
-        putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAcl()));
         putPrincipalRequest.setGlobalAcls(TestUtil.singleAcl());
         sendCommand(putPrincipalRequest);
 
-        assertThat(storedPrincipal().getPerTenantAcls().keySet()).isNotEmpty();
+        assertThat(storedPrincipal().getPerTenantAcls().keySet()).isEmpty();
         assertThat(storedPrincipal().getGlobalAcls().getAcls()).containsExactly(TestUtil.acl());
+    }
+
+    @Test
+    public void shouldPreventPrivilegeEscalationOnGlobalAcls() {
+        defaultStore.put(new StoredGetable<>(new TenantModel(tenantId)));
+        StoredGetable storedRequester =
+                defaultStore.get(new PrincipalIdModel(requesterId).getStoreableKey(), StoredGetable.class);
+        PrincipalModel requester = (PrincipalModel) storedRequester.getStoredObject();
+        requester.getPerTenantAcls().clear();
+        requester.setGlobalAcls(new ServerACLsModel());
+        defaultStore.put(new StoredGetable<>(requester));
+
+        putPrincipalRequest.getPerTenantAcls().clear();
+        putPrincipalRequest.setGlobalAcls(TestUtil.singleAcl());
+        sendCommand(putPrincipalRequest);
+
+        metadataCache.clear();
+        StoredGetable<Principal, PrincipalModel> storedPrincipal =
+                defaultStore.get(new PrincipalIdModel(principalId.toString()).getStoreableKey(), StoredGetable.class);
+        assertThat(storedPrincipal).isNull();
+    }
+
+    @Test
+    public void supportPrincipalWithoutAcls() {
+        defaultStore.put(new StoredGetable<>(new TenantModel(tenantId)));
+        putPrincipalRequest.getPerTenantAcls().clear();
+        putPrincipalRequest.setGlobalAcls(new ServerACLsModel());
+        sendCommand(putPrincipalRequest);
+
+        assertThat(storedPrincipal().getPerTenantAcls().keySet()).isEmpty();
+        assertThat(storedPrincipal().getGlobalAcls().getAcls()).isEmpty();
     }
 
     @Test
@@ -146,7 +183,6 @@ public class PrincipalAdministrationTest {
 
     @Test
     public void supportPrincipalDowngrade() {
-        String newPrincipalTenantId = "my-tenant";
         putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("acl-before-overwrite")));
         sendCommand(putPrincipalRequest);
         putPrincipalRequest.setId("other-principal");
