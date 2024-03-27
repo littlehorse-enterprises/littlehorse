@@ -31,7 +31,7 @@ T
 
 ### Aggregator
 
-![](/home/saul/Workspace/LittleHorse/littlehorse/docs/images/lh-canary.png)
+![](../docs/images/lh-canary.png)
 
 ## Kafka Configurations
 
