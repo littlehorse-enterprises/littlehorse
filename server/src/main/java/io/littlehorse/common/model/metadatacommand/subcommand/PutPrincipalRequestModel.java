@@ -98,9 +98,10 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
 
             toSave.setCreatedAt(oldPrincipal.getCreatedAt());
         }
-
-        if (perTenantAcls.isEmpty()) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Must provide list of tenants");
+        boolean canWriteAdminPrincipals = requester.isAdmin();
+        if (!globalAcls.getAcls().isEmpty() && !canWriteAdminPrincipals) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "Only admin users can create a principal with global privileges");
         }
         ensureThatIsAllowedToWriteInRequestedTenants(requester);
         for (Map.Entry<String, ServerACLsModel> perTenantAcl : perTenantAcls.entrySet()) {
