@@ -37,11 +37,11 @@ public class ServerListener implements Closeable {
                 .permitKeepAliveTime(15, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
                 .addService(service)
-                .intercept(new RequestSanitizer())
                 .intercept(new MetricCollectingServerInterceptor(meter))
                 .intercept(new RequestAuthorizer(
                         service, executionContextKey, metadataCache, coreStoreProvider, config.getConfig()))
                 .intercept(config.getAuthorizer())
+                .intercept(new RequestSanitizer())
                 .executor(executor)
                 .build();
     }
