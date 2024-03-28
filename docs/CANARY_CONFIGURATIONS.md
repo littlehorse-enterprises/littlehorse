@@ -56,7 +56,7 @@ the messages and measures the latency (via the timestamp), and exposes such metr
 
 The LH Canary is highly similar to the Strimzi Canary, but it is slightly more complex. Whereas the Strimzi Canary just
 needs to produce messages to a topic and make sure they go through, the LH Canary emulates an E2E use case where a
-client requests to run a workflow and then a worker executes the schedules task.
+client requests to run a workflow and then a worker executes the scheduled task.
 
 As you can see in the following image, LH Canary has three components an `Aggregator`, a `Metronome` and
 a `LH TaskWorker`.
