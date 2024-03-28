@@ -80,11 +80,17 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
             return;
         }
         try {
-            testContext
-                    .getLhClient()
-                    .putTenant(PutTenantRequest.newBuilder()
-                            .setId(testContext.getConfig().getTenantId())
-                            .build());
+            Awaitility.await()
+                    .atMost(Duration.ofSeconds(15))
+                    .ignoreException(RuntimeException.class)
+                    .until(() -> {
+                        testContext
+                                .getLhClient()
+                                .putTenant(PutTenantRequest.newBuilder()
+                                        .setId(testContext.getConfig().getTenantId())
+                                        .build());
+                        return true;
+                    });
         } catch (StatusRuntimeException ex) {
             if (!ex.getStatus().getCode().equals(Status.Code.ALREADY_EXISTS)) {
                 throw ex;

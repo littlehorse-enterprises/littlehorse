@@ -12,7 +12,7 @@ public class RequestSanitizer implements ServerAuthorizer {
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(
             ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
         Context context = Context.current();
-        String s = headers.get(CLIENT_ID);
+        headers.discardAll(CLIENT_ID);
         return Contexts.interceptCall(context, call, headers, next);
     }
 }
