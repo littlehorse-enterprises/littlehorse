@@ -63,11 +63,12 @@ public class WorkflowEventRunTest {
         ThrowEventNodeRunModel eventRun = new ThrowEventNodeRunModel(eventDef, testProcessorContext);
         nodeRun.setSubNodeRun(eventRun);
 
-        nodeRun.arrive(new Date());
+        nodeRun.arrive(new Date(), testProcessorContext);
         nodeRun.setStatus(LHStatus.COMPLETED);
         Assertions.assertThat(nodeRun.getSubNodeRun()).isNotNull();
-        Assertions.assertThat(nodeRun.getOutput()).isEmpty();
-        Assertions.assertThat(nodeRun.checkIfProcessingCompleted()).isTrue();
+        Assertions.assertThat(nodeRun.getOutput(testProcessorContext)).isEmpty();
+        Assertions.assertThat(nodeRun.checkIfProcessingCompleted(testProcessorContext))
+                .isTrue();
     }
 
     @Test
@@ -75,7 +76,7 @@ public class WorkflowEventRunTest {
         WorkflowEventDefIdModel eventDef = new WorkflowEventDefIdModel("user-created");
         ThrowEventNodeRunModel eventRun = new ThrowEventNodeRunModel(eventDef, testProcessorContext);
         nodeRun.setSubNodeRun(eventRun);
-        nodeRun.arrive(new Date());
+        nodeRun.arrive(new Date(), testProcessorContext);
         testProcessorContext.getableManager().put(nodeRun);
         testProcessorContext.endExecution();
         NodeRunModel storeNodeRun = testProcessorContext.getableManager().get(new NodeRunIdModel(wfRunId, 1, 2));
@@ -88,7 +89,7 @@ public class WorkflowEventRunTest {
         ThrowEventNodeRunModel eventRun = new ThrowEventNodeRunModel(eventDef, testProcessorContext);
         nodeRun.setSubNodeRun(eventRun);
 
-        nodeRun.arrive(new Date());
+        nodeRun.arrive(new Date(), testProcessorContext);
         testProcessorContext.getableManager().put(nodeRun);
         testProcessorContext.endExecution();
         WorkflowEventModel storedEvent =
@@ -103,15 +104,15 @@ public class WorkflowEventRunTest {
         nodeRun.setSubNodeRun(eventRun);
 
         // Throw event the first time
-        nodeRun.arrive(new Date());
+        nodeRun.arrive(new Date(), testProcessorContext);
         testProcessorContext.getableManager().put(nodeRun);
         testProcessorContext.endExecution();
         // Throw event a second time
-        nodeRun.arrive(new Date());
+        nodeRun.arrive(new Date(), testProcessorContext);
         testProcessorContext.getableManager().put(nodeRun);
         testProcessorContext.endExecution();
         // Throw event a third time
-        nodeRun.arrive(new Date());
+        nodeRun.arrive(new Date(), testProcessorContext);
         testProcessorContext.getableManager().put(nodeRun);
         testProcessorContext.endExecution();
 
@@ -127,13 +128,13 @@ public class WorkflowEventRunTest {
         nodeRun.setSubNodeRun(eventRun);
 
         // Throw event the first time
-        nodeRun.arrive(new Date());
+        nodeRun.arrive(new Date(), testProcessorContext);
         testProcessorContext.getableManager().put(nodeRun);
         // Throw event a second time
-        nodeRun.arrive(new Date());
+        nodeRun.arrive(new Date(), testProcessorContext);
         testProcessorContext.getableManager().put(nodeRun);
         // Throw event a third time
-        nodeRun.arrive(new Date());
+        nodeRun.arrive(new Date(), testProcessorContext);
         testProcessorContext.getableManager().put(nodeRun);
 
         WorkflowEventModel storedEvent =

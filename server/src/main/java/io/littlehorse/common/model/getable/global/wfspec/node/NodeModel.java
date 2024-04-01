@@ -24,6 +24,7 @@ import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -195,7 +196,7 @@ public class NodeModel extends LHSerializable<Node> {
         return Optional.empty();
     }
 
-    public void validate() throws LHApiException {
+    public void validate(MetadataCommandExecution ctx) throws LHApiException {
         for (EdgeModel e : outgoingEdges) {
             if (e.getSinkNodeName().equals(name)) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, "Self loop not allowed!");
@@ -235,7 +236,7 @@ public class NodeModel extends LHSerializable<Node> {
         }
         validateFailureHandlers();
 
-        getSubNode().validate();
+        getSubNode().validate(ctx);
     }
 
     private void validateFailureHandlers() {

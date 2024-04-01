@@ -53,9 +53,9 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
     }
 
     @Override
-    public void arrive(Date time) throws NodeFailureException {
+    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
         Optional<WorkflowEventModel> currentWorkflowEvent =
-                getCurrentWorkflowEventId(nodeRun.getId().getWfRunId(), this.eventDefId);
+                getCurrentWorkflowEventId(nodeRun.getId().getWfRunId(), this.eventDefId, processorContext);
         if (currentWorkflowEvent.isPresent()) {
             int currentId = currentWorkflowEvent.get().getId().getId();
             workflowEventId = new WorkflowEventIdModel(nodeRun.getId().getWfRunId(), this.eventDefId, ++currentId);
@@ -68,9 +68,9 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
                     .getThreadRun()
                     .assignVariable(getNode().getThrowEventNode().getContent());
             WorkflowEventModel event = new WorkflowEventModel(workflowEventId, content);
-            processorExecutionContext.getableManager().put(event);
+            processorContext.getableManager().put(event);
 
-            processorExecutionContext.notifyOfEventThrown(event);
+            processorContext.notifyOfEventThrown(event);
         } catch (LHVarSubError exn) {
             throw new NodeFailureException(new FailureModel(
                     "Failed calculating content of workflow Event: %s".formatted(exn.getMessage()),
@@ -79,18 +79,18 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput() {
+    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
         return Optional.empty();
     }
 
     @Override
-    public boolean checkIfProcessingCompleted() throws NodeFailureException {
+    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) throws NodeFailureException {
         return true;
     }
 
     private Optional<WorkflowEventModel> getCurrentWorkflowEventId(
-            WfRunIdModel wfRunId, WorkflowEventDefIdModel eventDefId) {
-        return processorExecutionContext.getableManager().getWorkflowEvents(wfRunId, eventDefId).stream()
+            WfRunIdModel wfRunId, WorkflowEventDefIdModel eventDefId, ProcessorExecutionContext processorContext) {
+        return processorContext.getableManager().getWorkflowEvents(wfRunId, eventDefId).stream()
                 .max(Comparator.comparingInt(
                         workflowEvent -> workflowEvent.getId().getId()));
     }

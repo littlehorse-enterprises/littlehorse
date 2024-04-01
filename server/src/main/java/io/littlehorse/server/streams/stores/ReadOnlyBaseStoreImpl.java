@@ -6,7 +6,6 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.common.proto.StoredGetablePb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
@@ -71,9 +70,9 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     }
 
     private <U extends Message, T extends Storeable<U>> T getMetadataObject(String keyToLookFor, Class<T> clazz) {
-        StoredGetablePb cachedGetable = metadataCache.get(keyToLookFor);
+        StoredGetable<? extends Message, ? extends MetadataGetable<?>> cachedGetable = metadataCache.get(keyToLookFor);
         if (cachedGetable != null) {
-            return LHSerializable.fromProto(cachedGetable, clazz, executionContext);
+            return (T) cachedGetable;
         } else {
             if (metadataCache.containsKey(keyToLookFor)) {
                 // we already know that the store does not contain this key

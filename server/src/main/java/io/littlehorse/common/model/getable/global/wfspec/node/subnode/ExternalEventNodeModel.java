@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.sdk.common.proto.ExternalEventNode;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import lombok.Getter;
@@ -54,7 +55,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
     }
 
     @Override
-    public void validate() throws LHApiException {
+    public void validate(MetadataCommandExecution ctx) throws LHApiException {
         // Want to be able to release new versions of ExternalEventDef's and have old
         // workflows automatically use the new version. We will enforce schema
         // compatibility rules on the EED to ensure that this isn't an issue.
@@ -68,7 +69,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
         }
     }
 
-    public ExternalEventRunModel createSubNodeRun(Date time) {
+    public ExternalEventRunModel createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
         return new ExternalEventRunModel(externalEventDefId, processorContext);
     }
 }

@@ -1,7 +1,11 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
-import io.littlehorse.common.proto.StoredGetablePb;
+import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
@@ -44,7 +48,9 @@ public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Vo
         try {
             if (value != null) {
                 store.put(key, value);
-                metadataCache.updateCache(key, StoredGetablePb.parseFrom(value.get()));
+                StoredGetable<? extends Message, MetadataGetable<?>> metadataGetable =
+                        LHSerializable.fromBytes(value.get(), StoredGetable.class, new BackgroundContext());
+                metadataCache.updateCache(key, metadataGetable);
             } else {
                 store.delete(key);
                 metadataCache.updateMissingKey(key);

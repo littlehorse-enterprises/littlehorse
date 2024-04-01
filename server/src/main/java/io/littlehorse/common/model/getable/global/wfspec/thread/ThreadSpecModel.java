@@ -19,6 +19,7 @@ import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -219,7 +220,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         return wfSpec.lookupVarDef(name);
     }
 
-    public void validate() throws LHApiException {
+    public void validate(MetadataCommandExecution ctx) throws LHApiException {
         if (entrypointNodeName == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "missing ENTRYPOITNT node!");
         }
@@ -242,7 +243,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 seenEntrypoint = true;
             }
             try {
-                node.validate();
+                node.validate(ctx);
             } catch (LHApiException exn) {
                 throw exn.getCopyWithPrefix("Node " + node.name);
             }

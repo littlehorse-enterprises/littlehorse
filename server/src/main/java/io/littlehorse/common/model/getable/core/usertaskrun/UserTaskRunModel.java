@@ -251,7 +251,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
     }
 
     private void scheduleAction(UTActionTriggerModel trigger) throws LHVarSubError {
-        trigger.schedule(this);
+        trigger.schedule(this, processorContext);
     }
 
     public void deadlineReassign(DeadlineReassignUserTaskModel trigger) {
