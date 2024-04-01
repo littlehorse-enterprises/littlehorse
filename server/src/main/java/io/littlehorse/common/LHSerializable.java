@@ -44,6 +44,7 @@ public abstract class LHSerializable<T extends Message> {
                 | InstantiationException
                 | IllegalAccessException exn) {
             log.error("This shouldn't be possible", exn);
+            exn.printStackTrace();
             throw new RuntimeException(exn);
         }
     }

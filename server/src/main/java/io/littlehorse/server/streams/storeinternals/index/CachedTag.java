@@ -5,6 +5,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.TagsCachePb;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,6 +46,18 @@ public class CachedTag extends LHSerializable<TagsCachePb.CachedTagPb> {
         CachedTag out = new CachedTag();
         out.initFrom(proto, context);
         return out;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CachedTag cachedTag)) return false;
+        return isRemote == cachedTag.isRemote && Objects.equals(id, cachedTag.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, isRemote);
     }
 
     @Override

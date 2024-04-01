@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.topology.core.processors;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.MetadataGetable;
+import io.littlehorse.common.proto.StoredGetablePb;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
@@ -48,8 +49,9 @@ public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Vo
         try {
             if (value != null) {
                 store.put(key, value);
+                StoredGetablePb storedGetablePb = StoredGetablePb.parseFrom(value.get());
                 StoredGetable<? extends Message, MetadataGetable<?>> metadataGetable =
-                        LHSerializable.fromBytes(value.get(), StoredGetable.class, new BackgroundContext());
+                        LHSerializable.fromProto(storedGetablePb, StoredGetable.class, new BackgroundContext());
                 metadataCache.updateCache(key, metadataGetable);
             } else {
                 store.delete(key);
