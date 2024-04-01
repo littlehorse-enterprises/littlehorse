@@ -39,7 +39,7 @@ LittleHorse OSS is licensed under the [Server Side Public License](https://www.m
 
 For information on how to run LittleHorse OSS in production, check out our [Operations Documentation](./06-operations/06-operations.md).
 
-![LH OSS logo](../static/img/logo.jpg)
+![LH OSS logo](/img/logo.jpg)
 
 :::note
 If you are building a software application delivered over the internet (SaaS), you may do so without restriction even if your SaaS app is _powered by_ LittleHorse.
