@@ -1,24 +1,4 @@
 # Workers/Clients Configurations
-- [Workers/Clients Configurations](#workersclients-configurations)
-  - [Client](#client)
-    - [`LHC_API_HOST`](#lhc_api_host)
-    - [`LHC_API_PORT`](#lhc_api_port)
-    - [`LHC_API_PROTOCOL`](#lhc_api_protocol)
-    - [`LHC_CA_CERT`](#lhc_ca_cert)
-    - [`LHC_CLIENT_CERT`](#lhc_client_cert)
-    - [`LHC_CLIENT_KEY`](#lhc_client_key)
-    - [`LHC_OAUTH_CLIENT_ID`](#lhc_oauth_client_id)
-    - [`LHC_OAUTH_CLIENT_SECRET`](#lhc_oauth_client_secret)
-    - [`LHC_OAUTH_ACCESS_TOKEN_URL`](#lhc_oauth_access_token_url)
-    - [`LHC_GRPC_KEEPALIVE_TIME_MS`](#lhc_grpc_keepalive_time_ms)
-    - [`LHC_GRPC_KEEPALIVE_TIMEOUT_MS`](#lhc_grpc_keepalive_timeout_ms)
-  - [LHCTL](#lhctl)
-    - [`LHC_OAUTH_SERVER_URL`](#lhc_oauth_server_url)
-  - [Worker](#worker)
-    - [`LHW_SERVER_CONNECT_LISTENER`](#lhw_server_connect_listener)
-    - [`LHW_NUM_WORKER_THREADS`](#lhw_num_worker_threads)
-    - [`LHW_TASK_WORKER_ID`](#lhw_task_worker_id)
-    - [`LHW_TASK_WORKER_VERSION`](#lhw_task_worker_version)
 
 ## Client
 

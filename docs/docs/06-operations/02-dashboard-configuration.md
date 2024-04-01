@@ -1,8 +1,10 @@
 # Dashboard Configurations
 
 :::info
-These configurations apply only to the `public.ecr.aws/littlehorse/lh-dashboard` docker image, and not when running the LH Dashboard compiled from source. We have an open ticket in our OSS repo to homologate the configurations and also improve the startup time of the `lh-dashboard` docker image.
+These configurations apply only to the `ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard` docker image, and not when running the LH Dashboard compiled from source. We have an open ticket in our OSS repo to homologate the configurations and also improve the startup time of the `lh-dashboard` docker image.
 :::
+
+## Dashboard
 
 ### `LHD_API_HOST`
 
