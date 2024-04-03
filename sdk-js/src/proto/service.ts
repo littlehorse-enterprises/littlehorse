@@ -28,6 +28,7 @@ import {
   NodeRunId,
   TaskDefId,
   TaskRunId,
+  TenantId,
   UserTaskDefId,
   UserTaskRunId,
   VariableId,
@@ -780,6 +781,23 @@ export interface ExternalEventDefIdList {
    * has returned all results. If it is set, you can pass it into your next request
    * to resume searching where your previous request left off.
    */
+  bookmark?: Buffer | undefined;
+}
+
+/** Search for all available TenantIds for current Principal */
+export interface SearchTenantRequest {
+  /** Maximum results to return in one request. */
+  limit?:
+    | number
+    | undefined;
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?: Buffer | undefined;
+}
+
+export interface TenantIdList {
+  /** The resulting object id's. */
+  tenants: TenantId[];
+  /** Bookmark for cursor-based pagination; pass if applicable. */
   bookmark?: Buffer | undefined;
 }
 
@@ -3800,6 +3818,118 @@ export const ExternalEventDefIdList = {
   },
 };
 
+function createBaseSearchTenantRequest(): SearchTenantRequest {
+  return { limit: undefined, bookmark: undefined };
+}
+
+export const SearchTenantRequest = {
+  encode(message: SearchTenantRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.limit !== undefined) {
+      writer.uint32(8).int32(message.limit);
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchTenantRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchTenantRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<SearchTenantRequest>): SearchTenantRequest {
+    return SearchTenantRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SearchTenantRequest>): SearchTenantRequest {
+    const message = createBaseSearchTenantRequest();
+    message.limit = object.limit ?? undefined;
+    message.bookmark = object.bookmark ?? undefined;
+    return message;
+  },
+};
+
+function createBaseTenantIdList(): TenantIdList {
+  return { tenants: [], bookmark: undefined };
+}
+
+export const TenantIdList = {
+  encode(message: TenantIdList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.tenants) {
+      TenantId.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TenantIdList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTenantIdList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.tenants.push(TenantId.decode(reader, reader.uint32()));
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<TenantIdList>): TenantIdList {
+    return TenantIdList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<TenantIdList>): TenantIdList {
+    const message = createBaseTenantIdList();
+    message.tenants = object.tenants?.map((e) => TenantId.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
+    return message;
+  },
+};
+
 function createBaseSearchExternalEventRequest(): SearchExternalEventRequest {
   return { bookmark: undefined, limit: undefined, wfRunId: undefined, externalEventDefNameAndStatus: undefined };
 }
@@ -6502,12 +6632,21 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Search for ExteranlEventDef's. */
+    /** Search for ExternalEventDef's. */
     searchExternalEventDef: {
       name: "SearchExternalEventDef",
       requestType: SearchExternalEventDefRequest,
       requestStream: false,
       responseType: ExternalEventDefIdList,
+      responseStream: false,
+      options: {},
+    },
+    /** Search for all available TenantIds for current Principal */
+    searchTenant: {
+      name: "SearchTenant",
+      requestType: SearchTenantRequest,
+      requestStream: false,
+      responseType: TenantIdList,
       responseStream: false,
       options: {},
     },
@@ -6886,11 +7025,13 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   ): Promise<DeepPartial<UserTaskDefIdList>>;
   /** Search for WfSpec's. */
   searchWfSpec(request: SearchWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfSpecIdList>>;
-  /** Search for ExteranlEventDef's. */
+  /** Search for ExternalEventDef's. */
   searchExternalEventDef(
     request: SearchExternalEventDefRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ExternalEventDefIdList>>;
+  /** Search for all available TenantIds for current Principal */
+  searchTenant(request: SearchTenantRequest, context: CallContext & CallContextExt): Promise<DeepPartial<TenantIdList>>;
   /**
    * Used by the Task Worker to:
    * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -7169,11 +7310,16 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<SearchWfSpecRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<WfSpecIdList>;
-  /** Search for ExteranlEventDef's. */
+  /** Search for ExternalEventDef's. */
   searchExternalEventDef(
     request: DeepPartial<SearchExternalEventDefRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ExternalEventDefIdList>;
+  /** Search for all available TenantIds for current Principal */
+  searchTenant(
+    request: DeepPartial<SearchTenantRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<TenantIdList>;
   /**
    * Used by the Task Worker to:
    * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.

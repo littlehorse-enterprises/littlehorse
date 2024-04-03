@@ -416,6 +416,22 @@ class ExternalEventDefIdList(_message.Message):
     bookmark: bytes
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
+class SearchTenantRequest(_message.Message):
+    __slots__ = ["limit", "bookmark"]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    limit: int
+    bookmark: bytes
+    def __init__(self, limit: _Optional[int] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+
+class TenantIdList(_message.Message):
+    __slots__ = ["tenants", "bookmark"]
+    TENANTS_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    tenants: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.TenantId]
+    bookmark: bytes
+    def __init__(self, tenants: _Optional[_Iterable[_Union[_object_id_pb2.TenantId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+
 class SearchExternalEventRequest(_message.Message):
     __slots__ = ["bookmark", "limit", "wf_run_id", "external_event_def_name_and_status"]
     class ByExtEvtDefNameAndStatusRequest(_message.Message):
