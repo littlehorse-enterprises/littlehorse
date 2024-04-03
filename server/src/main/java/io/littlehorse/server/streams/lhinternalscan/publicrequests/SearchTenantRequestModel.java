@@ -19,7 +19,9 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class SearchTenantRequestModel extends PublicScanRequest<SearchTenantRequest, TenantIdList, TenantId, TenantIdModel, SearchTenantRequestReply> {
+public class SearchTenantRequestModel
+        extends PublicScanRequest<
+                SearchTenantRequest, TenantIdList, TenantId, TenantIdModel, SearchTenantRequestReply> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         SearchTenantRequest p = (SearchTenantRequest) proto;
@@ -29,7 +31,6 @@ public class SearchTenantRequestModel extends PublicScanRequest<SearchTenantRequ
             } catch (Exception exn) {
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
-
         }
         if (p.hasLimit()) {
             this.limit = p.getLimit();

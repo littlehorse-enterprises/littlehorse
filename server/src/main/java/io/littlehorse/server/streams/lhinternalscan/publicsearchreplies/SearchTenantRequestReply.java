@@ -1,6 +1,5 @@
 package io.littlehorse.server.streams.lhinternalscan.publicsearchreplies;
 
-import com.google.protobuf.GeneratedMessageV3;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.proto.TenantId;
 import io.littlehorse.sdk.common.proto.TenantIdList;
