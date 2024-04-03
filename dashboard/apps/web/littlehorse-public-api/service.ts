@@ -841,7 +841,7 @@ export interface SearchTenantRequest {
 
 export interface TenantIdList {
   /** The resulting object id's. */
-  tenants: TenantId[];
+  results: TenantId[];
   /** Bookmark for cursor-based pagination; pass if applicable. */
   bookmark?: Uint8Array | undefined;
 }
@@ -4786,12 +4786,12 @@ export const SearchTenantRequest = {
 };
 
 function createBaseTenantIdList(): TenantIdList {
-  return { tenants: [], bookmark: undefined };
+  return { results: [], bookmark: undefined };
 }
 
 export const TenantIdList = {
   encode(message: TenantIdList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.tenants) {
+    for (const v of message.results) {
       TenantId.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.bookmark !== undefined) {
@@ -4812,7 +4812,7 @@ export const TenantIdList = {
             break;
           }
 
-          message.tenants.push(TenantId.decode(reader, reader.uint32()));
+          message.results.push(TenantId.decode(reader, reader.uint32()));
           continue;
         case 2:
           if (tag !== 18) {
@@ -4832,15 +4832,15 @@ export const TenantIdList = {
 
   fromJSON(object: any): TenantIdList {
     return {
-      tenants: globalThis.Array.isArray(object?.tenants) ? object.tenants.map((e: any) => TenantId.fromJSON(e)) : [],
+      results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => TenantId.fromJSON(e)) : [],
       bookmark: isSet(object.bookmark) ? bytesFromBase64(object.bookmark) : undefined,
     };
   },
 
   toJSON(message: TenantIdList): unknown {
     const obj: any = {};
-    if (message.tenants?.length) {
-      obj.tenants = message.tenants.map((e) => TenantId.toJSON(e));
+    if (message.results?.length) {
+      obj.results = message.results.map((e) => TenantId.toJSON(e));
     }
     if (message.bookmark !== undefined) {
       obj.bookmark = base64FromBytes(message.bookmark);
@@ -4853,7 +4853,7 @@ export const TenantIdList = {
   },
   fromPartial<I extends Exact<DeepPartial<TenantIdList>, I>>(object: I): TenantIdList {
     const message = createBaseTenantIdList();
-    message.tenants = object.tenants?.map((e) => TenantId.fromPartial(e)) || [];
+    message.results = object.results?.map((e) => TenantId.fromPartial(e)) || [];
     message.bookmark = object.bookmark ?? undefined;
     return message;
   },

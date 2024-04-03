@@ -16,7 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private TenantIdList() {
-    tenants_ = java.util.Collections.emptyList();
+    results_ = java.util.Collections.emptyList();
     bookmark_ = com.google.protobuf.ByteString.EMPTY;
   }
 
@@ -41,65 +41,65 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  public static final int TENANTS_FIELD_NUMBER = 1;
+  public static final int RESULTS_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.TenantId> tenants_;
+  private java.util.List<io.littlehorse.sdk.common.proto.TenantId> results_;
   /**
    * <pre>
    * The resulting object id's.
    * </pre>
    *
-   * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+   * <code>repeated .littlehorse.TenantId results = 1;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.TenantId> getTenantsList() {
-    return tenants_;
+  public java.util.List<io.littlehorse.sdk.common.proto.TenantId> getResultsList() {
+    return results_;
   }
   /**
    * <pre>
    * The resulting object id's.
    * </pre>
    *
-   * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+   * <code>repeated .littlehorse.TenantId results = 1;</code>
    */
   @java.lang.Override
   public java.util.List<? extends io.littlehorse.sdk.common.proto.TenantIdOrBuilder> 
-      getTenantsOrBuilderList() {
-    return tenants_;
+      getResultsOrBuilderList() {
+    return results_;
   }
   /**
    * <pre>
    * The resulting object id's.
    * </pre>
    *
-   * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+   * <code>repeated .littlehorse.TenantId results = 1;</code>
    */
   @java.lang.Override
-  public int getTenantsCount() {
-    return tenants_.size();
+  public int getResultsCount() {
+    return results_.size();
   }
   /**
    * <pre>
    * The resulting object id's.
    * </pre>
    *
-   * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+   * <code>repeated .littlehorse.TenantId results = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TenantId getTenants(int index) {
-    return tenants_.get(index);
+  public io.littlehorse.sdk.common.proto.TenantId getResults(int index) {
+    return results_.get(index);
   }
   /**
    * <pre>
    * The resulting object id's.
    * </pre>
    *
-   * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+   * <code>repeated .littlehorse.TenantId results = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantsOrBuilder(
+  public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getResultsOrBuilder(
       int index) {
-    return tenants_.get(index);
+    return results_.get(index);
   }
 
   public static final int BOOKMARK_FIELD_NUMBER = 2;
@@ -143,8 +143,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    for (int i = 0; i < tenants_.size(); i++) {
-      output.writeMessage(1, tenants_.get(i));
+    for (int i = 0; i < results_.size(); i++) {
+      output.writeMessage(1, results_.get(i));
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeBytes(2, bookmark_);
@@ -158,9 +158,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    for (int i = 0; i < tenants_.size(); i++) {
+    for (int i = 0; i < results_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, tenants_.get(i));
+        .computeMessageSize(1, results_.get(i));
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
@@ -181,8 +181,8 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.TenantIdList other = (io.littlehorse.sdk.common.proto.TenantIdList) obj;
 
-    if (!getTenantsList()
-        .equals(other.getTenantsList())) return false;
+    if (!getResultsList()
+        .equals(other.getResultsList())) return false;
     if (hasBookmark() != other.hasBookmark()) return false;
     if (hasBookmark()) {
       if (!getBookmark()
@@ -199,9 +199,9 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (getTenantsCount() > 0) {
-      hash = (37 * hash) + TENANTS_FIELD_NUMBER;
-      hash = (53 * hash) + getTenantsList().hashCode();
+    if (getResultsCount() > 0) {
+      hash = (37 * hash) + RESULTS_FIELD_NUMBER;
+      hash = (53 * hash) + getResultsList().hashCode();
     }
     if (hasBookmark()) {
       hash = (37 * hash) + BOOKMARK_FIELD_NUMBER;
@@ -338,11 +338,11 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      if (tenantsBuilder_ == null) {
-        tenants_ = java.util.Collections.emptyList();
+      if (resultsBuilder_ == null) {
+        results_ = java.util.Collections.emptyList();
       } else {
-        tenants_ = null;
-        tenantsBuilder_.clear();
+        results_ = null;
+        resultsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
       bookmark_ = com.google.protobuf.ByteString.EMPTY;
@@ -379,14 +379,14 @@ private static final long serialVersionUID = 0L;
     }
 
     private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.TenantIdList result) {
-      if (tenantsBuilder_ == null) {
+      if (resultsBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0)) {
-          tenants_ = java.util.Collections.unmodifiableList(tenants_);
+          results_ = java.util.Collections.unmodifiableList(results_);
           bitField0_ = (bitField0_ & ~0x00000001);
         }
-        result.tenants_ = tenants_;
+        result.results_ = results_;
       } else {
-        result.tenants_ = tenantsBuilder_.build();
+        result.results_ = resultsBuilder_.build();
       }
     }
 
@@ -444,29 +444,29 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.TenantIdList other) {
       if (other == io.littlehorse.sdk.common.proto.TenantIdList.getDefaultInstance()) return this;
-      if (tenantsBuilder_ == null) {
-        if (!other.tenants_.isEmpty()) {
-          if (tenants_.isEmpty()) {
-            tenants_ = other.tenants_;
+      if (resultsBuilder_ == null) {
+        if (!other.results_.isEmpty()) {
+          if (results_.isEmpty()) {
+            results_ = other.results_;
             bitField0_ = (bitField0_ & ~0x00000001);
           } else {
-            ensureTenantsIsMutable();
-            tenants_.addAll(other.tenants_);
+            ensureResultsIsMutable();
+            results_.addAll(other.results_);
           }
           onChanged();
         }
       } else {
-        if (!other.tenants_.isEmpty()) {
-          if (tenantsBuilder_.isEmpty()) {
-            tenantsBuilder_.dispose();
-            tenantsBuilder_ = null;
-            tenants_ = other.tenants_;
+        if (!other.results_.isEmpty()) {
+          if (resultsBuilder_.isEmpty()) {
+            resultsBuilder_.dispose();
+            resultsBuilder_ = null;
+            results_ = other.results_;
             bitField0_ = (bitField0_ & ~0x00000001);
-            tenantsBuilder_ = 
+            resultsBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getTenantsFieldBuilder() : null;
+                 getResultsFieldBuilder() : null;
           } else {
-            tenantsBuilder_.addAllMessages(other.tenants_);
+            resultsBuilder_.addAllMessages(other.results_);
           }
         }
       }
@@ -504,11 +504,11 @@ private static final long serialVersionUID = 0L;
                   input.readMessage(
                       io.littlehorse.sdk.common.proto.TenantId.parser(),
                       extensionRegistry);
-              if (tenantsBuilder_ == null) {
-                ensureTenantsIsMutable();
-                tenants_.add(m);
+              if (resultsBuilder_ == null) {
+                ensureResultsIsMutable();
+                results_.add(m);
               } else {
-                tenantsBuilder_.addMessage(m);
+                resultsBuilder_.addMessage(m);
               }
               break;
             } // case 10
@@ -534,30 +534,30 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.util.List<io.littlehorse.sdk.common.proto.TenantId> tenants_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.TenantId> results_ =
       java.util.Collections.emptyList();
-    private void ensureTenantsIsMutable() {
+    private void ensureResultsIsMutable() {
       if (!((bitField0_ & 0x00000001) != 0)) {
-        tenants_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.TenantId>(tenants_);
+        results_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.TenantId>(results_);
         bitField0_ |= 0x00000001;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> tenantsBuilder_;
+        io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> resultsBuilder_;
 
     /**
      * <pre>
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.TenantId> getTenantsList() {
-      if (tenantsBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(tenants_);
+    public java.util.List<io.littlehorse.sdk.common.proto.TenantId> getResultsList() {
+      if (resultsBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(results_);
       } else {
-        return tenantsBuilder_.getMessageList();
+        return resultsBuilder_.getMessageList();
       }
     }
     /**
@@ -565,13 +565,13 @@ private static final long serialVersionUID = 0L;
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
-    public int getTenantsCount() {
-      if (tenantsBuilder_ == null) {
-        return tenants_.size();
+    public int getResultsCount() {
+      if (resultsBuilder_ == null) {
+        return results_.size();
       } else {
-        return tenantsBuilder_.getCount();
+        return resultsBuilder_.getCount();
       }
     }
     /**
@@ -579,13 +579,13 @@ private static final long serialVersionUID = 0L;
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.TenantId getTenants(int index) {
-      if (tenantsBuilder_ == null) {
-        return tenants_.get(index);
+    public io.littlehorse.sdk.common.proto.TenantId getResults(int index) {
+      if (resultsBuilder_ == null) {
+        return results_.get(index);
       } else {
-        return tenantsBuilder_.getMessage(index);
+        return resultsBuilder_.getMessage(index);
       }
     }
     /**
@@ -593,19 +593,19 @@ private static final long serialVersionUID = 0L;
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
-    public Builder setTenants(
+    public Builder setResults(
         int index, io.littlehorse.sdk.common.proto.TenantId value) {
-      if (tenantsBuilder_ == null) {
+      if (resultsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureTenantsIsMutable();
-        tenants_.set(index, value);
+        ensureResultsIsMutable();
+        results_.set(index, value);
         onChanged();
       } else {
-        tenantsBuilder_.setMessage(index, value);
+        resultsBuilder_.setMessage(index, value);
       }
       return this;
     }
@@ -614,16 +614,16 @@ private static final long serialVersionUID = 0L;
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
-    public Builder setTenants(
+    public Builder setResults(
         int index, io.littlehorse.sdk.common.proto.TenantId.Builder builderForValue) {
-      if (tenantsBuilder_ == null) {
-        ensureTenantsIsMutable();
-        tenants_.set(index, builderForValue.build());
+      if (resultsBuilder_ == null) {
+        ensureResultsIsMutable();
+        results_.set(index, builderForValue.build());
         onChanged();
       } else {
-        tenantsBuilder_.setMessage(index, builderForValue.build());
+        resultsBuilder_.setMessage(index, builderForValue.build());
       }
       return this;
     }
@@ -632,18 +632,18 @@ private static final long serialVersionUID = 0L;
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
-    public Builder addTenants(io.littlehorse.sdk.common.proto.TenantId value) {
-      if (tenantsBuilder_ == null) {
+    public Builder addResults(io.littlehorse.sdk.common.proto.TenantId value) {
+      if (resultsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureTenantsIsMutable();
-        tenants_.add(value);
+        ensureResultsIsMutable();
+        results_.add(value);
         onChanged();
       } else {
-        tenantsBuilder_.addMessage(value);
+        resultsBuilder_.addMessage(value);
       }
       return this;
     }
@@ -652,19 +652,19 @@ private static final long serialVersionUID = 0L;
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
-    public Builder addTenants(
+    public Builder addResults(
         int index, io.littlehorse.sdk.common.proto.TenantId value) {
-      if (tenantsBuilder_ == null) {
+      if (resultsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureTenantsIsMutable();
-        tenants_.add(index, value);
+        ensureResultsIsMutable();
+        results_.add(index, value);
         onChanged();
       } else {
-        tenantsBuilder_.addMessage(index, value);
+        resultsBuilder_.addMessage(index, value);
       }
       return this;
     }
@@ -673,16 +673,16 @@ private static final long serialVersionUID = 0L;
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
-    public Builder addTenants(
+    public Builder addResults(
         io.littlehorse.sdk.common.proto.TenantId.Builder builderForValue) {
-      if (tenantsBuilder_ == null) {
-        ensureTenantsIsMutable();
-        tenants_.add(builderForValue.build());
+      if (resultsBuilder_ == null) {
+        ensureResultsIsMutable();
+        results_.add(builderForValue.build());
         onChanged();
       } else {
-        tenantsBuilder_.addMessage(builderForValue.build());
+        resultsBuilder_.addMessage(builderForValue.build());
       }
       return this;
     }
@@ -691,16 +691,16 @@ private static final long serialVersionUID = 0L;
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
-    public Builder addTenants(
+    public Builder addResults(
         int index, io.littlehorse.sdk.common.proto.TenantId.Builder builderForValue) {
-      if (tenantsBuilder_ == null) {
-        ensureTenantsIsMutable();
-        tenants_.add(index, builderForValue.build());
+      if (resultsBuilder_ == null) {
+        ensureResultsIsMutable();
+        results_.add(index, builderForValue.build());
         onChanged();
       } else {
-        tenantsBuilder_.addMessage(index, builderForValue.build());
+        resultsBuilder_.addMessage(index, builderForValue.build());
       }
       return this;
     }
@@ -709,17 +709,17 @@ private static final long serialVersionUID = 0L;
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
-    public Builder addAllTenants(
+    public Builder addAllResults(
         java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.TenantId> values) {
-      if (tenantsBuilder_ == null) {
-        ensureTenantsIsMutable();
+      if (resultsBuilder_ == null) {
+        ensureResultsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, tenants_);
+            values, results_);
         onChanged();
       } else {
-        tenantsBuilder_.addAllMessages(values);
+        resultsBuilder_.addAllMessages(values);
       }
       return this;
     }
@@ -728,15 +728,15 @@ private static final long serialVersionUID = 0L;
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
-    public Builder clearTenants() {
-      if (tenantsBuilder_ == null) {
-        tenants_ = java.util.Collections.emptyList();
+    public Builder clearResults() {
+      if (resultsBuilder_ == null) {
+        results_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
       } else {
-        tenantsBuilder_.clear();
+        resultsBuilder_.clear();
       }
       return this;
     }
@@ -745,15 +745,15 @@ private static final long serialVersionUID = 0L;
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
-    public Builder removeTenants(int index) {
-      if (tenantsBuilder_ == null) {
-        ensureTenantsIsMutable();
-        tenants_.remove(index);
+    public Builder removeResults(int index) {
+      if (resultsBuilder_ == null) {
+        ensureResultsIsMutable();
+        results_.remove(index);
         onChanged();
       } else {
-        tenantsBuilder_.remove(index);
+        resultsBuilder_.remove(index);
       }
       return this;
     }
@@ -762,24 +762,24 @@ private static final long serialVersionUID = 0L;
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.TenantId.Builder getTenantsBuilder(
+    public io.littlehorse.sdk.common.proto.TenantId.Builder getResultsBuilder(
         int index) {
-      return getTenantsFieldBuilder().getBuilder(index);
+      return getResultsFieldBuilder().getBuilder(index);
     }
     /**
      * <pre>
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantsOrBuilder(
+    public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getResultsOrBuilder(
         int index) {
-      if (tenantsBuilder_ == null) {
-        return tenants_.get(index);  } else {
-        return tenantsBuilder_.getMessageOrBuilder(index);
+      if (resultsBuilder_ == null) {
+        return results_.get(index);  } else {
+        return resultsBuilder_.getMessageOrBuilder(index);
       }
     }
     /**
@@ -787,14 +787,14 @@ private static final long serialVersionUID = 0L;
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.TenantIdOrBuilder> 
-         getTenantsOrBuilderList() {
-      if (tenantsBuilder_ != null) {
-        return tenantsBuilder_.getMessageOrBuilderList();
+         getResultsOrBuilderList() {
+      if (resultsBuilder_ != null) {
+        return resultsBuilder_.getMessageOrBuilderList();
       } else {
-        return java.util.Collections.unmodifiableList(tenants_);
+        return java.util.Collections.unmodifiableList(results_);
       }
     }
     /**
@@ -802,10 +802,10 @@ private static final long serialVersionUID = 0L;
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.TenantId.Builder addTenantsBuilder() {
-      return getTenantsFieldBuilder().addBuilder(
+    public io.littlehorse.sdk.common.proto.TenantId.Builder addResultsBuilder() {
+      return getResultsFieldBuilder().addBuilder(
           io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance());
     }
     /**
@@ -813,11 +813,11 @@ private static final long serialVersionUID = 0L;
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.TenantId.Builder addTenantsBuilder(
+    public io.littlehorse.sdk.common.proto.TenantId.Builder addResultsBuilder(
         int index) {
-      return getTenantsFieldBuilder().addBuilder(
+      return getResultsFieldBuilder().addBuilder(
           index, io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance());
     }
     /**
@@ -825,25 +825,25 @@ private static final long serialVersionUID = 0L;
      * The resulting object id's.
      * </pre>
      *
-     * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+     * <code>repeated .littlehorse.TenantId results = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.TenantId.Builder> 
-         getTenantsBuilderList() {
-      return getTenantsFieldBuilder().getBuilderList();
+         getResultsBuilderList() {
+      return getResultsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> 
-        getTenantsFieldBuilder() {
-      if (tenantsBuilder_ == null) {
-        tenantsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+        getResultsFieldBuilder() {
+      if (resultsBuilder_ == null) {
+        resultsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder>(
-                tenants_,
+                results_,
                 ((bitField0_ & 0x00000001) != 0),
                 getParentForChildren(),
                 isClean());
-        tenants_ = null;
+        results_ = null;
       }
-      return tenantsBuilder_;
+      return resultsBuilder_;
     }
 
     private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;

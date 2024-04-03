@@ -955,10 +955,10 @@ export const ThreadVarDef = {
     if (message.varDef !== undefined) {
       VariableDef.encode(message.varDef, writer.uint32(10).fork()).ldelim();
     }
-    if (message.required !== false) {
+    if (message.required === true) {
       writer.uint32(16).bool(message.required);
     }
-    if (message.searchable !== false) {
+    if (message.searchable === true) {
       writer.uint32(24).bool(message.searchable);
     }
     for (const v of message.jsonIndexes) {
@@ -1040,10 +1040,10 @@ export const ThreadVarDef = {
     if (message.varDef !== undefined) {
       obj.varDef = VariableDef.toJSON(message.varDef);
     }
-    if (message.required !== false) {
+    if (message.required === true) {
       obj.required = message.required;
     }
-    if (message.searchable !== false) {
+    if (message.searchable === true) {
       obj.searchable = message.searchable;
     }
     if (message.jsonIndexes?.length) {

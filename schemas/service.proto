@@ -760,7 +760,7 @@ message SearchTenantRequest {
 
 message TenantIdList {
       // The resulting object id's.
-      repeated TenantId tenants = 1;
+      repeated TenantId results = 1;
       // Bookmark for cursor-based pagination; pass if applicable.
       optional bytes bookmark = 2;
 }

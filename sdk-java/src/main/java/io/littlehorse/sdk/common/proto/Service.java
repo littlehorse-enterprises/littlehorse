@@ -537,7 +537,7 @@ public final class Service {
       "\001(\014H\000\210\001\001B\013\n\t_bookmark\"W\n\023SearchTenantReq" +
       "uest\022\022\n\005limit\030\001 \001(\005H\000\210\001\001\022\025\n\010bookmark\030\002 \001" +
       "(\014H\001\210\001\001B\010\n\006_limitB\013\n\t_bookmark\"Z\n\014Tenant" +
-      "IdList\022&\n\007tenants\030\001 \003(\0132\025.littlehorse.Te" +
+      "IdList\022&\n\007results\030\001 \003(\0132\025.littlehorse.Te" +
       "nantId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookma" +
       "rk\"\200\003\n\032SearchExternalEventRequest\022\025\n\010boo" +
       "kmark\030\001 \001(\014H\001\210\001\001\022\022\n\005limit\030\002 \001(\005H\002\210\001\001\022)\n\t" +
@@ -1022,7 +1022,7 @@ public final class Service {
     internal_static_littlehorse_TenantIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_TenantIdList_descriptor,
-        new java.lang.String[] { "Tenants", "Bookmark", "Bookmark", });
+        new java.lang.String[] { "Results", "Bookmark", "Bookmark", });
     internal_static_littlehorse_SearchExternalEventRequest_descriptor =
       getDescriptor().getMessageTypes().get(36);
     internal_static_littlehorse_SearchExternalEventRequest_fieldAccessorTable = new

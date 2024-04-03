@@ -12,43 +12,43 @@ public interface TenantIdListOrBuilder extends
    * The resulting object id's.
    * </pre>
    *
-   * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+   * <code>repeated .littlehorse.TenantId results = 1;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.TenantId> 
-      getTenantsList();
+      getResultsList();
   /**
    * <pre>
    * The resulting object id's.
    * </pre>
    *
-   * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+   * <code>repeated .littlehorse.TenantId results = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.TenantId getTenants(int index);
+  io.littlehorse.sdk.common.proto.TenantId getResults(int index);
   /**
    * <pre>
    * The resulting object id's.
    * </pre>
    *
-   * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+   * <code>repeated .littlehorse.TenantId results = 1;</code>
    */
-  int getTenantsCount();
+  int getResultsCount();
   /**
    * <pre>
    * The resulting object id's.
    * </pre>
    *
-   * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+   * <code>repeated .littlehorse.TenantId results = 1;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.TenantIdOrBuilder> 
-      getTenantsOrBuilderList();
+      getResultsOrBuilderList();
   /**
    * <pre>
    * The resulting object id's.
    * </pre>
    *
-   * <code>repeated .littlehorse.TenantId tenants = 1;</code>
+   * <code>repeated .littlehorse.TenantId results = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantsOrBuilder(
+  io.littlehorse.sdk.common.proto.TenantIdOrBuilder getResultsOrBuilder(
       int index);
 
   /**

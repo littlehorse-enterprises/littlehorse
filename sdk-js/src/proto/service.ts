@@ -796,7 +796,7 @@ export interface SearchTenantRequest {
 
 export interface TenantIdList {
   /** The resulting object id's. */
-  tenants: TenantId[];
+  results: TenantId[];
   /** Bookmark for cursor-based pagination; pass if applicable. */
   bookmark?: Buffer | undefined;
 }
@@ -3875,12 +3875,12 @@ export const SearchTenantRequest = {
 };
 
 function createBaseTenantIdList(): TenantIdList {
-  return { tenants: [], bookmark: undefined };
+  return { results: [], bookmark: undefined };
 }
 
 export const TenantIdList = {
   encode(message: TenantIdList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.tenants) {
+    for (const v of message.results) {
       TenantId.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.bookmark !== undefined) {
@@ -3901,7 +3901,7 @@ export const TenantIdList = {
             break;
           }
 
-          message.tenants.push(TenantId.decode(reader, reader.uint32()));
+          message.results.push(TenantId.decode(reader, reader.uint32()));
           continue;
         case 2:
           if (tag !== 18) {
@@ -3924,7 +3924,7 @@ export const TenantIdList = {
   },
   fromPartial(object: DeepPartial<TenantIdList>): TenantIdList {
     const message = createBaseTenantIdList();
-    message.tenants = object.tenants?.map((e) => TenantId.fromPartial(e)) || [];
+    message.results = object.results?.map((e) => TenantId.fromPartial(e)) || [];
     message.bookmark = object.bookmark ?? undefined;
     return message;
   },

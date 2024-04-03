@@ -1112,7 +1112,7 @@ export const ExternalEventRun = {
     if (message.externalEventId !== undefined) {
       ExternalEventId.encode(message.externalEventId, writer.uint32(26).fork()).ldelim();
     }
-    if (message.timedOut !== false) {
+    if (message.timedOut === true) {
       writer.uint32(32).bool(message.timedOut);
     }
     return writer;
@@ -1188,7 +1188,7 @@ export const SleepNodeRun = {
     if (message.maturationTime !== undefined) {
       Timestamp.encode(toTimestamp(message.maturationTime), writer.uint32(10).fork()).ldelim();
     }
-    if (message.matured !== false) {
+    if (message.matured === true) {
       writer.uint32(16).bool(message.matured);
     }
     return writer;
@@ -1256,7 +1256,7 @@ export const Failure = {
     if (message.content !== undefined) {
       VariableValue.encode(message.content, writer.uint32(26).fork()).ldelim();
     }
-    if (message.wasProperlyHandled !== false) {
+    if (message.wasProperlyHandled === true) {
       writer.uint32(32).bool(message.wasProperlyHandled);
     }
     if (message.failureHandlerThreadrunId !== undefined) {
