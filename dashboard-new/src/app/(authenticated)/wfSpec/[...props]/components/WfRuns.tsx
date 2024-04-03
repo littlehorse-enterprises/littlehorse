@@ -9,7 +9,7 @@ import { WfRunIdList } from 'littlehorse-client/dist/proto/service'
 import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { FC, useMemo, useState } from 'react'
+import { FC, Fragment, useMemo, useState } from 'react'
 import { searchWfRun } from '../actions/searchWfRun'
 import { WfRunsHeader } from './WfRunsHeader'
 
@@ -61,8 +61,8 @@ export const WfRuns: FC<Props> = ({ id }) => {
         </div>
       ) : (
         <div className="flex min-h-[360px] flex-col gap-4">
-          {data?.pages.map(page => (
-            <>
+          {data?.pages.map((page, i) => (
+            <Fragment key={i}>
               {page.results.map(({ id }) => (
                 <div key={id}>
                   <Link className="py-2 text-blue-500 hover:underline" href={`/wfRun/${id}`}>
@@ -70,7 +70,7 @@ export const WfRuns: FC<Props> = ({ id }) => {
                   </Link>
                 </div>
               ))}
-            </>
+            </Fragment>
           ))}
         </div>
       )}

@@ -14,12 +14,14 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
     <>
       <Navigation href="/" title="Go back to WfSpecs" />
       <Details status={spec.status} id={spec.id} />
+      <Diagram currentThread={'entrypoint'} spec={spec} />
       {Object.keys(spec.threadSpecs)
         .reverse()
         .map(name => (
           <Thread key={name} name={name} spec={spec.threadSpecs[name]} />
         ))}
       <WfRuns id={spec.id} />
+      {JSON.stringify(spec)}
     </>
   )
 }
