@@ -84,6 +84,12 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
                 context.service().getPrincipal(context.authorization().principalId());
         PrincipalModel toSave = new PrincipalModel();
         toSave.setId(new PrincipalIdModel(id));
+
+        // Check if the ID contains a slash
+        if (id.contains("/")) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "Principal ID cannot contain slashes.");
+        }
         if (oldPrincipal != null) {
             if (!overwrite) {
                 throw new LHApiException(
