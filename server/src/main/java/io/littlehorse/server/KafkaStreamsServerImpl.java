@@ -505,6 +505,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_TENANT, actions = ACLAction.READ)
     public void searchTenant(SearchTenantRequest req, StreamObserver<TenantIdList> ctx) {
         handleScan(SearchTenantRequestModel.fromProto(req, requestContext()), ctx, SearchTenantRequestReply.class);
     }
