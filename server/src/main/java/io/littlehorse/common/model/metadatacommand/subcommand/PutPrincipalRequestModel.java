@@ -87,8 +87,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
 
         // Check if the ID contains a slash
         if (id.contains("/")) {
-            throw new LHApiException(
-                    Status.INVALID_ARGUMENT, "Principal ID cannot contain slashes.");
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Principal ID cannot contain slashes.");
         }
         if (oldPrincipal != null) {
             if (!overwrite) {
