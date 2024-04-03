@@ -56,7 +56,7 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
     public void schedule(UserTaskRunModel utr, ProcessorExecutionContext processorContext) throws LHVarSubError {
         switch (actionType) {
             case TASK:
-                task.schedule(utr, this);
+                task.schedule(utr, this, processorContext);
                 break;
             case REASSIGN:
                 reassign.schedule(utr, this, processorContext);
