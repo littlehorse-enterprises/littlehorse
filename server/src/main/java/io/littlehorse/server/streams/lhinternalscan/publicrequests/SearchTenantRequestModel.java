@@ -22,8 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 public class SearchTenantRequestModel
         extends PublicScanRequest<
                 SearchTenantRequest, TenantIdList, TenantId, TenantIdModel, SearchTenantRequestReply> {
+    private ExecutionContext context;
+
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+        this.context = context;
         SearchTenantRequest p = (SearchTenantRequest) proto;
         if (p.hasBookmark()) {
             try {
@@ -70,7 +73,10 @@ public class SearchTenantRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException {
-        return ObjectIdScanBoundaryStrategy.prefixMetadataScan();
+        return this.context.authorization().isAdmin()
+                ? ObjectIdScanBoundaryStrategy.prefixMetadataScan()
+                : ObjectIdScanBoundaryStrategy.metadataSearchFor(
+                        this.context.authorization().tenantId().getId());
     }
 
     public static SearchTenantRequestModel fromProto(SearchTenantRequest proto, ExecutionContext context) {

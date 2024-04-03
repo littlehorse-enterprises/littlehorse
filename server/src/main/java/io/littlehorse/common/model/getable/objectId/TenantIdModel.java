@@ -44,7 +44,7 @@ public class TenantIdModel extends ClusterMetadataId<TenantId, Tenant, TenantMod
 
     @Override
     public void initFromString(String storeKey) {
-        this.id = storeKey;
+        this.id = storeKey.split("/")[1];
     }
 
     @Override

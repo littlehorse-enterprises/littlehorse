@@ -1,19 +1,14 @@
 package io.littlehorse.server.auth;
 
-import io.grpc.BindableService;
-import io.grpc.Context;
-import io.grpc.Contexts;
-import io.grpc.Metadata;
-import io.grpc.MethodDescriptor;
-import io.grpc.ServerCall;
-import io.grpc.ServerCallHandler;
-import io.grpc.Status;
+import io.grpc.*;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
@@ -22,12 +17,7 @@ import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class RequestAuthorizer implements ServerAuthorizer {
 
@@ -59,9 +49,13 @@ public class RequestAuthorizer implements ServerAuthorizer {
                 ? null
                 : (PrincipalIdModel) ObjectIdModel.fromString(clientIdStr.trim(), PrincipalIdModel.class);
         String tenantIdStr = headers.get(TENANT_ID);
-        TenantIdModel tenantId = tenantIdStr == null
-                ? null
-                : (TenantIdModel) ObjectIdModel.fromString(tenantIdStr.trim(), TenantIdModel.class);
+
+        String storeKey = tenantIdStr != null
+                ? LHUtil.getCompositeId(String.valueOf(GetableClassEnum.TENANT.getNumber()), tenantIdStr.trim())
+                : null;
+
+        TenantIdModel tenantId =
+                storeKey == null ? null : (TenantIdModel) ObjectIdModel.fromString(storeKey, TenantIdModel.class);
 
         Context context = Context.current();
         try {
