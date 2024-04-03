@@ -1,5 +1,6 @@
 package io.littlehorse.server.streams.store;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
@@ -12,12 +13,10 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-@Setter
 public class StoredGetable<U extends Message, T extends AbstractGetable<U>> extends Storeable<StoredGetablePb> {
 
     private TagsCache indexCache;
@@ -33,12 +32,6 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
         this.objectType = AbstractGetable.getTypeEnum((Class<? extends AbstractGetable<?>>) getable.getClass());
     }
 
-    public StoredGetable(T getable, TagsCache indexCache) {
-        this.storedObject = getable;
-        this.indexCache = indexCache;
-        this.objectType = AbstractGetable.getTypeEnum((Class<? extends AbstractGetable<?>>) getable.getClass());
-    }
-
     @Override
     public Class<StoredGetablePb> getProtoBaseClass() {
         return StoredGetablePb.class;
@@ -48,9 +41,10 @@ public class StoredGetable<U extends Message, T extends AbstractGetable<U>> exte
     public void initFrom(Message proto, ExecutionContext context) {
         StoredGetablePb p = (StoredGetablePb) proto;
         indexCache = LHSerializable.fromProto(p.getIndexCache(), TagsCache.class, context);
+        ByteString getablePayload = p.getGetablePayload();
         objectType = p.getType();
         try {
-            storedObject = LHSerializable.fromBytes(p.getGetablePayload().toByteArray(), getStoredClass(), context);
+            storedObject = LHSerializable.fromBytes(getablePayload, getStoredClass(), context);
         } catch (LHSerdeError exception) {
             log.error("Failed loading from store: {}", exception.getMessage(), exception);
         }

@@ -1,5 +1,6 @@
 package io.littlehorse.common;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
@@ -59,6 +60,22 @@ public abstract class LHSerializable<T extends Message> {
 
             GeneratedMessageV3 proto = protoClass.cast(
                     protoClass.getMethod("parseFrom", byte[].class).invoke(null, b));
+            out.initFrom(proto, context);
+            return out;
+        } catch (Exception exn) {
+            log.error(exn.getMessage(), exn);
+            throw new LHSerdeError(exn, "unable to process bytes for " + cls.getName());
+        }
+    }
+
+    public static <T extends LHSerializable<?>> T fromBytes(ByteString b, Class<T> cls, ExecutionContext context)
+            throws LHSerdeError {
+        try {
+            T out = load(cls);
+            Class<? extends GeneratedMessageV3> protoClass = out.getProtoBaseClass();
+
+            GeneratedMessageV3 proto = protoClass.cast(
+                    protoClass.getMethod("parseFrom", ByteString.class).invoke(null, b));
             out.initFrom(proto, context);
             return out;
         } catch (Exception exn) {
