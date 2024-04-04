@@ -36,8 +36,9 @@ class CanaryConfigTest {
     @Test
     void getFilterRules() {
         Map<String, Object> input = Map.of(
-                "lh.canary.metrics.filter.enable[0]", "test_ms",
-                "lh.canary.metrics.filter.enable[1]", "test_ms2");
+                "lh.canary.metrics.filter.enable.test_ms", "true",
+                "lh.canary.metrics.filter.enable.test_ms2", "true",
+                "lh.canary.metrics.filter.enable.test_ms3", "false");
         CanaryConfig canaryConfig = new CanaryConfig(input);
 
         List<String> output = canaryConfig.getEnabledMetrics();
