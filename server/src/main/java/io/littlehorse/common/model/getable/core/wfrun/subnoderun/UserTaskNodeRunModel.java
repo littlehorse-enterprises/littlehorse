@@ -66,7 +66,7 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
     }
 
     @Override
-    public boolean checkIfProcessingCompleted() throws NodeFailureException {
+    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) throws NodeFailureException {
         UserTaskRunModel utr = processorContext.getableManager().get(userTaskRunId);
         if (utr.getFailureToThrowKenobi() != null) {
             NodeFailureException toThrow = new NodeFailureException(utr.getFailureToThrowKenobi());
@@ -77,7 +77,7 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput() {
+    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
         UserTaskRunModel userTask = processorContext.getableManager().get(userTaskRunId);
 
         if (userTask.getStatus() != UserTaskRunStatus.DONE) {
@@ -92,7 +92,7 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
     }
 
     @Override
-    public void arrive(Date time) throws NodeFailureException {
+    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
         // The UserTaskNode arrive() function should create a UserTaskRun.
         NodeModel node = getNodeRun().getNode();
         UserTaskNodeModel utn = node.getUserTaskNode();

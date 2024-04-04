@@ -9,6 +9,8 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssign
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.StartMultipleThreadsNode;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,12 +51,12 @@ public class StartMultipleThreadsNodeModel extends SubNode<StartMultipleThreadsN
     }
 
     @Override
-    public SubNodeRun<?> createSubNodeRun(Date time) {
+    public SubNodeRun<?> createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
         StartMultipleThreadsRunModel out = new StartMultipleThreadsRunModel();
         out.setThreadSpecName(threadSpecName);
         return out;
     }
 
     @Override
-    public void validate() {}
+    public void validate(MetadataCommandExecution ctx) {}
 }

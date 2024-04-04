@@ -5,8 +5,11 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.TagsCachePb;
 import io.littlehorse.common.proto.TagsCachePb.CachedTagPb;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,12 +17,12 @@ import lombok.Setter;
 @Setter
 public class TagsCache extends LHSerializable<TagsCachePb> {
 
-    public List<CachedTag> tags = new ArrayList<>();
+    public Set<CachedTag> tags = new HashSet<>();
 
     public TagsCache() {}
 
     public TagsCache(List<Tag> tags) {
-        this.setTags(tags.stream().map(tag -> new CachedTag(tag)).toList());
+        this.setTags(tags.stream().map(CachedTag::new).collect(Collectors.toSet()));
     }
 
     public Class<TagsCachePb> getProtoBaseClass() {
@@ -47,8 +50,12 @@ public class TagsCache extends LHSerializable<TagsCachePb> {
         return out;
     }
 
-    public List<String> getTagIds() {
+    public Collection<String> getTagIds() {
         return this.tags.stream().map(CachedTag::getId).toList();
+    }
+
+    public boolean contains(Tag tag) {
+        return tags.contains(new CachedTag(tag));
     }
     // public void setTagIds(List<String> tagIds) {
     // this.tagIds = tagIds;

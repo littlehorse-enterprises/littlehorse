@@ -21,6 +21,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -93,8 +94,9 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         return out;
     }
 
-    public WaitForThreadsRunModel createSubNodeRun(Date time) {
-        return new WaitForThreadsRunModel(context.castOnSupport(ProcessorExecutionContext.class));
+    @Override
+    public WaitForThreadsRunModel createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
+        return new WaitForThreadsRunModel();
     }
 
     public List<WaitForThreadModel> getThreadsToWaitFor(
@@ -148,7 +150,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
     }
 
     @Override
-    public void validate() throws LHApiException {
+    public void validate(MetadataCommandExecution ctx) throws LHApiException {
         switch (type) {
             case THREADS:
                 for (ThreadToWaitForModel ttwf : threads.getThreads()) {
