@@ -26,7 +26,7 @@ public final class ServerFilterRules {
             deny("kafka_producer"),
             deny("kafka_consumer"),
             deny("kafka_admin"),
-            deny("lh_cache_size"));
+            accept("lh_cache_size"));
 
     public static ServerFilterRule accept(String prefix) {
         return new ServerFilterRule(prefix, MeterFilterReply.ACCEPT);

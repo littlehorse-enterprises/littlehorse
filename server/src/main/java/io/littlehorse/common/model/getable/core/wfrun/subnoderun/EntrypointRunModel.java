@@ -30,17 +30,17 @@ public class EntrypointRunModel extends SubNodeRun<EntrypointRun> {
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput() {
+    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
         return Optional.empty();
     }
 
     @Override
-    public boolean checkIfProcessingCompleted() throws NodeFailureException {
+    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) throws NodeFailureException {
         return true;
     }
 
     @Override
-    public void arrive(Date time) throws NodeFailureException {}
+    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {}
 
     public static EntrypointRunModel fromProto(EntrypointRun p, ExecutionContext context) {
         EntrypointRunModel out = new EntrypointRunModel();

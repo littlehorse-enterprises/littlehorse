@@ -16,6 +16,7 @@ import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.StartThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,11 +51,11 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
     }
 
     @Override
-    public boolean checkIfProcessingCompleted() {
+    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) {
         return true;
     }
 
-    public void arrive(Date time) throws NodeFailureException {
+    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
         StartThreadNodeModel stn = getNode().startThreadNode;
         Map<String, VariableValueModel> variables = new HashMap<>();
 
@@ -90,7 +91,7 @@ public class StartThreadRunModel extends SubNodeRun<StartThreadRun> {
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput() {
+    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
         return Optional.of(new VariableValueModel(childThreadId));
     }
 

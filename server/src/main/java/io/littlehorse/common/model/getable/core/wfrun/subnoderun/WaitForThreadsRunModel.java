@@ -39,13 +39,8 @@ import lombok.extern.slf4j.Slf4j;
 public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
     private List<WaitForThreadModel> threads = new ArrayList<>();
-    private ProcessorExecutionContext context;
 
     public WaitForThreadsRunModel() {}
-
-    public WaitForThreadsRunModel(ProcessorExecutionContext context) {
-        this.context = context;
-    }
 
     @Override
     public Class<WaitForThreadsRun> getProtoBaseClass() {
@@ -54,7 +49,6 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
-        this.context = context.castOnSupport(ProcessorExecutionContext.class);
         WaitForThreadsRun p = (WaitForThreadsRun) proto;
         for (WaitForThreadsRun.WaitForThread wft : p.getThreadsList()) {
             WaitForThreadModel wftm = LHSerializable.fromProto(wft, WaitForThreadModel.class, context);
@@ -80,19 +74,19 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
     }
 
     @Override
-    public boolean maybeHalt() {
+    public boolean maybeHalt(ProcessorExecutionContext processorContext) {
         return true;
     }
 
     @Override
-    public boolean checkIfProcessingCompleted() throws NodeFailureException {
+    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) throws NodeFailureException {
         boolean allCompleteOrHandled = true;
 
         // This is stupid but it's required to make things work.
         threads.stream().forEach(child -> child.setNodeRun(nodeRun));
 
         for (WaitForThreadModel childThread : threads) {
-            updateStatusOfAndMaybeThrow(childThread);
+            updateStatusOfAndMaybeThrow(childThread, processorContext);
 
             allCompleteOrHandled = allCompleteOrHandled
                     && childThread.getWaitingStatus() == WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED;
@@ -102,12 +96,12 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
     }
 
     @Override
-    public void arrive(Date time) throws NodeFailureException {
+    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
         // Need to initialize all of the threads.
         WaitForThreadsNodeModel node = getNode().getWaitForThreadsNode();
         nodeRun.setStatus(LHStatus.RUNNING);
         try {
-            threads.addAll(node.getThreadsToWaitFor(nodeRun, time, context));
+            threads.addAll(node.getThreadsToWaitFor(nodeRun, time, processorContext));
         } catch (LHVarSubError exn) {
             throw new NodeFailureException(new FailureModel(
                     "Failed determining thread run number to wait for: " + exn.getMessage(),
@@ -116,7 +110,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput() {
+    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
         // Currently, the WaitForThreads node does not have output. This is because we haven't yet implemented
         // ThreadRun outputs.
         return Optional.empty();
@@ -127,7 +121,8 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
      * @param child is the child we're looking at.
      * @throws NodeFailureException if the child failed with an unrecoverable error.
      */
-    private void updateStatusOfAndMaybeThrow(WaitForThreadModel child) throws NodeFailureException {
+    private void updateStatusOfAndMaybeThrow(WaitForThreadModel child, ProcessorExecutionContext processorContext)
+            throws NodeFailureException {
         if (child.getWaitingStatus() == WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED) {
             return;
         }
@@ -151,7 +146,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
                 FailureHandlerDefModel handler = getHandlerFor(latestFailure);
                 if (handler != null) {
                     child.setWaitingStatus(WaitingThreadStatus.THREAD_HANDLING_FAILURE);
-                    startFailureHandlerFor(handler, latestFailure, childThreadRun, child);
+                    startFailureHandlerFor(handler, latestFailure, childThreadRun, child, processorContext);
                 } else {
                     child.setWaitingStatus(WaitingThreadStatus.THREAD_UNSUCCESSFUL);
                     propagateFailure(latestFailure, child);
@@ -204,7 +199,8 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
             FailureHandlerDefModel failureHandlerDef,
             FailureModel failure,
             ThreadRunModel failedChildThreadRun,
-            WaitForThreadModel failedChildThread)
+            WaitForThreadModel failedChildThread,
+            ProcessorExecutionContext processorContext)
             throws NodeFailureException {
         /*
          * The logic for the ThreadRunModel starting a FailureHandler is more complex
@@ -221,7 +217,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
         failedChildThread.setWaitingStatus(WaitingThreadStatus.THREAD_HANDLING_FAILURE);
 
-        WfSpecModel wfSpec = context.service().getWfSpec(nodeRun.getWfSpecId());
+        WfSpecModel wfSpec = processorContext.service().getWfSpec(nodeRun.getWfSpecId());
         ThreadSpecModel handlerSpec = wfSpec.threadSpecs.get(failureHandlerDef.getHandlerSpecName());
         Map<String, VariableValueModel> vars = new HashMap<>();
         if (handlerSpec.variableDefs.size() > 0) {

@@ -15,6 +15,7 @@ import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -99,12 +100,12 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     }
 
     @Override
-    public UserTaskNodeRunModel createSubNodeRun(Date time) {
+    public UserTaskNodeRunModel createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
         return new UserTaskNodeRunModel(processorContext);
     }
 
     @Override
-    public void validate() throws LHApiException {
+    public void validate(MetadataCommandExecution ctx) throws LHApiException {
         UserTaskDefModel utd;
         if (userTaskDefVersion == null) {
             utd = metadataManager.getLastFromPrefix(

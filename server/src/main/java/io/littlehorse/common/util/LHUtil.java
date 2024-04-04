@@ -95,7 +95,7 @@ public class LHUtil {
     }
 
     public static String toLhDbFormat(Date date) {
-        return date == null ? "null" : String.format("%012d", date.getTime());
+        return date == null ? "null" : String.valueOf(date.getTime());
     }
 
     public static Date getWindowStart(Date time, MetricsWindowLength type) {
@@ -130,14 +130,7 @@ public class LHUtil {
 
     /** @precondition every input string is a valid LHName. */
     public static String getCompositeId(String... components) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < components.length; i++) {
-            builder.append(components[i]);
-            if (i + 1 < components.length) {
-                builder.append('/');
-            }
-        }
-        return builder.toString();
+        return String.join("/", components);
     }
 
     public static boolean isValidLHName(String name) {

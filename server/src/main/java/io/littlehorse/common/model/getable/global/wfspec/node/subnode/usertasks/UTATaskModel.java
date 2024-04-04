@@ -57,7 +57,9 @@ public class UTATaskModel extends LHSerializable<UTATask> {
     // TODO: There is a lot of duplicated code between here and in the TaskRun
     // infrastructure. See if possible to combine it.
     // Like hey both use the same TaskNode
-    public void schedule(UserTaskRunModel utr, UTActionTriggerModel trigger) throws LHVarSubError {
+    public void schedule(
+            UserTaskRunModel utr, UTActionTriggerModel trigger, ProcessorExecutionContext processorExecutionContext)
+            throws LHVarSubError {
         NodeRunModel nodeRunModel = utr.getNodeRun();
 
         // Next, figure out when the task should be scheduled.
@@ -70,8 +72,6 @@ public class UTATaskModel extends LHSerializable<UTATask> {
         Date maturationTime = new Date(System.currentTimeMillis() + (1000 * delaySeconds.getIntVal()));
         LHTimer timer = new LHTimer(
                 new CommandModel(new TriggeredTaskRun(task, utr.getNodeRun().getObjectId()), maturationTime));
-        ProcessorExecutionContext processorExecutionContext =
-                this.executionContext.castOnSupport(ProcessorExecutionContext.class);
         LHTaskManager taskManager = processorExecutionContext.getTaskManager();
         taskManager.scheduleTimer(timer);
     }

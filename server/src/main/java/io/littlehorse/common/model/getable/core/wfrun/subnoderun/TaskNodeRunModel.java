@@ -55,7 +55,6 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
             taskRunId = LHSerializable.fromProto(p.getTaskRunId(), TaskRunIdModel.class, context);
         }
         this.executionContext = context;
-        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     @Override
@@ -68,7 +67,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
     }
 
     @Override
-    public boolean checkIfProcessingCompleted() throws NodeFailureException {
+    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) throws NodeFailureException {
         TaskRunModel taskRun = processorContext.getableManager().get(taskRunId);
 
         if (taskRun.isStillRunning()) return false;
@@ -88,7 +87,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
     }
 
     @Override
-    public void arrive(Date time) throws NodeFailureException {
+    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
         // The TaskNode arrive() function should create a TaskRun. Note that
         // creating a TaskRun also causes the first TaskAttempt to be scheduled.
 
@@ -96,7 +95,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
 
         TaskDefModel td;
         try {
-            td = node.getTaskDef(nodeRun.getThreadRun());
+            td = node.getTaskDef(nodeRun.getThreadRun(), processorContext);
         } catch (LHVarSubError exn) {
             throw new NodeFailureException(new FailureModel(
                     "Failed calculating dynamic task: " + exn.getMessage(), LHErrorType.VAR_SUB_ERROR.toString()));
@@ -111,7 +110,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
         List<VarNameAndValModel> inputVariables;
 
         try {
-            inputVariables = node.assignInputVars(nodeRun.getThreadRun());
+            inputVariables = node.assignInputVars(nodeRun.getThreadRun(), processorContext);
         } catch (LHVarSubError exn) {
             throw new NodeFailureException(new FailureModel(
                     "Failed calculating TaskRun Input Vars: " + exn.getMessage(), LHConstants.VAR_SUB_ERROR));
@@ -136,7 +135,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput() {
+    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
         TaskRunModel taskRun = processorContext.getableManager().get(taskRunId);
         if (taskRun.getStatus() != TaskStatus.TASK_SUCCESS) {
             throw new IllegalStateException("somehow called getOutput() on taskRun that's not done yet");
@@ -145,7 +144,7 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
     }
 
     @Override
-    public boolean maybeHalt() {
+    public boolean maybeHalt(ProcessorExecutionContext processorContext) {
         // TODO as part of #606: a TaskRun should be interruptible between retries.
         // For now, we can't interrupt a TaskRun until it's fully done.
         return !processorContext.getableManager().get(getTaskRunId()).isStillRunning();
