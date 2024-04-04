@@ -16,7 +16,7 @@ export const extractEdges = (spec: ThreadSpec): Edge[] => {
       return {
         id,
         source,
-        type: 'smoothstep',
+        type: 'default',
         target: edge.sinkNodeName,
         label,
         targetHandle: `${index}`,

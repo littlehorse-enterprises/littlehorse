@@ -1,5 +1,5 @@
 import { ComponentType } from 'react'
-import { NodeProps } from 'reactflow'
+import { NodeProps as NodeFlow } from 'reactflow'
 import { NodeType } from '../extractNodes'
 import { Entrypoint } from './Entrypoint'
 import { Exit } from './Exit'
@@ -10,6 +10,8 @@ import { UserTask } from './UserTask'
 import { WaitForThreads } from './WaitForThreads'
 import { StartThread } from './StartThread'
 import { Sleep } from './Sleep'
+import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
+import { Node } from 'littlehorse-client/dist/proto/wf_spec'
 
 const nodeTypes: Record<NodeType, ComponentType<NodeProps>> = {
   ENTRYPOINT: Entrypoint,
@@ -26,4 +28,5 @@ const nodeTypes: Record<NodeType, ComponentType<NodeProps>> = {
   UNKNOWN_NODE_TYPE: WaitForThreads,
 }
 
+export type NodeProps<T = Node> = NodeFlow<T & { nodeRun?: NodeRun; fade?: boolean }>
 export default nodeTypes

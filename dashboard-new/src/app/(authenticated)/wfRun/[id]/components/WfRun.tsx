@@ -6,7 +6,7 @@ import { ReactFlowProvider } from 'reactflow'
 import { WfRunResponse } from '../getWfRun'
 import { Details } from './Details'
 
-export const WfRun: FC<WfRunResponse> = ({ wfRun, wfSpec }) => {
+export const WfRun: FC<WfRunResponse> = ({ wfRun, wfSpec, nodeRuns }) => {
   return (
     <ReactFlowProvider>
       <Navigation
@@ -14,13 +14,16 @@ export const WfRun: FC<WfRunResponse> = ({ wfRun, wfSpec }) => {
         title="Go back to WfSpec"
       />
       <Details {...wfRun} />
-      <Diagram spec={wfSpec} wfRun={wfRun} />
+      <Diagram spec={wfSpec} wfRun={wfRun} nodeRuns={nodeRuns} />
       <br />
       <br />
       {JSON.stringify(wfSpec)}
       <br />
       <br />
       {JSON.stringify(wfRun)}
+      <br />
+      <br />
+      {JSON.stringify(nodeRuns)}
     </ReactFlowProvider>
   )
 }
