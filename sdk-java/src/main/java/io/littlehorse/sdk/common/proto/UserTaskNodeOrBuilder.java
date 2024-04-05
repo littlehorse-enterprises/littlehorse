@@ -164,4 +164,33 @@ public interface UserTaskNodeOrBuilder extends
    * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getNotesOrBuilder();
+
+  /**
+   * <pre>
+   * Specifies the name of the exception thrown when the User Task is canceled
+   * </pre>
+   *
+   * <code>optional string on_cancel_exception_name = 7;</code>
+   * @return Whether the onCancelExceptionName field is set.
+   */
+  boolean hasOnCancelExceptionName();
+  /**
+   * <pre>
+   * Specifies the name of the exception thrown when the User Task is canceled
+   * </pre>
+   *
+   * <code>optional string on_cancel_exception_name = 7;</code>
+   * @return The onCancelExceptionName.
+   */
+  java.lang.String getOnCancelExceptionName();
+  /**
+   * <pre>
+   * Specifies the name of the exception thrown when the User Task is canceled
+   * </pre>
+   *
+   * <code>optional string on_cancel_exception_name = 7;</code>
+   * @return The bytes for onCancelExceptionName.
+   */
+  com.google.protobuf.ByteString
+      getOnCancelExceptionNameBytes();
 }
