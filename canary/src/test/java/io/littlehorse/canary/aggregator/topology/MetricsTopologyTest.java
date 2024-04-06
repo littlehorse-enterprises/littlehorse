@@ -16,7 +16,10 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TopologyTestDriver;
 import org.apache.kafka.streams.state.KeyValueStore;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 class MetricsTopologyTest {
     private TopologyTestDriver testDriver;
@@ -130,14 +133,26 @@ class MetricsTopologyTest {
         }
 
         @Test
+        void notDuplicatedWithDifferentAttempts() {
+            String host = "localhost";
+            int port = 2023;
+            String idempotencyKey = UUID.randomUUID().toString();
+
+            inputTopic.pipeInput(newTaskRunBeatKey(host, port, idempotencyKey, 0), newTaskRunBeat(2));
+            inputTopic.pipeInput(newTaskRunBeatKey(host, port, idempotencyKey, 1), newTaskRunBeat(2));
+            inputTopic.pipeInput(newTaskRunBeatKey(host, port, idempotencyKey, 2), newTaskRunBeat(2));
+
+            assertThat(store.get(newMetricKey(host, port, "duplicated_task_run_max_count")))
+                    .isNull();
+        }
+
+        @Test
         void notDuplicated() {
             String host = "localhost";
             int port = 2023;
 
             inputTopic.pipeInput(newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0), newTaskRunBeat(2));
-
             inputTopic.pipeInput(newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0), newTaskRunBeat(2));
-
             inputTopic.pipeInput(newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0), newTaskRunBeat(2));
 
             assertThat(store.get(newMetricKey(host, port, "duplicated_task_run_max_count")))
@@ -186,9 +201,7 @@ class MetricsTopologyTest {
             int port = 2023;
 
             inputTopic.pipeInput(newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0), newTaskRunBeat(3));
-
             inputTopic.pipeInput(newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0), newTaskRunBeat(2));
-
             inputTopic.pipeInput(newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0), newTaskRunBeat(4));
 
             assertThat(store.get(newMetricKey(host, port, "task_run_latency_avg")))
