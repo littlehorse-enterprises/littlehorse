@@ -73,6 +73,8 @@ public class Metronome {
         lhClient.runWf(RunWfRequest.newBuilder()
                 .setWfSpecName(CANARY_WORKFLOW)
                 .setId(wfId)
+                .setRevision(0)
+                .setMajorVersion(0)
                 .putVariables(
                         VARIABLE_NAME,
                         VariableValue.newBuilder()
