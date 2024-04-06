@@ -1,10 +1,7 @@
 package io.littlehorse.canary.aggregator.topology;
 
 import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
-import io.littlehorse.canary.proto.AverageAggregator;
-import io.littlehorse.canary.proto.Beat;
-import io.littlehorse.canary.proto.BeatKey;
-import io.littlehorse.canary.proto.MetricKey;
+import io.littlehorse.canary.proto.*;
 import java.time.Duration;
 import java.util.List;
 import lombok.Getter;
@@ -21,7 +18,7 @@ import org.apache.kafka.streams.state.WindowStore;
 public class LatencyTopology {
 
     public static final String LATENCY_AVG_STORE = "latency-avg";
-    private final KStream<MetricKey, Double> stream;
+    private final KStream<MetricKey, Metric> stream;
 
     public LatencyTopology(
             final KStream<BeatKey, Beat> mainStream, final TimeWindows windows, final Duration storeRetention) {
@@ -45,10 +42,14 @@ public class LatencyTopology {
                 .flatMap(LatencyTopology::makeMetrics);
     }
 
-    private static List<KeyValue<MetricKey, Double>> makeMetrics(final BeatKey key, final AverageAggregator value) {
+    private static List<KeyValue<MetricKey, Metric>> makeMetrics(final BeatKey key, final AverageAggregator value) {
         return List.of(
-                KeyValue.pair(buildMetricKey(key, "avg"), value.getAvg()),
-                KeyValue.pair(buildMetricKey(key, "max"), value.getMax()));
+                KeyValue.pair(buildMetricKey(key, "avg"), buildMetric(value.getAvg())),
+                KeyValue.pair(buildMetricKey(key, "max"), buildMetric(value.getMax())));
+    }
+
+    private static Metric buildMetric(final double value) {
+        return Metric.newBuilder().setDouble(value).build();
     }
 
     private static MetricKey buildMetricKey(final BeatKey key, final String suffix) {

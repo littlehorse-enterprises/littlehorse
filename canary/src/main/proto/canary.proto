@@ -6,10 +6,7 @@ option java_package = "io.littlehorse.canary.proto";
 
 import "google/protobuf/timestamp.proto";
 
-////////////////////////////////////////////////
-// BEATS KEY
-////////////////////////////////////////////////
-
+// Identify a metric beat
 message BeatKey {
   string server_host = 1;
   int32 server_port = 2;
@@ -20,19 +17,7 @@ message BeatKey {
   }
 }
 
-message LatencyBeatKey {
-  string name = 1;
-}
-
-message TaskRunBeatKey {
-  string idempotency_key = 1;
-  int32 attempt_number = 2;
-}
-
-////////////////////////////////////////////////
-// BEATS VALUE
-////////////////////////////////////////////////
-
+// Contains the specific beat data
 message Beat {
   google.protobuf.Timestamp time = 1;
   oneof beat {
@@ -41,30 +26,54 @@ message Beat {
   }
 }
 
+// RunWf request beat identifier
+message LatencyBeatKey {
+  string name = 1;
+}
+
+// RunWf request beat body
 message LatencyBeat {
   double latency = 1;
 }
 
+// Use by the canary worker for identifying all the task run
+message TaskRunBeatKey {
+  string idempotency_key = 1;
+  int32 attempt_number = 2;
+}
+
+// TaskRun body
 message TaskRunBeat {
   google.protobuf.Timestamp scheduled_time = 1;
   google.protobuf.Timestamp executed_time = 2;
+  google.protobuf.Timestamp requested_time = 3;
+  int64 latency = 4;
 }
 
-////////////////////////////////////////////////
-// METRICS
-////////////////////////////////////////////////
-
+// Metric identifier
 message MetricKey {
   string server_host = 1;
   int32 server_port = 2;
   string server_version = 3;
   string id = 4;
+  repeated Tag tags = 5;
 }
 
-////////////////////////////////////////////////
-// AGGREGATORS
-////////////////////////////////////////////////
+// Metric body
+message Metric {
+  oneof value {
+    double double = 1;
+    int64 long = 2;
+  }
+}
 
+// Prometheus tags
+message Tag {
+  string key = 1;
+  string value = 2;
+}
+
+// Avg. aggregator use in tables
 message AverageAggregator {
   int64 count = 1;
   double sum = 2;

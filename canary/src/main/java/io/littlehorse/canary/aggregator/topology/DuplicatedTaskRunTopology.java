@@ -1,18 +1,19 @@
 package io.littlehorse.canary.aggregator.topology;
 
 import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
-import io.littlehorse.canary.proto.Beat;
-import io.littlehorse.canary.proto.BeatKey;
-import io.littlehorse.canary.proto.MetricKey;
+import io.littlehorse.canary.proto.*;
 import java.time.Duration;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.Grouped;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Materialized;
+import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.jetbrains.annotations.NotNull;
 
 @Getter
 @Slf4j
@@ -20,12 +21,24 @@ public class DuplicatedTaskRunTopology {
 
     public static final String DUPLICATED_TASK_COUNT_STORE = "duplicated-task-count";
     public static final String DUPLICATED_TASK_BY_SERVER_COUNT_STORE = "duplicated-task-by-server-count";
-    public static final String DUPLICATED_TASK_METRIC_NAME = "duplicated_task_run_max_count";
-    private final KStream<MetricKey, Double> stream;
 
-    public DuplicatedTaskRunTopology(final KStream<BeatKey, Beat> mainStream, final Duration storeRetention) {
-        stream = mainStream
-                .filter((key, value) -> value.hasTaskRunBeat())
+    public static final String DUPLICATED_TASK_METRIC_NAME = "duplicated_task_run_max_count";
+    public static final String TASK_RUN_LATENCY_METRIC_NAME = "task_run_latency";
+
+    private final KStream<MetricKey, Metric> stream;
+
+    public DuplicatedTaskRunTopology(
+            final KStream<BeatKey, Beat> mainStream, final Duration storeRetention, final String inputTopic) {
+        // filter all task run beats
+        final KStream<BeatKey, Beat> taskRunBeats = mainStream.filter((key, value) -> key.hasTaskRunBeatKey());
+
+        // send latency to another topology
+        taskRunBeats
+                .map(DuplicatedTaskRunTopology::toLatencyMetricBeat)
+                .to(inputTopic, Produced.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.Beat()));
+
+        // define this topology
+        stream = taskRunBeats
                 .groupByKey()
                 // count all the records with the same idempotency key and attempt number
                 .count(Materialized.<BeatKey, Long, KeyValueStore<Bytes, byte[]>>as(DUPLICATED_TASK_COUNT_STORE)
@@ -35,19 +48,37 @@ public class DuplicatedTaskRunTopology {
                 // filter by duplicated
                 .filter((key, value) -> value > 1L)
                 .toStream()
-                .mapValues((readOnlyKey, value) -> Double.valueOf(value))
                 // debug peek aggregate
                 .peek(DuplicatedTaskRunTopology::peekAggregate)
                 // re-key from task run to lh cluster
-                .groupBy((key, value) -> toMetricKey(key), Grouped.with(ProtobufSerdes.MetricKey(), Serdes.Double()))
+                .groupBy((key, value) -> toMetricKey(key), Grouped.with(ProtobufSerdes.MetricKey(), Serdes.Long()))
                 // count how many task were duplicated
                 .count(Materialized.<MetricKey, Long, KeyValueStore<Bytes, byte[]>>as(
                                 DUPLICATED_TASK_BY_SERVER_COUNT_STORE)
                         .withKeySerde(ProtobufSerdes.MetricKey())
                         .withValueSerde(Serdes.Long())
                         .withRetention(storeRetention))
-                .mapValues((readOnlyKey, value) -> Double.valueOf(value))
+                .mapValues((readOnlyKey, value) ->
+                        Metric.newBuilder().setLong(value).build())
                 .toStream();
+    }
+
+    @NotNull
+    private static KeyValue<BeatKey, Beat> toLatencyMetricBeat(final BeatKey oldKey, final Beat oldValue) {
+        final BeatKey newKey = BeatKey.newBuilder()
+                .setServerHost(oldKey.getServerHost())
+                .setServerVersion(oldKey.getServerVersion())
+                .setServerPort(oldKey.getServerPort())
+                .setLatencyBeatKey(LatencyBeatKey.newBuilder().setName(TASK_RUN_LATENCY_METRIC_NAME))
+                .build();
+
+        final Beat newValue = Beat.newBuilder()
+                .setTime(oldValue.getTime())
+                .setLatencyBeat(LatencyBeat.newBuilder()
+                        .setLatency(oldValue.getTaskRunBeat().getLatency()))
+                .build();
+
+        return new KeyValue<>(newKey, newValue);
     }
 
     private static MetricKey toMetricKey(final BeatKey key) {
@@ -59,7 +90,7 @@ public class DuplicatedTaskRunTopology {
                 .build();
     }
 
-    private static void peekAggregate(final BeatKey key, final Double count) {
+    private static void peekAggregate(final BeatKey key, final Long count) {
         log.debug(
                 "server={}:{}, idempotency_key={}, attempt_number={}, count={}",
                 key.getServerHost(),
