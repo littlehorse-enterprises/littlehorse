@@ -3,34 +3,34 @@ package io.littlehorse.canary.aggregator.serdes;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import io.littlehorse.canary.proto.Beat;
+import io.littlehorse.canary.proto.BeatValue;
 import io.littlehorse.canary.proto.LatencyBeat;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
 
-class BeatDeserializerTest {
+class BeatValueDeserializerTest {
 
     Faker faker = new Faker();
 
     @Test
     void returnNullIfReceivesNull() {
-        BeatDeserializer deserializer = new BeatDeserializer();
+        BeatValueDeserializer deserializer = new BeatValueDeserializer();
 
         assertNull(deserializer.deserialize(null, null));
     }
 
     @Test
     void deserialize() {
-        BeatDeserializer deserializer = new BeatDeserializer();
+        BeatValueDeserializer deserializer = new BeatValueDeserializer();
 
-        Beat expected = Beat.newBuilder()
+        BeatValue expected = BeatValue.newBuilder()
                 .setLatencyBeat(
                         LatencyBeat.newBuilder().setLatency(faker.number().randomNumber()))
                 .build();
 
         byte[] input = expected.toByteArray();
 
-        Beat actual = deserializer.deserialize(null, input);
+        BeatValue actual = deserializer.deserialize(null, input);
 
         assertThat(expected).isEqualTo(actual);
     }

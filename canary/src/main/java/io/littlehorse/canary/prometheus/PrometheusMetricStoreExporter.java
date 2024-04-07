@@ -1,8 +1,8 @@
 package io.littlehorse.canary.prometheus;
 
 import com.google.common.util.concurrent.AtomicDouble;
-import io.littlehorse.canary.proto.Metric;
 import io.littlehorse.canary.proto.MetricKey;
+import io.littlehorse.canary.proto.MetricValue;
 import io.littlehorse.canary.util.Shutdown;
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.binder.MeterBinder;
@@ -56,14 +56,14 @@ public class PrometheusMetricStoreExporter implements MeterBinder {
             return;
         }
 
-        final ReadOnlyKeyValueStore<MetricKey, Metric> store = kafkaStreams.store(
+        final ReadOnlyKeyValueStore<MetricKey, MetricValue> store = kafkaStreams.store(
                 StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore()));
 
         final Set<MetricKey> foundMetrics = new HashSet<>();
 
-        try (KeyValueIterator<MetricKey, Metric> records = store.all()) {
+        try (KeyValueIterator<MetricKey, MetricValue> records = store.all()) {
             while (records.hasNext()) {
-                final KeyValue<MetricKey, Metric> record = records.next();
+                final KeyValue<MetricKey, MetricValue> record = records.next();
                 foundMetrics.add(record.key);
 
                 final PrometheusMetric current = currentMeters.get(record.key);

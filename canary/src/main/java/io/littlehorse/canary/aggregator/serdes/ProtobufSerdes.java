@@ -11,19 +11,27 @@ public class ProtobufSerdes {
         return Serdes.serdeFrom(new ProtobufSerializer<>(), new AverageAggregatorDeserializer());
     }
 
-    public static Serde<Beat> Beat() {
-        return Serdes.serdeFrom(new ProtobufSerializer<>(), new BeatDeserializer());
+    public static Serde<BeatValue> BeatValue() {
+        return Serdes.serdeFrom(new ProtobufSerializer<>(), new BeatValueDeserializer());
     }
 
     public static Serde<BeatKey> BeatKey() {
         return Serdes.serdeFrom(new ProtobufSerializer<>(), new BeatKeyDeserializer());
     }
 
-    public static Serde<Metric> Metric() {
-        return Serdes.serdeFrom(new ProtobufSerializer<>(), new MetricDeserializer());
+    public static Serde<MetricValue> MetricValue() {
+        return Serdes.serdeFrom(new ProtobufSerializer<>(), new MetricValueDeserializer());
     }
 
     public static Serde<MetricKey> MetricKey() {
         return Serdes.serdeFrom(new ProtobufSerializer<>(), new MetricKeyDeserializer());
+    }
+
+    public static Serde<EventValue> EvenValue() {
+        return Serdes.serdeFrom(new ProtobufSerializer<>(), new EventValueDeserializer());
+    }
+
+    public static Serde<EventKey> EventKey() {
+        return Serdes.serdeFrom(new ProtobufSerializer<>(), new EventKeyDeserializer());
     }
 }

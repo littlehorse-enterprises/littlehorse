@@ -18,7 +18,7 @@ message BeatKey {
 }
 
 // Contains the specific beat data
-message Beat {
+message BeatValue {
   google.protobuf.Timestamp time = 1;
   oneof beat {
     LatencyBeat latency_beat = 2;
@@ -57,7 +57,7 @@ message MetricKey {
 }
 
 // Metric body
-message Metric {
+message MetricValue {
   double value = 1;
 }
 

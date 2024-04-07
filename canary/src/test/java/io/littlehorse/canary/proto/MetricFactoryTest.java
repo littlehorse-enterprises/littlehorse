@@ -16,7 +16,7 @@ class MetricFactoryTest {
     @Test
     public void buildMetricBeat() {
         MetricKey key = MetricFactory.buildKey(ID, SERVER_HOST, SERVER_PORT, SERVER_VERSION);
-        Metric value = MetricFactory.buildValue(VALUE);
+        MetricValue value = MetricFactory.buildValue(VALUE);
 
         assertThat(key)
                 .isEqualTo(MetricKey.newBuilder()
@@ -24,7 +24,7 @@ class MetricFactoryTest {
                         .addTags(Tag.newBuilder().setKey("server").setValue(SERVER_HOST + ":" + SERVER_PORT))
                         .addTags(Tag.newBuilder().setKey("server_version").setValue(SERVER_VERSION))
                         .build());
-        assertThat(value).isEqualTo(Metric.newBuilder().setValue(VALUE).build());
+        assertThat(value).isEqualTo(MetricValue.newBuilder().setValue(VALUE).build());
     }
 
     @Test

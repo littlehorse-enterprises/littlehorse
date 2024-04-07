@@ -6,8 +6,8 @@ import static io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockin
 
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.canary.kafka.MessageEmitter;
-import io.littlehorse.canary.proto.Beat;
 import io.littlehorse.canary.proto.BeatKey;
+import io.littlehorse.canary.proto.BeatValue;
 import io.littlehorse.canary.proto.LatencyBeat;
 import io.littlehorse.canary.proto.LatencyBeatKey;
 import io.littlehorse.canary.util.Shutdown;
@@ -91,7 +91,7 @@ public class Metronome {
                 .setLatencyBeatKey(LatencyBeatKey.newBuilder().setId(RUN_WF_LATENCY_METRIC_NAME))
                 .build();
 
-        final Beat beat = Beat.newBuilder()
+        final BeatValue beat = BeatValue.newBuilder()
                 .setTime(Timestamps.now())
                 .setLatencyBeat(LatencyBeat.newBuilder().setLatency(latency.toMillis()))
                 .build();

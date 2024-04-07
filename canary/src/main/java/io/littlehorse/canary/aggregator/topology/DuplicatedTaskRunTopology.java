@@ -25,17 +25,17 @@ public class DuplicatedTaskRunTopology {
     public static final String DUPLICATED_TASK_METRIC_NAME = "duplicated_task_run_max_count";
     public static final String TASK_RUN_LATENCY_METRIC_NAME = "task_run_latency";
 
-    private final KStream<MetricKey, Metric> stream;
+    private final KStream<MetricKey, MetricValue> stream;
 
     public DuplicatedTaskRunTopology(
-            final KStream<BeatKey, Beat> mainStream, final Duration storeRetention, final String inputTopic) {
+            final KStream<BeatKey, BeatValue> mainStream, final Duration storeRetention, final String inputTopic) {
         // filter all task run beats
-        final KStream<BeatKey, Beat> taskRunBeats = mainStream.filter((key, value) -> key.hasTaskRunBeatKey());
+        final KStream<BeatKey, BeatValue> taskRunBeats = mainStream.filter((key, value) -> key.hasTaskRunBeatKey());
 
         // send latency to another topology
         taskRunBeats
                 .map(DuplicatedTaskRunTopology::toLatencyMetricBeat)
-                .to(inputTopic, Produced.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.Beat()));
+                .to(inputTopic, Produced.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.BeatValue()));
 
         // define this topology
         stream = taskRunBeats
@@ -63,7 +63,7 @@ public class DuplicatedTaskRunTopology {
     }
 
     @NotNull
-    private static KeyValue<BeatKey, Beat> toLatencyMetricBeat(final BeatKey oldKey, final Beat oldValue) {
+    private static KeyValue<BeatKey, BeatValue> toLatencyMetricBeat(final BeatKey oldKey, final BeatValue oldValue) {
         final BeatKey newKey = BeatKey.newBuilder()
                 .setServerHost(oldKey.getServerHost())
                 .setServerVersion(oldKey.getServerVersion())
@@ -71,7 +71,7 @@ public class DuplicatedTaskRunTopology {
                 .setLatencyBeatKey(LatencyBeatKey.newBuilder().setId(TASK_RUN_LATENCY_METRIC_NAME))
                 .build();
 
-        final Beat newValue = Beat.newBuilder()
+        final BeatValue newValue = BeatValue.newBuilder()
                 .setTime(oldValue.getTime())
                 .setLatencyBeat(LatencyBeat.newBuilder()
                         .setLatency(oldValue.getTaskRunBeat().getLatency()))

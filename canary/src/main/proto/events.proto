@@ -13,18 +13,23 @@ enum EventType {
   TASK_RUN_EXECUTION = 2;
 }
 
+enum EventStatus {
+  OK = 0;
+  ERROR = 1;
+}
+
 // Identify a canary event
 message EventKey {
   string server_host = 1;
   int32 server_port = 2;
   string server_version = 3;
   string id = 4;
-  EventKey event_type = 5;
+  EventType event_type = 5;
 }
 
 // Contains the canary event data
 message EventValue {
   google.protobuf.Timestamp time = 1;
-  optional double latency = 2;
-  optional string status = 3;
+  EventStatus status = 2;
+  int64 latency = 3;
 }

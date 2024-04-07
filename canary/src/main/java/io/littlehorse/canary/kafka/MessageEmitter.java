@@ -24,7 +24,6 @@ public class MessageEmitter implements MeterBinder {
 
     public MessageEmitter(final String topicName, final Map<String, Object> kafkaProducerConfigMap) {
         this.topicName = topicName;
-
         producer = new KafkaProducer<>(kafkaProducerConfigMap);
         Shutdown.addShutdownHook("Message Emitter", producer);
     }

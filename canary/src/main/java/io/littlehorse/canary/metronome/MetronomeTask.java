@@ -1,11 +1,9 @@
 package io.littlehorse.canary.metronome;
 
+import com.google.protobuf.Message;
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.canary.kafka.MessageEmitter;
-import io.littlehorse.canary.proto.Beat;
-import io.littlehorse.canary.proto.BeatKey;
-import io.littlehorse.canary.proto.TaskRunBeat;
-import io.littlehorse.canary.proto.TaskRunBeatKey;
+import io.littlehorse.canary.proto.*;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.WorkerContext;
 import java.time.Duration;
@@ -34,23 +32,18 @@ class MetronomeTask {
 
         log.trace("Executing task {}", MetronomeWorkflow.TASK_NAME);
 
-        final BeatKey key = BeatKey.newBuilder()
+        final Message key = EventKey.newBuilder()
                 .setServerHost(serverHost)
                 .setServerPort(serverPort)
                 .setServerVersion(serverVersion)
-                .setTaskRunBeatKey(TaskRunBeatKey.newBuilder()
-                        .setIdempotencyKey(context.getIdempotencyKey())
-                        .setAttemptNumber(context.getAttemptNumber()))
+                .setId("%s/%s".formatted(context.getIdempotencyKey(), context.getAttemptNumber()))
+                .setEventType(EventType.TASK_RUN_EXECUTION)
                 .build();
 
-        final Beat beat = Beat.newBuilder()
-                .setTime(Timestamps.now())
-                .setTaskRunBeat(TaskRunBeat.newBuilder()
-                        .setScheduledTime(Timestamps.fromDate(context.getScheduledTime()))
-                        .setRequestedTime(Timestamps.fromMillis(startTime))
-                        .setExecutedTime(Timestamps.fromMillis(executionTime.toEpochMilli()))
-                        .setLatency(Duration.between(Instant.ofEpochMilli(startTime), executionTime)
-                                .toMillis()))
+        final Message beat = EventValue.newBuilder()
+                .setTime(Timestamps.fromMillis(executionTime.toEpochMilli()))
+                .setLatency(Duration.between(Instant.ofEpochMilli(startTime), executionTime)
+                        .toMillis())
                 .build();
 
         emitter.emit(key, beat);

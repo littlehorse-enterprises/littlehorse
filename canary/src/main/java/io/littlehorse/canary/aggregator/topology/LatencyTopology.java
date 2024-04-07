@@ -18,10 +18,10 @@ import org.apache.kafka.streams.state.WindowStore;
 public class LatencyTopology {
 
     public static final String LATENCY_AVG_STORE = "latency-avg";
-    private final KStream<MetricKey, Metric> stream;
+    private final KStream<MetricKey, MetricValue> stream;
 
     public LatencyTopology(
-            final KStream<BeatKey, Beat> mainStream, final TimeWindows windows, final Duration storeRetention) {
+            final KStream<BeatKey, BeatValue> mainStream, final TimeWindows windows, final Duration storeRetention) {
         stream = mainStream
                 .filter((key, value) -> value.hasLatencyBeat())
                 .groupByKey()
@@ -42,14 +42,15 @@ public class LatencyTopology {
                 .flatMap(LatencyTopology::makeMetrics);
     }
 
-    private static List<KeyValue<MetricKey, Metric>> makeMetrics(final BeatKey key, final AverageAggregator value) {
+    private static List<KeyValue<MetricKey, MetricValue>> makeMetrics(
+            final BeatKey key, final AverageAggregator value) {
         return List.of(
                 KeyValue.pair(buildMetricKey(key, "avg"), buildMetric(value.getAvg())),
                 KeyValue.pair(buildMetricKey(key, "max"), buildMetric(value.getMax())));
     }
 
-    private static Metric buildMetric(final double value) {
-        return Metric.newBuilder().setValue(value).build();
+    private static MetricValue buildMetric(final double value) {
+        return MetricValue.newBuilder().setValue(value).build();
     }
 
     private static MetricKey buildMetricKey(final BeatKey key, final String suffix) {
@@ -72,7 +73,7 @@ public class LatencyTopology {
                 value.getMax());
     }
 
-    private static AverageAggregator aggregate(final Beat value, final AverageAggregator aggregate) {
+    private static AverageAggregator aggregate(final BeatValue value, final AverageAggregator aggregate) {
         final long count = aggregate.getCount() + 1L;
         final double sum = aggregate.getSum() + value.getLatencyBeat().getLatency();
         final double avg = sum / count;

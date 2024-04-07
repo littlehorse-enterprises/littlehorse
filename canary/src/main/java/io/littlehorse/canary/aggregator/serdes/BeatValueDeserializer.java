@@ -2,19 +2,21 @@ package io.littlehorse.canary.aggregator.serdes;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.littlehorse.canary.aggregator.internal.ProtobufDeserializationException;
-import io.littlehorse.canary.proto.Metric;
+import io.littlehorse.canary.proto.BeatValue;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Deserializer;
 
-public class MetricDeserializer implements Deserializer<Metric> {
+@Slf4j
+public class BeatValueDeserializer implements Deserializer<BeatValue> {
 
     @Override
-    public Metric deserialize(final String topic, final byte[] data) {
+    public BeatValue deserialize(final String topic, final byte[] data) {
         if (data == null) {
             return null;
         }
 
         try {
-            return Metric.parseFrom(data);
+            return BeatValue.parseFrom(data);
         } catch (InvalidProtocolBufferException e) {
             throw new ProtobufDeserializationException(e);
         }

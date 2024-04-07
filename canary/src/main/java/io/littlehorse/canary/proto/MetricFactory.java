@@ -25,7 +25,7 @@ public class MetricFactory {
                 .build();
     }
 
-    public static Metric buildValue(final double value) {
-        return Metric.newBuilder().setValue(value).build();
+    public static MetricValue buildValue(final double value) {
+        return MetricValue.newBuilder().setValue(value).build();
     }
 }

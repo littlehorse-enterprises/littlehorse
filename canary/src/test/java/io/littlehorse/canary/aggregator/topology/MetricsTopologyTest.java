@@ -28,11 +28,11 @@ class MetricsTopologyTest {
     public static final int EXPECTED_PORT = 2023;
     public static final String EXPECTED_VERSION = "1.0.0";
     private TopologyTestDriver testDriver;
-    private TestInputTopic<BeatKey, Beat> inputTopic;
-    private KeyValueStore<MetricKey, Metric> store;
+    private TestInputTopic<BeatKey, BeatValue> inputTopic;
+    private KeyValueStore<MetricKey, MetricValue> store;
 
-    private static Beat newTaskRunBeat(long latency) {
-        return Beat.newBuilder()
+    private static BeatValue newTaskRunBeat(long latency) {
+        return BeatValue.newBuilder()
                 .setTime(Timestamps.now())
                 .setTaskRunBeat(TaskRunBeat.newBuilder()
                         .setScheduledTime(Timestamps.now())
@@ -52,8 +52,8 @@ class MetricsTopologyTest {
                 .build();
     }
 
-    private static Beat newLatencyBeat(int latency) {
-        return Beat.newBuilder()
+    private static BeatValue newLatencyBeat(int latency) {
+        return BeatValue.newBuilder()
                 .setTime(Timestamps.now())
                 .setLatencyBeat(LatencyBeat.newBuilder().setLatency(latency))
                 .build();
@@ -84,7 +84,7 @@ class MetricsTopologyTest {
         inputTopic = testDriver.createInputTopic(
                 inputTopicName,
                 ProtobufSerdes.BeatKey().serializer(),
-                ProtobufSerdes.Beat().serializer());
+                ProtobufSerdes.BeatValue().serializer());
 
         store = testDriver.getKeyValueStore(METRICS_STORE);
     }
@@ -103,13 +103,14 @@ class MetricsTopologyTest {
 
             BeatKey beatKey = newLatencyBeatKey(EXPECTED_HOST, EXPECTED_PORT, metricName);
 
-            List<Beat> beats = List.of(newLatencyBeat(20), newLatencyBeat(40), newLatencyBeat(10), newLatencyBeat(10));
+            List<BeatValue> beats =
+                    List.of(newLatencyBeat(20), newLatencyBeat(40), newLatencyBeat(10), newLatencyBeat(10));
             beats.forEach(metric -> inputTopic.pipeInput(beatKey, metric));
 
             assertThat(store.get(buildKey(metricName + "_avg", EXPECTED_HOST, EXPECTED_PORT, EXPECTED_VERSION)))
-                    .isEqualTo(Metric.newBuilder().setValue(20).build());
+                    .isEqualTo(MetricValue.newBuilder().setValue(20).build());
             assertThat(store.get(buildKey(metricName + "_max", EXPECTED_HOST, EXPECTED_PORT, EXPECTED_VERSION)))
-                    .isEqualTo(Metric.newBuilder().setValue(40).build());
+                    .isEqualTo(MetricValue.newBuilder().setValue(40).build());
         }
 
         @Test
@@ -118,23 +119,25 @@ class MetricsTopologyTest {
 
             String localhost1 = "localhost1";
             BeatKey beatKey1 = newLatencyBeatKey(localhost1, EXPECTED_PORT, metricName);
-            List<Beat> beats1 = List.of(newLatencyBeat(20), newLatencyBeat(40), newLatencyBeat(10), newLatencyBeat(10));
+            List<BeatValue> beats1 =
+                    List.of(newLatencyBeat(20), newLatencyBeat(40), newLatencyBeat(10), newLatencyBeat(10));
             beats1.forEach(metric -> inputTopic.pipeInput(beatKey1, metric));
 
             String localhost2 = "localhost2";
             BeatKey beatKey2 = newLatencyBeatKey(localhost2, EXPECTED_PORT, metricName);
-            List<Beat> beats2 = List.of(newLatencyBeat(20), newLatencyBeat(40), newLatencyBeat(20), newLatencyBeat(10));
+            List<BeatValue> beats2 =
+                    List.of(newLatencyBeat(20), newLatencyBeat(40), newLatencyBeat(20), newLatencyBeat(10));
             beats2.forEach(metric -> inputTopic.pipeInput(beatKey2, metric));
 
             assertThat(store.get(buildKey(metricName + "_avg", localhost1, EXPECTED_PORT, EXPECTED_VERSION)))
-                    .isEqualTo(Metric.newBuilder().setValue(20).build());
+                    .isEqualTo(MetricValue.newBuilder().setValue(20).build());
             assertThat(store.get(buildKey(metricName + "_max", localhost1, EXPECTED_PORT, EXPECTED_VERSION)))
-                    .isEqualTo(Metric.newBuilder().setValue(40).build());
+                    .isEqualTo(MetricValue.newBuilder().setValue(40).build());
 
             assertThat(store.get(buildKey(metricName + "_avg", localhost2, EXPECTED_PORT, EXPECTED_VERSION)))
-                    .isEqualTo(Metric.newBuilder().setValue(22.5).build());
+                    .isEqualTo(MetricValue.newBuilder().setValue(22.5).build());
             assertThat(store.get(buildKey(metricName + "_max", localhost2, EXPECTED_PORT, EXPECTED_VERSION)))
-                    .isEqualTo(Metric.newBuilder().setValue(40).build());
+                    .isEqualTo(MetricValue.newBuilder().setValue(40).build());
         }
     }
 
@@ -145,12 +148,12 @@ class MetricsTopologyTest {
             BeatKey beatKey = newTaskRunBeatKey(
                     EXPECTED_HOST, EXPECTED_PORT, UUID.randomUUID().toString(), 0);
 
-            List<Beat> beats = List.of(newTaskRunBeat(2), newTaskRunBeat(2));
+            List<BeatValue> beats = List.of(newTaskRunBeat(2), newTaskRunBeat(2));
             beats.forEach(metric -> inputTopic.pipeInput(beatKey, metric));
 
             assertThat(store.get(
                             buildKey("duplicated_task_run_max_count", EXPECTED_HOST, EXPECTED_PORT, EXPECTED_VERSION)))
-                    .isEqualTo(Metric.newBuilder().setValue(1).build());
+                    .isEqualTo(MetricValue.newBuilder().setValue(1).build());
         }
 
         @Test
@@ -193,13 +196,13 @@ class MetricsTopologyTest {
             BeatKey beatKey2 = newTaskRunBeatKey(
                     EXPECTED_HOST, EXPECTED_PORT, UUID.randomUUID().toString(), 0);
 
-            List<Beat> beats = List.of(newTaskRunBeat(2), newTaskRunBeat(2));
+            List<BeatValue> beats = List.of(newTaskRunBeat(2), newTaskRunBeat(2));
             beats.forEach(metric -> inputTopic.pipeInput(beatKey1, metric));
             beats.forEach(metric -> inputTopic.pipeInput(beatKey2, metric));
 
             assertThat(store.get(
                             buildKey("duplicated_task_run_max_count", EXPECTED_HOST, EXPECTED_PORT, EXPECTED_VERSION)))
-                    .isEqualTo(Metric.newBuilder().setValue(2).build());
+                    .isEqualTo(MetricValue.newBuilder().setValue(2).build());
         }
 
         @Test
@@ -212,14 +215,14 @@ class MetricsTopologyTest {
             BeatKey beatKey1 = newTaskRunBeatKey(host1, port1, UUID.randomUUID().toString(), 0);
             BeatKey beatKey2 = newTaskRunBeatKey(host2, port2, UUID.randomUUID().toString(), 0);
 
-            List<Beat> beats = List.of(newTaskRunBeat(2), newTaskRunBeat(2));
+            List<BeatValue> beats = List.of(newTaskRunBeat(2), newTaskRunBeat(2));
             beats.forEach(metric -> inputTopic.pipeInput(beatKey1, metric));
             beats.forEach(metric -> inputTopic.pipeInput(beatKey2, metric));
 
             assertThat(store.get(buildKey("duplicated_task_run_max_count", host1, port1, EXPECTED_VERSION)))
-                    .isEqualTo(Metric.newBuilder().setValue(1).build());
+                    .isEqualTo(MetricValue.newBuilder().setValue(1).build());
             assertThat(store.get(buildKey("duplicated_task_run_max_count", host2, port2, EXPECTED_VERSION)))
-                    .isEqualTo(Metric.newBuilder().setValue(1).build());
+                    .isEqualTo(MetricValue.newBuilder().setValue(1).build());
         }
 
         @Test
