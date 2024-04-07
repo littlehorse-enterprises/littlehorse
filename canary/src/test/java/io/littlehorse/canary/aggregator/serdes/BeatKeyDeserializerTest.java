@@ -23,7 +23,7 @@ class BeatKeyDeserializerTest {
 
         BeatKey expected = BeatKey.newBuilder()
                 .setLatencyBeatKey(
-                        LatencyBeatKey.newBuilder().setName(UUID.randomUUID().toString()))
+                        LatencyBeatKey.newBuilder().setId(UUID.randomUUID().toString()))
                 .build();
 
         byte[] input = expected.toByteArray();

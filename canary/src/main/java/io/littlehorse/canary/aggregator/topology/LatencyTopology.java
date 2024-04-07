@@ -49,16 +49,15 @@ public class LatencyTopology {
     }
 
     private static Metric buildMetric(final double value) {
-        return Metric.newBuilder().setDouble(value).build();
+        return Metric.newBuilder().setValue(value).build();
     }
 
     private static MetricKey buildMetricKey(final BeatKey key, final String suffix) {
-        return MetricKey.newBuilder()
-                .setServerVersion(key.getServerVersion())
-                .setServerPort(key.getServerPort())
-                .setServerHost(key.getServerHost())
-                .setId("%s_%s".formatted(key.getLatencyBeatKey().getName(), suffix))
-                .build();
+        return MetricFactory.buildKey(
+                "%s_%s".formatted(key.getLatencyBeatKey().getId(), suffix),
+                key.getServerHost(),
+                key.getServerPort(),
+                key.getServerVersion());
     }
 
     private static void peekAggregate(final BeatKey key, final AverageAggregator value) {
@@ -66,7 +65,7 @@ public class LatencyTopology {
                 "server={}:{}, latency={}, count={}, sum={}, avg={}, max={}",
                 key.getServerHost(),
                 key.getServerPort(),
-                key.getLatencyBeatKey().getName(),
+                key.getLatencyBeatKey().getId(),
                 value.getCount(),
                 value.getSum(),
                 value.getAvg(),

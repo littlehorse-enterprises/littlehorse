@@ -58,8 +58,7 @@ public class DuplicatedTaskRunTopology {
                         .withKeySerde(ProtobufSerdes.MetricKey())
                         .withValueSerde(Serdes.Long())
                         .withRetention(storeRetention))
-                .mapValues((readOnlyKey, value) ->
-                        Metric.newBuilder().setLong(value).build())
+                .mapValues((readOnlyKey, value) -> MetricFactory.buildValue(value))
                 .toStream();
     }
 
@@ -69,7 +68,7 @@ public class DuplicatedTaskRunTopology {
                 .setServerHost(oldKey.getServerHost())
                 .setServerVersion(oldKey.getServerVersion())
                 .setServerPort(oldKey.getServerPort())
-                .setLatencyBeatKey(LatencyBeatKey.newBuilder().setName(TASK_RUN_LATENCY_METRIC_NAME))
+                .setLatencyBeatKey(LatencyBeatKey.newBuilder().setId(TASK_RUN_LATENCY_METRIC_NAME))
                 .build();
 
         final Beat newValue = Beat.newBuilder()
@@ -82,12 +81,8 @@ public class DuplicatedTaskRunTopology {
     }
 
     private static MetricKey toMetricKey(final BeatKey key) {
-        return MetricKey.newBuilder()
-                .setId(DUPLICATED_TASK_METRIC_NAME)
-                .setServerHost(key.getServerHost())
-                .setServerPort(key.getServerPort())
-                .setServerVersion(key.getServerVersion())
-                .build();
+        return MetricFactory.buildKey(
+                DUPLICATED_TASK_METRIC_NAME, key.getServerHost(), key.getServerPort(), key.getServerVersion());
     }
 
     private static void peekAggregate(final BeatKey key, final Long count) {

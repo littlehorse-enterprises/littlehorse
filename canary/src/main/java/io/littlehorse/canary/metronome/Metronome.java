@@ -88,7 +88,7 @@ public class Metronome {
                 .setServerHost(serverHost)
                 .setServerPort(serverPort)
                 .setServerVersion(serverVersion)
-                .setLatencyBeatKey(LatencyBeatKey.newBuilder().setName(RUN_WF_LATENCY_METRIC_NAME))
+                .setLatencyBeatKey(LatencyBeatKey.newBuilder().setId(RUN_WF_LATENCY_METRIC_NAME))
                 .build();
 
         final Beat beat = Beat.newBuilder()

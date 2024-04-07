@@ -28,7 +28,7 @@ message Beat {
 
 // RunWf request beat identifier
 message LatencyBeatKey {
-  string name = 1;
+  string id = 1;
 }
 
 // RunWf request beat body
@@ -52,19 +52,13 @@ message TaskRunBeat {
 
 // Metric identifier
 message MetricKey {
-  string server_host = 1;
-  int32 server_port = 2;
-  string server_version = 3;
-  string id = 4;
-  repeated Tag tags = 5;
+  string id = 1;
+  repeated Tag tags = 2;
 }
 
 // Metric body
 message Metric {
-  oneof value {
-    double double = 1;
-    int64 long = 2;
-  }
+  double value = 1;
 }
 
 // Prometheus tags

@@ -1,6 +1,8 @@
 package io.littlehorse.canary.aggregator.topology;
 
 import static io.littlehorse.canary.aggregator.topology.MetricsTopology.METRICS_STORE;
+import static io.littlehorse.canary.proto.MetricFactory.buildKey;
+import static io.littlehorse.canary.proto.MetricFactory.buildValue;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.protobuf.util.Timestamps;
@@ -22,6 +24,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class MetricsTopologyTest {
+    public static final String EXPECTED_HOST = "localhost";
+    public static final int EXPECTED_PORT = 2023;
+    public static final String EXPECTED_VERSION = "1.0.0";
     private TopologyTestDriver testDriver;
     private TestInputTopic<BeatKey, Beat> inputTopic;
     private KeyValueStore<MetricKey, Metric> store;
@@ -40,6 +45,7 @@ class MetricsTopologyTest {
         return BeatKey.newBuilder()
                 .setServerHost(expectedHost)
                 .setServerPort(expectedPort)
+                .setServerVersion(EXPECTED_VERSION)
                 .setTaskRunBeatKey(TaskRunBeatKey.newBuilder()
                         .setIdempotencyKey(idempotencyKey)
                         .setAttemptNumber(attemptNumber))
@@ -57,15 +63,8 @@ class MetricsTopologyTest {
         return BeatKey.newBuilder()
                 .setServerHost(expectedHost)
                 .setServerPort(expectedPort)
-                .setLatencyBeatKey(LatencyBeatKey.newBuilder().setName(expectedMetricName))
-                .build();
-    }
-
-    private static MetricKey newMetricKey(String expectedHost, int expectedPort, String expectedMetricName) {
-        return MetricKey.newBuilder()
-                .setServerHost(expectedHost)
-                .setServerPort(expectedPort)
-                .setId(expectedMetricName)
+                .setServerVersion(EXPECTED_VERSION)
+                .setLatencyBeatKey(LatencyBeatKey.newBuilder().setId(expectedMetricName))
                 .build();
     }
 
@@ -101,18 +100,41 @@ class MetricsTopologyTest {
         @Test
         void calculateLatency() {
             String metricName = "my_metric";
-            String host = "localhost";
-            int port = 2023;
 
-            BeatKey beatKey = newLatencyBeatKey(host, port, metricName);
+            BeatKey beatKey = newLatencyBeatKey(EXPECTED_HOST, EXPECTED_PORT, metricName);
 
             List<Beat> beats = List.of(newLatencyBeat(20), newLatencyBeat(40), newLatencyBeat(10), newLatencyBeat(10));
             beats.forEach(metric -> inputTopic.pipeInput(beatKey, metric));
 
-            assertThat(store.get(newMetricKey(host, port, metricName + "_avg")))
-                    .isEqualTo(Metric.newBuilder().setDouble(20).build());
-            assertThat(store.get(newMetricKey(host, port, metricName + "_max")))
-                    .isEqualTo(Metric.newBuilder().setDouble(40).build());
+            assertThat(store.get(buildKey(metricName + "_avg", EXPECTED_HOST, EXPECTED_PORT, EXPECTED_VERSION)))
+                    .isEqualTo(Metric.newBuilder().setValue(20).build());
+            assertThat(store.get(buildKey(metricName + "_max", EXPECTED_HOST, EXPECTED_PORT, EXPECTED_VERSION)))
+                    .isEqualTo(Metric.newBuilder().setValue(40).build());
+        }
+
+        @Test
+        void calculateLatencyForDifferentHosts() {
+            String metricName = "my_metric";
+
+            String localhost1 = "localhost1";
+            BeatKey beatKey1 = newLatencyBeatKey(localhost1, EXPECTED_PORT, metricName);
+            List<Beat> beats1 = List.of(newLatencyBeat(20), newLatencyBeat(40), newLatencyBeat(10), newLatencyBeat(10));
+            beats1.forEach(metric -> inputTopic.pipeInput(beatKey1, metric));
+
+            String localhost2 = "localhost2";
+            BeatKey beatKey2 = newLatencyBeatKey(localhost2, EXPECTED_PORT, metricName);
+            List<Beat> beats2 = List.of(newLatencyBeat(20), newLatencyBeat(40), newLatencyBeat(20), newLatencyBeat(10));
+            beats2.forEach(metric -> inputTopic.pipeInput(beatKey2, metric));
+
+            assertThat(store.get(buildKey(metricName + "_avg", localhost1, EXPECTED_PORT, EXPECTED_VERSION)))
+                    .isEqualTo(Metric.newBuilder().setValue(20).build());
+            assertThat(store.get(buildKey(metricName + "_max", localhost1, EXPECTED_PORT, EXPECTED_VERSION)))
+                    .isEqualTo(Metric.newBuilder().setValue(40).build());
+
+            assertThat(store.get(buildKey(metricName + "_avg", localhost2, EXPECTED_PORT, EXPECTED_VERSION)))
+                    .isEqualTo(Metric.newBuilder().setValue(22.5).build());
+            assertThat(store.get(buildKey(metricName + "_max", localhost2, EXPECTED_PORT, EXPECTED_VERSION)))
+                    .isEqualTo(Metric.newBuilder().setValue(40).build());
         }
     }
 
@@ -120,59 +142,64 @@ class MetricsTopologyTest {
     class TaskRun {
         @Test
         void countDuplicated() {
-            String host = "localhost";
-            int port = 2023;
-
-            BeatKey beatKey = newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0);
+            BeatKey beatKey = newTaskRunBeatKey(
+                    EXPECTED_HOST, EXPECTED_PORT, UUID.randomUUID().toString(), 0);
 
             List<Beat> beats = List.of(newTaskRunBeat(2), newTaskRunBeat(2));
             beats.forEach(metric -> inputTopic.pipeInput(beatKey, metric));
 
-            assertThat(store.get(newMetricKey(host, port, "duplicated_task_run_max_count")))
-                    .isEqualTo(Metric.newBuilder().setLong(1).build());
+            assertThat(store.get(
+                            buildKey("duplicated_task_run_max_count", EXPECTED_HOST, EXPECTED_PORT, EXPECTED_VERSION)))
+                    .isEqualTo(Metric.newBuilder().setValue(1).build());
         }
 
         @Test
         void notDuplicatedWithDifferentAttempts() {
-            String host = "localhost";
-            int port = 2023;
             String idempotencyKey = UUID.randomUUID().toString();
 
-            inputTopic.pipeInput(newTaskRunBeatKey(host, port, idempotencyKey, 0), newTaskRunBeat(2));
-            inputTopic.pipeInput(newTaskRunBeatKey(host, port, idempotencyKey, 1), newTaskRunBeat(2));
-            inputTopic.pipeInput(newTaskRunBeatKey(host, port, idempotencyKey, 2), newTaskRunBeat(2));
+            inputTopic.pipeInput(newTaskRunBeatKey(EXPECTED_HOST, EXPECTED_PORT, idempotencyKey, 0), newTaskRunBeat(2));
+            inputTopic.pipeInput(newTaskRunBeatKey(EXPECTED_HOST, EXPECTED_PORT, idempotencyKey, 1), newTaskRunBeat(2));
+            inputTopic.pipeInput(newTaskRunBeatKey(EXPECTED_HOST, EXPECTED_PORT, idempotencyKey, 2), newTaskRunBeat(2));
 
-            assertThat(store.get(newMetricKey(host, port, "duplicated_task_run_max_count")))
+            assertThat(store.get(
+                            buildKey("duplicated_task_run_max_count", EXPECTED_HOST, EXPECTED_PORT, EXPECTED_VERSION)))
                     .isNull();
         }
 
         @Test
         void notDuplicated() {
-            String host = "localhost";
-            int port = 2023;
+            inputTopic.pipeInput(
+                    newTaskRunBeatKey(
+                            EXPECTED_HOST, EXPECTED_PORT, UUID.randomUUID().toString(), 0),
+                    newTaskRunBeat(2));
+            inputTopic.pipeInput(
+                    newTaskRunBeatKey(
+                            EXPECTED_HOST, EXPECTED_PORT, UUID.randomUUID().toString(), 0),
+                    newTaskRunBeat(2));
+            inputTopic.pipeInput(
+                    newTaskRunBeatKey(
+                            EXPECTED_HOST, EXPECTED_PORT, UUID.randomUUID().toString(), 0),
+                    newTaskRunBeat(2));
 
-            inputTopic.pipeInput(newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0), newTaskRunBeat(2));
-            inputTopic.pipeInput(newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0), newTaskRunBeat(2));
-            inputTopic.pipeInput(newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0), newTaskRunBeat(2));
-
-            assertThat(store.get(newMetricKey(host, port, "duplicated_task_run_max_count")))
+            assertThat(store.get(
+                            buildKey("duplicated_task_run_max_count", EXPECTED_HOST, EXPECTED_PORT, EXPECTED_VERSION)))
                     .isNull();
         }
 
         @Test
         void countDuplicatedForTwoTasks() {
-            String host = "localhost";
-            int port = 2023;
-
-            BeatKey beatKey1 = newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0);
-            BeatKey beatKey2 = newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0);
+            BeatKey beatKey1 = newTaskRunBeatKey(
+                    EXPECTED_HOST, EXPECTED_PORT, UUID.randomUUID().toString(), 0);
+            BeatKey beatKey2 = newTaskRunBeatKey(
+                    EXPECTED_HOST, EXPECTED_PORT, UUID.randomUUID().toString(), 0);
 
             List<Beat> beats = List.of(newTaskRunBeat(2), newTaskRunBeat(2));
             beats.forEach(metric -> inputTopic.pipeInput(beatKey1, metric));
             beats.forEach(metric -> inputTopic.pipeInput(beatKey2, metric));
 
-            assertThat(store.get(newMetricKey(host, port, "duplicated_task_run_max_count")))
-                    .isEqualTo(Metric.newBuilder().setLong(2).build());
+            assertThat(store.get(
+                            buildKey("duplicated_task_run_max_count", EXPECTED_HOST, EXPECTED_PORT, EXPECTED_VERSION)))
+                    .isEqualTo(Metric.newBuilder().setValue(2).build());
         }
 
         @Test
@@ -189,26 +216,32 @@ class MetricsTopologyTest {
             beats.forEach(metric -> inputTopic.pipeInput(beatKey1, metric));
             beats.forEach(metric -> inputTopic.pipeInput(beatKey2, metric));
 
-            assertThat(store.get(newMetricKey(host1, port1, "duplicated_task_run_max_count")))
-                    .isEqualTo(Metric.newBuilder().setLong(1).build());
-            assertThat(store.get(newMetricKey(host2, port2, "duplicated_task_run_max_count")))
-                    .isEqualTo(Metric.newBuilder().setLong(1).build());
+            assertThat(store.get(buildKey("duplicated_task_run_max_count", host1, port1, EXPECTED_VERSION)))
+                    .isEqualTo(Metric.newBuilder().setValue(1).build());
+            assertThat(store.get(buildKey("duplicated_task_run_max_count", host2, port2, EXPECTED_VERSION)))
+                    .isEqualTo(Metric.newBuilder().setValue(1).build());
         }
 
         @Test
         void calculateLatency() {
-            String host = "localhost";
-            int port = 2023;
+            inputTopic.pipeInput(
+                    newTaskRunBeatKey(
+                            EXPECTED_HOST, EXPECTED_PORT, UUID.randomUUID().toString(), 0),
+                    newTaskRunBeat(3));
+            inputTopic.pipeInput(
+                    newTaskRunBeatKey(
+                            EXPECTED_HOST, EXPECTED_PORT, UUID.randomUUID().toString(), 0),
+                    newTaskRunBeat(2));
+            inputTopic.pipeInput(
+                    newTaskRunBeatKey(
+                            EXPECTED_HOST, EXPECTED_PORT, UUID.randomUUID().toString(), 0),
+                    newTaskRunBeat(4));
 
-            inputTopic.pipeInput(newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0), newTaskRunBeat(3));
-            inputTopic.pipeInput(newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0), newTaskRunBeat(2));
-            inputTopic.pipeInput(newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0), newTaskRunBeat(4));
+            assertThat(store.get(buildKey("task_run_latency_avg", EXPECTED_HOST, EXPECTED_PORT, EXPECTED_VERSION)))
+                    .isEqualTo(buildValue(3));
 
-            assertThat(store.get(newMetricKey(host, port, "task_run_latency_avg")))
-                    .isEqualTo(Metric.newBuilder().setDouble(3).build());
-
-            assertThat(store.get(newMetricKey(host, port, "task_run_latency_max")))
-                    .isEqualTo(Metric.newBuilder().setDouble(4).build());
+            assertThat(store.get(buildKey("task_run_latency_max", EXPECTED_HOST, EXPECTED_PORT, EXPECTED_VERSION)))
+                    .isEqualTo(buildValue(4));
         }
     }
 }
