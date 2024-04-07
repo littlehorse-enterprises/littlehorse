@@ -66,11 +66,3 @@ message Tag {
   string key = 1;
   string value = 2;
 }
-
-// Avg. aggregator use in tables
-message AverageAggregator {
-  int64 count = 1;
-  double sum = 2;
-  double avg = 3;
-  double max = 4;
-}

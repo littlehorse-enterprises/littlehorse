@@ -10,7 +10,8 @@ import java.util.stream.Collectors;
 public class CanaryConfig implements Config {
 
     public static final String LH_CANARY_PREFIX = "lh.canary.";
-    public static final String TOPIC_NAME = "topic.name";
+    public static final String TOPIC_METRICS_NAME = "topic.metrics.name";
+    public static final String TOPIC_EVENTS_NAME = "topic.events.name";
     public static final String TOPIC_CREATION_PARTITIONS = "topic.creation.partitions";
     public static final String TOPIC_CREATION_REPLICAS = "topic.creation.replicas";
     public static final String METRONOME_ENABLE = "metronome.enable";
@@ -69,8 +70,12 @@ public class CanaryConfig implements Config {
         return configs.get(configName).toString();
     }
 
-    public String getTopicName() {
-        return getConfig(TOPIC_NAME);
+    public String getTopicMetricsName() {
+        return getConfig(TOPIC_METRICS_NAME);
+    }
+
+    public String getTopicEventsName() {
+        return getConfig(TOPIC_EVENTS_NAME);
     }
 
     public long getTopicCreationTimeoutMs() {

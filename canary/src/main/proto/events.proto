@@ -1,0 +1,30 @@
+syntax = "proto3";
+package littlehorse;
+
+option java_multiple_files = true;
+option java_package = "io.littlehorse.canary.proto";
+
+import "google/protobuf/timestamp.proto";
+
+// Event type
+enum EventType {
+  WF_RUN_REQUEST = 0;
+  GET_WF_RUN_REQUEST = 1;
+  TASK_RUN_EXECUTION = 2;
+}
+
+// Identify a canary event
+message EventKey {
+  string server_host = 1;
+  int32 server_port = 2;
+  string server_version = 3;
+  string id = 4;
+  EventKey event_type = 5;
+}
+
+// Contains the canary event data
+message EventValue {
+  google.protobuf.Timestamp time = 1;
+  optional double latency = 2;
+  optional string status = 3;
+}

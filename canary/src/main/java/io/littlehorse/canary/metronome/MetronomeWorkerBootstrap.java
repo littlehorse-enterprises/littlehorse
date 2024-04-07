@@ -22,7 +22,7 @@ public class MetronomeWorkerBootstrap extends Bootstrap implements MeterBinder {
         final LHConfig lhConfig = new LHConfig(config.toLittleHorseConfig().toMap());
 
         emitter = new MetricsEmitter(
-                config.getTopicName(), config.toKafkaProducerConfig().toMap());
+                config.getTopicMetricsName(), config.toKafkaProducerConfig().toMap());
 
         final MetronomeTask executable = new MetronomeTask(
                 emitter,

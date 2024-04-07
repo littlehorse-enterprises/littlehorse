@@ -29,7 +29,7 @@ public class AggregatorBootstrap extends Bootstrap implements MeterBinder {
         kafkaStreamsConfigMap = config.toKafkaStreamsConfig();
 
         final MetricsTopology metricsTopology =
-                new MetricsTopology(config.getTopicName(), config.getAggregatorStoreRetentionMs());
+                new MetricsTopology(config.getTopicMetricsName(), config.getAggregatorStoreRetentionMs());
         kafkaStreams = new KafkaStreams(metricsTopology.toTopology(), new StreamsConfig(kafkaStreamsConfigMap.toMap()));
         Shutdown.addShutdownHook("Aggregator Topology", kafkaStreams);
 
