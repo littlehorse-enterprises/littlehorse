@@ -1,8 +1,7 @@
 package io.littlehorse.canary.kafka;
 
+import com.google.protobuf.Message;
 import io.littlehorse.canary.CanaryException;
-import io.littlehorse.canary.proto.Beat;
-import io.littlehorse.canary.proto.BeatKey;
 import io.littlehorse.canary.util.Shutdown;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
@@ -18,16 +17,16 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.utils.Bytes;
 
 @Slf4j
-public class MetricsEmitter implements MeterBinder {
+public class MessageEmitter implements MeterBinder {
 
     private final Producer<Bytes, Bytes> producer;
     private final String topicName;
 
-    public MetricsEmitter(final String topicName, final Map<String, Object> kafkaProducerConfigMap) {
+    public MessageEmitter(final String topicName, final Map<String, Object> kafkaProducerConfigMap) {
         this.topicName = topicName;
 
         producer = new KafkaProducer<>(kafkaProducerConfigMap);
-        Shutdown.addShutdownHook("Metrics Emitter", producer);
+        Shutdown.addShutdownHook("Message Emitter", producer);
     }
 
     /**
@@ -37,15 +36,15 @@ public class MetricsEmitter implements MeterBinder {
      * @param value
      * @return Future<RecordMetadata>
      */
-    public Future<RecordMetadata> future(final BeatKey key, final Beat value) {
+    public Future<RecordMetadata> future(final Message key, final Message value) {
         final ProducerRecord<Bytes, Bytes> record =
                 new ProducerRecord<>(topicName, Bytes.wrap(key.toByteArray()), Bytes.wrap(value.toByteArray()));
 
         return producer.send(record, (metadata, exception) -> {
             if (exception == null) {
-                log.trace("Emitting message {}", value.getBeatCase());
+                log.trace("Emitting message {}", key.getClass());
             } else {
-                log.error("Emitting message {}", value.getBeatCase(), exception);
+                log.error("Emitting message {}", key.getClass(), exception);
             }
         });
     }
@@ -57,7 +56,7 @@ public class MetricsEmitter implements MeterBinder {
      * @param value
      * @return RecordMetadata
      */
-    public RecordMetadata emit(final BeatKey key, final Beat value) {
+    public RecordMetadata emit(final Message key, final Message value) {
         try {
             return future(key, value).get();
         } catch (InterruptedException | ExecutionException e) {

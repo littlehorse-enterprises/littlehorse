@@ -5,7 +5,7 @@ import static io.littlehorse.canary.metronome.MetronomeWorkflow.VARIABLE_NAME;
 import static io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 
 import com.google.protobuf.util.Timestamps;
-import io.littlehorse.canary.kafka.MetricsEmitter;
+import io.littlehorse.canary.kafka.MessageEmitter;
 import io.littlehorse.canary.proto.Beat;
 import io.littlehorse.canary.proto.BeatKey;
 import io.littlehorse.canary.proto.LatencyBeat;
@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 public class Metronome {
 
     public static final String RUN_WF_LATENCY_METRIC_NAME = "run_wf_latency";
-    private final MetricsEmitter emitter;
+    private final MessageEmitter emitter;
     private final ScheduledExecutorService mainExecutor;
     private final ExecutorService requestsExecutor;
     private final int runs;
@@ -36,7 +36,7 @@ public class Metronome {
     private final String serverVersion;
 
     public Metronome(
-            final MetricsEmitter emitter,
+            final MessageEmitter emitter,
             final LittleHorseBlockingStub lhClient,
             final long frequency,
             final int threads,

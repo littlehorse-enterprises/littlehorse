@@ -2,7 +2,7 @@ package io.littlehorse.canary.metronome;
 
 import io.littlehorse.canary.Bootstrap;
 import io.littlehorse.canary.config.CanaryConfig;
-import io.littlehorse.canary.kafka.MetricsEmitter;
+import io.littlehorse.canary.kafka.MessageEmitter;
 import io.littlehorse.canary.util.LHClientUtil;
 import io.littlehorse.canary.util.Shutdown;
 import io.littlehorse.sdk.common.config.LHConfig;
@@ -14,14 +14,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MetronomeWorkerBootstrap extends Bootstrap implements MeterBinder {
 
-    private final MetricsEmitter emitter;
+    private final MessageEmitter emitter;
 
     public MetronomeWorkerBootstrap(final CanaryConfig config) {
         super(config);
 
         final LHConfig lhConfig = new LHConfig(config.toLittleHorseConfig().toMap());
 
-        emitter = new MetricsEmitter(
+        emitter = new MessageEmitter(
                 config.getTopicMetricsName(), config.toKafkaProducerConfig().toMap());
 
         final MetronomeTask executable = new MetronomeTask(

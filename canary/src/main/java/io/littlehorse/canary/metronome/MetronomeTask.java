@@ -1,7 +1,7 @@
 package io.littlehorse.canary.metronome;
 
 import com.google.protobuf.util.Timestamps;
-import io.littlehorse.canary.kafka.MetricsEmitter;
+import io.littlehorse.canary.kafka.MessageEmitter;
 import io.littlehorse.canary.proto.Beat;
 import io.littlehorse.canary.proto.BeatKey;
 import io.littlehorse.canary.proto.TaskRunBeat;
@@ -15,13 +15,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 class MetronomeTask {
 
-    private final MetricsEmitter emitter;
+    private final MessageEmitter emitter;
     private final String serverHost;
     private final int serverPort;
     private final String serverVersion;
 
     public MetronomeTask(
-            final MetricsEmitter emitter, final String serverHost, final int serverPort, final String serverVersion) {
+            final MessageEmitter emitter, final String serverHost, final int serverPort, final String serverVersion) {
         this.emitter = emitter;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
