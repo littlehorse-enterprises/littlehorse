@@ -668,6 +668,8 @@ class UserTaskOutput(NodeOutput):
         user_task_def_name: str,
         user_id: Optional[Union[str, WfRunVariable]] = None,
         user_group: Optional[Union[str, WfRunVariable]] = None,
+        notes: Optional[Union[str, WfRunVariable, LHFormatString]] = None,
+        on_cancel_exception_name: Optional[Union[str, WfRunVariable]] = None,
     ) -> None:
         super().__init__(node_name)
         self._thread = thread
@@ -675,6 +677,8 @@ class UserTaskOutput(NodeOutput):
         self._user_task_def_name = user_task_def_name
         self._user_group = user_group
         self._user_id = user_id
+        self._notes = notes
+        self._on_cancel_exception_name = on_cancel_exception_name
 
     def with_notes(
         self, notes: Union[str, WfRunVariable, LHFormatString]
@@ -685,11 +689,40 @@ class UserTaskOutput(NodeOutput):
 
         ug = to_variable_assignment(self._user_group) if self._user_group else None
         ui = to_variable_assignment(self._user_id) if self._user_id else None
+        if self._on_cancel_exception_name:
+            exception_name = to_variable_assignment(self._on_cancel_exception_name)
+        else:
+            exception_name = None
+
         ut_node = UserTaskNode(
             user_task_def_name=self._user_task_def_name,
             user_group=ug,
             user_id=ui,
             notes=to_variable_assignment(notes),
+            on_cancel_exception_name=exception_name,
+        )
+        self._notes = notes
+
+        node.sub_node = ut_node
+        return self
+
+    def with_on_cancel_exception(self, exception_name: Union[str, WfRunVariable]) -> "UserTaskOutput":
+        node = self._thread._last_node()
+        if node.name != self._node_name:
+            raise ValueError("tried to mutate stale UserTaskOutput!")
+
+        ug = to_variable_assignment(self._user_group) if self._user_group else None
+        ui = to_variable_assignment(self._user_id) if self._user_id else None
+        if self._notes:
+            notes = to_variable_assignment(self._notes)
+        else:
+            notes = None
+        ut_node = UserTaskNode(
+            user_task_def_name=self._user_task_def_name,
+            user_group=ug,
+            user_id=ui,
+            notes=notes,
+            on_cancel_exception_name=to_variable_assignment(exception_name),
         )
 
         node.sub_node = ut_node
@@ -1280,6 +1313,7 @@ class WorkflowThread:
         trigger: UTActionTrigger = UTActionTrigger(
             reassign=UTActionTrigger.UTAReassign(user_group=ut_node.user_group),
             delay_seconds=to_variable_assignment(deadline_seconds),
+            hook=UTActionTrigger.UTHook.ON_TASK_ASSIGNED,
         )
         ut_node.actions.append(trigger)
 
@@ -1638,6 +1672,24 @@ class WorkflowThread:
         while len(self._variable_mutations) > 0:
             variables_from_if_block.append(self._variable_mutations.popleft())
         return variables_from_if_block
+
+    def cancel_user_task_run_after(
+        self, user_task: UserTaskOutput, delay_in_seconds: Union[int, WfRunVariable]
+    ) -> None:
+        self._check_if_active()
+        if self._last_node().name != user_task.node_name:
+            raise ValueError("Tried to reassign stale user task node!")
+
+        cancel = UTActionTrigger.UTACancel()
+
+        ut_node: UserTaskNode = typing.cast(UserTaskNode, self._last_node().sub_node)
+        ut_node.actions.append(
+            UTActionTrigger(
+                cancel=cancel,
+                delay_seconds=to_variable_assignment(delay_in_seconds),
+                hook=UTActionTrigger.UTHook.ON_TASK_ASSIGNED,
+            )
+        )
 
 
 ThreadInitializer = Callable[[WorkflowThread], None]
