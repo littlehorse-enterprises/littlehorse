@@ -1,7 +1,9 @@
 package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
+import com.google.common.base.Strings;
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
@@ -37,6 +39,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     private VariableAssignmentModel notes;
     private ReadOnlyMetadataManager metadataManager;
     private ProcessorExecutionContext processorContext;
+    private String onCancelExceptionName;
 
     public UserTaskNodeModel() {
         this.actions = new ArrayList<>();
@@ -64,6 +67,10 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
             out.setNotes(notes.toProto());
         }
 
+        if (onCancelExceptionName != null) {
+            out.setOnCancelExceptionName(onCancelExceptionName);
+        }
+
         return out;
     }
 
@@ -84,6 +91,9 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
 
         if (p.hasNotes()) {
             notes = LHSerializable.fromProto(p.getNotes(), VariableAssignmentModel.class, context);
+        }
+        if (p.hasOnCancelExceptionName()) {
+            onCancelExceptionName = p.getOnCancelExceptionName();
         }
         this.metadataManager = context.metadataManager();
         this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
@@ -125,6 +135,14 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
 
         if (userId == null && userGroup == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Must specify userGroup or userId");
+        }
+    }
+
+    public String getFailureName() {
+        if (!Strings.isNullOrEmpty(onCancelExceptionName) && !onCancelExceptionName.isBlank()) {
+            return onCancelExceptionName;
+        } else {
+            return LHConstants.USER_TASK_CANCELLED;
         }
     }
 }
