@@ -23,6 +23,7 @@ import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
 import java.time.Duration;
+import java.util.Map;
 import java.util.UUID;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
@@ -35,8 +36,8 @@ public class TaskDefLifecycleTest {
 
     @Test
     void shouldBeIdempotent() {
-        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), "greet");
-        TaskDefBuilder taskCopy = new TaskDefBuilder(new TaskWorker(), "greet");
+        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), "greet", null);
+        TaskDefBuilder taskCopy = new TaskDefBuilder(new TaskWorker(), "greet", null);
         TaskDef original = client.putTaskDef(task.toPutTaskDefRequest());
         TaskDef copy = client.putTaskDef(taskCopy.toPutTaskDefRequest());
         assertThat(TaskDefUtil.equals(TaskDefModel.fromProto(original, null), TaskDefModel.fromProto(copy, null)))
@@ -45,10 +46,10 @@ public class TaskDefLifecycleTest {
 
     @Test
     void shouldThrowAlreadyExistWhenTaskDefDifferent() {
-        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), "greet-with-update");
+        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), "greet-with-update", null);
         client.putTaskDef(task.toPutTaskDefRequest());
 
-        TaskDefBuilder taskUpdated = new TaskDefBuilder(new TaskWorkerUpdated(), "greet-with-update");
+        TaskDefBuilder taskUpdated = new TaskDefBuilder(new TaskWorkerUpdated(), "greet-with-update", null);
 
         assertThatThrownBy(() -> client.putTaskDef(taskUpdated.toPutTaskDefRequest()))
                 .isInstanceOf(StatusRuntimeException.class)
@@ -119,6 +120,70 @@ public class TaskDefLifecycleTest {
                 return caught != null && LHTestExceptionUtil.isNotFoundException(caught);
             });
         }
+    }
+
+    @Test
+    public void shouldResolvePlaceHolder() {
+        String taskDefName = "a-task-name-${CLUSTER_NAME}";
+        Map<String, String> values = Map.of("CLUSTER_NAME", "pedro-cluster");
+
+        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), taskDefName, values);
+
+        assertThat(task.taskDefName).isEqualTo("a-task-name-pedro-cluster");
+    }
+
+    @Test
+    public void shouldResolvePlaceHolderWhenItIsTheOnlyTextOnTheStringTemplate() {
+        String taskDefName = "${CLUSTER_NAME}";
+        Map<String, String> values = Map.of("CLUSTER_NAME", "pedro-cluster");
+
+        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), taskDefName, values);
+
+        assertThat(task.taskDefName).isEqualTo("pedro-cluster");
+    }
+
+    @Test
+    public void IfNoValueProvidedForPlaceHolderItShouldThrowAnError() {
+        String taskDefName = "something-${INVALID_PLACEHOLDER}";
+        Map<String, String> values = Map.of("CLUSTER_NAME", "pedro-cluster");
+
+        assertThatThrownBy(() -> {
+                    TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), taskDefName, values);
+                })
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("No value has been provided for the placeholder with key: INVALID_PLACEHOLDER");
+    }
+
+    @Test
+    public void shouldResolve2PlaceHolders() {
+        String taskDefName = "a-task-name-${CLUSTER_NAME}-${CLOUD_NAME}";
+        Map<String, String> values = Map.of("CLUSTER_NAME", "pedro-cluster", "CLOUD_NAME", "aws");
+
+        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), taskDefName, values);
+
+        assertThat(task.taskDefName).isEqualTo("a-task-name-pedro-cluster-aws");
+    }
+
+    @Test
+    public void shouldResolve3PlaceHoldersWithOnePlaceholderAtTheBeginningOfTheTemplate() {
+        String taskDefName = "${REGION}_a-task-name-${CLUSTER_NAME}-${CLOUD_NAME}";
+        Map<String, String> values =
+                Map.of("CLUSTER_NAME", "pedro-cluster", "CLOUD_NAME", "aws", "REGION", "us-west-2");
+
+        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), taskDefName, values);
+
+        assertThat(task.taskDefName).isEqualTo("us-west-2_a-task-name-pedro-cluster-aws");
+    }
+
+    @Test
+    public void taskDefNameRemainsTheSameIfItHasNoPlaceholdersAndPlaceHolderValuesWereProvided() {
+        String taskDefName = "a-task-name";
+        Map<String, String> values =
+                Map.of("CLUSTER_NAME", "pedro-cluster", "CLOUD_NAME", "aws", "REGION", "us-west-2");
+
+        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), taskDefName, values);
+
+        assertThat(task.taskDefName).isEqualTo("a-task-name");
     }
 }
 
