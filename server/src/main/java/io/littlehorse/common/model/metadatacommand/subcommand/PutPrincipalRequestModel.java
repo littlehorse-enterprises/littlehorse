@@ -103,7 +103,11 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
             throw new LHApiException(
                     Status.INVALID_ARGUMENT, "Only admin users can create a principal with global privileges");
         }
+
         ensureThatIsAllowedToWriteInRequestedTenants(requester);
+
+        validateIfPerTenantACLsHasAssociatedTenantResource();
+
         for (Map.Entry<String, ServerACLsModel> perTenantAcl : perTenantAcls.entrySet()) {
             TenantIdModel tenantId = new TenantIdModel(perTenantAcl.getKey());
             ServerACLsModel acls = perTenantAcl.getValue();
@@ -120,6 +124,24 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
 
         metadataManager.put(toSave);
         return toSave.toProto().build();
+    }
+
+    /**
+     * Validates whether the perTenantACLs contain any resource associated with TENANT.
+     */
+    private void validateIfPerTenantACLsHasAssociatedTenantResource() {
+        if (hasTenantResource()) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    "PutPrincipalRequest does not allow non-Admin users to have any permissions on tenants");
+        }
+    }
+
+    private boolean hasTenantResource() {
+        return !perTenantAcls.isEmpty()
+                && perTenantAcls.values().stream().anyMatch(mappedACL -> mappedACL.getAcls().stream()
+                        .anyMatch(actualACL -> actualACL.getResources().stream()
+                                .anyMatch(aclResource -> aclResource.equals(ACLResource.ACL_TENANT))));
     }
 
     /**

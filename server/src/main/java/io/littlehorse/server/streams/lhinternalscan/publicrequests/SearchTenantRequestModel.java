@@ -73,10 +73,7 @@ public class SearchTenantRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException {
-        return this.context.authorization().isAdmin()
-                ? ObjectIdScanBoundaryStrategy.prefixMetadataScan()
-                : ObjectIdScanBoundaryStrategy.metadataSearchFor(
-                        this.context.authorization().tenantId().getId());
+        return ObjectIdScanBoundaryStrategy.prefixMetadataScan();
     }
 
     public static SearchTenantRequestModel fromProto(SearchTenantRequest proto, ExecutionContext context) {
