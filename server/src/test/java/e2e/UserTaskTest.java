@@ -41,6 +41,9 @@ public class UserTaskTest {
     @LHWorkflow("deadline-reassignment-workflow-user-without-group")
     private Workflow deadlineReassignmentUserWithoutGroupWorkflow;
 
+    @LHWorkflow("cancel-user-task")
+    private Workflow userTaskCancel;
+
     @LHUserTaskForm(USER_TASK_DEF_NAME)
     private MyForm myForm = new MyForm();
 
@@ -107,6 +110,15 @@ public class UserTaskTest {
         Assertions.assertThat(wfRunIdList.getResultsList()).isNotEmpty();
     }
 
+    @Test
+    void shouldExecuteBusinessExceptionHandlerWhenUserTaskGetsCancel() {
+        workflowVerifier
+                .prepareRun(userTaskCancel)
+                .thenCancelUserTaskRun(0, 1)
+                .waitForStatus(COMPLETED)
+                .start();
+    }
+
     @LHWorkflow("deadline-reassignment-workflow")
     public Workflow buildDeadlineReassignmentWorkflow() {
         return new WorkflowImpl("deadline-reassignment-workflow", entrypointThread -> {
@@ -138,9 +150,26 @@ public class UserTaskTest {
         });
     }
 
+    @LHWorkflow("cancel-user-task")
+    public Workflow buildCancelUserTaskWorkflow() {
+        return new WorkflowImpl("cancel-user-task", entrypointThread -> {
+            UserTaskOutput formOutput = entrypointThread
+                    .assignUserTask(USER_TASK_DEF_NAME, "test-user-id", null)
+                    .withOnCancelException("no-response");
+            entrypointThread.handleException(formOutput, "no-response", userTaskCanceledHandler -> {
+                userTaskCanceledHandler.execute("user-task-canceled");
+            });
+        });
+    }
+
     @LHTaskMethod("my-custom-task")
     public String obiwan(MyForm formData) {
         return "String was " + formData.myStr + " and int was " + formData.myInt;
+    }
+
+    @LHTaskMethod("user-task-canceled")
+    public String userTaskCanceled() {
+        return "User task canceled";
     }
 }
 

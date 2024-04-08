@@ -170,7 +170,7 @@ public interface UserTaskNodeOrBuilder extends
    * Specifies the name of the exception thrown when the User Task is canceled
    * </pre>
    *
-   * <code>optional string on_cancel_exception_name = 7;</code>
+   * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
    * @return Whether the onCancelExceptionName field is set.
    */
   boolean hasOnCancelExceptionName();
@@ -179,18 +179,16 @@ public interface UserTaskNodeOrBuilder extends
    * Specifies the name of the exception thrown when the User Task is canceled
    * </pre>
    *
-   * <code>optional string on_cancel_exception_name = 7;</code>
+   * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
    * @return The onCancelExceptionName.
    */
-  java.lang.String getOnCancelExceptionName();
+  io.littlehorse.sdk.common.proto.VariableAssignment getOnCancelExceptionName();
   /**
    * <pre>
    * Specifies the name of the exception thrown when the User Task is canceled
    * </pre>
    *
-   * <code>optional string on_cancel_exception_name = 7;</code>
-   * @return The bytes for onCancelExceptionName.
+   * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
    */
-  com.google.protobuf.ByteString
-      getOnCancelExceptionNameBytes();
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getOnCancelExceptionNameOrBuilder();
 }

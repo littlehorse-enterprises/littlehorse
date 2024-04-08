@@ -18,7 +18,6 @@ private static final long serialVersionUID = 0L;
   private UserTaskNode() {
     userTaskDefName_ = "";
     actions_ = java.util.Collections.emptyList();
-    onCancelExceptionName_ = "";
   }
 
   @java.lang.Override
@@ -286,14 +285,13 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int ON_CANCEL_EXCEPTION_NAME_FIELD_NUMBER = 7;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object onCancelExceptionName_ = "";
+  private io.littlehorse.sdk.common.proto.VariableAssignment onCancelExceptionName_;
   /**
    * <pre>
    * Specifies the name of the exception thrown when the User Task is canceled
    * </pre>
    *
-   * <code>optional string on_cancel_exception_name = 7;</code>
+   * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
    * @return Whether the onCancelExceptionName field is set.
    */
   @java.lang.Override
@@ -305,43 +303,23 @@ private static final long serialVersionUID = 0L;
    * Specifies the name of the exception thrown when the User Task is canceled
    * </pre>
    *
-   * <code>optional string on_cancel_exception_name = 7;</code>
+   * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
    * @return The onCancelExceptionName.
    */
   @java.lang.Override
-  public java.lang.String getOnCancelExceptionName() {
-    java.lang.Object ref = onCancelExceptionName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      onCancelExceptionName_ = s;
-      return s;
-    }
+  public io.littlehorse.sdk.common.proto.VariableAssignment getOnCancelExceptionName() {
+    return onCancelExceptionName_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : onCancelExceptionName_;
   }
   /**
    * <pre>
    * Specifies the name of the exception thrown when the User Task is canceled
    * </pre>
    *
-   * <code>optional string on_cancel_exception_name = 7;</code>
-   * @return The bytes for onCancelExceptionName.
+   * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getOnCancelExceptionNameBytes() {
-    java.lang.Object ref = onCancelExceptionName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      onCancelExceptionName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getOnCancelExceptionNameOrBuilder() {
+    return onCancelExceptionName_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : onCancelExceptionName_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -377,7 +355,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(6, getNotes());
     }
     if (((bitField0_ & 0x00000010) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 7, onCancelExceptionName_);
+      output.writeMessage(7, getOnCancelExceptionName());
     }
     getUnknownFields().writeTo(output);
   }
@@ -412,7 +390,8 @@ private static final long serialVersionUID = 0L;
         .computeMessageSize(6, getNotes());
     }
     if (((bitField0_ & 0x00000010) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, onCancelExceptionName_);
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, getOnCancelExceptionName());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -629,6 +608,7 @@ private static final long serialVersionUID = 0L;
         getUserIdFieldBuilder();
         getActionsFieldBuilder();
         getNotesFieldBuilder();
+        getOnCancelExceptionNameFieldBuilder();
       }
     }
     @java.lang.Override
@@ -659,7 +639,11 @@ private static final long serialVersionUID = 0L;
         notesBuilder_.dispose();
         notesBuilder_ = null;
       }
-      onCancelExceptionName_ = "";
+      onCancelExceptionName_ = null;
+      if (onCancelExceptionNameBuilder_ != null) {
+        onCancelExceptionNameBuilder_.dispose();
+        onCancelExceptionNameBuilder_ = null;
+      }
       return this;
     }
 
@@ -733,7 +717,9 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000008;
       }
       if (((from_bitField0_ & 0x00000040) != 0)) {
-        result.onCancelExceptionName_ = onCancelExceptionName_;
+        result.onCancelExceptionName_ = onCancelExceptionNameBuilder_ == null
+            ? onCancelExceptionName_
+            : onCancelExceptionNameBuilder_.build();
         to_bitField0_ |= 0x00000010;
       }
       result.bitField0_ |= to_bitField0_;
@@ -827,9 +813,7 @@ private static final long serialVersionUID = 0L;
         mergeNotes(other.getNotes());
       }
       if (other.hasOnCancelExceptionName()) {
-        onCancelExceptionName_ = other.onCancelExceptionName_;
-        bitField0_ |= 0x00000040;
-        onChanged();
+        mergeOnCancelExceptionName(other.getOnCancelExceptionName());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -902,7 +886,9 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 50
             case 58: {
-              onCancelExceptionName_ = input.readStringRequireUtf8();
+              input.readMessage(
+                  getOnCancelExceptionNameFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000040;
               break;
             } // case 58
@@ -1836,13 +1822,15 @@ private static final long serialVersionUID = 0L;
       return notesBuilder_;
     }
 
-    private java.lang.Object onCancelExceptionName_ = "";
+    private io.littlehorse.sdk.common.proto.VariableAssignment onCancelExceptionName_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> onCancelExceptionNameBuilder_;
     /**
      * <pre>
      * Specifies the name of the exception thrown when the User Task is canceled
      * </pre>
      *
-     * <code>optional string on_cancel_exception_name = 7;</code>
+     * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
      * @return Whether the onCancelExceptionName field is set.
      */
     public boolean hasOnCancelExceptionName() {
@@ -1853,19 +1841,14 @@ private static final long serialVersionUID = 0L;
      * Specifies the name of the exception thrown when the User Task is canceled
      * </pre>
      *
-     * <code>optional string on_cancel_exception_name = 7;</code>
+     * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
      * @return The onCancelExceptionName.
      */
-    public java.lang.String getOnCancelExceptionName() {
-      java.lang.Object ref = onCancelExceptionName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        onCancelExceptionName_ = s;
-        return s;
+    public io.littlehorse.sdk.common.proto.VariableAssignment getOnCancelExceptionName() {
+      if (onCancelExceptionNameBuilder_ == null) {
+        return onCancelExceptionName_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : onCancelExceptionName_;
       } else {
-        return (java.lang.String) ref;
+        return onCancelExceptionNameBuilder_.getMessage();
       }
     }
     /**
@@ -1873,35 +1856,35 @@ private static final long serialVersionUID = 0L;
      * Specifies the name of the exception thrown when the User Task is canceled
      * </pre>
      *
-     * <code>optional string on_cancel_exception_name = 7;</code>
-     * @return The bytes for onCancelExceptionName.
+     * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
      */
-    public com.google.protobuf.ByteString
-        getOnCancelExceptionNameBytes() {
-      java.lang.Object ref = onCancelExceptionName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        onCancelExceptionName_ = b;
-        return b;
+    public Builder setOnCancelExceptionName(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+      if (onCancelExceptionNameBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        onCancelExceptionName_ = value;
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        onCancelExceptionNameBuilder_.setMessage(value);
       }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
     }
     /**
      * <pre>
      * Specifies the name of the exception thrown when the User Task is canceled
      * </pre>
      *
-     * <code>optional string on_cancel_exception_name = 7;</code>
-     * @param value The onCancelExceptionName to set.
-     * @return This builder for chaining.
+     * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
      */
     public Builder setOnCancelExceptionName(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      onCancelExceptionName_ = value;
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
+      if (onCancelExceptionNameBuilder_ == null) {
+        onCancelExceptionName_ = builderForValue.build();
+      } else {
+        onCancelExceptionNameBuilder_.setMessage(builderForValue.build());
+      }
       bitField0_ |= 0x00000040;
       onChanged();
       return this;
@@ -1911,12 +1894,38 @@ private static final long serialVersionUID = 0L;
      * Specifies the name of the exception thrown when the User Task is canceled
      * </pre>
      *
-     * <code>optional string on_cancel_exception_name = 7;</code>
-     * @return This builder for chaining.
+     * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
+     */
+    public Builder mergeOnCancelExceptionName(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+      if (onCancelExceptionNameBuilder_ == null) {
+        if (((bitField0_ & 0x00000040) != 0) &&
+          onCancelExceptionName_ != null &&
+          onCancelExceptionName_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+          getOnCancelExceptionNameBuilder().mergeFrom(value);
+        } else {
+          onCancelExceptionName_ = value;
+        }
+      } else {
+        onCancelExceptionNameBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Specifies the name of the exception thrown when the User Task is canceled
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
      */
     public Builder clearOnCancelExceptionName() {
-      onCancelExceptionName_ = getDefaultInstance().getOnCancelExceptionName();
       bitField0_ = (bitField0_ & ~0x00000040);
+      onCancelExceptionName_ = null;
+      if (onCancelExceptionNameBuilder_ != null) {
+        onCancelExceptionNameBuilder_.dispose();
+        onCancelExceptionNameBuilder_ = null;
+      }
       onChanged();
       return this;
     }
@@ -1925,18 +1934,47 @@ private static final long serialVersionUID = 0L;
      * Specifies the name of the exception thrown when the User Task is canceled
      * </pre>
      *
-     * <code>optional string on_cancel_exception_name = 7;</code>
-     * @param value The bytes for onCancelExceptionName to set.
-     * @return This builder for chaining.
+     * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
      */
-    public Builder setOnCancelExceptionNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      onCancelExceptionName_ = value;
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getOnCancelExceptionNameBuilder() {
       bitField0_ |= 0x00000040;
       onChanged();
-      return this;
+      return getOnCancelExceptionNameFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Specifies the name of the exception thrown when the User Task is canceled
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getOnCancelExceptionNameOrBuilder() {
+      if (onCancelExceptionNameBuilder_ != null) {
+        return onCancelExceptionNameBuilder_.getMessageOrBuilder();
+      } else {
+        return onCancelExceptionName_ == null ?
+            io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : onCancelExceptionName_;
+      }
+    }
+    /**
+     * <pre>
+     * Specifies the name of the exception thrown when the User Task is canceled
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
+        getOnCancelExceptionNameFieldBuilder() {
+      if (onCancelExceptionNameBuilder_ == null) {
+        onCancelExceptionNameBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                getOnCancelExceptionName(),
+                getParentForChildren(),
+                isClean());
+        onCancelExceptionName_ = null;
+      }
+      return onCancelExceptionNameBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

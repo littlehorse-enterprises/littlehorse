@@ -292,7 +292,8 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         this.events.add(new UserTaskEventModel(
                 new UTECancelledModel("UserTaskRun was cancelled"),
                 processorContext.currentCommand().getTime()));
-        String failureName = this.getUserTaskNode().getFailureName();
+        ThreadRunModel currentThreadRun = this.getNodeRun().getThreadRun();
+        String failureName = this.getUtNode().assignExceptionNameVariable(currentThreadRun);
         failureToThrowKenobi = new FailureModel("User task cancelled", failureName);
     }
 

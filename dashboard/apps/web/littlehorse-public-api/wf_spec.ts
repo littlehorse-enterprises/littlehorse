@@ -330,7 +330,7 @@ export interface UserTaskNode {
     | VariableAssignment
     | undefined;
   /** Specifies the name of the exception thrown when the User Task is canceled */
-  onCancelExceptionName?: string | undefined;
+  onCancelExceptionName?: VariableAssignment | undefined;
 }
 
 export interface EdgeCondition {
@@ -2762,7 +2762,7 @@ export const UserTaskNode = {
       VariableAssignment.encode(message.notes, writer.uint32(50).fork()).ldelim();
     }
     if (message.onCancelExceptionName !== undefined) {
-      writer.uint32(58).string(message.onCancelExceptionName);
+      VariableAssignment.encode(message.onCancelExceptionName, writer.uint32(58).fork()).ldelim();
     }
     return writer;
   },
@@ -2821,7 +2821,7 @@ export const UserTaskNode = {
             break;
           }
 
-          message.onCancelExceptionName = reader.string();
+          message.onCancelExceptionName = VariableAssignment.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -2843,7 +2843,7 @@ export const UserTaskNode = {
       userTaskDefVersion: isSet(object.userTaskDefVersion) ? globalThis.Number(object.userTaskDefVersion) : undefined,
       notes: isSet(object.notes) ? VariableAssignment.fromJSON(object.notes) : undefined,
       onCancelExceptionName: isSet(object.onCancelExceptionName)
-        ? globalThis.String(object.onCancelExceptionName)
+        ? VariableAssignment.fromJSON(object.onCancelExceptionName)
         : undefined,
     };
   },
@@ -2869,7 +2869,7 @@ export const UserTaskNode = {
       obj.notes = VariableAssignment.toJSON(message.notes);
     }
     if (message.onCancelExceptionName !== undefined) {
-      obj.onCancelExceptionName = message.onCancelExceptionName;
+      obj.onCancelExceptionName = VariableAssignment.toJSON(message.onCancelExceptionName);
     }
     return obj;
   },
@@ -2891,7 +2891,10 @@ export const UserTaskNode = {
     message.notes = (object.notes !== undefined && object.notes !== null)
       ? VariableAssignment.fromPartial(object.notes)
       : undefined;
-    message.onCancelExceptionName = object.onCancelExceptionName ?? undefined;
+    message.onCancelExceptionName =
+      (object.onCancelExceptionName !== undefined && object.onCancelExceptionName !== null)
+        ? VariableAssignment.fromPartial(object.onCancelExceptionName)
+        : undefined;
     return message;
   },
 };

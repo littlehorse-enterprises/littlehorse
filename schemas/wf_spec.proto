@@ -209,7 +209,7 @@ message UserTaskNode {
   optional VariableAssignment notes = 6;
 
   // Specifies the name of the exception thrown when the User Task is canceled
-  optional string on_cancel_exception_name = 7;
+  optional VariableAssignment on_cancel_exception_name = 7;
 }
 
 message EdgeCondition {

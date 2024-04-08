@@ -6,6 +6,8 @@ import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UTActionTriggerModel;
@@ -39,7 +41,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     private VariableAssignmentModel notes;
     private ReadOnlyMetadataManager metadataManager;
     private ProcessorExecutionContext processorContext;
-    private String onCancelExceptionName;
+    private VariableAssignmentModel onCancelExceptionName;
 
     public UserTaskNodeModel() {
         this.actions = new ArrayList<>();
@@ -68,7 +70,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         }
 
         if (onCancelExceptionName != null) {
-            out.setOnCancelExceptionName(onCancelExceptionName);
+            out.setOnCancelExceptionName(onCancelExceptionName.toProto());
         }
 
         return out;
@@ -93,7 +95,8 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
             notes = LHSerializable.fromProto(p.getNotes(), VariableAssignmentModel.class, context);
         }
         if (p.hasOnCancelExceptionName()) {
-            onCancelExceptionName = p.getOnCancelExceptionName();
+            onCancelExceptionName =
+                    LHSerializable.fromProto(p.getOnCancelExceptionName(), VariableAssignmentModel.class, context);
         }
         this.metadataManager = context.metadataManager();
         this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
@@ -138,11 +141,21 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         }
     }
 
-    public String getFailureName() {
-        if (!Strings.isNullOrEmpty(onCancelExceptionName) && !onCancelExceptionName.isBlank()) {
-            return onCancelExceptionName;
-        } else {
-            return LHConstants.USER_TASK_CANCELLED;
+    public String assignExceptionNameVariable(ThreadRunModel threadRun) {
+        try {
+            if (onCancelExceptionName != null) {
+                String resolvedExceptionName =
+                        threadRun.assignVariable(onCancelExceptionName).asStr().getStrVal();
+                if (!Strings.isNullOrEmpty(resolvedExceptionName) && !resolvedExceptionName.isBlank()) {
+                    return resolvedExceptionName;
+                } else {
+                    return LHConstants.USER_TASK_CANCELLED;
+                }
+            } else {
+                return LHConstants.USER_TASK_CANCELLED;
+            }
+        } catch (LHVarSubError e) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Must specify a valid on cancel exception name");
         }
     }
 }
