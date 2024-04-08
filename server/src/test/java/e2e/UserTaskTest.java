@@ -44,6 +44,9 @@ public class UserTaskTest {
     @LHWorkflow("cancel-user-task")
     private Workflow userTaskCancel;
 
+    @LHWorkflow("cancel-user-task-on-deadline")
+    private Workflow userTaskCancelOnDeadline;
+
     @LHUserTaskForm(USER_TASK_DEF_NAME)
     private MyForm myForm = new MyForm();
 
@@ -119,6 +122,14 @@ public class UserTaskTest {
                 .start();
     }
 
+    @Test
+    void shouldExecuteBusinessExceptionHandlerWhenUserTaskGetsCancelOnDeadline() {
+        workflowVerifier
+                .prepareRun(userTaskCancelOnDeadline)
+                .waitForStatus(COMPLETED, Duration.ofSeconds(5))
+                .start();
+    }
+
     @LHWorkflow("deadline-reassignment-workflow")
     public Workflow buildDeadlineReassignmentWorkflow() {
         return new WorkflowImpl("deadline-reassignment-workflow", entrypointThread -> {
@@ -156,6 +167,19 @@ public class UserTaskTest {
             UserTaskOutput formOutput = entrypointThread
                     .assignUserTask(USER_TASK_DEF_NAME, "test-user-id", null)
                     .withOnCancelException("no-response");
+            entrypointThread.handleException(formOutput, "no-response", userTaskCanceledHandler -> {
+                userTaskCanceledHandler.execute("user-task-canceled");
+            });
+        });
+    }
+
+    @LHWorkflow("cancel-user-task-on-deadline")
+    public Workflow buildCancelUserTaskOnReassignmentWorkflow() {
+        return new WorkflowImpl("cancel-user-task-on-deadline", entrypointThread -> {
+            UserTaskOutput formOutput = entrypointThread
+                    .assignUserTask(USER_TASK_DEF_NAME, "test-user-id", null)
+                    .withOnCancelException("no-response");
+            entrypointThread.cancelUserTaskAfter(formOutput, 2);
             entrypointThread.handleException(formOutput, "no-response", userTaskCanceledHandler -> {
                 userTaskCanceledHandler.execute("user-task-canceled");
             });

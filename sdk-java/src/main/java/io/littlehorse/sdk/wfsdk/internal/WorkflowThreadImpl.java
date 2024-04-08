@@ -229,8 +229,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
     @Override
     public void scheduleReminderTaskOnAssignment(
             UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Serializable... args) {
-        // List<Object> nextArgs = new ArrayList<>();
-        // for (Object arg : args) nextArgs.add(arg);
         scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_TASK_ASSIGNED, args);
     }
 
@@ -259,6 +257,25 @@ final class WorkflowThreadImpl implements WorkflowThread {
         spec.putNodes(lastNodeName, curNode.build());
         // TODO LH-334: return a modified child class of NodeOutput which lets
         // us mutate variables
+    }
+
+    @Override
+    public void cancelUserTaskAfter(UserTaskOutput userTask, Serializable delaySeconds) {
+        checkIfIsActive();
+        VariableAssignment assn = assignVariable(delaySeconds);
+        UTActionTrigger.UTACancel utaCancel =
+                UTActionTrigger.UTACancel.newBuilder().build();
+        UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTask;
+        if (!lastNodeName.equals(utImpl.nodeName)) {
+            throw new RuntimeException("Tried to edit a stale User Task node!");
+        }
+        Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
+        UTActionTrigger.Builder newUtActionBuilder = UTActionTrigger.newBuilder()
+                .setCancel(utaCancel)
+                .setHook(UTActionTrigger.UTHook.ON_TASK_ASSIGNED)
+                .setDelaySeconds(assn);
+        curNode.getUserTaskBuilder().addActions(newUtActionBuilder);
+        spec.putNodes(lastNodeName, curNode.build());
     }
 
     public LHFormatStringImpl format(String format, WfRunVariable... args) {

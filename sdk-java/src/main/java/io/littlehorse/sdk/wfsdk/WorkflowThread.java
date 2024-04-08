@@ -183,6 +183,8 @@ public interface WorkflowThread {
     void scheduleReminderTaskOnAssignment(
             UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, Serializable... args);
 
+    void cancelUserTaskAfter(UserTaskOutput userTask, Serializable delaySeconds);
+
     /**
      * Adds a task reminder once a user is assigned to the UserTask.
      *
