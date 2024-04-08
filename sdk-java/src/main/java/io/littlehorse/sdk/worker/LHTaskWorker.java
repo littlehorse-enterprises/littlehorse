@@ -83,7 +83,7 @@ public class LHTaskWorker implements Closeable {
      *      *                    That method will be used to execute the tasks.
      * @param taskDefName is the name of the `TaskDef` to execute.
      * @param config is a valid LHConfig.
-     * @param valuesForPlaceholders
+     * @param valuesForPlaceholders map of values that will replace the placeholders on the taskDefName
      */
     public LHTaskWorker(
             Object executable, String taskDefName, LHConfig config, Map<String, String> valuesForPlaceholders) {
