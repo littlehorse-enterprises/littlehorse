@@ -37,7 +37,6 @@ export const WfRuns: FC<Props> = ({ id }) => {
     initialPageParam: undefined,
     getNextPageParam: (lastPage: WfRunIdList) => lastPage.bookmark?.toString('base64'),
     queryFn: async ({ pageParam }) => {
-      console.log({ startTime })
       return await searchWfRun({
         wfSpecName: id!.name,
         wfSpecMajorVersion: id!.majorVersion,

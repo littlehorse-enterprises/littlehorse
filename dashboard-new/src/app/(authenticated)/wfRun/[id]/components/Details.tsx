@@ -1,5 +1,5 @@
 'use client'
-import { formatDate } from '@/app/utils'
+import { formatDate } from '@/app/utils/date'
 import { WfRun } from 'littlehorse-client/dist/proto/wf_run'
 import Link from 'next/link'
 import { FC } from 'react'

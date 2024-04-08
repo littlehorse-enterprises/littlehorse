@@ -10,8 +10,10 @@ const Default: FC<SmoothStepEdgeProps> = ({
   label,
   pathOptions,
   style,
+  data,
   sourcePosition = Position.Bottom,
   targetPosition = Position.Top,
+  ...rest
 }) => {
   const [path, labelX, labelY] = getSmoothStepPath({
     sourceX,
@@ -24,9 +26,10 @@ const Default: FC<SmoothStepEdgeProps> = ({
     offset: pathOptions?.offset,
   })
 
+  console.log({rest})
   return (
     <>
-      <BaseEdge id={id} path={path} style={style} />
+      <BaseEdge id={id} path={path} style={style} {...rest} />
       <EdgeLabelRenderer>
         <div
           className="rounded-md bg-gray-200 px-2 text-xs text-gray-600"
@@ -36,7 +39,7 @@ const Default: FC<SmoothStepEdgeProps> = ({
             pointerEvents: 'all',
           }}
         >
-          {label}
+          {label} - {rest.selected ? 'true' : 'false'}
         </div>
       </EdgeLabelRenderer>
     </>

@@ -1,16 +1,22 @@
-import { Comparator, VariableAssignment } from 'littlehorse-client/dist/proto/common_wfspec'
-import { VariableValue } from 'littlehorse-client/dist/proto/variable'
+import { getVariable } from '@/app/utils'
+import { Comparator } from 'littlehorse-client/dist/proto/common_wfspec'
 import { Edge as EdgeProto, ThreadSpec } from 'littlehorse-client/dist/proto/wf_spec'
-import { Edge } from 'reactflow'
+import { Edge, MarkerType } from 'reactflow'
 
 export const extractEdges = (spec: ThreadSpec): Edge[] => {
-  const edgeMap = new Map<string, number>()
+  const targetMap = new Map<string, number>()
+  const sourceMap = new Map<string, number>()
   return Object.entries(spec.nodes).flatMap(([source, node]) => {
     return node.outgoingEdges.map(edge => {
+      const sourceIndex = sourceMap.get(source) ?? 0
+      let targetIndex = targetMap.get(edge.sinkNodeName) ?? 0
+      const sourceTarget = sourceMap.get(edge.sinkNodeName) ?? 0
+
+      if (sourceTarget > 0 && targetIndex !== 0) targetIndex++
       const edgeId = `${source}-${edge.sinkNodeName}`
-      const index = edgeMap.get(edgeId) ?? 0
-      const id = index === 0 ? edgeId : `${edgeId}-${index}`
-      edgeMap.set(edgeId, index + 1)
+      const id = sourceIndex === 0 && targetIndex === 0 ? edgeId : `${edgeId}-${sourceIndex}-${targetIndex}`
+      targetMap.set(edge.sinkNodeName, targetIndex + 1)
+      sourceMap.set(source, sourceIndex + 1)
 
       const label = extractEdgeLabel(edge)
       return {
@@ -19,9 +25,15 @@ export const extractEdges = (spec: ThreadSpec): Edge[] => {
         type: 'default',
         target: edge.sinkNodeName,
         label,
-        targetHandle: `${index}`,
-        sourceHandle: `${index}`,
+        data: edge,
+        targetHandle: `target-${targetIndex}`,
+        sourceHandle: `source-${sourceIndex}`,
+        selected: true,
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+        },
         animated: true,
+        arrowHeadType: 'arrowclosed',
       }
     })
   })
@@ -31,7 +43,7 @@ const extractEdgeLabel = ({ condition }: EdgeProto) => {
   if (!condition) return
 
   const { left, right, comparator } = condition
-  return `${getValue(left)} ${getComparator(comparator)} ${getValue(right)}`
+  return `${getVariable(left)} ${getComparator(comparator)} ${getVariable(right)}`
 }
 
 const getComparator = (comparator: Comparator) => Conditions[comparator]
@@ -45,32 +57,4 @@ export const Conditions: Record<Comparator, string> = {
   [Comparator.IN]: 'IN',
   [Comparator.NOT_IN]: 'NOT IN',
   [Comparator.UNRECOGNIZED]: '',
-}
-
-const getValue = (variable?: VariableAssignment) => {
-  if (!variable) return 'undefined'
-  if (variable.formatString) return getValueFromFormatString(variable)
-  if (variable.variableName) {
-    return getValueFromVariableName(variable)
-  }
-  if (variable.literalValue) return getValueFromLiteralValue(variable)
-}
-
-const getValueFromVariableName = ({
-  variableName,
-  jsonPath,
-}: Pick<VariableAssignment, 'variableName' | 'jsonPath'>) => {
-  if (jsonPath) return `${jsonPath} within ${variableName}`
-  return variableName
-}
-
-const getValueFromLiteralValue = ({ literalValue }: Pick<VariableAssignment, 'literalValue'>) => {
-  if (!literalValue) return
-  const key = Object.keys(literalValue)[0] as keyof VariableValue
-  return literalValue[key]
-}
-
-const getValueFromFormatString = ({ formatString }: Pick<VariableAssignment, 'formatString'>) => {
-  if (!formatString) return
-  return `${formatString.format}(${formatString.args})`
 }

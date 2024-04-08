@@ -7,6 +7,7 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  safelist: ['stroke-green-500', 'stroke-red-500'],
   theme: {
     extend: {
       colors: ({ colors }) => ({

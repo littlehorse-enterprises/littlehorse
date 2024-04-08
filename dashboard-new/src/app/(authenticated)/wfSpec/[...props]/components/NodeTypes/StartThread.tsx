@@ -15,11 +15,11 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
             <ClockIcon className="h-4 w-4 fill-transparent stroke-blue-500" />
           </div>
         </div>
-        <Handle type="source" position={Position.Right} className="h-2 w-2 bg-transparent" />
+        <Handle type="source" position={Position.Right} className="bg-transparent" />
         <Handle
           type="target"
           position={Position.Left}
-          className="border-b-4 border-l-4 border-t-4 border-b-transparent border-l-gray-500 border-t-transparent bg-transparent"
+          className="bg-transparent"
         />
         <div className="absolute flex w-full items-center justify-center whitespace-nowrap text-center	">
           <div className="block">{data.startThread?.threadSpecName}</div>

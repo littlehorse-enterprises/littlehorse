@@ -11,7 +11,7 @@ const ExitNode: FC<NodeProps> = ({ data }) => {
         <Handle
           type="target"
           position={Position.Left}
-          className="border-b-4 border-l-4 border-t-4 border-b-transparent border-l-gray-500 border-t-transparent bg-transparent"
+          className="bg-transparent"
         />
       </div>
     </Fade>
