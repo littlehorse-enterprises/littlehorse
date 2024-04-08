@@ -85,6 +85,21 @@ func TestUserTaskWithNotes(t *testing.T) {
 	assert.Equal(t, "sample notes", utNode.GetNotes().GetLiteralValue().GetStr())
 }
 
+func TestUserTaskWithOnCancelExceptionName(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		t.AssignUserTask("sample-user-task", nil, "group").WithOnCancelException("no-response")
+	}, "my-workflow")
+
+	putWf, _ := wf.Compile()
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-sample-user-task-USER_TASK"]
+
+	utNode := node.GetUserTask()
+	assert.NotNil(t, utNode)
+
+	assert.Equal(t, "no-response", utNode.GetOnCancelExceptionName().GetLiteralValue().GetStr())
+}
+
 func TestReminderTask(t *testing.T) {
 	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		userVar := t.AddVariable("user", model.VariableType_STR)

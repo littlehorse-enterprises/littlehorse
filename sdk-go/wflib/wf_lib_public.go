@@ -281,3 +281,14 @@ func (u *UserTaskOutput) WithNotes(notes interface{}) *UserTaskOutput {
 	userTaskNode.Notes = notesVar
 	return u
 }
+
+func (u *UserTaskOutput) WithOnCancelException(exceptionName interface{}) *UserTaskOutput {
+	userTaskNode := u.node.GetUserTask()
+	onCancelExceptionName, err := u.thread.assignVariable(exceptionName)
+
+	if err != nil {
+		u.thread.throwError(err)
+	}
+	userTaskNode.OnCancelExceptionName = onCancelExceptionName
+	return u
+}
