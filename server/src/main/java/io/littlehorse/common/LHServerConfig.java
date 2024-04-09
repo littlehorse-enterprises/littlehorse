@@ -806,7 +806,9 @@ public class LHServerConfig extends ConfigBase {
         props.put("num.standby.replicas", Integer.valueOf(getOrSetDefault(NUM_STANDBY_REPLICAS_KEY, "0")));
         props.put("max.warmup.replicas", Integer.valueOf(getOrSetDefault(NUM_WARMUP_REPLICAS_KEY, "4")));
         props.put("probing.rebalance.interval.ms", 60 * 1000);
-        props.put("metrics.recording.level", getOrSetDefault(STREAMS_METRICS_LEVEL_KEY, "info").toUpperCase());
+        props.put(
+                "metrics.recording.level",
+                getOrSetDefault(STREAMS_METRICS_LEVEL_KEY, "info").toUpperCase());
 
         // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.
         props.put("default.deserialization.exception.handler", LogAndContinueExceptionHandler.class);
