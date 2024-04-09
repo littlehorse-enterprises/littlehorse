@@ -22,7 +22,6 @@ public class LHTaskSignature {
     Method taskMethod;
     boolean hasWorkerContextAtEnd;
     String taskDefName;
-
     Object executable;
 
     public LHTaskSignature(String taskDefName, Object executable, Map<String, String> valuesForPlaceHolders)
@@ -38,18 +37,20 @@ public class LHTaskSignature {
                 String taskDefForThisMethod =
                         method.getAnnotation(LHTaskMethod.class).value();
 
-                if (valuesForPlaceHolders != null && !valuesForPlaceHolders.isEmpty()) {
-                    taskDefForThisMethod =
-                            replacePlaceholdersInTaskDefName(taskDefForThisMethod, valuesForPlaceHolders);
-                }
-
                 if (!taskDefForThisMethod.equals(taskDefName)) {
                     continue;
+                }
+
+                if (valuesForPlaceHolders != null && !valuesForPlaceHolders.isEmpty()) {
+                    this.taskDefName = replacePlaceholdersInTaskDefName(taskDefForThisMethod, valuesForPlaceHolders);
+                } else {
+                    this.taskDefName = taskDefForThisMethod;
                 }
 
                 if (taskMethod != null) {
                     throw new TaskSchemaMismatchError("Found two annotated task methods!");
                 }
+
                 taskMethod = method;
             }
         }
