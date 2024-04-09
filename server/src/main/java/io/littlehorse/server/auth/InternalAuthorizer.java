@@ -12,7 +12,6 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
-
 import java.util.Objects;
 
 public class InternalAuthorizer implements ServerAuthorizer {

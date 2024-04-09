@@ -21,7 +21,6 @@ import io.littlehorse.server.Authorize;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
-
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;

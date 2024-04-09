@@ -13,7 +13,6 @@ import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
-
 import java.util.regex.Pattern;
 
 public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> implements ClusterLevelCommand {
