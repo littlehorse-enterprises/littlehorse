@@ -1,6 +1,5 @@
 package io.littlehorse.canary.metronome;
 
-import com.google.protobuf.Message;
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.canary.kafka.MessageEmitter;
 import io.littlehorse.canary.proto.*;
@@ -32,7 +31,7 @@ class MetronomeTask {
 
         log.trace("Executing task {}", MetronomeWorkflow.TASK_NAME);
 
-        final Message key = EventKey.newBuilder()
+        final EventKey key = EventKey.newBuilder()
                 .setServerHost(serverHost)
                 .setServerPort(serverPort)
                 .setServerVersion(serverVersion)
@@ -40,10 +39,9 @@ class MetronomeTask {
                 .setEventType(EventType.TASK_RUN_EXECUTION)
                 .build();
 
-        final Message beat = EventValue.newBuilder()
+        final EventValue beat = EventValue.newBuilder()
                 .setTime(Timestamps.fromMillis(executionTime.toEpochMilli()))
-                .setLatency(Duration.between(Instant.ofEpochMilli(startTime), executionTime)
-                        .toMillis())
+                .setLatency(Duration.between(Instant.ofEpochMilli(startTime), executionTime).toMillis())
                 .build();
 
         emitter.emit(key, beat);

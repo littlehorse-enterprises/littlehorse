@@ -4,6 +4,8 @@ import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
 import io.littlehorse.canary.proto.*;
 import java.time.Duration;
 import java.util.List;
+
+import io.littlehorse.canary.util.MetricFactory;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
@@ -15,12 +17,12 @@ import org.apache.kafka.streams.state.WindowStore;
 
 @Getter
 @Slf4j
-public class LatencyTopology {
+public class LatencySubTopology {
 
     public static final String LATENCY_AVG_STORE = "latency-avg";
     private final KStream<MetricKey, MetricValue> stream;
 
-    public LatencyTopology(
+    public LatencySubTopology(
             final KStream<BeatKey, BeatValue> mainStream, final TimeWindows windows, final Duration storeRetention) {
         stream = mainStream
                 .filter((key, value) -> value.hasLatencyBeat())
@@ -37,9 +39,9 @@ public class LatencyTopology {
                                 .withRetention(storeRetention))
                 .toStream((key, value) -> key.key())
                 // debug peek aggregate
-                .peek(LatencyTopology::peekAggregate)
+                .peek(LatencySubTopology::peekAggregate)
                 // extract metrics
-                .flatMap(LatencyTopology::makeMetrics);
+                .flatMap(LatencySubTopology::makeMetrics);
     }
 
     private static List<KeyValue<MetricKey, MetricValue>> makeMetrics(

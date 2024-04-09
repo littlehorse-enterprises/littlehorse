@@ -3,7 +3,7 @@ package io.littlehorse.canary.kafka;
 import io.littlehorse.canary.Bootstrap;
 import io.littlehorse.canary.CanaryException;
 import io.littlehorse.canary.config.CanaryConfig;
-import io.littlehorse.canary.util.Shutdown;
+import io.littlehorse.canary.util.ShutdownHook;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.instrument.binder.kafka.KafkaClientMetrics;
@@ -24,7 +24,7 @@ public class KafkaTopicBootstrap extends Bootstrap implements MeterBinder {
         super(config);
 
         adminClient = KafkaAdminClient.create(config.toKafkaAdminConfig().toMap());
-        Shutdown.addShutdownHook("Topics Creator", adminClient);
+        ShutdownHook.add("Topics Creator", adminClient);
 
         try {
             adminClient
@@ -46,14 +46,14 @@ public class KafkaTopicBootstrap extends Bootstrap implements MeterBinder {
 
     private List<NewTopic> getNewTopics() {
         return List.of(
-                new NewTopic(config.getTopicMetricsName(), config.getTopicPartitions(), config.getTopicReplicas()),
-                new NewTopic(config.getTopicEventsName(), config.getTopicPartitions(), config.getTopicReplicas()));
+                new NewTopic(config.getBeatsTopicName(), config.getTopicPartitions(), config.getTopicReplicas()),
+                new NewTopic(config.getEventsTopicName(), config.getTopicPartitions(), config.getTopicReplicas()));
     }
 
     @Override
     public void bindTo(final MeterRegistry registry) {
         final KafkaClientMetrics kafkaClientMetrics = new KafkaClientMetrics(adminClient);
-        Shutdown.addShutdownHook("Topics Creator: Prometheus Exporter", kafkaClientMetrics);
+        ShutdownHook.add("Topics Creator: Prometheus Exporter", kafkaClientMetrics);
         kafkaClientMetrics.bindTo(registry);
     }
 }

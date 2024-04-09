@@ -2,7 +2,7 @@ package io.littlehorse.canary.kafka;
 
 import com.google.protobuf.Message;
 import io.littlehorse.canary.CanaryException;
-import io.littlehorse.canary.util.Shutdown;
+import io.littlehorse.canary.util.ShutdownHook;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.instrument.binder.kafka.KafkaClientMetrics;
@@ -25,7 +25,7 @@ public class MessageEmitter implements MeterBinder {
     public MessageEmitter(final String topicName, final Map<String, Object> kafkaProducerConfigMap) {
         this.topicName = topicName;
         producer = new KafkaProducer<>(kafkaProducerConfigMap);
-        Shutdown.addShutdownHook("Message Emitter", producer);
+        ShutdownHook.add("Message Emitter", producer);
     }
 
     /**
@@ -66,7 +66,7 @@ public class MessageEmitter implements MeterBinder {
     @Override
     public void bindTo(final MeterRegistry registry) {
         final KafkaClientMetrics kafkaClientMetrics = new KafkaClientMetrics(producer);
-        Shutdown.addShutdownHook("Metrics Emitter: Prometheus Exporter", kafkaClientMetrics);
+        ShutdownHook.add("Metrics Emitter: Prometheus Exporter", kafkaClientMetrics);
         kafkaClientMetrics.bindTo(registry);
     }
 }

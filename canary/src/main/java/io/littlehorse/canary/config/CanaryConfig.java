@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class CanaryConfig implements Config {
 
     public static final String LH_CANARY_PREFIX = "lh.canary.";
-    public static final String TOPIC_METRICS_NAME = "topic.metrics.name";
+    public static final String TOPIC_BEATS_NAME = "topic.beats.name";
     public static final String TOPIC_EVENTS_NAME = "topic.events.name";
     public static final String TOPIC_CREATION_PARTITIONS = "topic.creation.partitions";
     public static final String TOPIC_CREATION_REPLICAS = "topic.creation.replicas";
@@ -70,11 +70,11 @@ public class CanaryConfig implements Config {
         return configs.get(configName).toString();
     }
 
-    public String getTopicMetricsName() {
-        return getConfig(TOPIC_METRICS_NAME);
+    public String getBeatsTopicName() {
+        return getConfig(TOPIC_BEATS_NAME);
     }
 
-    public String getTopicEventsName() {
+    public String getEventsTopicName() {
         return getConfig(TOPIC_EVENTS_NAME);
     }
 

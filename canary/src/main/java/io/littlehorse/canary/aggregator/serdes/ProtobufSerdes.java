@@ -27,7 +27,7 @@ public class ProtobufSerdes {
         return Serdes.serdeFrom(new ProtobufSerializer<>(), new MetricKeyDeserializer());
     }
 
-    public static Serde<EventValue> EvenValue() {
+    public static Serde<EventValue> EventValue() {
         return Serdes.serdeFrom(new ProtobufSerializer<>(), new EventValueDeserializer());
     }
 

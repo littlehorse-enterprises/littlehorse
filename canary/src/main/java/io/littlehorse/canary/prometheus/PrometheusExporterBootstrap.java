@@ -2,7 +2,7 @@ package io.littlehorse.canary.prometheus;
 
 import io.littlehorse.canary.Bootstrap;
 import io.littlehorse.canary.config.CanaryConfig;
-import io.littlehorse.canary.util.Shutdown;
+import io.littlehorse.canary.util.ShutdownHook;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
@@ -27,7 +27,7 @@ public class PrometheusExporterBootstrap extends Bootstrap {
 
     private PrometheusMeterRegistry initializeRegistry() {
         final PrometheusMeterRegistry prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
-        Shutdown.addShutdownHook("Prometheus Exporter", prometheusRegistry::close);
+        ShutdownHook.add("Prometheus Exporter", prometheusRegistry::close);
 
         final List<Tag> comonTags = config.getCommonTags().entrySet().stream()
                 .map(entry -> Tag.of(entry.getKey(), entry.getValue().toString()))

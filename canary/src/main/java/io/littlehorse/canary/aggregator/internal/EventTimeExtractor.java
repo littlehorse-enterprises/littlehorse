@@ -2,15 +2,16 @@ package io.littlehorse.canary.aggregator.internal;
 
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.canary.proto.BeatValue;
+import io.littlehorse.canary.proto.EventValue;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.streams.processor.TimestampExtractor;
 
 @Slf4j
-public class BeatTimeExtractor implements TimestampExtractor {
+public class EventTimeExtractor implements TimestampExtractor {
     @Override
     public long extract(final ConsumerRecord<Object, Object> record, final long partitionTime) {
-        if (!(record.value() instanceof BeatValue beat)) {
+        if (!(record.value() instanceof EventValue beat)) {
             log.warn("Invalid class {}, using default timestamp", record.value().getClass());
             return partitionTime;
         }

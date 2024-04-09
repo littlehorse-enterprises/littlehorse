@@ -7,7 +7,7 @@ import io.littlehorse.canary.kafka.KafkaTopicBootstrap;
 import io.littlehorse.canary.metronome.MetronomeBootstrap;
 import io.littlehorse.canary.metronome.MetronomeWorkerBootstrap;
 import io.littlehorse.canary.prometheus.PrometheusExporterBootstrap;
-import io.littlehorse.canary.util.Shutdown;
+import io.littlehorse.canary.util.ShutdownHook;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.concurrent.CountDownLatch;
@@ -34,7 +34,7 @@ public class Main {
         }
 
         final CountDownLatch latch = new CountDownLatch(1);
-        Shutdown.addShutdownHook("Main Thread", latch::countDown);
+        ShutdownHook.add("Main Thread", latch::countDown);
         latch.await();
     }
 

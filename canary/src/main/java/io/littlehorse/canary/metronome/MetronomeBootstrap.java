@@ -25,7 +25,7 @@ public class MetronomeBootstrap extends Bootstrap implements MeterBinder {
         workflow.register();
 
         emitter = new MessageEmitter(
-                config.getTopicEventsName(), config.toKafkaProducerConfig().toMap());
+                config.getEventsTopicName(), config.toKafkaProducerConfig().toMap());
 
         new Metronome(
                 emitter,

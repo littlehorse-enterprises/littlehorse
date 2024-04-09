@@ -1,8 +1,8 @@
 package io.littlehorse.canary.aggregator.topology;
 
-import static io.littlehorse.canary.aggregator.topology.MetricsTopology.METRICS_STORE;
-import static io.littlehorse.canary.proto.MetricFactory.buildKey;
-import static io.littlehorse.canary.proto.MetricFactory.buildValue;
+import static io.littlehorse.canary.aggregator.topology.CanaryTopology.METRICS_STORE;
+import static io.littlehorse.canary.util.MetricFactory.buildKey;
+import static io.littlehorse.canary.util.MetricFactory.buildValue;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.protobuf.util.Timestamps;
@@ -23,7 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class MetricsTopologyTest {
+class CanaryTopologyTest {
     public static final String EXPECTED_HOST = "localhost";
     public static final int EXPECTED_PORT = 2023;
     public static final String EXPECTED_VERSION = "1.0.0";
@@ -70,19 +70,20 @@ class MetricsTopologyTest {
 
     @BeforeEach
     void beforeEach() throws IOException {
-        String inputTopicName = "metrics";
+        String eventsTopic = "events";
+        String beatsTopic = "beats";
 
-        MetricsTopology metricsTopology =
-                new MetricsTopology(inputTopicName, Duration.ofMinutes(2).toMillis());
+        CanaryTopology canaryTopology =
+                new CanaryTopology(eventsTopic,beatsTopic, Duration.ofMinutes(2).toMillis());
 
         Properties properties = new Properties();
         properties.put(
                 StreamsConfig.STATE_DIR_CONFIG,
                 Files.createTempDirectory("canaryStreamUnitTest").toString());
 
-        testDriver = new TopologyTestDriver(metricsTopology.toTopology(), properties);
+        testDriver = new TopologyTestDriver(canaryTopology.toTopology(), properties);
         inputTopic = testDriver.createInputTopic(
-                inputTopicName,
+                eventsTopic,
                 ProtobufSerdes.BeatKey().serializer(),
                 ProtobufSerdes.BeatValue().serializer());
 

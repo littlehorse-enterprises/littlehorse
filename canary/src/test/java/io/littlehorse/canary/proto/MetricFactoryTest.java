@@ -3,6 +3,8 @@ package io.littlehorse.canary.proto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+
+import io.littlehorse.canary.util.MetricFactory;
 import org.junit.jupiter.api.Test;
 
 class MetricFactoryTest {

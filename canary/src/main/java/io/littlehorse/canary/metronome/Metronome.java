@@ -6,11 +6,8 @@ import static io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockin
 
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.canary.kafka.MessageEmitter;
-import io.littlehorse.canary.proto.BeatKey;
-import io.littlehorse.canary.proto.BeatValue;
-import io.littlehorse.canary.proto.LatencyBeat;
-import io.littlehorse.canary.proto.LatencyBeatKey;
-import io.littlehorse.canary.util.Shutdown;
+import io.littlehorse.canary.proto.*;
+import io.littlehorse.canary.util.ShutdownHook;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import java.time.Duration;
@@ -52,11 +49,11 @@ public class Metronome {
         this.serverVersion = serverVersion;
 
         mainExecutor = Executors.newSingleThreadScheduledExecutor();
-        Shutdown.addShutdownHook("Metronome: Main Executor Thread", () -> closeExecutor(mainExecutor));
+        ShutdownHook.add("Metronome: Main Executor Thread", () -> closeExecutor(mainExecutor));
         mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency, TimeUnit.MILLISECONDS);
 
         requestsExecutor = Executors.newFixedThreadPool(threads);
-        Shutdown.addShutdownHook("Metronome: Request Executor Thread", () -> closeExecutor(requestsExecutor));
+        ShutdownHook.add("Metronome: Request Executor Thread", () -> closeExecutor(requestsExecutor));
     }
 
     private void closeExecutor(final ExecutorService executor) throws InterruptedException {
@@ -66,37 +63,48 @@ public class Metronome {
 
     private void executeRun() {
         final String wfId = UUID.randomUUID().toString().replace("-", "");
+
         log.trace("Executing run {}", wfId);
 
         final Instant before = Instant.now();
+        EventStatus status = requestWfRun(wfId);
+        final Instant after = Instant.now();
 
-        lhClient.runWf(RunWfRequest.newBuilder()
-                .setWfSpecName(CANARY_WORKFLOW)
-                .setId(wfId)
-                .setRevision(0)
-                .setMajorVersion(0)
-                .putVariables(
-                        VARIABLE_NAME,
-                        VariableValue.newBuilder()
-                                .setInt(Instant.now().toEpochMilli())
-                                .build())
-                .build());
-
-        final Duration latency = Duration.between(before, Instant.now());
-
-        final BeatKey key = BeatKey.newBuilder()
+        final EventKey key = EventKey.newBuilder()
                 .setServerHost(serverHost)
                 .setServerPort(serverPort)
                 .setServerVersion(serverVersion)
-                .setLatencyBeatKey(LatencyBeatKey.newBuilder().setId(RUN_WF_LATENCY_METRIC_NAME))
+                .setId(wfId)
+                .setEventType(EventType.WF_RUN_REQUEST)
                 .build();
 
-        final BeatValue beat = BeatValue.newBuilder()
-                .setTime(Timestamps.now())
-                .setLatencyBeat(LatencyBeat.newBuilder().setLatency(latency.toMillis()))
+        final EventValue beat = EventValue.newBuilder()
+                .setTime(Timestamps.fromMillis(before.toEpochMilli()))
+                .setLatency(Duration.between(before, after).toMillis())
+                .setStatus(status)
                 .build();
 
         emitter.future(key, beat);
+    }
+
+    private EventStatus requestWfRun(String wfId) {
+        try {
+            lhClient.runWf(RunWfRequest.newBuilder()
+                    .setWfSpecName(CANARY_WORKFLOW)
+                    .setId(wfId)
+                    .setRevision(0)
+                    .setMajorVersion(0)
+                    .putVariables(
+                            VARIABLE_NAME,
+                            VariableValue.newBuilder()
+                                    .setInt(Instant.now().toEpochMilli())
+                                    .build())
+                    .build());
+        } catch (Exception e) {
+            return EventStatus.ERROR;
+        }
+
+        return EventStatus.OK;
     }
 
     private void scheduledRun() {

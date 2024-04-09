@@ -4,7 +4,7 @@ import io.littlehorse.canary.Bootstrap;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.kafka.MessageEmitter;
 import io.littlehorse.canary.util.LHClientUtil;
-import io.littlehorse.canary.util.Shutdown;
+import io.littlehorse.canary.util.ShutdownHook;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -22,7 +22,7 @@ public class MetronomeWorkerBootstrap extends Bootstrap implements MeterBinder {
         final LHConfig lhConfig = new LHConfig(config.toLittleHorseConfig().toMap());
 
         emitter = new MessageEmitter(
-                config.getTopicEventsName(), config.toKafkaProducerConfig().toMap());
+                config.getEventsTopicName(), config.toKafkaProducerConfig().toMap());
 
         final MetronomeTask executable = new MetronomeTask(
                 emitter,
@@ -31,7 +31,7 @@ public class MetronomeWorkerBootstrap extends Bootstrap implements MeterBinder {
                 LHClientUtil.getServerVersion(lhConfig.getBlockingStub()));
 
         final LHTaskWorker worker = new LHTaskWorker(executable, MetronomeWorkflow.TASK_NAME, lhConfig);
-        Shutdown.addShutdownHook("Metronome: LH Task Worker", worker);
+        ShutdownHook.add("Metronome: LH Task Worker", worker);
         worker.registerTaskDef();
         worker.start();
 

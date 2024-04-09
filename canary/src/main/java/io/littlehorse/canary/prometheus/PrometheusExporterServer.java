@@ -3,7 +3,7 @@ package io.littlehorse.canary.prometheus;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.micrometer.MicrometerPlugin;
-import io.littlehorse.canary.util.Shutdown;
+import io.littlehorse.canary.util.ShutdownHook;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.prometheus.client.exporter.common.TextFormat;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ public class PrometheusExporterServer {
                         new MicrometerPlugin(pluginConfig -> pluginConfig.registry = prometheusRegistry)))
                 .get(webPath, this::printMetrics)
                 .start(webPort);
-        Shutdown.addShutdownHook("Prometheus Exporter: Web Server", server::stop);
+        ShutdownHook.add("Prometheus Exporter: Web Server", server::stop);
     }
 
     private void printMetrics(final Context context) {

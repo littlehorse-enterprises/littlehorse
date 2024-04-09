@@ -1,4 +1,8 @@
-package io.littlehorse.canary.proto;
+package io.littlehorse.canary.util;
+
+import io.littlehorse.canary.proto.MetricKey;
+import io.littlehorse.canary.proto.MetricValue;
+import io.littlehorse.canary.proto.Tag;
 
 import java.util.List;
 
