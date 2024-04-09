@@ -18,6 +18,12 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
 
     private String id;
 
+    public PutTenantRequestModel() {}
+
+    public PutTenantRequestModel(String id) {
+        this.id = id;
+    }
+
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         PutTenantRequest putTenantRequest = (PutTenantRequest) proto;

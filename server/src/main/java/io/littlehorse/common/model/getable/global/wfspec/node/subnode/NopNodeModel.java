@@ -6,6 +6,8 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.EntrypointRunMo
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.sdk.common.proto.NopNode;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 
 public class NopNodeModel extends SubNode<NopNode> {
@@ -24,10 +26,10 @@ public class NopNodeModel extends SubNode<NopNode> {
     public void initFrom(Message proto, ExecutionContext context) {}
 
     @Override
-    public void validate() throws LHApiException {}
+    public void validate(MetadataCommandExecution ctx) throws LHApiException {}
 
     @Override
-    public EntrypointRunModel createSubNodeRun(Date time) {
+    public EntrypointRunModel createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
         return new EntrypointRunModel();
     }
 }
