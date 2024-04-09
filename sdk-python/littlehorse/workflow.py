@@ -706,7 +706,9 @@ class UserTaskOutput(NodeOutput):
         node.sub_node = ut_node
         return self
 
-    def with_on_cancel_exception(self, exception_name: Union[str, WfRunVariable]) -> "UserTaskOutput":
+    def with_on_cancel_exception(
+        self, exception_name: Union[str, WfRunVariable]
+    ) -> "UserTaskOutput":
         node = self._thread._last_node()
         if node.name != self._node_name:
             raise ValueError("tried to mutate stale UserTaskOutput!")
@@ -1676,7 +1678,37 @@ class WorkflowThread:
     def cancel_user_task_run_after(
         self, user_task: UserTaskOutput, delay_in_seconds: Union[int, WfRunVariable]
     ) -> None:
+        """
+        Cancels a User Task Run if it exceeds a specified deadline.
+        Args:
+            user_task: reference to the UserTaskNode that will be canceled after the deadline.
+            delay_in_seconds: delay time after which the User Task Run should be canceled.
+        """
         self._check_if_active()
+        self._schedule_user_task_cancellation_after(
+            user_task, delay_in_seconds, UTActionTrigger.UTHook.ON_ARRIVAL
+        )
+
+    def cancel_user_task_run_after_assignment(
+        self, user_task: UserTaskOutput, delay_in_seconds: Union[int, WfRunVariable]
+    ):
+        """
+        Cancels a User Task Run if it exceeds a specified deadline after it is assigned.
+        Args:
+            user_task: reference to the UserTaskNode that will be canceled after the deadline.
+            delay_in_seconds: delay time after which the User Task Run should be canceled.
+        """
+        self._check_if_active()
+        self._schedule_user_task_cancellation_after(
+            user_task, delay_in_seconds, UTActionTrigger.UTHook.ON_TASK_ASSIGNED
+        )
+
+    def _schedule_user_task_cancellation_after(
+        self,
+        user_task: UserTaskOutput,
+        delay_in_seconds: Union[int, WfRunVariable],
+        hook: UTActionTrigger.UTHook,
+    ):
         if self._last_node().name != user_task.node_name:
             raise ValueError("Tried to reassign stale user task node!")
 
@@ -1687,7 +1719,7 @@ class WorkflowThread:
             UTActionTrigger(
                 cancel=cancel,
                 delay_seconds=to_variable_assignment(delay_in_seconds),
-                hook=UTActionTrigger.UTHook.ON_TASK_ASSIGNED,
+                hook=hook,
             )
         )
 
