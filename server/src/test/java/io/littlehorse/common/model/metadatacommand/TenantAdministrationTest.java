@@ -1,10 +1,8 @@
 package io.littlehorse.common.model.metadatacommand;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
@@ -19,7 +17,6 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
-import java.util.UUID;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -31,9 +28,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class TenantAdministrationTest {
@@ -58,7 +64,7 @@ public class TenantAdministrationTest {
     private final String tenantId = "test-tenant-id";
 
     private final PutTenantRequestModel putTenantRequest =
-            PutTenantRequestModel.fromProto(putTenantRequest(), PutTenantRequestModel.class, mock());
+            PutTenantRequestModel.fromProto(putTenantRequest(tenantId), PutTenantRequestModel.class, mock());
 
     private Headers metadata = HeadersUtil.metadataHeadersFor(
             new TenantIdModel(tenantId), new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL));
@@ -96,11 +102,49 @@ public class TenantAdministrationTest {
         assertThat(storedTenant()).isNotNull();
     }
 
+    @Test
+    void shouldThrowExceptionWhenTenantHasABackSlashInvalidCharacter() {
+        String invalidTenant = "///Tenant";
+        PutTenantRequestModel putTenantRequestModel =
+                PutTenantRequestModel.fromProto(putTenantRequest(invalidTenant), PutTenantRequestModel.class, mock());
+        MetadataCommandModel command = new MetadataCommandModel(putTenantRequestModel);
+        metadataProcessor.init(mockProcessorContext);
+        metadataProcessor.process(
+                new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
+
+        ArgumentCaptor<Exception> argumentCaptor = ArgumentCaptor.forClass(Exception.class);
+
+        verify(server, times(1)).sendErrorToClient(any(), argumentCaptor.capture());
+
+        assertThat(argumentCaptor.getValue()).isInstanceOf(LHApiException.class);
+        assertThat(argumentCaptor.getValue().getMessage())
+                .isEqualTo("INVALID_ARGUMENT: / and \\ are not valid characters for Tenant");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenTenantHasAForwardSlashInvalidCharacter() {
+        String invalidTenant = "Tenanṭ\\";
+        PutTenantRequestModel putTenantRequestModel =
+                PutTenantRequestModel.fromProto(putTenantRequest(invalidTenant), PutTenantRequestModel.class, mock());
+        MetadataCommandModel command = new MetadataCommandModel(putTenantRequestModel);
+        metadataProcessor.init(mockProcessorContext);
+        metadataProcessor.process(
+                new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
+
+        ArgumentCaptor<Exception> argumentCaptor = ArgumentCaptor.forClass(Exception.class);
+
+        verify(server, times(1)).sendErrorToClient(any(), argumentCaptor.capture());
+
+        assertThat(argumentCaptor.getValue()).isInstanceOf(LHApiException.class);
+        assertThat(argumentCaptor.getValue().getMessage())
+                .isEqualTo("INVALID_ARGUMENT: / and \\ are not valid characters for Tenant");
+    }
+
     private TenantModel storedTenant() {
         return metadataManager.get(new TenantIdModel(tenantId));
     }
 
-    private PutTenantRequest putTenantRequest() {
+    private PutTenantRequest putTenantRequest(String tenantId) {
         return PutTenantRequest.newBuilder().setId(tenantId).build();
     }
 }

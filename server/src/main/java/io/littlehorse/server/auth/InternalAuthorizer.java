@@ -9,11 +9,10 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
+
 import java.util.Objects;
 
 public class InternalAuthorizer implements ServerAuthorizer {
@@ -44,9 +43,7 @@ public class InternalAuthorizer implements ServerAuthorizer {
         String tenantIdStr = headers.get(TENANT_ID);
         TenantIdModel tenantId = tenantIdStr == null
                 ? null
-                : (TenantIdModel) ObjectIdModel.fromString(
-                        LHUtil.getCompositeId(String.valueOf(GetableClassEnum.TENANT.getNumber()), tenantIdStr.trim()),
-                        TenantIdModel.class);
+                : (TenantIdModel) ObjectIdModel.fromString(tenantIdStr.trim(), TenantIdModel.class);
         Objects.requireNonNull(clientId);
         Objects.requireNonNull(tenantId);
         RequestExecutionContext requestContext = new RequestExecutionContext(
