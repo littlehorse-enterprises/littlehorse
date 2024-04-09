@@ -42,6 +42,7 @@
     - [`LHS_CORE_STREAM_THREADS`](#lhs_core_stream_threads)
     - [`LHS_TIMER_STREAM_THREADS`](#lhs_timer_stream_threads)
     - [`LHS_NUM_NETWORK_THREADS`](#lhs_num_network_threads)
+    - [`LHS_STREAMS_METRICS_LEVEL`](#lhs_streams_metrics_level)
     - [`LHS_STREAMS_SESSION_TIMEOUT`](#lhs_streams_session_timeout)
     - [`LHS_CORE_STREAMS_COMMIT_INTERVAL`](#lhs_core_streams_commit_interval)
     - [`LHS_TIMER_STREAMS_COMMIT_INTERVAL`](#lhs_timer_streams_commit_interval)
@@ -552,6 +553,16 @@ The size of the shared Threadpool used by the grpc listeners.
 - **Type:** int
 - **Default:** 2
 - **Minimum:** 2
+- **Importance:** medium
+
+---
+
+### `LHS_STREAMS_METRICS_LEVEL`
+
+The level of granularity to collect Kafka Streams Metrics. Passes through to Kafka Streams `metrics.recording.level`.
+
+- **Type:** info|debug|trace
+- **Default:** info
 - **Importance:** medium
 
 ---
