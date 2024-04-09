@@ -260,8 +260,18 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
-    public void cancelUserTaskAfter(UserTaskOutput userTask, Serializable delaySeconds) {
+    public void cancelUserTaskRunAfter(UserTaskOutput userTask, Serializable delaySeconds) {
         checkIfIsActive();
+        scheduleUserTaskCancellationAfterDeadline(userTask, delaySeconds, UTActionTrigger.UTHook.ON_ARRIVAL);
+    }
+
+    @Override
+    public void cancelUserTaskRunAfterAssignment(UserTaskOutput userTask, Serializable delaySeconds) {
+        checkIfIsActive();
+        scheduleUserTaskCancellationAfterDeadline(userTask, delaySeconds, UTActionTrigger.UTHook.ON_TASK_ASSIGNED);
+    }
+
+    private void scheduleUserTaskCancellationAfterDeadline(UserTaskOutput userTask, Serializable delaySeconds, UTActionTrigger.UTHook hook){
         VariableAssignment assn = assignVariable(delaySeconds);
         UTActionTrigger.UTACancel utaCancel =
                 UTActionTrigger.UTACancel.newBuilder().build();
@@ -272,7 +282,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
         UTActionTrigger.Builder newUtActionBuilder = UTActionTrigger.newBuilder()
                 .setCancel(utaCancel)
-                .setHook(UTActionTrigger.UTHook.ON_TASK_ASSIGNED)
+                .setHook(hook)
                 .setDelaySeconds(assn);
         curNode.getUserTaskBuilder().addActions(newUtActionBuilder);
         spec.putNodes(lastNodeName, curNode.build());

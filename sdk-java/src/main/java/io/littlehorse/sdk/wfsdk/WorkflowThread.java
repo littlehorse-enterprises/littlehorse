@@ -183,7 +183,19 @@ public interface WorkflowThread {
     void scheduleReminderTaskOnAssignment(
             UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, Serializable... args);
 
-    void cancelUserTaskAfter(UserTaskOutput userTask, Serializable delaySeconds);
+    /**
+     * Cancels a User Task Run if it exceeds a specified deadline.
+     * @param userTask is a reference to the UserTaskNode that will be canceled after the deadline
+     * @param delaySeconds is the delay time after which the User Task Run should be canceled
+     */
+    void cancelUserTaskRunAfter(UserTaskOutput userTask, Serializable delaySeconds);
+
+    /**
+     * Cancels a User Task Run if it exceeds a specified deadline after it is assigned
+     * @param userTask is a reference to the UserTaskNode that will be canceled after the deadline
+     * @param delaySeconds is the delay time after which the User Task Run should be canceled
+     */
+    void cancelUserTaskRunAfterAssignment(UserTaskOutput userTask, Serializable delaySeconds);
 
     /**
      * Adds a task reminder once a user is assigned to the UserTask.

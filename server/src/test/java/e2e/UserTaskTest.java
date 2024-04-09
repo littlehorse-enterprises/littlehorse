@@ -179,7 +179,7 @@ public class UserTaskTest {
             UserTaskOutput formOutput = entrypointThread
                     .assignUserTask(USER_TASK_DEF_NAME, "test-user-id", null)
                     .withOnCancelException("no-response");
-            entrypointThread.cancelUserTaskAfter(formOutput, 2);
+            entrypointThread.cancelUserTaskRunAfter(formOutput, 2);
             entrypointThread.handleException(formOutput, "no-response", userTaskCanceledHandler -> {
                 userTaskCanceledHandler.execute("user-task-canceled");
             });
