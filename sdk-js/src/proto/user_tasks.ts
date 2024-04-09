@@ -423,7 +423,7 @@ export const UserTaskField = {
     if (message.displayName !== "") {
       writer.uint32(34).string(message.displayName);
     }
-    if (message.required !== false) {
+    if (message.required === true) {
       writer.uint32(40).bool(message.required);
     }
     return writer;
@@ -743,7 +743,7 @@ export const AssignUserTaskRunRequest = {
     if (message.userTaskRunId !== undefined) {
       UserTaskRunId.encode(message.userTaskRunId, writer.uint32(10).fork()).ldelim();
     }
-    if (message.overrideClaim !== false) {
+    if (message.overrideClaim === true) {
       writer.uint32(16).bool(message.overrideClaim);
     }
     if (message.userGroup !== undefined) {

@@ -1405,7 +1405,7 @@ function createBaseManualHalt(): ManualHalt {
 
 export const ManualHalt = {
   encode(message: ManualHalt, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.meaningOfLife !== false) {
+    if (message.meaningOfLife === true) {
       writer.uint32(1096).bool(message.meaningOfLife);
     }
     return writer;
@@ -1440,7 +1440,7 @@ export const ManualHalt = {
 
   toJSON(message: ManualHalt): unknown {
     const obj: any = {};
-    if (message.meaningOfLife !== false) {
+    if (message.meaningOfLife === true) {
       obj.meaningOfLife = message.meaningOfLife;
     }
     return obj;
