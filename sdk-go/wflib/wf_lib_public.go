@@ -206,6 +206,10 @@ func (t *WorkflowThread) Format(format string, args ...*WfRunVariable) *LHFormat
 	return t.format(format, args)
 }
 
+func (t *WorkflowThread) CancelUserTaskAfter(userTask *UserTaskOutput, delaySeconds interface{}) {
+	t.cancelUserTaskAfter(userTask, delaySeconds)
+}
+
 func (t *WorkflowThread) ScheduleReminderTask(
 	userTask *UserTaskOutput, delaySeconds interface{},
 	taskDefName string, args ...interface{},

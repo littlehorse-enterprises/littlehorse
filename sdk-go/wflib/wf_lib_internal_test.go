@@ -123,6 +123,28 @@ func TestReminderTask(t *testing.T) {
 
 }
 
+func TestCancelUserTaskAfterDeadline(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		userVar := t.AddVariable("user", model.VariableType_STR)
+		uto := t.AssignUserTask("my-task", userVar, nil)
+		t.CancelUserTaskAfter(uto, 20)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-my-task-USER_TASK"]
+
+	utNode := node.GetUserTask()
+	assert.NotNil(t, utNode)
+	cancelUserTask := utNode.Actions[0]
+	assert.NotNil(t, cancelUserTask)
+	assert.Equal(t, model.UTActionTrigger_ON_TASK_ASSIGNED, cancelUserTask.Hook)
+}
+
 func TestUserTaskAssignToUserWithGroup(t *testing.T) {
 	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		t.AssignUserTask("my-task", "yoda", "jedi-council")
