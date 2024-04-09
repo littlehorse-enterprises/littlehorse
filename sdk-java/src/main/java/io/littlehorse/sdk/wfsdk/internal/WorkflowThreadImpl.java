@@ -271,7 +271,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
         scheduleUserTaskCancellationAfterDeadline(userTask, delaySeconds, UTActionTrigger.UTHook.ON_TASK_ASSIGNED);
     }
 
-    private void scheduleUserTaskCancellationAfterDeadline(UserTaskOutput userTask, Serializable delaySeconds, UTActionTrigger.UTHook hook){
+    private void scheduleUserTaskCancellationAfterDeadline(
+            UserTaskOutput userTask, Serializable delaySeconds, UTActionTrigger.UTHook hook) {
         VariableAssignment assn = assignVariable(delaySeconds);
         UTActionTrigger.UTACancel utaCancel =
                 UTActionTrigger.UTACancel.newBuilder().build();
@@ -280,10 +281,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
             throw new RuntimeException("Tried to edit a stale User Task node!");
         }
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        UTActionTrigger.Builder newUtActionBuilder = UTActionTrigger.newBuilder()
-                .setCancel(utaCancel)
-                .setHook(hook)
-                .setDelaySeconds(assn);
+        UTActionTrigger.Builder newUtActionBuilder =
+                UTActionTrigger.newBuilder().setCancel(utaCancel).setHook(hook).setDelaySeconds(assn);
         curNode.getUserTaskBuilder().addActions(newUtActionBuilder);
         spec.putNodes(lastNodeName, curNode.build());
     }

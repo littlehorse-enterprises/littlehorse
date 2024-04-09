@@ -106,6 +106,7 @@ public class UserTaskTest {
                 .doSearch(SearchWfRunRequest.class, instanceCaptor.capture(), buildId)
                 .waitForUserTaskRunStatus(0, 1, UserTaskRunStatus.ASSIGNED)
                 .waitForUserTaskRunStatus(0, 1, UserTaskRunStatus.UNASSIGNED, Duration.ofSeconds(6))
+                .thenCancelUserTaskRun(0, 1)
                 .start();
         CapturedResult<WfRunIdList> capturedResult = instanceCaptor.getValue();
         WfRunIdList wfRunIdList = capturedResult.get();

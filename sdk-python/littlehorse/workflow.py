@@ -1691,7 +1691,7 @@ class WorkflowThread:
 
     def cancel_user_task_run_after_assignment(
         self, user_task: UserTaskOutput, delay_in_seconds: Union[int, WfRunVariable]
-    ):
+    ) -> None:
         """
         Cancels a User Task Run if it exceeds a specified deadline after it is assigned.
         Args:
@@ -1708,7 +1708,7 @@ class WorkflowThread:
         user_task: UserTaskOutput,
         delay_in_seconds: Union[int, WfRunVariable],
         hook: UTActionTrigger.UTHook,
-    ):
+    ) -> None:
         if self._last_node().name != user_task.node_name:
             raise ValueError("Tried to reassign stale user task node!")
 
