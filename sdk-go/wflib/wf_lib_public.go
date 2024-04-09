@@ -210,6 +210,10 @@ func (t *WorkflowThread) CancelUserTaskAfter(userTask *UserTaskOutput, delaySeco
 	t.cancelUserTaskAfter(userTask, delaySeconds)
 }
 
+func (t *WorkflowThread) CancelUserTaskAfterAssignment(userTask *UserTaskOutput, delaySeconds interface{}) {
+	t.cancelUserTaskAfterAssignment(userTask, delaySeconds)
+}
+
 func (t *WorkflowThread) ScheduleReminderTask(
 	userTask *UserTaskOutput, delaySeconds interface{},
 	taskDefName string, args ...interface{},

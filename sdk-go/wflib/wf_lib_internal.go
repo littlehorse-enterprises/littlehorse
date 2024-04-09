@@ -292,6 +292,30 @@ func (t *WorkflowThread) cancelUserTaskAfter(userTask *UserTaskOutput, delaySeco
 	curNode.GetUserTask().Actions = append(curNode.GetUserTask().Actions,
 		&model.UTActionTrigger{
 			Action:       &utaCancel,
+			Hook:         model.UTActionTrigger_ON_ARRIVAL,
+			DelaySeconds: delayAssn,
+		},
+	)
+}
+func (t *WorkflowThread) cancelUserTaskAfterAssignment(userTask *UserTaskOutput, delaySeconds interface{}) {
+	t.checkIfIsActive()
+
+	delayAssn, err := t.assignVariable(delaySeconds)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	utaCancel := model.UTActionTrigger_Cancel{
+		Cancel: &model.UTActionTrigger_UTACancel{},
+	}
+
+	if userTask.Output.nodeName != *(t.lastNodeName) {
+		log.Fatal("Tried to edit a stale UserTask node!")
+	}
+	curNode := t.spec.Nodes[*t.lastNodeName]
+	curNode.GetUserTask().Actions = append(curNode.GetUserTask().Actions,
+		&model.UTActionTrigger{
+			Action:       &utaCancel,
 			Hook:         model.UTActionTrigger_ON_TASK_ASSIGNED,
 			DelaySeconds: delayAssn,
 		},
