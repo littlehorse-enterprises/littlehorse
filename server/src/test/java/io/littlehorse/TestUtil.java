@@ -248,9 +248,27 @@ public class TestUtil {
         return acl;
     }
 
+    public static ServerACLModel aclWithTenantResource() {
+        ServerACLModel acl = new ServerACLModel();
+        acl.setName(Optional.of("name"));
+        acl.setPrefix(Optional.empty());
+        acl.setResources(List.of(ACLResource.ACL_TENANT));
+        acl.setAllowedActions(List.of(ACLAction.WRITE_METADATA));
+        return acl;
+    }
+
     public static ServerACLsModel singleAcl() {
         return ServerACLsModel.fromProto(
                 ServerACLs.newBuilder().addAcls(acl().toProto()).build(), ServerACLsModel.class, null);
+    }
+
+    public static ServerACLsModel singleAclWithTenantResource() {
+        return ServerACLsModel.fromProto(
+                ServerACLs.newBuilder()
+                        .addAcls(aclWithTenantResource().toProto())
+                        .build(),
+                ServerACLsModel.class,
+                null);
     }
 
     public static ServerACLModel adminAcl() {

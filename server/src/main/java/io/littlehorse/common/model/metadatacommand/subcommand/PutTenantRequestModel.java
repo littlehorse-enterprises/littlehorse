@@ -13,6 +13,7 @@ import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import java.util.regex.Pattern;
 
 public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> implements ClusterLevelCommand {
 
@@ -49,6 +50,10 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
     public Tenant process(MetadataCommandExecution context) {
         MetadataManager metadataManager = context.metadataManager();
         if (metadataManager.get(new TenantIdModel(id)) == null) {
+            if (Pattern.matches(".*[\\\\/].*", this.id)) {
+                throw new LHApiException(Status.INVALID_ARGUMENT, "/ and \\ are not valid characters for Tenant");
+            }
+
             TenantModel toSave = new TenantModel(id);
             toSave.setCreatedAt(context.currentCommand().getTime());
             metadataManager.put(toSave);

@@ -1224,6 +1224,37 @@ public final class LittleHorseGrpc {
     return getSearchExternalEventDefMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchTenantRequest,
+      io.littlehorse.sdk.common.proto.TenantIdList> getSearchTenantMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchTenant",
+      requestType = io.littlehorse.sdk.common.proto.SearchTenantRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.TenantIdList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchTenantRequest,
+      io.littlehorse.sdk.common.proto.TenantIdList> getSearchTenantMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchTenantRequest, io.littlehorse.sdk.common.proto.TenantIdList> getSearchTenantMethod;
+    if ((getSearchTenantMethod = LittleHorseGrpc.getSearchTenantMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getSearchTenantMethod = LittleHorseGrpc.getSearchTenantMethod) == null) {
+          LittleHorseGrpc.getSearchTenantMethod = getSearchTenantMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.SearchTenantRequest, io.littlehorse.sdk.common.proto.TenantIdList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchTenant"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.SearchTenantRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.TenantIdList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("SearchTenant"))
+              .build();
+        }
+      }
+    }
+    return getSearchTenantMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest,
       io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse> getRegisterTaskWorkerMethod;
 
@@ -2241,12 +2272,22 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Search for ExteranlEventDef's.
+     * Search for ExternalEventDef's.
      * </pre>
      */
     default void searchExternalEventDef(io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEventDefIdList> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchExternalEventDefMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Search for all available TenantIds for current Principal
+     * </pre>
+     */
+    default void searchTenant(io.littlehorse.sdk.common.proto.SearchTenantRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TenantIdList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchTenantMethod(), responseObserver);
     }
 
     /**
@@ -2911,13 +2952,24 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Search for ExteranlEventDef's.
+     * Search for ExternalEventDef's.
      * </pre>
      */
     public void searchExternalEventDef(io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEventDefIdList> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getSearchExternalEventDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Search for all available TenantIds for current Principal
+     * </pre>
+     */
+    public void searchTenant(io.littlehorse.sdk.common.proto.SearchTenantRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TenantIdList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchTenantMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -3551,12 +3603,22 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Search for ExteranlEventDef's.
+     * Search for ExternalEventDef's.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDefIdList searchExternalEventDef(io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getSearchExternalEventDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for all available TenantIds for current Principal
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.TenantIdList searchTenant(io.littlehorse.sdk.common.proto.SearchTenantRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchTenantMethod(), getCallOptions(), request);
     }
 
     /**
@@ -4199,13 +4261,24 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Search for ExteranlEventDef's.
+     * Search for ExternalEventDef's.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ExternalEventDefIdList> searchExternalEventDef(
         io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getSearchExternalEventDefMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Search for all available TenantIds for current Principal
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.TenantIdList> searchTenant(
+        io.littlehorse.sdk.common.proto.SearchTenantRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchTenantMethod(), getCallOptions()), request);
     }
 
     /**
@@ -4439,24 +4512,25 @@ public final class LittleHorseGrpc {
   private static final int METHODID_SEARCH_USER_TASK_DEF = 36;
   private static final int METHODID_SEARCH_WF_SPEC = 37;
   private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 38;
-  private static final int METHODID_REGISTER_TASK_WORKER = 39;
-  private static final int METHODID_REPORT_TASK = 40;
-  private static final int METHODID_STOP_WF_RUN = 41;
-  private static final int METHODID_RESUME_WF_RUN = 42;
-  private static final int METHODID_DELETE_WF_RUN = 43;
-  private static final int METHODID_DELETE_TASK_DEF = 44;
-  private static final int METHODID_DELETE_WF_SPEC = 45;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 46;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 47;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 48;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 49;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 50;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 51;
-  private static final int METHODID_PUT_TENANT = 52;
-  private static final int METHODID_PUT_PRINCIPAL = 53;
-  private static final int METHODID_WHOAMI = 54;
-  private static final int METHODID_GET_SERVER_VERSION = 55;
-  private static final int METHODID_POLL_TASK = 56;
+  private static final int METHODID_SEARCH_TENANT = 39;
+  private static final int METHODID_REGISTER_TASK_WORKER = 40;
+  private static final int METHODID_REPORT_TASK = 41;
+  private static final int METHODID_STOP_WF_RUN = 42;
+  private static final int METHODID_RESUME_WF_RUN = 43;
+  private static final int METHODID_DELETE_WF_RUN = 44;
+  private static final int METHODID_DELETE_TASK_DEF = 45;
+  private static final int METHODID_DELETE_WF_SPEC = 46;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 47;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 48;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 49;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 50;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 51;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 52;
+  private static final int METHODID_PUT_TENANT = 53;
+  private static final int METHODID_PUT_PRINCIPAL = 54;
+  private static final int METHODID_WHOAMI = 55;
+  private static final int METHODID_GET_SERVER_VERSION = 56;
+  private static final int METHODID_POLL_TASK = 57;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -4630,6 +4704,10 @@ public final class LittleHorseGrpc {
         case METHODID_SEARCH_EXTERNAL_EVENT_DEF:
           serviceImpl.searchExternalEventDef((io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEventDefIdList>) responseObserver);
+          break;
+        case METHODID_SEARCH_TENANT:
+          serviceImpl.searchTenant((io.littlehorse.sdk.common.proto.SearchTenantRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TenantIdList>) responseObserver);
           break;
         case METHODID_REGISTER_TASK_WORKER:
           serviceImpl.registerTaskWorker((io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest) request,
@@ -4994,6 +5072,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.ExternalEventDefIdList>(
                 service, METHODID_SEARCH_EXTERNAL_EVENT_DEF)))
         .addMethod(
+          getSearchTenantMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.SearchTenantRequest,
+              io.littlehorse.sdk.common.proto.TenantIdList>(
+                service, METHODID_SEARCH_TENANT)))
+        .addMethod(
           getRegisterTaskWorkerMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -5206,6 +5291,7 @@ public final class LittleHorseGrpc {
               .addMethod(getSearchUserTaskDefMethod())
               .addMethod(getSearchWfSpecMethod())
               .addMethod(getSearchExternalEventDefMethod())
+              .addMethod(getSearchTenantMethod())
               .addMethod(getRegisterTaskWorkerMethod())
               .addMethod(getPollTaskMethod())
               .addMethod(getReportTaskMethod())
