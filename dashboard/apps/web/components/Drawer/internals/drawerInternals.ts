@@ -4,7 +4,7 @@ export const getFullVariableName = (values: any) =>
 export const getNOPRHS = (value: any) => {
     if (value) {
         const variableType = Object.keys(value)[0]
-        return value[variableType].toString();
+        return value[variableType].toString()
     }
 
     return ''
