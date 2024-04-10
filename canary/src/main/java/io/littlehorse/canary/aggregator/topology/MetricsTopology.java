@@ -22,6 +22,8 @@ public class MetricsTopology {
     public static final String METRICS_STORE = "metrics";
     public static final String LATENCY_STORE = "latency";
     public static final String COUNT_STORE = "count";
+    public static final String DUPLICATED_TASK_RUN_STORE = "duplicated-task-run";
+    public static final String DUPLICATED_TASK_RUN_BY_SERVER_STORE = "duplicated-task-run-by-server";
 
     private final String inputTopic;
     private final Duration storeRetention;
@@ -38,39 +40,87 @@ public class MetricsTopology {
 
         // group cleaned beat
         final KGroupedStream<BeatKey, BeatValue> beatsWithoutIdGroup = beatsStream
-                //// clean beata to calculate latency
-                .groupBy(MetricsTopology::cleanBeatKey, initializeBeatGroup());
+                // it removes the id
+                .groupBy(
+                MetricsTopology::cleanBeatKey, Grouped.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.BeatValue()));
 
         // build latency metric stream
         final KStream<MetricKey, MetricValue> latencyMetricsStream = beatsWithoutIdGroup
-                //// reset aggregator every minute
+                // reset aggregator every minute
                 .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(5)))
-                //// calculate average
+                // calculate average
                 .aggregate(
                         MetricsTopology::initializeAverageAggregator,
                         MetricsTopology::aggregateAverage,
                         initializeLatencyStore())
-                //// build metric
-                .toStream((keyWindowed, value) -> keyWindowed.key())
+                // build metric
+                .toStream(MetricsTopology::extractKeyFromWindow)
                 .flatMap(MetricsTopology::makeLatencyMetrics);
 
         // build count metric stream
-        final KStream<MetricKey, MetricValue> countMetricStream =
-                beatsWithoutIdGroup.count(initializeCountStore()).toStream().map(MetricsTopology::makeCountMetric);
+        final KStream<MetricKey, MetricValue> countMetricStream = beatsWithoutIdGroup
+                .count(initializeCountStore(COUNT_STORE))
+                .toStream()
+                .map(MetricsTopology::makeCountMetric);
+
+        // build duplicated task run stream
+        final KStream<MetricKey, MetricValue> duplicatedTaskRunStream = beatsStream
+                // filter by
+                .filter(MetricsTopology::filterTaskRunBeats)
+                .groupByKey()
+                // count all the records with the same idempotency key and attempt number
+                .count(initializeCountStore(DUPLICATED_TASK_RUN_STORE))
+                // filter by duplicated
+                .filter(MetricsTopology::selectDuplicatedTaskRun)
+                // group by server
+                .groupBy(
+                        MetricsTopology::buildDuplicatedMetric, Grouped.with(ProtobufSerdes.MetricKey(), Serdes.Long()))
+                // count by server
+                .count(initializeDuplicatedTaskRunStore())
+                .toStream()
+                .mapValues(MetricsTopology::makeDuplicatedTaskRunCountMetric);
 
         // merge streams
         latencyMetricsStream
                 .merge(countMetricStream)
-                //// peek
+                .merge(duplicatedTaskRunStream)
+                // peek
                 .peek(MetricsTopology::peekMetrics)
-                //// save metrics
+                // save metrics
                 .toTable(Named.as(METRICS_STORE), initializeMetricStore());
 
         return streamsBuilder.build();
     }
 
-    private Materialized<BeatKey, Long, KeyValueStore<Bytes, byte[]>> initializeCountStore() {
-        return Materialized.<BeatKey, Long, KeyValueStore<Bytes, byte[]>>as(COUNT_STORE)
+    private static boolean selectDuplicatedTaskRun(final BeatKey key, final Long value) {
+        return value > 1L;
+    }
+
+    private static MetricValue makeDuplicatedTaskRunCountMetric(final MetricKey readOnlyKey, final Long value) {
+        return buildMetricValue(value);
+    }
+
+    private Materialized<MetricKey, Long, KeyValueStore<Bytes, byte[]>> initializeDuplicatedTaskRunStore() {
+        return Materialized.<MetricKey, Long, KeyValueStore<Bytes, byte[]>>as(DUPLICATED_TASK_RUN_BY_SERVER_STORE)
+                .withKeySerde(ProtobufSerdes.MetricKey())
+                .withValueSerde(Serdes.Long())
+                .withRetention(storeRetention);
+    }
+
+    private static KeyValue<MetricKey, Long> buildDuplicatedMetric(final BeatKey key, final Long count) {
+        return KeyValue.pair(buildMetricKey(key, "duplicated_task_run_count"), count);
+    }
+
+    private static boolean filterTaskRunBeats(final BeatKey key, final BeatValue value) {
+        return key.getType().equals(BeatType.TASK_RUN_EXECUTION);
+    }
+
+    private static BeatKey extractKeyFromWindow(final Windowed<BeatKey> keyWindowed, final AverageAggregator value) {
+        return keyWindowed.key();
+    }
+
+    private Materialized<BeatKey, Long, KeyValueStore<Bytes, byte[]>> initializeCountStore(final String storeName) {
+        return Materialized.<BeatKey, Long, KeyValueStore<Bytes, byte[]>>as(storeName)
                 .withKeySerde(ProtobufSerdes.BeatKey())
                 .withValueSerde(Serdes.Long())
                 .withRetention(storeRetention);
@@ -79,10 +129,6 @@ public class MetricsTopology {
     private static KeyValue<MetricKey, MetricValue> makeCountMetric(final BeatKey key, final Long count) {
         final String metricIdPrefix = key.getType().toString().toLowerCase();
         return KeyValue.pair(buildMetricKey(key, "%s_%s".formatted(metricIdPrefix, "count")), buildMetricValue(count));
-    }
-
-    private static Grouped<BeatKey, BeatValue> initializeBeatGroup() {
-        return Grouped.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.BeatValue());
     }
 
     private static Consumed<BeatKey, BeatValue> initializeSerdes() {
