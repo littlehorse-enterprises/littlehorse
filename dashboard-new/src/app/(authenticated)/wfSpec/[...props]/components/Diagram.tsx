@@ -23,12 +23,22 @@ export const Diagram: FC<Props> = ({ spec, wfRun, nodeRuns }) => {
     ? wfRun.threadRuns[wfRun.greatestThreadrunNumber].threadSpecName
     : spec.entrypointThreadName
   const [thread, setThread] = useState(currentThread)
+
   const threadSpec = useMemo(() => {
     if (thread === undefined) return spec.threadSpecs[spec.entrypointThreadName]
     return spec.threadSpecs[thread]
   }, [spec, thread])
   const [edges, setEdges] = useEdgesState(extractEdges(threadSpec))
   const [nodes, setNodes] = useNodesState(extractNodes(threadSpec))
+
+  const threadRunNumber = useMemo(() => {
+    const threadRun = wfRun?.threadRuns.find(threadRun => threadRun.threadSpecName === thread)
+    return threadRun?.number
+  }, [thread, wfRun?.threadRuns])
+  const threadNodeRuns = useMemo(() => {
+    if (!wfRun) return
+    return wfRun.threadRuns[threadRunNumber!].nodeRuns
+  }, [threadRunNumber, wfRun])
 
   const updateGraph = useCallback(() => {
     const nodes = extractNodes(threadSpec)
@@ -74,7 +84,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun, nodeRuns }) => {
         </Panel>
         <Controls />
       </ReactFlow>
-      <Layouter nodeRuns={wfRun?.threadRuns[wfRun.greatestThreadrunNumber].nodeRuns} />
+      <Layouter nodeRuns={threadNodeRuns} />
     </div>
   )
 }

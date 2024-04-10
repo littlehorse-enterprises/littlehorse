@@ -19,7 +19,7 @@ export const NodeDetails: FC<Props> = ({ children }) => {
           if (node.selected) {
             return { ...node, zIndex: 9999 }
           } else {
-            return { ...node, zIndex: 1}
+            return { ...node, zIndex: 1 }
           }
         })
       )
@@ -40,7 +40,7 @@ export const NodeDetails: FC<Props> = ({ children }) => {
 
   return (
     <div style={wrapperStyle} className="flex flex-col justify-center drop-shadow">
-      {children}
+      <div className="rounded-md bg-white p-2 text-xs">{children}</div>
       <div className="flex items-center justify-center">
         <div className="transform-x-1/2 transform-y-1/2 h-4 w-4 border-[0.5rem] border-transparent border-t-white bg-transparent"></div>
       </div>

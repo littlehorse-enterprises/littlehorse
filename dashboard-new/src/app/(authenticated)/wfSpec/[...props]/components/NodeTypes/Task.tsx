@@ -1,8 +1,9 @@
 import { getVariable } from '@/app/utils'
-import { Cog6ToothIcon } from '@heroicons/react/16/solid'
+import { ArrowTopRightOnSquareIcon, Cog6ToothIcon } from '@heroicons/react/16/solid'
 import { Node as NodeProto } from 'littlehorse-client/dist/proto/wf_spec'
+import Link from 'next/link'
 import { FC, memo } from 'react'
-import { Handle, NodeToolbar, Position } from 'reactflow'
+import { Handle, Position } from 'reactflow'
 import { NodeProps } from '.'
 import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
@@ -12,14 +13,27 @@ const Node: FC<NodeProps<NodeProto>> = ({ selected, data }) => {
   return (
     <Fade fade={fade} status={data.nodeRun?.status}>
       <NodeDetails>
-        <div className="max-w-96 overflow-hidden rounded-md bg-white p-2 text-xs">
-          Task Def {data.task?.taskDefId?.name}
-          <br />
-          {JSON.stringify(data.task)}
-          <br />
-          {JSON.stringify(data.nodeRun)}
-          {data.task?.variables.map((variable, i) => <div key={`variable.${i}`}>{getVariable(variable)}</div>)}
+        <div className="mb-2 flex gap-1 text-nowrap">
+          <h3 className="font-bold">TaskDef</h3>
+          <Link
+            className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
+            target="_blank"
+            href={`/taskDef/${data.task?.taskDefId?.name}`}
+          >
+            {data.task?.taskDefId?.name} <ArrowTopRightOnSquareIcon className="h-4 w-4" />
+          </Link>
         </div>
+        {data.task?.variables && data.task?.variables.length > 0 && (
+          <div className="">
+            <h3 className="font-bold">Inputs</h3>
+            <ul className="list-inside list-disc">
+              {data.task.variables.map((variable, i) => (
+                <li key={`variable.${i}`}>{getVariable(variable)}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {data.nodeRun && <div></div>}
       </NodeDetails>
       <div
         className={
@@ -30,11 +44,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ selected, data }) => {
         <Cog6ToothIcon className="h-4 w-4 fill-orange-500" />
         {data.task?.taskDefId?.name}
         <Handle type="source" position={Position.Right} className="bg-transparent" />
-        <Handle
-          type="target"
-          position={Position.Left}
-          className="bg-transparent"
-        />
+        <Handle type="target" position={Position.Left} className="bg-transparent" />
       </div>
     </Fade>
   )

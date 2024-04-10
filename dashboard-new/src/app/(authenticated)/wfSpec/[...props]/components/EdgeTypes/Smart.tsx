@@ -1,8 +1,16 @@
 import { getSmartEdge } from '@tisoap/react-flow-smart-edge'
 import { FC, memo } from 'react'
-import { BaseEdge, BezierEdge, EdgeLabelRenderer, Position, SmoothStepEdgeProps, getSmoothStepPath, useNodes } from 'reactflow'
+import {
+  BaseEdge,
+  BezierEdge,
+  EdgeLabelRenderer,
+  Position,
+  SmoothStepEdgeProps,
+  getSmoothStepPath,
+  useNodes,
+} from 'reactflow'
 
-const Edge: FC<SmoothStepEdgeProps> = (props) => {
+const Edge: FC<SmoothStepEdgeProps> = props => {
   const NODE_PADDING_THAT_SHOW_EDGES_IN_A_REASONABLE_POSITION_IN_THE_SCREEN = 60
 
   const { sourcePosition, targetPosition, sourceX, sourceY, targetX, targetY, style, markerStart, markerEnd, label } =

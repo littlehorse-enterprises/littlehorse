@@ -28,7 +28,6 @@ export const extractEdges = (spec: ThreadSpec): Edge[] => {
         data: edge,
         targetHandle: `target-${targetIndex}`,
         sourceHandle: `source-${sourceIndex}`,
-        selected: true,
         markerEnd: {
           type: MarkerType.ArrowClosed,
         },

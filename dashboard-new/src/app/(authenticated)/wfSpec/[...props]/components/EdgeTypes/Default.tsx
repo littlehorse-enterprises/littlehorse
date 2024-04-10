@@ -1,5 +1,6 @@
 import { FC, memo } from 'react'
 import { BaseEdge, EdgeLabelRenderer, Position, SmoothStepEdgeProps, getSmoothStepPath } from 'reactflow'
+import { EdgeDetails } from './EdgeDetails'
 
 const Default: FC<SmoothStepEdgeProps> = ({
   id,
@@ -26,7 +27,6 @@ const Default: FC<SmoothStepEdgeProps> = ({
     offset: pathOptions?.offset,
   })
 
-  console.log({rest})
   return (
     <>
       <BaseEdge id={id} path={path} style={style} {...rest} />
@@ -39,7 +39,7 @@ const Default: FC<SmoothStepEdgeProps> = ({
             pointerEvents: 'all',
           }}
         >
-          {label} - {rest.selected ? 'true' : 'false'}
+          {label}
         </div>
       </EdgeLabelRenderer>
     </>

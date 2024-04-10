@@ -4,11 +4,21 @@ import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '.'
 import { Fade } from './Fade'
+import { NodeDetails } from './NodeDetails'
 
 const Node: FC<NodeProps<NodeProto>> = ({ data, selected }) => {
   const { fade } = data
   return (
     <Fade fade={fade}>
+      <NodeDetails>
+        <div className="max-w-96 overflow-hidden rounded-md bg-white p-2 text-xs">
+          UserTaskDef {data.userTask?.userTaskDefName}
+          <br />
+          {JSON.stringify(data.userTask)}
+          <br />
+          {JSON.stringify(data.nodeRun)}
+        </div>
+      </NodeDetails>
       <div
         className={
           'flex cursor-pointer flex-col items-center rounded-md border-[1px] border-blue-500 bg-blue-200 px-2 pt-1 text-xs ' +
@@ -18,11 +28,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data, selected }) => {
         <UserIcon className="h-4 w-4 fill-blue-500" />
         {data.userTask?.userTaskDefName}
         <Handle type="source" position={Position.Right} className="bg-transparent" />
-        <Handle
-          type="target"
-          position={Position.Left}
-          className="bg-transparent"
-        />
+        <Handle type="target" position={Position.Left} className="bg-transparent" />
       </div>
     </Fade>
   )

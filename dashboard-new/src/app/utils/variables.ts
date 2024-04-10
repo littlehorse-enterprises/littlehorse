@@ -1,5 +1,5 @@
-import { VariableAssignment } from "littlehorse-client/dist/proto/common_wfspec"
-import { VariableValue } from "littlehorse-client/dist/proto/variable"
+import { VariableAssignment } from 'littlehorse-client/dist/proto/common_wfspec'
+import { VariableValue } from 'littlehorse-client/dist/proto/variable'
 
 export const getVariable = (variable?: VariableAssignment) => {
   if (!variable) return

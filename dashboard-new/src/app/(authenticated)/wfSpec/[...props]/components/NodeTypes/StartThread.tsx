@@ -16,11 +16,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
           </div>
         </div>
         <Handle type="source" position={Position.Right} className="bg-transparent" />
-        <Handle
-          type="target"
-          position={Position.Left}
-          className="bg-transparent"
-        />
+        <Handle type="target" position={Position.Left} className="bg-transparent" />
         <div className="absolute flex w-full items-center justify-center whitespace-nowrap text-center	">
           <div className="block">{data.startThread?.threadSpecName}</div>
         </div>

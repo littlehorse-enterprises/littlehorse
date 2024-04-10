@@ -13,11 +13,7 @@ const Node: FC<NodeProps> = ({ data }) => {
           <ClockIcon className="h-4 w-4 fill-none stroke-gray-500" />
         </div>
 
-        <Handle
-          type="target"
-          position={Position.Left}
-          className="bg-transparent"
-        />
+        <Handle type="target" position={Position.Left} className="bg-transparent" />
         <Handle type="source" position={Position.Right} className="bg-transparent" />
       </div>
     </Fade>
