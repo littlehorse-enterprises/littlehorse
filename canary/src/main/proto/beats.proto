@@ -22,11 +22,11 @@ message BeatKey {
   int32 server_port = 2;
   string server_version = 3;
   BeatType type = 4;
-  string id = 5;
+  BeatStatus status = 5;
+  string id = 6;
 }
 
 message BeatValue {
   google.protobuf.Timestamp time = 1;
-  BeatStatus status = 2;
-  int64 latency = 3;
+  int64 latency = 2;
 }

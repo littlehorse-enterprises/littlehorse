@@ -42,8 +42,8 @@ public class BeatEmitter {
     public Future<RecordMetadata> future(
             final String id, final BeatType type, final BeatStatus status, final Duration latency) {
 
-        final BeatKey beatKey = buildKey(id, type);
-        final BeatValue beatValue = buildValue(latency, status);
+        final BeatKey beatKey = buildKey(id, type, status);
+        final BeatValue beatValue = buildValue(latency);
 
         return producer.send(buildRecord(beatKey, beatValue), (metadata, exception) -> {
             if (exception == null) {
@@ -66,21 +66,21 @@ public class BeatEmitter {
         }
     }
 
-    private BeatValue buildValue(final Duration latency, final BeatStatus status) {
+    private BeatValue buildValue(final Duration latency) {
         return BeatValue.newBuilder()
                 .setTime(Timestamps.now())
                 .setLatency(latency.toMillis())
-                .setStatus(status)
                 .build();
     }
 
-    private BeatKey buildKey(final String id, final BeatType type) {
+    private BeatKey buildKey(final String id, final BeatType type, final BeatStatus status) {
         return BeatKey.newBuilder()
                 .setServerHost(lhServerHost)
                 .setServerPort(lhServerPort)
                 .setServerVersion(lhServerVersion)
                 .setId(id)
                 .setType(type)
+                .setStatus(status)
                 .build();
     }
 }

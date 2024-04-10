@@ -11,8 +11,14 @@ message MetricKey {
   int32 server_port = 2;
   string server_version = 3;
   string id = 4;
+  repeated Tag tags = 5;
 }
 
 message MetricValue {
   double value = 1;
+}
+
+message Tag {
+  string key = 1;
+  string value = 2;
 }
