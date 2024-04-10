@@ -3,10 +3,8 @@ export const getFullVariableName = (values: any) =>
 
 export const getNOPRHS = (value: any) => {
     if (value) {
-        const variableType: string = value.type
-        const correctKey = variableType.toLowerCase()
-
-        return value[correctKey].toString()
+        const variableType = Object.keys(value)[0]
+        return value[variableType].toString();
     }
 
     return ''
