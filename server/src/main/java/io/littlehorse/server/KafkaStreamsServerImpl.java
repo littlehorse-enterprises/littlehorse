@@ -212,18 +212,17 @@ import io.littlehorse.server.streams.topology.core.WfService;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import io.littlehorse.server.streams.util.POSTStreamObserver;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.RecordMetadata;
-import org.apache.kafka.common.header.Headers;
-import org.apache.kafka.streams.KafkaStreams;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.Callback;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.streams.KafkaStreams;
 
 @Slf4j
 public class KafkaStreamsServerImpl extends LittleHorseImplBase {
