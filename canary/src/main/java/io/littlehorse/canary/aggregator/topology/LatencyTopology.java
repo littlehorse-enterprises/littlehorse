@@ -2,8 +2,8 @@ package io.littlehorse.canary.aggregator.topology;
 
 import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
 import io.littlehorse.canary.proto.AverageAggregator;
-import io.littlehorse.canary.proto.Beat;
 import io.littlehorse.canary.proto.BeatKey;
+import io.littlehorse.canary.proto.BeatValue;
 import io.littlehorse.canary.proto.MetricKey;
 import java.time.Duration;
 import java.util.List;
@@ -24,9 +24,9 @@ public class LatencyTopology {
     private final KStream<MetricKey, Double> stream;
 
     public LatencyTopology(
-            final KStream<BeatKey, Beat> mainStream, final TimeWindows windows, final Duration storeRetention) {
+            final KStream<BeatKey, BeatValue> mainStream, final TimeWindows windows, final Duration storeRetention) {
         stream = mainStream
-                .filter((key, value) -> value.hasLatencyBeat())
+                //                .filter((key, value) -> value.hasLatencyBeat())
                 .groupByKey()
                 // reset aggregator every minute
                 .windowedBy(windows)
@@ -56,27 +56,27 @@ public class LatencyTopology {
                 .setServerVersion(key.getServerVersion())
                 .setServerPort(key.getServerPort())
                 .setServerHost(key.getServerHost())
-                .setId("%s_%s".formatted(key.getLatencyBeatKey().getName(), suffix))
+                .setId("%s_%s".formatted(key.getType().toString().toLowerCase(), suffix))
                 .build();
     }
 
     private static void peekAggregate(final BeatKey key, final AverageAggregator value) {
         log.debug(
-                "server={}:{}, latency={}, count={}, sum={}, avg={}, max={}",
+                "server={}:{}, id={}, count={}, sum={}, avg={}, max={}",
                 key.getServerHost(),
                 key.getServerPort(),
-                key.getLatencyBeatKey().getName(),
+                key.getType(),
                 value.getCount(),
                 value.getSum(),
                 value.getAvg(),
                 value.getMax());
     }
 
-    private static AverageAggregator aggregate(final Beat value, final AverageAggregator aggregate) {
+    private static AverageAggregator aggregate(final BeatValue value, final AverageAggregator aggregate) {
         final long count = aggregate.getCount() + 1L;
-        final double sum = aggregate.getSum() + value.getLatencyBeat().getLatency();
+        final double sum = aggregate.getSum() + value.getLatency();
         final double avg = sum / count;
-        final double max = Math.max(value.getLatencyBeat().getLatency(), aggregate.getMax());
+        final double max = Math.max(value.getLatency(), aggregate.getMax());
 
         return AverageAggregator.newBuilder()
                 .setCount(count)

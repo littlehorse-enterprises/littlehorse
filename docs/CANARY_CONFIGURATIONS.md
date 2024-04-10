@@ -1,43 +1,45 @@
 # LH Canary Configurations
 
 <!-- TOC -->
+
 * [LH Canary Configurations](#lh-canary-configurations)
-  * [What is LH Canary?](#what-is-lh-canary)
-  * [Metronome](#metronome)
-    * [Kafka Topics](#kafka-topics)
-    * [Configurations](#configurations)
-      * [`lh.canary.metronome.enable`](#lhcanarymetronomeenable)
-      * [`lh.canary.metronome.frequency.ms`](#lhcanarymetronomefrequencyms)
-      * [`lh.canary.metronome.threads`](#lhcanarymetronomethreads)
-      * [`lh.canary.metronome.runs`](#lhcanarymetronomeruns)
-    * [Kafka Configurations](#kafka-configurations)
-    * [LH Client Configurations](#lh-client-configurations)
-  * [Task Worker](#task-worker)
-    * [Kafka Topics](#kafka-topics-1)
-    * [Configurations](#configurations-1)
-      * [`lh.canary.metronome.worker.enable`](#lhcanarymetronomeworkerenable)
-    * [Kafka Configurations](#kafka-configurations-1)
-    * [LH Client Configurations](#lh-client-configurations-1)
-  * [Aggregator](#aggregator)
-    * [Metrics](#metrics)
-    * [Kafka Topics](#kafka-topics-2)
-    * [Configurations](#configurations-2)
-      * [`lh.canary.aggregator.enable`](#lhcanaryaggregatorenable)
-      * [`lh.canary.aggregator.store.retention.ms`](#lhcanaryaggregatorstoreretentionms)
-      * [`lh.canary.metrics.port`](#lhcanarymetricsport)
-      * [`lh.canary.metrics.path`](#lhcanarymetricspath)
-      * [`lh.canary.metrics.filter.enable`](#lhcanarymetricsfilterenable)
-      * [`lh.canary.metrics.filter.enable.<metric name>`](#lhcanarymetricsfilterenablemetric-name)
-      * [`lh.canary.metrics.common.tags.<additional tag>`](#lhcanarymetricscommontagsadditional-tag)
-    * [Kafka Configurations](#kafka-configurations-2)
-  * [Common Configurations](#common-configurations)
-      * [`lh.canary.id`](#lhcanaryid)
-      * [`lh.canary.topic.name`](#lhcanarytopicname)
-      * [`lh.canary.topic.creation.enable`](#lhcanarytopiccreationenable)
-      * [`lh.canary.topic.creation.replicas`](#lhcanarytopiccreationreplicas)
-      * [`lh.canary.topic.creation.partitions`](#lhcanarytopiccreationpartitions)
-      * [`lh.canary.topic.creation.timeout.ms`](#lhcanarytopiccreationtimeoutms)
-  * [Using Env Variables](#using-env-variables)
+    * [What is LH Canary?](#what-is-lh-canary)
+    * [Metronome](#metronome)
+        * [Kafka Topics](#kafka-topics)
+        * [Configurations](#configurations)
+            * [`lh.canary.metronome.enable`](#lhcanarymetronomeenable)
+            * [`lh.canary.metronome.frequency.ms`](#lhcanarymetronomefrequencyms)
+            * [`lh.canary.metronome.threads`](#lhcanarymetronomethreads)
+            * [`lh.canary.metronome.runs`](#lhcanarymetronomeruns)
+        * [Kafka Configurations](#kafka-configurations)
+        * [LH Client Configurations](#lh-client-configurations)
+    * [Task Worker](#task-worker)
+        * [Kafka Topics](#kafka-topics-1)
+        * [Configurations](#configurations-1)
+            * [`lh.canary.metronome.worker.enable`](#lhcanarymetronomeworkerenable)
+        * [Kafka Configurations](#kafka-configurations-1)
+        * [LH Client Configurations](#lh-client-configurations-1)
+    * [Aggregator](#aggregator)
+        * [Metrics](#metrics)
+        * [Kafka Topics](#kafka-topics-2)
+        * [Configurations](#configurations-2)
+            * [`lh.canary.aggregator.enable`](#lhcanaryaggregatorenable)
+            * [`lh.canary.aggregator.store.retention.ms`](#lhcanaryaggregatorstoreretentionms)
+            * [`lh.canary.metrics.port`](#lhcanarymetricsport)
+            * [`lh.canary.metrics.path`](#lhcanarymetricspath)
+            * [`lh.canary.metrics.filter.enable`](#lhcanarymetricsfilterenable)
+            * [`lh.canary.metrics.filter.enable.<metric name>`](#lhcanarymetricsfilterenablemetric-name)
+            * [`lh.canary.metrics.common.tags.<additional tag>`](#lhcanarymetricscommontagsadditional-tag)
+        * [Kafka Configurations](#kafka-configurations-2)
+    * [Common Configurations](#common-configurations)
+        * [`lh.canary.id`](#lhcanaryid)
+        * [`lh.canary.topic.name`](#lhcanarytopicname)
+        * [`lh.canary.topic.creation.enable`](#lhcanarytopiccreationenable)
+        * [`lh.canary.topic.creation.replicas`](#lhcanarytopiccreationreplicas)
+        * [`lh.canary.topic.creation.partitions`](#lhcanarytopiccreationpartitions)
+        * [`lh.canary.topic.creation.timeout.ms`](#lhcanarytopiccreationtimeoutms)
+    * [Using Env Variables](#using-env-variables)
+
 <!-- TOC -->
 
 ## What is LH Canary?
@@ -177,13 +179,13 @@ It exposes a `/metrics`  endpoint that prometheus scrapes.
 
 ### Metrics
 
-| Metric                          | Description                                                                                                  |
-|---------------------------------|--------------------------------------------------------------------------------------------------------------|
-| `task_run_latency_avg`          | Average time elapsed from when a task was scheduled until it was executed by the worker in milliseconds      |
-| `task_run_latency_max`          | Maximum time to execute a task by the worker in milliseconds                                                 |
-| `run_wf_latency_avg`            | Average time of requesting a new wf run in milliseconds                                                      |
-| `run_wf_latency_max`            | Max time of requesting a new wr run in milliseconds                                                          |
-| `duplicated_task_run_max_count` | Number of detected duplicated task. Useful for data integrity, every task scheduled has to have an unique id |
+| Metric                                 | Description                                                                                                  |
+|----------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| `canary_task_run_latency_avg`          | Average time elapsed from when a task was scheduled until it was executed by the worker in milliseconds      |
+| `canary_task_run_latency_max`          | Maximum time to execute a task by the worker in milliseconds                                                 |
+| `canary_run_wf_latency_avg`            | Average time of requesting a new wf run in milliseconds                                                      |
+| `canary_run_wf_latency_max`            | Max time of requesting a new wr run in milliseconds                                                          |
+| `canary_duplicated_task_run_max_count` | Number of detected duplicated task. Useful for data integrity, every task scheduled has to have an unique id |
 
 ### Kafka Topics
 
@@ -238,33 +240,6 @@ Prometheus scrape endpoint path.
 
 ---
 
-#### `lh.canary.metrics.filter.enable`
-
-Flag to enable the metric filter.
-If `false` all metrics are exposed without filter.
-If `true` the filter is enabled and only the metrics under the `lh.canary.metrics.filter.enable.<metric name>` config
-will be exposed.
-
-By default, it is enabled, and the aggregator only exposed the canary related metrics.
-
-- **Type:** boolean
-- **Default:** true
-- **Importance:** high
-
----
-
-#### `lh.canary.metrics.filter.enable.<metric name>`
-
-This config is useful to enable metrics outside the canary related metrics.
-For example, if you want to activate `kafka_stream_alive_stream_threads` metric, you have to pass:
-`lh.canary.metrics.filter.enable.kafka_stream_alive_stream_threads=true`.
-
-- **Type:** boolean
-- **Default:** null
-- **Importance:** low
-
----
-
 #### `lh.canary.metrics.common.tags.<additional tag>`
 
 This config is useful to add default tags to prometheus metrics.
@@ -307,6 +282,16 @@ Metrics beats topic. Use by the aggregator for consuming, and for the metronome 
 #### `lh.canary.topic.creation.enable`
 
 Flag to enable topics creation.
+
+- **Type:** boolean
+- **Default:** false
+- **Importance:** high
+
+---
+
+#### `lh.canary.workflow.creation.enable`
+
+Flag to enable canary workflow creation.
 
 - **Type:** boolean
 - **Default:** false

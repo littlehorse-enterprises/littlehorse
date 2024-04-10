@@ -1,8 +1,8 @@
 package io.littlehorse.canary.aggregator.topology;
 
 import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
-import io.littlehorse.canary.proto.Beat;
 import io.littlehorse.canary.proto.BeatKey;
+import io.littlehorse.canary.proto.BeatValue;
 import io.littlehorse.canary.proto.MetricKey;
 import java.time.Duration;
 import lombok.Getter;
@@ -23,9 +23,9 @@ public class DuplicatedTaskRunTopology {
     public static final String DUPLICATED_TASK_METRIC_NAME = "duplicated_task_run_max_count";
     private final KStream<MetricKey, Double> stream;
 
-    public DuplicatedTaskRunTopology(final KStream<BeatKey, Beat> mainStream, final Duration storeRetention) {
+    public DuplicatedTaskRunTopology(final KStream<BeatKey, BeatValue> mainStream, final Duration storeRetention) {
         stream = mainStream
-                .filter((key, value) -> value.hasTaskRunBeat())
+                //                .filter((key, value) -> value.hasTaskRunBeat())
                 .groupByKey()
                 // count all the records with the same idempotency key and attempt number
                 .count(Materialized.<BeatKey, Long, KeyValueStore<Bytes, byte[]>>as(DUPLICATED_TASK_COUNT_STORE)
@@ -60,12 +60,6 @@ public class DuplicatedTaskRunTopology {
     }
 
     private static void peekAggregate(final BeatKey key, final Double count) {
-        log.debug(
-                "server={}:{}, idempotency_key={}, attempt_number={}, count={}",
-                key.getServerHost(),
-                key.getServerPort(),
-                key.getTaskRunBeatKey().getIdempotencyKey(),
-                key.getTaskRunBeatKey().getAttemptNumber(),
-                count);
+        log.debug("server={}:{}, id={}, count={}", key.getServerHost(), key.getServerPort(), key.getId(), count);
     }
 }

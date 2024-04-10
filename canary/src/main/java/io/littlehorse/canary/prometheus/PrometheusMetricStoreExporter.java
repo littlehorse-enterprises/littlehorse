@@ -2,7 +2,7 @@ package io.littlehorse.canary.prometheus;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import io.littlehorse.canary.proto.MetricKey;
-import io.littlehorse.canary.util.Shutdown;
+import io.littlehorse.canary.util.ShutdownHook;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -48,7 +48,7 @@ public class PrometheusMetricStoreExporter implements MeterBinder {
     @Override
     public void bindTo(final MeterRegistry registry) {
         final ScheduledExecutorService mainExecutor = Executors.newSingleThreadScheduledExecutor();
-        Shutdown.addShutdownHook("Latency Metrics Exporter", () -> {
+        ShutdownHook.add("Latency Metrics Exporter", () -> {
             mainExecutor.shutdownNow();
             mainExecutor.awaitTermination(1, TimeUnit.SECONDS);
         });
