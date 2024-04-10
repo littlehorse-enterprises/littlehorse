@@ -1,4 +1,4 @@
-package io.littlehorse.canary.prometheus;
+package io.littlehorse.canary.aggregator.internal;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import io.littlehorse.canary.proto.MetricKey;
@@ -25,13 +25,13 @@ import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 @Slf4j
-public class PrometheusMetricStoreExporter implements MeterBinder {
+public class MetricStoreExporter implements MeterBinder {
 
     private final KafkaStreams kafkaStreams;
     private final String storeName;
     private final Map<MetricKey, PrometheusMetric> currentMeters;
 
-    public PrometheusMetricStoreExporter(final KafkaStreams kafkaStreams, final String storeName) {
+    public MetricStoreExporter(final KafkaStreams kafkaStreams, final String storeName) {
         this.kafkaStreams = kafkaStreams;
         this.storeName = storeName;
         currentMeters = new HashMap<>();

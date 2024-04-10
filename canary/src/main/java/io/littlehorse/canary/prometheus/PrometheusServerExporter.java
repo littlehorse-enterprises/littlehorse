@@ -16,6 +16,8 @@ public class PrometheusServerExporter {
         this.prometheusExporter = prometheusExporter;
         final Javalin server = Javalin.create().get(webPath, this::printMetrics).start(webPort);
         ShutdownHook.add("Prometheus Exporter: Web Server", server::stop);
+
+        log.info("Metrics Server Exporter Started");
     }
 
     private void printMetrics(final Context context) {

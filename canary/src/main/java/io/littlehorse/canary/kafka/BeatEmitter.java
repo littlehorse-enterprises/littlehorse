@@ -41,19 +41,21 @@ public class BeatEmitter {
 
     public Future<RecordMetadata> future(
             final String id, final BeatType type, final BeatStatus status, final Duration latency) {
+
         final BeatKey beatKey = buildKey(id, type);
         final BeatValue beatValue = buildValue(latency, status);
 
-        final ProducerRecord<Bytes, Bytes> record =
-                new ProducerRecord<>(topicName, Bytes.wrap(beatKey.toByteArray()), Bytes.wrap(beatValue.toByteArray()));
-
-        return producer.send(record, (metadata, exception) -> {
+        return producer.send(buildRecord(beatKey, beatValue), (metadata, exception) -> {
             if (exception == null) {
                 log.trace("Emitting message {}", beatKey.getType());
             } else {
                 log.error("Emitting message {}", beatKey.getType(), exception);
             }
         });
+    }
+
+    private ProducerRecord<Bytes, Bytes> buildRecord(final BeatKey beatKey, final BeatValue beatValue) {
+        return new ProducerRecord<>(topicName, Bytes.wrap(beatKey.toByteArray()), Bytes.wrap(beatValue.toByteArray()));
     }
 
     public RecordMetadata emit(final String id, final BeatType type, final BeatStatus status, final Duration latency) {

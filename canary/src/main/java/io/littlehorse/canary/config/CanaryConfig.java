@@ -2,6 +2,7 @@ package io.littlehorse.canary.config;
 
 import static java.util.Map.entry;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -17,8 +18,6 @@ public class CanaryConfig implements Config {
     public static final String METRONOME_FREQUENCY_MS = "metronome.frequency.ms";
     public static final String METRONOME_THREADS = "metronome.threads";
     public static final String METRONOME_RUNS = "metronome.runs";
-    public static final String API_PORT = "api.port";
-    public static final String ID = "id";
     public static final String METRICS_PORT = "metrics.port";
     public static final String METRICS_PATH = "metrics.path";
     public static final String TOPIC_CREATION_ENABLE = "topic.creation.enable";
@@ -72,8 +71,8 @@ public class CanaryConfig implements Config {
         return getConfig(TOPIC_NAME);
     }
 
-    public long getTopicCreationTimeoutMs() {
-        return Long.parseLong(getConfig(TOPIC_CREATION_TIMEOUT_MS));
+    public Duration getTopicCreationTimeout() {
+        return Duration.ofMillis(Long.parseLong(getConfig(TOPIC_CREATION_TIMEOUT_MS)));
     }
 
     public int getTopicPartitions() {
@@ -104,12 +103,12 @@ public class CanaryConfig implements Config {
         return Boolean.parseBoolean(getConfig(AGGREGATOR_ENABLE));
     }
 
-    public long getMetronomeFrequencyMs() {
-        return Long.parseLong(getConfig(METRONOME_FREQUENCY_MS));
+    public Duration getMetronomeFrequency() {
+        return Duration.ofMillis(Long.parseLong(getConfig(METRONOME_FREQUENCY_MS)));
     }
 
-    public long getAggregatorStoreRetentionMs() {
-        return Long.parseLong(getConfig(AGGREGATOR_STORE_RETENTION_MS));
+    public Duration getAggregatorStoreRetention() {
+        return Duration.ofMillis(Long.parseLong(getConfig(AGGREGATOR_STORE_RETENTION_MS)));
     }
 
     public int getMetronomeThreads() {

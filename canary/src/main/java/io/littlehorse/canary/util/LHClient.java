@@ -14,7 +14,7 @@ public class LHClient {
 
     private final LittleHorseBlockingStub blockingStub;
 
-    public LHClient(LHConfig lhConfig) {
+    public LHClient(final LHConfig lhConfig) {
         blockingStub = lhConfig.getBlockingStub();
     }
 

@@ -26,7 +26,7 @@ public class Metronome {
     public Metronome(
             final BeatEmitter emitter,
             final LHClient lhClient,
-            final long frequency,
+            final Duration frequency,
             final int threads,
             final int runs) {
         this.emitter = emitter;
@@ -35,7 +35,7 @@ public class Metronome {
 
         mainExecutor = Executors.newSingleThreadScheduledExecutor();
         ShutdownHook.add("Metronome: Main Executor Thread", () -> closeExecutor(mainExecutor));
-        mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency, TimeUnit.MILLISECONDS);
+        mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency.toMillis(), TimeUnit.MILLISECONDS);
 
         requestsExecutor = Executors.newFixedThreadPool(threads);
         ShutdownHook.add("Metronome: Request Executor Thread", () -> closeExecutor(requestsExecutor));
@@ -54,8 +54,16 @@ public class Metronome {
 
         log.debug("Executing run {}", wfId);
 
-        lhClient.runCanaryWf(wfId, start);
-        emitter.future(wfId, BeatType.WF_RUN_REQUEST, BeatStatus.OK, Duration.between(start, Instant.now()));
+        try {
+            lhClient.runCanaryWf(wfId, start);
+            emmit(wfId, start, BeatStatus.OK);
+        } catch (Exception e) {
+            emmit(wfId, start, BeatStatus.ERROR);
+        }
+    }
+
+    private void emmit(final String wfId, final Instant start, final BeatStatus status) {
+        emitter.future(wfId, BeatType.WF_RUN_REQUEST, status, Duration.between(start, Instant.now()));
     }
 
     private void scheduledRun() {

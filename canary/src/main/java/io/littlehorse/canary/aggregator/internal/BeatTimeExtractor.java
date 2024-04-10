@@ -8,6 +8,7 @@ import org.apache.kafka.streams.processor.TimestampExtractor;
 
 @Slf4j
 public class BeatTimeExtractor implements TimestampExtractor {
+
     @Override
     public long extract(final ConsumerRecord<Object, Object> record, final long partitionTime) {
         if (!(record.value() instanceof BeatValue beat)) {
