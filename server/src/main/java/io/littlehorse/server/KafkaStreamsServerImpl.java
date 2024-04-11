@@ -123,6 +123,7 @@ import io.littlehorse.sdk.common.proto.SearchExternalEventRequest;
 import io.littlehorse.sdk.common.proto.SearchNodeRunRequest;
 import io.littlehorse.sdk.common.proto.SearchTaskDefRequest;
 import io.littlehorse.sdk.common.proto.SearchTaskRunRequest;
+import io.littlehorse.sdk.common.proto.SearchTenantRequest;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
@@ -139,6 +140,7 @@ import io.littlehorse.sdk.common.proto.TaskRunIdList;
 import io.littlehorse.sdk.common.proto.TaskRunList;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest;
 import io.littlehorse.sdk.common.proto.Tenant;
+import io.littlehorse.sdk.common.proto.TenantIdList;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskDefId;
 import io.littlehorse.sdk.common.proto.UserTaskDefIdList;
@@ -177,6 +179,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExterna
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchNodeRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTaskDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTaskRunRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTenantRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchUserTaskDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchUserTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchVariableRequestModel;
@@ -194,6 +197,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchEx
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskRunReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTenantRequestReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUserTaskDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUserTaskRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchVariableReply;
@@ -654,6 +658,12 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 SearchExternalEventDefRequestModel.fromProto(req, requestContext()),
                 ctx,
                 SearchExternalEventDefReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_TENANT, actions = ACLAction.READ)
+    public void searchTenant(SearchTenantRequest req, StreamObserver<TenantIdList> ctx) {
+        handleScan(SearchTenantRequestModel.fromProto(req, requestContext()), ctx, SearchTenantRequestReply.class);
     }
 
     // EMPLOYEE_TODO: this is a synchronous call. Make it asynchronous.

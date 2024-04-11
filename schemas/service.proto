@@ -171,8 +171,11 @@ service LittleHorse {
   // Search for WfSpec's.
   rpc SearchWfSpec(SearchWfSpecRequest) returns (WfSpecIdList) {}
 
-  // Search for ExteranlEventDef's.
+  // Search for ExternalEventDef's.
   rpc SearchExternalEventDef(SearchExternalEventDefRequest) returns (ExternalEventDefIdList) {}
+
+  // Search for all available TenantIds for current Principal
+  rpc SearchTenant(SearchTenantRequest) returns (TenantIdList) {}
 
   // Used by the Task Worker to:
   // 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -745,6 +748,21 @@ message ExternalEventDefIdList {
   // has returned all results. If it is set, you can pass it into your next request
   // to resume searching where your previous request left off.
   optional bytes bookmark = 2;
+}
+
+// Search for all available TenantIds for current Principal
+message SearchTenantRequest {
+      // Maximum results to return in one request.
+      optional int32 limit = 1;
+      // Bookmark for cursor-based pagination; pass if applicable.
+      optional bytes bookmark = 2;
+}
+
+message TenantIdList {
+      // The resulting object id's.
+      repeated TenantId results = 1;
+      // Bookmark for cursor-based pagination; pass if applicable.
+      optional bytes bookmark = 2;
 }
 
 // EVOLVING: Search for ExternalEvent's.
