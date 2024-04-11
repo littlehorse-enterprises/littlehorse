@@ -2,7 +2,7 @@ package io.littlehorse.canary.config;
 
 import static java.util.Map.entry;
 
-import java.util.List;
+import java.time.Duration;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -18,17 +18,15 @@ public class CanaryConfig implements Config {
     public static final String METRONOME_FREQUENCY_MS = "metronome.frequency.ms";
     public static final String METRONOME_THREADS = "metronome.threads";
     public static final String METRONOME_RUNS = "metronome.runs";
-    public static final String API_PORT = "api.port";
-    public static final String ID = "id";
     public static final String METRICS_PORT = "metrics.port";
     public static final String METRICS_PATH = "metrics.path";
-    public static final String METRICS_FILTER_ENABLE = "metrics.filter.enable";
-    public static final String METRICS_FILTER_PREFIX = "%s.".formatted(METRICS_FILTER_ENABLE);
+    public static final String TOPIC_CREATION_ENABLE = "topic.creation.enable";
     public static final String METRONOME_WORKER_ENABLE = "metronome.worker.enable";
     public static final String AGGREGATOR_STORE_RETENTION_MS = "aggregator.store.retention.ms";
     public static final String TOPIC_CREATION_TIMEOUT_MS = "topic.creation.timeout.ms";
     public static final String METRICS_COMMON_TAGS = "metrics.common.tags";
     public static final String METRICS_COMMON_TAGS_PREFIX = "%s.".formatted(METRICS_COMMON_TAGS);
+    public static final String WORKFLOW_CREATION_ENABLE = "workflow.creation.enable";
 
     private final Map<String, Object> configs;
 
@@ -73,16 +71,12 @@ public class CanaryConfig implements Config {
         return getConfig(TOPIC_NAME);
     }
 
-    public long getTopicCreationTimeoutMs() {
-        return Long.parseLong(getConfig(TOPIC_CREATION_TIMEOUT_MS));
+    public Duration getTopicCreationTimeout() {
+        return Duration.ofMillis(Long.parseLong(getConfig(TOPIC_CREATION_TIMEOUT_MS)));
     }
 
     public int getTopicPartitions() {
         return Integer.parseInt(getConfig(TOPIC_CREATION_PARTITIONS));
-    }
-
-    public int getApiPort() {
-        return Integer.parseInt(getConfig(API_PORT));
     }
 
     public int getMetricsPort() {
@@ -91,10 +85,6 @@ public class CanaryConfig implements Config {
 
     public String getMetricsPath() {
         return getConfig(METRICS_PATH);
-    }
-
-    public boolean isMetricsFilterEnabled() {
-        return Boolean.parseBoolean(getConfig(METRICS_FILTER_ENABLE));
     }
 
     public short getTopicReplicas() {
@@ -113,12 +103,12 @@ public class CanaryConfig implements Config {
         return Boolean.parseBoolean(getConfig(AGGREGATOR_ENABLE));
     }
 
-    public long getMetronomeFrequencyMs() {
-        return Long.parseLong(getConfig(METRONOME_FREQUENCY_MS));
+    public Duration getMetronomeFrequency() {
+        return Duration.ofMillis(Long.parseLong(getConfig(METRONOME_FREQUENCY_MS)));
     }
 
-    public long getAggregatorStoreRetentionMs() {
-        return Long.parseLong(getConfig(AGGREGATOR_STORE_RETENTION_MS));
+    public Duration getAggregatorStoreRetention() {
+        return Duration.ofMillis(Long.parseLong(getConfig(AGGREGATOR_STORE_RETENTION_MS)));
     }
 
     public int getMetronomeThreads() {
@@ -129,22 +119,19 @@ public class CanaryConfig implements Config {
         return Integer.parseInt(getConfig(METRONOME_RUNS));
     }
 
-    public String getId() {
-        return getConfig(ID);
-    }
-
-    public List<String> getEnabledMetrics() {
-        return configs.entrySet().stream()
-                .filter(entry -> entry.getKey().startsWith(METRICS_FILTER_PREFIX))
-                .filter(entry -> Boolean.parseBoolean(entry.getValue().toString()))
-                .map(entry -> entry.getKey().substring(METRICS_FILTER_PREFIX.length()))
-                .collect(Collectors.toList());
-    }
-
-    public Map<String, Object> getCommonTags() {
+    public Map<String, String> getCommonTags() {
         return configs.entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(METRICS_COMMON_TAGS_PREFIX))
                 .collect(Collectors.toMap(
-                        entry -> entry.getKey().substring(METRICS_COMMON_TAGS_PREFIX.length()), Entry::getValue));
+                        entry -> entry.getKey().substring(METRICS_COMMON_TAGS_PREFIX.length()),
+                        entry -> entry.getValue().toString()));
+    }
+
+    public boolean isTopicCreationEnabled() {
+        return Boolean.parseBoolean(getConfig(TOPIC_CREATION_ENABLE));
+    }
+
+    public boolean isWorkflowCreationEnabled() {
+        return Boolean.parseBoolean(getConfig(WORKFLOW_CREATION_ENABLE));
     }
 }

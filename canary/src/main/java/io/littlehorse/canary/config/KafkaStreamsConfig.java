@@ -15,10 +15,6 @@ public class KafkaStreamsConfig implements Config {
                 .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    public String getStateDir() {
-        return configs.get(StreamsConfig.STATE_DIR_CONFIG).toString();
-    }
-
     @Override
     public Map<String, Object> toMap() {
         return configs;

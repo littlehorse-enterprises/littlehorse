@@ -3,10 +3,10 @@ package io.littlehorse.canary.util;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class Shutdown {
-    private Shutdown() {}
+public class ShutdownHook {
+    private ShutdownHook() {}
 
-    public static void addShutdownHook(final String message, final AutoCloseable closeable) {
+    public static void add(final String message, final AutoCloseable closeable) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 closeable.close();
