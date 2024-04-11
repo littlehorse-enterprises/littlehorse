@@ -176,24 +176,35 @@ It exposes a `/metrics`  endpoint that prometheus scrapes.
 
 ### Metrics
 
-| Metric                                 | Description                                                                                                  |
-|----------------------------------------|--------------------------------------------------------------------------------------------------------------|
-| `canary_task_run_latency_avg`          | Average time elapsed from when a task was scheduled until it was executed by the worker in milliseconds      |
-| `canary_task_run_latency_max`          | Maximum time to execute a task by the worker in milliseconds                                                 |
-| `canary_run_wf_latency_avg`            | Average time of requesting a new wf run in milliseconds                                                      |
-| `canary_run_wf_latency_max`            | Max time of requesting a new wr run in milliseconds                                                          |
-| `canary_duplicated_task_run_max_count` | Number of detected duplicated task. Useful for data integrity, every task scheduled has to have an unique id |
+| Metric                             | Description                                                                                                  |
+|------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| `canary_task_run_execution_avg`    | Average time elapsed from when a task was scheduled until it was executed by the worker in milliseconds      |
+| `canary_task_run_execution_max`    | Maximum time to execute a task by the worker in milliseconds                                                 |
+| `canary_task_run_execution_count`  | Total wf run executed by the worker                                                                          |
+| `canary_get_wf_run_request_avg`    | Average time of getting a wf run in milliseconds                                                             |
+| `canary_get_wf_run_request_max`    | Max time of getting a wf run in milliseconds                                                                 |
+| `canary_get_wf_run_request_count`  | Total get executed wf run by the metronome                                                                   |
+| `canary_wf_run_request_avg`        | Average time of requesting a new wf run in milliseconds                                                      |
+| `canary_wf_run_request_max`        | Max time of requesting a new wf run in milliseconds                                                          |
+| `canary_wf_run_request_count`      | Total wf run count by the metronome                                                                          |
+| `canary_duplicated_task_run_count` | Number of detected duplicated task. Useful for data integrity, every task scheduled has to have an unique id |
 
 ### Kafka Topics
 
 - `canary-beats` use for producing the metric beats.
 - Kafka streams topics:
-    - `canary-dev-duplicated-task-by-server-count-changelog`
-    - `canary-dev-duplicated-task-by-server-count-repartition`
-    - `canary-dev-duplicated-task-count-changelog`
-    - `canary-dev-latency-avg-changelog`
-    - `canary-dev-metrics-changelog`
-    - `canary-dev-metrics-repartition`
+  ```
+  canary-beats
+  ${lh.canary.id}-count-changelog
+  ${lh.canary.id}-count-repartition
+  ${lh.canary.id}-duplicated-task-run-by-server-changelog
+  ${lh.canary.id}-duplicated-task-run-by-server-repartition
+  ${lh.canary.id}-duplicated-task-run-changelog
+  ${lh.canary.id}-latency-changelog
+  ${lh.canary.id}-latency-repartition
+  ${lh.canary.id}-metrics-changelog
+  ${lh.canary.id}-metrics-repartition
+  ```
 
 ### Configurations
 
