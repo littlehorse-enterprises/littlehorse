@@ -65,7 +65,7 @@ public class MetricsTopology {
 
         // build duplicated task run stream
         final KStream<MetricKey, MetricValue> duplicatedTaskRunStream = beatsStream
-                // filter by
+                // filter by TASK_RUN_EXECUTION
                 .filter(MetricsTopology::filterTaskRunBeats)
                 .groupByKey()
                 // count all the records with the same idempotency key and attempt number

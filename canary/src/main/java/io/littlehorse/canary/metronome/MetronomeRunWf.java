@@ -1,6 +1,6 @@
 package io.littlehorse.canary.metronome;
 
-import io.littlehorse.canary.kafka.BeatEmitter;
+import io.littlehorse.canary.kafka.BeatProducer;
 import io.littlehorse.canary.proto.BeatStatus;
 import io.littlehorse.canary.proto.BeatType;
 import io.littlehorse.canary.util.LHClient;
@@ -15,21 +15,21 @@ import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class Metronome {
+public class MetronomeRunWf {
 
-    private final BeatEmitter emitter;
+    private final BeatProducer producer;
     private final ScheduledExecutorService mainExecutor;
     private final ExecutorService requestsExecutor;
     private final LHClient lhClient;
     private final int runs;
 
-    public Metronome(
-            final BeatEmitter emitter,
+    public MetronomeRunWf(
+            final BeatProducer producer,
             final LHClient lhClient,
             final Duration frequency,
             final int threads,
             final int runs) {
-        this.emitter = emitter;
+        this.producer = producer;
         this.lhClient = lhClient;
         this.runs = runs;
 
@@ -63,7 +63,7 @@ public class Metronome {
     }
 
     private void sendMetricBeat(final String wfId, final Instant start, final BeatStatus status) {
-        emitter.future(wfId, BeatType.WF_RUN_REQUEST, status, Duration.between(start, Instant.now()));
+        producer.sendFuture(wfId, BeatType.WF_RUN_REQUEST, status, Duration.between(start, Instant.now()));
     }
 
     private void scheduledRun() {

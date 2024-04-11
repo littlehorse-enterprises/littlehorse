@@ -32,10 +32,13 @@
       * [`lh.canary.id`](#lhcanaryid)
       * [`lh.canary.topic.name`](#lhcanarytopicname)
       * [`lh.canary.topic.creation.enable`](#lhcanarytopiccreationenable)
-      * [`lh.canary.workflow.creation.enable`](#lhcanaryworkflowcreationenable)
-      * [`lh.canary.topic.creation.replicas`](#lhcanarytopiccreationreplicas)
-      * [`lh.canary.topic.creation.partitions`](#lhcanarytopiccreationpartitions)
       * [`lh.canary.topic.creation.timeout.ms`](#lhcanarytopiccreationtimeoutms)
+      * [`lh.canary.topic.replicas`](#lhcanarytopicreplicas)
+      * [`lh.canary.topic.partitions`](#lhcanarytopicpartitions)
+      * [`lh.canary.workflow.creation.enable`](#lhcanaryworkflowcreationenable)
+      * [`lh.canary.workflow.name`](#lhcanaryworkflowname)
+      * [`lh.canary.workflow.version`](#lhcanaryworkflowversion)
+      * [`lh.canary.workflow.revison`](#lhcanaryworkflowrevison)
   * [Using Env Variables](#using-env-variables)
 <!-- TOC -->
 
@@ -297,6 +300,36 @@ Flag to enable topics creation.
 
 ---
 
+#### `lh.canary.topic.creation.timeout.ms`
+
+Total time to wait for creating the metric beats topic in milliseconds.
+
+- **Type:** int
+- **Default:** 5000
+- **Importance:** high
+
+---
+
+#### `lh.canary.topic.replicas`
+
+Replicas for metric beats topic.
+
+- **Type:** int
+- **Default:** 3
+- **Importance:** high
+
+---
+
+#### `lh.canary.topic.partitions`
+
+Partitions for metric beats topic.
+
+- **Type:** int
+- **Default:** 12
+- **Importance:** high
+
+---
+
 #### `lh.canary.workflow.creation.enable`
 
 Flag to enable canary workflow creation.
@@ -307,32 +340,32 @@ Flag to enable canary workflow creation.
 
 ---
 
-#### `lh.canary.topic.creation.replicas`
+#### `lh.canary.workflow.name`
 
-Replicas for metric beats topic.
+Workflow name.
 
-- **Type:** int
-- **Default:** 3
+- **Type:** string
+- **Default:** canary-workflow
 - **Importance:** high
 
 ---
 
-#### `lh.canary.topic.creation.partitions`
+#### `lh.canary.workflow.version`
 
-Partitions for metric beats topic.
+Workflow major version.
 
 - **Type:** int
-- **Default:** 12
+- **Default:** 0
 - **Importance:** high
 
 ---
 
-#### `lh.canary.topic.creation.timeout.ms`
+#### `lh.canary.workflow.revison`
 
-Total time to wait for creating the metric beats topic in milliseconds.
+Workflow reversion.
 
 - **Type:** int
-- **Default:** 5000
+- **Default:** 0
 - **Importance:** high
 
 ## Using Env Variables

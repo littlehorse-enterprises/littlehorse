@@ -3,9 +3,9 @@ package io.littlehorse.canary;
 import io.littlehorse.canary.aggregator.Aggregator;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.ConfigLoader;
-import io.littlehorse.canary.kafka.BeatEmitter;
+import io.littlehorse.canary.kafka.BeatProducer;
 import io.littlehorse.canary.kafka.TopicCreator;
-import io.littlehorse.canary.metronome.Metronome;
+import io.littlehorse.canary.metronome.MetronomeRunWf;
 import io.littlehorse.canary.metronome.MetronomeWorker;
 import io.littlehorse.canary.metronome.MetronomeWorkflow;
 import io.littlehorse.canary.prometheus.PrometheusExporter;
@@ -40,8 +40,12 @@ public class Main {
         final CanaryConfig canaryConfig = args.length > 0 ? ConfigLoader.load(Paths.get(args[0])) : ConfigLoader.load();
         final LHConfig lhConfig =
                 new LHConfig(canaryConfig.toLittleHorseConfig().toMap());
-        final LHClient lhClient = new LHClient(lhConfig);
-        final BeatEmitter emitter = new BeatEmitter(
+        final LHClient lhClient = new LHClient(
+                lhConfig,
+                canaryConfig.getWorkflowName(),
+                canaryConfig.getWorkflowVersion(),
+                canaryConfig.getWorkflowRevision());
+        final BeatProducer producer = new BeatProducer(
                 lhConfig.getApiBootstrapHost(),
                 lhConfig.getApiBootstrapPort(),
                 lhClient.getServerVersion(),
@@ -62,18 +66,18 @@ public class Main {
 
         // start worker
         if (canaryConfig.isMetronomeWorkerEnabled()) {
-            new MetronomeWorker(emitter, lhConfig);
+            new MetronomeWorker(producer, lhConfig);
         }
 
         // register wf
         if (canaryConfig.isWorkflowCreationEnabled()) {
-            new MetronomeWorkflow(lhClient);
+            new MetronomeWorkflow(lhClient, canaryConfig.getWorkflowName());
         }
 
         // start metronome client
         if (canaryConfig.isMetronomeEnabled()) {
-            new Metronome(
-                    emitter,
+            new MetronomeRunWf(
+                    producer,
                     lhClient,
                     canaryConfig.getMetronomeFrequency(),
                     canaryConfig.getMetronomeThreads(),
