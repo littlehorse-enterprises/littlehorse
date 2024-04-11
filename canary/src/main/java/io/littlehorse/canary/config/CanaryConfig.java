@@ -66,6 +66,10 @@ public class CanaryConfig implements Config {
         return new KafkaProducerConfig(configs);
     }
 
+    public KafkaConsumerConfig toKafkaConsumerConfig() {
+        return new KafkaConsumerConfig(configs);
+    }
+
     public KafkaStreamsConfig toKafkaStreamsConfig() {
         return new KafkaStreamsConfig(configs);
     }
