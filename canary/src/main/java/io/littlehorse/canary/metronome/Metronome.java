@@ -56,13 +56,13 @@ public class Metronome {
 
         try {
             lhClient.runCanaryWf(wfId, start);
-            emmit(wfId, start, BeatStatus.OK);
+            sendMetricBeat(wfId, start, BeatStatus.OK);
         } catch (Exception e) {
-            emmit(wfId, start, BeatStatus.ERROR);
+            sendMetricBeat(wfId, start, BeatStatus.ERROR);
         }
     }
 
-    private void emmit(final String wfId, final Instant start, final BeatStatus status) {
+    private void sendMetricBeat(final String wfId, final Instant start, final BeatStatus status) {
         emitter.future(wfId, BeatType.WF_RUN_REQUEST, status, Duration.between(start, Instant.now()));
     }
 
