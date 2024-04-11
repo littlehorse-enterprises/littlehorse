@@ -110,6 +110,7 @@ class MetricsTopologyTest {
     @AfterEach
     void afterEach() {
         testDriver.close();
+        store.close();
     }
 
     @Test
@@ -214,6 +215,31 @@ class MetricsTopologyTest {
         assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count")))
                 .isEqualTo(newMetricValue(3.));
         assertThat(store.get(newMetricKey("canary_duplicated_task_run_count"))).isEqualTo(newMetricValue(1.));
+    }
+
+    @Test
+    void calculateCountAndLatencyForTaskRunWithTwoDuplicated() {
+        BeatType expectedType = BeatType.TASK_RUN_EXECUTION;
+        String expectedTypeName = expectedType.name().toLowerCase();
+        String expectedUniqueId1 = getRandomId();
+        String expectedUniqueId2 = getRandomId();
+
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId1, 20));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId1, 10));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId1, 30));
+
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId2, 20));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId2, 30));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId2, 40));
+
+        assertThat(getCount()).isEqualTo(4);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg")))
+                .isEqualTo(newMetricValue(25.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max")))
+                .isEqualTo(newMetricValue(40.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count")))
+                .isEqualTo(newMetricValue(6.));
+        assertThat(store.get(newMetricKey("canary_duplicated_task_run_count"))).isEqualTo(newMetricValue(2.));
     }
 
     @Test
