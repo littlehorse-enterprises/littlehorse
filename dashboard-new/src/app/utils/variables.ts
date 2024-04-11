@@ -24,7 +24,7 @@ const getValueFromLiteralValue = ({ literalValue }: Pick<VariableAssignment, 'li
   return literalValue[key]
 }
 
-const getValueFromFormatString = ({ formatString }: Pick<VariableAssignment, 'formatString'>) => {
+const getValueFromFormatString = ({ formatString }: Pick<VariableAssignment, 'formatString'>): string | undefined => {
   if (!formatString) return
-  return `${formatString.format}(${formatString.args})`
+  return `${getVariable(formatString.format)}`
 }

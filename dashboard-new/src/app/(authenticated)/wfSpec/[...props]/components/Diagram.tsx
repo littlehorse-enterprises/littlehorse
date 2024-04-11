@@ -36,8 +36,8 @@ export const Diagram: FC<Props> = ({ spec, wfRun, nodeRuns }) => {
     return threadRun?.number
   }, [thread, wfRun?.threadRuns])
   const threadNodeRuns = useMemo(() => {
-    if (!wfRun) return
-    return wfRun.threadRuns[threadRunNumber!].nodeRuns
+    if (!wfRun || threadRunNumber === undefined) return
+    return wfRun.threadRuns[threadRunNumber].nodeRuns
   }, [threadRunNumber, wfRun])
 
   const updateGraph = useCallback(() => {
@@ -52,7 +52,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun, nodeRuns }) => {
   }, [updateGraph])
 
   return (
-    <div className="mb-4 min-h-[600px] min-w-full rounded border-2 border-slate-100 bg-slate-50 shadow-inner">
+    <div className="mb-4 min-h-[800px] min-w-full rounded border-2 border-slate-100 bg-slate-50 shadow-inner">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -62,7 +62,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun, nodeRuns }) => {
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         snapToGrid={true}
-        className="min-h-[600px] min-w-full bg-slate-50"
+        className="min-h-[800px] min-w-full bg-slate-50"
       >
         <Panel position="top-left">
           <div className="flex w-full items-center justify-between gap-2">

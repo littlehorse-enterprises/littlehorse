@@ -45,6 +45,8 @@ export const WfRunsHeader: FC<Props> = ({ currentStatus, currentWindow, setWindo
           <Link
             key={status}
             href={`?status=${status}`}
+            replace
+            scroll={false}
             className={`flex items-center border-y-2 border-l-2 p-2 text-xs first-of-type:rounded-l-lg first-of-type:border-l-2 last-of-type:rounded-r-lg last-of-type:border-r-2 ${status === currentStatus ? 'border-blue-500 bg-blue-500 text-white' : ' text-gray-500'}`}
           >
             {status}
