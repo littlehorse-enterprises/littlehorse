@@ -59,6 +59,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
                 ? null
                 : (PrincipalIdModel) ObjectIdModel.fromString(clientIdStr.trim(), PrincipalIdModel.class);
         String tenantIdStr = headers.get(TENANT_ID);
+
         TenantIdModel tenantId = tenantIdStr == null
                 ? null
                 : (TenantIdModel) ObjectIdModel.fromString(tenantIdStr.trim(), TenantIdModel.class);

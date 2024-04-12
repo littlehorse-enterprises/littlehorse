@@ -1,0 +1,32 @@
+syntax = "proto3";
+package littlehorse;
+
+option java_multiple_files = true;
+option java_package = "io.littlehorse.canary.proto";
+
+import "google/protobuf/timestamp.proto";
+
+enum BeatType {
+  WF_RUN_REQUEST = 0;
+  GET_WF_RUN_REQUEST = 1;
+  TASK_RUN_EXECUTION = 2;
+}
+
+enum BeatStatus {
+  OK = 0;
+  ERROR = 1;
+}
+
+message BeatKey {
+  string server_host = 1;
+  int32 server_port = 2;
+  string server_version = 3;
+  BeatType type = 4;
+  BeatStatus status = 5;
+  string id = 6;
+}
+
+message BeatValue {
+  google.protobuf.Timestamp time = 1;
+  int64 latency = 2;
+}
