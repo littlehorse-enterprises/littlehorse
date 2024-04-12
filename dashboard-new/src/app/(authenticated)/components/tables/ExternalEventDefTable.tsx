@@ -1,23 +1,25 @@
 import { ExternalEventDefId } from 'littlehorse-client/dist/proto/object_id'
 import Link from 'next/link'
-import { FC } from 'react'
+import { FC, Fragment } from 'react'
+import { SearchResultProps } from '.'
 
-type Props = {
-  items: ExternalEventDefId[]
-}
-export const ExternalEventDefTable: FC<Props> = ({ items }) => {
-  if (items.length === 0) {
+export const ExternalEventDefTable: FC<SearchResultProps> = ({ pages = [] }) => {
+  if (pages.length === 0) {
     return <div className="flex min-h-[360px] items-center justify-center text-center italic">No ExternalEventDefs</div>
   }
 
   return (
     <div className="py-4">
-      {items.map(({ name }) => (
-        <div key={name} className="my-2 flex gap-2">
-          <Link className="underline hover:no-underline" href={`/externalEventDef/${name}`}>
-            {name}
-          </Link>
-        </div>
+      {pages.map((page, i) => (
+        <Fragment key={i}>
+          {page.results.map(({ name }: ExternalEventDefId) => (
+            <div key={name} className="my-2 flex gap-2">
+              <Link className="underline hover:no-underline" href={`/externalEventDef/${name}`}>
+                {name}
+              </Link>
+            </div>
+          ))}
+        </Fragment>
       ))}
     </div>
   )

@@ -2,10 +2,12 @@ import { Metadata } from 'next'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { ClientError, Status } from 'nice-grpc-common'
+import { getWfSpec } from './actions/getWfSpec'
 import { WfSpec } from './components/WfSpec'
-import { getWfSpec } from './getWfSpec'
 
 type Props = { params: { props: string[] } }
+
+export const dynamic = 'force-dynamic'
 
 export default async function Page({ params: { props } }: Props) {
   const name = props[0]
