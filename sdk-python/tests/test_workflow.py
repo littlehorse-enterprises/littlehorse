@@ -2178,13 +2178,13 @@ class TestUserTasks(unittest.TestCase):
         ut_node = node.user_task
         self.assertEqual(ut_node.notes, to_variable_assignment("hi there"))
 
-    def test_on_cancel_exception_name(self):
+    def test_on_cancellation_exception_name(self):
         def wf_func(thread: WorkflowThread) -> None:
             thread.assign_user_task(
                 "my-user-task",
                 user_id="asdf",
                 user_group="my-group",
-            ).with_on_cancel_exception("no-response")
+            ).with_on_cancellation_exception("no-response")
 
         wf = Workflow("my-wf", wf_func).compile()
         thread = wf.thread_specs[wf.entrypoint_thread_name]
@@ -2192,7 +2192,8 @@ class TestUserTasks(unittest.TestCase):
         node = thread.nodes["1-my-user-task-USER_TASK"]
         ut_node = node.user_task
         self.assertEqual(
-            ut_node.on_cancel_exception_name, to_variable_assignment("no-response")
+            ut_node.on_cancellation_exception_name,
+            to_variable_assignment("no-response"),
         )
 
 

@@ -85,9 +85,9 @@ func TestUserTaskWithNotes(t *testing.T) {
 	assert.Equal(t, "sample notes", utNode.GetNotes().GetLiteralValue().GetStr())
 }
 
-func TestUserTaskWithOnCancelExceptionName(t *testing.T) {
+func TestUserTaskWithOnCancellationExceptionName(t *testing.T) {
 	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
-		t.AssignUserTask("sample-user-task", nil, "group").WithOnCancelException("no-response")
+		t.AssignUserTask("sample-user-task", nil, "group").WithOnCancellationException("no-response")
 	}, "my-workflow")
 
 	putWf, _ := wf.Compile()
@@ -97,7 +97,7 @@ func TestUserTaskWithOnCancelExceptionName(t *testing.T) {
 	utNode := node.GetUserTask()
 	assert.NotNil(t, utNode)
 
-	assert.Equal(t, "no-response", utNode.GetOnCancelExceptionName().GetLiteralValue().GetStr())
+	assert.Equal(t, "no-response", utNode.GetOnCancellationExceptionName().GetLiteralValue().GetStr())
 }
 
 func TestReminderTask(t *testing.T) {

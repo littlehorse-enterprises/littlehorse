@@ -170,25 +170,25 @@ public interface UserTaskNodeOrBuilder extends
    * Specifies the name of the exception thrown when the User Task is canceled
    * </pre>
    *
-   * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
-   * @return Whether the onCancelExceptionName field is set.
+   * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>
+   * @return Whether the onCancellationExceptionName field is set.
    */
-  boolean hasOnCancelExceptionName();
+  boolean hasOnCancellationExceptionName();
   /**
    * <pre>
    * Specifies the name of the exception thrown when the User Task is canceled
    * </pre>
    *
-   * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
-   * @return The onCancelExceptionName.
+   * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>
+   * @return The onCancellationExceptionName.
    */
-  io.littlehorse.sdk.common.proto.VariableAssignment getOnCancelExceptionName();
+  io.littlehorse.sdk.common.proto.VariableAssignment getOnCancellationExceptionName();
   /**
    * <pre>
    * Specifies the name of the exception thrown when the User Task is canceled
    * </pre>
    *
-   * <code>optional .littlehorse.VariableAssignment on_cancel_exception_name = 7;</code>
+   * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getOnCancelExceptionNameOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getOnCancellationExceptionNameOrBuilder();
 }

@@ -669,7 +669,7 @@ class UserTaskOutput(NodeOutput):
         user_id: Optional[Union[str, WfRunVariable]] = None,
         user_group: Optional[Union[str, WfRunVariable]] = None,
         notes: Optional[Union[str, WfRunVariable, LHFormatString]] = None,
-        on_cancel_exception_name: Optional[Union[str, WfRunVariable]] = None,
+        on_cancellation_exception_name: Optional[Union[str, WfRunVariable]] = None,
     ) -> None:
         super().__init__(node_name)
         self._thread = thread
@@ -678,7 +678,7 @@ class UserTaskOutput(NodeOutput):
         self._user_group = user_group
         self._user_id = user_id
         self._notes = notes
-        self._on_cancel_exception_name = on_cancel_exception_name
+        self._on_cancellation_exception_name = on_cancellation_exception_name
 
     def with_notes(
         self, notes: Union[str, WfRunVariable, LHFormatString]
@@ -689,8 +689,10 @@ class UserTaskOutput(NodeOutput):
 
         ug = to_variable_assignment(self._user_group) if self._user_group else None
         ui = to_variable_assignment(self._user_id) if self._user_id else None
-        if self._on_cancel_exception_name:
-            exception_name = to_variable_assignment(self._on_cancel_exception_name)
+        if self._on_cancellation_exception_name:
+            exception_name = to_variable_assignment(
+                self._on_cancellation_exception_name
+            )
         else:
             exception_name = None
 
@@ -699,14 +701,14 @@ class UserTaskOutput(NodeOutput):
             user_group=ug,
             user_id=ui,
             notes=to_variable_assignment(notes),
-            on_cancel_exception_name=exception_name,
+            on_cancellation_exception_name=exception_name,
         )
         self._notes = notes
 
         node.sub_node = ut_node
         return self
 
-    def with_on_cancel_exception(
+    def with_on_cancellation_exception(
         self, exception_name: Union[str, WfRunVariable]
     ) -> "UserTaskOutput":
         node = self._thread._last_node()
@@ -724,7 +726,7 @@ class UserTaskOutput(NodeOutput):
             user_group=ug,
             user_id=ui,
             notes=notes,
-            on_cancel_exception_name=to_variable_assignment(exception_name),
+            on_cancellation_exception_name=to_variable_assignment(exception_name),
         )
 
         node.sub_node = ut_node

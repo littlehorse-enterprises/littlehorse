@@ -41,7 +41,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     private VariableAssignmentModel notes;
     private ReadOnlyMetadataManager metadataManager;
     private ProcessorExecutionContext processorContext;
-    private VariableAssignmentModel onCancelExceptionName;
+    private VariableAssignmentModel onCancellationException;
 
     public UserTaskNodeModel() {
         this.actions = new ArrayList<>();
@@ -69,8 +69,8 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
             out.setNotes(notes.toProto());
         }
 
-        if (onCancelExceptionName != null) {
-            out.setOnCancelExceptionName(onCancelExceptionName.toProto());
+        if (onCancellationException != null) {
+            out.setOnCancellationExceptionName(onCancellationException.toProto());
         }
 
         return out;
@@ -94,9 +94,9 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         if (p.hasNotes()) {
             notes = LHSerializable.fromProto(p.getNotes(), VariableAssignmentModel.class, context);
         }
-        if (p.hasOnCancelExceptionName()) {
-            onCancelExceptionName =
-                    LHSerializable.fromProto(p.getOnCancelExceptionName(), VariableAssignmentModel.class, context);
+        if (p.hasOnCancellationExceptionName()) {
+            onCancellationException = LHSerializable.fromProto(
+                    p.getOnCancellationExceptionName(), VariableAssignmentModel.class, context);
         }
         this.metadataManager = context.metadataManager();
         this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
@@ -143,9 +143,11 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
 
     public String assignExceptionNameVariable(ThreadRunModel threadRun) {
         try {
-            if (onCancelExceptionName != null) {
-                String resolvedExceptionName =
-                        threadRun.assignVariable(onCancelExceptionName).asStr().getStrVal();
+            if (onCancellationException != null) {
+                String resolvedExceptionName = threadRun
+                        .assignVariable(onCancellationException)
+                        .asStr()
+                        .getStrVal();
                 if (!Strings.isNullOrEmpty(resolvedExceptionName) && !resolvedExceptionName.isBlank()) {
                     return resolvedExceptionName;
                 } else {

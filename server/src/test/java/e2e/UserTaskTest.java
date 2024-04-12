@@ -167,7 +167,7 @@ public class UserTaskTest {
         return new WorkflowImpl("cancel-user-task", entrypointThread -> {
             UserTaskOutput formOutput = entrypointThread
                     .assignUserTask(USER_TASK_DEF_NAME, "test-user-id", null)
-                    .withOnCancelException("no-response");
+                    .withOnCancellationException("no-response");
             entrypointThread.handleException(formOutput, "no-response", userTaskCanceledHandler -> {
                 userTaskCanceledHandler.execute("user-task-canceled");
             });
@@ -179,7 +179,7 @@ public class UserTaskTest {
         return new WorkflowImpl("cancel-user-task-on-deadline", entrypointThread -> {
             UserTaskOutput formOutput = entrypointThread
                     .assignUserTask(USER_TASK_DEF_NAME, "test-user-id", null)
-                    .withOnCancelException("no-response");
+                    .withOnCancellationException("no-response");
             entrypointThread.cancelUserTaskRunAfter(formOutput, 2);
             entrypointThread.handleException(formOutput, "no-response", userTaskCanceledHandler -> {
                 userTaskCanceledHandler.execute("user-task-canceled");

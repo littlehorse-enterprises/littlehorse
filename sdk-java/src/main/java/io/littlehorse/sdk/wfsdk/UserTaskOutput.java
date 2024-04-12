@@ -7,7 +7,7 @@ public interface UserTaskOutput extends NodeOutput {
 
     public UserTaskOutput withNotes(LHFormatString notes);
 
-    UserTaskOutput withOnCancelException(String exceptionName);
+    UserTaskOutput withOnCancellationException(String exceptionName);
 
-    UserTaskOutput withOnCancelException(WfRunVariable exceptionName);
+    UserTaskOutput withOnCancellationException(WfRunVariable exceptionName);
 }
