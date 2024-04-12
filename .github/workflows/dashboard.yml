@@ -1,0 +1,86 @@
+name: dashboard
+run-name: Publishing images
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "dashboard"
+    paths:
+      - .github/workflows/dashboard.yml
+      - server/**
+      - dashboard-new/**
+      - docker/standalone/**
+permissions:
+  id-token: write
+  packages: write
+  contents: read
+jobs:
+  lh-server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "corretto"
+          java-version: 17
+
+      - name: Tests and Build
+        run: ./gradlew server:build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: server-jar
+          path: server/build/libs/server-*-all.jar
+
+  lh-standalone:
+    runs-on: ubuntu-latest
+    needs:
+      - lh-server
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          package_json_file: ./dashboard/package.json
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache-dependency-path: dashboard/pnpm-lock.yaml
+          cache: pnpm
+
+      - name: Build Dashboard
+        working-directory: ./dashboard
+        run: |
+          pnpm install
+          pnpm build
+      
+      - name: Build sdk-js
+        working-directory: ./sdk-js
+        run: |
+          npm ci
+          npm run build
+
+      - name: Build Dashboard-new
+        working-directory: ./dashboard-new
+        run: |
+          npm ci
+          npm run build
+
+      - name: Dowload Server Jar artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: server-jar
+          path: server/build/libs/
+
+      - name: Build and Publish
+        uses: ./.github/actions/publish-image
+        with:
+          image-name: lh-standalone-next
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerfile: docker/standalone/Dockerfile
