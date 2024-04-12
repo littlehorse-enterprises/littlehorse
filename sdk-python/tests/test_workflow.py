@@ -1960,6 +1960,52 @@ class TestUserTasks(unittest.TestCase):
         reassign = action.reassign
         self.assertEqual(reassign.user_group.literal_value.str, "my-group")
 
+    def test_cancel_user_task_on_deadline(self):
+        def wf_func(thread: WorkflowThread) -> None:
+            uto = thread.assign_user_task(
+                "my-user-task",
+                user_id="asdf",
+                user_group="my-group",
+            )
+            thread.cancel_user_task_run_after(uto, 60)
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+
+        self.assertEqual(len(ut_node.actions), 1)
+
+        action = ut_node.actions[0]
+        self.assertEqual(action.delay_seconds.literal_value.int, 60)
+        self.assertEqual(action.hook, UTActionTrigger.UTHook.ON_ARRIVAL)
+        self.assertTrue(action.HasField("cancel"))
+        self.assertFalse(action.HasField("reassign"))
+
+    def test_cancel_user_task_on_deadline_after_assignment(self):
+        def wf_func(thread: WorkflowThread) -> None:
+            uto = thread.assign_user_task(
+                "my-user-task",
+                user_id="asdf",
+                user_group="my-group",
+            )
+            thread.cancel_user_task_run_after_assignment(uto, 60)
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+
+        self.assertEqual(len(ut_node.actions), 1)
+
+        action = ut_node.actions[0]
+        self.assertEqual(action.delay_seconds.literal_value.int, 60)
+        self.assertEqual(action.hook, UTActionTrigger.UTHook.ON_TASK_ASSIGNED)
+        self.assertTrue(action.HasField("cancel"))
+        self.assertFalse(action.HasField("reassign"))
+
     def test_reminder_task(self):
         def wf_func(thread: WorkflowThread) -> None:
             uto = thread.assign_user_task(
@@ -2131,6 +2177,24 @@ class TestUserTasks(unittest.TestCase):
         node = thread.nodes["1-my-user-task-USER_TASK"]
         ut_node = node.user_task
         self.assertEqual(ut_node.notes, to_variable_assignment("hi there"))
+
+    def test_on_cancellation_exception_name(self):
+        def wf_func(thread: WorkflowThread) -> None:
+            thread.assign_user_task(
+                "my-user-task",
+                user_id="asdf",
+                user_group="my-group",
+            ).with_on_cancellation_exception("no-response")
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+        self.assertEqual(
+            ut_node.on_cancellation_exception_name,
+            to_variable_assignment("no-response"),
+        )
 
 
 class FormatStringTest(unittest.TestCase):
