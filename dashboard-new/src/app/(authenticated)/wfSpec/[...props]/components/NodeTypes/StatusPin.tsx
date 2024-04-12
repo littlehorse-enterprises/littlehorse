@@ -26,7 +26,7 @@ const Status: Record<LHStatus, Pin> = {
     Icon: EllipsisHorizontalIcon,
   },
   [LHStatus.RUNNING]: {
-    color: 'blue',
+    color: 'green',
     Icon: PlayIcon,
   },
   [LHStatus.COMPLETED]: {

@@ -40,7 +40,7 @@ export const NodeDetails: FC<Props> = ({ children }) => {
 
   return (
     <div style={wrapperStyle} className="flex flex-col justify-center drop-shadow">
-      <div className="rounded-md bg-white max-w-96 p-2 text-xs">{children}</div>
+      <div className="max-w-96 rounded-md bg-white p-2 text-xs">{children}</div>
       <div className="flex items-center justify-center">
         <div className="transform-x-1/2 transform-y-1/2 h-4 w-4 border-[0.5rem] border-transparent border-t-white bg-transparent"></div>
       </div>

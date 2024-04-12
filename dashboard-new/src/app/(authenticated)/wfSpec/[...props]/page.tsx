@@ -7,6 +7,8 @@ import { WfSpec } from './components/WfSpec'
 
 type Props = { params: { props: string[] } }
 
+export const dynamic = 'force-dynamic'
+
 export default async function Page({ params: { props } }: Props) {
   const name = props[0]
   const version = props[1]

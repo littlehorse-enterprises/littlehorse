@@ -27,7 +27,6 @@ export const Layouter: FC<{ nodeRuns?: NodeRun[] }> = ({ nodeRuns }) => {
       const layoutedNodes = nodes.map(node => {
         const nodeWithPosition = dagreGraph.node(node.id)
         const nodeRun = nodeRuns?.find(nodeRun => {
-          console.log(nodeRun.nodeName, node.id)
           return nodeRun.nodeName === node.id
         })
         const fade = nodeRuns !== undefined && nodeRun === undefined

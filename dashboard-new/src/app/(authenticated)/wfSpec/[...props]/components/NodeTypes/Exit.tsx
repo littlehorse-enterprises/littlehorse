@@ -18,7 +18,7 @@ const ExitNode: FC<NodeProps> = ({ data }) => {
             {failureDef.failureName}
           </div>
           <div className="">
-            <pre className="max-w-36 truncate hover:max-w-full bg-slate-600 p-1 font-mono text-xs text-white">
+            <pre className="max-w-36 truncate bg-slate-600 p-1 font-mono text-xs text-white hover:max-w-full">
               {failureDef.message}
             </pre>
           </div>
