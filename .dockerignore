@@ -7,6 +7,7 @@
 !lhctl/
 !docker/
 !dashboard/
+!dashboard-new/
 !gradle.properties
 !settings.gradle
 !go.mod

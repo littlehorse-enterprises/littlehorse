@@ -7,6 +7,7 @@ import handsomeHorse from './handsome-horse.png'
 export const metadata: Metadata = {
   title: 'Login - Littlehorse Dashboard',
 }
+export const dynamic = "force-dynamic"
 
 export default async function Login() {
   const providers = await getProviders()
