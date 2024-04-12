@@ -36,11 +36,17 @@ if [ "${LHD_OAUTH_ENABLED}" == "true" ]; then
   export KEYCLOAK_CLIENT_SECRET=${LHD_OAUTH_CLIENT_SECRET}
   export KEYCLOAK_ISSUER_URI=${LHD_OAUTH_SERVER_URL}
   export AUTH_SECRET=${LHD_OAUTH_ENCRYPT_SECRET}
+  export NEXTAUTH_SECRET=${AUTH_SECRET}
 else
   export AUTH_SECRET=$(uuidgen)
+  export NEXTAUTH_SECRET=${AUTH_SECRET}
 fi
 
 export HOSTNAME=0.0.0.0
 export PORT=8080
 
+if [ "${DASHBOARD_NEXT}" == "true" ]; then
+node /lh/dashboard-new/server.js
+else
 node /lh/dashboard/apps/web/server.js
+fi

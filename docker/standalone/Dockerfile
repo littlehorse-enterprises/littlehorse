@@ -28,11 +28,17 @@ COPY ./dashboard/apps/web/.next/standalone ./
 COPY ./dashboard/apps/web/.next/static ./apps/web/.next/static
 COPY ./dashboard/apps/web/public ./apps/web/public
 
+# New dashboard
+WORKDIR /lh/dashboard-new
+COPY ./dashboard-new/.next/standalone ./
+COPY ./dashboard-new/.next/static ./.next/static
+
 WORKDIR /
 
 COPY ./server/build/libs/server-*-all.jar /lh/server.jar
 
 ENV LHD_API_HOST=localhost
 ENV LHD_API_PORT=2023
+ENV DASHBOARD_NEXT=true
 
 ENTRYPOINT ["/lh/docker-entrypoint.sh"]

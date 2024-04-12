@@ -15,15 +15,6 @@ export const WfRun: FC<WfRunResponse> = ({ wfRun, wfSpec, nodeRuns }) => {
       />
       <Details {...wfRun} />
       <Diagram spec={wfSpec} wfRun={wfRun} nodeRuns={nodeRuns} />
-      <br />
-      <br />
-      {JSON.stringify(wfSpec)}
-      <br />
-      <br />
-      {JSON.stringify(wfRun)}
-      <br />
-      <br />
-      {JSON.stringify(nodeRuns)}
     </ReactFlowProvider>
   )
 }
