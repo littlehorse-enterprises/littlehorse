@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MetronomeRunWfExecuter {
+public class MetronomeRunWfExecutor {
 
     private final BeatProducer producer;
     private final ScheduledExecutorService mainExecutor;
@@ -25,7 +25,7 @@ public class MetronomeRunWfExecuter {
     private final int runs;
     private final LocalRepository repository;
 
-    public MetronomeRunWfExecuter(
+    public MetronomeRunWfExecutor(
             final BeatProducer producer,
             final LHClient lhClient,
             final Duration frequency,
