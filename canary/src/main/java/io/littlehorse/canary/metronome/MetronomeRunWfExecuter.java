@@ -1,6 +1,7 @@
 package io.littlehorse.canary.metronome;
 
 import io.littlehorse.canary.metronome.internal.BeatProducer;
+import io.littlehorse.canary.metronome.internal.LocalRepository;
 import io.littlehorse.canary.proto.BeatStatus;
 import io.littlehorse.canary.proto.BeatType;
 import io.littlehorse.canary.util.LHClient;
@@ -22,16 +23,19 @@ public class MetronomeRunWfExecuter {
     private final ExecutorService requestsExecutor;
     private final LHClient lhClient;
     private final int runs;
+    private final LocalRepository repository;
 
     public MetronomeRunWfExecuter(
             final BeatProducer producer,
             final LHClient lhClient,
             final Duration frequency,
             final int threads,
-            final int runs) {
+            final int runs,
+            final LocalRepository repository) {
         this.producer = producer;
         this.lhClient = lhClient;
         this.runs = runs;
+        this.repository = repository;
 
         mainExecutor = Executors.newSingleThreadScheduledExecutor();
         ShutdownHook.add("Metronome: Main Executor Thread", () -> closeExecutor(mainExecutor));
@@ -57,6 +61,7 @@ public class MetronomeRunWfExecuter {
         try {
             lhClient.runCanaryWf(wfId, start); // 100
             sendMetricBeat(wfId, start, BeatStatus.OK);
+            repository.save(wfId, 0);
         } catch (Exception e) {
             sendMetricBeat(wfId, start, BeatStatus.ERROR);
         }

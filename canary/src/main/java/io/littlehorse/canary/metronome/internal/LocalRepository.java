@@ -1,6 +1,7 @@
 package io.littlehorse.canary.metronome.internal;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.Timestamps;
 import io.littlehorse.canary.CanaryException;
 import io.littlehorse.canary.proto.Attempt;
 import io.littlehorse.canary.util.ShutdownHook;
@@ -26,6 +27,15 @@ public class LocalRepository {
             db.close();
             options.close();
         });
+    }
+
+    public void save(final String id, final long attempt) {
+        save(
+                id,
+                Attempt.newBuilder()
+                        .setAttempt(attempt)
+                        .setTime(Timestamps.now())
+                        .build());
     }
 
     public void save(final String id, final Attempt attempt) {

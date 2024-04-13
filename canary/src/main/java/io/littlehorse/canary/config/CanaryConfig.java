@@ -27,6 +27,7 @@ public class CanaryConfig implements Config {
     public static final String METRONOME_THREADS = "metronome.threads";
     public static final String METRONOME_RUNS = "metronome.runs";
     public static final String METRONOME_WORKER_ENABLE = "metronome.worker.enable";
+    public static final String METRONOME_DATA_PATH = "metronome.data.path";
 
     public static final String AGGREGATOR_ENABLE = "aggregator.enable";
     public static final String METRICS_PORT = "metrics.port";
@@ -156,5 +157,9 @@ public class CanaryConfig implements Config {
 
     public int getWorkflowVersion() {
         return Integer.parseInt(getConfig(WORKFLOW_VERSION));
+    }
+
+    public String getMetronomeDataPath() {
+        return getConfig(METRONOME_DATA_PATH);
     }
 }
