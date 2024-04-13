@@ -13,8 +13,14 @@ enum BeatType {
 }
 
 enum BeatStatus {
-  OK = 0;
-  ERROR = 1;
+  STARTING = 0;
+  RUNNING = 1;
+  COMPLETED = 2;
+  HALTING = 3;
+  HALTED = 4;
+  ERROR = 5;
+  EXCEPTION = 6;
+  OK = 7;
 }
 
 message BeatKey {

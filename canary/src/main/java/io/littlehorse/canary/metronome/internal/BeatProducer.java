@@ -1,4 +1,4 @@
-package io.littlehorse.canary.kafka;
+package io.littlehorse.canary.metronome.internal;
 
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.canary.CanaryException;

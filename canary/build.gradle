@@ -37,6 +37,9 @@ dependencies {
     // Prometheus
     implementation 'io.micrometer:micrometer-registry-prometheus:1.12.2'
 
+    // RocksDB
+    implementation 'org.rocksdb:rocksdbjni:9.0.0'
+
     // Tests
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'

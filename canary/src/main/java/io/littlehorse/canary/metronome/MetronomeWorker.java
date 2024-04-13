@@ -1,6 +1,6 @@
 package io.littlehorse.canary.metronome;
 
-import io.littlehorse.canary.kafka.BeatProducer;
+import io.littlehorse.canary.metronome.internal.BeatProducer;
 import io.littlehorse.canary.proto.BeatStatus;
 import io.littlehorse.canary.proto.BeatType;
 import io.littlehorse.canary.util.ShutdownHook;

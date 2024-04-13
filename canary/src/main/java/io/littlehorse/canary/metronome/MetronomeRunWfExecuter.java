@@ -1,6 +1,6 @@
 package io.littlehorse.canary.metronome;
 
-import io.littlehorse.canary.kafka.BeatProducer;
+import io.littlehorse.canary.metronome.internal.BeatProducer;
 import io.littlehorse.canary.proto.BeatStatus;
 import io.littlehorse.canary.proto.BeatType;
 import io.littlehorse.canary.util.LHClient;
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MetronomeRunWf {
+public class MetronomeRunWfExecuter {
 
     private final BeatProducer producer;
     private final ScheduledExecutorService mainExecutor;
@@ -23,7 +23,7 @@ public class MetronomeRunWf {
     private final LHClient lhClient;
     private final int runs;
 
-    public MetronomeRunWf(
+    public MetronomeRunWfExecuter(
             final BeatProducer producer,
             final LHClient lhClient,
             final Duration frequency,
@@ -40,7 +40,7 @@ public class MetronomeRunWf {
         requestsExecutor = Executors.newFixedThreadPool(threads);
         ShutdownHook.add("Metronome: Request Executor Thread", () -> closeExecutor(requestsExecutor));
 
-        log.info("Metronome Started");
+        log.info("RunWf Metronome Started");
     }
 
     private void closeExecutor(final ExecutorService executor) throws InterruptedException {
@@ -55,7 +55,7 @@ public class MetronomeRunWf {
         log.debug("Executing run {}", wfId);
 
         try {
-            lhClient.runCanaryWf(wfId, start);
+            lhClient.runCanaryWf(wfId, start); // 100
             sendMetricBeat(wfId, start, BeatStatus.OK);
         } catch (Exception e) {
             sendMetricBeat(wfId, start, BeatStatus.ERROR);

@@ -15,13 +15,14 @@ import org.apache.kafka.common.errors.TopicExistsException;
 @Slf4j
 public class TopicCreator {
 
-    public TopicCreator(final Map<String, Object> kafkaAdminClient, final NewTopic topic, final Duration timeout) {
+    public TopicCreator(
+            final Map<String, Object> kafkaAdminClient, final Duration timeout, final List<NewTopic> topics) {
         final AdminClient adminClient = KafkaAdminClient.create(kafkaAdminClient);
         ShutdownHook.add("Topics Creator", adminClient);
 
         try {
-            adminClient.createTopics(List.of(topic)).all().get(timeout.toMillis(), TimeUnit.MILLISECONDS);
-            log.info("Topics {} created", topic);
+            adminClient.createTopics(topics).all().get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+            log.info("Topics {} created", topics);
         } catch (Exception e) {
             if (e.getCause() instanceof TopicExistsException) {
                 log.warn(e.getMessage());

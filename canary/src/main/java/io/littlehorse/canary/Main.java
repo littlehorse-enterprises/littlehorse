@@ -3,11 +3,11 @@ package io.littlehorse.canary;
 import io.littlehorse.canary.aggregator.Aggregator;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.ConfigLoader;
-import io.littlehorse.canary.kafka.BeatProducer;
 import io.littlehorse.canary.kafka.TopicCreator;
-import io.littlehorse.canary.metronome.MetronomeRunWf;
+import io.littlehorse.canary.metronome.MetronomeRunWfExecuter;
 import io.littlehorse.canary.metronome.MetronomeWorker;
 import io.littlehorse.canary.metronome.MetronomeWorkflow;
+import io.littlehorse.canary.metronome.internal.BeatProducer;
 import io.littlehorse.canary.prometheus.PrometheusExporter;
 import io.littlehorse.canary.prometheus.PrometheusServerExporter;
 import io.littlehorse.canary.util.LHClient;
@@ -15,6 +15,7 @@ import io.littlehorse.canary.util.ShutdownHook;
 import io.littlehorse.sdk.common.config.LHConfig;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -55,13 +56,11 @@ public class Main {
 
         // create topics
         if (canaryConfig.isTopicCreationEnabled()) {
+            final NewTopic topic = new NewTopic(
+                    canaryConfig.getTopicName(), canaryConfig.getTopicPartitions(), canaryConfig.getTopicReplicas());
+
             new TopicCreator(
-                    canaryConfig.toKafkaAdminConfig().toMap(),
-                    new NewTopic(
-                            canaryConfig.getTopicName(),
-                            canaryConfig.getTopicPartitions(),
-                            canaryConfig.getTopicReplicas()),
-                    canaryConfig.getTopicCreationTimeout());
+                    canaryConfig.toKafkaAdminConfig().toMap(), canaryConfig.getTopicCreationTimeout(), List.of(topic));
         }
 
         // start worker
@@ -76,7 +75,7 @@ public class Main {
 
         // start metronome client
         if (canaryConfig.isMetronomeEnabled()) {
-            new MetronomeRunWf(
+            new MetronomeRunWfExecuter(
                     producer,
                     lhClient,
                     canaryConfig.getMetronomeFrequency(),
