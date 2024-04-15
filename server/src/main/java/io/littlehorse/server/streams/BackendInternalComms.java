@@ -696,7 +696,6 @@ public class BackendInternalComms implements Closeable {
         }
         String bookmarkKey = null;
         boolean brokenBecauseOutOfData = true;
-        System.out.println("partition key " + req.partitionKey);
         try (LHKeyValueIterator<?> iter =
                 store.range(startKey, StoredGetable.getRocksDBKey(endKey, req.getObjectType()), StoredGetable.class)) {
 
