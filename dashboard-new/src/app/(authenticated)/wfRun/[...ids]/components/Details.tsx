@@ -1,5 +1,6 @@
 'use client'
 import { formatDate } from '@/app/utils/date'
+import { concatWfRunIds } from '@/app/utils/wfRun'
 import { WfRun } from 'littlehorse-client/dist/proto/wf_run'
 import Link from 'next/link'
 import { FC } from 'react'
@@ -22,6 +23,14 @@ export const Details: FC<DetailsProps> = ({ id, status, wfSpecId, startTime }) =
     <div className="mb-4">
       <span className="italic">WfRun</span>
       <h1 className="block text-2xl font-bold">{id?.id}</h1>
+      {id?.parentWfRunId && (
+        <div className="flex items-center gap-2">
+          Parent WfRun:
+          <Link href={`/wfRun/${concatWfRunIds(id?.parentWfRunId)}`} className="text-blue-500 underline">
+            {id?.parentWfRunId?.id}
+          </Link>
+        </div>
+      )}
       <div className="flex flex-row gap-2 text-sm text-gray-500">
         <div className="flex items-center gap-2">
           WfSpec:
