@@ -1,6 +1,5 @@
 import { FC, memo } from 'react'
 import { BaseEdge, EdgeLabelRenderer, Position, SmoothStepEdgeProps, getSmoothStepPath } from 'reactflow'
-import { EdgeDetails } from './EdgeDetails'
 
 const Default: FC<SmoothStepEdgeProps> = ({
   id,

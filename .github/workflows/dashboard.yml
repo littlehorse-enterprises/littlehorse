@@ -83,4 +83,4 @@ jobs:
         with:
           image-name: lh-standalone-next
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          dockerfile: docker/standalone/Dockerfile
+          dockerfile: docker/standalone/Dockerfile.next

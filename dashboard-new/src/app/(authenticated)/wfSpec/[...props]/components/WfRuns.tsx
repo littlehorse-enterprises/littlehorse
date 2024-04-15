@@ -1,6 +1,7 @@
 'use client'
 import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
 import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
+import { concatWfRunIds } from '@/app/utils/wfRun'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { ArrowPathIcon } from '@heroicons/react/16/solid'
 import { useInfiniteQuery } from '@tanstack/react-query'
@@ -62,10 +63,10 @@ export const WfRuns: FC<Props> = ({ id }) => {
         <div className="flex min-h-[360px] flex-col gap-4">
           {data?.pages.map((page, i) => (
             <Fragment key={i}>
-              {page.results.map(({ id }) => (
-                <div key={id}>
-                  <Link className="py-2 text-blue-500 hover:underline" href={`/wfRun/${id}`}>
-                    {id}
+              {page.results.map(wfRunId => (
+                <div key={wfRunId.id}>
+                  <Link className="py-2 text-blue-500 hover:underline" href={`/wfRun/${concatWfRunIds(wfRunId)}`}>
+                    {wfRunId.id}
                   </Link>
                 </div>
               ))}
