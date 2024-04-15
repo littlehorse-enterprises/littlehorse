@@ -12,6 +12,7 @@ import { useSearchParams } from 'next/navigation'
 import { FC, Fragment, useMemo, useState } from 'react'
 import { searchWfRun } from '../actions/searchWfRun'
 import { WfRunsHeader } from './WfRunsHeader'
+import { WfRunId } from 'littlehorse-client/dist/proto/object_id'
 
 type Props = Pick<WfSpec, 'id'>
 export const WfRuns: FC<Props> = ({ id }) => {
@@ -62,10 +63,10 @@ export const WfRuns: FC<Props> = ({ id }) => {
         <div className="flex min-h-[360px] flex-col gap-4">
           {data?.pages.map((page, i) => (
             <Fragment key={i}>
-              {page.results.map(({ id }) => (
-                <div key={id}>
-                  <Link className="py-2 text-blue-500 hover:underline" href={`/wfRun/${id}`}>
-                    {id}
+              {page.results.map((wfRunId) => (
+                <div key={wfRunId.id}>
+                  <Link className="py-2 text-blue-500 hover:underline" href={`/wfRun/${concatIds(wfRunId)}`}>
+                    {wfRunId.id}
                   </Link>
                 </div>
               ))}
@@ -81,4 +82,14 @@ export const WfRuns: FC<Props> = ({ id }) => {
 const getStatus = (status: string | null) => {
   if (!status) return undefined
   return lHStatusFromJSON(status)
+}
+
+const concatIds = (wfRunId: WfRunId) => {
+  const ids = []
+  let current: WfRunId | undefined = wfRunId
+  while (current) {
+    ids.push(current.id)
+    current = current.parentWfRunId
+  }
+  return ids.reverse().join('/')
 }

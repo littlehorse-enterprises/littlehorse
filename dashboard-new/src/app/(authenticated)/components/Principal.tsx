@@ -1,7 +1,7 @@
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Menu, Transition } from '@headlessui/react'
 import { signOut } from 'next-auth/react'
-import React, { FC, Fragment } from 'react'
+import { FC, Fragment } from 'react'
 function classNames(...classes: Array<string | boolean>) {
   return classes.filter(Boolean).join(' ')
 }
