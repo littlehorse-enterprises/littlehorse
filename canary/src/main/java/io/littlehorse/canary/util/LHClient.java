@@ -49,4 +49,8 @@ public class LHClient {
                         VariableValue.newBuilder().setInt(start.toEpochMilli()).build())
                 .build());
     }
+
+    public WfRun getCanaryWfRun(final String id) {
+        return blockingStub.getWfRun(WfRunId.newBuilder().setId(id).build());
+    }
 }

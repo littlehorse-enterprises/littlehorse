@@ -167,7 +167,7 @@ public class MetricsTopology {
                 .setId("canary_%s".formatted(id))
                 .addTags(Tag.newBuilder()
                         .setKey("status")
-                        .setValue(key.getStatus().toString().toLowerCase()))
+                        .setValue(key.getStatus().toLowerCase()))
                 .build();
     }
 

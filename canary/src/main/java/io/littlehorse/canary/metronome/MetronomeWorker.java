@@ -1,7 +1,6 @@
 package io.littlehorse.canary.metronome;
 
 import io.littlehorse.canary.metronome.internal.BeatProducer;
-import io.littlehorse.canary.proto.BeatStatus;
 import io.littlehorse.canary.proto.BeatType;
 import io.littlehorse.canary.util.ShutdownHook;
 import io.littlehorse.sdk.common.config.LHConfig;
@@ -35,7 +34,7 @@ public class MetronomeWorker {
         producer.send(
                 id,
                 BeatType.TASK_RUN_EXECUTION,
-                BeatStatus.OK,
+                "OK",
                 Duration.between(Instant.ofEpochMilli(startTime), Instant.now()));
     }
 }

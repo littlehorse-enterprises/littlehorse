@@ -63,16 +63,16 @@ class MetricsTopologyTest {
     }
 
     private static TestRecord<BeatKey, BeatValue> newBeat(BeatType type, String id, long latency) {
-        return newBeat(HOST_1, PORT_1, type, id, latency, BeatStatus.OK);
+        return newBeat(HOST_1, PORT_1, type, id, latency, BeatStatus.OK.name());
     }
 
     private static TestRecord<BeatKey, BeatValue> newBeat(
             BeatType type, String id, long latency, BeatStatus beatStatus) {
-        return newBeat(HOST_1, PORT_1, type, id, latency, beatStatus);
+        return newBeat(HOST_1, PORT_1, type, id, latency, beatStatus.name());
     }
 
     private static TestRecord<BeatKey, BeatValue> newBeat(
-            String host, int port, BeatType type, String id, long latency, BeatStatus beatStatus) {
+            String host, int port, BeatType type, String id, long latency, String beatStatus) {
         BeatKey key = BeatKey.newBuilder()
                 .setServerHost(host)
                 .setServerPort(port)
@@ -252,9 +252,9 @@ class MetricsTopologyTest {
         inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 10));
         inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 30));
 
-        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 20, BeatStatus.OK));
-        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 10, BeatStatus.OK));
-        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 30, BeatStatus.OK));
+        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 20, BeatStatus.OK.name()));
+        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 10, BeatStatus.OK.name()));
+        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 30, BeatStatus.OK.name()));
 
         assertThat(getCount()).isEqualTo(8);
 

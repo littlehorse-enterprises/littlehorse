@@ -3,7 +3,6 @@ package io.littlehorse.canary.metronome.internal;
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.canary.CanaryException;
 import io.littlehorse.canary.proto.BeatKey;
-import io.littlehorse.canary.proto.BeatStatus;
 import io.littlehorse.canary.proto.BeatType;
 import io.littlehorse.canary.proto.BeatValue;
 import io.littlehorse.canary.util.ShutdownHook;
@@ -40,7 +39,7 @@ public class BeatProducer {
     }
 
     public Future<RecordMetadata> sendFuture(
-            final String id, final BeatType type, final BeatStatus status, final Duration latency) {
+            final String id, final BeatType type, final String status, final Duration latency) {
 
         final BeatKey beatKey = buildKey(id, type, status);
         final BeatValue beatValue = buildValue(latency);
@@ -58,7 +57,7 @@ public class BeatProducer {
         return new ProducerRecord<>(topicName, Bytes.wrap(beatKey.toByteArray()), Bytes.wrap(beatValue.toByteArray()));
     }
 
-    public RecordMetadata send(final String id, final BeatType type, final BeatStatus status, final Duration latency) {
+    public RecordMetadata send(final String id, final BeatType type, final String status, final Duration latency) {
         try {
             return sendFuture(id, type, status, latency).get();
         } catch (InterruptedException | ExecutionException e) {
@@ -73,7 +72,7 @@ public class BeatProducer {
                 .build();
     }
 
-    private BeatKey buildKey(final String id, final BeatType type, final BeatStatus status) {
+    private BeatKey buildKey(final String id, final BeatType type, final String status) {
         return BeatKey.newBuilder()
                 .setServerHost(lhServerHost)
                 .setServerPort(lhServerPort)

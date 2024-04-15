@@ -13,14 +13,8 @@ enum BeatType {
 }
 
 enum BeatStatus {
-  STARTING = 0;
-  RUNNING = 1;
-  COMPLETED = 2;
-  HALTING = 3;
-  HALTED = 4;
-  ERROR = 5;
-  EXCEPTION = 6;
-  OK = 7;
+  OK = 0;
+  ERROR = 1;
 }
 
 message BeatKey {
@@ -28,7 +22,7 @@ message BeatKey {
   int32 server_port = 2;
   string server_version = 3;
   BeatType type = 4;
-  BeatStatus status = 5;
+  string status = 5;
   string id = 6;
 }
 

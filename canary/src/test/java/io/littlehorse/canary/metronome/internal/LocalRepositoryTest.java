@@ -33,7 +33,7 @@ class LocalRepositoryTest {
     private static Attempt newAttempt(int attempt) {
         return Attempt.newBuilder()
                 .setAttempt(attempt)
-                .setTime(Timestamps.now())
+                .setStart(Timestamps.now())
                 .build();
     }
 }

@@ -38,11 +38,11 @@ public class MetronomeRunWfExecutor {
         this.repository = repository;
 
         mainExecutor = Executors.newSingleThreadScheduledExecutor();
-        ShutdownHook.add("Metronome: Main Executor Thread", () -> closeExecutor(mainExecutor));
+        ShutdownHook.add("Metronome: RunWf Main Executor Thread", () -> closeExecutor(mainExecutor));
         mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency.toMillis(), TimeUnit.MILLISECONDS);
 
         requestsExecutor = Executors.newFixedThreadPool(threads);
-        ShutdownHook.add("Metronome: Request Executor Thread", () -> closeExecutor(requestsExecutor));
+        ShutdownHook.add("Metronome: RunWf Request Executor Thread", () -> closeExecutor(requestsExecutor));
 
         log.info("RunWf Metronome Started");
     }
@@ -59,20 +59,20 @@ public class MetronomeRunWfExecutor {
         log.debug("Executing run {}", wfId);
 
         try {
-            lhClient.runCanaryWf(wfId, start); // 100
-            sendMetricBeat(wfId, start, BeatStatus.OK);
+            lhClient.runCanaryWf(wfId, start);
+            sendMetricBeat(wfId, start, BeatStatus.OK.name());
             repository.save(wfId, 0);
         } catch (Exception e) {
-            sendMetricBeat(wfId, start, BeatStatus.ERROR);
+            sendMetricBeat(wfId, start, BeatStatus.ERROR.name());
         }
     }
 
-    private void sendMetricBeat(final String wfId, final Instant start, final BeatStatus status) {
+    private void sendMetricBeat(final String wfId, final Instant start, final String status) {
         producer.sendFuture(wfId, BeatType.WF_RUN_REQUEST, status, Duration.between(start, Instant.now()));
     }
 
     private void scheduledRun() {
-        log.trace("Executing metronome");
+        log.trace("Executing run wf metronome");
         for (int i = 0; i < runs; i++) {
             requestsExecutor.submit(this::executeRun);
         }

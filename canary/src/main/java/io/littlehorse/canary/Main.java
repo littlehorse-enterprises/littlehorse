@@ -4,7 +4,7 @@ import io.littlehorse.canary.aggregator.Aggregator;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.ConfigLoader;
 import io.littlehorse.canary.kafka.TopicCreator;
-import io.littlehorse.canary.metronome.MetronomeGetWfExecutor;
+import io.littlehorse.canary.metronome.MetronomeGetWfRunExecutor;
 import io.littlehorse.canary.metronome.MetronomeRunWfExecutor;
 import io.littlehorse.canary.metronome.MetronomeWorker;
 import io.littlehorse.canary.metronome.MetronomeWorkflow;
@@ -82,12 +82,17 @@ public class Main {
             new MetronomeRunWfExecutor(
                     producer,
                     lhClient,
-                    canaryConfig.getMetronomeFrequency(),
-                    canaryConfig.getMetronomeThreads(),
-                    canaryConfig.getMetronomeRuns(),
+                    canaryConfig.getMetronomeRunWfFrequency(),
+                    canaryConfig.getMetronomeRunWfThreads(),
+                    canaryConfig.getMetronomeRunWfRuns(),
                     repository);
 
-            new MetronomeGetWfExecutor(repository);
+            new MetronomeGetWfRunExecutor(
+                    producer,
+                    lhClient,
+                    canaryConfig.getMetronomeGetWfRunFrequency(),
+                    canaryConfig.getMetronomeGetWfRunThreads(),
+                    repository);
         }
 
         // start the aggregator
