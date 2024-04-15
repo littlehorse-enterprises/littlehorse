@@ -1,5 +1,5 @@
 'use client'
-import { ThreadRunWithNodeRuns } from '@/app/(authenticated)/wfRun/[id]/getWfRun'
+import { ThreadRunWithNodeRuns } from '@/app/(authenticated)/wfRun/[...ids]/getWfRun'
 import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
 import { WfRun } from 'littlehorse-client/dist/proto/wf_run'
 import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
