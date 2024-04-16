@@ -21,12 +21,14 @@ export type WfRunResponse = {
 export const getWfRun = async ({ ids }: Props): Promise<WfRunResponse> => {
   const tenantId = cookies().get('tenantId')?.value
   const client = await lhClient({ tenantId })
-  const wfRunId = ids.reverse().reduceRight<WfRunId|undefined>((parentWfRunId, id) => ({ id, parentWfRunId }), undefined)
+  const wfRunId = ids
+    .reverse()
+    .reduceRight<WfRunId | undefined>((parentWfRunId, id) => ({ id, parentWfRunId }), undefined)
   const wfRun = await client.getWfRun(wfRunId!)
   const [wfSpec, { results: nodeRuns }] = await Promise.all([
     client.getWfSpec({ ...wfRun.wfSpecId }),
     client.listNodeRuns({
-      wfRunId
+      wfRunId,
     }),
   ])
 
@@ -37,6 +39,8 @@ export const getWfRun = async ({ ids }: Props): Promise<WfRunResponse> => {
 const mergeThreadRunsWithNodeRuns = (threadRun: ThreadRun, nodeRuns: NodeRun[]): ThreadRunWithNodeRuns => {
   return {
     ...threadRun,
-    nodeRuns: nodeRuns.filter(nodeRun => nodeRun.threadSpecName === threadRun.threadSpecName),
+    nodeRuns: nodeRuns.filter(
+      nodeRun => nodeRun.threadSpecName === threadRun.threadSpecName && nodeRun.id?.threadRunNumber === threadRun.number
+    ),
   }
 }

@@ -59,7 +59,7 @@ export const StatusPin: FC<{ status?: LHStatus }> = ({ status }) => {
   if (!status) return <></>
   const { color, Icon } = Status[status]
   return (
-    <div className={`absolute -right-2 -top-2 rounded-full bg-${color}-200 z-10 p-1`}>
+    <div className={`absolute -right-4 -top-4 rounded-full bg-${color}-200 z-10 p-1`}>
       <Icon className={`h-4 w-4 stroke-${color}-500 fill-transparent`} />
     </div>
   )

@@ -1,27 +1,52 @@
-import { ClockIcon } from '@heroicons/react/24/outline'
-import { Node as NodeProto } from 'littlehorse-client/dist/proto/wf_spec'
+import { getVariable } from '@/app/utils'
+import { PlusIcon } from '@heroicons/react/16/solid'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '.'
+import { useThread } from '../../hooks/useThread'
 import { Fade } from './Fade'
+import { NodeDetails } from './NodeDetails'
 
-const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
+const Node: FC<NodeProps> = ({ data }) => {
   const { fade } = data
+  const { setThread } = useThread()
+  if (data.startThread === undefined) return
+  const variables = Object.entries(data.startThread.variables)
   return (
-    <Fade fade={fade}>
-      <div className="relative cursor-pointer items-center justify-center text-xs">
-        <div className="items-center-justify-center flex rounded-full border-[1px] border-blue-500 bg-blue-200 p-[1px] text-xs">
-          <div className="items-center-justify-center flex h-10 w-10 items-center justify-center rounded-full border-[1px] border-blue-500 bg-blue-200 p-2 text-xs">
-            <ClockIcon className="h-4 w-4 fill-transparent stroke-blue-500" />
+    <>
+      <NodeDetails>
+        <div className="flex items-center items-center gap-1 text-nowrap">
+          <h3 className="font-bold">StartThread</h3>
+          <button
+            className="whitespace-nowrap text-blue-500 hover:underline"
+            onClick={() => setThread({ name: data.startThread?.threadSpecName || '', number: 0 })}
+          >
+            {data.startThread?.threadSpecName}
+          </button>
+        </div>
+        {variables.length > 0 && (
+          <div className="mt-2">
+            <h2 className="font-bold">Variables</h2>
+            <ul>
+              {variables.map(([name, value]) => (
+                <li key={name}>
+                  {`{${name}}`} = {getVariable(value)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </NodeDetails>
+      <Fade fade={fade} status={data.nodeRun?.status}>
+        <div className="relative cursor-pointer">
+          <div className="ml-1 flex h-6 w-6 rotate-45 items-center justify-center border-[2px] border-gray-500 bg-gray-200">
+            <PlusIcon className="h-5 w-5 rotate-45 fill-gray-500" />
           </div>
         </div>
         <Handle type="source" position={Position.Right} className="bg-transparent" />
         <Handle type="target" position={Position.Left} className="bg-transparent" />
-        <div className="absolute flex w-full items-center justify-center whitespace-nowrap text-center	">
-          <div className="block">{data.startThread?.threadSpecName}</div>
-        </div>
-      </div>
-    </Fade>
+      </Fade>
+    </>
   )
 }
 

@@ -1,13 +1,12 @@
 import { getVariable } from '@/app/utils'
 import { Cog6ToothIcon } from '@heroicons/react/16/solid'
-import { Node as NodeProto } from 'littlehorse-client/dist/proto/wf_spec'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '.'
 import { Fade } from './Fade'
 import { TaskDetails } from './TaskDetails'
 
-const Node: FC<NodeProps<NodeProto>> = ({ selected, data }) => {
+const Node: FC<NodeProps> = ({ selected, data }) => {
   const { fade } = data
   if (!data.task) return null
   const { task } = data

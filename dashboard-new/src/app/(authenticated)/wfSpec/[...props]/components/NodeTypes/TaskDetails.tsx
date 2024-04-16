@@ -11,7 +11,7 @@ export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, 
   return (
     <NodeDetails>
       <div className="mb-2">
-        <div className="flex items-center items-center gap-1 text-nowrap">
+        <div className="flex items-center items-center gap-1 whitespace-nowrap text-nowrap">
           <h3 className="font-bold">TaskDef</h3>
           {nodeRun ? (
             <TaskLink taskName={task.taskDefId?.name} />
@@ -28,7 +28,7 @@ export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, 
         </div>
       </div>
       {task.variables && task.variables.length > 0 && (
-        <div className="">
+        <div className="whitespace-nowrap">
           <h3 className="font-bold">Inputs</h3>
           <ul className="list-inside list-disc">
             {task.variables.map((variable, i) => (
