@@ -27,6 +27,15 @@ class UserTaskOutputImpl extends NodeOutputImpl implements UserTaskOutput {
         parent.getSpec().putNodes(nodeName, node.build());
     }
 
+    private void addOnCancellationException(Object exceptionName) {
+        VariableAssignment assn = parent.assignVariable(exceptionName);
+
+        // get the Node
+        Node.Builder node = parent.getSpec().getNodesOrThrow(nodeName).toBuilder();
+        node.getUserTaskBuilder().setOnCancellationExceptionName(assn);
+        parent.getSpec().putNodes(nodeName, node.build());
+    }
+
     public UserTaskOutputImpl withNotes(String notes) {
         addNotes(notes);
         return this;
@@ -39,6 +48,18 @@ class UserTaskOutputImpl extends NodeOutputImpl implements UserTaskOutput {
 
     public UserTaskOutputImpl withNotes(LHFormatString notes) {
         addNotes(notes);
+        return this;
+    }
+
+    @Override
+    public UserTaskOutput withOnCancellationException(String exceptionName) {
+        addOnCancellationException(exceptionName);
+        return this;
+    }
+
+    @Override
+    public UserTaskOutput withOnCancellationException(WfRunVariable exceptionName) {
+        addOnCancellationException(exceptionName);
         return this;
     }
 }

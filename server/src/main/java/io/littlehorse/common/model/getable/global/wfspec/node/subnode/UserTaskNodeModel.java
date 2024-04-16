@@ -1,9 +1,13 @@
 package io.littlehorse.common.model.getable.global.wfspec.node.subnode;
 
+import com.google.common.base.Strings;
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UTActionTriggerModel;
@@ -37,6 +41,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     private VariableAssignmentModel notes;
     private ReadOnlyMetadataManager metadataManager;
     private ProcessorExecutionContext processorContext;
+    private VariableAssignmentModel onCancellationException;
 
     public UserTaskNodeModel() {
         this.actions = new ArrayList<>();
@@ -64,6 +69,10 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
             out.setNotes(notes.toProto());
         }
 
+        if (onCancellationException != null) {
+            out.setOnCancellationExceptionName(onCancellationException.toProto());
+        }
+
         return out;
     }
 
@@ -84,6 +93,10 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
 
         if (p.hasNotes()) {
             notes = LHSerializable.fromProto(p.getNotes(), VariableAssignmentModel.class, context);
+        }
+        if (p.hasOnCancellationExceptionName()) {
+            onCancellationException = LHSerializable.fromProto(
+                    p.getOnCancellationExceptionName(), VariableAssignmentModel.class, context);
         }
         this.metadataManager = context.metadataManager();
         this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
@@ -125,6 +138,26 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
 
         if (userId == null && userGroup == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Must specify userGroup or userId");
+        }
+    }
+
+    public String assignExceptionNameVariable(ThreadRunModel threadRun) {
+        try {
+            if (onCancellationException != null) {
+                String resolvedExceptionName = threadRun
+                        .assignVariable(onCancellationException)
+                        .asStr()
+                        .getStrVal();
+                if (!Strings.isNullOrEmpty(resolvedExceptionName) && !resolvedExceptionName.isBlank()) {
+                    return resolvedExceptionName;
+                } else {
+                    return LHConstants.USER_TASK_CANCELLED;
+                }
+            } else {
+                return LHConstants.USER_TASK_CANCELLED;
+            }
+        } catch (LHVarSubError e) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Must specify a valid on cancel exception name");
         }
     }
 }

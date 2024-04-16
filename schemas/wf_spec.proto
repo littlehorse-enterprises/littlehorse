@@ -207,6 +207,9 @@ message UserTaskNode {
 
   // Allow WfRun-specific notes for this User Task.
   optional VariableAssignment notes = 6;
+
+  // Specifies the name of the exception thrown when the User Task is canceled
+  optional VariableAssignment on_cancellation_exception_name = 7;
 }
 
 message EdgeCondition {

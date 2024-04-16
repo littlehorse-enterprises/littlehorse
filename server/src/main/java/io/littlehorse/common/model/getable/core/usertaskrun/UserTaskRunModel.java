@@ -292,7 +292,9 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         this.events.add(new UserTaskEventModel(
                 new UTECancelledModel("UserTaskRun was cancelled"),
                 processorContext.currentCommand().getTime()));
-        failureToThrowKenobi = new FailureModel("User task cancelled", LHConstants.USER_TASK_CANCELLED);
+        ThreadRunModel currentThreadRun = this.getNodeRun().getThreadRun();
+        String failureName = this.getUtNode().assignExceptionNameVariable(currentThreadRun);
+        failureToThrowKenobi = new FailureModel("User task cancelled", failureName);
     }
 
     public void processTaskCompletedEvent(CompleteUserTaskRunRequestModel event) throws LHApiException {

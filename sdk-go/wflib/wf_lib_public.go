@@ -206,6 +206,14 @@ func (t *WorkflowThread) Format(format string, args ...*WfRunVariable) *LHFormat
 	return t.format(format, args)
 }
 
+func (t *WorkflowThread) CancelUserTaskAfter(userTask *UserTaskOutput, delaySeconds interface{}) {
+	t.cancelUserTaskAfter(userTask, delaySeconds)
+}
+
+func (t *WorkflowThread) CancelUserTaskAfterAssignment(userTask *UserTaskOutput, delaySeconds interface{}) {
+	t.cancelUserTaskAfterAssignment(userTask, delaySeconds)
+}
+
 func (t *WorkflowThread) ScheduleReminderTask(
 	userTask *UserTaskOutput, delaySeconds interface{},
 	taskDefName string, args ...interface{},
@@ -279,5 +287,16 @@ func (u *UserTaskOutput) WithNotes(notes interface{}) *UserTaskOutput {
 		u.thread.throwError(err)
 	}
 	userTaskNode.Notes = notesVar
+	return u
+}
+
+func (u *UserTaskOutput) WithOnCancellationException(exceptionName interface{}) *UserTaskOutput {
+	userTaskNode := u.node.GetUserTask()
+	onCancellationExceptionName, err := u.thread.assignVariable(exceptionName)
+
+	if err != nil {
+		u.thread.throwError(err)
+	}
+	userTaskNode.OnCancellationExceptionName = onCancellationExceptionName
 	return u
 }

@@ -326,7 +326,11 @@ export interface UserTaskNode {
     | number
     | undefined;
   /** Allow WfRun-specific notes for this User Task. */
-  notes?: VariableAssignment | undefined;
+  notes?:
+    | VariableAssignment
+    | undefined;
+  /** Specifies the name of the exception thrown when the User Task is canceled */
+  onCancellationExceptionName?: VariableAssignment | undefined;
 }
 
 export interface EdgeCondition {
@@ -2733,6 +2737,7 @@ function createBaseUserTaskNode(): UserTaskNode {
     actions: [],
     userTaskDefVersion: undefined,
     notes: undefined,
+    onCancellationExceptionName: undefined,
   };
 }
 
@@ -2755,6 +2760,9 @@ export const UserTaskNode = {
     }
     if (message.notes !== undefined) {
       VariableAssignment.encode(message.notes, writer.uint32(50).fork()).ldelim();
+    }
+    if (message.onCancellationExceptionName !== undefined) {
+      VariableAssignment.encode(message.onCancellationExceptionName, writer.uint32(58).fork()).ldelim();
     }
     return writer;
   },
@@ -2808,6 +2816,13 @@ export const UserTaskNode = {
 
           message.notes = VariableAssignment.decode(reader, reader.uint32());
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.onCancellationExceptionName = VariableAssignment.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2827,6 +2842,9 @@ export const UserTaskNode = {
         : [],
       userTaskDefVersion: isSet(object.userTaskDefVersion) ? globalThis.Number(object.userTaskDefVersion) : undefined,
       notes: isSet(object.notes) ? VariableAssignment.fromJSON(object.notes) : undefined,
+      onCancellationExceptionName: isSet(object.onCancellationExceptionName)
+        ? VariableAssignment.fromJSON(object.onCancellationExceptionName)
+        : undefined,
     };
   },
 
@@ -2850,6 +2868,9 @@ export const UserTaskNode = {
     if (message.notes !== undefined) {
       obj.notes = VariableAssignment.toJSON(message.notes);
     }
+    if (message.onCancellationExceptionName !== undefined) {
+      obj.onCancellationExceptionName = VariableAssignment.toJSON(message.onCancellationExceptionName);
+    }
     return obj;
   },
 
@@ -2870,6 +2891,10 @@ export const UserTaskNode = {
     message.notes = (object.notes !== undefined && object.notes !== null)
       ? VariableAssignment.fromPartial(object.notes)
       : undefined;
+    message.onCancellationExceptionName =
+      (object.onCancellationExceptionName !== undefined && object.onCancellationExceptionName !== null)
+        ? VariableAssignment.fromPartial(object.onCancellationExceptionName)
+        : undefined;
     return message;
   },
 };
