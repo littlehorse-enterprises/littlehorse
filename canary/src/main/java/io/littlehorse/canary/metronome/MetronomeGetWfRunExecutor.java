@@ -1,5 +1,6 @@
 package io.littlehorse.canary.metronome;
 
+import com.google.protobuf.util.Timestamps;
 import io.littlehorse.canary.metronome.internal.BeatProducer;
 import io.littlehorse.canary.metronome.internal.LocalRepository;
 import io.littlehorse.canary.proto.Attempt;
@@ -25,16 +26,19 @@ public class MetronomeGetWfRunExecutor {
     private final BeatProducer producer;
     private final LHClient lhClient;
     private final LocalRepository repository;
+    private final long retries;
 
     public MetronomeGetWfRunExecutor(
             final BeatProducer producer,
             final LHClient lhClient,
             final Duration frequency,
             final int threads,
+            final int retries,
             final LocalRepository repository) {
         this.producer = producer;
         this.lhClient = lhClient;
         this.repository = repository;
+        this.retries = retries;
 
         mainExecutor = Executors.newSingleThreadScheduledExecutor();
         ShutdownHook.add("Metronome: GetWfRun  Main Executor Thread", () -> closeExecutor(mainExecutor));
@@ -59,22 +63,43 @@ public class MetronomeGetWfRunExecutor {
     }
 
     private void executeRun(final String id, final Attempt attempt) {
-        log.trace("GetWfRun Attempt {} {}", id, attempt.getLastAttempt());
-        final Instant start = Instant.now();
-        try {
-            final WfRun run = lhClient.getCanaryWfRun(id);
-            log.debug("GetWfRun {} {}", id, run.getStatus());
-            producer.sendFuture(
-                    id, BeatType.GET_WF_RUN_REQUEST, run.getStatus().name(), Duration.between(start, Instant.now()));
+        if (attempt.getAttempt() >= retries) {
+            repository.delete(id);
+            return;
+        }
 
-            if (run.getStatus().equals(LHStatus.COMPLETED)) {
-                repository.delete(id);
-            }
-            // TODO MISSING RETRY LOGIC
-            // TODO ADD DELETE AFTER IT GET EXHAUSTED
+        updateAttempt(id, attempt);
+
+        final Instant start = Instant.now();
+        final WfRun currentStatus = getCurrentStatus(id, start);
+        producer.sendFuture(
+                id,
+                BeatType.GET_WF_RUN_REQUEST,
+                currentStatus.getStatus().name(),
+                Duration.between(start, Instant.now()));
+        log.debug("GetWfRun {} {}", id, currentStatus.getStatus());
+        if (currentStatus.getStatus().equals(LHStatus.COMPLETED)) {
+            repository.delete(id);
+        }
+    }
+
+    private void updateAttempt(final String id, final Attempt attempt) {
+        repository.save(
+                id,
+                Attempt.newBuilder()
+                        .setStart(attempt.getStart())
+                        .setLastAttempt(Timestamps.now())
+                        .setAttempt(attempt.getAttempt() + 1)
+                        .build());
+    }
+
+    private WfRun getCurrentStatus(final String id, final Instant start) {
+        try {
+            return lhClient.getCanaryWfRun(id);
         } catch (Exception e) {
             producer.sendFuture(
                     id, BeatType.GET_WF_RUN_REQUEST, BeatStatus.ERROR.name(), Duration.between(start, Instant.now()));
+            throw e;
         }
     }
 }

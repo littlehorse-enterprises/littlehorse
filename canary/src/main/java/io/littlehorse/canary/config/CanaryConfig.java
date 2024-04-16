@@ -23,11 +23,12 @@ public class CanaryConfig implements Config {
     public static final String WORKFLOW_REVISION = "workflow.revision";
 
     public static final String METRONOME_ENABLE = "metronome.enable";
-    public static final String METRONOME_RUN_WF_FREQUENCY_MS = "metronome.run-wf.frequency.ms";
-    public static final String METRONOME_RUN_WF_THREADS = "metronome.run-wf.threads";
-    public static final String METRONOME_RUN_WF_RUNS = "metronome.run-wf.runs";
-    public static final String METRONOME_GET_WF_RUN_FREQUENCY_MS = "metronome.get-wf-run.frequency.ms";
-    public static final String METRONOME_GET_WF_RUN_THREADS = "metronome.get-wf-run.threads";
+    public static final String METRONOME_RUN_FREQUENCY_MS = "metronome.run.frequency.ms";
+    public static final String METRONOME_RUN_THREADS = "metronome.run.threads";
+    public static final String METRONOME_RUN_REQUESTS = "metronome.run.requests";
+    public static final String METRONOME_GET_FREQUENCY_MS = "metronome.get.frequency.ms";
+    public static final String METRONOME_GET_THREADS = "metronome.get.threads";
+    public static final String METRONOME_GET_RETRIES = "metronome.get.retries";
     public static final String METRONOME_WORKER_ENABLE = "metronome.worker.enable";
     public static final String METRONOME_DATA_PATH = "metronome.data.path";
 
@@ -121,24 +122,28 @@ public class CanaryConfig implements Config {
         return Duration.ofMillis(Long.parseLong(getConfig(AGGREGATOR_STORE_RETENTION_MS)));
     }
 
-    public Duration getMetronomeRunWfFrequency() {
-        return Duration.ofMillis(Long.parseLong(getConfig(METRONOME_RUN_WF_FREQUENCY_MS)));
+    public Duration getMetronomeRunFrequency() {
+        return Duration.ofMillis(Long.parseLong(getConfig(METRONOME_RUN_FREQUENCY_MS)));
     }
 
-    public int getMetronomeRunWfThreads() {
-        return Integer.parseInt(getConfig(METRONOME_RUN_WF_THREADS));
+    public int getMetronomeRunThreads() {
+        return Integer.parseInt(getConfig(METRONOME_RUN_THREADS));
     }
 
-    public int getMetronomeRunWfRuns() {
-        return Integer.parseInt(getConfig(METRONOME_RUN_WF_RUNS));
+    public int getMetronomeRunRequests() {
+        return Integer.parseInt(getConfig(METRONOME_RUN_REQUESTS));
     }
 
-    public Duration getMetronomeGetWfRunFrequency() {
-        return Duration.ofMillis(Long.parseLong(getConfig(METRONOME_GET_WF_RUN_FREQUENCY_MS)));
+    public Duration getMetronomeGetFrequency() {
+        return Duration.ofMillis(Long.parseLong(getConfig(METRONOME_GET_FREQUENCY_MS)));
     }
 
-    public int getMetronomeGetWfRunThreads() {
-        return Integer.parseInt(getConfig(METRONOME_GET_WF_RUN_THREADS));
+    public int getMetronomeGetThreads() {
+        return Integer.parseInt(getConfig(METRONOME_GET_THREADS));
+    }
+
+    public int getMetronomeGetRetries() {
+        return Integer.parseInt(getConfig(METRONOME_GET_RETRIES));
     }
 
     public Map<String, String> getCommonTags() {

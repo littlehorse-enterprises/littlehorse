@@ -82,16 +82,17 @@ public class Main {
             new MetronomeRunWfExecutor(
                     producer,
                     lhClient,
-                    canaryConfig.getMetronomeRunWfFrequency(),
-                    canaryConfig.getMetronomeRunWfThreads(),
-                    canaryConfig.getMetronomeRunWfRuns(),
+                    canaryConfig.getMetronomeRunFrequency(),
+                    canaryConfig.getMetronomeRunThreads(),
+                    canaryConfig.getMetronomeRunRequests(),
                     repository);
 
             new MetronomeGetWfRunExecutor(
                     producer,
                     lhClient,
-                    canaryConfig.getMetronomeGetWfRunFrequency(),
-                    canaryConfig.getMetronomeGetWfRunThreads(),
+                    canaryConfig.getMetronomeGetFrequency(),
+                    canaryConfig.getMetronomeGetThreads(),
+                    canaryConfig.getMetronomeGetRetries(),
                     repository);
         }
 

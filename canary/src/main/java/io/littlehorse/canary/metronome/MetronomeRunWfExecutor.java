@@ -60,11 +60,13 @@ public class MetronomeRunWfExecutor {
 
         try {
             lhClient.runCanaryWf(wfId, start);
-            sendMetricBeat(wfId, start, BeatStatus.OK.name());
-            repository.save(wfId, 0);
         } catch (Exception e) {
             sendMetricBeat(wfId, start, BeatStatus.ERROR.name());
+            throw e;
         }
+
+        sendMetricBeat(wfId, start, BeatStatus.OK.name());
+        repository.save(wfId, 0);
     }
 
     private void sendMetricBeat(final String wfId, final Instant start, final String status) {
