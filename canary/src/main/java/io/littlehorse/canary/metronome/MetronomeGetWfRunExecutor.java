@@ -72,6 +72,11 @@ public class MetronomeGetWfRunExecutor {
 
         final Instant start = Instant.now();
         final WfRun currentStatus = getCurrentStatus(id, start);
+
+        if (currentStatus == null) {
+            return;
+        }
+
         producer.sendFuture(
                 id,
                 BeatType.GET_WF_RUN_REQUEST,
@@ -99,7 +104,7 @@ public class MetronomeGetWfRunExecutor {
         } catch (Exception e) {
             producer.sendFuture(
                     id, BeatType.GET_WF_RUN_REQUEST, BeatStatus.ERROR.name(), Duration.between(start, Instant.now()));
-            throw e;
+            return null;
         }
     }
 }

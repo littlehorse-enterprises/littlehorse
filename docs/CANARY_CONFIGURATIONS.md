@@ -88,17 +88,17 @@ Flag to enable the metronome component.
 
 ---
 
-#### `lh.canary.metronome.frequency.ms`
+#### `lh.canary.metronome.run.frequency.ms`
 
-Time between requests.
+Time between run wf requests.
 
 - **Type:** int
 - **Default:** 1000
 - **Importance:** medium
 
-#### `lh.canary.metronome.threads`
+#### `lh.canary.metronome.run.threads`
 
-Size of thread pool.
+Size of run wf requests thread pool.
 
 - **Type:** int
 - **Default:** 1
@@ -106,12 +106,50 @@ Size of thread pool.
 
 ---
 
-#### `lh.canary.metronome.runs`
+#### `lh.canary.metronome.run.requests`
 
 Number of wf run to request.
 
 - **Type:** int
 - **Default:** 1
+- **Importance:** medium
+
+---
+
+#### `lh.canary.metronome.get.frequency.ms`
+
+Time between get run wf requests.
+
+- **Type:** int
+- **Default:** 1000
+- **Importance:** medium
+
+#### `lh.canary.metronome.get.threads`
+
+Size of get run wf requests thread pool.
+
+- **Type:** int
+- **Default:** 1
+- **Importance:** medium
+
+---
+
+#### `lh.canary.metronome.get.retries`
+
+Number of get wf run retries in case of failure.
+
+- **Type:** int
+- **Default:** 1
+- **Importance:** medium
+
+---
+
+#### `lh.canary.metronome.data.path`
+
+Local DB path.
+
+- **Type:** string
+- **Default:** /tmp/canaryMetronome
 - **Importance:** medium
 
 ### Kafka Configurations
