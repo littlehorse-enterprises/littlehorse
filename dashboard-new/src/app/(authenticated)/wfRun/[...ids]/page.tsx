@@ -18,6 +18,6 @@ export default async function Page({ params: { ids } }: Props) {
 
 export async function generateMetadata({ params: { ids } }: Props): Promise<Metadata> {
   return {
-    title: `WfRun ${ids[ids.length -1]} | Littlehorse`,
+    title: `WfRun ${ids[ids.length - 1]} | Littlehorse`,
   }
 }

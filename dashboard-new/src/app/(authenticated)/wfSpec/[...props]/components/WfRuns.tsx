@@ -1,7 +1,7 @@
 'use client'
 import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
 import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
-import { concatWfRunIds } from '@/app/utils/wfRun'
+import { concatWfRunIds } from '@/app/utils'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { ArrowPathIcon } from '@heroicons/react/16/solid'
 import { useInfiniteQuery } from '@tanstack/react-query'
