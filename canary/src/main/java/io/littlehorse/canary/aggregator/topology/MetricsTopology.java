@@ -38,14 +38,14 @@ public class MetricsTopology {
         final StreamsBuilder streamsBuilder = new StreamsBuilder();
         final KStream<BeatKey, BeatValue> beatsStream = streamsBuilder.stream(inputTopic, initializeSerdes());
 
-        // group cleaned beat
-        final KGroupedStream<BeatKey, BeatValue> beatsWithoutIdGroup = beatsStream
-                // it removes the id
-                .groupBy(
-                MetricsTopology::cleanBeatKey, Grouped.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.BeatValue()));
-
         // build latency metric stream
-        final KStream<MetricKey, MetricValue> latencyMetricsStream = beatsWithoutIdGroup
+        final KStream<MetricKey, MetricValue> latencyMetricsStream = beatsStream
+                // remove GET_WF_RUN_EXHAUSTED_RETRIES
+                .filterNot(MetricsTopology::isExhaustedRetries)
+                // remove the id
+                .groupBy(
+                        MetricsTopology::cleanBeatKey,
+                        Grouped.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.BeatValue()))
                 // reset aggregator every minute
                 .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(5)))
                 // calculate average
@@ -58,7 +58,12 @@ public class MetricsTopology {
                 .flatMap(MetricsTopology::makeLatencyMetrics);
 
         // build count metric stream
-        final KStream<MetricKey, MetricValue> countMetricStream = beatsWithoutIdGroup
+        final KStream<MetricKey, MetricValue> countMetricStream = beatsStream
+                // remove the id
+                .groupBy(
+                        MetricsTopology::cleanBeatKey,
+                        Grouped.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.BeatValue()))
+                // count all
                 .count(initializeCountStore(COUNT_STORE))
                 .toStream()
                 .map(MetricsTopology::makeCountMetric);
@@ -90,6 +95,10 @@ public class MetricsTopology {
                 .toTable(Named.as(METRICS_STORE), initializeMetricStore());
 
         return streamsBuilder.build();
+    }
+
+    private static boolean isExhaustedRetries(final BeatKey key, final BeatValue value) {
+        return key.getType().equals(BeatType.GET_WF_RUN_EXHAUSTED_RETRIES);
     }
 
     private static boolean selectDuplicatedTaskRun(final BeatKey key, final Long value) {

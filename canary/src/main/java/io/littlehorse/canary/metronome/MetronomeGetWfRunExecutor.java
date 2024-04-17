@@ -65,6 +65,7 @@ public class MetronomeGetWfRunExecutor {
     private void executeRun(final String id, final Attempt attempt) {
         if (attempt.getAttempt() >= retries) {
             repository.delete(id);
+            producer.sendFuture(id, BeatType.GET_WF_RUN_EXHAUSTED_RETRIES);
             return;
         }
 
@@ -82,6 +83,7 @@ public class MetronomeGetWfRunExecutor {
                 BeatType.GET_WF_RUN_REQUEST,
                 currentStatus.getStatus().name(),
                 Duration.between(start, Instant.now()));
+
         log.debug("GetWfRun {} {}", id, currentStatus.getStatus());
         if (currentStatus.getStatus().equals(LHStatus.COMPLETED)) {
             repository.delete(id);

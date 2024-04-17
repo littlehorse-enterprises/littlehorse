@@ -38,6 +38,10 @@ public class BeatProducer {
         ShutdownHook.add("Beat Producer", producer);
     }
 
+    public Future<RecordMetadata> sendFuture(final String id, final BeatType type) {
+        return sendFuture(id, type, null, null);
+    }
+
     public Future<RecordMetadata> sendFuture(
             final String id, final BeatType type, final String status, final Duration latency) {
 
@@ -57,29 +61,36 @@ public class BeatProducer {
         return new ProducerRecord<>(topicName, Bytes.wrap(beatKey.toByteArray()), Bytes.wrap(beatValue.toByteArray()));
     }
 
-    public RecordMetadata send(final String id, final BeatType type, final String status, final Duration latency) {
+    public RecordMetadata send(final String id, final BeatType type, final Duration latency) {
         try {
-            return sendFuture(id, type, status, latency).get();
+            return sendFuture(id, type, null, latency).get();
         } catch (InterruptedException | ExecutionException e) {
             throw new CanaryException(e);
         }
     }
 
     private BeatValue buildValue(final Duration latency) {
-        return BeatValue.newBuilder()
-                .setTime(Timestamps.now())
-                .setLatency(latency.toMillis())
-                .build();
+        final BeatValue.Builder builder = BeatValue.newBuilder().setTime(Timestamps.now());
+
+        if (latency != null) {
+            builder.setLatency(latency.toMillis());
+        }
+
+        return builder.build();
     }
 
     private BeatKey buildKey(final String id, final BeatType type, final String status) {
-        return BeatKey.newBuilder()
+        final BeatKey.Builder builder = BeatKey.newBuilder()
                 .setServerHost(lhServerHost)
                 .setServerPort(lhServerPort)
                 .setServerVersion(lhServerVersion)
                 .setId(id)
-                .setType(type)
-                .setStatus(status)
-                .build();
+                .setType(type);
+
+        if (status != null) {
+            builder.setStatus(status);
+        }
+
+        return builder.build();
     }
 }

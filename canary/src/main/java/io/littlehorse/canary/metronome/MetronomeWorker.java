@@ -32,9 +32,6 @@ public class MetronomeWorker {
         final String id = "%s/%s".formatted(context.getIdempotencyKey(), context.getAttemptNumber());
         log.debug("Executing task {} {}", MetronomeWorkflow.TASK_NAME, id);
         producer.send(
-                id,
-                BeatType.TASK_RUN_EXECUTION,
-                "OK",
-                Duration.between(Instant.ofEpochMilli(startTime), Instant.now()));
+                id, BeatType.TASK_RUN_EXECUTION, Duration.between(Instant.ofEpochMilli(startTime), Instant.now()));
     }
 }

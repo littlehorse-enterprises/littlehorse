@@ -25,6 +25,7 @@ public class LocalRepository {
         try {
             db = RocksDB.open(options, dataPath);
         } catch (RocksDBException e) {
+            options.close();
             throw new CanaryException(e);
         }
 
