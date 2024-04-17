@@ -12,6 +12,7 @@ import { StartThread } from './StartThread'
 import { Sleep } from './Sleep'
 import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
 import { Node } from 'littlehorse-client/dist/proto/wf_spec'
+import { StartMultipleThreads } from './StartMultipleThreads'
 
 const nodeTypes: Record<NodeType, ComponentType<NodeProps>> = {
   ENTRYPOINT: Entrypoint,
@@ -23,7 +24,7 @@ const nodeTypes: Record<NodeType, ComponentType<NodeProps>> = {
   WAIT_FOR_THREADS: WaitForThreads,
   SLEEP: Sleep,
   USER_TASK: UserTask,
-  START_MULTIPLE_THREADS: WaitForThreads,
+  START_MULTIPLE_THREADS: StartMultipleThreads,
   THROW_EVENT: WaitForThreads,
   UNKNOWN_NODE_TYPE: WaitForThreads,
 }

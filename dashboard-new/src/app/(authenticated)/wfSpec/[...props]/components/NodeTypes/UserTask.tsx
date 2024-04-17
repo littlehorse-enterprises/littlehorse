@@ -1,7 +1,6 @@
 import { getVariable } from '@/app/utils'
 import { UserIcon } from '@heroicons/react/16/solid'
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid'
-import { Node as NodeProto } from 'littlehorse-client/dist/proto/wf_spec'
 import Link from 'next/link'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
@@ -9,7 +8,7 @@ import { NodeProps } from '.'
 import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
 
-const Node: FC<NodeProps<NodeProto>> = ({ data, selected }) => {
+const Node: FC<NodeProps> = ({ data, selected }) => {
   if (!data.userTask) return null
   const { fade, userTask } = data
   return (
