@@ -1,9 +1,8 @@
-package io.littlehorse.canary.kafka;
+package io.littlehorse.canary.metronome.internal;
 
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.canary.CanaryException;
 import io.littlehorse.canary.proto.BeatKey;
-import io.littlehorse.canary.proto.BeatStatus;
 import io.littlehorse.canary.proto.BeatType;
 import io.littlehorse.canary.proto.BeatValue;
 import io.littlehorse.canary.util.ShutdownHook;
@@ -16,7 +15,7 @@ import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.utils.Bytes;
 
 @Slf4j
-public class BeatEmitter {
+public class BeatProducer {
 
     private final Producer<Bytes, Bytes> producer;
     private final String lhServerHost;
@@ -24,7 +23,7 @@ public class BeatEmitter {
     private final String lhServerVersion;
     private final String topicName;
 
-    public BeatEmitter(
+    public BeatProducer(
             final String lhServerHost,
             final int lhServerPort,
             final String lhServerVersion,
@@ -36,20 +35,24 @@ public class BeatEmitter {
         this.topicName = topicName;
 
         producer = new KafkaProducer<>(kafkaProducerConfigMap);
-        ShutdownHook.add("Metrics Emitter", producer);
+        ShutdownHook.add("Beat Producer", producer);
     }
 
-    public Future<RecordMetadata> future(
-            final String id, final BeatType type, final BeatStatus status, final Duration latency) {
+    public Future<RecordMetadata> sendFuture(final String id, final BeatType type) {
+        return sendFuture(id, type, null, null);
+    }
+
+    public Future<RecordMetadata> sendFuture(
+            final String id, final BeatType type, final String status, final Duration latency) {
 
         final BeatKey beatKey = buildKey(id, type, status);
         final BeatValue beatValue = buildValue(latency);
 
         return producer.send(buildRecord(beatKey, beatValue), (metadata, exception) -> {
             if (exception == null) {
-                log.trace("Emitting message {}", beatKey.getType());
+                log.trace("Producing message {}", beatKey.getType());
             } else {
-                log.error("Emitting message {}", beatKey.getType(), exception);
+                log.error("Producing message {}", beatKey.getType(), exception);
             }
         });
     }
@@ -58,29 +61,36 @@ public class BeatEmitter {
         return new ProducerRecord<>(topicName, Bytes.wrap(beatKey.toByteArray()), Bytes.wrap(beatValue.toByteArray()));
     }
 
-    public RecordMetadata emit(final String id, final BeatType type, final BeatStatus status, final Duration latency) {
+    public RecordMetadata send(final String id, final BeatType type, final Duration latency) {
         try {
-            return future(id, type, status, latency).get();
+            return sendFuture(id, type, null, latency).get();
         } catch (InterruptedException | ExecutionException e) {
             throw new CanaryException(e);
         }
     }
 
     private BeatValue buildValue(final Duration latency) {
-        return BeatValue.newBuilder()
-                .setTime(Timestamps.now())
-                .setLatency(latency.toMillis())
-                .build();
+        final BeatValue.Builder builder = BeatValue.newBuilder().setTime(Timestamps.now());
+
+        if (latency != null) {
+            builder.setLatency(latency.toMillis());
+        }
+
+        return builder.build();
     }
 
-    private BeatKey buildKey(final String id, final BeatType type, final BeatStatus status) {
-        return BeatKey.newBuilder()
+    private BeatKey buildKey(final String id, final BeatType type, final String status) {
+        final BeatKey.Builder builder = BeatKey.newBuilder()
                 .setServerHost(lhServerHost)
                 .setServerPort(lhServerPort)
                 .setServerVersion(lhServerVersion)
                 .setId(id)
-                .setType(type)
-                .setStatus(status)
-                .build();
+                .setType(type);
+
+        if (status != null) {
+            builder.setStatus(status);
+        }
+
+        return builder.build();
     }
 }

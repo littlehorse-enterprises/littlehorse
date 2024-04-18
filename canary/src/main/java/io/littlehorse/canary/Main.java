@@ -3,11 +3,13 @@ package io.littlehorse.canary;
 import io.littlehorse.canary.aggregator.Aggregator;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.ConfigLoader;
-import io.littlehorse.canary.kafka.BeatEmitter;
 import io.littlehorse.canary.kafka.TopicCreator;
-import io.littlehorse.canary.metronome.Metronome;
+import io.littlehorse.canary.metronome.MetronomeGetWfRunExecutor;
+import io.littlehorse.canary.metronome.MetronomeRunWfExecutor;
 import io.littlehorse.canary.metronome.MetronomeWorker;
 import io.littlehorse.canary.metronome.MetronomeWorkflow;
+import io.littlehorse.canary.metronome.internal.BeatProducer;
+import io.littlehorse.canary.metronome.internal.LocalRepository;
 import io.littlehorse.canary.prometheus.PrometheusExporter;
 import io.littlehorse.canary.prometheus.PrometheusServerExporter;
 import io.littlehorse.canary.util.LHClient;
@@ -15,6 +17,7 @@ import io.littlehorse.canary.util.ShutdownHook;
 import io.littlehorse.sdk.common.config.LHConfig;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -40,8 +43,12 @@ public class Main {
         final CanaryConfig canaryConfig = args.length > 0 ? ConfigLoader.load(Paths.get(args[0])) : ConfigLoader.load();
         final LHConfig lhConfig =
                 new LHConfig(canaryConfig.toLittleHorseConfig().toMap());
-        final LHClient lhClient = new LHClient(lhConfig);
-        final BeatEmitter emitter = new BeatEmitter(
+        final LHClient lhClient = new LHClient(
+                lhConfig,
+                canaryConfig.getWorkflowName(),
+                canaryConfig.getWorkflowVersion(),
+                canaryConfig.getWorkflowRevision());
+        final BeatProducer producer = new BeatProducer(
                 lhConfig.getApiBootstrapHost(),
                 lhConfig.getApiBootstrapPort(),
                 lhClient.getServerVersion(),
@@ -51,33 +58,42 @@ public class Main {
 
         // create topics
         if (canaryConfig.isTopicCreationEnabled()) {
+            final NewTopic topic = new NewTopic(
+                    canaryConfig.getTopicName(), canaryConfig.getTopicPartitions(), canaryConfig.getTopicReplicas());
+
             new TopicCreator(
-                    canaryConfig.toKafkaAdminConfig().toMap(),
-                    new NewTopic(
-                            canaryConfig.getTopicName(),
-                            canaryConfig.getTopicPartitions(),
-                            canaryConfig.getTopicReplicas()),
-                    canaryConfig.getTopicCreationTimeout());
+                    canaryConfig.toKafkaAdminConfig().toMap(), canaryConfig.getTopicCreationTimeout(), List.of(topic));
         }
 
         // start worker
         if (canaryConfig.isMetronomeWorkerEnabled()) {
-            new MetronomeWorker(emitter, lhConfig);
+            new MetronomeWorker(producer, lhConfig);
         }
 
         // register wf
         if (canaryConfig.isWorkflowCreationEnabled()) {
-            new MetronomeWorkflow(lhClient);
+            new MetronomeWorkflow(lhClient, canaryConfig.getWorkflowName());
         }
 
         // start metronome client
         if (canaryConfig.isMetronomeEnabled()) {
-            new Metronome(
-                    emitter,
+            final LocalRepository repository = new LocalRepository(canaryConfig.getMetronomeDataPath());
+
+            new MetronomeRunWfExecutor(
+                    producer,
                     lhClient,
-                    canaryConfig.getMetronomeFrequency(),
-                    canaryConfig.getMetronomeThreads(),
-                    canaryConfig.getMetronomeRuns());
+                    canaryConfig.getMetronomeRunFrequency(),
+                    canaryConfig.getMetronomeRunThreads(),
+                    canaryConfig.getMetronomeRunRequests(),
+                    repository);
+
+            new MetronomeGetWfRunExecutor(
+                    producer,
+                    lhClient,
+                    canaryConfig.getMetronomeGetFrequency(),
+                    canaryConfig.getMetronomeGetThreads(),
+                    canaryConfig.getMetronomeGetRetries(),
+                    repository);
         }
 
         // start the aggregator

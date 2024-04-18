@@ -1,5 +1,6 @@
 package io.littlehorse.canary.aggregator.topology;
 
+import com.google.common.base.Strings;
 import io.littlehorse.canary.aggregator.internal.BeatTimeExtractor;
 import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
 import io.littlehorse.canary.proto.*;
@@ -38,14 +39,14 @@ public class MetricsTopology {
         final StreamsBuilder streamsBuilder = new StreamsBuilder();
         final KStream<BeatKey, BeatValue> beatsStream = streamsBuilder.stream(inputTopic, initializeSerdes());
 
-        // group cleaned beat
-        final KGroupedStream<BeatKey, BeatValue> beatsWithoutIdGroup = beatsStream
-                // it removes the id
-                .groupBy(
-                MetricsTopology::cleanBeatKey, Grouped.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.BeatValue()));
-
         // build latency metric stream
-        final KStream<MetricKey, MetricValue> latencyMetricsStream = beatsWithoutIdGroup
+        final KStream<MetricKey, MetricValue> latencyMetricsStream = beatsStream
+                // remove GET_WF_RUN_EXHAUSTED_RETRIES
+                .filterNot(MetricsTopology::isExhaustedRetries)
+                // remove the id
+                .groupBy(
+                        MetricsTopology::cleanBeatKey,
+                        Grouped.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.BeatValue()))
                 // reset aggregator every minute
                 .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(5)))
                 // calculate average
@@ -58,14 +59,19 @@ public class MetricsTopology {
                 .flatMap(MetricsTopology::makeLatencyMetrics);
 
         // build count metric stream
-        final KStream<MetricKey, MetricValue> countMetricStream = beatsWithoutIdGroup
+        final KStream<MetricKey, MetricValue> countMetricStream = beatsStream
+                // remove the id
+                .groupBy(
+                        MetricsTopology::cleanBeatKey,
+                        Grouped.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.BeatValue()))
+                // count all
                 .count(initializeCountStore(COUNT_STORE))
                 .toStream()
                 .map(MetricsTopology::makeCountMetric);
 
         // build duplicated task run stream
         final KStream<MetricKey, MetricValue> duplicatedTaskRunStream = beatsStream
-                // filter by
+                // filter by TASK_RUN_EXECUTION
                 .filter(MetricsTopology::filterTaskRunBeats)
                 .groupByKey()
                 // count all the records with the same idempotency key and attempt number
@@ -90,6 +96,10 @@ public class MetricsTopology {
                 .toTable(Named.as(METRICS_STORE), initializeMetricStore());
 
         return streamsBuilder.build();
+    }
+
+    private static boolean isExhaustedRetries(final BeatKey key, final BeatValue value) {
+        return key.getType().equals(BeatType.GET_WF_RUN_EXHAUSTED_RETRIES);
     }
 
     private static boolean selectDuplicatedTaskRun(final BeatKey key, final Long value) {
@@ -160,15 +170,18 @@ public class MetricsTopology {
     }
 
     private static MetricKey buildMetricKey(final BeatKey key, final String id) {
-        return MetricKey.newBuilder()
+        final MetricKey.Builder builder = MetricKey.newBuilder()
                 .setServerVersion(key.getServerVersion())
                 .setServerPort(key.getServerPort())
                 .setServerHost(key.getServerHost())
-                .setId("canary_%s".formatted(id))
-                .addTags(Tag.newBuilder()
-                        .setKey("status")
-                        .setValue(key.getStatus().toString().toLowerCase()))
-                .build();
+                .setId("canary_%s".formatted(id));
+
+        if (key.hasStatus() && !Strings.isNullOrEmpty(key.getStatus())) {
+            builder.addTags(
+                    Tag.newBuilder().setKey("status").setValue(key.getStatus().toLowerCase()));
+        }
+
+        return builder.build();
     }
 
     private Materialized<BeatKey, AverageAggregator, WindowStore<Bytes, byte[]>> initializeLatencyStore() {

@@ -10,6 +10,7 @@ enum BeatType {
   WF_RUN_REQUEST = 0;
   GET_WF_RUN_REQUEST = 1;
   TASK_RUN_EXECUTION = 2;
+  GET_WF_RUN_EXHAUSTED_RETRIES = 3;
 }
 
 enum BeatStatus {
@@ -22,11 +23,11 @@ message BeatKey {
   int32 server_port = 2;
   string server_version = 3;
   BeatType type = 4;
-  BeatStatus status = 5;
-  string id = 6;
+  optional string status = 5;
+  optional string id = 6;
 }
 
 message BeatValue {
   google.protobuf.Timestamp time = 1;
-  int64 latency = 2;
+  optional int64 latency = 2;
 }

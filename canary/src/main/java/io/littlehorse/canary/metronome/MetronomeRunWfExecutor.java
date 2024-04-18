@@ -1,6 +1,7 @@
 package io.littlehorse.canary.metronome;
 
-import io.littlehorse.canary.kafka.BeatEmitter;
+import io.littlehorse.canary.metronome.internal.BeatProducer;
+import io.littlehorse.canary.metronome.internal.LocalRepository;
 import io.littlehorse.canary.proto.BeatStatus;
 import io.littlehorse.canary.proto.BeatType;
 import io.littlehorse.canary.util.LHClient;
@@ -15,32 +16,35 @@ import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class Metronome {
+public class MetronomeRunWfExecutor {
 
-    private final BeatEmitter emitter;
+    private final BeatProducer producer;
     private final ScheduledExecutorService mainExecutor;
     private final ExecutorService requestsExecutor;
     private final LHClient lhClient;
     private final int runs;
+    private final LocalRepository repository;
 
-    public Metronome(
-            final BeatEmitter emitter,
+    public MetronomeRunWfExecutor(
+            final BeatProducer producer,
             final LHClient lhClient,
             final Duration frequency,
             final int threads,
-            final int runs) {
-        this.emitter = emitter;
+            final int runs,
+            final LocalRepository repository) {
+        this.producer = producer;
         this.lhClient = lhClient;
         this.runs = runs;
+        this.repository = repository;
 
         mainExecutor = Executors.newSingleThreadScheduledExecutor();
-        ShutdownHook.add("Metronome: Main Executor Thread", () -> closeExecutor(mainExecutor));
+        ShutdownHook.add("Metronome: RunWf Main Executor Thread", () -> closeExecutor(mainExecutor));
         mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency.toMillis(), TimeUnit.MILLISECONDS);
 
         requestsExecutor = Executors.newFixedThreadPool(threads);
-        ShutdownHook.add("Metronome: Request Executor Thread", () -> closeExecutor(requestsExecutor));
+        ShutdownHook.add("Metronome: RunWf Request Executor Thread", () -> closeExecutor(requestsExecutor));
 
-        log.info("Metronome Started");
+        log.info("RunWf Metronome Started");
     }
 
     private void closeExecutor(final ExecutorService executor) throws InterruptedException {
@@ -56,18 +60,21 @@ public class Metronome {
 
         try {
             lhClient.runCanaryWf(wfId, start);
-            sendMetricBeat(wfId, start, BeatStatus.OK);
         } catch (Exception e) {
-            sendMetricBeat(wfId, start, BeatStatus.ERROR);
+            sendMetricBeat(wfId, start, BeatStatus.ERROR.name());
+            return;
         }
+
+        sendMetricBeat(wfId, start, BeatStatus.OK.name());
+        repository.save(wfId, 0);
     }
 
-    private void sendMetricBeat(final String wfId, final Instant start, final BeatStatus status) {
-        emitter.future(wfId, BeatType.WF_RUN_REQUEST, status, Duration.between(start, Instant.now()));
+    private void sendMetricBeat(final String wfId, final Instant start, final String status) {
+        producer.sendFuture(wfId, BeatType.WF_RUN_REQUEST, status, Duration.between(start, Instant.now()));
     }
 
     private void scheduledRun() {
-        log.trace("Executing metronome");
+        log.trace("Executing run wf metronome");
         for (int i = 0; i < runs; i++) {
             requestsExecutor.submit(this::executeRun);
         }

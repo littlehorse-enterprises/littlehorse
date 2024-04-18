@@ -7,9 +7,13 @@
     * [Kafka Topics](#kafka-topics)
     * [Configurations](#configurations)
       * [`lh.canary.metronome.enable`](#lhcanarymetronomeenable)
-      * [`lh.canary.metronome.frequency.ms`](#lhcanarymetronomefrequencyms)
-      * [`lh.canary.metronome.threads`](#lhcanarymetronomethreads)
-      * [`lh.canary.metronome.runs`](#lhcanarymetronomeruns)
+      * [`lh.canary.metronome.run.frequency.ms`](#lhcanarymetronomerunfrequencyms)
+      * [`lh.canary.metronome.run.threads`](#lhcanarymetronomerunthreads)
+      * [`lh.canary.metronome.run.requests`](#lhcanarymetronomerunrequests)
+      * [`lh.canary.metronome.get.frequency.ms`](#lhcanarymetronomegetfrequencyms)
+      * [`lh.canary.metronome.get.threads`](#lhcanarymetronomegetthreads)
+      * [`lh.canary.metronome.get.retries`](#lhcanarymetronomegetretries)
+      * [`lh.canary.metronome.data.path`](#lhcanarymetronomedatapath)
     * [Kafka Configurations](#kafka-configurations)
     * [LH Client Configurations](#lh-client-configurations)
   * [Task Worker](#task-worker)
@@ -32,10 +36,13 @@
       * [`lh.canary.id`](#lhcanaryid)
       * [`lh.canary.topic.name`](#lhcanarytopicname)
       * [`lh.canary.topic.creation.enable`](#lhcanarytopiccreationenable)
-      * [`lh.canary.workflow.creation.enable`](#lhcanaryworkflowcreationenable)
-      * [`lh.canary.topic.creation.replicas`](#lhcanarytopiccreationreplicas)
-      * [`lh.canary.topic.creation.partitions`](#lhcanarytopiccreationpartitions)
       * [`lh.canary.topic.creation.timeout.ms`](#lhcanarytopiccreationtimeoutms)
+      * [`lh.canary.topic.replicas`](#lhcanarytopicreplicas)
+      * [`lh.canary.topic.partitions`](#lhcanarytopicpartitions)
+      * [`lh.canary.workflow.creation.enable`](#lhcanaryworkflowcreationenable)
+      * [`lh.canary.workflow.name`](#lhcanaryworkflowname)
+      * [`lh.canary.workflow.version`](#lhcanaryworkflowversion)
+      * [`lh.canary.workflow.revison`](#lhcanaryworkflowrevison)
   * [Using Env Variables](#using-env-variables)
 <!-- TOC -->
 
@@ -85,17 +92,17 @@ Flag to enable the metronome component.
 
 ---
 
-#### `lh.canary.metronome.frequency.ms`
+#### `lh.canary.metronome.run.frequency.ms`
 
-Time between requests.
+Time between run wf requests.
 
 - **Type:** int
 - **Default:** 1000
 - **Importance:** medium
 
-#### `lh.canary.metronome.threads`
+#### `lh.canary.metronome.run.threads`
 
-Size of thread pool.
+Size of run wf requests thread pool.
 
 - **Type:** int
 - **Default:** 1
@@ -103,12 +110,50 @@ Size of thread pool.
 
 ---
 
-#### `lh.canary.metronome.runs`
+#### `lh.canary.metronome.run.requests`
 
 Number of wf run to request.
 
 - **Type:** int
 - **Default:** 1
+- **Importance:** medium
+
+---
+
+#### `lh.canary.metronome.get.frequency.ms`
+
+Time between get run wf requests.
+
+- **Type:** int
+- **Default:** 1000
+- **Importance:** medium
+
+#### `lh.canary.metronome.get.threads`
+
+Size of get run wf requests thread pool.
+
+- **Type:** int
+- **Default:** 1
+- **Importance:** medium
+
+---
+
+#### `lh.canary.metronome.get.retries`
+
+Number of get wf run retries in case of failure.
+
+- **Type:** int
+- **Default:** 1
+- **Importance:** medium
+
+---
+
+#### `lh.canary.metronome.data.path`
+
+Local DB path.
+
+- **Type:** string
+- **Default:** /tmp/canaryMetronome
 - **Importance:** medium
 
 ### Kafka Configurations
@@ -176,18 +221,19 @@ It exposes a `/metrics`  endpoint that prometheus scrapes.
 
 ### Metrics
 
-| Metric                             | Description                                                                                                  |
-|------------------------------------|--------------------------------------------------------------------------------------------------------------|
-| `canary_task_run_execution_avg`    | Average time elapsed from when a task was scheduled until it was executed by the worker in milliseconds      |
-| `canary_task_run_execution_max`    | Maximum time to execute a task by the worker in milliseconds                                                 |
-| `canary_task_run_execution_count`  | Total wf run executed by the worker                                                                          |
-| `canary_get_wf_run_request_avg`    | Average time of getting a wf run in milliseconds                                                             |
-| `canary_get_wf_run_request_max`    | Max time of getting a wf run in milliseconds                                                                 |
-| `canary_get_wf_run_request_count`  | Total get executed wf run by the metronome                                                                   |
-| `canary_wf_run_request_avg`        | Average time of requesting a new wf run in milliseconds                                                      |
-| `canary_wf_run_request_max`        | Max time of requesting a new wf run in milliseconds                                                          |
-| `canary_wf_run_request_count`      | Total wf run count by the metronome                                                                          |
-| `canary_duplicated_task_run_count` | Number of detected duplicated task. Useful for data integrity, every task scheduled has to have an unique id |
+| Metric                                      | Description                                                                                                  |
+|---------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| `canary_task_run_execution_avg`             | Average time elapsed from when a task was scheduled until it was executed by the worker in milliseconds      |
+| `canary_task_run_execution_max`             | Maximum time to execute a task by the worker in milliseconds                                                 |
+| `canary_task_run_execution_count`           | Total wf run executed by the worker                                                                          |
+| `canary_get_wf_run_request_avg`             | Average time of getting a wf run in milliseconds                                                             |
+| `canary_get_wf_run_request_max`             | Max time of getting a wf run in milliseconds                                                                 |
+| `canary_get_wf_run_request_count`           | Total get executed wf run by the metronome                                                                   |
+| `canary_wf_run_request_avg`                 | Average time of requesting a new wf run in milliseconds                                                      |
+| `canary_wf_run_request_max`                 | Max time of requesting a new wf run in milliseconds                                                          |
+| `canary_wf_run_request_count`               | Total wf run count by the metronome                                                                          |
+| `canary_duplicated_task_run_count`          | Number of detected duplicated task. Useful for data integrity, every task scheduled has to have an unique id |
+| `canary_get_wf_run_exhausted_retries_count` | Total wf run id count that failed                                                                            |
 
 ### Kafka Topics
 
@@ -297,6 +343,36 @@ Flag to enable topics creation.
 
 ---
 
+#### `lh.canary.topic.creation.timeout.ms`
+
+Total time to wait for creating the metric beats topic in milliseconds.
+
+- **Type:** int
+- **Default:** 5000
+- **Importance:** high
+
+---
+
+#### `lh.canary.topic.replicas`
+
+Replicas for metric beats topic.
+
+- **Type:** int
+- **Default:** 3
+- **Importance:** high
+
+---
+
+#### `lh.canary.topic.partitions`
+
+Partitions for metric beats topic.
+
+- **Type:** int
+- **Default:** 12
+- **Importance:** high
+
+---
+
 #### `lh.canary.workflow.creation.enable`
 
 Flag to enable canary workflow creation.
@@ -307,32 +383,32 @@ Flag to enable canary workflow creation.
 
 ---
 
-#### `lh.canary.topic.creation.replicas`
+#### `lh.canary.workflow.name`
 
-Replicas for metric beats topic.
+Workflow name.
 
-- **Type:** int
-- **Default:** 3
+- **Type:** string
+- **Default:** canary-workflow
 - **Importance:** high
 
 ---
 
-#### `lh.canary.topic.creation.partitions`
+#### `lh.canary.workflow.version`
 
-Partitions for metric beats topic.
+Workflow major version.
 
 - **Type:** int
-- **Default:** 12
+- **Default:** 0
 - **Importance:** high
 
 ---
 
-#### `lh.canary.topic.creation.timeout.ms`
+#### `lh.canary.workflow.revison`
 
-Total time to wait for creating the metric beats topic in milliseconds.
+Workflow reversion.
 
 - **Type:** int
-- **Default:** 5000
+- **Default:** 0
 - **Importance:** high
 
 ## Using Env Variables

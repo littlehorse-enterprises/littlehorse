@@ -50,41 +50,46 @@ class MetricsTopologyTest {
     }
 
     private static MetricKey newMetricKey(String host, int port, String id) {
-        return newMetricKey(host, port, id, "ok");
+        return newMetricKey(host, port, id, null);
     }
 
     private static MetricKey newMetricKey(String host, int port, String id, String status) {
-        return MetricKey.newBuilder()
-                .setServerHost(host)
-                .setServerPort(port)
-                .setId(id)
-                .addTags(Tag.newBuilder().setKey("status").setValue(status).build())
-                .build();
+        MetricKey.Builder builder =
+                MetricKey.newBuilder().setServerHost(host).setServerPort(port).setId(id);
+
+        if (status != null) {
+            builder.addTags(Tag.newBuilder().setKey("status").setValue(status).build());
+        }
+
+        return builder.build();
     }
 
-    private static TestRecord<BeatKey, BeatValue> newBeat(BeatType type, String id, long latency) {
-        return newBeat(HOST_1, PORT_1, type, id, latency, BeatStatus.OK);
+    private static TestRecord<BeatKey, BeatValue> newBeat(BeatType type, String id, Long latency) {
+        return newBeat(HOST_1, PORT_1, type, id, latency, null);
     }
 
-    private static TestRecord<BeatKey, BeatValue> newBeat(
-            BeatType type, String id, long latency, BeatStatus beatStatus) {
+    private static TestRecord<BeatKey, BeatValue> newBeat(BeatType type, String id, Long latency, String beatStatus) {
         return newBeat(HOST_1, PORT_1, type, id, latency, beatStatus);
     }
 
     private static TestRecord<BeatKey, BeatValue> newBeat(
-            String host, int port, BeatType type, String id, long latency, BeatStatus beatStatus) {
-        BeatKey key = BeatKey.newBuilder()
+            String host, int port, BeatType type, String id, Long latency, String beatStatus) {
+        BeatKey.Builder keyBuilder = BeatKey.newBuilder()
                 .setServerHost(host)
                 .setServerPort(port)
-                .setStatus(beatStatus)
                 .setType(type)
-                .setId(id)
-                .build();
-        BeatValue value = BeatValue.newBuilder()
-                .setTime(Timestamps.now())
-                .setLatency(latency)
-                .build();
-        return new TestRecord<>(key, value);
+                .setId(id);
+        BeatValue.Builder valueBuilder = BeatValue.newBuilder().setTime(Timestamps.now());
+
+        if (beatStatus != null) {
+            keyBuilder.setStatus(beatStatus);
+        }
+
+        if (latency != null) {
+            valueBuilder.setLatency(latency);
+        }
+
+        return new TestRecord<>(keyBuilder.build(), valueBuilder.build());
     }
 
     @BeforeEach
@@ -118,15 +123,28 @@ class MetricsTopologyTest {
         BeatType expectedType = BeatType.WF_RUN_REQUEST;
         String expectedTypeName = expectedType.name().toLowerCase();
 
-        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20));
-        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10));
-        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "ok"));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10L, "ok"));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30L, "ok"));
 
         assertThat(getCount()).isEqualTo(3);
-        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg")))
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg", "ok")))
                 .isEqualTo(newMetricValue(20.));
-        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max")))
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max", "ok")))
                 .isEqualTo(newMetricValue(30.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count", "ok")))
+                .isEqualTo(newMetricValue(3.));
+    }
+
+    @Test
+    void calculateCountForExhaustedRetries() {
+        BeatType expectedType = BeatType.GET_WF_RUN_EXHAUSTED_RETRIES;
+        String expectedTypeName = expectedType.name().toLowerCase();
+
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), null));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), null));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), null));
+
         assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count")))
                 .isEqualTo(newMetricValue(3.));
     }
@@ -136,21 +154,21 @@ class MetricsTopologyTest {
         BeatType expectedType = BeatType.WF_RUN_REQUEST;
         String expectedTypeName = expectedType.name().toLowerCase();
 
-        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20));
-        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10));
-        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "ok"));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10L, "ok"));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30L, "ok"));
 
-        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20, BeatStatus.ERROR));
-        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10, BeatStatus.ERROR));
-        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30, BeatStatus.ERROR));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "error"));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10L, "error"));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30L, "error"));
 
         assertThat(getCount()).isEqualTo(6);
 
-        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg")))
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg", "ok")))
                 .isEqualTo(newMetricValue(20.));
-        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max")))
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max", "ok")))
                 .isEqualTo(newMetricValue(30.));
-        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count")))
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count", "ok")))
                 .isEqualTo(newMetricValue(3.));
 
         assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg", "error")))
@@ -166,16 +184,16 @@ class MetricsTopologyTest {
         BeatType expectedType = BeatType.GET_WF_RUN_REQUEST;
         String expectedTypeName = expectedType.name().toLowerCase();
 
-        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20));
-        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10));
-        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "completed"));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10L, "completed"));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30L, "completed"));
 
         assertThat(getCount()).isEqualTo(3);
-        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg")))
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg", "completed")))
                 .isEqualTo(newMetricValue(20.));
-        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max")))
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max", "completed")))
                 .isEqualTo(newMetricValue(30.));
-        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count")))
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count", "completed")))
                 .isEqualTo(newMetricValue(3.));
     }
 
@@ -184,9 +202,9 @@ class MetricsTopologyTest {
         BeatType expectedType = BeatType.TASK_RUN_EXECUTION;
         String expectedTypeName = expectedType.name().toLowerCase();
 
-        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20));
-        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10));
-        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10L));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30L));
 
         assertThat(getCount()).isEqualTo(3);
         assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg")))
@@ -203,9 +221,9 @@ class MetricsTopologyTest {
         String expectedTypeName = expectedType.name().toLowerCase();
         String expectedUniqueId = getRandomId();
 
-        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 20));
-        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 10));
-        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 30));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 20L));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 10L));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 30L));
 
         assertThat(getCount()).isEqualTo(4);
         assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg")))
@@ -224,13 +242,13 @@ class MetricsTopologyTest {
         String expectedUniqueId1 = getRandomId();
         String expectedUniqueId2 = getRandomId();
 
-        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId1, 20));
-        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId1, 10));
-        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId1, 30));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId1, 20L));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId1, 10L));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId1, 30L));
 
-        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId2, 20));
-        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId2, 30));
-        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId2, 40));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId2, 20L));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId2, 30L));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId2, 40L));
 
         assertThat(getCount()).isEqualTo(4);
         assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg")))
@@ -248,13 +266,13 @@ class MetricsTopologyTest {
         String expectedTypeName = expectedType.name().toLowerCase();
         String expectedUniqueId = getRandomId();
 
-        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 20));
-        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 10));
-        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 30));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 20L));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 10L));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 30L));
 
-        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 20, BeatStatus.OK));
-        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 10, BeatStatus.OK));
-        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 30, BeatStatus.OK));
+        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 20L, null));
+        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 10L, null));
+        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 30L, null));
 
         assertThat(getCount()).isEqualTo(8);
 
