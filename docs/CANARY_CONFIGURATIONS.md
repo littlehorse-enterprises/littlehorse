@@ -7,9 +7,13 @@
     * [Kafka Topics](#kafka-topics)
     * [Configurations](#configurations)
       * [`lh.canary.metronome.enable`](#lhcanarymetronomeenable)
-      * [`lh.canary.metronome.frequency.ms`](#lhcanarymetronomefrequencyms)
-      * [`lh.canary.metronome.threads`](#lhcanarymetronomethreads)
-      * [`lh.canary.metronome.runs`](#lhcanarymetronomeruns)
+      * [`lh.canary.metronome.run.frequency.ms`](#lhcanarymetronomerunfrequencyms)
+      * [`lh.canary.metronome.run.threads`](#lhcanarymetronomerunthreads)
+      * [`lh.canary.metronome.run.requests`](#lhcanarymetronomerunrequests)
+      * [`lh.canary.metronome.get.frequency.ms`](#lhcanarymetronomegetfrequencyms)
+      * [`lh.canary.metronome.get.threads`](#lhcanarymetronomegetthreads)
+      * [`lh.canary.metronome.get.retries`](#lhcanarymetronomegetretries)
+      * [`lh.canary.metronome.data.path`](#lhcanarymetronomedatapath)
     * [Kafka Configurations](#kafka-configurations)
     * [LH Client Configurations](#lh-client-configurations)
   * [Task Worker](#task-worker)
@@ -217,18 +221,19 @@ It exposes a `/metrics`  endpoint that prometheus scrapes.
 
 ### Metrics
 
-| Metric                             | Description                                                                                                  |
-|------------------------------------|--------------------------------------------------------------------------------------------------------------|
-| `canary_task_run_execution_avg`    | Average time elapsed from when a task was scheduled until it was executed by the worker in milliseconds      |
-| `canary_task_run_execution_max`    | Maximum time to execute a task by the worker in milliseconds                                                 |
-| `canary_task_run_execution_count`  | Total wf run executed by the worker                                                                          |
-| `canary_get_wf_run_request_avg`    | Average time of getting a wf run in milliseconds                                                             |
-| `canary_get_wf_run_request_max`    | Max time of getting a wf run in milliseconds                                                                 |
-| `canary_get_wf_run_request_count`  | Total get executed wf run by the metronome                                                                   |
-| `canary_wf_run_request_avg`        | Average time of requesting a new wf run in milliseconds                                                      |
-| `canary_wf_run_request_max`        | Max time of requesting a new wf run in milliseconds                                                          |
-| `canary_wf_run_request_count`      | Total wf run count by the metronome                                                                          |
-| `canary_duplicated_task_run_count` | Number of detected duplicated task. Useful for data integrity, every task scheduled has to have an unique id |
+| Metric                                      | Description                                                                                                  |
+|---------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| `canary_task_run_execution_avg`             | Average time elapsed from when a task was scheduled until it was executed by the worker in milliseconds      |
+| `canary_task_run_execution_max`             | Maximum time to execute a task by the worker in milliseconds                                                 |
+| `canary_task_run_execution_count`           | Total wf run executed by the worker                                                                          |
+| `canary_get_wf_run_request_avg`             | Average time of getting a wf run in milliseconds                                                             |
+| `canary_get_wf_run_request_max`             | Max time of getting a wf run in milliseconds                                                                 |
+| `canary_get_wf_run_request_count`           | Total get executed wf run by the metronome                                                                   |
+| `canary_wf_run_request_avg`                 | Average time of requesting a new wf run in milliseconds                                                      |
+| `canary_wf_run_request_max`                 | Max time of requesting a new wf run in milliseconds                                                          |
+| `canary_wf_run_request_count`               | Total wf run count by the metronome                                                                          |
+| `canary_duplicated_task_run_count`          | Number of detected duplicated task. Useful for data integrity, every task scheduled has to have an unique id |
+| `canary_get_wf_run_exhausted_retries_count` | Total wf run id count that failed                                                                            |
 
 ### Kafka Topics
 

@@ -1,5 +1,6 @@
 package io.littlehorse.canary.aggregator.topology;
 
+import com.google.common.base.Strings;
 import io.littlehorse.canary.aggregator.internal.BeatTimeExtractor;
 import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
 import io.littlehorse.canary.proto.*;
@@ -169,15 +170,18 @@ public class MetricsTopology {
     }
 
     private static MetricKey buildMetricKey(final BeatKey key, final String id) {
-        return MetricKey.newBuilder()
+        final MetricKey.Builder builder = MetricKey.newBuilder()
                 .setServerVersion(key.getServerVersion())
                 .setServerPort(key.getServerPort())
                 .setServerHost(key.getServerHost())
-                .setId("canary_%s".formatted(id))
-                .addTags(Tag.newBuilder()
-                        .setKey("status")
-                        .setValue(key.getStatus().toLowerCase()))
-                .build();
+                .setId("canary_%s".formatted(id));
+
+        if (key.hasStatus() && !Strings.isNullOrEmpty(key.getStatus())) {
+            builder.addTags(
+                    Tag.newBuilder().setKey("status").setValue(key.getStatus().toLowerCase()));
+        }
+
+        return builder.build();
     }
 
     private Materialized<BeatKey, AverageAggregator, WindowStore<Bytes, byte[]>> initializeLatencyStore() {
