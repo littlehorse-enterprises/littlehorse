@@ -7,7 +7,13 @@ export const getVariable = (variable?: VariableAssignment) => {
   if (variable.variableName) {
     return getValueFromVariableName(variable)
   }
-  if (variable.literalValue) return getValueFromLiteralValue(variable)
+  if (variable.literalValue) return getVariableValue(variable.literalValue)
+}
+
+export const getVariableValue = (variable?: VariableValue) => {
+  if (!variable) return
+  const key = Object.keys(variable)[0] as keyof VariableValue
+  return variable[key]
 }
 
 const getValueFromVariableName = ({
@@ -17,12 +23,6 @@ const getValueFromVariableName = ({
   if (!variableName) return
   if (jsonPath) return `{${jsonPath.replace('$', variableName)}}`
   return `{${variableName}}`
-}
-
-const getValueFromLiteralValue = ({ literalValue }: Pick<VariableAssignment, 'literalValue'>) => {
-  if (!literalValue) return
-  const key = Object.keys(literalValue)[0] as keyof VariableValue
-  return literalValue[key]
 }
 
 const getValueFromFormatString = ({ formatString }: Pick<VariableAssignment, 'formatString'>): string | undefined => {

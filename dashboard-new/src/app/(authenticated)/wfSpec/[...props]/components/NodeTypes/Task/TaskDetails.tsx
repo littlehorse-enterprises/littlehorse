@@ -1,12 +1,20 @@
-import { getVariable } from '@/app/utils'
+import { getVariable, getVariableValue } from '@/app/utils'
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid'
+import { useQuery } from '@tanstack/react-query'
 import { TaskNode } from 'littlehorse-client/dist/proto/common_wfspec'
 import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
 import Link from 'next/link'
 import { FC } from 'react'
-import { NodeDetails } from './NodeDetails'
+import { getTaskRun } from './getTaskRun'
+import { NodeDetails } from '../NodeDetails'
 
 export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, nodeRun }) => {
+  const { data } = useQuery({
+    queryKey: ['taskRun', nodeRun],
+    queryFn: async () => {
+      if (nodeRun?.task?.taskRunId) return await getTaskRun(nodeRun.task.taskRunId)
+    },
+  })
   if (!task) return null
   return (
     <NodeDetails>
@@ -25,14 +33,27 @@ export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, 
         <div className="flex gap-2 text-nowrap">
           <div className="flex items-center justify-center">Timeout: {task.timeoutSeconds}s</div>
           <div className="flex items-center justify-center">Retries: {task.retries}</div>
+          {data?.totalAttempts !== undefined && (
+            <div className="flex items-center justify-center">Attempts: {data.totalAttempts}</div>
+          )}
         </div>
       </div>
-      {task.variables && task.variables.length > 0 && (
+      {data === undefined && task.variables && task.variables.length > 0 && (
         <div className="whitespace-nowrap">
           <h3 className="font-bold">Inputs</h3>
           <ul className="list-inside list-disc">
             {task.variables.map((variable, i) => (
               <li key={`variable.${i}`}>{getVariable(variable)}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {data?.inputVariables && data.inputVariables.length > 0 && (
+        <div className="mt-2 whitespace-nowrap">
+          <h3 className="font-bold">Inputs</h3>
+          <ul className="list-inside list-disc">
+            {data.inputVariables.map(({ varName, value }) => (
+              <li key={`variable.${varName}`}>{`${varName} = ${getVariableValue(value)}`}</li>
             ))}
           </ul>
         </div>

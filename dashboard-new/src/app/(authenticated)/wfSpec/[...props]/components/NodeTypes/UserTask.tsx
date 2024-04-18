@@ -36,7 +36,7 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
           {userTask.notes && (
             <div className="rounded bg-gray-200 p-1">
               <h3 className="mb-1 font-bold">Notes</h3>
-              <pre>{getVariable(userTask.notes)}</pre>
+              <pre className="overflow-x-auto">{getVariable(userTask.notes)}</pre>
             </div>
           )}
         </div>
