@@ -53,7 +53,6 @@ public class UserTasksExample {
 
         wf.handleException(
             formOutput,
-            "USER_TASK_CANCELLED",
             handler -> {
                 String email = "test-ut-support@gmail.com";
                 handler.execute(EMAIL_TASK_NAME, email, "Task cancelled");
