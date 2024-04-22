@@ -21,7 +21,7 @@ public class LHLibUtilTest {
         Assertions.assertThat(anakinStr).isEqualTo(grandparent + "_" + parent + "_" + child);
 
         // Darth vader is Anakin but re-constructed
-        WfRunId darthVader = LHLibUtil.wfRunId(anakinStr);
+        WfRunId darthVader = LHLibUtil.wfRunIdFromString(anakinStr);
         Assertions.assertThat(darthVader.getId()).isEqualTo(child);
         Assertions.assertThat(darthVader.getParentWfRunId().getId()).isEqualTo(parent);
         Assertions.assertThat(darthVader.getParentWfRunId().getParentWfRunId().getId()).isEqualTo(grandparent);

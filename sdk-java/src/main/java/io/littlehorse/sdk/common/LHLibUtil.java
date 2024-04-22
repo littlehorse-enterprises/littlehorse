@@ -89,7 +89,7 @@ public class LHLibUtil {
         return null;
     }
 
-    public static WfRunId wfRunId(String id) {
+    public static WfRunId wfRunIdFromString(String id) {
         if (!id.contains("_")) {
             return WfRunId.newBuilder().setId(id).build();
         }
@@ -97,7 +97,7 @@ public class LHLibUtil {
         String childId = id.substring(id.lastIndexOf("_") + 1);
         return WfRunId.newBuilder()
                 .setId(childId)
-                .setParentWfRunId(LHLibUtil.wfRunId(parentId))
+                .setParentWfRunId(LHLibUtil.wfRunIdFromString(parentId))
                 .build();
     }
 
