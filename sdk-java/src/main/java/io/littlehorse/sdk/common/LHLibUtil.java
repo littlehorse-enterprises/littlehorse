@@ -90,7 +90,15 @@ public class LHLibUtil {
     }
 
     public static WfRunId wfRunId(String id) {
-        return WfRunId.newBuilder().setId(id).build();
+        if (!id.contains("_")) {
+            return WfRunId.newBuilder().setId(id).build();
+        }
+        String parentId = id.substring(0, id.lastIndexOf("_"));
+        String childId = id.substring(id.lastIndexOf("_") + 1);
+        return WfRunId.newBuilder()
+                .setId(childId)
+                .setParentWfRunId(LHLibUtil.wfRunId(parentId))
+                .build();
     }
 
     public static ExternalEventDefId externalEventDefId(String name) {
