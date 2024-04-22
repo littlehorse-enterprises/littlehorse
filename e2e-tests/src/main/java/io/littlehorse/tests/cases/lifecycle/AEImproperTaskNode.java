@@ -157,7 +157,7 @@ public class AEImproperTaskNode extends Test {
 
     private NodeRun getNodeRun(String wfRunId, int threadRunNumber, int position) {
         return client.getNodeRun(NodeRunId.newBuilder()
-                .setWfRunId(LHLibUtil.wfRunId(wfRunId))
+                .setWfRunId(LHLibUtil.wfRunIdFromString(wfRunId))
                 .setThreadRunNumber(threadRunNumber)
                 .setPosition(position)
                 .build());

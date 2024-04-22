@@ -92,6 +92,19 @@ public class TestUtil {
         return nodeRunModel;
     }
 
+    public static NodeRunModel nodeRun(String wfRunId) {
+        NodeRunModel nodeRunModel = new NodeRunModel();
+        nodeRunModel.setId(new NodeRunIdModel(wfRunId, 1, 0));
+        nodeRunModel.setStatus(LHStatus.RUNNING);
+        nodeRunModel.setType(NodeRun.NodeTypeCase.TASK);
+        nodeRunModel.setArrivalTime(new Date());
+        nodeRunModel.setWfSpecId(wfSpecId());
+        nodeRunModel.setThreadSpecName("test-thread");
+        nodeRunModel.setNodeName("test-node-name");
+        nodeRunModel.setTaskRun(taskNodeRun());
+        return nodeRunModel;
+    }
+
     public static UserTaskNodeRunModel userTaskNodeRun(String wfRunId, ProcessorExecutionContext processorContext) {
         UserTaskRunModel utr = userTaskRun(wfRunId, processorContext);
         UserTaskNodeRunModel out = new UserTaskNodeRunModel();
@@ -107,7 +120,7 @@ public class TestUtil {
         userTaskRun.setUserId("33333");
         userTaskRun.setUserGroup("1234567");
         userTaskRun.setScheduledTime(new Date());
-        userTaskRun.setNodeRunId(nodeRun().getObjectId());
+        userTaskRun.setNodeRunId(nodeRun(wfRunId).getObjectId());
         return userTaskRun;
     }
 
