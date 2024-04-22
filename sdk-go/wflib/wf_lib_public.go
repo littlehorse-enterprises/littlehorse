@@ -91,15 +91,15 @@ func (n *NodeOutput) JsonPath(path string) NodeOutput {
 }
 
 func (n *NodeOutput) HandleExceptionOnChild(handler ThreadFunc, exceptionName *string) {
-	// TODO
+	n.handleExceptionOnChild(handler, exceptionName)
 }
 
 func (n *NodeOutput) HandleErrorOnChild(handler ThreadFunc, errorName *string) {
-	// TODO
+	n.handleErrorOnChild(handler, errorName)
 }
 
 func (n *NodeOutput) HandleAnyFailureOnChild(handler ThreadFunc) {
-	// TODO
+	n.handleAnyFailureOnChild(handler)
 }
 
 func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
