@@ -14,8 +14,10 @@ public class LHLibUtilTest {
         String grandparent = "qui-gon";
 
         WfRunId quiGon = WfRunId.newBuilder().setId(grandparent).build();
-        WfRunId obiWan = WfRunId.newBuilder().setId(parent).setParentWfRunId(quiGon).build();
-        WfRunId anakin = WfRunId.newBuilder().setId(child).setParentWfRunId(obiWan).build();
+        WfRunId obiWan =
+                WfRunId.newBuilder().setId(parent).setParentWfRunId(quiGon).build();
+        WfRunId anakin =
+                WfRunId.newBuilder().setId(child).setParentWfRunId(obiWan).build();
 
         String anakinStr = LHLibUtil.wfRunIdToString(anakin);
         Assertions.assertThat(anakinStr).isEqualTo(grandparent + "_" + parent + "_" + child);
@@ -24,7 +26,8 @@ public class LHLibUtilTest {
         WfRunId darthVader = LHLibUtil.wfRunIdFromString(anakinStr);
         Assertions.assertThat(darthVader.getId()).isEqualTo(child);
         Assertions.assertThat(darthVader.getParentWfRunId().getId()).isEqualTo(parent);
-        Assertions.assertThat(darthVader.getParentWfRunId().getParentWfRunId().getId()).isEqualTo(grandparent);
+        Assertions.assertThat(darthVader.getParentWfRunId().getParentWfRunId().getId())
+                .isEqualTo(grandparent);
     }
 
     @Test
