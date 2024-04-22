@@ -754,7 +754,7 @@ public class LHServerConfig extends ConfigBase {
         //
         // That's not to mention that we will be writing fewer times to RocksDB. Huge win.
         int commitInterval = Integer.valueOf(getOrSetDefault(LHServerConfig.CORE_STREAMS_COMMIT_INTERVAL_KEY, "2000"));
-        props.put("commit.interval", commitInterval);
+        props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, commitInterval);
         props.put(
                 "statestore.cache.max.bytes",
                 Long.valueOf(getOrSetDefault(CORE_STATESTORE_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 32))));
@@ -788,7 +788,7 @@ public class LHServerConfig extends ConfigBase {
         // the LHS_CORE_STATESTORE_CACHE_BYTES config smaller (i.e. 16MB) due to the smaller commit interval.
         int commitInterval =
                 Integer.valueOf(getOrSetDefault(LHServerConfig.TIMER_STREAMS_COMMIT_INTERVAL_KEY, "30000"));
-        props.put("commit.interval", commitInterval);
+        props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, commitInterval);
 
         props.put(
                 "statestore.cache.max.bytes",
