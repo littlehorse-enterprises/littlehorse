@@ -3,7 +3,6 @@ package io.littlehorse.test.internal;
 import io.grpc.CallCredentials;
 import io.grpc.Metadata;
 import io.grpc.Status;
-import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -15,15 +14,11 @@ public interface TestBootstrapper {
 
     LittleHorseBlockingStub getLhClient();
 
-    LittleHorseBlockingStub getAnonymousClient();
-
     final class MockCallCredentials extends CallCredentials {
 
-        private final PrincipalIdModel principalId;
         private final TenantIdModel tenantId;
 
-        MockCallCredentials(final PrincipalIdModel principalId, final TenantIdModel tenantId) {
-            this.principalId = principalId;
+        MockCallCredentials(final TenantIdModel tenantId) {
             this.tenantId = tenantId;
         }
 
@@ -32,7 +27,6 @@ public interface TestBootstrapper {
             executor.execute(() -> {
                 try {
                     Metadata headers = new Metadata();
-                    headers.put(ServerAuthorizer.CLIENT_ID, principalId.getId());
                     headers.put(ServerAuthorizer.TENANT_ID, tenantId.getId());
                     metadataApplier.apply(headers);
                 } catch (Exception e) {

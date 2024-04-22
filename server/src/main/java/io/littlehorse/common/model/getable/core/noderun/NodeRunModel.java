@@ -415,10 +415,10 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
      * This method may mutate the state of the NodeRun.
      * @return
      */
-    public boolean checkIfProcessingCompleted() throws NodeFailureException {
+    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) throws NodeFailureException {
         boolean completed;
         try {
-            completed = getSubNodeRun().checkIfProcessingCompleted();
+            completed = getSubNodeRun().checkIfProcessingCompleted(processorContext);
         } catch (NodeFailureException exn) {
             failures.add(exn.getFailure());
             status = exn.getFailure().getStatus();
@@ -436,9 +436,9 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         return completed;
     }
 
-    public void arrive(Date time) throws NodeFailureException {
+    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
         try {
-            getSubNodeRun().arrive(time);
+            getSubNodeRun().arrive(time, processorContext);
             setStatus(LHStatus.RUNNING);
         } catch (NodeFailureException exn) {
             failures.add(exn.getFailure());
@@ -457,12 +457,12 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
      * @precondition the NodeRUnModel should already be completed or recovered from failure.
      * @return the output from this NodeRunModel's NodeRun, if such output exists.
      */
-    public Optional<VariableValueModel> getOutput() {
+    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
         if (status != LHStatus.COMPLETED) {
             throw new IllegalStateException("Cannot get output from a non-completed NodeRun");
         }
 
-        return getSubNodeRun().getOutput();
+        return getSubNodeRun().getOutput(processorContext);
     }
 
     /**
@@ -470,13 +470,13 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
      * to HALTING. Returns true if the NodeRun is successfully HALTED.
      * @return true if the NodeRun is successfully HALTED; else false.
      */
-    public boolean maybeHalt() {
+    public boolean maybeHalt(ProcessorExecutionContext processorContext) {
         if (!isInProgress()) {
             // If the NodeRun is already completed, failed, or halted, then we're done (:
             return true;
         }
 
-        if (getSubNodeRun().maybeHalt()) {
+        if (getSubNodeRun().maybeHalt(processorContext)) {
             status = LHStatus.HALTED;
             return true;
         } else {
@@ -530,7 +530,8 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
      * @return the Node that the ThreadSpecModel should advance to next.
      * @throws NodeFailureException if evaluation of outgoing edges fails or if variable mutations fail.
      */
-    public NodeModel evaluateOutgoingEdgesAndMaybeMutateVariables() throws NodeFailureException {
+    public NodeModel evaluateOutgoingEdgesAndMaybeMutateVariables(ProcessorExecutionContext processorContext)
+            throws NodeFailureException {
         NodeModel currentNode = getNode();
         ThreadRunModel thread = getThreadRun();
 
@@ -545,7 +546,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                     // if the Failure is handled. If a user wants to mutate variables anyways, they
                     // should do so in the Failure Handler.
                     if (failures.isEmpty()) {
-                        edge.mutateVariables(thread, this.getOutput());
+                        edge.mutateVariables(thread, this.getOutput(processorContext));
                     }
 
                     // If we get here, we have found an edge that was valid, and the variable

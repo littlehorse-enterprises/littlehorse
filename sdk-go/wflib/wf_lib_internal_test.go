@@ -85,6 +85,21 @@ func TestUserTaskWithNotes(t *testing.T) {
 	assert.Equal(t, "sample notes", utNode.GetNotes().GetLiteralValue().GetStr())
 }
 
+func TestUserTaskWithOnCancellationExceptionName(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		t.AssignUserTask("sample-user-task", nil, "group").WithOnCancellationException("no-response")
+	}, "my-workflow")
+
+	putWf, _ := wf.Compile()
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-sample-user-task-USER_TASK"]
+
+	utNode := node.GetUserTask()
+	assert.NotNil(t, utNode)
+
+	assert.Equal(t, "no-response", utNode.GetOnCancellationExceptionName().GetLiteralValue().GetStr())
+}
+
 func TestReminderTask(t *testing.T) {
 	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		userVar := t.AddVariable("user", model.VariableType_STR)
@@ -106,6 +121,50 @@ func TestReminderTask(t *testing.T) {
 	assert.NotNil(t, reminderAction)
 	assert.Equal(t, model.UTActionTrigger_ON_TASK_ASSIGNED, reminderAction.Hook)
 
+}
+
+func TestCancelUserTaskAfterDeadline(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		userVar := t.AddVariable("user", model.VariableType_STR)
+		uto := t.AssignUserTask("my-task", userVar, nil)
+		t.CancelUserTaskAfter(uto, 20)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-my-task-USER_TASK"]
+
+	utNode := node.GetUserTask()
+	assert.NotNil(t, utNode)
+	cancelUserTask := utNode.Actions[0]
+	assert.NotNil(t, cancelUserTask)
+	assert.Equal(t, model.UTActionTrigger_ON_ARRIVAL, cancelUserTask.Hook)
+}
+
+func TestCancelUserTaskAfterAssignment(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		userVar := t.AddVariable("user", model.VariableType_STR)
+		uto := t.AssignUserTask("my-task", userVar, nil)
+		t.CancelUserTaskAfterAssignment(uto, 20)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-my-task-USER_TASK"]
+
+	utNode := node.GetUserTask()
+	assert.NotNil(t, utNode)
+	cancelUserTask := utNode.Actions[0]
+	assert.NotNil(t, cancelUserTask)
+	assert.Equal(t, model.UTActionTrigger_ON_TASK_ASSIGNED, cancelUserTask.Hook)
 }
 
 func TestUserTaskAssignToUserWithGroup(t *testing.T) {

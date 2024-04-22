@@ -13,6 +13,7 @@ import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -40,10 +41,12 @@ public class TagStorageManager {
 
     public void store(Collection<Tag> newTags, TagsCache preExistingTags) {
         List<String> newTagIds = newTags.stream().map(tag -> tag.getStoreKey()).toList();
-
-        List<Tag> tagsToAdd = newTags.stream()
-                .filter(tag -> !preExistingTags.getTagIds().contains(tag.getStoreKey()))
-                .toList();
+        List<Tag> tagsToAdd = new ArrayList<>();
+        for (Tag newTag : newTags) {
+            if (!preExistingTags.contains(newTag)) {
+                tagsToAdd.add(newTag);
+            }
+        }
 
         List<CachedTag> tagsToRemove = preExistingTags.getTags().stream()
                 .filter(cachedTag -> !newTagIds.contains(cachedTag.getId()))

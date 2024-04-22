@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssign
 import io.littlehorse.sdk.common.proto.SleepNode;
 import io.littlehorse.sdk.common.proto.SleepNode.SleepLengthCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.time.Instant;
 import java.util.Date;
@@ -67,14 +68,14 @@ public class SleepNodeModel extends SubNode<SleepNode> {
     }
 
     @Override
-    public void validate() throws LHApiException {
+    public void validate(MetadataCommandExecution ctx) throws LHApiException {
         // TODO: once we have schemas, we need to validate that the
         // variable assignments are types that make sense (unsigned int, long,
         // or date string).
     }
 
     @Override
-    public SleepNodeRunModel createSubNodeRun(Date time) {
+    public SleepNodeRunModel createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
         return new SleepNodeRunModel(processorContext);
     }
 

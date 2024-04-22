@@ -20,8 +20,8 @@ import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
-import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.ArrayList;
@@ -45,8 +45,6 @@ public class TaskNodeModel extends SubNode<TaskNode> {
 
     // private TaskDefModel taskDef;
     private WfService wfService;
-    private ReadOnlyMetadataManager metadataManager;
-    private ProcessorExecutionContext processorContext;
 
     private int simpleRetries;
     private ExponentialBackoffRetryPolicyModel exponentialBackoffRetryPolicy;
@@ -77,8 +75,6 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         for (VariableAssignment assn : p.getVariablesList()) {
             variables.add(VariableAssignmentModel.fromProto(assn, context));
         }
-        this.metadataManager = context.metadataManager();
-        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
 
         this.taskToExecuteType = p.getTaskToExecuteCase();
         switch (taskToExecuteType) {
@@ -124,10 +120,10 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     }
 
     @Override
-    public void validate() throws LHApiException {
+    public void validate(MetadataCommandExecution ctx) throws LHApiException {
         // Can only validate the type of TaskDef if we know it ahead of time...
         if (taskToExecuteType == TaskToExecuteCase.TASK_DEF_ID) {
-            TaskDefModel taskDef = metadataManager.get(new TaskDefIdModel(taskDefId.getName()));
+            TaskDefModel taskDef = ctx.metadataManager().get(new TaskDefIdModel(taskDefId.getName()));
             if (taskDef == null) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, "Refers to nonexistent TaskDef " + taskDefId);
             }
@@ -197,13 +193,13 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         return out;
     }
 
-    public TaskDefModel getTaskDef(ThreadRunModel thread) throws LHVarSubError {
+    public TaskDefModel getTaskDef(ThreadRunModel thread, ExecutionContext executionContext) throws LHVarSubError {
         switch (taskToExecuteType) {
             case TASK_DEF_ID:
-                return metadataManager.get(taskDefId);
+                return executionContext.metadataManager().get(taskDefId);
             case DYNAMIC_TASK:
                 String taskDefName = thread.assignVariable(dynamicTask).asStr().getStrVal();
-                TaskDefModel out = metadataManager.get(new TaskDefIdModel(taskDefName));
+                TaskDefModel out = executionContext.metadataManager().get(new TaskDefIdModel(taskDefName));
                 if (out == null) {
                     throw new LHVarSubError(null, "No TaskDef named %s!".formatted(taskDefName));
                 }
@@ -213,11 +209,12 @@ public class TaskNodeModel extends SubNode<TaskNode> {
         throw new LHApiException(Status.INVALID_ARGUMENT, "Node does not specify Task to execute");
     }
 
-    public List<VarNameAndValModel> assignInputVars(ThreadRunModel thread) throws LHVarSubError {
-        TaskDefModel taskDef = getTaskDef(thread);
+    public List<VarNameAndValModel> assignInputVars(ThreadRunModel thread, ProcessorExecutionContext processorContext)
+            throws LHVarSubError {
+        TaskDefModel taskDef = getTaskDef(thread, processorContext);
 
         List<VarNameAndValModel> out = new ArrayList<>();
-        if (getTaskDef(thread).getInputVars().size() != variables.size()) {
+        if (taskDef.getInputVars().size() != variables.size()) {
             throw new LHVarSubError(null, "Impossible: got different number of taskdef vars and node input vars");
         }
 
@@ -245,7 +242,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     }
 
     @Override
-    public TaskNodeRunModel createSubNodeRun(Date time) {
+    public TaskNodeRunModel createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
         TaskNodeRunModel out = new TaskNodeRunModel(processorContext);
         // Note: all of the initialization is done in `TaskNodeRun#arrive()`
         return out;

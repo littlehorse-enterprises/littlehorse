@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExitNodeMo
 import io.littlehorse.sdk.common.proto.ExitRun;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import java.util.Optional;
 
@@ -32,10 +33,10 @@ public class ExitRunModel extends SubNodeRun<ExitRun> {
     }
 
     @Override
-    public void arrive(Date time) {}
+    public void arrive(Date time, ProcessorExecutionContext processorContext) {}
 
     @Override
-    public boolean checkIfProcessingCompleted() throws NodeFailureException {
+    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) throws NodeFailureException {
         // If the EXIT node has a failure defined, the whole point of the Node is to fail.
         ExitNodeModel node = getNode().getExitNode();
         if (node.getFailureDef() != null) {
@@ -72,7 +73,7 @@ public class ExitRunModel extends SubNodeRun<ExitRun> {
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput() {
+    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
         return Optional.empty();
     }
 

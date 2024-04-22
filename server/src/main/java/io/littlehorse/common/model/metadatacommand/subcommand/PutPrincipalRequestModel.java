@@ -84,6 +84,16 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
                 context.service().getPrincipal(context.authorization().principalId());
         PrincipalModel toSave = new PrincipalModel();
         toSave.setId(new PrincipalIdModel(id));
+
+        char[] disallowedCharacters = {'/', '\\'};
+        // Check if the ID contains any disallowed characters
+        for (char disallowedChar : disallowedCharacters) {
+            if (id.contains(String.valueOf(disallowedChar))) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT, "Principal ID cannot contain slashes or backslashes.");
+            }
+        }
+
         if (oldPrincipal != null) {
             if (!overwrite) {
                 throw new LHApiException(
@@ -98,11 +108,16 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
 
             toSave.setCreatedAt(oldPrincipal.getCreatedAt());
         }
-
-        if (perTenantAcls.isEmpty()) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Must provide list of tenants");
+        boolean canWriteAdminPrincipals = requester.isAdmin();
+        if (!globalAcls.getAcls().isEmpty() && !canWriteAdminPrincipals) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "Only admin users can create a principal with global privileges");
         }
+
         ensureThatIsAllowedToWriteInRequestedTenants(requester);
+
+        validateIfPerTenantACLsHasAssociatedTenantResource();
+
         for (Map.Entry<String, ServerACLsModel> perTenantAcl : perTenantAcls.entrySet()) {
             TenantIdModel tenantId = new TenantIdModel(perTenantAcl.getKey());
             ServerACLsModel acls = perTenantAcl.getValue();
@@ -119,6 +134,24 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
 
         metadataManager.put(toSave);
         return toSave.toProto().build();
+    }
+
+    /**
+     * Validates whether the perTenantACLs contain any resource associated with TENANT.
+     */
+    private void validateIfPerTenantACLsHasAssociatedTenantResource() {
+        if (hasTenantResource()) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    "PutPrincipalRequest does not allow non-Admin users to have any permissions on tenants");
+        }
+    }
+
+    private boolean hasTenantResource() {
+        return !perTenantAcls.isEmpty()
+                && perTenantAcls.values().stream().anyMatch(mappedACL -> mappedACL.getAcls().stream()
+                        .anyMatch(actualACL -> actualACL.getResources().stream()
+                                .anyMatch(aclResource -> aclResource.equals(ACLResource.ACL_TENANT))));
     }
 
     /**

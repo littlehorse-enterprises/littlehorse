@@ -6,13 +6,15 @@ from inspect import Parameter, signature, iscoroutinefunction
 import logging
 import signal
 import traceback
-from typing import Any, AsyncIterator, Callable
+from google.protobuf.json_format import MessageToJson
+from typing import Any, AsyncIterator, Callable, Optional
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
     TaskSchemaMismatchException,
-    LHTaskException,
+    LHTaskException as LHTaskPythonException,
 )
-from littlehorse.model.common_enums_pb2 import TaskStatus
+from littlehorse.model.common_enums_pb2 import LHErrorType, TaskStatus
+from littlehorse.model.common_wfspec_pb2 import VariableDef
 from littlehorse.model.object_id_pb2 import (
     NodeRunId,
     TaskDefId,
@@ -21,6 +23,7 @@ from littlehorse.model.object_id_pb2 import (
 )
 from littlehorse.model.service_pb2 import (
     PollTaskRequest,
+    PutTaskDefRequest,
     RegisterTaskWorkerRequest,
     RegisterTaskWorkerResponse,
     ReportTaskRun,
@@ -28,12 +31,16 @@ from littlehorse.model.service_pb2 import (
 )
 from google.protobuf.timestamp_pb2 import Timestamp
 from littlehorse.model.task_def_pb2 import TaskDef
-from littlehorse.utils import extract_value, to_variable_value
+from littlehorse.model.task_run_pb2 import LHTaskError, LHTaskException
+from littlehorse.model.variable_pb2 import VariableValue
+from littlehorse.utils import extract_value, to_variable_type, to_variable_value
 from littlehorse.utils import to_type
 
-REPORT_TASK_DEFAULT_RETRIES = 5
-HEARTBEAT_DEFAULT_INTERVAL = 5
-GRPC_UNARY_CALL_TIMEOUT = 20
+REPORT_TASK_RETRIES_INTERVAL_SECONDS = 2
+REPORT_TASK_FAIL_RETRIES = 15
+HEARTBEAT_INTERVAL_SECONDS = 5
+POLL_TASK_INTERVAL_SECONDS = 5
+GRPC_UNARY_CALL_TIMEOUT_SECONDS = 30
 
 
 class WorkerContext:
@@ -277,6 +284,11 @@ class LHConnection:
         if self._task.has_context():
             args.append(context)
 
+        output: Optional[VariableValue] = None
+        task_error: Optional[LHTaskError] = None
+        task_exception: Optional[LHTaskException] = None
+        status: TaskStatus
+
         try:
             raw_output = await self._task._callable(*args)
             try:
@@ -286,20 +298,31 @@ class LHConnection:
                 output = None
                 stacktrace = traceback.format_exc()
                 logging.error(stacktrace)
-                context.log(stacktrace)
                 status = TaskStatus.TASK_OUTPUT_SERIALIZING_ERROR
-        except LHTaskException:
+                task_error = LHTaskError(
+                    type=LHErrorType.VAR_SUB_ERROR,
+                    message=f"Failed serializing output: {stacktrace}",
+                )
+
+        except LHTaskPythonException as exn:
             output = None
             stacktrace = traceback.format_exc()
             logging.error(stacktrace)
-            context.log(stacktrace)
             status = TaskStatus.TASK_EXCEPTION
+            task_exception = LHTaskException(
+                name=exn.exception_name,
+                message=exn.message,
+                content=exn.content,
+            )
         except BaseException:
             output = None
             stacktrace = traceback.format_exc()
             logging.error(stacktrace)
-            context.log(stacktrace)
             status = TaskStatus.TASK_FAILED
+            task_error = LHTaskError(
+                type=LHErrorType.TASK_ERROR,
+                message=stacktrace,
+            )
 
         self._schedule_task_semaphore.release()
 
@@ -312,12 +335,14 @@ class LHConnection:
             attempt_number=task.attempt_number,
             status=status,
             output=output,
+            error=task_error,
+            exception=task_exception,
             log_output=(
                 to_variable_value(context.log_output) if context.log_output else None
             ),
         )
 
-        asyncio.create_task(self._report_task(task_result, REPORT_TASK_DEFAULT_RETRIES))
+        asyncio.create_task(self._report_task(task_result, REPORT_TASK_FAIL_RETRIES))
 
     async def _report_task(self, task_result: ReportTaskRun, retries_left: int) -> None:
         if retries_left <= 0:
@@ -334,7 +359,9 @@ class LHConnection:
         )
 
         try:
-            await self._stub.ReportTask(task_result, timeout=GRPC_UNARY_CALL_TIMEOUT)
+            await self._stub.ReportTask(
+                task_result, timeout=GRPC_UNARY_CALL_TIMEOUT_SECONDS
+            )
             self._log.debug("Task '%s' successfully reported", self._task.task_name)
         except Exception as e:
             retries_left -= 1
@@ -344,7 +371,7 @@ class LHConnection:
                 retries_left,
                 e,
             )
-            await asyncio.sleep(1.5)
+            await asyncio.sleep(REPORT_TASK_RETRIES_INTERVAL_SECONDS)
             await self._report_task(task_result, retries_left)
 
     async def _ask_for_work(self) -> None:
@@ -374,7 +401,7 @@ class LHConnection:
                         "likely due to server ('%s') restart.",
                         self.server,
                     )
-                    await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
+                    await asyncio.sleep(POLL_TASK_INTERVAL_SECONDS)
                 self._ask_for_work_semaphore.release()
         except Exception as e:
             self._log.error(
@@ -479,13 +506,9 @@ class LHTaskWorker:
         self._config = config
         self._connections: dict[str, LHConnection] = {}
         self._liveness_controller = LHLivenessController()
-
-        # get the task definition from the server
-        stub = config.stub()
-        reply: TaskDef = stub.GetTaskDef(
-            TaskDefId(name=task_def_name), timeout=GRPC_UNARY_CALL_TIMEOUT
-        )
-        self._task = LHTask(callable, reply)
+        self._task_def_name = task_def_name
+        self._callable = callable
+        self._task: LHTask
 
     async def _heartbeat(self) -> None:
         stub = self._config.stub(async_channel=True, name="heartbeat")
@@ -504,7 +527,7 @@ class LHTaskWorker:
             )
             try:
                 reply: RegisterTaskWorkerResponse = await stub.RegisterTaskWorker(
-                    request, timeout=GRPC_UNARY_CALL_TIMEOUT
+                    request, timeout=GRPC_UNARY_CALL_TIMEOUT_SECONDS
                 )
                 self._log.debug(
                     "Heart beat received for task %s at %s",
@@ -518,7 +541,7 @@ class LHTaskWorker:
                     e,
                 )
                 self._liveness_controller.notify_worker_failure()
-                await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
+                await asyncio.sleep(HEARTBEAT_INTERVAL_SECONDS)
                 continue
 
             self._liveness_controller.notify_success_call(reply)
@@ -563,7 +586,7 @@ class LHTaskWorker:
                 self._connections[host] = new_connection
                 asyncio.create_task(new_connection.start())
 
-            await asyncio.sleep(HEARTBEAT_DEFAULT_INTERVAL)
+            await asyncio.sleep(HEARTBEAT_INTERVAL_SECONDS)
 
     def health(self) -> LHTaskWorkerHealth:
         return self._liveness_controller.health()
@@ -574,7 +597,14 @@ class LHTaskWorker:
 
     async def start(self) -> None:
         """Starts polling for and executing tasks."""
-        self._log.info(f"Starting worker '{self._task.task_name}'")
+        self._log.info(f"Starting worker '{self._task_def_name}'")
+
+        # get the task definition from the server
+        stub = self._config.stub()
+        reply: TaskDef = stub.GetTaskDef(
+            TaskDefId(name=self._task_def_name), timeout=GRPC_UNARY_CALL_TIMEOUT_SECONDS
+        )
+        self._task = LHTask(self._callable, reply)
 
         await self._heartbeat()
 
@@ -585,6 +615,24 @@ class LHTaskWorker:
 
         for connection in self._connections.values():
             connection.stop()
+
+    def register_task_def(self) -> None:
+        _create_task_def(self._callable, self._task_def_name, self._config)
+
+
+def _create_task_def(
+    task: Callable[..., Any], name: str, config: LHConfig, timeout: Optional[int] = None
+) -> None:
+    stub = config.stub()
+    task_signature = signature(task)
+    input_vars = [
+        VariableDef(name=param.name, type=to_variable_type(param.annotation))
+        for param in task_signature.parameters.values()
+        if param.annotation is not WorkerContext
+    ]
+    request = PutTaskDefRequest(name=name, input_vars=input_vars)
+    stub.PutTaskDef(request, timeout=timeout)
+    logging.info(f"TaskDef {name} was created:\n{MessageToJson(request)}")
 
 
 def shutdown_hook(*workers: LHTaskWorker) -> None:

@@ -10,12 +10,12 @@ public class ObjectIdScanBoundaryStrategy implements SearchScanBoundaryStrategy 
     private String startKey;
     private String endKey;
 
-    private String objectId;
+    private String partitionKey;
 
-    public ObjectIdScanBoundaryStrategy(String objectId, String startKey, String endKey) {
+    public ObjectIdScanBoundaryStrategy(String partitionKey, String startKey, String endKey) {
         this.startKey = startKey;
         this.endKey = endKey;
-        this.objectId = objectId;
+        this.partitionKey = partitionKey;
     }
 
     @Override
@@ -28,11 +28,11 @@ public class ObjectIdScanBoundaryStrategy implements SearchScanBoundaryStrategy 
 
     @Override
     public String getSearchAttributeString() {
-        return objectId;
+        return partitionKey;
     }
 
     public static ObjectIdScanBoundaryStrategy from(WfRunIdModel wfRunId) {
-        return new ObjectIdScanBoundaryStrategy(wfRunId.toString(), wfRunId + "/", wfRunId + "/~");
+        return new ObjectIdScanBoundaryStrategy(wfRunId.getPartitionKey().get(), wfRunId + "/", wfRunId + "/~");
     }
 
     public static ObjectIdScanBoundaryStrategy prefixMetadataScan() {

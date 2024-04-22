@@ -1,21 +1,16 @@
 package io.littlehorse.test.internal;
 
-import com.google.protobuf.Empty;
-import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import java.io.IOException;
-import java.time.Duration;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.admin.NewTopic;
-import org.awaitility.Awaitility;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -23,36 +18,25 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
 
     private LHConfig workerConfig;
     private LittleHorseBlockingStub client;
-    private LittleHorseBlockingStub anonymousClient;
 
     private KafkaContainer kafka;
     private KafkaStreamsServerImpl server;
 
     public StandaloneTestBootstrapper() {
-        this(null);
-    }
-
-    public StandaloneTestBootstrapper(PrincipalIdModel principalId) {
         try {
-            setup(principalId);
+            setup();
         } catch (Exception e) {
             throw new LHTestInitializationException(e);
         }
     }
 
-    public void setup(PrincipalIdModel principalId) throws Exception {
+    public void setup() throws Exception {
         kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.0"));
         kafka.start();
         workerConfig = new LHConfig(testClientProperties());
-        anonymousClient = workerConfig.getBlockingStub();
-        if (principalId != null) {
-            client = workerConfig
-                    .getBlockingStub()
-                    .withCallCredentials(
-                            new MockCallCredentials(principalId, new TenantIdModel(workerConfig.getTenantId())));
-        } else {
-            client = anonymousClient;
-        }
+        client = workerConfig
+                .getBlockingStub()
+                .withCallCredentials(new MockCallCredentials(new TenantIdModel(workerConfig.getTenantId())));
         startServer();
     }
 
@@ -82,15 +66,6 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
                     }
                 })
                 .start();
-
-        // wait until the server is up
-        Awaitility.await()
-                .atMost(Duration.ofSeconds(30))
-                .ignoreException(StatusRuntimeException.class)
-                .until(() -> {
-                    client.whoami(Empty.getDefaultInstance());
-                    return true;
-                });
     }
 
     @Override
@@ -101,11 +76,6 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
     @Override
     public LittleHorseBlockingStub getLhClient() {
         return client;
-    }
-
-    @Override
-    public LittleHorseBlockingStub getAnonymousClient() {
-        return anonymousClient;
     }
 
     private Properties testClientProperties() {

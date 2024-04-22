@@ -17,6 +17,7 @@ import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTETas
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
@@ -103,12 +104,13 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
         log.info("Scheduling a one-off task for wfRun {} due to UserTask", wfRunId);
 
         try {
-            List<VarNameAndValModel> inputVars = taskToSchedule.assignInputVars(thread);
+            List<VarNameAndValModel> inputVars = taskToSchedule.assignInputVars(thread, executionContext);
             TaskRunIdModel taskRunId = new TaskRunIdModel(wfRunId, executionContext);
-            TaskDefIdModel id = taskToSchedule.getTaskDef(thread).getId();
+            TaskDefModel taskDef = taskToSchedule.getTaskDef(thread, executionContext);
+            TaskDefIdModel id = taskDef.getId();
 
-            ScheduledTaskModel toSchedule = new ScheduledTaskModel(
-                    taskToSchedule.getTaskDef(thread).getObjectId(), inputVars, userTaskRun, executionContext);
+            ScheduledTaskModel toSchedule =
+                    new ScheduledTaskModel(taskDef.getObjectId(), inputVars, userTaskRun, executionContext);
             toSchedule.setTaskRunId(taskRunId);
 
             TaskRunModel taskRun = new TaskRunModel(

@@ -7,7 +7,7 @@ import lombok.Getter;
  * Thrown to indicate that a Task method reached a client specific error.
  */
 @Getter
-public class LHTaskException extends Exception {
+public class LHTaskException extends RuntimeException {
 
     private final String name;
     private final VariableValue content;

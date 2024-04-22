@@ -221,6 +221,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.SearchExternalEventDefRequest.SerializeToString,
                 response_deserializer=service__pb2.ExternalEventDefIdList.FromString,
                 )
+        self.SearchTenant = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchTenant',
+                request_serializer=service__pb2.SearchTenantRequest.SerializeToString,
+                response_deserializer=service__pb2.TenantIdList.FromString,
+                )
         self.RegisterTaskWorker = channel.unary_unary(
                 '/littlehorse.LittleHorse/RegisterTaskWorker',
                 request_serializer=service__pb2.RegisterTaskWorkerRequest.SerializeToString,
@@ -616,7 +621,14 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def SearchExternalEventDef(self, request, context):
-        """Search for ExteranlEventDef's.
+        """Search for ExternalEventDef's.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SearchTenant(self, request, context):
+        """Search for all available TenantIds for current Principal
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -950,6 +962,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.SearchExternalEventDef,
                     request_deserializer=service__pb2.SearchExternalEventDefRequest.FromString,
                     response_serializer=service__pb2.ExternalEventDefIdList.SerializeToString,
+            ),
+            'SearchTenant': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchTenant,
+                    request_deserializer=service__pb2.SearchTenantRequest.FromString,
+                    response_serializer=service__pb2.TenantIdList.SerializeToString,
             ),
             'RegisterTaskWorker': grpc.unary_unary_rpc_method_handler(
                     servicer.RegisterTaskWorker,
@@ -1711,6 +1728,23 @@ class LittleHorse(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchExternalEventDef',
             service__pb2.SearchExternalEventDefRequest.SerializeToString,
             service__pb2.ExternalEventDefIdList.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SearchTenant(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchTenant',
+            service__pb2.SearchTenantRequest.SerializeToString,
+            service__pb2.TenantIdList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

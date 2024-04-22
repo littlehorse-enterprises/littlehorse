@@ -16,17 +16,19 @@ public final class ServerFilterRules {
             accept("kafka_stream_state_bytes"),
             accept("kafka_stream_state_total_sst"),
             accept("kafka_stream_state_live_sst"),
+            accept("kafka_stream_state_put_latency"),
+            accept("kafka_stream_state_get_latency"),
             accept("kafka_consumer_coordinator_rebalance"),
             accept("kafka_producer_request"),
             accept("kafka_producer_outgoing_byte"),
             accept("kafka_producer_record_error"),
-            accept("kafka_stream_state"),
+            deny("kafka_stream_state"),
             deny("kafka_stream_task"),
             deny("kafka_stream_processor"),
             deny("kafka_producer"),
             deny("kafka_consumer"),
             deny("kafka_admin"),
-            deny("lh_cache_size"));
+            accept("lh_cache_size"));
 
     public static ServerFilterRule accept(String prefix) {
         return new ServerFilterRule(prefix, MeterFilterReply.ACCEPT);

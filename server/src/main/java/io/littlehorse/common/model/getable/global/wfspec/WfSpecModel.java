@@ -67,7 +67,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
     // Internal, not related to Proto.
     private Map<String, String> varToThreadSpec = new HashMap<>();
     private boolean initializedVarToThreadSpec = false;
-    private ExecutionContext executionContext;
+    private MetadataCommandExecution executionContext;
 
     public WfSpecModel() {
         // default constructor used by LHDeserializers
@@ -179,7 +179,6 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
             retentionPolicy =
                     LHSerializable.fromProto(proto.getRetentionPolicy(), WorkflowRetentionPolicyModel.class, context);
         }
-        this.executionContext = context;
 
         for (ThreadVarDef tvd : proto.getFrozenVariablesList()) {
             ThreadVarDefModel tvdm = LHSerializable.fromProto(tvd, ThreadVarDefModel.class, context);
@@ -233,7 +232,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         for (Map.Entry<String, ThreadSpecModel> e : threadSpecs.entrySet()) {
             ThreadSpecModel ts = e.getValue();
             try {
-                ts.validate();
+                ts.validate(ctx);
             } catch (LHApiException exn) {
                 throw exn.getCopyWithPrefix("Thread " + ts.name);
             }

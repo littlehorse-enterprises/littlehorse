@@ -1,17 +1,15 @@
-package io.littlehorse.canary.prometheus;
+package io.littlehorse.canary.aggregator.internal;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import io.littlehorse.canary.proto.MetricKey;
-import io.littlehorse.canary.util.Shutdown;
+import io.littlehorse.canary.proto.MetricValue;
+import io.littlehorse.canary.util.ShutdownHook;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tags;
+import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.binder.MeterBinder;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -25,30 +23,32 @@ import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 @Slf4j
-public class PrometheusMetricStoreExporter implements MeterBinder {
+public class MetricStoreExporter implements MeterBinder {
 
     private final KafkaStreams kafkaStreams;
     private final String storeName;
     private final Map<MetricKey, PrometheusMetric> currentMeters;
 
-    public PrometheusMetricStoreExporter(final KafkaStreams kafkaStreams, final String storeName) {
+    public MetricStoreExporter(final KafkaStreams kafkaStreams, final String storeName) {
         this.kafkaStreams = kafkaStreams;
         this.storeName = storeName;
         currentMeters = new HashMap<>();
     }
 
-    private static Tags toTags(final MetricKey key) {
-        return Tags.of(
-                "server",
-                "%s:%s".formatted(key.getServerHost(), key.getServerPort()),
-                "server_version",
-                key.getServerVersion());
+    private static List<Tag> toTags(final MetricKey key) {
+        final List<Tag> tags = new ArrayList<>();
+        tags.add(Tag.of("server", "%s:%s".formatted(key.getServerHost(), key.getServerPort())));
+        tags.add(Tag.of("server_version", key.getServerVersion()));
+        tags.addAll(key.getTagsList().stream()
+                .map(tag -> Tag.of(tag.getKey(), tag.getValue()))
+                .toList());
+        return tags;
     }
 
     @Override
     public void bindTo(final MeterRegistry registry) {
         final ScheduledExecutorService mainExecutor = Executors.newSingleThreadScheduledExecutor();
-        Shutdown.addShutdownHook("Latency Metrics Exporter", () -> {
+        ShutdownHook.add("Latency Metrics Exporter", () -> {
             mainExecutor.shutdownNow();
             mainExecutor.awaitTermination(1, TimeUnit.SECONDS);
         });
@@ -63,26 +63,26 @@ public class PrometheusMetricStoreExporter implements MeterBinder {
             return;
         }
 
-        final ReadOnlyKeyValueStore<MetricKey, Double> store = kafkaStreams.store(
+        final ReadOnlyKeyValueStore<MetricKey, MetricValue> store = kafkaStreams.store(
                 StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore()));
 
         final Set<MetricKey> foundMetrics = new HashSet<>();
 
-        try (KeyValueIterator<MetricKey, Double> records = store.all()) {
+        try (KeyValueIterator<MetricKey, MetricValue> records = store.all()) {
             while (records.hasNext()) {
-                final KeyValue<MetricKey, Double> record = records.next();
+                final KeyValue<MetricKey, MetricValue> record = records.next();
                 foundMetrics.add(record.key);
 
                 final PrometheusMetric current = currentMeters.get(record.key);
                 if (current == null) {
-                    final AtomicDouble newMeter = new AtomicDouble(record.value);
+                    final AtomicDouble newMeter = new AtomicDouble(record.value.getValue());
                     final Meter.Id meterId = Gauge.builder(record.key.getId(), newMeter, AtomicDouble::get)
                             .tags(toTags(record.key))
                             .register(registry)
                             .getId();
                     currentMeters.put(record.key, new PrometheusMetric(meterId, newMeter));
                 } else {
-                    current.meter.set(record.value);
+                    current.meter.set(record.value.getValue());
                 }
             }
         }

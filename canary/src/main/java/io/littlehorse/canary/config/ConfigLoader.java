@@ -1,5 +1,6 @@
 package io.littlehorse.canary.config;
 
+import com.google.common.collect.Streams;
 import io.smallrye.config.PropertiesConfigSource;
 import io.smallrye.config.SmallRyeConfig;
 import io.smallrye.config.SmallRyeConfigBuilder;
@@ -8,7 +9,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Properties;
-import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.eclipse.microprofile.config.Config;
 
 public class ConfigLoader {
@@ -72,10 +74,9 @@ public class ConfigLoader {
     }
 
     private static Map<String, Object> toMap(final Config config) {
-        final Map<String, Object> configs = new TreeMap<>();
-        for (String key : config.getPropertyNames()) {
-            configs.put(key, config.getOptionalValue(key, String.class).orElse(""));
-        }
-        return configs;
+        return Streams.stream(config.getPropertyNames())
+                .collect(Collectors.toUnmodifiableMap(
+                        Function.identity(),
+                        key -> config.getOptionalValue(key, String.class).orElse("")));
     }
 }

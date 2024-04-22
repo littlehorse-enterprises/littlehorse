@@ -26,13 +26,25 @@ import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
-import io.littlehorse.common.proto.*;
+import io.littlehorse.common.proto.BookmarkPb;
+import io.littlehorse.common.proto.GetObjectRequest;
+import io.littlehorse.common.proto.GetObjectResponse;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse;
+import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
+import io.littlehorse.common.proto.InternalScanResponse;
+import io.littlehorse.common.proto.InternalWaitForWfEventRequest;
+import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsStub;
+import io.littlehorse.common.proto.PartitionBookmarkPb;
+import io.littlehorse.common.proto.ScanResultTypePb;
+import io.littlehorse.common.proto.WaitForCommandRequest;
+import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
@@ -110,7 +122,7 @@ public class BackendInternalComms implements Closeable {
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
     private final Context.Key<RequestExecutionContext> contextKey;
-    private final Pattern objectIdExtractorPattern = Pattern.compile("[0-9]+/[0-9]+/");
+    private final Pattern tenantScopedObjectIdExtractorPattern = Pattern.compile("[0-9]+/[0-9]+/");
     private final MetadataCache metadataCache;
 
     public BackendInternalComms(
@@ -684,7 +696,6 @@ public class BackendInternalComms implements Closeable {
         }
         String bookmarkKey = null;
         boolean brokenBecauseOutOfData = true;
-
         try (LHKeyValueIterator<?> iter =
                 store.range(startKey, StoredGetable.getRocksDBKey(endKey, req.getObjectType()), StoredGetable.class)) {
 
@@ -735,14 +746,16 @@ public class BackendInternalComms implements Closeable {
 
             // TODO: This is a leaky abstraction.
             String storeableKey = next.getKey();
-            Matcher matcher = objectIdExtractorPattern.matcher(storeableKey);
+            Matcher matcher = tenantScopedObjectIdExtractorPattern.matcher(storeableKey);
             if (matcher.find()) {
                 int prefixEndIndex = matcher.end(0);
                 String objectIdStr = storeableKey.substring(prefixEndIndex);
                 return ByteString.copyFrom(
                         ObjectIdModel.fromString(objectIdStr, idCls).toBytes());
             } else {
-                throw new IllegalStateException("Invalid object id");
+                // search for global getables
+                return ByteString.copyFrom(ObjectIdModel.fromString(storeableKey.split("/")[1], idCls)
+                        .toBytes());
             }
         } else {
             throw new RuntimeException("Impossible: unknown result type");
