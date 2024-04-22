@@ -128,7 +128,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
 
         // This is so that we can delete it in the cleanup() method.
         client.stopWfRun(StopWfRunRequest.newBuilder()
-                .setWfRunId(LHLibUtil.wfRunId(wfRunId))
+                .setWfRunId(LHLibUtil.wfRunIdFromString(wfRunId))
                 .setThreadRunNumber(0)
                 .build());
         return wfRunId;
