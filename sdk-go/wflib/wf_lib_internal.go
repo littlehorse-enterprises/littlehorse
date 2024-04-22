@@ -558,6 +558,94 @@ func (n *NodeOutput) jsonPathImpl(path string) NodeOutput {
 	}
 }
 
+func (n *NodeOutput) handleExceptionOnChild(handler ThreadFunc, exceptionName *string) {
+	n.thread.checkIfIsActive()
+	node := n.thread.spec.Nodes[n.nodeName]
+	if node.GetWaitForThreads() == nil {
+		n.thread.throwError(errors.New("can only call handleExceptionOnChild on WaitForThreads Node"))
+	}
+
+	var threadName string
+	if exceptionName != nil {
+		threadName = "exn-handler-" + n.nodeName + "-" + *exceptionName
+	} else {
+		threadName = "exn-handler-" + n.nodeName
+	}
+	threadName = n.thread.wf.addSubThread(threadName, handler)
+
+	var failureHandler *model.FailureHandlerDef
+	if exceptionName != nil {
+		failureHandler = &model.FailureHandlerDef{
+			HandlerSpecName: threadName,
+			FailureToCatch: &model.FailureHandlerDef_SpecificFailure{
+				SpecificFailure: *exceptionName,
+			},
+		}
+	} else {
+		failureHandler = &model.FailureHandlerDef{
+			HandlerSpecName: threadName,
+			FailureToCatch: &model.FailureHandlerDef_AnyFailureOfType{
+				AnyFailureOfType: model.FailureHandlerDef_FAILURE_TYPE_EXCEPTION,
+			},
+		}
+	}
+	node.GetWaitForThreads().PerThreadFailureHandlers = append(
+		node.GetWaitForThreads().PerThreadFailureHandlers, failureHandler)
+	common.PrintProto(node)
+}
+
+func (n *NodeOutput) handleErrorOnChild(handler ThreadFunc, errorName *string) {
+	n.thread.checkIfIsActive()
+	node := n.thread.spec.Nodes[n.nodeName]
+	if node.GetWaitForThreads() == nil {
+		n.thread.throwError(errors.New("can only call handleErrorOnChild on WaitForThreads Node"))
+	}
+
+	var threadName string
+	if errorName != nil {
+		threadName = "error-handler-" + n.nodeName + "-" + *errorName
+	} else {
+		threadName = "error-handler-" + n.nodeName
+	}
+	threadName = n.thread.wf.addSubThread(threadName, handler)
+
+	var failureHandler *model.FailureHandlerDef
+	if errorName != nil {
+		failureHandler = &model.FailureHandlerDef{
+			HandlerSpecName: threadName,
+			FailureToCatch: &model.FailureHandlerDef_SpecificFailure{
+				SpecificFailure: *errorName,
+			},
+		}
+	} else {
+		failureHandler = &model.FailureHandlerDef{
+			HandlerSpecName: threadName,
+			FailureToCatch: &model.FailureHandlerDef_AnyFailureOfType{
+				AnyFailureOfType: model.FailureHandlerDef_FAILURE_TYPE_ERROR,
+			},
+		}
+	}
+	node.GetWaitForThreads().PerThreadFailureHandlers = append(
+		node.GetWaitForThreads().PerThreadFailureHandlers, failureHandler)
+}
+
+func (n *NodeOutput) handleAnyFailureOnChild(handler ThreadFunc) {
+	n.thread.checkIfIsActive()
+	node := n.thread.spec.Nodes[n.nodeName]
+	if node.GetWaitForThreads() == nil {
+		n.thread.throwError(errors.New("can only call handleErrorOnChild on WaitForThreads Node"))
+	}
+
+	threadName := "failure-handler-" + n.nodeName + "-ANY_FAILURE"
+	threadName = n.thread.wf.addSubThread(threadName, handler)
+
+	failureHandler := &model.FailureHandlerDef{
+		HandlerSpecName: threadName,
+	}
+	node.GetWaitForThreads().PerThreadFailureHandlers = append(
+		node.GetWaitForThreads().PerThreadFailureHandlers, failureHandler)
+}
+
 func (t *WorkflowThread) throwError(e error) {
 	// For now, we just panic, since it provides a way to get a stacktrace.
 	// In the future, we'll do more clean things and try to find out how to
@@ -896,7 +984,7 @@ func (t *WorkflowThread) spawnThread(
 
 func (t *WorkflowThread) waitForThreads(s ...*SpawnedThread) *NodeOutput {
 	t.checkIfIsActive()
-	nodeName, node := t.createBlankNode("wait", "WAIT_THREADS")
+	nodeName, node := t.createBlankNode("threads", "WAIT_FOR_THREADS")
 	node.Node = &model.Node_WaitForThreads{
 		WaitForThreads: &model.WaitForThreadsNode{
 			ThreadsToWaitFor: &model.WaitForThreadsNode_Threads{

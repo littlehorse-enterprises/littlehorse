@@ -90,6 +90,18 @@ func (n *NodeOutput) JsonPath(path string) NodeOutput {
 	return n.jsonPathImpl(path)
 }
 
+func (n *NodeOutput) HandleExceptionOnChild(handler ThreadFunc, exceptionName *string) {
+	n.handleExceptionOnChild(handler, exceptionName)
+}
+
+func (n *NodeOutput) HandleErrorOnChild(handler ThreadFunc, errorName *string) {
+	n.handleErrorOnChild(handler, errorName)
+}
+
+func (n *NodeOutput) HandleAnyFailureOnChild(handler ThreadFunc) {
+	n.handleAnyFailureOnChild(handler)
+}
+
 func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
 	return w.jsonPathImpl(path)
 }
