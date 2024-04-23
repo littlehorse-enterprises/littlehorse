@@ -227,7 +227,14 @@ public class BackendInternalComms implements Closeable {
     }
 
     public void waitForCommand(AbstractCommand<?> command, StreamObserver<WaitForCommandResponse> observer) {
-        KeyQueryMetadata meta = lookupPartitionKey(ServerTopology.CORE_STORE, command.getPartitionKey());
+        String storeName =
+                switch (command.getStore()) {
+                    case CORE -> ServerTopology.CORE_STORE;
+                    case METADATA -> ServerTopology.METADATA_STORE;
+                    case REPARTITION -> ServerTopology.CORE_REPARTITION_STORE;
+                    case UNRECOGNIZED -> throw new LHApiException(Status.INTERNAL);
+                };
+        KeyQueryMetadata meta = lookupPartitionKey(storeName, command.getPartitionKey());
 
         /*
          * As a prerequisite to this method being called, the command has already
