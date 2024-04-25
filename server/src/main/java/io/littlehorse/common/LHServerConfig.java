@@ -808,7 +808,7 @@ public class LHServerConfig extends ConfigBase {
                 getOrSetDefault(LHServerConfig.INTERNAL_ADVERTISED_HOST_KEY, "localhost") + ":"
                         + this.getInternalAdvertisedPort());
 
-        props.put("__state.updater.enabled__", true);
+        props.put("__state.updater.enabled__", false);
         props.put("bootstrap.servers", this.getBootstrapServers());
         props.put("client.id", this.getClientId());
         props.put("state.dir", getStateDirectory());
