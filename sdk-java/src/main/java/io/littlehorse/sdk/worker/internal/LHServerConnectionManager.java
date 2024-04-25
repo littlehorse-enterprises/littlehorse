@@ -109,7 +109,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
             log.debug("Scheduled task on threadpool for wfRun {}", wfRunId);
         } else {
             this.workerSemaphore.release();
-            log.error("Didn't successfully claim task, likely due to server restart.");
+            log.info("Didn't successfully claim task, likely due to server restart.");
         }
     }
 
