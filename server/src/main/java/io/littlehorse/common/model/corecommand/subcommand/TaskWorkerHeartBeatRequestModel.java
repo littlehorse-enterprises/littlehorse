@@ -56,7 +56,7 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
 
     @Override
     public RegisterTaskWorkerResponse process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        log.debug("Processing a heartbeat");
+        log.info("Processing a heartbeat");
         GetableManager getableManager = executionContext.getableManager();
         // Get the group, a group contains all the task worker for that specific task
         TaskWorkerGroupModel taskWorkerGroup = getableManager.get(new TaskWorkerGroupIdModel(taskDefId));
@@ -80,10 +80,18 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
             taskWorker.taskWorkerId = clientId;
             taskWorkerGroup.taskWorkers.put(clientId, taskWorker);
         }
-
+        Set<HostModel> internalHosts = executionContext.getInternalHosts();
+        log.info("there are %s workers registered and %s server instances"
+                .formatted(taskWorkerGroup.taskWorkers.size(), internalHosts.size()));
         // Run assignor
-        assignor.assign(executionContext.getInternalHosts(), taskWorkerGroup.taskWorkers.values());
-
+        assignor.assign(internalHosts, taskWorkerGroup.taskWorkers.values());
+        Set<String> assignedHosts = taskWorkerGroup.taskWorkers.values().stream()
+                .flatMap(taskWorkerMetadataModel -> taskWorkerMetadataModel.hosts.stream())
+                .map(HostModel::getKey)
+                .collect(Collectors.toSet());
+        if (internalHosts.size() != assignedHosts.size()) {
+            log.error("Ok, unbalanced assignment");
+        }
         // Update the latest heartbeat with the current timestamp
         taskWorker.latestHeartbeat = new Date();
 

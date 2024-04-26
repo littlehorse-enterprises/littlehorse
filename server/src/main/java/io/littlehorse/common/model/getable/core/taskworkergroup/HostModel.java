@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Objects;
 
 public class HostModel extends LHSerializable<LHHostInfo> implements Comparable<HostModel> {
 
@@ -45,22 +46,14 @@ public class HostModel extends LHSerializable<LHHostInfo> implements Comparable<
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        final HostModel hostInfo = (HostModel) o;
-        return port == hostInfo.port && host.equals(hostInfo.host);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof HostModel hostModel)) return false;
+        return port == hostModel.port && Objects.equals(host, hostModel.host);
     }
 
     @Override
     public int hashCode() {
-        int result = host.hashCode();
-        result = 31 * result + port;
-        return result;
+        return Objects.hash(host, port);
     }
 }

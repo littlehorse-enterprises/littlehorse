@@ -3,12 +3,8 @@ package io.littlehorse.server.monitoring.metrics;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
-import java.io.Closeable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
@@ -16,13 +12,12 @@ import org.apache.kafka.streams.TaskMetadata;
 import org.apache.kafka.streams.ThreadMetadata;
 
 @Slf4j
-public class InstanceState implements MeterBinder, Closeable, KafkaStreams.StateListener {
+public class InstanceState implements MeterBinder, KafkaStreams.StateListener {
     private final KafkaStreams streams;
 
     @Getter
     private KafkaStreams.State currentState;
 
-    private final ScheduledExecutorService mainExecutor;
     private static final String METRIC_NAME = "active_tasks_count";
 
     @Getter
@@ -30,7 +25,6 @@ public class InstanceState implements MeterBinder, Closeable, KafkaStreams.State
 
     public InstanceState(KafkaStreams streams) {
         this.streams = streams;
-        mainExecutor = Executors.newSingleThreadScheduledExecutor();
     }
 
     @Override
@@ -49,16 +43,6 @@ public class InstanceState implements MeterBinder, Closeable, KafkaStreams.State
                             return value.get(ServerTopologyDescriptor.TIMER.topologyName);
                         })
                 .register(registry);
-    }
-
-    @Override
-    public void close() {
-        try {
-            mainExecutor.shutdownNow();
-            mainExecutor.awaitTermination(1, TimeUnit.SECONDS);
-        } catch (Exception ex) {
-            log.warn("Error when closing meter {}", ex.getMessage(), ex);
-        }
     }
 
     @Override
