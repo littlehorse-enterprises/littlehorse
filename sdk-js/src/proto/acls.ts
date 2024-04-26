@@ -545,7 +545,7 @@ export const PutPrincipalRequest = {
     if (message.globalAcls !== undefined) {
       ServerACLs.encode(message.globalAcls, writer.uint32(26).fork()).ldelim();
     }
-    if (message.overwrite === true) {
+    if (message.overwrite !== false) {
       writer.uint32(40).bool(message.overwrite);
     }
     return writer;

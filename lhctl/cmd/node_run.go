@@ -62,22 +62,43 @@ var getNodeRunCmd = &cobra.Command{
 }
 
 var listNodeRunCmd = &cobra.Command{
-	Use:   "nodeRun <wfRunId>",
+	Use:   "nodeRun <wfRunId> <threadRunNumber>",
 	Short: "List all NodeRun's for a given WfRun Id.",
+	Args: func(cmd *cobra.Command, args []string) error {
+		if err := cobra.MinimumNArgs(1)(cmd, args); err != nil {
+			return err
+		}
+
+		if err := cobra.MaximumNArgs(2)(cmd, args); err != nil {
+			return err
+		}
+
+		return nil
+	},
 	Long: `
 Lists all NodeRun's for a given WfRun Id.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		// bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
-		// limit, _ := cmd.Flags().GetInt32("limit")
+		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
+		limit, _ := cmd.Flags().GetInt32("limit")
 
-		if len(args) != 1 {
-			log.Fatal("Must provide one arg: the WfRun ID!")
-		}
 		wfRunIdStr := args[0]
+		var trn int
 
+		if len(args) == 2 {
+			threadNumber, err := strconv.Atoi(args[1])
+			if err != nil {
+				log.Fatal("Couldn't convert threadRunNumber to int.")
+			}
+			trn = threadNumber
+		}
+
+		threadRunNumber := int32(trn)
 		req := &model.ListNodeRunsRequest{
-			WfRunId: common.StrToWfRunId(wfRunIdStr),
+			WfRunId:         common.StrToWfRunId(wfRunIdStr),
+			ThreadRunNumber: &threadRunNumber,
+			Bookmark:        bookmark,
+			Limit:           &limit,
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListNodeRuns(
