@@ -8,7 +8,7 @@ import { useModal } from '../../../hooks/useModal'
 import { Modals } from '../../../components/Modals'
 
 export const WfRun: FC<WfRunResponse> = ({ wfRun, wfSpec, nodeRuns }) => {
-  const {modal, showModal} = useModal()
+  const { modal, showModal } = useModal()
   return (
     <>
       <Navigation

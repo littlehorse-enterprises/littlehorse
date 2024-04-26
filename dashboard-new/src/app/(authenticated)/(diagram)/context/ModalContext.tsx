@@ -1,7 +1,6 @@
-import { TaskRun } from "littlehorse-client/dist/proto/task_run";
-import { Dispatch, SetStateAction, createContext } from "react";
-import { ModalType } from "../components/Modals";
-
+import { TaskRun } from 'littlehorse-client/dist/proto/task_run'
+import { Dispatch, SetStateAction, createContext } from 'react'
+import { ModalType } from '../components/Modals'
 
 export type Modal = {
   type: ModalType

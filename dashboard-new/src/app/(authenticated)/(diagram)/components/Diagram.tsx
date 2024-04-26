@@ -54,6 +54,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
 
   return (
     <ThreadProvider value={{ thread, setThread }}>
+      <ThreadPanel spec={spec} wfRun={wfRun} />
       <div className="mb-4 min-h-[800px] min-w-full rounded border-2 border-slate-100 bg-slate-50 shadow-inner">
         <ReactFlow
           nodes={nodes}
@@ -66,7 +67,6 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
           snapToGrid={true}
           className="min-h-[800px] min-w-full bg-slate-50"
         >
-          <ThreadPanel spec={spec} wfRun={wfRun} />
           <Controls />
         </ReactFlow>
         <Layouter nodeRuns={threadNodeRuns} />
