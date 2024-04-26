@@ -4,6 +4,8 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import java.io.Closeable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -24,7 +26,7 @@ public class InstanceState implements MeterBinder, Closeable, KafkaStreams.State
     private static final String METRIC_NAME = "active_tasks_count";
 
     @Getter
-    private int currentAssignedTasks;
+    private Map<String, Integer> activeTaskPerPartition = new HashMap<>();
 
     public InstanceState(KafkaStreams streams) {
         this.streams = streams;
@@ -34,7 +36,19 @@ public class InstanceState implements MeterBinder, Closeable, KafkaStreams.State
     @Override
     public void bindTo(MeterRegistry registry) {
         log.info("registering metric " + METRIC_NAME);
-        Gauge.builder(METRIC_NAME, () -> currentAssignedTasks).register(registry);
+        activeTaskPerPartition.put(ServerTopologyDescriptor.CORE.topologyName, 0);
+        activeTaskPerPartition.put(ServerTopologyDescriptor.TIMER.topologyName, 0);
+        Gauge.builder(METRIC_NAME + "_" + ServerTopologyDescriptor.CORE.topologyName, activeTaskPerPartition, value -> {
+                    return value.get(ServerTopologyDescriptor.CORE.topologyName);
+                })
+                .register(registry);
+        Gauge.builder(
+                        METRIC_NAME + "_" + ServerTopologyDescriptor.TIMER.topologyName,
+                        activeTaskPerPartition,
+                        value -> {
+                            return value.get(ServerTopologyDescriptor.TIMER.topologyName);
+                        })
+                .register(registry);
     }
 
     @Override
@@ -50,12 +64,37 @@ public class InstanceState implements MeterBinder, Closeable, KafkaStreams.State
     @Override
     public void onChange(KafkaStreams.State newState, KafkaStreams.State oldState) {
         this.currentState = newState;
-        currentAssignedTasks = 0;
+        activeTaskPerPartition.put(ServerTopologyDescriptor.TIMER.topologyName, 0);
+        activeTaskPerPartition.put(ServerTopologyDescriptor.CORE.topologyName, 0);
         for (ThreadMetadata metadataForLocalThread : streams.metadataForLocalThreads()) {
             for (TaskMetadata activeTask : metadataForLocalThread.activeTasks()) {
-                log.info(activeTask.taskId().toString());
+                ServerTopologyDescriptor descriptor =
+                        getDescriptor(activeTask.taskId().subtopology());
+                if (descriptor != null) {
+                    int currentCount = activeTaskPerPartition.get(descriptor.topologyName);
+                    activeTaskPerPartition.put(descriptor.topologyName, ++currentCount);
+                }
             }
-            currentAssignedTasks += metadataForLocalThread.activeTasks().size();
+        }
+    }
+
+    private ServerTopologyDescriptor getDescriptor(int id) {
+        return switch (id) {
+            case 1 -> ServerTopologyDescriptor.CORE;
+            case 2 -> ServerTopologyDescriptor.TIMER;
+            default -> null;
+        };
+    }
+
+    private enum ServerTopologyDescriptor {
+        CORE("core", 1),
+        TIMER("timer", 2);
+        private final String topologyName;
+        private final int id;
+
+        ServerTopologyDescriptor(String topologyName, int id) {
+            this.topologyName = topologyName;
+            this.id = id;
         }
     }
 }
