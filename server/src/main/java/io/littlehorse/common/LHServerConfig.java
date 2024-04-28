@@ -134,10 +134,10 @@ public class LHServerConfig extends ConfigBase {
     private Map<String, AuthorizationProtocol> listenersAuthorizationMap;
 
     // EXPERIMENTAL Internal configs. Should not be used by real users; only for testing.
-    public static final String PLO_KOON_USE_AT_LEAST_ONCE = "PLO_KOON_USE_AT_LEAST_ONCE";
-    public static final String PLO_KOON_USE_STATE_UPDATER = "PLO_KOON_USE_STATE_UPDATER";
-    public static final String PLO_KOON_LEAVE_GROUP_ON_SHUTDOWN = "PLO_KOON_LEAVE_GROUP_ON_SHUTDOWN";
-    public static final String PLO_KOON_USE_STATIC_MEMBERSHIP = "PLO_KOON_USE_STATIC_MEMBERSHIP";
+    public static final String X_USE_AT_LEAST_ONCE_KEY = "LHS_X_USE_AT_LEAST_ONCE";
+    public static final String X_USE_STATE_UPDATER_KEY = "LHS_X_USE_STATE_UPDATER";
+    public static final String X_LEAVE_GROUP_ON_SHUTDOWN_KEY = "LHS_X_LEAVE_GROUP_ON_SHUTDOWN";
+    public static final String X_USE_STATIC_MEMBERSHIP_KEY = "LHS_X_USE_STATIC_MEMBERSHIP";
 
     protected String[] getEnvKeyPrefixes() {
         return new String[] {"LHS_"};
@@ -744,14 +744,14 @@ public class LHServerConfig extends ConfigBase {
      * group on shutdown
      */
     public boolean leaveGroupOnShutdown() {
-        return getOrSetDefault(PLO_KOON_LEAVE_GROUP_ON_SHUTDOWN, "false").equals("true");
+        return getOrSetDefault(X_LEAVE_GROUP_ON_SHUTDOWN_KEY, "false").equals("true");
     }
 
     public Properties getCoreStreamsConfig() {
         Properties props = getBaseStreamsConfig();
         props.put("application.id", getKafkaGroupId("core"));
 
-        if (getOrSetDefault(PLO_KOON_USE_AT_LEAST_ONCE, "false").equals("true")) {
+        if (getOrSetDefault(X_USE_AT_LEAST_ONCE_KEY, "false").equals("true")) {
             log.warn("Using experimental override config to use at-least-once for Core topology");
             props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.AT_LEAST_ONCE);
         } else {
@@ -826,17 +826,17 @@ public class LHServerConfig extends ConfigBase {
     private Properties getBaseStreamsConfig() {
         Properties props = new Properties();
 
-        if (getOrSetDefault(PLO_KOON_LEAVE_GROUP_ON_SHUTDOWN, "false").equals("true")) {
+        if (getOrSetDefault(X_LEAVE_GROUP_ON_SHUTDOWN_KEY, "false").equals("true")) {
             log.warn("Using experimental internal config to leave group on shutdonw!");
             props.put(StreamsConfig.consumerPrefix("internal.leave.group.on.close"), true);
         }
 
-        if (getOrSetDefault(PLO_KOON_USE_STATE_UPDATER, "false").equals("true")) {
+        if (getOrSetDefault(X_USE_STATE_UPDATER_KEY, "false").equals("true")) {
             log.warn("Using experimental internal config to use State Updater!");
             props.put(StreamsConfig.InternalConfig.STATE_UPDATER_ENABLED, true);
         }
 
-        if (getOrSetDefault(PLO_KOON_USE_STATIC_MEMBERSHIP, "false").equals("true")) {
+        if (getOrSetDefault(X_USE_STATIC_MEMBERSHIP_KEY, "false").equals("true")) {
             log.warn("Using experimental internal config to enable static membership");
             props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, getLHInstanceId());
         }
