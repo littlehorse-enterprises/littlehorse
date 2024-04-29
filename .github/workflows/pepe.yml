@@ -5,9 +5,9 @@ on:
       -  chore/documentation-enhancements
 permissions:
   packages: write
-  contents: read
-jobs:
+  contents: write
 
+jobs:
   publish-documentation:
     name: Publish Documentation
     runs-on: ubuntu-latest
