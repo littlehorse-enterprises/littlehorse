@@ -90,7 +90,7 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
                 .map(HostModel::getKey)
                 .collect(Collectors.toSet());
         if (internalHosts.size() != assignedHosts.size()) {
-            log.error("Ok, unbalanced assignment");
+            log.warn("Unbalanced assignment for task " + taskDefId.getName());
         }
         // Update the latest heartbeat with the current timestamp
         taskWorker.latestHeartbeat = new Date();

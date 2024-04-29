@@ -39,9 +39,7 @@ public class InstanceState implements MeterBinder, KafkaStreams.StateListener {
         Gauge.builder(
                         METRIC_NAME + "_" + ServerTopologyDescriptor.TIMER.topologyName,
                         activeTaskPerPartition,
-                        value -> {
-                            return value.get(ServerTopologyDescriptor.TIMER.topologyName);
-                        })
+                        value -> value.get(ServerTopologyDescriptor.TIMER.topologyName))
                 .register(registry);
     }
 
