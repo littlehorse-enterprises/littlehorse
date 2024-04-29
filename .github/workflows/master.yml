@@ -7,7 +7,7 @@ on:
       - master
 permissions:
   packages: write
-  contents: read
+  contents: write
 jobs:
   publish-docker:
     uses: ./.github/workflows/publish-docker.yml
