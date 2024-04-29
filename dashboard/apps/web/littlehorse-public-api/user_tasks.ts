@@ -469,7 +469,7 @@ export const UserTaskField = {
     if (message.displayName !== "") {
       writer.uint32(34).string(message.displayName);
     }
-    if (message.required === true) {
+    if (message.required !== false) {
       writer.uint32(40).bool(message.required);
     }
     return writer;
@@ -550,7 +550,7 @@ export const UserTaskField = {
     if (message.displayName !== "") {
       obj.displayName = message.displayName;
     }
-    if (message.required === true) {
+    if (message.required !== false) {
       obj.required = message.required;
     }
     return obj;
@@ -902,7 +902,7 @@ export const AssignUserTaskRunRequest = {
     if (message.userTaskRunId !== undefined) {
       UserTaskRunId.encode(message.userTaskRunId, writer.uint32(10).fork()).ldelim();
     }
-    if (message.overrideClaim === true) {
+    if (message.overrideClaim !== false) {
       writer.uint32(16).bool(message.overrideClaim);
     }
     if (message.userGroup !== undefined) {
@@ -972,7 +972,7 @@ export const AssignUserTaskRunRequest = {
     if (message.userTaskRunId !== undefined) {
       obj.userTaskRunId = UserTaskRunId.toJSON(message.userTaskRunId);
     }
-    if (message.overrideClaim === true) {
+    if (message.overrideClaim !== false) {
       obj.overrideClaim = message.overrideClaim;
     }
     if (message.userGroup !== undefined) {

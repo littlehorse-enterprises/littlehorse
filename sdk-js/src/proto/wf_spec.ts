@@ -787,10 +787,10 @@ export const ThreadVarDef = {
     if (message.varDef !== undefined) {
       VariableDef.encode(message.varDef, writer.uint32(10).fork()).ldelim();
     }
-    if (message.required === true) {
+    if (message.required !== false) {
       writer.uint32(16).bool(message.required);
     }
-    if (message.searchable === true) {
+    if (message.searchable !== false) {
       writer.uint32(24).bool(message.searchable);
     }
     for (const v of message.jsonIndexes) {

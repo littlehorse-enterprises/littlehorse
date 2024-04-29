@@ -1368,7 +1368,7 @@ export const ExternalEventRun = {
     if (message.externalEventId !== undefined) {
       ExternalEventId.encode(message.externalEventId, writer.uint32(26).fork()).ldelim();
     }
-    if (message.timedOut === true) {
+    if (message.timedOut !== false) {
       writer.uint32(32).bool(message.timedOut);
     }
     return writer;
@@ -1440,7 +1440,7 @@ export const ExternalEventRun = {
     if (message.externalEventId !== undefined) {
       obj.externalEventId = ExternalEventId.toJSON(message.externalEventId);
     }
-    if (message.timedOut === true) {
+    if (message.timedOut !== false) {
       obj.timedOut = message.timedOut;
     }
     return obj;
@@ -1472,7 +1472,7 @@ export const SleepNodeRun = {
     if (message.maturationTime !== undefined) {
       Timestamp.encode(toTimestamp(message.maturationTime), writer.uint32(10).fork()).ldelim();
     }
-    if (message.matured === true) {
+    if (message.matured !== false) {
       writer.uint32(16).bool(message.matured);
     }
     return writer;
@@ -1520,7 +1520,7 @@ export const SleepNodeRun = {
     if (message.maturationTime !== undefined) {
       obj.maturationTime = message.maturationTime;
     }
-    if (message.matured === true) {
+    if (message.matured !== false) {
       obj.matured = message.matured;
     }
     return obj;
@@ -1558,7 +1558,7 @@ export const Failure = {
     if (message.content !== undefined) {
       VariableValue.encode(message.content, writer.uint32(26).fork()).ldelim();
     }
-    if (message.wasProperlyHandled === true) {
+    if (message.wasProperlyHandled !== false) {
       writer.uint32(32).bool(message.wasProperlyHandled);
     }
     if (message.failureHandlerThreadrunId !== undefined) {
@@ -1641,7 +1641,7 @@ export const Failure = {
     if (message.content !== undefined) {
       obj.content = VariableValue.toJSON(message.content);
     }
-    if (message.wasProperlyHandled === true) {
+    if (message.wasProperlyHandled !== false) {
       obj.wasProperlyHandled = message.wasProperlyHandled;
     }
     if (message.failureHandlerThreadrunId !== undefined) {

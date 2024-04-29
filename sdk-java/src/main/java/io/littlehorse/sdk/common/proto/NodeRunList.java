@@ -21,6 +21,7 @@ private static final long serialVersionUID = 0L;
   }
   private NodeRunList() {
     results_ = java.util.Collections.emptyList();
+    bookmark_ = com.google.protobuf.ByteString.EMPTY;
   }
 
   @java.lang.Override
@@ -43,6 +44,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.NodeRunList.class, io.littlehorse.sdk.common.proto.NodeRunList.Builder.class);
   }
 
+  private int bitField0_;
   public static final int RESULTS_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.NodeRun> results_;
@@ -104,6 +106,37 @@ private static final long serialVersionUID = 0L;
     return results_.get(index);
   }
 
+  public static final int BOOKMARK_FIELD_NUMBER = 2;
+  private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
+  /**
+   * <pre>
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   * </pre>
+   *
+   * <code>optional bytes bookmark = 2;</code>
+   * @return Whether the bookmark field is set.
+   */
+  @java.lang.Override
+  public boolean hasBookmark() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <pre>
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   * </pre>
+   *
+   * <code>optional bytes bookmark = 2;</code>
+   * @return The bookmark.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString getBookmark() {
+    return bookmark_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -121,6 +154,9 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < results_.size(); i++) {
       output.writeMessage(1, results_.get(i));
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeBytes(2, bookmark_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -133,6 +169,10 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < results_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, results_.get(i));
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBytesSize(2, bookmark_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -151,6 +191,11 @@ private static final long serialVersionUID = 0L;
 
     if (!getResultsList()
         .equals(other.getResultsList())) return false;
+    if (hasBookmark() != other.hasBookmark()) return false;
+    if (hasBookmark()) {
+      if (!getBookmark()
+          .equals(other.getBookmark())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -165,6 +210,10 @@ private static final long serialVersionUID = 0L;
     if (getResultsCount() > 0) {
       hash = (37 * hash) + RESULTS_FIELD_NUMBER;
       hash = (53 * hash) + getResultsList().hashCode();
+    }
+    if (hasBookmark()) {
+      hash = (37 * hash) + BOOKMARK_FIELD_NUMBER;
+      hash = (53 * hash) + getBookmark().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -308,6 +357,7 @@ private static final long serialVersionUID = 0L;
         resultsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
+      bookmark_ = com.google.protobuf.ByteString.EMPTY;
       return this;
     }
 
@@ -354,6 +404,12 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.NodeRunList result) {
       int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.bookmark_ = bookmark_;
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -426,6 +482,9 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
+      if (other.hasBookmark()) {
+        setBookmark(other.getBookmark());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -465,6 +524,11 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 10
+            case 18: {
+              bookmark_ = input.readBytes();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -792,6 +856,70 @@ private static final long serialVersionUID = 0L;
         results_ = null;
       }
       return resultsBuilder_;
+    }
+
+    private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * The bookmark can be used for cursor-based pagination. If it is null, the server
+     * has returned all results. If it is set, you can pass it into your next request
+     * to resume searching where your previous request left off.
+     * </pre>
+     *
+     * <code>optional bytes bookmark = 2;</code>
+     * @return Whether the bookmark field is set.
+     */
+    @java.lang.Override
+    public boolean hasBookmark() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <pre>
+     * The bookmark can be used for cursor-based pagination. If it is null, the server
+     * has returned all results. If it is set, you can pass it into your next request
+     * to resume searching where your previous request left off.
+     * </pre>
+     *
+     * <code>optional bytes bookmark = 2;</code>
+     * @return The bookmark.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getBookmark() {
+      return bookmark_;
+    }
+    /**
+     * <pre>
+     * The bookmark can be used for cursor-based pagination. If it is null, the server
+     * has returned all results. If it is set, you can pass it into your next request
+     * to resume searching where your previous request left off.
+     * </pre>
+     *
+     * <code>optional bytes bookmark = 2;</code>
+     * @param value The bookmark to set.
+     * @return This builder for chaining.
+     */
+    public Builder setBookmark(com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      bookmark_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The bookmark can be used for cursor-based pagination. If it is null, the server
+     * has returned all results. If it is set, you can pass it into your next request
+     * to resume searching where your previous request left off.
+     * </pre>
+     *
+     * <code>optional bytes bookmark = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearBookmark() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      bookmark_ = getDefaultInstance().getBookmark();
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
