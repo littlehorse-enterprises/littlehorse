@@ -3,6 +3,8 @@ package io.littlehorse.server.monitoring.metrics;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
@@ -10,9 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.TaskMetadata;
 import org.apache.kafka.streams.ThreadMetadata;
+import org.jetbrains.annotations.NotNull;
 
 @Slf4j
-public class InstanceState implements MeterBinder, KafkaStreams.StateListener {
+public class InstanceState implements MeterBinder, KafkaStreams.StateListener, Closeable {
     private final KafkaStreams streams;
 
     @Getter
@@ -21,62 +24,47 @@ public class InstanceState implements MeterBinder, KafkaStreams.StateListener {
     private static final String METRIC_NAME = "active_tasks_count";
 
     @Getter
-    private Map<String, Integer> activeTaskPerPartition = new HashMap<>();
+    private final Map<Integer, Integer> activeTaskBySubTopology = new HashMap<>();
+
+    private static final int GLOBAL_SUB_TOPOLOGY_ID = 0;
+    private static final int CORE_SUB_TOPOLOGY_ID = 1;
+    private static final int REPARTITION_SUB_TOPOLOGY_ID = 2;
 
     public InstanceState(KafkaStreams streams) {
         this.streams = streams;
     }
 
     @Override
-    public void bindTo(MeterRegistry registry) {
-        log.info("registering metric " + METRIC_NAME);
-        activeTaskPerPartition.put(ServerTopologyDescriptor.CORE.topologyName, 0);
-        activeTaskPerPartition.put(ServerTopologyDescriptor.TIMER.topologyName, 0);
-        Gauge.builder(METRIC_NAME + "_" + ServerTopologyDescriptor.CORE.topologyName, activeTaskPerPartition, value -> {
-                    return value.get(ServerTopologyDescriptor.CORE.topologyName);
+    public void bindTo(@NotNull MeterRegistry registry) {
+        Gauge.builder(METRIC_NAME + "_global", activeTaskBySubTopology, value -> {
+                    return value.getOrDefault(GLOBAL_SUB_TOPOLOGY_ID, 0);
                 })
                 .register(registry);
-        Gauge.builder(
-                        METRIC_NAME + "_" + ServerTopologyDescriptor.TIMER.topologyName,
-                        activeTaskPerPartition,
-                        value -> value.get(ServerTopologyDescriptor.TIMER.topologyName))
+        Gauge.builder(METRIC_NAME + "_core", activeTaskBySubTopology, value -> {
+                    return value.getOrDefault(CORE_SUB_TOPOLOGY_ID, 0);
+                })
+                .register(registry);
+        Gauge.builder(METRIC_NAME + "_repartition", activeTaskBySubTopology, value -> {
+                    return value.getOrDefault(REPARTITION_SUB_TOPOLOGY_ID, 0);
+                })
                 .register(registry);
     }
 
     @Override
     public void onChange(KafkaStreams.State newState, KafkaStreams.State oldState) {
         this.currentState = newState;
-        activeTaskPerPartition.put(ServerTopologyDescriptor.TIMER.topologyName, 0);
-        activeTaskPerPartition.put(ServerTopologyDescriptor.CORE.topologyName, 0);
+        activeTaskBySubTopology.put(GLOBAL_SUB_TOPOLOGY_ID, 0);
+        activeTaskBySubTopology.put(CORE_SUB_TOPOLOGY_ID, 0);
+        activeTaskBySubTopology.put(REPARTITION_SUB_TOPOLOGY_ID, 0);
         for (ThreadMetadata metadataForLocalThread : streams.metadataForLocalThreads()) {
             for (TaskMetadata activeTask : metadataForLocalThread.activeTasks()) {
-                ServerTopologyDescriptor descriptor =
-                        getDescriptor(activeTask.taskId().subtopology());
-                if (descriptor != null) {
-                    int currentCount = activeTaskPerPartition.get(descriptor.topologyName);
-                    activeTaskPerPartition.put(descriptor.topologyName, ++currentCount);
-                }
+                final int subtopology = activeTask.taskId().subtopology();
+                int currentCount = activeTaskBySubTopology.getOrDefault(subtopology, 0);
+                activeTaskBySubTopology.put(subtopology, ++currentCount);
             }
         }
     }
 
-    private ServerTopologyDescriptor getDescriptor(int id) {
-        return switch (id) {
-            case 1 -> ServerTopologyDescriptor.CORE;
-            case 2 -> ServerTopologyDescriptor.TIMER;
-            default -> null;
-        };
-    }
-
-    private enum ServerTopologyDescriptor {
-        CORE("core", 1),
-        TIMER("timer", 2);
-        private final String topologyName;
-        private final int id;
-
-        ServerTopologyDescriptor(String topologyName, int id) {
-            this.topologyName = topologyName;
-            this.id = id;
-        }
-    }
+    @Override
+    public void close() throws IOException {}
 }
