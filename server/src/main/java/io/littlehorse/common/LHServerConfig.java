@@ -30,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.common.errors.TopicExistsException;
@@ -131,6 +132,12 @@ public class LHServerConfig extends ConfigBase {
     private List<AdvertisedListenerConfig> advertisedListenerConfigs;
     private Map<String, ListenerProtocol> listenersProtocolMap;
     private Map<String, AuthorizationProtocol> listenersAuthorizationMap;
+
+    // EXPERIMENTAL Internal configs. Should not be used by real users; only for testing.
+    public static final String X_USE_AT_LEAST_ONCE_KEY = "LHS_X_USE_AT_LEAST_ONCE";
+    public static final String X_USE_STATE_UPDATER_KEY = "LHS_X_USE_STATE_UPDATER";
+    public static final String X_LEAVE_GROUP_ON_SHUTDOWN_KEY = "LHS_X_LEAVE_GROUP_ON_SHUTDOWN";
+    public static final String X_USE_STATIC_MEMBERSHIP_KEY = "LHS_X_USE_STATIC_MEMBERSHIP";
 
     protected String[] getEnvKeyPrefixes() {
         return new String[] {"LHS_"};
@@ -732,10 +739,25 @@ public class LHServerConfig extends ConfigBase {
         return defaultVal;
     }
 
+    /*
+     * EXPERIMENTAL: Internal config to determine whether the server should leave the
+     * group on shutdown
+     */
+    public boolean leaveGroupOnShutdown() {
+        return getOrSetDefault(X_LEAVE_GROUP_ON_SHUTDOWN_KEY, "false").equals("true");
+    }
+
     public Properties getCoreStreamsConfig() {
         Properties props = getBaseStreamsConfig();
         props.put("application.id", getKafkaGroupId("core"));
-        props.put("processing.guarantee", "exactly_once_v2");
+
+        if (getOrSetDefault(X_USE_AT_LEAST_ONCE_KEY, "false").equals("true")) {
+            log.warn("Using experimental override config to use at-least-once for Core topology");
+            props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.AT_LEAST_ONCE);
+        } else {
+            props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_V2);
+        }
+
         props.put("num.stream.threads", Integer.valueOf(getOrSetDefault(CORE_STREAM_THREADS_KEY, "1")));
         // The Core Topology is EOS. Note that we have engineered the application to not be sensitive
         // to commit latency (long story). The only thing that is affected by commit latency is the
@@ -803,12 +825,27 @@ public class LHServerConfig extends ConfigBase {
 
     private Properties getBaseStreamsConfig() {
         Properties props = new Properties();
+
+        if (getOrSetDefault(X_LEAVE_GROUP_ON_SHUTDOWN_KEY, "false").equals("true")) {
+            log.warn("Using experimental internal config to leave group on shutdonw!");
+            props.put(StreamsConfig.consumerPrefix("internal.leave.group.on.close"), true);
+        }
+
+        if (getOrSetDefault(X_USE_STATE_UPDATER_KEY, "false").equals("true")) {
+            log.warn("Using experimental internal config to use State Updater!");
+            props.put(StreamsConfig.InternalConfig.STATE_UPDATER_ENABLED, true);
+        }
+
+        if (getOrSetDefault(X_USE_STATIC_MEMBERSHIP_KEY, "false").equals("true")) {
+            log.warn("Using experimental internal config to enable static membership");
+            props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, getLHInstanceId());
+        }
+
         props.put(
                 "application.server",
                 getOrSetDefault(LHServerConfig.INTERNAL_ADVERTISED_HOST_KEY, "localhost") + ":"
                         + this.getInternalAdvertisedPort());
 
-        props.put("__state.updater.enabled__", false);
         props.put("bootstrap.servers", this.getBootstrapServers());
         props.put("client.id", this.getClientId());
         props.put("state.dir", getStateDirectory());
