@@ -75,6 +75,11 @@ public class LHServerConnection implements Closeable, StreamObserver<PollTaskRes
                 .build());
     }
 
+    @Override
+    public String toString() {
+        return "Connection to " + host.getHost() + ":" + host.getPort();
+    }
+
     public void close() {
         stillRunning = false;
 

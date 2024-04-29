@@ -131,7 +131,7 @@ public class LHServerConnectionManager implements StreamObserver<RegisterTaskWor
     public void onNext(RegisterTaskWorkerResponse next) {
         // Reconcile what's running
         livenessController.notifySuccessCall(next);
-
+        log.info("Running connections are: " + runningConnections.toString());
         for (LHHostInfo host : next.getYourHostsList()) {
             if (!isAlreadyRunning(host)) {
                 runningConnections.add(new LHServerConnection(this, host));
