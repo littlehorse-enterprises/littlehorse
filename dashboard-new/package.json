@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "prettier --check .",
     "lint:fix": "prettier --write .",
-    "test": "jest"
+    "test": "jest",
+    "preinstall": "cd ../sdk-js && npm i && npm run build"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.18",

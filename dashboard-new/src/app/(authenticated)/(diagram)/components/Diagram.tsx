@@ -1,18 +1,18 @@
 'use client'
-import { ThreadRunWithNodeRuns } from '@/app/(authenticated)/wfRun/[...ids]/getWfRun'
+import { ThreadRunWithNodeRuns } from '@/app/(authenticated)/(diagram)/wfRun/[...ids]/getWfRun'
 import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
 import { WfRun } from 'littlehorse-client/dist/proto/wf_run'
 import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'
 import 'reactflow/dist/base.css'
-import { ThreadProvider, ThreadType } from '../hooks/useThread'
+import { ThreadProvider, ThreadType } from '../context'
 import { edgeTypes } from './EdgeTypes'
+import { extractEdges } from './EdgeTypes/extractEdges'
 import { Layouter } from './Layouter'
 import nodeTypes from './NodeTypes'
+import { extractNodes } from './NodeTypes/extractNodes'
 import { ThreadPanel } from './ThreadPanel'
-import { extractEdges } from './extractEdges'
-import { extractNodes } from './extractNodes'
 
 type Props = {
   wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }
@@ -54,6 +54,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
 
   return (
     <ThreadProvider value={{ thread, setThread }}>
+      <ThreadPanel spec={spec} wfRun={wfRun} />
       <div className="mb-4 min-h-[800px] min-w-full rounded border-2 border-slate-100 bg-slate-50 shadow-inner">
         <ReactFlow
           nodes={nodes}
@@ -66,7 +67,6 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
           snapToGrid={true}
           className="min-h-[800px] min-w-full bg-slate-50"
         >
-          <ThreadPanel spec={spec} wfRun={wfRun} />
           <Controls />
         </ReactFlow>
         <Layouter nodeRuns={threadNodeRuns} />

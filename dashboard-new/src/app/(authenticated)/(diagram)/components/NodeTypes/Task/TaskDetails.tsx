@@ -1,12 +1,31 @@
 import { getVariable } from '@/app/utils'
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid'
+import { ArrowTopRightOnSquareIcon, EyeIcon } from '@heroicons/react/24/solid'
+import { useQuery } from '@tanstack/react-query'
 import { TaskNode } from 'littlehorse-client/dist/proto/common_wfspec'
 import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
 import Link from 'next/link'
-import { FC } from 'react'
-import { NodeDetails } from './NodeDetails'
+import { FC, useCallback } from 'react'
+import { useModal } from '../../../hooks/useModal'
+import { NodeDetails } from '../NodeDetails'
+import { getTaskRun } from './getTaskRun'
 
 export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, nodeRun }) => {
+  const { data } = useQuery({
+    queryKey: ['taskRun', nodeRun],
+    queryFn: async () => {
+      if (nodeRun?.task?.taskRunId) return await getTaskRun(nodeRun.task.taskRunId)
+    },
+  })
+
+  const { setModal, setShowModal } = useModal()
+
+  const onClick = useCallback(() => {
+    if (data) {
+      setModal({ type: 'taskRun', data: data })
+      setShowModal(true)
+    }
+  }, [data, setModal, setShowModal])
+
   if (!task) return null
   return (
     <NodeDetails>
@@ -30,17 +49,29 @@ export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, 
       {task.variables && task.variables.length > 0 && (
         <div className="whitespace-nowrap">
           <h3 className="font-bold">Inputs</h3>
-          <ul className="list-inside list-disc">
+          <ol className="list-inside list-decimal">
             {task.variables.map((variable, i) => (
-              <li key={`variable.${i}`}>{getVariable(variable)}</li>
+              <li className="mb-1 flex gap-1" key={`variable.${i}`}>
+                <div className="bg-gray-200 px-2 font-mono text-fuchsia-500">arg{i}</div>
+                <div> = </div>
+                <div className="truncate">{getVariable(variable)}</div>
+              </li>
             ))}
-          </ul>
+          </ol>
         </div>
       )}
       {nodeRun && nodeRun.errorMessage && (
         <div className="mt-2 flex flex-col rounded bg-red-200 p-1">
           <h3 className="font-bold">Error</h3>
           <pre className="overflow-x-auto">{nodeRun.errorMessage}</pre>
+        </div>
+      )}
+      {nodeRun && (
+        <div className="mt-2 flex justify-center">
+          <button className="flex items-center gap-1 p-1 text-blue-500 hover:bg-gray-200" onClick={onClick}>
+            <EyeIcon className="h-4 w-4" />
+            Inspect TaskRun
+          </button>
         </div>
       )}
     </NodeDetails>
