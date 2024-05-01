@@ -1,5 +1,6 @@
 package io.littlehorse.server.monitoring.metrics;
 
+import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
@@ -29,9 +30,11 @@ public class InstanceState implements MeterBinder, KafkaStreams.StateListener, C
     private static final int GLOBAL_SUB_TOPOLOGY_ID = 0;
     private static final int CORE_SUB_TOPOLOGY_ID = 1;
     private static final int REPARTITION_SUB_TOPOLOGY_ID = 2;
+    private final KafkaStreamsServerImpl serverImpl;
 
-    public InstanceState(KafkaStreams streams) {
+    public InstanceState(KafkaStreams streams, KafkaStreamsServerImpl serverImpl) {
         this.streams = streams;
+        this.serverImpl = serverImpl;
     }
 
     @Override
@@ -52,6 +55,9 @@ public class InstanceState implements MeterBinder, KafkaStreams.StateListener, C
 
     @Override
     public void onChange(KafkaStreams.State newState, KafkaStreams.State oldState) {
+        if (newState == KafkaStreams.State.REBALANCING) {
+            serverImpl.drainTaskQueue();
+        }
         this.currentState = newState;
         activeTaskBySubTopology.put(GLOBAL_SUB_TOPOLOGY_ID, 0);
         activeTaskBySubTopology.put(CORE_SUB_TOPOLOGY_ID, 0);

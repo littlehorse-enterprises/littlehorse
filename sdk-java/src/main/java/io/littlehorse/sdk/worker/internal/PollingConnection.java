@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class LHServerConnectionV2 implements Closeable, StreamObserver<PollTaskResponse> {
+public class PollingConnection implements Closeable, StreamObserver<PollTaskResponse> {
 
     private final LHTaskExecutor executor;
     private LHHostInfo host;
@@ -32,7 +32,7 @@ public class LHServerConnectionV2 implements Closeable, StreamObserver<PollTaskR
     private final TaskDefId taskDefId;
     private final String taskWorkerVersion;
 
-    public LHServerConnectionV2(
+    public PollingConnection(
             LHTaskExecutor executor,
             LHHostInfo host,
             LittleHorseStub stub,

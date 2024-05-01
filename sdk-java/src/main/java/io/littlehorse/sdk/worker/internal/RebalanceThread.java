@@ -27,7 +27,7 @@ final class RebalanceThread extends Thread {
     private final Object executable;
     private final LHTaskExecutor executor;
     private final LHConfig config;
-    private final Map<LHHostInfo, LHServerConnectionV2> runningConnections = new ConcurrentHashMap<>();
+    private final Map<LHHostInfo, PollingConnection> runningConnections = new ConcurrentHashMap<>();
     private final LHLivenessController livenessController;
 
     public RebalanceThread(
@@ -72,9 +72,9 @@ final class RebalanceThread extends Thread {
                 );
     }
 
-    private LHServerConnectionV2 createConnection(LHHostInfo host) {
+    private PollingConnection createConnection(LHHostInfo host) {
         LittleHorseGrpc.LittleHorseStub stub = config.getAsyncStub(host.getHost(), host.getPort());
-        return new LHServerConnectionV2(
+        return new PollingConnection(
                 executor,
                 host,
                 stub,
@@ -102,12 +102,13 @@ final class RebalanceThread extends Thread {
             List<LHHostInfo> availableHosts = response.getYourHostsList();
             for (LHHostInfo runningConnection : runningConnections.keySet()) {
                 if (!availableHosts.contains(runningConnection)) {
-                    LHServerConnectionV2 removed = runningConnections.remove(runningConnection);
+                    PollingConnection removed = runningConnections.remove(runningConnection);
                     removed.close();
                 }
             }
             for (LHHostInfo lhHostInfo : availableHosts) {
-                if (!runningConnections.containsKey(lhHostInfo)) {
+                if (!runningConnections.containsKey(lhHostInfo)
+                        || !runningConnections.get(lhHostInfo).isStillRunning()) {
                     runningConnections.put(lhHostInfo, createConnection(lhHostInfo));
                 }
             }

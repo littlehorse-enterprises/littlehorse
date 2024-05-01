@@ -253,7 +253,8 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager),
                 config.getCoreStreamsConfig());
         this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
-        this.healthService = new HealthService(config, coreStreams, timerStreams, taskQueueManager, metadataCache);
+        this.healthService =
+                new HealthService(config, coreStreams, timerStreams, taskQueueManager, metadataCache, this);
         coreStreams.setStandbyUpdateListener(healthService);
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
         coreStoreProvider = new CoreStoreProvider(this.coreStreams);
@@ -1030,5 +1031,9 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
     public void onEventThrown(WorkflowEventModel event) {
         internalComms.onWorkflowEventThrown(event);
+    }
+
+    public void drainTaskQueue() {
+        taskQueueManager.clear();
     }
 }

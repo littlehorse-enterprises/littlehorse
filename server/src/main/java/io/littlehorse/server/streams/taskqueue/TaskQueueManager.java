@@ -49,6 +49,10 @@ public class TaskQueueManager {
                         taskToCreate.taskDefName(), this, individualQueueConfiguredCapacity, taskToCreate.tenantId()));
     }
 
+    public void clear() {
+        taskQueues.clear();
+    }
+
     public Collection<OneTaskQueue> all() {
         return taskQueues.values();
     }
