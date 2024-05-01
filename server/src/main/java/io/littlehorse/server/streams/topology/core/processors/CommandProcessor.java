@@ -5,6 +5,7 @@ import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.PartitionMetricsModel;
+import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
@@ -20,9 +21,11 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -156,7 +159,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     private void rehydrateTenant(TenantModel tenant) {
-        /*TenantScopedStore coreDefaultStore =
+        TenantScopedStore coreDefaultStore =
                 TenantScopedStore.newInstance(this.nativeStore, tenant.getId(), new BackgroundContext());
         try (LHKeyValueIterator<ScheduledTaskModel> iter = coreDefaultStore.prefixScan("", ScheduledTaskModel.class)) {
             while (iter.hasNext()) {
@@ -164,9 +167,9 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 ScheduledTaskModel scheduledTask = next.getValue();
                 log.debug("Rehydration: scheduling task: {}", scheduledTask.getStoreKey());
                 // This will break task rehydration for tenant specific test. this will be addressed in Issue #554
-                // server.onTaskScheduled(scheduledTask.getTaskDefId(), scheduledTask, tenant.getId());
+                server.onTaskScheduled(scheduledTask.getTaskDefId(), scheduledTask, tenant.getId());
             }
-        }*/
+        }
         log.info("Ignoring rehydrate");
     }
 
