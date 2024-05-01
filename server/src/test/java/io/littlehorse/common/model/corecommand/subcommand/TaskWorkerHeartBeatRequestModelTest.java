@@ -56,7 +56,7 @@ public class TaskWorkerHeartBeatRequestModelTest {
     @Test
     void assignNewHosts() {
         TaskWorkerGroupModel taskWorkerGroup = new TaskWorkerGroupModel();
-        taskWorkerGroup.taskWorkers = generateTaskWorkersMetadata(2, 1);
+        taskWorkerGroup.taskWorkers = generateTaskWorkersMetadata(10, 1);
 
         List<TaskWorkerMetadataModel> taskWorkerMetadatas =
                 taskWorkerGroup.taskWorkers.values().stream().toList();
@@ -65,7 +65,7 @@ public class TaskWorkerHeartBeatRequestModelTest {
         taskWorkerHeartBeat.setClientId(taskWorkerToKeep.taskWorkerId);
 
         when(executionContext.getableManager().get(any())).thenReturn(taskWorkerGroup);
-        when(executionContext.getInternalHosts()).thenReturn(generateHosts(2));
+        when(executionContext.getInternalHosts()).thenReturn(generateHosts(10));
 
         taskWorkerHeartBeat.process(executionContext, lhConfig);
 

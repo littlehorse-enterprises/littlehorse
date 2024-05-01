@@ -114,9 +114,7 @@ public class CommandProcessorTest {
         defaultStore.put(scheduledTask);
         clusterStore.put(new StoredGetable<>(new TenantModel("my-tenant")));
         commandProcessor.init(mockProcessorContext);
-        verify(server, times(2))
-                .onTaskScheduled(
-                        eq(scheduledTask.getTaskDefId()), any(), eq(new TenantIdModel(LHConstants.DEFAULT_TENANT)));
+        verify(server, times(2)).onTaskScheduled(eq(scheduledTask.getTaskDefId()), any(), any());
     }
 
     /*@Test

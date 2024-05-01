@@ -11,7 +11,7 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 
-public class LHServerConnectionManagerTest {
+public class LHServerConnectionManagerImplTest {
 
     static final long HEARTBEAT_INTERVAL_MS = 5000L;
     private final LHConfig mockConfig = mock();

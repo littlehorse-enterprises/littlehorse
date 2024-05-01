@@ -13,6 +13,9 @@ import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
 import io.littlehorse.sdk.worker.internal.LHLivenessController;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
+import io.littlehorse.sdk.worker.internal.LHServerConnectionManagerImpl;
+import io.littlehorse.sdk.worker.internal.LHServerConnectionManagerV2Impl;
+import io.littlehorse.sdk.worker.internal.LHTaskExecutor;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.io.Closeable;
 import java.lang.reflect.Method;
@@ -22,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
 
@@ -52,6 +56,7 @@ public class LHTaskWorker implements Closeable {
     private LHServerConnectionManager manager;
     private String taskDefName;
     private LittleHorseBlockingStub grpcClient;
+    private final LHTaskExecutor executor = new LHTaskExecutor();
 
     /**
      * Creates an LHTaskWorker given an Object that has an annotated LHTaskMethod, and a
@@ -105,7 +110,7 @@ public class LHTaskWorker implements Closeable {
             String taskDefName,
             Map<String, String> valuesForPlaceHolders,
             LHConfig config,
-            LHServerConnectionManager manager) {
+            LHServerConnectionManagerImpl manager) {
         this(executable, taskDefName, config, valuesForPlaceHolders);
         this.manager = manager;
     }
@@ -122,8 +127,17 @@ public class LHTaskWorker implements Closeable {
     private void createManager() {
         validateTaskDefAndExecutable();
         if (this.manager == null) {
-            this.manager = new LHServerConnectionManager(
-                    taskMethod, taskDef, config, mappings, executable, new LHLivenessController());
+            this.manager = new LHServerConnectionManagerV2Impl(
+                    taskDef,
+                    config.getAsyncStub(),
+                    config.getTaskWorkerId(),
+                    config.getConnectListener(),
+                    new LHLivenessController(),
+                    taskMethod,
+                    mappings,
+                    executable,
+                    executor,
+                    config);
         }
     }
 
@@ -227,6 +241,11 @@ public class LHTaskWorker implements Closeable {
     public void close() {
         if (manager != null) {
             manager.close();
+            try {
+                executor.close(2, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
