@@ -12,7 +12,9 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 final class RebalanceThread extends Thread {
     private final LittleHorseGrpc.LittleHorseStub bootstrapStub;
     private final String taskWorkerId;
@@ -109,6 +111,7 @@ final class RebalanceThread extends Thread {
                     runningConnections.put(lhHostInfo, createConnection(lhHostInfo));
                 }
             }
+            log.info("Current connections: " + runningConnections.values());
         }
 
         @Override
