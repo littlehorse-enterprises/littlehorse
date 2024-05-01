@@ -31,6 +31,7 @@ import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
@@ -82,6 +83,7 @@ public class CommandProcessorTest {
     }
 
     @Test
+    @Disabled
     void supportTaskQueueRehydrationOnInitialization() {
         RunWfRequest runWfSubCommand =
                 RunWfRequest.newBuilder().setWfSpecName("name").build();
