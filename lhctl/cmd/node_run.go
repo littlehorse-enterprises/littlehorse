@@ -64,20 +64,24 @@ var getNodeRunCmd = &cobra.Command{
 var listNodeRunCmd = &cobra.Command{
 	Use:   "nodeRun <wfRunId>",
 	Short: "List all NodeRun's for a given WfRun Id.",
+	Args:  cobra.MinimumNArgs(1),
 	Long: `
 Lists all NodeRun's for a given WfRun Id.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		// bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
-		// limit, _ := cmd.Flags().GetInt32("limit")
-
-		if len(args) != 1 {
-			log.Fatal("Must provide one arg: the WfRun ID!")
-		}
+		threadRunNumber, _ := cmd.Flags().GetInt32("thread-run-number")
+		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
+		limit, _ := cmd.Flags().GetInt32("limit")
 		wfRunIdStr := args[0]
 
 		req := &model.ListNodeRunsRequest{
-			WfRunId: common.StrToWfRunId(wfRunIdStr),
+			WfRunId:  common.StrToWfRunId(wfRunIdStr),
+			Bookmark: bookmark,
+			Limit:    &limit,
+		}
+
+		if threadRunNumber != -1 {
+			req.ThreadRunNumber = &threadRunNumber
 		}
 
 		common.PrintResp(getGlobalClient(cmd).ListNodeRuns(
@@ -189,4 +193,5 @@ func init() {
 
 	searchNodeRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for nodeRuns that started no more than this number of minutes ago")
 	searchNodeRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for nodeRuns that started at least this number of minutes ago")
+	listNodeRunCmd.Flags().Int32("thread-run-number", -1, "Filter by ThreadRun Number")
 }

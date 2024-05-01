@@ -1,6 +1,6 @@
 /* eslint-disable */
 import Long from "long";
-import type { CallContext, CallOptions } from "nice-grpc-common";
+import { type CallContext, type CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
 import { Principal, PutPrincipalRequest, PutTenantRequest, Tenant } from "./acls";
 import {
@@ -853,13 +853,31 @@ export interface ExternalEventIdList {
  */
 export interface ListNodeRunsRequest {
   /** The WfRun for whom we list NodeRun's. */
-  wfRunId: WfRunId | undefined;
+  wfRunId:
+    | WfRunId
+    | undefined;
+  /** Optionally specify the thread run number to filter NodeRun's by. */
+  threadRunNumber?:
+    | number
+    | undefined;
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?: number | undefined;
 }
 
 /** A list of NodeRun Objects. */
 export interface NodeRunList {
   /** A list of NodeRun Objects. */
   results: NodeRun[];
+  /**
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   */
+  bookmark?: Buffer | undefined;
 }
 
 /**
@@ -4139,13 +4157,22 @@ export const ExternalEventIdList = {
 };
 
 function createBaseListNodeRunsRequest(): ListNodeRunsRequest {
-  return { wfRunId: undefined };
+  return { wfRunId: undefined, threadRunNumber: undefined, bookmark: undefined, limit: undefined };
 }
 
 export const ListNodeRunsRequest = {
   encode(message: ListNodeRunsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.wfRunId !== undefined) {
       WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.threadRunNumber !== undefined) {
+      writer.uint32(16).int32(message.threadRunNumber);
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(26).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(32).int32(message.limit);
     }
     return writer;
   },
@@ -4164,6 +4191,27 @@ export const ListNodeRunsRequest = {
 
           message.wfRunId = WfRunId.decode(reader, reader.uint32());
           continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.threadRunNumber = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -4181,18 +4229,24 @@ export const ListNodeRunsRequest = {
     message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
       ? WfRunId.fromPartial(object.wfRunId)
       : undefined;
+    message.threadRunNumber = object.threadRunNumber ?? undefined;
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
     return message;
   },
 };
 
 function createBaseNodeRunList(): NodeRunList {
-  return { results: [] };
+  return { results: [], bookmark: undefined };
 }
 
 export const NodeRunList = {
   encode(message: NodeRunList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.results) {
       NodeRun.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
     }
     return writer;
   },
@@ -4211,6 +4265,13 @@ export const NodeRunList = {
 
           message.results.push(NodeRun.decode(reader, reader.uint32()));
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -4226,6 +4287,7 @@ export const NodeRunList = {
   fromPartial(object: DeepPartial<NodeRunList>): NodeRunList {
     const message = createBaseNodeRunList();
     message.results = object.results?.map((e) => NodeRun.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
     return message;
   },
 };

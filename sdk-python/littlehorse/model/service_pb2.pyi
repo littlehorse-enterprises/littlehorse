@@ -460,16 +460,24 @@ class ExternalEventIdList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.ExternalEventId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class ListNodeRunsRequest(_message.Message):
-    __slots__ = ["wf_run_id"]
+    __slots__ = ["wf_run_id", "thread_run_number", "bookmark", "limit"]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
     wf_run_id: _object_id_pb2.WfRunId
-    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
+    thread_run_number: int
+    bookmark: bytes
+    limit: int
+    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., thread_run_number: _Optional[int] = ..., bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ...) -> None: ...
 
 class NodeRunList(_message.Message):
-    __slots__ = ["results"]
+    __slots__ = ["results", "bookmark"]
     RESULTS_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
     results: _containers.RepeatedCompositeFieldContainer[_node_run_pb2.NodeRun]
-    def __init__(self, results: _Optional[_Iterable[_Union[_node_run_pb2.NodeRun, _Mapping]]] = ...) -> None: ...
+    bookmark: bytes
+    def __init__(self, results: _Optional[_Iterable[_Union[_node_run_pb2.NodeRun, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class ListVariablesRequest(_message.Message):
     __slots__ = ["wf_run_id"]
