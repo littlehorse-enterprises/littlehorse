@@ -46,6 +46,7 @@ public class PollingConnection implements Closeable, StreamObserver<PollTaskResp
         this.mappings = mappings;
         this.executable = executable;
         this.taskMethod = taskMethod;
+        this.taskMethod.setAccessible(true);
         this.executor = executor;
         this.host = host;
         this.stub = stub;
