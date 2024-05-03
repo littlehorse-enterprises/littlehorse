@@ -1123,7 +1123,7 @@ function createBaseManualHalt(): ManualHalt {
 
 export const ManualHalt = {
   encode(message: ManualHalt, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.meaningOfLife === true) {
+    if (message.meaningOfLife !== false) {
       writer.uint32(1096).bool(message.meaningOfLife);
     }
     return writer;

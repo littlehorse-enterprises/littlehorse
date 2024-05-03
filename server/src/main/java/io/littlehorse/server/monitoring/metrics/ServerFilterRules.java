@@ -11,6 +11,9 @@ public final class ServerFilterRules {
     public static final List<ServerFilterRule> RULES = List.of(
             // TODO: Wait for KIP-869 and gather state restoration metrics.
             accept("lh_in_memory_task_queue_size"),
+            accept("lh_cache_size"),
+
+            // Kafka Streams State Stuff
             accept("kafka_stream_state_compaction_pending"),
             accept("kafka_stream_state_write_stall"),
             accept("kafka_stream_state_bytes"),
@@ -18,17 +21,30 @@ public final class ServerFilterRules {
             accept("kafka_stream_state_live_sst"),
             accept("kafka_stream_state_put_latency"),
             accept("kafka_stream_state_get_latency"),
+
+            // Kafka Consumer Metrics
             accept("kafka_consumer_coordinator_rebalance"),
+            accept("kafka_consumer_coordinator_last_rebalance_seconds_ago"),
+            accept("kafka_consumer_incoming_byte_rate"),
+            accept("kafka_consumer_fetch_manager_records_lag"),
+            accept("kafka_consumer_fetch_manager_fetch_throttle_time"),
+            accept("kafka_consumer_fetch_manager_fetch_latency_avg"),
+            accept("kafka_consumer_request"),
+            accept("kafka_consumer_time_between_poll"),
+
+            // Producer Metrics
+            accept("kafka_producer_batch_size"),
             accept("kafka_producer_request"),
             accept("kafka_producer_outgoing_byte"),
             accept("kafka_producer_record_error"),
+
+            // Filter metrics to reduce
             deny("kafka_stream_state"),
             deny("kafka_stream_task"),
             deny("kafka_stream_processor"),
             deny("kafka_producer"),
             deny("kafka_consumer"),
-            deny("kafka_admin"),
-            accept("lh_cache_size"));
+            deny("kafka_admin"));
 
     public static ServerFilterRule accept(String prefix) {
         return new ServerFilterRule(prefix, MeterFilterReply.ACCEPT);
