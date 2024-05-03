@@ -11,7 +11,11 @@ public class MyWorker {
 
     @LHTaskMethod("task-2")
     public String task2() {
-        return "task-2";
+        StringBuilder out = new StringBuilder();
+        for (int i = 0; i < 100; i++) {
+            out.append("asdf23t");
+        }
+        return out.toString();
     }
 
     @LHTaskMethod("task-3")

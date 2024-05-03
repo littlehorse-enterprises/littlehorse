@@ -2,16 +2,16 @@ package io.littlehorse.server.monitoring.health;
 
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.monitoring.InProgressRestoration;
+import io.littlehorse.server.monitoring.StandbyStoresOnInstance;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import lombok.Data;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.TaskMetadata;
 import org.apache.kafka.streams.KafkaStreams.State;
+import org.apache.kafka.streams.TaskMetadata;
 
 @Data
 public class ServerHealthState {
@@ -44,7 +44,8 @@ public class ServerHealthState {
             LHServerConfig config,
             KafkaStreams coreStreams,
             KafkaStreams timerStreams,
-            Map<TopicPartition, InProgressRestoration> restorations) {
+            Map<TopicPartition, InProgressRestoration> restorations,
+            Map<String, StandbyStoresOnInstance> standbyTasks) {
 
         this();
 
@@ -72,19 +73,25 @@ public class ServerHealthState {
 
         this.coreStandbyTasks.addAll(coreStreams.metadataForLocalThreads().stream()
                 .flatMap(thread -> thread.standbyTasks().stream())
-                .filter(activeTask -> fromTask(activeTask, config) == LHProcessorType.CORE)
-                .map(standbyTask -> new StandbyTaskState(standbyTask, restorations, config))
+                .filter(standbyTask -> fromTask(standbyTask, config) == LHProcessorType.CORE)
+                .map(standbyTask -> new StandbyTaskState(
+                        standbyTask, restorations, config, standbyTasks.get(LHProcessorType.CORE.getStoreName())))
                 .toList());
 
         this.repartitionStandbyTasks.addAll(coreStreams.metadataForLocalThreads().stream()
                 .flatMap(thread -> thread.standbyTasks().stream())
-                .filter(activeTask -> fromTask(activeTask, config) == LHProcessorType.REPARTITION)
-                .map(standbyTask -> new StandbyTaskState(standbyTask, restorations, config))
+                .filter(standbyTask -> fromTask(standbyTask, config) == LHProcessorType.REPARTITION)
+                .map(standbyTask -> new StandbyTaskState(
+                        standbyTask,
+                        restorations,
+                        config,
+                        standbyTasks.get(LHProcessorType.REPARTITION.getStoreName())))
                 .toList());
 
         this.timerStandbyTasks.addAll(timerStreams.metadataForLocalThreads().stream()
                 .flatMap(thread -> thread.standbyTasks().stream())
-                .map(timerTask -> new StandbyTaskState(timerTask, restorations, config))
+                .map(timerTask -> new StandbyTaskState(
+                        timerTask, restorations, config, standbyTasks.get(LHProcessorType.TIMER.getStoreName())))
                 .toList());
 
         this.coreState = coreStreams.state();

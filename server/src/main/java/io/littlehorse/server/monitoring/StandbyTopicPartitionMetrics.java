@@ -3,13 +3,11 @@ package io.littlehorse.server.monitoring;
 import java.io.Serializable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.TopicPartition;
 
 @Getter
 @EqualsAndHashCode(of = {"partition", "topic"})
-@Slf4j
-class TopicPartitionMetrics implements Serializable {
+public class StandbyTopicPartitionMetrics implements Serializable {
 
     private final int partition;
     private final String topic;
@@ -17,7 +15,8 @@ class TopicPartitionMetrics implements Serializable {
     private final long endOffset;
     private final long currentLag;
 
-    public TopicPartitionMetrics(final TopicPartition partition, final long currentOffset, final long endOffset) {
+    public StandbyTopicPartitionMetrics(
+            final TopicPartition partition, final long currentOffset, final long endOffset) {
         this.partition = partition.partition();
         this.topic = partition.topic();
         this.currentOffset = currentOffset;

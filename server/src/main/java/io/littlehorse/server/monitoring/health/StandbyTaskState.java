@@ -2,6 +2,8 @@ package io.littlehorse.server.monitoring.health;
 
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.monitoring.InProgressRestoration;
+import io.littlehorse.server.monitoring.StandbyStoresOnInstance;
+import io.littlehorse.server.monitoring.StandbyTopicPartitionMetrics;
 import java.util.Map;
 import java.util.Set;
 import lombok.Data;
@@ -14,11 +16,24 @@ public class StandbyTaskState {
     private LHProcessorType processor;
     private String topic;
     private int partition;
+    private long lag;
+    private long changelogEndOffset;
 
     public StandbyTaskState() {}
 
     public StandbyTaskState(
-            TaskMetadata meta, Map<TopicPartition, InProgressRestoration> restorations, LHServerConfig config) {
+            TaskMetadata meta,
+            Map<TopicPartition, InProgressRestoration> restorations,
+            LHServerConfig config,
+            StandbyStoresOnInstance storeLagInfos) {
+
+        StandbyTopicPartitionMetrics storeLagInfo = storeLagInfos.getPartitions().stream()
+                .filter(lagInfo -> {
+                    return lagInfo.getPartition()
+                            == meta.topicPartitions().stream().findFirst().get().partition();
+                })
+                .findFirst()
+                .get();
 
         Set<TopicPartition> topics = meta.topicPartitions();
         if (topics.size() != 1) {
@@ -30,8 +45,7 @@ public class StandbyTaskState {
         this.topic = tp.topic();
         this.partition = tp.partition();
         this.processor = ServerHealthState.fromTopic(this.topic, config);
-
-        // Note: Kafka Streams (accidentally) provides no way to calculate lag for
-        // standby tasks. Future versions of this class will include such calculations.
+        this.changelogEndOffset = storeLagInfo.getEndOffset();
+        this.lag = storeLagInfo.getCurrentLag();
     }
 }
