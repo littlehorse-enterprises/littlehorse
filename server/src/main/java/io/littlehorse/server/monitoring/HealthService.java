@@ -68,6 +68,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         this.server.get(config.getDiskUsagePath(), this::getDiskUsage);
         this.server.get(config.getStandbyStatusPath(), this::getStandbyStatus);
 
+        coreStreams.setStandbyUpdateListener(this);
         coreStreams.setGlobalStateRestoreListener(this);
         timerStreams.setGlobalStateRestoreListener(this);
 
