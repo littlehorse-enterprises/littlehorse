@@ -13,8 +13,6 @@ import org.apache.kafka.streams.TaskMetadata;
 @Data
 public class StandbyTaskState {
 
-    private LHProcessorType processor;
-    private String topic;
     private int partition;
     private long lag;
     private long changelogEndOffset;
@@ -42,9 +40,7 @@ public class StandbyTaskState {
 
         TopicPartition tp = topics.stream().findFirst().get();
 
-        this.topic = tp.topic();
         this.partition = tp.partition();
-        this.processor = ServerHealthState.fromTopic(this.topic, config);
         this.changelogEndOffset = storeLagInfo.getEndOffset();
         this.lag = storeLagInfo.getCurrentLag();
     }
