@@ -1,7 +1,6 @@
 package io.littlehorse.server.monitoring.health;
 
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.server.monitoring.InProgressRestoration;
 import io.littlehorse.server.monitoring.StandbyStoresOnInstance;
 import io.littlehorse.server.monitoring.StandbyTopicPartitionMetrics;
 import java.util.Map;

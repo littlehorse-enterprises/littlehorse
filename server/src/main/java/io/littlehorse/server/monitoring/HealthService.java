@@ -3,6 +3,7 @@ package io.littlehorse.server.monitoring;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.server.monitoring.health.InProgressRestoration;
 import io.littlehorse.server.monitoring.health.ServerHealthState;
 import io.littlehorse.server.monitoring.metrics.PrometheusMetricExporter;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;

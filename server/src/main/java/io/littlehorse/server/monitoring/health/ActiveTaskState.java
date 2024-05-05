@@ -1,7 +1,7 @@
 package io.littlehorse.server.monitoring.health;
 
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.server.monitoring.InProgressRestoration;
+
 import java.util.Map;
 import java.util.Set;
 import lombok.Data;

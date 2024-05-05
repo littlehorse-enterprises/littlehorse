@@ -1,9 +1,7 @@
-package io.littlehorse.server.monitoring;
+package io.littlehorse.server.monitoring.health;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.server.monitoring.health.LHProcessorType;
-import io.littlehorse.server.monitoring.health.ServerHealthState;
 import lombok.Data;
 import org.apache.kafka.common.TopicPartition;
 
