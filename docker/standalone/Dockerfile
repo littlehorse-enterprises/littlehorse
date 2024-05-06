@@ -23,9 +23,8 @@ WORKDIR /lh/dashboard
 ENV NODE_ENV=production
 EXPOSE 8080
 
-COPY ./dashboard/apps/web/.next/standalone ./
-COPY ./dashboard/apps/web/.next/static ./apps/web/.next/static
-COPY ./dashboard/apps/web/public ./apps/web/public
+COPY ./dashboard/.next/standalone ./
+COPY ./dashboard/.next/static ./.next/static
 
 WORKDIR /
 
