@@ -55,13 +55,13 @@ The LittleHorse repository contains the following components:
 
 ## Getting Started
 
-To get started *using* LittleHorse, check out the [Java Quickstart](docs/QUICKSTART_JAVA.md) or the [GoLang Quickstart](docs/QUICKSTART_GO.md). Also, if you want to run a docker sandbox go to the [Docker Quickstart](docs/QUICKSTART_DOCKER.md).
+To get started *using* LittleHorse, check out the [Installation Guide](docs/docs/05-developer-guide/00-install.md)
 
-To get started *developing* LittleHorse, check out the [Development Guide](docs/DEVELOPING.md).
+To get started *developing* LittleHorse, check out the [Contributing Guide](CONTRIBUTING.md).
 
-- [Server Configurations](docs/SERVER_CONFIGURATIONS.md)
-- [Workers/Clients Configurations](docs/CLIENT_CONFIGURATIONS.md)
-- [Dashboard Configurations](docs/DASHBOARD_CONFIGURATIONS.md)
+- [Server Configurations](docs/docs/06-operations/01-server-configuration.md)
+- [Workers/Clients Configurations](docs/docs/06-operations/03-client-configuration.md)
+- [Dashboard Configurations](docs/docs/06-operations/02-dashboard-configuration.md)
 
 ## License
 
