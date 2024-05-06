@@ -9,7 +9,6 @@ RUN mkdir /kafka /lh \
     && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
     && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
     && apt update && apt install -y nodejs \
-    && npm i -g pnpm \
     && rm -rf /var/lib/apt/lists/* \
     && wget -q https://downloads.apache.org/kafka/3.7.0/kafka_2.12-3.7.0.tgz -O /tmp/kafka.tgz \
     && tar -xzf /tmp/kafka.tgz --strip-components 1 -C /kafka \
