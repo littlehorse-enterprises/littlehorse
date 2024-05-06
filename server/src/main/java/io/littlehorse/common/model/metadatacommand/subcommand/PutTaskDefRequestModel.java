@@ -16,6 +16,7 @@ import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,7 +75,9 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         if (oldVersion != null) {
             if (TaskDefUtil.equals(spec, oldVersion))
                 return oldVersion.toProto().build();
-            throw new LHApiException(Status.ALREADY_EXISTS, "TaskDef already exists and is immutable.");
+            throw new LHApiException(
+                    Status.ALREADY_EXISTS,
+                    MessageFormat.format("TaskDef [{0}] already exists and is immutable.", name));
         }
 
         metadataManager.put(spec);
