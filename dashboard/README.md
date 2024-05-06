@@ -1,5 +1,21 @@
 # LH Dashboard
 
+
+
+## Environment Variables
+If running the app without Docker, you need to fill in the environment variables in the `.env` file inside `apps/web`. The `.env` file in the root folder is not being read by the app.
+
+- `LHC_API_HOST` littlehorse hostname
+- `LHC_API_PORT` littlehorse port
+- `LHC_CA_CERT` To specify the path to the self signed certificate that the dashboard needs to connect to a LittleHorse server configured to work with OAuth.
+- `LHD_OAUTH_ENABLED` enable oauth authentication
+- `LHD_OAUTH_ENCRYPT_SECRET` random string that will be used to encrypt the secrets and also the JWT token
+- `LHD_OAUTH_CALLBACK_URL` the url (domain) in which the dashboard will run (required for some authentication methods). For your local you can use: `http:/localhost:3001/`
+- `LHD_OAUTH_CLIENT_ID` the client id configured in keycloack
+- `LHD_OAUTH_CLIENT_SECRET` the client secret configured in keycloack
+- `LHD_OAUTH_ISSUER_URI` the keycloack
+
+
 ## Development
 
 Create a copy of `.env-sample` as `.env-local` and modify it accordingly to your littlehorse-server configuration.
@@ -30,4 +46,125 @@ LHC_API_PORT=2023
 
 ### LH Server with authentication
 
-TODO
+* The LH Dashboard can use Keycloack provider as an SSO mechanism for a user to login into the dashboard and use it. For that to work you have to enable the toggle `LHD_OATUH_ENABLED` in the needed environments.
+
+* You need to your LittleHorse server running in OAuth mode for this feature to work correclty.
+
+* For the needed Environment Variables please refer to the corresponding section in this README.
+
+* [Here a detail of the implemented authentication flow for this project](https://link.excalidraw.com/readonly/5sxfddEgSEFTEQLF3WAG)
+
+
+## Linting
+We are using ESLint as the linter for project. Given that we have a mono-repo structure we have the main command for the linter in the root package.json file.
+
+You can run the linter by:
+```
+npm run lint
+```
+
+If you wanna ESLint to try to fix the issues automatically, run:
+```
+npm run lint:fix
+```
+
+### Configuring your IDE to have Linter Live Feedback
+
+#### Intellij
+* Go to the ESLint configuration
+* Choose Manual Configuration
+* For ESLint package pick the one in the root folder: `<your workskpace dir>/lh-dashboard/node_modules/eslint`
+* For Working directories use:`<your workskpace dir>/lh-dashboard/apps/web;<your workskpace dir>/lh-dashboard/packages/ui`
+* For the Configuration file use: `<your workskpace dir>/lh-dashboard/.eslintrc.js`
+* With the above config you will receive live feedback in intellij on regards to the linting rules that are configured
+* While configuring the ESLint plugin you can enable the option: `run eslint --fix on save`
+* The reFormat code shortcut will *NOT* use the ESLint rules, you should do:`Fix ESLint problems` by opening the IntelliJ`Actions` menu.
+
+#### VSCode
+* Install the extension called `ESLint'
+* Configure the VSCode IDE with the following options:
+```
+{
+    "files.autoSave": "afterDelay",
+    "eslint.format.enable": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "eslint.workingDirectories": ["<your workskpace dir>/lh-dashboard/apps/web",
+      "<your workskpace dir>/lh-dashboard/packages/ui"]
+}
+```
+* On the actions menu choose: `Developer: Reload Window`
+* You should start seeing the linter errors in the code
+
+### Linter configuration
+The configuration for the entire mono-repo is under `/packages/eslint-config-custom/next.js`. On the mentioned file you can configure the rules that apply
+for the entire `lh-dashboard` mono-repo.
+
+## Testing
+Jest is being used as the testing framework, any file that has the pattern `*.test.*` in its name is considered a test and will be executed by Jest.
+To run the tests please execute:
+```
+npm run test
+```
+If you wanna watch your tests while developing execute:
+```
+npm run test --watch
+```
+
+### Environment variables
+You need to create a `env.test.local` file to contain any env variable you might for your tests.
+
+
+## Start the Dashboard with Docker
+
+The Dashboard docker image is under `docker/dashboard`, in order to run it please do the following:
+1. Go under the `dashboard` directory, execute: `npm install`
+
+2. Build the docker image
+
+```sh
+./local-dev/build.sh --dashboard
+```
+Execute either of the following:
+
+### Authentication Disabled:
+
+```bash
+docker run --rm \
+  -p 3000:3000 \
+  --env LHC_API_HOST='localhost' \
+  --env LHC_API_PORT='2023' \
+  --network host \
+  ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
+```
+
+### Authentication Enabled:
+
+```bash
+docker run --rm \
+  --env LHC_API_HOST='localhost' \
+  --env LHC_API_PORT='2023' \
+  --env LHD_OAUTH_ENABLED='true' \
+  --env LHD_OAUTH_CLIENT_ID='{a-client-id}' \
+  --env LHD_OAUTH_CLIENT_SECRET='{a-client-secret}' \
+  --env LHD_OAUTH_ISSUER_URI='{https://keycloack-env}/realms/lh' \
+  --env LHD_OAUTH_CALLBACK_URL='localhost:3000' \
+  --env LHD_OAUTH_ENCRYPT_SECRET='{a-secret-to-encrypt}' \
+  --network host \
+  ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
+```
+
+## SSL termination
+
+Assuming you have a folder `./ssl` containing `tls.crt` and `tls.key`
+
+```bash
+docker run --rm \
+  --env SSL='true' \
+  --env LHC_API_HOST='localhost' \
+  --env LHC_API_PORT='2023' \
+  --network host \
+  -v ./ssl:/ssl \
+  ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
+```
