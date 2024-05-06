@@ -21,6 +21,7 @@ import io.littlehorse.test.internal.TestContext;
 import io.littlehorse.test.internal.TestExecutionContext;
 import io.littlehorse.test.internal.step.AssignUserTask;
 import io.littlehorse.test.internal.step.AwaitWorkflowEventStep;
+import io.littlehorse.test.internal.step.CancelUserTaskRun;
 import io.littlehorse.test.internal.step.SearchStep;
 import io.littlehorse.test.internal.step.SendExternalEventStep;
 import io.littlehorse.test.internal.step.VerifyNodeRunStep;
@@ -185,6 +186,11 @@ public class WfRunVerifier extends AbstractVerifier {
     public WfRunVerifier thenAssignUserTask(
             int threadRunNumber, int nodeRunNumber, boolean overrideClaim, String userId, String groupId) {
         steps.add(new AssignUserTask(steps.size() + 1, threadRunNumber, nodeRunNumber, overrideClaim, userId, groupId));
+        return this;
+    }
+
+    public WfRunVerifier thenCancelUserTaskRun(int threadRunNumber, int nodeRunNumber) {
+        steps.add(new CancelUserTaskRun(steps.size() + 1, threadRunNumber, nodeRunNumber));
         return this;
     }
 }

@@ -13,6 +13,7 @@ import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ThrowEventNode;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import lombok.Getter;
@@ -48,12 +49,12 @@ public class ThrowEventNodeModel extends SubNode<ThrowEventNode> {
     }
 
     @Override
-    public SubNodeRun<?> createSubNodeRun(Date time) {
+    public SubNodeRun<?> createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
         return new ThrowEventNodeRunModel(workflowEventDefId, context.castOnSupport(ProcessorExecutionContext.class));
     }
 
     @Override
-    public void validate() throws LHApiException {
+    public void validate(MetadataCommandExecution ctx) throws LHApiException {
         WorkflowEventDefModel eventDef = context.service().getWorkflowEventDef(workflowEventDefId);
         if (eventDef == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT.withDescription(

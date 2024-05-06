@@ -17,8 +17,10 @@ import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTETas
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -102,11 +104,13 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
         log.info("Scheduling a one-off task for wfRun {} due to UserTask", wfRunId);
 
         try {
-            List<VarNameAndValModel> inputVars = taskToSchedule.assignInputVars(thread);
+            List<VarNameAndValModel> inputVars = taskToSchedule.assignInputVars(thread, executionContext);
             TaskRunIdModel taskRunId = new TaskRunIdModel(wfRunId, executionContext);
+            TaskDefModel taskDef = taskToSchedule.getTaskDef(thread, executionContext);
+            TaskDefIdModel id = taskDef.getId();
 
-            ScheduledTaskModel toSchedule = new ScheduledTaskModel(
-                    taskToSchedule.getTaskDef().getObjectId(), inputVars, userTaskRun, executionContext);
+            ScheduledTaskModel toSchedule =
+                    new ScheduledTaskModel(taskDef.getObjectId(), inputVars, userTaskRun, executionContext);
             toSchedule.setTaskRunId(taskRunId);
 
             TaskRunModel taskRun = new TaskRunModel(
@@ -115,7 +119,8 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
                             new UserTaskTriggerReferenceModel(userTaskRun, executionContext), executionContext),
                     taskToSchedule,
                     executionContext,
-                    taskRunId);
+                    taskRunId,
+                    id);
 
             executionContext.getableManager().put(taskRun);
 

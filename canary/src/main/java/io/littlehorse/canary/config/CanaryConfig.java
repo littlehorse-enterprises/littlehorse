@@ -2,7 +2,7 @@ package io.littlehorse.canary.config;
 
 import static java.util.Map.entry;
 
-import java.util.List;
+import java.time.Duration;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -10,23 +10,32 @@ import java.util.stream.Collectors;
 public class CanaryConfig implements Config {
 
     public static final String LH_CANARY_PREFIX = "lh.canary.";
+
     public static final String TOPIC_NAME = "topic.name";
-    public static final String TOPIC_CREATION_PARTITIONS = "topic.creation.partitions";
-    public static final String TOPIC_CREATION_REPLICAS = "topic.creation.replicas";
+    public static final String TOPIC_CREATION_ENABLE = "topic.creation.enable";
+    public static final String TOPIC_CREATION_TIMEOUT_MS = "topic.creation.timeout.ms";
+    public static final String TOPIC_PARTITIONS = "topic.partitions";
+    public static final String TOPIC_REPLICAS = "topic.replicas";
+
+    public static final String WORKFLOW_NAME = "workflow.name";
+    public static final String WORKFLOW_CREATION_ENABLE = "workflow.creation.enable";
+    public static final String WORKFLOW_VERSION = "workflow.version";
+    public static final String WORKFLOW_REVISION = "workflow.revision";
+
     public static final String METRONOME_ENABLE = "metronome.enable";
+    public static final String METRONOME_RUN_FREQUENCY_MS = "metronome.run.frequency.ms";
+    public static final String METRONOME_RUN_THREADS = "metronome.run.threads";
+    public static final String METRONOME_RUN_REQUESTS = "metronome.run.requests";
+    public static final String METRONOME_GET_FREQUENCY_MS = "metronome.get.frequency.ms";
+    public static final String METRONOME_GET_THREADS = "metronome.get.threads";
+    public static final String METRONOME_GET_RETRIES = "metronome.get.retries";
+    public static final String METRONOME_WORKER_ENABLE = "metronome.worker.enable";
+    public static final String METRONOME_DATA_PATH = "metronome.data.path";
+
     public static final String AGGREGATOR_ENABLE = "aggregator.enable";
-    public static final String METRONOME_FREQUENCY_MS = "metronome.frequency.ms";
-    public static final String METRONOME_THREADS = "metronome.threads";
-    public static final String METRONOME_RUNS = "metronome.runs";
-    public static final String API_PORT = "api.port";
-    public static final String ID = "id";
     public static final String METRICS_PORT = "metrics.port";
     public static final String METRICS_PATH = "metrics.path";
-    public static final String METRICS_FILTER_ENABLE = "metrics.filter.enable";
-    public static final String METRICS_FILTER_PREFIX = "%s\\[\\d+\\]".formatted(METRICS_FILTER_ENABLE);
-    public static final String METRONOME_WORKER_ENABLE = "metronome.worker.enable";
     public static final String AGGREGATOR_STORE_RETENTION_MS = "aggregator.store.retention.ms";
-    public static final String TOPIC_CREATION_TIMEOUT_MS = "topic.creation.timeout.ms";
     public static final String METRICS_COMMON_TAGS = "metrics.common.tags";
     public static final String METRICS_COMMON_TAGS_PREFIX = "%s.".formatted(METRICS_COMMON_TAGS);
 
@@ -61,6 +70,10 @@ public class CanaryConfig implements Config {
         return new KafkaProducerConfig(configs);
     }
 
+    public KafkaConsumerConfig toKafkaConsumerConfig() {
+        return new KafkaConsumerConfig(configs);
+    }
+
     public KafkaStreamsConfig toKafkaStreamsConfig() {
         return new KafkaStreamsConfig(configs);
     }
@@ -73,16 +86,12 @@ public class CanaryConfig implements Config {
         return getConfig(TOPIC_NAME);
     }
 
-    public long getTopicCreationTimeoutMs() {
-        return Long.parseLong(getConfig(TOPIC_CREATION_TIMEOUT_MS));
+    public Duration getTopicCreationTimeout() {
+        return Duration.ofMillis(Long.parseLong(getConfig(TOPIC_CREATION_TIMEOUT_MS)));
     }
 
     public int getTopicPartitions() {
-        return Integer.parseInt(getConfig(TOPIC_CREATION_PARTITIONS));
-    }
-
-    public int getApiPort() {
-        return Integer.parseInt(getConfig(API_PORT));
+        return Integer.parseInt(getConfig(TOPIC_PARTITIONS));
     }
 
     public int getMetricsPort() {
@@ -93,12 +102,8 @@ public class CanaryConfig implements Config {
         return getConfig(METRICS_PATH);
     }
 
-    public boolean isMetricsFilterEnabled() {
-        return Boolean.parseBoolean(getConfig(METRICS_FILTER_ENABLE));
-    }
-
     public short getTopicReplicas() {
-        return Short.parseShort(getConfig(TOPIC_CREATION_REPLICAS));
+        return Short.parseShort(getConfig(TOPIC_REPLICAS));
     }
 
     public boolean isMetronomeEnabled() {
@@ -113,38 +118,63 @@ public class CanaryConfig implements Config {
         return Boolean.parseBoolean(getConfig(AGGREGATOR_ENABLE));
     }
 
-    public long getMetronomeFrequencyMs() {
-        return Long.parseLong(getConfig(METRONOME_FREQUENCY_MS));
+    public Duration getAggregatorStoreRetention() {
+        return Duration.ofMillis(Long.parseLong(getConfig(AGGREGATOR_STORE_RETENTION_MS)));
     }
 
-    public long getAggregatorStoreRetentionMs() {
-        return Long.parseLong(getConfig(AGGREGATOR_STORE_RETENTION_MS));
+    public Duration getMetronomeRunFrequency() {
+        return Duration.ofMillis(Long.parseLong(getConfig(METRONOME_RUN_FREQUENCY_MS)));
     }
 
-    public int getMetronomeThreads() {
-        return Integer.parseInt(getConfig(METRONOME_THREADS));
+    public int getMetronomeRunThreads() {
+        return Integer.parseInt(getConfig(METRONOME_RUN_THREADS));
     }
 
-    public int getMetronomeRuns() {
-        return Integer.parseInt(getConfig(METRONOME_RUNS));
+    public int getMetronomeRunRequests() {
+        return Integer.parseInt(getConfig(METRONOME_RUN_REQUESTS));
     }
 
-    public String getId() {
-        return getConfig(ID);
+    public Duration getMetronomeGetFrequency() {
+        return Duration.ofMillis(Long.parseLong(getConfig(METRONOME_GET_FREQUENCY_MS)));
     }
 
-    public List<String> getEnabledMetrics() {
-        return configs.entrySet().stream()
-                .filter(entry -> entry.getKey().matches(METRICS_FILTER_PREFIX))
-                .map(Entry::getValue)
-                .map(Object::toString)
-                .toList();
+    public int getMetronomeGetThreads() {
+        return Integer.parseInt(getConfig(METRONOME_GET_THREADS));
     }
 
-    public Map<String, Object> getCommonTags() {
+    public int getMetronomeGetRetries() {
+        return Integer.parseInt(getConfig(METRONOME_GET_RETRIES));
+    }
+
+    public Map<String, String> getCommonTags() {
         return configs.entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(METRICS_COMMON_TAGS_PREFIX))
                 .collect(Collectors.toMap(
-                        entry -> entry.getKey().substring(METRICS_COMMON_TAGS_PREFIX.length()), Entry::getValue));
+                        entry -> entry.getKey().substring(METRICS_COMMON_TAGS_PREFIX.length()),
+                        entry -> entry.getValue().toString()));
+    }
+
+    public boolean isTopicCreationEnabled() {
+        return Boolean.parseBoolean(getConfig(TOPIC_CREATION_ENABLE));
+    }
+
+    public boolean isWorkflowCreationEnabled() {
+        return Boolean.parseBoolean(getConfig(WORKFLOW_CREATION_ENABLE));
+    }
+
+    public String getWorkflowName() {
+        return getConfig(WORKFLOW_NAME);
+    }
+
+    public int getWorkflowRevision() {
+        return Integer.parseInt(getConfig(WORKFLOW_REVISION));
+    }
+
+    public int getWorkflowVersion() {
+        return Integer.parseInt(getConfig(WORKFLOW_VERSION));
+    }
+
+    public String getMetronomeDataPath() {
+        return getConfig(METRONOME_DATA_PATH);
     }
 }

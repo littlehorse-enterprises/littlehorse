@@ -14,6 +14,7 @@ var putPrincipalCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		acl, _ := cmd.Flags().GetString("acl")
 		tenantId, _ := cmd.Flags().GetString("tenantId")
+		overwrite, _ := cmd.Flags().GetBool("overwrite")
 		id := args[0]
 		serverAcls := []*model.ServerACL{}
 		per_tenant_acls := make(map[string]*model.ServerACLs)
@@ -33,6 +34,7 @@ var putPrincipalCmd = &cobra.Command{
 		putRequest := model.PutPrincipalRequest{
 			Id:            id,
 			PerTenantAcls: per_tenant_acls,
+			Overwrite: overwrite,
 		}
 		common.PrintResp(getGlobalClient(cmd).PutPrincipal(
 			requestContext(cmd),
@@ -87,5 +89,6 @@ var (
 func init() {
 	putCmd.AddCommand(putPrincipalCmd)
 	putPrincipalCmd.Flags().String("acl", "", "ACLs")
+	putPrincipalCmd.Flags().Bool("overwrite", false, "Overwrites principal information")
 	putPrincipalCmd.Flags().String("tenantId", "", "Tenant associated with the principal")
 }

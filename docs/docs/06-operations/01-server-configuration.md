@@ -499,6 +499,16 @@ The size of the shared Threadpool used by the grpc listeners.
 
 ---
 
+### `LHS_STREAMS_METRICS_LEVEL`
+
+The level of granularity to collect Kafka Streams Metrics. Passes through to Kafka Streams `metrics.recording.level`.
+
+- **Type:** info|debug|trace
+- **Default:** info
+- **Importance:** medium
+
+---
+
 ### `LHS_STREAMS_SESSION_TIMEOUT`
 
 The timeout used to detect client failures when using Kafka's group management facility. [Kafka Official](https://kafka.apache.org/documentation/#consumerconfigs_session.timeout.ms).

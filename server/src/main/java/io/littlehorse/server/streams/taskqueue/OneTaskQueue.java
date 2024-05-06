@@ -11,6 +11,7 @@ import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -38,12 +39,14 @@ public class OneTaskQueue {
     private TenantIdModel tenantId;
 
     private String hostName;
+    private Date lastRehydratedTask;
+    private ScheduledTaskModel lastReturnedTask;
 
     @Getter
     /*
      * If it is true, the queue should execute a task rehydration from store
      */
-    private boolean outOfCapacity;
+    private boolean hasMoreTasksOnDisk;
 
     public OneTaskQueue(String taskDefName, TaskQueueManager parent, int capacity, TenantIdModel tenantId) {
         this.taskDefName = taskDefName;
@@ -127,8 +130,8 @@ public class OneTaskQueue {
                 luckyClient = hungryClients.poll();
             } else {
                 // case 2
-                outOfCapacity = !pendingTasks.offer(scheduledTask);
-                return !outOfCapacity;
+                hasMoreTasksOnDisk = !pendingTasks.offer(scheduledTask) || hasMoreTasksOnDisk;
+                return !hasMoreTasksOnDisk;
             }
         } finally {
             lock.unlock();
@@ -170,7 +173,7 @@ public class OneTaskQueue {
 
         try {
             lock.lock();
-            if (pendingTasks.isEmpty() && outOfCapacity) {
+            if (pendingTasks.isEmpty() && hasMoreTasksOnDisk) {
                 rehydrateFromStore(requestContext.getableManager());
             }
 
@@ -181,6 +184,7 @@ public class OneTaskQueue {
                 }
 
                 nextTask = pendingTasks.poll();
+                lastReturnedTask = nextTask;
             } else {
                 // case 2
                 hungryClients.add(requestObserver);
@@ -198,6 +202,7 @@ public class OneTaskQueue {
      * Can only be called within a lock
      */
     private void rehydrateFromStore(ReadOnlyGetableManager readOnlyGetableManager) {
+        log.debug("Rehydrating");
         String startKey = Tag.getAttributeString(
                         GetableClassEnum.TASK_RUN,
                         List.of(
@@ -213,16 +218,25 @@ public class OneTaskQueue {
                 TaskRunIdModel taskRunId =
                         (TaskRunIdModel) TaskRunIdModel.fromString(describedObjectId, TaskRunIdModel.class);
                 ScheduledTaskModel scheduledTask = readOnlyGetableManager.getScheduledTask(taskRunId);
-                if (scheduledTask != null) {
+                if (scheduledTask != null && notRehydratedYet(scheduledTask)) {
                     if (!hungryClients.isEmpty()) {
                         parent.itsAMatch(scheduledTask, hungryClients.remove());
                     } else {
                         queueOutOfCapacity = !pendingTasks.offer(scheduledTask);
+                        if (!queueOutOfCapacity) {
+                            lastRehydratedTask = scheduledTask.getCreatedAt();
+                        }
                     }
                 }
             }
-            this.outOfCapacity = queueOutOfCapacity;
+            this.hasMoreTasksOnDisk = queueOutOfCapacity;
         }
+    }
+
+    private boolean notRehydratedYet(ScheduledTaskModel scheduledTask) {
+        return (lastRehydratedTask == null && !scheduledTask.getTaskRunId().equals(lastReturnedTask.getTaskRunId())
+                || (!scheduledTask.getTaskRunId().equals(lastReturnedTask.getTaskRunId())
+                        && scheduledTask.getCreatedAt().compareTo(lastRehydratedTask) >= 0));
     }
 
     public int size() {

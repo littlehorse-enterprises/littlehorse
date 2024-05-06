@@ -17,6 +17,7 @@ import io.littlehorse.server.TestProcessorExecutionContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
+import java.util.Date;
 import java.util.List;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.assertj.core.api.Assertions;
@@ -85,40 +86,53 @@ public class OneTaskQueueTest {
     @Test
     public void shouldRecoverScheduledTaskFromStoreAndKeepTheOriginalOrder() {
         ScheduledTaskModel task1 = TestUtil.scheduledTaskModel("wf-1");
+        task1.setCreatedAt(new Date(new Date().getTime() + 2000L));
         ScheduledTaskModel task2 = TestUtil.scheduledTaskModel("wf-2");
+        task2.setCreatedAt(new Date(new Date().getTime() + 3000L));
         ScheduledTaskModel task3 = TestUtil.scheduledTaskModel("wf-3");
+        task3.setCreatedAt(new Date(new Date().getTime() + 4000L));
         ScheduledTaskModel task4 = TestUtil.scheduledTaskModel("wf-4");
+        task4.setCreatedAt(new Date(new Date().getTime() + 5000L));
 
+        TaskRunModel taskRun1 = TestUtil.taskRun(task1.getTaskRunId(), task3.getTaskDefId());
+        TaskRunModel taskRun2 = TestUtil.taskRun(task2.getTaskRunId(), task3.getTaskDefId());
         TaskRunModel taskRun3 = TestUtil.taskRun(task3.getTaskRunId(), task3.getTaskDefId());
         TaskRunModel taskRun4 = TestUtil.taskRun(task4.getTaskRunId(), task4.getTaskDefId());
+        processorContext.getableManager().put(taskRun1);
+        processorContext.getableManager().put(taskRun2);
         processorContext.getableManager().put(taskRun3);
         processorContext.getableManager().put(taskRun4);
+        processorContext.getCoreStore().put(task1);
+        processorContext.getCoreStore().put(task2);
         processorContext.getCoreStore().put(task3);
         processorContext.getCoreStore().put(task4);
         processorContext.endExecution();
         ArgumentCaptor<ScheduledTaskModel> captor = ArgumentCaptor.forClass(ScheduledTaskModel.class);
         OneTaskQueue boundedQueue =
-                new OneTaskQueue(taskName, taskQueueManager, 2, new TenantIdModel(LHConstants.DEFAULT_TENANT));
+                new OneTaskQueue(taskName, taskQueueManager, 1, new TenantIdModel(LHConstants.DEFAULT_TENANT));
 
         boundedQueue.onTaskScheduled(task1);
         boundedQueue.onTaskScheduled(task2);
+        Assertions.assertThat(boundedQueue.isHasMoreTasksOnDisk()).isTrue();
         boundedQueue.onTaskScheduled(task3);
-        Assertions.assertThat(boundedQueue.isOutOfCapacity()).isTrue();
         boundedQueue.onTaskScheduled(task4);
 
         boundedQueue.onPollRequest(mockClient, requestContext);
         boundedQueue.onPollRequest(mockClient, requestContext);
         boundedQueue.onPollRequest(mockClient, requestContext);
-        processorContext.getCoreStore().delete(task3);
         boundedQueue.onPollRequest(mockClient, requestContext);
         InOrder inOrder = inOrder(taskQueueManager);
-        inOrder.verify(taskQueueManager).itsAMatch(same(task1), same(mockClient));
-        inOrder.verify(taskQueueManager).itsAMatch(same(task2), same(mockClient));
-        inOrder.verify(taskQueueManager, times(2)).itsAMatch(captor.capture(), same(mockClient));
+        // inOrder.verify(taskQueueManager).itsAMatch(same(task1), same(mockClient));
+        // inOrder.verify(taskQueueManager).itsAMatch(same(task2), same(mockClient));
+        inOrder.verify(taskQueueManager, times(4)).itsAMatch(captor.capture(), same(mockClient));
         List<ScheduledTaskModel> allValues = captor.getAllValues();
         assertThat(allValues.get(0).getTaskRunId().wfRunId.getId())
-                .isEqualTo(task3.getTaskRunId().wfRunId.getId());
+                .isEqualTo(task1.getTaskRunId().wfRunId.getId());
         assertThat(allValues.get(1).getTaskRunId().wfRunId.getId())
+                .isEqualTo(task2.getTaskRunId().wfRunId.getId());
+        assertThat(allValues.get(2).getTaskRunId().wfRunId.getId())
+                .isEqualTo(task3.getTaskRunId().wfRunId.getId());
+        assertThat(allValues.get(3).getTaskRunId().wfRunId.getId())
                 .isEqualTo(task4.getTaskRunId().wfRunId.getId());
     }
 

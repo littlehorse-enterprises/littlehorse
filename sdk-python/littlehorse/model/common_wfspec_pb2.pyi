@@ -147,15 +147,17 @@ class ExponentialBackoffRetryPolicy(_message.Message):
     def __init__(self, base_interval_ms: _Optional[int] = ..., max_delay_ms: _Optional[int] = ..., multiplier: _Optional[float] = ...) -> None: ...
 
 class TaskNode(_message.Message):
-    __slots__ = ["task_def_id", "timeout_seconds", "retries", "exponential_backoff", "variables"]
+    __slots__ = ["task_def_id", "dynamic_task", "timeout_seconds", "retries", "exponential_backoff", "variables"]
     TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    DYNAMIC_TASK_FIELD_NUMBER: _ClassVar[int]
     TIMEOUT_SECONDS_FIELD_NUMBER: _ClassVar[int]
     RETRIES_FIELD_NUMBER: _ClassVar[int]
     EXPONENTIAL_BACKOFF_FIELD_NUMBER: _ClassVar[int]
     VARIABLES_FIELD_NUMBER: _ClassVar[int]
     task_def_id: _object_id_pb2.TaskDefId
+    dynamic_task: VariableAssignment
     timeout_seconds: int
     retries: int
     exponential_backoff: ExponentialBackoffRetryPolicy
     variables: _containers.RepeatedCompositeFieldContainer[VariableAssignment]
-    def __init__(self, task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., timeout_seconds: _Optional[int] = ..., retries: _Optional[int] = ..., exponential_backoff: _Optional[_Union[ExponentialBackoffRetryPolicy, _Mapping]] = ..., variables: _Optional[_Iterable[_Union[VariableAssignment, _Mapping]]] = ...) -> None: ...
+    def __init__(self, task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., dynamic_task: _Optional[_Union[VariableAssignment, _Mapping]] = ..., timeout_seconds: _Optional[int] = ..., retries: _Optional[int] = ..., exponential_backoff: _Optional[_Union[ExponentialBackoffRetryPolicy, _Mapping]] = ..., variables: _Optional[_Iterable[_Union[VariableAssignment, _Mapping]]] = ...) -> None: ...

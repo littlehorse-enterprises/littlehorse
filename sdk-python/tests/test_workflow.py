@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import MagicMock
-from littlehorse.model.common_enums_pb2 import VariableType
+
+from littlehorse.model.common_enums_pb2 import LHErrorType, VariableType
 from littlehorse.model.common_wfspec_pb2 import (
     Comparator,
     TaskNode,
@@ -9,13 +10,14 @@ from littlehorse.model.common_wfspec_pb2 import (
     VariableMutation,
     VariableMutationType,
     UTActionTrigger,
+    ExponentialBackoffRetryPolicy,
 )
-from littlehorse.model.service_pb2 import PutWfSpecRequest
-from littlehorse.model.variable_pb2 import VariableValue
 from littlehorse.model.object_id_pb2 import (
     ExternalEventDefId,
     TaskDefId,
 )
+from littlehorse.model.service_pb2 import PutWfSpecRequest
+from littlehorse.model.variable_pb2 import VariableValue
 from littlehorse.model.wf_spec_pb2 import (
     Edge,
     EdgeCondition,
@@ -34,14 +36,13 @@ from littlehorse.model.wf_spec_pb2 import (
     WfRunVariableAccessLevel,
     WorkflowRetentionPolicy,
 )
-from littlehorse.workflow import to_variable_assignment, LHErrorType
-
 from littlehorse.workflow import (
     NodeOutput,
     WorkflowThread,
     WfRunVariable,
     Workflow,
 )
+from littlehorse.workflow import SpawnedThreads, to_variable_assignment
 
 
 class TestNodeOutput(unittest.TestCase):
@@ -1661,6 +1662,202 @@ class TestWorkflow(unittest.TestCase):
         )
 
 
+class TestRetries(unittest.TestCase):
+    def test_add_retries(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.execute("my-task", retries=4)
+
+        wf = Workflow("my-wf", my_entrypoint)
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        interrupt_defs=[],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-my-task-TASK")],
+                            ),
+                            "1-my-task-TASK": Node(
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="my-task"), retries=4
+                                ),
+                                outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
+                            ),
+                            "2-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    ),
+                },
+            ),
+        )
+
+    def test_add_retries_1_task(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.execute("my-task1", retries=4)
+            thread.execute("my-task2")
+
+        wf = Workflow("my-wf", my_entrypoint)
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        interrupt_defs=[],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-my-task1-TASK")],
+                            ),
+                            "1-my-task1-TASK": Node(
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="my-task1"), retries=4
+                                ),
+                                outgoing_edges=[Edge(sink_node_name="2-my-task2-TASK")],
+                            ),
+                            "2-my-task2-TASK": Node(
+                                task=TaskNode(task_def_id=TaskDefId(name="my-task2")),
+                                outgoing_edges=[Edge(sink_node_name="3-exit-EXIT")],
+                            ),
+                            "3-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    ),
+                },
+            ),
+        )
+
+    def test_add_retries_with_default(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.execute("my-task1")
+            thread.execute("my-task2")
+
+        wf = Workflow("my-wf", my_entrypoint)
+        wf.with_retry_policy(4)
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        interrupt_defs=[],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-my-task1-TASK")],
+                            ),
+                            "1-my-task1-TASK": Node(
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="my-task1"), retries=4
+                                ),
+                                outgoing_edges=[Edge(sink_node_name="2-my-task2-TASK")],
+                            ),
+                            "2-my-task2-TASK": Node(
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="my-task2"), retries=4
+                                ),
+                                outgoing_edges=[Edge(sink_node_name="3-exit-EXIT")],
+                            ),
+                            "3-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    ),
+                },
+            ),
+        )
+
+    def test_add_retries_with_default_policy(self):
+        policy = ExponentialBackoffRetryPolicy(
+            base_interval_ms=1000, max_delay_ms=10000, multiplier=4
+        )
+
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.execute("my-task1")
+            thread.execute("my-task2")
+
+        wf = Workflow("my-wf", my_entrypoint)
+        wf.with_retry_policy(2, exponential_backoff=policy)
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        interrupt_defs=[],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-my-task1-TASK")],
+                            ),
+                            "1-my-task1-TASK": Node(
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="my-task1"),
+                                    retries=2,
+                                    exponential_backoff=policy,
+                                ),
+                                outgoing_edges=[Edge(sink_node_name="2-my-task2-TASK")],
+                            ),
+                            "2-my-task2-TASK": Node(
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="my-task2"),
+                                    retries=2,
+                                    exponential_backoff=policy,
+                                ),
+                                outgoing_edges=[Edge(sink_node_name="3-exit-EXIT")],
+                            ),
+                            "3-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    ),
+                },
+            ),
+        )
+
+    def test_add_retries_with_policy(self):
+        policy = ExponentialBackoffRetryPolicy(
+            base_interval_ms=1000, max_delay_ms=5000, multiplier=2
+        )
+
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.execute(
+                "my-task",
+                retries=4,
+                exponential_backoff=policy,
+            )
+
+        wf = Workflow("my-wf", my_entrypoint)
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        interrupt_defs=[],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-my-task-TASK")],
+                            ),
+                            "1-my-task-TASK": Node(
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="my-task"),
+                                    retries=4,
+                                    exponential_backoff=policy,
+                                ),
+                                outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
+                            ),
+                            "2-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    ),
+                },
+            ),
+        )
+
+
 class TestUserTasks(unittest.TestCase):
     def test_assign_to_user_id(self):
         def wf_func(thread: WorkflowThread) -> None:
@@ -1762,6 +1959,52 @@ class TestUserTasks(unittest.TestCase):
 
         reassign = action.reassign
         self.assertEqual(reassign.user_group.literal_value.str, "my-group")
+
+    def test_cancel_user_task_on_deadline(self):
+        def wf_func(thread: WorkflowThread) -> None:
+            uto = thread.assign_user_task(
+                "my-user-task",
+                user_id="asdf",
+                user_group="my-group",
+            )
+            thread.cancel_user_task_run_after(uto, 60)
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+
+        self.assertEqual(len(ut_node.actions), 1)
+
+        action = ut_node.actions[0]
+        self.assertEqual(action.delay_seconds.literal_value.int, 60)
+        self.assertEqual(action.hook, UTActionTrigger.UTHook.ON_ARRIVAL)
+        self.assertTrue(action.HasField("cancel"))
+        self.assertFalse(action.HasField("reassign"))
+
+    def test_cancel_user_task_on_deadline_after_assignment(self):
+        def wf_func(thread: WorkflowThread) -> None:
+            uto = thread.assign_user_task(
+                "my-user-task",
+                user_id="asdf",
+                user_group="my-group",
+            )
+            thread.cancel_user_task_run_after_assignment(uto, 60)
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+
+        self.assertEqual(len(ut_node.actions), 1)
+
+        action = ut_node.actions[0]
+        self.assertEqual(action.delay_seconds.literal_value.int, 60)
+        self.assertEqual(action.hook, UTActionTrigger.UTHook.ON_TASK_ASSIGNED)
+        self.assertTrue(action.HasField("cancel"))
+        self.assertFalse(action.HasField("reassign"))
 
     def test_reminder_task(self):
         def wf_func(thread: WorkflowThread) -> None:
@@ -1935,6 +2178,24 @@ class TestUserTasks(unittest.TestCase):
         ut_node = node.user_task
         self.assertEqual(ut_node.notes, to_variable_assignment("hi there"))
 
+    def test_on_cancellation_exception_name(self):
+        def wf_func(thread: WorkflowThread) -> None:
+            thread.assign_user_task(
+                "my-user-task",
+                user_id="asdf",
+                user_group="my-group",
+            ).with_on_cancellation_exception("no-response")
+
+        wf = Workflow("my-wf", wf_func).compile()
+        thread = wf.thread_specs[wf.entrypoint_thread_name]
+
+        node = thread.nodes["1-my-user-task-USER_TASK"]
+        ut_node = node.user_task
+        self.assertEqual(
+            ut_node.on_cancellation_exception_name,
+            to_variable_assignment("no-response"),
+        )
+
 
 class FormatStringTest(unittest.TestCase):
     def test_format_string(self):
@@ -1982,6 +2243,142 @@ class ThrowEventNodeTest(unittest.TestCase):
         self.assertEqual(
             second_throw.throw_event.content.literal_value.str, "some-content"
         )
+
+
+class TestWaitForThreads(unittest.TestCase):
+
+    def test_wait_for_threads_handle_exception_on_child(self):
+        def failure_handler(wf: WorkflowThread) -> None:
+            wf.execute("some-task")
+
+        def child_thread(wf: WorkflowThread) -> None:
+            wf.execute("some-task")
+
+        def wf_func(wf: WorkflowThread) -> None:
+            child = wf.spawn_thread(child_thread, "child")
+            result = wf.wait_for_threads(SpawnedThreads(fixed_threads=[child]))
+            result.handle_exception_on_child(failure_handler, "my-exception")
+            result.handle_exception_on_child(failure_handler)
+
+        wf_spec = Workflow("some-wf", wf_func).compile()
+
+        self.assertEqual(len(wf_spec.thread_specs), 4)
+        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        node = entrypoint.nodes["2-threads-WAIT_FOR_THREADS"]
+        wftn = node.wait_for_threads
+
+        self.assertEqual(len(wftn.per_thread_failure_handlers), 2)
+        specific_handler = wftn.per_thread_failure_handlers[0]
+        any_handler = wftn.per_thread_failure_handlers[1]
+
+        self.assertEqual(specific_handler.specific_failure, "my-exception")
+        self.assertEqual(
+            specific_handler.handler_spec_name,
+            "exn-handler-2-threads-WAIT_FOR_THREADS-my-exception",
+        )
+
+        self.assertEqual(
+            any_handler.any_failure_of_type,
+            FailureHandlerDef.LHFailureType.FAILURE_TYPE_EXCEPTION,
+        )
+        self.assertEqual(
+            any_handler.handler_spec_name,
+            "exn-handler-2-threads-WAIT_FOR_THREADS",
+        )
+
+    def test_wait_for_threads_handle_error_on_child(self):
+        def error_handler(wf: WorkflowThread) -> None:
+            wf.execute("some-task")
+
+        def child_thread(wf: WorkflowThread) -> None:
+            wf.execute("some-task")
+
+        def wf_func(wf: WorkflowThread) -> None:
+            child = wf.spawn_thread(child_thread, "child")
+            result = wf.wait_for_threads(SpawnedThreads(fixed_threads=[child]))
+            result.handle_error_on_child(error_handler, LHErrorType.TIMEOUT)
+            result.handle_error_on_child(error_handler)
+
+        wf_spec = Workflow("some-wf", wf_func).compile()
+
+        self.assertEqual(len(wf_spec.thread_specs), 4)
+        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        node = entrypoint.nodes["2-threads-WAIT_FOR_THREADS"]
+        wftn = node.wait_for_threads
+
+        self.assertEqual(len(wftn.per_thread_failure_handlers), 2)
+        timeout_handler = wftn.per_thread_failure_handlers[0]
+        any_error_handler = wftn.per_thread_failure_handlers[1]
+
+        self.assertEqual(
+            timeout_handler.specific_failure, LHErrorType.Name(LHErrorType.TIMEOUT)
+        )
+        self.assertEqual(
+            timeout_handler.handler_spec_name,
+            "error-handler-2-threads-WAIT_FOR_THREADS-TIMEOUT",
+        )
+
+        self.assertEqual(
+            any_error_handler.any_failure_of_type,
+            FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR,
+        )
+        self.assertEqual(
+            any_error_handler.handler_spec_name,
+            "error-handler-2-threads-WAIT_FOR_THREADS",
+        )
+
+    def test_wait_for_threads_handle_any_failure_on_child(self):
+        def failure_handler(wf: WorkflowThread) -> None:
+            wf.execute("some-task")
+
+        def child_thread(wf: WorkflowThread) -> None:
+            wf.execute("some-task")
+
+        def wf_func(wf: WorkflowThread) -> None:
+            child = wf.spawn_thread(child_thread, "child")
+            result = wf.wait_for_threads(SpawnedThreads(fixed_threads=[child]))
+            result.handle_any_failure_on_child(failure_handler)
+
+        wf_spec = Workflow("some-wf", wf_func).compile()
+
+        self.assertEqual(len(wf_spec.thread_specs), 3)
+        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        node = entrypoint.nodes["2-threads-WAIT_FOR_THREADS"]
+        wftn = node.wait_for_threads
+
+        self.assertEqual(len(wftn.per_thread_failure_handlers), 1)
+        any_failure_handler = wftn.per_thread_failure_handlers[0]
+
+        self.assertEqual(
+            any_failure_handler.handler_spec_name,
+            "failure-handler-2-threads-WAIT_FOR_THREADS-ANY_FAILURE",
+        )
+
+
+class DynamicTaskTest(unittest.TestCase):
+    def test_dynamic_task(self):
+        def wf_func(thread: WorkflowThread) -> None:
+            my_var = thread.add_variable("my-var", VariableType.STR)
+            thread.execute("some-static-task")
+
+            format_str = thread.format("some-dynamic-task-{0}", my_var)
+            thread.execute(format_str)
+            thread.execute(my_var)
+
+        wf = Workflow("obiwan", wf_func).compile()
+        entrypoint = wf.thread_specs[wf.entrypoint_thread_name]
+
+        static_node = entrypoint.nodes["1-some-static-task-TASK"]
+        self.assertEqual(static_node.task.task_def_id.name, "some-static-task")
+
+        format_str_node = entrypoint.nodes["2-some-dynamic-task-{0}-TASK"]
+        self.assertEqual(
+            format_str_node.task.dynamic_task.format_string.format.literal_value.str,
+            "some-dynamic-task-{0}",
+        )
+
+        var_node = entrypoint.nodes["3-my-var-TASK"]
+        self.assertEqual(var_node.task.dynamic_task.variable_name, "my-var")
 
 
 if __name__ == "__main__":

@@ -116,7 +116,7 @@ export const ExternalEvent = {
     if (message.nodeRunPosition !== undefined) {
       writer.uint32(40).int32(message.nodeRunPosition);
     }
-    if (message.claimed === true) {
+    if (message.claimed !== false) {
       writer.uint32(48).bool(message.claimed);
     }
     return writer;
@@ -208,7 +208,7 @@ export const ExternalEvent = {
     if (message.nodeRunPosition !== undefined) {
       obj.nodeRunPosition = Math.round(message.nodeRunPosition);
     }
-    if (message.claimed === true) {
+    if (message.claimed !== false) {
       obj.claimed = message.claimed;
     }
     return obj;

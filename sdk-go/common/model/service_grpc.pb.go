@@ -59,6 +59,7 @@ const (
 	LittleHorse_SearchUserTaskDef_FullMethodName       = "/littlehorse.LittleHorse/SearchUserTaskDef"
 	LittleHorse_SearchWfSpec_FullMethodName            = "/littlehorse.LittleHorse/SearchWfSpec"
 	LittleHorse_SearchExternalEventDef_FullMethodName  = "/littlehorse.LittleHorse/SearchExternalEventDef"
+	LittleHorse_SearchTenant_FullMethodName            = "/littlehorse.LittleHorse/SearchTenant"
 	LittleHorse_RegisterTaskWorker_FullMethodName      = "/littlehorse.LittleHorse/RegisterTaskWorker"
 	LittleHorse_PollTask_FullMethodName                = "/littlehorse.LittleHorse/PollTask"
 	LittleHorse_ReportTask_FullMethodName              = "/littlehorse.LittleHorse/ReportTask"
@@ -192,8 +193,10 @@ type LittleHorseClient interface {
 	SearchUserTaskDef(ctx context.Context, in *SearchUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDefIdList, error)
 	// Search for WfSpec's.
 	SearchWfSpec(ctx context.Context, in *SearchWfSpecRequest, opts ...grpc.CallOption) (*WfSpecIdList, error)
-	// Search for ExteranlEventDef's.
+	// Search for ExternalEventDef's.
 	SearchExternalEventDef(ctx context.Context, in *SearchExternalEventDefRequest, opts ...grpc.CallOption) (*ExternalEventDefIdList, error)
+	// Search for all available TenantIds for current Principal
+	SearchTenant(ctx context.Context, in *SearchTenantRequest, opts ...grpc.CallOption) (*TenantIdList, error)
 	// Used by the Task Worker to:
 	// 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
 	// 2. Receive the assignemnt of LH Server's to poll from.
@@ -596,6 +599,15 @@ func (c *littleHorseClient) SearchExternalEventDef(ctx context.Context, in *Sear
 	return out, nil
 }
 
+func (c *littleHorseClient) SearchTenant(ctx context.Context, in *SearchTenantRequest, opts ...grpc.CallOption) (*TenantIdList, error) {
+	out := new(TenantIdList)
+	err := c.cc.Invoke(ctx, LittleHorse_SearchTenant_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) RegisterTaskWorker(ctx context.Context, in *RegisterTaskWorkerRequest, opts ...grpc.CallOption) (*RegisterTaskWorkerResponse, error) {
 	out := new(RegisterTaskWorkerResponse)
 	err := c.cc.Invoke(ctx, LittleHorse_RegisterTaskWorker_FullMethodName, in, out, opts...)
@@ -893,8 +905,10 @@ type LittleHorseServer interface {
 	SearchUserTaskDef(context.Context, *SearchUserTaskDefRequest) (*UserTaskDefIdList, error)
 	// Search for WfSpec's.
 	SearchWfSpec(context.Context, *SearchWfSpecRequest) (*WfSpecIdList, error)
-	// Search for ExteranlEventDef's.
+	// Search for ExternalEventDef's.
 	SearchExternalEventDef(context.Context, *SearchExternalEventDefRequest) (*ExternalEventDefIdList, error)
+	// Search for all available TenantIds for current Principal
+	SearchTenant(context.Context, *SearchTenantRequest) (*TenantIdList, error)
 	// Used by the Task Worker to:
 	// 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
 	// 2. Receive the assignemnt of LH Server's to poll from.
@@ -1059,6 +1073,9 @@ func (UnimplementedLittleHorseServer) SearchWfSpec(context.Context, *SearchWfSpe
 }
 func (UnimplementedLittleHorseServer) SearchExternalEventDef(context.Context, *SearchExternalEventDefRequest) (*ExternalEventDefIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchExternalEventDef not implemented")
+}
+func (UnimplementedLittleHorseServer) SearchTenant(context.Context, *SearchTenantRequest) (*TenantIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchTenant not implemented")
 }
 func (UnimplementedLittleHorseServer) RegisterTaskWorker(context.Context, *RegisterTaskWorkerRequest) (*RegisterTaskWorkerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterTaskWorker not implemented")
@@ -1829,6 +1846,24 @@ func _LittleHorse_SearchExternalEventDef_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_SearchTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchTenantRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SearchTenant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SearchTenant_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SearchTenant(ctx, req.(*SearchTenantRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_RegisterTaskWorker_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RegisterTaskWorkerRequest)
 	if err := dec(in); err != nil {
@@ -2323,6 +2358,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchExternalEventDef",
 			Handler:    _LittleHorse_SearchExternalEventDef_Handler,
+		},
+		{
+			MethodName: "SearchTenant",
+			Handler:    _LittleHorse_SearchTenant_Handler,
 		},
 		{
 			MethodName: "RegisterTaskWorker",

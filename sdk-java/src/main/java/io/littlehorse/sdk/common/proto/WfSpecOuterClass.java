@@ -298,46 +298,49 @@ public final class WfSpecOuterClass {
       "owEventNodeH\000B\006\n\004node\"y\n\016ThrowEventNode\022" +
       "5\n\014event_def_id\030\001 \001(\0132\037.littlehorse.Work" +
       "flowEventDefId\0220\n\007content\030\002 \001(\0132\037.little" +
-      "horse.VariableAssignment\"\342\002\n\014UserTaskNod" +
+      "horse.VariableAssignment\"\323\003\n\014UserTaskNod" +
       "e\022\032\n\022user_task_def_name\030\001 \001(\t\0228\n\nuser_gr" +
       "oup\030\002 \001(\0132\037.littlehorse.VariableAssignme" +
       "ntH\000\210\001\001\0225\n\007user_id\030\003 \001(\0132\037.littlehorse.V" +
       "ariableAssignmentH\001\210\001\001\022-\n\007actions\030\004 \003(\0132" +
       "\034.littlehorse.UTActionTrigger\022\"\n\025user_ta" +
       "sk_def_version\030\005 \001(\005H\002\210\001\001\0223\n\005notes\030\006 \001(\013" +
-      "2\037.littlehorse.VariableAssignmentH\003\210\001\001B\r" +
-      "\n\013_user_groupB\n\n\010_user_idB\030\n\026_user_task_" +
-      "def_versionB\010\n\006_notes\"\233\001\n\rEdgeCondition\022" +
-      "+\n\ncomparator\030\001 \001(\0162\027.littlehorse.Compar" +
-      "ator\022-\n\004left\030\002 \001(\0132\037.littlehorse.Variabl" +
-      "eAssignment\022.\n\005right\030\003 \001(\0132\037.littlehorse" +
-      ".VariableAssignment\"\233\001\n\004Edge\022\026\n\016sink_nod" +
-      "e_name\030\001 \001(\t\0222\n\tcondition\030\002 \001(\0132\032.little" +
-      "horse.EdgeConditionH\000\210\001\001\0229\n\022variable_mut" +
-      "ations\030\003 \003(\0132\035.littlehorse.VariableMutat" +
-      "ionB\014\n\n_condition\"\t\n\007NopNode\"\276\001\n\tSleepNo" +
-      "de\0226\n\013raw_seconds\030\001 \001(\0132\037.littlehorse.Va" +
-      "riableAssignmentH\000\0224\n\ttimestamp\030\002 \001(\0132\037." +
-      "littlehorse.VariableAssignmentH\000\0223\n\010iso_" +
-      "date\030\003 \001(\0132\037.littlehorse.VariableAssignm" +
-      "entH\000B\016\n\014sleep_length\"\207\002\n\026WfSpecVersionM" +
-      "igration\022\031\n\021new_major_version\030\001 \001(\005\022\024\n\014n" +
-      "ew_revision\030\002 \001(\005\022]\n\026thread_spec_migrati" +
-      "ons\030\003 \003(\0132=.littlehorse.WfSpecVersionMig" +
-      "ration.ThreadSpecMigrationsEntry\032]\n\031Thre" +
-      "adSpecMigrationsEntry\022\013\n\003key\030\001 \001(\t\022/\n\005va" +
-      "lue\030\002 \001(\0132 .littlehorse.ThreadSpecMigrat" +
-      "ion:\0028\001\"\325\001\n\023ThreadSpecMigration\022\034\n\024new_t" +
-      "hread_spec_name\030\001 \001(\t\022M\n\017node_migrations" +
-      "\030\002 \003(\01324.littlehorse.ThreadSpecMigration" +
-      ".NodeMigrationsEntry\032Q\n\023NodeMigrationsEn" +
-      "try\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.little" +
-      "horse.NodeMigration:\0028\001\"&\n\rNodeMigration" +
-      "\022\025\n\rnew_node_name\030\001 \001(\t*N\n\030WfRunVariable" +
-      "AccessLevel\022\016\n\nPUBLIC_VAR\020\000\022\017\n\013PRIVATE_V" +
-      "AR\020\001\022\021\n\rINHERITED_VAR\020\002BG\n\037io.littlehors" +
-      "e.sdk.common.protoP\001Z\007.;model\252\002\030LittleHo" +
-      "rse.Common.Protob\006proto3"
+      "2\037.littlehorse.VariableAssignmentH\003\210\001\001\022L" +
+      "\n\036on_cancellation_exception_name\030\007 \001(\0132\037" +
+      ".littlehorse.VariableAssignmentH\004\210\001\001B\r\n\013" +
+      "_user_groupB\n\n\010_user_idB\030\n\026_user_task_de" +
+      "f_versionB\010\n\006_notesB!\n\037_on_cancellation_" +
+      "exception_name\"\233\001\n\rEdgeCondition\022+\n\ncomp" +
+      "arator\030\001 \001(\0162\027.littlehorse.Comparator\022-\n" +
+      "\004left\030\002 \001(\0132\037.littlehorse.VariableAssign" +
+      "ment\022.\n\005right\030\003 \001(\0132\037.littlehorse.Variab" +
+      "leAssignment\"\233\001\n\004Edge\022\026\n\016sink_node_name\030" +
+      "\001 \001(\t\0222\n\tcondition\030\002 \001(\0132\032.littlehorse.E" +
+      "dgeConditionH\000\210\001\001\0229\n\022variable_mutations\030" +
+      "\003 \003(\0132\035.littlehorse.VariableMutationB\014\n\n" +
+      "_condition\"\t\n\007NopNode\"\276\001\n\tSleepNode\0226\n\013r" +
+      "aw_seconds\030\001 \001(\0132\037.littlehorse.VariableA" +
+      "ssignmentH\000\0224\n\ttimestamp\030\002 \001(\0132\037.littleh" +
+      "orse.VariableAssignmentH\000\0223\n\010iso_date\030\003 " +
+      "\001(\0132\037.littlehorse.VariableAssignmentH\000B\016" +
+      "\n\014sleep_length\"\207\002\n\026WfSpecVersionMigratio" +
+      "n\022\031\n\021new_major_version\030\001 \001(\005\022\024\n\014new_revi" +
+      "sion\030\002 \001(\005\022]\n\026thread_spec_migrations\030\003 \003" +
+      "(\0132=.littlehorse.WfSpecVersionMigration." +
+      "ThreadSpecMigrationsEntry\032]\n\031ThreadSpecM" +
+      "igrationsEntry\022\013\n\003key\030\001 \001(\t\022/\n\005value\030\002 \001" +
+      "(\0132 .littlehorse.ThreadSpecMigration:\0028\001" +
+      "\"\325\001\n\023ThreadSpecMigration\022\034\n\024new_thread_s" +
+      "pec_name\030\001 \001(\t\022M\n\017node_migrations\030\002 \003(\0132" +
+      "4.littlehorse.ThreadSpecMigration.NodeMi" +
+      "grationsEntry\032Q\n\023NodeMigrationsEntry\022\013\n\003" +
+      "key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.littlehorse.N" +
+      "odeMigration:\0028\001\"&\n\rNodeMigration\022\025\n\rnew" +
+      "_node_name\030\001 \001(\t*N\n\030WfRunVariableAccessL" +
+      "evel\022\016\n\nPUBLIC_VAR\020\000\022\017\n\013PRIVATE_VAR\020\001\022\021\n" +
+      "\rINHERITED_VAR\020\002BG\n\037io.littlehorse.sdk.c" +
+      "ommon.protoP\001Z\007.;model\252\002\030LittleHorse.Com" +
+      "mon.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -502,7 +505,7 @@ public final class WfSpecOuterClass {
     internal_static_littlehorse_UserTaskNode_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_UserTaskNode_descriptor,
-        new java.lang.String[] { "UserTaskDefName", "UserGroup", "UserId", "Actions", "UserTaskDefVersion", "Notes", "UserGroup", "UserId", "UserTaskDefVersion", "Notes", });
+        new java.lang.String[] { "UserTaskDefName", "UserGroup", "UserId", "Actions", "UserTaskDefVersion", "Notes", "OnCancellationExceptionName", "UserGroup", "UserId", "UserTaskDefVersion", "Notes", "OnCancellationExceptionName", });
     internal_static_littlehorse_EdgeCondition_descriptor =
       getDescriptor().getMessageTypes().get(19);
     internal_static_littlehorse_EdgeCondition_fieldAccessorTable = new

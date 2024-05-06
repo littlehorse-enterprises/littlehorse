@@ -24,6 +24,23 @@ var putTenantCmd = &cobra.Command{
 	},
 }
 
+var searchTenantCmd = &cobra.Command{
+	Use:   "tenant",
+	Short: "Search for all available TenantIds for current Principal",
+	Run: func(cmd *cobra.Command, args []string) {
+		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
+		limit, _ := cmd.Flags().GetInt32("limit")
+		common.PrintResp(getGlobalClient(cmd).SearchTenant(
+			requestContext(cmd),
+			&model.SearchTenantRequest{
+				Bookmark: bookmark,
+				Limit:    &limit,
+			},
+		))
+	},
+}
+
 func init() {
 	putCmd.AddCommand(putTenantCmd)
+	searchCmd.AddCommand(searchTenantCmd)
 }

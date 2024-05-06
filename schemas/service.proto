@@ -171,8 +171,11 @@ service LittleHorse {
   // Search for WfSpec's.
   rpc SearchWfSpec(SearchWfSpecRequest) returns (WfSpecIdList) {}
 
-  // Search for ExteranlEventDef's.
+  // Search for ExternalEventDef's.
   rpc SearchExternalEventDef(SearchExternalEventDefRequest) returns (ExternalEventDefIdList) {}
+
+  // Search for all available TenantIds for current Principal
+  rpc SearchTenant(SearchTenantRequest) returns (TenantIdList) {}
 
   // Used by the Task Worker to:
   // 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -747,6 +750,21 @@ message ExternalEventDefIdList {
   optional bytes bookmark = 2;
 }
 
+// Search for all available TenantIds for current Principal
+message SearchTenantRequest {
+      // Maximum results to return in one request.
+      optional int32 limit = 1;
+      // Bookmark for cursor-based pagination; pass if applicable.
+      optional bytes bookmark = 2;
+}
+
+message TenantIdList {
+      // The resulting object id's.
+      repeated TenantId results = 1;
+      // Bookmark for cursor-based pagination; pass if applicable.
+      optional bytes bookmark = 2;
+}
+
 // EVOLVING: Search for ExternalEvent's.
 //
 // Currently, this request allows you to search for ExternalEvent's based on either:
@@ -795,12 +813,26 @@ message ExternalEventIdList {
 message ListNodeRunsRequest {
   // The WfRun for whom we list NodeRun's.
   WfRunId wf_run_id = 1;
+
+  // Optionally specify the thread run number to filter NodeRun's by.
+  optional int32 thread_run_number = 2;
+
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 3;
+
+  // Maximum results to return in one request.
+  optional int32 limit = 4;
 }
 
 // A list of NodeRun Objects.
 message NodeRunList {
   // A list of NodeRun Objects.
   repeated NodeRun results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
 }
 
 // List all Variables for a specific WfRun. Note that List requests return actual Variable Objects,

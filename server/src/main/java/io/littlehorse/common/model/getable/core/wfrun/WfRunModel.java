@@ -339,7 +339,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
                         new FailureModel(
                                 "Failed launching interrupt thread with id: " + interruptor.number,
                                 LHConstants.CHILD_FAILURE),
-                        time);
+                        time,
+                        processorContext);
             } else {
                 toInterrupt.acknowledgeInterruptStarted(pi, interruptor.number);
             }
@@ -388,7 +389,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
                         new FailureModel(
                                 "Failed launching exception handler thread with id: " + fh.number,
                                 LHConstants.CHILD_FAILURE),
-                        time);
+                        time,
+                        executionContext.castOnSupport(ProcessorExecutionContext.class));
             } else {
                 failedThr.acknowledgeXnHandlerStarted(pfh, fh.number);
             }
@@ -397,12 +399,13 @@ public class WfRunModel extends CoreGetable<WfRun> {
         return somethingChanged;
     }
 
-    private void putFailureOnThreadRun(ThreadRunModel threadToFail, FailureModel failure, Date time) {
+    private void putFailureOnThreadRun(
+            ThreadRunModel threadToFail, FailureModel failure, Date time, ProcessorExecutionContext processorContext) {
         NodeRunModel nodeRun = threadToFail.getCurrentNodeRun();
         nodeRun.getFailures().add(failure);
         threadToFail.setStatus(failure.getStatus());
         threadToFail.setErrorMessage(failure.getMessage());
-        nodeRun.maybeHalt();
+        nodeRun.maybeHalt(processorContext);
     }
 
     public void advance(Date time) {

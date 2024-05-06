@@ -21,6 +21,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.common.util.WfSpecUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.Node;
+import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
@@ -66,7 +67,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
     // Internal, not related to Proto.
     private Map<String, String> varToThreadSpec = new HashMap<>();
     private boolean initializedVarToThreadSpec = false;
-    private ExecutionContext executionContext;
+    private MetadataCommandExecution executionContext;
 
     public WfSpecModel() {
         // default constructor used by LHDeserializers
@@ -108,7 +109,8 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         List<String> names = new ArrayList<>();
         threadSpecs.forEach((s, threadSpec) -> {
             threadSpec.getNodes().values().forEach(node -> {
-                if (node.getType() == Node.NodeCase.TASK) {
+                if (node.getType() == Node.NodeCase.TASK
+                        && node.getTaskNode().getTaskToExecuteType() == TaskToExecuteCase.TASK_DEF_ID) {
                     names.add(node.getTaskNode().getTaskDefId().getName());
                 }
             });
@@ -177,7 +179,6 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
             retentionPolicy =
                     LHSerializable.fromProto(proto.getRetentionPolicy(), WorkflowRetentionPolicyModel.class, context);
         }
-        this.executionContext = context;
 
         for (ThreadVarDef tvd : proto.getFrozenVariablesList()) {
             ThreadVarDefModel tvdm = LHSerializable.fromProto(tvd, ThreadVarDefModel.class, context);
@@ -231,7 +232,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         for (Map.Entry<String, ThreadSpecModel> e : threadSpecs.entrySet()) {
             ThreadSpecModel ts = e.getValue();
             try {
-                ts.validate();
+                ts.validate(ctx);
             } catch (LHApiException exn) {
                 throw exn.getCopyWithPrefix("Thread " + ts.name);
             }
