@@ -4,11 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum LHProcessorType {
-    CORE("core"),
-    REPARTITION("repartition"),
-    GLOBAL_METADATA("global-metadata"),
-    METADATA("metadata"),
-    TIMER("timer");
+    CORE("core-store"),
+    REPARTITION("core-repartition-store"),
+    GLOBAL_METADATA("global-metadata-store"),
+    METADATA("metadata-store"),
+    TIMER("timer-store");
 
     private final String storeName;
 

@@ -15,13 +15,13 @@ import org.apache.kafka.streams.processor.StandbyUpdateListener;
  */
 @Getter
 @Slf4j
-final class InstanceStore {
+public final class StandbyStoresOnInstance {
 
     private final String storeName;
-    private final Set<TopicPartitionMetrics> partitions = new HashSet<>();
+    private final Set<StandbyTopicPartitionMetrics> partitions = new HashSet<>();
     private final int clusterPartitions;
 
-    InstanceStore(final String storeName, final int numberOfPartitionAssigned) {
+    StandbyStoresOnInstance(final String storeName, final int numberOfPartitionAssigned) {
         this.storeName = storeName;
         this.clusterPartitions = numberOfPartitionAssigned;
     }
@@ -33,7 +33,8 @@ final class InstanceStore {
      * @param endOffset topic partition end offset
      */
     public void recordOffsets(TopicPartition topicPartition, final long currentOffset, final long endOffset) {
-        TopicPartitionMetrics newMetric = new TopicPartitionMetrics(topicPartition, currentOffset, endOffset);
+        StandbyTopicPartitionMetrics newMetric =
+                new StandbyTopicPartitionMetrics(topicPartition, currentOffset, endOffset);
         partitions.remove(newMetric);
         partitions.add(newMetric);
     }
@@ -45,7 +46,7 @@ final class InstanceStore {
     @JsonProperty("totalLag")
     public long totalLag() {
         return partitions.stream()
-                .map(TopicPartitionMetrics::getCurrentLag)
+                .map(StandbyTopicPartitionMetrics::getCurrentLag)
                 .map(lag -> Math.max(0, lag)) // ignore sentinel values (-1)
                 .mapToLong(Long::longValue)
                 .sum();
@@ -74,6 +75,6 @@ final class InstanceStore {
             final long endOffset,
             final StandbyUpdateListener.SuspendReason reason) {
         log.info("TopicPartition %s suspended with reason %s ".formatted(topicPartition, reason));
-        partitions.remove(new TopicPartitionMetrics(topicPartition, currentOffset, endOffset));
+        partitions.remove(new StandbyTopicPartitionMetrics(topicPartition, currentOffset, endOffset));
     }
 }

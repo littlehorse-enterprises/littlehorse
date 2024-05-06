@@ -11,13 +11,13 @@ class TopicPartitionMetricsTest {
 
     @Test
     public void shouldCalculateLagFromOffsets() {
-        long currentLag = new TopicPartitionMetrics(tp, 100, 1000).getCurrentLag();
+        long currentLag = new StandbyTopicPartitionMetrics(tp, 100, 1000).getCurrentLag();
         Assertions.assertThat(currentLag).isEqualTo(900);
     }
 
     @Test
     public void shouldSetDefaultLag() {
-        long currentLag = new TopicPartitionMetrics(tp, 1000, 100).getCurrentLag();
+        long currentLag = new StandbyTopicPartitionMetrics(tp, 1000, 100).getCurrentLag();
         Assertions.assertThat(currentLag).isEqualTo(-1);
     }
 }
