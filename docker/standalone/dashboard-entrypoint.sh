@@ -45,8 +45,4 @@ fi
 export HOSTNAME=0.0.0.0
 export PORT=8080
 
-if [ "${DASHBOARD_NEXT}" == "true" ]; then
-node /lh/dashboard-new/server.js
-else
-node /lh/dashboard/apps/web/server.js
-fi
+node /lh/dashboard/server.js
