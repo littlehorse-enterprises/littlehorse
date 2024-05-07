@@ -37,8 +37,8 @@ done
 if [[ ${dashboard} = true ]]; then
     echo "Building lh-dashboard"
     cd dashboard
-    pnpm install
-    pnpm build
+    npm install
+    npm run build
     cd ..
     docker build -t littlehorse/lh-dashboard:latest -f docker/dashboard/Dockerfile .
 fi
