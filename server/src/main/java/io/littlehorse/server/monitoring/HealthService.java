@@ -53,7 +53,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
                 timerStreams,
                 taskQueueManager,
                 metadataCache,
-                new StandbyMetrics(standbyStores, config.getLHInstanceId()));
+                new StandbyMetrics(standbyStores, config.getLHInstanceName()));
         this.server = Javalin.create();
 
         this.coreStreams = coreStreams;

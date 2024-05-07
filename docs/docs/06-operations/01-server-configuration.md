@@ -417,11 +417,11 @@ An identifier for the stream processing application. Must be unique within the L
 
 ### `LHS_INSTANCE_ID`
 
-A unique identifier of the consumer instance provided by the end user. [Kafka Official](https://kafka.apache.org/documentation/#consumerconfigs_group.instance.id).
+An optional ordinal integer describing the order in which this Server was added to the cluster. If provided, it **must** be unique. Providing this configuration allows LittleHorse to make better decisions about Kafka Streams Task Assignment when adding or removing servers. For a specific server, this should be consistent across restarts. Must be positive.
 
-- **Type:** string
-- **Default:** server1
-- **Importance:** high
+- **Type:** Short
+- **Default:** null
+- **Importance:** medium
 
 ---
 

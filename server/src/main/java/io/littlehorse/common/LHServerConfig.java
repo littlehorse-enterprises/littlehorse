@@ -323,9 +323,21 @@ public class LHServerConfig extends ConfigBase {
         return getOrSetDefault(LHServerConfig.LHS_CLUSTER_ID_KEY, "cluster1");
     }
 
-    public String getLHInstanceId() {
-        return getOrSetDefault(
-                LHServerConfig.LHS_INSTANCE_ID_KEY, "unset-" + UUID.randomUUID().toString());
+    public Optional<Short> getLHInstanceId() {
+        String instanceId = getOrSetDefault(LHS_INSTANCE_ID_KEY, null);
+        if (instanceId == null) return Optional.empty();
+
+        short ordinalVal = Short.valueOf(instanceId);
+        if (ordinalVal < 0) {
+            throw new LHMisconfigurationException("LHS_INSTANCE_ID cannot be negative");
+        }
+        return Optional.of(ordinalVal);
+    }
+
+    public String getLHInstanceName() {
+        return getLHInstanceId().isPresent()
+                ? getLHInstanceId().get().toString()
+                : UUID.randomUUID().toString();
     }
 
     public String getStateDirectory() {
@@ -631,7 +643,7 @@ public class LHServerConfig extends ConfigBase {
 
     public Properties getKafkaProducerConfig(String component) {
         Properties conf = new Properties();
-        conf.put("client.id", this.getClientId());
+        conf.put("client.id", this.getClientId(component));
         conf.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
         conf.put(
@@ -750,6 +762,7 @@ public class LHServerConfig extends ConfigBase {
     public Properties getCoreStreamsConfig() {
         Properties props = getBaseStreamsConfig();
         props.put("application.id", getKafkaGroupId("core"));
+        props.put("client.id", this.getClientId("core"));
 
         if (getOrSetDefault(X_USE_AT_LEAST_ONCE_KEY, "false").equals("true")) {
             log.warn("Using experimental override config to use at-least-once for Core topology");
@@ -791,6 +804,7 @@ public class LHServerConfig extends ConfigBase {
     public Properties getTimerStreamsConfig() {
         Properties props = getBaseStreamsConfig();
         props.put("application.id", this.getKafkaGroupId("timer"));
+        props.put("client.id", this.getClientId("timer"));
         props.put("processing.guarantee", "at_least_once");
         props.put("consumer.isolation.level", "read_uncommitted");
         props.put("num.stream.threads", Integer.valueOf(getOrSetDefault(TIMER_STREAM_THREADS_KEY, "1")));
@@ -838,7 +852,7 @@ public class LHServerConfig extends ConfigBase {
 
         if (getOrSetDefault(X_USE_STATIC_MEMBERSHIP_KEY, "false").equals("true")) {
             log.warn("Using experimental internal config to enable static membership");
-            props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, getLHInstanceId());
+            props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, getLHInstanceName());
         }
 
         props.put(
@@ -847,7 +861,6 @@ public class LHServerConfig extends ConfigBase {
                         + this.getInternalAdvertisedPort());
 
         props.put("bootstrap.servers", this.getBootstrapServers());
-        props.put("client.id", this.getClientId());
         props.put("state.dir", getStateDirectory());
         props.put("request.timeout.ms", 1000 * 60);
         props.put("producer.transaction.timeout.ms", 1000 * 60);
@@ -908,8 +921,8 @@ public class LHServerConfig extends ConfigBase {
         return props;
     }
 
-    private String getClientId() {
-        return this.getLHClusterId() + "-" + this.getLHInstanceId();
+    private String getClientId(String component) {
+        return this.getLHClusterId() + "-" + this.getLHInstanceName() + "-" + component;
     }
 
     public int getNumNetworkThreads() {
