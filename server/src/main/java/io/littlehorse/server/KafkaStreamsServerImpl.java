@@ -228,6 +228,7 @@ import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.processor.TaskId;
 
 @Slf4j
 public class KafkaStreamsServerImpl extends LittleHorseImplBase {
@@ -978,8 +979,13 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         }
     }
 
-    public void onTaskScheduled(TaskDefIdModel taskDef, ScheduledTaskModel scheduledTask, TenantIdModel tenantId) {
-        taskQueueManager.onTaskScheduled(taskDef, scheduledTask, tenantId);
+    public void onTaskScheduled(
+            TaskId streamsTaskId, TaskDefIdModel taskDef, ScheduledTaskModel scheduledTask, TenantIdModel tenantId) {
+        taskQueueManager.onTaskScheduled(streamsTaskId, taskDef, scheduledTask, tenantId);
+    }
+
+    public void drainPartitionTaskQueue(TaskId streamsTaskId) {
+        taskQueueManager.drainPartition(streamsTaskId);
     }
 
     public void start() throws IOException {

@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.*;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 public class TaskWorkerMetadataModel extends LHSerializable<TaskWorkerMetadata>
@@ -16,6 +17,8 @@ public class TaskWorkerMetadataModel extends LHSerializable<TaskWorkerMetadata>
 
     public String taskWorkerId;
     public Date latestHeartbeat;
+
+    @Getter
     public Set<HostModel> hosts = new TreeSet<>();
 
     @Override

@@ -20,6 +20,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.streams.processor.TaskId;
 
 // One instance of this class is responsible for coordinating the grpc backend for
 // one specific TaskDef on one LH Server host.
@@ -29,7 +30,7 @@ public class OneTaskQueue {
     private Queue<PollTaskRequestObserver> hungryClients;
     private Lock lock;
 
-    private LinkedBlockingQueue<ScheduledTaskModel> pendingTasks;
+    private LinkedBlockingQueue<QueueItem> pendingTasks;
     private TaskQueueManager parent;
 
     @Getter
@@ -106,7 +107,7 @@ public class OneTaskQueue {
      *                        scheduled.
      * @return True if the task was successfully scheduled, or False if the queue is full.
      */
-    public boolean onTaskScheduled(ScheduledTaskModel scheduledTask) {
+    public boolean onTaskScheduled(TaskId streamsTaskId, ScheduledTaskModel scheduledTask) {
         // There's two cases here:
         // 1. There are clients waiting for requests, in which case we know that
         // the pendingTaskIds queue/list must be empty.
@@ -130,7 +131,8 @@ public class OneTaskQueue {
                 luckyClient = hungryClients.poll();
             } else {
                 // case 2
-                hasMoreTasksOnDisk = !pendingTasks.offer(scheduledTask) || hasMoreTasksOnDisk;
+                hasMoreTasksOnDisk =
+                        !pendingTasks.offer(new QueueItem(streamsTaskId, scheduledTask)) || hasMoreTasksOnDisk;
                 return !hasMoreTasksOnDisk;
             }
         } finally {
@@ -183,7 +185,7 @@ public class OneTaskQueue {
                     throw new RuntimeException("Can't have pending tasks and hungry clients");
                 }
 
-                nextTask = pendingTasks.poll();
+                nextTask = pendingTasks.poll().scheduledTask();
                 lastReturnedTask = nextTask;
             } else {
                 // case 2
@@ -222,7 +224,7 @@ public class OneTaskQueue {
                     if (!hungryClients.isEmpty()) {
                         parent.itsAMatch(scheduledTask, hungryClients.remove());
                     } else {
-                        queueOutOfCapacity = !pendingTasks.offer(scheduledTask);
+                        queueOutOfCapacity = !pendingTasks.offer(new QueueItem(null, scheduledTask));
                         if (!queueOutOfCapacity) {
                             lastRehydratedTask = scheduledTask.getCreatedAt();
                         }
@@ -239,7 +241,13 @@ public class OneTaskQueue {
                         && scheduledTask.getCreatedAt().compareTo(lastRehydratedTask) >= 0));
     }
 
+    public void drainPartition(TaskId partitionToDrain) {
+        pendingTasks.removeIf(queueItem -> queueItem.streamsTaskId().equals(partitionToDrain));
+    }
+
     public int size() {
         return pendingTasks.size();
     }
+
+    private record QueueItem(TaskId streamsTaskId, ScheduledTaskModel scheduledTask) {}
 }
