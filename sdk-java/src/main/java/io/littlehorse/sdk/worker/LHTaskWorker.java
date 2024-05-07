@@ -52,7 +52,6 @@ public class LHTaskWorker implements Closeable {
     private LHServerConnectionManager manager;
     private String taskDefName;
     private LittleHorseBlockingStub grpcClient;
-
     /**
      * Creates an LHTaskWorker given an Object that has an annotated LHTaskMethod, and a
      * configuration Properties object.
@@ -95,11 +94,6 @@ public class LHTaskWorker implements Closeable {
         this.grpcClient = config.getBlockingStub();
     }
 
-    public LHTaskWorker(Object executable, String taskDefName, LHConfig config, LHServerConnectionManager manager) {
-        this(executable, taskDefName, config);
-        this.manager = manager;
-    }
-
     public LHTaskWorker(
             Object executable,
             String taskDefName,
@@ -123,7 +117,15 @@ public class LHTaskWorker implements Closeable {
         validateTaskDefAndExecutable();
         if (this.manager == null) {
             this.manager = new LHServerConnectionManager(
-                    taskMethod, taskDef, config, mappings, executable, new LHLivenessController());
+                    taskDef,
+                    config.getAsyncStub(),
+                    config.getTaskWorkerId(),
+                    config.getConnectListener(),
+                    new LHLivenessController(),
+                    taskMethod,
+                    mappings,
+                    executable,
+                    config);
         }
     }
 
