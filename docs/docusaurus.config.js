@@ -34,9 +34,11 @@ const config = {
 
   presets: [
     [
-      "classic",
-      /** @type {import('@docusaurus/preset-classic').Options} */
-      ({
+      'docusaurus-protobuffet',
+      {
+        protubuffet: {
+          fileDescriptorsPath: './fixtures/proto_workspace.json',
+        },
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
         },
@@ -44,7 +46,7 @@ const config = {
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
-      }),
+      },
     ],
   ],
 
