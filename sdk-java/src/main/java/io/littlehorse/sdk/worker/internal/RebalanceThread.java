@@ -20,7 +20,6 @@ final class RebalanceThread extends Thread {
     private final String taskWorkerId;
     private final String connectListenerName;
     private final TaskDef taskDef;
-    private static final long HEARTBEAT_INTERVAL_MS = 5000L;
     private final HeartBeatCallback heartBeatCallback = new HeartBeatCallback();
     private final Method taskMethod;
     private final List<VariableMapping> mappings;
@@ -29,6 +28,7 @@ final class RebalanceThread extends Thread {
     private final LHConfig config;
     private final Map<LHHostInfo, PollingConnection> runningConnections = new ConcurrentHashMap<>();
     private final LHLivenessController livenessController;
+    private final long heartbeatIntervalMs;
 
     public RebalanceThread(
             LittleHorseGrpc.LittleHorseStub bootstrapStub,
@@ -40,7 +40,8 @@ final class RebalanceThread extends Thread {
             Object executable,
             LHTaskExecutor executor,
             LHConfig config,
-            LHLivenessController livenessController) {
+            LHLivenessController livenessController,
+            long heartbeatIntervalMs) {
         this.bootstrapStub = bootstrapStub;
         this.taskWorkerId = taskWorkerId;
         this.connectListenerName = connectListenerName;
@@ -51,6 +52,7 @@ final class RebalanceThread extends Thread {
         this.executor = executor;
         this.config = config;
         this.livenessController = livenessController;
+        this.heartbeatIntervalMs = heartbeatIntervalMs;
     }
 
     @Override
@@ -61,15 +63,14 @@ final class RebalanceThread extends Thread {
         }
     }
 
-    private void doHeartBeat() {
+    public void doHeartBeat() {
         bootstrapStub.registerTaskWorker(
                 RegisterTaskWorkerRequest.newBuilder()
                         .setTaskDefId(taskDef.getId())
                         .setTaskWorkerId(taskWorkerId)
                         .setListenerName(connectListenerName)
                         .build(),
-                heartBeatCallback // the callbacks come back to this manager.
-                );
+                heartBeatCallback);
     }
 
     private PollingConnection createConnection(LHHostInfo host) {
@@ -88,7 +89,7 @@ final class RebalanceThread extends Thread {
 
     private void waitForInterval() {
         try {
-            Thread.sleep(HEARTBEAT_INTERVAL_MS);
+            Thread.sleep(heartbeatIntervalMs);
         } catch (Exception ignored) {
             // Ignored
         }

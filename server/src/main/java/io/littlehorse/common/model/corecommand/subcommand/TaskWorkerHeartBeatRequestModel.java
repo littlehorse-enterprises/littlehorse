@@ -56,7 +56,6 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
 
     @Override
     public RegisterTaskWorkerResponse process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        log.info("Processing a heartbeat");
         GetableManager getableManager = executionContext.getableManager();
         // Get the group, a group contains all the task worker for that specific task
         TaskWorkerGroupModel taskWorkerGroup = getableManager.get(new TaskWorkerGroupIdModel(taskDefId));
@@ -81,8 +80,6 @@ public class TaskWorkerHeartBeatRequestModel extends CoreSubCommand<TaskWorkerHe
             taskWorkerGroup.taskWorkers.put(clientId, taskWorker);
         }
         Set<HostModel> internalHosts = executionContext.getInternalHosts();
-        log.info("there are %s workers registered and %s server instances"
-                .formatted(taskWorkerGroup.taskWorkers.size(), internalHosts.size()));
         // Run assignor
         assignor.assign(internalHosts, taskWorkerGroup.taskWorkers.values());
         Set<String> assignedHosts = taskWorkerGroup.taskWorkers.values().stream()

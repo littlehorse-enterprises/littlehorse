@@ -13,6 +13,7 @@ public class LHServerConnectionManagerV2Impl implements LHServerConnectionManage
     private final RebalanceThread rebalanceThread;
     private final TaskDef taskDef;
     private final LHLivenessController livenessController;
+    private static final long HEARTBEAT_INTERVAL_MS = 5000L;
 
     public LHServerConnectionManagerV2Impl(
             TaskDef taskDef,
@@ -35,7 +36,8 @@ public class LHServerConnectionManagerV2Impl implements LHServerConnectionManage
                 executable,
                 executor,
                 config,
-                livenessController);
+                livenessController,
+                HEARTBEAT_INTERVAL_MS);
         this.livenessController = livenessController;
         this.taskDef = taskDef;
     }

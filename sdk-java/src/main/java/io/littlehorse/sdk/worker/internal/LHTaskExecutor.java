@@ -28,6 +28,16 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * In memory queue and executor for scheduled tasks.
+ * An instance of this class will accept scheduled task to be executed from.
+ * Multiples tasks can share the same queue of pending tasks.
+ * This class will handle retries with a specified delay.
+ * A ${@link Semaphore} is used internally in order to prevent overwhelming the in-memory queue,
+ * clients can control the allowed size of this by specifying INFLIGHT_PENDING_TASKS.
+ * Also, clients can define the number of thread dedicated to execute tasks.
+ *
+ */
 @Slf4j
 public class LHTaskExecutor {
 
@@ -57,6 +67,7 @@ public class LHTaskExecutor {
     }
 
     public boolean close(int timeout, TimeUnit timeUnit) throws InterruptedException {
+        log.info("shutting down...");
         pool.shutdown();
         return pool.awaitTermination(timeout, timeUnit);
     }
@@ -104,6 +115,7 @@ public class LHTaskExecutor {
 
         try {
             Object rawResult = invoke(scheduledTask, wc, mappings, executable, taskMethod);
+            log.info("Task executed for: " + scheduledTask.getTaskDefId().getName());
             VariableValue serialized = LHLibUtil.objToVarVal(rawResult);
             taskResult.setOutput(serialized.toBuilder()).setStatus(TaskStatus.TASK_SUCCESS);
         } catch (InputVarSubstitutionError exn) {

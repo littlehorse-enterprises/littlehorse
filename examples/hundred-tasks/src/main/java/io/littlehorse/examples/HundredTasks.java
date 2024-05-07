@@ -72,6 +72,8 @@ public class HundredTasks {
     public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
+
+
         LHConfig config = new LHConfig(props);
         LittleHorseBlockingStub client = config.getBlockingStub();
 
