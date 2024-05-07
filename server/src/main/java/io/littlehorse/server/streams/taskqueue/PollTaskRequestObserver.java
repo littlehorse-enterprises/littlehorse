@@ -73,7 +73,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         taskQueueManager.onRequestDisconnected(this, tenantId);
         log.debug(
                 "Instance {}: Client {} disconnected from task queue {}",
-                taskQueueManager.getBackend().getInstanceId(),
+                taskQueueManager.getBackend().getInstanceName(),
                 clientId,
                 taskDefId);
     }

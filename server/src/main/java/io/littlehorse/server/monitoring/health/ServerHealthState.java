@@ -50,7 +50,7 @@ public class ServerHealthState {
 
         this.host = config.getInternalAdvertisedHost();
         this.port = config.getInternalAdvertisedPort();
-        this.instanceId = config.getLHInstanceId();
+        this.instanceId = config.getLHInstanceName();
         this.restorations = restorations.values().stream().toList();
 
         this.coreActiveTasks.addAll(coreStreams.metadataForLocalThreads().stream()
