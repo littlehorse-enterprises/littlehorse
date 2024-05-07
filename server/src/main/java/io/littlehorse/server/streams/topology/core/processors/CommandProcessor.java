@@ -93,7 +93,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         CommandModel command = executionContext.currentCommand();
         log.trace(
                 "{} Processing command of type {} with commandId {} with partition key {}",
-                config.getLHInstanceId(),
+                config.getLHInstanceName(),
                 command.type,
                 command.commandId,
                 command.getPartitionKey());

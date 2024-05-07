@@ -66,6 +66,7 @@ import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
@@ -212,8 +213,12 @@ import io.littlehorse.server.streams.topology.core.WfService;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import io.littlehorse.server.streams.util.POSTStreamObserver;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Date;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
@@ -250,12 +255,16 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         this.metadataCache = new MetadataCache();
         this.config = config;
         this.taskQueueManager = new TaskQueueManager(this, LHConstants.MAX_TASKRUNS_IN_ONE_TASKQUEUE);
+
+        if (config.getLHInstanceId().isPresent()) {
+            overrideStreamsProcessId("core");
+            overrideStreamsProcessId("timer");
+        }
         this.coreStreams = new KafkaStreams(
                 ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager),
                 config.getCoreStreamsConfig());
         this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
         this.healthService = new HealthService(config, coreStreams, timerStreams, taskQueueManager, metadataCache);
-        coreStreams.setStandbyUpdateListener(healthService);
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
         coreStoreProvider = new CoreStoreProvider(this.coreStreams);
         this.listenerManager = new ListenersManager(
@@ -271,8 +280,8 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey, coreStoreProvider);
     }
 
-    public String getInstanceId() {
-        return config.getLHInstanceId();
+    public String getInstanceName() {
+        return config.getLHInstanceName();
     }
 
     @Override
@@ -501,8 +510,33 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     @Override
     @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.WRITE_METADATA)
     public void reportTask(ReportTaskRun req, StreamObserver<Empty> ctx) {
+        // There is no need to wait for the ReportTaskRun to actually be processed, because
+        // we would just return a google.protobuf.Empty anyways. All we need to do is wait for
+        // the Command to be persisted into Kafka.
         ReportTaskRunModel reqModel = LHSerializable.fromProto(req, ReportTaskRunModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx, Empty.class, true);
+
+        TenantIdModel tenantId = requestContext().authorization().tenantId();
+        PrincipalIdModel principalId = requestContext().authorization().principalId();
+        Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
+
+        CommandModel command = new CommandModel(reqModel, new Date());
+
+        Callback kafkaProducerCallback = (meta, exn) -> {
+            if (exn == null) {
+                ctx.onNext(Empty.getDefaultInstance());
+                ctx.onCompleted();
+            } else {
+                ctx.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
+            }
+        };
+
+        LHProducer producer = internalComms.getProducer();
+        producer.send(
+                command.getPartitionKey(),
+                command,
+                command.getTopic(config),
+                kafkaProducerCallback,
+                commandMetadata.toArray());
     }
 
     @Override
@@ -960,6 +994,28 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         internalComms.start();
         listenerManager.start();
         healthService.start();
+    }
+
+    private void overrideStreamsProcessId(String topology) {
+        String fakeUuid = String.format(
+                "%08d-0000-0000-0000-000000000000", config.getLHInstanceId().get());
+        String fileContent = String.format("{\"processId\":\"" + fakeUuid + "\"}");
+
+        try {
+            Path stateDir = Path.of(config.getStateDirectory());
+            Path streamsDir = stateDir.resolve(config.getKafkaGroupId(topology));
+            Path streamsMetadataFile = streamsDir.resolve("kafka-streams-process-metadata");
+            if (!Files.exists(streamsMetadataFile.getParent())) {
+                Files.createDirectories(streamsMetadataFile.getParent());
+            }
+            try (FileWriter writer = new FileWriter(streamsMetadataFile.toFile())) {
+                writer.write(fileContent);
+                log.info("Overwrote kafka-streams-process-metadata with content: {}", fileContent);
+            }
+
+        } catch (IOException exn) {
+            throw new LHMisconfigurationException("Failed overriding Streams Process ID", exn);
+        }
     }
 
     public void close() {

@@ -1,0 +1,5 @@
+{
+  "/page": "app/page.js",
+  "/wfspec/[id]/[version]/page": "app/wfspec/[id]/[version]/page.js",
+  "/wfrun/[id]/page": "app/wfrun/[id]/page.js"
+}

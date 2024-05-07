@@ -52,7 +52,7 @@ public class TaskDefLifecycleTest {
 
         assertThatThrownBy(() -> client.putTaskDef(taskUpdated.toPutTaskDefRequest()))
                 .isInstanceOf(StatusRuntimeException.class)
-                .hasMessage("ALREADY_EXISTS: TaskDef already exists and is immutable.");
+                .hasMessage("ALREADY_EXISTS: TaskDef [greet-with-update] already exists and is immutable.");
     }
 
     @Test

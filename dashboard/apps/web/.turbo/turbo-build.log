@@ -1,0 +1,78 @@
+
+> web@1.0.0 build /home/eduwer/Projects/LH/littlehorse/dashboard/apps/web
+> next build
+
+ ⚠ Invalid next.config.js options detected: 
+ ⚠     Unrecognized key(s) in object: 'outputFileTracingRoot'
+ ⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+
+ ⚠ The Next.js plugin was not detected in your ESLint configuration. See https://nextjs.org/docs/basic-features/eslint#migrating-existing-config
+
+./components/SessionProvider.tsx
+4:1  Warning: All imports in the declaration are only used as types. Use `import type`.  @typescript-eslint/consistent-type-imports
+6:55  Warning: Function component is not a function declaration  react/function-component-definition
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+   Collecting page data ...
+   Generating static pages (0/4) ...
+   Generating static pages (1/4) 
+   Generating static pages (2/4) 
+   Generating static pages (3/4) 
+ ✓ Generating static pages (4/4) 
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                   Size     First Load JS
+┌ λ /                                         2.99 kB         143 kB
+├ λ /_not-found                               885 B          81.6 kB
+├ λ /taskdef/[id]                             3.81 kB         141 kB
+├ λ /usertaskdef/[id]/[version]               2.88 kB         114 kB
+├ λ /wfrun/[id]                               3.48 kB         495 kB
+└ λ /wfspec/[id]/[version]                    4.82 kB         506 kB
++ First Load JS shared by all                 80.7 kB
+  ├ chunks/3-decb13fe1164a707.js              27.6 kB
+  ├ chunks/8f3812d6-f57e4b80a698ad9c.js       50.9 kB
+  ├ chunks/main-app-728c69ae3a0b0886.js       234 B
+  └ chunks/webpack-d381630e686b524a.js        1.91 kB
+
+Route (pages)                                 Size     First Load JS
+┌ λ /api/auth/[...nextauth]                   0 B            80.3 kB
+├ λ /api/drawer/externalEvent                 0 B            80.3 kB
+├ λ /api/drawer/nodeRun                       0 B            80.3 kB
+├ λ /api/drawer/taskDef/[name]                0 B            80.3 kB
+├ λ /api/drawer/taskRun                       0 B            80.3 kB
+├ λ /api/drawer/userTaskRun                   0 B            80.3 kB
+├ λ /api/drawer/variable                      0 B            80.3 kB
+├ λ /api/drawer/wfRun/[id]                    0 B            80.3 kB
+├ λ /api/drawer/wfSpec/[name]                 0 B            80.3 kB
+├ λ /api/grpcMethodCallHandler                0 B            80.3 kB
+├ λ /api/information/taskDef                  0 B            80.3 kB
+├ λ /api/information/userTaskDef              0 B            80.3 kB
+├ λ /api/LHClient                             0 B            80.3 kB
+├ λ /api/loops/taskRun                        0 B            80.3 kB
+├ λ /api/metrics/taskDef                      0 B            80.3 kB
+├ λ /api/metrics/wfSpec                       0 B            80.3 kB
+├ λ /api/search/externalEventDef              0 B            80.3 kB
+├ λ /api/search/nodeRun/[number]/[position]   0 B            80.3 kB
+├ λ /api/search/taskDef                       0 B            80.3 kB
+├ λ /api/search/taskRun                       0 B            80.3 kB
+├ λ /api/search/userTaskDef                   0 B            80.3 kB
+├ λ /api/search/userTaskRun                   0 B            80.3 kB
+├ λ /api/search/wfRun                         0 B            80.3 kB
+├ λ /api/search/wfSpec                        0 B            80.3 kB
+├ λ /api/visualization/wfRun                  0 B            80.3 kB
+├ λ /api/visualization/wfSpec                 0 B            80.3 kB
+└ λ /api/visualization/workflowLayoutedGraph  0 B            80.3 kB
++ First Load JS shared by all                 80.3 kB
+  ├ chunks/framework-5914f800e5c1bf38.js      45.2 kB
+  ├ chunks/main-842f5e4f03c3906a.js           33 kB
+  ├ chunks/pages/_app-e6ebf5f99c29c4a5.js     206 B
+  └ chunks/webpack-d381630e686b524a.js        1.91 kB
+
+ƒ Middleware                                  57.1 kB
+
+λ  (Server)  server-side renders at runtime (uses getInitialProps or getServerSideProps)
+

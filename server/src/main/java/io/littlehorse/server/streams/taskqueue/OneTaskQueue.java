@@ -39,7 +39,7 @@ public class OneTaskQueue {
     @Getter
     private TenantIdModel tenantId;
 
-    private String hostName;
+    private String instanceName;
     private Date lastRehydratedTask;
     private ScheduledTaskModel lastReturnedTask;
 
@@ -56,7 +56,7 @@ public class OneTaskQueue {
         this.hungryClients = new LinkedList<>();
         this.lock = new ReentrantLock();
         this.parent = parent;
-        hostName = parent.getBackend().getInstanceId();
+        instanceName = parent.getBackend().getInstanceName();
     }
 
     /**
@@ -76,7 +76,7 @@ public class OneTaskQueue {
             hungryClients.removeIf(thing -> {
                 log.trace(
                         "Instance {}: Removing task queue observer for taskdef {} with" + " client id {}: {}",
-                        parent.getBackend().getInstanceId(),
+                        parent.getBackend().getInstanceName(),
                         taskDefName,
                         disconnectedObserver.getClientId(),
                         disconnectedObserver);
@@ -115,7 +115,7 @@ public class OneTaskQueue {
         // add the task id to the taskid list.
         log.trace(
                 "Instance {}: Task scheduled for wfRun {}, queue is empty? {}",
-                hostName,
+                instanceName,
                 LHLibUtil.getWfRunId(scheduledTask.getSource().toProto()),
                 hungryClients.isEmpty());
 
@@ -163,7 +163,7 @@ public class OneTaskQueue {
             throw new RuntimeException("Not possible, got mismatched taskdef name");
         }
 
-        log.trace("Instance {}: Poll request received for taskDef {}", hostName, taskDefName);
+        log.trace("Instance {}: Poll request received for taskDef {}", instanceName, taskDefName);
 
         // There's two cases here:
         // 1. There are pending Task Id's in the queue, which means that there

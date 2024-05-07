@@ -1,0 +1,20 @@
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/api/metrics/wfSpec": "pages/api/metrics/wfSpec.js",
+  "/api/search/wfSpec": "pages/api/search/wfSpec.js",
+  "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
+  "/api/visualization/wfSpec": "pages/api/visualization/wfSpec.js",
+  "/api/drawer/wfSpec/[name]": "pages/api/drawer/wfSpec/[name].js",
+  "/api/search/wfRun": "pages/api/search/wfRun.js",
+  "/api/visualization/workflowLayoutedGraph": "pages/api/visualization/workflowLayoutedGraph.js",
+  "/api/visualization/wfRun": "pages/api/visualization/wfRun.js",
+  "/api/drawer/wfRun/[id]": "pages/api/drawer/wfRun/[id].js",
+  "/api/drawer/variable": "pages/api/drawer/variable.js",
+  "/api/information/taskDef": "pages/api/information/taskDef.js",
+  "/api/drawer/nodeRun": "pages/api/drawer/nodeRun.js",
+  "/api/loops/taskRun": "pages/api/loops/taskRun.js",
+  "/api/drawer/taskDef/[name]": "pages/api/drawer/taskDef/[name].js",
+  "/api/drawer/taskRun": "pages/api/drawer/taskRun.js"
+}

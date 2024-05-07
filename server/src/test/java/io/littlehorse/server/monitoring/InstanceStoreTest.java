@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class InstanceStoreTest {
 
-    private final InstanceStore instanceStore = new InstanceStore("my-store", 10);
+    private final StandbyStoresOnInstance instanceStore = new StandbyStoresOnInstance("my-store", 10);
 
     @Test
     void shouldCalculateOverallLag() {

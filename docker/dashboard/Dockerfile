@@ -1,25 +1,18 @@
-FROM node:20 AS base
-RUN apt-get update && apt-get install -y uuid-runtime \
-  && rm -rf /var/lib/apt/lists/*
+FROM ghcr.io/littlehorse-enterprises/alpine-nginx-nodejs/nginx-nodejs:main as runner
+ENV NODE_ENV production
 
-FROM base AS runner
-WORKDIR /lh/dashboard
-ENV NODE_ENV=production
+RUN apk add --no-cache uuidgen
 
-RUN groupadd -g 1001 nodejs
-RUN useradd nextjs -u 1001
-USER nextjs
+RUN mkdir /app
+WORKDIR /app
+RUN mkdir .next
 
-COPY --chown=nextjs:nodejs ./dashboard/apps/web/.next/standalone ./
-COPY --chown=nextjs:nodejs ./dashboard/apps/web/.next/static ./apps/web/.next/static
-COPY --chown=nextjs:nodejs ./dashboard/apps/web/public ./apps/web/public
+COPY ./dashboard/.next/standalone ./
+COPY ./dashboard/.next/static ./.next/static
 
-COPY ./docker/dashboard/docker-entrypoint.sh ./
+COPY ./docker/dashboard/entrypoint.sh ./entrypoint.sh
+EXPOSE 3000
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
 
-EXPOSE 8080
-
-ENV PORT 8080
-ENV HOSTNAME 0.0.0.0
-
-ENTRYPOINT ["/lh/dashboard/docker-entrypoint.sh"]
-CMD ["dashboard"]
+ENTRYPOINT [ "/app/entrypoint.sh" ]
