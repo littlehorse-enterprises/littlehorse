@@ -325,9 +325,6 @@ public class LHServerConfig extends ConfigBase {
 
     public Optional<Integer> getLHInstanceId() {
         String instanceId = getOrSetDefault(LHS_INSTANCE_ID_KEY, null);
-        if (instanceId == null) {
-            throw new LHMisconfigurationException("Instance ID is required and must be unique!");
-        }
         return instanceId == null ? Optional.empty() : Optional.of(Integer.valueOf(instanceId));
     }
 
