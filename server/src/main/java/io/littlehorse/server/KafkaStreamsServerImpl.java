@@ -214,6 +214,7 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import io.littlehorse.server.streams.util.POSTStreamObserver;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
@@ -499,8 +500,33 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     @Override
     @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.WRITE_METADATA)
     public void reportTask(ReportTaskRun req, StreamObserver<Empty> ctx) {
+        // There is no need to wait for the ReportTaskRun to actually be processed, because
+        // we would just return a google.protobuf.Empty anyways. All we need to do is wait for
+        // the Command to be persisted into Kafka.
         ReportTaskRunModel reqModel = LHSerializable.fromProto(req, ReportTaskRunModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx, Empty.class, true);
+
+        TenantIdModel tenantId = requestContext().authorization().tenantId();
+        PrincipalIdModel principalId = requestContext().authorization().principalId();
+        Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
+
+        CommandModel command = new CommandModel(reqModel, new Date());
+
+        Callback kafkaProducerCallback = (meta, exn) -> {
+            if (exn == null) {
+                ctx.onNext(Empty.getDefaultInstance());
+                ctx.onCompleted();
+            } else {
+                ctx.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
+            }
+        };
+
+        LHProducer producer = internalComms.getProducer();
+        producer.send(
+                command.getPartitionKey(),
+                command,
+                command.getTopic(config),
+                kafkaProducerCallback,
+                commandMetadata.toArray());
     }
 
     @Override
