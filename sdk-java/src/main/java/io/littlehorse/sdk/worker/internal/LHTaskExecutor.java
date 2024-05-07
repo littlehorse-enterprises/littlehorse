@@ -43,10 +43,12 @@ public class LHTaskExecutor {
     private final ScheduledExecutorService pool;
     private final Semaphore semaphore;
     private static final int TOTAL_RETRIES = 5;
+    private final LittleHorseGrpc.LittleHorseStub bootstrapStub;
 
-    public LHTaskExecutor(int concurrency) {
+    public LHTaskExecutor(int concurrency, LittleHorseGrpc.LittleHorseStub bootstrapStub) {
         this.pool = Executors.newScheduledThreadPool(concurrency);
         this.semaphore = new Semaphore(concurrency);
+        this.bootstrapStub = bootstrapStub;
         Thread closeExecutorHook = new Thread(() -> {
             try {
                 this.close(4, TimeUnit.SECONDS);
@@ -66,11 +68,6 @@ public class LHTaskExecutor {
             List<VariableMapping> mappings,
             Object executable,
             Method taskMethod) {
-        try {
-            this.semaphore.acquire();
-        } catch (InterruptedException exn) {
-            throw new RuntimeException(exn);
-        }
         this.pool.submit(() -> {
             this.doTask(scheduledTask, specificStub, mappings, executable, taskMethod);
         });
@@ -82,6 +79,14 @@ public class LHTaskExecutor {
     public boolean close(int timeout, TimeUnit timeUnit) throws InterruptedException {
         pool.shutdown();
         return pool.awaitTermination(timeout, timeUnit);
+    }
+
+    public void acquire() {
+        try {
+            this.semaphore.acquire();
+        } catch (InterruptedException exn) {
+            throw new RuntimeException(exn);
+        }
     }
 
     private void doTask(
@@ -96,11 +101,11 @@ public class LHTaskExecutor {
         String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource()).getId();
         try {
             log.debug("Going to report task for wfRun {}", wfRunId);
-            specificStub.reportTask(result, new ReportTaskObserver(result, TOTAL_RETRIES, specificStub));
+            specificStub.reportTask(result, new ReportTaskObserver(result, TOTAL_RETRIES, bootstrapStub));
             log.debug("Successfully contacted LHServer on reportTask for wfRun {}", wfRunId);
         } catch (Exception exn) {
             log.warn("Failed to report task for wfRun {}: {}", wfRunId, exn.getMessage());
-            scheduleRetry(result, specificStub, TOTAL_RETRIES);
+            scheduleRetry(result, bootstrapStub, TOTAL_RETRIES);
         }
     }
 
