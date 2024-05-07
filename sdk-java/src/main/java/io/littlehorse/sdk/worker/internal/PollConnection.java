@@ -93,6 +93,7 @@ public class PollConnection implements Closeable, StreamObserver<PollTaskRespons
 
     private void askForMoreWork() {
         log.debug("Asking for more work on {}:{}", host.getHost(), host.getPort());
+        executor.acquire();
         pollClient.onNext(PollTaskRequest.newBuilder()
                 .setClientId(taskWorkerId)
                 .setTaskDefId(taskDefId)
