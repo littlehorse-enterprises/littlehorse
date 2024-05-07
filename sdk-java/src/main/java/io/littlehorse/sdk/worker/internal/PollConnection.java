@@ -14,8 +14,11 @@ import java.util.List;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Manages an active connection to poll tasks from the server.
+ */
 @Slf4j
-public class PollingConnection implements Closeable, StreamObserver<PollTaskResponse> {
+public class PollConnection implements Closeable, StreamObserver<PollTaskResponse> {
 
     private final LHTaskExecutor executor;
     private LHHostInfo host;
@@ -32,7 +35,7 @@ public class PollingConnection implements Closeable, StreamObserver<PollTaskResp
     private final TaskDefId taskDefId;
     private final String taskWorkerVersion;
 
-    public PollingConnection(
+    public PollConnection(
             LHTaskExecutor executor,
             LHHostInfo host,
             LittleHorseStub stub,
@@ -55,7 +58,7 @@ public class PollingConnection implements Closeable, StreamObserver<PollTaskResp
         this.taskDefId = taskDefId;
         this.taskWorkerVersion = taskWorkerVersion;
 
-        log.info("new connection to " + this);
+        log.info("New connection to: " + this);
         askForMoreWork();
     }
 
@@ -88,14 +91,6 @@ public class PollingConnection implements Closeable, StreamObserver<PollTaskResp
         }
     }
 
-    public LHHostInfo getHostInfo() {
-        return host;
-    }
-
-    public boolean isSameAs(LHHostInfo other) {
-        return (this.host.getHost().equals(other.getHost()) && this.host.getPort() == other.getPort());
-    }
-
     private void askForMoreWork() {
         log.debug("Asking for more work on {}:{}", host.getHost(), host.getPort());
         pollClient.onNext(PollTaskRequest.newBuilder()
@@ -110,6 +105,7 @@ public class PollingConnection implements Closeable, StreamObserver<PollTaskResp
         return "Connection to " + host.getHost() + ":" + host.getPort();
     }
 
+    @Override
     public void close() {
         log.info("Stopping connection to " + this);
         stillRunning = false;

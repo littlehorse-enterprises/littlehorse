@@ -26,7 +26,7 @@ final class RebalanceThread extends Thread {
     private final Object executable;
     private final LHTaskExecutor executor;
     private final LHConfig config;
-    private final Map<LHHostInfo, PollingConnection> runningConnections = new ConcurrentHashMap<>();
+    private final Map<LHHostInfo, PollConnection> runningConnections = new ConcurrentHashMap<>();
     private final LHLivenessController livenessController;
     private final long heartbeatIntervalMs;
 
@@ -73,9 +73,9 @@ final class RebalanceThread extends Thread {
                 heartBeatCallback);
     }
 
-    private PollingConnection createConnection(LHHostInfo host) {
+    private PollConnection createConnection(LHHostInfo host) {
         LittleHorseGrpc.LittleHorseStub stub = config.getAsyncStub(host.getHost(), host.getPort());
-        return new PollingConnection(
+        return new PollConnection(
                 executor,
                 host,
                 stub,
@@ -103,7 +103,7 @@ final class RebalanceThread extends Thread {
             List<LHHostInfo> availableHosts = response.getYourHostsList();
             for (LHHostInfo runningConnection : runningConnections.keySet()) {
                 if (!availableHosts.contains(runningConnection)) {
-                    PollingConnection removed = runningConnections.remove(runningConnection);
+                    PollConnection removed = runningConnections.remove(runningConnection);
                     removed.close();
                 }
             }
@@ -113,7 +113,6 @@ final class RebalanceThread extends Thread {
                     runningConnections.put(lhHostInfo, createConnection(lhHostInfo));
                 }
             }
-            log.info("Current connections: " + runningConnections.values());
         }
 
         @Override

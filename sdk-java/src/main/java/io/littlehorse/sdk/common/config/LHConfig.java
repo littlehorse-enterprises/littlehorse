@@ -16,7 +16,6 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseStub;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
-import io.littlehorse.sdk.worker.internal.LHTaskExecutor;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -107,19 +106,6 @@ public class LHConfig extends ConfigBase {
     private OAuthClient oauthClient;
     private OAuthConfig oauthConfig;
     private OAuthCredentialsProvider oauthCredentialsProvider;
-
-    public final LHTaskExecutor executor = new LHTaskExecutor();
-
-    {
-        Thread closeExecutorHook = new Thread(() -> {
-            try {
-                executor.close(4, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        Runtime.getRuntime().addShutdownHook(closeExecutorHook);
-    }
 
     /** Creates an LHClientConfig. Loads default values for config from env vars. */
     public LHConfig() {

@@ -13,9 +13,6 @@ import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
 import io.littlehorse.sdk.worker.internal.LHLivenessController;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
-import io.littlehorse.sdk.worker.internal.LHServerConnectionManagerImpl;
-import io.littlehorse.sdk.worker.internal.LHServerConnectionManagerV2Impl;
-import io.littlehorse.sdk.worker.internal.LHTaskExecutor;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.io.Closeable;
 import java.lang.reflect.Method;
@@ -55,8 +52,6 @@ public class LHTaskWorker implements Closeable {
     private LHServerConnectionManager manager;
     private String taskDefName;
     private LittleHorseBlockingStub grpcClient;
-    private final LHTaskExecutor executor;
-
     /**
      * Creates an LHTaskWorker given an Object that has an annotated LHTaskMethod, and a
      * configuration Properties object.
@@ -72,7 +67,6 @@ public class LHTaskWorker implements Closeable {
         this.mappings = new ArrayList<>();
         this.taskDefName = taskDefName;
         this.grpcClient = config.getBlockingStub();
-        this.executor = config.executor;
     }
 
     /**
@@ -98,12 +92,6 @@ public class LHTaskWorker implements Closeable {
         this.mappings = new ArrayList<>();
         this.taskDefName = taskDefName;
         this.grpcClient = config.getBlockingStub();
-        this.executor = config.executor;
-    }
-
-    public LHTaskWorker(Object executable, String taskDefName, LHConfig config, LHServerConnectionManager manager) {
-        this(executable, taskDefName, config);
-        this.manager = manager;
     }
 
     public LHTaskWorker(
@@ -111,7 +99,7 @@ public class LHTaskWorker implements Closeable {
             String taskDefName,
             Map<String, String> valuesForPlaceHolders,
             LHConfig config,
-            LHServerConnectionManagerImpl manager) {
+            LHServerConnectionManager manager) {
         this(executable, taskDefName, config, valuesForPlaceHolders);
         this.manager = manager;
     }
@@ -128,7 +116,7 @@ public class LHTaskWorker implements Closeable {
     private void createManager() {
         validateTaskDefAndExecutable();
         if (this.manager == null) {
-            this.manager = new LHServerConnectionManagerV2Impl(
+            this.manager = new LHServerConnectionManager(
                     taskDef,
                     config.getAsyncStub(),
                     config.getTaskWorkerId(),
@@ -137,7 +125,6 @@ public class LHTaskWorker implements Closeable {
                     taskMethod,
                     mappings,
                     executable,
-                    executor,
                     config);
         }
     }

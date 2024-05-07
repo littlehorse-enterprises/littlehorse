@@ -29,13 +29,12 @@ import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * In memory queue and executor for scheduled tasks.
- * An instance of this class will accept scheduled task to be executed from.
- * Multiples tasks can share the same queue of pending tasks.
- * This class will handle retries with a specified delay.
- * A ${@link Semaphore} is used internally in order to prevent overwhelming the in-memory queue,
- * clients can control the allowed size of this by specifying INFLIGHT_PENDING_TASKS.
- * Also, clients can define the number of thread dedicated to execute tasks.
+ * Manages a queue and executor for scheduling and executing tasks in memory.
+ * Future versions will share the same queue for many workers.
+ * It handles retries with a specified delay.
+ * Internally, a {@link Semaphore} is used to prevent overwhelming the in-memory queue.
+ * Clients can control the allowed size of this queue by specifying {@code LHW_NUM_WORKER_THREADS}.
+ * Clients can also specify the number of threads dedicated to executing tasks.
  *
  */
 @Slf4j
@@ -45,11 +44,22 @@ public class LHTaskExecutor {
     private final Semaphore semaphore;
     private static final int TOTAL_RETRIES = 5;
 
-    public LHTaskExecutor() {
-        this.pool = Executors.newScheduledThreadPool(8);
-        this.semaphore = new Semaphore(1_000);
+    public LHTaskExecutor(int concurrency) {
+        this.pool = Executors.newScheduledThreadPool(concurrency);
+        this.semaphore = new Semaphore(concurrency);
+        Thread closeExecutorHook = new Thread(() -> {
+            try {
+                this.close(4, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        Runtime.getRuntime().addShutdownHook(closeExecutorHook);
     }
 
+    /**
+     * Schedule a new task to be executed
+     */
     public void submitTaskForExecution(
             ScheduledTask scheduledTask,
             LittleHorseStub specificStub,
@@ -66,8 +76,10 @@ public class LHTaskExecutor {
         });
     }
 
+    /**
+     * Gracefully shutdown
+     */
     public boolean close(int timeout, TimeUnit timeUnit) throws InterruptedException {
-        log.info("shutting down...");
         pool.shutdown();
         return pool.awaitTermination(timeout, timeUnit);
     }

@@ -224,7 +224,6 @@ public class OneTaskQueue {
                     if (!hungryClients.isEmpty()) {
                         parent.itsAMatch(scheduledTask, hungryClients.remove());
                     } else {
-                        // TODO: rehydrate per partition
                         queueOutOfCapacity = !pendingTasks.offer(new QueueItem(null, scheduledTask));
                         if (!queueOutOfCapacity) {
                             lastRehydratedTask = scheduledTask.getCreatedAt();
