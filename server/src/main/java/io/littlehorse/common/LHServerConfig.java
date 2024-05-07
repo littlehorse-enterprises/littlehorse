@@ -323,9 +323,15 @@ public class LHServerConfig extends ConfigBase {
         return getOrSetDefault(LHServerConfig.LHS_CLUSTER_ID_KEY, "cluster1");
     }
 
-    public Optional<Integer> getLHInstanceId() {
+    public Optional<Short> getLHInstanceId() {
         String instanceId = getOrSetDefault(LHS_INSTANCE_ID_KEY, null);
-        return instanceId == null ? Optional.empty() : Optional.of(Integer.valueOf(instanceId));
+        if (instanceId == null) return Optional.empty();
+
+        short ordinalVal = Short.valueOf(instanceId);
+        if (ordinalVal < 0) {
+            throw new LHMisconfigurationException("LHS_INSTANCE_ID cannot be negative");
+        }
+        return Optional.of(ordinalVal);
     }
 
     public String getLHInstanceName() {

@@ -1004,8 +1004,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             }
             try (FileWriter writer = new FileWriter(streamsMetadataFile.toFile())) {
                 writer.write(fileContent);
-                System.out.println("Done creating file!");
-                System.out.println(fileContent);
+                log.info("Overwrote kafka-streams-process-metadata with content: {}", fileContent);
             }
 
         } catch (IOException exn) {

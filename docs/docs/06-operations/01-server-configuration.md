@@ -417,9 +417,9 @@ An identifier for the stream processing application. Must be unique within the L
 
 ### `LHS_INSTANCE_ID`
 
-An optional ordinal integer describing the order in which this Server was added to the cluster. If provided, it **must** be unique. Providing this configuration allows LittleHorse to make better decisions about Kafka Streams Task Assignment when adding or removing servers.
+An optional ordinal integer describing the order in which this Server was added to the cluster. If provided, it **must** be unique. Providing this configuration allows LittleHorse to make better decisions about Kafka Streams Task Assignment when adding or removing servers. For a specific server, this should be consistent across restarts. Must be positive.
 
-- **Type:** int
+- **Type:** Short
 - **Default:** null
 - **Importance:** medium
 
