@@ -212,7 +212,7 @@ public class OneTaskQueue {
         }
     }
 
-    public boolean hasMoreTasksOnDisk(TaskId streamsTaskId){
+    public boolean hasMoreTasksOnDisk(TaskId streamsTaskId) {
         return taskTrack.get(streamsTaskId).hasMoreDataOnDisk();
     }
 
