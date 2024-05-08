@@ -12,9 +12,11 @@ import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -42,6 +44,8 @@ public class OneTaskQueue {
     private String instanceName;
     private Date lastRehydratedTask;
     private ScheduledTaskModel lastReturnedTask;
+
+    private Set<TaskId> taskTrack = new HashSet<>();
 
     @Getter
     /*
@@ -118,6 +122,7 @@ public class OneTaskQueue {
                 instanceName,
                 LHLibUtil.getWfRunId(scheduledTask.getSource().toProto()),
                 hungryClients.isEmpty());
+        taskTrack.add(streamsTaskId);
 
         PollTaskRequestObserver luckyClient = null;
         try {
@@ -176,7 +181,9 @@ public class OneTaskQueue {
         try {
             lock.lock();
             if (pendingTasks.isEmpty() && hasMoreTasksOnDisk) {
-                rehydrateFromStore(requestContext.getableManager());
+                for (TaskId taskId : taskTrack) {
+                    rehydrateFromStore(requestContext.getableManager(taskId));
+                }
             }
 
             if (!pendingTasks.isEmpty()) {
@@ -205,6 +212,9 @@ public class OneTaskQueue {
      */
     private void rehydrateFromStore(ReadOnlyGetableManager readOnlyGetableManager) {
         log.debug("Rehydrating");
+        if (readOnlyGetableManager.getSpecificTask().isEmpty()) {
+            throw new IllegalStateException("Only specific task rehydration is permitted.");
+        }
         String startKey = Tag.getAttributeString(
                         GetableClassEnum.TASK_RUN,
                         List.of(
@@ -224,7 +234,8 @@ public class OneTaskQueue {
                     if (!hungryClients.isEmpty()) {
                         parent.itsAMatch(scheduledTask, hungryClients.remove());
                     } else {
-                        queueOutOfCapacity = !pendingTasks.offer(new QueueItem(null, scheduledTask));
+                        queueOutOfCapacity = !pendingTasks.offer(new QueueItem(
+                                readOnlyGetableManager.getSpecificTask().get(), scheduledTask));
                         if (!queueOutOfCapacity) {
                             lastRehydratedTask = scheduledTask.getCreatedAt();
                         }
@@ -242,6 +253,7 @@ public class OneTaskQueue {
     }
 
     public void drainPartition(TaskId partitionToDrain) {
+        taskTrack.remove(partitionToDrain);
         pendingTasks.removeIf(queueItem -> queueItem.streamsTaskId().equals(partitionToDrain));
     }
 
