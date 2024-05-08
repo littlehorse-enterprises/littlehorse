@@ -118,7 +118,7 @@ public class OneTaskQueueTest {
 
         boundedQueue.onTaskScheduled(streamsTaskId, task1);
         boundedQueue.onTaskScheduled(streamsTaskId, task2);
-        Assertions.assertThat(boundedQueue.isHasMoreTasksOnDisk()).isTrue();
+        Assertions.assertThat(boundedQueue.hasMoreTasksOnDisk(streamsTaskId)).isTrue();
         boundedQueue.onTaskScheduled(streamsTaskId, task3);
         boundedQueue.onTaskScheduled(streamsTaskId, task4);
 
