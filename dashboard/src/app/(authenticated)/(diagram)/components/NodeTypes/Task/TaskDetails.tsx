@@ -14,6 +14,7 @@ export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, 
     queryKey: ['taskRun', nodeRun],
     queryFn: async () => {
       if (nodeRun?.task?.taskRunId) return await getTaskRun(nodeRun.task.taskRunId)
+      return null
     },
   })
 

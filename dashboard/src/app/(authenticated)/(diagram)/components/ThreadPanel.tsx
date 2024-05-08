@@ -1,7 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 import { WfRun } from 'littlehorse-client/dist/proto/wf_run'
 import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
-import { FC, useEffect, useMemo } from 'react'
+import { FC, useMemo } from 'react'
 import { useScrollbar } from '../hooks/useScrollbar'
 import { useThread } from '../hooks/useThread'
 
@@ -21,7 +21,7 @@ export const ThreadPanel: FC<{ spec: WfSpec; wfRun?: WfRun }> = ({ spec, wfRun }
       </div>
       <div className="flex touch-pan-y items-center overflow-hidden text-nowrap" ref={containerRef}>
         <div
-          className="flex gap-2 duration-[15ms] ease-[cubic-bezier(.05,0,0,1)] will-change-transform	"
+          className="flex gap-2 duration-[15ms] ease-[cubic-bezier(.05,0,0,1)] will-change-transform"
           style={{ transform: `translateX(${scroll}px)` }}
           ref={itemsRef}
         >
@@ -29,7 +29,7 @@ export const ThreadPanel: FC<{ spec: WfSpec; wfRun?: WfRun }> = ({ spec, wfRun }
             <button
               className={
                 'border-[1px] p-2 text-sm shadow ' +
-                (name === thread.name && number !== undefined && number === thread.number
+                ((name === thread.name && number === undefined) || (name === thread.name && number === thread.number)
                   ? 'bg-blue-500 text-white'
                   : 'bg-white text-black')
               }
