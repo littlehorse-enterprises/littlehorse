@@ -19,6 +19,7 @@ import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import org.apache.kafka.streams.processor.TaskId;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.assertj.core.api.Assertions;
@@ -27,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
+import org.mockito.Mockito;
 
 public class OneTaskQueueTest {
     private final TaskQueueManager taskQueueManager = mock(Answers.RETURNS_DEEP_STUBS);
@@ -50,7 +52,8 @@ public class OneTaskQueueTest {
     public void setup() {
         when(mockClient.getTaskDefId()).thenReturn(taskName);
         when(mockClient.getFreshExecutionContext().getableManager()).thenReturn(processorContext.getableManager());
-        when(requestContext.getableManager()).thenReturn(processorContext.getableManager());
+        when(requestContext.getableManager(any(TaskId.class))).thenReturn(processorContext.getableManager());
+        Mockito.when(processorContext.getableManager().getSpecificTask()).thenReturn(Optional.of(TaskId.parse("0_2")));
     }
 
     @Test
