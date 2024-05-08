@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Manages a queue and executor for scheduling and executing tasks in memory.
  * Future versions will share the same queue for many workers.
- * It handles retries with a specified delay.
+ * It handles task retries with a specified delay using the bootstrap connection.
  * Internally, a {@link Semaphore} is used to prevent overwhelming the in-memory queue.
  * Clients can control the allowed size of this queue by specifying {@code LHW_NUM_WORKER_THREADS}.
  * Clients can also specify the number of threads dedicated to executing tasks.
