@@ -14,7 +14,7 @@ var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print Client and Server Version Information.",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("lhctl version: 0.8.1")
+		fmt.Println("lhctl version: 0.8.2")
 
 		resp, err := getGlobalClient(cmd).GetServerVersion(requestContext(cmd), &emptypb.Empty{})
 		if err != nil {
