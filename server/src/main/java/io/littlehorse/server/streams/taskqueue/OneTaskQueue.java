@@ -183,8 +183,6 @@ public class OneTaskQueue {
                 for (Map.Entry<TaskId, TrackedPartition> taskHasMoreDataOnDisk : taskTrack.entrySet()) {
                     if (taskHasMoreDataOnDisk.getValue().hasMoreDataOnDisk()) {
                         rehydrateFromStore(requestContext.getableManager(taskHasMoreDataOnDisk.getKey()));
-                    } else {
-                        log.info("ignoring rehydrate for " + taskHasMoreDataOnDisk.getKey());
                     }
                 }
             }

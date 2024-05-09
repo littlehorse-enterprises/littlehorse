@@ -171,7 +171,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 server.onTaskScheduled(ctx.taskId(), scheduledTask.getTaskDefId(), scheduledTask, tenant.getId());
             }
         }
-        log.info("Ignoring rehydrate");
     }
 
     @Override
