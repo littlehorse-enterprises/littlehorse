@@ -1,0 +1,30 @@
+---
+title: workflow_event.proto
+hide_title: true
+---
+
+import { ProtoMessage, ProtoServiceMethod, ProtoEnum } from '@theme/ProtoFile';
+
+# `workflow_event.proto`
+_**path** workflow_event.proto_
+
+_**package** littlehorse_
+
+
+
+---
+
+## Messages
+
+
+### `WorkflowEvent`
+<ProtoMessage key={0} message={{"name":"WorkflowEvent","longName":"WorkflowEvent","fullName":"littlehorse.WorkflowEvent","description":"A WorkflowEvent represents a \"Thing That Happened\" *INSIDE* a WfRun. It is DIFFERENT from\nan ExternalEvent, because an ExternalEvent represents something that happened OUTSIDE the WfRun,\nand is used to send information to the WfRun.\n\nIn contrast, a WorkflowEvent is thrown by the WfRun and is used to send information to the outside\nworld.","hasExtensions":false,"hasFields":true,"hasOneofs":false,"extensions":[],"fields":[{"name":"id","description":"The ID of the WorkflowEvent. Contains WfRunId and WorkflowEventDefId.","label":"","type":"WorkflowEventId","longType":"WorkflowEventId","fullType":"littlehorse.WorkflowEventId","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":"","typeLink":"/protodocs/object_id.proto#workfloweventid"},{"name":"content","description":"The content of the WorkflowEvent.","label":"","type":"VariableValue","longType":"VariableValue","fullType":"littlehorse.VariableValue","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":"","typeLink":"/protodocs/variable.proto#variablevalue"},{"name":"created_at","description":"The time that the WorkflowEvent was created.","label":"","type":"Timestamp","longType":"google.protobuf.Timestamp","fullType":"google.protobuf.Timestamp","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":""}]}} />
+
+
+### `WorkflowEventDef`
+<ProtoMessage key={1} message={{"name":"WorkflowEventDef","longName":"WorkflowEventDef","fullName":"littlehorse.WorkflowEventDef","description":"","hasExtensions":false,"hasFields":true,"hasOneofs":false,"extensions":[],"fields":[{"name":"id","description":"","label":"","type":"WorkflowEventDefId","longType":"WorkflowEventDefId","fullType":"littlehorse.WorkflowEventDefId","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":"","typeLink":"/protodocs/object_id.proto#workfloweventdefid"},{"name":"created_at","description":"","label":"","type":"Timestamp","longType":"google.protobuf.Timestamp","fullType":"google.protobuf.Timestamp","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":""},{"name":"type","description":"","label":"","type":"VariableType","longType":"VariableType","fullType":"littlehorse.VariableType","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":"","typeLink":"/protodocs/common_enums.proto#variabletype"}]}} />
+
+---
+
+
+  

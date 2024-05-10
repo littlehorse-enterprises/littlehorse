@@ -1,0 +1,46 @@
+---
+title: common_enums.proto
+hide_title: true
+---
+
+import { ProtoMessage, ProtoServiceMethod, ProtoEnum } from '@theme/ProtoFile';
+
+# `common_enums.proto`
+_**path** common_enums.proto_
+
+_**package** littlehorse_
+
+
+
+---
+
+## Enums
+
+
+### `LHErrorType`
+<ProtoEnum key={0} enumb={{"name":"LHErrorType","longName":"LHErrorType","fullName":"littlehorse.LHErrorType","description":"This enum is all of the types of technical failure that can occur in a WfRun.","values":[{"name":"CHILD_FAILURE","number":"0","description":"A child ThreadRun failed with a technical ERROR."},{"name":"VAR_SUB_ERROR","number":"1","description":"Failed substituting input variables into a NodeRun."},{"name":"VAR_MUTATION_ERROR","number":"2","description":"Failed mutating variables after a NodeRun successfully completed."},{"name":"USER_TASK_CANCELLED","number":"3","description":"A UserTaskRun was cancelled (EVOLVING: this will become a Business EXCEPTION)"},{"name":"TIMEOUT","number":"4","description":"A NodeRun failed due to a timeout."},{"name":"TASK_FAILURE","number":"5","description":"A TaskRun failed due to an unexpected error."},{"name":"VAR_ERROR","number":"6","description":"Wrapper for VAR_SUB_ERROR and VAR_MUTATION_ERROR"},{"name":"TASK_ERROR","number":"7","description":"Wrapper for TASK_FALIURE and TIMEOUT"},{"name":"INTERNAL_ERROR","number":"8","description":"An unexpected LittleHorse Internal error occurred. This is not expected to happen."}]}} />
+
+
+### `LHStatus`
+<ProtoEnum key={1} enumb={{"name":"LHStatus","longName":"LHStatus","fullName":"littlehorse.LHStatus","description":"Status used for WfRun, ThreadRun, and NodeRun","values":[{"name":"STARTING","number":"0","description":""},{"name":"RUNNING","number":"1","description":""},{"name":"COMPLETED","number":"2","description":""},{"name":"HALTING","number":"3","description":""},{"name":"HALTED","number":"4","description":""},{"name":"ERROR","number":"5","description":""},{"name":"EXCEPTION","number":"6","description":""}]}} />
+
+
+### `MetadataStatus`
+<ProtoEnum key={2} enumb={{"name":"MetadataStatus","longName":"MetadataStatus","fullName":"littlehorse.MetadataStatus","description":"Status of a Metadata Object, such as WfSpec or TaskDef","values":[{"name":"ACTIVE","number":"0","description":"ACTIVE means the object can be used."},{"name":"ARCHIVED","number":"1","description":"An ARCHIVED WfSpec can no longer be used to create new WfRun's, but\nexisting WfRun's will be allowed to run to completion."},{"name":"TERMINATING","number":"2","description":"A TERMINATING WfSpec is actively deleting all running WfRun's, and will\nself-destruct once all of its child WfRun's are terminated."}]}} />
+
+
+### `MetricsWindowLength`
+<ProtoEnum key={3} enumb={{"name":"MetricsWindowLength","longName":"MetricsWindowLength","fullName":"littlehorse.MetricsWindowLength","description":"Metrics","values":[{"name":"MINUTES_5","number":"0","description":""},{"name":"HOURS_2","number":"1","description":""},{"name":"DAYS_1","number":"2","description":""}]}} />
+
+
+### `TaskStatus`
+<ProtoEnum key={4} enumb={{"name":"TaskStatus","longName":"TaskStatus","fullName":"littlehorse.TaskStatus","description":"Status of a TaskRun.","values":[{"name":"TASK_SCHEDULED","number":"0","description":"Scheduled in the Task Queue but not yet picked up by a Task Worker."},{"name":"TASK_RUNNING","number":"1","description":"Picked up by a Task Worker, but not yet reported or timed out."},{"name":"TASK_SUCCESS","number":"2","description":"Successfully completed."},{"name":"TASK_FAILED","number":"3","description":"Task Worker reported a technical failure while attempting to execute the TaskRun"},{"name":"TASK_TIMEOUT","number":"4","description":"Task Worker did not report a result in time."},{"name":"TASK_OUTPUT_SERIALIZING_ERROR","number":"5","description":"Task Worker reported that it was unable to serialize the output of the TaskRun."},{"name":"TASK_INPUT_VAR_SUB_ERROR","number":"6","description":"Task Worker was unable to deserialize the input variables into appropriate language-specific\nobjects to pass into the Task Function"},{"name":"TASK_EXCEPTION","number":"8","description":"Task Function business logic determined that there was a business exception."},{"name":"TASK_PENDING","number":"9","description":"Refers to a TaskAttempt that is not yet scheduled. This happens when using retries\nwith an ExponentialBackoffRetryPolicy: the TaskAttempt isn't supposed to be scheduled\nuntil it \"matures\", but it does already exist."}]}} />
+
+
+### `VariableType`
+<ProtoEnum key={5} enumb={{"name":"VariableType","longName":"VariableType","fullName":"littlehorse.VariableType","description":"Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a\nVariableValue.","values":[{"name":"JSON_OBJ","number":"0","description":"An object represented as a json string."},{"name":"JSON_ARR","number":"1","description":"A list represented as a json array string."},{"name":"DOUBLE","number":"2","description":"A 64-bit floating point number."},{"name":"BOOL","number":"3","description":"A boolean"},{"name":"STR","number":"4","description":"A string"},{"name":"INT","number":"5","description":"A 64-bit integer"},{"name":"BYTES","number":"6","description":"A byte array"}]}} />
+
+---
+
+
+  
