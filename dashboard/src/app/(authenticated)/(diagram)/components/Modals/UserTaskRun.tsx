@@ -17,13 +17,18 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data }) => {
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel className="w-1/3 min-w-fit rounded bg-white p-2">
+          <DialogTitle className="flex justify-between">
+            <div className="mb-8 ml-3 mr-2 mt-3 h-2">
+              <span className="font-bold">Created On: </span> {data.scheduledTime}
+            </div>
+            <button className="mr-2 w-5">
+              <XMarkIcon onClick={() => setShowModal(false)} />
+            </button>
+          </DialogTitle>
           <DialogBody>
             <div className="mt-2">
-              <div className="mb-2 flex justify-between">
+              <div className="mb-2">
                 <div className="ml-3 h-2 font-bold">Assignment History</div>
-                <button className="mr-2 w-5">
-                  <XMarkIcon onClick={() => setShowModal(false)} />
-                </button>
               </div>
               <div className="mt-6 flex items-center justify-between p-2">
                 <table className="text-surface min-w-full text-center text-sm font-light dark:text-white">
