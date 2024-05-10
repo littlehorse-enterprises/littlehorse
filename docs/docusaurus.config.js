@@ -5,7 +5,7 @@ const lightCodeTheme = require("prism-react-renderer/themes/github");
 // const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
-const config = {
+module.exports = {
   title: "LittleHorse",
   tagline: "Workflow-Driven Microservices",
   favicon: "img/logo.jpg",
@@ -36,7 +36,7 @@ const config = {
     [
       'docusaurus-protobuffet',
       {
-        protubuffet: {
+        protobuffet: {
           fileDescriptorsPath: './fixtures/proto_workspace.json',
         },
         docs: {
@@ -139,5 +139,3 @@ const config = {
       },
     }),
 };
-
-module.exports = config;
