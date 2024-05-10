@@ -1,10 +1,15 @@
 import { TaskRun } from 'littlehorse-client/dist/proto/task_run'
 import { Dispatch, SetStateAction, createContext } from 'react'
 import { ModalType } from '../components/Modals'
+import { UserTaskRun } from 'littlehorse-client/dist/proto/user_tasks'
 
 export type Modal = {
   type: ModalType
-  data: TaskRun
+  data: TaskRun | UserTaskRun
+}
+
+export interface UserTaskModal extends Modal {
+  data: UserTaskRun
 }
 
 type ModalContextType = {
