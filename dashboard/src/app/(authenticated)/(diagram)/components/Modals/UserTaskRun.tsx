@@ -1,10 +1,9 @@
 import { FC, useRef } from 'react'
 import { UserTaskModal } from '@/app/(authenticated)/(diagram)/context'
 import { useModal } from '@/app/(authenticated)/(diagram)/hooks/useModal'
-import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { DialogBody } from 'next/dist/client/components/react-dev-overlay/internal/components/Dialog'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import Link from 'next/link'
 
 export const UserTaskRun: FC<UserTaskModal> = ({ data }) => {
   const { showModal, setShowModal } = useModal()
@@ -17,13 +16,15 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data }) => {
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel className="w-1/3 min-w-fit rounded bg-white p-2">
-          <DialogTitle className="flex justify-between">
-            <div className="mb-8 ml-3 mr-2 mt-3 h-2">
-              <span className="font-bold">Created On: </span> {data.scheduledTime}
+          <DialogTitle>
+            <div className="mb-8 ml-3 mr-2 mt-3 flex h-2 justify-between">
+              <div>
+                <span className="font-bold">Created On: </span> {data.scheduledTime}
+              </div>
+              <button className="mr-2 w-5">
+                <XMarkIcon onClick={() => setShowModal(false)} />
+              </button>
             </div>
-            <button className="mr-2 w-5">
-              <XMarkIcon onClick={() => setShowModal(false)} />
-            </button>
           </DialogTitle>
           <DialogBody>
             <div className="mt-2">
