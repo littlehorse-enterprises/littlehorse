@@ -1,6 +1,9 @@
 # LH Dashboard
-
-
+## Requirements
+- It needs Node 20. You can install `NVM` and run on the dashboard folder:
+```shell
+nvm use
+```
 
 ## Environment Variables
 If running the app without Docker, you need to fill in the environment variables in the `.env` file inside `apps/web`. The `.env` file in the root folder is not being read by the app.
