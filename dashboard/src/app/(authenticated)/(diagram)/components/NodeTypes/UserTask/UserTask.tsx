@@ -8,6 +8,7 @@ import { NodeProps } from '../index'
 import { Fade } from '../Fade'
 import { NodeDetails } from '../NodeDetails'
 import { UserTaskRunDetails } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/UserTaskRunDetails'
+import { UserTaskDefDetails } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/UserTaskDefDetails'
 
 const Node: FC<NodeProps> = ({ data, selected }) => {
   if (!data.userTask) return null
@@ -28,13 +29,11 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
             </Link>
           </div>
           <div className="mb-2 flex gap-2 text-nowrap">
-            {userTask.userGroup && (
-              <div className="flex items-center justify-center">Group: {getVariable(userTask.userGroup)}</div>
+            {nodeRun ? (
+              <UserTaskRunDetails userTask={userTask} nodeRun={nodeRun} />
+            ) : (
+              <UserTaskDefDetails userTask={userTask} />
             )}
-            {userTask.userId && (
-              <div className="flex items-center justify-center">User: {getVariable(userTask.userId)}</div>
-            )}
-            {nodeRun && <UserTaskRunDetails userTask={userTask} nodeRun={nodeRun} />}
           </div>
           {userTask.notes && (
             <div className="rounded bg-gray-200 p-1">
