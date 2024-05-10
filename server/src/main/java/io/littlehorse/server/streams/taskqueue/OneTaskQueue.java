@@ -196,7 +196,10 @@ public class OneTaskQueue {
                 nextTask = poll.scheduledTask();
                 TrackedPartition trackedPartition = taskTrack.getOrDefault(
                         poll.streamsTaskId(), new TrackedPartition(true, nextTask.getCreatedAt(), nextTask));
-                taskTrack.put(poll.streamsTaskId(), trackedPartition);
+                taskTrack.put(
+                        poll.streamsTaskId(),
+                        new TrackedPartition(
+                                trackedPartition.hasMoreDataOnDisk(), trackedPartition.lastRehydratedTask(), nextTask));
             } else {
                 // case 2
                 hungryClients.add(requestObserver);
