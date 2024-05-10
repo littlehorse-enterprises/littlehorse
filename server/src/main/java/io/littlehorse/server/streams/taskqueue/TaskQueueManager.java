@@ -9,7 +9,10 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.streams.processor.TaskId;
 
+@Slf4j
 public class TaskQueueManager {
 
     private final ConcurrentHashMap<TenantTaskName, OneTaskQueue> taskQueues;
@@ -34,8 +37,13 @@ public class TaskQueueManager {
         getSubQueue(new TenantTaskName(tenantId, observer.getTaskDefId())).onRequestDisconnected(observer);
     }
 
-    public void onTaskScheduled(TaskDefIdModel taskDef, ScheduledTaskModel scheduledTask, TenantIdModel tenantId) {
-        getSubQueue(new TenantTaskName(tenantId, taskDef.getName())).onTaskScheduled(scheduledTask);
+    public void onTaskScheduled(
+            TaskId streamsTaskId, TaskDefIdModel taskDef, ScheduledTaskModel scheduledTask, TenantIdModel tenantId) {
+        getSubQueue(new TenantTaskName(tenantId, taskDef.getName())).onTaskScheduled(streamsTaskId, scheduledTask);
+    }
+
+    public void drainPartition(TaskId partitionToDrain) {
+        taskQueues.values().forEach(oneTaskQueue -> oneTaskQueue.drainPartition(partitionToDrain));
     }
 
     public void itsAMatch(ScheduledTaskModel scheduledTask, PollTaskRequestObserver luckyClient) {

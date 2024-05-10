@@ -93,7 +93,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         CommandModel command = executionContext.currentCommand();
         log.trace(
                 "{} Processing command of type {} with commandId {} with partition key {}",
-                config.getLHInstanceId(),
+                config.getLHInstanceName(),
                 command.type,
                 command.commandId,
                 command.getPartitionKey());
@@ -145,6 +145,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             throw new RuntimeException("Re-claiming partition! Yikes!");
         }
         partitionIsClaimed = true;
+        server.drainPartitionTaskQueue(ctx.taskId());
         ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(this.globalStore, new BackgroundContext());
         rehydrateTenant(new TenantModel(LHConstants.DEFAULT_TENANT));
         try (LHKeyValueIterator<?> storedTenants = clusterStore.range(
@@ -167,15 +168,16 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 ScheduledTaskModel scheduledTask = next.getValue();
                 log.debug("Rehydration: scheduling task: {}", scheduledTask.getStoreKey());
                 // This will break task rehydration for tenant specific test. this will be addressed in Issue #554
-                server.onTaskScheduled(
-                        scheduledTask.getTaskDefId(), scheduledTask, new TenantIdModel(LHConstants.DEFAULT_TENANT));
+                server.onTaskScheduled(ctx.taskId(), scheduledTask.getTaskDefId(), scheduledTask, tenant.getId());
             }
         }
+        log.info("Ignoring rehydrate");
     }
 
     @Override
     public void close() {
         this.partitionIsClaimed = false;
+        server.drainPartitionTaskQueue(ctx.taskId());
     }
 
     private void forwardMetricsUpdates(long timestamp) {

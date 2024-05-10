@@ -76,21 +76,9 @@ for i in $(ls "$WORK_DIR"/schemas | grep -v -E "^internal" | sed 's/.proto/_pb2/
 done
 
 # compile js protobuf
-echo "Compiling protobuf objects"
+echo "Compiling protobuf sdk-js"
 
-# This is still being used in the dashboard, we should remove it as soon as there's not more refereces to it
-$docker_run protoc \
-    --plugin=/usr/local/lib/node_modules/ts-proto/protoc-gen-ts_proto \
-    --ts_proto_opt=outputServices=nice-grpc,outputServices=generic-definitions,useDate=string,esModuleInterop=true,stringEnums=true \
-    --ts_proto_out="/littlehorse/dashboard/apps/web/littlehorse-public-api" \
-    -I=/littlehorse/schemas \
-    $PUBLIC_PROTOS
-
-echo "Fixing imports for protobuff JS for more information see the README file"
-find "${WORK_DIR}"/dashboard/apps/web/littlehorse-public-api/ -type f -readable -writable -exec sed -i "s/import _m0/import * as _m0/g" {} \;
-
-
-# This segment is for the sdk-js should replace the dashboard version eventually
+# This segment is for the sdk-js
 $docker_run protoc \
 	--plugin=/usr/local/lib/node_modules/ts-proto/protoc-gen-ts_proto \
 	--ts_proto_out /littlehorse/sdk-js/src/proto \

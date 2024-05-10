@@ -80,22 +80,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: pnpm/action-setup@v2
-        with:
-          package_json_file: dashboard/package.json
-
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache-dependency-path: dashboard/pnpm-lock.yaml
-          cache: pnpm
 
       - name: Build Dashboard
         working-directory: ./dashboard
         run: |
-          pnpm install
-          pnpm build
+          npm ci
+          npm run build
 
       - name: Build and Publish
         uses: ./.github/actions/publish-image
@@ -113,22 +107,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: pnpm/action-setup@v2
-        with:
-          package_json_file: ./dashboard/package.json
-
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache-dependency-path: dashboard/pnpm-lock.yaml
-          cache: pnpm
 
       - name: Build Dashboard
         working-directory: ./dashboard
         run: |
-          pnpm install
-          pnpm build
+          npm ci
+          npm run build
 
       - name: Dowload Server Jar artifact
         uses: actions/download-artifact@v4

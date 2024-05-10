@@ -154,6 +154,28 @@ public class RoundRobinAssignorTest {
                 && taskWorkersMetadata.get(8).hosts.size() == 1);
     }
 
+    @Test
+    void assignWithNineHostsAndSixWorkers() {
+        List<HostModel> hosts = generateHosts(9);
+        List<TaskWorkerMetadataModel> taskWorkersMetadata = generateTaskWorkersMetadata(6);
+
+        // assign multiple times
+        robinAssignor.assign(hosts, taskWorkersMetadata);
+        robinAssignor.assign(hosts, taskWorkersMetadata);
+        org.assertj.core.api.Assertions.assertThat(taskWorkersMetadata.get(0).hosts)
+                .containsExactlyInAnyOrder((hosts.get(0)), (hosts.get(3)), (hosts.get(6)));
+        org.assertj.core.api.Assertions.assertThat(taskWorkersMetadata.get(1).hosts)
+                .containsExactlyInAnyOrder((hosts.get(0)), (hosts.get(3)), (hosts.get(6)));
+        org.assertj.core.api.Assertions.assertThat(taskWorkersMetadata.get(2).hosts)
+                .containsExactlyInAnyOrder((hosts.get(1)), (hosts.get(4)), (hosts.get(7)));
+        org.assertj.core.api.Assertions.assertThat(taskWorkersMetadata.get(3).hosts)
+                .containsExactlyInAnyOrder((hosts.get(1)), (hosts.get(4)), (hosts.get(7)));
+        org.assertj.core.api.Assertions.assertThat(taskWorkersMetadata.get(4).hosts)
+                .containsExactlyInAnyOrder((hosts.get(2)), (hosts.get(5)), (hosts.get(8)));
+        org.assertj.core.api.Assertions.assertThat(taskWorkersMetadata.get(5).hosts)
+                .containsExactlyInAnyOrder((hosts.get(2)), (hosts.get(5)), (hosts.get(8)));
+    }
+
     public List<HostModel> generateHosts(int q) {
         char[] domains = "abcdefghijklmnopqrstuvwxyz".substring(0, q).toCharArray();
         List<HostModel> hosts = new ArrayList<>();

@@ -5,6 +5,7 @@ import io.javalin.http.Context;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.monitoring.health.InProgressRestoration;
 import io.littlehorse.server.monitoring.health.ServerHealthState;
+import io.littlehorse.server.monitoring.metrics.InstanceState;
 import io.littlehorse.server.monitoring.metrics.PrometheusMetricExporter;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -32,8 +33,8 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
     private Map<TopicPartition, InProgressRestoration> restorations;
     private final Map<String, Integer> numberOfPartitionPerTopic;
+    private InstanceState coreState;
     private final Map<String, StandbyStoresOnInstance> standbyStores = new ConcurrentHashMap<>();
-    private State coreState;
     private State timerState;
 
     private KafkaStreams coreStreams;
@@ -48,12 +49,14 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         this.prom = new PrometheusMetricExporter(config);
         this.numberOfPartitionPerTopic = config.partitionsByTopic();
 
+        this.coreState = new InstanceState(coreStreams);
         this.prom.bind(
                 coreStreams,
                 timerStreams,
                 taskQueueManager,
                 metadataCache,
-                new StandbyMetrics(standbyStores, config.getLHInstanceId()));
+                new StandbyMetrics(standbyStores, config.getLHInstanceName()),
+                coreState);
         this.server = Javalin.create();
 
         this.coreStreams = coreStreams;
@@ -73,10 +76,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         timerStreams.setGlobalStateRestoreListener(this);
         timerStreams.setStandbyUpdateListener(this);
 
-        coreStreams.setStateListener((newState, oldState) -> {
-            log.info("New state for core topology: {}", newState);
-            coreState = newState;
-        });
+        coreStreams.setStateListener(coreState);
         timerStreams.setStateListener((newState, oldState) -> {
             log.info("New state for timer topology: {}", newState);
             timerState = newState;
@@ -128,7 +128,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
     private void getLiveness(Context ctx) {
         Predicate<State> isAlive = state -> state == State.RUNNING || state == State.REBALANCING;
 
-        if (isAlive.test(timerState) && isAlive.test(coreState)) {
+        if (isAlive.test(timerState) && isAlive.test(coreState.getCurrentState())) {
             ctx.result("OK!");
         } else {
             ctx.status(500);

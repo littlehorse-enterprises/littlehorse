@@ -4,6 +4,7 @@ import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
@@ -11,6 +12,7 @@ import org.apache.kafka.streams.state.KeyValueStore;
  * Package-private class that allows you to read and write storeables at either
  * the tenant or cluster scope.
  */
+@Slf4j
 abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore {
 
     private final KeyValueStore<String, Bytes> nativeStore;
@@ -39,6 +41,9 @@ abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore 
         if (metadataCache != null) {
             metadataCache.evictCache(fullKey);
         }
-        nativeStore.delete(fullKey);
+        Bytes delete = nativeStore.delete(fullKey);
+        if (delete == null) {
+            log.warn("Not deleted! " + fullKey);
+        }
     }
 }
