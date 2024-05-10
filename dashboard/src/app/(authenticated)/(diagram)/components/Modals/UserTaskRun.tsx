@@ -65,30 +65,33 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data }) => {
                   </tbody>
                 </table>
               </div>
-
-              <div className="ml-3 mt-6 h-2 font-bold">Cancellation History</div>
-              <div className="mt-6 flex items-center justify-between p-2">
-                <table className="text-surface min-w-full text-center text-sm font-light dark:text-white">
-                  <thead className="border-b border-neutral-200 bg-neutral-300 font-medium dark:border-white/10 dark:text-neutral-800">
-                    <tr>
-                      <th scope="col" className="px-6 py-4">
-                        Timestamp
-                      </th>
-                      <th scope="col" className="px-6 py-4">
-                        Message
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cancellationHistory.map((e, index) => (
-                      <tr key={index} className="border-b border-neutral-200 dark:border-white/10">
-                        <td className="px-6 py-4">{e.time}</td>
-                        <td className="px-6 py-4">{e.cancelled?.message}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              {cancellationHistory.length > 0 && (
+                <div>
+                  <div className="ml-3 mt-6 h-2 font-bold">Cancellation History</div>
+                  <div className="mt-6 flex items-center justify-between p-2">
+                    <table className="text-surface min-w-full text-center text-sm font-light dark:text-white">
+                      <thead className="border-b border-neutral-200 bg-neutral-300 font-medium dark:border-white/10 dark:text-neutral-800">
+                        <tr>
+                          <th scope="col" className="px-6 py-4">
+                            Timestamp
+                          </th>
+                          <th scope="col" className="px-6 py-4">
+                            Message
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {cancellationHistory.map((e, index) => (
+                          <tr key={index} className="border-b border-neutral-200 dark:border-white/10">
+                            <td className="px-6 py-4">{e.time}</td>
+                            <td className="px-6 py-4">{e.cancelled?.message}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
             </div>
           </DialogBody>
         </DialogPanel>
