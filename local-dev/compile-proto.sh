@@ -39,7 +39,7 @@ rm -rf "${WORK_DIR}"/sdk-go/common/model/*
 rm -rf "${WORK_DIR}"/sdk-python/littlehorse/model/*
 rm -rf "${WORK_DIR}"/server/src/main/java/io/littlehorse/common/proto/*
 rm -rf "${WORK_DIR}"/dashboard/apps/web/littlehorse-public-api/*
-rm -rf "${WORK_DIR}"/docs/fixtures/*
+# rm -rf "${WORK_DIR}"/docs/docs/08-api.md*
 
 # compile protobuf
 echo "Compiling protobuf objects"
@@ -50,7 +50,7 @@ $docker_run protoc \
     --go_out=/littlehorse/sdk-go/common/model \
     --grpc-java_out=/littlehorse/sdk-java/src/main/java \
     --go-grpc_out=/littlehorse/sdk-go/common/model \
-    --doc_out=/littlehorse/docs/fixtures --doc_opt=json,proto_workspace.json \
+    --doc_out=/littlehorse/docs/docs --doc_opt=/littlehorse/docs/protobuf-go-template.tpl,08-api.md \
     -I=/littlehorse/schemas \
     $PUBLIC_PROTOS
 

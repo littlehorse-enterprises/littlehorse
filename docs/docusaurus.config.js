@@ -35,11 +35,8 @@ module.exports = {
 
   presets: [
     [
-      'docusaurus-protobuffet',
+      'classic',
       {
-        protobuffet: {
-          fileDescriptorsPath: './fixtures/proto_workspace.json',
-        },
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
         },
