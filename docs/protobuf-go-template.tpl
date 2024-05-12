@@ -20,61 +20,39 @@ The LittleHorse GRPC API is the backbone of the clients that you get in all of o
 gives you a GRPC stub to access the API. Most common operations are already documented with code examples in different
 languages [here](/docs/developer-guide/grpc), but we put this here for the true Jedi Masters.
 
-| Name | Request Type | Response Type | Description |
-| -----| ------------ | ------------- | ------------|
-{{range .Files}}{{if .HasServices}}{{range .Services -}}{{range .Methods -}}| `{{.Name}}` | [`{{.RequestLongType}}`](#{{.RequestLongType | lower | replace "." ""}}) | [`{{.ResponseLongType}}`](#{{.ResponseLongType | lower | replace "." ""}}) | {{.Description | replace "\n" " "}} |
-{{end}}{{end}}{{end}}{{end}}
+{{range .Files}}
+{{if .HasServices}}
+{{range .Services -}}
+{{range .Methods -}}
+### RPC `{{.Name}}` {#{{.Name | lower | replace "." ""}}}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [{{.RequestLongType}}](#{{.RequestLongType | lower | replace "." ""}}) | [{{.ResponseLongType}}](#{{.ResponseLongType | lower | replace "." ""}}) | {{.Description | replace "\n\n" "<br/><br/>" | replace "\n" " "}} |
+
+{{end}}
+{{end}}
+{{end}}
+{{end}}
 
 ## LittleHorse Protobuf Schemas
 
+This section contains the exact schemas for every object in our public API.
 
-{{/*
-## 
 {{range .Files}}
-
-# {{.Name}} {#{{.FullName | lower | replace "." ""}}}
-{{.Description}}
-
-
-{{end}} <!-- end methods -->
-{{end}} <!-- end services -->
-
-# Messages
 {{range .Messages}}
 
-## {{.LongName}} {#{{.LongName | lower | replace "." ""}}}
+### Message `{{.LongName}}` {#{{.LongName | lower | replace "." ""}}}
+
 {{.Description}}
 
 {{if .HasFields}}
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 {{range .Fields -}}
-	| {{if .IsOneof}}[**oneof**](https://developers.google.com/protocol-buffers/docs/proto3#oneof) {{.OneofDecl}}.{{end}}{{.Name}} | [{{if .IsMap}}map {{else}}{{.Label}} {{end}}{{.LongType}}](#{{.LongType | lower | replace "." ""}}) | {{if .Description}}{{nobr .Description}}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}}{{else}}none{{end}} |
+| {{if .IsOneof}}[oneof `{{.OneofDecl}}`] {{end}}`{{.Name}}` | [{{if .IsMap}}`map` {{else}}{{.Label}} {{end}}{{.LongType}}](#{{.LongType | lower | replace "." ""}}) | {{if .Description}}{{nobr .Description}}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}}{{else}}none{{end}} |
 {{end}} <!-- end Fields -->
 {{end}} <!-- end HasFields -->
-{{end}} <!-- end messages -->
 
-# Enums
-{{range .Enums}}
-
-## {{.LongName}} {#{{.LongName | lower | replace "." ""}}}
-{{.Description}}
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-{{range .Values -}}
-	| {{.Name}} | {{.Number}} | {{if .Description}}{{nobr .Description}}{{else}}none{{end}} |
 {{end}}
-
-{{end}} <!-- end Enums -->
-{{end}} <!-- end Files -->
-
-# Scalar Value Types
-
-| .proto Type | Notes | C++ Type | Java Type | Python Type |
-| ----------- | ----- | -------- | --------- | ----------- |
-{{range .Scalars -}}
-  | <div><h4 id="{{.ProtoType | lower | replace "." ""}}" /></div><a name="{{.ProtoType}}" /> {{.ProtoType}} | {{.Notes}} | {{.CppType}} | {{.JavaType}} | {{.PythonType}} |
 {{end}}
-
-*/}}

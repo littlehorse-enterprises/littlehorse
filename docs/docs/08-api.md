@@ -20,68 +20,3486 @@ The LittleHorse GRPC API is the backbone of the clients that you get in all of o
 gives you a GRPC stub to access the API. Most common operations are already documented with code examples in different
 languages [here](/docs/developer-guide/grpc), but we put this here for the true Jedi Masters.
 
-| Name | Request Type | Response Type | Description |
-| -----| ------------ | ------------- | ------------|
-| `PutTaskDef` | [`PutTaskDefRequest`](#puttaskdefrequest) | [`TaskDef`](#taskdef) | Creates a TaskDef. |
-| `GetTaskDef` | [`TaskDefId`](#taskdefid) | [`TaskDef`](#taskdef) | Gets a TaskDef. |
-| `PutExternalEventDef` | [`PutExternalEventDefRequest`](#putexternaleventdefrequest) | [`ExternalEventDef`](#externaleventdef) | Creates an ExternalEventDef. |
-| `GetExternalEventDef` | [`ExternalEventDefId`](#externaleventdefid) | [`ExternalEventDef`](#externaleventdef) | Gets an ExternalEventDef. |
-| `PutWorkflowEventDef` | [`PutWorkflowEventDefRequest`](#putworkfloweventdefrequest) | [`WorkflowEventDef`](#workfloweventdef) | EXPERIMENTAL: Creates a WorkflowEventDef. |
-| `PutWfSpec` | [`PutWfSpecRequest`](#putwfspecrequest) | [`WfSpec`](#wfspec) | Creates a WfSpec. |
-| `GetWfSpec` | [`WfSpecId`](#wfspecid) | [`WfSpec`](#wfspec) | Gets a WfSpec. |
-| `GetLatestWfSpec` | [`GetLatestWfSpecRequest`](#getlatestwfspecrequest) | [`WfSpec`](#wfspec) | Returns the latest WfSpec with a specified name (and optionally a specified Major Version). |
-| `MigrateWfSpec` | [`MigrateWfSpecRequest`](#migratewfspecrequest) | [`WfSpec`](#wfspec) | EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where you must update WfRun's that are in the RUNNING state rather than allowing them to run to completion.  As of 0.7.2, this feature is only partially implemented. |
-| `PutUserTaskDef` | [`PutUserTaskDefRequest`](#putusertaskdefrequest) | [`UserTaskDef`](#usertaskdef) | Creates a UserTaskDef. |
-| `GetUserTaskDef` | [`UserTaskDefId`](#usertaskdefid) | [`UserTaskDef`](#usertaskdef) | Gets a specific UserTaskDef.  This RPC is highly useful for applications built around User Tasks. For example, a UI that dynamically displays form fields based on the User Task might first receive a UserTaskRun, then use that UserTaskRun to look up the UserTaskDef. The frontend would inspect the UserTaskDef and display a form field on the browser page for each field in the UserTaskDef. |
-| `GetLatestUserTaskDef` | [`GetLatestUserTaskDefRequest`](#getlatestusertaskdefrequest) | [`UserTaskDef`](#usertaskdef) | Returns the most recent UserTaskDef with a specific name. |
-| `RunWf` | [`RunWfRequest`](#runwfrequest) | [`WfRun`](#wfrun) | Runs a WfSpec to create a WfRun. |
-| `GetWfRun` | [`WfRunId`](#wfrunid) | [`WfRun`](#wfrun) | Gets a WfRun. Although useful for development and debugging, this RPC is not often used by applications. |
-| `GetUserTaskRun` | [`UserTaskRunId`](#usertaskrunid) | [`UserTaskRun`](#usertaskrun) | Loads a specific UserTaskRun. It includes information about to whom the UserTask is currently assigned, history of assignments and reassignments, and any context for that UserTaskRun which is specific to the WfRun. |
-| `AssignUserTaskRun` | [`AssignUserTaskRunRequest`](#assignusertaskrunrequest) | [`.google.protobuf.Empty`](#googleprotobufempty) | Change the ownership of a UserTaskRun to a new userId, userGroup, or both. The action will be reflected in your next call to SearchUserTaskRun. This RPC is useful for applications that are using User Tasks to build an internal task-list and wish to administer the tasks. |
-| `CompleteUserTaskRun` | [`CompleteUserTaskRunRequest`](#completeusertaskrunrequest) | [`.google.protobuf.Empty`](#googleprotobufempty) | Completes a UserTaskRun. Includes the results of the UserTaskRun, the UserTaskRun Id, and the userId of the user who completes the UserTaskRun. Results in the UserTask NodeRun being completed, and unblocks the associated ThreadRun in the WfRun.  This RPC is highly useful for applications built around a WfSpec that uses USER_TASK nodes. |
-| `CancelUserTaskRun` | [`CancelUserTaskRunRequest`](#cancelusertaskrunrequest) | [`.google.protobuf.Empty`](#googleprotobufempty) | Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun. |
-| `ListUserTaskRuns` | [`ListUserTaskRunRequest`](#listusertaskrunrequest) | [`UserTaskRunList`](#usertaskrunlist) | Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun to model an entity. |
-| `GetNodeRun` | [`NodeRunId`](#noderunid) | [`NodeRun`](#noderun) | Gets a specific NodeRun. |
-| `ListNodeRuns` | [`ListNodeRunsRequest`](#listnoderunsrequest) | [`NodeRunList`](#noderunlist) | Lists all NodeRun's for a specific WfRun. |
-| `GetTaskRun` | [`TaskRunId`](#taskrunid) | [`TaskRun`](#taskrun) | Gets a specific TaskRun. |
-| `ListTaskRuns` | [`ListTaskRunsRequest`](#listtaskrunsrequest) | [`TaskRunList`](#taskrunlist) | Lists all TaskRun's for a specific WfRun. |
-| `GetVariable` | [`VariableId`](#variableid) | [`Variable`](#variable) | Get the value of a specific Variable. When using a WfRun to model an entity, this RPC is useful for retrieving information. It is equivalent to looking up the value of a column for a specific row in a SQL table. |
-| `ListVariables` | [`ListVariablesRequest`](#listvariablesrequest) | [`VariableList`](#variablelist) | List all Variables from a WfRun. |
-| `PutExternalEvent` | [`PutExternalEventRequest`](#putexternaleventrequest) | [`ExternalEvent`](#externalevent) | Post an ExternalEvent. This RPC is highly useful for |
-| `GetExternalEvent` | [`ExternalEventId`](#externaleventid) | [`ExternalEvent`](#externalevent) | Get a specific ExternalEvent. |
-| `AwaitWorkflowEvent` | [`AwaitWorkflowEventRequest`](#awaitworkfloweventrequest) | [`WorkflowEvent`](#workflowevent) | Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent is not thrown before the deadline specified by the client.  To specify the deadline, the client should use GRPC deadlines. |
-| `ListExternalEvents` | [`ListExternalEventsRequest`](#listexternaleventsrequest) | [`ExternalEventList`](#externaleventlist) | List ExternalEvent's for a specific WfRun. |
-| `SearchWfRun` | [`SearchWfRunRequest`](#searchwfrunrequest) | [`WfRunIdList`](#wfrunidlist) | Search for WfRun's. This RPC is highly useful for applications that store data in LittleHorse and need to find a specific WfRun based on certain indexed fields. |
-| `SearchNodeRun` | [`SearchNodeRunRequest`](#searchnoderunrequest) | [`NodeRunIdList`](#noderunidlist) | Search for NodeRun's. This RPC is useful for monitoring and finding bugs in your workflows or Task Workers. |
-| `SearchTaskRun` | [`SearchTaskRunRequest`](#searchtaskrunrequest) | [`TaskRunIdList`](#taskrunidlist) | Search for TaskRun's. This RPC is useful for finding bugs in your Task Workers. |
-| `SearchUserTaskRun` | [`SearchUserTaskRunRequest`](#searchusertaskrunrequest) | [`UserTaskRunIdList`](#usertaskrunidlist) | Search for UserTaskRun's. This RPC is highly useful for applications that connect human end-users to LittleHorse: it enables you to find all tasks assigned to a specific person or group of people. |
-| `SearchVariable` | [`SearchVariableRequest`](#searchvariablerequest) | [`VariableIdList`](#variableidlist) | Search for Variable's. This RPC is highly useful for applications that store data in LittleHorse and need to find a specific WfRun based on certain indexed fields. |
-| `SearchExternalEvent` | [`SearchExternalEventRequest`](#searchexternaleventrequest) | [`ExternalEventIdList`](#externaleventidlist) | Search for ExternalEvent's. |
-| `SearchTaskDef` | [`SearchTaskDefRequest`](#searchtaskdefrequest) | [`TaskDefIdList`](#taskdefidlist) | Search for TaskDef's. |
-| `SearchUserTaskDef` | [`SearchUserTaskDefRequest`](#searchusertaskdefrequest) | [`UserTaskDefIdList`](#usertaskdefidlist) | Search for UserTaskDef's. |
-| `SearchWfSpec` | [`SearchWfSpecRequest`](#searchwfspecrequest) | [`WfSpecIdList`](#wfspecidlist) | Search for WfSpec's. |
-| `SearchExternalEventDef` | [`SearchExternalEventDefRequest`](#searchexternaleventdefrequest) | [`ExternalEventDefIdList`](#externaleventdefidlist) | Search for ExternalEventDef's. |
-| `SearchTenant` | [`SearchTenantRequest`](#searchtenantrequest) | [`TenantIdList`](#tenantidlist) | Search for all available TenantIds for current Principal |
-| `RegisterTaskWorker` | [`RegisterTaskWorkerRequest`](#registertaskworkerrequest) | [`RegisterTaskWorkerResponse`](#registertaskworkerresponse) | Used by the Task Worker to: 1. Tell the LH Server that the Task Worker has joined the Task Worker Group. 2. Receive the assignemnt of LH Server's to poll from. Generally, you won't use this request manually. |
-| `PollTask` | [`PollTaskRequest`](#polltaskrequest) | [`PollTaskResponse`](#polltaskresponse) | Used by Task Workers to listen for TaskRuns on the Task Queue. Generally, you won't use this RPC manually. |
-| `ReportTask` | [`ReportTaskRun`](#reporttaskrun) | [`.google.protobuf.Empty`](#googleprotobufempty) | Used by Task Workers to report the result of a TaskRun. Generally, you won't use this rpc manually. |
-| `StopWfRun` | [`StopWfRunRequest`](#stopwfrunrequest) | [`.google.protobuf.Empty`](#googleprotobufempty) | Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state. |
-| `ResumeWfRun` | [`ResumeWfRunRequest`](#resumewfrunrequest) | [`.google.protobuf.Empty`](#googleprotobufempty) | Resumes a WfRun or a specific ThreadRun of a WfRun. |
-| `DeleteWfRun` | [`DeleteWfRunRequest`](#deletewfrunrequest) | [`.google.protobuf.Empty`](#googleprotobufempty) | Deletes a WfRun. The WfRun cannot be in the RUNNING state. |
-| `DeleteTaskDef` | [`DeleteTaskDefRequest`](#deletetaskdefrequest) | [`.google.protobuf.Empty`](#googleprotobufempty) | Deletes a TaskDef. |
-| `DeleteWfSpec` | [`DeleteWfSpecRequest`](#deletewfspecrequest) | [`.google.protobuf.Empty`](#googleprotobufempty) | Deletes a WfSpec. |
-| `DeleteUserTaskDef` | [`DeleteUserTaskDefRequest`](#deleteusertaskdefrequest) | [`.google.protobuf.Empty`](#googleprotobufempty) | Deletes a UserTaskDef. |
-| `DeleteExternalEventDef` | [`DeleteExternalEventDefRequest`](#deleteexternaleventdefrequest) | [`.google.protobuf.Empty`](#googleprotobufempty) | Deletes an ExternalEventDef. |
-| `GetTaskDefMetricsWindow` | [`TaskDefMetricsQueryRequest`](#taskdefmetricsqueryrequest) | [`TaskDefMetrics`](#taskdefmetrics) | Returns TaskDef Metrics for a specific TaskDef and a specific time window. |
-| `GetWfSpecMetricsWindow` | [`WfSpecMetricsQueryRequest`](#wfspecmetricsqueryrequest) | [`WfSpecMetrics`](#wfspecmetrics) | Returns WfSpec Metrics for a specific WfSpec and a specific time window. |
-| `ListTaskDefMetrics` | [`ListTaskMetricsRequest`](#listtaskmetricsrequest) | [`ListTaskMetricsResponse`](#listtaskmetricsresponse) | Returns a list of TaskDef Metrics Windows. |
-| `ListWfSpecMetrics` | [`ListWfMetricsRequest`](#listwfmetricsrequest) | [`ListWfMetricsResponse`](#listwfmetricsresponse) | Returns a list of WfSpec Metrics Windows. |
-| `PutTenant` | [`PutTenantRequest`](#puttenantrequest) | [`Tenant`](#tenant) | EXPERIMENTAL: Creates another Tenant in the LH Server. |
-| `PutPrincipal` | [`PutPrincipalRequest`](#putprincipalrequest) | [`Principal`](#principal) | EXPERIMENTAL: Creates an Principal. |
-| `Whoami` | [`.google.protobuf.Empty`](#googleprotobufempty) | [`Principal`](#principal) | Returns the Principal of the caller. |
-| `GetServerVersion` | [`.google.protobuf.Empty`](#googleprotobufempty) | [`ServerVersionResponse`](#serverversionresponse) | Gets the version of the LH Server. |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### RPC `PutTaskDef` {#puttaskdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [PutTaskDefRequest](#puttaskdefrequest) | [TaskDef](#taskdef) | Creates a TaskDef. |
+
+### RPC `GetTaskDef` {#gettaskdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [TaskDefId](#taskdefid) | [TaskDef](#taskdef) | Gets a TaskDef. |
+
+### RPC `PutExternalEventDef` {#putexternaleventdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [PutExternalEventDefRequest](#putexternaleventdefrequest) | [ExternalEventDef](#externaleventdef) | Creates an ExternalEventDef. |
+
+### RPC `GetExternalEventDef` {#getexternaleventdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [ExternalEventDefId](#externaleventdefid) | [ExternalEventDef](#externaleventdef) | Gets an ExternalEventDef. |
+
+### RPC `PutWorkflowEventDef` {#putworkfloweventdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [PutWorkflowEventDefRequest](#putworkfloweventdefrequest) | [WorkflowEventDef](#workfloweventdef) | EXPERIMENTAL: Creates a WorkflowEventDef. |
+
+### RPC `PutWfSpec` {#putwfspec}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [PutWfSpecRequest](#putwfspecrequest) | [WfSpec](#wfspec) | Creates a WfSpec. |
+
+### RPC `GetWfSpec` {#getwfspec}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [WfSpecId](#wfspecid) | [WfSpec](#wfspec) | Gets a WfSpec. |
+
+### RPC `GetLatestWfSpec` {#getlatestwfspec}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [GetLatestWfSpecRequest](#getlatestwfspecrequest) | [WfSpec](#wfspec) | Returns the latest WfSpec with a specified name (and optionally a specified Major Version). |
+
+### RPC `MigrateWfSpec` {#migratewfspec}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [MigrateWfSpecRequest](#migratewfspecrequest) | [WfSpec](#wfspec) | EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where you must update WfRun's that are in the RUNNING state rather than allowing them to run to completion.<br/><br/>As of 0.7.2, this feature is only partially implemented. |
+
+### RPC `PutUserTaskDef` {#putusertaskdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [PutUserTaskDefRequest](#putusertaskdefrequest) | [UserTaskDef](#usertaskdef) | Creates a UserTaskDef. |
+
+### RPC `GetUserTaskDef` {#getusertaskdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [UserTaskDefId](#usertaskdefid) | [UserTaskDef](#usertaskdef) | Gets a specific UserTaskDef.<br/><br/>This RPC is highly useful for applications built around User Tasks. For example, a UI that dynamically displays form fields based on the User Task might first receive a UserTaskRun, then use that UserTaskRun to look up the UserTaskDef. The frontend would inspect the UserTaskDef and display a form field on the browser page for each field in the UserTaskDef. |
+
+### RPC `GetLatestUserTaskDef` {#getlatestusertaskdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [GetLatestUserTaskDefRequest](#getlatestusertaskdefrequest) | [UserTaskDef](#usertaskdef) | Returns the most recent UserTaskDef with a specific name. |
+
+### RPC `RunWf` {#runwf}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [RunWfRequest](#runwfrequest) | [WfRun](#wfrun) | Runs a WfSpec to create a WfRun. |
+
+### RPC `GetWfRun` {#getwfrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [WfRunId](#wfrunid) | [WfRun](#wfrun) | Gets a WfRun. Although useful for development and debugging, this RPC is not often used by applications. |
+
+### RPC `GetUserTaskRun` {#getusertaskrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [UserTaskRunId](#usertaskrunid) | [UserTaskRun](#usertaskrun) | Loads a specific UserTaskRun. It includes information about to whom the UserTask is currently assigned, history of assignments and reassignments, and any context for that UserTaskRun which is specific to the WfRun. |
+
+### RPC `AssignUserTaskRun` {#assignusertaskrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [AssignUserTaskRunRequest](#assignusertaskrunrequest) | [.google.protobuf.Empty](#googleprotobufempty) | Change the ownership of a UserTaskRun to a new userId, userGroup, or both. The action will be reflected in your next call to SearchUserTaskRun. This RPC is useful for applications that are using User Tasks to build an internal task-list and wish to administer the tasks. |
+
+### RPC `CompleteUserTaskRun` {#completeusertaskrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [CompleteUserTaskRunRequest](#completeusertaskrunrequest) | [.google.protobuf.Empty](#googleprotobufempty) | Completes a UserTaskRun. Includes the results of the UserTaskRun, the UserTaskRun Id, and the userId of the user who completes the UserTaskRun. Results in the UserTask NodeRun being completed, and unblocks the associated ThreadRun in the WfRun.<br/><br/>This RPC is highly useful for applications built around a WfSpec that uses USER_TASK nodes. |
+
+### RPC `CancelUserTaskRun` {#cancelusertaskrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [CancelUserTaskRunRequest](#cancelusertaskrunrequest) | [.google.protobuf.Empty](#googleprotobufempty) | Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun. |
+
+### RPC `ListUserTaskRuns` {#listusertaskruns}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [ListUserTaskRunRequest](#listusertaskrunrequest) | [UserTaskRunList](#usertaskrunlist) | Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun to model an entity. |
+
+### RPC `GetNodeRun` {#getnoderun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [NodeRunId](#noderunid) | [NodeRun](#noderun) | Gets a specific NodeRun. |
+
+### RPC `ListNodeRuns` {#listnoderuns}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [ListNodeRunsRequest](#listnoderunsrequest) | [NodeRunList](#noderunlist) | Lists all NodeRun's for a specific WfRun. |
+
+### RPC `GetTaskRun` {#gettaskrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [TaskRunId](#taskrunid) | [TaskRun](#taskrun) | Gets a specific TaskRun. |
+
+### RPC `ListTaskRuns` {#listtaskruns}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [ListTaskRunsRequest](#listtaskrunsrequest) | [TaskRunList](#taskrunlist) | Lists all TaskRun's for a specific WfRun. |
+
+### RPC `GetVariable` {#getvariable}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [VariableId](#variableid) | [Variable](#variable) | Get the value of a specific Variable. When using a WfRun to model an entity, this RPC is useful for retrieving information. It is equivalent to looking up the value of a column for a specific row in a SQL table. |
+
+### RPC `ListVariables` {#listvariables}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [ListVariablesRequest](#listvariablesrequest) | [VariableList](#variablelist) | List all Variables from a WfRun. |
+
+### RPC `PutExternalEvent` {#putexternalevent}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [PutExternalEventRequest](#putexternaleventrequest) | [ExternalEvent](#externalevent) | Post an ExternalEvent. This RPC is highly useful for |
+
+### RPC `GetExternalEvent` {#getexternalevent}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [ExternalEventId](#externaleventid) | [ExternalEvent](#externalevent) | Get a specific ExternalEvent. |
+
+### RPC `AwaitWorkflowEvent` {#awaitworkflowevent}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [AwaitWorkflowEventRequest](#awaitworkfloweventrequest) | [WorkflowEvent](#workflowevent) | Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent is not thrown before the deadline specified by the client.<br/><br/>To specify the deadline, the client should use GRPC deadlines. |
+
+### RPC `ListExternalEvents` {#listexternalevents}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [ListExternalEventsRequest](#listexternaleventsrequest) | [ExternalEventList](#externaleventlist) | List ExternalEvent's for a specific WfRun. |
+
+### RPC `SearchWfRun` {#searchwfrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [SearchWfRunRequest](#searchwfrunrequest) | [WfRunIdList](#wfrunidlist) | Search for WfRun's. This RPC is highly useful for applications that store data in LittleHorse and need to find a specific WfRun based on certain indexed fields. |
+
+### RPC `SearchNodeRun` {#searchnoderun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [SearchNodeRunRequest](#searchnoderunrequest) | [NodeRunIdList](#noderunidlist) | Search for NodeRun's. This RPC is useful for monitoring and finding bugs in your workflows or Task Workers. |
+
+### RPC `SearchTaskRun` {#searchtaskrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [SearchTaskRunRequest](#searchtaskrunrequest) | [TaskRunIdList](#taskrunidlist) | Search for TaskRun's. This RPC is useful for finding bugs in your Task Workers. |
+
+### RPC `SearchUserTaskRun` {#searchusertaskrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [SearchUserTaskRunRequest](#searchusertaskrunrequest) | [UserTaskRunIdList](#usertaskrunidlist) | Search for UserTaskRun's. This RPC is highly useful for applications that connect human end-users to LittleHorse: it enables you to find all tasks assigned to a specific person or group of people. |
+
+### RPC `SearchVariable` {#searchvariable}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [SearchVariableRequest](#searchvariablerequest) | [VariableIdList](#variableidlist) | Search for Variable's. This RPC is highly useful for applications that store data in LittleHorse and need to find a specific WfRun based on certain indexed fields. |
+
+### RPC `SearchExternalEvent` {#searchexternalevent}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [SearchExternalEventRequest](#searchexternaleventrequest) | [ExternalEventIdList](#externaleventidlist) | Search for ExternalEvent's. |
+
+### RPC `SearchTaskDef` {#searchtaskdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [SearchTaskDefRequest](#searchtaskdefrequest) | [TaskDefIdList](#taskdefidlist) | Search for TaskDef's. |
+
+### RPC `SearchUserTaskDef` {#searchusertaskdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [SearchUserTaskDefRequest](#searchusertaskdefrequest) | [UserTaskDefIdList](#usertaskdefidlist) | Search for UserTaskDef's. |
+
+### RPC `SearchWfSpec` {#searchwfspec}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [SearchWfSpecRequest](#searchwfspecrequest) | [WfSpecIdList](#wfspecidlist) | Search for WfSpec's. |
+
+### RPC `SearchExternalEventDef` {#searchexternaleventdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [SearchExternalEventDefRequest](#searchexternaleventdefrequest) | [ExternalEventDefIdList](#externaleventdefidlist) | Search for ExternalEventDef's. |
+
+### RPC `SearchTenant` {#searchtenant}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [SearchTenantRequest](#searchtenantrequest) | [TenantIdList](#tenantidlist) | Search for all available TenantIds for current Principal |
+
+### RPC `RegisterTaskWorker` {#registertaskworker}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [RegisterTaskWorkerRequest](#registertaskworkerrequest) | [RegisterTaskWorkerResponse](#registertaskworkerresponse) | Used by the Task Worker to: 1. Tell the LH Server that the Task Worker has joined the Task Worker Group. 2. Receive the assignemnt of LH Server's to poll from. Generally, you won't use this request manually. |
+
+### RPC `PollTask` {#polltask}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [PollTaskRequest](#polltaskrequest) | [PollTaskResponse](#polltaskresponse) | Used by Task Workers to listen for TaskRuns on the Task Queue. Generally, you won't use this RPC manually. |
+
+### RPC `ReportTask` {#reporttask}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [ReportTaskRun](#reporttaskrun) | [.google.protobuf.Empty](#googleprotobufempty) | Used by Task Workers to report the result of a TaskRun. Generally, you won't use this rpc manually. |
+
+### RPC `StopWfRun` {#stopwfrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [StopWfRunRequest](#stopwfrunrequest) | [.google.protobuf.Empty](#googleprotobufempty) | Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state. |
+
+### RPC `ResumeWfRun` {#resumewfrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [ResumeWfRunRequest](#resumewfrunrequest) | [.google.protobuf.Empty](#googleprotobufempty) | Resumes a WfRun or a specific ThreadRun of a WfRun. |
+
+### RPC `DeleteWfRun` {#deletewfrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [DeleteWfRunRequest](#deletewfrunrequest) | [.google.protobuf.Empty](#googleprotobufempty) | Deletes a WfRun. The WfRun cannot be in the RUNNING state. |
+
+### RPC `DeleteTaskDef` {#deletetaskdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [DeleteTaskDefRequest](#deletetaskdefrequest) | [.google.protobuf.Empty](#googleprotobufempty) | Deletes a TaskDef. |
+
+### RPC `DeleteWfSpec` {#deletewfspec}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [DeleteWfSpecRequest](#deletewfspecrequest) | [.google.protobuf.Empty](#googleprotobufempty) | Deletes a WfSpec. |
+
+### RPC `DeleteUserTaskDef` {#deleteusertaskdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [DeleteUserTaskDefRequest](#deleteusertaskdefrequest) | [.google.protobuf.Empty](#googleprotobufempty) | Deletes a UserTaskDef. |
+
+### RPC `DeleteExternalEventDef` {#deleteexternaleventdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [DeleteExternalEventDefRequest](#deleteexternaleventdefrequest) | [.google.protobuf.Empty](#googleprotobufempty) | Deletes an ExternalEventDef. |
+
+### RPC `GetTaskDefMetricsWindow` {#gettaskdefmetricswindow}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [TaskDefMetricsQueryRequest](#taskdefmetricsqueryrequest) | [TaskDefMetrics](#taskdefmetrics) | Returns TaskDef Metrics for a specific TaskDef and a specific time window. |
+
+### RPC `GetWfSpecMetricsWindow` {#getwfspecmetricswindow}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [WfSpecMetricsQueryRequest](#wfspecmetricsqueryrequest) | [WfSpecMetrics](#wfspecmetrics) | Returns WfSpec Metrics for a specific WfSpec and a specific time window. |
+
+### RPC `ListTaskDefMetrics` {#listtaskdefmetrics}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [ListTaskMetricsRequest](#listtaskmetricsrequest) | [ListTaskMetricsResponse](#listtaskmetricsresponse) | Returns a list of TaskDef Metrics Windows. |
+
+### RPC `ListWfSpecMetrics` {#listwfspecmetrics}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [ListWfMetricsRequest](#listwfmetricsrequest) | [ListWfMetricsResponse](#listwfmetricsresponse) | Returns a list of WfSpec Metrics Windows. |
+
+### RPC `PutTenant` {#puttenant}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [PutTenantRequest](#puttenantrequest) | [Tenant](#tenant) | EXPERIMENTAL: Creates another Tenant in the LH Server. |
+
+### RPC `PutPrincipal` {#putprincipal}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [PutPrincipalRequest](#putprincipalrequest) | [Principal](#principal) | EXPERIMENTAL: Creates an Principal. |
+
+### RPC `Whoami` {#whoami}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [.google.protobuf.Empty](#googleprotobufempty) | [Principal](#principal) | Returns the Principal of the caller. |
+
+### RPC `GetServerVersion` {#getserverversion}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [.google.protobuf.Empty](#googleprotobufempty) | [ServerVersionResponse](#serverversionresponse) | Gets the version of the LH Server. |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## LittleHorse Protobuf Schemas
+
+This section contains the exact schemas for every object in our public API.
+
+
+
+
+### Message `DeletePrincipalRequest` {#deleteprincipalrequest}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ string](#string) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `Principal` {#principal}
+
+This is a GlobalGetable.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ PrincipalId](#principalid) | Principals are agnostic of the Authentication protocol that you use. In OAuth, the id is retrieved by looking at the claims on the request. In mTLS, the id is retrived by looking at the Subject Name of the client certificate. |
+| `created_at` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | none |
+| `per_tenant_acls` | [`map` Principal.PerTenantAclsEntry](#principalpertenantaclsentry) | Maps a Tenant ID to a list of ACL's that the Principal has permission to execute *within that Tenant* |
+| `global_acls` | [ ServerACLs](#serveracls) | Sets permissions that this Principal has *for any Tenant* in the LH Cluster. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `Principal.PerTenantAclsEntry` {#principalpertenantaclsentry}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `key` | [ string](#string) | none |
+| `value` | [ ServerACLs](#serveracls) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `PutPrincipalRequest` {#putprincipalrequest}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ string](#string) | none |
+| `per_tenant_acls` | [`map` PutPrincipalRequest.PerTenantAclsEntry](#putprincipalrequestpertenantaclsentry) | none |
+| `global_acls` | [ ServerACLs](#serveracls) | none |
+| `overwrite` | [ bool](#bool) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `PutPrincipalRequest.PerTenantAclsEntry` {#putprincipalrequestpertenantaclsentry}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `key` | [ string](#string) | none |
+| `value` | [ ServerACLs](#serveracls) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `PutTenantRequest` {#puttenantrequest}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ string](#string) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ServerACL` {#serveracl}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `resources` | [repeated ACLResource](#aclresource) | none |
+| `allowed_actions` | [repeated ACLAction](#aclaction) | none |
+| [oneof `resource_filter`] `name` | [ string](#string) | none |
+| [oneof `resource_filter`] `prefix` | [ string](#string) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ServerACLs` {#serveracls}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `acls` | [repeated ServerACL](#serveracl) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `Tenant` {#tenant}
+
+This is a GlobalGetable
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ TenantId](#tenantid) | none |
+| `created_at` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | Future versions will include quotas on a per-Tenant basis. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+
+
+
+
+### Message `ExponentialBackoffRetryPolicy` {#exponentialbackoffretrypolicy}
+
+Defines an Exponential backoff policy for TaskRun retries. The delay for a retry
+attempt `N` is defined as:
+
+min(base_interval_ms * (multiplier ^(N-1)), max_delay_ms)
+
+Note that timers in LittleHorse have a resolution of about 500-1000 milliseconds,
+so timing is not exact.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `base_interval_ms` | [ int32](#int32) | Base delay in ms for the first retry. Note that in LittleHorse, timers have a resolution of 500-1000 milliseconds. Must be greater than zero. |
+| `max_delay_ms` | [ int64](#int64) | Maximum delay in milliseconds between retries. |
+| `multiplier` | [ float](#float) | The multiplier to use in calculating the retry backoff policy. We recommend starting with 2.0. Must be at least 1.0. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskNode` {#tasknode}
+
+Defines a TaskRun execution. Used in a Node and also in the UserTask Trigger Actions.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `task_to_execute`] `task_def_id` | [ TaskDefId](#taskdefid) | none |
+| [oneof `task_to_execute`] `dynamic_task` | [ VariableAssignment](#variableassignment) | none |
+| `timeout_seconds` | [ int32](#int32) | How long until LittleHorse determines that the Task Worker had a technical ERROR if the worker does not yet reply to the Server. This is determined on a per-Attempt basis. |
+| `retries` | [ int32](#int32) | Configures the amount of retries allowed on this TaskNode.
+
+Retryable errors include: - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the Task Worker in time. - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing the Task Function.
+
+Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR, TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION). |
+| [oneof `_exponential_backoff`] `exponential_backoff` | [optional ExponentialBackoffRetryPolicy](#exponentialbackoffretrypolicy) | If this field is set, then retries will use Exponential Backoff. |
+| `variables` | [repeated VariableAssignment](#variableassignment) | Input variables into the TaskDef. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UTActionTrigger` {#utactiontrigger}
+
+A UTActionTrigger triggers an action upon certain lifecycle hooks
+in a User Task. Actions include:
+- re-assign the User Task Run
+- cancel the User Task Run
+- execute a Reminder Task
+
+Hooks include:
+- Upon creation of the UserTaskRun
+- Upon rescheduling the UserTaskRun
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `action`] `task` | [ UTActionTrigger.UTATask](#utactiontriggerutatask) | none |
+| [oneof `action`] `cancel` | [ UTActionTrigger.UTACancel](#utactiontriggerutacancel) | none |
+| [oneof `action`] `reassign` | [ UTActionTrigger.UTAReassign](#utactiontriggerutareassign) | later on, might enable scheduling entire ThreadRuns |
+| `delay_seconds` | [ VariableAssignment](#variableassignment) | The Action is triggered some time after the Hook matures. The delay is controlled by this field. |
+| `hook` | [ UTActionTrigger.UTHook](#utactiontriggeruthook) | The hook on which this UserTaskAction is scheduled. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UTActionTrigger.UTACancel` {#utactiontriggerutacancel}
+
+A UserTaskAction that causes a UserTaskRun to be CANCELLED when it fires.
+
+ <!-- end HasFields -->
+
+
+
+### Message `UTActionTrigger.UTAReassign` {#utactiontriggerutareassign}
+
+A UserTaskAction that causes a UserTaskRun to be reassigned when it fires.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_user_id`] `user_id` | [optional VariableAssignment](#variableassignment) | A variable assignment that resolves to a STR representing the new user_id. If not set, the user_id of the UserTaskRun will be un-set. |
+| [oneof `_user_group`] `user_group` | [optional VariableAssignment](#variableassignment) | A variable assignment that resolves to a STR representing the new user_group. If not set, the user_group of the UserTaskRun will be un-set. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UTActionTrigger.UTATask` {#utactiontriggerutatask}
+
+A UserTaskAction that causes a TaskRun to be scheduled when it fires.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `task` | [ TaskNode](#tasknode) | The specification of the Task to schedule. |
+| `mutations` | [repeated VariableMutation](#variablemutation) | EXPERIMENTAL: Any variables in the ThreadRun which we should mutate. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `VariableAssignment` {#variableassignment}
+
+A VariableAssignment is used within a WfSpec to determine how a value should be
+assigned in the context of a specific WfRun. For example, in a TASK node, you
+use a VariableAssignment for each input parameter to determine how the value
+is set.
+
+Note that the VariableAssignment is normally handled by the SDK; you shouldn't
+have to worry about this in daily LittleHorse usage.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_json_path`] `json_path` | [optional string](#string) | If you provide a `variable_name` and the specified variable is JSON_OBJ or JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment resolve to the specified field. |
+| [oneof `source`] `variable_name` | [ string](#string) | Assign the value from a variable. |
+| [oneof `source`] `literal_value` | [ VariableValue](#variablevalue) | Assign a literal value |
+| [oneof `source`] `format_string` | [ VariableAssignment.FormatString](#variableassignmentformatstring) | Assign a format string |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `VariableAssignment.FormatString` {#variableassignmentformatstring}
+
+A FormatString formats a template String with values from the WfRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `format` | [ VariableAssignment](#variableassignment) | A VariableAssignment which must resolve to a String that has format args. A valid string is "This is a format string with three args: {0}, {1}, {2}" |
+| `args` | [repeated VariableAssignment](#variableassignment) | VariableAssignments which fill out the args. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `VariableDef` {#variabledef}
+
+Declares a Variable.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `type` | [ VariableType](#variabletype) | The Type of the variable. |
+| `name` | [ string](#string) | The name of the variable. |
+| [oneof `_default_value`] `default_value` | [optional VariableValue](#variablevalue) | Optional default value if the variable isn't set; for example, in a ThreadRun if you start a ThreadRun or WfRun without passing a variable in, then this is used. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `VariableMutation` {#variablemutation}
+
+A VariableMutation defines a modification made to one of a ThreadRun's variables.
+The LHS determines the variable that is modified; the operation determines how
+it is modified, and the RHS is the input to the operation.
+
+Day-to-day users of LittleHorse generally don't interact with this structure unless
+they are writing their own WfSpec SDK.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `lhs_name` | [ string](#string) | The name of the variable to mutate |
+| [oneof `_lhs_json_path`] `lhs_json_path` | [optional string](#string) | For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate a specific sub-field of the variable. |
+| `operation` | [ VariableMutationType](#variablemutationtype) | Defines the operation that we are executing. |
+| [oneof `rhs_value`] `source_variable` | [ VariableAssignment](#variableassignment) | Set the source_variable as the RHS to use another variable from the workflow to as the RHS/ |
+| [oneof `rhs_value`] `literal_value` | [ VariableValue](#variablevalue) | Use a literal value as the RHS. |
+| [oneof `rhs_value`] `node_output` | [ VariableMutation.NodeOutputSource](#variablemutationnodeoutputsource) | Use the output of the current node as the RHS. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `VariableMutation.NodeOutputSource` {#variablemutationnodeoutputsource}
+
+Specifies to use the output of a NodeRun as the RHS.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_jsonpath`] `jsonpath` | [optional string](#string) | Use this specific field from a JSON output |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+
+
+### Message `ExternalEvent` {#externalevent}
+
+An ExternalEvent represents A Thing That Happened outside the context of a WfRun.
+Generally, an ExternalEvent is used to represent a document getting signed, an incident
+being resolved, an order being fulfilled, etc.
+
+ExternalEvent's are created via the 'rpc PutExternalEvent'
+
+For more context on ExternalEvents, check our documentation here:
+https://littlehorse.dev/docs/concepts/external-events
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ ExternalEventId](#externaleventid) | The ID of the ExternalEvent. This contains WfRunId, ExternalEventDefId, and a unique guid which can be used for idempotency of the `PutExternalEvent` rpc call. |
+| `created_at` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | The time the ExternalEvent was registered with LittleHorse. |
+| `content` | [ VariableValue](#variablevalue) | The payload of this ExternalEvent. |
+| [oneof `_thread_run_number`] `thread_run_number` | [optional int32](#int32) | If the ExternalEvent was claimed by a specific ThreadRun (via Interrupt or EXTERNAL_EVENT Node), this is set to the number of the relevant ThreadRun. |
+| [oneof `_node_run_position`] `node_run_position` | [optional int32](#int32) | If the ExternalEvent was claimed by a specific ThreadRun (via EXTERNAL_EVENT Node; note that in the case of an Interrupt the node_run_position will never be set), this is set to the number of the relevant NodeRun. |
+| `claimed` | [ bool](#bool) | Whether the ExternalEvent has been claimed by a WfRun. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ExternalEventDef` {#externaleventdef}
+
+The ExternalEventDef defines the blueprint for an ExternalEvent.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ ExternalEventDefId](#externaleventdefid) | The id of the ExternalEventDef. |
+| `created_at` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | When the ExternalEventDef was created. |
+| `retention_policy` | [ ExternalEventRetentionPolicy](#externaleventretentionpolicy) | The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the ExternalEvent **only before** it is matched with a WfRun. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ExternalEventRetentionPolicy` {#externaleventretentionpolicy}
+
+Policy to determine how long an ExternalEvent is retained after creation if it
+is not yet claimed by a WfRun. Note that once a WfRun has been matched with the
+ExternalEvent, the ExternalEvent is deleted if/when that WfRun is deleted.
+If not set, then ExternalEvent's are not deleted if they are not matched with
+a WfRun.
+
+A future version of LittleHorse will allow changing the retention_policy, which
+will trigger a cleanup of old `ExternalEvent`s.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `ext_evt_gc_policy`] `seconds_after_put` | [ int64](#int64) | Delete such an ExternalEvent X seconds after it has been registered if it has not yet been claimed by a WfRun. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+
+
+### Message `EntrypointRun` {#entrypointrun}
+
+The sub-node structure for an ENTRYPOINT NodeRun. Currently Empty.
+
+ <!-- end HasFields -->
+
+
+
+### Message `ExitRun` {#exitrun}
+
+The sub-node structure for an EXIT NodeRun. Currently Empty, will contain info
+about ThreadRun Outputs once those are added in the future.
+
+ <!-- end HasFields -->
+
+
+
+### Message `ExternalEventRun` {#externaleventrun}
+
+The sub-node structure for an EXTERNAL_EVENT NodeRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `external_event_def_id` | [ ExternalEventDefId](#externaleventdefid) | The ExternalEventDefId that we are waiting for. |
+| [oneof `_event_time`] `event_time` | [optional google.protobuf.Timestamp](#googleprotobuftimestamp) | The time that the ExternalEvent arrived. Unset if still waiting. |
+| [oneof `_external_event_id`] `external_event_id` | [optional ExternalEventId](#externaleventid) | The ExternalEventId of the ExternalEvent. Unset if still waiting. |
+| `timed_out` | [ bool](#bool) | Whether we had a timeout while waiting for the ExternalEvent to come. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `Failure` {#failure}
+
+Denotes a failure that happened during execution of a NodeRun or the outgoing
+edges.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `failure_name` | [ string](#string) | The name of the failure. LittleHorse has certain built-in failures, all named in UPPER_UNDERSCORE_CASE. Such failures correspond with the `LHStatus.ERROR`.
+
+Any Failure named in `kebab-case` is a user-defined business `EXCEPTION`, treated as an `LHStatus.EXCEPTION`. |
+| `message` | [ string](#string) | The human-readable message associated with this Failure. |
+| [oneof `_content`] `content` | [optional VariableValue](#variablevalue) | A user-defined Failure can have a value; for example, in Java an Exception is an Object with arbitrary properties and behaviors.
+
+Future versions of LH will allow FailureHandler threads to accept that value as an input variable. |
+| `was_properly_handled` | [ bool](#bool) | A boolean denoting whether a Failure Handler ThreadRun properly handled the Failure. |
+| [oneof `_failure_handler_threadrun_id`] `failure_handler_threadrun_id` | [optional int32](#int32) | If there is a defined failure handler for the NodeRun, then this field is set to the id of the failure handler thread run. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `NodeRun` {#noderun}
+
+A NodeRun is a running instance of a Node in a ThreadRun. Note that a NodeRun
+is a Getable object, meaning it can be retried from the LittleHorse grpc API.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ NodeRunId](#noderunid) | The ID of the NodeRun. Note that the NodeRunId contains the WfRunId, the ThreadRun's number, and the position of the NodeRun within that ThreadRun. |
+| `wf_spec_id` | [ WfSpecId](#wfspecid) | The ID of the WfSpec that this NodeRun is from. This is not _always_ the same as the ThreadRun it belongs to because of the upcoming WfSpec Version Migration feature. |
+| `failure_handler_ids` | [repeated int32](#int32) | A list of all ThreadRun's that ran to handle a failure thrown by this NodeRun. |
+| `status` | [ LHStatus](#lhstatus) | The status of this NodeRun. |
+| `arrival_time` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | The time the ThreadRun arrived at this NodeRun. |
+| [oneof `_end_time`] `end_time` | [optional google.protobuf.Timestamp](#googleprotobuftimestamp) | The time the NodeRun was terminated (failed or completed). |
+| `thread_spec_name` | [ string](#string) | The name of the ThreadSpec to which this NodeRun belongs. |
+| `node_name` | [ string](#string) | The name of the Node in the ThreadSpec that this NodeRun belongs to. |
+| [oneof `_error_message`] `error_message` | [optional string](#string) | A human-readable error message intended to help developers diagnose WfSpec problems. |
+| `failures` | [repeated Failure](#failure) | A list of Failures thrown by this NodeRun. |
+| [oneof `node_type`] `task` | [ TaskNodeRun](#tasknoderun) | Denotes a TASK node, which runs a TaskRun. |
+| [oneof `node_type`] `external_event` | [ ExternalEventRun](#externaleventrun) | An EXTERNAL_EVENT node blocks until an ExternalEvent arrives. |
+| [oneof `node_type`] `entrypoint` | [ EntrypointRun](#entrypointrun) | An ENTRYPOINT node is the first thing that runs in a ThreadRun. |
+| [oneof `node_type`] `exit` | [ ExitRun](#exitrun) | An EXIT node completes a ThreadRun. |
+| [oneof `node_type`] `start_thread` | [ StartThreadRun](#startthreadrun) | A START_THREAD node starts a child ThreadRun. |
+| [oneof `node_type`] `wait_threads` | [ WaitForThreadsRun](#waitforthreadsrun) | A WAIT_THREADS node waits for one or more child ThreadRun's to complete. |
+| [oneof `node_type`] `sleep` | [ SleepNodeRun](#sleepnoderun) | A SLEEP node makes the ThreadRun block for a certain amount of time. |
+| [oneof `node_type`] `user_task` | [ UserTaskNodeRun](#usertasknoderun) | A USER_TASK node waits until a human executes some work and reports the result. |
+| [oneof `node_type`] `start_multiple_threads` | [ StartMultipleThreadsRun](#startmultiplethreadsrun) | A START_MULTIPLE_THREADS node iterates over a JSON_ARR variable and spawns a child ThreadRun for each element in the list. |
+| [oneof `node_type`] `throw_event` | [ ThrowEventNodeRun](#throweventnoderun) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SleepNodeRun` {#sleepnoderun}
+
+The sub-node structure for a SLEEP NodeRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `maturation_time` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | The time at which the NodeRun is *SCHEDULED TO* wake up. In rare cases, if the LH Server is back-pressuring clients due to extreme load, the timer event which marks the sleep node as "matured" may come in slightly late. |
+| `matured` | [ bool](#bool) | Whether the SleepNodeRun has been matured. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `StartMultipleThreadsRun` {#startmultiplethreadsrun}
+
+The sub-node structure for a START_MULTIPLE_THREADS NodeRun.
+
+Note: the output of this NodeRun, which can be used to mutate Variables,
+is a JSON_ARR variable containing the ID's of all the child threadRuns.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `thread_spec_name` | [ string](#string) | The thread_spec_name of the child thread_runs. |
+| `child_thread_ids` | [repeated int32](#int32) | The list of all created child ThreadRun's |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `StartThreadRun` {#startthreadrun}
+
+The sub-node structure for a START_THREAD NodeRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_child_thread_id`] `child_thread_id` | [optional int32](#int32) | Contains the thread_run_number of the created Child ThreadRun, if it has been created already. |
+| `thread_spec_name` | [ string](#string) | The thread_spec_name of the child thread_run. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskNodeRun` {#tasknoderun}
+
+The sub-node structure for a TASK NodeRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_task_run_id`] `task_run_id` | [optional TaskRunId](#taskrunid) | The ID of the TaskRun. Note that if the ThreadRun was halted when it arrived at this TASK Node, then the task_run_id will be unset. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ThrowEventNodeRun` {#throweventnoderun}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `workflow_event_id` | [ WorkflowEventId](#workfloweventid) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskNodeRun` {#usertasknoderun}
+
+The sub-node structure for a USER_TASK NodeRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_user_task_run_id`] `user_task_run_id` | [optional UserTaskRunId](#usertaskrunid) | The ID of the UserTaskRun. Note that if the ThreadRun was halted when it arrived at this USER_TASK node, then the user_task_run_id will be unset. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WaitForThreadsRun` {#waitforthreadsrun}
+
+The sub-node structure for a WAIT_FOR_THREADS NodeRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `threads` | [repeated WaitForThreadsRun.WaitForThread](#waitforthreadsrunwaitforthread) | The threads that are being waited for. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WaitForThreadsRun.WaitForThread` {#waitforthreadsrunwaitforthread}
+
+A 'WaitForThread' structure defines a thread that is being waited for.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_thread_end_time`] `thread_end_time` | [optional google.protobuf.Timestamp](#googleprotobuftimestamp) | The time at which the ThreadRun ended (successfully or not). Not set if the ThreadRun is still RUNNING, HALTED, or HALTING. |
+| `thread_status` | [ LHStatus](#lhstatus) | The current status of the ThreadRun being waited for. |
+| `thread_run_number` | [ int32](#int32) | The number of the ThreadRun being waited for. |
+| `waiting_status` | [ WaitForThreadsRun.WaitingThreadStatus](#waitforthreadsrunwaitingthreadstatus) | The "waiting status" of this specific thread: whether it's still running, already done, handling a failure, or completely failed. |
+| [oneof `_failure_handler_thread_run_id`] `failure_handler_thread_run_id` | [optional int32](#int32) | If there is a failure on the ThreadRun, and we have a failure handler defined for it, then we will start a failure handler for this threadrun. This field is the id of that threadRun. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+
+
+### Message `ExternalEventDefId` {#externaleventdefid}
+
+ID for ExternalEventDef
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `name` | [ string](#string) | ExternalEventDef's are uniquedly identified by their name. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ExternalEventId` {#externaleventid}
+
+ID for an ExternalEvent.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_run_id` | [ WfRunId](#wfrunid) | WfRunId for the ExternalEvent. Note that every ExternalEvent is associated with a WfRun. |
+| `external_event_def_id` | [ ExternalEventDefId](#externaleventdefid) | The ExternalEventDef for this ExternalEvent. |
+| `guid` | [ string](#string) | A unique guid allowing for distinguishing this ExternalEvent from other events of the same ExternalEventDef and WfRun. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `NodeRunId` {#noderunid}
+
+ID for a NodeRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_run_id` | [ WfRunId](#wfrunid) | ID of the WfRun for this NodeRun. Note that every NodeRun is associated with a WfRun. |
+| `thread_run_number` | [ int32](#int32) | ThreadRun of this NodeRun. Note that each NodeRun belongs to a ThreadRun. |
+| `position` | [ int32](#int32) | Position of this NodeRun within its ThreadRun. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `PrincipalId` {#principalid}
+
+ID for a Principal.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ string](#string) | The id of this principal. In OAuth, this is the OAuth Client ID (for machine principals) or the OAuth User Id (for human principals). |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskDefId` {#taskdefid}
+
+ID for a TaskDef.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `name` | [ string](#string) | TaskDef's are uniquely identified by their name. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskDefMetricsId` {#taskdefmetricsid}
+
+ID for a specific window of TaskDef metrics.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `window_start` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | The timestamp at which this metrics window starts. |
+| `window_type` | [ MetricsWindowLength](#metricswindowlength) | The length of this window. |
+| `task_def_id` | [ TaskDefId](#taskdefid) | The TaskDefId that this metrics window reports on. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskRunId` {#taskrunid}
+
+ID for a TaskRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_run_id` | [ WfRunId](#wfrunid) | WfRunId for this TaskRun. Note that every TaskRun is associated with a WfRun. |
+| `task_guid` | [ string](#string) | Unique identifier for this TaskRun. Unique among the WfRun. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskWorkerGroupId` {#taskworkergroupid}
+
+ID for a TaskWorkerGroup.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `task_def_id` | [ TaskDefId](#taskdefid) | TaskWorkerGroups are uniquely identified by their TaskDefId. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TenantId` {#tenantid}
+
+ID for a Tenant.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ string](#string) | The Tenant ID. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskDefId` {#usertaskdefid}
+
+ID for a UserTaskDef
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `name` | [ string](#string) | The name of a UserTaskDef |
+| `version` | [ int32](#int32) | Note that UserTaskDef's use simple versioning. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskRunId` {#usertaskrunid}
+
+ID for a UserTaskRun
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_run_id` | [ WfRunId](#wfrunid) | WfRunId for this UserTaskRun. Note that every UserTaskRun is associated with a WfRun. |
+| `user_task_guid` | [ string](#string) | Unique identifier for this UserTaskRun. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `VariableId` {#variableid}
+
+Id for a Variable.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_run_id` | [ WfRunId](#wfrunid) | WfRunId for the variable. Note that every Variable is associated with a WfRun. |
+| `thread_run_number` | [ int32](#int32) | Each Variable is owned by a specific ThreadRun inside the WfRun it belongs to. This is that ThreadRun's number. |
+| `name` | [ string](#string) | The name of the variable. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WfRunId` {#wfrunid}
+
+ID for a WfRun
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ string](#string) | The ID for this WfRun instance. |
+| [oneof `_parent_wf_run_id`] `parent_wf_run_id` | [optional WfRunId](#wfrunid) | A WfRun may have a parent WfRun. If so, this field is set to the parent's ID. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WfSpecId` {#wfspecid}
+
+The ID of a WfSpec.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `name` | [ string](#string) | Name of the WfSpec. |
+| `major_version` | [ int32](#int32) | Major Version of a WfSpec.
+
+Note that WfSpec's are versioned. Creating a new WfSpec with the same name and no breaking changes to the public Variables API results in a new WfSpec being created with the same MajorVersion and a new revision. Creating a WfSpec with a breaking change to the public Variables API results in a new WfSpec being created with the same name, an incremented major_version, and revision = 0. |
+| `revision` | [ int32](#int32) | Revision of a WfSpec.
+
+Note that WfSpec's are versioned. Creating a new WfSpec with the same name and no breaking changes to the public Variables API results in a new WfSpec being created with the same MajorVersion and a new revision. Creating a WfSpec with a breaking change to the public Variables API results in a new WfSpec being created with the same name, an incremented major_version, and revision = 0. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WfSpecMetricsId` {#wfspecmetricsid}
+
+ID for a specific window of WfSpec metrics.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `window_start` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | The timestamp at which this metrics window starts. |
+| `window_type` | [ MetricsWindowLength](#metricswindowlength) | The length of this window. |
+| `wf_spec_id` | [ WfSpecId](#wfspecid) | The WfSpecId that this metrics window reports on. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WorkflowEventDefId` {#workfloweventdefid}
+
+ID for a WorkflowEventDef.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `name` | [ string](#string) | The name of the WorkflowEventDef |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WorkflowEventId` {#workfloweventid}
+
+An ID for a WorkflowEvent.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_run_id` | [ WfRunId](#wfrunid) | The Id of the WfRun that threw the event. |
+| `workflow_event_def_id` | [ WorkflowEventDefId](#workfloweventdefid) | The ID of the WorkflowEventDef that this WorkflowEvent is a member of. |
+| `number` | [ int32](#int32) | A sequence number that makes the WorkflowEventId unique among all WorkflowEvent's of the same type thrown by the WfRun. This field starts at zero and is incremented every time a WorkflowEvent of the same type is thrown by the same WfRun. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+
+
+### Message `AwaitWorkflowEventRequest` {#awaitworkfloweventrequest}
+
+Request to await until a WorkflowEvent of a certain WorkflowEventDef on a certain WfRun
+is thrown. Relies upon native GRPC deadlines to configure timeouts.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_run_id` | [ WfRunId](#wfrunid) | The ID of the WfRun which must throw the WorkflowEvent. |
+| `event_def_ids` | [repeated WorkflowEventDefId](#workfloweventdefid) | The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first WorkflowEvent thrown by the WfRun. |
+| `workflow_events_to_ignore` | [repeated WorkflowEventId](#workfloweventid) | Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `DeleteExternalEventDefRequest` {#deleteexternaleventdefrequest}
+
+Deletes an ExternalEventDef
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ ExternalEventDefId](#externaleventdefid) | The ID of the ExternalEventDef to delete. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `DeleteExternalEventRequest` {#deleteexternaleventrequest}
+
+Deletes an ExternalEvent.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ ExternalEventId](#externaleventid) | The ID of the ExternalEvent to delete. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `DeleteTaskDefRequest` {#deletetaskdefrequest}
+
+Deletes a TaskDef.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ TaskDefId](#taskdefid) | The ID of the TaskDef to delete. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `DeleteUserTaskDefRequest` {#deleteusertaskdefrequest}
+
+Deletes a UserTaskDef.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ UserTaskDefId](#usertaskdefid) | The ID of the UserTaskDef to delete. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `DeleteWfRunRequest` {#deletewfrunrequest}
+
+Deletes a WfRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ WfRunId](#wfrunid) | The ID of the WfRun to delete. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `DeleteWfSpecRequest` {#deletewfspecrequest}
+
+Deletes a WfSpec
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ WfSpecId](#wfspecid) | The ID of the WfSpec to delete |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ExternalEventDefIdList` {#externaleventdefidlist}
+
+List of ExternalEventDef Id's.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated ExternalEventDefId](#externaleventdefid) | The resulting object id's. |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | The bookmark can be used for cursor-based pagination. If it is null, the server has returned all results. If it is set, you can pass it into your next request to resume searching where your previous request left off. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ExternalEventIdList` {#externaleventidlist}
+
+List of ExternalEvent Id's
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated ExternalEventId](#externaleventid) | The resulting object id's. |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | The bookmark can be used for cursor-based pagination. If it is null, the server has returned all results. If it is set, you can pass it into your next request to resume searching where your previous request left off. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ExternalEventList` {#externaleventlist}
+
+A list of ExternalEvents.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated ExternalEvent](#externalevent) | A list of ExternalEvent objects. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `GetLatestUserTaskDefRequest` {#getlatestusertaskdefrequest}
+
+Returns the UserTaskDef with a given name and the highest version number.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `name` | [ string](#string) | The name of the UserTaskDef to search for. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `GetLatestWfSpecRequest` {#getlatestwfspecrequest}
+
+Get the latest WfSpec with a given name and optionally majorVersion
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `name` | [ string](#string) | The name of the WfSpec to get. This is required. |
+| [oneof `_major_version`] `major_version` | [optional int32](#int32) | Optionally get only WfSpec's that have the same major version. This can be useful if you want to guarantee that there have been no breaking changes to the API of the WfSpec, for example, to ensure that there have been no changes to searchable variables or required input variables. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `LHHostInfo` {#lhhostinfo}
+
+Information about a specific LH Server to contact.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `host` | [ string](#string) | The host on the server |
+| `port` | [ int32](#int32) | The port for the specified listener. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ListExternalEventsRequest` {#listexternaleventsrequest}
+
+List all ExternalEvents for a specific WfRunId. Note that List Requests return actual
+ExternalEvent objects, not ExternalEventId's.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_run_id` | [ WfRunId](#wfrunid) | The WfRunId for whom we list ExternalEvent's. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ListNodeRunsRequest` {#listnoderunsrequest}
+
+List all NodeRun's for a given WfRun. Note that List requests return actual NodeRun Objects,
+not NodeRunId's.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_run_id` | [ WfRunId](#wfrunid) | The WfRun for whom we list NodeRun's. |
+| [oneof `_thread_run_number`] `thread_run_number` | [optional int32](#int32) | Optionally specify the thread run number to filter NodeRun's by. |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | Bookmark for cursor-based pagination; pass if applicable. |
+| [oneof `_limit`] `limit` | [optional int32](#int32) | Maximum results to return in one request. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ListTaskMetricsRequest` {#listtaskmetricsrequest}
+
+Query to retrieve TaskDef Metrics over a period of time.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `task_def_id` | [ TaskDefId](#taskdefid) | TaskDef id for whichwe retrieve metrics. |
+| `last_window_start` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | This parameter is a timestamp that is used to determine the *last* window returned. The server will then return `num_windows` worth of data from before this timestamp. |
+| `window_length` | [ MetricsWindowLength](#metricswindowlength) | Window size |
+| `num_windows` | [ int32](#int32) | Number of windows to retrieve. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ListTaskMetricsResponse` {#listtaskmetricsresponse}
+
+A list of TaskDef Metrics WIndows
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated TaskDefMetrics](#taskdefmetrics) | List of TaskDef Metrics Windows |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ListTaskRunsRequest` {#listtaskrunsrequest}
+
+List TaskRun's for a specific WfRun
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_run_id` | [ WfRunId](#wfrunid) | The WfRun for which to list TaskRun's |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ListUserTaskRunRequest` {#listusertaskrunrequest}
+
+List UserTaskRun's for a specific WfRun
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_run_id` | [ WfRunId](#wfrunid) | The WfRun for which to list UserTaskRuns |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ListVariablesRequest` {#listvariablesrequest}
+
+List all Variables for a specific WfRun. Note that List requests return actual Variable Objects,
+not VariableId's.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_run_id` | [ WfRunId](#wfrunid) | The WfRun for whom we will list Variables. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ListWfMetricsRequest` {#listwfmetricsrequest}
+
+Query to retrieve WfSpec Metrics over a period of time.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_spec_id` | [ WfSpecId](#wfspecid) | WfSpecId of metrics to get. |
+| `last_window_start` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | This parameter is a timestamp that is used to determine the *last* window returned. The server will then return `num_windows` worth of data from before this timestamp. |
+| `window_length` | [ MetricsWindowLength](#metricswindowlength) | The window size |
+| `num_windows` | [ int32](#int32) | Number of windows to retrieve |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ListWfMetricsResponse` {#listwfmetricsresponse}
+
+A list of WfSpec Metrics Windows
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated WfSpecMetrics](#wfspecmetrics) | List of WfSpec Metrics Windows |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `MigrateWfSpecRequest` {#migratewfspecrequest}
+
+EXPERIMENTAL: migrate live WfRun's from one version of a WfSpec to another.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `old_wf_spec` | [ WfSpecId](#wfspecid) | none |
+| `migration` | [ WfSpecVersionMigration](#wfspecversionmigration) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `NodeRunIdList` {#noderunidlist}
+
+List of NodeRun Id's.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated NodeRunId](#noderunid) | The resulting object id's. |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | The bookmark can be used for cursor-based pagination. If it is null, the server has returned all results. If it is set, you can pass it into your next request to resume searching where your previous request left off. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `NodeRunList` {#noderunlist}
+
+A list of NodeRun Objects.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated NodeRun](#noderun) | A list of NodeRun Objects. |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | The bookmark can be used for cursor-based pagination. If it is null, the server has returned all results. If it is set, you can pass it into your next request to resume searching where your previous request left off. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `PollTaskRequest` {#polltaskrequest}
+
+Request sent by the Task Worker SDK to tell the Server that the Task Worker is ready
+to execute a TaskRun. Generally used only by the Task Worker SDK.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `task_def_id` | [ TaskDefId](#taskdefid) | Is the TaskDefId that the Task Worker wants to execute. |
+| `client_id` | [ string](#string) | Is the ID of the Task Worker. |
+| [oneof `_task_worker_version`] `task_worker_version` | [optional string](#string) | Optionally specifies the version of the Task Worker, so that it can be recorded for debugging purposes on the TaskRun itself. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `PollTaskResponse` {#polltaskresponse}
+
+Response from the server for PollTaskRequest.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_result`] `result` | [optional ScheduledTask](#scheduledtask) | If possible, a ScheduledTask is returned. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `PutExternalEventDefRequest` {#putexternaleventdefrequest}
+
+Field to create an ExternalEventDef.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `name` | [ string](#string) | The name of the resulting ExternalEventDef. |
+| `retention_policy` | [ ExternalEventRetentionPolicy](#externaleventretentionpolicy) | Policy to determine how long an ExternalEvent is retained after creation if it is not yet claimed by a WfRun. Note that once a WfRun has been matched with the ExternalEvent, the ExternalEvent is deleted if/when that WfRun is deleted. If not set, then ExternalEvent's are not deleted if they are not matched with a WfRun.
+
+A future version of LittleHorse will allow changing the retention_policy, which will trigger a cleanup of old `ExternalEvent`s. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `PutExternalEventRequest` {#putexternaleventrequest}
+
+Request used to create an ExternalEvent.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_run_id` | [ WfRunId](#wfrunid) | The ID of the WfRun that this Event is sent to. |
+| `external_event_def_id` | [ ExternalEventDefId](#externaleventdefid) | The ID of the ExternalEventDef that this event implements. |
+| [oneof `_guid`] `guid` | [optional string](#string) | Note that an ExternalEventDefId is a three-part ID: 1. WfRunId 2. ExternalEventDef Name 3. A guid The guid from part 3) can be optionally provided to the PutExternalEventRequest in order to make it idempotent. It is a best practice to do so. |
+| `content` | [ VariableValue](#variablevalue) | The content of this event. |
+| [oneof `_thread_run_number`] `thread_run_number` | [optional int32](#int32) | Optionally specify that this ExternalEvent may only be claimed by a specific ThreadRun. |
+| [oneof `_node_run_position`] `node_run_position` | [optional int32](#int32) | Optionally specify that this ExternalEvent may only be claimed by a specific NodeRun. In order for this to be set, you must also set thread_run_number. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `PutTaskDefRequest` {#puttaskdefrequest}
+
+Creates a TaskDef.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `name` | [ string](#string) | The name of the TaskDef to create. |
+| `input_vars` | [repeated VariableDef](#variabledef) | Variables required to execute the TaskDef. Normally, these are automatically generated by the Task Worker SDK. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `PutUserTaskDefRequest` {#putusertaskdefrequest}
+
+Creates a UserTaskDef.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `name` | [ string](#string) | The name of the UserTaskDef to create. |
+| `fields` | [repeated UserTaskField](#usertaskfield) | The fields that should be presented to the user on the screen in order to fill out the User Task. Note that these fields also define a data contract for the result of the UserTaskDef. |
+| [oneof `_description`] `description` | [optional string](#string) | Optional metadata field to store user-defined data. Does not impact workflow execution. Fine to store up to a few KB of text here. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `PutWfSpecRequest` {#putwfspecrequest}
+
+Creates a WfSpec. Generally, this request is generated by the Workflow object in
+our various SDK's.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `name` | [ string](#string) | The name of the resulting WfSpec. |
+| `thread_specs` | [`map` PutWfSpecRequest.ThreadSpecsEntry](#putwfspecrequestthreadspecsentry) | Map from name the ThreadSpec. |
+| `entrypoint_thread_name` | [ string](#string) | The name of the ThreadSpec to be used as the workflow entrypoint. |
+| [oneof `_retention_policy`] `retention_policy` | [optional WorkflowRetentionPolicy](#workflowretentionpolicy) | Optional policy to determine how long a WfRun is retained in the data store after it is completed or terminated. |
+| [oneof `_parent_wf_spec`] `parent_wf_spec` | [optional WfSpec.ParentWfSpecReference](#wfspecparentwfspecreference) | Parent WfSpec Reference. If this is set, then all WfRun's for this WfSpec *MUST* be Child WfRun's of the specified WfSpec. |
+| `allowed_updates` | [ AllowedUpdateType](#allowedupdatetype) | Configures the behavior of this individual request. Can be used to prevent breaking changes to the WfSpec, prevent any changes to the WfSpec, or allow all changes to the WfSpec. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `PutWfSpecRequest.ThreadSpecsEntry` {#putwfspecrequestthreadspecsentry}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `key` | [ string](#string) | none |
+| `value` | [ ThreadSpec](#threadspec) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `PutWorkflowEventDefRequest` {#putworkfloweventdefrequest}
+
+EXPERIMENTAL: Creates a WorkflowEventDef
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `name` | [ string](#string) | none |
+| `type` | [ VariableType](#variabletype) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `RegisterTaskWorkerRequest` {#registertaskworkerrequest}
+
+Message used by Task Worker to register itself to the server and ask for assignments of
+servers to poll.
+
+Used by the Task Worker SDK; generally, you shouldn't have to touch this manually.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `task_worker_id` | [ string](#string) | Is the ID of the Task Worker. |
+| `task_def_id` | [ TaskDefId](#taskdefid) | The TaskDef the worker wants to poll for. |
+| `listener_name` | [ string](#string) | The listener that the worker is polling on. Used by the server to determine which advertised hosts to return. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `RegisterTaskWorkerResponse` {#registertaskworkerresponse}
+
+Response containing list of Servers that the Task Worker should connect to and start polling from.
+Only used internally by the Task Worker SDK.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `your_hosts` | [repeated LHHostInfo](#lhhostinfo) | The list of LH Server hosts that the Task Worker should start polling. |
+| [oneof `_is_cluster_healthy`] `is_cluster_healthy` | [optional bool](#bool) | Whether the LH Cluster is healthy. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ReportTaskRun` {#reporttaskrun}
+
+Request used by the Task Worker SDK to report the result of a TaskRun execution.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `task_run_id` | [ TaskRunId](#taskrunid) | ID of the TaskRun |
+| `time` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | When the TaskRun was executed |
+| `status` | [ TaskStatus](#taskstatus) | Status of the TaskRun |
+| [oneof `_log_output`] `log_output` | [optional VariableValue](#variablevalue) | Optional information for logging or exceptions |
+| `attempt_number` | [ int32](#int32) | Attempt number of the TaskRun |
+| [oneof `result`] `output` | [ VariableValue](#variablevalue) | Successfully completed task |
+| [oneof `result`] `error` | [ LHTaskError](#lhtaskerror) | Technical error |
+| [oneof `result`] `exception` | [ LHTaskException](#lhtaskexception) | Business exception |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ResumeWfRunRequest` {#resumewfrunrequest}
+
+Resume a WfRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_run_id` | [ WfRunId](#wfrunid) | Is the WfRunId |
+| `thread_run_number` | [ int32](#int32) | The number of the ThreadRun to resume. Note that resuming the entrypoint ThreadRun (which always has number `0`) causes the whole WfRun to resume. If you do not manually set the thread_run_number field, it defaults to zero, so resuming the entire WfRun is the default behavior. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `RunWfRequest` {#runwfrequest}
+
+Create a Workflow Run.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_spec_name` | [ string](#string) | The name of the WfSpec to run. |
+| [oneof `_major_version`] `major_version` | [optional int32](#int32) | Optionally specify the major version of the WfSpec to run. This guarantees that the "signature" of the WfSpec (i.e. the required input variables, and searchable variables) will not change for this app. |
+| [oneof `_revision`] `revision` | [optional int32](#int32) | Optionally specify the specific revision of the WfSpec to run. It is not recommended to use this in practice, as the WfSpec logic should be de-coupled from the applications that run WfRun's. |
+| `variables` | [`map` RunWfRequest.VariablesEntry](#runwfrequestvariablesentry) | A map from Variable Name to Values for those variables. The provided variables are passed as input to the Entrypoint ThreadRun. |
+| [oneof `_id`] `id` | [optional string](#string) | You can optionally specify the ID of this WfRun. This is a recommended best practice as it also makes your request idempotent and allows you to easily find the WfRun at a later time. |
+| [oneof `_parent_wf_run_id`] `parent_wf_run_id` | [optional WfRunId](#wfrunid) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `RunWfRequest.VariablesEntry` {#runwfrequestvariablesentry}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `key` | [ string](#string) | none |
+| `value` | [ VariableValue](#variablevalue) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ScheduledTask` {#scheduledtask}
+
+Message sent by server to Task Worker SDK specifying a specific TaskRun to be executed.
+This is used and handled internally by the Task Worker SDK.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `task_run_id` | [ TaskRunId](#taskrunid) | Id of the TaskRun to execute. |
+| `task_def_id` | [ TaskDefId](#taskdefid) | ID of the TaskDef to which the TaskRun belongs. |
+| `attempt_number` | [ int32](#int32) | Attempt number of the TaskRun, zero indexed. attempt_number of `0` means this is the first attempt; `1` means this is the first retry, etc. |
+| `variables` | [repeated VarNameAndVal](#varnameandval) | Input variables for this TaskRun. |
+| `created_at` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | none |
+| `source` | [ TaskRunSource](#taskrunsource) | Source of the TaskRun. Currently, there are two options: 1. A TASK node 2. A reminder task scheduled by a trigger on a User Task. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchExternalEventDefRequest` {#searchexternaleventdefrequest}
+
+Search for ExternalEventDef's.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | Bookmark for cursor-based pagination; pass if applicable. |
+| [oneof `_limit`] `limit` | [optional int32](#int32) | Maximum results to return in one request. |
+| [oneof `_prefix`] `prefix` | [optional string](#string) | Optionally search only for ExternalEventDef's whose name starts with this prefix. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchExternalEventRequest` {#searchexternaleventrequest}
+
+EVOLVING: Search for ExternalEvent's.
+
+Currently, this request allows you to search for ExternalEvent's based on either:
+1. A WfRunId
+2. An ExternalEventDefName and status.
+
+This specific RPC is under discussions for a Refactor and will soon experience breaking changes.
+It is recommended for applications needing to search by WfRunId to instead use the
+`rpc ListExternalEvents` call, as we plan to remove the 'by WfRunId' option from this request.
+
+Specifically, we plan to remove the "by wfRunId" option (which is redundant with the ListExternalEvents
+request), and "flatten" the "ByExtEvtDefNameAndStatusRequest" fields into the main message.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | Bookmark for cursor-based pagination; pass if applicable. |
+| [oneof `_limit`] `limit` | [optional int32](#int32) | Maximum results to return in one request. |
+| [oneof `ext_evt_criteria`] `wf_run_id` | [ WfRunId](#wfrunid) | none |
+| [oneof `ext_evt_criteria`] `external_event_def_name_and_status` | [ SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest](#searchexternaleventrequestbyextevtdefnameandstatusrequest) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest` {#searchexternaleventrequestbyextevtdefnameandstatusrequest}
+
+EVOLVING: message encapsulating criteria to search for ExternalEvent's by their status
+and ExternalEventDefName.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `external_event_def_name` | [ string](#string) | none |
+| [oneof `_is_claimed`] `is_claimed` | [optional bool](#bool) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchNodeRunRequest` {#searchnoderunrequest}
+
+Search for NodeRun's by certain criteria.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | Bookmark for cursor-based pagination; pass if applicable. |
+| [oneof `_limit`] `limit` | [optional int32](#int32) | Maximum results to return in one request. |
+| [oneof `_earliest_start`] `earliest_start` | [optional google.protobuf.Timestamp](#googleprotobuftimestamp) | Only return NodeRun's created after this time. |
+| [oneof `_latest_start`] `latest_start` | [optional google.protobuf.Timestamp](#googleprotobuftimestamp) | Only return NodeRun's created before this time. |
+| `node_type` | [ SearchNodeRunRequest.NodeType](#searchnoderunrequestnodetype) | Specifies the type of NodeRun to search for. |
+| `status` | [ LHStatus](#lhstatus) | Specifies the status of NodeRun to search for. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchTaskDefRequest` {#searchtaskdefrequest}
+
+Search for TaskDef's based on certain criteria.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | Bookmark for cursor-based pagination; pass if applicable. |
+| [oneof `_limit`] `limit` | [optional int32](#int32) | Maximum results to return in one request. |
+| [oneof `_prefix`] `prefix` | [optional string](#string) | Optionally specify to only return TaskDef's with a specific prefix. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchTaskRunRequest` {#searchtaskrunrequest}
+
+Searches for TaskRuns by various criteria.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | Bookmark for cursor-based pagination; pass if applicable. |
+| [oneof `_limit`] `limit` | [optional int32](#int32) | Maximum results to return in one request. |
+| `task_def_name` | [ string](#string) | Specifies the TaskDef of TaskRun's to return. This is required. |
+| [oneof `_status`] `status` | [optional TaskStatus](#taskstatus) | Specifies to only return TaskRun's matching this status. |
+| [oneof `_earliest_start`] `earliest_start` | [optional google.protobuf.Timestamp](#googleprotobuftimestamp) | Specifies to only return TaskRun's that were scheduled after this time. |
+| [oneof `_latest_start`] `latest_start` | [optional google.protobuf.Timestamp](#googleprotobuftimestamp) | Specifies to only return TaskRun's that were scheduled before this time. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchTenantRequest` {#searchtenantrequest}
+
+Search for all available TenantIds for current Principal
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_limit`] `limit` | [optional int32](#int32) | Maximum results to return in one request. |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | Bookmark for cursor-based pagination; pass if applicable. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchUserTaskDefRequest` {#searchusertaskdefrequest}
+
+Search for UserTaskDef's.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | Bookmark for cursor-based pagination; pass if applicable. |
+| [oneof `_limit`] `limit` | [optional int32](#int32) | Maximum results to return in one request. |
+| [oneof `user_task_def_criteria`] `prefix` | [ string](#string) | Return all UserTaskDef's with a specific prefix. |
+| [oneof `user_task_def_criteria`] `name` | [ string](#string) | Return all UserTaskDef's with a specific name. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchUserTaskRunRequest` {#searchusertaskrunrequest}
+
+Search for UserTaskRun's matching certain criteria. The attributes are additive,
+you may specify any combination of fields in this request. Only UserTaskRun's
+matching all criteria will be returned.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | Bookmark for cursor-based pagination; pass if applicable. |
+| [oneof `_limit`] `limit` | [optional int32](#int32) | Maximum results to return in one request. |
+| [oneof `_status`] `status` | [optional UserTaskRunStatus](#usertaskrunstatus) | Status of UserTaskRun's to return. |
+| [oneof `_user_task_def_name`] `user_task_def_name` | [optional string](#string) | UserTaskDef name to search for. |
+| [oneof `_user_id`] `user_id` | [optional string](#string) | Search for UserTaskRun's assigned to this user id. |
+| [oneof `_user_group`] `user_group` | [optional string](#string) | Search for UserTaskRun's assigned to this user group. |
+| [oneof `_earliest_start`] `earliest_start` | [optional google.protobuf.Timestamp](#googleprotobuftimestamp) | Search for UserTaskRun's that were created after this time. |
+| [oneof `_latest_start`] `latest_start` | [optional google.protobuf.Timestamp](#googleprotobuftimestamp) | Search for UserTaskRun's that were created before this time. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchVariableRequest` {#searchvariablerequest}
+
+Search for Variables by their value. This request is also highly useful to search for
+WfRun's based on the value of Variable's that are not in the Entrypoint ThreadRun,
+and also when you are using LittleHorse as a data store and need to perform a search.
+
+You may only search for a Variable that has an index specified on it. This may be done
+via th `.searchable()` method on our SDK's.
+
+Note that we do not yet support searching JSON_OBJ or JSON_ARR fields, but you may
+still mark those fields as searchable. We will soon add the ability to query those
+fields via the indices.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | Bookmark for cursor-based pagination; pass if applicable. |
+| [oneof `_limit`] `limit` | [optional int32](#int32) | Maximum results to return in one request. |
+| `value` | [ VariableValue](#variablevalue) | Specifies the value that the variable must be. Exact match is required. |
+| [oneof `_wf_spec_major_version`] `wf_spec_major_version` | [optional int32](#int32) | Specifies major version of the WfSpec for the associated WfRun. |
+| [oneof `_wf_spec_revision`] `wf_spec_revision` | [optional int32](#int32) | Specifies the revision of the WfSpec for the associated WfRun. |
+| `var_name` | [ string](#string) | Specifies the name of the variable to search for. This is required. |
+| `wf_spec_name` | [ string](#string) | Specifies the name of the WfSpec for the associated WfRun's. This is required. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchWfRunRequest` {#searchwfrunrequest}
+
+A request used to retrieve a list of WfRunId's by certain criteria.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | Bookmark for cursor-based pagination; pass if applicable. |
+| [oneof `_limit`] `limit` | [optional int32](#int32) | Maximum results to return in one request. |
+| `wf_spec_name` | [ string](#string) | The WfSpec whose WfRun's we are searching for. This is required. |
+| [oneof `_wf_spec_major_version`] `wf_spec_major_version` | [optional int32](#int32) | Specifies to return only WfRun's from this WfSpec Major Version. |
+| [oneof `_wf_spec_revision`] `wf_spec_revision` | [optional int32](#int32) | Specifies to return only WfRun's from this WfSpec Revision. Can only be set if wf_spec_major_version is also set. |
+| [oneof `_status`] `status` | [optional LHStatus](#lhstatus) | Specifies to return only WfRun's matching this status. |
+| [oneof `_earliest_start`] `earliest_start` | [optional google.protobuf.Timestamp](#googleprotobuftimestamp) | Specifies to return only WfRun's that started after this time |
+| [oneof `_latest_start`] `latest_start` | [optional google.protobuf.Timestamp](#googleprotobuftimestamp) | Specifies to return only WfRun's that started before this time |
+| `variable_filters` | [repeated VariableMatch](#variablematch) | Allows filtering WfRun's based on the value of the Variables. This ONLY works for the Variables in the entrypiont threadrun (that is, variables where the threadRunNumber == 0). |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchWfSpecRequest` {#searchwfspecrequest}
+
+Search for WfSpec's.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | Bookmark for cursor-based pagination; pass if applicable. |
+| [oneof `_limit`] `limit` | [optional int32](#int32) | Maximum results to return in one request. |
+| [oneof `wf_spec_criteria`] `name` | [ string](#string) | Return WfSpec's with a specific name. |
+| [oneof `wf_spec_criteria`] `prefix` | [ string](#string) | Return WfSpec's with a specific prefix. |
+| [oneof `wf_spec_criteria`] `task_def_name` | [ string](#string) | Return all WfSpec's that make use of a given TaskDef. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ServerVersionResponse` {#serverversionresponse}
+
+The version of the LH Server according to Semantic Versioning
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `major_version` | [ int32](#int32) | Server Major Version |
+| `minor_version` | [ int32](#int32) | Server Minor Version |
+| `patch_version` | [ int32](#int32) | Server Patch Version |
+| [oneof `_pre_release_identifier`] `pre_release_identifier` | [optional string](#string) | Prerelease Identifier. If this is set, then the server is NOT a production release but rather a release candidate or experimental pre-release. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `StopWfRunRequest` {#stopwfrunrequest}
+
+Message to HALT a WfRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_run_id` | [ WfRunId](#wfrunid) | Is the WfRunId |
+| `thread_run_number` | [ int32](#int32) | The number of the ThreadRun to halt. Note that halting the entrypoint ThreadRun (which always has number `0`) causes the whole WfRun to halt. If you do not manually set the thread_run_number field, it defaults to zero, so stopping the entire WfRun is the default behavior. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskDefIdList` {#taskdefidlist}
+
+List of TaskDef Id's.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated TaskDefId](#taskdefid) | The resulting object id's. |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | The bookmark can be used for cursor-based pagination. If it is null, the server has returned all results. If it is set, you can pass it into your next request to resume searching where your previous request left off. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskDefMetrics` {#taskdefmetrics}
+
+Metrics for a TaskDef in a certain time period.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `task_def_id` | [ TaskDefId](#taskdefid) | TaskDef that the metrics apply to. |
+| `window_start` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | When the window started. |
+| `type` | [ MetricsWindowLength](#metricswindowlength) | Length of the window. |
+| `schedule_to_start_max` | [ int64](#int64) | Longest time that a TaskRun was in the TASK_SCHEDULED state |
+| `schedule_to_start_avg` | [ int64](#int64) | Average time that a TaskRun was in the TASK_SCHEDULED state |
+| `start_to_complete_max` | [ int64](#int64) | Longest time between a TaskRun being started and completed |
+| `start_to_complete_avg` | [ int64](#int64) | Average time between a TaskRun being started and completed |
+| `total_completed` | [ int64](#int64) | Total number of TaskRun's that reached the TASK_SUCCESS state |
+| `total_errored` | [ int64](#int64) | Total number of TaskRun's that reached the TASK_ERROR state |
+| `total_started` | [ int64](#int64) | Total number of TaskRun's that transitioned to the TASK_RUNNING state |
+| `total_scheduled` | [ int64](#int64) | Total number of TaskRun's that were scheduled |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskDefMetricsQueryRequest` {#taskdefmetricsqueryrequest}
+
+Query to retrieve a specific TaskDef Metrics Window.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `window_start` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | Return the window *containing* this timestamp. The window start is not guaranteed to align perfectly with the request. |
+| `window_type` | [ MetricsWindowLength](#metricswindowlength) | The window size |
+| [oneof `_task_def_name`] `task_def_name` | [optional string](#string) | The name of the specific TaskDef for which we are calculating metrics. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskRunIdList` {#taskrunidlist}
+
+List of TaskRun ID's.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated TaskRunId](#taskrunid) | The resulting object id's. |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | The bookmark can be used for cursor-based pagination. If it is null, the server has returned all results. If it is set, you can pass it into your next request to resume searching where your previous request left off. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskRunList` {#taskrunlist}
+
+A list of TaskRun's
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated TaskRun](#taskrun) | A list of TaskRun Objects |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskWorkerHeartBeatRequest` {#taskworkerheartbeatrequest}
+
+Message used by Task Worker to register itself to the server and ask for assignments of
+servers to poll.
+
+Used by the Task Worker SDK; generally, you shouldn't have to touch this manually.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `client_id` | [ string](#string) | none |
+| `task_def_id` | [ TaskDefId](#taskdefid) | none |
+| `listener_name` | [ string](#string) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TenantIdList` {#tenantidlist}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated TenantId](#tenantid) | The resulting object id's. |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | Bookmark for cursor-based pagination; pass if applicable. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskDefIdList` {#usertaskdefidlist}
+
+List of UserTaskDef Id's.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated UserTaskDefId](#usertaskdefid) | The resulting object id's. |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | The bookmark can be used for cursor-based pagination. If it is null, the server has returned all results. If it is set, you can pass it into your next request to resume searching where your previous request left off. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskRunIdList` {#usertaskrunidlist}
+
+A list of UserTaskRun Id's
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated UserTaskRunId](#usertaskrunid) | The resulting object id's. |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | The bookmark can be used for cursor-based pagination. If it is null, the server has returned all results. If it is set, you can pass it into your next request to resume searching where your previous request left off. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskRunList` {#usertaskrunlist}
+
+List of UserTaskRuns
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated UserTaskRun](#usertaskrun) | A list of UserTaskRun Objects |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `VariableIdList` {#variableidlist}
+
+This is a list of Variable ID's.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated VariableId](#variableid) | The resulting object id's. |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | The bookmark can be used for cursor-based pagination. If it is null, the server has returned all results. If it is set, you can pass it into your next request to resume searching where your previous request left off. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `VariableList` {#variablelist}
+
+A list of Variables.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated Variable](#variable) | A list of Variable objects. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `VariableMatch` {#variablematch}
+
+Used by a SearchWfRunRequest to filter WfRun's and only return those whose Variable's
+match a certain filter.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `var_name` | [ string](#string) | The name of the variable to inspect. |
+| `value` | [ VariableValue](#variablevalue) | The value that the Variable must have in order to satisfy this VariableMatch |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WfRunIdList` {#wfrunidlist}
+
+List of WfRun Id's
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated WfRunId](#wfrunid) | The resulting object id's. |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | The bookmark can be used for cursor-based pagination. If it is null, the server has returned all results. If it is set, you can pass it into your next request to resume searching where your previous request left off. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WfSpecIdList` {#wfspecidlist}
+
+List of WfSpec Id's.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `results` | [repeated WfSpecId](#wfspecid) | The resulting object id's. |
+| [oneof `_bookmark`] `bookmark` | [optional bytes](#bytes) | The bookmark can be used for cursor-based pagination. If it is null, the server has returned all results. If it is set, you can pass it into your next request to resume searching where your previous request left off. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WfSpecMetrics` {#wfspecmetrics}
+
+Metrics for a WfSpec in a specific time window
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_spec_id` | [ WfSpecId](#wfspecid) | The WfSpecId that these metrics analyze |
+| `window_start` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | The time that the window started |
+| `type` | [ MetricsWindowLength](#metricswindowlength) | The length of the window |
+| `total_started` | [ int64](#int64) | Total number of WfRun's created for this WfSpec |
+| `total_completed` | [ int64](#int64) | Total number of WfRun's that reached the COMPLETED state |
+| `total_errored` | [ int64](#int64) | Total number of WfRun's that reached the ERROR state |
+| `start_to_complete_max` | [ int64](#int64) | Longest time between a WfRun being started and reaching the COMPLETED state |
+| `start_to_complete_avg` | [ int64](#int64) | Average time that a WfRun took to reach the COMPLETED state |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WfSpecMetricsQueryRequest` {#wfspecmetricsqueryrequest}
+
+Query to retrieve a specific WfSpec Metrics Window.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_spec_id` | [ WfSpecId](#wfspecid) | WfSpecId of metrics to get. |
+| `window_start` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | Return the window *containing* this timestamp. The window start is not guaranteed to align perfectly with the request. |
+| `window_length` | [ MetricsWindowLength](#metricswindowlength) | The window size |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+
+
+### Message `TaskDef` {#taskdef}
+
+A TaskDef defines a blueprint for a TaskRun that can be dispatched to Task Workers.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ TaskDefId](#taskdefid) | The ID of this TaskDef. |
+| `input_vars` | [repeated VariableDef](#variabledef) | The input variables required to execute this TaskDef. |
+| `created_at` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | The time at which this TaskDef was created. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+
+
+### Message `LHTaskError` {#lhtaskerror}
+
+Message denoting a TaskRun failed for technical reasons.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `type` | [ LHErrorType](#lherrortype) | The technical error code. |
+| `message` | [ string](#string) | Human readable message for debugging. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `LHTaskException` {#lhtaskexception}
+
+Message denoting a TaskRun's execution signaled that something went wrong in the
+business process, throwing a littlehorse 'EXCEPTION'.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `name` | [ string](#string) | The user-defined Failure name, for example, "credit-card-declined" |
+| `message` | [ string](#string) | Human readadble description of the failure. |
+| `content` | [ VariableValue](#variablevalue) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskAttempt` {#taskattempt}
+
+A single time that a TaskRun was scheduled for execution on a Task Queue.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_log_output`] `log_output` | [optional VariableValue](#variablevalue) | Optional information provided by the Task Worker SDK for debugging. Usually, if set it contains a stacktrace or it contains information logged via `WorkerContext#log()`. |
+| [oneof `_schedule_time`] `schedule_time` | [optional google.protobuf.Timestamp](#googleprotobuftimestamp) | The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is in the TASK_PENDING status; for example, when waiting between retries with exponential backoff. |
+| [oneof `_start_time`] `start_time` | [optional google.protobuf.Timestamp](#googleprotobuftimestamp) | The time the TaskAttempt was pulled off the queue and sent to a TaskWorker. |
+| [oneof `_end_time`] `end_time` | [optional google.protobuf.Timestamp](#googleprotobuftimestamp) | The time the TaskAttempt was finished (either completed, reported as failed, or timed out) |
+| `task_worker_id` | [ string](#string) | EXPERIMENTAL: the ID of the Task Worker who executed this TaskRun. |
+| [oneof `_task_worker_version`] `task_worker_version` | [optional string](#string) | The version of the Task Worker that executed the TaskAttempt. |
+| `status` | [ TaskStatus](#taskstatus) | The status of this TaskAttempt. |
+| [oneof `result`] `output` | [ VariableValue](#variablevalue) | Denotes the Task Function executed properly and returned an output. |
+| [oneof `result`] `error` | [ LHTaskError](#lhtaskerror) | An unexpected technical error was encountered. May or may not be retriable. |
+| [oneof `result`] `exception` | [ LHTaskException](#lhtaskexception) | The Task Function encountered a business problem and threw a technical exception. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskNodeReference` {#tasknodereference}
+
+Reference to a NodeRun of type TASK which caused a TaskRun to be scheduled.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `node_run_id` | [ NodeRunId](#noderunid) | The ID of the NodeRun which caused this TASK to be scheduled. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskRun` {#taskrun}
+
+A TaskRun resents a single instance of a TaskDef being executed.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ TaskRunId](#taskrunid) | The ID of the TaskRun. Note that the TaskRunId contains the WfRunId. |
+| `task_def_id` | [ TaskDefId](#taskdefid) | The ID of the TaskDef being executed. |
+| `attempts` | [repeated TaskAttempt](#taskattempt) | All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of the TaskRun being put on a Task Queue to be executed by the Task Workers. |
+| `input_variables` | [repeated VarNameAndVal](#varnameandval) | The input variables to pass into this TaskRun. Note that this is a list and not a map, because ordering matters. Depending on the language implementation, not every LittleHorse Task Worker SDK has the ability to determine the names of the variables from the method signature, so we provide both names and ordering. |
+| `source` | [ TaskRunSource](#taskrunsource) | The source (in the WfRun) that caused this TaskRun to be created. Currently, this can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such as a task used to send reminders). |
+| `scheduled_at` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | When the TaskRun was scheduled. |
+| `status` | [ TaskStatus](#taskstatus) | The status of the TaskRun. |
+| `timeout_seconds` | [ int32](#int32) | The timeout before LH considers a TaskAttempt to be timed out. |
+| `total_attempts` | [ int32](#int32) | The maximum number of attempts that may be scheduled for this TaskRun. NOTE: setting total_attempts to 1 means that there are no retries. |
+| [oneof `_exponential_backoff`] `exponential_backoff` | [optional ExponentialBackoffRetryPolicy](#exponentialbackoffretrypolicy) | Optional backoff policy . |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskRunSource` {#taskrunsource}
+
+The source of a TaskRun; i.e. why it was scheduled.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `task_run_source`] `task_node` | [ TaskNodeReference](#tasknodereference) | Reference to a NodeRun of type TASK which scheduled this TaskRun. |
+| [oneof `task_run_source`] `user_task_trigger` | [ UserTaskTriggerReference](#usertasktriggerreference) | Reference to the specific UserTaskRun trigger action which scheduled this TaskRun |
+| [oneof `_wf_spec_id`] `wf_spec_id` | [optional WfSpecId](#wfspecid) | The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so that the WorkerContext can know this information. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `VarNameAndVal` {#varnameandval}
+
+A key-value pair of variable name and value.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `var_name` | [ string](#string) | The variable name. |
+| `value` | [ VariableValue](#variablevalue) | The value of the variable for this TaskRun. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+
+
+### Message `AssignUserTaskRunRequest` {#assignusertaskrunrequest}
+
+Re-Assigns a UserTaskRun to a specific userId or userGroup.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `user_task_run_id` | [ UserTaskRunId](#usertaskrunid) | The UserTaskRun to assign to a new user_id or user_group. |
+| `override_claim` | [ bool](#bool) | If override_claim is set to false and the UserTaskRun is already assigned to a user_id, then the request throws a FAILED_PRECONDITION error. If set to true, then the old claim is overriden and the UserTaskRun is assigned to the new user. |
+| [oneof `_user_group`] `user_group` | [optional string](#string) | The new user_group to which the UserTaskRun is assigned. If not set, then the user_group of the UserTaskRun is actively unset by this request. At least one of the user_group and user_id must be set. |
+| [oneof `_user_id`] `user_id` | [optional string](#string) | The new user_id to which the UserTaskRun is assigned. If not set, then the user_id of the UserTaskRun is actively unset by this request. At least one of the user_group and user_id must be set. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `CancelUserTaskRunRequest` {#cancelusertaskrunrequest}
+
+Cancels a UserTaskRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `user_task_run_id` | [ UserTaskRunId](#usertaskrunid) | The id of the UserTaskRun to cancel. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `CompleteUserTaskRunRequest` {#completeusertaskrunrequest}
+
+Completes a UserTaskRun with provided values.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `user_task_run_id` | [ UserTaskRunId](#usertaskrunid) | The id of UserTaskRun to complete. |
+| `results` | [`map` CompleteUserTaskRunRequest.ResultsEntry](#completeusertaskrunrequestresultsentry) | A map from UserTaskField.name to a VariableValue containing the results of the user filling out the form. |
+| `user_id` | [ string](#string) | The ID of the user who executed the task. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `CompleteUserTaskRunRequest.ResultsEntry` {#completeusertaskrunrequestresultsentry}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `key` | [ string](#string) | none |
+| `value` | [ VariableValue](#variablevalue) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskDef` {#usertaskdef}
+
+UserTaskDef is the metadata blueprint for UserTaskRuns.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `name` | [ string](#string) | The name of the `UserTaskDef` |
+| `version` | [ int32](#int32) | The version of the `UserTaskDef`. Only simple versioning is supported. |
+| [oneof `_description`] `description` | [optional string](#string) | Metadata field that does not impact WfRun execution. Useful for providing context on the UserTaskRun, for example when displaying it on a general-purpose task manager application. |
+| `fields` | [repeated UserTaskField](#usertaskfield) | These are the fields comprise the User Task. A User Task Manager application, or any application used to complete a UserTaskRun, should inspect these fields and display form entries for each one. |
+| `created_at` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | The time the UserTaskRun was created. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskEvent` {#usertaskevent}
+
+This is an event stored in the audit log of a `UserTaskRun` purely for observability
+purposes.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `time` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | the time the event occurred. |
+| [oneof `event`] `task_executed` | [ UserTaskEvent.UTETaskExecuted](#usertaskeventutetaskexecuted) | Denotes that a TaskRun was scheduled via a trigger. |
+| [oneof `event`] `assigned` | [ UserTaskEvent.UTEAssigned](#usertaskeventuteassigned) | Denotes that the UserTaskRun was assigned. |
+| [oneof `event`] `cancelled` | [ UserTaskEvent.UTECancelled](#usertaskeventutecancelled) | Denotes that the UserTaskRun was cancelled.
+
+TODO: Add "save user task" and "complete user task" to the audit log |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskEvent.UTEAssigned` {#usertaskeventuteassigned}
+
+Message denoting that the UserTaskRun was assigned.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_old_user_id`] `old_user_id` | [optional string](#string) | The user_id before the ownership change, if set. |
+| [oneof `_old_user_group`] `old_user_group` | [optional string](#string) | The user_group before the ownership change, if set. |
+| [oneof `_new_user_id`] `new_user_id` | [optional string](#string) | The user_id after the ownership change, if set. |
+| [oneof `_new_user_group`] `new_user_group` | [optional string](#string) | The user_group after the ownership change, if set. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskEvent.UTECancelled` {#usertaskeventutecancelled}
+
+Empty message used to denote that the `UserTaskRun` was cancelled.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `message` | [ string](#string) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskEvent.UTETaskExecuted` {#usertaskeventutetaskexecuted}
+
+Message to denote that a `TaskRun` was scheduled by a trigger for this UserTaskRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `task_run` | [ TaskRunId](#taskrunid) | The `TaskRunId` of the scheduled `TaskRun` |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskField` {#usertaskfield}
+
+A UserTaskField is a specific field of data to be entered into a UserTaskRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `name` | [ string](#string) | The name of the field. When a UserTaskRun is completed, the NodeOutput is a single-level JSON_OBJ. Each key is the name of the field. Must be unique. |
+| `type` | [ VariableType](#variabletype) | The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE). |
+| [oneof `_description`] `description` | [optional string](#string) | Optional description which can be displayed by the User Task UI application. Does not affect WfRun execution. |
+| `display_name` | [ string](#string) | The name to be displayed by the User Task UI application. Does not affect WfRun execution. |
+| `required` | [ bool](#bool) | Whether this field is required for UserTaskRun completion. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskRun` {#usertaskrun}
+
+A UserTaskRun is a running instance of a UserTaskDef. It is created when a
+ThreadRun arrives at a Node of type `USER_TASK`.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ UserTaskRunId](#usertaskrunid) | The ID of the UserTaskRun. |
+| `user_task_def_id` | [ UserTaskDefId](#usertaskdefid) | The ID of the UserTaskDef that this UserTaskRun comes from. |
+| [oneof `_user_group`] `user_group` | [optional string](#string) | The user_group to which this UserTaskRun is assigned. Not Set if not assigned to a group. At least one of user_group or user_id will be set for any given UserTaskRun. |
+| [oneof `_user_id`] `user_id` | [optional string](#string) | The user_id to which this UserTaskRun is assigned. Not Set if not assigned to a user. At least one of user_group or user_id will be set for any given UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the UNASSIGNED status. |
+| `results` | [`map` UserTaskRun.ResultsEntry](#usertaskrunresultsentry) | The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed. Each key in this map is the `name` of a corresponding `UserTaskField` on the UserTaskDef. |
+| `status` | [ UserTaskRunStatus](#usertaskrunstatus) | Status of the UserTaskRun. Can be UNASSIGNED, ASSIGNED, DONE, or CANCELLED. |
+| `events` | [repeated UserTaskEvent](#usertaskevent) | A list of events that have happened. Used for auditing information. |
+| [oneof `_notes`] `notes` | [optional string](#string) | Notes about this UserTaskRun that are **specific to the WfRun**. These notes are set by the WfSpec based on variables inside the specific `WfRun` and are intended to be displayed on the User Task Manager application. They do not affect WfRun execution. |
+| `scheduled_time` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | The time that the UserTaskRun was created/scheduled. |
+| `node_run_id` | [ NodeRunId](#noderunid) | The NodeRun with which the UserTaskRun is associated. |
+| `epoch` | [ int32](#int32) | Current observed epoch of the UserTaskRun, related to the number of times it has been updated or re-assigned. Used internally to implement automated reassignment and reminder tasks. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskRun.ResultsEntry` {#usertaskrunresultsentry}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `key` | [ string](#string) | none |
+| `value` | [ VariableValue](#variablevalue) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskTriggerReference` {#usertasktriggerreference}
+
+All TaskRun's have a "trigger reference" which refers to the WfRun Element that
+caused the TaskRun to be scheduled. For example, a TaskRun on a regular TASK_NODE
+has a TaskNodeReference.
+
+The UserTaskTriggerReference serves as the "Trigger Reference" for a TaskRun that
+was scheduled by a lifecycle hook on a UserTaskRun (eg. a reminder task).
+
+The UserTaskTriggerReference is most useful in the WorkerContext of the Task Worker
+SDK, which allows the Task Method to determine where the TaskRun comes from.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `node_run_id` | [ NodeRunId](#noderunid) | Is the NodeRun that the UserTaskRun belongs to. |
+| `user_task_event_number` | [ int32](#int32) | Is the index in the `events` field of the UserTaskRun that the TaskRun corresponds to. |
+| [oneof `_user_id`] `user_id` | [optional string](#string) | Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not asigned to a specific user_id. |
+| [oneof `_user_group`] `user_group` | [optional string](#string) | Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not asigned to a specific user_id. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+
+
+### Message `Variable` {#variable}
+
+A Variable is an instance of a variable assigned to a WfRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ VariableId](#variableid) | ID of this Variable. Note that the VariableId contains the relevant WfRunId inside it, the threadRunNumber, and the name of the Variabe. |
+| `value` | [ VariableValue](#variablevalue) | The value of this Variable. |
+| `created_at` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | When the Variable was created. |
+| `wf_spec_id` | [ WfSpecId](#wfspecid) | The ID of the WfSpec that this Variable belongs to. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `VariableValue` {#variablevalue}
+
+VariableValue is a structure containing a value in LittleHorse. It can be
+used to pass input variables into a WfRun/ThreadRun/TaskRun/etc, as output
+from a TaskRun, as the value of a WfRun's Variable, etc.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `value`] `json_obj` | [ string](#string) | A String representing a serialized json object. |
+| [oneof `value`] `json_arr` | [ string](#string) | A String representing a serialized json list. |
+| [oneof `value`] `double` | [ double](#double) | A 64-bit floating point number. |
+| [oneof `value`] `bool` | [ bool](#bool) | A boolean. |
+| [oneof `value`] `str` | [ string](#string) | A string. |
+| [oneof `value`] `int` | [ int64](#int64) | A 64-bit integer. |
+| [oneof `value`] `bytes` | [ bytes](#bytes) | An arbitrary String of bytes. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+
+
+### Message `FailureBeingHandled` {#failurebeinghandled}
+
+Points to the Failure that is currently being handled in the ThreadRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `thread_run_number` | [ int32](#int32) | The thread run number. |
+| `node_run_position` | [ int32](#int32) | The position of the NodeRun causing the failure. |
+| `failure_number` | [ int32](#int32) | The number of the failure. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `HandlingFailureHaltReason` {#handlingfailurehaltreason}
+
+A Halt Reason denoting that a ThreadRun is halted while a Failure Handler is being run.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `handler_thread_id` | [ int32](#int32) | The ID of the Failure Handler ThreadRun. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `Interrupted` {#interrupted}
+
+A Halt Reason denoting that a ThreadRun is halted because it is waiting for the
+interrupt handler threadRun to run.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `interrupt_thread_id` | [ int32](#int32) | The ID of the Interrupt Handler ThreadRun. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ManualHalt` {#manualhalt}
+
+A Halt Reason denoting that a ThreadRun was halted manually, via the `rpc StopWfRun` request.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `meaning_of_life` | [ bool](#bool) | Nothing to store. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ParentHalted` {#parenthalted}
+
+A Halt Reason denoting that a ThreadRun is halted because its parent is also HALTED.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `parent_thread_id` | [ int32](#int32) | The ID of the halted parent. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `PendingFailureHandler` {#pendingfailurehandler}
+
+Represents a Failure Handler that is pending to be run.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `failed_thread_run` | [ int32](#int32) | The ThreadRun that failed. |
+| `handler_spec_name` | [ string](#string) | The name of the ThreadSpec to run to handle the failure. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `PendingFailureHandlerHaltReason` {#pendingfailurehandlerhaltreason}
+
+A Halt Reason denoting that a ThreadRun is halted while a Failure Handler is *enqueued* to be
+run.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `node_run_position` | [ int32](#int32) | The position of the NodeRun which threw the failure. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `PendingInterrupt` {#pendinginterrupt}
+
+Represents an ExternalEvent that has a registered Interrupt Handler for it
+and which is pending to be sent to the relevant ThreadRun's.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `external_event_id` | [ ExternalEventId](#externaleventid) | The ID of the ExternalEvent triggering the Interrupt. |
+| `handler_spec_name` | [ string](#string) | The name of the ThreadSpec to run to handle the Interrupt. |
+| `interrupted_thread_id` | [ int32](#int32) | The ID of the ThreadRun to interrupt. Must wait for this ThreadRun to be HALTED before running the Interrupt Handler. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `PendingInterruptHaltReason` {#pendinginterrupthaltreason}
+
+A Halt Reason denoting that a ThreadRun is halted while waiting for an Interrupt handler
+to be run.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `external_event_id` | [ ExternalEventId](#externaleventid) | The ExternalEventId that caused the Interrupt. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ThreadHaltReason` {#threadhaltreason}
+
+Denotes a reason why a ThreadRun is halted. See `ThreadRun.halt_reasons` for context.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `reason`] `parent_halted` | [ ParentHalted](#parenthalted) | Parent threadRun halted. |
+| [oneof `reason`] `interrupted` | [ Interrupted](#interrupted) | Handling an Interrupt. |
+| [oneof `reason`] `pending_interrupt` | [ PendingInterruptHaltReason](#pendinginterrupthaltreason) | Waiting to handle Interrupt. |
+| [oneof `reason`] `pending_failure` | [ PendingFailureHandlerHaltReason](#pendingfailurehandlerhaltreason) | Waiting to handle a failure. |
+| [oneof `reason`] `handling_failure` | [ HandlingFailureHaltReason](#handlingfailurehaltreason) | Handling a failure. |
+| [oneof `reason`] `manual_halt` | [ ManualHalt](#manualhalt) | Manually stopped the WfRun. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ThreadRun` {#threadrun}
+
+A ThreadRun is a running thread of execution within a WfRun.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_spec_id` | [ WfSpecId](#wfspecid) | The current WfSpecId of this ThreadRun. This must be set explicitly because during a WfSpec Version Migration, it is possible for different ThreadSpec's to have different WfSpec versions. |
+| `number` | [ int32](#int32) | The number of the ThreadRun. This is an auto-incremented integer corresponding to the chronological ordering of when the ThreadRun's were created. If you have not configured any retention policy for the ThreadRun's (i.e. never clean them up), then this also corresponds to the position of the ThreadRun in the WfRun's `thread_runs` list. |
+| `status` | [ LHStatus](#lhstatus) | The status of the ThreadRun. |
+| `thread_spec_name` | [ string](#string) | The name of the ThreadSpec being run. |
+| `start_time` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | The time the ThreadRun was started. |
+| [oneof `_end_time`] `end_time` | [optional google.protobuf.Timestamp](#googleprotobuftimestamp) | The time the ThreadRun was completed or failed. Unset if still active. |
+| [oneof `_error_message`] `error_message` | [optional string](#string) | Human-readable error message detailing what went wrong in the case of a failure. |
+| `child_thread_ids` | [repeated int32](#int32) | List of thread_run_number's for all child thread_runs. |
+| [oneof `_parent_thread_id`] `parent_thread_id` | [optional int32](#int32) | Set for every ThreadRun except the ENTRYPOINT. This is the id of the parent thread. |
+| `halt_reasons` | [repeated ThreadHaltReason](#threadhaltreason) | If the ThreadRun is HALTED, this contains a list of every reason for which the ThreadRun is HALTED. Once every reason is "resolved" (and thus removed from the list), then the ThreadRun will return to the RUNNING state. |
+| [oneof `_interrupt_trigger_id`] `interrupt_trigger_id` | [optional ExternalEventId](#externaleventid) | If this ThreadRun is of type INTERRUPT_HANDLER, this field is set to the ID of the ExternalEvent that caused the Interrupt. |
+| [oneof `_failure_being_handled`] `failure_being_handled` | [optional FailureBeingHandled](#failurebeinghandled) | If this ThreadRun is of type FAILURE_HANDLER, this field is set to the exact Failure that is being handled by this ThreadRun. |
+| `current_node_position` | [ int32](#int32) | This is the current `position` of the current NodeRun being run. This is an auto-incremented field that gets incremented every time we run a new NodeRun. |
+| `handled_failed_children` | [repeated int32](#int32) | List of every child ThreadRun which both a) failed, and b) was properly handled by a Failure Handler.
+
+This is important because at the EXIT node, if a Child ThreadRun was discovered to have failed, then this ThreadRun (the parent) also fails with the same failure as the child. If, however, a Failure Handler had previously "handled" the Child Failure, that ThreadRun's number is appended to this list, and then the EXIT node ignores that ThreadRun. |
+| `type` | [ ThreadType](#threadtype) | The Type of this ThreadRun. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WfRun` {#wfrun}
+
+A WfRun is a running instance of a WfSpec.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ WfRunId](#wfrunid) | The ID of the WfRun. |
+| `wf_spec_id` | [ WfSpecId](#wfspecid) | The ID of the WfSpec that this WfRun belongs to. |
+| `old_wf_spec_versions` | [repeated WfSpecId](#wfspecid) | When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the old WfSpecId to this list for historical auditing and debugging purposes. |
+| `status` | [ LHStatus](#lhstatus) | The status of this WfRun. |
+| `greatest_threadrun_number` | [ int32](#int32) | The ID number of the greatest ThreadRUn in this WfRun. The total number of ThreadRuns is given by greatest_thread_run_number + 1.
+
+Introduced now since with ThreadRun-level retention, we can't rely upon thread_runs.size() to determine the number of ThreadRuns, as a ThreadRun is removed from the thread_runs list once its retention period expires. |
+| `start_time` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | The time the WfRun was started. |
+| [oneof `_end_time`] `end_time` | [optional google.protobuf.Timestamp](#googleprotobuftimestamp) | The time the WfRun failed or completed. |
+| `thread_runs` | [repeated ThreadRun](#threadrun) | A list of all active ThreadRun's and terminated ThreadRun's whose retention periods have not yet expired. |
+| `pending_interrupts` | [repeated PendingInterrupt](#pendinginterrupt) | A list of Interrupt events that will fire once their appropriate ThreadRun's finish halting. |
+| `pending_failures` | [repeated PendingFailureHandler](#pendingfailurehandler) | A list of pending failure handlers which will fire once their appropriate ThreadRun's finish halting. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+
+
+### Message `Edge` {#edge}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `sink_node_name` | [ string](#string) | none |
+| [oneof `_condition`] `condition` | [optional EdgeCondition](#edgecondition) | none |
+| `variable_mutations` | [repeated VariableMutation](#variablemutation) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `EdgeCondition` {#edgecondition}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `comparator` | [ Comparator](#comparator) | none |
+| `left` | [ VariableAssignment](#variableassignment) | none |
+| `right` | [ VariableAssignment](#variableassignment) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `EntrypointNode` {#entrypointnode}
+
+
+
+ <!-- end HasFields -->
+
+
+
+### Message `ExitNode` {#exitnode}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `_failure_def`] `failure_def` | [optional FailureDef](#failuredef) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ExternalEventNode` {#externaleventnode}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `external_event_def_id` | [ ExternalEventDefId](#externaleventdefid) | none |
+| `timeout_seconds` | [ VariableAssignment](#variableassignment) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `FailureDef` {#failuredef}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `failure_name` | [ string](#string) | none |
+| `message` | [ string](#string) | none |
+| [oneof `_content`] `content` | [optional VariableAssignment](#variableassignment) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `FailureHandlerDef` {#failurehandlerdef}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `handler_spec_name` | [ string](#string) | none |
+| [oneof `failure_to_catch`] `specific_failure` | [ string](#string) | none |
+| [oneof `failure_to_catch`] `any_failure_of_type` | [ FailureHandlerDef.LHFailureType](#failurehandlerdeflhfailuretype) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `InterruptDef` {#interruptdef}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `external_event_def_id` | [ ExternalEventDefId](#externaleventdefid) | none |
+| `handler_spec_name` | [ string](#string) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `JsonIndex` {#jsonindex}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `field_path` | [ string](#string) | none |
+| `field_type` | [ VariableType](#variabletype) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `Node` {#node}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `outgoing_edges` | [repeated Edge](#edge) | none |
+| `failure_handlers` | [repeated FailureHandlerDef](#failurehandlerdef) | none |
+| [oneof `node`] `entrypoint` | [ EntrypointNode](#entrypointnode) | none |
+| [oneof `node`] `exit` | [ ExitNode](#exitnode) | none |
+| [oneof `node`] `task` | [ TaskNode](#tasknode) | none |
+| [oneof `node`] `external_event` | [ ExternalEventNode](#externaleventnode) | none |
+| [oneof `node`] `start_thread` | [ StartThreadNode](#startthreadnode) | none |
+| [oneof `node`] `wait_for_threads` | [ WaitForThreadsNode](#waitforthreadsnode) | none |
+| [oneof `node`] `nop` | [ NopNode](#nopnode) | none |
+| [oneof `node`] `sleep` | [ SleepNode](#sleepnode) | none |
+| [oneof `node`] `user_task` | [ UserTaskNode](#usertasknode) | none |
+| [oneof `node`] `start_multiple_threads` | [ StartMultipleThreadsNode](#startmultiplethreadsnode) | none |
+| [oneof `node`] `throw_event` | [ ThrowEventNode](#throweventnode) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `NodeMigration` {#nodemigration}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `new_node_name` | [ string](#string) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `NopNode` {#nopnode}
+
+
+
+ <!-- end HasFields -->
+
+
+
+### Message `SearchableVariableDef` {#searchablevariabledef}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `var_def` | [ VariableDef](#variabledef) | Future: Add index information (local/remote/etc) |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SleepNode` {#sleepnode}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `sleep_length`] `raw_seconds` | [ VariableAssignment](#variableassignment) | none |
+| [oneof `sleep_length`] `timestamp` | [ VariableAssignment](#variableassignment) | none |
+| [oneof `sleep_length`] `iso_date` | [ VariableAssignment](#variableassignment) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `StartMultipleThreadsNode` {#startmultiplethreadsnode}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `thread_spec_name` | [ string](#string) | none |
+| `variables` | [`map` StartMultipleThreadsNode.VariablesEntry](#startmultiplethreadsnodevariablesentry) | none |
+| `iterable` | [ VariableAssignment](#variableassignment) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `StartMultipleThreadsNode.VariablesEntry` {#startmultiplethreadsnodevariablesentry}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `key` | [ string](#string) | none |
+| `value` | [ VariableAssignment](#variableassignment) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `StartThreadNode` {#startthreadnode}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `thread_spec_name` | [ string](#string) | none |
+| `variables` | [`map` StartThreadNode.VariablesEntry](#startthreadnodevariablesentry) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `StartThreadNode.VariablesEntry` {#startthreadnodevariablesentry}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `key` | [ string](#string) | none |
+| `value` | [ VariableAssignment](#variableassignment) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ThreadRetentionPolicy` {#threadretentionpolicy}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `thread_gc_policy`] `seconds_after_thread_termination` | [ int64](#int64) | Delete associated ThreadRun's X seconds after they terminate, regardless of status. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ThreadSpec` {#threadspec}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `nodes` | [`map` ThreadSpec.NodesEntry](#threadspecnodesentry) | none |
+| `variable_defs` | [repeated ThreadVarDef](#threadvardef) | none |
+| `interrupt_defs` | [repeated InterruptDef](#interruptdef) | none |
+| [oneof `_retention_policy`] `retention_policy` | [optional ThreadRetentionPolicy](#threadretentionpolicy) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ThreadSpec.NodesEntry` {#threadspecnodesentry}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `key` | [ string](#string) | none |
+| `value` | [ Node](#node) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ThreadSpecMigration` {#threadspecmigration}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `new_thread_spec_name` | [ string](#string) | none |
+| `node_migrations` | [`map` ThreadSpecMigration.NodeMigrationsEntry](#threadspecmigrationnodemigrationsentry) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ThreadSpecMigration.NodeMigrationsEntry` {#threadspecmigrationnodemigrationsentry}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `key` | [ string](#string) | none |
+| `value` | [ NodeMigration](#nodemigration) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ThreadVarDef` {#threadvardef}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `var_def` | [ VariableDef](#variabledef) | none |
+| `required` | [ bool](#bool) | none |
+| `searchable` | [ bool](#bool) | none |
+| `json_indexes` | [repeated JsonIndex](#jsonindex) | none |
+| `access_level` | [ WfRunVariableAccessLevel](#wfrunvariableaccesslevel) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ThrowEventNode` {#throweventnode}
+
+A SubNode that throws a WorkflowEvent of a specific type.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `event_def_id` | [ WorkflowEventDefId](#workfloweventdefid) | The WorkflowEventDefId of the WorkflowEvent that is thrown |
+| `content` | [ VariableAssignment](#variableassignment) | A VariableAssignment defining the content of the WorkflowEvent that is thrown |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskNode` {#usertasknode}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `user_task_def_name` | [ string](#string) | none |
+| [oneof `_user_group`] `user_group` | [optional VariableAssignment](#variableassignment) | to whom should the User Task Run be assigned? |
+| [oneof `_user_id`] `user_id` | [optional VariableAssignment](#variableassignment) | none |
+| `actions` | [repeated UTActionTrigger](#utactiontrigger) | This is used to, for example, send a push notification to a mobile app to remind someone that they need to fill out a task, or to re-assign the task to another group of people |
+| [oneof `_user_task_def_version`] `user_task_def_version` | [optional int32](#int32) | So, once the WfSpec is created, this will be pinned to a version. Customer can optionally specify a specific version or can leave it null, in which case we just use the latest |
+| [oneof `_notes`] `notes` | [optional VariableAssignment](#variableassignment) | Allow WfRun-specific notes for this User Task. |
+| [oneof `_on_cancellation_exception_name`] `on_cancellation_exception_name` | [optional VariableAssignment](#variableassignment) | Specifies the name of the exception thrown when the User Task is canceled |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WaitForThreadsNode` {#waitforthreadsnode}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `threads_to_wait_for`] `threads` | [ WaitForThreadsNode.ThreadsToWaitFor](#waitforthreadsnodethreadstowaitfor) | none |
+| [oneof `threads_to_wait_for`] `thread_list` | [ VariableAssignment](#variableassignment) | none |
+| `per_thread_failure_handlers` | [repeated FailureHandlerDef](#failurehandlerdef) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WaitForThreadsNode.ThreadToWaitFor` {#waitforthreadsnodethreadtowaitfor}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `thread_run_number` | [ VariableAssignment](#variableassignment) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WaitForThreadsNode.ThreadsToWaitFor` {#waitforthreadsnodethreadstowaitfor}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `threads` | [repeated WaitForThreadsNode.ThreadToWaitFor](#waitforthreadsnodethreadtowaitfor) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WfSpec` {#wfspec}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ WfSpecId](#wfspecid) | none |
+| `created_at` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | none |
+| `frozen_variables` | [repeated ThreadVarDef](#threadvardef) | none |
+| `status` | [ MetadataStatus](#metadatastatus) | to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED |
+| `thread_specs` | [`map` WfSpec.ThreadSpecsEntry](#wfspecthreadspecsentry) | none |
+| `entrypoint_thread_name` | [ string](#string) | none |
+| [oneof `_retention_policy`] `retention_policy` | [optional WorkflowRetentionPolicy](#workflowretentionpolicy) | none |
+| [oneof `_migration`] `migration` | [optional WfSpecVersionMigration](#wfspecversionmigration) | none |
+| [oneof `_parent_wf_spec`] `parent_wf_spec` | [optional WfSpec.ParentWfSpecReference](#wfspecparentwfspecreference) | Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the child of a WfRun belonging to the referenced WfSpec. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WfSpec.ParentWfSpecReference` {#wfspecparentwfspecreference}
+
+Reference to another WfSpec. If a WfSpec has a ParentWfSpecReference, then all
+WfRun's for that WfSpec *MUST* be the child of a WfRun of the provided WfSpec; meaning
+that the RunWf RPC must provide a `parent_wf_run_id` that belongs to the specified
+WfSpec.
+
+Currently, only reference by names is supported.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `wf_spec_name` | [ string](#string) | Name of the Parent WfSpec |
+| `wf_spec_major_version` | [ int32](#int32) | FOR NOW: no validation of variables on parent. In the future we will pass wf_spec_major_version, but we should probably examine the rules for evolution in the future. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WfSpec.ThreadSpecsEntry` {#wfspecthreadspecsentry}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `key` | [ string](#string) | none |
+| `value` | [ ThreadSpec](#threadspec) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WfSpecVersionMigration` {#wfspecversionmigration}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `new_major_version` | [ int32](#int32) | none |
+| `new_revision` | [ int32](#int32) | none |
+| `thread_spec_migrations` | [`map` WfSpecVersionMigration.ThreadSpecMigrationsEntry](#wfspecversionmigrationthreadspecmigrationsentry) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WfSpecVersionMigration.ThreadSpecMigrationsEntry` {#wfspecversionmigrationthreadspecmigrationsentry}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `key` | [ string](#string) | none |
+| `value` | [ ThreadSpecMigration](#threadspecmigration) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WorkflowRetentionPolicy` {#workflowretentionpolicy}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| [oneof `wf_gc_policy`] `seconds_after_wf_termination` | [ int64](#int64) | Delete all WfRun's X seconds after they terminate, regardless of status. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+
+
+### Message `WorkflowEvent` {#workflowevent}
+
+A WorkflowEvent represents a "Thing That Happened" *INSIDE* a WfRun. It is DIFFERENT from
+an ExternalEvent, because an ExternalEvent represents something that happened OUTSIDE the WfRun,
+and is used to send information to the WfRun.
+
+In contrast, a WorkflowEvent is thrown by the WfRun and is used to send information to the outside
+world.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ WorkflowEventId](#workfloweventid) | The ID of the WorkflowEvent. Contains WfRunId and WorkflowEventDefId. |
+| `content` | [ VariableValue](#variablevalue) | The content of the WorkflowEvent. |
+| `created_at` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | The time that the WorkflowEvent was created. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WorkflowEventDef` {#workfloweventdef}
+
+
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [ WorkflowEventDefId](#workfloweventdefid) | none |
+| `created_at` | [ google.protobuf.Timestamp](#googleprotobuftimestamp) | none |
+| `type` | [ VariableType](#variabletype) | none |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
 
 
