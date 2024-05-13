@@ -10,83 +10,102 @@ import io.littlehorse.sdk.common.exception.LHTaskException;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHTaskError;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseStub;
+import io.littlehorse.sdk.common.proto.PollTaskRequest;
+import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
+import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
+import java.io.Closeable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Manages a queue and executor for scheduling and executing tasks in memory.
- * Future versions will share the same queue for many workers.
- * It handles retries of the rpc reportTask using the bootstrap connection in case the specific host is down.
- * Internally, a {@link Semaphore} is used to prevent overwhelming the in-memory queue.
- * Clients can control the allowed size of this queue by specifying {@code LHW_NUM_WORKER_THREADS}.
- * Clients can also specify the number of threads dedicated to executing tasks.
- *
- */
 @Slf4j
-public class LHTaskExecutor {
+public class PollThread extends Thread implements Closeable, StreamObserver<PollTaskResponse> {
 
-    private final ScheduledExecutorService pool;
-    private final Semaphore semaphore;
-    private static final int TOTAL_RETRIES = 5;
+    private StreamObserver<PollTaskRequest> pollClient;
+    private final String taskWorkerId;
+    private final TaskDefId taskDefId;
+    private final String taskWorkerVersion;
+    private final Semaphore semaphore = new Semaphore(1);
+
+    public final LittleHorseGrpc.LittleHorseStub stub;
+    private final List<VariableMapping> mappings;
+    private final Object executable;
+    private final Method taskMethod;
     private final LittleHorseGrpc.LittleHorseStub bootstrapStub;
+    private final int MAX_RETRY_ATTEMPTS = 5;
 
-    public LHTaskExecutor(int concurrency, LittleHorseGrpc.LittleHorseStub bootstrapStub) {
-        this.pool = Executors.newScheduledThreadPool(concurrency);
-        this.semaphore = new Semaphore(concurrency);
-        this.bootstrapStub = bootstrapStub;
-        Thread closeExecutorHook = new Thread(() -> {
-            try {
-                this.close(4, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        Runtime.getRuntime().addShutdownHook(closeExecutorHook);
-    }
+    private boolean stillRunning = true;
 
-    /**
-     * Schedule a new task to be executed
-     */
-    public void submitTaskForExecution(
-            ScheduledTask scheduledTask,
-            LittleHorseStub specificStub,
+    public PollThread(
+            String threadName,
+            LittleHorseGrpc.LittleHorseStub stub,
+            LittleHorseGrpc.LittleHorseStub bootstrapStub,
+            TaskDefId taskDefId,
+            String taskWorkerId,
+            String taskWorkerVersion,
             List<VariableMapping> mappings,
             Object executable,
             Method taskMethod) {
-        this.pool.submit(() -> {
-            this.doTask(scheduledTask, specificStub, mappings, executable, taskMethod);
-        });
+        super(threadName);
+        this.stub = stub;
+        this.taskDefId = taskDefId;
+        this.taskWorkerId = taskWorkerId;
+        this.taskWorkerVersion = taskWorkerVersion;
+        this.pollClient = stub.pollTask(this);
+        this.mappings = mappings;
+        this.executable = executable;
+        this.taskMethod = taskMethod;
+        this.taskMethod.setAccessible(true);
+        this.bootstrapStub = bootstrapStub;
     }
 
-    /**
-     * Gracefully shutdown
-     */
-    public boolean close(int timeout, TimeUnit timeUnit) throws InterruptedException {
-        pool.shutdown();
-        return pool.awaitTermination(timeout, timeUnit);
-    }
-
-    public void acquire() {
+    @Override
+    public void run() {
         try {
-            this.semaphore.acquire();
-        } catch (InterruptedException exn) {
-            throw new RuntimeException(exn);
+            while (stillRunning) {
+                semaphore.acquire();
+                pollClient.onNext(PollTaskRequest.newBuilder()
+                        .setClientId(taskWorkerId)
+                        .setTaskDefId(taskDefId)
+                        .setTaskWorkerVersion(taskWorkerVersion)
+                        .build());
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
+    }
+
+    @Override
+    public void onNext(PollTaskResponse value) {
+        doTask(value.getResult(), stub, mappings, executable, taskMethod);
+        semaphore.release();
+    }
+
+    @Override
+    public void onError(Throwable t) {
+        log.error("Unexpected error from server", t);
+        this.stillRunning = false;
+    }
+
+    @Override
+    public void onCompleted() {
+        log.error("Unexpected call to onCompleted() in the Server Connection.");
+        this.stillRunning = false;
+    }
+
+    @Override
+    public void close() {
+        this.stillRunning = false;
     }
 
     private void doTask(
@@ -97,25 +116,15 @@ public class LHTaskExecutor {
             Method taskMethod) {
         ReportTaskRun result = executeTask(
                 scheduledTask, LHLibUtil.fromProtoTs(scheduledTask.getCreatedAt()), mappings, executable, taskMethod);
-        this.semaphore.release();
         String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource()).getId();
         try {
             log.debug("Going to report task for wfRun {}", wfRunId);
-            specificStub.reportTask(result, new ReportTaskObserver(result, TOTAL_RETRIES, bootstrapStub));
+            specificStub.reportTask(result, new ReportTaskObserver(result, 2));
             log.debug("Successfully contacted LHServer on reportTask for wfRun {}", wfRunId);
         } catch (Exception exn) {
             log.warn("Failed to report task for wfRun {}: {}", wfRunId, exn.getMessage());
-            scheduleRetry(result, bootstrapStub, TOTAL_RETRIES);
+            retry(result, MAX_RETRY_ATTEMPTS);
         }
-    }
-
-    private void scheduleRetry(ReportTaskRun reportedTaskRun, LittleHorseStub stub, int retriesLeft) {
-        pool.schedule(
-                () -> {
-                    stub.reportTask(reportedTaskRun, new ReportTaskObserver(reportedTaskRun, retriesLeft, stub));
-                },
-                500,
-                TimeUnit.MILLISECONDS);
     }
 
     private ReportTaskRun executeTask(
@@ -132,7 +141,7 @@ public class LHTaskExecutor {
 
         try {
             Object rawResult = invoke(scheduledTask, wc, mappings, executable, taskMethod);
-            log.info("Task executed for: " + scheduledTask.getTaskDefId().getName());
+            log.debug("Task executed for: " + scheduledTask.getTaskDefId().getName());
             VariableValue serialized = LHLibUtil.objToVarVal(rawResult);
             taskResult.setOutput(serialized.toBuilder()).setStatus(TaskStatus.TASK_SUCCESS);
         } catch (InputVarSubstitutionError exn) {
@@ -216,15 +225,19 @@ public class LHTaskExecutor {
                 .build();
     }
 
+    private void retry(ReportTaskRun reportedTaskRun, int retriesLeft) {
+        if (retriesLeft > 0) {
+            bootstrapStub.reportTask(reportedTaskRun, new ReportTaskObserver(reportedTaskRun, --retriesLeft));
+        }
+    }
+
     private class ReportTaskObserver implements StreamObserver<Empty> {
         private final ReportTaskRun reportedTaskRun;
         private final int retriesLeft;
-        private final LittleHorseStub stub;
 
-        private ReportTaskObserver(ReportTaskRun result, int retriesLeft, LittleHorseStub stub) {
+        private ReportTaskObserver(ReportTaskRun result, int retriesLeft) {
             this.reportedTaskRun = result;
             this.retriesLeft = retriesLeft;
-            this.stub = stub;
         }
 
         @Override
@@ -234,7 +247,7 @@ public class LHTaskExecutor {
 
         @Override
         public void onError(Throwable t) {
-            scheduleRetry(reportedTaskRun, stub, retriesLeft);
+            retry(reportedTaskRun, retriesLeft);
         }
 
         @Override
