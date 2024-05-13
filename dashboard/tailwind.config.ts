@@ -14,6 +14,7 @@ const config: Config = {
         ...colors,
         black: '#242529',
         blue: { 500: '#7F7AFF' },
+        'text-default': 'black'
       }),
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
