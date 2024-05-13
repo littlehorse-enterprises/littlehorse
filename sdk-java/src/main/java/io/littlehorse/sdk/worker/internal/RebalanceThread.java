@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,9 +25,8 @@ final class RebalanceThread extends Thread {
     private final Method taskMethod;
     private final List<VariableMapping> mappings;
     private final Object executable;
-    private final LHTaskExecutor executor;
     private final LHConfig config;
-    private final Map<LHHostInfo, PollConnection> runningConnections = new ConcurrentHashMap<>();
+    private final Map<LHHostInfo, List<PollThread>> runningConnections = new ConcurrentHashMap<>();
     private final LHLivenessController livenessController;
     private final long heartbeatIntervalMs;
 
@@ -38,7 +38,6 @@ final class RebalanceThread extends Thread {
             Method taskMethod,
             List<VariableMapping> mappings,
             Object executable,
-            LHTaskExecutor executor,
             LHConfig config,
             LHLivenessController livenessController,
             long heartbeatIntervalMs) {
@@ -49,7 +48,6 @@ final class RebalanceThread extends Thread {
         this.taskMethod = taskMethod;
         this.mappings = mappings;
         this.executable = executable;
-        this.executor = executor;
         this.config = config;
         this.livenessController = livenessController;
         this.heartbeatIntervalMs = heartbeatIntervalMs;
@@ -73,18 +71,17 @@ final class RebalanceThread extends Thread {
                 heartBeatCallback);
     }
 
-    private PollConnection createConnection(LHHostInfo host) {
-        LittleHorseGrpc.LittleHorseStub stub = config.getAsyncStub(host.getHost(), host.getPort());
-        return new PollConnection(
-                executor,
-                host,
+    private PollThread createConnection(LittleHorseGrpc.LittleHorseStub stub, String threadName) {
+        return new PollThread(
+                threadName,
                 stub,
+                bootstrapStub,
+                taskDef.getId(),
+                taskWorkerId,
+                config.getTaskWorkerVersion(),
                 mappings,
                 executable,
-                taskMethod,
-                taskWorkerId,
-                taskDef.getId(),
-                config.getTaskWorkerVersion());
+                taskMethod);
     }
 
     private void waitForInterval() {
@@ -103,14 +100,23 @@ final class RebalanceThread extends Thread {
             List<LHHostInfo> availableHosts = response.getYourHostsList();
             for (LHHostInfo runningConnection : runningConnections.keySet()) {
                 if (!availableHosts.contains(runningConnection)) {
-                    PollConnection removed = runningConnections.remove(runningConnection);
-                    removed.close();
+                    for (PollThread removed : runningConnections.remove(runningConnection)) {
+                        removed.close();
+                    }
                 }
             }
             for (LHHostInfo lhHostInfo : availableHosts) {
-                if (!runningConnections.containsKey(lhHostInfo)
-                        || !runningConnections.get(lhHostInfo).isStillRunning()) {
-                    runningConnections.put(lhHostInfo, createConnection(lhHostInfo));
+                if (!runningConnections.containsKey(lhHostInfo)) {
+                    final List<PollThread> connections = new ArrayList<>();
+                    LittleHorseGrpc.LittleHorseStub stub =
+                            config.getAsyncStub(lhHostInfo.getHost(), lhHostInfo.getPort());
+                    for (int i = 0; i < config.getWorkerThreads(); i++) {
+                        String threadName = String.format("lh-poll-%s", i);
+                        PollThread connection = createConnection(stub, threadName);
+                        connection.start();
+                        connections.add(connection);
+                    }
+                    runningConnections.put(lhHostInfo, connections);
                 }
             }
         }
