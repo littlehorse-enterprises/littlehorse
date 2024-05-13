@@ -41,12 +41,15 @@ public class PollThread extends Thread implements Closeable, StreamObserver<Poll
     private final List<VariableMapping> mappings;
     private final Object executable;
     private final Method taskMethod;
+    private final LittleHorseGrpc.LittleHorseStub bootstrapStub;
+    private final int MAX_RETRY_ATTEMPTS = 5;
 
     private boolean stillRunning = true;
 
     public PollThread(
             String threadName,
             LittleHorseGrpc.LittleHorseStub stub,
+            LittleHorseGrpc.LittleHorseStub bootstrapStub,
             TaskDefId taskDefId,
             String taskWorkerId,
             String taskWorkerVersion,
@@ -63,6 +66,7 @@ public class PollThread extends Thread implements Closeable, StreamObserver<Poll
         this.executable = executable;
         this.taskMethod = taskMethod;
         this.taskMethod.setAccessible(true);
+        this.bootstrapStub = bootstrapStub;
     }
 
     @Override
@@ -115,10 +119,11 @@ public class PollThread extends Thread implements Closeable, StreamObserver<Poll
         String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource()).getId();
         try {
             log.debug("Going to report task for wfRun {}", wfRunId);
-            specificStub.reportTask(result, new ReportTaskObserver(result, 2, specificStub));
+            specificStub.reportTask(result, new ReportTaskObserver(result, 2));
             log.debug("Successfully contacted LHServer on reportTask for wfRun {}", wfRunId);
         } catch (Exception exn) {
             log.warn("Failed to report task for wfRun {}: {}", wfRunId, exn.getMessage());
+            retry(result, MAX_RETRY_ATTEMPTS);
         }
     }
 
@@ -220,15 +225,19 @@ public class PollThread extends Thread implements Closeable, StreamObserver<Poll
                 .build();
     }
 
+    private void retry(ReportTaskRun reportedTaskRun, int retriesLeft) {
+        if (retriesLeft > 0) {
+            bootstrapStub.reportTask(reportedTaskRun, new ReportTaskObserver(reportedTaskRun, --retriesLeft));
+        }
+    }
+
     private class ReportTaskObserver implements StreamObserver<Empty> {
         private final ReportTaskRun reportedTaskRun;
         private final int retriesLeft;
-        private final LittleHorseGrpc.LittleHorseStub stub;
 
-        private ReportTaskObserver(ReportTaskRun result, int retriesLeft, LittleHorseGrpc.LittleHorseStub stub) {
+        private ReportTaskObserver(ReportTaskRun result, int retriesLeft) {
             this.reportedTaskRun = result;
             this.retriesLeft = retriesLeft;
-            this.stub = stub;
         }
 
         @Override
@@ -238,7 +247,7 @@ public class PollThread extends Thread implements Closeable, StreamObserver<Poll
 
         @Override
         public void onError(Throwable t) {
-            // TODO retries
+            retry(reportedTaskRun, retriesLeft);
         }
 
         @Override
