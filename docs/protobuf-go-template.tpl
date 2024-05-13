@@ -47,12 +47,31 @@ This section contains the exact schemas for every object in our public API.
 {{.Description}}
 
 {{if .HasFields}}
-| Field | Type | Description |
-| ----- | ---- | ----------- |
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
 {{range .Fields -}}
-| {{if .IsOneof}}[oneof `{{.OneofDecl}}`] {{end}}`{{.Name}}` | [{{if .IsMap}}`map` {{else}}{{.Label}} {{end}}{{.LongType}}](#{{.LongType | lower | replace "." ""}}) | {{if .Description}}{{nobr .Description}}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}}{{else}}none{{end}} |
+| `{{.Name}}` | {{if and .IsOneof (ne (printf "%s" .Name) (printf "%s" (slice .OneofDecl 1)))}}oneof `{{.OneofDecl}}`{{else}}{{if .IsMap}}map{{else}}{{.Label}}{{end}}{{end}}| [{{.LongType}}](#{{.LongType | lower | replace "." ""}}) | {{.Description | replace "\n\n" "<br/><br/>" | replace "\n" " "}} |
 {{end}} <!-- end Fields -->
 {{end}} <!-- end HasFields -->
 
 {{end}}
 {{end}}
+
+## LittleHorse Enums
+
+This section contains the enums defined by the LittleHorse API.
+
+{{range .Files}}
+{{range .Enums}}
+
+### Enum {{.LongName}} {#{{.LongName | lower | replace "." ""}}}
+{{.Description}}
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+{{range .Values -}}
+	| {{.Name}} | {{.Number}} | {{nobr .Description}} |
+{{end}}
+
+{{end}} <!-- end Enums -->
+{{end}} <!-- end Files -->
