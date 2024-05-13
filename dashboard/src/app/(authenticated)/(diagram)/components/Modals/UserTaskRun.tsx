@@ -4,10 +4,10 @@ import { useModal } from '@/app/(authenticated)/(diagram)/hooks/useModal'
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { DialogBody } from 'next/dist/client/components/react-dev-overlay/internal/components/Dialog'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { getVariableValue } from '@/app/utils'
+import { getVariable, getVariableValue } from '@/app/utils'
 import { UserTaskRunStatus } from 'littlehorse-client/dist/proto/user_tasks'
 
-export const UserTaskRun: FC<UserTaskModal> = ({ data, nodeRun }) => {
+export const UserTaskRun: FC<UserTaskModal> = ({ data, nodeRun, userTaskNode }) => {
   const { showModal, setShowModal } = useModal()
   const refDiv = useRef(null)
   const assigmentHistory = data.events.filter(e => e.assigned !== undefined)
@@ -22,27 +22,41 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data, nodeRun }) => {
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel className="w-1/3 min-w-fit rounded bg-white p-2">
-          <DialogTitle className="mb-12">
-            <div className="ml-3 mr-2 mt-3 flex h-2 justify-between">
+          <DialogTitle className="mb-6 mt-3">
+            <div className="ml-3 mr-2 flex h-2 justify-between ">
               <div>
-                <span className="font-bold">Created On: </span> <span>{data.scheduledTime}</span>
-                {data.status === UserTaskRunStatus.DONE && (
-                  <div>
-                    <span className="font-bold">Completed On: </span> <span> {nodeRun.endTime}</span>
-                  </div>
-                )}
-                {data.status === UserTaskRunStatus.CANCELLED && (
-                  <div>
-                    <span className="font-bold">Cancelled On: </span> <span> {cancellationHistory[0].time}</span>
-                  </div>
-                )}
+                <span className="font-bold">User Task: </span>{' '}
+                <span className="font-bold">{data.userTaskDefId?.name}</span>
               </div>
               <button className="mr-2 w-5">
                 <XMarkIcon onClick={() => setShowModal(false)} />
               </button>
             </div>
           </DialogTitle>
-          <DialogBody>
+          <DialogBody className="mt-4">
+            <hr />
+            <div className="mb-4 mt-4">
+              <span className="ml-3 font-bold">Created On: </span> <span>{data.scheduledTime}</span>
+              {data.status === UserTaskRunStatus.DONE && (
+                <div className="ml-3  mt-1">
+                  <span className="font-bold">Completed On: </span> <span> {nodeRun.endTime}</span>
+                </div>
+              )}
+              {data.status === UserTaskRunStatus.CANCELLED && (
+                <div className="ml-3">
+                  <span className="font-bold">Cancelled On: </span> <span> {cancellationHistory[0].time}</span>
+                </div>
+              )}
+              {userTaskNode.onCancellationExceptionName !== undefined && (
+                <div className="ml-3">
+                  <span className="font-bold">Exception upon cancellation: </span>
+                  <span className="rounded bg-red-300 p-1 text-xs">
+                    {' '}
+                    {getVariable(userTaskNode.onCancellationExceptionName)}
+                  </span>
+                </div>
+              )}
+            </div>
             <hr />
             {resultsToRender.length > 0 && (
               <div className="mt-2">

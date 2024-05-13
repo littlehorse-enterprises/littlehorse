@@ -7,7 +7,10 @@ import { getVariable } from '@/app/utils'
 import { EyeIcon } from '@heroicons/react/24/solid'
 import { useModal } from '@/app/(authenticated)/(diagram)/hooks/useModal'
 
-export const UserTaskRunDetails: FC<{ userTask?: UserTaskNode; nodeRun?: NodeRun }> = ({ userTask, nodeRun }) => {
+export const UserTaskRunDetails: FC<{ userTaskNode?: UserTaskNode; nodeRun?: NodeRun }> = ({
+  userTaskNode,
+  nodeRun,
+}) => {
   const { data } = useQuery({
     queryKey: ['userTaskRun', nodeRun],
     queryFn: async () => {
@@ -20,7 +23,7 @@ export const UserTaskRunDetails: FC<{ userTask?: UserTaskNode; nodeRun?: NodeRun
 
   const onClick = useCallback(() => {
     if (data) {
-      setModal({ type: 'userTaskRun', data, nodeRun })
+      setModal({ type: 'userTaskRun', data, nodeRun, userTaskNode })
       setShowModal(true)
     }
   }, [data, setModal, setShowModal])

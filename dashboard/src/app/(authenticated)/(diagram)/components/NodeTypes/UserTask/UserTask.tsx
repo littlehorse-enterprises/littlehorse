@@ -30,7 +30,7 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
           </div>
           <div className="mb-2 flex gap-2 text-nowrap">
             {nodeRun ? (
-              <UserTaskRunDetails userTask={userTask} nodeRun={nodeRun} />
+              <UserTaskRunDetails userTaskNode={userTask} nodeRun={nodeRun} />
             ) : (
               <UserTaskDefDetails userTask={userTask} />
             )}
