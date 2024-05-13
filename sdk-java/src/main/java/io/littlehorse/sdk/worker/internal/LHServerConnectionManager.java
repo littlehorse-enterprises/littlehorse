@@ -33,7 +33,6 @@ public class LHServerConnectionManager {
                 taskMethod,
                 mappings,
                 executable,
-                new LHTaskExecutor(config.getWorkerThreads(), bootstrapStub),
                 config,
                 livenessController,
                 HEARTBEAT_INTERVAL_MS);
