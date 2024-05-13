@@ -5,8 +5,9 @@ import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { DialogBody } from 'next/dist/client/components/react-dev-overlay/internal/components/Dialog'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { getVariableValue } from '@/app/utils'
+import { UserTaskRunStatus } from 'littlehorse-client/dist/proto/user_tasks'
 
-export const UserTaskRun: FC<UserTaskModal> = ({ data }) => {
+export const UserTaskRun: FC<UserTaskModal> = ({ data, nodeRun }) => {
   const { showModal, setShowModal } = useModal()
   const refDiv = useRef(null)
   const assigmentHistory = data.events.filter(e => e.assigned !== undefined)
@@ -16,17 +17,20 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data }) => {
     value: getVariableValue(data.results[k]),
   }))
 
-  console.log(data)
-
   return (
     <Dialog initialFocus={refDiv} open={showModal} className="relative z-50" onClose={() => setShowModal(false)}>
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel className="w-1/3 min-w-fit rounded bg-white p-2">
-          <DialogTitle>
-            <div className="mb-8 ml-3 mr-2 mt-3 flex h-2 justify-between">
+          <DialogTitle className="mb-12">
+            <div className="ml-3 mr-2 mt-3 flex h-2 justify-between">
               <div>
-                <span className="font-bold">Created On: </span> {data.scheduledTime}
+                <span className="font-bold">Created On: </span> <span>{data.scheduledTime}</span>
+                {data.status === UserTaskRunStatus.DONE && (
+                  <div>
+                    <span className="font-bold">Completed On: </span> <span> {nodeRun.endTime}</span>
+                  </div>
+                )}
               </div>
               <button className="mr-2 w-5">
                 <XMarkIcon onClick={() => setShowModal(false)} />
@@ -34,6 +38,7 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data }) => {
             </div>
           </DialogTitle>
           <DialogBody>
+            <hr />
             {resultsToRender.length > 0 && (
               <div className="mt-2">
                 <div className="mb-2">

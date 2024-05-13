@@ -20,7 +20,7 @@ export const UserTaskRunDetails: FC<{ userTask?: UserTaskNode; nodeRun?: NodeRun
 
   const onClick = useCallback(() => {
     if (data) {
-      setModal({ type: 'userTaskRun', data })
+      setModal({ type: 'userTaskRun', data, nodeRun })
       setShowModal(true)
     }
   }, [data, setModal, setShowModal])
