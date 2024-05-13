@@ -50,7 +50,7 @@ This section contains the exact schemas for every object in our public API.
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
 {{range .Fields -}}
-| `{{.Name}}` | {{if and .IsOneof (ne (printf "%s" .Name) (printf "%s" (slice .OneofDecl 1)))}}oneof `{{.OneofDecl}}`{{else}}{{if .IsMap}}map{{else}}{{.Label}}{{end}}{{end}}| [{{.LongType}}](#{{.LongType | lower | replace "." ""}}) | {{.Description | replace "\n\n" "<br/><br/>" | replace "\n" " "}} |
+| `{{.Name}}` | {{if and .IsOneof (ne (printf "%s" .Name) (printf "%s" (slice .OneofDecl 1)))}}oneof `{{.OneofDecl}}`{{else}}{{if .IsMap}}map{{else}}{{.Label}}{{end}}{{end}}| {{ if and (ne .LongType "int64") (ne .LongType "int32") (ne .LongType "float") (ne .LongType "bytes") (ne .LongType "double") (ne .LongType "google.protobuf.Empty") (ne .LongType "string") (ne .LongType "bool") (ne .LongType "google.protobuf.Timestamp")}}[{{.LongType}}](#{{.LongType | lower | replace "." ""}}){{else}}{{.LongType}}{{end}} | {{.Description | replace "\n\n" "<br/><br/>" | replace "\n" " "}} |
 {{end}} <!-- end Fields -->
 {{end}} <!-- end HasFields -->
 
