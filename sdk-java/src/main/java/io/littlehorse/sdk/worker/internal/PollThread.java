@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicLong;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -43,10 +42,10 @@ public class PollThread extends Thread implements Closeable, StreamObserver<Poll
     private final Object executable;
     private final Method taskMethod;
 
-    private boolean running = true;
-    private final AtomicLong executedTaskCount = new AtomicLong(0L);
+    private boolean stillRunning = true;
 
     public PollThread(
+            String threadName,
             LittleHorseGrpc.LittleHorseStub stub,
             TaskDefId taskDefId,
             String taskWorkerId,
@@ -54,6 +53,7 @@ public class PollThread extends Thread implements Closeable, StreamObserver<Poll
             List<VariableMapping> mappings,
             Object executable,
             Method taskMethod) {
+        super(threadName);
         this.stub = stub;
         this.taskDefId = taskDefId;
         this.taskWorkerId = taskWorkerId;
@@ -68,7 +68,7 @@ public class PollThread extends Thread implements Closeable, StreamObserver<Poll
     @Override
     public void run() {
         try {
-            while (running) {
+            while (stillRunning) {
                 semaphore.acquire();
                 pollClient.onNext(PollTaskRequest.newBuilder()
                         .setClientId(taskWorkerId)
@@ -85,22 +85,23 @@ public class PollThread extends Thread implements Closeable, StreamObserver<Poll
     public void onNext(PollTaskResponse value) {
         doTask(value.getResult(), stub, mappings, executable, taskMethod);
         semaphore.release();
-        log.info("processed count " + executedTaskCount.incrementAndGet());
     }
 
     @Override
     public void onError(Throwable t) {
-        log.error("oopps!");
+        log.error("Unexpected error from server", t);
+        this.stillRunning = false;
     }
 
     @Override
     public void onCompleted() {
-        log.info("completed");
+        log.error("Unexpected call to onCompleted() in the Server Connection.");
+        this.stillRunning = false;
     }
 
     @Override
     public void close() {
-        this.running = false;
+        this.stillRunning = false;
     }
 
     private void doTask(

@@ -71,9 +71,16 @@ final class RebalanceThread extends Thread {
                 heartBeatCallback);
     }
 
-    private PollThread createConnection(LittleHorseGrpc.LittleHorseStub stub) {
+    private PollThread createConnection(LittleHorseGrpc.LittleHorseStub stub, String threadName) {
         return new PollThread(
-                stub, taskDef.getId(), taskWorkerId, config.getTaskWorkerVersion(), mappings, executable, taskMethod);
+                threadName,
+                stub,
+                taskDef.getId(),
+                taskWorkerId,
+                config.getTaskWorkerVersion(),
+                mappings,
+                executable,
+                taskMethod);
     }
 
     private void waitForInterval() {
@@ -103,7 +110,8 @@ final class RebalanceThread extends Thread {
                     LittleHorseGrpc.LittleHorseStub stub =
                             config.getAsyncStub(lhHostInfo.getHost(), lhHostInfo.getPort());
                     for (int i = 0; i < config.getWorkerThreads(); i++) {
-                        PollThread connection = createConnection(stub);
+                        String threadName = String.format("lh-poll-%s", i);
+                        PollThread connection = createConnection(stub, threadName);
                         connection.start();
                         connections.add(connection);
                     }
