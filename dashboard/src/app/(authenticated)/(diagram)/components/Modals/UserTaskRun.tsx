@@ -34,7 +34,7 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data }) => {
             </div>
           </DialogTitle>
           <DialogBody>
-            {data.results && (
+            {resultsToRender.length > 0 && (
               <div className="mt-2">
                 <div className="mb-2">
                   <div className="ml-3 h-2 font-bold">Results</div>
