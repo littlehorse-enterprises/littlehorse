@@ -373,9 +373,9 @@ lhctl run <wfSpecName> ...args
 ```
 
 All positional arguments after the WfSpec Name are interpreted as pairs of
-{Variable Name, Variable Value}. The variable values are intelligently deserialized
+`{Variable Name, Variable Value}`. The variable values are intelligently deserialized
 to their appropriate types; for example, if var 'foo' is of type 'JSON_OBJ', then
-the argument '{"bar":"baz"}' will be unmarshalled as a JSON object.
+the argument `'{"bar":"baz"}'` will be unmarshalled as a JSON object.
 
 To run the "my-workflow" `WfSpec` with two input parameters,
 

@@ -55,6 +55,8 @@ public class LHServerConfig extends ConfigBase {
     @Getter
     private WriteBufferManager globalRocksdbWriteBufferManager;
 
+    private String instanceName;
+
     // Kafka Global Configs
     public static final String KAFKA_BOOTSTRAP_KEY = "LHS_KAFKA_BOOTSTRAP_SERVERS";
     public static final String LHS_CLUSTER_ID_KEY = "LHS_CLUSTER_ID"; // determines application.id
@@ -335,9 +337,13 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public String getLHInstanceName() {
-        return getLHInstanceId().isPresent()
+        if (instanceName != null) return instanceName;
+
+        instanceName = getLHInstanceId().isPresent()
                 ? getLHInstanceId().get().toString()
                 : UUID.randomUUID().toString();
+
+        return instanceName;
     }
 
     public String getStateDirectory() {

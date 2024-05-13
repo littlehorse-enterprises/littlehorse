@@ -22,6 +22,7 @@ RUN apt update && \
     wget -q https://repo1.maven.org/maven2/io/grpc/protoc-gen-grpc-java/1.57.2/protoc-gen-grpc-java-1.57.2-linux-x86_64.exe -O /usr/local/bin/protoc-gen-grpc-java && \
     GOBIN=/usr/local/bin go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.31.0 && \
     GOBIN=/usr/local/bin go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.3.0 && \
+    GOBIN=/usr/local/bin go install github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc@latest && \
     pip install grpcio-tools==1.57.0 && \
     npm install -g ts-proto && \
     chmod +x /usr/local/bin/* && \
@@ -47,6 +48,7 @@ $docker_run protoc \
     --go_out=/littlehorse/sdk-go/common/model \
     --grpc-java_out=/littlehorse/sdk-java/src/main/java \
     --go-grpc_out=/littlehorse/sdk-go/common/model \
+    --doc_out=/littlehorse/docs/docs --doc_opt=/littlehorse/docs/protobuf-go-template.tpl,08-api.md \
     -I=/littlehorse/schemas \
     $PUBLIC_PROTOS
 

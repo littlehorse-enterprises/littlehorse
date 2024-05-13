@@ -48,24 +48,27 @@ service LittleHorse {
   // Returns the latest WfSpec with a specified name (and optionally a specified Major Version).
   rpc GetLatestWfSpec(GetLatestWfSpecRequest) returns (WfSpec) {}
 
-  // EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
-  // same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
-  // you must update WfRun's that are in the RUNNING state rather than allowing them to run to
-  // completion.
-  //
-  // As of 0.7.2, this feature is only partially implemented.
+  /*
+   * EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
+   * same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
+   * you must update WfRun's that are in the RUNNING state rather than allowing them to run to
+   * completion.
+   *
+   * As of 0.7.2, this feature is only partially implemented.
+   */
   rpc MigrateWfSpec(MigrateWfSpecRequest) returns (WfSpec) {}
 
   // Creates a UserTaskDef.
   rpc PutUserTaskDef(PutUserTaskDefRequest) returns (UserTaskDef) {}
 
-  // Gets a specific UserTaskDef.
-  //
-  // This RPC is highly useful for applications built around
-  // User Tasks. For example, a UI that dynamically displays form fields based on the User Task
-  // might first receive a UserTaskRun, then use that UserTaskRun to look up the UserTaskDef.
-  // The frontend would inspect the UserTaskDef and display a form field on the browser page
-  // for each field in the UserTaskDef.
+  /* Gets a specific UserTaskDef.
+   *
+   * This RPC is highly useful for applications built around
+   * User Tasks. For example, a UI that dynamically displays form fields based on the User Task
+   * might first receive a UserTaskRun, then use that UserTaskRun to look up the UserTaskDef.
+   * The frontend would inspect the UserTaskDef and display a form field on the browser page
+   * for each field in the UserTaskDef.
+   */
   rpc GetUserTaskDef(UserTaskDefId) returns (UserTaskDef) {}
 
   // Returns the most recent UserTaskDef with a specific name.
