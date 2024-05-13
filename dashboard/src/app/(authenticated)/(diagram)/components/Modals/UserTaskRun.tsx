@@ -4,12 +4,19 @@ import { useModal } from '@/app/(authenticated)/(diagram)/hooks/useModal'
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { DialogBody } from 'next/dist/client/components/react-dev-overlay/internal/components/Dialog'
 import { XMarkIcon } from '@heroicons/react/24/outline'
+import { getVariableValue } from '@/app/utils'
 
 export const UserTaskRun: FC<UserTaskModal> = ({ data }) => {
   const { showModal, setShowModal } = useModal()
   const refDiv = useRef(null)
   const assigmentHistory = data.events.filter(e => e.assigned !== undefined)
   const cancellationHistory = data.events.filter(e => e.cancelled !== undefined)
+  const resultsToRender = Object.keys(data.results).map(k => ({
+    field: k,
+    value: getVariableValue(data.results[k]),
+  }))
+
+  console.log(data)
 
   return (
     <Dialog initialFocus={refDiv} open={showModal} className="relative z-50" onClose={() => setShowModal(false)}>
@@ -27,6 +34,35 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data }) => {
             </div>
           </DialogTitle>
           <DialogBody>
+            {data.results && (
+              <div className="mt-2">
+                <div className="mb-2">
+                  <div className="ml-3 h-2 font-bold">Results</div>
+                </div>
+                <div className="mt-6 flex items-center justify-between p-2">
+                  <table className="text-surface min-w-full text-center text-sm font-light dark:text-white">
+                    <thead className="border-b border-neutral-200 bg-neutral-300 font-medium dark:border-white/10 dark:text-neutral-800">
+                      <tr>
+                        <th scope="col" className="px-6 py-4">
+                          Field
+                        </th>
+                        <th scope="col" className="px-6 py-4">
+                          Value
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {resultsToRender.map((result, index) => (
+                        <tr key={index} className="border-b border-neutral-200 dark:border-white/10">
+                          <td className="px-6 py-4">{result.field}</td>
+                          <td className="px-6 py-4">{result.value}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
             <div className="mt-2">
               <div className="mb-2">
                 <div className="ml-3 h-2 font-bold">Assignment History</div>
