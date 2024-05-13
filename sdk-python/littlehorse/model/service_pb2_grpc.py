@@ -378,7 +378,8 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def MigrateWfSpec(self, request, context):
-        """EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
+        """
+        EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
         same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
         you must update WfRun's that are in the RUNNING state rather than allowing them to run to
         completion.
