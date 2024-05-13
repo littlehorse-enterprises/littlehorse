@@ -25,12 +25,10 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data, nodeRun, userTaskNode }) 
           <DialogTitle className="mb-6 mt-3">
             <div className="ml-3 mr-2 flex h-2 justify-between ">
               <div>
-                <span className="font-bold">User Task: </span>{' '}
-                <span>{data.userTaskDefId?.name}</span>
+                <span className="font-bold">User Task: </span> <span>{data.userTaskDefId?.name}</span>
               </div>
               <div>
-                <span className="font-bold">User Task GUID: </span>{' '}
-                <span>{data.id?.userTaskGuid}</span>
+                <span className="font-bold">User Task GUID: </span> <span>{data.id?.userTaskGuid}</span>
               </div>
               <button className="mr-2 w-5">
                 <XMarkIcon onClick={() => setShowModal(false)} />

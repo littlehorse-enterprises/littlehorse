@@ -6,6 +6,7 @@ import { getUserTaskRun } from '@/app/(authenticated)/(diagram)/components/NodeT
 import { getVariable } from '@/app/utils'
 import { EyeIcon } from '@heroicons/react/24/solid'
 import { useModal } from '@/app/(authenticated)/(diagram)/hooks/useModal'
+import { UserAndGroupAssignmentInfo } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/UserAndGroupAssignmentInfo'
 
 export const UserTaskRunDetails: FC<{ userTaskNode?: UserTaskNode; nodeRun?: NodeRun }> = ({
   userTaskNode,
@@ -32,8 +33,7 @@ export const UserTaskRunDetails: FC<{ userTaskNode?: UserTaskNode; nodeRun?: Nod
     data && (
       <div className="flex-col">
         <div className="mb-2 flex gap-2 ">
-          {data.userGroup && <div className="flex items-center justify-center">Group: {data.userGroup}</div>}
-          {data.userId && <div className="flex items-center justify-center">User: {data.userId}</div>}
+          <UserAndGroupAssignmentInfo userGroup={data.userGroup} userId={data.userId} />
         </div>
         <div className="mt-2 flex justify-center">
           <button className="flex items-center gap-1 p-1 text-blue-500 hover:bg-gray-200" onClick={onClick}>
