@@ -38,8 +38,6 @@ rm -rf "${WORK_DIR}"/sdk-java/src/main/java/io/littlehorse/sdk/common/proto/*
 rm -rf "${WORK_DIR}"/sdk-go/common/model/*
 rm -rf "${WORK_DIR}"/sdk-python/littlehorse/model/*
 rm -rf "${WORK_DIR}"/server/src/main/java/io/littlehorse/common/proto/*
-rm -rf "${WORK_DIR}"/dashboard/apps/web/littlehorse-public-api/*
-# rm -rf "${WORK_DIR}"/docs/docs/08-api.md*
 
 # compile protobuf
 echo "Compiling protobuf objects"
