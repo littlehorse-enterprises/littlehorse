@@ -31,6 +31,11 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data, nodeRun }) => {
                     <span className="font-bold">Completed On: </span> <span> {nodeRun.endTime}</span>
                   </div>
                 )}
+                {data.status === UserTaskRunStatus.CANCELLED && (
+                  <div>
+                    <span className="font-bold">Cancelled On: </span> <span> {cancellationHistory[0].time}</span>
+                  </div>
+                )}
               </div>
               <button className="mr-2 w-5">
                 <XMarkIcon onClick={() => setShowModal(false)} />
