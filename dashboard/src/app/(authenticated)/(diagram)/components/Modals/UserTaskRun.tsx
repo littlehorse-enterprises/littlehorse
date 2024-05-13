@@ -64,8 +64,8 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data, nodeRun, userTaskNode }) 
                   <div className="ml-3 h-2 font-bold">Results</div>
                 </div>
                 <div className="mt-6 flex items-center justify-between p-2">
-                  <table className="text-surface min-w-full text-center text-sm font-light dark:text-white">
-                    <thead className="border-b border-neutral-200 bg-neutral-300 font-medium dark:border-white/10 dark:text-neutral-800">
+                  <table className="text-surface min-w-full text-center text-sm font-light">
+                    <thead className="border-b border-neutral-200 bg-neutral-300 font-medium">
                       <tr>
                         <th scope="col" className="px-6 py-4">
                           Field
@@ -77,7 +77,7 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data, nodeRun, userTaskNode }) 
                     </thead>
                     <tbody>
                       {resultsToRender.map((result, index) => (
-                        <tr key={index} className="border-b border-neutral-200 dark:border-white/10">
+                        <tr key={index} className="border-b border-neutral-200">
                           <td className="px-6 py-4">{result.field}</td>
                           <td className="px-6 py-4">{result.value}</td>
                         </tr>
@@ -92,8 +92,8 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data, nodeRun, userTaskNode }) 
                 <div className="ml-3 h-2 font-bold">Assignment History</div>
               </div>
               <div className="mt-6 flex items-center justify-between p-2">
-                <table className="text-surface min-w-full text-center text-sm font-light dark:text-white">
-                  <thead className="border-b border-neutral-200 bg-neutral-300 font-medium dark:border-white/10 dark:text-neutral-800">
+                <table className="text-surface min-w-full text-center text-sm font-light">
+                  <thead className="border-b border-neutral-200 bg-neutral-300 font-medium">
                     <tr>
                       <th scope="col" className="px-6 py-4">
                         Timestamp
@@ -114,7 +114,7 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data, nodeRun, userTaskNode }) 
                   </thead>
                   <tbody>
                     {assigmentHistory.map((e, index) => (
-                      <tr key={index} className="border-b border-neutral-200 dark:border-white/10">
+                      <tr key={index} className="border-b border-neutral-200">
                         <td className="px-6 py-4">{e.time}</td>
                         <td className="px-6 py-4">{e.assigned?.oldUserGroup}</td>
                         <td className="px-6 py-4">{e.assigned?.newUserGroup}</td>
@@ -129,8 +129,8 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data, nodeRun, userTaskNode }) 
                 <div>
                   <div className="ml-3 mt-6 h-2 font-bold">Cancellation History</div>
                   <div className="mt-6 flex items-center justify-between p-2">
-                    <table className="text-surface min-w-full text-center text-sm font-light dark:text-white">
-                      <thead className="border-b border-neutral-200 bg-neutral-300 font-medium dark:border-white/10 dark:text-neutral-800">
+                    <table className="text-surface min-w-full text-center text-sm font-light">
+                      <thead className="border-b border-neutral-200 bg-neutral-300 font-medium">
                         <tr>
                           <th scope="col" className="px-6 py-4">
                             Timestamp
@@ -142,7 +142,7 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data, nodeRun, userTaskNode }) 
                       </thead>
                       <tbody>
                         {cancellationHistory.map((e, index) => (
-                          <tr key={index} className="border-b border-neutral-200 dark:border-white/10">
+                          <tr key={index} className="border-b border-neutral-200">
                             <td className="px-6 py-4">{e.time}</td>
                             <td className="px-6 py-4">{e.cancelled?.message}</td>
                           </tr>
