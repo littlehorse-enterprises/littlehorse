@@ -1,11 +1,12 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require("prism-react-renderer/themes/github");
-// const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const {themes} = require('prism-react-renderer');
+const lightCodeTheme = themes.github;
+// const darkTheme = themes.dracula;
 
 /** @type {import('@docusaurus/types').Config} */
-const config = {
+module.exports = {
   title: "LittleHorse",
   tagline: "Workflow-Driven Microservices",
   favicon: "img/logo.jpg",
@@ -34,9 +35,8 @@ const config = {
 
   presets: [
     [
-      "classic",
-      /** @type {import('@docusaurus/preset-classic').Options} */
-      ({
+      'classic',
+      {
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
         },
@@ -44,7 +44,7 @@ const config = {
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
-      }),
+      },
     ],
   ],
 
@@ -137,5 +137,3 @@ const config = {
       },
     }),
 };
-
-module.exports = config;
