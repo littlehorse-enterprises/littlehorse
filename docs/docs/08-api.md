@@ -358,6 +358,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 | [ListWfMetricsRequest](#listwfmetricsrequest) | [ListWfMetricsResponse](#listwfmetricsresponse) | Returns a list of WfSpec Metrics Windows. |
 
+### RPC `ListTaskWorkerGroup` {#listtaskworkergroup}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [ListTaskWorkerGroupRequest](#listtaskworkergrouprequest) | [ListTaskWorkerGroupResponse](#listtaskworkergroupresponse) |  |
+
 ### RPC `PutTenant` {#puttenant}
 
 | Request Type | Response Type | Description |
@@ -1494,6 +1500,32 @@ List TaskRun's for a specific WfRun
 
 
 
+### Message `ListTaskWorkerGroupRequest` {#listtaskworkergrouprequest}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `task_def_id` | oneof `task_worker_group_criteria`| [TaskDefId](#taskdefid) |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ListTaskWorkerGroupResponse` {#listtaskworkergroupresponse}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `result` | | [TaskWorkerGroup](#taskworkergroup) |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `ListUserTaskRunRequest` {#listusertaskrunrequest}
 
 List UserTaskRun's for a specific WfRun
@@ -2182,6 +2214,35 @@ A list of TaskRun's
 
 
 
+### Message `TaskWorkerGroup` {#taskworkergroup}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `id` | | [TaskWorkerGroupId](#taskworkergroupid) |  |
+| `created_at` | | google.protobuf.Timestamp |  |
+| `task_workers` | map| [TaskWorkerGroup.TaskWorkersEntry](#taskworkergrouptaskworkersentry) |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskWorkerGroup.TaskWorkersEntry` {#taskworkergrouptaskworkersentry}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `key` | | string |  |
+| `value` | | [TaskWorkerMetadata](#taskworkermetadata) |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `TaskWorkerHeartBeatRequest` {#taskworkerheartbeatrequest}
 
 Message used by Task Worker to register itself to the server and ask for assignments of
@@ -2195,6 +2256,21 @@ Used by the Task Worker SDK; generally, you shouldn't have to touch this manuall
 | `client_id` | | string |  |
 | `task_def_id` | | [TaskDefId](#taskdefid) |  |
 | `listener_name` | | string |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `TaskWorkerMetadata` {#taskworkermetadata}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `task_worker_id` | | string |  |
+| `latest_heartbeat` | | google.protobuf.Timestamp |  |
+| `hosts` | repeated| [LHHostInfo](#lhhostinfo) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 

@@ -93,6 +93,8 @@ import io.littlehorse.sdk.common.proto.ListNodeRunsRequest;
 import io.littlehorse.sdk.common.proto.ListTaskMetricsRequest;
 import io.littlehorse.sdk.common.proto.ListTaskMetricsResponse;
 import io.littlehorse.sdk.common.proto.ListTaskRunsRequest;
+import io.littlehorse.sdk.common.proto.ListTaskWorkerGroupRequest;
+import io.littlehorse.sdk.common.proto.ListTaskWorkerGroupResponse;
 import io.littlehorse.sdk.common.proto.ListUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.ListVariablesRequest;
 import io.littlehorse.sdk.common.proto.ListWfMetricsRequest;
@@ -172,6 +174,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListExternalE
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListNodeRunsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskMetricsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskRunsRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskWorkerGroupModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListUserTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListVariablesRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListWfMetricsRequestModel;
@@ -190,6 +193,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListExte
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListNodeRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskMetricsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskRunsReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskWorkerGroupReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListUserTaskRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListVariablesReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWfMetricsReply;
@@ -461,6 +465,14 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         ListUserTaskRunRequestModel requestModel =
                 LHSerializable.fromProto(req, ListUserTaskRunRequestModel.class, requestContext());
         handleScan(requestModel, ctx, ListUserTaskRunReply.class);
+    }
+
+    @Override
+    public void listTaskWorkerGroup(
+            ListTaskWorkerGroupRequest request, StreamObserver<ListTaskWorkerGroupResponse> ctx) {
+        ListTaskWorkerGroupModel requestModel =
+                LHSerializable.fromProto(request, ListTaskWorkerGroupModel.class, requestContext());
+        handleScan(requestModel, ctx, ListTaskWorkerGroupReply.class);
     }
 
     @Override
