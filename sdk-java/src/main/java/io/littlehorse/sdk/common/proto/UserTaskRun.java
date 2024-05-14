@@ -142,7 +142,7 @@ private static final long serialVersionUID = 0L;
   private volatile java.lang.Object userGroup_ = "";
   /**
    * <pre>
-   * Denotes the UserTaskRun as assigned to a specific User Group.
+   * Denotes the UserTaskRun as belonging to a specific User Group.
    *
    * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
    * is the responsibility of the application to keep track of user/group identity and ensure
@@ -160,7 +160,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Denotes the UserTaskRun as assigned to a specific User Group.
+   * Denotes the UserTaskRun as belonging to a specific User Group.
    *
    * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
    * is the responsibility of the application to keep track of user/group identity and ensure
@@ -187,7 +187,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Denotes the UserTaskRun as assigned to a specific User Group.
+   * Denotes the UserTaskRun as belonging to a specific User Group.
    *
    * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
    * is the responsibility of the application to keep track of user/group identity and ensure
@@ -1679,7 +1679,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     private java.lang.Object userGroup_ = "";
     /**
      * <pre>
-     * Denotes the UserTaskRun as assigned to a specific User Group.
+     * Denotes the UserTaskRun as belonging to a specific User Group.
      *
      * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
      * is the responsibility of the application to keep track of user/group identity and ensure
@@ -1696,7 +1696,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * Denotes the UserTaskRun as assigned to a specific User Group.
+     * Denotes the UserTaskRun as belonging to a specific User Group.
      *
      * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
      * is the responsibility of the application to keep track of user/group identity and ensure
@@ -1722,7 +1722,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * Denotes the UserTaskRun as assigned to a specific User Group.
+     * Denotes the UserTaskRun as belonging to a specific User Group.
      *
      * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
      * is the responsibility of the application to keep track of user/group identity and ensure
@@ -1749,7 +1749,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * Denotes the UserTaskRun as assigned to a specific User Group.
+     * Denotes the UserTaskRun as belonging to a specific User Group.
      *
      * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
      * is the responsibility of the application to keep track of user/group identity and ensure
@@ -1772,7 +1772,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * Denotes the UserTaskRun as assigned to a specific User Group.
+     * Denotes the UserTaskRun as belonging to a specific User Group.
      *
      * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
      * is the responsibility of the application to keep track of user/group identity and ensure
@@ -1792,7 +1792,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * Denotes the UserTaskRun as assigned to a specific User Group.
+     * Denotes the UserTaskRun as belonging to a specific User Group.
      *
      * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
      * is the responsibility of the application to keep track of user/group identity and ensure

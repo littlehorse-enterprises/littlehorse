@@ -126,7 +126,7 @@ export interface UserTaskRun {
     | UserTaskDefId
     | undefined;
   /**
-   * Denotes the UserTaskRun as assigned to a specific User Group.
+   * Denotes the UserTaskRun as belonging to a specific User Group.
    *
    * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
    * is the responsibility of the application to keep track of user/group identity and ensure

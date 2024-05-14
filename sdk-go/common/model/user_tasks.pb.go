@@ -266,7 +266,7 @@ type UserTaskRun struct {
 	Id *UserTaskRunId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// The ID of the UserTaskDef that this UserTaskRun comes from.
 	UserTaskDefId *UserTaskDefId `protobuf:"bytes,2,opt,name=user_task_def_id,json=userTaskDefId,proto3" json:"user_task_def_id,omitempty"`
-	// Denotes the UserTaskRun as assigned to a specific User Group.
+	// Denotes the UserTaskRun as belonging to a specific User Group.
 	//
 	// The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
 	// is the responsibility of the application to keep track of user/group identity and ensure
