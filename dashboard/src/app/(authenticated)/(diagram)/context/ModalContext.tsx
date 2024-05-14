@@ -12,12 +12,6 @@ export type Modal = {
   userTaskNode?: UserTaskNode
 }
 
-export interface UserTaskModal extends Modal {
-  data: UserTaskRun
-  nodeRun: NodeRun
-  userTaskNode: UserTaskNode
-}
-
 type ModalContextType = {
   modal: Modal | null
   setModal: Dispatch<SetStateAction<Modal | null>>
