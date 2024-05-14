@@ -1,8 +1,15 @@
 # LH Dashboard
 
+## Requirements
 
+- It needs Node 20. You can install `NVM` and run on the dashboard folder:
+
+```shell
+nvm use
+```
 
 ## Environment Variables
+
 If running the app without Docker, you need to fill in the environment variables in the `.env` file inside `apps/web`. The `.env` file in the root folder is not being read by the app.
 
 - `LHC_API_HOST` littlehorse hostname
@@ -14,7 +21,6 @@ If running the app without Docker, you need to fill in the environment variables
 - `LHD_OAUTH_CLIENT_ID` the client id configured in keycloack
 - `LHD_OAUTH_CLIENT_SECRET` the client secret configured in keycloack
 - `LHD_OAUTH_ISSUER_URI` the keycloack
-
 
 ## Development
 
@@ -46,24 +52,26 @@ LHC_API_PORT=2023
 
 ### LH Server with authentication
 
-* The LH Dashboard can use Keycloack provider as an SSO mechanism for a user to login into the dashboard and use it. For that to work you have to enable the toggle `LHD_OATUH_ENABLED` in the needed environments.
+- The LH Dashboard can use Keycloack provider as an SSO mechanism for a user to login into the dashboard and use it. For that to work you have to enable the toggle `LHD_OAUTH_ENABLED` in the needed environments.
 
-* You need to your LittleHorse server running in OAuth mode for this feature to work correclty.
+- You need to your LittleHorse server running in OAuth mode for this feature to work correclty.
 
-* For the needed Environment Variables please refer to the corresponding section in this README.
+- For the needed Environment Variables please refer to the corresponding section in this README.
 
-* [Here a detail of the implemented authentication flow for this project](https://link.excalidraw.com/readonly/5sxfddEgSEFTEQLF3WAG)
-
+- [Here a detail of the implemented authentication flow for this project](https://link.excalidraw.com/readonly/5sxfddEgSEFTEQLF3WAG)
 
 ## Linting
+
 We are using ESLint as the linter for project. Given that we have a mono-repo structure we have the main command for the linter in the root package.json file.
 
 You can run the linter by:
+
 ```
 npm run lint
 ```
 
 If you wanna ESLint to try to fix the issues automatically, run:
+
 ```
 npm run lint:fix
 ```
@@ -71,18 +79,21 @@ npm run lint:fix
 ### Configuring your IDE to have Linter Live Feedback
 
 #### Intellij
-* Go to the ESLint configuration
-* Choose Manual Configuration
-* For ESLint package pick the one in the root folder: `<your workskpace dir>/lh-dashboard/node_modules/eslint`
-* For Working directories use:`<your workskpace dir>/lh-dashboard/apps/web;<your workskpace dir>/lh-dashboard/packages/ui`
-* For the Configuration file use: `<your workskpace dir>/lh-dashboard/.eslintrc.js`
-* With the above config you will receive live feedback in intellij on regards to the linting rules that are configured
-* While configuring the ESLint plugin you can enable the option: `run eslint --fix on save`
-* The reFormat code shortcut will *NOT* use the ESLint rules, you should do:`Fix ESLint problems` by opening the IntelliJ`Actions` menu.
+
+- Go to the ESLint configuration
+- Choose Manual Configuration
+- For ESLint package pick the one in the root folder: `<your workskpace dir>/lh-dashboard/node_modules/eslint`
+- For Working directories use:`<your workskpace dir>/lh-dashboard/apps/web;<your workskpace dir>/lh-dashboard/packages/ui`
+- For the Configuration file use: `<your workskpace dir>/lh-dashboard/.eslintrc.js`
+- With the above config you will receive live feedback in intellij on regards to the linting rules that are configured
+- While configuring the ESLint plugin you can enable the option: `run eslint --fix on save`
+- The reFormat code shortcut will _NOT_ use the ESLint rules, you should do:`Fix ESLint problems` by opening the IntelliJ`Actions` menu.
 
 #### VSCode
-* Install the extension called `ESLint'
-* Configure the VSCode IDE with the following options:
+
+- Install the extension called `ESLint'
+- Configure the VSCode IDE with the following options:
+
 ```
 {
     "files.autoSave": "afterDelay",
@@ -94,31 +105,38 @@ npm run lint:fix
       "<your workskpace dir>/lh-dashboard/packages/ui"]
 }
 ```
-* On the actions menu choose: `Developer: Reload Window`
-* You should start seeing the linter errors in the code
+
+- On the actions menu choose: `Developer: Reload Window`
+- You should start seeing the linter errors in the code
 
 ### Linter configuration
+
 The configuration for the entire mono-repo is under `/packages/eslint-config-custom/next.js`. On the mentioned file you can configure the rules that apply
 for the entire `lh-dashboard` mono-repo.
 
 ## Testing
+
 Jest is being used as the testing framework, any file that has the pattern `*.test.*` in its name is considered a test and will be executed by Jest.
 To run the tests please execute:
+
 ```
 npm run test
 ```
+
 If you wanna watch your tests while developing execute:
+
 ```
 npm run test --watch
 ```
 
 ### Environment variables
-You need to create a `env.test.local` file to contain any env variable you might for your tests.
 
+You need to create a `env.test.local` file to contain any env variable you might for your tests.
 
 ## Start the Dashboard with Docker
 
 The Dashboard docker image is under `docker/dashboard`, in order to run it please do the following:
+
 1. Go under the `dashboard` directory, execute: `npm install`
 
 2. Build the docker image
@@ -126,6 +144,7 @@ The Dashboard docker image is under `docker/dashboard`, in order to run it pleas
 ```sh
 ./local-dev/build.sh --dashboard
 ```
+
 Execute either of the following:
 
 ### Authentication Disabled:

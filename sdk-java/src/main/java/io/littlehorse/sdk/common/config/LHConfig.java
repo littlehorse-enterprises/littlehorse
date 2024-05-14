@@ -403,6 +403,6 @@ public class LHConfig extends ConfigBase {
      * @return the number of worker threads to run.
      */
     public int getWorkerThreads() {
-        return Integer.valueOf(getOrSetDefault(NUM_WORKER_THREADS_KEY, "8"));
+        return Integer.valueOf(getOrSetDefault(NUM_WORKER_THREADS_KEY, "2"));
     }
 }

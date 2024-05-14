@@ -10,7 +10,7 @@ import { Sleep } from './Sleep'
 import { StartMultipleThreads } from './StartMultipleThreads'
 import { StartThread } from './StartThread'
 import { Task } from './Task'
-import { UserTask } from './UserTask'
+import { UserTask } from './UserTask/UserTask'
 import { WaitForThreads } from './WaitForThreads'
 import { NodeType } from './extractNodes'
 

@@ -4,13 +4,16 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid'
 import Link from 'next/link'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
-import { NodeProps } from '.'
-import { Fade } from './Fade'
-import { NodeDetails } from './NodeDetails'
+import { NodeProps } from '../index'
+import { Fade } from '../Fade'
+import { NodeDetails } from '../NodeDetails'
+import { UserTaskRunDetails } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/UserTaskRunDetails'
+import { UserTaskDefDetails } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/UserTaskDefDetails'
 
 const Node: FC<NodeProps> = ({ data, selected }) => {
   if (!data.userTask) return null
-  const { fade, userTask } = data
+  const { fade, userTask, nodeRun } = data
+
   return (
     <>
       <NodeDetails>
@@ -26,11 +29,10 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
             </Link>
           </div>
           <div className="mb-2 flex gap-2 text-nowrap">
-            {userTask.userGroup && (
-              <div className="flex items-center justify-center">Group: {getVariable(userTask.userGroup)}</div>
-            )}
-            {userTask.userId && (
-              <div className="flex items-center justify-center">User: {getVariable(userTask.userId)}</div>
+            {nodeRun ? (
+              <UserTaskRunDetails userTaskNode={userTask} nodeRun={nodeRun} />
+            ) : (
+              <UserTaskDefDetails userTask={userTask} />
             )}
           </div>
           {userTask.notes && (
