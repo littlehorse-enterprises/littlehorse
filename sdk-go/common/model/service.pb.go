@@ -4714,14 +4714,18 @@ func (x *UserTaskRunList) GetResults() []*UserTaskRun {
 	return nil
 }
 
+// Describes a specific task worker
 type TaskWorkerMetadata struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	TaskWorkerId    string                 `protobuf:"bytes,1,opt,name=task_worker_id,json=taskWorkerId,proto3" json:"task_worker_id,omitempty"`
+	// User-defined identifier for the worker.
+	TaskWorkerId string `protobuf:"bytes,1,opt,name=task_worker_id,json=taskWorkerId,proto3" json:"task_worker_id,omitempty"`
+	// Timestamp indicating the last heartbeat sent by the worker.
 	LatestHeartbeat *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=latest_heartbeat,json=latestHeartbeat,proto3" json:"latest_heartbeat,omitempty"`
-	Hosts           []*LHHostInfo          `protobuf:"bytes,3,rep,name=hosts,proto3" json:"hosts,omitempty"`
+	// The host(s) where the worker is polling tasks
+	Hosts []*LHHostInfo `protobuf:"bytes,3,rep,name=hosts,proto3" json:"hosts,omitempty"`
 }
 
 func (x *TaskWorkerMetadata) Reset() {
@@ -4777,13 +4781,17 @@ func (x *TaskWorkerMetadata) GetHosts() []*LHHostInfo {
 	return nil
 }
 
+// Describes all workers registered for a specific TaskDef.
 type TaskWorkerGroup struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id          *TaskWorkerGroupId             `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	CreatedAt   *timestamppb.Timestamp         `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	// Identifier for the group.
+	Id *TaskWorkerGroupId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// Timestamp indicating when the worker group was initially registered.
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	// Metadata grouped by ClientId string.
 	TaskWorkers map[string]*TaskWorkerMetadata `protobuf:"bytes,3,rep,name=task_workers,json=taskWorkers,proto3" json:"task_workers,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 

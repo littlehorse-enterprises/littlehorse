@@ -50,7 +50,7 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-| [TaskDefId](#taskdefid) | [TaskWorkerGroup](#taskworkergroup) |  |
+| [TaskDefId](#taskdefid) | [TaskWorkerGroup](#taskworkergroup) | Gets the registered task worker group associated with a specific TaskDef. |
 
 ### RPC `PutExternalEventDef` {#putexternaleventdef}
 
@@ -2178,14 +2178,14 @@ A list of TaskRun's
 
 ### Message `TaskWorkerGroup` {#taskworkergroup}
 
-
+Describes all workers registered for a specific TaskDef.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `id` | | [TaskWorkerGroupId](#taskworkergroupid) |  |
-| `created_at` | | google.protobuf.Timestamp |  |
-| `task_workers` | map| [TaskWorkerGroup.TaskWorkersEntry](#taskworkergrouptaskworkersentry) |  |
+| `id` | | [TaskWorkerGroupId](#taskworkergroupid) | Identifier for the group. |
+| `created_at` | | google.protobuf.Timestamp | Timestamp indicating when the worker group was initially registered. |
+| `task_workers` | map| [TaskWorkerGroup.TaskWorkersEntry](#taskworkergrouptaskworkersentry) | Metadata grouped by ClientId string. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2225,14 +2225,14 @@ Used by the Task Worker SDK; generally, you shouldn't have to touch this manuall
 
 ### Message `TaskWorkerMetadata` {#taskworkermetadata}
 
-
+Describes a specific task worker
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `task_worker_id` | | string |  |
-| `latest_heartbeat` | | google.protobuf.Timestamp |  |
-| `hosts` | repeated| [LHHostInfo](#lhhostinfo) |  |
+| `task_worker_id` | | string | User-defined identifier for the worker. |
+| `latest_heartbeat` | | google.protobuf.Timestamp | Timestamp indicating the last heartbeat sent by the worker. |
+| `hosts` | repeated| [LHHostInfo](#lhhostinfo) | The host(s) where the worker is polling tasks |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3566,6 +3566,7 @@ This section contains the enums defined by the LittleHorse API.
 | ACL_PRINCIPAL | 4 |  |
 | ACL_TENANT | 5 |  |
 | ACL_ALL_RESOURCES | 6 |  |
+| ACL_TASK_WORKER_GROUP | 7 |  |
 
 
  <!-- end Enums -->

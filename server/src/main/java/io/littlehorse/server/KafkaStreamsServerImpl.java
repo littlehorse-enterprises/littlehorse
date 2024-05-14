@@ -361,6 +361,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_TASK_WORKER_GROUP, actions = ACLAction.READ)
     public void getTaskWorkerGroup(TaskDefId taskDefIdPb, StreamObserver<TaskWorkerGroup> ctx) {
         TaskDefIdModel taskDefId = TaskDefIdModel.fromProto(taskDefIdPb, TaskDefIdModel.class, requestContext());
         TaskWorkerGroupModel taskWorkerGroup = internalComms.getObject(

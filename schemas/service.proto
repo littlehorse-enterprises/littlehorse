@@ -30,7 +30,8 @@ service LittleHorse {
   // Gets a TaskDef.
   rpc GetTaskDef(TaskDefId) returns (TaskDef) {}
 
-  rpc GetTaskWorkerGroup(TaskDefId) returns (TaskWorkerGroup) {}
+  // Gets the registered task worker group associated with a specific TaskDef.
+  rpc GetTaskWorkerGroup (TaskDefId) returns (TaskWorkerGroup) {}
 
   // Creates an ExternalEventDef.
   rpc PutExternalEventDef(PutExternalEventDefRequest) returns (ExternalEventDef) {}
@@ -1139,15 +1140,23 @@ message UserTaskRunList {
   repeated UserTaskRun results = 1;
 }
 
+// Describes a specific task worker
 message TaskWorkerMetadata {
+  // User-defined identifier for the worker.
   string task_worker_id = 1;
+  // Timestamp indicating the last heartbeat sent by the worker.
   google.protobuf.Timestamp latest_heartbeat = 2;
+  // The host(s) where the worker is polling tasks
   repeated LHHostInfo hosts = 3;
 }
 
+// Describes all workers registered for a specific TaskDef.
 message TaskWorkerGroup {
+  // Identifier for the group.
   TaskWorkerGroupId id = 1;
+  // Timestamp indicating when the worker group was initially registered.
   google.protobuf.Timestamp created_at = 2;
+  // Metadata grouped by ClientId string.
   map<string, TaskWorkerMetadata> task_workers = 3;
 }
 

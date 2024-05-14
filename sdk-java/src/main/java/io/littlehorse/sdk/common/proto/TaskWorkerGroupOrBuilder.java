@@ -8,40 +8,72 @@ public interface TaskWorkerGroupOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Identifier for the group.
+   * </pre>
+   *
    * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * Identifier for the group.
+   * </pre>
+   *
    * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.TaskWorkerGroupId getId();
   /**
+   * <pre>
+   * Identifier for the group.
+   * </pre>
+   *
    * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TaskWorkerGroupIdOrBuilder getIdOrBuilder();
 
   /**
+   * <pre>
+   * Timestamp indicating when the worker group was initially registered.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
   boolean hasCreatedAt();
   /**
+   * <pre>
+   * Timestamp indicating when the worker group was initially registered.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
   com.google.protobuf.Timestamp getCreatedAt();
   /**
+   * <pre>
+   * Timestamp indicating when the worker group was initially registered.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
+   * <pre>
+   * Metadata grouped by ClientId string.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.TaskWorkerMetadata&gt; task_workers = 3;</code>
    */
   int getTaskWorkersCount();
   /**
+   * <pre>
+   * Metadata grouped by ClientId string.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.TaskWorkerMetadata&gt; task_workers = 3;</code>
    */
   boolean containsTaskWorkers(
@@ -53,11 +85,19 @@ public interface TaskWorkerGroupOrBuilder extends
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.TaskWorkerMetadata>
   getTaskWorkers();
   /**
+   * <pre>
+   * Metadata grouped by ClientId string.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.TaskWorkerMetadata&gt; task_workers = 3;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.TaskWorkerMetadata>
   getTaskWorkersMap();
   /**
+   * <pre>
+   * Metadata grouped by ClientId string.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.TaskWorkerMetadata&gt; task_workers = 3;</code>
    */
   /* nullable */
@@ -66,6 +106,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata getTaskWorkersOrDefault(
       /* nullable */
 io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue);
   /**
+   * <pre>
+   * Metadata grouped by ClientId string.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.TaskWorkerMetadata&gt; task_workers = 3;</code>
    */
   io.littlehorse.sdk.common.proto.TaskWorkerMetadata getTaskWorkersOrThrow(

@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Describes all workers registered for a specific TaskDef.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.TaskWorkerGroup}
  */
 public final class TaskWorkerGroup extends
@@ -53,6 +57,10 @@ private static final long serialVersionUID = 0L;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TaskWorkerGroupId id_;
   /**
+   * <pre>
+   * Identifier for the group.
+   * </pre>
+   *
    * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
    * @return Whether the id field is set.
    */
@@ -61,6 +69,10 @@ private static final long serialVersionUID = 0L;
     return id_ != null;
   }
   /**
+   * <pre>
+   * Identifier for the group.
+   * </pre>
+   *
    * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
    * @return The id.
    */
@@ -69,6 +81,10 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.TaskWorkerGroupId.getDefaultInstance() : id_;
   }
   /**
+   * <pre>
+   * Identifier for the group.
+   * </pre>
+   *
    * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
    */
   @java.lang.Override
@@ -79,6 +95,10 @@ private static final long serialVersionUID = 0L;
   public static final int CREATED_AT_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp createdAt_;
   /**
+   * <pre>
+   * Timestamp indicating when the worker group was initially registered.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
@@ -87,6 +107,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ != null;
   }
   /**
+   * <pre>
+   * Timestamp indicating when the worker group was initially registered.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
@@ -95,6 +119,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
   /**
+   * <pre>
+   * Timestamp indicating when the worker group was initially registered.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   @java.lang.Override
@@ -129,6 +157,10 @@ private static final long serialVersionUID = 0L;
     return internalGetTaskWorkers().getMap().size();
   }
   /**
+   * <pre>
+   * Metadata grouped by ClientId string.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.TaskWorkerMetadata&gt; task_workers = 3;</code>
    */
   @java.lang.Override
@@ -146,6 +178,10 @@ private static final long serialVersionUID = 0L;
     return getTaskWorkersMap();
   }
   /**
+   * <pre>
+   * Metadata grouped by ClientId string.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.TaskWorkerMetadata&gt; task_workers = 3;</code>
    */
   @java.lang.Override
@@ -153,6 +189,10 @@ private static final long serialVersionUID = 0L;
     return internalGetTaskWorkers().getMap();
   }
   /**
+   * <pre>
+   * Metadata grouped by ClientId string.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.TaskWorkerMetadata&gt; task_workers = 3;</code>
    */
   @java.lang.Override
@@ -167,6 +207,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
+   * <pre>
+   * Metadata grouped by ClientId string.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.TaskWorkerMetadata&gt; task_workers = 3;</code>
    */
   @java.lang.Override
@@ -382,6 +426,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
     return builder;
   }
   /**
+   * <pre>
+   * Describes all workers registered for a specific TaskDef.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.TaskWorkerGroup}
    */
   public static final class Builder extends
@@ -620,6 +668,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskWorkerGroupId, io.littlehorse.sdk.common.proto.TaskWorkerGroupId.Builder, io.littlehorse.sdk.common.proto.TaskWorkerGroupIdOrBuilder> idBuilder_;
     /**
+     * <pre>
+     * Identifier for the group.
+     * </pre>
+     *
      * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
      * @return Whether the id field is set.
      */
@@ -627,6 +679,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * Identifier for the group.
+     * </pre>
+     *
      * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
      * @return The id.
      */
@@ -638,6 +694,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Identifier for the group.
+     * </pre>
+     *
      * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
      */
     public Builder setId(io.littlehorse.sdk.common.proto.TaskWorkerGroupId value) {
@@ -654,6 +714,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Identifier for the group.
+     * </pre>
+     *
      * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
      */
     public Builder setId(
@@ -668,6 +732,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Identifier for the group.
+     * </pre>
+     *
      * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
      */
     public Builder mergeId(io.littlehorse.sdk.common.proto.TaskWorkerGroupId value) {
@@ -687,6 +755,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Identifier for the group.
+     * </pre>
+     *
      * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
      */
     public Builder clearId() {
@@ -700,6 +772,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Identifier for the group.
+     * </pre>
+     *
      * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskWorkerGroupId.Builder getIdBuilder() {
@@ -708,6 +784,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return getIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Identifier for the group.
+     * </pre>
+     *
      * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskWorkerGroupIdOrBuilder getIdOrBuilder() {
@@ -719,6 +799,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Identifier for the group.
+     * </pre>
+     *
      * <code>.littlehorse.TaskWorkerGroupId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -739,6 +823,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
     /**
+     * <pre>
+     * Timestamp indicating when the worker group was initially registered.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return Whether the createdAt field is set.
      */
@@ -746,6 +834,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * Timestamp indicating when the worker group was initially registered.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return The createdAt.
      */
@@ -757,6 +849,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Timestamp indicating when the worker group was initially registered.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
@@ -773,6 +869,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Timestamp indicating when the worker group was initially registered.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(
@@ -787,6 +887,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Timestamp indicating when the worker group was initially registered.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
@@ -806,6 +910,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Timestamp indicating when the worker group was initially registered.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder clearCreatedAt() {
@@ -819,6 +927,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Timestamp indicating when the worker group was initially registered.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
@@ -827,6 +939,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return getCreatedAtFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Timestamp indicating when the worker group was initially registered.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
@@ -838,6 +954,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Timestamp indicating when the worker group was initially registered.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -881,6 +1001,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return internalGetTaskWorkers().getMap().size();
     }
     /**
+     * <pre>
+     * Metadata grouped by ClientId string.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.TaskWorkerMetadata&gt; task_workers = 3;</code>
      */
     @java.lang.Override
@@ -898,6 +1022,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return getTaskWorkersMap();
     }
     /**
+     * <pre>
+     * Metadata grouped by ClientId string.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.TaskWorkerMetadata&gt; task_workers = 3;</code>
      */
     @java.lang.Override
@@ -905,6 +1033,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return internalGetTaskWorkers().getMap();
     }
     /**
+     * <pre>
+     * Metadata grouped by ClientId string.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.TaskWorkerMetadata&gt; task_workers = 3;</code>
      */
     @java.lang.Override
@@ -919,6 +1051,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
+     * <pre>
+     * Metadata grouped by ClientId string.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.TaskWorkerMetadata&gt; task_workers = 3;</code>
      */
     @java.lang.Override
@@ -939,6 +1075,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Metadata grouped by ClientId string.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.TaskWorkerMetadata&gt; task_workers = 3;</code>
      */
     public Builder removeTaskWorkers(
@@ -958,6 +1098,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return internalGetMutableTaskWorkers().getMutableMap();
     }
     /**
+     * <pre>
+     * Metadata grouped by ClientId string.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.TaskWorkerMetadata&gt; task_workers = 3;</code>
      */
     public Builder putTaskWorkers(
@@ -971,6 +1115,10 @@ io.littlehorse.sdk.common.proto.TaskWorkerMetadata defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Metadata grouped by ClientId string.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.TaskWorkerMetadata&gt; task_workers = 3;</code>
      */
     public Builder putAllTaskWorkers(
