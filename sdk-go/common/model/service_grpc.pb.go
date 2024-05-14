@@ -22,6 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	LittleHorse_PutTaskDef_FullMethodName              = "/littlehorse.LittleHorse/PutTaskDef"
 	LittleHorse_GetTaskDef_FullMethodName              = "/littlehorse.LittleHorse/GetTaskDef"
+	LittleHorse_GetTaskWorkerGroup_FullMethodName      = "/littlehorse.LittleHorse/GetTaskWorkerGroup"
 	LittleHorse_PutExternalEventDef_FullMethodName     = "/littlehorse.LittleHorse/PutExternalEventDef"
 	LittleHorse_GetExternalEventDef_FullMethodName     = "/littlehorse.LittleHorse/GetExternalEventDef"
 	LittleHorse_PutWorkflowEventDef_FullMethodName     = "/littlehorse.LittleHorse/PutWorkflowEventDef"
@@ -88,6 +89,8 @@ type LittleHorseClient interface {
 	PutTaskDef(ctx context.Context, in *PutTaskDefRequest, opts ...grpc.CallOption) (*TaskDef, error)
 	// Gets a TaskDef.
 	GetTaskDef(ctx context.Context, in *TaskDefId, opts ...grpc.CallOption) (*TaskDef, error)
+	// Gets the registered task worker group associated with a specific TaskDef.
+	GetTaskWorkerGroup(ctx context.Context, in *TaskDefId, opts ...grpc.CallOption) (*TaskWorkerGroup, error)
 	// Creates an ExternalEventDef.
 	PutExternalEventDef(ctx context.Context, in *PutExternalEventDefRequest, opts ...grpc.CallOption) (*ExternalEventDef, error)
 	// Gets an ExternalEventDef.
@@ -261,6 +264,15 @@ func (c *littleHorseClient) PutTaskDef(ctx context.Context, in *PutTaskDefReques
 func (c *littleHorseClient) GetTaskDef(ctx context.Context, in *TaskDefId, opts ...grpc.CallOption) (*TaskDef, error) {
 	out := new(TaskDef)
 	err := c.cc.Invoke(ctx, LittleHorse_GetTaskDef_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetTaskWorkerGroup(ctx context.Context, in *TaskDefId, opts ...grpc.CallOption) (*TaskWorkerGroup, error) {
+	out := new(TaskWorkerGroup)
+	err := c.cc.Invoke(ctx, LittleHorse_GetTaskWorkerGroup_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -801,6 +813,8 @@ type LittleHorseServer interface {
 	PutTaskDef(context.Context, *PutTaskDefRequest) (*TaskDef, error)
 	// Gets a TaskDef.
 	GetTaskDef(context.Context, *TaskDefId) (*TaskDef, error)
+	// Gets the registered task worker group associated with a specific TaskDef.
+	GetTaskWorkerGroup(context.Context, *TaskDefId) (*TaskWorkerGroup, error)
 	// Creates an ExternalEventDef.
 	PutExternalEventDef(context.Context, *PutExternalEventDefRequest) (*ExternalEventDef, error)
 	// Gets an ExternalEventDef.
@@ -964,6 +978,9 @@ func (UnimplementedLittleHorseServer) PutTaskDef(context.Context, *PutTaskDefReq
 }
 func (UnimplementedLittleHorseServer) GetTaskDef(context.Context, *TaskDefId) (*TaskDef, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTaskDef not implemented")
+}
+func (UnimplementedLittleHorseServer) GetTaskWorkerGroup(context.Context, *TaskDefId) (*TaskWorkerGroup, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTaskWorkerGroup not implemented")
 }
 func (UnimplementedLittleHorseServer) PutExternalEventDef(context.Context, *PutExternalEventDefRequest) (*ExternalEventDef, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutExternalEventDef not implemented")
@@ -1178,6 +1195,24 @@ func _LittleHorse_GetTaskDef_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).GetTaskDef(ctx, req.(*TaskDefId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetTaskWorkerGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskDefId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetTaskWorkerGroup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetTaskWorkerGroup_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetTaskWorkerGroup(ctx, req.(*TaskDefId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2212,6 +2247,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTaskDef",
 			Handler:    _LittleHorse_GetTaskDef_Handler,
+		},
+		{
+			MethodName: "GetTaskWorkerGroup",
+			Handler:    _LittleHorse_GetTaskWorkerGroup_Handler,
 		},
 		{
 			MethodName: "PutExternalEventDef",

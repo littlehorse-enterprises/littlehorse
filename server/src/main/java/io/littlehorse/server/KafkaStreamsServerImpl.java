@@ -31,6 +31,7 @@ import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
@@ -44,6 +45,7 @@ import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
@@ -139,6 +141,7 @@ import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunIdList;
 import io.littlehorse.sdk.common.proto.TaskRunList;
+import io.littlehorse.sdk.common.proto.TaskWorkerGroup;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.sdk.common.proto.TenantIdList;
@@ -353,6 +356,21 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find TaskDef %s".formatted(req.getName())));
         } else {
             ctx.onNext(td.toProto().build());
+            ctx.onCompleted();
+        }
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_TASK_WORKER_GROUP, actions = ACLAction.READ)
+    public void getTaskWorkerGroup(TaskDefId taskDefIdPb, StreamObserver<TaskWorkerGroup> ctx) {
+        TaskDefIdModel taskDefId = TaskDefIdModel.fromProto(taskDefIdPb, TaskDefIdModel.class, requestContext());
+        TaskWorkerGroupModel taskWorkerGroup = internalComms.getObject(
+                new TaskWorkerGroupIdModel(taskDefId), TaskWorkerGroupModel.class, requestContext());
+        if (taskWorkerGroup == null) {
+            ctx.onError(new LHApiException(
+                    Status.NOT_FOUND, "Couldn't find a TaskWorkerGroup for %s".formatted(taskDefIdPb.getName())));
+        } else {
+            ctx.onNext(taskWorkerGroup.toProto().build());
             ctx.onCompleted();
         }
     }

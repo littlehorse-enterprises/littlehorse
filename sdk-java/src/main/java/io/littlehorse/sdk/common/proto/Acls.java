@@ -93,14 +93,15 @@ public final class Acls {
       "ey\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.littlehorse.Se" +
       "rverACLs:\0028\001\"$\n\026DeletePrincipalRequest\022\n" +
       "\n\002id\030\001 \001(\t\"\036\n\020PutTenantRequest\022\n\n\002id\030\001 \001" +
-      "(\t*\222\001\n\013ACLResource\022\020\n\014ACL_WORKFLOW\020\000\022\014\n\010" +
+      "(\t*\255\001\n\013ACLResource\022\020\n\014ACL_WORKFLOW\020\000\022\014\n\010" +
       "ACL_TASK\020\001\022\026\n\022ACL_EXTERNAL_EVENT\020\002\022\021\n\rAC" +
       "L_USER_TASK\020\003\022\021\n\rACL_PRINCIPAL\020\004\022\016\n\nACL_" +
-      "TENANT\020\005\022\025\n\021ACL_ALL_RESOURCES\020\006*C\n\tACLAc" +
-      "tion\022\010\n\004READ\020\000\022\007\n\003RUN\020\001\022\022\n\016WRITE_METADAT" +
-      "A\020\002\022\017\n\013ALL_ACTIONS\020\003BG\n\037io.littlehorse.s" +
-      "dk.common.protoP\001Z\007.;model\252\002\030LittleHorse" +
-      ".Common.Protob\006proto3"
+      "TENANT\020\005\022\025\n\021ACL_ALL_RESOURCES\020\006\022\031\n\025ACL_T" +
+      "ASK_WORKER_GROUP\020\007*C\n\tACLAction\022\010\n\004READ\020" +
+      "\000\022\007\n\003RUN\020\001\022\022\n\016WRITE_METADATA\020\002\022\017\n\013ALL_AC" +
+      "TIONS\020\003BG\n\037io.littlehorse.sdk.common.pro" +
+      "toP\001Z\007.;model\252\002\030LittleHorse.Common.Proto" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

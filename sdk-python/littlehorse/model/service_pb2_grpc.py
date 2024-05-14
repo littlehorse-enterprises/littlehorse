@@ -36,6 +36,11 @@ class LittleHorseStub(object):
                 request_serializer=object__id__pb2.TaskDefId.SerializeToString,
                 response_deserializer=task__def__pb2.TaskDef.FromString,
                 )
+        self.GetTaskWorkerGroup = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetTaskWorkerGroup',
+                request_serializer=object__id__pb2.TaskDefId.SerializeToString,
+                response_deserializer=service__pb2.TaskWorkerGroup.FromString,
+                )
         self.PutExternalEventDef = channel.unary_unary(
                 '/littlehorse.LittleHorse/PutExternalEventDef',
                 request_serializer=service__pb2.PutExternalEventDefRequest.SerializeToString,
@@ -330,6 +335,13 @@ class LittleHorseServicer(object):
 
     def GetTaskDef(self, request, context):
         """Gets a TaskDef.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetTaskWorkerGroup(self, request, context):
+        """Gets the registered task worker group associated with a specific TaskDef.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -779,6 +791,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=object__id__pb2.TaskDefId.FromString,
                     response_serializer=task__def__pb2.TaskDef.SerializeToString,
             ),
+            'GetTaskWorkerGroup': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetTaskWorkerGroup,
+                    request_deserializer=object__id__pb2.TaskDefId.FromString,
+                    response_serializer=service__pb2.TaskWorkerGroup.SerializeToString,
+            ),
             'PutExternalEventDef': grpc.unary_unary_rpc_method_handler(
                     servicer.PutExternalEventDef,
                     request_deserializer=service__pb2.PutExternalEventDefRequest.FromString,
@@ -1100,6 +1117,23 @@ class LittleHorse(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetTaskDef',
             object__id__pb2.TaskDefId.SerializeToString,
             task__def__pb2.TaskDef.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetTaskWorkerGroup(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetTaskWorkerGroup',
+            object__id__pb2.TaskDefId.SerializeToString,
+            service__pb2.TaskWorkerGroup.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
