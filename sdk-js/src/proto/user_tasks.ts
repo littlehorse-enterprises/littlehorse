@@ -126,18 +126,26 @@ export interface UserTaskRun {
     | UserTaskDefId
     | undefined;
   /**
-   * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
-   * to a group. At least one of user_group or user_id will be set for any given
-   * UserTaskRun.
+   * Denotes the UserTaskRun as assigned to a specific User Group.
+   *
+   * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
+   * is the responsibility of the application to keep track of user/group identity and ensure
+   * that the user_group does indeed exist.
+   *
+   * Either `user_id` or `user_group` or both are set at any time.
    */
   userGroup?:
     | string
     | undefined;
   /**
-   * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
-   * to a user. At least one of user_group or user_id will be set for any given
-   * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
-   * UNASSIGNED status.
+   * Denotes the UserTaskRun as assigned to a specific User ID. If this is set, then
+   * the UserTaskRun is either in the ASSIGNED, DONE, or CANCELLED status.
+   *
+   * The `user_id` does not refer to a User that is stored in LittleHorse; rather, it
+   * is the responsibility of the application to keep track of user identity and ensure
+   * that the user_id does indeed exist.
+   *
+   * Either `user_id` or `user_group` or both are set at any time.
    */
   userId?:
     | string

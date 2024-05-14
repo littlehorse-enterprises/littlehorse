@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A `WfSpec`` defines the logic for a worfklow in LittleHorse. It is a metadata object
+ * and is a blueprint for a `WfRun` execution.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.WfSpec}
  */
 public final class WfSpec extends
@@ -765,6 +770,13 @@ private static final long serialVersionUID = 0L;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WfSpecId id_;
   /**
+   * <pre>
+   * The ID of the `WfSpec`. Note that this ID is versioned with both a major
+   * version and a minor revision. Creating new WfSpec's with the same name
+   * and different specifications results in a completely new `WfSpec` object
+   * whose `id.name` is the same but with different version.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId id = 1;</code>
    * @return Whether the id field is set.
    */
@@ -773,6 +785,13 @@ private static final long serialVersionUID = 0L;
     return id_ != null;
   }
   /**
+   * <pre>
+   * The ID of the `WfSpec`. Note that this ID is versioned with both a major
+   * version and a minor revision. Creating new WfSpec's with the same name
+   * and different specifications results in a completely new `WfSpec` object
+   * whose `id.name` is the same but with different version.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId id = 1;</code>
    * @return The id.
    */
@@ -781,6 +800,13 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : id_;
   }
   /**
+   * <pre>
+   * The ID of the `WfSpec`. Note that this ID is versioned with both a major
+   * version and a minor revision. Creating new WfSpec's with the same name
+   * and different specifications results in a completely new `WfSpec` object
+   * whose `id.name` is the same but with different version.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId id = 1;</code>
    */
   @java.lang.Override
@@ -791,6 +817,10 @@ private static final long serialVersionUID = 0L;
   public static final int CREATED_AT_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp createdAt_;
   /**
+   * <pre>
+   * The timestamp at which the `WfSpec` was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
@@ -799,6 +829,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ != null;
   }
   /**
+   * <pre>
+   * The timestamp at which the `WfSpec` was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
@@ -807,6 +841,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
   /**
+   * <pre>
+   * The timestamp at which the `WfSpec` was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   @java.lang.Override
@@ -818,6 +856,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef> frozenVariables_;
   /**
+   * <pre>
+   * Variables whose types cannot be changed without causing a Breaking Change between
+   * the versions.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
    */
   @java.lang.Override
@@ -825,6 +868,11 @@ private static final long serialVersionUID = 0L;
     return frozenVariables_;
   }
   /**
+   * <pre>
+   * Variables whose types cannot be changed without causing a Breaking Change between
+   * the versions.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
    */
   @java.lang.Override
@@ -833,6 +881,11 @@ private static final long serialVersionUID = 0L;
     return frozenVariables_;
   }
   /**
+   * <pre>
+   * Variables whose types cannot be changed without causing a Breaking Change between
+   * the versions.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
    */
   @java.lang.Override
@@ -840,6 +893,11 @@ private static final long serialVersionUID = 0L;
     return frozenVariables_.size();
   }
   /**
+   * <pre>
+   * Variables whose types cannot be changed without causing a Breaking Change between
+   * the versions.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
    */
   @java.lang.Override
@@ -847,6 +905,11 @@ private static final long serialVersionUID = 0L;
     return frozenVariables_.get(index);
   }
   /**
+   * <pre>
+   * Variables whose types cannot be changed without causing a Breaking Change between
+   * the versions.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
    */
   @java.lang.Override
@@ -859,7 +922,8 @@ private static final long serialVersionUID = 0L;
   private int status_ = 0;
   /**
    * <pre>
-   * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+   * The Status of the `WfSpec`. Currently, only `ACTIVE` exists. This field will be
+   * used in the future when de-commissioning a WfSpec gracefully.
    * </pre>
    *
    * <code>.littlehorse.MetadataStatus status = 4;</code>
@@ -870,7 +934,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+   * The Status of the `WfSpec`. Currently, only `ACTIVE` exists. This field will be
+   * used in the future when de-commissioning a WfSpec gracefully.
    * </pre>
    *
    * <code>.littlehorse.MetadataStatus status = 4;</code>
@@ -908,6 +973,11 @@ private static final long serialVersionUID = 0L;
     return internalGetThreadSpecs().getMap().size();
   }
   /**
+   * <pre>
+   * The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+   * a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
   @java.lang.Override
@@ -925,6 +995,11 @@ private static final long serialVersionUID = 0L;
     return getThreadSpecsMap();
   }
   /**
+   * <pre>
+   * The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+   * a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
   @java.lang.Override
@@ -932,6 +1007,11 @@ private static final long serialVersionUID = 0L;
     return internalGetThreadSpecs().getMap();
   }
   /**
+   * <pre>
+   * The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+   * a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
   @java.lang.Override
@@ -946,6 +1026,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
+   * <pre>
+   * The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+   * a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
   @java.lang.Override
@@ -964,6 +1049,12 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
   @SuppressWarnings("serial")
   private volatile java.lang.Object entrypointThreadName_ = "";
   /**
+   * <pre>
+   * The name of the `ENTRYPOINT` ThreadSpec. The Entrypoint is the `ThreadSpec` for the
+   * Entrypoint ThreadRun, which is the `ThreadRun` that is created upon starting the
+   * `WfRun`.
+   * </pre>
+   *
    * <code>string entrypoint_thread_name = 6;</code>
    * @return The entrypointThreadName.
    */
@@ -981,6 +1072,12 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
   }
   /**
+   * <pre>
+   * The name of the `ENTRYPOINT` ThreadSpec. The Entrypoint is the `ThreadSpec` for the
+   * Entrypoint ThreadRun, which is the `ThreadRun` that is created upon starting the
+   * `WfRun`.
+   * </pre>
+   *
    * <code>string entrypoint_thread_name = 6;</code>
    * @return The bytes for entrypointThreadName.
    */
@@ -1002,6 +1099,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
   public static final int RETENTION_POLICY_FIELD_NUMBER = 7;
   private io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy retentionPolicy_;
   /**
+   * <pre>
+   * Optional policy that configures cleaning up old `WfRun`'s after they are completed or
+   * failed. Recommended for production settings to avoid running out of disk space; unless
+   * you are using a `WfRun` as a data record, in which case the application should
+   * clean up `WfRun`'s as appropriate.
+   * </pre>
+   *
    * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
    * @return Whether the retentionPolicy field is set.
    */
@@ -1010,6 +1114,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Optional policy that configures cleaning up old `WfRun`'s after they are completed or
+   * failed. Recommended for production settings to avoid running out of disk space; unless
+   * you are using a `WfRun` as a data record, in which case the application should
+   * clean up `WfRun`'s as appropriate.
+   * </pre>
+   *
    * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
    * @return The retentionPolicy.
    */
@@ -1018,6 +1129,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.getDefaultInstance() : retentionPolicy_;
   }
   /**
+   * <pre>
+   * Optional policy that configures cleaning up old `WfRun`'s after they are completed or
+   * failed. Recommended for production settings to avoid running out of disk space; unless
+   * you are using a `WfRun` as a data record, in which case the application should
+   * clean up `WfRun`'s as appropriate.
+   * </pre>
+   *
    * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
    */
   @java.lang.Override
@@ -1028,6 +1146,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
   public static final int MIGRATION_FIELD_NUMBER = 8;
   private io.littlehorse.sdk.common.proto.WfSpecVersionMigration migration_;
   /**
+   * <pre>
+   * EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
    * @return Whether the migration field is set.
    */
@@ -1036,6 +1158,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
    * @return The migration.
    */
@@ -1044,6 +1170,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return migration_ == null ? io.littlehorse.sdk.common.proto.WfSpecVersionMigration.getDefaultInstance() : migration_;
   }
   /**
+   * <pre>
+   * EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
    */
   @java.lang.Override
@@ -1374,6 +1504,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     return builder;
   }
   /**
+   * <pre>
+   * A `WfSpec`` defines the logic for a worfklow in LittleHorse. It is a metadata object
+   * and is a blueprint for a `WfRun` execution.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.WfSpec}
    */
   public static final class Builder extends
@@ -1773,6 +1908,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> idBuilder_;
     /**
+     * <pre>
+     * The ID of the `WfSpec`. Note that this ID is versioned with both a major
+     * version and a minor revision. Creating new WfSpec's with the same name
+     * and different specifications results in a completely new `WfSpec` object
+     * whose `id.name` is the same but with different version.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      * @return Whether the id field is set.
      */
@@ -1780,6 +1922,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The ID of the `WfSpec`. Note that this ID is versioned with both a major
+     * version and a minor revision. Creating new WfSpec's with the same name
+     * and different specifications results in a completely new `WfSpec` object
+     * whose `id.name` is the same but with different version.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      * @return The id.
      */
@@ -1791,6 +1940,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The ID of the `WfSpec`. Note that this ID is versioned with both a major
+     * version and a minor revision. Creating new WfSpec's with the same name
+     * and different specifications results in a completely new `WfSpec` object
+     * whose `id.name` is the same but with different version.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      */
     public Builder setId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -1807,6 +1963,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ID of the `WfSpec`. Note that this ID is versioned with both a major
+     * version and a minor revision. Creating new WfSpec's with the same name
+     * and different specifications results in a completely new `WfSpec` object
+     * whose `id.name` is the same but with different version.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      */
     public Builder setId(
@@ -1821,6 +1984,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ID of the `WfSpec`. Note that this ID is versioned with both a major
+     * version and a minor revision. Creating new WfSpec's with the same name
+     * and different specifications results in a completely new `WfSpec` object
+     * whose `id.name` is the same but with different version.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      */
     public Builder mergeId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -1840,6 +2010,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ID of the `WfSpec`. Note that this ID is versioned with both a major
+     * version and a minor revision. Creating new WfSpec's with the same name
+     * and different specifications results in a completely new `WfSpec` object
+     * whose `id.name` is the same but with different version.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      */
     public Builder clearId() {
@@ -1853,6 +2030,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ID of the `WfSpec`. Note that this ID is versioned with both a major
+     * version and a minor revision. Creating new WfSpec's with the same name
+     * and different specifications results in a completely new `WfSpec` object
+     * whose `id.name` is the same but with different version.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId.Builder getIdBuilder() {
@@ -1861,6 +2045,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return getIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the `WfSpec`. Note that this ID is versioned with both a major
+     * version and a minor revision. Creating new WfSpec's with the same name
+     * and different specifications results in a completely new `WfSpec` object
+     * whose `id.name` is the same but with different version.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getIdOrBuilder() {
@@ -1872,6 +2063,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The ID of the `WfSpec`. Note that this ID is versioned with both a major
+     * version and a minor revision. Creating new WfSpec's with the same name
+     * and different specifications results in a completely new `WfSpec` object
+     * whose `id.name` is the same but with different version.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1892,6 +2090,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
     /**
+     * <pre>
+     * The timestamp at which the `WfSpec` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return Whether the createdAt field is set.
      */
@@ -1899,6 +2101,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * The timestamp at which the `WfSpec` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return The createdAt.
      */
@@ -1910,6 +2116,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The timestamp at which the `WfSpec` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
@@ -1926,6 +2136,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The timestamp at which the `WfSpec` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(
@@ -1940,6 +2154,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The timestamp at which the `WfSpec` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
@@ -1959,6 +2177,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The timestamp at which the `WfSpec` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder clearCreatedAt() {
@@ -1972,6 +2194,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The timestamp at which the `WfSpec` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
@@ -1980,6 +2206,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return getCreatedAtFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The timestamp at which the `WfSpec` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
@@ -1991,6 +2221,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The timestamp at which the `WfSpec` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -2020,6 +2254,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
         io.littlehorse.sdk.common.proto.ThreadVarDef, io.littlehorse.sdk.common.proto.ThreadVarDef.Builder, io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder> frozenVariablesBuilder_;
 
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef> getFrozenVariablesList() {
@@ -2030,6 +2269,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public int getFrozenVariablesCount() {
@@ -2040,6 +2284,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadVarDef getFrozenVariables(int index) {
@@ -2050,6 +2299,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public Builder setFrozenVariables(
@@ -2067,6 +2321,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public Builder setFrozenVariables(
@@ -2081,6 +2340,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public Builder addFrozenVariables(io.littlehorse.sdk.common.proto.ThreadVarDef value) {
@@ -2097,6 +2361,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public Builder addFrozenVariables(
@@ -2114,6 +2383,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public Builder addFrozenVariables(
@@ -2128,6 +2402,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public Builder addFrozenVariables(
@@ -2142,6 +2421,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public Builder addAllFrozenVariables(
@@ -2157,6 +2441,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public Builder clearFrozenVariables() {
@@ -2170,6 +2459,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public Builder removeFrozenVariables(int index) {
@@ -2183,6 +2477,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadVarDef.Builder getFrozenVariablesBuilder(
@@ -2190,6 +2489,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return getFrozenVariablesFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder getFrozenVariablesOrBuilder(
@@ -2200,6 +2504,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder> 
@@ -2211,6 +2520,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadVarDef.Builder addFrozenVariablesBuilder() {
@@ -2218,6 +2532,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
           io.littlehorse.sdk.common.proto.ThreadVarDef.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadVarDef.Builder addFrozenVariablesBuilder(
@@ -2226,6 +2545,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
           index, io.littlehorse.sdk.common.proto.ThreadVarDef.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Variables whose types cannot be changed without causing a Breaking Change between
+     * the versions.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef.Builder> 
@@ -2250,7 +2574,8 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     private int status_ = 0;
     /**
      * <pre>
-     * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+     * The Status of the `WfSpec`. Currently, only `ACTIVE` exists. This field will be
+     * used in the future when de-commissioning a WfSpec gracefully.
      * </pre>
      *
      * <code>.littlehorse.MetadataStatus status = 4;</code>
@@ -2261,7 +2586,8 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
     /**
      * <pre>
-     * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+     * The Status of the `WfSpec`. Currently, only `ACTIVE` exists. This field will be
+     * used in the future when de-commissioning a WfSpec gracefully.
      * </pre>
      *
      * <code>.littlehorse.MetadataStatus status = 4;</code>
@@ -2276,7 +2602,8 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
     /**
      * <pre>
-     * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+     * The Status of the `WfSpec`. Currently, only `ACTIVE` exists. This field will be
+     * used in the future when de-commissioning a WfSpec gracefully.
      * </pre>
      *
      * <code>.littlehorse.MetadataStatus status = 4;</code>
@@ -2289,7 +2616,8 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
     /**
      * <pre>
-     * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+     * The Status of the `WfSpec`. Currently, only `ACTIVE` exists. This field will be
+     * used in the future when de-commissioning a WfSpec gracefully.
      * </pre>
      *
      * <code>.littlehorse.MetadataStatus status = 4;</code>
@@ -2307,7 +2635,8 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     }
     /**
      * <pre>
-     * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+     * The Status of the `WfSpec`. Currently, only `ACTIVE` exists. This field will be
+     * used in the future when de-commissioning a WfSpec gracefully.
      * </pre>
      *
      * <code>.littlehorse.MetadataStatus status = 4;</code>
@@ -2347,6 +2676,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return internalGetThreadSpecs().getMap().size();
     }
     /**
+     * <pre>
+     * The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+     * a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
      */
     @java.lang.Override
@@ -2364,6 +2698,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return getThreadSpecsMap();
     }
     /**
+     * <pre>
+     * The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+     * a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
      */
     @java.lang.Override
@@ -2371,6 +2710,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return internalGetThreadSpecs().getMap();
     }
     /**
+     * <pre>
+     * The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+     * a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
      */
     @java.lang.Override
@@ -2385,6 +2729,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
+     * <pre>
+     * The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+     * a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
      */
     @java.lang.Override
@@ -2405,6 +2754,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+     * a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
      */
     public Builder removeThreadSpecs(
@@ -2424,6 +2778,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return internalGetMutableThreadSpecs().getMutableMap();
     }
     /**
+     * <pre>
+     * The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+     * a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
      */
     public Builder putThreadSpecs(
@@ -2437,6 +2796,11 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+     * a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
      */
     public Builder putAllThreadSpecs(
@@ -2449,6 +2813,12 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
 
     private java.lang.Object entrypointThreadName_ = "";
     /**
+     * <pre>
+     * The name of the `ENTRYPOINT` ThreadSpec. The Entrypoint is the `ThreadSpec` for the
+     * Entrypoint ThreadRun, which is the `ThreadRun` that is created upon starting the
+     * `WfRun`.
+     * </pre>
+     *
      * <code>string entrypoint_thread_name = 6;</code>
      * @return The entrypointThreadName.
      */
@@ -2465,6 +2835,12 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The name of the `ENTRYPOINT` ThreadSpec. The Entrypoint is the `ThreadSpec` for the
+     * Entrypoint ThreadRun, which is the `ThreadRun` that is created upon starting the
+     * `WfRun`.
+     * </pre>
+     *
      * <code>string entrypoint_thread_name = 6;</code>
      * @return The bytes for entrypointThreadName.
      */
@@ -2482,6 +2858,12 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The name of the `ENTRYPOINT` ThreadSpec. The Entrypoint is the `ThreadSpec` for the
+     * Entrypoint ThreadRun, which is the `ThreadRun` that is created upon starting the
+     * `WfRun`.
+     * </pre>
+     *
      * <code>string entrypoint_thread_name = 6;</code>
      * @param value The entrypointThreadName to set.
      * @return This builder for chaining.
@@ -2495,6 +2877,12 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The name of the `ENTRYPOINT` ThreadSpec. The Entrypoint is the `ThreadSpec` for the
+     * Entrypoint ThreadRun, which is the `ThreadRun` that is created upon starting the
+     * `WfRun`.
+     * </pre>
+     *
      * <code>string entrypoint_thread_name = 6;</code>
      * @return This builder for chaining.
      */
@@ -2505,6 +2893,12 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The name of the `ENTRYPOINT` ThreadSpec. The Entrypoint is the `ThreadSpec` for the
+     * Entrypoint ThreadRun, which is the `ThreadRun` that is created upon starting the
+     * `WfRun`.
+     * </pre>
+     *
      * <code>string entrypoint_thread_name = 6;</code>
      * @param value The bytes for entrypointThreadName to set.
      * @return This builder for chaining.
@@ -2523,6 +2917,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy, io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.Builder, io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder> retentionPolicyBuilder_;
     /**
+     * <pre>
+     * Optional policy that configures cleaning up old `WfRun`'s after they are completed or
+     * failed. Recommended for production settings to avoid running out of disk space; unless
+     * you are using a `WfRun` as a data record, in which case the application should
+     * clean up `WfRun`'s as appropriate.
+     * </pre>
+     *
      * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      * @return Whether the retentionPolicy field is set.
      */
@@ -2530,6 +2931,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
+     * <pre>
+     * Optional policy that configures cleaning up old `WfRun`'s after they are completed or
+     * failed. Recommended for production settings to avoid running out of disk space; unless
+     * you are using a `WfRun` as a data record, in which case the application should
+     * clean up `WfRun`'s as appropriate.
+     * </pre>
+     *
      * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      * @return The retentionPolicy.
      */
@@ -2541,6 +2949,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Optional policy that configures cleaning up old `WfRun`'s after they are completed or
+     * failed. Recommended for production settings to avoid running out of disk space; unless
+     * you are using a `WfRun` as a data record, in which case the application should
+     * clean up `WfRun`'s as appropriate.
+     * </pre>
+     *
      * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      */
     public Builder setRetentionPolicy(io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy value) {
@@ -2557,6 +2972,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Optional policy that configures cleaning up old `WfRun`'s after they are completed or
+     * failed. Recommended for production settings to avoid running out of disk space; unless
+     * you are using a `WfRun` as a data record, in which case the application should
+     * clean up `WfRun`'s as appropriate.
+     * </pre>
+     *
      * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      */
     public Builder setRetentionPolicy(
@@ -2571,6 +2993,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Optional policy that configures cleaning up old `WfRun`'s after they are completed or
+     * failed. Recommended for production settings to avoid running out of disk space; unless
+     * you are using a `WfRun` as a data record, in which case the application should
+     * clean up `WfRun`'s as appropriate.
+     * </pre>
+     *
      * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      */
     public Builder mergeRetentionPolicy(io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy value) {
@@ -2590,6 +3019,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Optional policy that configures cleaning up old `WfRun`'s after they are completed or
+     * failed. Recommended for production settings to avoid running out of disk space; unless
+     * you are using a `WfRun` as a data record, in which case the application should
+     * clean up `WfRun`'s as appropriate.
+     * </pre>
+     *
      * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      */
     public Builder clearRetentionPolicy() {
@@ -2603,6 +3039,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Optional policy that configures cleaning up old `WfRun`'s after they are completed or
+     * failed. Recommended for production settings to avoid running out of disk space; unless
+     * you are using a `WfRun` as a data record, in which case the application should
+     * clean up `WfRun`'s as appropriate.
+     * </pre>
+     *
      * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      */
     public io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy.Builder getRetentionPolicyBuilder() {
@@ -2611,6 +3054,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return getRetentionPolicyFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Optional policy that configures cleaning up old `WfRun`'s after they are completed or
+     * failed. Recommended for production settings to avoid running out of disk space; unless
+     * you are using a `WfRun` as a data record, in which case the application should
+     * clean up `WfRun`'s as appropriate.
+     * </pre>
+     *
      * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      */
     public io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder getRetentionPolicyOrBuilder() {
@@ -2622,6 +3072,13 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Optional policy that configures cleaning up old `WfRun`'s after they are completed or
+     * failed. Recommended for production settings to avoid running out of disk space; unless
+     * you are using a `WfRun` as a data record, in which case the application should
+     * clean up `WfRun`'s as appropriate.
+     * </pre>
+     *
      * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -2642,6 +3099,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpecVersionMigration, io.littlehorse.sdk.common.proto.WfSpecVersionMigration.Builder, io.littlehorse.sdk.common.proto.WfSpecVersionMigrationOrBuilder> migrationBuilder_;
     /**
+     * <pre>
+     * EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      * @return Whether the migration field is set.
      */
@@ -2649,6 +3110,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return ((bitField0_ & 0x00000080) != 0);
     }
     /**
+     * <pre>
+     * EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      * @return The migration.
      */
@@ -2660,6 +3125,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
+     * <pre>
+     * EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      */
     public Builder setMigration(io.littlehorse.sdk.common.proto.WfSpecVersionMigration value) {
@@ -2676,6 +3145,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      */
     public Builder setMigration(
@@ -2690,6 +3163,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      */
     public Builder mergeMigration(io.littlehorse.sdk.common.proto.WfSpecVersionMigration value) {
@@ -2709,6 +3186,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      */
     public Builder clearMigration() {
@@ -2722,6 +3203,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecVersionMigration.Builder getMigrationBuilder() {
@@ -2730,6 +3215,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       return getMigrationFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecVersionMigrationOrBuilder getMigrationOrBuilder() {
@@ -2741,6 +3230,10 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
       }
     }
     /**
+     * <pre>
+     * EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another.
+     * </pre>
+     *
      * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

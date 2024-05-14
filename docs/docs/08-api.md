@@ -2646,8 +2646,8 @@ ThreadRun arrives at a Node of type `USER_TASK`.
 | ----- | ----  | ---- | ----------- |
 | `id` | | [UserTaskRunId](#usertaskrunid) | The ID of the UserTaskRun. |
 | `user_task_def_id` | | [UserTaskDefId](#usertaskdefid) | The ID of the UserTaskDef that this UserTaskRun comes from. |
-| `user_group` | optional| string | The user_group to which this UserTaskRun is assigned. Not Set if not assigned to a group. At least one of user_group or user_id will be set for any given UserTaskRun. |
-| `user_id` | optional| string | The user_id to which this UserTaskRun is assigned. Not Set if not assigned to a user. At least one of user_group or user_id will be set for any given UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the UNASSIGNED status. |
+| `user_group` | optional| string | Denotes the UserTaskRun as assigned to a specific User Group.<br/><br/>The `user_group` does not refer to a group that is stored in LittleHorse; rather, it is the responsibility of the application to keep track of user/group identity and ensure that the user_group does indeed exist.<br/><br/>Either `user_id` or `user_group` or both are set at any time. |
+| `user_id` | optional| string | Denotes the UserTaskRun as assigned to a specific User ID. If this is set, then the UserTaskRun is either in the ASSIGNED, DONE, or CANCELLED status.<br/><br/>The `user_id` does not refer to a User that is stored in LittleHorse; rather, it is the responsibility of the application to keep track of user identity and ensure that the user_id does indeed exist.<br/><br/>Either `user_id` or `user_group` or both are set at any time. |
 | `results` | map| [UserTaskRun.ResultsEntry](#usertaskrunresultsentry) | The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed. Each key in this map is the `name` of a corresponding `UserTaskField` on the UserTaskDef. |
 | `status` | | [UserTaskRunStatus](#usertaskrunstatus) | Status of the UserTaskRun. Can be UNASSIGNED, ASSIGNED, DONE, or CANCELLED. |
 | `events` | repeated| [UserTaskEvent](#usertaskevent) | A list of events that have happened. Used for auditing information. |
@@ -2936,14 +2936,14 @@ A WfRun is a running instance of a WfSpec.
 
 ### Message `Edge` {#edge}
 
-
+The Edge is the line in the workflow that connects one Node to another.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `sink_node_name` | | string |  |
-| `condition` | optional| [EdgeCondition](#edgecondition) |  |
-| `variable_mutations` | repeated| [VariableMutation](#variablemutation) |  |
+| `sink_node_name` | | string | The name of the Node that the Edge points to. |
+| `condition` | optional| [EdgeCondition](#edgecondition) | The Condition on which this Edge will be traversed. When choosing an Edge to travel after the completion of a NodeRun, the Edges are evaluated in order. The first one to either have no condition or have a condition which evaluates to `true` is taken. |
+| `variable_mutations` | repeated| [VariableMutation](#variablemutation) | Ordered list of Variable Mutations to execute when traversing this Edge. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2951,14 +2951,14 @@ A WfRun is a running instance of a WfSpec.
 
 ### Message `EdgeCondition` {#edgecondition}
 
-
+This is a boolean expression used to evaluate whether an Edge is valid.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `comparator` | | [Comparator](#comparator) |  |
-| `left` | | [VariableAssignment](#variableassignment) |  |
-| `right` | | [VariableAssignment](#variableassignment) |  |
+| `comparator` | | [Comparator](#comparator) | The Operator used to evaluate the left versus the right. |
+| `left` | | [VariableAssignment](#variableassignment) | The left side of the boolean expression. |
+| `right` | | [VariableAssignment](#variableassignment) | The right side of the Boolean Expression. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2966,7 +2966,9 @@ A WfRun is a running instance of a WfSpec.
 
 ### Message `EntrypointNode` {#entrypointnode}
 
+Defines the beginning of the ThreadRun execution.
 
+Output is NULL
 
  <!-- end HasFields -->
 
@@ -2974,12 +2976,12 @@ A WfRun is a running instance of a WfSpec.
 
 ### Message `ExitNode` {#exitnode}
 
-
+Defines the end of the ThreadRun execution.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `failure_def` | optional| [FailureDef](#failuredef) |  |
+| `failure_def` | optional| [FailureDef](#failuredef) | If set, this ExitNode throws the specified Failure upon arrival. Note that Failures are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent by the entrypoint ThreadRun).<br/><br/>If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2987,13 +2989,16 @@ A WfRun is a running instance of a WfSpec.
 
 ### Message `ExternalEventNode` {#externaleventnode}
 
+An ExternalEventNode causes the WfRun to stop and wait for an ExternalEvent
+to arrive before continuing onwards.
 
+The output is just the content of the ExternalEvent.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `external_event_def_id` | | [ExternalEventDefId](#externaleventdefid) |  |
-| `timeout_seconds` | | [VariableAssignment](#variableassignment) |  |
+| `external_event_def_id` | | [ExternalEventDefId](#externaleventdefid) | The ID of the ExternalEventDef that we are waiting for. |
+| `timeout_seconds` | | [VariableAssignment](#variableassignment) | Determines the maximum amount of time that the NodeRun will wait for the ExternalEvent to arrive. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3001,14 +3006,14 @@ A WfRun is a running instance of a WfSpec.
 
 ### Message `FailureDef` {#failuredef}
 
-
+Defines a Failure that can be thrown.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `failure_name` | | string |  |
-| `message` | | string |  |
-| `content` | optional| [VariableAssignment](#variableassignment) |  |
+| `failure_name` | | string | The code for the failure. If in UPPER_CASE, it must be one of the LHErrorType enums, and represents an ERROR. If it is in kebab-case, then it is a user-defined EXCEPTION. |
+| `message` | | string | Human-readable message denoting why the Failure occurred. |
+| `content` | optional| [VariableAssignment](#variableassignment) | If specified, the thrown Failure will have this content. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3045,13 +3050,14 @@ A WfRun is a running instance of a WfSpec.
 
 ### Message `JsonIndex` {#jsonindex}
 
-
+Defines an index to make a JSON_OBJ or JSON_ARR variable searchable over a specific
+JSON Path.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `field_path` | | string |  |
-| `field_type` | | [VariableType](#variabletype) |  |
+| `field_path` | | string | Denotes the path in JSONPath format (according to the Java Jayway library) that has a field we should index. |
+| `field_type` | | [VariableType](#variabletype) | Is the type of the field we are indexing. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3059,24 +3065,24 @@ A WfRun is a running instance of a WfSpec.
 
 ### Message `Node` {#node}
 
-
+A Node is a step in a ThreadRun.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `outgoing_edges` | repeated| [Edge](#edge) |  |
-| `failure_handlers` | repeated| [FailureHandlerDef](#failurehandlerdef) |  |
-| `entrypoint` | oneof `node`| [EntrypointNode](#entrypointnode) |  |
-| `exit` | oneof `node`| [ExitNode](#exitnode) |  |
-| `task` | oneof `node`| [TaskNode](#tasknode) |  |
-| `external_event` | oneof `node`| [ExternalEventNode](#externaleventnode) |  |
-| `start_thread` | oneof `node`| [StartThreadNode](#startthreadnode) |  |
-| `wait_for_threads` | oneof `node`| [WaitForThreadsNode](#waitforthreadsnode) |  |
-| `nop` | oneof `node`| [NopNode](#nopnode) |  |
-| `sleep` | oneof `node`| [SleepNode](#sleepnode) |  |
-| `user_task` | oneof `node`| [UserTaskNode](#usertasknode) |  |
-| `start_multiple_threads` | oneof `node`| [StartMultipleThreadsNode](#startmultiplethreadsnode) |  |
-| `throw_event` | oneof `node`| [ThrowEventNode](#throweventnode) |  |
+| `outgoing_edges` | repeated| [Edge](#edge) | Defines the flow of execution and determines where the ThreadRun goes next. |
+| `failure_handlers` | repeated| [FailureHandlerDef](#failurehandlerdef) | Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown by the NodeRun. If a Failure is thrown by the Node execution, then the first matching Failure Handler (if present) is run. If there is a matching Failure Handler and it runs to completion, then the ThreadRun advances from the Node; else, it fails. |
+| `entrypoint` | oneof `node`| [EntrypointNode](#entrypointnode) | Creates an EntrypointRun. Every ThreadRun has one Entrypoint node. |
+| `exit` | oneof `node`| [ExitNode](#exitnode) | Creates an Exitrun. Every ThreadRun has at least one Exit Node. |
+| `task` | oneof `node`| [TaskNode](#tasknode) | Creates a TaskNodeRUn |
+| `external_event` | oneof `node`| [ExternalEventNode](#externaleventnode) | Creates an ExternalEventRun |
+| `start_thread` | oneof `node`| [StartThreadNode](#startthreadnode) | Creates a StartThreadNodeRun |
+| `wait_for_threads` | oneof `node`| [WaitForThreadsNode](#waitforthreadsnode) | Creates a WaitForThreadsNodeRun |
+| `nop` | oneof `node`| [NopNode](#nopnode) | Creates a NopNodeRun |
+| `sleep` | oneof `node`| [SleepNode](#sleepnode) | Creates a SleepNodeRun |
+| `user_task` | oneof `node`| [UserTaskNode](#usertasknode) | Creates a UserTaskNodeRun |
+| `start_multiple_threads` | oneof `node`| [StartMultipleThreadsNode](#startmultiplethreadsnode) | Creates a StartMultipleThreadsNodeRun |
+| `throw_event` | oneof `node`| [ThrowEventNode](#throweventnode) | Creates a ThrowEventNodeRun |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3084,12 +3090,13 @@ A WfRun is a running instance of a WfSpec.
 
 ### Message `NodeMigration` {#nodemigration}
 
-
+EXPERIMENTAL: Specification for migrating a WfRun from a Node in one WfSpec
+to a Node in another WfSpec version.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `new_node_name` | | string |  |
+| `new_node_name` | | string | The name of the Node on the new WfSpec to move to. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3097,35 +3104,24 @@ A WfRun is a running instance of a WfSpec.
 
 ### Message `NopNode` {#nopnode}
 
+NOP node has no operations and is used for conditional branching.
 
-
- <!-- end HasFields -->
-
-
-
-### Message `SearchableVariableDef` {#searchablevariabledef}
-
-
-
-
-| Field | Label | Type | Description |
-| ----- | ----  | ---- | ----------- |
-| `var_def` | | [VariableDef](#variabledef) | Future: Add index information (local/remote/etc) |
- <!-- end Fields -->
  <!-- end HasFields -->
 
 
 
 ### Message `SleepNode` {#sleepnode}
 
+Sleep Node causes the WfRun to wait a specified time and then resume.
 
+There is no output.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `raw_seconds` | oneof `sleep_length`| [VariableAssignment](#variableassignment) |  |
-| `timestamp` | oneof `sleep_length`| [VariableAssignment](#variableassignment) |  |
-| `iso_date` | oneof `sleep_length`| [VariableAssignment](#variableassignment) |  |
+| `raw_seconds` | oneof `sleep_length`| [VariableAssignment](#variableassignment) | Sleeps the specified number of seconds. |
+| `timestamp` | oneof `sleep_length`| [VariableAssignment](#variableassignment) | Sleeps until the `long` timestamp (epoch millis) specified here. |
+| `iso_date` | oneof `sleep_length`| [VariableAssignment](#variableassignment) | Sleeps until the ISO-formatted date specified here. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3233,13 +3229,14 @@ A WfRun is a running instance of a WfSpec.
 
 ### Message `ThreadSpecMigration` {#threadspecmigration}
 
-
+EXPERIMENTAL: Specification for how to migrate a ThreadRun of a specific ThreadSpec
+from one WfSpec to another WfSpec version.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `new_thread_spec_name` | | string |  |
-| `node_migrations` | map| [ThreadSpecMigration.NodeMigrationsEntry](#threadspecmigrationnodemigrationsentry) |  |
+| `new_thread_spec_name` | | string | The name of the ThreadSpec in the new WfSpec that this ThreadSpec should migrate to. |
+| `node_migrations` | map| [ThreadSpecMigration.NodeMigrationsEntry](#threadspecmigrationnodemigrationsentry) | Map from name of the nodes on the current ThreadSpec to the migration to perform on it to move it to a new WfSpec. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3261,16 +3258,16 @@ A WfRun is a running instance of a WfSpec.
 
 ### Message `ThreadVarDef` {#threadvardef}
 
-
+Denotes a variable declaration at the ThreadSpec level.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `var_def` | | [VariableDef](#variabledef) |  |
-| `required` | | bool |  |
-| `searchable` | | bool |  |
-| `json_indexes` | repeated| [JsonIndex](#jsonindex) |  |
-| `access_level` | | [WfRunVariableAccessLevel](#wfrunvariableaccesslevel) |  |
+| `var_def` | | [VariableDef](#variabledef) | Is the actual VariableDefinition containing name and type. |
+| `required` | | bool | Whether the variable is required as input to the threadRun. |
+| `searchable` | | bool | Whether this variable has an index configured. |
+| `json_indexes` | repeated| [JsonIndex](#jsonindex) | Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields to index. |
+| `access_level` | | [WfRunVariableAccessLevel](#wfrunvariableaccesslevel) | The Access Level of this variable. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3278,7 +3275,7 @@ A WfRun is a running instance of a WfSpec.
 
 ### Message `ThrowEventNode` {#throweventnode}
 
-A SubNode that throws a WorkflowEvent of a specific type.
+A SubNode that throws a WorkflowEvent of a specific type. There is no output.
 
 
 | Field | Label | Type | Description |
@@ -3292,18 +3289,21 @@ A SubNode that throws a WorkflowEvent of a specific type.
 
 ### Message `UserTaskNode` {#usertasknode}
 
+The UserTaskNode creates a UserTaskRun, which is used to get input from a human
+user into the workflow.
 
+The output is a JSON_OBJ variable with one key/value pair for each UserTaskField.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `user_task_def_name` | | string |  |
-| `user_group` | optional| [VariableAssignment](#variableassignment) | to whom should the User Task Run be assigned? |
-| `user_id` | optional| [VariableAssignment](#variableassignment) |  |
-| `actions` | repeated| [UTActionTrigger](#utactiontrigger) | This is used to, for example, send a push notification to a mobile app to remind someone that they need to fill out a task, or to re-assign the task to another group of people |
-| `user_task_def_version` | optional| int32 | So, once the WfSpec is created, this will be pinned to a version. Customer can optionally specify a specific version or can leave it null, in which case we just use the latest |
-| `notes` | optional| [VariableAssignment](#variableassignment) | Allow WfRun-specific notes for this User Task. |
-| `on_cancellation_exception_name` | optional| [VariableAssignment](#variableassignment) | Specifies the name of the exception thrown when the User Task is canceled |
+| `user_task_def_name` | | string | Denotes the name of the `UserTaskDef` that should create the `UserTaskRun`. |
+| `user_group` | optional| [VariableAssignment](#variableassignment) | Denotes the user_group to which the UserTaskRun is assigned upon creation. |
+| `user_id` | optional| [VariableAssignment](#variableassignment) | Denotes the user_id to which the UserTaskRun is assigned upon creation. |
+| `actions` | repeated| [UTActionTrigger](#utactiontrigger) | Specifies a list of actions that happen on various time-based triggers. Actions include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing a "reminder" TaskRun. |
+| `user_task_def_version` | optional| int32 | If set, then the UserTaskRun will always have this specific version of the UserTaskDef. Otherwise, the UserTaskRun will have the latest version. |
+| `notes` | optional| [VariableAssignment](#variableassignment) | Specifies the value to be displayed on the `notes` field of the UserTaskRun. |
+| `on_cancellation_exception_name` | optional| [VariableAssignment](#variableassignment) | Specifies the name of the exception thrown when the User Task is canceled. If not set, then the cancellation or timeout of a User Task Run throws an ERROR rather than an EXCEPTION. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3318,7 +3318,7 @@ A SubNode that throws a WorkflowEvent of a specific type.
 | ----- | ----  | ---- | ----------- |
 | `threads` | oneof `threads_to_wait_for`| [WaitForThreadsNode.ThreadsToWaitFor](#waitforthreadsnodethreadstowaitfor) |  |
 | `thread_list` | oneof `threads_to_wait_for`| [VariableAssignment](#variableassignment) |  |
-| `per_thread_failure_handlers` | repeated| [FailureHandlerDef](#failurehandlerdef) |  |
+| `per_thread_failure_handlers` | repeated| [FailureHandlerDef](#failurehandlerdef) | If any of the child ThreadRun's that we are waiting for throw a Failure, we will evaluate it against these FailureHandlerDef's and run the first matching FailureHandler (if any). The FailureHandler will be a child of the child, which means that it has access to all of the failed Child's variables.<br/><br/>This is different from Node-level Failure Handlers, which would be _siblings_ of the ThreadRuns that we're waiting for, and would run only when the overall nodeRun has failed. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3352,19 +3352,20 @@ A SubNode that throws a WorkflowEvent of a specific type.
 
 ### Message `WfSpec` {#wfspec}
 
-
+A `WfSpec`` defines the logic for a worfklow in LittleHorse. It is a metadata object
+and is a blueprint for a `WfRun` execution.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `id` | | [WfSpecId](#wfspecid) |  |
-| `created_at` | | google.protobuf.Timestamp |  |
-| `frozen_variables` | repeated| [ThreadVarDef](#threadvardef) |  |
-| `status` | | [MetadataStatus](#metadatastatus) | to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED |
-| `thread_specs` | map| [WfSpec.ThreadSpecsEntry](#wfspecthreadspecsentry) |  |
-| `entrypoint_thread_name` | | string |  |
-| `retention_policy` | optional| [WorkflowRetentionPolicy](#workflowretentionpolicy) |  |
-| `migration` | optional| [WfSpecVersionMigration](#wfspecversionmigration) |  |
+| `id` | | [WfSpecId](#wfspecid) | The ID of the `WfSpec`. Note that this ID is versioned with both a major version and a minor revision. Creating new WfSpec's with the same name and different specifications results in a completely new `WfSpec` object whose `id.name` is the same but with different version. |
+| `created_at` | | google.protobuf.Timestamp | The timestamp at which the `WfSpec` was created. |
+| `frozen_variables` | repeated| [ThreadVarDef](#threadvardef) | Variables whose types cannot be changed without causing a Breaking Change between the versions. |
+| `status` | | [MetadataStatus](#metadatastatus) | The Status of the `WfSpec`. Currently, only `ACTIVE` exists. This field will be used in the future when de-commissioning a WfSpec gracefully. |
+| `thread_specs` | map| [WfSpec.ThreadSpecsEntry](#wfspecthreadspecsentry) | The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for a parallel thread of execution (a `ThreadRun`). They are referred to by their names. |
+| `entrypoint_thread_name` | | string | The name of the `ENTRYPOINT` ThreadSpec. The Entrypoint is the `ThreadSpec` for the Entrypoint ThreadRun, which is the `ThreadRun` that is created upon starting the `WfRun`. |
+| `retention_policy` | optional| [WorkflowRetentionPolicy](#workflowretentionpolicy) | Optional policy that configures cleaning up old `WfRun`'s after they are completed or failed. Recommended for production settings to avoid running out of disk space; unless you are using a `WfRun` as a data record, in which case the application should clean up `WfRun`'s as appropriate. |
+| `migration` | optional| [WfSpecVersionMigration](#wfspecversionmigration) | EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another. |
 | `parent_wf_spec` | optional| [WfSpec.ParentWfSpecReference](#wfspecparentwfspecreference) | Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the child of a WfRun belonging to the referenced WfSpec. |
  <!-- end Fields -->
  <!-- end HasFields -->
@@ -3406,14 +3407,15 @@ Currently, only reference by names is supported.
 
 ### Message `WfSpecVersionMigration` {#wfspecversionmigration}
 
-
+EXPERIMENTAL: Specification for how to migrate an in-flight WfRun from one WfSpec
+to another WfSpec version.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `new_major_version` | | int32 |  |
-| `new_revision` | | int32 |  |
-| `thread_spec_migrations` | map| [WfSpecVersionMigration.ThreadSpecMigrationsEntry](#wfspecversionmigrationthreadspecmigrationsentry) |  |
+| `new_major_version` | | int32 | The major version of the WfSpec that we are migrating to. |
+| `new_revision` | | int32 | The revision of the WfSpec that we are migrating to. |
+| `thread_spec_migrations` | map| [WfSpecVersionMigration.ThreadSpecMigrationsEntry](#wfspecversionmigrationthreadspecmigrationsentry) | Map from ThreadSpec name to a specifier determining how to migrate ThreadRun's to the new version of the WfSpec. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3435,7 +3437,8 @@ Currently, only reference by names is supported.
 
 ### Message `WorkflowRetentionPolicy` {#workflowretentionpolicy}
 
-
+A WorkflowRetentionPolicy configures how long a WfRun is retained in the data store before
+being deleted after it is completed or failed.
 
 
 | Field | Label | Type | Description |
@@ -3769,13 +3772,13 @@ The type of a ThreadRUn.
 
 
 ### Enum WfRunVariableAccessLevel {#wfrunvariableaccesslevel}
-
+Determines the Access Level for a Variable in a ThreadSpec/WfSpec.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| PUBLIC_VAR | 0 |  |
-| PRIVATE_VAR | 1 |  |
-| INHERITED_VAR | 2 |  |
+| PUBLIC_VAR | 0 | A `PUBLIC_VAR` can be accessed (read + mutated) by child `WfRun`'s. |
+| PRIVATE_VAR | 1 | A `PRIVATE_VAR` cannot be accessed by a child `WfRun`. |
+| INHERITED_VAR | 2 | An `INHERITED_VAR` is inherited from the parent `WfRun`. Only valid in a `WfSpec` that has a parent. Also can only be declared in the Entrypoint Thread. |
 
 
  <!-- end Enums -->

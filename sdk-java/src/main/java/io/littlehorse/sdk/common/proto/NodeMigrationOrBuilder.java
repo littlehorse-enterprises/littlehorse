@@ -8,11 +8,19 @@ public interface NodeMigrationOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The name of the Node on the new WfSpec to move to.
+   * </pre>
+   *
    * <code>string new_node_name = 1;</code>
    * @return The newNodeName.
    */
   java.lang.String getNewNodeName();
   /**
+   * <pre>
+   * The name of the Node on the new WfSpec to move to.
+   * </pre>
+   *
    * <code>string new_node_name = 1;</code>
    * @return The bytes for newNodeName.
    */

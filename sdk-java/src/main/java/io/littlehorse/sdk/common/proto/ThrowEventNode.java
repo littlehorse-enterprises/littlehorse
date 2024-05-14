@@ -5,7 +5,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * A SubNode that throws a WorkflowEvent of a specific type.
+ * A SubNode that throws a WorkflowEvent of a specific type. There is no output.
  * </pre>
  *
  * Protobuf type {@code littlehorse.ThrowEventNode}
@@ -298,7 +298,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * A SubNode that throws a WorkflowEvent of a specific type.
+   * A SubNode that throws a WorkflowEvent of a specific type. There is no output.
    * </pre>
    *
    * Protobuf type {@code littlehorse.ThrowEventNode}

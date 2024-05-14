@@ -30,9 +30,16 @@ import { ExternalEventDefId, WfSpecId, WorkflowEventDefId } from "./object_id";
 
 export const protobufPackage = "littlehorse";
 
+/** Determines the Access Level for a Variable in a ThreadSpec/WfSpec. */
 export enum WfRunVariableAccessLevel {
+  /** PUBLIC_VAR - A `PUBLIC_VAR` can be accessed (read + mutated) by child `WfRun`'s. */
   PUBLIC_VAR = "PUBLIC_VAR",
+  /** PRIVATE_VAR - A `PRIVATE_VAR` cannot be accessed by a child `WfRun`. */
   PRIVATE_VAR = "PRIVATE_VAR",
+  /**
+   * INHERITED_VAR - An `INHERITED_VAR` is inherited from the parent `WfRun`. Only valid in a `WfSpec` that
+   * has a parent. Also can only be declared in the Entrypoint Thread.
+   */
   INHERITED_VAR = "INHERITED_VAR",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
@@ -69,15 +76,55 @@ export function wfRunVariableAccessLevelToNumber(object: WfRunVariableAccessLeve
   }
 }
 
+/**
+ * A `WfSpec`` defines the logic for a worfklow in LittleHorse. It is a metadata object
+ * and is a blueprint for a `WfRun` execution.
+ */
 export interface WfSpec {
-  id: WfSpecId | undefined;
-  createdAt: string | undefined;
+  /**
+   * The ID of the `WfSpec`. Note that this ID is versioned with both a major
+   * version and a minor revision. Creating new WfSpec's with the same name
+   * and different specifications results in a completely new `WfSpec` object
+   * whose `id.name` is the same but with different version.
+   */
+  id:
+    | WfSpecId
+    | undefined;
+  /** The timestamp at which the `WfSpec` was created. */
+  createdAt:
+    | string
+    | undefined;
+  /**
+   * Variables whose types cannot be changed without causing a Breaking Change between
+   * the versions.
+   */
   frozenVariables: ThreadVarDef[];
-  /** to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED */
+  /**
+   * The Status of the `WfSpec`. Currently, only `ACTIVE` exists. This field will be
+   * used in the future when de-commissioning a WfSpec gracefully.
+   */
   status: MetadataStatus;
+  /**
+   * The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+   * a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
+   */
   threadSpecs: { [key: string]: ThreadSpec };
+  /**
+   * The name of the `ENTRYPOINT` ThreadSpec. The Entrypoint is the `ThreadSpec` for the
+   * Entrypoint ThreadRun, which is the `ThreadRun` that is created upon starting the
+   * `WfRun`.
+   */
   entrypointThreadName: string;
-  retentionPolicy?: WorkflowRetentionPolicy | undefined;
+  /**
+   * Optional policy that configures cleaning up old `WfRun`'s after they are completed or
+   * failed. Recommended for production settings to avoid running out of disk space; unless
+   * you are using a `WfRun` as a data record, in which case the application should
+   * clean up `WfRun`'s as appropriate.
+   */
+  retentionPolicy?:
+    | WorkflowRetentionPolicy
+    | undefined;
+  /** EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another. */
   migration?:
     | WfSpecVersionMigration
     | undefined;
@@ -112,6 +159,10 @@ export interface WfSpec_ParentWfSpecReference {
   wfSpecMajorVersion: number;
 }
 
+/**
+ * A WorkflowRetentionPolicy configures how long a WfRun is retained in the data store before
+ * being deleted after it is completed or failed.
+ */
 export interface WorkflowRetentionPolicy {
   /**
    * Delete all WfRun's X seconds after they terminate, regardless of
@@ -120,21 +171,36 @@ export interface WorkflowRetentionPolicy {
   secondsAfterWfTermination?: number | undefined;
 }
 
+/**
+ * Defines an index to make a JSON_OBJ or JSON_ARR variable searchable over a specific
+ * JSON Path.
+ */
 export interface JsonIndex {
+  /**
+   * Denotes the path in JSONPath format (according to the Java Jayway library) that
+   * has a field we should index.
+   */
   fieldPath: string;
+  /** Is the type of the field we are indexing. */
   fieldType: VariableType;
 }
 
-export interface SearchableVariableDef {
-  /** Future: Add index information (local/remote/etc) */
-  varDef: VariableDef | undefined;
-}
-
+/** Denotes a variable declaration at the ThreadSpec level. */
 export interface ThreadVarDef {
-  varDef: VariableDef | undefined;
+  /** Is the actual VariableDefinition containing name and type. */
+  varDef:
+    | VariableDef
+    | undefined;
+  /** Whether the variable is required as input to the threadRun. */
   required: boolean;
+  /** Whether this variable has an index configured. */
   searchable: boolean;
+  /**
+   * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+   * to index.
+   */
   jsonIndexes: JsonIndex[];
+  /** The Access Level of this variable. */
   accessLevel: WfRunVariableAccessLevel;
 }
 
@@ -225,7 +291,19 @@ export function failureHandlerDef_LHFailureTypeToNumber(object: FailureHandlerDe
 
 export interface WaitForThreadsNode {
   threads?: WaitForThreadsNode_ThreadsToWaitFor | undefined;
-  threadList?: VariableAssignment | undefined;
+  threadList?:
+    | VariableAssignment
+    | undefined;
+  /**
+   * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+   * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+   * (if any). The FailureHandler will be a child of the child, which means that it has
+   * access to all of the failed Child's variables.
+   *
+   * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+   * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+   * failed.
+   */
   perThreadFailureHandlers: FailureHandlerDef[];
 }
 
@@ -237,41 +315,115 @@ export interface WaitForThreadsNode_ThreadsToWaitFor {
   threads: WaitForThreadsNode_ThreadToWaitFor[];
 }
 
+/**
+ * An ExternalEventNode causes the WfRun to stop and wait for an ExternalEvent
+ * to arrive before continuing onwards.
+ *
+ * The output is just the content of the ExternalEvent.
+ */
 export interface ExternalEventNode {
-  externalEventDefId: ExternalEventDefId | undefined;
+  /** The ID of the ExternalEventDef that we are waiting for. */
+  externalEventDefId:
+    | ExternalEventDefId
+    | undefined;
+  /**
+   * Determines the maximum amount of time that the NodeRun will wait for the
+   * ExternalEvent to arrive.
+   */
   timeoutSeconds: VariableAssignment | undefined;
 }
 
+/**
+ * Defines the beginning of the ThreadRun execution.
+ *
+ * Output is NULL
+ */
 export interface EntrypointNode {
 }
 
+/** Defines the end of the ThreadRun execution. */
 export interface ExitNode {
+  /**
+   * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+   * are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+   * by the entrypoint ThreadRun).
+   *
+   * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
+   */
   failureDef?: FailureDef | undefined;
 }
 
+/** Defines a Failure that can be thrown. */
 export interface FailureDef {
+  /**
+   * The code for the failure. If in UPPER_CASE, it must be one of the LHErrorType
+   * enums, and represents an ERROR. If it is in kebab-case, then it is a user-defined
+   * EXCEPTION.
+   */
   failureName: string;
+  /** Human-readable message denoting why the Failure occurred. */
   message: string;
+  /** If specified, the thrown Failure will have this content. */
   content?: VariableAssignment | undefined;
 }
 
+/** A Node is a step in a ThreadRun. */
 export interface Node {
+  /** Defines the flow of execution and determines where the ThreadRun goes next. */
   outgoingEdges: Edge[];
+  /**
+   * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+   * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+   * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+   * and it runs to completion, then the ThreadRun advances from the Node; else, it
+   * fails.
+   */
   failureHandlers: FailureHandlerDef[];
-  entrypoint?: EntrypointNode | undefined;
-  exit?: ExitNode | undefined;
-  task?: TaskNode | undefined;
-  externalEvent?: ExternalEventNode | undefined;
-  startThread?: StartThreadNode | undefined;
-  waitForThreads?: WaitForThreadsNode | undefined;
-  nop?: NopNode | undefined;
-  sleep?: SleepNode | undefined;
-  userTask?: UserTaskNode | undefined;
-  startMultipleThreads?: StartMultipleThreadsNode | undefined;
+  /** Creates an EntrypointRun. Every ThreadRun has one Entrypoint node. */
+  entrypoint?:
+    | EntrypointNode
+    | undefined;
+  /** Creates an Exitrun. Every ThreadRun has at least one Exit Node. */
+  exit?:
+    | ExitNode
+    | undefined;
+  /** Creates a TaskNodeRUn */
+  task?:
+    | TaskNode
+    | undefined;
+  /** Creates an ExternalEventRun */
+  externalEvent?:
+    | ExternalEventNode
+    | undefined;
+  /** Creates a StartThreadNodeRun */
+  startThread?:
+    | StartThreadNode
+    | undefined;
+  /** Creates a WaitForThreadsNodeRun */
+  waitForThreads?:
+    | WaitForThreadsNode
+    | undefined;
+  /** Creates a NopNodeRun */
+  nop?:
+    | NopNode
+    | undefined;
+  /** Creates a SleepNodeRun */
+  sleep?:
+    | SleepNode
+    | undefined;
+  /** Creates a UserTaskNodeRun */
+  userTask?:
+    | UserTaskNode
+    | undefined;
+  /** Creates a StartMultipleThreadsNodeRun */
+  startMultipleThreads?:
+    | StartMultipleThreadsNode
+    | undefined;
+  /** Creates a ThrowEventNodeRun */
   throwEvent?: ThrowEventNode | undefined;
 }
 
-/** A SubNode that throws a WorkflowEvent of a specific type. */
+/** A SubNode that throws a WorkflowEvent of a specific type. There is no output. */
 export interface ThrowEventNode {
   /** The WorkflowEventDefId of the WorkflowEvent that is thrown */
   eventDefId:
@@ -281,59 +433,112 @@ export interface ThrowEventNode {
   content: VariableAssignment | undefined;
 }
 
+/**
+ * The UserTaskNode creates a UserTaskRun, which is used to get input from a human
+ * user into the workflow.
+ *
+ * The output is a JSON_OBJ variable with one key/value pair for each UserTaskField.
+ */
 export interface UserTaskNode {
+  /** Denotes the name of the `UserTaskDef` that should create the `UserTaskRun`. */
   userTaskDefName: string;
-  /** to whom should the User Task Run be assigned? */
-  userGroup?: VariableAssignment | undefined;
+  /** Denotes the user_group to which the UserTaskRun is assigned upon creation. */
+  userGroup?:
+    | VariableAssignment
+    | undefined;
+  /** Denotes the user_id to which the UserTaskRun is assigned upon creation. */
   userId?:
     | VariableAssignment
     | undefined;
   /**
-   * This is used to, for example, send a push notification to a mobile app
-   * to remind someone that they need to fill out a task, or to re-assign
-   * the task to another group of people
+   * Specifies a list of actions that happen on various time-based triggers. Actions
+   * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+   * a "reminder" TaskRun.
    */
   actions: UTActionTrigger[];
   /**
-   * So, once the WfSpec is created, this will be pinned to a version. Customer
-   * can optionally specify a specific version or can leave it null, in which
-   * case we just use the latest
+   * If set, then the UserTaskRun will always have this specific version of the
+   * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
    */
   userTaskDefVersion?:
     | number
     | undefined;
-  /** Allow WfRun-specific notes for this User Task. */
+  /** Specifies the value to be displayed on the `notes` field of the UserTaskRun. */
   notes?:
     | VariableAssignment
     | undefined;
-  /** Specifies the name of the exception thrown when the User Task is canceled */
+  /**
+   * Specifies the name of the exception thrown when the User Task is canceled. If
+   * not set, then the cancellation or timeout of a User Task Run throws an ERROR
+   * rather than an EXCEPTION.
+   */
   onCancellationExceptionName?: VariableAssignment | undefined;
 }
 
+/** This is a boolean expression used to evaluate whether an Edge is valid. */
 export interface EdgeCondition {
+  /** The Operator used to evaluate the left versus the right. */
   comparator: Comparator;
-  left: VariableAssignment | undefined;
+  /** The left side of the boolean expression. */
+  left:
+    | VariableAssignment
+    | undefined;
+  /** The right side of the Boolean Expression. */
   right: VariableAssignment | undefined;
 }
 
+/** The Edge is the line in the workflow that connects one Node to another. */
 export interface Edge {
+  /** The name of the Node that the Edge points to. */
   sinkNodeName: string;
-  condition?: EdgeCondition | undefined;
+  /**
+   * The Condition on which this Edge will be traversed. When choosing an Edge
+   * to travel after the completion of a NodeRun, the Edges are evaluated in
+   * order. The first one to either have no condition or have a condition which
+   * evaluates to `true` is taken.
+   */
+  condition?:
+    | EdgeCondition
+    | undefined;
+  /** Ordered list of Variable Mutations to execute when traversing this Edge. */
   variableMutations: VariableMutation[];
 }
 
+/** NOP node has no operations and is used for conditional branching. */
 export interface NopNode {
 }
 
+/**
+ * Sleep Node causes the WfRun to wait a specified time and then resume.
+ *
+ * There is no output.
+ */
 export interface SleepNode {
-  rawSeconds?: VariableAssignment | undefined;
-  timestamp?: VariableAssignment | undefined;
+  /** Sleeps the specified number of seconds. */
+  rawSeconds?:
+    | VariableAssignment
+    | undefined;
+  /** Sleeps until the `long` timestamp (epoch millis) specified here. */
+  timestamp?:
+    | VariableAssignment
+    | undefined;
+  /** Sleeps until the ISO-formatted date specified here. */
   isoDate?: VariableAssignment | undefined;
 }
 
+/**
+ * EXPERIMENTAL: Specification for how to migrate an in-flight WfRun from one WfSpec
+ * to another WfSpec version.
+ */
 export interface WfSpecVersionMigration {
+  /** The major version of the WfSpec that we are migrating to. */
   newMajorVersion: number;
+  /** The revision of the WfSpec that we are migrating to. */
   newRevision: number;
+  /**
+   * Map from ThreadSpec name to a specifier determining how to migrate ThreadRun's
+   * to the new version of the WfSpec.
+   */
   threadSpecMigrations: { [key: string]: ThreadSpecMigration };
 }
 
@@ -342,8 +547,20 @@ export interface WfSpecVersionMigration_ThreadSpecMigrationsEntry {
   value: ThreadSpecMigration | undefined;
 }
 
+/**
+ * EXPERIMENTAL: Specification for how to migrate a ThreadRun of a specific ThreadSpec
+ * from one WfSpec to another WfSpec version.
+ */
 export interface ThreadSpecMigration {
+  /**
+   * The name of the ThreadSpec in the new WfSpec that this ThreadSpec should
+   * migrate to.
+   */
   newThreadSpecName: string;
+  /**
+   * Map from name of the nodes on the current ThreadSpec to the migration
+   * to perform on it to move it to a new WfSpec.
+   */
   nodeMigrations: { [key: string]: NodeMigration };
 }
 
@@ -352,7 +569,12 @@ export interface ThreadSpecMigration_NodeMigrationsEntry {
   value: NodeMigration | undefined;
 }
 
+/**
+ * EXPERIMENTAL: Specification for migrating a WfRun from a Node in one WfSpec
+ * to a Node in another WfSpec version.
+ */
 export interface NodeMigration {
+  /** The name of the Node on the new WfSpec to move to. */
   newNodeName: string;
 }
 
@@ -727,53 +949,6 @@ export const JsonIndex = {
     const message = createBaseJsonIndex();
     message.fieldPath = object.fieldPath ?? "";
     message.fieldType = object.fieldType ?? VariableType.JSON_OBJ;
-    return message;
-  },
-};
-
-function createBaseSearchableVariableDef(): SearchableVariableDef {
-  return { varDef: undefined };
-}
-
-export const SearchableVariableDef = {
-  encode(message: SearchableVariableDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.varDef !== undefined) {
-      VariableDef.encode(message.varDef, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): SearchableVariableDef {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSearchableVariableDef();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.varDef = VariableDef.decode(reader, reader.uint32());
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  create(base?: DeepPartial<SearchableVariableDef>): SearchableVariableDef {
-    return SearchableVariableDef.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<SearchableVariableDef>): SearchableVariableDef {
-    const message = createBaseSearchableVariableDef();
-    message.varDef = (object.varDef !== undefined && object.varDef !== null)
-      ? VariableDef.fromPartial(object.varDef)
-      : undefined;
     return message;
   },
 };

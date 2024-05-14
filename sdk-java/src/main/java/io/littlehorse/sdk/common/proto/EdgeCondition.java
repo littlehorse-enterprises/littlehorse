@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * This is a boolean expression used to evaluate whether an Edge is valid.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.EdgeCondition}
  */
 public final class EdgeCondition extends
@@ -42,6 +46,10 @@ private static final long serialVersionUID = 0L;
   public static final int COMPARATOR_FIELD_NUMBER = 1;
   private int comparator_ = 0;
   /**
+   * <pre>
+   * The Operator used to evaluate the left versus the right.
+   * </pre>
+   *
    * <code>.littlehorse.Comparator comparator = 1;</code>
    * @return The enum numeric value on the wire for comparator.
    */
@@ -49,6 +57,10 @@ private static final long serialVersionUID = 0L;
     return comparator_;
   }
   /**
+   * <pre>
+   * The Operator used to evaluate the left versus the right.
+   * </pre>
+   *
    * <code>.littlehorse.Comparator comparator = 1;</code>
    * @return The comparator.
    */
@@ -60,6 +72,10 @@ private static final long serialVersionUID = 0L;
   public static final int LEFT_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.VariableAssignment left_;
   /**
+   * <pre>
+   * The left side of the boolean expression.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment left = 2;</code>
    * @return Whether the left field is set.
    */
@@ -68,6 +84,10 @@ private static final long serialVersionUID = 0L;
     return left_ != null;
   }
   /**
+   * <pre>
+   * The left side of the boolean expression.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment left = 2;</code>
    * @return The left.
    */
@@ -76,6 +96,10 @@ private static final long serialVersionUID = 0L;
     return left_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : left_;
   }
   /**
+   * <pre>
+   * The left side of the boolean expression.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment left = 2;</code>
    */
   @java.lang.Override
@@ -86,6 +110,10 @@ private static final long serialVersionUID = 0L;
   public static final int RIGHT_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.VariableAssignment right_;
   /**
+   * <pre>
+   * The right side of the Boolean Expression.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment right = 3;</code>
    * @return Whether the right field is set.
    */
@@ -94,6 +122,10 @@ private static final long serialVersionUID = 0L;
     return right_ != null;
   }
   /**
+   * <pre>
+   * The right side of the Boolean Expression.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment right = 3;</code>
    * @return The right.
    */
@@ -102,6 +134,10 @@ private static final long serialVersionUID = 0L;
     return right_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : right_;
   }
   /**
+   * <pre>
+   * The right side of the Boolean Expression.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment right = 3;</code>
    */
   @java.lang.Override
@@ -298,6 +334,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * This is a boolean expression used to evaluate whether an Edge is valid.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.EdgeCondition}
    */
   public static final class Builder extends
@@ -507,6 +547,10 @@ private static final long serialVersionUID = 0L;
 
     private int comparator_ = 0;
     /**
+     * <pre>
+     * The Operator used to evaluate the left versus the right.
+     * </pre>
+     *
      * <code>.littlehorse.Comparator comparator = 1;</code>
      * @return The enum numeric value on the wire for comparator.
      */
@@ -514,6 +558,10 @@ private static final long serialVersionUID = 0L;
       return comparator_;
     }
     /**
+     * <pre>
+     * The Operator used to evaluate the left versus the right.
+     * </pre>
+     *
      * <code>.littlehorse.Comparator comparator = 1;</code>
      * @param value The enum numeric value on the wire for comparator to set.
      * @return This builder for chaining.
@@ -525,6 +573,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The Operator used to evaluate the left versus the right.
+     * </pre>
+     *
      * <code>.littlehorse.Comparator comparator = 1;</code>
      * @return The comparator.
      */
@@ -534,6 +586,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.Comparator.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * The Operator used to evaluate the left versus the right.
+     * </pre>
+     *
      * <code>.littlehorse.Comparator comparator = 1;</code>
      * @param value The comparator to set.
      * @return This builder for chaining.
@@ -548,6 +604,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The Operator used to evaluate the left versus the right.
+     * </pre>
+     *
      * <code>.littlehorse.Comparator comparator = 1;</code>
      * @return This builder for chaining.
      */
@@ -562,6 +622,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> leftBuilder_;
     /**
+     * <pre>
+     * The left side of the boolean expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment left = 2;</code>
      * @return Whether the left field is set.
      */
@@ -569,6 +633,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * The left side of the boolean expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment left = 2;</code>
      * @return The left.
      */
@@ -580,6 +648,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The left side of the boolean expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment left = 2;</code>
      */
     public Builder setLeft(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -596,6 +668,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The left side of the boolean expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment left = 2;</code>
      */
     public Builder setLeft(
@@ -610,6 +686,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The left side of the boolean expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment left = 2;</code>
      */
     public Builder mergeLeft(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -629,6 +709,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The left side of the boolean expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment left = 2;</code>
      */
     public Builder clearLeft() {
@@ -642,6 +726,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The left side of the boolean expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment left = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getLeftBuilder() {
@@ -650,6 +738,10 @@ private static final long serialVersionUID = 0L;
       return getLeftFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The left side of the boolean expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment left = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getLeftOrBuilder() {
@@ -661,6 +753,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The left side of the boolean expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment left = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -681,6 +777,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> rightBuilder_;
     /**
+     * <pre>
+     * The right side of the Boolean Expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment right = 3;</code>
      * @return Whether the right field is set.
      */
@@ -688,6 +788,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * The right side of the Boolean Expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment right = 3;</code>
      * @return The right.
      */
@@ -699,6 +803,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The right side of the Boolean Expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment right = 3;</code>
      */
     public Builder setRight(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -715,6 +823,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The right side of the Boolean Expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment right = 3;</code>
      */
     public Builder setRight(
@@ -729,6 +841,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The right side of the Boolean Expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment right = 3;</code>
      */
     public Builder mergeRight(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -748,6 +864,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The right side of the Boolean Expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment right = 3;</code>
      */
     public Builder clearRight() {
@@ -761,6 +881,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The right side of the Boolean Expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment right = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getRightBuilder() {
@@ -769,6 +893,10 @@ private static final long serialVersionUID = 0L;
       return getRightFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The right side of the Boolean Expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment right = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getRightOrBuilder() {
@@ -780,6 +908,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The right side of the Boolean Expression.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment right = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

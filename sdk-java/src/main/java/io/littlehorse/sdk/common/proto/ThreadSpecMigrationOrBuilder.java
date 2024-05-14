@@ -8,11 +8,21 @@ public interface ThreadSpecMigrationOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The name of the ThreadSpec in the new WfSpec that this ThreadSpec should
+   * migrate to.
+   * </pre>
+   *
    * <code>string new_thread_spec_name = 1;</code>
    * @return The newThreadSpecName.
    */
   java.lang.String getNewThreadSpecName();
   /**
+   * <pre>
+   * The name of the ThreadSpec in the new WfSpec that this ThreadSpec should
+   * migrate to.
+   * </pre>
+   *
    * <code>string new_thread_spec_name = 1;</code>
    * @return The bytes for newThreadSpecName.
    */
@@ -20,10 +30,20 @@ public interface ThreadSpecMigrationOrBuilder extends
       getNewThreadSpecNameBytes();
 
   /**
+   * <pre>
+   * Map from name of the nodes on the current ThreadSpec to the migration
+   * to perform on it to move it to a new WfSpec.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.NodeMigration&gt; node_migrations = 2;</code>
    */
   int getNodeMigrationsCount();
   /**
+   * <pre>
+   * Map from name of the nodes on the current ThreadSpec to the migration
+   * to perform on it to move it to a new WfSpec.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.NodeMigration&gt; node_migrations = 2;</code>
    */
   boolean containsNodeMigrations(
@@ -35,11 +55,21 @@ public interface ThreadSpecMigrationOrBuilder extends
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigration>
   getNodeMigrations();
   /**
+   * <pre>
+   * Map from name of the nodes on the current ThreadSpec to the migration
+   * to perform on it to move it to a new WfSpec.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.NodeMigration&gt; node_migrations = 2;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigration>
   getNodeMigrationsMap();
   /**
+   * <pre>
+   * Map from name of the nodes on the current ThreadSpec to the migration
+   * to perform on it to move it to a new WfSpec.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.NodeMigration&gt; node_migrations = 2;</code>
    */
   /* nullable */
@@ -48,6 +78,11 @@ io.littlehorse.sdk.common.proto.NodeMigration getNodeMigrationsOrDefault(
       /* nullable */
 io.littlehorse.sdk.common.proto.NodeMigration defaultValue);
   /**
+   * <pre>
+   * Map from name of the nodes on the current ThreadSpec to the migration
+   * to perform on it to move it to a new WfSpec.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.NodeMigration&gt; node_migrations = 2;</code>
    */
   io.littlehorse.sdk.common.proto.NodeMigration getNodeMigrationsOrThrow(

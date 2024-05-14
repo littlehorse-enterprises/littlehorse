@@ -4,19 +4,36 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Determines the Access Level for a Variable in a ThreadSpec/WfSpec.
+ * </pre>
+ *
  * Protobuf enum {@code littlehorse.WfRunVariableAccessLevel}
  */
 public enum WfRunVariableAccessLevel
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
+   * <pre>
+   * A `PUBLIC_VAR` can be accessed (read + mutated) by child `WfRun`'s.
+   * </pre>
+   *
    * <code>PUBLIC_VAR = 0;</code>
    */
   PUBLIC_VAR(0),
   /**
+   * <pre>
+   * A `PRIVATE_VAR` cannot be accessed by a child `WfRun`.
+   * </pre>
+   *
    * <code>PRIVATE_VAR = 1;</code>
    */
   PRIVATE_VAR(1),
   /**
+   * <pre>
+   * An `INHERITED_VAR` is inherited from the parent `WfRun`. Only valid in a `WfSpec` that
+   * has a parent. Also can only be declared in the Entrypoint Thread.
+   * </pre>
+   *
    * <code>INHERITED_VAR = 2;</code>
    */
   INHERITED_VAR(2),
@@ -24,14 +41,27 @@ public enum WfRunVariableAccessLevel
   ;
 
   /**
+   * <pre>
+   * A `PUBLIC_VAR` can be accessed (read + mutated) by child `WfRun`'s.
+   * </pre>
+   *
    * <code>PUBLIC_VAR = 0;</code>
    */
   public static final int PUBLIC_VAR_VALUE = 0;
   /**
+   * <pre>
+   * A `PRIVATE_VAR` cannot be accessed by a child `WfRun`.
+   * </pre>
+   *
    * <code>PRIVATE_VAR = 1;</code>
    */
   public static final int PRIVATE_VAR_VALUE = 1;
   /**
+   * <pre>
+   * An `INHERITED_VAR` is inherited from the parent `WfRun`. Only valid in a `WfSpec` that
+   * has a parent. Also can only be declared in the Entrypoint Thread.
+   * </pre>
+   *
    * <code>INHERITED_VAR = 2;</code>
    */
   public static final int INHERITED_VAR_VALUE = 2;

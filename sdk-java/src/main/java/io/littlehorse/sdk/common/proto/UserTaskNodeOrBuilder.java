@@ -8,11 +8,19 @@ public interface UserTaskNodeOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Denotes the name of the `UserTaskDef` that should create the `UserTaskRun`.
+   * </pre>
+   *
    * <code>string user_task_def_name = 1;</code>
    * @return The userTaskDefName.
    */
   java.lang.String getUserTaskDefName();
   /**
+   * <pre>
+   * Denotes the name of the `UserTaskDef` that should create the `UserTaskRun`.
+   * </pre>
+   *
    * <code>string user_task_def_name = 1;</code>
    * @return The bytes for userTaskDefName.
    */
@@ -21,7 +29,7 @@ public interface UserTaskNodeOrBuilder extends
 
   /**
    * <pre>
-   * to whom should the User Task Run be assigned?
+   * Denotes the user_group to which the UserTaskRun is assigned upon creation.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
@@ -30,7 +38,7 @@ public interface UserTaskNodeOrBuilder extends
   boolean hasUserGroup();
   /**
    * <pre>
-   * to whom should the User Task Run be assigned?
+   * Denotes the user_group to which the UserTaskRun is assigned upon creation.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
@@ -39,7 +47,7 @@ public interface UserTaskNodeOrBuilder extends
   io.littlehorse.sdk.common.proto.VariableAssignment getUserGroup();
   /**
    * <pre>
-   * to whom should the User Task Run be assigned?
+   * Denotes the user_group to which the UserTaskRun is assigned upon creation.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
@@ -47,25 +55,37 @@ public interface UserTaskNodeOrBuilder extends
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserGroupOrBuilder();
 
   /**
+   * <pre>
+   * Denotes the user_id to which the UserTaskRun is assigned upon creation.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
    * @return Whether the userId field is set.
    */
   boolean hasUserId();
   /**
+   * <pre>
+   * Denotes the user_id to which the UserTaskRun is assigned upon creation.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
    * @return The userId.
    */
   io.littlehorse.sdk.common.proto.VariableAssignment getUserId();
   /**
+   * <pre>
+   * Denotes the user_id to which the UserTaskRun is assigned upon creation.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserIdOrBuilder();
 
   /**
    * <pre>
-   * This is used to, for example, send a push notification to a mobile app
-   * to remind someone that they need to fill out a task, or to re-assign
-   * the task to another group of people
+   * Specifies a list of actions that happen on various time-based triggers. Actions
+   * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+   * a "reminder" TaskRun.
    * </pre>
    *
    * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -74,9 +94,9 @@ public interface UserTaskNodeOrBuilder extends
       getActionsList();
   /**
    * <pre>
-   * This is used to, for example, send a push notification to a mobile app
-   * to remind someone that they need to fill out a task, or to re-assign
-   * the task to another group of people
+   * Specifies a list of actions that happen on various time-based triggers. Actions
+   * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+   * a "reminder" TaskRun.
    * </pre>
    *
    * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -84,9 +104,9 @@ public interface UserTaskNodeOrBuilder extends
   io.littlehorse.sdk.common.proto.UTActionTrigger getActions(int index);
   /**
    * <pre>
-   * This is used to, for example, send a push notification to a mobile app
-   * to remind someone that they need to fill out a task, or to re-assign
-   * the task to another group of people
+   * Specifies a list of actions that happen on various time-based triggers. Actions
+   * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+   * a "reminder" TaskRun.
    * </pre>
    *
    * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -94,9 +114,9 @@ public interface UserTaskNodeOrBuilder extends
   int getActionsCount();
   /**
    * <pre>
-   * This is used to, for example, send a push notification to a mobile app
-   * to remind someone that they need to fill out a task, or to re-assign
-   * the task to another group of people
+   * Specifies a list of actions that happen on various time-based triggers. Actions
+   * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+   * a "reminder" TaskRun.
    * </pre>
    *
    * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -105,9 +125,9 @@ public interface UserTaskNodeOrBuilder extends
       getActionsOrBuilderList();
   /**
    * <pre>
-   * This is used to, for example, send a push notification to a mobile app
-   * to remind someone that they need to fill out a task, or to re-assign
-   * the task to another group of people
+   * Specifies a list of actions that happen on various time-based triggers. Actions
+   * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+   * a "reminder" TaskRun.
    * </pre>
    *
    * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -117,9 +137,8 @@ public interface UserTaskNodeOrBuilder extends
 
   /**
    * <pre>
-   * So, once the WfSpec is created, this will be pinned to a version. Customer
-   * can optionally specify a specific version or can leave it null, in which
-   * case we just use the latest
+   * If set, then the UserTaskRun will always have this specific version of the
+   * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
    * </pre>
    *
    * <code>optional int32 user_task_def_version = 5;</code>
@@ -128,9 +147,8 @@ public interface UserTaskNodeOrBuilder extends
   boolean hasUserTaskDefVersion();
   /**
    * <pre>
-   * So, once the WfSpec is created, this will be pinned to a version. Customer
-   * can optionally specify a specific version or can leave it null, in which
-   * case we just use the latest
+   * If set, then the UserTaskRun will always have this specific version of the
+   * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
    * </pre>
    *
    * <code>optional int32 user_task_def_version = 5;</code>
@@ -140,7 +158,7 @@ public interface UserTaskNodeOrBuilder extends
 
   /**
    * <pre>
-   * Allow WfRun-specific notes for this User Task.
+   * Specifies the value to be displayed on the `notes` field of the UserTaskRun.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
@@ -149,7 +167,7 @@ public interface UserTaskNodeOrBuilder extends
   boolean hasNotes();
   /**
    * <pre>
-   * Allow WfRun-specific notes for this User Task.
+   * Specifies the value to be displayed on the `notes` field of the UserTaskRun.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
@@ -158,7 +176,7 @@ public interface UserTaskNodeOrBuilder extends
   io.littlehorse.sdk.common.proto.VariableAssignment getNotes();
   /**
    * <pre>
-   * Allow WfRun-specific notes for this User Task.
+   * Specifies the value to be displayed on the `notes` field of the UserTaskRun.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
@@ -167,7 +185,9 @@ public interface UserTaskNodeOrBuilder extends
 
   /**
    * <pre>
-   * Specifies the name of the exception thrown when the User Task is canceled
+   * Specifies the name of the exception thrown when the User Task is canceled. If
+   * not set, then the cancellation or timeout of a User Task Run throws an ERROR
+   * rather than an EXCEPTION.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>
@@ -176,7 +196,9 @@ public interface UserTaskNodeOrBuilder extends
   boolean hasOnCancellationExceptionName();
   /**
    * <pre>
-   * Specifies the name of the exception thrown when the User Task is canceled
+   * Specifies the name of the exception thrown when the User Task is canceled. If
+   * not set, then the cancellation or timeout of a User Task Run throws an ERROR
+   * rather than an EXCEPTION.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>
@@ -185,7 +207,9 @@ public interface UserTaskNodeOrBuilder extends
   io.littlehorse.sdk.common.proto.VariableAssignment getOnCancellationExceptionName();
   /**
    * <pre>
-   * Specifies the name of the exception thrown when the User Task is canceled
+   * Specifies the name of the exception thrown when the User Task is canceled. If
+   * not set, then the cancellation or timeout of a User Task Run throws an ERROR
+   * rather than an EXCEPTION.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>

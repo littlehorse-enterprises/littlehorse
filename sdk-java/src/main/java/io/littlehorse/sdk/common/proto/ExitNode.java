@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Defines the end of the ThreadRun execution.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ExitNode}
  */
 public final class ExitNode extends
@@ -42,6 +46,14 @@ private static final long serialVersionUID = 0L;
   public static final int FAILURE_DEF_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.FailureDef failureDef_;
   /**
+   * <pre>
+   * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+   * are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+   * by the entrypoint ThreadRun).
+   *
+   * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
+   * </pre>
+   *
    * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
    * @return Whether the failureDef field is set.
    */
@@ -50,6 +62,14 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+   * are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+   * by the entrypoint ThreadRun).
+   *
+   * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
+   * </pre>
+   *
    * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
    * @return The failureDef.
    */
@@ -58,6 +78,14 @@ private static final long serialVersionUID = 0L;
     return failureDef_ == null ? io.littlehorse.sdk.common.proto.FailureDef.getDefaultInstance() : failureDef_;
   }
   /**
+   * <pre>
+   * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+   * are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+   * by the entrypoint ThreadRun).
+   *
+   * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
+   * </pre>
+   *
    * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
    */
   @java.lang.Override
@@ -228,6 +256,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Defines the end of the ThreadRun execution.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ExitNode}
    */
   public static final class Builder extends
@@ -416,6 +448,14 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.FailureDef, io.littlehorse.sdk.common.proto.FailureDef.Builder, io.littlehorse.sdk.common.proto.FailureDefOrBuilder> failureDefBuilder_;
     /**
+     * <pre>
+     * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+     * are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+     * by the entrypoint ThreadRun).
+     *
+     * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
      * @return Whether the failureDef field is set.
      */
@@ -423,6 +463,14 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+     * are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+     * by the entrypoint ThreadRun).
+     *
+     * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
      * @return The failureDef.
      */
@@ -434,6 +482,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+     * are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+     * by the entrypoint ThreadRun).
+     *
+     * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
      */
     public Builder setFailureDef(io.littlehorse.sdk.common.proto.FailureDef value) {
@@ -450,6 +506,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+     * are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+     * by the entrypoint ThreadRun).
+     *
+     * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
      */
     public Builder setFailureDef(
@@ -464,6 +528,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+     * are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+     * by the entrypoint ThreadRun).
+     *
+     * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
      */
     public Builder mergeFailureDef(io.littlehorse.sdk.common.proto.FailureDef value) {
@@ -483,6 +555,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+     * are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+     * by the entrypoint ThreadRun).
+     *
+     * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
      */
     public Builder clearFailureDef() {
@@ -496,6 +576,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+     * are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+     * by the entrypoint ThreadRun).
+     *
+     * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.FailureDef.Builder getFailureDefBuilder() {
@@ -504,6 +592,14 @@ private static final long serialVersionUID = 0L;
       return getFailureDefFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+     * are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+     * by the entrypoint ThreadRun).
+     *
+     * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.FailureDefOrBuilder getFailureDefOrBuilder() {
@@ -515,6 +611,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+     * are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+     * by the entrypoint ThreadRun).
+     *
+     * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
+     * </pre>
+     *
      * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

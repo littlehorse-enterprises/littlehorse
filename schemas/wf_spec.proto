@@ -12,18 +12,42 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
+// A `WfSpec`` defines the logic for a worfklow in LittleHorse. It is a metadata object
+// and is a blueprint for a `WfRun` execution.
 message WfSpec {
+  // The ID of the `WfSpec`. Note that this ID is versioned with both a major
+  // version and a minor revision. Creating new WfSpec's with the same name
+  // and different specifications results in a completely new `WfSpec` object
+  // whose `id.name` is the same but with different version.
   WfSpecId id = 1;
+
+  // The timestamp at which the `WfSpec` was created.
   google.protobuf.Timestamp created_at = 2;
+
+  // Variables whose types cannot be changed without causing a Breaking Change between
+  // the versions.
   repeated ThreadVarDef frozen_variables = 3;
 
-  // to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+  // The Status of the `WfSpec`. Currently, only `ACTIVE` exists. This field will be
+  // used in the future when de-commissioning a WfSpec gracefully.
   MetadataStatus status = 4;
 
+  // The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+  // a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
   map<string, ThreadSpec> thread_specs = 5;
+
+  // The name of the `ENTRYPOINT` ThreadSpec. The Entrypoint is the `ThreadSpec` for the
+  // Entrypoint ThreadRun, which is the `ThreadRun` that is created upon starting the
+  // `WfRun`.
   string entrypoint_thread_name = 6;
 
+  // Optional policy that configures cleaning up old `WfRun`'s after they are completed or
+  // failed. Recommended for production settings to avoid running out of disk space; unless
+  // you are using a `WfRun` as a data record, in which case the application should
+  // clean up `WfRun`'s as appropriate.
   optional WorkflowRetentionPolicy retention_policy = 7;
+
+  // EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another.
   optional WfSpecVersionMigration migration = 8;
 
   // Reference to another WfSpec. If a WfSpec has a ParentWfSpecReference, then all
@@ -46,37 +70,56 @@ message WfSpec {
   optional ParentWfSpecReference parent_wf_spec = 9;
 }
 
+// A WorkflowRetentionPolicy configures how long a WfRun is retained in the data store before
+// being deleted after it is completed or failed.
 message WorkflowRetentionPolicy {
   oneof wf_gc_policy {
     // Delete all WfRun's X seconds after they terminate, regardless of
     // status.
     int64 seconds_after_wf_termination = 1;
-
-    // Future versions can allow different retention based on WfRun status.
   }
 }
 
+// Defines an index to make a JSON_OBJ or JSON_ARR variable searchable over a specific
+// JSON Path.
 message JsonIndex {
+  // Denotes the path in JSONPath format (according to the Java Jayway library) that
+  // has a field we should index.
   string field_path = 1;
+
+  // Is the type of the field we are indexing.
   VariableType field_type = 2;
 }
 
-message SearchableVariableDef {
-  VariableDef var_def = 1;
-  // Future: Add index information (local/remote/etc)
-}
-
+// Determines the Access Level for a Variable in a ThreadSpec/WfSpec.
 enum WfRunVariableAccessLevel {
+  // A `PUBLIC_VAR` can be accessed (read + mutated) by child `WfRun`'s.
   PUBLIC_VAR = 0;
+
+  // A `PRIVATE_VAR` cannot be accessed by a child `WfRun`.
   PRIVATE_VAR = 1;
+
+  // An `INHERITED_VAR` is inherited from the parent `WfRun`. Only valid in a `WfSpec` that
+  // has a parent. Also can only be declared in the Entrypoint Thread.
   INHERITED_VAR = 2;
 }
 
+// Denotes a variable declaration at the ThreadSpec level.
 message ThreadVarDef {
+  // Is the actual VariableDefinition containing name and type.
   VariableDef var_def = 1;
+
+  // Whether the variable is required as input to the threadRun.
   bool required = 2;
+
+  // Whether this variable has an index configured.
   bool searchable = 3;
+
+  // Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+  // to index.
   repeated JsonIndex json_indexes = 4;
+
+  // The Access Level of this variable.
   WfRunVariableAccessLevel access_level = 5;
 }
 
@@ -138,48 +181,111 @@ message WaitForThreadsNode {
     ThreadsToWaitFor threads = 1;
     VariableAssignment thread_list = 2;
   }
+
+  // If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+  // evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+  // (if any). The FailureHandler will be a child of the child, which means that it has
+  // access to all of the failed Child's variables.
+  //
+  // This is different from Node-level Failure Handlers, which would be _siblings_ of the
+  // ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+  // failed.
   repeated FailureHandlerDef per_thread_failure_handlers = 3;
 }
 
+// An ExternalEventNode causes the WfRun to stop and wait for an ExternalEvent
+// to arrive before continuing onwards.
+//
+// The output is just the content of the ExternalEvent.
 message ExternalEventNode {
+  // The ID of the ExternalEventDef that we are waiting for.
   ExternalEventDefId external_event_def_id = 1;
+
+  // Determines the maximum amount of time that the NodeRun will wait for the
+  // ExternalEvent to arrive.
   VariableAssignment timeout_seconds = 2;
 }
 
+// Defines the beginning of the ThreadRun execution.
+//
+// Output is NULL
 message EntrypointNode {
 
 }
 
+// Defines the end of the ThreadRun execution.
 message ExitNode {
+  // If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+  // are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+  // by the entrypoint ThreadRun).
+  //
+  // If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
   optional FailureDef failure_def = 1;
 }
 
+// Defines a Failure that can be thrown.
 message FailureDef {
+  // The code for the failure. If in UPPER_CASE, it must be one of the LHErrorType
+  // enums, and represents an ERROR. If it is in kebab-case, then it is a user-defined
+  // EXCEPTION.
   string failure_name = 1;
+
+  // Human-readable message denoting why the Failure occurred.
   string message = 2;
+
+  // If specified, the thrown Failure will have this content.
   optional VariableAssignment content = 3;
 }
 
+// A Node is a step in a ThreadRun.
 message Node {
+  // Defines the flow of execution and determines where the ThreadRun goes next.
   repeated Edge outgoing_edges = 1;
+
+  // Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+  // by the NodeRun. If a Failure is thrown by the Node execution, then the first
+  // matching Failure Handler (if present) is run. If there is a matching Failure Handler
+  // and it runs to completion, then the ThreadRun advances from the Node; else, it
+  // fails.
   repeated FailureHandlerDef failure_handlers = 4;
 
   oneof node {
+    // Creates an EntrypointRun. Every ThreadRun has one Entrypoint node.
     EntrypointNode entrypoint = 5;
+
+    // Creates an Exitrun. Every ThreadRun has at least one Exit Node.
     ExitNode exit = 6;
+
+    // Creates a TaskNodeRUn
     TaskNode task = 7;
+
+    // Creates an ExternalEventRun
     ExternalEventNode external_event = 8;
+
+    // Creates a StartThreadNodeRun
     StartThreadNode start_thread = 9;
+
+    // Creates a WaitForThreadsNodeRun
     WaitForThreadsNode wait_for_threads = 10;
+
+    // Creates a NopNodeRun
     NopNode nop = 11;
+
+    // Creates a SleepNodeRun
     SleepNode sleep = 12;
+
+    // Creates a UserTaskNodeRun
     UserTaskNode user_task = 13;
+
+    // Creates a StartMultipleThreadsNodeRun
     StartMultipleThreadsNode start_multiple_threads = 15;
+
+    // Creates a ThrowEventNodeRun
     ThrowEventNode throw_event = 16;
   }
 }
 
-// A SubNode that throws a WorkflowEvent of a specific type.
+// A SubNode that throws a WorkflowEvent of a specific type. There is no output.
 message ThrowEventNode {
   // The WorkflowEventDefId of the WorkflowEvent that is thrown
   WorkflowEventDefId event_def_id = 1;
@@ -188,61 +294,108 @@ message ThrowEventNode {
   VariableAssignment content = 2;
 }
 
+// The UserTaskNode creates a UserTaskRun, which is used to get input from a human
+// user into the workflow.
+//
+// The output is a JSON_OBJ variable with one key/value pair for each UserTaskField.
 message UserTaskNode {
+  // Denotes the name of the `UserTaskDef` that should create the `UserTaskRun`.
   string user_task_def_name = 1;
 
-  // to whom should the User Task Run be assigned?
+  // Denotes the user_group to which the UserTaskRun is assigned upon creation.
   optional VariableAssignment user_group = 2;
+
+  // Denotes the user_id to which the UserTaskRun is assigned upon creation.
   optional VariableAssignment user_id = 3;
 
-  // This is used to, for example, send a push notification to a mobile app
-  // to remind someone that they need to fill out a task, or to re-assign
-  // the task to another group of people
+  // Specifies a list of actions that happen on various time-based triggers. Actions
+  // include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+  // a "reminder" TaskRun.
   repeated UTActionTrigger actions = 4;
 
-  // So, once the WfSpec is created, this will be pinned to a version. Customer
-  // can optionally specify a specific version or can leave it null, in which
-  // case we just use the latest
+  // If set, then the UserTaskRun will always have this specific version of the
+  // UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
   optional int32 user_task_def_version = 5;
 
-  // Allow WfRun-specific notes for this User Task.
+  // Specifies the value to be displayed on the `notes` field of the UserTaskRun.
   optional VariableAssignment notes = 6;
 
-  // Specifies the name of the exception thrown when the User Task is canceled
+  // Specifies the name of the exception thrown when the User Task is canceled. If
+  // not set, then the cancellation or timeout of a User Task Run throws an ERROR
+  // rather than an EXCEPTION.
   optional VariableAssignment on_cancellation_exception_name = 7;
 }
 
+// This is a boolean expression used to evaluate whether an Edge is valid.
 message EdgeCondition {
+  // The Operator used to evaluate the left versus the right.
   Comparator comparator = 1;
+
+  // The left side of the boolean expression.
   VariableAssignment left = 2;
+
+  // The right side of the Boolean Expression.
   VariableAssignment right = 3;
 }
 
+// The Edge is the line in the workflow that connects one Node to another.
 message Edge {
+  // The name of the Node that the Edge points to.
   string sink_node_name = 1;
+
+  // The Condition on which this Edge will be traversed. When choosing an Edge
+  // to travel after the completion of a NodeRun, the Edges are evaluated in
+  // order. The first one to either have no condition or have a condition which
+  // evaluates to `true` is taken.
   optional EdgeCondition condition = 2;
+
+  // Ordered list of Variable Mutations to execute when traversing this Edge.
   repeated VariableMutation variable_mutations = 3;
 }
 
+// NOP node has no operations and is used for conditional branching.
 message NopNode {
 }
 
+// Sleep Node causes the WfRun to wait a specified time and then resume.
+//
+// There is no output.
 message SleepNode {
   oneof sleep_length {
+    // Sleeps the specified number of seconds.
     VariableAssignment raw_seconds = 1;
+
+    // Sleeps until the `long` timestamp (epoch millis) specified here.
     VariableAssignment timestamp = 2;
+
+    // Sleeps until the ISO-formatted date specified here.
     VariableAssignment iso_date = 3;
   }
 }
 
+// EXPERIMENTAL: Specification for how to migrate an in-flight WfRun from one WfSpec
+// to another WfSpec version.
 message WfSpecVersionMigration {
+  // The major version of the WfSpec that we are migrating to.
   int32 new_major_version = 1;
+
+  // The revision of the WfSpec that we are migrating to.
   int32 new_revision = 2;
+
+  // Map from ThreadSpec name to a specifier determining how to migrate ThreadRun's
+  // to the new version of the WfSpec.
   map<string, ThreadSpecMigration> thread_spec_migrations = 3;
 }
 
+// EXPERIMENTAL: Specification for how to migrate a ThreadRun of a specific ThreadSpec
+// from one WfSpec to another WfSpec version.
 message ThreadSpecMigration {
+  // The name of the ThreadSpec in the new WfSpec that this ThreadSpec should
+  // migrate to.
   string new_thread_spec_name = 1;
+
+  // Map from name of the nodes on the current ThreadSpec to the migration
+  // to perform on it to move it to a new WfSpec.
   map<string, NodeMigration> node_migrations = 2;
 
   // Future work:
@@ -251,7 +404,10 @@ message ThreadSpecMigration {
   // - any other feature request that comes up in the field
 }
 
+// EXPERIMENTAL: Specification for migrating a WfRun from a Node in one WfSpec
+// to a Node in another WfSpec version.
 message NodeMigration {
+  // The name of the Node on the new WfSpec to move to.
   string new_node_name = 1;
 
   // Future work:

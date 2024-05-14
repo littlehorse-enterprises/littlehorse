@@ -8,22 +8,40 @@ public interface WfSpecVersionMigrationOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The major version of the WfSpec that we are migrating to.
+   * </pre>
+   *
    * <code>int32 new_major_version = 1;</code>
    * @return The newMajorVersion.
    */
   int getNewMajorVersion();
 
   /**
+   * <pre>
+   * The revision of the WfSpec that we are migrating to.
+   * </pre>
+   *
    * <code>int32 new_revision = 2;</code>
    * @return The newRevision.
    */
   int getNewRevision();
 
   /**
+   * <pre>
+   * Map from ThreadSpec name to a specifier determining how to migrate ThreadRun's
+   * to the new version of the WfSpec.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
    */
   int getThreadSpecMigrationsCount();
   /**
+   * <pre>
+   * Map from ThreadSpec name to a specifier determining how to migrate ThreadRun's
+   * to the new version of the WfSpec.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
    */
   boolean containsThreadSpecMigrations(
@@ -35,11 +53,21 @@ public interface WfSpecVersionMigrationOrBuilder extends
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecMigration>
   getThreadSpecMigrations();
   /**
+   * <pre>
+   * Map from ThreadSpec name to a specifier determining how to migrate ThreadRun's
+   * to the new version of the WfSpec.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpecMigration>
   getThreadSpecMigrationsMap();
   /**
+   * <pre>
+   * Map from ThreadSpec name to a specifier determining how to migrate ThreadRun's
+   * to the new version of the WfSpec.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
    */
   /* nullable */
@@ -48,6 +76,11 @@ io.littlehorse.sdk.common.proto.ThreadSpecMigration getThreadSpecMigrationsOrDef
       /* nullable */
 io.littlehorse.sdk.common.proto.ThreadSpecMigration defaultValue);
   /**
+   * <pre>
+   * Map from ThreadSpec name to a specifier determining how to migrate ThreadRun's
+   * to the new version of the WfSpec.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ThreadSpecMigration&gt; thread_spec_migrations = 3;</code>
    */
   io.littlehorse.sdk.common.proto.ThreadSpecMigration getThreadSpecMigrationsOrThrow(

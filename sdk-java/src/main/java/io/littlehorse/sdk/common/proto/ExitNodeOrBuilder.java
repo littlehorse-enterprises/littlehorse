@@ -8,16 +8,40 @@ public interface ExitNodeOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+   * are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+   * by the entrypoint ThreadRun).
+   *
+   * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
+   * </pre>
+   *
    * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
    * @return Whether the failureDef field is set.
    */
   boolean hasFailureDef();
   /**
+   * <pre>
+   * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+   * are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+   * by the entrypoint ThreadRun).
+   *
+   * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
+   * </pre>
+   *
    * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
    * @return The failureDef.
    */
   io.littlehorse.sdk.common.proto.FailureDef getFailureDef();
   /**
+   * <pre>
+   * If set, this ExitNode throws the specified Failure upon arrival. Note that Failures
+   * are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent
+   * by the entrypoint ThreadRun).
+   *
+   * If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED.
+   * </pre>
+   *
    * <code>optional .littlehorse.FailureDef failure_def = 1;</code>
    */
   io.littlehorse.sdk.common.proto.FailureDefOrBuilder getFailureDefOrBuilder();

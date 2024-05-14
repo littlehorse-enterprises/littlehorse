@@ -1529,6 +1529,17 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef> perThreadFailureHandlers_;
   /**
+   * <pre>
+   * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+   * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+   * (if any). The FailureHandler will be a child of the child, which means that it has
+   * access to all of the failed Child's variables.
+   *
+   * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+   * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+   * failed.
+   * </pre>
+   *
    * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
    */
   @java.lang.Override
@@ -1536,6 +1547,17 @@ private static final long serialVersionUID = 0L;
     return perThreadFailureHandlers_;
   }
   /**
+   * <pre>
+   * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+   * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+   * (if any). The FailureHandler will be a child of the child, which means that it has
+   * access to all of the failed Child's variables.
+   *
+   * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+   * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+   * failed.
+   * </pre>
+   *
    * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
    */
   @java.lang.Override
@@ -1544,6 +1566,17 @@ private static final long serialVersionUID = 0L;
     return perThreadFailureHandlers_;
   }
   /**
+   * <pre>
+   * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+   * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+   * (if any). The FailureHandler will be a child of the child, which means that it has
+   * access to all of the failed Child's variables.
+   *
+   * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+   * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+   * failed.
+   * </pre>
+   *
    * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
    */
   @java.lang.Override
@@ -1551,6 +1584,17 @@ private static final long serialVersionUID = 0L;
     return perThreadFailureHandlers_.size();
   }
   /**
+   * <pre>
+   * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+   * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+   * (if any). The FailureHandler will be a child of the child, which means that it has
+   * access to all of the failed Child's variables.
+   *
+   * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+   * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+   * failed.
+   * </pre>
+   *
    * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
    */
   @java.lang.Override
@@ -1558,6 +1602,17 @@ private static final long serialVersionUID = 0L;
     return perThreadFailureHandlers_.get(index);
   }
   /**
+   * <pre>
+   * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+   * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+   * (if any). The FailureHandler will be a child of the child, which means that it has
+   * access to all of the failed Child's variables.
+   *
+   * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+   * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+   * failed.
+   * </pre>
+   *
    * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
    */
   @java.lang.Override
@@ -2340,6 +2395,17 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.FailureHandlerDef, io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder, io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder> perThreadFailureHandlersBuilder_;
 
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef> getPerThreadFailureHandlersList() {
@@ -2350,6 +2416,17 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public int getPerThreadFailureHandlersCount() {
@@ -2360,6 +2437,17 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.FailureHandlerDef getPerThreadFailureHandlers(int index) {
@@ -2370,6 +2458,17 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public Builder setPerThreadFailureHandlers(
@@ -2387,6 +2486,17 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public Builder setPerThreadFailureHandlers(
@@ -2401,6 +2511,17 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public Builder addPerThreadFailureHandlers(io.littlehorse.sdk.common.proto.FailureHandlerDef value) {
@@ -2417,6 +2538,17 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public Builder addPerThreadFailureHandlers(
@@ -2434,6 +2566,17 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public Builder addPerThreadFailureHandlers(
@@ -2448,6 +2591,17 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public Builder addPerThreadFailureHandlers(
@@ -2462,6 +2616,17 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public Builder addAllPerThreadFailureHandlers(
@@ -2477,6 +2642,17 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public Builder clearPerThreadFailureHandlers() {
@@ -2490,6 +2666,17 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public Builder removePerThreadFailureHandlers(int index) {
@@ -2503,6 +2690,17 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder getPerThreadFailureHandlersBuilder(
@@ -2510,6 +2708,17 @@ private static final long serialVersionUID = 0L;
       return getPerThreadFailureHandlersFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder getPerThreadFailureHandlersOrBuilder(
@@ -2520,6 +2729,17 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder> 
@@ -2531,6 +2751,17 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder addPerThreadFailureHandlersBuilder() {
@@ -2538,6 +2769,17 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.FailureHandlerDef.getDefaultInstance());
     }
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder addPerThreadFailureHandlersBuilder(
@@ -2546,6 +2788,17 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.FailureHandlerDef.getDefaultInstance());
     }
     /**
+     * <pre>
+     * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+     * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+     * (if any). The FailureHandler will be a child of the child, which means that it has
+     * access to all of the failed Child's variables.
+     *
+     * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+     * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+     * failed.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder> 
