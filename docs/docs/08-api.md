@@ -3021,14 +3021,16 @@ Defines a Failure that can be thrown.
 
 ### Message `FailureHandlerDef` {#failurehandlerdef}
 
-
+Specifies a Failure Handler which can run in case of a certain Failure to allow
+the ThreadRun to run compensatory logic and gracefully continue rather than
+failing immediately.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `handler_spec_name` | | string |  |
-| `specific_failure` | oneof `failure_to_catch`| string |  |
-| `any_failure_of_type` | oneof `failure_to_catch`| [FailureHandlerDef.LHFailureType](#failurehandlerdeflhfailuretype) |  |
+| `handler_spec_name` | | string | The name of the ThreadSpec to run as a |
+| `specific_failure` | oneof `failure_to_catch`| string | Specifies that this FailureHandlerDef will be triggered for a Failure with this exact name.<br/><br/>If this and `specific_failure` are both unset, then any failure is caught. |
+| `any_failure_of_type` | oneof `failure_to_catch`| [FailureHandlerDef.LHFailureType](#failurehandlerdeflhfailuretype) | Specifies that this FailureHandlerDef will be triggered for any failure matching this type (ERROR or EXCEPTION). |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3036,13 +3038,16 @@ Defines a Failure that can be thrown.
 
 ### Message `InterruptDef` {#interruptdef}
 
-
+Defines an Interrupt for a ThreadSpec. An Interrupt means that when an ExternalEvent
+of a certain type is registered to the WfRun, then the affected ThreadRun is HALTED
+and a handler ThreadRun is run as an interrupt handler. The interrupted ThreadRun
+is resumed once the interrupt handler completes.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `external_event_def_id` | | [ExternalEventDefId](#externaleventdefid) |  |
-| `handler_spec_name` | | string |  |
+| `external_event_def_id` | | [ExternalEventDefId](#externaleventdefid) | The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec. Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef and an ExternalEventNode in the same WfSpec. |
+| `handler_spec_name` | | string | The name of the ThreadSpec that we run as the interrupt handler. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3129,14 +3134,17 @@ There is no output.
 
 ### Message `StartMultipleThreadsNode` {#startmultiplethreadsnode}
 
+Iterates over a JSON_ARR and starts a Child ThreadRun for each element in the
+list.
 
+Returns a JSON_ARR containing the thread_run_number of each spawned child.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `thread_spec_name` | | string |  |
-| `variables` | map| [StartMultipleThreadsNode.VariablesEntry](#startmultiplethreadsnodevariablesentry) |  |
-| `iterable` | | [VariableAssignment](#variableassignment) |  |
+| `thread_spec_name` | | string | The name of the ThreadSpec to spawn. |
+| `variables` | map| [StartMultipleThreadsNode.VariablesEntry](#startmultiplethreadsnodevariablesentry) | Variables which are passed into the child ThreadRuns. These assignments are the same for all spawned threads. |
+| `iterable` | | [VariableAssignment](#variableassignment) | Assignment that resolves to a JSON_ARR. For each element in the list, a child ThreadRun is started. The reserved `INPUT` variable for each Child is set to the corresponding item in the list. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3158,13 +3166,13 @@ There is no output.
 
 ### Message `StartThreadNode` {#startthreadnode}
 
-
+Starts a Child ThreadRun with a specific ThreadSpec.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `thread_spec_name` | | string |  |
-| `variables` | map| [StartThreadNode.VariablesEntry](#startthreadnodevariablesentry) |  |
+| `thread_spec_name` | | string | The name of the ThreadSpec to spawn. |
+| `variables` | map| [StartThreadNode.VariablesEntry](#startthreadnodevariablesentry) | The input variables to pass into the Child ThreadRun. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3186,7 +3194,8 @@ There is no output.
 
 ### Message `ThreadRetentionPolicy` {#threadretentionpolicy}
 
-
+ThreadRetentionPolicy specifies how long to keep record of a ThreadRun and its associated
+NodeRun's and TaskRun's and Variables after the ThreadRun has been completed.
 
 
 | Field | Label | Type | Description |
@@ -3199,15 +3208,16 @@ There is no output.
 
 ### Message `ThreadSpec` {#threadspec}
 
-
+Defines a blueprint for a ThreadRun, which is a thread of execution inside a
+WfRun.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `nodes` | map| [ThreadSpec.NodesEntry](#threadspecnodesentry) |  |
-| `variable_defs` | repeated| [ThreadVarDef](#threadvardef) |  |
-| `interrupt_defs` | repeated| [InterruptDef](#interruptdef) |  |
-| `retention_policy` | optional| [ThreadRetentionPolicy](#threadretentionpolicy) |  |
+| `nodes` | map| [ThreadSpec.NodesEntry](#threadspecnodesentry) | The Nodes inside this ThreadSpec. Maps from name to Node. |
+| `variable_defs` | repeated| [ThreadVarDef](#threadvardef) | Defines Variables that are local to ThreadRun's of this ThreadSpec. |
+| `interrupt_defs` | repeated| [InterruptDef](#interruptdef) | Defines all interrupts for this ThreadSpec. |
+| `retention_policy` | optional| [ThreadRetentionPolicy](#threadretentionpolicy) | Optional retention policy to clean up ThreadRun's of this ThreadSpec after they have been completed. This is important for long-lived WfRun's that could have hundreds of ThreadRun's, because a ThreadRun has a record inside the WfRun itself. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3311,13 +3321,18 @@ The output is a JSON_OBJ variable with one key/value pair for each UserTaskField
 
 ### Message `WaitForThreadsNode` {#waitforthreadsnode}
 
+Specifies that a ThreadRun will wait for certain specified Child ThreadRun's to
+complete or fail before the WfRun continues. If one of the Child ThreadRun's
+throws a Failure that is not caught by the `per_thread_failure_handlers`,
+then the Child ThreadRun's Failure is thrown by the WaitForThreadsRun.
 
+No output.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `threads` | oneof `threads_to_wait_for`| [WaitForThreadsNode.ThreadsToWaitFor](#waitforthreadsnodethreadstowaitfor) |  |
-| `thread_list` | oneof `threads_to_wait_for`| [VariableAssignment](#variableassignment) |  |
+| `threads` | oneof `threads_to_wait_for`| [WaitForThreadsNode.ThreadsToWaitFor](#waitforthreadsnodethreadstowaitfor) | Specifies that the WaitForThreadsRun will wait for the threads specified here. |
+| `thread_list` | oneof `threads_to_wait_for`| [VariableAssignment](#variableassignment) | Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained in the JSON_ARR value specified here. Each element in the list must be an INT representing the `number` of a ThreadRun that we're waiting for. |
 | `per_thread_failure_handlers` | repeated| [FailureHandlerDef](#failurehandlerdef) | If any of the child ThreadRun's that we are waiting for throw a Failure, we will evaluate it against these FailureHandlerDef's and run the first matching FailureHandler (if any). The FailureHandler will be a child of the child, which means that it has access to all of the failed Child's variables.<br/><br/>This is different from Node-level Failure Handlers, which would be _siblings_ of the ThreadRuns that we're waiting for, and would run only when the overall nodeRun has failed. |
  <!-- end Fields -->
  <!-- end HasFields -->
@@ -3331,7 +3346,7 @@ The output is a JSON_OBJ variable with one key/value pair for each UserTaskField
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `thread_run_number` | | [VariableAssignment](#variableassignment) |  |
+| `thread_run_number` | | [VariableAssignment](#variableassignment) | Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number matches the value specified here. Must resolve to an INT. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3344,7 +3359,7 @@ The output is a JSON_OBJ variable with one key/value pair for each UserTaskField
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `threads` | repeated| [WaitForThreadsNode.ThreadToWaitFor](#waitforthreadsnodethreadtowaitfor) |  |
+| `threads` | repeated| [WaitForThreadsNode.ThreadToWaitFor](#waitforthreadsnodethreadtowaitfor) | Wait for one or more ThreadRun's |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3761,12 +3776,12 @@ The type of a ThreadRUn.
 
 
 ### Enum FailureHandlerDef.LHFailureType {#failurehandlerdeflhfailuretype}
-
+Specifies a type of Failure
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| FAILURE_TYPE_ERROR | 0 |  |
-| FAILURE_TYPE_EXCEPTION | 1 |  |
+| FAILURE_TYPE_ERROR | 0 | FAILURE_TYPE_ERROR specifies any technical `ERROR`. |
+| FAILURE_TYPE_EXCEPTION | 1 | Specifies a user-defined, business-related `EXCEPTION`. |
 
 
 

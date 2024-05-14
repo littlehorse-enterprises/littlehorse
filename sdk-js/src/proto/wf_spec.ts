@@ -204,10 +204,22 @@ export interface ThreadVarDef {
   accessLevel: WfRunVariableAccessLevel;
 }
 
+/**
+ * Defines a blueprint for a ThreadRun, which is a thread of execution inside a
+ * WfRun.
+ */
 export interface ThreadSpec {
+  /** The Nodes inside this ThreadSpec. Maps from name to Node. */
   nodes: { [key: string]: Node };
+  /** Defines Variables that are local to ThreadRun's of this ThreadSpec. */
   variableDefs: ThreadVarDef[];
+  /** Defines all interrupts for this ThreadSpec. */
   interruptDefs: InterruptDef[];
+  /**
+   * Optional retention policy to clean up ThreadRun's of this ThreadSpec after they
+   * have been completed. This is important for long-lived WfRun's that could have
+   * hundreds of ThreadRun's, because a ThreadRun has a record inside the WfRun itself.
+   */
   retentionPolicy?: ThreadRetentionPolicy | undefined;
 }
 
@@ -216,6 +228,10 @@ export interface ThreadSpec_NodesEntry {
   value: Node | undefined;
 }
 
+/**
+ * ThreadRetentionPolicy specifies how long to keep record of a ThreadRun and its associated
+ * NodeRun's and TaskRun's and Variables after the ThreadRun has been completed.
+ */
 export interface ThreadRetentionPolicy {
   /**
    * Delete associated ThreadRun's X seconds after they terminate, regardless
@@ -224,13 +240,30 @@ export interface ThreadRetentionPolicy {
   secondsAfterThreadTermination?: number | undefined;
 }
 
+/**
+ * Defines an Interrupt for a ThreadSpec. An Interrupt means that when an ExternalEvent
+ * of a certain type is registered to the WfRun, then the affected ThreadRun is HALTED
+ * and a handler ThreadRun is run as an interrupt handler. The interrupted ThreadRun
+ * is resumed once the interrupt handler completes.
+ */
 export interface InterruptDef {
-  externalEventDefId: ExternalEventDefId | undefined;
+  /**
+   * The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+   * Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+   * and an ExternalEventNode in the same WfSpec.
+   */
+  externalEventDefId:
+    | ExternalEventDefId
+    | undefined;
+  /** The name of the ThreadSpec that we run as the interrupt handler. */
   handlerSpecName: string;
 }
 
+/** Starts a Child ThreadRun with a specific ThreadSpec. */
 export interface StartThreadNode {
+  /** The name of the ThreadSpec to spawn. */
   threadSpecName: string;
+  /** The input variables to pass into the Child ThreadRun. */
   variables: { [key: string]: VariableAssignment };
 }
 
@@ -239,9 +272,25 @@ export interface StartThreadNode_VariablesEntry {
   value: VariableAssignment | undefined;
 }
 
+/**
+ * Iterates over a JSON_ARR and starts a Child ThreadRun for each element in the
+ * list.
+ *
+ * Returns a JSON_ARR containing the thread_run_number of each spawned child.
+ */
 export interface StartMultipleThreadsNode {
+  /** The name of the ThreadSpec to spawn. */
   threadSpecName: string;
+  /**
+   * Variables which are passed into the child ThreadRuns. These assignments are
+   * the same for all spawned threads.
+   */
   variables: { [key: string]: VariableAssignment };
+  /**
+   * Assignment that resolves to a JSON_ARR. For each element in the list, a child
+   * ThreadRun is started. The reserved `INPUT` variable for each Child is set to the
+   * corresponding item in the list.
+   */
   iterable: VariableAssignment | undefined;
 }
 
@@ -250,14 +299,35 @@ export interface StartMultipleThreadsNode_VariablesEntry {
   value: VariableAssignment | undefined;
 }
 
+/**
+ * Specifies a Failure Handler which can run in case of a certain Failure to allow
+ * the ThreadRun to run compensatory logic and gracefully continue rather than
+ * failing immediately.
+ */
 export interface FailureHandlerDef {
+  /** The name of the ThreadSpec to run as a */
   handlerSpecName: string;
-  specificFailure?: string | undefined;
+  /**
+   * Specifies that this FailureHandlerDef will be triggered for a Failure with this
+   * exact name.
+   *
+   * If this and `specific_failure` are both unset, then any failure is caught.
+   */
+  specificFailure?:
+    | string
+    | undefined;
+  /**
+   * Specifies that this FailureHandlerDef will be triggered for any failure matching
+   * this type (ERROR or EXCEPTION).
+   */
   anyFailureOfType?: FailureHandlerDef_LHFailureType | undefined;
 }
 
+/** Specifies a type of Failure */
 export enum FailureHandlerDef_LHFailureType {
+  /** FAILURE_TYPE_ERROR - FAILURE_TYPE_ERROR specifies any technical `ERROR`. */
   FAILURE_TYPE_ERROR = "FAILURE_TYPE_ERROR",
+  /** FAILURE_TYPE_EXCEPTION - Specifies a user-defined, business-related `EXCEPTION`. */
   FAILURE_TYPE_EXCEPTION = "FAILURE_TYPE_EXCEPTION",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
@@ -289,8 +359,27 @@ export function failureHandlerDef_LHFailureTypeToNumber(object: FailureHandlerDe
   }
 }
 
+/**
+ * Specifies that a ThreadRun will wait for certain specified Child ThreadRun's to
+ * complete or fail before the WfRun continues. If one of the Child ThreadRun's
+ * throws a Failure that is not caught by the `per_thread_failure_handlers`,
+ * then the Child ThreadRun's Failure is thrown by the WaitForThreadsRun.
+ *
+ * No output.
+ */
 export interface WaitForThreadsNode {
-  threads?: WaitForThreadsNode_ThreadsToWaitFor | undefined;
+  /**
+   * Specifies that the WaitForThreadsRun will wait for the threads specified
+   * here.
+   */
+  threads?:
+    | WaitForThreadsNode_ThreadsToWaitFor
+    | undefined;
+  /**
+   * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+   * in the JSON_ARR value specified here. Each element in the list must be an INT
+   * representing the `number` of a ThreadRun that we're waiting for.
+   */
   threadList?:
     | VariableAssignment
     | undefined;
@@ -308,10 +397,15 @@ export interface WaitForThreadsNode {
 }
 
 export interface WaitForThreadsNode_ThreadToWaitFor {
+  /**
+   * Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+   * matches the value specified here. Must resolve to an INT.
+   */
   threadRunNumber: VariableAssignment | undefined;
 }
 
 export interface WaitForThreadsNode_ThreadsToWaitFor {
+  /** Wait for one or more ThreadRun's */
   threads: WaitForThreadsNode_ThreadToWaitFor[];
 }
 

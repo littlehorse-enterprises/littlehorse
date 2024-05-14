@@ -8,31 +8,64 @@ public interface WaitForThreadsNodeOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for the threads specified
+   * here.
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
    * @return Whether the threads field is set.
    */
   boolean hasThreads();
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for the threads specified
+   * here.
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
    * @return The threads.
    */
   io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor getThreads();
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for the threads specified
+   * here.
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForOrBuilder getThreadsOrBuilder();
 
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+   * in the JSON_ARR value specified here. Each element in the list must be an INT
+   * representing the `number` of a ThreadRun that we're waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
    * @return Whether the threadList field is set.
    */
   boolean hasThreadList();
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+   * in the JSON_ARR value specified here. Each element in the list must be an INT
+   * representing the `number` of a ThreadRun that we're waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
    * @return The threadList.
    */
   io.littlehorse.sdk.common.proto.VariableAssignment getThreadList();
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+   * in the JSON_ARR value specified here. Each element in the list must be an INT
+   * representing the `number` of a ThreadRun that we're waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getThreadListOrBuilder();

@@ -4,6 +4,15 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Specifies that a ThreadRun will wait for certain specified Child ThreadRun's to
+ * complete or fail before the WfRun continues. If one of the Child ThreadRun's
+ * throws a Failure that is not caught by the `per_thread_failure_handlers`,
+ * then the Child ThreadRun's Failure is thrown by the WaitForThreadsRun.
+ *
+ * No output.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.WaitForThreadsNode}
  */
 public final class WaitForThreadsNode extends
@@ -44,16 +53,31 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <pre>
+     * Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+     * matches the value specified here. Must resolve to an INT.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
      * @return Whether the threadRunNumber field is set.
      */
     boolean hasThreadRunNumber();
     /**
+     * <pre>
+     * Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+     * matches the value specified here. Must resolve to an INT.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
      * @return The threadRunNumber.
      */
     io.littlehorse.sdk.common.proto.VariableAssignment getThreadRunNumber();
     /**
+     * <pre>
+     * Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+     * matches the value specified here. Must resolve to an INT.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
      */
     io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getThreadRunNumberOrBuilder();
@@ -96,6 +120,11 @@ private static final long serialVersionUID = 0L;
     public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 1;
     private io.littlehorse.sdk.common.proto.VariableAssignment threadRunNumber_;
     /**
+     * <pre>
+     * Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+     * matches the value specified here. Must resolve to an INT.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
      * @return Whether the threadRunNumber field is set.
      */
@@ -104,6 +133,11 @@ private static final long serialVersionUID = 0L;
       return threadRunNumber_ != null;
     }
     /**
+     * <pre>
+     * Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+     * matches the value specified here. Must resolve to an INT.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
      * @return The threadRunNumber.
      */
@@ -112,6 +146,11 @@ private static final long serialVersionUID = 0L;
       return threadRunNumber_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : threadRunNumber_;
     }
     /**
+     * <pre>
+     * Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+     * matches the value specified here. Must resolve to an INT.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
      */
     @java.lang.Override
@@ -461,6 +500,11 @@ private static final long serialVersionUID = 0L;
       private com.google.protobuf.SingleFieldBuilderV3<
           io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> threadRunNumberBuilder_;
       /**
+       * <pre>
+       * Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+       * matches the value specified here. Must resolve to an INT.
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        * @return Whether the threadRunNumber field is set.
        */
@@ -468,6 +512,11 @@ private static final long serialVersionUID = 0L;
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
+       * <pre>
+       * Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+       * matches the value specified here. Must resolve to an INT.
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        * @return The threadRunNumber.
        */
@@ -479,6 +528,11 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+       * matches the value specified here. Must resolve to an INT.
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        */
       public Builder setThreadRunNumber(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -495,6 +549,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+       * matches the value specified here. Must resolve to an INT.
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        */
       public Builder setThreadRunNumber(
@@ -509,6 +568,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+       * matches the value specified here. Must resolve to an INT.
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        */
       public Builder mergeThreadRunNumber(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -528,6 +592,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+       * matches the value specified here. Must resolve to an INT.
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        */
       public Builder clearThreadRunNumber() {
@@ -541,6 +610,11 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+       * matches the value specified here. Must resolve to an INT.
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getThreadRunNumberBuilder() {
@@ -549,6 +623,11 @@ private static final long serialVersionUID = 0L;
         return getThreadRunNumberFieldBuilder().getBuilder();
       }
       /**
+       * <pre>
+       * Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+       * matches the value specified here. Must resolve to an INT.
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        */
       public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getThreadRunNumberOrBuilder() {
@@ -560,6 +639,11 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+       * matches the value specified here. Must resolve to an INT.
+       * </pre>
+       *
        * <code>.littlehorse.VariableAssignment thread_run_number = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -644,24 +728,44 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <pre>
+     * Wait for one or more ThreadRun's
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> 
         getThreadsList();
     /**
+     * <pre>
+     * Wait for one or more ThreadRun's
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor getThreads(int index);
     /**
+     * <pre>
+     * Wait for one or more ThreadRun's
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     int getThreadsCount();
     /**
+     * <pre>
+     * Wait for one or more ThreadRun's
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     java.util.List<? extends io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder> 
         getThreadsOrBuilderList();
     /**
+     * <pre>
+     * Wait for one or more ThreadRun's
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder getThreadsOrBuilder(
@@ -707,6 +811,10 @@ private static final long serialVersionUID = 0L;
     @SuppressWarnings("serial")
     private java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> threads_;
     /**
+     * <pre>
+     * Wait for one or more ThreadRun's
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     @java.lang.Override
@@ -714,6 +822,10 @@ private static final long serialVersionUID = 0L;
       return threads_;
     }
     /**
+     * <pre>
+     * Wait for one or more ThreadRun's
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     @java.lang.Override
@@ -722,6 +834,10 @@ private static final long serialVersionUID = 0L;
       return threads_;
     }
     /**
+     * <pre>
+     * Wait for one or more ThreadRun's
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     @java.lang.Override
@@ -729,6 +845,10 @@ private static final long serialVersionUID = 0L;
       return threads_.size();
     }
     /**
+     * <pre>
+     * Wait for one or more ThreadRun's
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     @java.lang.Override
@@ -736,6 +856,10 @@ private static final long serialVersionUID = 0L;
       return threads_.get(index);
     }
     /**
+     * <pre>
+     * Wait for one or more ThreadRun's
+     * </pre>
+     *
      * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
      */
     @java.lang.Override
@@ -1131,6 +1255,10 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder> threadsBuilder_;
 
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor> getThreadsList() {
@@ -1141,6 +1269,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public int getThreadsCount() {
@@ -1151,6 +1283,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor getThreads(int index) {
@@ -1161,6 +1297,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public Builder setThreads(
@@ -1178,6 +1318,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public Builder setThreads(
@@ -1192,6 +1336,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public Builder addThreads(io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor value) {
@@ -1208,6 +1356,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public Builder addThreads(
@@ -1225,6 +1377,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public Builder addThreads(
@@ -1239,6 +1395,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public Builder addThreads(
@@ -1253,6 +1413,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public Builder addAllThreads(
@@ -1268,6 +1432,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public Builder clearThreads() {
@@ -1281,6 +1449,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public Builder removeThreads(int index) {
@@ -1294,6 +1466,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder getThreadsBuilder(
@@ -1301,6 +1477,10 @@ private static final long serialVersionUID = 0L;
         return getThreadsFieldBuilder().getBuilder(index);
       }
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder getThreadsOrBuilder(
@@ -1311,6 +1491,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public java.util.List<? extends io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitForOrBuilder> 
@@ -1322,6 +1506,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder addThreadsBuilder() {
@@ -1329,6 +1517,10 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.getDefaultInstance());
       }
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder addThreadsBuilder(
@@ -1337,6 +1529,10 @@ private static final long serialVersionUID = 0L;
             index, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.getDefaultInstance());
       }
       /**
+       * <pre>
+       * Wait for one or more ThreadRun's
+       * </pre>
+       *
        * <code>repeated .littlehorse.WaitForThreadsNode.ThreadToWaitFor threads = 1;</code>
        */
       public java.util.List<io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadToWaitFor.Builder> 
@@ -1465,6 +1661,11 @@ private static final long serialVersionUID = 0L;
 
   public static final int THREADS_FIELD_NUMBER = 1;
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for the threads specified
+   * here.
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
    * @return Whether the threads field is set.
    */
@@ -1473,6 +1674,11 @@ private static final long serialVersionUID = 0L;
     return threadsToWaitForCase_ == 1;
   }
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for the threads specified
+   * here.
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
    * @return The threads.
    */
@@ -1484,6 +1690,11 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for the threads specified
+   * here.
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
    */
   @java.lang.Override
@@ -1496,6 +1707,12 @@ private static final long serialVersionUID = 0L;
 
   public static final int THREAD_LIST_FIELD_NUMBER = 2;
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+   * in the JSON_ARR value specified here. Each element in the list must be an INT
+   * representing the `number` of a ThreadRun that we're waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
    * @return Whether the threadList field is set.
    */
@@ -1504,6 +1721,12 @@ private static final long serialVersionUID = 0L;
     return threadsToWaitForCase_ == 2;
   }
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+   * in the JSON_ARR value specified here. Each element in the list must be an INT
+   * representing the `number` of a ThreadRun that we're waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
    * @return The threadList.
    */
@@ -1515,6 +1738,12 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+   * in the JSON_ARR value specified here. Each element in the list must be an INT
+   * representing the `number` of a ThreadRun that we're waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
    */
   @java.lang.Override
@@ -1820,6 +2049,15 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Specifies that a ThreadRun will wait for certain specified Child ThreadRun's to
+   * complete or fail before the WfRun continues. If one of the Child ThreadRun's
+   * throws a Failure that is not caught by the `per_thread_failure_handlers`,
+   * then the Child ThreadRun's Failure is thrown by the WaitForThreadsRun.
+   *
+   * No output.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.WaitForThreadsNode}
    */
   public static final class Builder extends
@@ -2101,6 +2339,11 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForOrBuilder> threadsBuilder_;
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for the threads specified
+     * here.
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
      * @return Whether the threads field is set.
      */
@@ -2109,6 +2352,11 @@ private static final long serialVersionUID = 0L;
       return threadsToWaitForCase_ == 1;
     }
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for the threads specified
+     * here.
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
      * @return The threads.
      */
@@ -2127,6 +2375,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for the threads specified
+     * here.
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
      */
     public Builder setThreads(io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor value) {
@@ -2143,6 +2396,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for the threads specified
+     * here.
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
      */
     public Builder setThreads(
@@ -2157,6 +2415,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for the threads specified
+     * here.
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
      */
     public Builder mergeThreads(io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor value) {
@@ -2180,6 +2443,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for the threads specified
+     * here.
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
      */
     public Builder clearThreads() {
@@ -2199,12 +2467,22 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for the threads specified
+     * here.
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor.Builder getThreadsBuilder() {
       return getThreadsFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for the threads specified
+     * here.
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
      */
     @java.lang.Override
@@ -2219,6 +2497,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for the threads specified
+     * here.
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -2243,6 +2526,12 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> threadListBuilder_;
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+     * in the JSON_ARR value specified here. Each element in the list must be an INT
+     * representing the `number` of a ThreadRun that we're waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      * @return Whether the threadList field is set.
      */
@@ -2251,6 +2540,12 @@ private static final long serialVersionUID = 0L;
       return threadsToWaitForCase_ == 2;
     }
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+     * in the JSON_ARR value specified here. Each element in the list must be an INT
+     * representing the `number` of a ThreadRun that we're waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      * @return The threadList.
      */
@@ -2269,6 +2564,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+     * in the JSON_ARR value specified here. Each element in the list must be an INT
+     * representing the `number` of a ThreadRun that we're waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      */
     public Builder setThreadList(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -2285,6 +2586,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+     * in the JSON_ARR value specified here. Each element in the list must be an INT
+     * representing the `number` of a ThreadRun that we're waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      */
     public Builder setThreadList(
@@ -2299,6 +2606,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+     * in the JSON_ARR value specified here. Each element in the list must be an INT
+     * representing the `number` of a ThreadRun that we're waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      */
     public Builder mergeThreadList(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -2322,6 +2635,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+     * in the JSON_ARR value specified here. Each element in the list must be an INT
+     * representing the `number` of a ThreadRun that we're waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      */
     public Builder clearThreadList() {
@@ -2341,12 +2660,24 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+     * in the JSON_ARR value specified here. Each element in the list must be an INT
+     * representing the `number` of a ThreadRun that we're waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getThreadListBuilder() {
       return getThreadListFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+     * in the JSON_ARR value specified here. Each element in the list must be an INT
+     * representing the `number` of a ThreadRun that we're waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      */
     @java.lang.Override
@@ -2361,6 +2692,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+     * in the JSON_ARR value specified here. Each element in the list must be an INT
+     * representing the `number` of a ThreadRun that we're waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

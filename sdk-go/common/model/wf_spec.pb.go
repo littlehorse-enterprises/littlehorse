@@ -75,10 +75,13 @@ func (WfRunVariableAccessLevel) EnumDescriptor() ([]byte, []int) {
 	return file_wf_spec_proto_rawDescGZIP(), []int{0}
 }
 
+// Specifies a type of Failure
 type FailureHandlerDef_LHFailureType int32
 
 const (
-	FailureHandlerDef_FAILURE_TYPE_ERROR     FailureHandlerDef_LHFailureType = 0
+	// FAILURE_TYPE_ERROR specifies any technical `ERROR`.
+	FailureHandlerDef_FAILURE_TYPE_ERROR FailureHandlerDef_LHFailureType = 0
+	// Specifies a user-defined, business-related `EXCEPTION`.
 	FailureHandlerDef_FAILURE_TYPE_EXCEPTION FailureHandlerDef_LHFailureType = 1
 )
 
@@ -471,14 +474,22 @@ func (x *ThreadVarDef) GetAccessLevel() WfRunVariableAccessLevel {
 	return WfRunVariableAccessLevel_PUBLIC_VAR
 }
 
+// Defines a blueprint for a ThreadRun, which is a thread of execution inside a
+// WfRun.
 type ThreadSpec struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Nodes           map[string]*Node       `protobuf:"bytes,1,rep,name=nodes,proto3" json:"nodes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	VariableDefs    []*ThreadVarDef        `protobuf:"bytes,2,rep,name=variable_defs,json=variableDefs,proto3" json:"variable_defs,omitempty"`
-	InterruptDefs   []*InterruptDef        `protobuf:"bytes,3,rep,name=interrupt_defs,json=interruptDefs,proto3" json:"interrupt_defs,omitempty"`
+	// The Nodes inside this ThreadSpec. Maps from name to Node.
+	Nodes map[string]*Node `protobuf:"bytes,1,rep,name=nodes,proto3" json:"nodes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// Defines Variables that are local to ThreadRun's of this ThreadSpec.
+	VariableDefs []*ThreadVarDef `protobuf:"bytes,2,rep,name=variable_defs,json=variableDefs,proto3" json:"variable_defs,omitempty"`
+	// Defines all interrupts for this ThreadSpec.
+	InterruptDefs []*InterruptDef `protobuf:"bytes,3,rep,name=interrupt_defs,json=interruptDefs,proto3" json:"interrupt_defs,omitempty"`
+	// Optional retention policy to clean up ThreadRun's of this ThreadSpec after they
+	// have been completed. This is important for long-lived WfRun's that could have
+	// hundreds of ThreadRun's, because a ThreadRun has a record inside the WfRun itself.
 	RetentionPolicy *ThreadRetentionPolicy `protobuf:"bytes,4,opt,name=retention_policy,json=retentionPolicy,proto3,oneof" json:"retention_policy,omitempty"`
 }
 
@@ -542,6 +553,8 @@ func (x *ThreadSpec) GetRetentionPolicy() *ThreadRetentionPolicy {
 	return nil
 }
 
+// ThreadRetentionPolicy specifies how long to keep record of a ThreadRun and its associated
+// NodeRun's and TaskRun's and Variables after the ThreadRun has been completed.
 type ThreadRetentionPolicy struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -611,13 +624,21 @@ type ThreadRetentionPolicy_SecondsAfterThreadTermination struct {
 func (*ThreadRetentionPolicy_SecondsAfterThreadTermination) isThreadRetentionPolicy_ThreadGcPolicy() {
 }
 
+// Defines an Interrupt for a ThreadSpec. An Interrupt means that when an ExternalEvent
+// of a certain type is registered to the WfRun, then the affected ThreadRun is HALTED
+// and a handler ThreadRun is run as an interrupt handler. The interrupted ThreadRun
+// is resumed once the interrupt handler completes.
 type InterruptDef struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+	// Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+	// and an ExternalEventNode in the same WfSpec.
 	ExternalEventDefId *ExternalEventDefId `protobuf:"bytes,1,opt,name=external_event_def_id,json=externalEventDefId,proto3" json:"external_event_def_id,omitempty"`
-	HandlerSpecName    string              `protobuf:"bytes,2,opt,name=handler_spec_name,json=handlerSpecName,proto3" json:"handler_spec_name,omitempty"`
+	// The name of the ThreadSpec that we run as the interrupt handler.
+	HandlerSpecName string `protobuf:"bytes,2,opt,name=handler_spec_name,json=handlerSpecName,proto3" json:"handler_spec_name,omitempty"`
 }
 
 func (x *InterruptDef) Reset() {
@@ -666,13 +687,16 @@ func (x *InterruptDef) GetHandlerSpecName() string {
 	return ""
 }
 
+// Starts a Child ThreadRun with a specific ThreadSpec.
 type StartThreadNode struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ThreadSpecName string                         `protobuf:"bytes,1,opt,name=thread_spec_name,json=threadSpecName,proto3" json:"thread_spec_name,omitempty"`
-	Variables      map[string]*VariableAssignment `protobuf:"bytes,2,rep,name=variables,proto3" json:"variables,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// The name of the ThreadSpec to spawn.
+	ThreadSpecName string `protobuf:"bytes,1,opt,name=thread_spec_name,json=threadSpecName,proto3" json:"thread_spec_name,omitempty"`
+	// The input variables to pass into the Child ThreadRun.
+	Variables map[string]*VariableAssignment `protobuf:"bytes,2,rep,name=variables,proto3" json:"variables,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (x *StartThreadNode) Reset() {
@@ -721,14 +745,24 @@ func (x *StartThreadNode) GetVariables() map[string]*VariableAssignment {
 	return nil
 }
 
+// Iterates over a JSON_ARR and starts a Child ThreadRun for each element in the
+// list.
+//
+// Returns a JSON_ARR containing the thread_run_number of each spawned child.
 type StartMultipleThreadsNode struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ThreadSpecName string                         `protobuf:"bytes,1,opt,name=thread_spec_name,json=threadSpecName,proto3" json:"thread_spec_name,omitempty"`
-	Variables      map[string]*VariableAssignment `protobuf:"bytes,2,rep,name=variables,proto3" json:"variables,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	Iterable       *VariableAssignment            `protobuf:"bytes,3,opt,name=iterable,proto3" json:"iterable,omitempty"`
+	// The name of the ThreadSpec to spawn.
+	ThreadSpecName string `protobuf:"bytes,1,opt,name=thread_spec_name,json=threadSpecName,proto3" json:"thread_spec_name,omitempty"`
+	// Variables which are passed into the child ThreadRuns. These assignments are
+	// the same for all spawned threads.
+	Variables map[string]*VariableAssignment `protobuf:"bytes,2,rep,name=variables,proto3" json:"variables,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// Assignment that resolves to a JSON_ARR. For each element in the list, a child
+	// ThreadRun is started. The reserved `INPUT` variable for each Child is set to the
+	// corresponding item in the list.
+	Iterable *VariableAssignment `protobuf:"bytes,3,opt,name=iterable,proto3" json:"iterable,omitempty"`
 }
 
 func (x *StartMultipleThreadsNode) Reset() {
@@ -784,11 +818,15 @@ func (x *StartMultipleThreadsNode) GetIterable() *VariableAssignment {
 	return nil
 }
 
+// Specifies a Failure Handler which can run in case of a certain Failure to allow
+// the ThreadRun to run compensatory logic and gracefully continue rather than
+// failing immediately.
 type FailureHandlerDef struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The name of the ThreadSpec to run as a
 	HandlerSpecName string `protobuf:"bytes,2,opt,name=handler_spec_name,json=handlerSpecName,proto3" json:"handler_spec_name,omitempty"`
 	// Types that are assignable to FailureToCatch:
 	//	*FailureHandlerDef_SpecificFailure
@@ -861,10 +899,18 @@ type isFailureHandlerDef_FailureToCatch interface {
 }
 
 type FailureHandlerDef_SpecificFailure struct {
+	// Specifies that this FailureHandlerDef will be triggered for a Failure with this
+	// exact name.
+	//
+	// If this and `specific_failure` are both unset, then any failure is caught.
 	SpecificFailure string `protobuf:"bytes,1,opt,name=specific_failure,json=specificFailure,proto3,oneof"`
 }
 
 type FailureHandlerDef_AnyFailureOfType struct {
+	// Specifies that this FailureHandlerDef will be triggered for any failure matching
+	// this type (ERROR or EXCEPTION).
+	//
+	//
 	AnyFailureOfType FailureHandlerDef_LHFailureType `protobuf:"varint,3,opt,name=any_failure_of_type,json=anyFailureOfType,proto3,enum=littlehorse.FailureHandlerDef_LHFailureType,oneof"`
 }
 
@@ -872,6 +918,12 @@ func (*FailureHandlerDef_SpecificFailure) isFailureHandlerDef_FailureToCatch() {
 
 func (*FailureHandlerDef_AnyFailureOfType) isFailureHandlerDef_FailureToCatch() {}
 
+// Specifies that a ThreadRun will wait for certain specified Child ThreadRun's to
+// complete or fail before the WfRun continues. If one of the Child ThreadRun's
+// throws a Failure that is not caught by the `per_thread_failure_handlers`,
+// then the Child ThreadRun's Failure is thrown by the WaitForThreadsRun.
+//
+// No output.
 type WaitForThreadsNode struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -957,10 +1009,15 @@ type isWaitForThreadsNode_ThreadsToWaitFor interface {
 }
 
 type WaitForThreadsNode_Threads struct {
+	// Specifies that the WaitForThreadsRun will wait for the threads specified
+	// here.
 	Threads *WaitForThreadsNode_ThreadsToWaitFor `protobuf:"bytes,1,opt,name=threads,proto3,oneof"`
 }
 
 type WaitForThreadsNode_ThreadList struct {
+	// Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+	// in the JSON_ARR value specified here. Each element in the list must be an INT
+	// representing the `number` of a ThreadRun that we're waiting for.
 	ThreadList *VariableAssignment `protobuf:"bytes,2,opt,name=thread_list,json=threadList,proto3,oneof"`
 }
 
@@ -2125,6 +2182,8 @@ type WaitForThreadsNode_ThreadToWaitFor struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+	// matches the value specified here. Must resolve to an INT.
 	ThreadRunNumber *VariableAssignment `protobuf:"bytes,1,opt,name=thread_run_number,json=threadRunNumber,proto3" json:"thread_run_number,omitempty"`
 }
 
@@ -2172,6 +2231,7 @@ type WaitForThreadsNode_ThreadsToWaitFor struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// Wait for one or more ThreadRun's
 	Threads []*WaitForThreadsNode_ThreadToWaitFor `protobuf:"bytes,1,rep,name=threads,proto3" json:"threads,omitempty"`
 }
 
