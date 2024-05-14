@@ -89,6 +89,7 @@ type LittleHorseClient interface {
 	PutTaskDef(ctx context.Context, in *PutTaskDefRequest, opts ...grpc.CallOption) (*TaskDef, error)
 	// Gets a TaskDef.
 	GetTaskDef(ctx context.Context, in *TaskDefId, opts ...grpc.CallOption) (*TaskDef, error)
+	// Gets the registered task worker group associated with a specific TaskDef.
 	GetTaskWorkerGroup(ctx context.Context, in *TaskDefId, opts ...grpc.CallOption) (*TaskWorkerGroup, error)
 	// Creates an ExternalEventDef.
 	PutExternalEventDef(ctx context.Context, in *PutExternalEventDefRequest, opts ...grpc.CallOption) (*ExternalEventDef, error)
@@ -812,6 +813,7 @@ type LittleHorseServer interface {
 	PutTaskDef(context.Context, *PutTaskDefRequest) (*TaskDef, error)
 	// Gets a TaskDef.
 	GetTaskDef(context.Context, *TaskDefId) (*TaskDef, error)
+	// Gets the registered task worker group associated with a specific TaskDef.
 	GetTaskWorkerGroup(context.Context, *TaskDefId) (*TaskWorkerGroup, error)
 	// Creates an ExternalEventDef.
 	PutExternalEventDef(context.Context, *PutExternalEventDefRequest) (*ExternalEventDef, error)

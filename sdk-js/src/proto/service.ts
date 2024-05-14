@@ -1231,15 +1231,29 @@ export interface UserTaskRunList {
   results: UserTaskRun[];
 }
 
+/** Describes a specific task worker */
 export interface TaskWorkerMetadata {
+  /** User-defined identifier for the worker. */
   taskWorkerId: string;
-  latestHeartbeat: string | undefined;
+  /** Timestamp indicating the last heartbeat sent by the worker. */
+  latestHeartbeat:
+    | string
+    | undefined;
+  /** The host(s) where the worker is polling tasks */
   hosts: LHHostInfo[];
 }
 
+/** Describes all workers registered for a specific TaskDef. */
 export interface TaskWorkerGroup {
-  id: TaskWorkerGroupId | undefined;
-  createdAt: string | undefined;
+  /** Identifier for the group. */
+  id:
+    | TaskWorkerGroupId
+    | undefined;
+  /** Timestamp indicating when the worker group was initially registered. */
+  createdAt:
+    | string
+    | undefined;
+  /** Metadata grouped by ClientId string. */
   taskWorkers: { [key: string]: TaskWorkerMetadata };
 }
 
@@ -6538,6 +6552,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Gets the registered task worker group associated with a specific TaskDef. */
     getTaskWorkerGroup: {
       name: "GetTaskWorkerGroup",
       requestType: TaskDefId,
@@ -7128,6 +7143,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   putTaskDef(request: PutTaskDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<TaskDef>>;
   /** Gets a TaskDef. */
   getTaskDef(request: TaskDefId, context: CallContext & CallContextExt): Promise<DeepPartial<TaskDef>>;
+  /** Gets the registered task worker group associated with a specific TaskDef. */
   getTaskWorkerGroup(request: TaskDefId, context: CallContext & CallContextExt): Promise<DeepPartial<TaskWorkerGroup>>;
   /** Creates an ExternalEventDef. */
   putExternalEventDef(
@@ -7408,6 +7424,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   putTaskDef(request: DeepPartial<PutTaskDefRequest>, options?: CallOptions & CallOptionsExt): Promise<TaskDef>;
   /** Gets a TaskDef. */
   getTaskDef(request: DeepPartial<TaskDefId>, options?: CallOptions & CallOptionsExt): Promise<TaskDef>;
+  /** Gets the registered task worker group associated with a specific TaskDef. */
   getTaskWorkerGroup(request: DeepPartial<TaskDefId>, options?: CallOptions & CallOptionsExt): Promise<TaskWorkerGroup>;
   /** Creates an ExternalEventDef. */
   putExternalEventDef(

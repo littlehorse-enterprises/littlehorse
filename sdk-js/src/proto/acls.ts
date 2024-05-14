@@ -19,6 +19,7 @@ export enum ACLResource {
   ACL_PRINCIPAL = "ACL_PRINCIPAL",
   ACL_TENANT = "ACL_TENANT",
   ACL_ALL_RESOURCES = "ACL_ALL_RESOURCES",
+  ACL_TASK_WORKER_GROUP = "ACL_TASK_WORKER_GROUP",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -45,6 +46,9 @@ export function aCLResourceFromJSON(object: any): ACLResource {
     case 6:
     case "ACL_ALL_RESOURCES":
       return ACLResource.ACL_ALL_RESOURCES;
+    case 7:
+    case "ACL_TASK_WORKER_GROUP":
+      return ACLResource.ACL_TASK_WORKER_GROUP;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -68,6 +72,8 @@ export function aCLResourceToNumber(object: ACLResource): number {
       return 5;
     case ACLResource.ACL_ALL_RESOURCES:
       return 6;
+    case ACLResource.ACL_TASK_WORKER_GROUP:
+      return 7;
     case ACLResource.UNRECOGNIZED:
     default:
       return -1;

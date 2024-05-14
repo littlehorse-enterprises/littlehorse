@@ -36,6 +36,10 @@ public enum ACLResource
    * <code>ACL_ALL_RESOURCES = 6;</code>
    */
   ACL_ALL_RESOURCES(6),
+  /**
+   * <code>ACL_TASK_WORKER_GROUP = 7;</code>
+   */
+  ACL_TASK_WORKER_GROUP(7),
   UNRECOGNIZED(-1),
   ;
 
@@ -67,6 +71,10 @@ public enum ACLResource
    * <code>ACL_ALL_RESOURCES = 6;</code>
    */
   public static final int ACL_ALL_RESOURCES_VALUE = 6;
+  /**
+   * <code>ACL_TASK_WORKER_GROUP = 7;</code>
+   */
+  public static final int ACL_TASK_WORKER_GROUP_VALUE = 7;
 
 
   public final int getNumber() {
@@ -100,6 +108,7 @@ public enum ACLResource
       case 4: return ACL_PRINCIPAL;
       case 5: return ACL_TENANT;
       case 6: return ACL_ALL_RESOURCES;
+      case 7: return ACL_TASK_WORKER_GROUP;
       default: return null;
     }
   }
