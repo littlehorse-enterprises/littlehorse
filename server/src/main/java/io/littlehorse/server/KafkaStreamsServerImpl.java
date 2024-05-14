@@ -367,8 +367,8 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         TaskWorkerGroupModel taskWorkerGroup = internalComms.getObject(
                 new TaskWorkerGroupIdModel(taskDefId), TaskWorkerGroupModel.class, requestContext());
         if (taskWorkerGroup == null) {
-            ctx.onError(
-                    new LHApiException(Status.NOT_FOUND, "Couldn't find TaskDef %s".formatted(taskDefIdPb.getName())));
+            ctx.onError(new LHApiException(
+                    Status.NOT_FOUND, "Couldn't find a TaskWorkerGroup for %s".formatted(taskDefIdPb.getName())));
         } else {
             ctx.onNext(taskWorkerGroup.toProto().build());
             ctx.onCompleted();
