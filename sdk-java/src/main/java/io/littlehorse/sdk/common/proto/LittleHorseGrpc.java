@@ -77,6 +77,37 @@ public final class LittleHorseGrpc {
     return getGetTaskDefMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefId,
+      io.littlehorse.sdk.common.proto.TaskWorkerGroup> getGetTaskWorkerGroupMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetTaskWorkerGroup",
+      requestType = io.littlehorse.sdk.common.proto.TaskDefId.class,
+      responseType = io.littlehorse.sdk.common.proto.TaskWorkerGroup.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefId,
+      io.littlehorse.sdk.common.proto.TaskWorkerGroup> getGetTaskWorkerGroupMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskWorkerGroup> getGetTaskWorkerGroupMethod;
+    if ((getGetTaskWorkerGroupMethod = LittleHorseGrpc.getGetTaskWorkerGroupMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getGetTaskWorkerGroupMethod = LittleHorseGrpc.getGetTaskWorkerGroupMethod) == null) {
+          LittleHorseGrpc.getGetTaskWorkerGroupMethod = getGetTaskWorkerGroupMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskWorkerGroup>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetTaskWorkerGroup"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.TaskWorkerGroup.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetTaskWorkerGroup"))
+              .build();
+        }
+      }
+    }
+    return getGetTaskWorkerGroupMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutExternalEventDefRequest,
       io.littlehorse.sdk.common.proto.ExternalEventDef> getPutExternalEventDefMethod;
 
@@ -1689,37 +1720,6 @@ public final class LittleHorseGrpc {
     return getListWfSpecMetricsMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskWorkerGroupRequest,
-      io.littlehorse.sdk.common.proto.ListTaskWorkerGroupResponse> getListTaskWorkerGroupMethod;
-
-  @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "ListTaskWorkerGroup",
-      requestType = io.littlehorse.sdk.common.proto.ListTaskWorkerGroupRequest.class,
-      responseType = io.littlehorse.sdk.common.proto.ListTaskWorkerGroupResponse.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskWorkerGroupRequest,
-      io.littlehorse.sdk.common.proto.ListTaskWorkerGroupResponse> getListTaskWorkerGroupMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListTaskWorkerGroupRequest, io.littlehorse.sdk.common.proto.ListTaskWorkerGroupResponse> getListTaskWorkerGroupMethod;
-    if ((getListTaskWorkerGroupMethod = LittleHorseGrpc.getListTaskWorkerGroupMethod) == null) {
-      synchronized (LittleHorseGrpc.class) {
-        if ((getListTaskWorkerGroupMethod = LittleHorseGrpc.getListTaskWorkerGroupMethod) == null) {
-          LittleHorseGrpc.getListTaskWorkerGroupMethod = getListTaskWorkerGroupMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListTaskWorkerGroupRequest, io.littlehorse.sdk.common.proto.ListTaskWorkerGroupResponse>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListTaskWorkerGroup"))
-              .setSampledToLocalTracing(true)
-              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.ListTaskWorkerGroupRequest.getDefaultInstance()))
-              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.ListTaskWorkerGroupResponse.getDefaultInstance()))
-              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListTaskWorkerGroup"))
-              .build();
-        }
-      }
-    }
-    return getListTaskWorkerGroupMethod;
-  }
-
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutTenantRequest,
       io.littlehorse.sdk.common.proto.Tenant> getPutTenantMethod;
 
@@ -1910,6 +1910,13 @@ public final class LittleHorseGrpc {
     default void getTaskDef(io.littlehorse.sdk.common.proto.TaskDefId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskDef> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetTaskDefMethod(), responseObserver);
+    }
+
+    /**
+     */
+    default void getTaskWorkerGroup(io.littlehorse.sdk.common.proto.TaskDefId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskWorkerGroup> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetTaskWorkerGroupMethod(), responseObserver);
     }
 
     /**
@@ -2467,13 +2474,6 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     */
-    default void listTaskWorkerGroup(io.littlehorse.sdk.common.proto.ListTaskWorkerGroupRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListTaskWorkerGroupResponse> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListTaskWorkerGroupMethod(), responseObserver);
-    }
-
-    /**
      * <pre>
      * EXPERIMENTAL: Creates another Tenant in the LH Server.
      * </pre>
@@ -2561,6 +2561,14 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskDef> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetTaskDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void getTaskWorkerGroup(io.littlehorse.sdk.common.proto.TaskDefId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskWorkerGroup> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetTaskWorkerGroupMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -3170,14 +3178,6 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     */
-    public void listTaskWorkerGroup(io.littlehorse.sdk.common.proto.ListTaskWorkerGroupRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListTaskWorkerGroupResponse> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getListTaskWorkerGroupMethod(), getCallOptions()), request, responseObserver);
-    }
-
-    /**
      * <pre>
      * EXPERIMENTAL: Creates another Tenant in the LH Server.
      * </pre>
@@ -3256,6 +3256,13 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.TaskDef getTaskDef(io.littlehorse.sdk.common.proto.TaskDefId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetTaskDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.TaskWorkerGroup getTaskWorkerGroup(io.littlehorse.sdk.common.proto.TaskDefId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetTaskWorkerGroupMethod(), getCallOptions(), request);
     }
 
     /**
@@ -3802,13 +3809,6 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     */
-    public io.littlehorse.sdk.common.proto.ListTaskWorkerGroupResponse listTaskWorkerGroup(io.littlehorse.sdk.common.proto.ListTaskWorkerGroupRequest request) {
-      return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getListTaskWorkerGroupMethod(), getCallOptions(), request);
-    }
-
-    /**
      * <pre>
      * EXPERIMENTAL: Creates another Tenant in the LH Server.
      * </pre>
@@ -3885,6 +3885,14 @@ public final class LittleHorseGrpc {
         io.littlehorse.sdk.common.proto.TaskDefId request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetTaskDefMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.TaskWorkerGroup> getTaskWorkerGroup(
+        io.littlehorse.sdk.common.proto.TaskDefId request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetTaskWorkerGroupMethod(), getCallOptions()), request);
     }
 
     /**
@@ -4482,14 +4490,6 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ListTaskWorkerGroupResponse> listTaskWorkerGroup(
-        io.littlehorse.sdk.common.proto.ListTaskWorkerGroupRequest request) {
-      return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getListTaskWorkerGroupMethod(), getCallOptions()), request);
-    }
-
-    /**
      * <pre>
      * EXPERIMENTAL: Creates another Tenant in the LH Server.
      * </pre>
@@ -4536,58 +4536,58 @@ public final class LittleHorseGrpc {
 
   private static final int METHODID_PUT_TASK_DEF = 0;
   private static final int METHODID_GET_TASK_DEF = 1;
-  private static final int METHODID_PUT_EXTERNAL_EVENT_DEF = 2;
-  private static final int METHODID_GET_EXTERNAL_EVENT_DEF = 3;
-  private static final int METHODID_PUT_WORKFLOW_EVENT_DEF = 4;
-  private static final int METHODID_PUT_WF_SPEC = 5;
-  private static final int METHODID_GET_WF_SPEC = 6;
-  private static final int METHODID_GET_LATEST_WF_SPEC = 7;
-  private static final int METHODID_MIGRATE_WF_SPEC = 8;
-  private static final int METHODID_PUT_USER_TASK_DEF = 9;
-  private static final int METHODID_GET_USER_TASK_DEF = 10;
-  private static final int METHODID_GET_LATEST_USER_TASK_DEF = 11;
-  private static final int METHODID_RUN_WF = 12;
-  private static final int METHODID_GET_WF_RUN = 13;
-  private static final int METHODID_GET_USER_TASK_RUN = 14;
-  private static final int METHODID_ASSIGN_USER_TASK_RUN = 15;
-  private static final int METHODID_COMPLETE_USER_TASK_RUN = 16;
-  private static final int METHODID_CANCEL_USER_TASK_RUN = 17;
-  private static final int METHODID_LIST_USER_TASK_RUNS = 18;
-  private static final int METHODID_GET_NODE_RUN = 19;
-  private static final int METHODID_LIST_NODE_RUNS = 20;
-  private static final int METHODID_GET_TASK_RUN = 21;
-  private static final int METHODID_LIST_TASK_RUNS = 22;
-  private static final int METHODID_GET_VARIABLE = 23;
-  private static final int METHODID_LIST_VARIABLES = 24;
-  private static final int METHODID_PUT_EXTERNAL_EVENT = 25;
-  private static final int METHODID_GET_EXTERNAL_EVENT = 26;
-  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 27;
-  private static final int METHODID_LIST_EXTERNAL_EVENTS = 28;
-  private static final int METHODID_SEARCH_WF_RUN = 29;
-  private static final int METHODID_SEARCH_NODE_RUN = 30;
-  private static final int METHODID_SEARCH_TASK_RUN = 31;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 32;
-  private static final int METHODID_SEARCH_VARIABLE = 33;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 34;
-  private static final int METHODID_SEARCH_TASK_DEF = 35;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 36;
-  private static final int METHODID_SEARCH_WF_SPEC = 37;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 38;
-  private static final int METHODID_SEARCH_TENANT = 39;
-  private static final int METHODID_REGISTER_TASK_WORKER = 40;
-  private static final int METHODID_REPORT_TASK = 41;
-  private static final int METHODID_STOP_WF_RUN = 42;
-  private static final int METHODID_RESUME_WF_RUN = 43;
-  private static final int METHODID_DELETE_WF_RUN = 44;
-  private static final int METHODID_DELETE_TASK_DEF = 45;
-  private static final int METHODID_DELETE_WF_SPEC = 46;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 47;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 48;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 49;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 50;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 51;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 52;
-  private static final int METHODID_LIST_TASK_WORKER_GROUP = 53;
+  private static final int METHODID_GET_TASK_WORKER_GROUP = 2;
+  private static final int METHODID_PUT_EXTERNAL_EVENT_DEF = 3;
+  private static final int METHODID_GET_EXTERNAL_EVENT_DEF = 4;
+  private static final int METHODID_PUT_WORKFLOW_EVENT_DEF = 5;
+  private static final int METHODID_PUT_WF_SPEC = 6;
+  private static final int METHODID_GET_WF_SPEC = 7;
+  private static final int METHODID_GET_LATEST_WF_SPEC = 8;
+  private static final int METHODID_MIGRATE_WF_SPEC = 9;
+  private static final int METHODID_PUT_USER_TASK_DEF = 10;
+  private static final int METHODID_GET_USER_TASK_DEF = 11;
+  private static final int METHODID_GET_LATEST_USER_TASK_DEF = 12;
+  private static final int METHODID_RUN_WF = 13;
+  private static final int METHODID_GET_WF_RUN = 14;
+  private static final int METHODID_GET_USER_TASK_RUN = 15;
+  private static final int METHODID_ASSIGN_USER_TASK_RUN = 16;
+  private static final int METHODID_COMPLETE_USER_TASK_RUN = 17;
+  private static final int METHODID_CANCEL_USER_TASK_RUN = 18;
+  private static final int METHODID_LIST_USER_TASK_RUNS = 19;
+  private static final int METHODID_GET_NODE_RUN = 20;
+  private static final int METHODID_LIST_NODE_RUNS = 21;
+  private static final int METHODID_GET_TASK_RUN = 22;
+  private static final int METHODID_LIST_TASK_RUNS = 23;
+  private static final int METHODID_GET_VARIABLE = 24;
+  private static final int METHODID_LIST_VARIABLES = 25;
+  private static final int METHODID_PUT_EXTERNAL_EVENT = 26;
+  private static final int METHODID_GET_EXTERNAL_EVENT = 27;
+  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 28;
+  private static final int METHODID_LIST_EXTERNAL_EVENTS = 29;
+  private static final int METHODID_SEARCH_WF_RUN = 30;
+  private static final int METHODID_SEARCH_NODE_RUN = 31;
+  private static final int METHODID_SEARCH_TASK_RUN = 32;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 33;
+  private static final int METHODID_SEARCH_VARIABLE = 34;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 35;
+  private static final int METHODID_SEARCH_TASK_DEF = 36;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 37;
+  private static final int METHODID_SEARCH_WF_SPEC = 38;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 39;
+  private static final int METHODID_SEARCH_TENANT = 40;
+  private static final int METHODID_REGISTER_TASK_WORKER = 41;
+  private static final int METHODID_REPORT_TASK = 42;
+  private static final int METHODID_STOP_WF_RUN = 43;
+  private static final int METHODID_RESUME_WF_RUN = 44;
+  private static final int METHODID_DELETE_WF_RUN = 45;
+  private static final int METHODID_DELETE_TASK_DEF = 46;
+  private static final int METHODID_DELETE_WF_SPEC = 47;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 48;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 49;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 50;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 51;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 52;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 53;
   private static final int METHODID_PUT_TENANT = 54;
   private static final int METHODID_PUT_PRINCIPAL = 55;
   private static final int METHODID_WHOAMI = 56;
@@ -4618,6 +4618,10 @@ public final class LittleHorseGrpc {
         case METHODID_GET_TASK_DEF:
           serviceImpl.getTaskDef((io.littlehorse.sdk.common.proto.TaskDefId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskDef>) responseObserver);
+          break;
+        case METHODID_GET_TASK_WORKER_GROUP:
+          serviceImpl.getTaskWorkerGroup((io.littlehorse.sdk.common.proto.TaskDefId) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskWorkerGroup>) responseObserver);
           break;
         case METHODID_PUT_EXTERNAL_EVENT_DEF:
           serviceImpl.putExternalEventDef((io.littlehorse.sdk.common.proto.PutExternalEventDefRequest) request,
@@ -4823,10 +4827,6 @@ public final class LittleHorseGrpc {
           serviceImpl.listWfSpecMetrics((io.littlehorse.sdk.common.proto.ListWfMetricsRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListWfMetricsResponse>) responseObserver);
           break;
-        case METHODID_LIST_TASK_WORKER_GROUP:
-          serviceImpl.listTaskWorkerGroup((io.littlehorse.sdk.common.proto.ListTaskWorkerGroupRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ListTaskWorkerGroupResponse>) responseObserver);
-          break;
         case METHODID_PUT_TENANT:
           serviceImpl.putTenant((io.littlehorse.sdk.common.proto.PutTenantRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Tenant>) responseObserver);
@@ -4878,6 +4878,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.TaskDefId,
               io.littlehorse.sdk.common.proto.TaskDef>(
                 service, METHODID_GET_TASK_DEF)))
+        .addMethod(
+          getGetTaskWorkerGroupMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.TaskDefId,
+              io.littlehorse.sdk.common.proto.TaskWorkerGroup>(
+                service, METHODID_GET_TASK_WORKER_GROUP)))
         .addMethod(
           getPutExternalEventDefMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -5243,13 +5250,6 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.ListWfMetricsResponse>(
                 service, METHODID_LIST_WF_SPEC_METRICS)))
         .addMethod(
-          getListTaskWorkerGroupMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              io.littlehorse.sdk.common.proto.ListTaskWorkerGroupRequest,
-              io.littlehorse.sdk.common.proto.ListTaskWorkerGroupResponse>(
-                service, METHODID_LIST_TASK_WORKER_GROUP)))
-        .addMethod(
           getPutTenantMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -5327,6 +5327,7 @@ public final class LittleHorseGrpc {
               .setSchemaDescriptor(new LittleHorseFileDescriptorSupplier())
               .addMethod(getPutTaskDefMethod())
               .addMethod(getGetTaskDefMethod())
+              .addMethod(getGetTaskWorkerGroupMethod())
               .addMethod(getPutExternalEventDefMethod())
               .addMethod(getGetExternalEventDefMethod())
               .addMethod(getPutWorkflowEventDefMethod())
@@ -5379,7 +5380,6 @@ public final class LittleHorseGrpc {
               .addMethod(getGetWfSpecMetricsWindowMethod())
               .addMethod(getListTaskDefMetricsMethod())
               .addMethod(getListWfSpecMetricsMethod())
-              .addMethod(getListTaskWorkerGroupMethod())
               .addMethod(getPutTenantMethod())
               .addMethod(getPutPrincipalMethod())
               .addMethod(getWhoamiMethod())

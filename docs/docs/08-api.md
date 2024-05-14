@@ -46,6 +46,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 | [TaskDefId](#taskdefid) | [TaskDef](#taskdef) | Gets a TaskDef. |
 
+### RPC `GetTaskWorkerGroup` {#gettaskworkergroup}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [TaskDefId](#taskdefid) | [TaskWorkerGroup](#taskworkergroup) |  |
+
 ### RPC `PutExternalEventDef` {#putexternaleventdef}
 
 | Request Type | Response Type | Description |
@@ -357,12 +363,6 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
 | [ListWfMetricsRequest](#listwfmetricsrequest) | [ListWfMetricsResponse](#listwfmetricsresponse) | Returns a list of WfSpec Metrics Windows. |
-
-### RPC `ListTaskWorkerGroup` {#listtaskworkergroup}
-
-| Request Type | Response Type | Description |
-| ------------ | ------------- | ------------|
-| [ListTaskWorkerGroupRequest](#listtaskworkergrouprequest) | [ListTaskWorkerGroupResponse](#listtaskworkergroupresponse) |  |
 
 ### RPC `PutTenant` {#puttenant}
 
@@ -1483,32 +1483,6 @@ List TaskRun's for a specific WfRun
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
 | `wf_run_id` | | [WfRunId](#wfrunid) | The WfRun for which to list TaskRun's |
- <!-- end Fields -->
- <!-- end HasFields -->
-
-
-
-### Message `ListTaskWorkerGroupRequest` {#listtaskworkergrouprequest}
-
-
-
-
-| Field | Label | Type | Description |
-| ----- | ----  | ---- | ----------- |
-| `task_def_id` | oneof `task_worker_group_criteria`| [TaskDefId](#taskdefid) |  |
- <!-- end Fields -->
- <!-- end HasFields -->
-
-
-
-### Message `ListTaskWorkerGroupResponse` {#listtaskworkergroupresponse}
-
-
-
-
-| Field | Label | Type | Description |
-| ----- | ----  | ---- | ----------- |
-| `result` | | [TaskWorkerGroup](#taskworkergroup) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 

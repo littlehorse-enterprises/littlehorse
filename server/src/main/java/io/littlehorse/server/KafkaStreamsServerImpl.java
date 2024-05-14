@@ -31,6 +31,7 @@ import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
@@ -44,6 +45,7 @@ import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
@@ -93,8 +95,6 @@ import io.littlehorse.sdk.common.proto.ListNodeRunsRequest;
 import io.littlehorse.sdk.common.proto.ListTaskMetricsRequest;
 import io.littlehorse.sdk.common.proto.ListTaskMetricsResponse;
 import io.littlehorse.sdk.common.proto.ListTaskRunsRequest;
-import io.littlehorse.sdk.common.proto.ListTaskWorkerGroupRequest;
-import io.littlehorse.sdk.common.proto.ListTaskWorkerGroupResponse;
 import io.littlehorse.sdk.common.proto.ListUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.ListVariablesRequest;
 import io.littlehorse.sdk.common.proto.ListWfMetricsRequest;
@@ -141,6 +141,7 @@ import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunIdList;
 import io.littlehorse.sdk.common.proto.TaskRunList;
+import io.littlehorse.sdk.common.proto.TaskWorkerGroup;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.sdk.common.proto.TenantIdList;
@@ -174,7 +175,6 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListExternalE
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListNodeRunsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskMetricsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskRunsRequestModel;
-import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskWorkerGroupModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListUserTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListVariablesRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListWfMetricsRequestModel;
@@ -193,7 +193,6 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListExte
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListNodeRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskMetricsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskRunsReply;
-import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskWorkerGroupReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListUserTaskRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListVariablesReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWfMetricsReply;
@@ -362,6 +361,20 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     }
 
     @Override
+    public void getTaskWorkerGroup(TaskDefId taskDefIdPb, StreamObserver<TaskWorkerGroup> ctx) {
+        TaskDefIdModel taskDefId = TaskDefIdModel.fromProto(taskDefIdPb, TaskDefIdModel.class, requestContext());
+        TaskWorkerGroupModel taskWorkerGroup = internalComms.getObject(
+                new TaskWorkerGroupIdModel(taskDefId), TaskWorkerGroupModel.class, requestContext());
+        if (taskWorkerGroup == null) {
+            ctx.onError(
+                    new LHApiException(Status.NOT_FOUND, "Couldn't find TaskDef %s".formatted(taskDefIdPb.getName())));
+        } else {
+            ctx.onNext(taskWorkerGroup.toProto().build());
+            ctx.onCompleted();
+        }
+    }
+
+    @Override
     @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.READ)
     public void getExternalEventDef(ExternalEventDefId req, StreamObserver<ExternalEventDef> ctx) {
         ExternalEventDefModel eed = getServiceFromContext().getExternalEventDef(req.getName());
@@ -465,14 +478,6 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         ListUserTaskRunRequestModel requestModel =
                 LHSerializable.fromProto(req, ListUserTaskRunRequestModel.class, requestContext());
         handleScan(requestModel, ctx, ListUserTaskRunReply.class);
-    }
-
-    @Override
-    public void listTaskWorkerGroup(
-            ListTaskWorkerGroupRequest request, StreamObserver<ListTaskWorkerGroupResponse> ctx) {
-        ListTaskWorkerGroupModel requestModel =
-                LHSerializable.fromProto(request, ListTaskWorkerGroupModel.class, requestContext());
-        handleScan(requestModel, ctx, ListTaskWorkerGroupReply.class);
     }
 
     @Override
