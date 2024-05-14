@@ -721,12 +721,6 @@ class UserTaskRunList(_message.Message):
     results: _containers.RepeatedCompositeFieldContainer[_user_tasks_pb2.UserTaskRun]
     def __init__(self, results: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskRun, _Mapping]]] = ...) -> None: ...
 
-class ListTaskWorkerGroupResponse(_message.Message):
-    __slots__ = ["result"]
-    RESULT_FIELD_NUMBER: _ClassVar[int]
-    result: TaskWorkerGroup
-    def __init__(self, result: _Optional[_Union[TaskWorkerGroup, _Mapping]] = ...) -> None: ...
-
 class TaskWorkerMetadata(_message.Message):
     __slots__ = ["task_worker_id", "latest_heartbeat", "hosts"]
     TASK_WORKER_ID_FIELD_NUMBER: _ClassVar[int]
@@ -753,12 +747,6 @@ class TaskWorkerGroup(_message.Message):
     created_at: _timestamp_pb2.Timestamp
     task_workers: _containers.MessageMap[str, TaskWorkerMetadata]
     def __init__(self, id: _Optional[_Union[_object_id_pb2.TaskWorkerGroupId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., task_workers: _Optional[_Mapping[str, TaskWorkerMetadata]] = ...) -> None: ...
-
-class ListTaskWorkerGroupRequest(_message.Message):
-    __slots__ = ["task_def_id"]
-    TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
-    task_def_id: _object_id_pb2.TaskDefId
-    def __init__(self, task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ...) -> None: ...
 
 class ListTaskRunsRequest(_message.Message):
     __slots__ = ["wf_run_id"]

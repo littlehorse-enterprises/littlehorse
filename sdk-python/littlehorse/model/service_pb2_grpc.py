@@ -36,6 +36,11 @@ class LittleHorseStub(object):
                 request_serializer=object__id__pb2.TaskDefId.SerializeToString,
                 response_deserializer=task__def__pb2.TaskDef.FromString,
                 )
+        self.GetTaskWorkerGroup = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetTaskWorkerGroup',
+                request_serializer=object__id__pb2.TaskDefId.SerializeToString,
+                response_deserializer=service__pb2.TaskWorkerGroup.FromString,
+                )
         self.PutExternalEventDef = channel.unary_unary(
                 '/littlehorse.LittleHorse/PutExternalEventDef',
                 request_serializer=service__pb2.PutExternalEventDefRequest.SerializeToString,
@@ -296,11 +301,6 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.ListWfMetricsRequest.SerializeToString,
                 response_deserializer=service__pb2.ListWfMetricsResponse.FromString,
                 )
-        self.ListTaskWorkerGroup = channel.unary_unary(
-                '/littlehorse.LittleHorse/ListTaskWorkerGroup',
-                request_serializer=service__pb2.ListTaskWorkerGroupRequest.SerializeToString,
-                response_deserializer=service__pb2.ListTaskWorkerGroupResponse.FromString,
-                )
         self.PutTenant = channel.unary_unary(
                 '/littlehorse.LittleHorse/PutTenant',
                 request_serializer=acls__pb2.PutTenantRequest.SerializeToString,
@@ -336,6 +336,12 @@ class LittleHorseServicer(object):
     def GetTaskDef(self, request, context):
         """Gets a TaskDef.
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetTaskWorkerGroup(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -743,12 +749,6 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def ListTaskWorkerGroup(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def PutTenant(self, request, context):
         """EXPERIMENTAL: Creates another Tenant in the LH Server.
         """
@@ -789,6 +789,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.GetTaskDef,
                     request_deserializer=object__id__pb2.TaskDefId.FromString,
                     response_serializer=task__def__pb2.TaskDef.SerializeToString,
+            ),
+            'GetTaskWorkerGroup': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetTaskWorkerGroup,
+                    request_deserializer=object__id__pb2.TaskDefId.FromString,
+                    response_serializer=service__pb2.TaskWorkerGroup.SerializeToString,
             ),
             'PutExternalEventDef': grpc.unary_unary_rpc_method_handler(
                     servicer.PutExternalEventDef,
@@ -1050,11 +1055,6 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.ListWfMetricsRequest.FromString,
                     response_serializer=service__pb2.ListWfMetricsResponse.SerializeToString,
             ),
-            'ListTaskWorkerGroup': grpc.unary_unary_rpc_method_handler(
-                    servicer.ListTaskWorkerGroup,
-                    request_deserializer=service__pb2.ListTaskWorkerGroupRequest.FromString,
-                    response_serializer=service__pb2.ListTaskWorkerGroupResponse.SerializeToString,
-            ),
             'PutTenant': grpc.unary_unary_rpc_method_handler(
                     servicer.PutTenant,
                     request_deserializer=acls__pb2.PutTenantRequest.FromString,
@@ -1116,6 +1116,23 @@ class LittleHorse(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetTaskDef',
             object__id__pb2.TaskDefId.SerializeToString,
             task__def__pb2.TaskDef.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetTaskWorkerGroup(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetTaskWorkerGroup',
+            object__id__pb2.TaskDefId.SerializeToString,
+            service__pb2.TaskWorkerGroup.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -2000,23 +2017,6 @@ class LittleHorse(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ListWfSpecMetrics',
             service__pb2.ListWfMetricsRequest.SerializeToString,
             service__pb2.ListWfMetricsResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def ListTaskWorkerGroup(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ListTaskWorkerGroup',
-            service__pb2.ListTaskWorkerGroupRequest.SerializeToString,
-            service__pb2.ListTaskWorkerGroupResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

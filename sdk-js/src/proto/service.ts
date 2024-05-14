@@ -1231,10 +1231,6 @@ export interface UserTaskRunList {
   results: UserTaskRun[];
 }
 
-export interface ListTaskWorkerGroupResponse {
-  result: TaskWorkerGroup | undefined;
-}
-
 export interface TaskWorkerMetadata {
   taskWorkerId: string;
   latestHeartbeat: string | undefined;
@@ -1250,10 +1246,6 @@ export interface TaskWorkerGroup {
 export interface TaskWorkerGroup_TaskWorkersEntry {
   key: string;
   value: TaskWorkerMetadata | undefined;
-}
-
-export interface ListTaskWorkerGroupRequest {
-  taskDefId?: TaskDefId | undefined;
 }
 
 /** List TaskRun's for a specific WfRun */
@@ -6034,53 +6026,6 @@ export const UserTaskRunList = {
   },
 };
 
-function createBaseListTaskWorkerGroupResponse(): ListTaskWorkerGroupResponse {
-  return { result: undefined };
-}
-
-export const ListTaskWorkerGroupResponse = {
-  encode(message: ListTaskWorkerGroupResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.result !== undefined) {
-      TaskWorkerGroup.encode(message.result, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ListTaskWorkerGroupResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseListTaskWorkerGroupResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.result = TaskWorkerGroup.decode(reader, reader.uint32());
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  create(base?: DeepPartial<ListTaskWorkerGroupResponse>): ListTaskWorkerGroupResponse {
-    return ListTaskWorkerGroupResponse.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<ListTaskWorkerGroupResponse>): ListTaskWorkerGroupResponse {
-    const message = createBaseListTaskWorkerGroupResponse();
-    message.result = (object.result !== undefined && object.result !== null)
-      ? TaskWorkerGroup.fromPartial(object.result)
-      : undefined;
-    return message;
-  },
-};
-
 function createBaseTaskWorkerMetadata(): TaskWorkerMetadata {
   return { taskWorkerId: "", latestHeartbeat: undefined, hosts: [] };
 }
@@ -6279,53 +6224,6 @@ export const TaskWorkerGroup_TaskWorkersEntry = {
     message.key = object.key ?? "";
     message.value = (object.value !== undefined && object.value !== null)
       ? TaskWorkerMetadata.fromPartial(object.value)
-      : undefined;
-    return message;
-  },
-};
-
-function createBaseListTaskWorkerGroupRequest(): ListTaskWorkerGroupRequest {
-  return { taskDefId: undefined };
-}
-
-export const ListTaskWorkerGroupRequest = {
-  encode(message: ListTaskWorkerGroupRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.taskDefId !== undefined) {
-      TaskDefId.encode(message.taskDefId, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ListTaskWorkerGroupRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseListTaskWorkerGroupRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.taskDefId = TaskDefId.decode(reader, reader.uint32());
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  create(base?: DeepPartial<ListTaskWorkerGroupRequest>): ListTaskWorkerGroupRequest {
-    return ListTaskWorkerGroupRequest.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<ListTaskWorkerGroupRequest>): ListTaskWorkerGroupRequest {
-    const message = createBaseListTaskWorkerGroupRequest();
-    message.taskDefId = (object.taskDefId !== undefined && object.taskDefId !== null)
-      ? TaskDefId.fromPartial(object.taskDefId)
       : undefined;
     return message;
   },
@@ -6637,6 +6535,14 @@ export const LittleHorseDefinition = {
       requestType: TaskDefId,
       requestStream: false,
       responseType: TaskDef,
+      responseStream: false,
+      options: {},
+    },
+    getTaskWorkerGroup: {
+      name: "GetTaskWorkerGroup",
+      requestType: TaskDefId,
+      requestStream: false,
+      responseType: TaskWorkerGroup,
       responseStream: false,
       options: {},
     },
@@ -7178,14 +7084,6 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    listTaskWorkerGroup: {
-      name: "ListTaskWorkerGroup",
-      requestType: ListTaskWorkerGroupRequest,
-      requestStream: false,
-      responseType: ListTaskWorkerGroupResponse,
-      responseStream: false,
-      options: {},
-    },
     /** EXPERIMENTAL: Creates another Tenant in the LH Server. */
     putTenant: {
       name: "PutTenant",
@@ -7230,6 +7128,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   putTaskDef(request: PutTaskDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<TaskDef>>;
   /** Gets a TaskDef. */
   getTaskDef(request: TaskDefId, context: CallContext & CallContextExt): Promise<DeepPartial<TaskDef>>;
+  getTaskWorkerGroup(request: TaskDefId, context: CallContext & CallContextExt): Promise<DeepPartial<TaskWorkerGroup>>;
   /** Creates an ExternalEventDef. */
   putExternalEventDef(
     request: PutExternalEventDefRequest,
@@ -7494,10 +7393,6 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ListWfMetricsRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ListWfMetricsResponse>>;
-  listTaskWorkerGroup(
-    request: ListTaskWorkerGroupRequest,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ListTaskWorkerGroupResponse>>;
   /** EXPERIMENTAL: Creates another Tenant in the LH Server. */
   putTenant(request: PutTenantRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Tenant>>;
   /** EXPERIMENTAL: Creates an Principal. */
@@ -7513,6 +7408,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   putTaskDef(request: DeepPartial<PutTaskDefRequest>, options?: CallOptions & CallOptionsExt): Promise<TaskDef>;
   /** Gets a TaskDef. */
   getTaskDef(request: DeepPartial<TaskDefId>, options?: CallOptions & CallOptionsExt): Promise<TaskDef>;
+  getTaskWorkerGroup(request: DeepPartial<TaskDefId>, options?: CallOptions & CallOptionsExt): Promise<TaskWorkerGroup>;
   /** Creates an ExternalEventDef. */
   putExternalEventDef(
     request: DeepPartial<PutExternalEventDefRequest>,
@@ -7786,10 +7682,6 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ListWfMetricsRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ListWfMetricsResponse>;
-  listTaskWorkerGroup(
-    request: DeepPartial<ListTaskWorkerGroupRequest>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ListTaskWorkerGroupResponse>;
   /** EXPERIMENTAL: Creates another Tenant in the LH Server. */
   putTenant(request: DeepPartial<PutTenantRequest>, options?: CallOptions & CallOptionsExt): Promise<Tenant>;
   /** EXPERIMENTAL: Creates an Principal. */
