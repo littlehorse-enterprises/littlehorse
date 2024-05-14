@@ -77,7 +77,7 @@ export function wfRunVariableAccessLevelToNumber(object: WfRunVariableAccessLeve
 }
 
 /**
- * A `WfSpec`` defines the logic for a worfklow in LittleHorse. It is a metadata object
+ * A `WfSpec` defines the logic for a workflow in LittleHorse. It is a metadata object
  * and is a blueprint for a `WfRun` execution.
  */
 export interface WfSpec {
@@ -387,7 +387,7 @@ export interface WaitForThreadsNode {
    * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
    * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
    * (if any). The FailureHandler will be a child of the child, which means that it has
-   * access to all of the failed Child's variables.
+   * access to all of the variables in the scope of the failed Child ThreadRun.
    *
    * This is different from Node-level Failure Handlers, which would be _siblings_ of the
    * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
@@ -477,7 +477,7 @@ export interface Node {
   entrypoint?:
     | EntrypointNode
     | undefined;
-  /** Creates an Exitrun. Every ThreadRun has at least one Exit Node. */
+  /** Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node. */
   exit?:
     | ExitNode
     | undefined;

@@ -292,7 +292,7 @@ private static final long serialVersionUID = 0L;
   public static final int EXIT_FIELD_NUMBER = 6;
   /**
    * <pre>
-   * Creates an Exitrun. Every ThreadRun has at least one Exit Node.
+   * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
    * </pre>
    *
    * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -304,7 +304,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Creates an Exitrun. Every ThreadRun has at least one Exit Node.
+   * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
    * </pre>
    *
    * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -319,7 +319,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Creates an Exitrun. Every ThreadRun has at least one Exit Node.
+   * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
    * </pre>
    *
    * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2443,7 +2443,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.ExitNode, io.littlehorse.sdk.common.proto.ExitNode.Builder, io.littlehorse.sdk.common.proto.ExitNodeOrBuilder> exitBuilder_;
     /**
      * <pre>
-     * Creates an Exitrun. Every ThreadRun has at least one Exit Node.
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2455,7 +2455,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an Exitrun. Every ThreadRun has at least one Exit Node.
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2477,7 +2477,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an Exitrun. Every ThreadRun has at least one Exit Node.
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2497,7 +2497,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an Exitrun. Every ThreadRun has at least one Exit Node.
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2515,7 +2515,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an Exitrun. Every ThreadRun has at least one Exit Node.
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2542,7 +2542,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an Exitrun. Every ThreadRun has at least one Exit Node.
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2565,7 +2565,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an Exitrun. Every ThreadRun has at least one Exit Node.
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2575,7 +2575,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an Exitrun. Every ThreadRun has at least one Exit Node.
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -2593,7 +2593,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an Exitrun. Every ThreadRun has at least one Exit Node.
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
      * </pre>
      *
      * <code>.littlehorse.ExitNode exit = 6;</code>

@@ -144,7 +144,7 @@ public interface NodeOrBuilder extends
 
   /**
    * <pre>
-   * Creates an Exitrun. Every ThreadRun has at least one Exit Node.
+   * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
    * </pre>
    *
    * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -153,7 +153,7 @@ public interface NodeOrBuilder extends
   boolean hasExit();
   /**
    * <pre>
-   * Creates an Exitrun. Every ThreadRun has at least one Exit Node.
+   * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
    * </pre>
    *
    * <code>.littlehorse.ExitNode exit = 6;</code>
@@ -162,7 +162,7 @@ public interface NodeOrBuilder extends
   io.littlehorse.sdk.common.proto.ExitNode getExit();
   /**
    * <pre>
-   * Creates an Exitrun. Every ThreadRun has at least one Exit Node.
+   * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
    * </pre>
    *
    * <code>.littlehorse.ExitNode exit = 6;</code>

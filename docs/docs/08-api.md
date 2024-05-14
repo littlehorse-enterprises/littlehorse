@@ -3090,7 +3090,7 @@ A Node is a step in a ThreadRun.
 | `outgoing_edges` | repeated| [Edge](#edge) | Defines the flow of execution and determines where the ThreadRun goes next. |
 | `failure_handlers` | repeated| [FailureHandlerDef](#failurehandlerdef) | Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown by the NodeRun. If a Failure is thrown by the Node execution, then the first matching Failure Handler (if present) is run. If there is a matching Failure Handler and it runs to completion, then the ThreadRun advances from the Node; else, it fails. |
 | `entrypoint` | oneof `node`| [EntrypointNode](#entrypointnode) | Creates an EntrypointRun. Every ThreadRun has one Entrypoint node. |
-| `exit` | oneof `node`| [ExitNode](#exitnode) | Creates an Exitrun. Every ThreadRun has at least one Exit Node. |
+| `exit` | oneof `node`| [ExitNode](#exitnode) | Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node. |
 | `task` | oneof `node`| [TaskNode](#tasknode) | Creates a TaskNodeRUn |
 | `external_event` | oneof `node`| [ExternalEventNode](#externaleventnode) | Creates an ExternalEventRun |
 | `start_thread` | oneof `node`| [StartThreadNode](#startthreadnode) | Creates a StartThreadNodeRun |
@@ -3345,7 +3345,7 @@ No output.
 | ----- | ----  | ---- | ----------- |
 | `threads` | oneof `threads_to_wait_for`| [WaitForThreadsNode.ThreadsToWaitFor](#waitforthreadsnodethreadstowaitfor) | Specifies that the WaitForThreadsRun will wait for the threads specified here. |
 | `thread_list` | oneof `threads_to_wait_for`| [VariableAssignment](#variableassignment) | Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained in the JSON_ARR value specified here. Each element in the list must be an INT representing the `number` of a ThreadRun that we're waiting for. |
-| `per_thread_failure_handlers` | repeated| [FailureHandlerDef](#failurehandlerdef) | If any of the child ThreadRun's that we are waiting for throw a Failure, we will evaluate it against these FailureHandlerDef's and run the first matching FailureHandler (if any). The FailureHandler will be a child of the child, which means that it has access to all of the failed Child's variables.<br/><br/>This is different from Node-level Failure Handlers, which would be _siblings_ of the ThreadRuns that we're waiting for, and would run only when the overall nodeRun has failed. |
+| `per_thread_failure_handlers` | repeated| [FailureHandlerDef](#failurehandlerdef) | If any of the child ThreadRun's that we are waiting for throw a Failure, we will evaluate it against these FailureHandlerDef's and run the first matching FailureHandler (if any). The FailureHandler will be a child of the child, which means that it has access to all of the variables in the scope of the failed Child ThreadRun.<br/><br/>This is different from Node-level Failure Handlers, which would be _siblings_ of the ThreadRuns that we're waiting for, and would run only when the overall nodeRun has failed. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3379,7 +3379,7 @@ No output.
 
 ### Message `WfSpec` {#wfspec}
 
-A `WfSpec`` defines the logic for a worfklow in LittleHorse. It is a metadata object
+A `WfSpec` defines the logic for a workflow in LittleHorse. It is a metadata object
 and is a blueprint for a `WfRun` execution.
 
 

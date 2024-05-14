@@ -5,7 +5,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * A `WfSpec`` defines the logic for a worfklow in LittleHorse. It is a metadata object
+ * A `WfSpec` defines the logic for a workflow in LittleHorse. It is a metadata object
  * and is a blueprint for a `WfRun` execution.
  * </pre>
  *
@@ -1505,7 +1505,7 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue) {
   }
   /**
    * <pre>
-   * A `WfSpec`` defines the logic for a worfklow in LittleHorse. It is a metadata object
+   * A `WfSpec` defines the logic for a workflow in LittleHorse. It is a metadata object
    * and is a blueprint for a `WfRun` execution.
    * </pre>
    *
