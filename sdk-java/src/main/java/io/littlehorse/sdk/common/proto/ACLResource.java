@@ -4,35 +4,74 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Defines a resource type for ACL's.
+ * </pre>
+ *
  * Protobuf enum {@code littlehorse.ACLResource}
  */
 public enum ACLResource
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
+   * <pre>
+   * Refers to `WfSpec` and `WfRun`
+   * </pre>
+   *
    * <code>ACL_WORKFLOW = 0;</code>
    */
   ACL_WORKFLOW(0),
   /**
+   * <pre>
+   * Refers to `TaskDef` and `TaskRun`
+   * </pre>
+   *
    * <code>ACL_TASK = 1;</code>
    */
   ACL_TASK(1),
   /**
+   * <pre>
+   * Refers to `ExternalEventDef` and `ExternalEvent`
+   * </pre>
+   *
    * <code>ACL_EXTERNAL_EVENT = 2;</code>
    */
   ACL_EXTERNAL_EVENT(2),
   /**
+   * <pre>
+   * Refers to `UserTaskDef` and `UserTaskRun`
+   * </pre>
+   *
    * <code>ACL_USER_TASK = 3;</code>
    */
   ACL_USER_TASK(3),
   /**
+   * <pre>
+   * Refers to the `Principal` resource. Currently, the `ACL_PRINCIPAL` permission is only
+   * valid in the `global_acls` field of the `Principal`. A `Principal` who only has access
+   * to a specific Tenant cannot create othe Principals because a Principal is scoped
+   * to the Cluster, and not to a Tenant.
+   * </pre>
+   *
    * <code>ACL_PRINCIPAL = 4;</code>
    */
   ACL_PRINCIPAL(4),
   /**
+   * <pre>
+   * Refers to the `Tenant` resource. The `ACL_TENANT` permission is only valid in the
+   * `global_acls` field of the `Principal`. This is because the `Tenant` resource is
+   * cluste-rscoped.
+   * </pre>
+   *
    * <code>ACL_TENANT = 5;</code>
    */
   ACL_TENANT(5),
   /**
+   * <pre>
+   * Refers to all resources. In the `global_acls` field, this includes `Principal` and `Tenant`
+   * resources. In the `per_tenant_acls` field, this does not include `Principal` and `Tenant` since
+   * those are cluster-scoped resources.
+   * </pre>
+   *
    * <code>ACL_ALL_RESOURCES = 6;</code>
    */
   ACL_ALL_RESOURCES(6),
@@ -40,30 +79,65 @@ public enum ACLResource
   ;
 
   /**
+   * <pre>
+   * Refers to `WfSpec` and `WfRun`
+   * </pre>
+   *
    * <code>ACL_WORKFLOW = 0;</code>
    */
   public static final int ACL_WORKFLOW_VALUE = 0;
   /**
+   * <pre>
+   * Refers to `TaskDef` and `TaskRun`
+   * </pre>
+   *
    * <code>ACL_TASK = 1;</code>
    */
   public static final int ACL_TASK_VALUE = 1;
   /**
+   * <pre>
+   * Refers to `ExternalEventDef` and `ExternalEvent`
+   * </pre>
+   *
    * <code>ACL_EXTERNAL_EVENT = 2;</code>
    */
   public static final int ACL_EXTERNAL_EVENT_VALUE = 2;
   /**
+   * <pre>
+   * Refers to `UserTaskDef` and `UserTaskRun`
+   * </pre>
+   *
    * <code>ACL_USER_TASK = 3;</code>
    */
   public static final int ACL_USER_TASK_VALUE = 3;
   /**
+   * <pre>
+   * Refers to the `Principal` resource. Currently, the `ACL_PRINCIPAL` permission is only
+   * valid in the `global_acls` field of the `Principal`. A `Principal` who only has access
+   * to a specific Tenant cannot create othe Principals because a Principal is scoped
+   * to the Cluster, and not to a Tenant.
+   * </pre>
+   *
    * <code>ACL_PRINCIPAL = 4;</code>
    */
   public static final int ACL_PRINCIPAL_VALUE = 4;
   /**
+   * <pre>
+   * Refers to the `Tenant` resource. The `ACL_TENANT` permission is only valid in the
+   * `global_acls` field of the `Principal`. This is because the `Tenant` resource is
+   * cluste-rscoped.
+   * </pre>
+   *
    * <code>ACL_TENANT = 5;</code>
    */
   public static final int ACL_TENANT_VALUE = 5;
   /**
+   * <pre>
+   * Refers to all resources. In the `global_acls` field, this includes `Principal` and `Tenant`
+   * resources. In the `per_tenant_acls` field, this does not include `Principal` and `Tenant` since
+   * those are cluster-scoped resources.
+   * </pre>
+   *
    * <code>ACL_ALL_RESOURCES = 6;</code>
    */
   public static final int ACL_ALL_RESOURCES_VALUE = 6;

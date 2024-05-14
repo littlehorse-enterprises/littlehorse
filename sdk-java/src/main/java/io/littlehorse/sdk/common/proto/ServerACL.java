@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Represents a specific set of permissions over a specific set of objects
+ * in a Tenant. This is a *positive* permission.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ServerACL}
  */
 public final class ServerACL extends
@@ -95,6 +100,10 @@ private static final long serialVersionUID = 0L;
             }
           };
   /**
+   * <pre>
+   * The resource types over which permission is granted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLResource resources = 1;</code>
    * @return A list containing the resources.
    */
@@ -104,6 +113,10 @@ private static final long serialVersionUID = 0L;
         java.lang.Integer, io.littlehorse.sdk.common.proto.ACLResource>(resources_, resources_converter_);
   }
   /**
+   * <pre>
+   * The resource types over which permission is granted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLResource resources = 1;</code>
    * @return The count of resources.
    */
@@ -112,6 +125,10 @@ private static final long serialVersionUID = 0L;
     return resources_.size();
   }
   /**
+   * <pre>
+   * The resource types over which permission is granted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLResource resources = 1;</code>
    * @param index The index of the element to return.
    * @return The resources at the given index.
@@ -121,6 +138,10 @@ private static final long serialVersionUID = 0L;
     return resources_converter_.convert(resources_.get(index));
   }
   /**
+   * <pre>
+   * The resource types over which permission is granted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLResource resources = 1;</code>
    * @return A list containing the enum numeric values on the wire for resources.
    */
@@ -130,6 +151,10 @@ private static final long serialVersionUID = 0L;
     return resources_;
   }
   /**
+   * <pre>
+   * The resource types over which permission is granted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLResource resources = 1;</code>
    * @param index The index of the value to return.
    * @return The enum numeric value on the wire of resources at the given index.
@@ -153,6 +178,10 @@ private static final long serialVersionUID = 0L;
             }
           };
   /**
+   * <pre>
+   * The actions that are permitted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
    * @return A list containing the allowedActions.
    */
@@ -162,6 +191,10 @@ private static final long serialVersionUID = 0L;
         java.lang.Integer, io.littlehorse.sdk.common.proto.ACLAction>(allowedActions_, allowedActions_converter_);
   }
   /**
+   * <pre>
+   * The actions that are permitted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
    * @return The count of allowedActions.
    */
@@ -170,6 +203,10 @@ private static final long serialVersionUID = 0L;
     return allowedActions_.size();
   }
   /**
+   * <pre>
+   * The actions that are permitted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
    * @param index The index of the element to return.
    * @return The allowedActions at the given index.
@@ -179,6 +216,10 @@ private static final long serialVersionUID = 0L;
     return allowedActions_converter_.convert(allowedActions_.get(index));
   }
   /**
+   * <pre>
+   * The actions that are permitted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
    * @return A list containing the enum numeric values on the wire for allowedActions.
    */
@@ -188,6 +229,10 @@ private static final long serialVersionUID = 0L;
     return allowedActions_;
   }
   /**
+   * <pre>
+   * The actions that are permitted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
    * @param index The index of the value to return.
    * @return The enum numeric value on the wire of allowedActions at the given index.
@@ -200,6 +245,15 @@ private static final long serialVersionUID = 0L;
 
   public static final int NAME_FIELD_NUMBER = 3;
   /**
+   * <pre>
+   * If set, then only the resources with this exact name are allowed. For example,
+   * the `READ` and `RUN` `allowed_actions` over `ACL_TASK` with `name` == `my-task`
+   * allows a Task Worker to only execute the `my-task` TaskDef.
+   *
+   * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+   * specified types.
+   * </pre>
+   *
    * <code>string name = 3;</code>
    * @return Whether the name field is set.
    */
@@ -207,6 +261,15 @@ private static final long serialVersionUID = 0L;
     return resourceFilterCase_ == 3;
   }
   /**
+   * <pre>
+   * If set, then only the resources with this exact name are allowed. For example,
+   * the `READ` and `RUN` `allowed_actions` over `ACL_TASK` with `name` == `my-task`
+   * allows a Task Worker to only execute the `my-task` TaskDef.
+   *
+   * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+   * specified types.
+   * </pre>
+   *
    * <code>string name = 3;</code>
    * @return The name.
    */
@@ -228,6 +291,15 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * If set, then only the resources with this exact name are allowed. For example,
+   * the `READ` and `RUN` `allowed_actions` over `ACL_TASK` with `name` == `my-task`
+   * allows a Task Worker to only execute the `my-task` TaskDef.
+   *
+   * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+   * specified types.
+   * </pre>
+   *
    * <code>string name = 3;</code>
    * @return The bytes for name.
    */
@@ -252,6 +324,13 @@ private static final long serialVersionUID = 0L;
 
   public static final int PREFIX_FIELD_NUMBER = 4;
   /**
+   * <pre>
+   * If set, then only the resources whose names match this prefix are allowed.
+   *
+   * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+   * specified types.
+   * </pre>
+   *
    * <code>string prefix = 4;</code>
    * @return Whether the prefix field is set.
    */
@@ -259,6 +338,13 @@ private static final long serialVersionUID = 0L;
     return resourceFilterCase_ == 4;
   }
   /**
+   * <pre>
+   * If set, then only the resources whose names match this prefix are allowed.
+   *
+   * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+   * specified types.
+   * </pre>
+   *
    * <code>string prefix = 4;</code>
    * @return The prefix.
    */
@@ -280,6 +366,13 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * If set, then only the resources whose names match this prefix are allowed.
+   *
+   * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+   * specified types.
+   * </pre>
+   *
    * <code>string prefix = 4;</code>
    * @return The bytes for prefix.
    */
@@ -535,6 +628,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Represents a specific set of permissions over a specific set of objects
+   * in a Tenant. This is a *positive* permission.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ServerACL}
    */
   public static final class Builder extends
@@ -823,6 +921,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The resource types over which permission is granted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLResource resources = 1;</code>
      * @return A list containing the resources.
      */
@@ -831,6 +933,10 @@ private static final long serialVersionUID = 0L;
           java.lang.Integer, io.littlehorse.sdk.common.proto.ACLResource>(resources_, resources_converter_);
     }
     /**
+     * <pre>
+     * The resource types over which permission is granted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLResource resources = 1;</code>
      * @return The count of resources.
      */
@@ -838,6 +944,10 @@ private static final long serialVersionUID = 0L;
       return resources_.size();
     }
     /**
+     * <pre>
+     * The resource types over which permission is granted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLResource resources = 1;</code>
      * @param index The index of the element to return.
      * @return The resources at the given index.
@@ -846,6 +956,10 @@ private static final long serialVersionUID = 0L;
       return resources_converter_.convert(resources_.get(index));
     }
     /**
+     * <pre>
+     * The resource types over which permission is granted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLResource resources = 1;</code>
      * @param index The index to set the value at.
      * @param value The resources to set.
@@ -862,6 +976,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The resource types over which permission is granted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLResource resources = 1;</code>
      * @param value The resources to add.
      * @return This builder for chaining.
@@ -876,6 +994,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The resource types over which permission is granted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLResource resources = 1;</code>
      * @param values The resources to add.
      * @return This builder for chaining.
@@ -890,6 +1012,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The resource types over which permission is granted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLResource resources = 1;</code>
      * @return This builder for chaining.
      */
@@ -900,6 +1026,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The resource types over which permission is granted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLResource resources = 1;</code>
      * @return A list containing the enum numeric values on the wire for resources.
      */
@@ -908,6 +1038,10 @@ private static final long serialVersionUID = 0L;
       return java.util.Collections.unmodifiableList(resources_);
     }
     /**
+     * <pre>
+     * The resource types over which permission is granted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLResource resources = 1;</code>
      * @param index The index of the value to return.
      * @return The enum numeric value on the wire of resources at the given index.
@@ -916,6 +1050,10 @@ private static final long serialVersionUID = 0L;
       return resources_.get(index);
     }
     /**
+     * <pre>
+     * The resource types over which permission is granted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLResource resources = 1;</code>
      * @param index The index to set the value at.
      * @param value The enum numeric value on the wire for resources to set.
@@ -929,6 +1067,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The resource types over which permission is granted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLResource resources = 1;</code>
      * @param value The enum numeric value on the wire for resources to add.
      * @return This builder for chaining.
@@ -940,6 +1082,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The resource types over which permission is granted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLResource resources = 1;</code>
      * @param values The enum numeric values on the wire for resources to add.
      * @return This builder for chaining.
@@ -963,6 +1109,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The actions that are permitted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
      * @return A list containing the allowedActions.
      */
@@ -971,6 +1121,10 @@ private static final long serialVersionUID = 0L;
           java.lang.Integer, io.littlehorse.sdk.common.proto.ACLAction>(allowedActions_, allowedActions_converter_);
     }
     /**
+     * <pre>
+     * The actions that are permitted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
      * @return The count of allowedActions.
      */
@@ -978,6 +1132,10 @@ private static final long serialVersionUID = 0L;
       return allowedActions_.size();
     }
     /**
+     * <pre>
+     * The actions that are permitted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
      * @param index The index of the element to return.
      * @return The allowedActions at the given index.
@@ -986,6 +1144,10 @@ private static final long serialVersionUID = 0L;
       return allowedActions_converter_.convert(allowedActions_.get(index));
     }
     /**
+     * <pre>
+     * The actions that are permitted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
      * @param index The index to set the value at.
      * @param value The allowedActions to set.
@@ -1002,6 +1164,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The actions that are permitted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
      * @param value The allowedActions to add.
      * @return This builder for chaining.
@@ -1016,6 +1182,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The actions that are permitted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
      * @param values The allowedActions to add.
      * @return This builder for chaining.
@@ -1030,6 +1200,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The actions that are permitted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
      * @return This builder for chaining.
      */
@@ -1040,6 +1214,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The actions that are permitted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
      * @return A list containing the enum numeric values on the wire for allowedActions.
      */
@@ -1048,6 +1226,10 @@ private static final long serialVersionUID = 0L;
       return java.util.Collections.unmodifiableList(allowedActions_);
     }
     /**
+     * <pre>
+     * The actions that are permitted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
      * @param index The index of the value to return.
      * @return The enum numeric value on the wire of allowedActions at the given index.
@@ -1056,6 +1238,10 @@ private static final long serialVersionUID = 0L;
       return allowedActions_.get(index);
     }
     /**
+     * <pre>
+     * The actions that are permitted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
      * @param index The index to set the value at.
      * @param value The enum numeric value on the wire for allowedActions to set.
@@ -1069,6 +1255,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The actions that are permitted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
      * @param value The enum numeric value on the wire for allowedActions to add.
      * @return This builder for chaining.
@@ -1080,6 +1270,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The actions that are permitted.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
      * @param values The enum numeric values on the wire for allowedActions to add.
      * @return This builder for chaining.
@@ -1095,6 +1289,15 @@ private static final long serialVersionUID = 0L;
     }
 
     /**
+     * <pre>
+     * If set, then only the resources with this exact name are allowed. For example,
+     * the `READ` and `RUN` `allowed_actions` over `ACL_TASK` with `name` == `my-task`
+     * allows a Task Worker to only execute the `my-task` TaskDef.
+     *
+     * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+     * specified types.
+     * </pre>
+     *
      * <code>string name = 3;</code>
      * @return Whether the name field is set.
      */
@@ -1103,6 +1306,15 @@ private static final long serialVersionUID = 0L;
       return resourceFilterCase_ == 3;
     }
     /**
+     * <pre>
+     * If set, then only the resources with this exact name are allowed. For example,
+     * the `READ` and `RUN` `allowed_actions` over `ACL_TASK` with `name` == `my-task`
+     * allows a Task Worker to only execute the `my-task` TaskDef.
+     *
+     * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+     * specified types.
+     * </pre>
+     *
      * <code>string name = 3;</code>
      * @return The name.
      */
@@ -1125,6 +1337,15 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If set, then only the resources with this exact name are allowed. For example,
+     * the `READ` and `RUN` `allowed_actions` over `ACL_TASK` with `name` == `my-task`
+     * allows a Task Worker to only execute the `my-task` TaskDef.
+     *
+     * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+     * specified types.
+     * </pre>
+     *
      * <code>string name = 3;</code>
      * @return The bytes for name.
      */
@@ -1148,6 +1369,15 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If set, then only the resources with this exact name are allowed. For example,
+     * the `READ` and `RUN` `allowed_actions` over `ACL_TASK` with `name` == `my-task`
+     * allows a Task Worker to only execute the `my-task` TaskDef.
+     *
+     * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+     * specified types.
+     * </pre>
+     *
      * <code>string name = 3;</code>
      * @param value The name to set.
      * @return This builder for chaining.
@@ -1161,6 +1391,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If set, then only the resources with this exact name are allowed. For example,
+     * the `READ` and `RUN` `allowed_actions` over `ACL_TASK` with `name` == `my-task`
+     * allows a Task Worker to only execute the `my-task` TaskDef.
+     *
+     * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+     * specified types.
+     * </pre>
+     *
      * <code>string name = 3;</code>
      * @return This builder for chaining.
      */
@@ -1173,6 +1412,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If set, then only the resources with this exact name are allowed. For example,
+     * the `READ` and `RUN` `allowed_actions` over `ACL_TASK` with `name` == `my-task`
+     * allows a Task Worker to only execute the `my-task` TaskDef.
+     *
+     * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+     * specified types.
+     * </pre>
+     *
      * <code>string name = 3;</code>
      * @param value The bytes for name to set.
      * @return This builder for chaining.
@@ -1188,6 +1436,13 @@ private static final long serialVersionUID = 0L;
     }
 
     /**
+     * <pre>
+     * If set, then only the resources whose names match this prefix are allowed.
+     *
+     * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+     * specified types.
+     * </pre>
+     *
      * <code>string prefix = 4;</code>
      * @return Whether the prefix field is set.
      */
@@ -1196,6 +1451,13 @@ private static final long serialVersionUID = 0L;
       return resourceFilterCase_ == 4;
     }
     /**
+     * <pre>
+     * If set, then only the resources whose names match this prefix are allowed.
+     *
+     * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+     * specified types.
+     * </pre>
+     *
      * <code>string prefix = 4;</code>
      * @return The prefix.
      */
@@ -1218,6 +1480,13 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If set, then only the resources whose names match this prefix are allowed.
+     *
+     * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+     * specified types.
+     * </pre>
+     *
      * <code>string prefix = 4;</code>
      * @return The bytes for prefix.
      */
@@ -1241,6 +1510,13 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If set, then only the resources whose names match this prefix are allowed.
+     *
+     * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+     * specified types.
+     * </pre>
+     *
      * <code>string prefix = 4;</code>
      * @param value The prefix to set.
      * @return This builder for chaining.
@@ -1254,6 +1530,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If set, then only the resources whose names match this prefix are allowed.
+     *
+     * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+     * specified types.
+     * </pre>
+     *
      * <code>string prefix = 4;</code>
      * @return This builder for chaining.
      */
@@ -1266,6 +1549,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If set, then only the resources whose names match this prefix are allowed.
+     *
+     * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+     * specified types.
+     * </pre>
+     *
      * <code>string prefix = 4;</code>
      * @param value The bytes for prefix to set.
      * @return This builder for chaining.

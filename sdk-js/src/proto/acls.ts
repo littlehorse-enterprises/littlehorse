@@ -11,13 +11,34 @@ import { PrincipalId, TenantId } from "./object_id";
 
 export const protobufPackage = "littlehorse";
 
+/** Defines a resource type for ACL's. */
 export enum ACLResource {
+  /** ACL_WORKFLOW - Refers to `WfSpec` and `WfRun` */
   ACL_WORKFLOW = "ACL_WORKFLOW",
+  /** ACL_TASK - Refers to `TaskDef` and `TaskRun` */
   ACL_TASK = "ACL_TASK",
+  /** ACL_EXTERNAL_EVENT - Refers to `ExternalEventDef` and `ExternalEvent` */
   ACL_EXTERNAL_EVENT = "ACL_EXTERNAL_EVENT",
+  /** ACL_USER_TASK - Refers to `UserTaskDef` and `UserTaskRun` */
   ACL_USER_TASK = "ACL_USER_TASK",
+  /**
+   * ACL_PRINCIPAL - Refers to the `Principal` resource. Currently, the `ACL_PRINCIPAL` permission is only
+   * valid in the `global_acls` field of the `Principal`. A `Principal` who only has access
+   * to a specific Tenant cannot create othe Principals because a Principal is scoped
+   * to the Cluster, and not to a Tenant.
+   */
   ACL_PRINCIPAL = "ACL_PRINCIPAL",
+  /**
+   * ACL_TENANT - Refers to the `Tenant` resource. The `ACL_TENANT` permission is only valid in the
+   * `global_acls` field of the `Principal`. This is because the `Tenant` resource is
+   * cluste-rscoped.
+   */
   ACL_TENANT = "ACL_TENANT",
+  /**
+   * ACL_ALL_RESOURCES - Refers to all resources. In the `global_acls` field, this includes `Principal` and `Tenant`
+   * resources. In the `per_tenant_acls` field, this does not include `Principal` and `Tenant` since
+   * those are cluster-scoped resources.
+   */
   ACL_ALL_RESOURCES = "ACL_ALL_RESOURCES",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
@@ -74,10 +95,26 @@ export function aCLResourceToNumber(object: ACLResource): number {
   }
 }
 
+/** Describes an Action that can be taken over a specific set of resources. */
 export enum ACLAction {
+  /**
+   * READ - Allows all RPC's that start with `Get`, `List`, and `Search` in relation to the
+   * metadata (eg. `TaskDef` for `ACL_TASK`) or run data (eg. `TaskRun` for `ACL_TASK`)
+   */
   READ = "READ",
+  /**
+   * RUN - Allows RPC's that are needed for mutating the _runs_ of the resource. For
+   * example, `RUN` over `ACL_TASK` allows the `ReportTask` and `PollTask` RPC's,
+   * and `RUN` over `ACL_WORKFLOW` allows the `RunWf`, `DeleteWfRun`, `StopWfRun`,
+   * and `ResumeWfRun` RPC's.
+   */
   RUN = "RUN",
+  /**
+   * WRITE_METADATA - Allows mutating metadata. For example, `WRITE_METADATA` over `ACL_WORKFLOW` allows
+   * mutating `WfSpec`s, and `WRITE_METADATA` over `ACL_TASK` allows mutating `TaskDef`s.
+   */
   WRITE_METADATA = "WRITE_METADATA",
+  /** ALL_ACTIONS - Allows all actions related to a resource. */
   ALL_ACTIONS = "ALL_ACTIONS",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
@@ -119,20 +156,31 @@ export function aCLActionToNumber(object: ACLAction): number {
   }
 }
 
-/** This is a GlobalGetable. */
+/**
+ * A Principal represents the identity of a client of LittleHorse, whether human or
+ * machine. The ACL's on the Principal control what actions the client is allowed
+ * to take.
+ *
+ * A Principal is not scoped to a Tenant; rather, a Principal is scoped to the Cluster
+ * and may have access to one or more Tenants.
+ */
 export interface Principal {
   /**
-   * Principals are agnostic of the Authentication protocol that you use. In OAuth,
-   * the id is retrieved by looking at the claims on the request. In mTLS, the
-   * id is retrived by looking at the Subject Name of the client certificate.
+   * The ID of the Principal. In OAuth for human users, this is the user_id. In
+   * OAuth for machine clients, this is the Client ID.
+   *
+   * mTLS for Principal identification is not yet implemented.
    */
-  id: PrincipalId | undefined;
+  id:
+    | PrincipalId
+    | undefined;
+  /** The time at which the Principal was created. */
   createdAt:
     | string
     | undefined;
   /**
    * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-   * execute *within that Tenant*
+   * execute *within that Tenant*.
    */
   perTenantAcls: { [key: string]: ServerACLs };
   /** Sets permissions that this Principal has *for any Tenant* in the LH Cluster. */
@@ -144,30 +192,77 @@ export interface Principal_PerTenantAclsEntry {
   value: ServerACLs | undefined;
 }
 
-/** This is a GlobalGetable */
+/**
+ * A Tenant is a logically isolated environment within LittleHorse. All workflows and
+ * associated data (WfSpec, WfRun, TaskDef, TaskRun, NodeRun, etc) are scoped to within
+ * a Tenant.
+ *
+ * Future versions will include quotas on a per-Tenant basis.
+ */
 export interface Tenant {
+  /** The ID of the Tenant. */
   id:
     | TenantId
     | undefined;
-  /** Future versions will include quotas on a per-Tenant basis. */
+  /** The time at which the Tenant was created. */
   createdAt: string | undefined;
 }
 
+/** List of ACL's for LittleHorse */
 export interface ServerACLs {
+  /** The associated ACL's */
   acls: ServerACL[];
 }
 
+/**
+ * Represents a specific set of permissions over a specific set of objects
+ * in a Tenant. This is a *positive* permission.
+ */
 export interface ServerACL {
+  /** The resource types over which permission is granted. */
   resources: ACLResource[];
+  /** The actions that are permitted. */
   allowedActions: ACLAction[];
-  name?: string | undefined;
+  /**
+   * If set, then only the resources with this exact name are allowed. For example,
+   * the `READ` and `RUN` `allowed_actions` over `ACL_TASK` with `name` == `my-task`
+   * allows a Task Worker to only execute the `my-task` TaskDef.
+   *
+   * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+   * specified types.
+   */
+  name?:
+    | string
+    | undefined;
+  /**
+   * If set, then only the resources whose names match this prefix are allowed.
+   *
+   * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+   * specified types.
+   */
   prefix?: string | undefined;
 }
 
+/**
+ * Creates or updates a Principal. If this request would remove admin privileges from the
+ * last admin principal (i.e. `ALL_ACTIONS` over `ACL_ALL_RESOURCES` in the `global_acls`),
+ * then the RPC throws `FAILED_PRECONDITION`.
+ */
 export interface PutPrincipalRequest {
+  /** The ID of the Principal that we are creating. */
   id: string;
+  /** The per-tenant ACL's for the Principal */
   perTenantAcls: { [key: string]: ServerACLs };
-  globalAcls: ServerACLs | undefined;
+  /** The ACL's for the principal in all tenants */
+  globalAcls:
+    | ServerACLs
+    | undefined;
+  /**
+   * If this is set to false and a `Principal` with the same `id` already exists *and*
+   * has different ACL's configured, then the RPC throws `ALREADY_EXISTS`.
+   *
+   * If this is set to `true`, then the RPC will override hte
+   */
   overwrite: boolean;
 }
 
