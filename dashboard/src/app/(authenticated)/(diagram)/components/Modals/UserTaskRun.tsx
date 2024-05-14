@@ -1,20 +1,21 @@
 import { FC, useRef } from 'react'
-import { UserTaskModal } from '@/app/(authenticated)/(diagram)/context'
+import { Modal } from '@/app/(authenticated)/(diagram)/context'
 import { useModal } from '@/app/(authenticated)/(diagram)/hooks/useModal'
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { DialogBody } from 'next/dist/client/components/react-dev-overlay/internal/components/Dialog'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { getVariable, getVariableValue } from '@/app/utils'
-import { UserTaskRunStatus } from 'littlehorse-client/dist/proto/user_tasks'
+import { UserTaskRun as LHUserTaskRun, UserTaskRunStatus } from 'littlehorse-client/dist/proto/user_tasks'
 
-export const UserTaskRun: FC<UserTaskModal> = ({ data, nodeRun, userTaskNode }) => {
+export const UserTaskRun: FC<Modal> = ({ data, nodeRun, userTaskNode }) => {
+  const lhUserTaskRun = data as LHUserTaskRun
   const { showModal, setShowModal } = useModal()
   const refDiv = useRef(null)
-  const assigmentHistory = data.events.filter(e => e.assigned !== undefined)
-  const cancellationHistory = data.events.filter(e => e.cancelled !== undefined)
-  const resultsToRender = Object.keys(data.results).map(k => ({
+  const assigmentHistory = lhUserTaskRun.events.filter(e => e.assigned !== undefined)
+  const cancellationHistory = lhUserTaskRun.events.filter(e => e.cancelled !== undefined)
+  const resultsToRender = Object.keys(lhUserTaskRun.results).map(k => ({
     field: k,
-    value: getVariableValue(data.results[k]),
+    value: getVariableValue(lhUserTaskRun.results[k]),
   }))
 
   return (
@@ -25,10 +26,10 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data, nodeRun, userTaskNode }) 
           <DialogTitle className="mb-6 mt-3">
             <div className="ml-3 mr-2 flex h-2 justify-between ">
               <div>
-                <span className="font-bold">User Task: </span> <span>{data.userTaskDefId?.name}</span>
+                <span className="font-bold">User Task: </span> <span>{lhUserTaskRun.userTaskDefId?.name}</span>
               </div>
               <div>
-                <span className="font-bold">User Task GUID: </span> <span>{data.id?.userTaskGuid}</span>
+                <span className="font-bold">User Task GUID: </span> <span>{lhUserTaskRun.id?.userTaskGuid}</span>
               </div>
               <button className="mr-2 w-5">
                 <XMarkIcon onClick={() => setShowModal(false)} />
@@ -38,23 +39,23 @@ export const UserTaskRun: FC<UserTaskModal> = ({ data, nodeRun, userTaskNode }) 
           <DialogBody className="mt-4">
             <hr />
             <div className="mb-4 mt-4">
-              <span className="ml-3 font-bold">Created On: </span> <span>{data.scheduledTime}</span>
-              {data.status === UserTaskRunStatus.DONE && (
+              <span className="ml-3 font-bold">Created On: </span> <span>{lhUserTaskRun.scheduledTime}</span>
+              {lhUserTaskRun.status === UserTaskRunStatus.DONE && (
                 <div className="ml-3  mt-1">
-                  <span className="font-bold">Completed On: </span> <span> {nodeRun.endTime}</span>
+                  <span className="font-bold">Completed On: </span> <span> {nodeRun!.endTime}</span>
                 </div>
               )}
-              {data.status === UserTaskRunStatus.CANCELLED && (
+              {lhUserTaskRun.status === UserTaskRunStatus.CANCELLED && (
                 <div className="ml-3">
                   <span className="font-bold">Cancelled On: </span> <span> {cancellationHistory[0].time}</span>
                 </div>
               )}
-              {userTaskNode.onCancellationExceptionName !== undefined && (
+              {userTaskNode!.onCancellationExceptionName !== undefined && (
                 <div className="ml-3">
                   <span className="font-bold">Exception upon cancellation: </span>
                   <span className="rounded bg-red-300 p-1 text-xs">
                     {' '}
-                    {getVariable(userTaskNode.onCancellationExceptionName)}
+                    {getVariable(userTaskNode!.onCancellationExceptionName)}
                   </span>
                 </div>
               )}
