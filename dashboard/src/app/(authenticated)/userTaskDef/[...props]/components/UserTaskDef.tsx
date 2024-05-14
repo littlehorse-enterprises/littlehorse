@@ -1,20 +1,19 @@
 'use client'
 
 import { UserTaskDef as UserTaskDefProto, UserTaskRunStatus } from 'littlehorse-client/dist/proto/user_tasks'
-import React, {FC, Fragment, useState} from 'react'
+import React, { FC, Fragment, useState } from 'react'
 import { Details } from './Details'
 import { Navigation } from '@/app/(authenticated)/components/Navigation'
 import { Fields } from './Fields'
-import {Button, Listbox, ListboxButton, ListboxOption, ListboxOptions} from '@headlessui/react'
-import {SEARCH_DEFAULT_LIMIT, WF_RUN_STATUSES} from "@/app/constants";
-import Link from "next/link";
+import { Button } from '@headlessui/react'
+import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import Link from 'next/link'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import {SearchUserTaskRunRequest, UserTaskRunIdList, WfRunIdList} from "littlehorse-client/dist/proto/service";
-import {searchWfRun} from "@/app/(authenticated)/(diagram)/wfSpec/[...props]/actions/searchWfRun";
-import {useWhoAmI} from "@/contexts/WhoAmIContext";
-import {searchUserTaskRun} from "@/app/(authenticated)/userTaskDef/[...props]/actions/searchUserTaskRun";
-import {ArrowPathIcon} from "@heroicons/react/16/solid";
-import {concatWfRunIds} from "@/app/utils";
+import { UserTaskRunIdList } from 'littlehorse-client/dist/proto/service'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
+import { searchUserTaskRun } from '@/app/(authenticated)/userTaskDef/[...props]/actions/searchUserTaskRun'
+import { ArrowPathIcon } from '@heroicons/react/16/solid'
+import { concatWfRunIds } from '@/app/utils'
 
 type Props = {
   spec: UserTaskDefProto
@@ -41,7 +40,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
         bookmark: pageParam ? Buffer.from(pageParam, 'base64') : undefined,
         limit,
         status: selectedStatus,
-        userTaskDefName: spec.name
+        userTaskDefName: spec.name,
       })
     },
   })
@@ -51,9 +50,9 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
       <Navigation href="/?type=UserTaskDef" title="Go back to UserTaskDefs" />
       <Details id={spec} />
       <Fields fields={spec.fields} />
-
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Search for User Task Run's:</h2>
+      <hr className="mt-6" />
+      <div className="mb-4 mt-6 flex items-center justify-between">
+        <h2 className="text-2xl font-bold">Related User Task Run's:</h2>
         <div className="flex">
           {userTaskPossibleStatuses.map(status => (
             <Button
@@ -73,17 +72,41 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
         </div>
       ) : (
         <div className="flex min-h-[360px] flex-col gap-4">
-          {data?.pages.map((page, i) => (
-            <Fragment key={i}>
-              {page.results.map(userTaskRunId => (
-                <div key={userTaskRunId.userTaskGuid}>
-                  <Link className="py-2 text-blue-500 hover:underline" href={`/wfRun/${concatWfRunIds(userTaskRunId.wfRunId!)}`}>
-                    {userTaskRunId.id}
-                  </Link>
-                </div>
+          <table className="text-surface min-w-full text-center text-sm font-light">
+            <thead className="border-b border-neutral-200 bg-neutral-300 font-medium">
+              <th scope="col" className="px-6 py-4">
+                WfRun Id
+              </th>
+              <th scope="col" className="px-6 py-4">
+                User Task GUID
+              </th>
+            </thead>
+            <tbody>
+              {data?.pages.map((page, i) => (
+                <Fragment key={i}>
+                  {page.results.length > 0 ? (
+                    page.results.map(userTaskRunId => (
+                      <tr key={userTaskRunId.userTaskGuid} className="border-b border-neutral-200">
+                        <td className="px-6 py-4">
+                          <Link
+                            className="py-2 text-blue-500 hover:underline"
+                            href={`/wfRun/${concatWfRunIds(userTaskRunId.wfRunId!)}`}
+                          >
+                            {concatWfRunIds(userTaskRunId.wfRunId!)}
+                          </Link>
+                        </td>
+                        <td className="px-6 py-4">{userTaskRunId.userTaskGuid}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={2}>No data</td>
+                    </tr>
+                  )}
+                </Fragment>
               ))}
-            </Fragment>
-          ))}
+            </tbody>
+          </table>
         </div>
       )}
     </>
