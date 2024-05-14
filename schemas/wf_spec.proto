@@ -123,62 +123,132 @@ message ThreadVarDef {
   WfRunVariableAccessLevel access_level = 5;
 }
 
+// Defines a blueprint for a ThreadRun, which is a thread of execution inside a
+// WfRun.
 message ThreadSpec {
+  // The Nodes inside this ThreadSpec. Maps from name to Node.
   map<string, Node> nodes = 1;
+
+  // Defines Variables that are local to ThreadRun's of this ThreadSpec.
   repeated ThreadVarDef variable_defs = 2;
+
+  // Defines all interrupts for this ThreadSpec.
   repeated InterruptDef interrupt_defs = 3;
 
+  // Optional retention policy to clean up ThreadRun's of this ThreadSpec after they
+  // have been completed. This is important for long-lived WfRun's that could have
+  // hundreds of ThreadRun's, because a ThreadRun has a record inside the WfRun itself.
   optional ThreadRetentionPolicy retention_policy = 4;
 }
 
+// ThreadRetentionPolicy specifies how long to keep record of a ThreadRun and its associated
+// NodeRun's and TaskRun's and Variables after the ThreadRun has been completed.
 message ThreadRetentionPolicy {
   oneof thread_gc_policy {
     // Delete associated ThreadRun's X seconds after they terminate, regardless
     // of status.
     int64 seconds_after_thread_termination = 1;
-
-    // Future versions can allow different policies based on ThreadRun status.
   }
 }
 
+// Defines an Interrupt for a ThreadSpec. An Interrupt means that when an ExternalEvent
+// of a certain type is registered to the WfRun, then the affected ThreadRun is HALTED
+// and a handler ThreadRun is run as an interrupt handler. The interrupted ThreadRun
+// is resumed once the interrupt handler completes.
 message InterruptDef {
+  // The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+  // Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+  // and an ExternalEventNode in the same WfSpec.
   ExternalEventDefId external_event_def_id = 1;
+
+  // The name of the ThreadSpec that we run as the interrupt handler.
   string handler_spec_name = 2;
 }
 
+// Starts a Child ThreadRun with a specific ThreadSpec.
 message StartThreadNode {
+  // The name of the ThreadSpec to spawn.
   string thread_spec_name = 1;
+
+  // The input variables to pass into the Child ThreadRun.
   map<string, VariableAssignment> variables = 2;
 }
 
+// Iterates over a JSON_ARR and starts a Child ThreadRun for each element in the
+// list.
+//
+// Returns a JSON_ARR containing the thread_run_number of each spawned child.
 message StartMultipleThreadsNode {
+  // The name of the ThreadSpec to spawn.
   string thread_spec_name = 1;
+
+  // Variables which are passed into the child ThreadRuns. These assignments are
+  // the same for all spawned threads.
   map<string, VariableAssignment> variables = 2;
+
+  // Assignment that resolves to a JSON_ARR. For each element in the list, a child
+  // ThreadRun is started. The reserved `INPUT` variable for each Child is set to the
+  // corresponding item in the list.
   VariableAssignment iterable = 3;
 }
 
+// Specifies a Failure Handler which can run in case of a certain Failure to allow
+// the ThreadRun to run compensatory logic and gracefully continue rather than
+// failing immediately.
 message FailureHandlerDef {
+  // The name of the ThreadSpec to run as a 
   string handler_spec_name = 2;
+
+  // Specifies a type of Failure
   enum LHFailureType {
+    // FAILURE_TYPE_ERROR specifies any technical `ERROR`.
     FAILURE_TYPE_ERROR = 0;
+
+    // Specifies a user-defined, business-related `EXCEPTION`.
     FAILURE_TYPE_EXCEPTION = 1;
   }
+
   oneof failure_to_catch {
+    // Specifies that this FailureHandlerDef will be triggered for a Failure with this
+    // exact name.
+    //
+    // If this and `specific_failure` are both unset, then any failure is caught.
     string specific_failure = 1;
+
+    // Specifies that this FailureHandlerDef will be triggered for any failure matching
+    // this type (ERROR or EXCEPTION).
+    //
+    // 
     LHFailureType any_failure_of_type = 3;
   }
 }
 
+// Specifies that a ThreadRun will wait for certain specified Child ThreadRun's to
+// complete or fail before the WfRun continues. If one of the Child ThreadRun's
+// throws a Failure that is not caught by the `per_thread_failure_handlers`,
+// then the Child ThreadRun's Failure is thrown by the WaitForThreadsRun.
+//
+// No output.
 message WaitForThreadsNode {
   message ThreadToWaitFor {
+    // Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number
+    // matches the value specified here. Must resolve to an INT.
     VariableAssignment thread_run_number = 1;
   }
   message ThreadsToWaitFor {
+    // Wait for one or more ThreadRun's
     repeated ThreadToWaitFor threads = 1;
   }
 
   oneof threads_to_wait_for {
+
+    // Specifies that the WaitForThreadsRun will wait for the threads specified
+    // here.
     ThreadsToWaitFor threads = 1;
+
+    // Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+    // in the JSON_ARR value specified here. Each element in the list must be an INT
+    // representing the `number` of a ThreadRun that we're waiting for.
     VariableAssignment thread_list = 2;
   }
 
