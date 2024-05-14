@@ -296,6 +296,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.ListWfMetricsRequest.SerializeToString,
                 response_deserializer=service__pb2.ListWfMetricsResponse.FromString,
                 )
+        self.ListTaskWorkerGroup = channel.unary_unary(
+                '/littlehorse.LittleHorse/ListTaskWorkerGroup',
+                request_serializer=service__pb2.ListTaskWorkerGroupRequest.SerializeToString,
+                response_deserializer=service__pb2.ListTaskWorkerGroupResponse.FromString,
+                )
         self.PutTenant = channel.unary_unary(
                 '/littlehorse.LittleHorse/PutTenant',
                 request_serializer=acls__pb2.PutTenantRequest.SerializeToString,
@@ -738,6 +743,12 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListTaskWorkerGroup(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def PutTenant(self, request, context):
         """EXPERIMENTAL: Creates another Tenant in the LH Server.
         """
@@ -1038,6 +1049,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.ListWfSpecMetrics,
                     request_deserializer=service__pb2.ListWfMetricsRequest.FromString,
                     response_serializer=service__pb2.ListWfMetricsResponse.SerializeToString,
+            ),
+            'ListTaskWorkerGroup': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListTaskWorkerGroup,
+                    request_deserializer=service__pb2.ListTaskWorkerGroupRequest.FromString,
+                    response_serializer=service__pb2.ListTaskWorkerGroupResponse.SerializeToString,
             ),
             'PutTenant': grpc.unary_unary_rpc_method_handler(
                     servicer.PutTenant,
@@ -1984,6 +2000,23 @@ class LittleHorse(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ListWfSpecMetrics',
             service__pb2.ListWfMetricsRequest.SerializeToString,
             service__pb2.ListWfMetricsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ListTaskWorkerGroup(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ListTaskWorkerGroup',
+            service__pb2.ListTaskWorkerGroupRequest.SerializeToString,
+            service__pb2.ListTaskWorkerGroupResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

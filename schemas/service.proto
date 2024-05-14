@@ -217,6 +217,8 @@ service LittleHorse {
   // Returns a list of WfSpec Metrics Windows.
   rpc ListWfSpecMetrics(ListWfMetricsRequest) returns (ListWfMetricsResponse) {}
 
+  rpc ListTaskWorkerGroup(ListTaskWorkerGroupRequest) returns (ListTaskWorkerGroupResponse) {}
+
   // EXPERIMENTAL: Creates another Tenant in the LH Server.
   rpc PutTenant(PutTenantRequest) returns (Tenant) {}
 
@@ -1135,6 +1137,28 @@ message ListUserTaskRunRequest {
 message UserTaskRunList {
   // A list of UserTaskRun Objects
   repeated UserTaskRun results = 1;
+}
+
+message ListTaskWorkerGroupResponse {
+  TaskWorkerGroup result = 1;
+}
+
+message TaskWorkerMetadata {
+  string task_worker_id = 1;
+  google.protobuf.Timestamp latest_heartbeat = 2;
+  repeated LHHostInfo hosts = 3;
+}
+
+message TaskWorkerGroup {
+  TaskWorkerGroupId id = 1;
+  google.protobuf.Timestamp created_at = 2;
+  map<string, TaskWorkerMetadata> task_workers = 3;
+}
+
+message ListTaskWorkerGroupRequest {
+  oneof task_worker_group_criteria {
+    TaskDefId task_def_id = 1;
+  }
 }
 
 // List TaskRun's for a specific WfRun
