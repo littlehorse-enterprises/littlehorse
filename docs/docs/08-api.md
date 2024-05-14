@@ -50,7 +50,7 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-| [TaskDefId](#taskdefid) | [TaskWorkerGroup](#taskworkergroup) |  |
+| [TaskDefId](#taskdefid) | [TaskWorkerGroup](#taskworkergroup) | Gets the registered task worker group associated with a specific TaskDef. |
 
 ### RPC `PutExternalEventDef` {#putexternaleventdef}
 
@@ -429,19 +429,14 @@ This section contains the exact schemas for every object in our public API.
 
 ### Message `Principal` {#principal}
 
-A Principal represents the identity of a client of LittleHorse, whether human or
-machine. The ACL's on the Principal control what actions the client is allowed
-to take.
-
-A Principal is not scoped to a Tenant; rather, a Principal is scoped to the Cluster
-and may have access to one or more Tenants.
+This is a GlobalGetable.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `id` | | [PrincipalId](#principalid) | The ID of the Principal. In OAuth for human users, this is the user_id. In OAuth for machine clients, this is the Client ID.<br/><br/>mTLS for Principal identification is not yet implemented. |
-| `created_at` | | google.protobuf.Timestamp | The time at which the Principal was created. |
-| `per_tenant_acls` | map| [Principal.PerTenantAclsEntry](#principalpertenantaclsentry) | Maps a Tenant ID to a list of ACL's that the Principal has permission to execute *within that Tenant*. |
+| `id` | | [PrincipalId](#principalid) | Principals are agnostic of the Authentication protocol that you use. In OAuth, the id is retrieved by looking at the claims on the request. In mTLS, the id is retrived by looking at the Subject Name of the client certificate. |
+| `created_at` | | google.protobuf.Timestamp |  |
+| `per_tenant_acls` | map| [Principal.PerTenantAclsEntry](#principalpertenantaclsentry) | Maps a Tenant ID to a list of ACL's that the Principal has permission to execute *within that Tenant* |
 | `global_acls` | | [ServerACLs](#serveracls) | Sets permissions that this Principal has *for any Tenant* in the LH Cluster. |
  <!-- end Fields -->
  <!-- end HasFields -->
@@ -464,17 +459,15 @@ and may have access to one or more Tenants.
 
 ### Message `PutPrincipalRequest` {#putprincipalrequest}
 
-Creates or updates a Principal. If this request would remove admin privileges from the
-last admin principal (i.e. `ALL_ACTIONS` over `ACL_ALL_RESOURCES` in the `global_acls`),
-then the RPC throws `FAILED_PRECONDITION`.
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `id` | | string | The ID of the Principal that we are creating. |
-| `per_tenant_acls` | map| [PutPrincipalRequest.PerTenantAclsEntry](#putprincipalrequestpertenantaclsentry) | The per-tenant ACL's for the Principal |
-| `global_acls` | | [ServerACLs](#serveracls) | The ACL's for the principal in all tenants |
-| `overwrite` | | bool | If this is set to false and a `Principal` with the same `id` already exists *and* has different ACL's configured, then the RPC throws `ALREADY_EXISTS`.<br/><br/>If this is set to `true`, then the RPC will override hte |
+| `id` | | string |  |
+| `per_tenant_acls` | map| [PutPrincipalRequest.PerTenantAclsEntry](#putprincipalrequestpertenantaclsentry) |  |
+| `global_acls` | | [ServerACLs](#serveracls) |  |
+| `overwrite` | | bool |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -509,16 +502,15 @@ then the RPC throws `FAILED_PRECONDITION`.
 
 ### Message `ServerACL` {#serveracl}
 
-Represents a specific set of permissions over a specific set of objects
-in a Tenant. This is a *positive* permission.
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `resources` | repeated| [ACLResource](#aclresource) | The resource types over which permission is granted. |
-| `allowed_actions` | repeated| [ACLAction](#aclaction) | The actions that are permitted. |
-| `name` | oneof `resource_filter`| string | If set, then only the resources with this exact name are allowed. For example, the `READ` and `RUN` `allowed_actions` over `ACL_TASK` with `name` == `my-task` allows a Task Worker to only execute the `my-task` TaskDef.<br/><br/>If `name` and `prefix` are unset, then the ACL applies to all resources of the specified types. |
-| `prefix` | oneof `resource_filter`| string | If set, then only the resources whose names match this prefix are allowed.<br/><br/>If `name` and `prefix` are unset, then the ACL applies to all resources of the specified types. |
+| `resources` | repeated| [ACLResource](#aclresource) |  |
+| `allowed_actions` | repeated| [ACLAction](#aclaction) |  |
+| `name` | oneof `resource_filter`| string |  |
+| `prefix` | oneof `resource_filter`| string |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -526,12 +518,12 @@ in a Tenant. This is a *positive* permission.
 
 ### Message `ServerACLs` {#serveracls}
 
-List of ACL's for LittleHorse
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `acls` | repeated| [ServerACL](#serveracl) | The associated ACL's |
+| `acls` | repeated| [ServerACL](#serveracl) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -539,17 +531,13 @@ List of ACL's for LittleHorse
 
 ### Message `Tenant` {#tenant}
 
-A Tenant is a logically isolated environment within LittleHorse. All workflows and
-associated data (WfSpec, WfRun, TaskDef, TaskRun, NodeRun, etc) are scoped to within
-a Tenant.
-
-Future versions will include quotas on a per-Tenant basis.
+This is a GlobalGetable
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `id` | | [TenantId](#tenantid) | The ID of the Tenant. |
-| `created_at` | | google.protobuf.Timestamp | The time at which the Tenant was created. |
+| `id` | | [TenantId](#tenantid) |  |
+| `created_at` | | google.protobuf.Timestamp | Future versions will include quotas on a per-Tenant basis. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2190,14 +2178,14 @@ A list of TaskRun's
 
 ### Message `TaskWorkerGroup` {#taskworkergroup}
 
-
+Describes all workers registered for a specific TaskDef.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `id` | | [TaskWorkerGroupId](#taskworkergroupid) |  |
-| `created_at` | | google.protobuf.Timestamp |  |
-| `task_workers` | map| [TaskWorkerGroup.TaskWorkersEntry](#taskworkergrouptaskworkersentry) |  |
+| `id` | | [TaskWorkerGroupId](#taskworkergroupid) | Identifier for the group. |
+| `created_at` | | google.protobuf.Timestamp | Timestamp indicating when the worker group was initially registered. |
+| `task_workers` | map| [TaskWorkerGroup.TaskWorkersEntry](#taskworkergrouptaskworkersentry) | Metadata grouped by ClientId string. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2237,14 +2225,14 @@ Used by the Task Worker SDK; generally, you shouldn't have to touch this manuall
 
 ### Message `TaskWorkerMetadata` {#taskworkermetadata}
 
-
+Describes a specific task worker
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `task_worker_id` | | string |  |
-| `latest_heartbeat` | | google.protobuf.Timestamp |  |
-| `hosts` | repeated| [LHHostInfo](#lhhostinfo) |  |
+| `task_worker_id` | | string | User-defined identifier for the worker. |
+| `latest_heartbeat` | | google.protobuf.Timestamp | Timestamp indicating the last heartbeat sent by the worker. |
+| `hosts` | repeated| [LHHostInfo](#lhhostinfo) | The host(s) where the worker is polling tasks |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2708,8 +2696,8 @@ ThreadRun arrives at a Node of type `USER_TASK`.
 | ----- | ----  | ---- | ----------- |
 | `id` | | [UserTaskRunId](#usertaskrunid) | The ID of the UserTaskRun. |
 | `user_task_def_id` | | [UserTaskDefId](#usertaskdefid) | The ID of the UserTaskDef that this UserTaskRun comes from. |
-| `user_group` | optional| string | Denotes the UserTaskRun as belonging to a specific User Group.<br/><br/>The `user_group` does not refer to a group that is stored in LittleHorse; rather, it is the responsibility of the application to keep track of user/group identity and ensure that the user_group does indeed exist.<br/><br/>Either `user_id` or `user_group` or both are set at any time. |
-| `user_id` | optional| string | Denotes the UserTaskRun as assigned to a specific User ID. If this is set, then the UserTaskRun is either in the ASSIGNED, DONE, or CANCELLED status.<br/><br/>The `user_id` does not refer to a User that is stored in LittleHorse; rather, it is the responsibility of the application to keep track of user identity and ensure that the user_id does indeed exist.<br/><br/>Either `user_id` or `user_group` or both are set at any time. |
+| `user_group` | optional| string | The user_group to which this UserTaskRun is assigned. Not Set if not assigned to a group. At least one of user_group or user_id will be set for any given UserTaskRun. |
+| `user_id` | optional| string | The user_id to which this UserTaskRun is assigned. Not Set if not assigned to a user. At least one of user_group or user_id will be set for any given UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the UNASSIGNED status. |
 | `results` | map| [UserTaskRun.ResultsEntry](#usertaskrunresultsentry) | The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed. Each key in this map is the `name` of a corresponding `UserTaskField` on the UserTaskDef. |
 | `status` | | [UserTaskRunStatus](#usertaskrunstatus) | Status of the UserTaskRun. Can be UNASSIGNED, ASSIGNED, DONE, or CANCELLED. |
 | `events` | repeated| [UserTaskEvent](#usertaskevent) | A list of events that have happened. Used for auditing information. |
@@ -2998,14 +2986,14 @@ A WfRun is a running instance of a WfSpec.
 
 ### Message `Edge` {#edge}
 
-The Edge is the line in the workflow that connects one Node to another.
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `sink_node_name` | | string | The name of the Node that the Edge points to. |
-| `condition` | optional| [EdgeCondition](#edgecondition) | The Condition on which this Edge will be traversed. When choosing an Edge to travel after the completion of a NodeRun, the Edges are evaluated in order. The first one to either have no condition or have a condition which evaluates to `true` is taken. |
-| `variable_mutations` | repeated| [VariableMutation](#variablemutation) | Ordered list of Variable Mutations to execute when traversing this Edge. |
+| `sink_node_name` | | string |  |
+| `condition` | optional| [EdgeCondition](#edgecondition) |  |
+| `variable_mutations` | repeated| [VariableMutation](#variablemutation) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3013,14 +3001,14 @@ The Edge is the line in the workflow that connects one Node to another.
 
 ### Message `EdgeCondition` {#edgecondition}
 
-This is a boolean expression used to evaluate whether an Edge is valid.
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `comparator` | | [Comparator](#comparator) | The Operator used to evaluate the left versus the right. |
-| `left` | | [VariableAssignment](#variableassignment) | The left side of the boolean expression. |
-| `right` | | [VariableAssignment](#variableassignment) | The right side of the Boolean Expression. |
+| `comparator` | | [Comparator](#comparator) |  |
+| `left` | | [VariableAssignment](#variableassignment) |  |
+| `right` | | [VariableAssignment](#variableassignment) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3028,9 +3016,7 @@ This is a boolean expression used to evaluate whether an Edge is valid.
 
 ### Message `EntrypointNode` {#entrypointnode}
 
-Defines the beginning of the ThreadRun execution.
 
-Output is NULL
 
  <!-- end HasFields -->
 
@@ -3038,12 +3024,12 @@ Output is NULL
 
 ### Message `ExitNode` {#exitnode}
 
-Defines the end of the ThreadRun execution.
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `failure_def` | optional| [FailureDef](#failuredef) | If set, this ExitNode throws the specified Failure upon arrival. Note that Failures are propagated up to the parent ThreadRun (or cause the entire WfRun to fail if sent by the entrypoint ThreadRun).<br/><br/>If this is not set, then a ThreadRun arriving at this Exit Node will be COMPLETED. |
+| `failure_def` | optional| [FailureDef](#failuredef) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3051,16 +3037,13 @@ Defines the end of the ThreadRun execution.
 
 ### Message `ExternalEventNode` {#externaleventnode}
 
-An ExternalEventNode causes the WfRun to stop and wait for an ExternalEvent
-to arrive before continuing onwards.
 
-The output is just the content of the ExternalEvent.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `external_event_def_id` | | [ExternalEventDefId](#externaleventdefid) | The ID of the ExternalEventDef that we are waiting for. |
-| `timeout_seconds` | | [VariableAssignment](#variableassignment) | Determines the maximum amount of time that the NodeRun will wait for the ExternalEvent to arrive. |
+| `external_event_def_id` | | [ExternalEventDefId](#externaleventdefid) |  |
+| `timeout_seconds` | | [VariableAssignment](#variableassignment) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3068,14 +3051,14 @@ The output is just the content of the ExternalEvent.
 
 ### Message `FailureDef` {#failuredef}
 
-Defines a Failure that can be thrown.
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `failure_name` | | string | The code for the failure. If in UPPER_CASE, it must be one of the LHErrorType enums, and represents an ERROR. If it is in kebab-case, then it is a user-defined EXCEPTION. |
-| `message` | | string | Human-readable message denoting why the Failure occurred. |
-| `content` | optional| [VariableAssignment](#variableassignment) | If specified, the thrown Failure will have this content. |
+| `failure_name` | | string |  |
+| `message` | | string |  |
+| `content` | optional| [VariableAssignment](#variableassignment) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3083,16 +3066,14 @@ Defines a Failure that can be thrown.
 
 ### Message `FailureHandlerDef` {#failurehandlerdef}
 
-Specifies a Failure Handler which can run in case of a certain Failure to allow
-the ThreadRun to run compensatory logic and gracefully continue rather than
-failing immediately.
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `handler_spec_name` | | string | The name of the ThreadSpec to run as a |
-| `specific_failure` | oneof `failure_to_catch`| string | Specifies that this FailureHandlerDef will be triggered for a Failure with this exact name.<br/><br/>If this and `specific_failure` are both unset, then any failure is caught. |
-| `any_failure_of_type` | oneof `failure_to_catch`| [FailureHandlerDef.LHFailureType](#failurehandlerdeflhfailuretype) | Specifies that this FailureHandlerDef will be triggered for any failure matching this type (ERROR or EXCEPTION). |
+| `handler_spec_name` | | string |  |
+| `specific_failure` | oneof `failure_to_catch`| string |  |
+| `any_failure_of_type` | oneof `failure_to_catch`| [FailureHandlerDef.LHFailureType](#failurehandlerdeflhfailuretype) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3100,16 +3081,13 @@ failing immediately.
 
 ### Message `InterruptDef` {#interruptdef}
 
-Defines an Interrupt for a ThreadSpec. An Interrupt means that when an ExternalEvent
-of a certain type is registered to the WfRun, then the affected ThreadRun is HALTED
-and a handler ThreadRun is run as an interrupt handler. The interrupted ThreadRun
-is resumed once the interrupt handler completes.
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `external_event_def_id` | | [ExternalEventDefId](#externaleventdefid) | The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec. Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef and an ExternalEventNode in the same WfSpec. |
-| `handler_spec_name` | | string | The name of the ThreadSpec that we run as the interrupt handler. |
+| `external_event_def_id` | | [ExternalEventDefId](#externaleventdefid) |  |
+| `handler_spec_name` | | string |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3117,14 +3095,13 @@ is resumed once the interrupt handler completes.
 
 ### Message `JsonIndex` {#jsonindex}
 
-Defines an index to make a JSON_OBJ or JSON_ARR variable searchable over a specific
-JSON Path.
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `field_path` | | string | Denotes the path in JSONPath format (according to the Java Jayway library) that has a field we should index. |
-| `field_type` | | [VariableType](#variabletype) | Is the type of the field we are indexing. |
+| `field_path` | | string |  |
+| `field_type` | | [VariableType](#variabletype) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3132,24 +3109,24 @@ JSON Path.
 
 ### Message `Node` {#node}
 
-A Node is a step in a ThreadRun.
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `outgoing_edges` | repeated| [Edge](#edge) | Defines the flow of execution and determines where the ThreadRun goes next. |
-| `failure_handlers` | repeated| [FailureHandlerDef](#failurehandlerdef) | Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown by the NodeRun. If a Failure is thrown by the Node execution, then the first matching Failure Handler (if present) is run. If there is a matching Failure Handler and it runs to completion, then the ThreadRun advances from the Node; else, it fails. |
-| `entrypoint` | oneof `node`| [EntrypointNode](#entrypointnode) | Creates an EntrypointRun. Every ThreadRun has one Entrypoint node. |
-| `exit` | oneof `node`| [ExitNode](#exitnode) | Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node. |
-| `task` | oneof `node`| [TaskNode](#tasknode) | Creates a TaskNodeRUn |
-| `external_event` | oneof `node`| [ExternalEventNode](#externaleventnode) | Creates an ExternalEventRun |
-| `start_thread` | oneof `node`| [StartThreadNode](#startthreadnode) | Creates a StartThreadNodeRun |
-| `wait_for_threads` | oneof `node`| [WaitForThreadsNode](#waitforthreadsnode) | Creates a WaitForThreadsNodeRun |
-| `nop` | oneof `node`| [NopNode](#nopnode) | Creates a NopNodeRun |
-| `sleep` | oneof `node`| [SleepNode](#sleepnode) | Creates a SleepNodeRun |
-| `user_task` | oneof `node`| [UserTaskNode](#usertasknode) | Creates a UserTaskNodeRun |
-| `start_multiple_threads` | oneof `node`| [StartMultipleThreadsNode](#startmultiplethreadsnode) | Creates a StartMultipleThreadsNodeRun |
-| `throw_event` | oneof `node`| [ThrowEventNode](#throweventnode) | Creates a ThrowEventNodeRun |
+| `outgoing_edges` | repeated| [Edge](#edge) |  |
+| `failure_handlers` | repeated| [FailureHandlerDef](#failurehandlerdef) |  |
+| `entrypoint` | oneof `node`| [EntrypointNode](#entrypointnode) |  |
+| `exit` | oneof `node`| [ExitNode](#exitnode) |  |
+| `task` | oneof `node`| [TaskNode](#tasknode) |  |
+| `external_event` | oneof `node`| [ExternalEventNode](#externaleventnode) |  |
+| `start_thread` | oneof `node`| [StartThreadNode](#startthreadnode) |  |
+| `wait_for_threads` | oneof `node`| [WaitForThreadsNode](#waitforthreadsnode) |  |
+| `nop` | oneof `node`| [NopNode](#nopnode) |  |
+| `sleep` | oneof `node`| [SleepNode](#sleepnode) |  |
+| `user_task` | oneof `node`| [UserTaskNode](#usertasknode) |  |
+| `start_multiple_threads` | oneof `node`| [StartMultipleThreadsNode](#startmultiplethreadsnode) |  |
+| `throw_event` | oneof `node`| [ThrowEventNode](#throweventnode) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3157,13 +3134,12 @@ A Node is a step in a ThreadRun.
 
 ### Message `NodeMigration` {#nodemigration}
 
-EXPERIMENTAL: Specification for migrating a WfRun from a Node in one WfSpec
-to a Node in another WfSpec version.
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `new_node_name` | | string | The name of the Node on the new WfSpec to move to. |
+| `new_node_name` | | string |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3171,24 +3147,35 @@ to a Node in another WfSpec version.
 
 ### Message `NopNode` {#nopnode}
 
-NOP node has no operations and is used for conditional branching.
 
+
+ <!-- end HasFields -->
+
+
+
+### Message `SearchableVariableDef` {#searchablevariabledef}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `var_def` | | [VariableDef](#variabledef) | Future: Add index information (local/remote/etc) |
+ <!-- end Fields -->
  <!-- end HasFields -->
 
 
 
 ### Message `SleepNode` {#sleepnode}
 
-Sleep Node causes the WfRun to wait a specified time and then resume.
 
-There is no output.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `raw_seconds` | oneof `sleep_length`| [VariableAssignment](#variableassignment) | Sleeps the specified number of seconds. |
-| `timestamp` | oneof `sleep_length`| [VariableAssignment](#variableassignment) | Sleeps until the `long` timestamp (epoch millis) specified here. |
-| `iso_date` | oneof `sleep_length`| [VariableAssignment](#variableassignment) | Sleeps until the ISO-formatted date specified here. |
+| `raw_seconds` | oneof `sleep_length`| [VariableAssignment](#variableassignment) |  |
+| `timestamp` | oneof `sleep_length`| [VariableAssignment](#variableassignment) |  |
+| `iso_date` | oneof `sleep_length`| [VariableAssignment](#variableassignment) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3196,17 +3183,14 @@ There is no output.
 
 ### Message `StartMultipleThreadsNode` {#startmultiplethreadsnode}
 
-Iterates over a JSON_ARR and starts a Child ThreadRun for each element in the
-list.
 
-Returns a JSON_ARR containing the thread_run_number of each spawned child.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `thread_spec_name` | | string | The name of the ThreadSpec to spawn. |
-| `variables` | map| [StartMultipleThreadsNode.VariablesEntry](#startmultiplethreadsnodevariablesentry) | Variables which are passed into the child ThreadRuns. These assignments are the same for all spawned threads. |
-| `iterable` | | [VariableAssignment](#variableassignment) | Assignment that resolves to a JSON_ARR. For each element in the list, a child ThreadRun is started. The reserved `INPUT` variable for each Child is set to the corresponding item in the list. |
+| `thread_spec_name` | | string |  |
+| `variables` | map| [StartMultipleThreadsNode.VariablesEntry](#startmultiplethreadsnodevariablesentry) |  |
+| `iterable` | | [VariableAssignment](#variableassignment) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3228,13 +3212,13 @@ Returns a JSON_ARR containing the thread_run_number of each spawned child.
 
 ### Message `StartThreadNode` {#startthreadnode}
 
-Starts a Child ThreadRun with a specific ThreadSpec.
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `thread_spec_name` | | string | The name of the ThreadSpec to spawn. |
-| `variables` | map| [StartThreadNode.VariablesEntry](#startthreadnodevariablesentry) | The input variables to pass into the Child ThreadRun. |
+| `thread_spec_name` | | string |  |
+| `variables` | map| [StartThreadNode.VariablesEntry](#startthreadnodevariablesentry) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3256,8 +3240,7 @@ Starts a Child ThreadRun with a specific ThreadSpec.
 
 ### Message `ThreadRetentionPolicy` {#threadretentionpolicy}
 
-ThreadRetentionPolicy specifies how long to keep record of a ThreadRun and its associated
-NodeRun's and TaskRun's and Variables after the ThreadRun has been completed.
+
 
 
 | Field | Label | Type | Description |
@@ -3270,16 +3253,15 @@ NodeRun's and TaskRun's and Variables after the ThreadRun has been completed.
 
 ### Message `ThreadSpec` {#threadspec}
 
-Defines a blueprint for a ThreadRun, which is a thread of execution inside a
-WfRun.
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `nodes` | map| [ThreadSpec.NodesEntry](#threadspecnodesentry) | The Nodes inside this ThreadSpec. Maps from name to Node. |
-| `variable_defs` | repeated| [ThreadVarDef](#threadvardef) | Defines Variables that are local to ThreadRun's of this ThreadSpec. |
-| `interrupt_defs` | repeated| [InterruptDef](#interruptdef) | Defines all interrupts for this ThreadSpec. |
-| `retention_policy` | optional| [ThreadRetentionPolicy](#threadretentionpolicy) | Optional retention policy to clean up ThreadRun's of this ThreadSpec after they have been completed. This is important for long-lived WfRun's that could have hundreds of ThreadRun's, because a ThreadRun has a record inside the WfRun itself. |
+| `nodes` | map| [ThreadSpec.NodesEntry](#threadspecnodesentry) |  |
+| `variable_defs` | repeated| [ThreadVarDef](#threadvardef) |  |
+| `interrupt_defs` | repeated| [InterruptDef](#interruptdef) |  |
+| `retention_policy` | optional| [ThreadRetentionPolicy](#threadretentionpolicy) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3301,14 +3283,13 @@ WfRun.
 
 ### Message `ThreadSpecMigration` {#threadspecmigration}
 
-EXPERIMENTAL: Specification for how to migrate a ThreadRun of a specific ThreadSpec
-from one WfSpec to another WfSpec version.
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `new_thread_spec_name` | | string | The name of the ThreadSpec in the new WfSpec that this ThreadSpec should migrate to. |
-| `node_migrations` | map| [ThreadSpecMigration.NodeMigrationsEntry](#threadspecmigrationnodemigrationsentry) | Map from name of the nodes on the current ThreadSpec to the migration to perform on it to move it to a new WfSpec. |
+| `new_thread_spec_name` | | string |  |
+| `node_migrations` | map| [ThreadSpecMigration.NodeMigrationsEntry](#threadspecmigrationnodemigrationsentry) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3330,16 +3311,16 @@ from one WfSpec to another WfSpec version.
 
 ### Message `ThreadVarDef` {#threadvardef}
 
-Denotes a variable declaration at the ThreadSpec level.
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `var_def` | | [VariableDef](#variabledef) | Is the actual VariableDefinition containing name and type. |
-| `required` | | bool | Whether the variable is required as input to the threadRun. |
-| `searchable` | | bool | Whether this variable has an index configured. |
-| `json_indexes` | repeated| [JsonIndex](#jsonindex) | Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields to index. |
-| `access_level` | | [WfRunVariableAccessLevel](#wfrunvariableaccesslevel) | The Access Level of this variable. |
+| `var_def` | | [VariableDef](#variabledef) |  |
+| `required` | | bool |  |
+| `searchable` | | bool |  |
+| `json_indexes` | repeated| [JsonIndex](#jsonindex) |  |
+| `access_level` | | [WfRunVariableAccessLevel](#wfrunvariableaccesslevel) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3347,7 +3328,7 @@ Denotes a variable declaration at the ThreadSpec level.
 
 ### Message `ThrowEventNode` {#throweventnode}
 
-A SubNode that throws a WorkflowEvent of a specific type. There is no output.
+A SubNode that throws a WorkflowEvent of a specific type.
 
 
 | Field | Label | Type | Description |
@@ -3361,21 +3342,18 @@ A SubNode that throws a WorkflowEvent of a specific type. There is no output.
 
 ### Message `UserTaskNode` {#usertasknode}
 
-The UserTaskNode creates a UserTaskRun, which is used to get input from a human
-user into the workflow.
 
-The output is a JSON_OBJ variable with one key/value pair for each UserTaskField.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `user_task_def_name` | | string | Denotes the name of the `UserTaskDef` that should create the `UserTaskRun`. |
-| `user_group` | optional| [VariableAssignment](#variableassignment) | Denotes the user_group to which the UserTaskRun is assigned upon creation. |
-| `user_id` | optional| [VariableAssignment](#variableassignment) | Denotes the user_id to which the UserTaskRun is assigned upon creation. |
-| `actions` | repeated| [UTActionTrigger](#utactiontrigger) | Specifies a list of actions that happen on various time-based triggers. Actions include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing a "reminder" TaskRun. |
-| `user_task_def_version` | optional| int32 | If set, then the UserTaskRun will always have this specific version of the UserTaskDef. Otherwise, the UserTaskRun will have the latest version. |
-| `notes` | optional| [VariableAssignment](#variableassignment) | Specifies the value to be displayed on the `notes` field of the UserTaskRun. |
-| `on_cancellation_exception_name` | optional| [VariableAssignment](#variableassignment) | Specifies the name of the exception thrown when the User Task is canceled. If not set, then the cancellation or timeout of a User Task Run throws an ERROR rather than an EXCEPTION. |
+| `user_task_def_name` | | string |  |
+| `user_group` | optional| [VariableAssignment](#variableassignment) | to whom should the User Task Run be assigned? |
+| `user_id` | optional| [VariableAssignment](#variableassignment) |  |
+| `actions` | repeated| [UTActionTrigger](#utactiontrigger) | This is used to, for example, send a push notification to a mobile app to remind someone that they need to fill out a task, or to re-assign the task to another group of people |
+| `user_task_def_version` | optional| int32 | So, once the WfSpec is created, this will be pinned to a version. Customer can optionally specify a specific version or can leave it null, in which case we just use the latest |
+| `notes` | optional| [VariableAssignment](#variableassignment) | Allow WfRun-specific notes for this User Task. |
+| `on_cancellation_exception_name` | optional| [VariableAssignment](#variableassignment) | Specifies the name of the exception thrown when the User Task is canceled |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3383,19 +3361,14 @@ The output is a JSON_OBJ variable with one key/value pair for each UserTaskField
 
 ### Message `WaitForThreadsNode` {#waitforthreadsnode}
 
-Specifies that a ThreadRun will wait for certain specified Child ThreadRun's to
-complete or fail before the WfRun continues. If one of the Child ThreadRun's
-throws a Failure that is not caught by the `per_thread_failure_handlers`,
-then the Child ThreadRun's Failure is thrown by the WaitForThreadsRun.
 
-No output.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `threads` | oneof `threads_to_wait_for`| [WaitForThreadsNode.ThreadsToWaitFor](#waitforthreadsnodethreadstowaitfor) | Specifies that the WaitForThreadsRun will wait for the threads specified here. |
-| `thread_list` | oneof `threads_to_wait_for`| [VariableAssignment](#variableassignment) | Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained in the JSON_ARR value specified here. Each element in the list must be an INT representing the `number` of a ThreadRun that we're waiting for. |
-| `per_thread_failure_handlers` | repeated| [FailureHandlerDef](#failurehandlerdef) | If any of the child ThreadRun's that we are waiting for throw a Failure, we will evaluate it against these FailureHandlerDef's and run the first matching FailureHandler (if any). The FailureHandler will be a child of the child, which means that it has access to all of the variables in the scope of the failed Child ThreadRun.<br/><br/>This is different from Node-level Failure Handlers, which would be _siblings_ of the ThreadRuns that we're waiting for, and would run only when the overall nodeRun has failed. |
+| `threads` | oneof `threads_to_wait_for`| [WaitForThreadsNode.ThreadsToWaitFor](#waitforthreadsnodethreadstowaitfor) |  |
+| `thread_list` | oneof `threads_to_wait_for`| [VariableAssignment](#variableassignment) |  |
+| `per_thread_failure_handlers` | repeated| [FailureHandlerDef](#failurehandlerdef) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3408,7 +3381,7 @@ No output.
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `thread_run_number` | | [VariableAssignment](#variableassignment) | Causes the WaitForThreadsNodeRun to wait for the ThreadRun whose number matches the value specified here. Must resolve to an INT. |
+| `thread_run_number` | | [VariableAssignment](#variableassignment) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3421,7 +3394,7 @@ No output.
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `threads` | repeated| [WaitForThreadsNode.ThreadToWaitFor](#waitforthreadsnodethreadtowaitfor) | Wait for one or more ThreadRun's |
+| `threads` | repeated| [WaitForThreadsNode.ThreadToWaitFor](#waitforthreadsnodethreadtowaitfor) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3429,20 +3402,19 @@ No output.
 
 ### Message `WfSpec` {#wfspec}
 
-A `WfSpec` defines the logic for a workflow in LittleHorse. It is a metadata object
-and is a blueprint for a `WfRun` execution.
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `id` | | [WfSpecId](#wfspecid) | The ID of the `WfSpec`. Note that this ID is versioned with both a major version and a minor revision. Creating new WfSpec's with the same name and different specifications results in a completely new `WfSpec` object whose `id.name` is the same but with different version. |
-| `created_at` | | google.protobuf.Timestamp | The timestamp at which the `WfSpec` was created. |
-| `frozen_variables` | repeated| [ThreadVarDef](#threadvardef) | Variables whose types cannot be changed without causing a Breaking Change between the versions. |
-| `status` | | [MetadataStatus](#metadatastatus) | The Status of the `WfSpec`. Currently, only `ACTIVE` exists. This field will be used in the future when de-commissioning a WfSpec gracefully. |
-| `thread_specs` | map| [WfSpec.ThreadSpecsEntry](#wfspecthreadspecsentry) | The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for a parallel thread of execution (a `ThreadRun`). They are referred to by their names. |
-| `entrypoint_thread_name` | | string | The name of the `ENTRYPOINT` ThreadSpec. The Entrypoint is the `ThreadSpec` for the Entrypoint ThreadRun, which is the `ThreadRun` that is created upon starting the `WfRun`. |
-| `retention_policy` | optional| [WorkflowRetentionPolicy](#workflowretentionpolicy) | Optional policy that configures cleaning up old `WfRun`'s after they are completed or failed. Recommended for production settings to avoid running out of disk space; unless you are using a `WfRun` as a data record, in which case the application should clean up `WfRun`'s as appropriate. |
-| `migration` | optional| [WfSpecVersionMigration](#wfspecversionmigration) | EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another. |
+| `id` | | [WfSpecId](#wfspecid) |  |
+| `created_at` | | google.protobuf.Timestamp |  |
+| `frozen_variables` | repeated| [ThreadVarDef](#threadvardef) |  |
+| `status` | | [MetadataStatus](#metadatastatus) | to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED |
+| `thread_specs` | map| [WfSpec.ThreadSpecsEntry](#wfspecthreadspecsentry) |  |
+| `entrypoint_thread_name` | | string |  |
+| `retention_policy` | optional| [WorkflowRetentionPolicy](#workflowretentionpolicy) |  |
+| `migration` | optional| [WfSpecVersionMigration](#wfspecversionmigration) |  |
 | `parent_wf_spec` | optional| [WfSpec.ParentWfSpecReference](#wfspecparentwfspecreference) | Reference to the parent WfSpec. If this is set, all WfRun's for this WfSpec must be the child of a WfRun belonging to the referenced WfSpec. |
  <!-- end Fields -->
  <!-- end HasFields -->
@@ -3484,15 +3456,14 @@ Currently, only reference by names is supported.
 
 ### Message `WfSpecVersionMigration` {#wfspecversionmigration}
 
-EXPERIMENTAL: Specification for how to migrate an in-flight WfRun from one WfSpec
-to another WfSpec version.
+
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `new_major_version` | | int32 | The major version of the WfSpec that we are migrating to. |
-| `new_revision` | | int32 | The revision of the WfSpec that we are migrating to. |
-| `thread_spec_migrations` | map| [WfSpecVersionMigration.ThreadSpecMigrationsEntry](#wfspecversionmigrationthreadspecmigrationsentry) | Map from ThreadSpec name to a specifier determining how to migrate ThreadRun's to the new version of the WfSpec. |
+| `new_major_version` | | int32 |  |
+| `new_revision` | | int32 |  |
+| `thread_spec_migrations` | map| [WfSpecVersionMigration.ThreadSpecMigrationsEntry](#wfspecversionmigrationthreadspecmigrationsentry) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3514,8 +3485,7 @@ to another WfSpec version.
 
 ### Message `WorkflowRetentionPolicy` {#workflowretentionpolicy}
 
-A WorkflowRetentionPolicy configures how long a WfRun is retained in the data store before
-being deleted after it is completed or failed.
+
 
 
 | Field | Label | Type | Description |
@@ -3572,30 +3542,31 @@ This section contains the enums defined by the LittleHorse API.
 
 
 ### Enum ACLAction {#aclaction}
-Describes an Action that can be taken over a specific set of resources.
+
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| READ | 0 | Allows all RPC's that start with `Get`, `List`, and `Search` in relation to the metadata (eg. `TaskDef` for `ACL_TASK`) or run data (eg. `TaskRun` for `ACL_TASK`) |
-| RUN | 1 | Allows RPC's that are needed for mutating the _runs_ of the resource. For example, `RUN` over `ACL_TASK` allows the `ReportTask` and `PollTask` RPC's, and `RUN` over `ACL_WORKFLOW` allows the `RunWf`, `DeleteWfRun`, `StopWfRun`, and `ResumeWfRun` RPC's. |
-| WRITE_METADATA | 2 | Allows mutating metadata. For example, `WRITE_METADATA` over `ACL_WORKFLOW` allows mutating `WfSpec`s, and `WRITE_METADATA` over `ACL_TASK` allows mutating `TaskDef`s. |
-| ALL_ACTIONS | 3 | Allows all actions related to a resource. |
+| READ | 0 |  |
+| RUN | 1 |  |
+| WRITE_METADATA | 2 |  |
+| ALL_ACTIONS | 3 |  |
 
 
 
 
 ### Enum ACLResource {#aclresource}
-Defines a resource type for ACL's.
+
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| ACL_WORKFLOW | 0 | Refers to `WfSpec` and `WfRun` |
-| ACL_TASK | 1 | Refers to `TaskDef` and `TaskRun` |
-| ACL_EXTERNAL_EVENT | 2 | Refers to `ExternalEventDef` and `ExternalEvent` |
-| ACL_USER_TASK | 3 | Refers to `UserTaskDef` and `UserTaskRun` |
-| ACL_PRINCIPAL | 4 | Refers to the `Principal` resource. Currently, the `ACL_PRINCIPAL` permission is only valid in the `global_acls` field of the `Principal`. A `Principal` who only has access to a specific Tenant cannot create othe Principals because a Principal is scoped to the Cluster, and not to a Tenant. |
-| ACL_TENANT | 5 | Refers to the `Tenant` resource. The `ACL_TENANT` permission is only valid in the `global_acls` field of the `Principal`. This is because the `Tenant` resource is cluste-rscoped. |
-| ACL_ALL_RESOURCES | 6 | Refers to all resources. In the `global_acls` field, this includes `Principal` and `Tenant` resources. In the `per_tenant_acls` field, this does not include `Principal` and `Tenant` since those are cluster-scoped resources. |
+| ACL_WORKFLOW | 0 |  |
+| ACL_TASK | 1 |  |
+| ACL_EXTERNAL_EVENT | 2 |  |
+| ACL_USER_TASK | 3 |  |
+| ACL_PRINCIPAL | 4 |  |
+| ACL_TENANT | 5 |  |
+| ACL_ALL_RESOURCES | 6 |  |
+| ACL_TASK_WORKER_GROUP | 7 |  |
 
 
  <!-- end Enums -->
@@ -3838,24 +3809,24 @@ The type of a ThreadRUn.
 
 
 ### Enum FailureHandlerDef.LHFailureType {#failurehandlerdeflhfailuretype}
-Specifies a type of Failure
+
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| FAILURE_TYPE_ERROR | 0 | FAILURE_TYPE_ERROR specifies any technical `ERROR`. |
-| FAILURE_TYPE_EXCEPTION | 1 | Specifies a user-defined, business-related `EXCEPTION`. |
+| FAILURE_TYPE_ERROR | 0 |  |
+| FAILURE_TYPE_EXCEPTION | 1 |  |
 
 
 
 
 ### Enum WfRunVariableAccessLevel {#wfrunvariableaccesslevel}
-Determines the Access Level for a Variable in a ThreadSpec/WfSpec.
+
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| PUBLIC_VAR | 0 | A `PUBLIC_VAR` can be accessed (read + mutated) by child `WfRun`'s. |
-| PRIVATE_VAR | 1 | A `PRIVATE_VAR` cannot be accessed by a child `WfRun`. |
-| INHERITED_VAR | 2 | An `INHERITED_VAR` is inherited from the parent `WfRun`. Only valid in a `WfSpec` that has a parent. Also can only be declared in the Entrypoint Thread. |
+| PUBLIC_VAR | 0 |  |
+| PRIVATE_VAR | 1 |  |
+| INHERITED_VAR | 2 |  |
 
 
  <!-- end Enums -->
