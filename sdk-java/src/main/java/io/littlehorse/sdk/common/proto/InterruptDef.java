@@ -4,6 +4,13 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Defines an Interrupt for a ThreadSpec. An Interrupt means that when an ExternalEvent
+ * of a certain type is registered to the WfRun, then the affected ThreadRun is HALTED
+ * and a handler ThreadRun is run as an interrupt handler. The interrupted ThreadRun
+ * is resumed once the interrupt handler completes.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.InterruptDef}
  */
 public final class InterruptDef extends
@@ -42,6 +49,12 @@ private static final long serialVersionUID = 0L;
   public static final int EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.ExternalEventDefId externalEventDefId_;
   /**
+   * <pre>
+   * The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+   * Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+   * and an ExternalEventNode in the same WfSpec.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
    * @return Whether the externalEventDefId field is set.
    */
@@ -50,6 +63,12 @@ private static final long serialVersionUID = 0L;
     return externalEventDefId_ != null;
   }
   /**
+   * <pre>
+   * The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+   * Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+   * and an ExternalEventNode in the same WfSpec.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
    * @return The externalEventDefId.
    */
@@ -58,6 +77,12 @@ private static final long serialVersionUID = 0L;
     return externalEventDefId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance() : externalEventDefId_;
   }
   /**
+   * <pre>
+   * The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+   * Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+   * and an ExternalEventNode in the same WfSpec.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
    */
   @java.lang.Override
@@ -69,6 +94,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object handlerSpecName_ = "";
   /**
+   * <pre>
+   * The name of the ThreadSpec that we run as the interrupt handler.
+   * </pre>
+   *
    * <code>string handler_spec_name = 2;</code>
    * @return The handlerSpecName.
    */
@@ -86,6 +115,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the ThreadSpec that we run as the interrupt handler.
+   * </pre>
+   *
    * <code>string handler_spec_name = 2;</code>
    * @return The bytes for handlerSpecName.
    */
@@ -277,6 +310,13 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Defines an Interrupt for a ThreadSpec. An Interrupt means that when an ExternalEvent
+   * of a certain type is registered to the WfRun, then the affected ThreadRun is HALTED
+   * and a handler ThreadRun is run as an interrupt handler. The interrupted ThreadRun
+   * is resumed once the interrupt handler completes.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.InterruptDef}
    */
   public static final class Builder extends
@@ -470,6 +510,12 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder> externalEventDefIdBuilder_;
     /**
+     * <pre>
+     * The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+     * Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+     * and an ExternalEventNode in the same WfSpec.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      * @return Whether the externalEventDefId field is set.
      */
@@ -477,6 +523,12 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+     * Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+     * and an ExternalEventNode in the same WfSpec.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      * @return The externalEventDefId.
      */
@@ -488,6 +540,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+     * Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+     * and an ExternalEventNode in the same WfSpec.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public Builder setExternalEventDefId(io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
@@ -504,6 +562,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+     * Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+     * and an ExternalEventNode in the same WfSpec.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public Builder setExternalEventDefId(
@@ -518,6 +582,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+     * Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+     * and an ExternalEventNode in the same WfSpec.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public Builder mergeExternalEventDefId(io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
@@ -537,6 +607,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+     * Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+     * and an ExternalEventNode in the same WfSpec.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public Builder clearExternalEventDefId() {
@@ -550,6 +626,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+     * Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+     * and an ExternalEventNode in the same WfSpec.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder getExternalEventDefIdBuilder() {
@@ -558,6 +640,12 @@ private static final long serialVersionUID = 0L;
       return getExternalEventDefIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+     * Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+     * and an ExternalEventNode in the same WfSpec.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefIdOrBuilder() {
@@ -569,6 +657,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+     * Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+     * and an ExternalEventNode in the same WfSpec.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -587,6 +681,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object handlerSpecName_ = "";
     /**
+     * <pre>
+     * The name of the ThreadSpec that we run as the interrupt handler.
+     * </pre>
+     *
      * <code>string handler_spec_name = 2;</code>
      * @return The handlerSpecName.
      */
@@ -603,6 +701,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec that we run as the interrupt handler.
+     * </pre>
+     *
      * <code>string handler_spec_name = 2;</code>
      * @return The bytes for handlerSpecName.
      */
@@ -620,6 +722,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec that we run as the interrupt handler.
+     * </pre>
+     *
      * <code>string handler_spec_name = 2;</code>
      * @param value The handlerSpecName to set.
      * @return This builder for chaining.
@@ -633,6 +739,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec that we run as the interrupt handler.
+     * </pre>
+     *
      * <code>string handler_spec_name = 2;</code>
      * @return This builder for chaining.
      */
@@ -643,6 +753,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec that we run as the interrupt handler.
+     * </pre>
+     *
      * <code>string handler_spec_name = 2;</code>
      * @param value The bytes for handlerSpecName to set.
      * @return This builder for chaining.

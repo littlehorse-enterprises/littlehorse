@@ -21,16 +21,31 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Defines a resource type for ACL's.
 type ACLResource int32
 
 const (
-	ACLResource_ACL_WORKFLOW       ACLResource = 0
-	ACLResource_ACL_TASK           ACLResource = 1
+	// Refers to `WfSpec` and `WfRun`
+	ACLResource_ACL_WORKFLOW ACLResource = 0
+	// Refers to `TaskDef` and `TaskRun`
+	ACLResource_ACL_TASK ACLResource = 1
+	// Refers to `ExternalEventDef` and `ExternalEvent`
 	ACLResource_ACL_EXTERNAL_EVENT ACLResource = 2
-	ACLResource_ACL_USER_TASK      ACLResource = 3
-	ACLResource_ACL_PRINCIPAL      ACLResource = 4
-	ACLResource_ACL_TENANT         ACLResource = 5
-	ACLResource_ACL_ALL_RESOURCES  ACLResource = 6
+	// Refers to `UserTaskDef` and `UserTaskRun`
+	ACLResource_ACL_USER_TASK ACLResource = 3
+	// Refers to the `Principal` resource. Currently, the `ACL_PRINCIPAL` permission is only
+	// valid in the `global_acls` field of the `Principal`. A `Principal` who only has access
+	// to a specific Tenant cannot create othe Principals because a Principal is scoped
+	// to the Cluster, and not to a Tenant.
+	ACLResource_ACL_PRINCIPAL ACLResource = 4
+	// Refers to the `Tenant` resource. The `ACL_TENANT` permission is only valid in the
+	// `global_acls` field of the `Principal`. This is because the `Tenant` resource is
+	// cluste-rscoped.
+	ACLResource_ACL_TENANT ACLResource = 5
+	// Refers to all resources. In the `global_acls` field, this includes `Principal` and `Tenant`
+	// resources. In the `per_tenant_acls` field, this does not include `Principal` and `Tenant` since
+	// those are cluster-scoped resources.
+	ACLResource_ACL_ALL_RESOURCES ACLResource = 6
 )
 
 // Enum value maps for ACLResource.
@@ -82,13 +97,23 @@ func (ACLResource) EnumDescriptor() ([]byte, []int) {
 	return file_acls_proto_rawDescGZIP(), []int{0}
 }
 
+// Describes an Action that can be taken over a specific set of resources.
 type ACLAction int32
 
 const (
-	ACLAction_READ           ACLAction = 0
-	ACLAction_RUN            ACLAction = 1
+	// Allows all RPC's that start with `Get`, `List`, and `Search` in relation to the
+	// metadata (eg. `TaskDef` for `ACL_TASK`) or run data (eg. `TaskRun` for `ACL_TASK`)
+	ACLAction_READ ACLAction = 0
+	// Allows RPC's that are needed for mutating the _runs_ of the resource. For
+	// example, `RUN` over `ACL_TASK` allows the `ReportTask` and `PollTask` RPC's,
+	// and `RUN` over `ACL_WORKFLOW` allows the `RunWf`, `DeleteWfRun`, `StopWfRun`,
+	// and `ResumeWfRun` RPC's.
+	ACLAction_RUN ACLAction = 1
+	// Allows mutating metadata. For example, `WRITE_METADATA` over `ACL_WORKFLOW` allows
+	// mutating `WfSpec`s, and `WRITE_METADATA` over `ACL_TASK` allows mutating `TaskDef`s.
 	ACLAction_WRITE_METADATA ACLAction = 2
-	ACLAction_ALL_ACTIONS    ACLAction = 3
+	// Allows all actions related to a resource.
+	ACLAction_ALL_ACTIONS ACLAction = 3
 )
 
 // Enum value maps for ACLAction.
@@ -134,19 +159,26 @@ func (ACLAction) EnumDescriptor() ([]byte, []int) {
 	return file_acls_proto_rawDescGZIP(), []int{1}
 }
 
-// This is a GlobalGetable.
+// A Principal represents the identity of a client of LittleHorse, whether human or
+// machine. The ACL's on the Principal control what actions the client is allowed
+// to take.
+//
+// A Principal is not scoped to a Tenant; rather, a Principal is scoped to the Cluster
+// and may have access to one or more Tenants.
 type Principal struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Principals are agnostic of the Authentication protocol that you use. In OAuth,
-	// the id is retrieved by looking at the claims on the request. In mTLS, the
-	// id is retrived by looking at the Subject Name of the client certificate.
-	Id        *PrincipalId           `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The ID of the Principal. In OAuth for human users, this is the user_id. In
+	// OAuth for machine clients, this is the Client ID.
+	//
+	// mTLS for Principal identification is not yet implemented.
+	Id *PrincipalId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The time at which the Principal was created.
 	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	// Maps a Tenant ID to a list of ACL's that the Principal has permission to
-	// execute *within that Tenant*
+	// execute *within that Tenant*.
 	PerTenantAcls map[string]*ServerACLs `protobuf:"bytes,3,rep,name=per_tenant_acls,json=perTenantAcls,proto3" json:"per_tenant_acls,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
 	GlobalAcls *ServerACLs `protobuf:"bytes,4,opt,name=global_acls,json=globalAcls,proto3" json:"global_acls,omitempty"`
@@ -212,14 +244,20 @@ func (x *Principal) GetGlobalAcls() *ServerACLs {
 	return nil
 }
 
-// This is a GlobalGetable
+// A Tenant is a logically isolated environment within LittleHorse. All workflows and
+// associated data (WfSpec, WfRun, TaskDef, TaskRun, NodeRun, etc) are scoped to within
+// a Tenant.
+//
+// Future versions will include quotas on a per-Tenant basis.
 type Tenant struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id        *TenantId              `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"` // Future versions will include quotas on a per-Tenant basis.
+	// The ID of the Tenant.
+	Id *TenantId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The time at which the Tenant was created.
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 }
 
 func (x *Tenant) Reset() {
@@ -268,11 +306,13 @@ func (x *Tenant) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
+// List of ACL's for LittleHorse
 type ServerACLs struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The associated ACL's
 	Acls []*ServerACL `protobuf:"bytes,1,rep,name=acls,proto3" json:"acls,omitempty"`
 }
 
@@ -315,13 +355,17 @@ func (x *ServerACLs) GetAcls() []*ServerACL {
 	return nil
 }
 
+// Represents a specific set of permissions over a specific set of objects
+// in a Tenant. This is a *positive* permission.
 type ServerACL struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Resources      []ACLResource `protobuf:"varint,1,rep,packed,name=resources,proto3,enum=littlehorse.ACLResource" json:"resources,omitempty"`
-	AllowedActions []ACLAction   `protobuf:"varint,2,rep,packed,name=allowed_actions,json=allowedActions,proto3,enum=littlehorse.ACLAction" json:"allowed_actions,omitempty"`
+	// The resource types over which permission is granted.
+	Resources []ACLResource `protobuf:"varint,1,rep,packed,name=resources,proto3,enum=littlehorse.ACLResource" json:"resources,omitempty"`
+	// The actions that are permitted.
+	AllowedActions []ACLAction `protobuf:"varint,2,rep,packed,name=allowed_actions,json=allowedActions,proto3,enum=littlehorse.ACLAction" json:"allowed_actions,omitempty"`
 	// Types that are assignable to ResourceFilter:
 	//	*ServerACL_Name
 	//	*ServerACL_Prefix
@@ -400,10 +444,20 @@ type isServerACL_ResourceFilter interface {
 }
 
 type ServerACL_Name struct {
+	// If set, then only the resources with this exact name are allowed. For example,
+	// the `READ` and `RUN` `allowed_actions` over `ACL_TASK` with `name` == `my-task`
+	// allows a Task Worker to only execute the `my-task` TaskDef.
+	//
+	// If `name` and `prefix` are unset, then the ACL applies to all resources of the
+	// specified types.
 	Name string `protobuf:"bytes,3,opt,name=name,proto3,oneof"`
 }
 
 type ServerACL_Prefix struct {
+	// If set, then only the resources whose names match this prefix are allowed.
+	//
+	// If `name` and `prefix` are unset, then the ACL applies to all resources of the
+	// specified types.
 	Prefix string `protobuf:"bytes,4,opt,name=prefix,proto3,oneof"`
 }
 
@@ -411,15 +465,25 @@ func (*ServerACL_Name) isServerACL_ResourceFilter() {}
 
 func (*ServerACL_Prefix) isServerACL_ResourceFilter() {}
 
+// Creates or updates a Principal. If this request would remove admin privileges from the
+// last admin principal (i.e. `ALL_ACTIONS` over `ACL_ALL_RESOURCES` in the `global_acls`),
+// then the RPC throws `FAILED_PRECONDITION`.
 type PutPrincipalRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The ID of the Principal that we are creating.
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The per-tenant ACL's for the Principal
 	PerTenantAcls map[string]*ServerACLs `protobuf:"bytes,2,rep,name=per_tenant_acls,json=perTenantAcls,proto3" json:"per_tenant_acls,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	GlobalAcls    *ServerACLs            `protobuf:"bytes,3,opt,name=global_acls,json=globalAcls,proto3" json:"global_acls,omitempty"`
-	Overwrite     bool                   `protobuf:"varint,5,opt,name=overwrite,proto3" json:"overwrite,omitempty"`
+	// The ACL's for the principal in all tenants
+	GlobalAcls *ServerACLs `protobuf:"bytes,3,opt,name=global_acls,json=globalAcls,proto3" json:"global_acls,omitempty"`
+	// If this is set to false and a `Principal` with the same `id` already exists *and*
+	// has different ACL's configured, then the RPC throws `ALREADY_EXISTS`.
+	//
+	// If this is set to `true`, then the RPC will override hte
+	Overwrite bool `protobuf:"varint,5,opt,name=overwrite,proto3" json:"overwrite,omitempty"`
 }
 
 func (x *PutPrincipalRequest) Reset() {

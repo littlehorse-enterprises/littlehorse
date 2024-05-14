@@ -9,66 +9,143 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
-// This is a GlobalGetable.
+// A Principal represents the identity of a client of LittleHorse, whether human or
+// machine. The ACL's on the Principal control what actions the client is allowed
+// to take.
+//
+// A Principal is not scoped to a Tenant; rather, a Principal is scoped to the Cluster
+// and may have access to one or more Tenants.
 message Principal {
-    // Principals are agnostic of the Authentication protocol that you use. In OAuth,
-    // the id is retrieved by looking at the claims on the request. In mTLS, the
-    // id is retrived by looking at the Subject Name of the client certificate.
+    // The ID of the Principal. In OAuth for human users, this is the user_id. In
+    // OAuth for machine clients, this is the Client ID.
+    //
+    // mTLS for Principal identification is not yet implemented.
     PrincipalId id = 1;
+
+    // The time at which the Principal was created.
     google.protobuf.Timestamp created_at = 2;
 
     // Maps a Tenant ID to a list of ACL's that the Principal has permission to
-    // execute *within that Tenant*
+    // execute *within that Tenant*.
     map<string, ServerACLs> per_tenant_acls = 3;
 
     // Sets permissions that this Principal has *for any Tenant* in the LH Cluster.
     ServerACLs global_acls = 4;
-
-    // Future versions will include quotas.
 }
 
-// This is a GlobalGetable
+// A Tenant is a logically isolated environment within LittleHorse. All workflows and
+// associated data (WfSpec, WfRun, TaskDef, TaskRun, NodeRun, etc) are scoped to within
+// a Tenant.
+//
+// Future versions will include quotas on a per-Tenant basis.
 message Tenant {
+    // The ID of the Tenant.
     TenantId id = 1;
+
+    // The time at which the Tenant was created.
     google.protobuf.Timestamp created_at = 2;
-    // Future versions will include quotas on a per-Tenant basis.
 }
 
+// List of ACL's for LittleHorse
 message ServerACLs {
+    // The associated ACL's
     repeated ServerACL acls = 1;
 }
 
+// Represents a specific set of permissions over a specific set of objects
+// in a Tenant. This is a *positive* permission.
 message ServerACL {
+    // The resource types over which permission is granted.
     repeated ACLResource resources = 1;
+
+    // The actions that are permitted.
     repeated ACLAction allowed_actions = 2;
 
     oneof resource_filter {
+        // If set, then only the resources with this exact name are allowed. For example,
+        // the `READ` and `RUN` `allowed_actions` over `ACL_TASK` with `name` == `my-task`
+        // allows a Task Worker to only execute the `my-task` TaskDef.
+        //
+        // If `name` and `prefix` are unset, then the ACL applies to all resources of the
+        // specified types.
         string name = 3;
+
+        // If set, then only the resources whose names match this prefix are allowed.
+        //
+        // If `name` and `prefix` are unset, then the ACL applies to all resources of the
+        // specified types.
         string prefix = 4;
     }
 }
 
+// Defines a resource type for ACL's.
 enum ACLResource {
+    // Refers to `WfSpec` and `WfRun`
     ACL_WORKFLOW = 0;
+
+    // Refers to `TaskDef` and `TaskRun`
     ACL_TASK = 1;
+
+    // Refers to `ExternalEventDef` and `ExternalEvent`
     ACL_EXTERNAL_EVENT = 2;
+
+    // Refers to `UserTaskDef` and `UserTaskRun`
     ACL_USER_TASK = 3;
+
+    // Refers to the `Principal` resource. Currently, the `ACL_PRINCIPAL` permission is only
+    // valid in the `global_acls` field of the `Principal`. A `Principal` who only has access
+    // to a specific Tenant cannot create othe Principals because a Principal is scoped
+    // to the Cluster, and not to a Tenant.
     ACL_PRINCIPAL = 4;
+
+    // Refers to the `Tenant` resource. The `ACL_TENANT` permission is only valid in the
+    // `global_acls` field of the `Principal`. This is because the `Tenant` resource is
+    // cluste-rscoped.
     ACL_TENANT = 5;
+
+    // Refers to all resources. In the `global_acls` field, this includes `Principal` and `Tenant`
+    // resources. In the `per_tenant_acls` field, this does not include `Principal` and `Tenant` since
+    // those are cluster-scoped resources.
     ACL_ALL_RESOURCES = 6;
 }
 
+// Describes an Action that can be taken over a specific set of resources.
 enum ACLAction {
+    // Allows all RPC's that start with `Get`, `List`, and `Search` in relation to the
+    // metadata (eg. `TaskDef` for `ACL_TASK`) or run data (eg. `TaskRun` for `ACL_TASK`)
     READ = 0;
+
+    // Allows RPC's that are needed for mutating the _runs_ of the resource. For
+    // example, `RUN` over `ACL_TASK` allows the `ReportTask` and `PollTask` RPC's,
+    // and `RUN` over `ACL_WORKFLOW` allows the `RunWf`, `DeleteWfRun`, `StopWfRun`,
+    // and `ResumeWfRun` RPC's.
     RUN = 1;
+
+    // Allows mutating metadata. For example, `WRITE_METADATA` over `ACL_WORKFLOW` allows
+    // mutating `WfSpec`s, and `WRITE_METADATA` over `ACL_TASK` allows mutating `TaskDef`s.
     WRITE_METADATA = 2;
+
+    // Allows all actions related to a resource.
     ALL_ACTIONS = 3;
 }
 
+// Creates or updates a Principal. If this request would remove admin privileges from the
+// last admin principal (i.e. `ALL_ACTIONS` over `ACL_ALL_RESOURCES` in the `global_acls`),
+// then the RPC throws `FAILED_PRECONDITION`.
 message PutPrincipalRequest {
+    // The ID of the Principal that we are creating.
     string id = 1;
+
+    // The per-tenant ACL's for the Principal
     map<string, ServerACLs> per_tenant_acls = 2;
+
+    // The ACL's for the principal in all tenants
     ServerACLs global_acls = 3;
+
+    // If this is set to false and a `Principal` with the same `id` already exists *and*
+    // has different ACL's configured, then the RPC throws `ALREADY_EXISTS`.
+    //
+    // If this is set to `true`, then the RPC will override hte 
     bool overwrite = 5;
 }
 

@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * EXPERIMENTAL: Specification for how to migrate a ThreadRun of a specific ThreadSpec
+ * from one WfSpec to another WfSpec version.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ThreadSpecMigration}
  */
 public final class ThreadSpecMigration extends
@@ -55,6 +60,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object newThreadSpecName_ = "";
   /**
+   * <pre>
+   * The name of the ThreadSpec in the new WfSpec that this ThreadSpec should
+   * migrate to.
+   * </pre>
+   *
    * <code>string new_thread_spec_name = 1;</code>
    * @return The newThreadSpecName.
    */
@@ -72,6 +82,11 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the ThreadSpec in the new WfSpec that this ThreadSpec should
+   * migrate to.
+   * </pre>
+   *
    * <code>string new_thread_spec_name = 1;</code>
    * @return The bytes for newThreadSpecName.
    */
@@ -117,6 +132,11 @@ private static final long serialVersionUID = 0L;
     return internalGetNodeMigrations().getMap().size();
   }
   /**
+   * <pre>
+   * Map from name of the nodes on the current ThreadSpec to the migration
+   * to perform on it to move it to a new WfSpec.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.NodeMigration&gt; node_migrations = 2;</code>
    */
   @java.lang.Override
@@ -134,6 +154,11 @@ private static final long serialVersionUID = 0L;
     return getNodeMigrationsMap();
   }
   /**
+   * <pre>
+   * Map from name of the nodes on the current ThreadSpec to the migration
+   * to perform on it to move it to a new WfSpec.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.NodeMigration&gt; node_migrations = 2;</code>
    */
   @java.lang.Override
@@ -141,6 +166,11 @@ private static final long serialVersionUID = 0L;
     return internalGetNodeMigrations().getMap();
   }
   /**
+   * <pre>
+   * Map from name of the nodes on the current ThreadSpec to the migration
+   * to perform on it to move it to a new WfSpec.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.NodeMigration&gt; node_migrations = 2;</code>
    */
   @java.lang.Override
@@ -155,6 +185,11 @@ io.littlehorse.sdk.common.proto.NodeMigration defaultValue) {
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
+   * <pre>
+   * Map from name of the nodes on the current ThreadSpec to the migration
+   * to perform on it to move it to a new WfSpec.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.NodeMigration&gt; node_migrations = 2;</code>
    */
   @java.lang.Override
@@ -348,6 +383,11 @@ io.littlehorse.sdk.common.proto.NodeMigration defaultValue) {
     return builder;
   }
   /**
+   * <pre>
+   * EXPERIMENTAL: Specification for how to migrate a ThreadRun of a specific ThreadSpec
+   * from one WfSpec to another WfSpec version.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ThreadSpecMigration}
    */
   public static final class Builder extends
@@ -558,6 +598,11 @@ io.littlehorse.sdk.common.proto.NodeMigration defaultValue) {
 
     private java.lang.Object newThreadSpecName_ = "";
     /**
+     * <pre>
+     * The name of the ThreadSpec in the new WfSpec that this ThreadSpec should
+     * migrate to.
+     * </pre>
+     *
      * <code>string new_thread_spec_name = 1;</code>
      * @return The newThreadSpecName.
      */
@@ -574,6 +619,11 @@ io.littlehorse.sdk.common.proto.NodeMigration defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec in the new WfSpec that this ThreadSpec should
+     * migrate to.
+     * </pre>
+     *
      * <code>string new_thread_spec_name = 1;</code>
      * @return The bytes for newThreadSpecName.
      */
@@ -591,6 +641,11 @@ io.littlehorse.sdk.common.proto.NodeMigration defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec in the new WfSpec that this ThreadSpec should
+     * migrate to.
+     * </pre>
+     *
      * <code>string new_thread_spec_name = 1;</code>
      * @param value The newThreadSpecName to set.
      * @return This builder for chaining.
@@ -604,6 +659,11 @@ io.littlehorse.sdk.common.proto.NodeMigration defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec in the new WfSpec that this ThreadSpec should
+     * migrate to.
+     * </pre>
+     *
      * <code>string new_thread_spec_name = 1;</code>
      * @return This builder for chaining.
      */
@@ -614,6 +674,11 @@ io.littlehorse.sdk.common.proto.NodeMigration defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec in the new WfSpec that this ThreadSpec should
+     * migrate to.
+     * </pre>
+     *
      * <code>string new_thread_spec_name = 1;</code>
      * @param value The bytes for newThreadSpecName to set.
      * @return This builder for chaining.
@@ -655,6 +720,11 @@ io.littlehorse.sdk.common.proto.NodeMigration defaultValue) {
       return internalGetNodeMigrations().getMap().size();
     }
     /**
+     * <pre>
+     * Map from name of the nodes on the current ThreadSpec to the migration
+     * to perform on it to move it to a new WfSpec.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.NodeMigration&gt; node_migrations = 2;</code>
      */
     @java.lang.Override
@@ -672,6 +742,11 @@ io.littlehorse.sdk.common.proto.NodeMigration defaultValue) {
       return getNodeMigrationsMap();
     }
     /**
+     * <pre>
+     * Map from name of the nodes on the current ThreadSpec to the migration
+     * to perform on it to move it to a new WfSpec.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.NodeMigration&gt; node_migrations = 2;</code>
      */
     @java.lang.Override
@@ -679,6 +754,11 @@ io.littlehorse.sdk.common.proto.NodeMigration defaultValue) {
       return internalGetNodeMigrations().getMap();
     }
     /**
+     * <pre>
+     * Map from name of the nodes on the current ThreadSpec to the migration
+     * to perform on it to move it to a new WfSpec.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.NodeMigration&gt; node_migrations = 2;</code>
      */
     @java.lang.Override
@@ -693,6 +773,11 @@ io.littlehorse.sdk.common.proto.NodeMigration defaultValue) {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
+     * <pre>
+     * Map from name of the nodes on the current ThreadSpec to the migration
+     * to perform on it to move it to a new WfSpec.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.NodeMigration&gt; node_migrations = 2;</code>
      */
     @java.lang.Override
@@ -713,6 +798,11 @@ io.littlehorse.sdk.common.proto.NodeMigration defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Map from name of the nodes on the current ThreadSpec to the migration
+     * to perform on it to move it to a new WfSpec.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.NodeMigration&gt; node_migrations = 2;</code>
      */
     public Builder removeNodeMigrations(
@@ -732,6 +822,11 @@ io.littlehorse.sdk.common.proto.NodeMigration defaultValue) {
       return internalGetMutableNodeMigrations().getMutableMap();
     }
     /**
+     * <pre>
+     * Map from name of the nodes on the current ThreadSpec to the migration
+     * to perform on it to move it to a new WfSpec.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.NodeMigration&gt; node_migrations = 2;</code>
      */
     public Builder putNodeMigrations(
@@ -745,6 +840,11 @@ io.littlehorse.sdk.common.proto.NodeMigration defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Map from name of the nodes on the current ThreadSpec to the migration
+     * to perform on it to move it to a new WfSpec.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.NodeMigration&gt; node_migrations = 2;</code>
      */
     public Builder putAllNodeMigrations(

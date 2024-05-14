@@ -4,23 +4,48 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Describes an Action that can be taken over a specific set of resources.
+ * </pre>
+ *
  * Protobuf enum {@code littlehorse.ACLAction}
  */
 public enum ACLAction
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
+   * <pre>
+   * Allows all RPC's that start with `Get`, `List`, and `Search` in relation to the
+   * metadata (eg. `TaskDef` for `ACL_TASK`) or run data (eg. `TaskRun` for `ACL_TASK`)
+   * </pre>
+   *
    * <code>READ = 0;</code>
    */
   READ(0),
   /**
+   * <pre>
+   * Allows RPC's that are needed for mutating the _runs_ of the resource. For
+   * example, `RUN` over `ACL_TASK` allows the `ReportTask` and `PollTask` RPC's,
+   * and `RUN` over `ACL_WORKFLOW` allows the `RunWf`, `DeleteWfRun`, `StopWfRun`,
+   * and `ResumeWfRun` RPC's.
+   * </pre>
+   *
    * <code>RUN = 1;</code>
    */
   RUN(1),
   /**
+   * <pre>
+   * Allows mutating metadata. For example, `WRITE_METADATA` over `ACL_WORKFLOW` allows
+   * mutating `WfSpec`s, and `WRITE_METADATA` over `ACL_TASK` allows mutating `TaskDef`s.
+   * </pre>
+   *
    * <code>WRITE_METADATA = 2;</code>
    */
   WRITE_METADATA(2),
   /**
+   * <pre>
+   * Allows all actions related to a resource.
+   * </pre>
+   *
    * <code>ALL_ACTIONS = 3;</code>
    */
   ALL_ACTIONS(3),
@@ -28,18 +53,39 @@ public enum ACLAction
   ;
 
   /**
+   * <pre>
+   * Allows all RPC's that start with `Get`, `List`, and `Search` in relation to the
+   * metadata (eg. `TaskDef` for `ACL_TASK`) or run data (eg. `TaskRun` for `ACL_TASK`)
+   * </pre>
+   *
    * <code>READ = 0;</code>
    */
   public static final int READ_VALUE = 0;
   /**
+   * <pre>
+   * Allows RPC's that are needed for mutating the _runs_ of the resource. For
+   * example, `RUN` over `ACL_TASK` allows the `ReportTask` and `PollTask` RPC's,
+   * and `RUN` over `ACL_WORKFLOW` allows the `RunWf`, `DeleteWfRun`, `StopWfRun`,
+   * and `ResumeWfRun` RPC's.
+   * </pre>
+   *
    * <code>RUN = 1;</code>
    */
   public static final int RUN_VALUE = 1;
   /**
+   * <pre>
+   * Allows mutating metadata. For example, `WRITE_METADATA` over `ACL_WORKFLOW` allows
+   * mutating `WfSpec`s, and `WRITE_METADATA` over `ACL_TASK` allows mutating `TaskDef`s.
+   * </pre>
+   *
    * <code>WRITE_METADATA = 2;</code>
    */
   public static final int WRITE_METADATA_VALUE = 2;
   /**
+   * <pre>
+   * Allows all actions related to a resource.
+   * </pre>
+   *
    * <code>ALL_ACTIONS = 3;</code>
    */
   public static final int ALL_ACTIONS_VALUE = 3;

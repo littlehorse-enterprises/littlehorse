@@ -8,26 +8,52 @@ public interface InterruptDefOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+   * Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+   * and an ExternalEventNode in the same WfSpec.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
    * @return Whether the externalEventDefId field is set.
    */
   boolean hasExternalEventDefId();
   /**
+   * <pre>
+   * The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+   * Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+   * and an ExternalEventNode in the same WfSpec.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
    * @return The externalEventDefId.
    */
   io.littlehorse.sdk.common.proto.ExternalEventDefId getExternalEventDefId();
   /**
+   * <pre>
+   * The ID of the ExternalEventDef which triggers an Interrupt for this ThreadSpec.
+   * Note that as of 0.9.0, you cannot use an ExternalEventDefId for both an InterruptDef
+   * and an ExternalEventNode in the same WfSpec.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefIdOrBuilder();
 
   /**
+   * <pre>
+   * The name of the ThreadSpec that we run as the interrupt handler.
+   * </pre>
+   *
    * <code>string handler_spec_name = 2;</code>
    * @return The handlerSpecName.
    */
   java.lang.String getHandlerSpecName();
   /**
+   * <pre>
+   * The name of the ThreadSpec that we run as the interrupt handler.
+   * </pre>
+   *
    * <code>string handler_spec_name = 2;</code>
    * @return The bytes for handlerSpecName.
    */

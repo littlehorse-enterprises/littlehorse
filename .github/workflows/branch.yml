@@ -12,6 +12,8 @@ on:
       - docker/standalone/**
       - docker/canary/**
       - server/**
+      - schemas/**
+      - sdk-java/**
       - dashboard/**
       - canary/**
 permissions:

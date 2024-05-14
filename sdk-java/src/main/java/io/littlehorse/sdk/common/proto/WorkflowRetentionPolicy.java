@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A WorkflowRetentionPolicy configures how long a WfRun is retained in the data store before
+ * being deleted after it is completed or failed.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.WorkflowRetentionPolicy}
  */
 public final class WorkflowRetentionPolicy extends
@@ -283,6 +288,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * A WorkflowRetentionPolicy configures how long a WfRun is retained in the data store before
+   * being deleted after it is completed or failed.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.WorkflowRetentionPolicy}
    */
   public static final class Builder extends

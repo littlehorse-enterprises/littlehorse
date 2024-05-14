@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Denotes a variable declaration at the ThreadSpec level.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ThreadVarDef}
  */
 public final class ThreadVarDef extends
@@ -43,6 +47,10 @@ private static final long serialVersionUID = 0L;
   public static final int VAR_DEF_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.VariableDef varDef_;
   /**
+   * <pre>
+   * Is the actual VariableDefinition containing name and type.
+   * </pre>
+   *
    * <code>.littlehorse.VariableDef var_def = 1;</code>
    * @return Whether the varDef field is set.
    */
@@ -51,6 +59,10 @@ private static final long serialVersionUID = 0L;
     return varDef_ != null;
   }
   /**
+   * <pre>
+   * Is the actual VariableDefinition containing name and type.
+   * </pre>
+   *
    * <code>.littlehorse.VariableDef var_def = 1;</code>
    * @return The varDef.
    */
@@ -59,6 +71,10 @@ private static final long serialVersionUID = 0L;
     return varDef_ == null ? io.littlehorse.sdk.common.proto.VariableDef.getDefaultInstance() : varDef_;
   }
   /**
+   * <pre>
+   * Is the actual VariableDefinition containing name and type.
+   * </pre>
+   *
    * <code>.littlehorse.VariableDef var_def = 1;</code>
    */
   @java.lang.Override
@@ -69,6 +85,10 @@ private static final long serialVersionUID = 0L;
   public static final int REQUIRED_FIELD_NUMBER = 2;
   private boolean required_ = false;
   /**
+   * <pre>
+   * Whether the variable is required as input to the threadRun.
+   * </pre>
+   *
    * <code>bool required = 2;</code>
    * @return The required.
    */
@@ -80,6 +100,10 @@ private static final long serialVersionUID = 0L;
   public static final int SEARCHABLE_FIELD_NUMBER = 3;
   private boolean searchable_ = false;
   /**
+   * <pre>
+   * Whether this variable has an index configured.
+   * </pre>
+   *
    * <code>bool searchable = 3;</code>
    * @return The searchable.
    */
@@ -92,6 +116,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.JsonIndex> jsonIndexes_;
   /**
+   * <pre>
+   * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+   * to index.
+   * </pre>
+   *
    * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
    */
   @java.lang.Override
@@ -99,6 +128,11 @@ private static final long serialVersionUID = 0L;
     return jsonIndexes_;
   }
   /**
+   * <pre>
+   * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+   * to index.
+   * </pre>
+   *
    * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
    */
   @java.lang.Override
@@ -107,6 +141,11 @@ private static final long serialVersionUID = 0L;
     return jsonIndexes_;
   }
   /**
+   * <pre>
+   * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+   * to index.
+   * </pre>
+   *
    * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
    */
   @java.lang.Override
@@ -114,6 +153,11 @@ private static final long serialVersionUID = 0L;
     return jsonIndexes_.size();
   }
   /**
+   * <pre>
+   * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+   * to index.
+   * </pre>
+   *
    * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
    */
   @java.lang.Override
@@ -121,6 +165,11 @@ private static final long serialVersionUID = 0L;
     return jsonIndexes_.get(index);
   }
   /**
+   * <pre>
+   * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+   * to index.
+   * </pre>
+   *
    * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
    */
   @java.lang.Override
@@ -132,6 +181,10 @@ private static final long serialVersionUID = 0L;
   public static final int ACCESS_LEVEL_FIELD_NUMBER = 5;
   private int accessLevel_ = 0;
   /**
+   * <pre>
+   * The Access Level of this variable.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunVariableAccessLevel access_level = 5;</code>
    * @return The enum numeric value on the wire for accessLevel.
    */
@@ -139,6 +192,10 @@ private static final long serialVersionUID = 0L;
     return accessLevel_;
   }
   /**
+   * <pre>
+   * The Access Level of this variable.
+   * </pre>
+   *
    * <code>.littlehorse.WfRunVariableAccessLevel access_level = 5;</code>
    * @return The accessLevel.
    */
@@ -357,6 +414,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Denotes a variable declaration at the ThreadSpec level.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ThreadVarDef}
    */
   public static final class Builder extends
@@ -631,6 +692,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableDef, io.littlehorse.sdk.common.proto.VariableDef.Builder, io.littlehorse.sdk.common.proto.VariableDefOrBuilder> varDefBuilder_;
     /**
+     * <pre>
+     * Is the actual VariableDefinition containing name and type.
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef var_def = 1;</code>
      * @return Whether the varDef field is set.
      */
@@ -638,6 +703,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * Is the actual VariableDefinition containing name and type.
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef var_def = 1;</code>
      * @return The varDef.
      */
@@ -649,6 +718,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Is the actual VariableDefinition containing name and type.
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef var_def = 1;</code>
      */
     public Builder setVarDef(io.littlehorse.sdk.common.proto.VariableDef value) {
@@ -665,6 +738,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the actual VariableDefinition containing name and type.
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef var_def = 1;</code>
      */
     public Builder setVarDef(
@@ -679,6 +756,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the actual VariableDefinition containing name and type.
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef var_def = 1;</code>
      */
     public Builder mergeVarDef(io.littlehorse.sdk.common.proto.VariableDef value) {
@@ -698,6 +779,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the actual VariableDefinition containing name and type.
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef var_def = 1;</code>
      */
     public Builder clearVarDef() {
@@ -711,6 +796,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the actual VariableDefinition containing name and type.
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef var_def = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableDef.Builder getVarDefBuilder() {
@@ -719,6 +808,10 @@ private static final long serialVersionUID = 0L;
       return getVarDefFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Is the actual VariableDefinition containing name and type.
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef var_def = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableDefOrBuilder getVarDefOrBuilder() {
@@ -730,6 +823,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Is the actual VariableDefinition containing name and type.
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef var_def = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -748,6 +845,10 @@ private static final long serialVersionUID = 0L;
 
     private boolean required_ ;
     /**
+     * <pre>
+     * Whether the variable is required as input to the threadRun.
+     * </pre>
+     *
      * <code>bool required = 2;</code>
      * @return The required.
      */
@@ -756,6 +857,10 @@ private static final long serialVersionUID = 0L;
       return required_;
     }
     /**
+     * <pre>
+     * Whether the variable is required as input to the threadRun.
+     * </pre>
+     *
      * <code>bool required = 2;</code>
      * @param value The required to set.
      * @return This builder for chaining.
@@ -768,6 +873,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Whether the variable is required as input to the threadRun.
+     * </pre>
+     *
      * <code>bool required = 2;</code>
      * @return This builder for chaining.
      */
@@ -780,6 +889,10 @@ private static final long serialVersionUID = 0L;
 
     private boolean searchable_ ;
     /**
+     * <pre>
+     * Whether this variable has an index configured.
+     * </pre>
+     *
      * <code>bool searchable = 3;</code>
      * @return The searchable.
      */
@@ -788,6 +901,10 @@ private static final long serialVersionUID = 0L;
       return searchable_;
     }
     /**
+     * <pre>
+     * Whether this variable has an index configured.
+     * </pre>
+     *
      * <code>bool searchable = 3;</code>
      * @param value The searchable to set.
      * @return This builder for chaining.
@@ -800,6 +917,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Whether this variable has an index configured.
+     * </pre>
+     *
      * <code>bool searchable = 3;</code>
      * @return This builder for chaining.
      */
@@ -823,6 +944,11 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.JsonIndex, io.littlehorse.sdk.common.proto.JsonIndex.Builder, io.littlehorse.sdk.common.proto.JsonIndexOrBuilder> jsonIndexesBuilder_;
 
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.JsonIndex> getJsonIndexesList() {
@@ -833,6 +959,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public int getJsonIndexesCount() {
@@ -843,6 +974,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.JsonIndex getJsonIndexes(int index) {
@@ -853,6 +989,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public Builder setJsonIndexes(
@@ -870,6 +1011,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public Builder setJsonIndexes(
@@ -884,6 +1030,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public Builder addJsonIndexes(io.littlehorse.sdk.common.proto.JsonIndex value) {
@@ -900,6 +1051,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public Builder addJsonIndexes(
@@ -917,6 +1073,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public Builder addJsonIndexes(
@@ -931,6 +1092,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public Builder addJsonIndexes(
@@ -945,6 +1111,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public Builder addAllJsonIndexes(
@@ -960,6 +1131,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public Builder clearJsonIndexes() {
@@ -973,6 +1149,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public Builder removeJsonIndexes(int index) {
@@ -986,6 +1167,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.JsonIndex.Builder getJsonIndexesBuilder(
@@ -993,6 +1179,11 @@ private static final long serialVersionUID = 0L;
       return getJsonIndexesFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.JsonIndexOrBuilder getJsonIndexesOrBuilder(
@@ -1003,6 +1194,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.JsonIndexOrBuilder> 
@@ -1014,6 +1210,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.JsonIndex.Builder addJsonIndexesBuilder() {
@@ -1021,6 +1222,11 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.JsonIndex.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.JsonIndex.Builder addJsonIndexesBuilder(
@@ -1029,6 +1235,11 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.JsonIndex.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Valid for JSON_OBJ and JSON_ARR variables only. List of JSON fields
+     * to index.
+     * </pre>
+     *
      * <code>repeated .littlehorse.JsonIndex json_indexes = 4;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.JsonIndex.Builder> 
@@ -1052,6 +1263,10 @@ private static final long serialVersionUID = 0L;
 
     private int accessLevel_ = 0;
     /**
+     * <pre>
+     * The Access Level of this variable.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunVariableAccessLevel access_level = 5;</code>
      * @return The enum numeric value on the wire for accessLevel.
      */
@@ -1059,6 +1274,10 @@ private static final long serialVersionUID = 0L;
       return accessLevel_;
     }
     /**
+     * <pre>
+     * The Access Level of this variable.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunVariableAccessLevel access_level = 5;</code>
      * @param value The enum numeric value on the wire for accessLevel to set.
      * @return This builder for chaining.
@@ -1070,6 +1289,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The Access Level of this variable.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunVariableAccessLevel access_level = 5;</code>
      * @return The accessLevel.
      */
@@ -1079,6 +1302,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * The Access Level of this variable.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunVariableAccessLevel access_level = 5;</code>
      * @param value The accessLevel to set.
      * @return This builder for chaining.
@@ -1093,6 +1320,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The Access Level of this variable.
+     * </pre>
+     *
      * <code>.littlehorse.WfRunVariableAccessLevel access_level = 5;</code>
      * @return This builder for chaining.
      */

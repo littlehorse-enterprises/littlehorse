@@ -4,6 +4,12 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Sleep Node causes the WfRun to wait a specified time and then resume.
+ *
+ * There is no output.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.SleepNode}
  */
 public final class SleepNode extends
@@ -84,6 +90,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int RAW_SECONDS_FIELD_NUMBER = 1;
   /**
+   * <pre>
+   * Sleeps the specified number of seconds.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
    * @return Whether the rawSeconds field is set.
    */
@@ -92,6 +102,10 @@ private static final long serialVersionUID = 0L;
     return sleepLengthCase_ == 1;
   }
   /**
+   * <pre>
+   * Sleeps the specified number of seconds.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
    * @return The rawSeconds.
    */
@@ -103,6 +117,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Sleeps the specified number of seconds.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
    */
   @java.lang.Override
@@ -115,6 +133,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int TIMESTAMP_FIELD_NUMBER = 2;
   /**
+   * <pre>
+   * Sleeps until the `long` timestamp (epoch millis) specified here.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
    * @return Whether the timestamp field is set.
    */
@@ -123,6 +145,10 @@ private static final long serialVersionUID = 0L;
     return sleepLengthCase_ == 2;
   }
   /**
+   * <pre>
+   * Sleeps until the `long` timestamp (epoch millis) specified here.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
    * @return The timestamp.
    */
@@ -134,6 +160,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Sleeps until the `long` timestamp (epoch millis) specified here.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
    */
   @java.lang.Override
@@ -146,6 +176,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int ISO_DATE_FIELD_NUMBER = 3;
   /**
+   * <pre>
+   * Sleeps until the ISO-formatted date specified here.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
    * @return Whether the isoDate field is set.
    */
@@ -154,6 +188,10 @@ private static final long serialVersionUID = 0L;
     return sleepLengthCase_ == 3;
   }
   /**
+   * <pre>
+   * Sleeps until the ISO-formatted date specified here.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
    * @return The isoDate.
    */
@@ -165,6 +203,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Sleeps until the ISO-formatted date specified here.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
    */
   @java.lang.Override
@@ -376,6 +418,12 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Sleep Node causes the WfRun to wait a specified time and then resume.
+   *
+   * There is no output.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.SleepNode}
    */
   public static final class Builder extends
@@ -616,6 +664,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> rawSecondsBuilder_;
     /**
+     * <pre>
+     * Sleeps the specified number of seconds.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      * @return Whether the rawSeconds field is set.
      */
@@ -624,6 +676,10 @@ private static final long serialVersionUID = 0L;
       return sleepLengthCase_ == 1;
     }
     /**
+     * <pre>
+     * Sleeps the specified number of seconds.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      * @return The rawSeconds.
      */
@@ -642,6 +698,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Sleeps the specified number of seconds.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      */
     public Builder setRawSeconds(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -658,6 +718,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Sleeps the specified number of seconds.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      */
     public Builder setRawSeconds(
@@ -672,6 +736,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Sleeps the specified number of seconds.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      */
     public Builder mergeRawSeconds(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -695,6 +763,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Sleeps the specified number of seconds.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      */
     public Builder clearRawSeconds() {
@@ -714,12 +786,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Sleeps the specified number of seconds.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getRawSecondsBuilder() {
       return getRawSecondsFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Sleeps the specified number of seconds.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      */
     @java.lang.Override
@@ -734,6 +814,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Sleeps the specified number of seconds.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -758,6 +842,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> timestampBuilder_;
     /**
+     * <pre>
+     * Sleeps until the `long` timestamp (epoch millis) specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      * @return Whether the timestamp field is set.
      */
@@ -766,6 +854,10 @@ private static final long serialVersionUID = 0L;
       return sleepLengthCase_ == 2;
     }
     /**
+     * <pre>
+     * Sleeps until the `long` timestamp (epoch millis) specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      * @return The timestamp.
      */
@@ -784,6 +876,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Sleeps until the `long` timestamp (epoch millis) specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      */
     public Builder setTimestamp(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -800,6 +896,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Sleeps until the `long` timestamp (epoch millis) specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      */
     public Builder setTimestamp(
@@ -814,6 +914,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Sleeps until the `long` timestamp (epoch millis) specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      */
     public Builder mergeTimestamp(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -837,6 +941,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Sleeps until the `long` timestamp (epoch millis) specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      */
     public Builder clearTimestamp() {
@@ -856,12 +964,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Sleeps until the `long` timestamp (epoch millis) specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getTimestampBuilder() {
       return getTimestampFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Sleeps until the `long` timestamp (epoch millis) specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      */
     @java.lang.Override
@@ -876,6 +992,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Sleeps until the `long` timestamp (epoch millis) specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -900,6 +1020,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> isoDateBuilder_;
     /**
+     * <pre>
+     * Sleeps until the ISO-formatted date specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      * @return Whether the isoDate field is set.
      */
@@ -908,6 +1032,10 @@ private static final long serialVersionUID = 0L;
       return sleepLengthCase_ == 3;
     }
     /**
+     * <pre>
+     * Sleeps until the ISO-formatted date specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      * @return The isoDate.
      */
@@ -926,6 +1054,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Sleeps until the ISO-formatted date specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      */
     public Builder setIsoDate(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -942,6 +1074,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Sleeps until the ISO-formatted date specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      */
     public Builder setIsoDate(
@@ -956,6 +1092,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Sleeps until the ISO-formatted date specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      */
     public Builder mergeIsoDate(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -979,6 +1119,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Sleeps until the ISO-formatted date specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      */
     public Builder clearIsoDate() {
@@ -998,12 +1142,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Sleeps until the ISO-formatted date specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getIsoDateBuilder() {
       return getIsoDateFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Sleeps until the ISO-formatted date specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      */
     @java.lang.Override
@@ -1018,6 +1170,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Sleeps until the ISO-formatted date specified here.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

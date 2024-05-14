@@ -4,6 +4,12 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Specifies a Failure Handler which can run in case of a certain Failure to allow
+ * the ThreadRun to run compensatory logic and gracefully continue rather than
+ * failing immediately.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.FailureHandlerDef}
  */
 public final class FailureHandlerDef extends
@@ -40,15 +46,27 @@ private static final long serialVersionUID = 0L;
   }
 
   /**
+   * <pre>
+   * Specifies a type of Failure
+   * </pre>
+   *
    * Protobuf enum {@code littlehorse.FailureHandlerDef.LHFailureType}
    */
   public enum LHFailureType
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
+     * <pre>
+     * FAILURE_TYPE_ERROR specifies any technical `ERROR`.
+     * </pre>
+     *
      * <code>FAILURE_TYPE_ERROR = 0;</code>
      */
     FAILURE_TYPE_ERROR(0),
     /**
+     * <pre>
+     * Specifies a user-defined, business-related `EXCEPTION`.
+     * </pre>
+     *
      * <code>FAILURE_TYPE_EXCEPTION = 1;</code>
      */
     FAILURE_TYPE_EXCEPTION(1),
@@ -56,10 +74,18 @@ private static final long serialVersionUID = 0L;
     ;
 
     /**
+     * <pre>
+     * FAILURE_TYPE_ERROR specifies any technical `ERROR`.
+     * </pre>
+     *
      * <code>FAILURE_TYPE_ERROR = 0;</code>
      */
     public static final int FAILURE_TYPE_ERROR_VALUE = 0;
     /**
+     * <pre>
+     * Specifies a user-defined, business-related `EXCEPTION`.
+     * </pre>
+     *
      * <code>FAILURE_TYPE_EXCEPTION = 1;</code>
      */
     public static final int FAILURE_TYPE_EXCEPTION_VALUE = 1;
@@ -193,6 +219,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object handlerSpecName_ = "";
   /**
+   * <pre>
+   * The name of the ThreadSpec to run as a 
+   * </pre>
+   *
    * <code>string handler_spec_name = 2;</code>
    * @return The handlerSpecName.
    */
@@ -210,6 +240,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the ThreadSpec to run as a 
+   * </pre>
+   *
    * <code>string handler_spec_name = 2;</code>
    * @return The bytes for handlerSpecName.
    */
@@ -230,6 +264,13 @@ private static final long serialVersionUID = 0L;
 
   public static final int SPECIFIC_FAILURE_FIELD_NUMBER = 1;
   /**
+   * <pre>
+   * Specifies that this FailureHandlerDef will be triggered for a Failure with this
+   * exact name.
+   *
+   * If this and `specific_failure` are both unset, then any failure is caught.
+   * </pre>
+   *
    * <code>string specific_failure = 1;</code>
    * @return Whether the specificFailure field is set.
    */
@@ -237,6 +278,13 @@ private static final long serialVersionUID = 0L;
     return failureToCatchCase_ == 1;
   }
   /**
+   * <pre>
+   * Specifies that this FailureHandlerDef will be triggered for a Failure with this
+   * exact name.
+   *
+   * If this and `specific_failure` are both unset, then any failure is caught.
+   * </pre>
+   *
    * <code>string specific_failure = 1;</code>
    * @return The specificFailure.
    */
@@ -258,6 +306,13 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Specifies that this FailureHandlerDef will be triggered for a Failure with this
+   * exact name.
+   *
+   * If this and `specific_failure` are both unset, then any failure is caught.
+   * </pre>
+   *
    * <code>string specific_failure = 1;</code>
    * @return The bytes for specificFailure.
    */
@@ -282,6 +337,13 @@ private static final long serialVersionUID = 0L;
 
   public static final int ANY_FAILURE_OF_TYPE_FIELD_NUMBER = 3;
   /**
+   * <pre>
+   * Specifies that this FailureHandlerDef will be triggered for any failure matching
+   * this type (ERROR or EXCEPTION).
+   *
+   * 
+   * </pre>
+   *
    * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
    * @return Whether the anyFailureOfType field is set.
    */
@@ -289,6 +351,13 @@ private static final long serialVersionUID = 0L;
     return failureToCatchCase_ == 3;
   }
   /**
+   * <pre>
+   * Specifies that this FailureHandlerDef will be triggered for any failure matching
+   * this type (ERROR or EXCEPTION).
+   *
+   * 
+   * </pre>
+   *
    * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
    * @return The enum numeric value on the wire for anyFailureOfType.
    */
@@ -299,6 +368,13 @@ private static final long serialVersionUID = 0L;
     return 0;
   }
   /**
+   * <pre>
+   * Specifies that this FailureHandlerDef will be triggered for any failure matching
+   * this type (ERROR or EXCEPTION).
+   *
+   * 
+   * </pre>
+   *
    * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
    * @return The anyFailureOfType.
    */
@@ -506,6 +582,12 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Specifies a Failure Handler which can run in case of a certain Failure to allow
+   * the ThreadRun to run compensatory logic and gracefully continue rather than
+   * failing immediately.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.FailureHandlerDef}
    */
   public static final class Builder extends
@@ -727,6 +809,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object handlerSpecName_ = "";
     /**
+     * <pre>
+     * The name of the ThreadSpec to run as a 
+     * </pre>
+     *
      * <code>string handler_spec_name = 2;</code>
      * @return The handlerSpecName.
      */
@@ -743,6 +829,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec to run as a 
+     * </pre>
+     *
      * <code>string handler_spec_name = 2;</code>
      * @return The bytes for handlerSpecName.
      */
@@ -760,6 +850,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec to run as a 
+     * </pre>
+     *
      * <code>string handler_spec_name = 2;</code>
      * @param value The handlerSpecName to set.
      * @return This builder for chaining.
@@ -773,6 +867,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec to run as a 
+     * </pre>
+     *
      * <code>string handler_spec_name = 2;</code>
      * @return This builder for chaining.
      */
@@ -783,6 +881,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec to run as a 
+     * </pre>
+     *
      * <code>string handler_spec_name = 2;</code>
      * @param value The bytes for handlerSpecName to set.
      * @return This builder for chaining.
@@ -798,6 +900,13 @@ private static final long serialVersionUID = 0L;
     }
 
     /**
+     * <pre>
+     * Specifies that this FailureHandlerDef will be triggered for a Failure with this
+     * exact name.
+     *
+     * If this and `specific_failure` are both unset, then any failure is caught.
+     * </pre>
+     *
      * <code>string specific_failure = 1;</code>
      * @return Whether the specificFailure field is set.
      */
@@ -806,6 +915,13 @@ private static final long serialVersionUID = 0L;
       return failureToCatchCase_ == 1;
     }
     /**
+     * <pre>
+     * Specifies that this FailureHandlerDef will be triggered for a Failure with this
+     * exact name.
+     *
+     * If this and `specific_failure` are both unset, then any failure is caught.
+     * </pre>
+     *
      * <code>string specific_failure = 1;</code>
      * @return The specificFailure.
      */
@@ -828,6 +944,13 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies that this FailureHandlerDef will be triggered for a Failure with this
+     * exact name.
+     *
+     * If this and `specific_failure` are both unset, then any failure is caught.
+     * </pre>
+     *
      * <code>string specific_failure = 1;</code>
      * @return The bytes for specificFailure.
      */
@@ -851,6 +974,13 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies that this FailureHandlerDef will be triggered for a Failure with this
+     * exact name.
+     *
+     * If this and `specific_failure` are both unset, then any failure is caught.
+     * </pre>
+     *
      * <code>string specific_failure = 1;</code>
      * @param value The specificFailure to set.
      * @return This builder for chaining.
@@ -864,6 +994,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies that this FailureHandlerDef will be triggered for a Failure with this
+     * exact name.
+     *
+     * If this and `specific_failure` are both unset, then any failure is caught.
+     * </pre>
+     *
      * <code>string specific_failure = 1;</code>
      * @return This builder for chaining.
      */
@@ -876,6 +1013,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies that this FailureHandlerDef will be triggered for a Failure with this
+     * exact name.
+     *
+     * If this and `specific_failure` are both unset, then any failure is caught.
+     * </pre>
+     *
      * <code>string specific_failure = 1;</code>
      * @param value The bytes for specificFailure to set.
      * @return This builder for chaining.
@@ -891,6 +1035,13 @@ private static final long serialVersionUID = 0L;
     }
 
     /**
+     * <pre>
+     * Specifies that this FailureHandlerDef will be triggered for any failure matching
+     * this type (ERROR or EXCEPTION).
+     *
+     * 
+     * </pre>
+     *
      * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
      * @return Whether the anyFailureOfType field is set.
      */
@@ -899,6 +1050,13 @@ private static final long serialVersionUID = 0L;
       return failureToCatchCase_ == 3;
     }
     /**
+     * <pre>
+     * Specifies that this FailureHandlerDef will be triggered for any failure matching
+     * this type (ERROR or EXCEPTION).
+     *
+     * 
+     * </pre>
+     *
      * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
      * @return The enum numeric value on the wire for anyFailureOfType.
      */
@@ -910,6 +1068,13 @@ private static final long serialVersionUID = 0L;
       return 0;
     }
     /**
+     * <pre>
+     * Specifies that this FailureHandlerDef will be triggered for any failure matching
+     * this type (ERROR or EXCEPTION).
+     *
+     * 
+     * </pre>
+     *
      * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
      * @param value The enum numeric value on the wire for anyFailureOfType to set.
      * @return This builder for chaining.
@@ -921,6 +1086,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies that this FailureHandlerDef will be triggered for any failure matching
+     * this type (ERROR or EXCEPTION).
+     *
+     * 
+     * </pre>
+     *
      * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
      * @return The anyFailureOfType.
      */
@@ -934,6 +1106,13 @@ private static final long serialVersionUID = 0L;
       return io.littlehorse.sdk.common.proto.FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR;
     }
     /**
+     * <pre>
+     * Specifies that this FailureHandlerDef will be triggered for any failure matching
+     * this type (ERROR or EXCEPTION).
+     *
+     * 
+     * </pre>
+     *
      * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
      * @param value The anyFailureOfType to set.
      * @return This builder for chaining.
@@ -948,6 +1127,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies that this FailureHandlerDef will be triggered for any failure matching
+     * this type (ERROR or EXCEPTION).
+     *
+     * 
+     * </pre>
+     *
      * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
      * @return This builder for chaining.
      */
