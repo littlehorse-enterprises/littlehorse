@@ -107,6 +107,7 @@ enum ACLResource {
     // resources. In the `per_tenant_acls` field, this does not include `Principal` and `Tenant` since
     // those are cluster-scoped resources.
     ACL_ALL_RESOURCES = 6;
+    ACL_TASK_WORKER_GROUP = 7;
 }
 
 // Describes an Action that can be taken over a specific set of resources.

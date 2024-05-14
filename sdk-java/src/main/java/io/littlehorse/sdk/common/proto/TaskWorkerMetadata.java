@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Describes a specific task worker
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.TaskWorkerMetadata}
  */
 public final class TaskWorkerMetadata extends
@@ -44,6 +48,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object taskWorkerId_ = "";
   /**
+   * <pre>
+   * User-defined identifier for the worker.
+   * </pre>
+   *
    * <code>string task_worker_id = 1;</code>
    * @return The taskWorkerId.
    */
@@ -61,6 +69,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * User-defined identifier for the worker.
+   * </pre>
+   *
    * <code>string task_worker_id = 1;</code>
    * @return The bytes for taskWorkerId.
    */
@@ -82,6 +94,10 @@ private static final long serialVersionUID = 0L;
   public static final int LATEST_HEARTBEAT_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp latestHeartbeat_;
   /**
+   * <pre>
+   * Timestamp indicating the last heartbeat sent by the worker.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp latest_heartbeat = 2;</code>
    * @return Whether the latestHeartbeat field is set.
    */
@@ -90,6 +106,10 @@ private static final long serialVersionUID = 0L;
     return latestHeartbeat_ != null;
   }
   /**
+   * <pre>
+   * Timestamp indicating the last heartbeat sent by the worker.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp latest_heartbeat = 2;</code>
    * @return The latestHeartbeat.
    */
@@ -98,6 +118,10 @@ private static final long serialVersionUID = 0L;
     return latestHeartbeat_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestHeartbeat_;
   }
   /**
+   * <pre>
+   * Timestamp indicating the last heartbeat sent by the worker.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp latest_heartbeat = 2;</code>
    */
   @java.lang.Override
@@ -109,6 +133,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.LHHostInfo> hosts_;
   /**
+   * <pre>
+   * The host(s) where the worker is polling tasks
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
    */
   @java.lang.Override
@@ -116,6 +144,10 @@ private static final long serialVersionUID = 0L;
     return hosts_;
   }
   /**
+   * <pre>
+   * The host(s) where the worker is polling tasks
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
    */
   @java.lang.Override
@@ -124,6 +156,10 @@ private static final long serialVersionUID = 0L;
     return hosts_;
   }
   /**
+   * <pre>
+   * The host(s) where the worker is polling tasks
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
    */
   @java.lang.Override
@@ -131,6 +167,10 @@ private static final long serialVersionUID = 0L;
     return hosts_.size();
   }
   /**
+   * <pre>
+   * The host(s) where the worker is polling tasks
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
    */
   @java.lang.Override
@@ -138,6 +178,10 @@ private static final long serialVersionUID = 0L;
     return hosts_.get(index);
   }
   /**
+   * <pre>
+   * The host(s) where the worker is polling tasks
+   * </pre>
+   *
    * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
    */
   @java.lang.Override
@@ -332,6 +376,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Describes a specific task worker
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.TaskWorkerMetadata}
    */
   public static final class Builder extends
@@ -582,6 +630,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object taskWorkerId_ = "";
     /**
+     * <pre>
+     * User-defined identifier for the worker.
+     * </pre>
+     *
      * <code>string task_worker_id = 1;</code>
      * @return The taskWorkerId.
      */
@@ -598,6 +650,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * User-defined identifier for the worker.
+     * </pre>
+     *
      * <code>string task_worker_id = 1;</code>
      * @return The bytes for taskWorkerId.
      */
@@ -615,6 +671,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * User-defined identifier for the worker.
+     * </pre>
+     *
      * <code>string task_worker_id = 1;</code>
      * @param value The taskWorkerId to set.
      * @return This builder for chaining.
@@ -628,6 +688,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * User-defined identifier for the worker.
+     * </pre>
+     *
      * <code>string task_worker_id = 1;</code>
      * @return This builder for chaining.
      */
@@ -638,6 +702,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * User-defined identifier for the worker.
+     * </pre>
+     *
      * <code>string task_worker_id = 1;</code>
      * @param value The bytes for taskWorkerId to set.
      * @return This builder for chaining.
@@ -656,6 +724,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> latestHeartbeatBuilder_;
     /**
+     * <pre>
+     * Timestamp indicating the last heartbeat sent by the worker.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp latest_heartbeat = 2;</code>
      * @return Whether the latestHeartbeat field is set.
      */
@@ -663,6 +735,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * Timestamp indicating the last heartbeat sent by the worker.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp latest_heartbeat = 2;</code>
      * @return The latestHeartbeat.
      */
@@ -674,6 +750,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Timestamp indicating the last heartbeat sent by the worker.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp latest_heartbeat = 2;</code>
      */
     public Builder setLatestHeartbeat(com.google.protobuf.Timestamp value) {
@@ -690,6 +770,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Timestamp indicating the last heartbeat sent by the worker.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp latest_heartbeat = 2;</code>
      */
     public Builder setLatestHeartbeat(
@@ -704,6 +788,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Timestamp indicating the last heartbeat sent by the worker.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp latest_heartbeat = 2;</code>
      */
     public Builder mergeLatestHeartbeat(com.google.protobuf.Timestamp value) {
@@ -723,6 +811,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Timestamp indicating the last heartbeat sent by the worker.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp latest_heartbeat = 2;</code>
      */
     public Builder clearLatestHeartbeat() {
@@ -736,6 +828,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Timestamp indicating the last heartbeat sent by the worker.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp latest_heartbeat = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getLatestHeartbeatBuilder() {
@@ -744,6 +840,10 @@ private static final long serialVersionUID = 0L;
       return getLatestHeartbeatFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Timestamp indicating the last heartbeat sent by the worker.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp latest_heartbeat = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getLatestHeartbeatOrBuilder() {
@@ -755,6 +855,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Timestamp indicating the last heartbeat sent by the worker.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp latest_heartbeat = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -784,6 +888,10 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.LHHostInfo, io.littlehorse.sdk.common.proto.LHHostInfo.Builder, io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder> hostsBuilder_;
 
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.LHHostInfo> getHostsList() {
@@ -794,6 +902,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public int getHostsCount() {
@@ -804,6 +916,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.LHHostInfo getHosts(int index) {
@@ -814,6 +930,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public Builder setHosts(
@@ -831,6 +951,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public Builder setHosts(
@@ -845,6 +969,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public Builder addHosts(io.littlehorse.sdk.common.proto.LHHostInfo value) {
@@ -861,6 +989,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public Builder addHosts(
@@ -878,6 +1010,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public Builder addHosts(
@@ -892,6 +1028,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public Builder addHosts(
@@ -906,6 +1046,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public Builder addAllHosts(
@@ -921,6 +1065,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public Builder clearHosts() {
@@ -934,6 +1082,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public Builder removeHosts(int index) {
@@ -947,6 +1099,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.LHHostInfo.Builder getHostsBuilder(
@@ -954,6 +1110,10 @@ private static final long serialVersionUID = 0L;
       return getHostsFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder getHostsOrBuilder(
@@ -964,6 +1124,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.LHHostInfoOrBuilder> 
@@ -975,6 +1139,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.LHHostInfo.Builder addHostsBuilder() {
@@ -982,6 +1150,10 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.LHHostInfo.getDefaultInstance());
     }
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.LHHostInfo.Builder addHostsBuilder(
@@ -990,6 +1162,10 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.LHHostInfo.getDefaultInstance());
     }
     /**
+     * <pre>
+     * The host(s) where the worker is polling tasks
+     * </pre>
+     *
      * <code>repeated .littlehorse.LHHostInfo hosts = 3;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.LHHostInfo.Builder> 

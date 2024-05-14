@@ -341,7 +341,8 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def GetTaskWorkerGroup(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Gets the registered task worker group associated with a specific TaskDef.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')

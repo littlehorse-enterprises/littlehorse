@@ -1913,6 +1913,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets the registered task worker group associated with a specific TaskDef.
+     * </pre>
      */
     default void getTaskWorkerGroup(io.littlehorse.sdk.common.proto.TaskDefId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskWorkerGroup> responseObserver) {
@@ -2564,6 +2567,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets the registered task worker group associated with a specific TaskDef.
+     * </pre>
      */
     public void getTaskWorkerGroup(io.littlehorse.sdk.common.proto.TaskDefId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskWorkerGroup> responseObserver) {
@@ -3259,6 +3265,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets the registered task worker group associated with a specific TaskDef.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.TaskWorkerGroup getTaskWorkerGroup(io.littlehorse.sdk.common.proto.TaskDefId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -3888,6 +3897,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Gets the registered task worker group associated with a specific TaskDef.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.TaskWorkerGroup> getTaskWorkerGroup(
         io.littlehorse.sdk.common.proto.TaskDefId request) {
