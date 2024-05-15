@@ -17,6 +17,7 @@ import {
 import { ArrowPathIcon } from '@heroicons/react/16/solid'
 import { concatWfRunIds } from '@/app/utils'
 import { useDebounce } from 'use-debounce'
+import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
 
 type Props = {
   spec: UserTaskDefProto
@@ -32,18 +33,18 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
   const [userId, setUserId] = useState('')
   const [userGroup, setUserGroup] = useState('')
   const { tenantId } = useWhoAmI()
-  const [limit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
   const [userIdToSearchFor] = useDebounce(userId, 1000)
   const [userGroupToSearchFor] = useDebounce(userGroup, 1000)
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ['userTaskRun', selectedStatus, userIdToSearchFor, userGroupToSearchFor, tenantId],
+    queryKey: ['userTaskRun', selectedStatus, userIdToSearchFor, userGroupToSearchFor, tenantId, limit],
     initialPageParam: undefined,
-    getNextPageParam: (lastPage: PaginatedUserTaskRunList) => lastPage.bookmark?.toString('base64'),
+    getNextPageParam: (lastPage: PaginatedUserTaskRunList) => lastPage.bookmarkAsString,
     queryFn: async ({ pageParam }) => {
       return await searchUserTaskRun({
         tenantId,
-        bookmark: pageParam ? Buffer.from(pageParam, 'base64') : undefined,
+        bookmarkAsString: pageParam,
         limit,
         status: selectedStatus,
         userTaskDefName: spec.name,
@@ -147,6 +148,15 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
           </table>
         </div>
       )}
+
+      <div className="mt-6">
+        <SearchFooter
+          currentLimit={limit}
+          setLimit={setLimit}
+          hasNextPage={hasNextPage}
+          fetchNextPage={fetchNextPage}
+        />
+      </div>
     </>
   )
 }
