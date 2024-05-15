@@ -9,9 +9,11 @@ import { Button, Field, Input, Label } from '@headlessui/react'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import Link from 'next/link'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { UserTaskRunIdList } from 'littlehorse-client/dist/proto/service'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { searchUserTaskRun } from '@/app/(authenticated)/userTaskDef/[...props]/actions/searchUserTaskRun'
+import {
+  PaginatedUserTaskRunList,
+  searchUserTaskRun,
+} from '@/app/(authenticated)/userTaskDef/[...props]/actions/searchUserTaskRun'
 import { ArrowPathIcon } from '@heroicons/react/16/solid'
 import { concatWfRunIds } from '@/app/utils'
 import { useDebounce } from 'use-debounce'
@@ -37,7 +39,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ['userTaskRun', selectedStatus, userIdToSearchFor, userGroupToSearchFor, tenantId],
     initialPageParam: undefined,
-    getNextPageParam: (lastPage: UserTaskRunIdList) => lastPage.bookmark?.toString('base64'),
+    getNextPageParam: (lastPage: PaginatedUserTaskRunList) => lastPage.bookmark?.toString('base64'),
     queryFn: async ({ pageParam }) => {
       return await searchUserTaskRun({
         tenantId,
@@ -107,23 +109,31 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
                 <th scope="col" className="px-6 py-4">
                   User Task GUID
                 </th>
+                <th scope="col" className="px-6 py-4">
+                  User Id
+                </th>
+                <th scope="col" className="px-6 py-4">
+                  User Group
+                </th>
               </tr>
             </thead>
             <tbody>
               {data?.pages.map((page, i) => (
                 <Fragment key={i}>
-                  {page.results.length > 0 ? (
-                    page.results.map(userTaskRunId => (
-                      <tr key={userTaskRunId.userTaskGuid} className="border-b border-neutral-200">
+                  {page.resultsWithDetails.length > 0 ? (
+                    page.resultsWithDetails.map(userTaskRun => (
+                      <tr key={userTaskRun.id?.userTaskGuid} className="border-b border-neutral-200">
                         <td className="px-6 py-4">
                           <Link
                             className="py-2 text-blue-500 hover:underline"
-                            href={`/wfRun/${concatWfRunIds(userTaskRunId.wfRunId!)}`}
+                            href={`/wfRun/${concatWfRunIds(userTaskRun.id?.wfRunId!)}`}
                           >
-                            {concatWfRunIds(userTaskRunId.wfRunId!)}
+                            {concatWfRunIds(userTaskRun.id?.wfRunId!)}
                           </Link>
                         </td>
-                        <td className="px-6 py-4">{userTaskRunId.userTaskGuid}</td>
+                        <td className="px-6 py-4">{userTaskRun.id?.userTaskGuid}</td>
+                        <td className="px-6 py-4">{userTaskRun.userId ? userTaskRun.userId : 'N/A'}</td>
+                        <td className="px-6 py-4">{userTaskRun.userGroup ? userTaskRun.userGroup : 'N/A'}</td>
                       </tr>
                     ))
                   ) : (
