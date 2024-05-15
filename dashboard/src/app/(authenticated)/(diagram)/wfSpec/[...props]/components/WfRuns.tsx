@@ -42,7 +42,7 @@ export const WfRuns: FC<Props> = ({ id }) => {
         wfSpecMajorVersion: id!.majorVersion,
         wfSpecRevision: id!.revision,
         variableFilters: [],
-        limit: 1,
+        limit,
         status,
         tenantId,
         bookmarkAsString: pageParam,
