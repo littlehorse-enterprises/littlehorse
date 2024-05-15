@@ -28,12 +28,14 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
   ]
   const [selectedStatus, setSelectedStatus] = useState(UserTaskRunStatus.UNASSIGNED)
   const [userId, setUserId] = useState('')
+  const [userGroup, setUserGroup] = useState('')
   const { tenantId } = useWhoAmI()
   const [limit] = useState<number>(SEARCH_DEFAULT_LIMIT)
   const [userIdToSearchFor] = useDebounce(userId, 1000)
+  const [userGroupToSearchFor] = useDebounce(userGroup, 1000)
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ['userTaskRun', selectedStatus, userIdToSearchFor, tenantId],
+    queryKey: ['userTaskRun', selectedStatus, userIdToSearchFor, userGroupToSearchFor, tenantId],
     initialPageParam: undefined,
     getNextPageParam: (lastPage: UserTaskRunIdList) => lastPage.bookmark?.toString('base64'),
     queryFn: async ({ pageParam }) => {
@@ -44,6 +46,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
         status: selectedStatus,
         userTaskDefName: spec.name,
         userId: userIdToSearchFor.trim() != '' ? userIdToSearchFor : undefined,
+        userGroup: userGroupToSearchFor.trim() != '' ? userGroupToSearchFor : undefined,
       })
     },
   })
@@ -68,13 +71,22 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
           ))}
         </div>
       </div>
-      <div className="mb-5 flex w-1/4 items-start justify-between">
+      <div className="mb-5 flex max-w-fit items-start justify-between">
         <Field className="flex items-center justify-between">
           <Label className="block w-1/2 font-bold">User Id</Label>
           <Input
             type="text"
             value={userId}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserId(e.target.value)}
+            className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
+          />
+        </Field>
+        <Field className="ml-6 flex items-center justify-between">
+          <Label className="block w-1/2 font-bold">User Group</Label>
+          <Input
+            type="text"
+            value={userGroup}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserGroup(e.target.value)}
             className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
           />
         </Field>

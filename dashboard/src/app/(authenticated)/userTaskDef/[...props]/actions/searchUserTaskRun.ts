@@ -6,5 +6,6 @@ import { SearchUserTaskRunRequest, UserTaskRunIdList } from 'littlehorse-client/
 export type UserTaskRunSearchProps = SearchUserTaskRunRequest & WithTenant
 export const searchUserTaskRun = async ({ tenantId, ...req }: UserTaskRunSearchProps): Promise<UserTaskRunIdList> => {
   const client = await lhClient({ tenantId })
+  console.log('request', req)
   return client.searchUserTaskRun(req)
 }
