@@ -139,7 +139,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={2}>No data</td>
+                      <td colSpan={4}>No data</td>
                     </tr>
                   )}
                 </Fragment>
