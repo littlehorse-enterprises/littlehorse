@@ -15,7 +15,7 @@ import {
   searchUserTaskRun,
 } from '@/app/(authenticated)/userTaskDef/[...props]/actions/searchUserTaskRun'
 import { ArrowPathIcon } from '@heroicons/react/16/solid'
-import { concatWfRunIds } from '@/app/utils'
+import { concatWfRunIds, utcToLocalDateTime } from '@/app/utils'
 import { useDebounce } from 'use-debounce'
 import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
 
@@ -53,6 +53,8 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
       })
     },
   })
+
+  const NOT_APPLICABLE_LABEL = 'N/A'
 
   return (
     <>
@@ -116,30 +118,44 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
                 <th scope="col" className="px-6 py-4">
                   User Group
                 </th>
+                <th scope="col" className="px-6 py-4">
+                  Creation Date
+                </th>
               </tr>
             </thead>
             <tbody>
               {data?.pages.map((page, i) => (
                 <Fragment key={i}>
                   {page.resultsWithDetails.length > 0 ? (
-                    page.resultsWithDetails.map(userTaskRun => (
-                      <tr key={userTaskRun.id?.userTaskGuid} className="border-b border-neutral-200">
-                        <td className="px-6 py-4">
-                          <Link
-                            className="py-2 text-blue-500 hover:underline"
-                            href={`/wfRun/${concatWfRunIds(userTaskRun.id?.wfRunId!)}`}
-                          >
-                            {concatWfRunIds(userTaskRun.id?.wfRunId!)}
-                          </Link>
-                        </td>
-                        <td className="px-6 py-4">{userTaskRun.id?.userTaskGuid}</td>
-                        <td className="px-6 py-4">{userTaskRun.userId ? userTaskRun.userId : 'N/A'}</td>
-                        <td className="px-6 py-4">{userTaskRun.userGroup ? userTaskRun.userGroup : 'N/A'}</td>
-                      </tr>
-                    ))
+                    page.resultsWithDetails.map(userTaskRun => {
+                      return (
+                        <tr key={userTaskRun.id?.userTaskGuid} className="border-b border-neutral-200">
+                          <td className="px-6 py-4">
+                            <Link
+                              className="py-2 text-blue-500 hover:underline"
+                              href={`/wfRun/${concatWfRunIds(userTaskRun.id?.wfRunId!)}`}
+                            >
+                              {concatWfRunIds(userTaskRun.id?.wfRunId!)}
+                            </Link>
+                          </td>
+                          <td className="px-6 py-4">{userTaskRun.id?.userTaskGuid}</td>
+                          <td className="px-6 py-4">
+                            {userTaskRun.userId ? userTaskRun.userId : NOT_APPLICABLE_LABEL}
+                          </td>
+                          <td className="px-6 py-4">
+                            {userTaskRun.userGroup ? userTaskRun.userGroup : NOT_APPLICABLE_LABEL}
+                          </td>
+                          <td className="px-6 py-4">
+                            {userTaskRun.scheduledTime
+                              ? utcToLocalDateTime(userTaskRun.scheduledTime)
+                              : NOT_APPLICABLE_LABEL}
+                          </td>
+                        </tr>
+                      )
+                    })
                   ) : (
                     <tr>
-                      <td colSpan={4}>No data</td>
+                      <td colSpan={5}>No data</td>
                     </tr>
                   )}
                 </Fragment>

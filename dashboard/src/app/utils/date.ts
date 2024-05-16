@@ -9,3 +9,6 @@ export const formatDate = (date?: Date | number) => {
     hour12: false,
   }).format(date)
 }
+
+export const utcToLocalDateTime = (utcISODateTime: string) =>
+  new Date(Date.parse(utcISODateTime)).toLocaleString(undefined, { hour12: false, timeZoneName: 'short' })
