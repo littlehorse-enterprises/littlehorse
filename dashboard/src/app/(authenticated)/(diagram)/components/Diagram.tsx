@@ -21,12 +21,12 @@ type Props = {
   spec: WfSpec
 }
 
-const isValidThreadRunNumberForCurrentWfRun = (threadRunNumberFromRedirection: number, wfRun: WfRun) => {
+const isValidThreadRunNumberForCurrentWfRun = (threadRunNumber: number, wfRun: WfRun) => {
   return (
-    !isNaN(threadRunNumberFromRedirection) &&
-    threadRunNumberFromRedirection >= 0 &&
+    !isNaN(threadRunNumber) &&
+    threadRunNumber >= 0 &&
     wfRun &&
-    threadRunNumberFromRedirection <= wfRun.greatestThreadrunNumber
+    threadRunNumber <= wfRun.greatestThreadrunNumber
   )
 }
 
