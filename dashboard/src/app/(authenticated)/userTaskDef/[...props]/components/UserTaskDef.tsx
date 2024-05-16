@@ -104,12 +104,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
           <Input
             type="datetime-local"
             value={createdAfter}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              console.log(e.target.value)
-              console.log(new Date(e.target.value))
-              console.log(new Date(e.target.value).toISOString())
-              setCreatedAfter(e.target.value)
-            }}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCreatedAfter(e.target.value)}
             className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
           />
         </Field>
