@@ -10,5 +10,7 @@ export const formatDate = (date?: Date | number) => {
   }).format(date)
 }
 
-export const utcToLocalDateTime = (utcISODateTime: string) =>
+export const utcToLocalDateTime = (utcISODateTime: string): string =>
   new Date(Date.parse(utcISODateTime)).toLocaleString(undefined, { hour12: false, timeZoneName: 'short' })
+
+export const localDateTimeToUTCIsoString = (localDateTime: string): string => new Date(localDateTime).toISOString()

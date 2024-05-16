@@ -15,7 +15,7 @@ import {
   searchUserTaskRun,
 } from '@/app/(authenticated)/userTaskDef/[...props]/actions/searchUserTaskRun'
 import { ArrowPathIcon } from '@heroicons/react/16/solid'
-import { concatWfRunIds, utcToLocalDateTime } from '@/app/utils'
+import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import { useDebounce } from 'use-debounce'
 import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
 
@@ -32,13 +32,14 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
   const [selectedStatus, setSelectedStatus] = useState(UserTaskRunStatus.UNASSIGNED)
   const [userId, setUserId] = useState('')
   const [userGroup, setUserGroup] = useState('')
+  const [createdAfter, setCreatedAfter] = useState('')
   const { tenantId } = useWhoAmI()
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
   const [userIdToSearchFor] = useDebounce(userId, 1000)
   const [userGroupToSearchFor] = useDebounce(userGroup, 1000)
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ['userTaskRun', selectedStatus, userIdToSearchFor, userGroupToSearchFor, tenantId, limit],
+    queryKey: ['userTaskRun', selectedStatus, userIdToSearchFor, userGroupToSearchFor, tenantId, limit, createdAfter],
     initialPageParam: undefined,
     getNextPageParam: (lastPage: PaginatedUserTaskRunList) => lastPage.bookmarkAsString,
     queryFn: async ({ pageParam }) => {
@@ -48,6 +49,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
         limit,
         status: selectedStatus,
         userTaskDefName: spec.name,
+        earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
         userId: userIdToSearchFor.trim() != '' ? userIdToSearchFor : undefined,
         userGroup: userGroupToSearchFor.trim() != '' ? userGroupToSearchFor : undefined,
       })
@@ -86,12 +88,28 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
             className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
           />
         </Field>
+
         <Field className="ml-6 flex items-center justify-between">
           <Label className="block w-1/2 font-bold">User Group</Label>
           <Input
             type="text"
             value={userGroup}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserGroup(e.target.value)}
+            className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
+          />
+        </Field>
+
+        <Field className="ml-6 flex items-center justify-between">
+          <Label className="block w-1/2 font-bold">Created after:</Label>
+          <Input
+            type="datetime-local"
+            value={createdAfter}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              console.log(e.target.value)
+              console.log(new Date(e.target.value))
+              console.log(new Date(e.target.value).toISOString())
+              setCreatedAfter(e.target.value)
+            }}
             className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
           />
         </Field>
