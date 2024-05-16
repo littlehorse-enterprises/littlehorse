@@ -13,6 +13,7 @@ import { Layouter } from './Layouter'
 import nodeTypes from './NodeTypes'
 import { extractNodes } from './NodeTypes/extractNodes'
 import { ThreadPanel } from './ThreadPanel'
+import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
 
 type Props = {
   wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }
@@ -20,11 +21,43 @@ type Props = {
   spec: WfSpec
 }
 
+const isValidThreadRunNumberForCurrentWfRun = (threadRunNumberFromRedirection: number, wfRun: WfRun) => {
+  return (
+    !isNaN(threadRunNumberFromRedirection) &&
+    threadRunNumberFromRedirection >= 0 &&
+    wfRun &&
+    threadRunNumberFromRedirection <= wfRun.greatestThreadrunNumber
+  )
+}
+
+const determineDefaultThreadRun = (
+  currentThread: string,
+  wfRun: (WfRun & { threadRuns: ThreadRunWithNodeRuns[] }) | undefined,
+  threadRunNumberFromRedirection: number,
+  spec: WfSpec
+) => {
+  let threadToShowByDefault = { name: currentThread, number: wfRun?.greatestThreadrunNumber || 0 }
+
+  if (wfRun && isValidThreadRunNumberForCurrentWfRun(threadRunNumberFromRedirection, wfRun)) {
+    const threadRunName = wfRun
+      ? wfRun.threadRuns[threadRunNumberFromRedirection].threadSpecName
+      : spec.entrypointThreadName
+    threadToShowByDefault = { name: threadRunName, number: threadRunNumberFromRedirection }
+  }
+  return threadToShowByDefault
+}
+
 export const Diagram: FC<Props> = ({ spec, wfRun }) => {
   const currentThread = wfRun
     ? wfRun.threadRuns[wfRun.greatestThreadrunNumber].threadSpecName
     : spec.entrypointThreadName
-  const [thread, setThread] = useState<ThreadType>({ name: currentThread, number: wfRun?.greatestThreadrunNumber || 0 })
+
+  const searchParams: ReadonlyURLSearchParams = useSearchParams()
+  const threadRunNumberFromRedirection: number = Number(searchParams.get('threadRunNumber'))
+
+  let threadToShowByDefault = determineDefaultThreadRun(currentThread, wfRun, threadRunNumberFromRedirection, spec)
+
+  const [thread, setThread] = useState<ThreadType>(threadToShowByDefault)
 
   const threadSpec = useMemo(() => {
     if (thread === undefined) return spec.threadSpecs[spec.entrypointThreadName]
