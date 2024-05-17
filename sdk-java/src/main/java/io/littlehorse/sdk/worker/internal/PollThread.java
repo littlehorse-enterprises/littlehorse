@@ -87,7 +87,11 @@ public class PollThread extends Thread implements Closeable, StreamObserver<Poll
 
     @Override
     public void onNext(PollTaskResponse value) {
-        doTask(value.getResult(), stub, mappings, executable, taskMethod);
+        if(value.hasResult()) {
+            doTask(value.getResult(), stub, mappings, executable, taskMethod);
+        } else {
+            log.warn("Didn't successfully claim a task");
+        }
         semaphore.release();
     }
 
