@@ -22,12 +22,7 @@ type Props = {
 }
 
 const isValidThreadRunNumberForCurrentWfRun = (threadRunNumber: number, wfRun: WfRun) => {
-  return (
-    !isNaN(threadRunNumber) &&
-    threadRunNumber >= 0 &&
-    wfRun &&
-    threadRunNumber <= wfRun.greatestThreadrunNumber
-  )
+  return !isNaN(threadRunNumber) && threadRunNumber >= 0 && wfRun && threadRunNumber <= wfRun.greatestThreadrunNumber
 }
 
 const determineDefaultThreadRun = (
@@ -54,6 +49,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
 
   const searchParams: ReadonlyURLSearchParams = useSearchParams()
   const threadRunNumberFromRedirection: number = Number(searchParams.get('threadRunNumber'))
+  const nodeRunNameToBeHighlighted: string = searchParams.get('nodeRunName')!
 
   let threadToShowByDefault = determineDefaultThreadRun(currentThread, wfRun, threadRunNumberFromRedirection, spec)
 
@@ -102,7 +98,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
         >
           <Controls />
         </ReactFlow>
-        <Layouter nodeRuns={threadNodeRuns} />
+        <Layouter nodeRuns={threadNodeRuns} nodeRunNameToBeHighlighted={nodeRunNameToBeHighlighted} />
       </div>
     </ThreadProvider>
   )

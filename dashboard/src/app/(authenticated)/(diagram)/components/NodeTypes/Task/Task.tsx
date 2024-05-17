@@ -7,9 +7,10 @@ import { Fade } from '../Fade'
 import { TaskDetails } from './TaskDetails'
 
 const Node: FC<NodeProps> = ({ selected, data }) => {
-  const { fade } = data
+  const { fade, nodeNeedsToBeHighlighted } = data
   if (!data.task) return null
   const { task } = data
+  console.log(nodeNeedsToBeHighlighted)
   return (
     <>
       <TaskDetails task={task} nodeRun={data.nodeRun} />
@@ -17,7 +18,8 @@ const Node: FC<NodeProps> = ({ selected, data }) => {
         <div
           className={
             'flex cursor-pointer flex-col items-center rounded-md border-[1px] border-orange-500 bg-orange-200 px-2 pt-1 text-xs' +
-            (selected ? ' bg-orange-300' : '')
+            (selected ? ' bg-orange-300' : '') +
+            (nodeNeedsToBeHighlighted ? ' shadow-lg shadow-orange-500' : '')
           }
         >
           <Cog6ToothIcon className="h-4 w-4 fill-orange-500" />

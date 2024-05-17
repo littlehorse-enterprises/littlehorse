@@ -162,14 +162,14 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
               {data?.pages.map((page, i) => (
                 <Fragment key={i}>
                   {page.resultsWithDetails.length > 0 ? (
-                    page.resultsWithDetails.map(userTaskRun => {
+                    page.resultsWithDetails.map(({ userTaskRun, nodeRun }) => {
                       return (
                         <tr key={userTaskRun.id?.userTaskGuid} className="border-b border-neutral-200">
                           <td className="px-6 py-4">
                             <Link
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
-                              href={`/wfRun/${concatWfRunIds(userTaskRun.id?.wfRunId!)}?threadRunNumber=${userTaskRun.nodeRunId?.threadRunNumber}&nodeRunPosition=${userTaskRun.nodeRunId?.position}`}
+                              href={`/wfRun/${concatWfRunIds(userTaskRun.id?.wfRunId!)}?threadRunNumber=${userTaskRun.nodeRunId?.threadRunNumber}&nodeRunName=${nodeRun.nodeName}`}
                             >
                               {concatWfRunIds(userTaskRun.id?.wfRunId!)}
                             </Link>

@@ -12,7 +12,7 @@ import { UserTaskDefDetails } from '@/app/(authenticated)/(diagram)/components/N
 
 const Node: FC<NodeProps> = ({ data, selected }) => {
   if (!data.userTask) return null
-  const { fade, userTask, nodeRun } = data
+  const { fade, userTask, nodeRun, nodeNeedsToBeHighlighted } = data
 
   return (
     <>
@@ -47,7 +47,8 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
         <div
           className={
             'flex cursor-pointer flex-col items-center rounded-md border-[1px] border-blue-500 bg-blue-200 px-2 pt-1 text-xs ' +
-            (selected ? 'bg-blue-300' : '')
+            (selected ? 'bg-blue-300' : '') +
+            (nodeNeedsToBeHighlighted ? ' shadow-lg shadow-blue-500' : '')
           }
         >
           <UserIcon className="h-4 w-4 fill-blue-500" />
