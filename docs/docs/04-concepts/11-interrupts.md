@@ -14,13 +14,17 @@ When an `ExternalEvent` is posted to a `WfRun`, and a `ThreadRun` has registered
 
 Once the Interrupt Handler (Child) completes, the Interrupted Thread (Parent) is resumed. If the Interrupt Handler fails, then the Parent also fails with a `CHILD_FAILED` exception. This error is unrecoverable.
 
+### Variable Scoping
+
+The Interrupt Handler `ThreadRun` is a Child of the Interrupted ThreadRun. As described in the [Child ThreadRun Docs](./08-child-threads.md#variable-scoping), this means that the Interrupt Handler has access to all variables in the scope of the interrupted ThreadRun.
+
 ## `ExternalEvent` Payload
 
 Recall that an `ExternalEvent` has a payload, which is a `VariableValue`. The Interrupt Handler thread can access that value through the `"INPUT"` `Variable`. Recall from the [Exception Handler Docs](./10-exception-handling.md) that `"INPUT"` is a reserved `Variable` name used for the same purpose.
 
 ## Scoping
 
-Interrupts are registerd at the `ThreadSpec` level. Only one `ThreadSpec` may register an Interrupt for a specific `ExternalEventDef`.
+Interrupts are registered at the `ThreadSpec` level. Only one `ThreadSpec` may register an Interrupt for a specific `ExternalEventDef`.
 
 When a `ThreadRun` is Interrupted, it must first halt. As per the [WfRun Documentation](./01-workflows.md#lifecycle), a `ThreadRun` is not considered `HALTED` until all of its Children are `HALTED` as well. Therefore, interrupting a `ThreadRun` causes all of the Children of the Interrupted `ThreadRun` to halt as well.
 
