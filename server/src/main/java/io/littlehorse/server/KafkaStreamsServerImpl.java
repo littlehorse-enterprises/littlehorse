@@ -1043,6 +1043,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                     log.info("Closing timer");
                     timerStreams.close();
                     latch.countDown();
+                    log.info("Done closing timer Kafka Streams");
                 })
                 .start();
 
@@ -1050,6 +1051,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                     log.info("Closing core");
                     coreStreams.close();
                     latch.countDown();
+                    log.info("Done closing core Kafka Streams");
                 })
                 .start();
 
@@ -1072,6 +1074,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
         try {
             latch.await();
+            log.info("Done shutting down all internal server processes");
         } catch (Exception exn) {
             throw new RuntimeException(exn);
         }
