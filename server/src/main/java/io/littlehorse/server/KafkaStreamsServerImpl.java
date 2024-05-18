@@ -36,6 +36,7 @@ import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -144,6 +145,7 @@ import io.littlehorse.sdk.common.proto.TaskRunList;
 import io.littlehorse.sdk.common.proto.TaskWorkerGroup;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest;
 import io.littlehorse.sdk.common.proto.Tenant;
+import io.littlehorse.sdk.common.proto.TenantId;
 import io.littlehorse.sdk.common.proto.TenantIdList;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskDefId;
@@ -863,6 +865,20 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     @Override
     public void awaitWorkflowEvent(AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx) {
         internalComms.doWaitForWorkflowEvent(req, ctx);
+    }
+
+    @Override
+    @Authorize(resources = {ACLResource.ACL_TENANT}, actions = ACLAction.READ)
+    public void getTenant(TenantId req, StreamObserver<Tenant> ctx) {
+        RequestExecutionContext reqContext = requestContext();
+        TenantIdModel tenantId = TenantIdModel.fromProto(req, TenantIdModel.class, reqContext);
+        TenantModel result = reqContext.metadataManager().get(tenantId);
+        if (result == null) {
+            ctx.onError(new LHApiException(Status.NOT_FOUND, "Could not find tenant %s".formatted(tenantId)));
+        } else {
+            ctx.onNext(result.toProto().build());
+            ctx.onCompleted();
+        }
     }
 
     @Override
