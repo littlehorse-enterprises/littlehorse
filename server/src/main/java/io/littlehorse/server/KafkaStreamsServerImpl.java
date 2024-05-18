@@ -868,7 +868,9 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     }
 
     @Override
-    @Authorize(resources = {ACLResource.ACL_TENANT}, actions = ACLAction.READ)
+    @Authorize(
+            resources = {ACLResource.ACL_TENANT},
+            actions = ACLAction.READ)
     public void getTenant(TenantId req, StreamObserver<Tenant> ctx) {
         RequestExecutionContext reqContext = requestContext();
         TenantIdModel tenantId = TenantIdModel.fromProto(req, TenantIdModel.class, reqContext);
