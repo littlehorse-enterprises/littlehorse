@@ -42,7 +42,7 @@ MyWorker workerObject = new MyWorker();
 LHWorkerConfig config = new LHWorkerConfig();
 
 LHTaskWorker worker = new LHTaskWorker(workerObject, "my-task", config);
-worker.registerTaskDef(false);
+worker.registerTaskDef();
 worker.start();
 ```
 
@@ -76,8 +76,7 @@ client, _ := common.NewLHClient(config)
 worker, err := tasklib.NewTaskWorker(config, DoTheTask, "my-task")
 
 // Create the TaskDef
-ignoreAlreadyExists := true
-err := worker.RegisterTaskDef(ignoreAlreadyExists)
+err := worker.RegisterTaskDef()
 
 // Start Working
 worker.Start()
