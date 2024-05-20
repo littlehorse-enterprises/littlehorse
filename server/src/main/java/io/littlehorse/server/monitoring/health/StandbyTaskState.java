@@ -1,15 +1,12 @@
 package io.littlehorse.server.monitoring.health;
 
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.server.monitoring.StandbyStoresOnInstance;
 import io.littlehorse.server.monitoring.StandbyTopicPartitionMetrics;
-import java.util.Map;
 import java.util.Set;
-import lombok.Data;
+import lombok.Getter;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.streams.TaskMetadata;
 
-@Data
+@Getter
 public class StandbyTaskState {
 
     private int partition;
@@ -18,20 +15,7 @@ public class StandbyTaskState {
 
     public StandbyTaskState() {}
 
-    public StandbyTaskState(
-            TaskMetadata meta,
-            Map<TopicPartition, InProgressRestoration> restorations,
-            LHServerConfig config,
-            StandbyStoresOnInstance storeLagInfos) {
-
-        StandbyTopicPartitionMetrics storeLagInfo = storeLagInfos.getPartitions().stream()
-                .filter(lagInfo -> {
-                    return lagInfo.getPartition()
-                            == meta.topicPartitions().stream().findFirst().get().partition();
-                })
-                .findFirst()
-                .get();
-
+    public StandbyTaskState(TaskMetadata meta, StandbyTopicPartitionMetrics storeLagInfo) {
         Set<TopicPartition> topics = meta.topicPartitions();
         if (topics.size() != 1) {
             throw new IllegalStateException("Impossible. All LH processors have only one input topic");
