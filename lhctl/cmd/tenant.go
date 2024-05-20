@@ -43,10 +43,8 @@ var searchTenantCmd = &cobra.Command{
 var getTenantCmd = &cobra.Command{
 	Use:   "tenant <id>",
 	Short: "Get a Tenant",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the tenant Id")
-		}
 		common.PrintResp(getGlobalClient(cmd).GetTenant(
 			requestContext(cmd),
 			&model.TenantId{
