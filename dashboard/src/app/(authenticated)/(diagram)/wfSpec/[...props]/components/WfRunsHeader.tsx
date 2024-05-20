@@ -1,5 +1,5 @@
 import { TIME_RANGES, TIME_RANGES_NAMES, TimeRange, WF_RUN_STATUSES } from '@/app/constants'
-import { Listbox } from '@headlessui/react'
+import { Listbox, ListboxButton, ListboxOptions } from '@headlessui/react'
 import { ClockIcon } from '@heroicons/react/24/outline'
 import { LHStatus } from 'littlehorse-client/dist/proto/common_enums'
 import Link from 'next/link'
@@ -18,11 +18,11 @@ export const WfRunsHeader: FC<Props> = ({ currentStatus, currentWindow, setWindo
       <div className="flex">
         <Listbox value={currentWindow} onChange={setWindow}>
           <div className="relative">
-            <Listbox.Button className="flex items-center gap-2 rounded-lg border-2 px-2 py-1 text-xs">
+            <ListboxButton className="flex items-center gap-2 rounded-lg border-2 px-2 py-1 text-xs">
               <ClockIcon className="h-5 w-5 fill-none stroke-black" />
               Last {TIME_RANGES_NAMES[currentWindow]}
-            </Listbox.Button>
-            <Listbox.Options className="absolute mt-1 w-[120px] rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
+            </ListboxButton>
+            <ListboxOptions className="absolute mt-1 w-[120px] rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
               {TIME_RANGES.map(time => (
                 <Listbox.Option
                   key={time}
@@ -36,7 +36,7 @@ export const WfRunsHeader: FC<Props> = ({ currentStatus, currentWindow, setWindo
                   Last {TIME_RANGES_NAMES[time]}
                 </Listbox.Option>
               ))}
-            </Listbox.Options>
+            </ListboxOptions>
           </div>
         </Listbox>
       </div>

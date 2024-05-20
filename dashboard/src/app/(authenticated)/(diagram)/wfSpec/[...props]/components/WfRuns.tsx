@@ -6,12 +6,11 @@ import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { ArrowPathIcon } from '@heroicons/react/16/solid'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { LHStatus, lHStatusFromJSON } from 'littlehorse-client/dist/proto/common_enums'
-import { WfRunIdList } from 'littlehorse-client/dist/proto/service'
 import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { FC, Fragment, useMemo, useState } from 'react'
-import { searchWfRun } from '../actions/searchWfRun'
+import { PaginatedWfRunIdList, searchWfRun } from '../actions/searchWfRun'
 import { WfRunsHeader } from './WfRunsHeader'
 
 type Props = Pick<WfSpec, 'id'>
@@ -36,7 +35,7 @@ export const WfRuns: FC<Props> = ({ id }) => {
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ['wfRun', status, tenantId, limit, startTime],
     initialPageParam: undefined,
-    getNextPageParam: (lastPage: WfRunIdList) => lastPage.bookmark?.toString('base64'),
+    getNextPageParam: (lastPage: PaginatedWfRunIdList) => lastPage.bookmarkAsString,
     queryFn: async ({ pageParam }) => {
       return await searchWfRun({
         wfSpecName: id!.name,
@@ -46,7 +45,7 @@ export const WfRuns: FC<Props> = ({ id }) => {
         limit,
         status,
         tenantId,
-        bookmark: pageParam ? Buffer.from(pageParam, 'base64') : undefined,
+        bookmarkAsString: pageParam,
         ...startTime,
       })
     },

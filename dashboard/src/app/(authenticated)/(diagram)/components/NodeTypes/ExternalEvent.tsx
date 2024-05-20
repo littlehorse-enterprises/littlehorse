@@ -10,7 +10,7 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid'
 
 const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   if (!data.externalEvent) return null
-  const { fade, externalEvent } = data
+  const { fade, externalEvent, nodeNeedsToBeHighlighted } = data
 
   return (
     <>
@@ -31,7 +31,10 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
       <Fade fade={fade} status={data.nodeRun?.status}>
         <div className="relative cursor-pointer items-center justify-center text-xs">
           <div
-            className={`items-center-justify-center flex rounded-full border-[1px] border-blue-500 bg-blue-200 p-[1px] text-xs `}
+            className={
+              'items-center-justify-center flex rounded-full border-[1px] border-blue-500 bg-blue-200 p-[1px] text-xs ' +
+              (nodeNeedsToBeHighlighted ? ' shadow-lg shadow-blue-500' : '')
+            }
           >
             <div className="items-center-justify-center flex rounded-full border-[1px] border-blue-500 bg-blue-200 p-2 text-xs">
               <EnvelopeOpenIcon className="h-4 w-4 fill-transparent stroke-blue-500" />
