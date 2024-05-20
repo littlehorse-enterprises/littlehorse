@@ -90,7 +90,7 @@ public class PollThread extends Thread implements Closeable, StreamObserver<Poll
         if (value.hasResult()) {
             doTask(value.getResult(), stub, mappings, executable, taskMethod);
         } else {
-            log.warn("Didn't successfully claim a task");
+            log.info("Didn't successfully claim a task");
         }
         semaphore.release();
     }
