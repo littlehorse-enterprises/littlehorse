@@ -76,6 +76,10 @@ public enum ACLResource
    */
   ACL_ALL_RESOURCES(6),
   /**
+   * <pre>
+   * Refers to the `TaskWorkerGroup` associated with a TaskDef
+   * </pre>
+   *
    * <code>ACL_TASK_WORKER_GROUP = 7;</code>
    */
   ACL_TASK_WORKER_GROUP(7),
@@ -146,6 +150,10 @@ public enum ACLResource
    */
   public static final int ACL_ALL_RESOURCES_VALUE = 6;
   /**
+   * <pre>
+   * Refers to the `TaskWorkerGroup` associated with a TaskDef
+   * </pre>
+   *
    * <code>ACL_TASK_WORKER_GROUP = 7;</code>
    */
   public static final int ACL_TASK_WORKER_GROUP_VALUE = 7;

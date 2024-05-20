@@ -34,7 +34,7 @@ var putPrincipalCmd = &cobra.Command{
 		putRequest := model.PutPrincipalRequest{
 			Id:            id,
 			PerTenantAcls: per_tenant_acls,
-			Overwrite: overwrite,
+			Overwrite:     overwrite,
 		}
 		common.PrintResp(getGlobalClient(cmd).PutPrincipal(
 			requestContext(cmd),
