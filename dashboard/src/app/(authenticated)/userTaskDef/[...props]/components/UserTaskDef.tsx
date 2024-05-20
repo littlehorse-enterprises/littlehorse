@@ -23,6 +23,7 @@ type Props = {
   spec: UserTaskDefProto
 }
 export const UserTaskDef: FC<Props> = ({ spec }) => {
+  const DEBOUNCE_DELAY = 1000
   const userTaskPossibleStatuses = [
     UserTaskRunStatus.ASSIGNED,
     UserTaskRunStatus.CANCELLED,
@@ -36,8 +37,8 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
   const [createdBefore, setCreatedBefore] = useState('')
   const { tenantId } = useWhoAmI()
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
-  const [userIdToSearchFor] = useDebounce(userId, 1000)
-  const [userGroupToSearchFor] = useDebounce(userGroup, 1000)
+  const [userIdToSearchFor] = useDebounce(userId, DEBOUNCE_DELAY)
+  const [userGroupToSearchFor] = useDebounce(userGroup, DEBOUNCE_DELAY)
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: [
