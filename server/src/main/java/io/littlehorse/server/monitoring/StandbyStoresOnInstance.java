@@ -2,6 +2,7 @@ package io.littlehorse.server.monitoring;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,12 @@ public final class StandbyStoresOnInstance {
     @JsonProperty("numberOfRegisteredPartitions")
     public int registeredPartitions() {
         return partitions.size();
+    }
+
+    public Optional<StandbyTopicPartitionMetrics> lagInfoForPartition(int partition) {
+        return partitions.stream()
+                .filter(standbyTopicPartitionMetrics -> standbyTopicPartitionMetrics.getPartition() == partition)
+                .findFirst();
     }
 
     /**
