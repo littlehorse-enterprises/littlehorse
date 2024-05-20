@@ -1,10 +1,28 @@
 'use server'
 import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
-import { SearchWfRunRequest } from 'littlehorse-client/dist/proto/service'
+import { SearchWfRunRequest, WfRunIdList } from 'littlehorse-client/dist/proto/service'
 
-export type WfRunSearchProps = SearchWfRunRequest & WithTenant
-export const searchWfRun = async ({ tenantId, ...req }: WfRunSearchProps) => {
+export interface PaginatedWfRunIdList extends WfRunIdList {
+  bookmarkAsString: string | undefined
+}
+
+type WithBookmarkAsString = {
+  bookmarkAsString: string | undefined
+}
+
+export type WfRunSearchProps = SearchWfRunRequest & WithTenant & WithBookmarkAsString
+export const searchWfRun = async ({
+  tenantId,
+  bookmarkAsString,
+  ...req
+}: WfRunSearchProps): Promise<PaginatedWfRunIdList> => {
   const client = await lhClient({ tenantId })
-  return client.searchWfRun(req)
+  const requestWithBookmark = bookmarkAsString ? { ...req, bookmark: Buffer.from(bookmarkAsString, 'base64') } : req
+  const wfRunIdList = await client.searchWfRun(requestWithBookmark)
+
+  return {
+    ...wfRunIdList,
+    bookmarkAsString: wfRunIdList.bookmark?.toString('base64'),
+  }
 }
