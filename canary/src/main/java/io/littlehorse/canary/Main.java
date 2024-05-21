@@ -85,6 +85,7 @@ public class Main {
                     canaryConfig.getMetronomeRunFrequency(),
                     canaryConfig.getMetronomeRunThreads(),
                     canaryConfig.getMetronomeRunRequests(),
+                    canaryConfig.getMetronomeSampleRate(),
                     repository);
 
             new MetronomeGetWfRunExecutor(
