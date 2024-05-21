@@ -107,6 +107,7 @@ final class RebalanceThread extends Thread {
                 for (PollThread pollThread : runningConnections.get(runningConnection)) {
                     if (!pollThread.isRunning()) {
                         runningConnections.remove(runningConnection);
+                        break;
                     }
                 }
             }
