@@ -105,7 +105,7 @@ _NOTE: The configurations above are indeed the defaults._
 
 ## Running Examples
 
-We provide a number of examples to using our SDK for defining a `WfSpec`. It may help to run a few of these and become familiar with the platform when developing for LittleHorse.
+We provide a number of examples to use our SDK for defining a `WfSpec`. It may help to run a few of these and become familiar with the platform when developing for LittleHorse.
 
 - [Java Examples](https://github.com/littlehorse-enterprises/littlehorse/tree/master/examples)
 - [Python Examples](https://github.com/littlehorse-enterprises/littlehorse/tree/master/sdk-python/examples)
@@ -135,4 +135,4 @@ Certain *types* of commits correlate to semantic versioning updates:
 - feat: MINOR
 - a commit with the footer `BREAKING CHANGE:` or a `!` after the type/scope
 
-You should reference the Conventional Commits v1.0.0 [website](https://www.conventionalcommits.org/en/v1.0.0/) for additional *types*, detailed specification rules, and FAQs about the practice before making a pull request. 
+You should reference the Conventional Commits v1.0.0 [website](https://www.conventionalcommits.org/en/v1.0.0/) for additional *types*, detailed specification rules, examples, and FAQs about the practice before making a pull request. 
