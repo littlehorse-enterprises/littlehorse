@@ -1,3 +1,4 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Menu, Transition } from '@headlessui/react'
 import { signOut } from 'next-auth/react'
@@ -9,7 +10,7 @@ function classNames(...classes: Array<string | boolean>) {
 export const Principal: FC = () => {
   const { user } = useWhoAmI()
   return (
-    user?.name != 'anonymous' && (
+    authOptions.providers.length > 0 && (
       <Menu as="div" className="relative inline-block text-left">
         <div>
           <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm">
