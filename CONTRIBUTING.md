@@ -1,6 +1,6 @@
 # Contributing
 
-Here at LittleHorse, we embrace sharing our product in open source and appreciate any contributions to our codebase. 
+The LittleHorse Server project is open-source according to the Server-Side Public License 1.0, and as such we appreciate any contributions to our codebase. Please note that all contributions will be subject to that license agreement.
 
 This document details all of the necessary information for contributing to LittleHorse.
 
