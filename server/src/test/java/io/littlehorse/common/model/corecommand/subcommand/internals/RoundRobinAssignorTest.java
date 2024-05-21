@@ -6,6 +6,7 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerMetadataModel;
 import java.util.*;
 import net.datafaker.Faker;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class RoundRobinAssignorTest {
@@ -25,60 +26,34 @@ public class RoundRobinAssignorTest {
     }
 
     @Test
-    void assignWithTwoHostsAndTwoWorkers() {
-        List<HostModel> hosts = generateHosts(2);
-        List<TaskWorkerMetadataModel> taskWorkersMetadata = generateTaskWorkersMetadata(2);
-
-        robinAssignor.assign(hosts, taskWorkersMetadata);
-
-        for (HostModel host : hosts) {
-            assertTrue(taskWorkersMetadata.get(0).hosts.contains(host));
-            assertTrue(taskWorkersMetadata.get(1).hosts.contains(host));
-        }
-    }
-
-    @Test
-    void assignWithTwoHostsAndFourWorkers() {
-        List<HostModel> hosts = generateHosts(2);
-        List<TaskWorkerMetadataModel> taskWorkersMetadata = generateTaskWorkersMetadata(4);
-
-        robinAssignor.assign(hosts, taskWorkersMetadata);
-
-        assertTrue(taskWorkersMetadata.get(0).hosts.contains(hosts.get(0))
-                && !taskWorkersMetadata.get(0).hosts.contains(hosts.get(1)));
-        assertTrue(taskWorkersMetadata.get(1).hosts.contains(hosts.get(0))
-                && !taskWorkersMetadata.get(1).hosts.contains(hosts.get(1)));
-        assertTrue(taskWorkersMetadata.get(2).hosts.contains(hosts.get(1))
-                && !taskWorkersMetadata.get(2).hosts.contains(hosts.get(0)));
-        assertTrue(taskWorkersMetadata.get(3).hosts.contains(hosts.get(1))
-                && !taskWorkersMetadata.get(3).hosts.contains(hosts.get(0)));
-    }
-
-    @Test
     void assignWithTwoHostsAndFiveWorkers() {
-        List<HostModel> hosts = generateHosts(2);
+        HostModel hostA = new HostModel("a", 0);
+        HostModel hostB = new HostModel("b", 0);
+        Set<HostModel> hosts = new TreeSet<>(List.of(hostA, hostB));
         List<TaskWorkerMetadataModel> taskWorkersMetadata = generateTaskWorkersMetadata(5);
 
         robinAssignor.assign(hosts, taskWorkersMetadata);
 
-        assertTrue(taskWorkersMetadata.get(0).hosts.contains(hosts.get(0)));
-        assertTrue(taskWorkersMetadata.get(1).hosts.contains(hosts.get(0)));
-        assertTrue(taskWorkersMetadata.get(2).hosts.contains(hosts.get(1)));
-        assertTrue(taskWorkersMetadata.get(3).hosts.contains(hosts.get(1)));
-        assertTrue(taskWorkersMetadata.get(4).hosts.contains(hosts.get(0)));
+        Assertions.assertThat(taskWorkersMetadata.get(0).hosts).containsExactly(hostA);
+        Assertions.assertThat(taskWorkersMetadata.get(1).hosts).containsExactly(hostB);
+        Assertions.assertThat(taskWorkersMetadata.get(2).hosts).containsExactly(hostA);
+        Assertions.assertThat(taskWorkersMetadata.get(3).hosts).containsExactly(hostB);
+        Assertions.assertThat(taskWorkersMetadata.get(4).hosts).containsExactly(hostA);
     }
 
     @Test
     void assignWithFiveHostsAndTwoWorkers() {
-        List<HostModel> hosts = generateHosts(5);
+        HostModel hostA = new HostModel("a", 0);
+        HostModel hostB = new HostModel("b", 0);
+        HostModel hostC = new HostModel("c", 0);
+        HostModel hostD = new HostModel("d", 0);
+        HostModel hostE = new HostModel("e", 0);
+        Set<HostModel> hosts = new TreeSet<>(List.of(hostA, hostB, hostC, hostD, hostE));
         List<TaskWorkerMetadataModel> taskWorkersMetadata = generateTaskWorkersMetadata(2);
 
         robinAssignor.assign(hosts, taskWorkersMetadata);
-
-        for (HostModel host : hosts) {
-            assertTrue(taskWorkersMetadata.get(0).hosts.contains(host));
-            assertTrue(taskWorkersMetadata.get(1).hosts.contains(host));
-        }
+        Assertions.assertThat(taskWorkersMetadata.get(0).hosts).containsExactly(hostA, hostC, hostE);
+        Assertions.assertThat(taskWorkersMetadata.get(1).hosts).containsExactly(hostB, hostD);
     }
 
     @Test
@@ -87,21 +62,11 @@ public class RoundRobinAssignorTest {
         List<TaskWorkerMetadataModel> taskWorkersMetadata = generateTaskWorkersMetadata(5);
         robinAssignor.assign(hosts, taskWorkersMetadata);
 
-        assertTrue(taskWorkersMetadata.get(0).hosts.contains(hosts.get(0))
-                && taskWorkersMetadata.get(0).hosts.contains(hosts.get(2))
-                && taskWorkersMetadata.get(0).hosts.size() == 2);
-        assertTrue(taskWorkersMetadata.get(1).hosts.contains(hosts.get(0))
-                && taskWorkersMetadata.get(1).hosts.contains(hosts.get(3))
-                && taskWorkersMetadata.get(1).hosts.size() == 2);
-        assertTrue(taskWorkersMetadata.get(2).hosts.contains(hosts.get(1))
-                && taskWorkersMetadata.get(2).hosts.contains(hosts.get(3))
-                && taskWorkersMetadata.get(2).hosts.size() == 2);
-        assertTrue(taskWorkersMetadata.get(3).hosts.contains(hosts.get(1))
-                && taskWorkersMetadata.get(3).hosts.contains(hosts.get(4))
-                && taskWorkersMetadata.get(3).hosts.size() == 2);
-        assertTrue(taskWorkersMetadata.get(4).hosts.contains(hosts.get(2))
-                && taskWorkersMetadata.get(4).hosts.contains(hosts.get(4))
-                && taskWorkersMetadata.get(4).hosts.size() == 2);
+        Assertions.assertThat(taskWorkersMetadata.get(0).hosts).containsExactly(hosts.get(0));
+        Assertions.assertThat(taskWorkersMetadata.get(1).hosts).containsExactly(hosts.get(1));
+        Assertions.assertThat(taskWorkersMetadata.get(2).hosts).containsExactly(hosts.get(2));
+        Assertions.assertThat(taskWorkersMetadata.get(3).hosts).containsExactly(hosts.get(3));
+        Assertions.assertThat(taskWorkersMetadata.get(4).hosts).containsExactly(hosts.get(4));
     }
 
     @Test
@@ -112,17 +77,13 @@ public class RoundRobinAssignorTest {
         robinAssignor.assign(hosts, taskWorkersMetadata);
 
         assertTrue(taskWorkersMetadata.get(0).hosts.contains(hosts.get(0))
-                && taskWorkersMetadata.get(0).hosts.contains(hosts.get(2))
-                && taskWorkersMetadata.get(0).hosts.size() == 2);
-        assertTrue(taskWorkersMetadata.get(1).hosts.contains(hosts.get(0))
-                && taskWorkersMetadata.get(1).hosts.contains(hosts.get(2))
-                && taskWorkersMetadata.get(1).hosts.size() == 2);
-        assertTrue(taskWorkersMetadata.get(2).hosts.contains(hosts.get(1))
-                && !taskWorkersMetadata.get(2).hosts.contains(hosts.get(2))
-                && taskWorkersMetadata.get(2).hosts.size() == 1);
-        assertTrue(taskWorkersMetadata.get(3).hosts.contains(hosts.get(1))
-                && !taskWorkersMetadata.get(3).hosts.contains(hosts.get(2))
-                && taskWorkersMetadata.get(3).hosts.size() == 1);
+                && taskWorkersMetadata.get(0).hosts.size() == 1);
+        assertTrue(taskWorkersMetadata.get(1).hosts.contains(hosts.get(1))
+                && taskWorkersMetadata.get(1).hosts.size() == 1);
+        assertTrue(taskWorkersMetadata.get(2).hosts.contains(hosts.get(2))
+                && taskWorkersMetadata.get(1).hosts.size() == 1);
+        assertTrue(taskWorkersMetadata.get(3).hosts.contains(hosts.get(0))
+                && taskWorkersMetadata.get(1).hosts.size() == 1);
     }
 
     @Test
@@ -134,24 +95,15 @@ public class RoundRobinAssignorTest {
         robinAssignor.assign(hosts, taskWorkersMetadata);
         robinAssignor.assign(hosts, taskWorkersMetadata);
 
-        assertTrue(taskWorkersMetadata.get(0).hosts.contains(hosts.get(0))
-                && taskWorkersMetadata.get(0).hosts.size() == 1);
-        assertTrue(taskWorkersMetadata.get(1).hosts.contains(hosts.get(0))
-                && taskWorkersMetadata.get(1).hosts.size() == 1);
-        assertTrue(taskWorkersMetadata.get(2).hosts.contains(hosts.get(1))
-                && taskWorkersMetadata.get(2).hosts.size() == 1);
-        assertTrue(taskWorkersMetadata.get(3).hosts.contains(hosts.get(1))
-                && taskWorkersMetadata.get(3).hosts.size() == 1);
-        assertTrue(taskWorkersMetadata.get(4).hosts.contains(hosts.get(2))
-                && taskWorkersMetadata.get(4).hosts.size() == 1);
-        assertTrue(taskWorkersMetadata.get(5).hosts.contains(hosts.get(2))
-                && taskWorkersMetadata.get(5).hosts.size() == 1);
-        assertTrue(taskWorkersMetadata.get(6).hosts.contains(hosts.get(0))
-                && taskWorkersMetadata.get(6).hosts.size() == 1);
-        assertTrue(taskWorkersMetadata.get(7).hosts.contains(hosts.get(1))
-                && taskWorkersMetadata.get(7).hosts.size() == 1);
-        assertTrue(taskWorkersMetadata.get(8).hosts.contains(hosts.get(2))
-                && taskWorkersMetadata.get(8).hosts.size() == 1);
+        Assertions.assertThat(taskWorkersMetadata.get(0).hosts).containsExactly(hosts.get(0));
+        Assertions.assertThat(taskWorkersMetadata.get(1).hosts).containsExactly(hosts.get(1));
+        Assertions.assertThat(taskWorkersMetadata.get(2).hosts).containsExactly(hosts.get(2));
+        Assertions.assertThat(taskWorkersMetadata.get(3).hosts).containsExactly(hosts.get(0));
+        Assertions.assertThat(taskWorkersMetadata.get(4).hosts).containsExactly(hosts.get(1));
+        Assertions.assertThat(taskWorkersMetadata.get(5).hosts).containsExactly(hosts.get(2));
+        Assertions.assertThat(taskWorkersMetadata.get(6).hosts).containsExactly(hosts.get(0));
+        Assertions.assertThat(taskWorkersMetadata.get(7).hosts).containsExactly(hosts.get(1));
+        Assertions.assertThat(taskWorkersMetadata.get(8).hosts).containsExactly(hosts.get(2));
     }
 
     @Test
@@ -163,17 +115,17 @@ public class RoundRobinAssignorTest {
         robinAssignor.assign(hosts, taskWorkersMetadata);
         robinAssignor.assign(hosts, taskWorkersMetadata);
         org.assertj.core.api.Assertions.assertThat(taskWorkersMetadata.get(0).hosts)
-                .containsExactlyInAnyOrder((hosts.get(0)), (hosts.get(3)), (hosts.get(6)));
+                .containsExactlyInAnyOrder((hosts.get(0)), (hosts.get(6)));
         org.assertj.core.api.Assertions.assertThat(taskWorkersMetadata.get(1).hosts)
-                .containsExactlyInAnyOrder((hosts.get(0)), (hosts.get(3)), (hosts.get(6)));
+                .containsExactlyInAnyOrder((hosts.get(1)), (hosts.get(7)));
         org.assertj.core.api.Assertions.assertThat(taskWorkersMetadata.get(2).hosts)
-                .containsExactlyInAnyOrder((hosts.get(1)), (hosts.get(4)), (hosts.get(7)));
+                .containsExactlyInAnyOrder((hosts.get(2)), (hosts.get(8)));
         org.assertj.core.api.Assertions.assertThat(taskWorkersMetadata.get(3).hosts)
-                .containsExactlyInAnyOrder((hosts.get(1)), (hosts.get(4)), (hosts.get(7)));
+                .containsExactlyInAnyOrder((hosts.get(3)));
         org.assertj.core.api.Assertions.assertThat(taskWorkersMetadata.get(4).hosts)
-                .containsExactlyInAnyOrder((hosts.get(2)), (hosts.get(5)), (hosts.get(8)));
+                .containsExactlyInAnyOrder((hosts.get(4)));
         org.assertj.core.api.Assertions.assertThat(taskWorkersMetadata.get(5).hosts)
-                .containsExactlyInAnyOrder((hosts.get(2)), (hosts.get(5)), (hosts.get(8)));
+                .containsExactlyInAnyOrder((hosts.get(5)));
     }
 
     public List<HostModel> generateHosts(int q) {

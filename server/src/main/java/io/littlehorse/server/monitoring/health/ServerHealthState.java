@@ -2,9 +2,11 @@ package io.littlehorse.server.monitoring.health;
 
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.monitoring.StandbyStoresOnInstance;
+import io.littlehorse.server.monitoring.StandbyTopicPartitionMetrics;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Data;
 import org.apache.kafka.common.TopicPartition;
@@ -73,24 +75,28 @@ public class ServerHealthState {
         this.coreStandbyTasks.addAll(coreStreams.metadataForLocalThreads().stream()
                 .flatMap(thread -> thread.standbyTasks().stream())
                 .filter(standbyTask -> fromTask(standbyTask, config) == LHProcessorType.CORE)
-                .map(standbyTask -> new StandbyTaskState(
-                        standbyTask, restorations, config, standbyTasks.get(LHProcessorType.CORE.getStoreName())))
+                .filter(standbyTask -> !standbyTask.topicPartitions().isEmpty())
+                .map(standbyTask -> createStandbyState(LHProcessorType.CORE.getStoreName(), standbyTasks, standbyTask))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .toList());
 
         this.repartitionStandbyTasks.addAll(coreStreams.metadataForLocalThreads().stream()
                 .flatMap(thread -> thread.standbyTasks().stream())
                 .filter(standbyTask -> fromTask(standbyTask, config) == LHProcessorType.REPARTITION)
-                .map(standbyTask -> new StandbyTaskState(
-                        standbyTask,
-                        restorations,
-                        config,
-                        standbyTasks.get(LHProcessorType.REPARTITION.getStoreName())))
+                .filter(standbyTask -> !standbyTask.topicPartitions().isEmpty())
+                .map(standbyTask ->
+                        createStandbyState(LHProcessorType.REPARTITION.getStoreName(), standbyTasks, standbyTask))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .toList());
 
         this.timerStandbyTasks.addAll(timerStreams.metadataForLocalThreads().stream()
                 .flatMap(thread -> thread.standbyTasks().stream())
-                .map(timerTask -> new StandbyTaskState(
-                        timerTask, restorations, config, standbyTasks.get(LHProcessorType.TIMER.getStoreName())))
+                .filter(timerTask -> !timerTask.topicPartitions().isEmpty())
+                .map(timerTask -> createStandbyState(LHProcessorType.TIMER.getStoreName(), standbyTasks, timerTask))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .toList());
 
         this.coreState = coreStreams.state();
@@ -103,6 +109,20 @@ public class ServerHealthState {
             throw new IllegalStateException("Impossible. All LH processors have only one input topic");
         }
         return fromTopic(topics.stream().findFirst().get().topic(), config);
+    }
+
+    private Optional<StandbyTaskState> createStandbyState(
+            String storeName, Map<String, StandbyStoresOnInstance> standbyTasks, TaskMetadata metadata) {
+        StandbyStoresOnInstance registeredStandbyTasks = standbyTasks.get(storeName);
+        StandbyTopicPartitionMetrics lagInfo = registeredStandbyTasks
+                .lagInfoForPartition(
+                        metadata.topicPartitions().stream().findFirst().get().partition())
+                .orElse(null);
+        if (lagInfo == null) {
+            return Optional.of(new StandbyTaskState(metadata, lagInfo));
+        } else {
+            return Optional.empty();
+        }
     }
 
     public static LHProcessorType fromTopic(String topic, LHServerConfig config) {

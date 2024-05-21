@@ -223,6 +223,9 @@ service LittleHorse {
   // EXPERIMENTAL: Creates another Tenant in the LH Server.
   rpc PutTenant(PutTenantRequest) returns (Tenant) {}
 
+  // EXPERIMENTAL: Gets a Tenant from the LH Server.
+  rpc GetTenant(TenantId) returns (Tenant) {}
+
   // EXPERIMENTAL: Creates an Principal.
   rpc PutPrincipal(PutPrincipalRequest) returns (Principal) {}
 

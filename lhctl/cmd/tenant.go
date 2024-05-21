@@ -9,7 +9,7 @@ import (
 )
 
 var putTenantCmd = &cobra.Command{
-	Use:   "tenant",
+	Use:   "tenant <id>",
 	Short: "Create a Tenant. Currently, updating Tenants is not supported.",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
@@ -40,7 +40,22 @@ var searchTenantCmd = &cobra.Command{
 	},
 }
 
+var getTenantCmd = &cobra.Command{
+	Use:   "tenant <id>",
+	Short: "Get a Tenant",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		common.PrintResp(getGlobalClient(cmd).GetTenant(
+			requestContext(cmd),
+			&model.TenantId{
+				Id: args[0],
+			},
+		))
+	},
+}
+
 func init() {
 	putCmd.AddCommand(putTenantCmd)
 	searchCmd.AddCommand(searchTenantCmd)
+	getCmd.AddCommand(getTenantCmd)
 }

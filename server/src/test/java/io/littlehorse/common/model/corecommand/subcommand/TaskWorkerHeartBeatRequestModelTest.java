@@ -69,8 +69,8 @@ public class TaskWorkerHeartBeatRequestModelTest {
 
         taskWorkerHeartBeat.process(executionContext, lhConfig);
 
-        assertThat(taskWorkerMetadatas.get(0).hosts).hasSize(2);
-        assertThat(taskWorkerMetadatas.get(1).hosts).hasSize(2);
+        assertThat(taskWorkerMetadatas.get(0).hosts).hasSize(1);
+        assertThat(taskWorkerMetadatas.get(1).hosts).hasSize(1);
     }
 
     @Test

@@ -29,5 +29,7 @@ const nodeTypes: Record<NodeType, ComponentType<NodeProps>> = {
   UNKNOWN_NODE_TYPE: WaitForThreads,
 }
 
-export type NodeProps<T = Node> = NodeFlow<T & { nodeRun?: NodeRun; fade?: boolean }>
+export type NodeProps<T = Node> = NodeFlow<
+  T & { nodeRun?: NodeRun; fade?: boolean; nodeNeedsToBeHighlighted?: boolean }
+>
 export default nodeTypes
