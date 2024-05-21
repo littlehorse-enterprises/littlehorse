@@ -104,6 +104,11 @@ final class RebalanceThread extends Thread {
                         removed.close();
                     }
                 }
+                for (PollThread pollThread : runningConnections.get(runningConnection)) {
+                    if (!pollThread.isRunning()) {
+                        runningConnections.remove(runningConnection);
+                    }
+                }
             }
             for (LHHostInfo lhHostInfo : availableHosts) {
                 if (!runningConnections.containsKey(lhHostInfo)) {
