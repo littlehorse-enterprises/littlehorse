@@ -28,10 +28,12 @@ public class MetronomeWorker {
     }
 
     @LHTaskMethod(MetronomeWorkflow.TASK_NAME)
-    public void executeTask(final long startTime, final WorkerContext context) {
+    public void executeTask(final long startTime, final boolean sampleIteration, final WorkerContext context) {
         final String id = "%s/%s".formatted(context.getIdempotencyKey(), context.getAttemptNumber());
         log.debug("Executing task {} {}", MetronomeWorkflow.TASK_NAME, id);
-        producer.send(
-                id, BeatType.TASK_RUN_EXECUTION, Duration.between(Instant.ofEpochMilli(startTime), Instant.now()));
+        if (sampleIteration) {
+            producer.send(
+                    id, BeatType.TASK_RUN_EXECUTION, Duration.between(Instant.ofEpochMilli(startTime), Instant.now()));
+        }
     }
 }

@@ -47,7 +47,7 @@ public class MetronomeRunWfExecutor {
         this.repository = repository;
         this.sampleRate = sampleRate;
         this.sampleDataEnabled = sampleRate > 0;
-        this.sampleSize = runs * (sampleRate / 100);
+        this.sampleSize = (int) (runs * (sampleRate / 100.0));
 
         mainExecutor = Executors.newSingleThreadScheduledExecutor();
         ShutdownHook.add("Metronome: RunWf Main Executor Thread", () -> closeExecutor(mainExecutor));
@@ -71,13 +71,12 @@ public class MetronomeRunWfExecutor {
         log.debug("Executing run {}", wfId);
 
         try {
-            lhClient.runCanaryWf(wfId, start);
+            lhClient.runCanaryWf(wfId, start, isSampleIteration);
         } catch (Exception e) {
             sendMetricBeat(wfId, start, BeatStatus.ERROR.name());
             return;
         }
         if (isSampleIteration) {
-            log.info("sending beat");
             sendMetricBeat(wfId, start, BeatStatus.OK.name());
             repository.save(wfId, 0);
         }

@@ -136,7 +136,7 @@ public class CanaryConfig implements Config {
     }
 
     public int getMetronomeSampleRate() {
-        return Integer.parseInt(getConfig(METRONOME_RUN_REQUESTS));
+        return Integer.parseInt(getConfig(METRONOME_RUN_SAMPLE_RATE));
     }
 
     public Duration getMetronomeGetFrequency() {

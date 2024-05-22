@@ -1,6 +1,7 @@
 package io.littlehorse.canary.util;
 
-import static io.littlehorse.canary.metronome.MetronomeWorkflow.VARIABLE_NAME;
+import static io.littlehorse.canary.metronome.MetronomeWorkflow.SAMPLE_ITERATION_VARIABLE;
+import static io.littlehorse.canary.metronome.MetronomeWorkflow.START_TIME_VARIABLE;
 
 import com.google.protobuf.Empty;
 import io.littlehorse.sdk.common.config.LHConfig;
@@ -38,15 +39,18 @@ public class LHClient {
         workflow.registerWfSpec(blockingStub);
     }
 
-    public WfRun runCanaryWf(final String id, final Instant start) {
+    public WfRun runCanaryWf(final String id, final Instant start, boolean sampleIteration) {
         return blockingStub.runWf(RunWfRequest.newBuilder()
                 .setWfSpecName(workflowName)
                 .setId(id)
                 .setRevision(workflowRevision)
                 .setMajorVersion(workflowVersion)
                 .putVariables(
-                        VARIABLE_NAME,
+                        START_TIME_VARIABLE,
                         VariableValue.newBuilder().setInt(start.toEpochMilli()).build())
+                .putVariables(
+                        SAMPLE_ITERATION_VARIABLE,
+                        VariableValue.newBuilder().setBool(sampleIteration).build())
                 .build());
     }
 
