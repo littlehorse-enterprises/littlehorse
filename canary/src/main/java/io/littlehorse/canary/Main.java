@@ -55,7 +55,7 @@ public class Main {
                 canaryConfig.getTopicName(),
                 canaryConfig.toKafkaProducerConfig().toMap());
         final PrometheusExporter prometheusExporter = new PrometheusExporter(canaryConfig.getCommonTags());
-
+        prometheusExporter.addMeasurable(lhClient);
         // create topics
         if (canaryConfig.isTopicCreationEnabled()) {
             final NewTopic topic = new NewTopic(

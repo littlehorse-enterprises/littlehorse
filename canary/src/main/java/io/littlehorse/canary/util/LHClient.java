@@ -8,14 +8,20 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.MeterBinder;
 import java.time.Instant;
+import lombok.NonNull;
 
-public class LHClient {
+public class LHClient implements MeterBinder {
 
     private final LittleHorseBlockingStub blockingStub;
     private final String workflowName;
     private final int workflowRevision;
     private final int workflowVersion;
+    private static final String WF_RUN_COUNTER_NAME = "canary_wf_run";
+    private final CounterMetric wfRunCounter = new CounterMetric(WF_RUN_COUNTER_NAME);
 
     public LHClient(
             final LHConfig lhConfig, final String workflowName, final int workflowVersion, final int workflowRevision) {
@@ -40,7 +46,7 @@ public class LHClient {
     }
 
     public WfRun runCanaryWf(final String id, final Instant start, boolean sampleIteration) {
-        return blockingStub.runWf(RunWfRequest.newBuilder()
+        WfRun newWfRun = blockingStub.runWf(RunWfRequest.newBuilder()
                 .setWfSpecName(workflowName)
                 .setId(id)
                 .setRevision(workflowRevision)
@@ -52,9 +58,36 @@ public class LHClient {
                         SAMPLE_ITERATION_VARIABLE,
                         VariableValue.newBuilder().setBool(sampleIteration).build())
                 .build());
+        wfRunCounter.increment();
+        return newWfRun;
     }
 
     public WfRun getCanaryWfRun(final String id) {
         return blockingStub.getWfRun(WfRunId.newBuilder().setId(id).build());
+    }
+
+    @Override
+    public void bindTo(@NonNull final MeterRegistry registry) {
+        wfRunCounter.bindTo(registry);
+    }
+
+    private static class CounterMetric implements MeterBinder {
+        private final String metricName;
+        private Counter counter;
+
+        private CounterMetric(final String metricName) {
+            this.metricName = metricName;
+        }
+
+        @Override
+        public void bindTo(@NonNull final MeterRegistry registry) {
+            counter = Counter.builder(metricName).register(registry);
+        }
+
+        public void increment() {
+            if (counter != null) {
+                counter.increment();
+            }
+        }
     }
 }
