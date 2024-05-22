@@ -104,11 +104,12 @@ final class RebalanceThread extends Thread {
                         removed.close();
                     }
                 }
-                LittleHorseGrpc.LittleHorseStub stub = config.getAsyncStub(runningConnection.getHost(),
-                        runningConnection.getPort());
+                LittleHorseGrpc.LittleHorseStub stub =
+                        config.getAsyncStub(runningConnection.getHost(), runningConnection.getPort());
                 // This loop replaces each PollThread that stops running with a fresh PollThread
                 for (int i = 0; i < runningConnections.get(runningConnection).size(); i++) {
-                    PollThread existingPollThread = runningConnections.get(runningConnection).get(i);
+                    PollThread existingPollThread =
+                            runningConnections.get(runningConnection).get(i);
                     ArrayList<PollThread> pollThreads = new ArrayList<>();
                     if (existingPollThread.isRunning()) {
                         pollThreads.add(existingPollThread);
@@ -124,8 +125,8 @@ final class RebalanceThread extends Thread {
             for (LHHostInfo lhHostInfo : availableHosts) {
                 if (!runningConnections.containsKey(lhHostInfo)) {
                     final List<PollThread> connections = new ArrayList<>();
-                    LittleHorseGrpc.LittleHorseStub stub = config.getAsyncStub(lhHostInfo.getHost(),
-                            lhHostInfo.getPort());
+                    LittleHorseGrpc.LittleHorseStub stub =
+                            config.getAsyncStub(lhHostInfo.getHost(), lhHostInfo.getPort());
                     for (int i = 0; i < config.getWorkerThreads(); i++) {
                         String threadName = String.format("lh-poll-%s", i);
                         PollThread connection = createConnection(stub, threadName);
@@ -143,7 +144,6 @@ final class RebalanceThread extends Thread {
         }
 
         @Override
-        public void onCompleted() {
-        }
+        public void onCompleted() {}
     }
 }
