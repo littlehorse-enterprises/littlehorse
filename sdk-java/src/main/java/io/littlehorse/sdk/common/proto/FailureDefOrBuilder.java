@@ -8,11 +8,23 @@ public interface FailureDefOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The code for the failure. If in UPPER_CASE, it must be one of the LHErrorType
+   * enums, and represents an ERROR. If it is in kebab-case, then it is a user-defined
+   * EXCEPTION.
+   * </pre>
+   *
    * <code>string failure_name = 1;</code>
    * @return The failureName.
    */
   java.lang.String getFailureName();
   /**
+   * <pre>
+   * The code for the failure. If in UPPER_CASE, it must be one of the LHErrorType
+   * enums, and represents an ERROR. If it is in kebab-case, then it is a user-defined
+   * EXCEPTION.
+   * </pre>
+   *
    * <code>string failure_name = 1;</code>
    * @return The bytes for failureName.
    */
@@ -20,11 +32,19 @@ public interface FailureDefOrBuilder extends
       getFailureNameBytes();
 
   /**
+   * <pre>
+   * Human-readable message denoting why the Failure occurred.
+   * </pre>
+   *
    * <code>string message = 2;</code>
    * @return The message.
    */
   java.lang.String getMessage();
   /**
+   * <pre>
+   * Human-readable message denoting why the Failure occurred.
+   * </pre>
+   *
    * <code>string message = 2;</code>
    * @return The bytes for message.
    */
@@ -32,16 +52,28 @@ public interface FailureDefOrBuilder extends
       getMessageBytes();
 
   /**
+   * <pre>
+   * If specified, the thrown Failure will have this content.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableAssignment content = 3;</code>
    * @return Whether the content field is set.
    */
   boolean hasContent();
   /**
+   * <pre>
+   * If specified, the thrown Failure will have this content.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableAssignment content = 3;</code>
    * @return The content.
    */
   io.littlehorse.sdk.common.proto.VariableAssignment getContent();
   /**
+   * <pre>
+   * If specified, the thrown Failure will have this content.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableAssignment content = 3;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getContentOrBuilder();

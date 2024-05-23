@@ -9,9 +9,10 @@ public interface PrincipalOrBuilder extends
 
   /**
    * <pre>
-   * Principals are agnostic of the Authentication protocol that you use. In OAuth,
-   * the id is retrieved by looking at the claims on the request. In mTLS, the
-   * id is retrived by looking at the Subject Name of the client certificate.
+   * The ID of the Principal. In OAuth for human users, this is the user_id. In
+   * OAuth for machine clients, this is the Client ID.
+   *
+   * mTLS for Principal identification is not yet implemented.
    * </pre>
    *
    * <code>.littlehorse.PrincipalId id = 1;</code>
@@ -20,9 +21,10 @@ public interface PrincipalOrBuilder extends
   boolean hasId();
   /**
    * <pre>
-   * Principals are agnostic of the Authentication protocol that you use. In OAuth,
-   * the id is retrieved by looking at the claims on the request. In mTLS, the
-   * id is retrived by looking at the Subject Name of the client certificate.
+   * The ID of the Principal. In OAuth for human users, this is the user_id. In
+   * OAuth for machine clients, this is the Client ID.
+   *
+   * mTLS for Principal identification is not yet implemented.
    * </pre>
    *
    * <code>.littlehorse.PrincipalId id = 1;</code>
@@ -31,9 +33,10 @@ public interface PrincipalOrBuilder extends
   io.littlehorse.sdk.common.proto.PrincipalId getId();
   /**
    * <pre>
-   * Principals are agnostic of the Authentication protocol that you use. In OAuth,
-   * the id is retrieved by looking at the claims on the request. In mTLS, the
-   * id is retrived by looking at the Subject Name of the client certificate.
+   * The ID of the Principal. In OAuth for human users, this is the user_id. In
+   * OAuth for machine clients, this is the Client ID.
+   *
+   * mTLS for Principal identification is not yet implemented.
    * </pre>
    *
    * <code>.littlehorse.PrincipalId id = 1;</code>
@@ -41,16 +44,28 @@ public interface PrincipalOrBuilder extends
   io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder getIdOrBuilder();
 
   /**
+   * <pre>
+   * The time at which the Principal was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
   boolean hasCreatedAt();
   /**
+   * <pre>
+   * The time at which the Principal was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
   com.google.protobuf.Timestamp getCreatedAt();
   /**
+   * <pre>
+   * The time at which the Principal was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
@@ -58,7 +73,7 @@ public interface PrincipalOrBuilder extends
   /**
    * <pre>
    * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-   * execute *within that Tenant*
+   * execute *within that Tenant*.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
@@ -67,7 +82,7 @@ public interface PrincipalOrBuilder extends
   /**
    * <pre>
    * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-   * execute *within that Tenant*
+   * execute *within that Tenant*.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
@@ -83,7 +98,7 @@ public interface PrincipalOrBuilder extends
   /**
    * <pre>
    * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-   * execute *within that Tenant*
+   * execute *within that Tenant*.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
@@ -93,7 +108,7 @@ public interface PrincipalOrBuilder extends
   /**
    * <pre>
    * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-   * execute *within that Tenant*
+   * execute *within that Tenant*.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
@@ -106,7 +121,7 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue);
   /**
    * <pre>
    * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-   * execute *within that Tenant*
+   * execute *within that Tenant*.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>

@@ -8,28 +8,48 @@ public interface ServerACLOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The resource types over which permission is granted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLResource resources = 1;</code>
    * @return A list containing the resources.
    */
   java.util.List<io.littlehorse.sdk.common.proto.ACLResource> getResourcesList();
   /**
+   * <pre>
+   * The resource types over which permission is granted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLResource resources = 1;</code>
    * @return The count of resources.
    */
   int getResourcesCount();
   /**
+   * <pre>
+   * The resource types over which permission is granted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLResource resources = 1;</code>
    * @param index The index of the element to return.
    * @return The resources at the given index.
    */
   io.littlehorse.sdk.common.proto.ACLResource getResources(int index);
   /**
+   * <pre>
+   * The resource types over which permission is granted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLResource resources = 1;</code>
    * @return A list containing the enum numeric values on the wire for resources.
    */
   java.util.List<java.lang.Integer>
   getResourcesValueList();
   /**
+   * <pre>
+   * The resource types over which permission is granted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLResource resources = 1;</code>
    * @param index The index of the value to return.
    * @return The enum numeric value on the wire of resources at the given index.
@@ -37,28 +57,48 @@ public interface ServerACLOrBuilder extends
   int getResourcesValue(int index);
 
   /**
+   * <pre>
+   * The actions that are permitted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
    * @return A list containing the allowedActions.
    */
   java.util.List<io.littlehorse.sdk.common.proto.ACLAction> getAllowedActionsList();
   /**
+   * <pre>
+   * The actions that are permitted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
    * @return The count of allowedActions.
    */
   int getAllowedActionsCount();
   /**
+   * <pre>
+   * The actions that are permitted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
    * @param index The index of the element to return.
    * @return The allowedActions at the given index.
    */
   io.littlehorse.sdk.common.proto.ACLAction getAllowedActions(int index);
   /**
+   * <pre>
+   * The actions that are permitted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
    * @return A list containing the enum numeric values on the wire for allowedActions.
    */
   java.util.List<java.lang.Integer>
   getAllowedActionsValueList();
   /**
+   * <pre>
+   * The actions that are permitted.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ACLAction allowed_actions = 2;</code>
    * @param index The index of the value to return.
    * @return The enum numeric value on the wire of allowedActions at the given index.
@@ -66,16 +106,43 @@ public interface ServerACLOrBuilder extends
   int getAllowedActionsValue(int index);
 
   /**
+   * <pre>
+   * If set, then only the resources with this exact name are allowed. For example,
+   * the `READ` and `RUN` `allowed_actions` over `ACL_TASK` with `name` == `my-task`
+   * allows a Task Worker to only execute the `my-task` TaskDef.
+   *
+   * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+   * specified types.
+   * </pre>
+   *
    * <code>string name = 3;</code>
    * @return Whether the name field is set.
    */
   boolean hasName();
   /**
+   * <pre>
+   * If set, then only the resources with this exact name are allowed. For example,
+   * the `READ` and `RUN` `allowed_actions` over `ACL_TASK` with `name` == `my-task`
+   * allows a Task Worker to only execute the `my-task` TaskDef.
+   *
+   * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+   * specified types.
+   * </pre>
+   *
    * <code>string name = 3;</code>
    * @return The name.
    */
   java.lang.String getName();
   /**
+   * <pre>
+   * If set, then only the resources with this exact name are allowed. For example,
+   * the `READ` and `RUN` `allowed_actions` over `ACL_TASK` with `name` == `my-task`
+   * allows a Task Worker to only execute the `my-task` TaskDef.
+   *
+   * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+   * specified types.
+   * </pre>
+   *
    * <code>string name = 3;</code>
    * @return The bytes for name.
    */
@@ -83,16 +150,37 @@ public interface ServerACLOrBuilder extends
       getNameBytes();
 
   /**
+   * <pre>
+   * If set, then only the resources whose names match this prefix are allowed.
+   *
+   * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+   * specified types.
+   * </pre>
+   *
    * <code>string prefix = 4;</code>
    * @return Whether the prefix field is set.
    */
   boolean hasPrefix();
   /**
+   * <pre>
+   * If set, then only the resources whose names match this prefix are allowed.
+   *
+   * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+   * specified types.
+   * </pre>
+   *
    * <code>string prefix = 4;</code>
    * @return The prefix.
    */
   java.lang.String getPrefix();
   /**
+   * <pre>
+   * If set, then only the resources whose names match this prefix are allowed.
+   *
+   * If `name` and `prefix` are unset, then the ACL applies to all resources of the
+   * specified types.
+   * </pre>
+   *
    * <code>string prefix = 4;</code>
    * @return The bytes for prefix.
    */

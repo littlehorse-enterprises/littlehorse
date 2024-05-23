@@ -8,54 +8,112 @@ public interface WfSpecOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the `WfSpec`. Note that this ID is versioned with both a major
+   * version and a minor revision. Creating new WfSpec's with the same name
+   * and different specifications results in a completely new `WfSpec` object
+   * whose `id.name` is the same but with different version.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * The ID of the `WfSpec`. Note that this ID is versioned with both a major
+   * version and a minor revision. Creating new WfSpec's with the same name
+   * and different specifications results in a completely new `WfSpec` object
+   * whose `id.name` is the same but with different version.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.WfSpecId getId();
   /**
+   * <pre>
+   * The ID of the `WfSpec`. Note that this ID is versioned with both a major
+   * version and a minor revision. Creating new WfSpec's with the same name
+   * and different specifications results in a completely new `WfSpec` object
+   * whose `id.name` is the same but with different version.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getIdOrBuilder();
 
   /**
+   * <pre>
+   * The timestamp at which the `WfSpec` was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
   boolean hasCreatedAt();
   /**
+   * <pre>
+   * The timestamp at which the `WfSpec` was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
   com.google.protobuf.Timestamp getCreatedAt();
   /**
+   * <pre>
+   * The timestamp at which the `WfSpec` was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
+   * <pre>
+   * Variables whose types cannot be changed without causing a Breaking Change between
+   * the versions.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef> 
       getFrozenVariablesList();
   /**
+   * <pre>
+   * Variables whose types cannot be changed without causing a Breaking Change between
+   * the versions.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
    */
   io.littlehorse.sdk.common.proto.ThreadVarDef getFrozenVariables(int index);
   /**
+   * <pre>
+   * Variables whose types cannot be changed without causing a Breaking Change between
+   * the versions.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
    */
   int getFrozenVariablesCount();
   /**
+   * <pre>
+   * Variables whose types cannot be changed without causing a Breaking Change between
+   * the versions.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder> 
       getFrozenVariablesOrBuilderList();
   /**
+   * <pre>
+   * Variables whose types cannot be changed without causing a Breaking Change between
+   * the versions.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadVarDef frozen_variables = 3;</code>
    */
   io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder getFrozenVariablesOrBuilder(
@@ -63,7 +121,8 @@ public interface WfSpecOrBuilder extends
 
   /**
    * <pre>
-   * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+   * The Status of the `WfSpec`. Currently, only `ACTIVE` exists. This field will be
+   * used in the future when de-commissioning a WfSpec gracefully.
    * </pre>
    *
    * <code>.littlehorse.MetadataStatus status = 4;</code>
@@ -72,7 +131,8 @@ public interface WfSpecOrBuilder extends
   int getStatusValue();
   /**
    * <pre>
-   * to be used for WfSpec Status, i.e. ACTIVE/TERMINATING/ARCHIVED
+   * The Status of the `WfSpec`. Currently, only `ACTIVE` exists. This field will be
+   * used in the future when de-commissioning a WfSpec gracefully.
    * </pre>
    *
    * <code>.littlehorse.MetadataStatus status = 4;</code>
@@ -81,10 +141,20 @@ public interface WfSpecOrBuilder extends
   io.littlehorse.sdk.common.proto.MetadataStatus getStatus();
 
   /**
+   * <pre>
+   * The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+   * a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
   int getThreadSpecsCount();
   /**
+   * <pre>
+   * The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+   * a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
   boolean containsThreadSpecs(
@@ -96,11 +166,21 @@ public interface WfSpecOrBuilder extends
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec>
   getThreadSpecs();
   /**
+   * <pre>
+   * The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+   * a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadSpec>
   getThreadSpecsMap();
   /**
+   * <pre>
+   * The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+   * a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
   /* nullable */
@@ -109,17 +189,34 @@ io.littlehorse.sdk.common.proto.ThreadSpec getThreadSpecsOrDefault(
       /* nullable */
 io.littlehorse.sdk.common.proto.ThreadSpec defaultValue);
   /**
+   * <pre>
+   * The various ThreadSpec's in this `WfSpec`. Each `ThreadSpec` defines a blueprint for
+   * a parallel thread of execution (a `ThreadRun`). They are referred to by their names.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ThreadSpec&gt; thread_specs = 5;</code>
    */
   io.littlehorse.sdk.common.proto.ThreadSpec getThreadSpecsOrThrow(
       java.lang.String key);
 
   /**
+   * <pre>
+   * The name of the `ENTRYPOINT` ThreadSpec. The Entrypoint is the `ThreadSpec` for the
+   * Entrypoint ThreadRun, which is the `ThreadRun` that is created upon starting the
+   * `WfRun`.
+   * </pre>
+   *
    * <code>string entrypoint_thread_name = 6;</code>
    * @return The entrypointThreadName.
    */
   java.lang.String getEntrypointThreadName();
   /**
+   * <pre>
+   * The name of the `ENTRYPOINT` ThreadSpec. The Entrypoint is the `ThreadSpec` for the
+   * Entrypoint ThreadRun, which is the `ThreadRun` that is created upon starting the
+   * `WfRun`.
+   * </pre>
+   *
    * <code>string entrypoint_thread_name = 6;</code>
    * @return The bytes for entrypointThreadName.
    */
@@ -127,31 +224,64 @@ io.littlehorse.sdk.common.proto.ThreadSpec defaultValue);
       getEntrypointThreadNameBytes();
 
   /**
+   * <pre>
+   * Optional policy that configures cleaning up old `WfRun`'s after they are completed or
+   * failed. Recommended for production settings to avoid running out of disk space; unless
+   * you are using a `WfRun` as a data record, in which case the application should
+   * clean up `WfRun`'s as appropriate.
+   * </pre>
+   *
    * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
    * @return Whether the retentionPolicy field is set.
    */
   boolean hasRetentionPolicy();
   /**
+   * <pre>
+   * Optional policy that configures cleaning up old `WfRun`'s after they are completed or
+   * failed. Recommended for production settings to avoid running out of disk space; unless
+   * you are using a `WfRun` as a data record, in which case the application should
+   * clean up `WfRun`'s as appropriate.
+   * </pre>
+   *
    * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
    * @return The retentionPolicy.
    */
   io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy getRetentionPolicy();
   /**
+   * <pre>
+   * Optional policy that configures cleaning up old `WfRun`'s after they are completed or
+   * failed. Recommended for production settings to avoid running out of disk space; unless
+   * you are using a `WfRun` as a data record, in which case the application should
+   * clean up `WfRun`'s as appropriate.
+   * </pre>
+   *
    * <code>optional .littlehorse.WorkflowRetentionPolicy retention_policy = 7;</code>
    */
   io.littlehorse.sdk.common.proto.WorkflowRetentionPolicyOrBuilder getRetentionPolicyOrBuilder();
 
   /**
+   * <pre>
+   * EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
    * @return Whether the migration field is set.
    */
   boolean hasMigration();
   /**
+   * <pre>
+   * EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
    * @return The migration.
    */
   io.littlehorse.sdk.common.proto.WfSpecVersionMigration getMigration();
   /**
+   * <pre>
+   * EXPERIMENTAL: ongoing migration from one version of a `WfSpec` to another.
+   * </pre>
+   *
    * <code>optional .littlehorse.WfSpecVersionMigration migration = 8;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecVersionMigrationOrBuilder getMigrationOrBuilder();

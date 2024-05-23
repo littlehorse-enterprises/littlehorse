@@ -30,40 +30,17 @@ Recall the valid types of Variables:
 - `JSON_ARR` (a dumped JSON String)
 - `BYTES`
 
-### A Note on Indexes
+### Searchable and Required Variables
 
-:::warn
-The API for indexes on `Variable`s is in the `EXPERIMENTAL` phase, meaning that it can experience breaking changes prior to the `1.0.0` release.
+It is often desirable to be able to search for a `WfRun` based on the value of the `Variable`s inside it. For example, how can I find the `WfRun` that has `email=foo@bar.com`? You can do that via the `rpc SearchVariable` 
+
+In order to do that, however, you must first put an index on your `Variable` by using the `.searchable()` method.
+
+Additionally, you can use the `.required()` method to make a `Variable` required as input to the `ThreadRun`. If you do this on your Entrypoint `ThreadRun`, then the `RunWfRequest` must specify a value for that `Variable`.
+
+:::note
+Putting an Index on a `Variable` or making the `Variable` "Required" means that the `Variable` becomes part of the public API of the `WfSpec`. That means you will increment a "major version" upon adding or removing an Index on a `Variable`. For more info, check out our docs on [WfSpec Versioning](../../04-concepts/01-workflows.md#wfspec-versioning).
 :::
-
-LittleHorse allows you to search for various Execution Objects based on their attributes. For example, you can search `WfRun`'s by their status and creation time. Additionally, you can specify that a `Variable` should be indexed.
-
-Since LittleHorse is a distributed system, indexes are not as simple as in Postgres where everything lives on one index. There are two types of indexes in LittleHorse:
-
-* `REMOTE`, in which the attributes of the index are hashed and sent to a specific partition, offering super-fast lookup.
-  * This is ideal for well-distributed indexes, such as the `guid` of a customer.
-* `LOCAL`, in which the index is stored on the same partition as the actual `WfRun`.
-  * This is ideal for when the index has a small set of possible values and when collisions are likely.
-
-:::warning
-If you use a `REMOTE` Index and have millions of objects with a specific value in that index, you will create a hot partition, which is an operational hazard that can cause latency spikes on `WfRun`'s sharing a Server Instance with that index. In extreme cases, it can cause the underlying Kafka cluster to experience operational difficulties.
-:::
-
-:::tip
-As a general rule of thumb, start with a `LOCAL` index, as that is always safe.
-
-`REMOTE` indexes most often make sense when a `WfRun` is tied to an individual person or identity, as we often want to be able to find workflow runs associated with a specific user, and it is rare for a human to have more than a thousand or so workflows associated with him/herself.
-:::
-
-### Persistent Variables
-
-Variable Indexes allow you to search for a `Variable` (and by extension, its `WfRun`) by a certain value. For example, if your `WfSpec` defines a `WfRunVariable` called `email`, you can find the `WfRun` where `email == 'obiwan@jedi.temple'` with a `SearchVariable` rpc call.
-
-However, that requires that you provide the `wfSpecVersion` in your search request. That means you can only search for a `Variable` if you know the version of the `WfSpec` it came from.
-
-Release `0.4.0` introduced the ability to mark a `Variable` as `persistent`, which means that:
-* Every future version of the `WfSpec` must have the same variable definition with the same index type.
-* You can now search for variables with a certain value across _all versions_ of the `WfSpec`.
 
 ### Defining Variables
 
@@ -91,16 +68,14 @@ You can set an index on the variable as follows:
 
 ```java
 public void threadFunction(WorkflowThread thread) {
-    WfRunVariable myVar = thread.addVariable("my-variable", "Hello, there!").withIndex(IndexType.LOCAL_INDEX);
+    WfRunVariable myVar = thread.addVariable("my-variable", "Hello, there!").searchable();
 }
 ```
 
-And you can mark the `Variable` as Persistent as follows:
+And you can mark the `Variable` as Required as follows:
 ```java
 public void threadFunction(WorkflowThread thread) {
-    WfRunVariable myVar = thread.addVariable("my-variable", "Hello, there!")
-            .withIndex(IndexType.LOCAL_INDEX)
-            .persistent();
+    WfRunVariable myVar = thread.addVariable("my-variable", "Hello, there!").required();
 }
 ```
 
@@ -124,11 +99,7 @@ func myThreadFunc(thread *wflib.WorkflowThread) {
 You can add an index on a `WfRunVariable` to make the variable searchable.
 ```go
 func myThreadFunc(thread *wflib.WorkflowThread) {
-    nameVar := thread.AddVariableWithDefault("my-variable", model.VariableType_STR, "Ahsoka Tano")
-    nameVar.WithIndex(model.IndexType_REMOTE_INDEX)
-
-    // optionally make it a Persistent variable
-    nameVar.Persistent()
+    nameVar := thread.AddVariableWithDefault("my-variable", model.VariableType_STR, "Ahsoka Tano").Searchable()
 }
 ```
 
@@ -151,11 +122,10 @@ You can set an index on the variable as follows:
 
 ```python
 def thread_function(thread: WorkflowThread) -> None:
-    the_name = thread.add_variable("input-name", VariableType.STR)
-    the_name.with_index(IndexType.LOCAL_INDEX)
+    the_name = thread.add_variable("input-name", VariableType.STR).searchable()
 
-    # optionally make the variable a Persistent variable
-    the_name.persistent()
+    # optionally make the variable a Required variable
+    the_name.required()
 ```
 
   </TabItem>

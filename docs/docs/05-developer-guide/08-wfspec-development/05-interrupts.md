@@ -134,6 +134,10 @@ def my_entrypoint(wf: WorkflowThread) -> None:
 
 ## Notes and Best Practices
 
-First, only one `ThreadSpec` may register an Interrupt Handler for a single `ExternalEventDef`.
+First, only one `ThreadSpec` may register an Interrupt Handler for a given `ExternalEventDef`.
 
-Additionally, note (as per the Concept Docs) that the Interrupt Handler Thread is a Child of the Interrupted `ThreadRun` and as such can mutate the parent's Variables. This is a very useful feature.
+Additionally, note (as per the [Concept Docs](../../04-concepts/11-interrupts.md#variable-scoping)) that the Interrupt Handler Thread is a Child of the Interrupted `ThreadRun`. This is a very useful feature.
+
+:::note
+If you use an `ExternalEventDef` as a trigger for an Interrupt, you cannot reuse that `ExternalEventDef` for a [wait for `ExternalEvent`](./04-external-events.md) node.
+:::

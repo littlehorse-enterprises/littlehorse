@@ -31,10 +31,12 @@ import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -44,6 +46,7 @@ import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
@@ -139,8 +142,10 @@ import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunIdList;
 import io.littlehorse.sdk.common.proto.TaskRunList;
+import io.littlehorse.sdk.common.proto.TaskWorkerGroup;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest;
 import io.littlehorse.sdk.common.proto.Tenant;
+import io.littlehorse.sdk.common.proto.TenantId;
 import io.littlehorse.sdk.common.proto.TenantIdList;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskDefId;
@@ -353,6 +358,21 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find TaskDef %s".formatted(req.getName())));
         } else {
             ctx.onNext(td.toProto().build());
+            ctx.onCompleted();
+        }
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_TASK_WORKER_GROUP, actions = ACLAction.READ)
+    public void getTaskWorkerGroup(TaskDefId taskDefIdPb, StreamObserver<TaskWorkerGroup> ctx) {
+        TaskDefIdModel taskDefId = TaskDefIdModel.fromProto(taskDefIdPb, TaskDefIdModel.class, requestContext());
+        TaskWorkerGroupModel taskWorkerGroup = internalComms.getObject(
+                new TaskWorkerGroupIdModel(taskDefId), TaskWorkerGroupModel.class, requestContext());
+        if (taskWorkerGroup == null) {
+            ctx.onError(new LHApiException(
+                    Status.NOT_FOUND, "Couldn't find a TaskWorkerGroup for %s".formatted(taskDefIdPb.getName())));
+        } else {
+            ctx.onNext(taskWorkerGroup.toProto().build());
             ctx.onCompleted();
         }
     }
@@ -849,6 +869,22 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
     @Override
     @Authorize(
+            resources = {ACLResource.ACL_TENANT},
+            actions = ACLAction.READ)
+    public void getTenant(TenantId req, StreamObserver<Tenant> ctx) {
+        RequestExecutionContext reqContext = requestContext();
+        TenantIdModel tenantId = TenantIdModel.fromProto(req, TenantIdModel.class, reqContext);
+        TenantModel result = reqContext.metadataManager().get(tenantId);
+        if (result == null) {
+            ctx.onError(new LHApiException(Status.NOT_FOUND, "Could not find tenant %s".formatted(tenantId)));
+        } else {
+            ctx.onNext(result.toProto().build());
+            ctx.onCompleted();
+        }
+    }
+
+    @Override
+    @Authorize(
             resources = {},
             actions = {})
     public void whoami(Empty request, StreamObserver<Principal> responseObserver) {
@@ -867,8 +903,8 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     public void getServerVersion(Empty request, StreamObserver<ServerVersionResponse> ctx) {
         ctx.onNext(ServerVersionResponse.newBuilder()
                 .setMajorVersion(0)
-                .setMinorVersion(8)
-                .setPatchVersion(2)
+                .setMinorVersion(9)
+                .setPatchVersion(0)
                 .build());
         ctx.onCompleted();
     }
@@ -1025,6 +1061,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                     log.info("Closing timer");
                     timerStreams.close();
                     latch.countDown();
+                    log.info("Done closing timer Kafka Streams");
                 })
                 .start();
 
@@ -1032,6 +1069,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                     log.info("Closing core");
                     coreStreams.close();
                     latch.countDown();
+                    log.info("Done closing core Kafka Streams");
                 })
                 .start();
 
@@ -1054,6 +1092,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
         try {
             latch.await();
+            log.info("Done shutting down all internal server processes");
         } catch (Exception exn) {
             throw new RuntimeException(exn);
         }

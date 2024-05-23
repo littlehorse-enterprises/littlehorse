@@ -1,33 +1,35 @@
 import { getVariableValue } from '@/app/utils'
-import { Dialog } from '@headlessui/react'
+import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import { FC, useMemo, useState } from 'react'
 import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
+import { TaskRun as LHTaskRun } from 'littlehorse-client/dist/proto/task_run'
 
 export const TaskRun: FC<Modal> = ({ data }) => {
+  const lhTaskRun = data as LHTaskRun
   const { showModal, setShowModal } = useModal()
-  const [attemptIndex, setAttemptIndex] = useState(data.attempts.length - 1)
-  const attempt = useMemo(() => data.attempts[attemptIndex], [attemptIndex, data.attempts])
+  const [attemptIndex, setAttemptIndex] = useState(lhTaskRun.attempts.length - 1)
+  const attempt = useMemo(() => lhTaskRun.attempts[attemptIndex], [attemptIndex, lhTaskRun.attempts])
   return (
     <Dialog open={showModal} className="relative z-50" onClose={() => setShowModal(false)}>
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="w-1/3 min-w-fit rounded bg-white p-2">
-          <Dialog.Title className="mb-2 flex items-center justify-between">
+        <DialogPanel className="w-1/3 min-w-fit rounded bg-white p-2">
+          <DialogTitle className="mb-2 flex items-center justify-between">
             <h2 className="text-lg font-bold">TaskRun</h2>
             <div className="item-center flex gap-1 bg-gray-200 px-2 py-1">
-              <span className="font-mono text-sm">{data.id?.taskGuid}</span>
+              <span className="font-mono text-sm">{lhTaskRun.id?.taskGuid}</span>
               <ClipboardDocumentIcon className="h-4 w-4 fill-transparent stroke-blue-500" />
             </div>
-          </Dialog.Title>
-          <Dialog.Description>
+          </DialogTitle>
+          <Description>
             <div className="">
               <div className="flex items-center justify-between bg-green-200 p-2">
                 <div className="flex items-center gap-1">
                   <div className="flex gap-1">
-                    {data.attempts.reverse().map((_, i) => {
-                      const index = data.attempts.length - i - 1
+                    {lhTaskRun.attempts.reverse().map((_, i) => {
+                      const index = lhTaskRun.attempts.length - i - 1
                       return (
                         <button
                           key={`attempt-${index}`}
@@ -61,8 +63,8 @@ export const TaskRun: FC<Modal> = ({ data }) => {
                 </div>
               )}
             </div>
-          </Dialog.Description>
-        </Dialog.Panel>
+          </Description>
+        </DialogPanel>
       </div>
     </Dialog>
   )

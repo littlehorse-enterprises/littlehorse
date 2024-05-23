@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * The Edge is the line in the workflow that connects one Node to another.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.Edge}
  */
 public final class Edge extends
@@ -45,6 +49,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object sinkNodeName_ = "";
   /**
+   * <pre>
+   * The name of the Node that the Edge points to.
+   * </pre>
+   *
    * <code>string sink_node_name = 1;</code>
    * @return The sinkNodeName.
    */
@@ -62,6 +70,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the Node that the Edge points to.
+   * </pre>
+   *
    * <code>string sink_node_name = 1;</code>
    * @return The bytes for sinkNodeName.
    */
@@ -83,6 +95,13 @@ private static final long serialVersionUID = 0L;
   public static final int CONDITION_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.EdgeCondition condition_;
   /**
+   * <pre>
+   * The Condition on which this Edge will be traversed. When choosing an Edge
+   * to travel after the completion of a NodeRun, the Edges are evaluated in
+   * order. The first one to either have no condition or have a condition which
+   * evaluates to `true` is taken.
+   * </pre>
+   *
    * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
    * @return Whether the condition field is set.
    */
@@ -91,6 +110,13 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * The Condition on which this Edge will be traversed. When choosing an Edge
+   * to travel after the completion of a NodeRun, the Edges are evaluated in
+   * order. The first one to either have no condition or have a condition which
+   * evaluates to `true` is taken.
+   * </pre>
+   *
    * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
    * @return The condition.
    */
@@ -99,6 +125,13 @@ private static final long serialVersionUID = 0L;
     return condition_ == null ? io.littlehorse.sdk.common.proto.EdgeCondition.getDefaultInstance() : condition_;
   }
   /**
+   * <pre>
+   * The Condition on which this Edge will be traversed. When choosing an Edge
+   * to travel after the completion of a NodeRun, the Edges are evaluated in
+   * order. The first one to either have no condition or have a condition which
+   * evaluates to `true` is taken.
+   * </pre>
+   *
    * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
    */
   @java.lang.Override
@@ -110,6 +143,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> variableMutations_;
   /**
+   * <pre>
+   * Ordered list of Variable Mutations to execute when traversing this Edge.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
    */
   @java.lang.Override
@@ -117,6 +154,10 @@ private static final long serialVersionUID = 0L;
     return variableMutations_;
   }
   /**
+   * <pre>
+   * Ordered list of Variable Mutations to execute when traversing this Edge.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
    */
   @java.lang.Override
@@ -125,6 +166,10 @@ private static final long serialVersionUID = 0L;
     return variableMutations_;
   }
   /**
+   * <pre>
+   * Ordered list of Variable Mutations to execute when traversing this Edge.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
    */
   @java.lang.Override
@@ -132,6 +177,10 @@ private static final long serialVersionUID = 0L;
     return variableMutations_.size();
   }
   /**
+   * <pre>
+   * Ordered list of Variable Mutations to execute when traversing this Edge.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
    */
   @java.lang.Override
@@ -139,6 +188,10 @@ private static final long serialVersionUID = 0L;
     return variableMutations_.get(index);
   }
   /**
+   * <pre>
+   * Ordered list of Variable Mutations to execute when traversing this Edge.
+   * </pre>
+   *
    * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
    */
   @java.lang.Override
@@ -333,6 +386,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * The Edge is the line in the workflow that connects one Node to another.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.Edge}
    */
   public static final class Builder extends
@@ -593,6 +650,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object sinkNodeName_ = "";
     /**
+     * <pre>
+     * The name of the Node that the Edge points to.
+     * </pre>
+     *
      * <code>string sink_node_name = 1;</code>
      * @return The sinkNodeName.
      */
@@ -609,6 +670,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the Node that the Edge points to.
+     * </pre>
+     *
      * <code>string sink_node_name = 1;</code>
      * @return The bytes for sinkNodeName.
      */
@@ -626,6 +691,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the Node that the Edge points to.
+     * </pre>
+     *
      * <code>string sink_node_name = 1;</code>
      * @param value The sinkNodeName to set.
      * @return This builder for chaining.
@@ -639,6 +708,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the Node that the Edge points to.
+     * </pre>
+     *
      * <code>string sink_node_name = 1;</code>
      * @return This builder for chaining.
      */
@@ -649,6 +722,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the Node that the Edge points to.
+     * </pre>
+     *
      * <code>string sink_node_name = 1;</code>
      * @param value The bytes for sinkNodeName to set.
      * @return This builder for chaining.
@@ -667,6 +744,13 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.EdgeCondition, io.littlehorse.sdk.common.proto.EdgeCondition.Builder, io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder> conditionBuilder_;
     /**
+     * <pre>
+     * The Condition on which this Edge will be traversed. When choosing an Edge
+     * to travel after the completion of a NodeRun, the Edges are evaluated in
+     * order. The first one to either have no condition or have a condition which
+     * evaluates to `true` is taken.
+     * </pre>
+     *
      * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
      * @return Whether the condition field is set.
      */
@@ -674,6 +758,13 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * The Condition on which this Edge will be traversed. When choosing an Edge
+     * to travel after the completion of a NodeRun, the Edges are evaluated in
+     * order. The first one to either have no condition or have a condition which
+     * evaluates to `true` is taken.
+     * </pre>
+     *
      * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
      * @return The condition.
      */
@@ -685,6 +776,13 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The Condition on which this Edge will be traversed. When choosing an Edge
+     * to travel after the completion of a NodeRun, the Edges are evaluated in
+     * order. The first one to either have no condition or have a condition which
+     * evaluates to `true` is taken.
+     * </pre>
+     *
      * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
      */
     public Builder setCondition(io.littlehorse.sdk.common.proto.EdgeCondition value) {
@@ -701,6 +799,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The Condition on which this Edge will be traversed. When choosing an Edge
+     * to travel after the completion of a NodeRun, the Edges are evaluated in
+     * order. The first one to either have no condition or have a condition which
+     * evaluates to `true` is taken.
+     * </pre>
+     *
      * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
      */
     public Builder setCondition(
@@ -715,6 +820,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The Condition on which this Edge will be traversed. When choosing an Edge
+     * to travel after the completion of a NodeRun, the Edges are evaluated in
+     * order. The first one to either have no condition or have a condition which
+     * evaluates to `true` is taken.
+     * </pre>
+     *
      * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
      */
     public Builder mergeCondition(io.littlehorse.sdk.common.proto.EdgeCondition value) {
@@ -734,6 +846,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The Condition on which this Edge will be traversed. When choosing an Edge
+     * to travel after the completion of a NodeRun, the Edges are evaluated in
+     * order. The first one to either have no condition or have a condition which
+     * evaluates to `true` is taken.
+     * </pre>
+     *
      * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
      */
     public Builder clearCondition() {
@@ -747,6 +866,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The Condition on which this Edge will be traversed. When choosing an Edge
+     * to travel after the completion of a NodeRun, the Edges are evaluated in
+     * order. The first one to either have no condition or have a condition which
+     * evaluates to `true` is taken.
+     * </pre>
+     *
      * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.EdgeCondition.Builder getConditionBuilder() {
@@ -755,6 +881,13 @@ private static final long serialVersionUID = 0L;
       return getConditionFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The Condition on which this Edge will be traversed. When choosing an Edge
+     * to travel after the completion of a NodeRun, the Edges are evaluated in
+     * order. The first one to either have no condition or have a condition which
+     * evaluates to `true` is taken.
+     * </pre>
+     *
      * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.EdgeConditionOrBuilder getConditionOrBuilder() {
@@ -766,6 +899,13 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The Condition on which this Edge will be traversed. When choosing an Edge
+     * to travel after the completion of a NodeRun, the Edges are evaluated in
+     * order. The first one to either have no condition or have a condition which
+     * evaluates to `true` is taken.
+     * </pre>
+     *
      * <code>optional .littlehorse.EdgeCondition condition = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -795,6 +935,10 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.VariableMutation, io.littlehorse.sdk.common.proto.VariableMutation.Builder, io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> variableMutationsBuilder_;
 
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.VariableMutation> getVariableMutationsList() {
@@ -805,6 +949,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public int getVariableMutationsCount() {
@@ -815,6 +963,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableMutation getVariableMutations(int index) {
@@ -825,6 +977,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public Builder setVariableMutations(
@@ -842,6 +998,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public Builder setVariableMutations(
@@ -856,6 +1016,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public Builder addVariableMutations(io.littlehorse.sdk.common.proto.VariableMutation value) {
@@ -872,6 +1036,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public Builder addVariableMutations(
@@ -889,6 +1057,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public Builder addVariableMutations(
@@ -903,6 +1075,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public Builder addVariableMutations(
@@ -917,6 +1093,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public Builder addAllVariableMutations(
@@ -932,6 +1112,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public Builder clearVariableMutations() {
@@ -945,6 +1129,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public Builder removeVariableMutations(int index) {
@@ -958,6 +1146,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableMutation.Builder getVariableMutationsBuilder(
@@ -965,6 +1157,10 @@ private static final long serialVersionUID = 0L;
       return getVariableMutationsFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableMutationOrBuilder getVariableMutationsOrBuilder(
@@ -975,6 +1171,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.VariableMutationOrBuilder> 
@@ -986,6 +1186,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableMutation.Builder addVariableMutationsBuilder() {
@@ -993,6 +1197,10 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.VariableMutation.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableMutation.Builder addVariableMutationsBuilder(
@@ -1001,6 +1209,10 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.VariableMutation.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Ordered list of Variable Mutations to execute when traversing this Edge.
+     * </pre>
+     *
      * <code>repeated .littlehorse.VariableMutation variable_mutations = 3;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.VariableMutation.Builder> 

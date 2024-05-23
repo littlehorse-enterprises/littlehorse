@@ -34,6 +34,7 @@ import {
   NodeRunId,
   TaskDefId,
   TaskRunId,
+  TaskWorkerGroupId,
   TenantId,
   UserTaskDefId,
   UserTaskRunId,
@@ -1228,6 +1229,37 @@ export interface ListUserTaskRunRequest {
 export interface UserTaskRunList {
   /** A list of UserTaskRun Objects */
   results: UserTaskRun[];
+}
+
+/** Describes a specific task worker */
+export interface TaskWorkerMetadata {
+  /** User-defined identifier for the worker. */
+  taskWorkerId: string;
+  /** Timestamp indicating the last heartbeat sent by the worker. */
+  latestHeartbeat:
+    | string
+    | undefined;
+  /** The host(s) where the worker is polling tasks */
+  hosts: LHHostInfo[];
+}
+
+/** Describes all workers registered for a specific TaskDef. */
+export interface TaskWorkerGroup {
+  /** Identifier for the group. */
+  id:
+    | TaskWorkerGroupId
+    | undefined;
+  /** Timestamp indicating when the worker group was initially registered. */
+  createdAt:
+    | string
+    | undefined;
+  /** Metadata grouped by ClientId string. */
+  taskWorkers: { [key: string]: TaskWorkerMetadata };
+}
+
+export interface TaskWorkerGroup_TaskWorkersEntry {
+  key: string;
+  value: TaskWorkerMetadata | undefined;
 }
 
 /** List TaskRun's for a specific WfRun */
@@ -6008,6 +6040,209 @@ export const UserTaskRunList = {
   },
 };
 
+function createBaseTaskWorkerMetadata(): TaskWorkerMetadata {
+  return { taskWorkerId: "", latestHeartbeat: undefined, hosts: [] };
+}
+
+export const TaskWorkerMetadata = {
+  encode(message: TaskWorkerMetadata, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.taskWorkerId !== "") {
+      writer.uint32(10).string(message.taskWorkerId);
+    }
+    if (message.latestHeartbeat !== undefined) {
+      Timestamp.encode(toTimestamp(message.latestHeartbeat), writer.uint32(18).fork()).ldelim();
+    }
+    for (const v of message.hosts) {
+      LHHostInfo.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TaskWorkerMetadata {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTaskWorkerMetadata();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.taskWorkerId = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.latestHeartbeat = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.hosts.push(LHHostInfo.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<TaskWorkerMetadata>): TaskWorkerMetadata {
+    return TaskWorkerMetadata.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<TaskWorkerMetadata>): TaskWorkerMetadata {
+    const message = createBaseTaskWorkerMetadata();
+    message.taskWorkerId = object.taskWorkerId ?? "";
+    message.latestHeartbeat = object.latestHeartbeat ?? undefined;
+    message.hosts = object.hosts?.map((e) => LHHostInfo.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseTaskWorkerGroup(): TaskWorkerGroup {
+  return { id: undefined, createdAt: undefined, taskWorkers: {} };
+}
+
+export const TaskWorkerGroup = {
+  encode(message: TaskWorkerGroup, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      TaskWorkerGroupId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.createdAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
+    }
+    Object.entries(message.taskWorkers).forEach(([key, value]) => {
+      TaskWorkerGroup_TaskWorkersEntry.encode({ key: key as any, value }, writer.uint32(26).fork()).ldelim();
+    });
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TaskWorkerGroup {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTaskWorkerGroup();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = TaskWorkerGroupId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          const entry3 = TaskWorkerGroup_TaskWorkersEntry.decode(reader, reader.uint32());
+          if (entry3.value !== undefined) {
+            message.taskWorkers[entry3.key] = entry3.value;
+          }
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<TaskWorkerGroup>): TaskWorkerGroup {
+    return TaskWorkerGroup.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<TaskWorkerGroup>): TaskWorkerGroup {
+    const message = createBaseTaskWorkerGroup();
+    message.id = (object.id !== undefined && object.id !== null) ? TaskWorkerGroupId.fromPartial(object.id) : undefined;
+    message.createdAt = object.createdAt ?? undefined;
+    message.taskWorkers = Object.entries(object.taskWorkers ?? {}).reduce<{ [key: string]: TaskWorkerMetadata }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = TaskWorkerMetadata.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    return message;
+  },
+};
+
+function createBaseTaskWorkerGroup_TaskWorkersEntry(): TaskWorkerGroup_TaskWorkersEntry {
+  return { key: "", value: undefined };
+}
+
+export const TaskWorkerGroup_TaskWorkersEntry = {
+  encode(message: TaskWorkerGroup_TaskWorkersEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      TaskWorkerMetadata.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TaskWorkerGroup_TaskWorkersEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTaskWorkerGroup_TaskWorkersEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = TaskWorkerMetadata.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<TaskWorkerGroup_TaskWorkersEntry>): TaskWorkerGroup_TaskWorkersEntry {
+    return TaskWorkerGroup_TaskWorkersEntry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<TaskWorkerGroup_TaskWorkersEntry>): TaskWorkerGroup_TaskWorkersEntry {
+    const message = createBaseTaskWorkerGroup_TaskWorkersEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? TaskWorkerMetadata.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
+
 function createBaseListTaskRunsRequest(): ListTaskRunsRequest {
   return { wfRunId: undefined };
 }
@@ -6314,6 +6549,15 @@ export const LittleHorseDefinition = {
       requestType: TaskDefId,
       requestStream: false,
       responseType: TaskDef,
+      responseStream: false,
+      options: {},
+    },
+    /** Gets the registered task worker group associated with a specific TaskDef. */
+    getTaskWorkerGroup: {
+      name: "GetTaskWorkerGroup",
+      requestType: TaskDefId,
+      requestStream: false,
+      responseType: TaskWorkerGroup,
       responseStream: false,
       options: {},
     },
@@ -6864,6 +7108,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** EXPERIMENTAL: Gets a Tenant from the LH Server. */
+    getTenant: {
+      name: "GetTenant",
+      requestType: TenantId,
+      requestStream: false,
+      responseType: Tenant,
+      responseStream: false,
+      options: {},
+    },
     /** EXPERIMENTAL: Creates an Principal. */
     putPrincipal: {
       name: "PutPrincipal",
@@ -6899,6 +7152,8 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   putTaskDef(request: PutTaskDefRequest, context: CallContext & CallContextExt): Promise<DeepPartial<TaskDef>>;
   /** Gets a TaskDef. */
   getTaskDef(request: TaskDefId, context: CallContext & CallContextExt): Promise<DeepPartial<TaskDef>>;
+  /** Gets the registered task worker group associated with a specific TaskDef. */
+  getTaskWorkerGroup(request: TaskDefId, context: CallContext & CallContextExt): Promise<DeepPartial<TaskWorkerGroup>>;
   /** Creates an ExternalEventDef. */
   putExternalEventDef(
     request: PutExternalEventDefRequest,
@@ -7165,6 +7420,8 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   ): Promise<DeepPartial<ListWfMetricsResponse>>;
   /** EXPERIMENTAL: Creates another Tenant in the LH Server. */
   putTenant(request: PutTenantRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Tenant>>;
+  /** EXPERIMENTAL: Gets a Tenant from the LH Server. */
+  getTenant(request: TenantId, context: CallContext & CallContextExt): Promise<DeepPartial<Tenant>>;
   /** EXPERIMENTAL: Creates an Principal. */
   putPrincipal(request: PutPrincipalRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Returns the Principal of the caller. */
@@ -7178,6 +7435,8 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   putTaskDef(request: DeepPartial<PutTaskDefRequest>, options?: CallOptions & CallOptionsExt): Promise<TaskDef>;
   /** Gets a TaskDef. */
   getTaskDef(request: DeepPartial<TaskDefId>, options?: CallOptions & CallOptionsExt): Promise<TaskDef>;
+  /** Gets the registered task worker group associated with a specific TaskDef. */
+  getTaskWorkerGroup(request: DeepPartial<TaskDefId>, options?: CallOptions & CallOptionsExt): Promise<TaskWorkerGroup>;
   /** Creates an ExternalEventDef. */
   putExternalEventDef(
     request: DeepPartial<PutExternalEventDefRequest>,
@@ -7453,6 +7712,8 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   ): Promise<ListWfMetricsResponse>;
   /** EXPERIMENTAL: Creates another Tenant in the LH Server. */
   putTenant(request: DeepPartial<PutTenantRequest>, options?: CallOptions & CallOptionsExt): Promise<Tenant>;
+  /** EXPERIMENTAL: Gets a Tenant from the LH Server. */
+  getTenant(request: DeepPartial<TenantId>, options?: CallOptions & CallOptionsExt): Promise<Tenant>;
   /** EXPERIMENTAL: Creates an Principal. */
   putPrincipal(request: DeepPartial<PutPrincipalRequest>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Returns the Principal of the caller. */

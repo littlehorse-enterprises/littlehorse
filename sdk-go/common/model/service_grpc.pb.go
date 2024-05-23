@@ -22,6 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	LittleHorse_PutTaskDef_FullMethodName              = "/littlehorse.LittleHorse/PutTaskDef"
 	LittleHorse_GetTaskDef_FullMethodName              = "/littlehorse.LittleHorse/GetTaskDef"
+	LittleHorse_GetTaskWorkerGroup_FullMethodName      = "/littlehorse.LittleHorse/GetTaskWorkerGroup"
 	LittleHorse_PutExternalEventDef_FullMethodName     = "/littlehorse.LittleHorse/PutExternalEventDef"
 	LittleHorse_GetExternalEventDef_FullMethodName     = "/littlehorse.LittleHorse/GetExternalEventDef"
 	LittleHorse_PutWorkflowEventDef_FullMethodName     = "/littlehorse.LittleHorse/PutWorkflowEventDef"
@@ -75,6 +76,7 @@ const (
 	LittleHorse_ListTaskDefMetrics_FullMethodName      = "/littlehorse.LittleHorse/ListTaskDefMetrics"
 	LittleHorse_ListWfSpecMetrics_FullMethodName       = "/littlehorse.LittleHorse/ListWfSpecMetrics"
 	LittleHorse_PutTenant_FullMethodName               = "/littlehorse.LittleHorse/PutTenant"
+	LittleHorse_GetTenant_FullMethodName               = "/littlehorse.LittleHorse/GetTenant"
 	LittleHorse_PutPrincipal_FullMethodName            = "/littlehorse.LittleHorse/PutPrincipal"
 	LittleHorse_Whoami_FullMethodName                  = "/littlehorse.LittleHorse/Whoami"
 	LittleHorse_GetServerVersion_FullMethodName        = "/littlehorse.LittleHorse/GetServerVersion"
@@ -88,6 +90,8 @@ type LittleHorseClient interface {
 	PutTaskDef(ctx context.Context, in *PutTaskDefRequest, opts ...grpc.CallOption) (*TaskDef, error)
 	// Gets a TaskDef.
 	GetTaskDef(ctx context.Context, in *TaskDefId, opts ...grpc.CallOption) (*TaskDef, error)
+	// Gets the registered task worker group associated with a specific TaskDef.
+	GetTaskWorkerGroup(ctx context.Context, in *TaskDefId, opts ...grpc.CallOption) (*TaskWorkerGroup, error)
 	// Creates an ExternalEventDef.
 	PutExternalEventDef(ctx context.Context, in *PutExternalEventDefRequest, opts ...grpc.CallOption) (*ExternalEventDef, error)
 	// Gets an ExternalEventDef.
@@ -233,6 +237,8 @@ type LittleHorseClient interface {
 	ListWfSpecMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*ListWfMetricsResponse, error)
 	// EXPERIMENTAL: Creates another Tenant in the LH Server.
 	PutTenant(ctx context.Context, in *PutTenantRequest, opts ...grpc.CallOption) (*Tenant, error)
+	// EXPERIMENTAL: Gets a Tenant from the LH Server.
+	GetTenant(ctx context.Context, in *TenantId, opts ...grpc.CallOption) (*Tenant, error)
 	// EXPERIMENTAL: Creates an Principal.
 	PutPrincipal(ctx context.Context, in *PutPrincipalRequest, opts ...grpc.CallOption) (*Principal, error)
 	// Returns the Principal of the caller.
@@ -261,6 +267,15 @@ func (c *littleHorseClient) PutTaskDef(ctx context.Context, in *PutTaskDefReques
 func (c *littleHorseClient) GetTaskDef(ctx context.Context, in *TaskDefId, opts ...grpc.CallOption) (*TaskDef, error) {
 	out := new(TaskDef)
 	err := c.cc.Invoke(ctx, LittleHorse_GetTaskDef_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetTaskWorkerGroup(ctx context.Context, in *TaskDefId, opts ...grpc.CallOption) (*TaskWorkerGroup, error) {
+	out := new(TaskWorkerGroup)
+	err := c.cc.Invoke(ctx, LittleHorse_GetTaskWorkerGroup_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -766,6 +781,15 @@ func (c *littleHorseClient) PutTenant(ctx context.Context, in *PutTenantRequest,
 	return out, nil
 }
 
+func (c *littleHorseClient) GetTenant(ctx context.Context, in *TenantId, opts ...grpc.CallOption) (*Tenant, error) {
+	out := new(Tenant)
+	err := c.cc.Invoke(ctx, LittleHorse_GetTenant_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) PutPrincipal(ctx context.Context, in *PutPrincipalRequest, opts ...grpc.CallOption) (*Principal, error) {
 	out := new(Principal)
 	err := c.cc.Invoke(ctx, LittleHorse_PutPrincipal_FullMethodName, in, out, opts...)
@@ -801,6 +825,8 @@ type LittleHorseServer interface {
 	PutTaskDef(context.Context, *PutTaskDefRequest) (*TaskDef, error)
 	// Gets a TaskDef.
 	GetTaskDef(context.Context, *TaskDefId) (*TaskDef, error)
+	// Gets the registered task worker group associated with a specific TaskDef.
+	GetTaskWorkerGroup(context.Context, *TaskDefId) (*TaskWorkerGroup, error)
 	// Creates an ExternalEventDef.
 	PutExternalEventDef(context.Context, *PutExternalEventDefRequest) (*ExternalEventDef, error)
 	// Gets an ExternalEventDef.
@@ -946,6 +972,8 @@ type LittleHorseServer interface {
 	ListWfSpecMetrics(context.Context, *ListWfMetricsRequest) (*ListWfMetricsResponse, error)
 	// EXPERIMENTAL: Creates another Tenant in the LH Server.
 	PutTenant(context.Context, *PutTenantRequest) (*Tenant, error)
+	// EXPERIMENTAL: Gets a Tenant from the LH Server.
+	GetTenant(context.Context, *TenantId) (*Tenant, error)
 	// EXPERIMENTAL: Creates an Principal.
 	PutPrincipal(context.Context, *PutPrincipalRequest) (*Principal, error)
 	// Returns the Principal of the caller.
@@ -964,6 +992,9 @@ func (UnimplementedLittleHorseServer) PutTaskDef(context.Context, *PutTaskDefReq
 }
 func (UnimplementedLittleHorseServer) GetTaskDef(context.Context, *TaskDefId) (*TaskDef, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTaskDef not implemented")
+}
+func (UnimplementedLittleHorseServer) GetTaskWorkerGroup(context.Context, *TaskDefId) (*TaskWorkerGroup, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTaskWorkerGroup not implemented")
 }
 func (UnimplementedLittleHorseServer) PutExternalEventDef(context.Context, *PutExternalEventDefRequest) (*ExternalEventDef, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutExternalEventDef not implemented")
@@ -1124,6 +1155,9 @@ func (UnimplementedLittleHorseServer) ListWfSpecMetrics(context.Context, *ListWf
 func (UnimplementedLittleHorseServer) PutTenant(context.Context, *PutTenantRequest) (*Tenant, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutTenant not implemented")
 }
+func (UnimplementedLittleHorseServer) GetTenant(context.Context, *TenantId) (*Tenant, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTenant not implemented")
+}
 func (UnimplementedLittleHorseServer) PutPrincipal(context.Context, *PutPrincipalRequest) (*Principal, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutPrincipal not implemented")
 }
@@ -1178,6 +1212,24 @@ func _LittleHorse_GetTaskDef_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).GetTaskDef(ctx, req.(*TaskDefId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetTaskWorkerGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskDefId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetTaskWorkerGroup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetTaskWorkerGroup_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetTaskWorkerGroup(ctx, req.(*TaskDefId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2144,6 +2196,24 @@ func _LittleHorse_PutTenant_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_GetTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TenantId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetTenant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetTenant_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetTenant(ctx, req.(*TenantId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_PutPrincipal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PutPrincipalRequest)
 	if err := dec(in); err != nil {
@@ -2212,6 +2282,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTaskDef",
 			Handler:    _LittleHorse_GetTaskDef_Handler,
+		},
+		{
+			MethodName: "GetTaskWorkerGroup",
+			Handler:    _LittleHorse_GetTaskWorkerGroup_Handler,
 		},
 		{
 			MethodName: "PutExternalEventDef",
@@ -2420,6 +2494,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PutTenant",
 			Handler:    _LittleHorse_PutTenant_Handler,
+		},
+		{
+			MethodName: "GetTenant",
+			Handler:    _LittleHorse_GetTenant_Handler,
 		},
 		{
 			MethodName: "PutPrincipal",

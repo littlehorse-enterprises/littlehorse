@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, useCallback } from "react"
+import { useState, useRef, useMemo, useCallback } from 'react'
 
 const SCROLL_STEP = 450
 

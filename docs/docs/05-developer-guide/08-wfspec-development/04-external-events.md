@@ -70,3 +70,7 @@ def thread_function(thread: WorkflowThread) -> None:
 
   </TabItem>
 </Tabs>
+
+:::note
+If you use an `ExternalEventDef` for any `EXTERNAL_EVENT` node as shown in this tutorial, you cannot re-use that `ExternalEventDef` as a trigger for [Interrupts](./05-interrupts.md).
+:::

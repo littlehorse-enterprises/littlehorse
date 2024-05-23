@@ -13,6 +13,7 @@ import { Layouter } from './Layouter'
 import nodeTypes from './NodeTypes'
 import { extractNodes } from './NodeTypes/extractNodes'
 import { ThreadPanel } from './ThreadPanel'
+import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
 
 type Props = {
   wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }
@@ -20,11 +21,39 @@ type Props = {
   spec: WfSpec
 }
 
+const isValidThreadRunNumberForCurrentWfRun = (threadRunNumber: number, wfRun: WfRun) => {
+  return !isNaN(threadRunNumber) && threadRunNumber >= 0 && wfRun && threadRunNumber <= wfRun.greatestThreadrunNumber
+}
+
+const determineDefaultThreadRun = (
+  currentThread: string,
+  wfRun: (WfRun & { threadRuns: ThreadRunWithNodeRuns[] }) | undefined,
+  threadRunNumberFromRedirection: number,
+  spec: WfSpec
+) => {
+  let threadToShowByDefault = { name: currentThread, number: wfRun?.greatestThreadrunNumber || 0 }
+
+  if (wfRun && isValidThreadRunNumberForCurrentWfRun(threadRunNumberFromRedirection, wfRun)) {
+    const threadRunName = wfRun
+      ? wfRun.threadRuns[threadRunNumberFromRedirection].threadSpecName
+      : spec.entrypointThreadName
+    threadToShowByDefault = { name: threadRunName, number: threadRunNumberFromRedirection }
+  }
+  return threadToShowByDefault
+}
+
 export const Diagram: FC<Props> = ({ spec, wfRun }) => {
   const currentThread = wfRun
     ? wfRun.threadRuns[wfRun.greatestThreadrunNumber].threadSpecName
     : spec.entrypointThreadName
-  const [thread, setThread] = useState<ThreadType>({ name: currentThread, number: wfRun?.greatestThreadrunNumber || 0 })
+
+  const searchParams: ReadonlyURLSearchParams = useSearchParams()
+  const threadRunNumberFromRedirection: number = Number(searchParams.get('threadRunNumber'))
+  const nodeRunNameToBeHighlighted: string = searchParams.get('nodeRunName')!
+
+  let threadToShowByDefault = determineDefaultThreadRun(currentThread, wfRun, threadRunNumberFromRedirection, spec)
+
+  const [thread, setThread] = useState<ThreadType>(threadToShowByDefault)
 
   const threadSpec = useMemo(() => {
     if (thread === undefined) return spec.threadSpecs[spec.entrypointThreadName]
@@ -69,7 +98,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
         >
           <Controls />
         </ReactFlow>
-        <Layouter nodeRuns={threadNodeRuns} />
+        <Layouter nodeRuns={threadNodeRuns} nodeRunNameToBeHighlighted={nodeRunNameToBeHighlighted} />
       </div>
     </ThreadProvider>
   )

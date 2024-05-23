@@ -10,7 +10,7 @@ import { Sleep } from './Sleep'
 import { StartMultipleThreads } from './StartMultipleThreads'
 import { StartThread } from './StartThread'
 import { Task } from './Task'
-import { UserTask } from './UserTask'
+import { UserTask } from './UserTask/UserTask'
 import { WaitForThreads } from './WaitForThreads'
 import { NodeType } from './extractNodes'
 
@@ -29,5 +29,7 @@ const nodeTypes: Record<NodeType, ComponentType<NodeProps>> = {
   UNKNOWN_NODE_TYPE: WaitForThreads,
 }
 
-export type NodeProps<T = Node> = NodeFlow<T & { nodeRun?: NodeRun; fade?: boolean }>
+export type NodeProps<T = Node> = NodeFlow<
+  T & { nodeRun?: NodeRun; fade?: boolean; nodeNeedsToBeHighlighted?: boolean }
+>
 export default nodeTypes

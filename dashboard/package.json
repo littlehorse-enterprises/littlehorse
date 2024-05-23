@@ -12,7 +12,7 @@
     "preinstall": "cd ../sdk-js && npm i && npm run build"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.18",
+    "@headlessui/react": "^2.0.3",
     "@heroicons/react": "^2.1.1",
     "@tanstack/react-query": "^5.28.6",
     "dagre": "^0.8.5",
@@ -21,7 +21,8 @@
     "next-auth": "^4.24.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "reactflow": "^11.11.1"
+    "reactflow": "^11.11.1",
+    "use-debounce": "^10.0.0"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
