@@ -103,12 +103,6 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     }
 
     RequestExecutionContext getFreshExecutionContext() {
-        return new RequestExecutionContext(
-                principalId,
-                tenantId,
-                coreStoreProvider.getNativeGlobalStore(),
-                coreStoreProvider.nativeCoreStore(),
-                metadataCache,
-                config);
+        return new RequestExecutionContext(principalId, tenantId, coreStoreProvider, metadataCache, config);
     }
 }

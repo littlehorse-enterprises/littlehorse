@@ -83,13 +83,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
     }
 
     private RequestExecutionContext contextFor(PrincipalIdModel clientId, TenantIdModel tenantId) {
-        return new RequestExecutionContext(
-                clientId,
-                tenantId,
-                coreStoreProvider.getNativeGlobalStore(),
-                coreStoreProvider.nativeCoreStore(),
-                metadataCache,
-                lhConfig);
+        return new RequestExecutionContext(clientId, tenantId, coreStoreProvider, metadataCache, lhConfig);
     }
 
     private static class AclVerifier {

@@ -20,17 +20,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TreeMap;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.streams.processor.TaskId;
 
 @Slf4j
 public class ReadOnlyGetableManager {
 
     protected final Map<String, GetableToStore<?, ?>> uncommittedChanges = new TreeMap<>();
     private final ReadOnlyTenantScopedStore store;
+    private final TaskId specificTask;
 
     public ReadOnlyGetableManager(ReadOnlyTenantScopedStore store) {
         this.store = store;
+        this.specificTask = null;
+    }
+
+    public ReadOnlyGetableManager(ReadOnlyTenantScopedStore store, TaskId specificTask) {
+        this.store = store;
+        this.specificTask = specificTask;
     }
 
     /**
@@ -150,5 +159,9 @@ public class ReadOnlyGetableManager {
     public List<WorkflowEventModel> getWorkflowEvents(WfRunIdModel wfRunId, WorkflowEventDefIdModel eventDefId) {
         String startKey = LHUtil.getCompositeId(wfRunId.toString(), eventDefId.toString());
         return iterateOverPrefix(startKey, WorkflowEventModel.class);
+    }
+
+    public Optional<TaskId> getSpecificTask() {
+        return Optional.ofNullable(specificTask);
     }
 }
