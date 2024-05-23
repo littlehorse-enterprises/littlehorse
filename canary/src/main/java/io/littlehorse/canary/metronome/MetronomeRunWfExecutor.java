@@ -64,7 +64,7 @@ public class MetronomeRunWfExecutor {
         executor.awaitTermination(1, TimeUnit.SECONDS);
     }
 
-    private void executeRun(boolean isSampleIteration) {
+    private void executeRun(final boolean isSampleIteration) {
         final Instant start = Instant.now();
         final String wfId = UUID.randomUUID().toString().replace("-", "");
 
@@ -88,7 +88,7 @@ public class MetronomeRunWfExecutor {
 
     private void scheduledRun() {
         log.trace("Executing run wf metronome");
-        HashSet<Integer> sample = createSampleRuns();
+        final HashSet<Integer> sample = createSampleRuns();
         for (int i = 0; i < runs; i++) {
             final boolean isSampleIteration = sample.contains(i);
             requestsExecutor.submit(() -> this.executeRun(isSampleIteration));
@@ -102,7 +102,7 @@ public class MetronomeRunWfExecutor {
         final List<Integer> range =
                 new ArrayList<>(IntStream.range(0, runs).boxed().toList());
         Collections.shuffle(range);
-        List<Integer> sample = range.subList(0, sampleSize);
+        final List<Integer> sample = range.subList(0, sampleSize);
         return new HashSet<>(sample);
     }
 }

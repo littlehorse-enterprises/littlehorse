@@ -45,8 +45,8 @@ public class LHClient implements MeterBinder {
         workflow.registerWfSpec(blockingStub);
     }
 
-    public WfRun runCanaryWf(final String id, final Instant start, boolean sampleIteration) {
-        WfRun newWfRun = blockingStub.runWf(RunWfRequest.newBuilder()
+    public WfRun runCanaryWf(final String id, final Instant start, final boolean sampleIteration) {
+        final WfRun newWfRun = blockingStub.runWf(RunWfRequest.newBuilder()
                 .setWfSpecName(workflowName)
                 .setId(id)
                 .setRevision(workflowRevision)
