@@ -1,11 +1,15 @@
 'use client'
 import { Navigation } from '@/app/(authenticated)/components/Navigation'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Field, Input, Label } from '@headlessui/react'
 import { TaskStatus } from 'littlehorse-client/dist/proto/common_enums'
 import { TaskDef as TaskDefProto } from 'littlehorse-client/dist/proto/task_def'
 import { FC, useState } from 'react'
 import { Details } from './Details'
 import { InputVars } from './InputVars'
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { localDateTimeToUTCIsoString } from '@/app/utils';
+import { PaginatedTaskRunList, searchTaskRun } from '../actions/searchTaskRun';
 
 type Props = {
   spec: TaskDefProto
@@ -14,6 +18,24 @@ export const TaskDef: FC<Props> = ({ spec }) => {
   const [selectedStatus, setSelectedStatus] = useState(TaskStatus.TASK_SUCCESS)
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
+  const { tenantId } = useWhoAmI()
+
+  const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
+    queryKey: ['taskRun', selectedStatus, tenantId, 10, createdAfter, createdBefore],
+    initialPageParam: undefined,
+    getNextPageParam: (lastPage: PaginatedTaskRunList) => lastPage.bookmarkAsString,
+    queryFn: async ({ pageParam }) => {
+      return await searchTaskRun({
+        tenantId,
+        bookmarkAsString: pageParam,
+        limit: 10,
+        status: selectedStatus,
+        taskDefName: spec.id?.name,
+        earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
+        latestStart: createdBefore ? localDateTimeToUTCIsoString(createdBefore) : undefined,
+      })
+    },
+  })
   return (
     <>
       <Navigation href="/?type=TaskDef" title="Go back to TaskDefs" />
