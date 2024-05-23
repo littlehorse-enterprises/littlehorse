@@ -23,6 +23,10 @@ public class CoreStoreProvider {
         return getStore(ServerTopology.CORE_STORE, null);
     }
 
+    public ReadOnlyKeyValueStore<String, Bytes> nativeCoreStore(int specificPartition) {
+        return getStore(ServerTopology.CORE_STORE, specificPartition);
+    }
+
     private ReadOnlyKeyValueStore<String, Bytes> getStore(final String storeName, Integer specificPartition) {
         StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
                 StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore());
