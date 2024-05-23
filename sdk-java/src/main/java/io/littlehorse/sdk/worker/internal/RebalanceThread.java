@@ -106,21 +106,24 @@ final class RebalanceThread extends Thread {
                 }
                 LittleHorseGrpc.LittleHorseStub stub =
                         config.getAsyncStub(runningConnection.getHost(), runningConnection.getPort());
+
+                List<PollThread> originalPollThreads = runningConnections.get(runningConnection);
+                ArrayList<PollThread> newPollThreads = new ArrayList<>();
+
                 // This loop replaces each PollThread that stops running with a fresh PollThread
-                for (int i = 0; i < runningConnections.get(runningConnection).size(); i++) {
-                    PollThread existingPollThread =
-                            runningConnections.get(runningConnection).get(i);
-                    ArrayList<PollThread> pollThreads = new ArrayList<>();
-                    if (existingPollThread.isRunning()) {
-                        pollThreads.add(existingPollThread);
+                for (int i = 0; i < originalPollThreads.size(); i++) {
+                    PollThread currentPollThread = originalPollThreads.get(i);
+                    if (currentPollThread.isRunning()) {
+                        newPollThreads.add(currentPollThread);
                     } else {
                         String threadName = String.format("lh-poll-%s", i);
                         PollThread connection = createConnection(stub, threadName);
                         connection.start();
-                        pollThreads.add(connection);
+                        newPollThreads.add(connection);
                     }
-                    runningConnections.put(runningConnection, pollThreads);
                 }
+
+                runningConnections.put(runningConnection, newPollThreads);
             }
             for (LHHostInfo lhHostInfo : availableHosts) {
                 if (!runningConnections.containsKey(lhHostInfo)) {
