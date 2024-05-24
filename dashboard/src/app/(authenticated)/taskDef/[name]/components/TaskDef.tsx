@@ -17,7 +17,7 @@ type Props = {
   spec: TaskDefProto
 }
 export const TaskDef: FC<Props> = ({ spec }) => {
-  const [selectedStatus, setSelectedStatus] = useState(TaskStatus.TASK_SUCCESS)
+  const [selectedStatus, setSelectedStatus] = useState<TaskStatus | 'ALL'>('ALL')
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
   const { tenantId } = useWhoAmI()
@@ -31,7 +31,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
         tenantId,
         bookmarkAsString: pageParam,
         limit: 10,
-        status: selectedStatus,
+        status: selectedStatus == 'ALL' ? undefined : selectedStatus,
         taskDefName: spec.id?.name || '',
         earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
         latestStart: createdBefore ? localDateTimeToUTCIsoString(createdBefore) : undefined,
@@ -52,6 +52,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
             setSelectedStatus(e.target.value as TaskStatus)
           }}
         >
+          <option>ALL</option>
           {Object.keys(TaskStatus)
             .filter(status => status != TaskStatus.UNRECOGNIZED)
             .map(status => (
