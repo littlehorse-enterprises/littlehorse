@@ -5,6 +5,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import lombok.Getter;
@@ -32,8 +33,9 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
             KeyValueStore<String, Bytes> globalMetadataNativeStore,
             KeyValueStore<String, Bytes> coreNativeStore,
             MetadataCache metadataCache,
-            LHServerConfig lhConfig) {
-        super(clientId, tenantId, globalMetadataNativeStore, coreNativeStore, metadataCache, lhConfig);
+            LHServerConfig lhConfig,
+            CoreStoreProvider coreStoreProvider) {
+        super(clientId, tenantId, coreStoreProvider, metadataCache, lhConfig);
         this.clientId = clientId.toString();
         this.tenantId = tenantId.toString();
         this.globalMetadataNativeStore = globalMetadataNativeStore;
@@ -54,6 +56,9 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
         coreNativeStore.init(mockProcessorContext.getStateStoreContext(), coreNativeStore);
         MetadataCache metadataCache = new MetadataCache();
         LHServerConfig lhConfig = Mockito.mock();
+        CoreStoreProvider mockStoreProvider = Mockito.mock();
+        Mockito.when(mockStoreProvider.nativeCoreStore()).thenReturn(coreNativeStore);
+        Mockito.when(mockStoreProvider.getNativeGlobalStore()).thenReturn(globalMetadataNativeStore);
         return new TestRequestExecutionContext(
                 new PrincipalIdModel(clientId),
                 new TenantIdModel(tenantId),
@@ -61,7 +66,8 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
                 globalMetadataNativeStore,
                 coreNativeStore,
                 metadataCache,
-                lhConfig);
+                lhConfig,
+                mockStoreProvider);
     }
 
     public void resetNativeStore() {
