@@ -1,15 +1,17 @@
 'use client'
 import { Navigation } from '@/app/(authenticated)/components/Navigation'
+import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Field, Input, Label } from '@headlessui/react'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { TaskStatus } from 'littlehorse-client/dist/proto/common_enums'
 import { TaskDef as TaskDefProto } from 'littlehorse-client/dist/proto/task_def'
-import { FC, useState } from 'react'
+import Link from 'next/link'
+import { FC, Fragment, useState } from 'react'
+import { PaginatedTaskRunList, searchTaskRun } from '../actions/searchTaskRun'
 import { Details } from './Details'
 import { InputVars } from './InputVars'
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { localDateTimeToUTCIsoString } from '@/app/utils';
-import { PaginatedTaskRunList, searchTaskRun } from '../actions/searchTaskRun';
 
 type Props = {
   spec: TaskDefProto
@@ -30,7 +32,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
         bookmarkAsString: pageParam,
         limit: 10,
         status: selectedStatus,
-        taskDefName: spec.id?.name,
+        taskDefName: spec.id?.name || '',
         earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
         latestStart: createdBefore ? localDateTimeToUTCIsoString(createdBefore) : undefined,
       })
@@ -76,7 +78,6 @@ export const TaskDef: FC<Props> = ({ spec }) => {
           />
         </Field>
       </div>
-      {/*
 
       {isPending ? (
         <div className="flex min-h-[360px] items-center justify-center text-center">
@@ -108,29 +109,22 @@ export const TaskDef: FC<Props> = ({ spec }) => {
               {data?.pages.map((page, i) => (
                 <Fragment key={i}>
                   {page.resultsWithDetails.length > 0 ? (
-                    page.resultsWithDetails.map(({ userTaskRun, nodeRun }) => {
+                    page.resultsWithDetails.map(({ taskRun, nodeRun }) => {
                       return (
-                        <tr key={userTaskRun.id?.userTaskGuid} className="border-b border-neutral-200">
+                        <tr key={taskRun.id?.taskGuid} className="border-b border-neutral-200">
                           <td className="px-6 py-4">
                             <Link
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
-                              href={`/wfRun/${concatWfRunIds(userTaskRun.id?.wfRunId!)}?threadRunNumber=${userTaskRun.nodeRunId?.threadRunNumber}&nodeRunName=${nodeRun.nodeName}`}
+                              href={`/wfRun/${concatWfRunIds(taskRun.id?.wfRunId!)}?threadRunNumber=${taskRun.id?.wfRunId?.id}&nodeRunName=${nodeRun.nodeName}`}
                             >
-                              {concatWfRunIds(userTaskRun.id?.wfRunId!)}
+                              {concatWfRunIds(taskRun.id?.wfRunId!)}
                             </Link>
                           </td>
-                          <td className="px-6 py-4">{userTaskRun.id?.userTaskGuid}</td>
+                          <td className="px-6 py-4">{taskRun.id?.taskGuid}</td>
+
                           <td className="px-6 py-4">
-                            {userTaskRun.userId ? userTaskRun.userId : NOT_APPLICABLE_LABEL}
-                          </td>
-                          <td className="px-6 py-4">
-                            {userTaskRun.userGroup ? userTaskRun.userGroup : NOT_APPLICABLE_LABEL}
-                          </td>
-                          <td className="px-6 py-4">
-                            {userTaskRun.scheduledTime
-                              ? utcToLocalDateTime(userTaskRun.scheduledTime)
-                              : NOT_APPLICABLE_LABEL}
+                            {taskRun.scheduledAt ? utcToLocalDateTime(taskRun.scheduledAt) : 'N/A'}
                           </td>
                         </tr>
                       )
@@ -147,7 +141,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
         </div>
       )}
 
-      <div className="mt-6">
+      {/* <div className="mt-6">
         <SearchFooter
           currentLimit={limit}
           setLimit={setLimit}
