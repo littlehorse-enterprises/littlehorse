@@ -1,17 +1,15 @@
 package io.littlehorse.canary.config;
 
-import static java.util.Map.entry;
-
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.apache.kafka.streams.StreamsConfig;
 
-public class KafkaStreamsConfig implements Config {
+public class KafkaConfig implements Config {
     private final Map<String, Object> configs;
 
-    public KafkaStreamsConfig(final Map<String, Object> configs) {
+    public KafkaConfig(final Map<String, Object> configs) {
         this.configs = configs.entrySet().stream()
-                .filter(entry -> StreamsConfig.configDef().names().contains(entry.getKey()))
+                .filter(entry -> entry.getKey().startsWith("kafka."))
+                .map(entry -> Map.entry(entry.getKey().substring(6), entry.getValue()))
                 .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
