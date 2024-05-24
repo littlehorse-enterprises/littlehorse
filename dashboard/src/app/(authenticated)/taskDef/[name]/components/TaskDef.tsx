@@ -52,9 +52,11 @@ export const TaskDef: FC<Props> = ({ spec }) => {
             setSelectedStatus(e.target.value as TaskStatus)
           }}
         >
-          {Object.keys(TaskStatus).map(status => (
-            <option key={status}>{status}</option>
-          ))}
+          {Object.keys(TaskStatus)
+            .filter(status => status != TaskStatus.UNRECOGNIZED)
+            .map(status => (
+              <option key={status}>{status}</option>
+            ))}
         </select>
       </div>
       <div className="mb-5 flex max-w-fit items-start justify-between">
