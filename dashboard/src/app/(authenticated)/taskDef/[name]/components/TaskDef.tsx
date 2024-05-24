@@ -92,13 +92,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                   WfRun Id
                 </td>
                 <th scope="col" className="px-6 py-4">
-                  User Task GUID
-                </th>
-                <th scope="col" className="px-6 py-4">
-                  User Id
-                </th>
-                <th scope="col" className="px-6 py-4">
-                  User Group
+                  Task GUID
                 </th>
                 <th scope="col" className="px-6 py-4">
                   Creation Date
