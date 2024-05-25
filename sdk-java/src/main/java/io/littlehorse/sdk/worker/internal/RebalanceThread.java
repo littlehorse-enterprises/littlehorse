@@ -104,6 +104,33 @@ final class RebalanceThread extends Thread {
                         removed.close();
                     }
                 }
+                LittleHorseGrpc.LittleHorseStub stub =
+                        config.getAsyncStub(runningConnection.getHost(), runningConnection.getPort());
+                List<PollThread> originalPollThreads = runningConnections.get(runningConnection);
+                // Check if any PollThreads have failed
+                boolean hasAPollThreadFailed = false;
+                for (PollThread p : originalPollThreads) {
+                    if (!p.isRunning()) {
+                        hasAPollThreadFailed = true;
+                        break;
+                    }
+                }
+                if (hasAPollThreadFailed) {
+                    ArrayList<PollThread> newPollThreads = new ArrayList<>();
+                    // This loop replaces each PollThread that stops running with a fresh PollThread
+                    for (int i = 0; i < originalPollThreads.size(); i++) {
+                        PollThread currentPollThread = originalPollThreads.get(i);
+                        if (currentPollThread.isRunning()) {
+                            newPollThreads.add(currentPollThread);
+                        } else {
+                            String threadName = String.format("lh-poll-%s", i);
+                            PollThread connection = createConnection(stub, threadName);
+                            connection.start();
+                            newPollThreads.add(connection);
+                        }
+                    }
+                    runningConnections.put(runningConnection, newPollThreads);
+                }
             }
             for (LHHostInfo lhHostInfo : availableHosts) {
                 if (!runningConnections.containsKey(lhHostInfo)) {

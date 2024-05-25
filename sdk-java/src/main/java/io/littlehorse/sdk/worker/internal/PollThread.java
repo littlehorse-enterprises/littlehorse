@@ -112,6 +112,10 @@ public class PollThread extends Thread implements Closeable, StreamObserver<Poll
         this.stillRunning = false;
     }
 
+    public boolean isRunning() {
+        return this.stillRunning;
+    }
+
     private void doTask(
             ScheduledTask scheduledTask,
             LittleHorseGrpc.LittleHorseStub specificStub,
