@@ -49,7 +49,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
 
   const searchParams: ReadonlyURLSearchParams = useSearchParams()
   const threadRunNumberFromRedirection: number = Number(searchParams.get('threadRunNumber'))
-  const nodeRunNameToBeHighlighted: string = searchParams.get('nodeRunName')!
+  const nodeNameToBeHighlighted: string = searchParams.get('nodeName')!
 
   let threadToShowByDefault = determineDefaultThreadRun(currentThread, wfRun, threadRunNumberFromRedirection, spec)
 
@@ -98,7 +98,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
         >
           <Controls />
         </ReactFlow>
-        <Layouter nodeRuns={threadNodeRuns} nodeRunNameToBeHighlighted={nodeRunNameToBeHighlighted} />
+        <Layouter nodeRuns={threadNodeRuns} nodeNameToBeHighlighted={nodeNameToBeHighlighted} />
       </div>
     </ThreadProvider>
   )

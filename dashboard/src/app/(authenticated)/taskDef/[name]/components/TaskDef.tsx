@@ -1,17 +1,17 @@
 'use client'
-import { Navigation } from '@/app/(authenticated)/components/Navigation'
-import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { Field, Input, Label } from '@headlessui/react'
-import { ArrowPathIcon } from '@heroicons/react/24/outline'
-import { useInfiniteQuery } from '@tanstack/react-query'
-import { TaskStatus } from 'littlehorse-client/dist/proto/common_enums'
-import { TaskDef as TaskDefProto } from 'littlehorse-client/dist/proto/task_def'
-import Link from 'next/link'
-import { FC, Fragment, useState } from 'react'
-import { PaginatedTaskRunList, searchTaskRun } from '../actions/searchTaskRun'
-import { Details } from './Details'
-import { InputVars } from './InputVars'
+import { Navigation } from '@/app/(authenticated)/components/Navigation';
+import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils';
+import { useWhoAmI } from '@/contexts/WhoAmIContext';
+import { Field, Input, Label } from '@headlessui/react';
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { TaskStatus } from 'littlehorse-client/dist/proto/common_enums';
+import { TaskDef as TaskDefProto } from 'littlehorse-client/dist/proto/task_def';
+import Link from 'next/link';
+import { FC, Fragment, useState } from 'react';
+import { PaginatedTaskRunList, searchTaskRun } from '../actions/searchTaskRun';
+import { Details } from './Details';
+import { InputVars } from './InputVars';
 
 type Props = {
   spec: TaskDefProto
@@ -109,11 +109,12 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                     page.resultsWithDetails.map(({ taskRun, nodeRun }) => {
                       return (
                         <tr key={taskRun.id?.taskGuid} className="border-b border-neutral-200">
-                          <td className="px-6 py-4">
+                          <td className="px-6 py-4">😡
                             <Link
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
-                              href={`/wfRun/${concatWfRunIds(taskRun.id?.wfRunId!)}?threadRunNumber=${taskRun.id?.wfRunId?.id}&nodeRunName=${nodeRun.nodeName}`}
+                              //? Will have to create a new request to get the nodeName to select the node in the diagram 😡 (will do this in the rewrite)
+                              href={`/wfRun/${concatWfRunIds(taskRun.id?.wfRunId!)}?threadRunNumber=${taskRun.source?.taskNode?.nodeRunId?.threadRunNumber || taskRun.source?.userTaskTrigger?.nodeRunId?.threadRunNumber}&nodeName=${taskRun.source?.taskNode?.nodeRunId?.position}-${taskRun.source?.taskNode?.nodeRunId}-TASK`}
                             >
                               {concatWfRunIds(taskRun.id?.wfRunId!)}
                             </Link>

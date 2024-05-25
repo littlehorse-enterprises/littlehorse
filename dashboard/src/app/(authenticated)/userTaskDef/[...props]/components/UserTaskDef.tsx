@@ -170,7 +170,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
                             <Link
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
-                              href={`/wfRun/${concatWfRunIds(userTaskRun.id?.wfRunId!)}?threadRunNumber=${userTaskRun.nodeRunId?.threadRunNumber}&nodeRunName=${nodeRun.nodeName}`}
+                              href={`/wfRun/${concatWfRunIds(userTaskRun.id?.wfRunId!)}?threadRunNumber=${userTaskRun.nodeRunId?.threadRunNumber}&nodeName=${nodeRun.nodeName}`}
                             >
                               {concatWfRunIds(userTaskRun.id?.wfRunId!)}
                             </Link>

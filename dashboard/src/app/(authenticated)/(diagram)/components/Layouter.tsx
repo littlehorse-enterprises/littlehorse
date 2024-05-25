@@ -3,9 +3,9 @@ import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
 import { FC, useCallback, useEffect } from 'react'
 import { Edge, Node, useReactFlow, useStore } from 'reactflow'
 
-export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: string }> = ({
+export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeNameToBeHighlighted?: string }> = ({
   nodeRuns,
-  nodeRunNameToBeHighlighted,
+  nodeNameToBeHighlighted,
 }) => {
   const nodes = useStore(store => store.getNodes())
   const edges = useStore(store => store.edges)
@@ -33,7 +33,7 @@ export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: s
           return nodeRun.nodeName === node.id
         })
         const fade = nodeRuns !== undefined && nodeRun === undefined
-        const nodeNeedsToBeHighlighted = node.id === nodeRunNameToBeHighlighted
+        const nodeNeedsToBeHighlighted = node.id === nodeNameToBeHighlighted
 
         return {
           ...node,
