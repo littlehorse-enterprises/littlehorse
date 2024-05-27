@@ -18,7 +18,7 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
     <>
       <NodeDetails>
         <div className="">
-          <div className="flex items-center items-center gap-1 text-nowrap">
+          <div className="flex items-center gap-1 text-nowrap">
             <h3 className="font-bold">UserTask</h3>
             <Link
               className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
