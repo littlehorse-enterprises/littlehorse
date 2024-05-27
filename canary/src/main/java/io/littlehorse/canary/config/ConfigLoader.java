@@ -1,5 +1,7 @@
 package io.littlehorse.canary.config;
 
+import static io.littlehorse.canary.config.CanaryConfig.LH_CANARY_PREFIX;
+
 import com.google.common.collect.Streams;
 import io.smallrye.config.PropertiesConfigSource;
 import io.smallrye.config.SmallRyeConfig;
@@ -29,6 +31,7 @@ public class ConfigLoader {
         final SmallRyeConfig config = new SmallRyeConfigBuilder()
                 .addDefaultInterceptors()
                 .addDefaultSources()
+                .withDefaultValues(defaultValues())
                 .build();
         return new CanaryConfig(toMap(config));
     }
@@ -49,6 +52,7 @@ public class ConfigLoader {
                 .addDefaultInterceptors()
                 .addDefaultSources()
                 .withSources(new PropertiesConfigSource(path.toUri().toURL(), 200))
+                .withDefaultValues(defaultValues())
                 .build();
         return new CanaryConfig(toMap(config));
     }
@@ -69,6 +73,7 @@ public class ConfigLoader {
                 .addDefaultSources()
                 .withSources(new PropertiesConfigSource(
                         ConfigSourceUtil.propertiesToMap(properties), "PropertiesConfigSource[source=Properties]", 200))
+                .withDefaultValues(defaultValues())
                 .build();
         return new CanaryConfig(toMap(config));
     }
@@ -78,5 +83,9 @@ public class ConfigLoader {
                 .collect(Collectors.toUnmodifiableMap(
                         Function.identity(),
                         key -> config.getOptionalValue(key, String.class).orElse("")));
+    }
+
+    private static Map<String, String> defaultValues() {
+        return Map.of(LH_CANARY_PREFIX + CanaryConfig.METRONOME_RUN_SAMPLE_RATE, "100");
     }
 }
