@@ -1,23 +1,24 @@
 'use client'
 
-import { UserTaskDef as UserTaskDefProto, UserTaskRunStatus } from 'littlehorse-client/dist/proto/user_tasks'
-import React, { FC, Fragment, useState } from 'react'
-import { Details } from './Details'
 import { Navigation } from '@/app/(authenticated)/components/Navigation'
-import { Fields } from './Fields'
-import { Button, Field, Input, Label } from '@headlessui/react'
-import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
-import Link from 'next/link'
-import { useInfiniteQuery } from '@tanstack/react-query'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
+import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
 import {
   PaginatedUserTaskRunList,
   searchUserTaskRun,
 } from '@/app/(authenticated)/userTaskDef/[...props]/actions/searchUserTaskRun'
-import { ArrowPathIcon } from '@heroicons/react/16/solid'
+import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
+import { Button, Field, Input, Label } from '@headlessui/react'
+import { ArrowPathIcon } from '@heroicons/react/16/solid'
+import { useInfiniteQuery } from '@tanstack/react-query'
+import { UserTaskDef as UserTaskDefProto, UserTaskRunStatus } from 'littlehorse-client/dist/proto/user_tasks'
+import Link from 'next/link'
+import React, { FC, Fragment, useState } from 'react'
 import { useDebounce } from 'use-debounce'
-import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
+import { Details } from './Details'
+import { Fields } from './Fields'
 
 type Props = {
   spec: UserTaskDefProto
@@ -139,34 +140,24 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
         </div>
       ) : (
         <div className="flex min-h-[360px] flex-col gap-4">
-          <table className="text-surface min-w-full text-center text-sm font-light">
-            <thead className="border-b border-neutral-200 bg-neutral-300 font-medium">
-              <tr>
-                <td scope="col" className="px-6 py-4">
-                  WfRun Id
-                </td>
-                <th scope="col" className="px-6 py-4">
-                  User Task GUID
-                </th>
-                <th scope="col" className="px-6 py-4">
-                  User Id
-                </th>
-                <th scope="col" className="px-6 py-4">
-                  User Group
-                </th>
-                <th scope="col" className="px-6 py-4">
-                  Creation Date
-                </th>
-              </tr>
-            </thead>
-            <tbody>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead scope="col">WfRun Id</TableHead>
+                <TableHead scope="col">User Task GUID</TableHead>
+                <TableHead scope="col">User Id</TableHead>
+                <TableHead scope="col">User Group</TableHead>
+                <TableHead scope="col">Creation Date</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {data?.pages.map((page, i) => (
                 <Fragment key={i}>
                   {page.resultsWithDetails.length > 0 ? (
                     page.resultsWithDetails.map(({ userTaskRun, nodeRun }) => {
                       return (
-                        <tr key={userTaskRun.id?.userTaskGuid} className="border-b border-neutral-200">
-                          <td className="px-6 py-4">
+                        <TableRow key={userTaskRun.id?.userTaskGuid}>
+                          <TableCell>
                             <Link
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
@@ -174,31 +165,29 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
                             >
                               {concatWfRunIds(userTaskRun.id?.wfRunId!)}
                             </Link>
-                          </td>
-                          <td className="px-6 py-4">{userTaskRun.id?.userTaskGuid}</td>
-                          <td className="px-6 py-4">
-                            {userTaskRun.userId ? userTaskRun.userId : NOT_APPLICABLE_LABEL}
-                          </td>
-                          <td className="px-6 py-4">
-                            {userTaskRun.userGroup ? userTaskRun.userGroup : NOT_APPLICABLE_LABEL}
-                          </td>
-                          <td className="px-6 py-4">
+                          </TableCell>
+                          <TableCell>{userTaskRun.id?.userTaskGuid}</TableCell>
+                          <TableCell>{userTaskRun.userId ? userTaskRun.userId : NOT_APPLICABLE_LABEL}</TableCell>
+                          <TableCell>{userTaskRun.userGroup ? userTaskRun.userGroup : NOT_APPLICABLE_LABEL}</TableCell>
+                          <TableCell>
                             {userTaskRun.scheduledTime
                               ? utcToLocalDateTime(userTaskRun.scheduledTime)
                               : NOT_APPLICABLE_LABEL}
-                          </td>
-                        </tr>
+                          </TableCell>
+                        </TableRow>
                       )
                     })
                   ) : (
-                    <tr>
-                      <td colSpan={5}>No data</td>
-                    </tr>
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center">
+                        No data
+                      </TableCell>
+                    </TableRow>
                   )}
                 </Fragment>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
 
