@@ -136,12 +136,12 @@ public class WfService {
         return out;
     }
 
-    public List<String> adminPrincipalIds() {
+    public List<PrincipalIdModel> adminPrincipalIds() {
         List<Tag> result =
                 metadataManager.tagScan(GetableClassEnum.PRINCIPAL, List.of(new Attribute("isAdmin", "true")));
-        List<String> adminPrincipalIds = new ArrayList<>();
+        List<PrincipalIdModel> adminPrincipalIds = new ArrayList<>();
         for (Tag storedTag : result) {
-            adminPrincipalIds.add(storedTag.getDescribedObjectId());
+            adminPrincipalIds.add(new PrincipalIdModel((storedTag.getDescribedObjectId())));
         }
         return adminPrincipalIds;
     }

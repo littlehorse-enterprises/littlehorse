@@ -683,7 +683,7 @@ public final class Service {
       "(\005\022#\n\026pre_release_identifier\030\004 \001(\tH\000\210\001\001B" +
       "\031\n\027_pre_release_identifier*P\n\021AllowedUpd" +
       "ateType\022\017\n\013ALL_UPDATES\020\000\022\032\n\026MINOR_REVISI" +
-      "ON_UPDATES\020\001\022\016\n\nNO_UPDATES\020\0022\371%\n\013LittleH" +
+      "ON_UPDATES\020\001\022\016\n\nNO_UPDATES\020\0022\313&\n\013LittleH" +
       "orse\022D\n\nPutTaskDef\022\036.littlehorse.PutTask" +
       "DefRequest\032\024.littlehorse.TaskDef\"\000\022<\n\nGe" +
       "tTaskDef\022\026.littlehorse.TaskDefId\032\024.littl" +
@@ -786,28 +786,30 @@ public final class Service {
       "ttlehorse.DeleteUserTaskDefRequest\032\026.goo" +
       "gle.protobuf.Empty\"\000\022^\n\026DeleteExternalEv" +
       "entDef\022*.littlehorse.DeleteExternalEvent" +
-      "DefRequest\032\026.google.protobuf.Empty\"\000\022a\n\027" +
-      "GetTaskDefMetricsWindow\022\'.littlehorse.Ta" +
-      "skDefMetricsQueryRequest\032\033.littlehorse.T" +
-      "askDefMetrics\"\000\022^\n\026GetWfSpecMetricsWindo" +
-      "w\022&.littlehorse.WfSpecMetricsQueryReques" +
-      "t\032\032.littlehorse.WfSpecMetrics\"\000\022a\n\022ListT" +
-      "askDefMetrics\022#.littlehorse.ListTaskMetr" +
-      "icsRequest\032$.littlehorse.ListTaskMetrics" +
-      "Response\"\000\022\\\n\021ListWfSpecMetrics\022!.little" +
-      "horse.ListWfMetricsRequest\032\".littlehorse" +
-      ".ListWfMetricsResponse\"\000\022A\n\tPutTenant\022\035." +
-      "littlehorse.PutTenantRequest\032\023.littlehor",
-      "se.Tenant\"\000\0229\n\tGetTenant\022\025.littlehorse.T" +
-      "enantId\032\023.littlehorse.Tenant\"\000\022J\n\014PutPri" +
-      "ncipal\022 .littlehorse.PutPrincipalRequest" +
-      "\032\026.littlehorse.Principal\"\000\022:\n\006Whoami\022\026.g" +
-      "oogle.protobuf.Empty\032\026.littlehorse.Princ" +
-      "ipal\"\000\022P\n\020GetServerVersion\022\026.google.prot" +
-      "obuf.Empty\032\".littlehorse.ServerVersionRe" +
-      "sponse\"\000BG\n\037io.littlehorse.sdk.common.pr" +
-      "otoP\001Z\007.;model\252\002\030LittleHorse.Common.Prot" +
-      "ob\006proto3"
+      "DefRequest\032\026.google.protobuf.Empty\"\000\022P\n\017" +
+      "DeletePrincipal\022#.littlehorse.DeletePrin" +
+      "cipalRequest\032\026.google.protobuf.Empty\"\000\022a" +
+      "\n\027GetTaskDefMetricsWindow\022\'.littlehorse." +
+      "TaskDefMetricsQueryRequest\032\033.littlehorse" +
+      ".TaskDefMetrics\"\000\022^\n\026GetWfSpecMetricsWin" +
+      "dow\022&.littlehorse.WfSpecMetricsQueryRequ" +
+      "est\032\032.littlehorse.WfSpecMetrics\"\000\022a\n\022Lis" +
+      "tTaskDefMetrics\022#.littlehorse.ListTaskMe" +
+      "tricsRequest\032$.littlehorse.ListTaskMetri" +
+      "csResponse\"\000\022\\\n\021ListWfSpecMetrics\022!.litt" +
+      "lehorse.ListWfMetricsRequest\032\".littlehor",
+      "se.ListWfMetricsResponse\"\000\022A\n\tPutTenant\022" +
+      "\035.littlehorse.PutTenantRequest\032\023.littleh" +
+      "orse.Tenant\"\000\0229\n\tGetTenant\022\025.littlehorse" +
+      ".TenantId\032\023.littlehorse.Tenant\"\000\022J\n\014PutP" +
+      "rincipal\022 .littlehorse.PutPrincipalReque" +
+      "st\032\026.littlehorse.Principal\"\000\022:\n\006Whoami\022\026" +
+      ".google.protobuf.Empty\032\026.littlehorse.Pri" +
+      "ncipal\"\000\022P\n\020GetServerVersion\022\026.google.pr" +
+      "otobuf.Empty\032\".littlehorse.ServerVersion" +
+      "Response\"\000BG\n\037io.littlehorse.sdk.common." +
+      "protoP\001Z\007.;model\252\002\030LittleHorse.Common.Pr" +
+      "otob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

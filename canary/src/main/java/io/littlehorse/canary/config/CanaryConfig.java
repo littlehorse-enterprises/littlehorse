@@ -59,24 +59,12 @@ public class CanaryConfig implements Config {
         return configs.toString();
     }
 
-    public KafkaAdminConfig toKafkaAdminConfig() {
-        return new KafkaAdminConfig(configs);
-    }
-
     public LittleHorseConfig toLittleHorseConfig() {
         return new LittleHorseConfig(configs);
     }
 
-    public KafkaProducerConfig toKafkaProducerConfig() {
-        return new KafkaProducerConfig(configs);
-    }
-
-    public KafkaConsumerConfig toKafkaConsumerConfig() {
-        return new KafkaConsumerConfig(configs);
-    }
-
-    public KafkaStreamsConfig toKafkaStreamsConfig() {
-        return new KafkaStreamsConfig(configs);
+    public KafkaConfig toKafkaConfig() {
+        return new KafkaConfig(configs);
     }
 
     private String getConfig(final String configName) {

@@ -15,8 +15,8 @@ class KafkaProducerConfigTest {
 
     @Test
     void toMapMustCreateCopy() {
-        Map<String, Object> input = Map.of(EXPECTED_KEY, EXPECTED_VALUE);
-        KafkaProducerConfig kafkaAdminConfig = new KafkaProducerConfig(input);
+        Map<String, Object> input = Map.of("kafka." + EXPECTED_KEY, EXPECTED_VALUE);
+        KafkaConfig kafkaAdminConfig = new KafkaConfig(input);
 
         Map<String, Object> output = kafkaAdminConfig.toMap();
         log.info("Configs: {}", output);
@@ -26,8 +26,9 @@ class KafkaProducerConfigTest {
 
     @Test
     void filterMap() {
-        Map<String, Object> input = Map.of(EXPECTED_KEY, EXPECTED_VALUE, "not.a.valid.key", "To be filtered");
-        KafkaProducerConfig kafkaAdminConfig = new KafkaProducerConfig(input);
+        Map<String, Object> input =
+                Map.of("kafka." + EXPECTED_KEY, EXPECTED_VALUE, "not.a.valid.key", "To be filtered");
+        KafkaConfig kafkaAdminConfig = new KafkaConfig(input);
 
         Map<String, Object> output = kafkaAdminConfig.toMap();
 
@@ -35,13 +36,13 @@ class KafkaProducerConfigTest {
     }
 
     @Test
-    void mustKeepProducerConfigs() {
+    void mustKeepKafkaConfigs() {
         Map<String, Object> input = Map.of(
-                "key.serializer", "org.apache.kafka.common.serialization.StringSerializer",
-                "value.serializer", "org.apache.kafka.common.serialization.BytesSerializer",
-                "acks", "all",
-                "client.id", "id",
-                "enable.idempotence", "true",
+                "kafka.key.serializer", "org.apache.kafka.common.serialization.StringSerializer",
+                "kafka.value.serializer", "org.apache.kafka.common.serialization.BytesSerializer",
+                "kafka.acks", "all",
+                "kafka.client.id", "id",
+                "kafka.enable.idempotence", "true",
                 "not.a.key", "not.a.value");
         Map<String, Object> expected = Map.of(
                 "key.serializer", "org.apache.kafka.common.serialization.StringSerializer",
@@ -49,7 +50,7 @@ class KafkaProducerConfigTest {
                 "acks", "all",
                 "client.id", "id",
                 "enable.idempotence", "true");
-        KafkaProducerConfig kafkaAdminConfig = new KafkaProducerConfig(input);
+        KafkaConfig kafkaAdminConfig = new KafkaConfig(input);
 
         Map<String, Object> output = kafkaAdminConfig.toMap();
         log.info("Configs: {}", output);

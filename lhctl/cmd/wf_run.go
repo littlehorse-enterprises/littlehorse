@@ -139,7 +139,7 @@ var deleteWfRunCmd = &cobra.Command{
 	Short: "Delete a Workflow Run.",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the ID of WfRun to stop.")
+			log.Fatal("You must provide one argument: the ID of WfRun to delete.")
 
 		}
 

@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.ClusterLevelCommand;
+import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
@@ -49,6 +50,13 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
     @Override
     public Tenant process(MetadataCommandExecution context) {
         MetadataManager metadataManager = context.metadataManager();
+
+        PrincipalModel caller =
+                context.service().getPrincipal(context.authorization().principalId());
+        if (!caller.canCreateTenants()) {
+            throw new LHApiException(Status.PERMISSION_DENIED, "Unauthorized to create tenants");
+        }
+
         if (metadataManager.get(new TenantIdModel(id)) == null) {
             if (Pattern.matches(".*[\\\\/].*", this.id)) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, "/ and \\ are not valid characters for Tenant");
