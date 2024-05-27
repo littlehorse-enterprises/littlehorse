@@ -41,10 +41,8 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
         }
         TokenStatus tokenModel = tokenCache.getIfPresent(token);
         if (tokenModel.isMachineClient()) {
-            System.out.println("Machine client: " + tokenModel.getClientId());
             headers.put(CLIENT_ID, tokenModel.getClientId());
         } else {
-            System.out.println("Human client: " + tokenModel.getUserName());
             headers.put(CLIENT_ID, tokenModel.getUserName());
         }
         return next.startCall(call, headers);
