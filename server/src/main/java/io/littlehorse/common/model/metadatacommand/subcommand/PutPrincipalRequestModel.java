@@ -171,7 +171,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
         //
         // Therefore, we need to check that there is still some other Admin Principal
         // somewhere before we remove it.
-        if (!context.adminPrincipalIds().stream()
+        if (!context.service().adminPrincipalIds().stream()
                 .anyMatch(adminPrincipalId -> !Objects.equals(adminPrincipalId.getId(), this.id))) {
             throw new LHApiException(
                     Status.FAILED_PRECONDITION,

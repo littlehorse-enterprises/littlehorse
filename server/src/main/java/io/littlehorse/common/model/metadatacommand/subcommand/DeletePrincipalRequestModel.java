@@ -83,7 +83,7 @@ public class DeletePrincipalRequestModel extends MetadataSubCommand<DeletePrinci
             return;
         }
 
-        Collection<PrincipalIdModel> adminPrincipals = ctx.adminPrincipalIds();
+        Collection<PrincipalIdModel> adminPrincipals = ctx.service().adminPrincipalIds();
         if (adminPrincipals.size() == 1) {
             // Then we know that we are deleting the last admin Principal.
             throw new LHApiException(

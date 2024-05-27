@@ -13,7 +13,6 @@ import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
-import java.util.Collection;
 import java.util.List;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
@@ -81,9 +80,5 @@ public class MetadataCommandExecution implements ExecutionContext {
         // We will need to pass list of acls and isAdmin argument in order to implement
         // fine-grained authorization
         return new AuthorizationContextImpl(principalId, tenantId, List.of(), false);
-    }
-
-    public Collection<PrincipalIdModel> adminPrincipalIds() {
-        return this.service().adminPrincipalIds();
     }
 }
