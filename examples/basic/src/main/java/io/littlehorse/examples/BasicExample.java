@@ -55,8 +55,10 @@ public class BasicExample {
 
     public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
-        Properties props = getConfigProps();
-        LHConfig config = new LHConfig(props);
+        // Properties props = getConfigProps();
+        // LHConfig config = new LHConfig(props);
+
+        LHConfig config = new LHConfig("/tmp/worker-my-tenant.config");
 
         // New workflow
         Workflow workflow = getWorkflow();
