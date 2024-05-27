@@ -43,11 +43,11 @@ export const searchTaskRun = async ({
     })
   }
 
-  const userTaskRunWithDetails: runDetails[] = await Promise.all(hydrateWithTaskRunDetails())
+  const taskRunWithDetails: runDetails[] = await Promise.all(hydrateWithTaskRunDetails())
 
   return {
     ...taskRunIdList,
     bookmarkAsString: taskRunIdList.bookmark?.toString('base64'),
-    resultsWithDetails: userTaskRunWithDetails,
+    resultsWithDetails: taskRunWithDetails,
   }
 }

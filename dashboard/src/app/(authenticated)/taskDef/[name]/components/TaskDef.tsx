@@ -106,14 +106,13 @@ export const TaskDef: FC<Props> = ({ spec }) => {
               {data?.pages.map((page, i) => (
                 <Fragment key={i}>
                   {page.resultsWithDetails.length > 0 ? (
-                    page.resultsWithDetails.map(({ taskRun, nodeRun }) => {
+                    page.resultsWithDetails.map(({ taskRun }) => {
                       return (
                         <tr key={taskRun.id?.taskGuid} className="border-b border-neutral-200">
                           <td className="px-6 py-4">
                             <Link
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
-                              //? Will have to create a new request to get the nodeName to select the node in the diagram 😡 (will do this in the rewrite)
                               href={`/wfRun/${concatWfRunIds(taskRun.id?.wfRunId!)}?threadRunNumber=${taskRun.source?.taskNode?.nodeRunId?.threadRunNumber || taskRun.source?.userTaskTrigger?.nodeRunId?.threadRunNumber}&nodeName=${taskRun.source?.taskNode?.nodeRunId?.position}-${taskRun.source?.taskNode?.nodeRunId}-TASK`}
                             >
                               {concatWfRunIds(taskRun.id?.wfRunId!)}
@@ -138,15 +137,6 @@ export const TaskDef: FC<Props> = ({ spec }) => {
           </table>
         </div>
       )}
-
-      {/* <div className="mt-6">
-        <SearchFooter
-          currentLimit={limit}
-          setLimit={setLimit}
-          hasNextPage={hasNextPage}
-          fetchNextPage={fetchNextPage}
-        />
-      </div> */}
     </>
   )
 }
