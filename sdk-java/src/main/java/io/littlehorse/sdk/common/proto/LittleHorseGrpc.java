@@ -1596,6 +1596,37 @@ public final class LittleHorseGrpc {
     return getDeleteExternalEventDefMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeletePrincipalRequest,
+      com.google.protobuf.Empty> getDeletePrincipalMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DeletePrincipal",
+      requestType = io.littlehorse.sdk.common.proto.DeletePrincipalRequest.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeletePrincipalRequest,
+      com.google.protobuf.Empty> getDeletePrincipalMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeletePrincipalRequest, com.google.protobuf.Empty> getDeletePrincipalMethod;
+    if ((getDeletePrincipalMethod = LittleHorseGrpc.getDeletePrincipalMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getDeletePrincipalMethod = LittleHorseGrpc.getDeletePrincipalMethod) == null) {
+          LittleHorseGrpc.getDeletePrincipalMethod = getDeletePrincipalMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeletePrincipalRequest, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeletePrincipal"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.DeletePrincipalRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("DeletePrincipal"))
+              .build();
+        }
+      }
+    }
+    return getDeletePrincipalMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest,
       io.littlehorse.sdk.common.proto.TaskDefMetrics> getGetTaskDefMetricsWindowMethod;
 
@@ -2469,6 +2500,18 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
+     * is the last remaining `Principal` with admin permissions. Admin permissions are defined
+     * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
+     * </pre>
+     */
+    default void deletePrincipal(io.littlehorse.sdk.common.proto.DeletePrincipalRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeletePrincipalMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
      * </pre>
      */
@@ -3182,6 +3225,19 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
+     * is the last remaining `Principal` with admin permissions. Admin permissions are defined
+     * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
+     * </pre>
+     */
+    public void deletePrincipal(io.littlehorse.sdk.common.proto.DeletePrincipalRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getDeletePrincipalMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
      * </pre>
      */
@@ -3827,6 +3883,18 @@ public final class LittleHorseGrpc {
     public com.google.protobuf.Empty deleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDeleteExternalEventDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
+     * is the last remaining `Principal` with admin permissions. Admin permissions are defined
+     * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
+     * </pre>
+     */
+    public com.google.protobuf.Empty deletePrincipal(io.littlehorse.sdk.common.proto.DeletePrincipalRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeletePrincipalMethod(), getCallOptions(), request);
     }
 
     /**
@@ -4521,6 +4589,19 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
+     * is the last remaining `Principal` with admin permissions. Admin permissions are defined
+     * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deletePrincipal(
+        io.littlehorse.sdk.common.proto.DeletePrincipalRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getDeletePrincipalMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
      * </pre>
      */
@@ -4669,16 +4750,17 @@ public final class LittleHorseGrpc {
   private static final int METHODID_DELETE_WF_SPEC = 47;
   private static final int METHODID_DELETE_USER_TASK_DEF = 48;
   private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 49;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 50;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 51;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 52;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 53;
-  private static final int METHODID_PUT_TENANT = 54;
-  private static final int METHODID_GET_TENANT = 55;
-  private static final int METHODID_PUT_PRINCIPAL = 56;
-  private static final int METHODID_WHOAMI = 57;
-  private static final int METHODID_GET_SERVER_VERSION = 58;
-  private static final int METHODID_POLL_TASK = 59;
+  private static final int METHODID_DELETE_PRINCIPAL = 50;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 51;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 52;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 53;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 54;
+  private static final int METHODID_PUT_TENANT = 55;
+  private static final int METHODID_GET_TENANT = 56;
+  private static final int METHODID_PUT_PRINCIPAL = 57;
+  private static final int METHODID_WHOAMI = 58;
+  private static final int METHODID_GET_SERVER_VERSION = 59;
+  private static final int METHODID_POLL_TASK = 60;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -4895,6 +4977,10 @@ public final class LittleHorseGrpc {
           break;
         case METHODID_DELETE_EXTERNAL_EVENT_DEF:
           serviceImpl.deleteExternalEventDef((io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
+        case METHODID_DELETE_PRINCIPAL:
+          serviceImpl.deletePrincipal((io.littlehorse.sdk.common.proto.DeletePrincipalRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         case METHODID_GET_TASK_DEF_METRICS_WINDOW:
@@ -5312,6 +5398,13 @@ public final class LittleHorseGrpc {
               com.google.protobuf.Empty>(
                 service, METHODID_DELETE_EXTERNAL_EVENT_DEF)))
         .addMethod(
+          getDeletePrincipalMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.DeletePrincipalRequest,
+              com.google.protobuf.Empty>(
+                service, METHODID_DELETE_PRINCIPAL)))
+        .addMethod(
           getGetTaskDefMetricsWindowMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -5473,6 +5566,7 @@ public final class LittleHorseGrpc {
               .addMethod(getDeleteWfSpecMethod())
               .addMethod(getDeleteUserTaskDefMethod())
               .addMethod(getDeleteExternalEventDefMethod())
+              .addMethod(getDeletePrincipalMethod())
               .addMethod(getGetTaskDefMetricsWindowMethod())
               .addMethod(getGetWfSpecMetricsWindowMethod())
               .addMethod(getListTaskDefMetricsMethod())

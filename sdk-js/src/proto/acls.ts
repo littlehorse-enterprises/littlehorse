@@ -278,8 +278,13 @@ export interface PutPrincipalRequest_PerTenantAclsEntry {
   value: ServerACLs | undefined;
 }
 
+/**
+ * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal` is the last
+ * admin `Principal`.
+ */
 export interface DeletePrincipalRequest {
-  id: string;
+  /** The ID of the `Principal` to delete. */
+  id: PrincipalId | undefined;
 }
 
 export interface PutTenantRequest {
@@ -788,13 +793,13 @@ export const PutPrincipalRequest_PerTenantAclsEntry = {
 };
 
 function createBaseDeletePrincipalRequest(): DeletePrincipalRequest {
-  return { id: "" };
+  return { id: undefined };
 }
 
 export const DeletePrincipalRequest = {
   encode(message: DeletePrincipalRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      PrincipalId.encode(message.id, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -811,7 +816,7 @@ export const DeletePrincipalRequest = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = PrincipalId.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -827,7 +832,7 @@ export const DeletePrincipalRequest = {
   },
   fromPartial(object: DeepPartial<DeletePrincipalRequest>): DeletePrincipalRequest {
     const message = createBaseDeletePrincipalRequest();
-    message.id = object.id ?? "";
+    message.id = (object.id !== undefined && object.id !== null) ? PrincipalId.fromPartial(object.id) : undefined;
     return message;
   },
 };

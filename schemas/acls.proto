@@ -152,8 +152,11 @@ message PutPrincipalRequest {
     bool overwrite = 5;
 }
 
+// Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal` is the last
+// admin `Principal`.
 message DeletePrincipalRequest {
-    string id = 1;
+  // The ID of the `Principal` to delete.
+  PrincipalId id = 1;
 }
 
 message PutTenantRequest {

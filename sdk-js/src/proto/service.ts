@@ -8,7 +8,7 @@
 import Long from "long";
 import { type CallContext, type CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
-import { Principal, PutPrincipalRequest, PutTenantRequest, Tenant } from "./acls";
+import { DeletePrincipalRequest, Principal, PutPrincipalRequest, PutTenantRequest, Tenant } from "./acls";
 import {
   LHStatus,
   lHStatusFromJSON,
@@ -7063,6 +7063,19 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /**
+     * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
+     * is the last remaining `Principal` with admin permissions. Admin permissions are defined
+     * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
+     */
+    deletePrincipal: {
+      name: "DeletePrincipal",
+      requestType: DeletePrincipalRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
     /** Returns TaskDef Metrics for a specific TaskDef and a specific time window. */
     getTaskDefMetricsWindow: {
       name: "GetTaskDefMetricsWindow",
@@ -7398,6 +7411,12 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: DeleteExternalEventDefRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<Empty>>;
+  /**
+   * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
+   * is the last remaining `Principal` with admin permissions. Admin permissions are defined
+   * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
+   */
+  deletePrincipal(request: DeletePrincipalRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Returns TaskDef Metrics for a specific TaskDef and a specific time window. */
   getTaskDefMetricsWindow(
     request: TaskDefMetricsQueryRequest,
@@ -7690,6 +7709,12 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<DeleteExternalEventDefRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<Empty>;
+  /**
+   * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
+   * is the last remaining `Principal` with admin permissions. Admin permissions are defined
+   * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
+   */
+  deletePrincipal(request: DeepPartial<DeletePrincipalRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Returns TaskDef Metrics for a specific TaskDef and a specific time window. */
   getTaskDefMetricsWindow(
     request: DeepPartial<TaskDefMetricsQueryRequest>,

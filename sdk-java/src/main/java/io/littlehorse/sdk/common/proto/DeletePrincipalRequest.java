@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal` is the last
+ * admin `Principal`.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.DeletePrincipalRequest}
  */
 public final class DeletePrincipalRequest extends
@@ -16,7 +21,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private DeletePrincipalRequest() {
-    id_ = "";
   }
 
   @java.lang.Override
@@ -40,42 +44,41 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int ID_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object id_ = "";
+  private io.littlehorse.sdk.common.proto.PrincipalId id_;
   /**
-   * <code>string id = 1;</code>
+   * <pre>
+   * The ID of the `Principal` to delete.
+   * </pre>
+   *
+   * <code>.littlehorse.PrincipalId id = 1;</code>
+   * @return Whether the id field is set.
+   */
+  @java.lang.Override
+  public boolean hasId() {
+    return id_ != null;
+  }
+  /**
+   * <pre>
+   * The ID of the `Principal` to delete.
+   * </pre>
+   *
+   * <code>.littlehorse.PrincipalId id = 1;</code>
    * @return The id.
    */
   @java.lang.Override
-  public java.lang.String getId() {
-    java.lang.Object ref = id_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      id_ = s;
-      return s;
-    }
+  public io.littlehorse.sdk.common.proto.PrincipalId getId() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.PrincipalId.getDefaultInstance() : id_;
   }
   /**
-   * <code>string id = 1;</code>
-   * @return The bytes for id.
+   * <pre>
+   * The ID of the `Principal` to delete.
+   * </pre>
+   *
+   * <code>.littlehorse.PrincipalId id = 1;</code>
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getIdBytes() {
-    java.lang.Object ref = id_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      id_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder getIdOrBuilder() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.PrincipalId.getDefaultInstance() : id_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -92,8 +95,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
+    if (id_ != null) {
+      output.writeMessage(1, getId());
     }
     getUnknownFields().writeTo(output);
   }
@@ -104,8 +107,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
+    if (id_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(1, getId());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -122,8 +126,11 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.DeletePrincipalRequest other = (io.littlehorse.sdk.common.proto.DeletePrincipalRequest) obj;
 
-    if (!getId()
-        .equals(other.getId())) return false;
+    if (hasId() != other.hasId()) return false;
+    if (hasId()) {
+      if (!getId()
+          .equals(other.getId())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -135,8 +142,10 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + ID_FIELD_NUMBER;
-    hash = (53 * hash) + getId().hashCode();
+    if (hasId()) {
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -235,6 +244,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal` is the last
+   * admin `Principal`.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.DeletePrincipalRequest}
    */
   public static final class Builder extends
@@ -268,7 +282,11 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      id_ = "";
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
+      }
       return this;
     }
 
@@ -303,7 +321,9 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.DeletePrincipalRequest result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.id_ = id_;
+        result.id_ = idBuilder_ == null
+            ? id_
+            : idBuilder_.build();
       }
     }
 
@@ -351,10 +371,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.DeletePrincipalRequest other) {
       if (other == io.littlehorse.sdk.common.proto.DeletePrincipalRequest.getDefaultInstance()) return this;
-      if (!other.getId().isEmpty()) {
-        id_ = other.id_;
-        bitField0_ |= 0x00000001;
-        onChanged();
+      if (other.hasId()) {
+        mergeId(other.getId());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -383,7 +401,9 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              id_ = input.readStringRequireUtf8();
+              input.readMessage(
+                  getIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
             } // case 10
@@ -404,76 +424,159 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.lang.Object id_ = "";
+    private io.littlehorse.sdk.common.proto.PrincipalId id_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PrincipalId, io.littlehorse.sdk.common.proto.PrincipalId.Builder, io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder> idBuilder_;
     /**
-     * <code>string id = 1;</code>
+     * <pre>
+     * The ID of the `Principal` to delete.
+     * </pre>
+     *
+     * <code>.littlehorse.PrincipalId id = 1;</code>
+     * @return Whether the id field is set.
+     */
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <pre>
+     * The ID of the `Principal` to delete.
+     * </pre>
+     *
+     * <code>.littlehorse.PrincipalId id = 1;</code>
      * @return The id.
      */
-    public java.lang.String getId() {
-      java.lang.Object ref = id_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        id_ = s;
-        return s;
+    public io.littlehorse.sdk.common.proto.PrincipalId getId() {
+      if (idBuilder_ == null) {
+        return id_ == null ? io.littlehorse.sdk.common.proto.PrincipalId.getDefaultInstance() : id_;
       } else {
-        return (java.lang.String) ref;
+        return idBuilder_.getMessage();
       }
     }
     /**
-     * <code>string id = 1;</code>
-     * @return The bytes for id.
+     * <pre>
+     * The ID of the `Principal` to delete.
+     * </pre>
+     *
+     * <code>.littlehorse.PrincipalId id = 1;</code>
      */
-    public com.google.protobuf.ByteString
-        getIdBytes() {
-      java.lang.Object ref = id_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        id_ = b;
-        return b;
+    public Builder setId(io.littlehorse.sdk.common.proto.PrincipalId value) {
+      if (idBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        id_ = value;
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        idBuilder_.setMessage(value);
       }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
     }
     /**
-     * <code>string id = 1;</code>
-     * @param value The id to set.
-     * @return This builder for chaining.
+     * <pre>
+     * The ID of the `Principal` to delete.
+     * </pre>
+     *
+     * <code>.littlehorse.PrincipalId id = 1;</code>
      */
     public Builder setId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      id_ = value;
+        io.littlehorse.sdk.common.proto.PrincipalId.Builder builderForValue) {
+      if (idBuilder_ == null) {
+        id_ = builderForValue.build();
+      } else {
+        idBuilder_.setMessage(builderForValue.build());
+      }
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>string id = 1;</code>
-     * @return This builder for chaining.
+     * <pre>
+     * The ID of the `Principal` to delete.
+     * </pre>
+     *
+     * <code>.littlehorse.PrincipalId id = 1;</code>
+     */
+    public Builder mergeId(io.littlehorse.sdk.common.proto.PrincipalId value) {
+      if (idBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0) &&
+          id_ != null &&
+          id_ != io.littlehorse.sdk.common.proto.PrincipalId.getDefaultInstance()) {
+          getIdBuilder().mergeFrom(value);
+        } else {
+          id_ = value;
+        }
+      } else {
+        idBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The ID of the `Principal` to delete.
+     * </pre>
+     *
+     * <code>.littlehorse.PrincipalId id = 1;</code>
      */
     public Builder clearId() {
-      id_ = getDefaultInstance().getId();
       bitField0_ = (bitField0_ & ~0x00000001);
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
+      }
       onChanged();
       return this;
     }
     /**
-     * <code>string id = 1;</code>
-     * @param value The bytes for id to set.
-     * @return This builder for chaining.
+     * <pre>
+     * The ID of the `Principal` to delete.
+     * </pre>
+     *
+     * <code>.littlehorse.PrincipalId id = 1;</code>
      */
-    public Builder setIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      id_ = value;
+    public io.littlehorse.sdk.common.proto.PrincipalId.Builder getIdBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
-      return this;
+      return getIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * The ID of the `Principal` to delete.
+     * </pre>
+     *
+     * <code>.littlehorse.PrincipalId id = 1;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder getIdOrBuilder() {
+      if (idBuilder_ != null) {
+        return idBuilder_.getMessageOrBuilder();
+      } else {
+        return id_ == null ?
+            io.littlehorse.sdk.common.proto.PrincipalId.getDefaultInstance() : id_;
+      }
+    }
+    /**
+     * <pre>
+     * The ID of the `Principal` to delete.
+     * </pre>
+     *
+     * <code>.littlehorse.PrincipalId id = 1;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PrincipalId, io.littlehorse.sdk.common.proto.PrincipalId.Builder, io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder> 
+        getIdFieldBuilder() {
+      if (idBuilder_ == null) {
+        idBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.PrincipalId, io.littlehorse.sdk.common.proto.PrincipalId.Builder, io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder>(
+                getId(),
+                getParentForChildren(),
+                isClean());
+        id_ = null;
+      }
+      return idBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

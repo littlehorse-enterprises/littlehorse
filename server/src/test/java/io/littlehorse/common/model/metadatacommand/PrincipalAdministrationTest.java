@@ -17,6 +17,7 @@ import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.DeletePrincipalRequest;
 import io.littlehorse.sdk.common.proto.Principal;
+import io.littlehorse.sdk.common.proto.PrincipalId;
 import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
 import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.server.KafkaStreamsServerImpl;
@@ -216,7 +217,7 @@ public class PrincipalAdministrationTest {
         assertThat(thrown)
                 .isNotNull()
                 .isInstanceOf(Exception.class)
-                .hasMessage("UNAUTHENTICATED: You are not allowed to write over the tenant [other-tenant]");
+                .hasMessage("PERMISSION_DENIED: Unauthorized to edit Principals affecting specified tenants");
     }
 
     @Test
@@ -283,7 +284,9 @@ public class PrincipalAdministrationTest {
     }
 
     private DeletePrincipalRequest deletePrincipalRequest() {
-        return DeletePrincipalRequest.newBuilder().setId(principalId.toString()).build();
+        return DeletePrincipalRequest.newBuilder()
+                .setId(PrincipalId.newBuilder().setId(principalId))
+                .build();
     }
 
     private PrincipalModel storedPrincipal() {
