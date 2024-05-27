@@ -51,7 +51,8 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
     public Tenant process(MetadataCommandExecution context) {
         MetadataManager metadataManager = context.metadataManager();
 
-        PrincipalModel caller = metadataManager.get(context.authorization().principalId());
+        PrincipalModel caller =
+                context.service().getPrincipal(context.authorization().principalId());
         if (!caller.canCreateTenants()) {
             throw new LHApiException(Status.PERMISSION_DENIED, "Unauthorized to create tenants");
         }

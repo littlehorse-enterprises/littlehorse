@@ -58,7 +58,7 @@ public class DeletePrincipalRequestModel extends MetadataSubCommand<DeletePrinci
         }
 
         PrincipalModel caller =
-                context.metadataManager().get(context.authorization().principalId());
+                context.service().getPrincipal(context.authorization().principalId());
 
         ensureThatCallerCanEditPrincipalsInRelevantTenants(context, caller);
 
@@ -75,7 +75,7 @@ public class DeletePrincipalRequestModel extends MetadataSubCommand<DeletePrinci
             return;
         }
 
-        PrincipalModel toDelete = ctx.metadataManager().get(id);
+        PrincipalModel toDelete = ctx.service().getPrincipal(id);
         if (toDelete == null || !toDelete.isAdmin()) {
             // We're not removing an admin principal, so we're good.
             //
@@ -93,7 +93,7 @@ public class DeletePrincipalRequestModel extends MetadataSubCommand<DeletePrinci
 
     private void ensureThatCallerCanEditPrincipalsInRelevantTenants(
             MetadataCommandExecution ctx, PrincipalModel caller) {
-        PrincipalModel toDelete = ctx.metadataManager().get(id);
+        PrincipalModel toDelete = ctx.service().getPrincipal(id);
         if (!caller.isAdmin()
                 && !caller.hasPermissionToEditPrincipalsIn(toDelete.getTenantsThatPrincipalHasPermissionOver())) {
             throw new LHApiException(

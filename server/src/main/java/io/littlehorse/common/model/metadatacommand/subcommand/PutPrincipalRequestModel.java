@@ -72,7 +72,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
     @Override
     public Principal process(MetadataCommandExecution context) {
         MetadataManager metadataManager = context.metadataManager();
-        PrincipalModel oldPrincipal = metadataManager.get(new PrincipalIdModel(id));
+        PrincipalModel oldPrincipal = context.service().getPrincipal(new PrincipalIdModel(id));
         PrincipalModel requester =
                 context.service().getPrincipal(context.authorization().principalId());
         PrincipalModel toSave = new PrincipalModel();
