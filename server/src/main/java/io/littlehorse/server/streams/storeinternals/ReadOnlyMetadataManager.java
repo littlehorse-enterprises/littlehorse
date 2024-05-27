@@ -93,11 +93,11 @@ public class ReadOnlyMetadataManager {
         return out;
     }
 
-    public List<Tag> tagScan(GetableClassEnum objectType, List<Attribute> attributes) {
-        String tagAttributeString = Tag.getAttributeString(objectType, attributes);
-        String startKey = "%s/" + tagAttributeString;
+    public List<Tag> clusterScopedTagScan(GetableClassEnum objectType, List<Attribute> attributes) {
+        String startKey = Tag.getAttributeString(objectType, attributes);
         String endKey = startKey + "~";
-        try (LHKeyValueIterator<Tag> rangeResult = tenantStore.range(startKey, endKey, Tag.class)) {
+
+        try (LHKeyValueIterator<Tag> rangeResult = clusterStore.range(startKey, endKey, Tag.class)) {
             final List<Tag> result = new ArrayList<>();
             rangeResult.forEachRemaining(tagLHIterKeyValue -> {
                 result.add(tagLHIterKeyValue.getValue());

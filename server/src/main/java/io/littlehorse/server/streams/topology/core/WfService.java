@@ -137,8 +137,8 @@ public class WfService {
     }
 
     public List<PrincipalIdModel> adminPrincipalIds() {
-        List<Tag> result =
-                metadataManager.tagScan(GetableClassEnum.PRINCIPAL, List.of(new Attribute("isAdmin", "true")));
+        List<Tag> result = metadataManager.clusterScopedTagScan(
+                GetableClassEnum.PRINCIPAL, List.of(new Attribute("isAdmin", "true")));
         List<PrincipalIdModel> adminPrincipalIds = new ArrayList<>();
         for (Tag storedTag : result) {
             adminPrincipalIds.add(new PrincipalIdModel((storedTag.getDescribedObjectId())));

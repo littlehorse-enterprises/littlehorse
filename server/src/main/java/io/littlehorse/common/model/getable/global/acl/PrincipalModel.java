@@ -90,11 +90,14 @@ public class PrincipalModel extends ClusterMetadataGetable<Principal> {
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        return List.of(new GetableIndex<>(
-                List.of(
-                        Pair.of("tenantId", GetableIndex.ValueType.DYNAMIC),
-                        Pair.of("isAdmin", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageType.LOCAL)));
+        return List.of(
+                new GetableIndex<>(
+                        List.of(
+                                Pair.of("tenantId", GetableIndex.ValueType.DYNAMIC),
+                                Pair.of("isAdmin", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL)),
+                new GetableIndex<>(
+                        List.of(Pair.of("isAdmin", GetableIndex.ValueType.SINGLE)), Optional.of(TagStorageType.LOCAL)));
     }
 
     @Override
