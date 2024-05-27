@@ -1,6 +1,5 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -13,8 +12,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Properties;
-
-import com.google.protobuf.Empty;
 /*
  * This is a simple example, which does two things:
  * 1. Declare an "input-name" variable of type String
@@ -55,10 +52,8 @@ public class BasicExample {
 
     public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
-        // Properties props = getConfigProps();
-        // LHConfig config = new LHConfig(props);
-
-        LHConfig config = new LHConfig("/tmp/worker-my-tenant.config");
+        Properties props = getConfigProps();
+        LHConfig config = new LHConfig(props);
 
         // New workflow
         Workflow workflow = getWorkflow();

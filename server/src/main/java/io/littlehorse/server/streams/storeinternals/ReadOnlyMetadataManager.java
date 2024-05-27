@@ -97,12 +97,13 @@ public class ReadOnlyMetadataManager {
         String tagAttributeString = Tag.getAttributeString(objectType, attributes);
         String startKey = "%s/" + tagAttributeString;
         String endKey = startKey + "~";
-        LHKeyValueIterator<Tag> rangeResult = tenantStore.range(startKey, endKey, Tag.class);
-        final List<Tag> result = new ArrayList<>();
-        rangeResult.forEachRemaining(tagLHIterKeyValue -> {
-            result.add(tagLHIterKeyValue.getValue());
-        });
-        return result;
+        try (LHKeyValueIterator<Tag> rangeResult = tenantStore.range(startKey, endKey, Tag.class)) {
+            final List<Tag> result = new ArrayList<>();
+            rangeResult.forEachRemaining(tagLHIterKeyValue -> {
+                result.add(tagLHIterKeyValue.getValue());
+            });
+            return result;
+        }
     }
 
     /**

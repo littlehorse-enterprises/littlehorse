@@ -295,46 +295,31 @@ public interface CommandOrBuilder extends
   io.littlehorse.common.proto.BulkUpdateJobOrBuilder getBulkJobOrBuilder();
 
   /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
    * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
    * @return Whether the taskAttemptRetryReady field is set.
    */
   boolean hasTaskAttemptRetryReady();
   /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
    * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
    * @return The taskAttemptRetryReady.
    */
   io.littlehorse.common.proto.TaskAttemptRetryReady getTaskAttemptRetryReady();
   /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
    * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
    */
   io.littlehorse.common.proto.TaskAttemptRetryReadyOrBuilder getTaskAttemptRetryReadyOrBuilder();
-
-  /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
-   * <code>.littlehorse.DeletePrincipalRequest delete_principal = 22;</code>
-   * @return Whether the deletePrincipal field is set.
-   */
-  boolean hasDeletePrincipal();
-  /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
-   * <code>.littlehorse.DeletePrincipalRequest delete_principal = 22;</code>
-   * @return The deletePrincipal.
-   */
-  io.littlehorse.sdk.common.proto.DeletePrincipalRequest getDeletePrincipal();
-  /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
-   * <code>.littlehorse.DeletePrincipalRequest delete_principal = 22;</code>
-   */
-  io.littlehorse.sdk.common.proto.DeletePrincipalRequestOrBuilder getDeletePrincipalOrBuilder();
 
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }
