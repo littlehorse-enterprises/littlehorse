@@ -43,7 +43,6 @@ public class Main {
         final CanaryConfig canaryConfig = args.length > 0 ? ConfigLoader.load(Paths.get(args[0])) : ConfigLoader.load();
 
         final PrometheusExporter prometheusExporter = new PrometheusExporter(canaryConfig.getCommonTags());
-        prometheusExporter.addMeasurable(lhClient);
         // create topics
         if (canaryConfig.isTopicCreationEnabled()) {
             final NewTopic topic = new NewTopic(
@@ -62,6 +61,7 @@ public class Main {
                     canaryConfig.getWorkflowName(),
                     canaryConfig.getWorkflowVersion(),
                     canaryConfig.getWorkflowRevision());
+            prometheusExporter.addMeasurable(lhClient);
             final BeatProducer producer = new BeatProducer(
                     lhConfig.getApiBootstrapHost(),
                     lhConfig.getApiBootstrapPort(),
