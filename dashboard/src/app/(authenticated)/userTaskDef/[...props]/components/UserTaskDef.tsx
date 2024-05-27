@@ -77,7 +77,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
       <Fields fields={spec.fields} />
       <hr className="mt-6" />
       <div className="mb-4 mt-6 flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Related User Task Run&apos;s:</h2>
+        <h2 className="text-2xl font-bold">Related User Task Runs:</h2>
         <div className="flex">
           {userTaskPossibleStatuses.map(status => (
             <Button
