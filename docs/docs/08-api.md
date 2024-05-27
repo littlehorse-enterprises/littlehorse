@@ -340,6 +340,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 | [DeleteExternalEventDefRequest](#deleteexternaleventdefrequest) | [.google.protobuf.Empty](#googleprotobufempty) | Deletes an ExternalEventDef. |
 
+### RPC `DeletePrincipal` {#deleteprincipal}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [DeletePrincipalRequest](#deleteprincipalrequest) | [.google.protobuf.Empty](#googleprotobufempty) | Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal` is the last remaining `Principal` with admin permissions. Admin permissions are defined as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope. |
+
 ### RPC `GetTaskDefMetricsWindow` {#gettaskdefmetricswindow}
 
 | Request Type | Response Type | Description |
@@ -422,12 +428,13 @@ This section contains the exact schemas for every object in our public API.
 
 ### Message `DeletePrincipalRequest` {#deleteprincipalrequest}
 
-
+Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal` is the last
+admin `Principal`.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `id` | | string |  |
+| `id` | | [PrincipalId](#principalid) | The ID of the `Principal` to delete. |
  <!-- end Fields -->
  <!-- end HasFields -->
 

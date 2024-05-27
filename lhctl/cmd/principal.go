@@ -1,15 +1,19 @@
 package cmd
 
 import (
+	"log"
+	"os"
 	"strings"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 )
 
 var putPrincipalCmd = &cobra.Command{
-	Use:   "principal",
+	Use:   "principal [id]",
 	Short: "Create principal.",
 	Run: func(cmd *cobra.Command, args []string) {
 		acl, _ := cmd.Flags().GetString("acl")
@@ -40,6 +44,38 @@ var putPrincipalCmd = &cobra.Command{
 			requestContext(cmd),
 			&putRequest,
 		))
+	},
+}
+
+var deployPrincipalCmd = &cobra.Command{
+	Use:   "principal <file>",
+	Short: "Deploy Principal from a file",
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) != 1 {
+			log.Fatal("Must provide one arg: the file of the principal to deploy")
+		}
+		putPrincipalReq := &model.PutPrincipalRequest{}
+
+		// First, read the file
+		dat, err := os.ReadFile(args[0])
+		if err != nil {
+			log.Fatal("Failed to read file: ", err)
+		}
+
+		useProto, err := cmd.Flags().GetBool("proto")
+		if err != nil {
+			log.Fatal("Unexpected error: ", err)
+		}
+		if useProto {
+			err = proto.Unmarshal(dat, putPrincipalReq)
+		} else {
+			err = protojson.Unmarshal(dat, putPrincipalReq)
+		}
+		if err != nil {
+			log.Fatal("Failed reading deploy file: " + err.Error())
+		}
+
+		common.PrintResp(getGlobalClient(cmd).PutPrincipal(requestContext(cmd), putPrincipalReq))
 	},
 }
 
@@ -86,9 +122,32 @@ var (
 	}
 )
 
+var deletePrincipalCmd = &cobra.Command{
+	Use:   "principal <id>",
+	Short: "Delete a Principal.",
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) != 1 {
+			log.Fatal("You must provide one argument: the ID of Principal to delete.")
+
+		}
+
+		common.PrintResp(getGlobalClient(cmd).DeletePrincipal(
+			requestContext(cmd),
+			&model.DeletePrincipalRequest{
+				Id: &model.PrincipalId{
+					Id: args[0],
+				},
+			},
+		))
+	},
+}
+
 func init() {
 	putCmd.AddCommand(putPrincipalCmd)
 	putPrincipalCmd.Flags().String("acl", "", "ACLs")
 	putPrincipalCmd.Flags().Bool("overwrite", false, "Overwrites principal information")
 	putPrincipalCmd.Flags().String("tenantId", "", "Tenant associated with the principal")
+
+	deployCmd.AddCommand(deployPrincipalCmd)
+	deleteCmd.AddCommand(deletePrincipalCmd)
 }

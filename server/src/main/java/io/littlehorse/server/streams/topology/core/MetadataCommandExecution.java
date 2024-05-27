@@ -3,17 +3,23 @@ package io.littlehorse.server.streams.topology.core;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.storeinternals.index.Attribute;
+import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -80,5 +86,18 @@ public class MetadataCommandExecution implements ExecutionContext {
         // We will need to pass list of acls and isAdmin argument in order to implement
         // fine-grained authorization
         return new AuthorizationContextImpl(principalId, tenantId, List.of(), false);
+    }
+
+    public Collection<PrincipalIdModel> adminPrincipalIds() {
+        Attribute tagAdminAttribute = new Attribute("isAdmin", Boolean.TRUE.toString());
+        Set<PrincipalIdModel> result = this.metadataManager()
+                .tagScan(PrincipalModel.getTypeEnum(PrincipalModel.class), List.of(tagAdminAttribute))
+                .stream()
+                .map(Tag::getDescribedObjectId)
+                .map(principalId -> new PrincipalIdModel(principalId))
+                .collect(Collectors.toSet());
+
+        // At this point, it is possible that the 'anonymous' Principal still exists.
+        return result;
     }
 }

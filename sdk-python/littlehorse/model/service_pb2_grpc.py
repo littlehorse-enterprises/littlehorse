@@ -281,6 +281,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.DeleteExternalEventDefRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
+        self.DeletePrincipal = channel.unary_unary(
+                '/littlehorse.LittleHorse/DeletePrincipal',
+                request_serializer=acls__pb2.DeletePrincipalRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                )
         self.GetTaskDefMetricsWindow = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetTaskDefMetricsWindow',
                 request_serializer=service__pb2.TaskDefMetricsQueryRequest.SerializeToString,
@@ -727,6 +732,15 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def DeletePrincipal(self, request, context):
+        """Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
+        is the last remaining `Principal` with admin permissions. Admin permissions are defined
+        as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GetTaskDefMetricsWindow(self, request, context):
         """Returns TaskDef Metrics for a specific TaskDef and a specific time window.
         """
@@ -1046,6 +1060,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'DeleteExternalEventDef': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteExternalEventDef,
                     request_deserializer=service__pb2.DeleteExternalEventDefRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'DeletePrincipal': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeletePrincipal,
+                    request_deserializer=acls__pb2.DeletePrincipalRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'GetTaskDefMetricsWindow': grpc.unary_unary_rpc_method_handler(
@@ -1966,6 +1985,23 @@ class LittleHorse(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/DeleteExternalEventDef',
             service__pb2.DeleteExternalEventDefRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DeletePrincipal(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/DeletePrincipal',
+            acls__pb2.DeletePrincipalRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
