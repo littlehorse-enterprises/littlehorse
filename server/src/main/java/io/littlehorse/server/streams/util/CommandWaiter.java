@@ -23,13 +23,17 @@ public class CommandWaiter {
     @Getter
     private StreamObserver<WaitForCommandResponse> observer;
 
+    @Getter
+    private final int commandPartition;
+
     private boolean alreadyCompleted;
 
-    public CommandWaiter(String commandId) {
+    public CommandWaiter(String commandId, int commandPartition) {
         this.lock = new ReentrantLock();
         this.alreadyCompleted = false;
         this.commandId = commandId;
         this.arrivalTime = new Date();
+        this.commandPartition = commandPartition;
     }
 
     public boolean setObserverAndMaybeComplete(StreamObserver<WaitForCommandResponse> observer) {
@@ -79,5 +83,15 @@ public class CommandWaiter {
         }
         this.alreadyCompleted = true;
         return true;
+    }
+
+    public void handleMigration() {
+        if (observer != null) {
+            observer.onNext(WaitForCommandResponse.newBuilder()
+                    .setPartitionMigratedResponse(WaitForCommandResponse.PartitionMigratedResponse.newBuilder()
+                            .build())
+                    .build());
+            observer.onCompleted();
+        }
     }
 }

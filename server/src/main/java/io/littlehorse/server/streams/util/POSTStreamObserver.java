@@ -43,6 +43,8 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
 
     @Override
     public void onNext(WaitForCommandResponse reply) {
-        ctx.onNext(buildRespFromBytes(reply.getResult()));
+        if (reply.hasResult()) {
+            ctx.onNext(buildRespFromBytes(reply.getResult()));
+        }
     }
 }

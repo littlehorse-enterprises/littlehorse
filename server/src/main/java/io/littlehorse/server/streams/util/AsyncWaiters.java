@@ -19,15 +19,19 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+import org.apache.kafka.streams.processor.TaskId;
+import org.apache.kafka.streams.processor.internals.Task;
 
 public class AsyncWaiters {
 
-    private ConcurrentHashMap<String, CommandWaiter> commandWaiters;
-    private HashMap<WfRunIdModel, GroupOfObserversWaitingForEvent> eventWaiters;
-    private Lock eventWaiterLock = new ReentrantLock();
+    private final ConcurrentHashMap<String, CommandWaiter> commandWaiters;
+    private final HashMap<WfRunIdModel, GroupOfObserversWaitingForEvent> eventWaiters;
+    private final Lock eventWaiterLock = new ReentrantLock();
 
     public AsyncWaiters() {
         commandWaiters = new ConcurrentHashMap<>();
@@ -53,8 +57,9 @@ public class AsyncWaiters {
                 .start();
     }
 
-    public void registerObserverWaitingForCommand(String commandId, StreamObserver<WaitForCommandResponse> observer) {
-        CommandWaiter tmp = new CommandWaiter(commandId);
+    public void registerObserverWaitingForCommand(
+            String commandId, int partition, StreamObserver<WaitForCommandResponse> observer) {
+        CommandWaiter tmp = new CommandWaiter(commandId, partition);
         CommandWaiter waiter = commandWaiters.putIfAbsent(commandId, tmp);
         if (waiter == null) waiter = tmp;
         if (waiter.setObserverAndMaybeComplete(observer)) {
@@ -63,7 +68,7 @@ public class AsyncWaiters {
     }
 
     public void markCommandFailed(String commandId, Exception exception) {
-        CommandWaiter tmp = new CommandWaiter(commandId);
+        CommandWaiter tmp = new CommandWaiter(commandId, -1);
         CommandWaiter waiter = commandWaiters.putIfAbsent(commandId, tmp);
         if (waiter == null) waiter = tmp;
         if (waiter.setExceptionAndMaybeComplete(exception)) {
@@ -72,7 +77,7 @@ public class AsyncWaiters {
     }
 
     public void registerCommandProcessed(String commandId, WaitForCommandResponse response) {
-        CommandWaiter tmp = new CommandWaiter(commandId);
+        CommandWaiter tmp = new CommandWaiter(commandId, -1);
         CommandWaiter waiter = commandWaiters.putIfAbsent(commandId, tmp);
         if (waiter == null) waiter = tmp;
         if (waiter.setResponseAndMaybeComplete(response)) {
@@ -120,6 +125,15 @@ public class AsyncWaiters {
         } finally {
             eventWaiterLock.unlock();
         }
+    }
+
+    public void handleRebalance(Set<Task> assignedTasks) {
+        Set<Integer> assignedPartitions =
+                assignedTasks.stream().map(Task::id).map(TaskId::partition).collect(Collectors.toSet());
+
+        commandWaiters.values().stream()
+                .filter(commandWaiter -> !assignedPartitions.contains(commandWaiter.getCommandPartition()))
+                .forEach(migratedCommand -> migratedCommand.handleMigration());
     }
 
     private void cleanupOldCommandWaiters() {

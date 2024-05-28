@@ -242,10 +242,11 @@ public class BackendInternalComms implements Closeable {
          * of the in-sync replicas).
          */
         if (meta.activeHost().equals(thisHost)) {
-            localWaitForCommand(command.getCommandId(), observer);
+            localWaitForCommand(command.getCommandId(), meta.partition(), observer);
         } else {
             WaitForCommandRequest req = WaitForCommandRequest.newBuilder()
                     .setCommandId(command.getCommandId())
+                    .setPartition(meta.partition())
                     .build();
             getInternalAsyncClient(meta.activeHost()).waitForCommand(req, observer);
         }
@@ -344,8 +345,8 @@ public class BackendInternalComms implements Closeable {
         asyncWaiters.markCommandFailed(commandId, caught);
     }
 
-    private void localWaitForCommand(String commandId, StreamObserver<WaitForCommandResponse> observer) {
-        asyncWaiters.registerObserverWaitingForCommand(commandId, observer);
+    private void localWaitForCommand(String commandId, int partition, StreamObserver<WaitForCommandResponse> observer) {
+        asyncWaiters.registerObserverWaitingForCommand(commandId, partition, observer);
         // Once the command has been recorded, we've got nothing to do: the
         // CommandProcessor will notify the StreamObserver once the command is
         // processed.
@@ -482,7 +483,7 @@ public class BackendInternalComms implements Closeable {
 
         @Override
         public void waitForCommand(WaitForCommandRequest req, StreamObserver<WaitForCommandResponse> ctx) {
-            localWaitForCommand(req.getCommandId(), ctx);
+            localWaitForCommand(req.getCommandId(), req.getPartition(), ctx);
         }
 
         @Override
