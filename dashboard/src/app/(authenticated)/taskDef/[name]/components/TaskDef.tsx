@@ -1,6 +1,7 @@
 'use client'
 import { Navigation } from '@/app/(authenticated)/components/Navigation'
 import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Field, Input, Label } from '@headlessui/react'
 import { ArrowPathIcon } from '@heroicons/react/24/outline'
@@ -38,6 +39,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
       })
     },
   })
+  console.log(data)
   return (
     <>
       <Navigation href="/?type=TaskDef" title="Go back to TaskDefs" />
@@ -88,28 +90,22 @@ export const TaskDef: FC<Props> = ({ spec }) => {
         </div>
       ) : (
         <div className="flex min-h-[360px] flex-col gap-4">
-          <table className="text-surface min-w-full text-center text-sm font-light">
-            <thead className="border-b border-neutral-200 bg-neutral-300 font-medium">
-              <tr>
-                <td scope="col" className="px-6 py-4">
-                  WfRun Id
-                </td>
-                <th scope="col" className="px-6 py-4">
-                  Task GUID
-                </th>
-                <th scope="col" className="px-6 py-4">
-                  Creation Date
-                </th>
-              </tr>
-            </thead>
-            <tbody>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead scope="col">WfRun Id</TableHead>
+                <TableHead scope="col">Task GUID</TableHead>
+                <TableHead scope="col">Creation Date</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {data?.pages.map((page, i) => (
                 <Fragment key={i}>
                   {page.resultsWithDetails.length > 0 ? (
                     page.resultsWithDetails.map(({ taskRun }) => {
                       return (
-                        <tr key={taskRun.id?.taskGuid} className="border-b border-neutral-200">
-                          <td className="px-6 py-4">
+                        <TableRow key={taskRun.id?.taskGuid}>
+                          <TableCell>
                             <Link
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
@@ -117,24 +113,24 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                             >
                               {concatWfRunIds(taskRun.id?.wfRunId!)}
                             </Link>
-                          </td>
-                          <td className="px-6 py-4">{taskRun.id?.taskGuid}</td>
+                          </TableCell>
+                          <TableCell>{taskRun.id?.taskGuid}</TableCell>
 
-                          <td className="px-6 py-4">
-                            {taskRun.scheduledAt ? utcToLocalDateTime(taskRun.scheduledAt) : 'N/A'}
-                          </td>
-                        </tr>
+                          <TableCell>{taskRun.scheduledAt ? utcToLocalDateTime(taskRun.scheduledAt) : 'N/A'}</TableCell>
+                        </TableRow>
                       )
                     })
                   ) : (
-                    <tr>
-                      <td colSpan={5}>No data</td>
-                    </tr>
+                    <TableRow>
+                      <TableCell colSpan={3} className="text-center">
+                        No data
+                      </TableCell>
+                    </TableRow>
                   )}
                 </Fragment>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
     </>
