@@ -2,7 +2,7 @@
 import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
 import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
-import { TaskRunId } from 'littlehorse-client/dist/proto/object_id';
+import { TaskRunId } from 'littlehorse-client/dist/proto/object_id'
 import { SearchTaskRunRequest, TaskRunIdList } from 'littlehorse-client/dist/proto/service'
 import { TaskRun } from 'littlehorse-client/dist/proto/task_run'
 

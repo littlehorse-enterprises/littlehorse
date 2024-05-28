@@ -8,7 +8,7 @@ import { TenantSelector } from './TenantSelector'
 
 export const Header: FC = () => {
   return (
-    <nav className="px-8 mb-4 border-gray-200 bg-black dark:bg-gray-900">
+    <nav className="mb-4 border-gray-200 bg-black px-8 dark:bg-gray-900">
       <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between py-4">
         <a href="/" className="flex items-center space-x-1 rtl:space-x-reverse">
           <LhLogo className="h-8 fill-white" />
