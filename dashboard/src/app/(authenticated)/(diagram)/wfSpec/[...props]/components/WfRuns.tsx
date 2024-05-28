@@ -3,7 +3,7 @@ import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
 import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
 import { concatWfRunIds } from '@/app/utils'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { ArrowPathIcon } from '@heroicons/react/16/solid'
+import { RefreshCwIcon } from 'lucide-react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { LHStatus, lHStatusFromJSON } from 'littlehorse-client/dist/proto/common_enums'
 import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
@@ -56,7 +56,7 @@ export const WfRuns: FC<Props> = ({ id }) => {
       <WfRunsHeader currentStatus={status} currentWindow={window} setWindow={setWindow} />
       {isPending ? (
         <div className="flex min-h-[360px] items-center justify-center text-center">
-          <ArrowPathIcon className="h-8 w-8 animate-spin fill-blue-500 stroke-none" />
+          <RefreshCwIcon className="h-8 w-8 animate-spin fill-blue-500 stroke-none" />
         </div>
       ) : (
         <div className="flex min-h-[360px] flex-col gap-4">

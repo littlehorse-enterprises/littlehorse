@@ -1,4 +1,4 @@
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { WfRun } from 'littlehorse-client/dist/proto/wf_run'
 import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
 import { FC, useMemo } from 'react'

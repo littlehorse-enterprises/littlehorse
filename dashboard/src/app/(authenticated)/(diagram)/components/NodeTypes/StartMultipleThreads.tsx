@@ -1,5 +1,5 @@
 import { getVariable } from '@/app/utils'
-import { PlusIcon } from '@heroicons/react/16/solid'
+import { PlusIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '.'
@@ -15,7 +15,7 @@ const Node: FC<NodeProps> = ({ data }) => {
   return (
     <>
       <NodeDetails>
-        <div className="flex items-center items-center gap-1 text-nowrap">
+        <div className="flex items-center gap-1 text-nowrap">
           <h3 className="font-bold">StartMultipleThread</h3>
           {data.nodeRun === undefined ? (
             <button

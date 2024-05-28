@@ -3,7 +3,7 @@ import { Modal } from '@/app/(authenticated)/(diagram)/context'
 import { useModal } from '@/app/(authenticated)/(diagram)/hooks/useModal'
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { DialogBody } from 'next/dist/client/components/react-dev-overlay/internal/components/Dialog'
-import { XMarkIcon } from '@heroicons/react/24/outline'
+import { XIcon } from 'lucide-react'
 import { getVariable, getVariableValue } from '@/app/utils'
 import { UserTaskRun as LHUserTaskRun, UserTaskRunStatus } from 'littlehorse-client/dist/proto/user_tasks'
 
@@ -32,7 +32,7 @@ export const UserTaskRun: FC<Modal> = ({ data, nodeRun, userTaskNode }) => {
                 <span className="font-bold">User Task GUID: </span> <span>{lhUserTaskRun.id?.userTaskGuid}</span>
               </div>
               <button className="mr-2 w-5">
-                <XMarkIcon onClick={() => setShowModal(false)} />
+                <XIcon onClick={() => setShowModal(false)} />
               </button>
             </div>
           </DialogTitle>

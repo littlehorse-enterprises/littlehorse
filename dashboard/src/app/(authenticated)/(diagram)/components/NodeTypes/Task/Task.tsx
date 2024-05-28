@@ -1,5 +1,5 @@
 import { getVariable } from '@/app/utils'
-import { Cog6ToothIcon } from '@heroicons/react/16/solid'
+import { SettingsIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '..'
@@ -22,7 +22,7 @@ const Node: FC<NodeProps> = ({ selected, data }) => {
             (nodeNeedsToBeHighlighted ? ' shadow-lg shadow-orange-500' : '')
           }
         >
-          <Cog6ToothIcon className="h-4 w-4 fill-orange-500" />
+          <SettingsIcon className="h-4 w-4 fill-orange-500" />
           {task.taskDefId?.name}
           {getVariable(task.dynamicTask)}
           <Handle type="source" position={Position.Right} className="bg-transparent" />

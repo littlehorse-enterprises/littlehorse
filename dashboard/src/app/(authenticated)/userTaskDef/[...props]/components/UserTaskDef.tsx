@@ -14,7 +14,7 @@ import {
   PaginatedUserTaskRunList,
   searchUserTaskRun,
 } from '@/app/(authenticated)/userTaskDef/[...props]/actions/searchUserTaskRun'
-import { ArrowPathIcon } from '@heroicons/react/16/solid'
+import { RefreshCwIcon } from 'lucide-react'
 import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import { useDebounce } from 'use-debounce'
 import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
@@ -135,7 +135,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
 
       {isPending ? (
         <div className="flex min-h-[360px] items-center justify-center text-center">
-          <ArrowPathIcon className="h-8 w-8 animate-spin fill-blue-500 stroke-none" />
+          <RefreshCwIcon className="h-8 w-8 animate-spin fill-blue-500 stroke-none" />
         </div>
       ) : (
         <div className="flex min-h-[360px] flex-col gap-4">
