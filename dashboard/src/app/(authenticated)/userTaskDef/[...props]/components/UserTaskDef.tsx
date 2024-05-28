@@ -6,12 +6,13 @@ import {
   PaginatedUserTaskRunList,
   searchUserTaskRun,
 } from '@/app/(authenticated)/userTaskDef/[...props]/actions/searchUserTaskRun'
+
+import { RefreshCwIcon } from 'lucide-react'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Button, Field, Input, Label } from '@headlessui/react'
-import { ArrowPathIcon } from '@heroicons/react/16/solid'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { UserTaskDef as UserTaskDefProto, UserTaskRunStatus } from 'littlehorse-client/dist/proto/user_tasks'
 import Link from 'next/link'
@@ -136,7 +137,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
 
       {isPending ? (
         <div className="flex min-h-[360px] items-center justify-center text-center">
-          <ArrowPathIcon className="h-8 w-8 animate-spin fill-blue-500 stroke-none" />
+          <RefreshCwIcon className="h-8 w-8 animate-spin fill-blue-500 stroke-none" />
         </div>
       ) : (
         <div className="flex min-h-[360px] flex-col gap-4">

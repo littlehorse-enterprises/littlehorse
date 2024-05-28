@@ -1,7 +1,7 @@
 'use client'
 import { SEARCH_DEFAULT_LIMIT, SEARCH_ENTITIES, SearchType } from '@/app/constants'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { ArrowPathIcon } from '@heroicons/react/16/solid'
+import { RefreshCwIcon } from 'lucide-react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
 import { FC, useState } from 'react'
@@ -32,7 +32,7 @@ export const Search: FC<{}> = () => {
       <SearchHeader currentType={type} setPrefix={setPrefix} />
       {isPending ? (
         <div className="flex min-h-[360px] items-center justify-center text-center">
-          <ArrowPathIcon className="h-8 w-8 animate-spin fill-blue-500 stroke-none" />
+          <RefreshCwIcon className="h-8 w-8 animate-spin fill-blue-500 stroke-none" />
         </div>
       ) : (
         <div className="min-h-[360px]">

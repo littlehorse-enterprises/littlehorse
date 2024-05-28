@@ -1,5 +1,5 @@
 import { getVariable } from '@/app/utils'
-import { ArrowTopRightOnSquareIcon, EyeIcon } from '@heroicons/react/24/solid'
+import { ExternalLinkIcon, EyeIcon } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { TaskNode } from 'littlehorse-client/dist/proto/common_wfspec'
 import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
@@ -31,7 +31,7 @@ export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, 
   return (
     <NodeDetails>
       <div className="mb-2">
-        <div className="flex items-center items-center gap-1 whitespace-nowrap text-nowrap">
+        <div className="flex items-center gap-1 whitespace-nowrap text-nowrap">
           <h3 className="font-bold">TaskDef</h3>
           {nodeRun ? (
             <TaskLink taskName={task.taskDefId?.name} />
@@ -86,7 +86,7 @@ const TaskLink: FC<{ taskName?: string }> = ({ taskName }) => {
       target="_blank"
       href={`/taskDef/${taskName}`}
     >
-      {taskName} <ArrowTopRightOnSquareIcon className="h-4 w-4" />
+      {taskName} <ExternalLinkIcon className="h-4 w-4" />
     </Link>
   )
 }

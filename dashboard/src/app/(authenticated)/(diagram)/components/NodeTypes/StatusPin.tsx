@@ -1,13 +1,13 @@
 import {
-  ExclamationTriangleIcon,
-  XCircleIcon,
-  BugAntIcon,
+  TriangleAlertIcon,
+  CircleXIcon,
+  BugIcon,
   CheckIcon,
-  EllipsisHorizontalIcon,
-  PlayIcon,
-  PlayPauseIcon,
-  StopIcon,
-} from '@heroicons/react/24/outline'
+  EllipsisIcon,
+  CirclePlayIcon,
+  CircleSlashIcon,
+  CirclePauseIcon,
+} from 'lucide-react'
 import { LHStatus } from 'littlehorse-client/dist/proto/common_enums'
 import React, { FC } from 'react'
 
@@ -23,11 +23,11 @@ type Pin = {
 const Status: Record<LHStatus, Pin> = {
   [LHStatus.STARTING]: {
     color: 'blue',
-    Icon: EllipsisHorizontalIcon,
+    Icon: EllipsisIcon,
   },
   [LHStatus.RUNNING]: {
     color: 'green',
-    Icon: PlayIcon,
+    Icon: CirclePlayIcon,
   },
   [LHStatus.COMPLETED]: {
     color: 'green',
@@ -35,23 +35,23 @@ const Status: Record<LHStatus, Pin> = {
   },
   [LHStatus.HALTING]: {
     color: 'gray',
-    Icon: PlayPauseIcon,
+    Icon: CircleSlashIcon,
   },
   [LHStatus.HALTED]: {
     color: 'gray',
-    Icon: StopIcon,
+    Icon: CirclePauseIcon,
   },
   [LHStatus.ERROR]: {
     color: 'red',
-    Icon: XCircleIcon,
+    Icon: CircleXIcon,
   },
   [LHStatus.EXCEPTION]: {
     color: 'orange',
-    Icon: ExclamationTriangleIcon,
+    Icon: TriangleAlertIcon,
   },
   [LHStatus.UNRECOGNIZED]: {
     color: 'gray',
-    Icon: BugAntIcon,
+    Icon: BugIcon,
   },
 }
 
