@@ -9,11 +9,16 @@ import lombok.extern.slf4j.Slf4j;
 public class MetronomeWorkflow {
 
     public static final String TASK_NAME = "canary-worker-task";
-    public static final String VARIABLE_NAME = "start-time";
+    public static final String START_TIME_VARIABLE = "start-time";
+    public static final String SAMPLE_ITERATION_VARIABLE = "sample-iteration";
 
     public MetronomeWorkflow(final LHClient lhClient, final String workflowName) {
         final Workflow workflow = Workflow.newWorkflow(
-                workflowName, thread -> thread.execute(TASK_NAME, thread.addVariable(VARIABLE_NAME, VariableType.INT)));
+                workflowName,
+                thread -> thread.execute(
+                        TASK_NAME,
+                        thread.addVariable(START_TIME_VARIABLE, VariableType.INT),
+                        thread.addVariable(SAMPLE_ITERATION_VARIABLE, VariableType.BOOL)));
         lhClient.registerWorkflow(workflow);
 
         log.info("Workflow {} Registered", workflowName);

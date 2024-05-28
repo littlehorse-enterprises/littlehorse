@@ -105,8 +105,8 @@ class PutPrincipalRequest(_message.Message):
 class DeletePrincipalRequest(_message.Message):
     __slots__ = ["id"]
     ID_FIELD_NUMBER: _ClassVar[int]
-    id: str
-    def __init__(self, id: _Optional[str] = ...) -> None: ...
+    id: _object_id_pb2.PrincipalId
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.PrincipalId, _Mapping]] = ...) -> None: ...
 
 class PutTenantRequest(_message.Message):
     __slots__ = ["id"]
