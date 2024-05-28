@@ -1,5 +1,5 @@
 import { SEARCH_ENTITIES, SearchType } from '@/app/constants'
-import { MagnifyingGlassIcon } from '@heroicons/react/16/solid'
+import { SearchIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC } from 'react'
 
@@ -21,7 +21,7 @@ export const SearchHeader: FC<Props> = ({ currentType, setPrefix }) => {
       </div>
       <div className="relative w-80">
         <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
-          <MagnifyingGlassIcon className="h-5 w-5 fill-blue-500" />
+          <SearchIcon className="h-5 w-5 fill-blue-500" />
         </div>
         <input
           type="text"

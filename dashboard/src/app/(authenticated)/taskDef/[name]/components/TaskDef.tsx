@@ -4,7 +4,7 @@ import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Field, Input, Label } from '@headlessui/react'
-import { ArrowPathIcon } from '@heroicons/react/24/outline'
+import { RefreshCwIcon } from 'lucide-react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { TaskStatus } from 'littlehorse-client/dist/proto/common_enums'
 import { TaskDef as TaskDefProto } from 'littlehorse-client/dist/proto/task_def'
@@ -86,7 +86,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
 
       {isPending ? (
         <div className="flex min-h-[360px] items-center justify-center text-center">
-          <ArrowPathIcon className="h-8 w-8 animate-spin fill-blue-500 stroke-none" />
+          <RefreshCwIcon className="h-8 w-8 animate-spin fill-blue-500 stroke-none" />
         </div>
       ) : (
         <div className="flex min-h-[360px] flex-col gap-4">

@@ -1,5 +1,5 @@
 import { Listbox } from '@headlessui/react'
-import { TagIcon } from '@heroicons/react/16/solid'
+import { TagIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC } from 'react'
 

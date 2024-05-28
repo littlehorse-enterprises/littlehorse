@@ -1,6 +1,5 @@
 import { getVariable } from '@/app/utils'
-import { UserIcon } from '@heroicons/react/16/solid'
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid'
+import { UserIcon, ExternalLinkIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
@@ -25,7 +24,7 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
               target="_blank"
               href={`/userTaskDef/${userTask.userTaskDefName}`}
             >
-              {userTask.userTaskDefName} <ArrowTopRightOnSquareIcon className="h-4 w-4" />
+              {userTask.userTaskDefName} <ExternalLinkIcon className="h-4 w-4" />
             </Link>
           </div>
           <div className="mb-2 flex gap-2 text-nowrap">

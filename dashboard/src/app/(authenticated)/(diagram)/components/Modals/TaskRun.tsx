@@ -1,6 +1,6 @@
 import { getVariableValue } from '@/app/utils'
 import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
-import { ClipboardDocumentIcon } from '@heroicons/react/24/outline'
+import { ClipboardIcon } from 'lucide-react'
 import { FC, useMemo, useState } from 'react'
 import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
@@ -20,7 +20,7 @@ export const TaskRun: FC<Modal> = ({ data }) => {
             <h2 className="text-lg font-bold">TaskRun</h2>
             <div className="item-center flex gap-1 bg-gray-200 px-2 py-1">
               <span className="font-mono text-sm">{lhTaskRun.id?.taskGuid}</span>
-              <ClipboardDocumentIcon className="h-4 w-4 fill-transparent stroke-blue-500" />
+              <ClipboardIcon className="h-4 w-4 fill-transparent stroke-blue-500" />
             </div>
           </DialogTitle>
           <Description>

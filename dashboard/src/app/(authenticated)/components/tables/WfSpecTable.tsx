@@ -1,4 +1,4 @@
-import { TagIcon } from '@heroicons/react/16/solid'
+import { TagIcon } from 'lucide-react'
 import { WfSpecId } from 'littlehorse-client/dist/proto/object_id'
 import Link from 'next/link'
 import { FC, Fragment } from 'react'
