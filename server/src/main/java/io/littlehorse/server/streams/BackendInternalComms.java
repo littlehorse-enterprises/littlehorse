@@ -99,6 +99,7 @@ import org.apache.kafka.streams.StreamsMetadata;
 import org.apache.kafka.streams.TaskMetadata;
 import org.apache.kafka.streams.ThreadMetadata;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
+import org.apache.kafka.streams.processor.TaskId;
 import org.apache.kafka.streams.state.HostInfo;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -242,10 +243,11 @@ public class BackendInternalComms implements Closeable {
          * of the in-sync replicas).
          */
         if (meta.activeHost().equals(thisHost)) {
-            localWaitForCommand(command.getCommandId(), observer);
+            localWaitForCommand(command.getCommandId(), meta.partition(), observer);
         } else {
             WaitForCommandRequest req = WaitForCommandRequest.newBuilder()
                     .setCommandId(command.getCommandId())
+                    .setPartition(meta.partition())
                     .build();
             getInternalAsyncClient(meta.activeHost()).waitForCommand(req, observer);
         }
@@ -344,8 +346,8 @@ public class BackendInternalComms implements Closeable {
         asyncWaiters.markCommandFailed(commandId, caught);
     }
 
-    private void localWaitForCommand(String commandId, StreamObserver<WaitForCommandResponse> observer) {
-        asyncWaiters.registerObserverWaitingForCommand(commandId, observer);
+    private void localWaitForCommand(String commandId, int partition, StreamObserver<WaitForCommandResponse> observer) {
+        asyncWaiters.registerObserverWaitingForCommand(commandId, partition, observer);
         // Once the command has been recorded, we've got nothing to do: the
         // CommandProcessor will notify the StreamObserver once the command is
         // processed.
@@ -439,6 +441,10 @@ public class BackendInternalComms implements Closeable {
         asyncWaiters.registerWorkflowEventHappened(event);
     }
 
+    public void handleRebalance(Set<TaskId> taskIds) {
+        asyncWaiters.handleRebalance(taskIds);
+    }
+
     /*
      * Implements the internal_server.proto service, which is used
      * for communication between the LH servers to do distributed lookups etc.
@@ -482,7 +488,7 @@ public class BackendInternalComms implements Closeable {
 
         @Override
         public void waitForCommand(WaitForCommandRequest req, StreamObserver<WaitForCommandResponse> ctx) {
-            localWaitForCommand(req.getCommandId(), ctx);
+            localWaitForCommand(req.getCommandId(), req.getPartition(), ctx);
         }
 
         @Override

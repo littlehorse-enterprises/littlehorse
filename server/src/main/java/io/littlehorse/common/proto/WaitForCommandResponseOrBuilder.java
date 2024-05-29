@@ -36,7 +36,29 @@ public interface WaitForCommandResponseOrBuilder extends
 
   /**
    * <code>bytes result = 3;</code>
+   * @return Whether the result field is set.
+   */
+  boolean hasResult();
+  /**
+   * <code>bytes result = 3;</code>
    * @return The result.
    */
   com.google.protobuf.ByteString getResult();
+
+  /**
+   * <code>.littlehorse.WaitForCommandResponse.PartitionMigratedResponse partition_migrated_response = 4;</code>
+   * @return Whether the partitionMigratedResponse field is set.
+   */
+  boolean hasPartitionMigratedResponse();
+  /**
+   * <code>.littlehorse.WaitForCommandResponse.PartitionMigratedResponse partition_migrated_response = 4;</code>
+   * @return The partitionMigratedResponse.
+   */
+  io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse getPartitionMigratedResponse();
+  /**
+   * <code>.littlehorse.WaitForCommandResponse.PartitionMigratedResponse partition_migrated_response = 4;</code>
+   */
+  io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponseOrBuilder getPartitionMigratedResponseOrBuilder();
+
+  io.littlehorse.common.proto.WaitForCommandResponse.YieldCase getYieldCase();
 }
