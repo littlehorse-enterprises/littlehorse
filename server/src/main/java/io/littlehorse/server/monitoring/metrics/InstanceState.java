@@ -1,17 +1,22 @@
 package io.littlehorse.server.monitoring.metrics;
 
+import io.littlehorse.server.streams.BackendInternalComms;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.TaskMetadata;
 import org.apache.kafka.streams.ThreadMetadata;
+import org.apache.kafka.streams.processor.TaskId;
 import org.jetbrains.annotations.NotNull;
 
 @Slf4j
@@ -29,9 +34,12 @@ public class InstanceState implements MeterBinder, KafkaStreams.StateListener, C
     private static final int GLOBAL_SUB_TOPOLOGY_ID = 0;
     private static final int CORE_SUB_TOPOLOGY_ID = 1;
     private static final int REPARTITION_SUB_TOPOLOGY_ID = 2;
+    private final AtomicReference<Set<TaskId>> activeTasks = new AtomicReference<>();
+    private final BackendInternalComms internalComms;
 
-    public InstanceState(KafkaStreams streams) {
+    public InstanceState(KafkaStreams streams, BackendInternalComms internalComms) {
         this.streams = streams;
+        this.internalComms = internalComms;
     }
 
     @Override
@@ -56,12 +64,19 @@ public class InstanceState implements MeterBinder, KafkaStreams.StateListener, C
         activeTaskBySubTopology.put(GLOBAL_SUB_TOPOLOGY_ID, 0);
         activeTaskBySubTopology.put(CORE_SUB_TOPOLOGY_ID, 0);
         activeTaskBySubTopology.put(REPARTITION_SUB_TOPOLOGY_ID, 0);
+        Set<TaskId> currentActiveTaskIds = new HashSet<>();
         for (ThreadMetadata metadataForLocalThread : streams.metadataForLocalThreads()) {
             for (TaskMetadata activeTask : metadataForLocalThread.activeTasks()) {
                 final int subtopology = activeTask.taskId().subtopology();
                 int currentCount = activeTaskBySubTopology.getOrDefault(subtopology, 0);
                 activeTaskBySubTopology.put(subtopology, ++currentCount);
+                currentActiveTaskIds.add(activeTask.taskId());
             }
+        }
+
+        if (newState == KafkaStreams.State.RUNNING) {
+            activeTasks.set(currentActiveTaskIds);
+            internalComms.handleRebalance(activeTasks.get());
         }
     }
 
