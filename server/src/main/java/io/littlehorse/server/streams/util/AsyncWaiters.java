@@ -132,7 +132,7 @@ public class AsyncWaiters {
 
         commandWaiters.values().stream()
                 .filter(commandWaiter -> !assignedPartitions.contains(commandWaiter.getCommandPartition()))
-                .forEach(migratedCommand -> migratedCommand.handleMigration());
+                .forEach(migratedCommandWaiter -> migratedCommandWaiter.handleMigration());
     }
 
     private void cleanupOldCommandWaiters() {
