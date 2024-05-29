@@ -10,7 +10,6 @@ const Node: FC<NodeProps> = ({ selected, data }) => {
   const { fade, nodeNeedsToBeHighlighted } = data
   if (!data.task) return null
   const { task } = data
-  console.log(nodeNeedsToBeHighlighted)
   return (
     <>
       <TaskDetails task={task} nodeRun={data.nodeRun} />

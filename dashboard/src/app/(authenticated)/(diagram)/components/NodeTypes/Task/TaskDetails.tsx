@@ -1,8 +1,8 @@
-import { getVariable } from '@/app/utils'
-import { ExternalLinkIcon, EyeIcon } from 'lucide-react'
+import { getVariable, getVariableValue } from '@/app/utils'
 import { useQuery } from '@tanstack/react-query'
 import { TaskNode } from 'littlehorse-client/dist/proto/common_wfspec'
 import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
+import { ExternalLinkIcon, EyeIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, useCallback } from 'react'
 import { useModal } from '../../../hooks/useModal'
@@ -53,9 +53,13 @@ export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, 
           <ol className="list-inside list-decimal">
             {task.variables.map((variable, i) => (
               <li className="mb-1 flex gap-1" key={`variable.${i}`}>
-                <div className="bg-gray-200 px-2 font-mono text-fuchsia-500">arg{i}</div>
+                <div className="bg-gray-200 px-2 font-mono text-fuchsia-500">
+                  {nodeRun ? data?.inputVariables[i].varName : `arg${i}`}
+                </div>
                 <div> = </div>
-                <div className="truncate">{getVariable(variable)}</div>
+                <div className="truncate">
+                  {nodeRun ? getVariableValue(data?.inputVariables[i].value) : getVariable(variable)}
+                </div>
               </li>
             ))}
           </ol>
