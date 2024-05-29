@@ -41,7 +41,7 @@ export class LHConfig {
     this.caCert = mergedConfig.LHC_CA_CERT
 
     let channelCredentials
-    if (this.protocol === 'SSL') {
+    if (this.protocol === 'TLS') {
       const rootCa = this.caCert ? readFileSync(this.caCert) : undefined
       channelCredentials = ChannelCredentials.createSsl(rootCa)
     }

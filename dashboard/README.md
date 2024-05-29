@@ -15,6 +15,7 @@ If running the app without Docker, you need to fill in the environment variables
 - `LHC_API_HOST` littlehorse hostname
 - `LHC_API_PORT` littlehorse port
 - `LHC_CA_CERT` To specify the path to the self signed certificate that the dashboard needs to connect to a LittleHorse server configured to work with OAuth.
+- `LHC_API_PROTOCOL` specify the communication protocol PLAINTEXT or TLS. If not provided it defaults to PLAINTEXT.
 - `LHD_OAUTH_ENABLED` enable oauth authentication
 - `LHD_OAUTH_ENCRYPT_SECRET` random string that will be used to encrypt the secrets and also the JWT token
 - `LHD_OAUTH_CALLBACK_URL` the url (domain) in which the dashboard will run (required for some authentication methods). For your local you can use: `http:/localhost:3001/`
