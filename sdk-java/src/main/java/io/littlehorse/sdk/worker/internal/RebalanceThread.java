@@ -75,13 +75,13 @@ final class RebalanceThread extends Thread {
         return new PollThread(
                 threadName,
                 stub,
-                bootstrapStub,
                 taskDef.getId(),
                 taskWorkerId,
                 config.getTaskWorkerVersion(),
                 mappings,
                 executable,
-                taskMethod);
+                taskMethod,
+                new ScheduledTaskExecutor(bootstrapStub));
     }
 
     private void waitForInterval() {
