@@ -990,7 +990,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             PrincipalIdModel principalId,
             TenantIdModel tenantId) {
         StreamObserver<WaitForCommandResponse> commandObserver =
-                new POSTStreamObserver<>(responseObserver, responseCls, shouldCompleteStream);
+                new POSTStreamObserver<>(responseObserver, responseCls, shouldCompleteStream, internalComms, command);
 
         Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command);
 
