@@ -99,6 +99,7 @@ import org.apache.kafka.streams.StreamsMetadata;
 import org.apache.kafka.streams.TaskMetadata;
 import org.apache.kafka.streams.ThreadMetadata;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
+import org.apache.kafka.streams.processor.TaskId;
 import org.apache.kafka.streams.state.HostInfo;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -438,6 +439,10 @@ public class BackendInternalComms implements Closeable {
 
     public void registerWorkflowEventProcessed(WorkflowEventModel event) {
         asyncWaiters.registerWorkflowEventHappened(event);
+    }
+
+    public void handleRebalance(Set<TaskId> taskIds) {
+        asyncWaiters.handleRebalance(taskIds);
     }
 
     /*

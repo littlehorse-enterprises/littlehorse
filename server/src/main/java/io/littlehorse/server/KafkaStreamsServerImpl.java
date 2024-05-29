@@ -271,9 +271,12 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager),
                 config.getCoreStreamsConfig());
         this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
-        this.healthService = new HealthService(config, coreStreams, timerStreams, taskQueueManager, metadataCache);
         Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
         coreStoreProvider = new CoreStoreProvider(this.coreStreams);
+        this.internalComms = new BackendInternalComms(
+                config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey, coreStoreProvider);
+        this.healthService =
+                new HealthService(config, coreStreams, timerStreams, taskQueueManager, metadataCache, internalComms);
         this.listenerManager = new ListenersManager(
                 config,
                 this,
@@ -282,9 +285,6 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 metadataCache,
                 contextKey,
                 coreStoreProvider);
-
-        this.internalComms = new BackendInternalComms(
-                config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey, coreStoreProvider);
     }
 
     public String getInstanceName() {

@@ -25,7 +25,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import org.apache.kafka.streams.processor.TaskId;
-import org.apache.kafka.streams.processor.internals.Task;
 
 public class AsyncWaiters {
 
@@ -127,9 +126,9 @@ public class AsyncWaiters {
         }
     }
 
-    public void handleRebalance(Set<Task> assignedTasks) {
+    public void handleRebalance(Set<TaskId> assignedTasks) {
         Set<Integer> assignedPartitions =
-                assignedTasks.stream().map(Task::id).map(TaskId::partition).collect(Collectors.toSet());
+                assignedTasks.stream().map(TaskId::partition).collect(Collectors.toSet());
 
         commandWaiters.values().stream()
                 .filter(commandWaiter -> !assignedPartitions.contains(commandWaiter.getCommandPartition()))

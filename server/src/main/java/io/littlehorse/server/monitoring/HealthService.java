@@ -7,6 +7,7 @@ import io.littlehorse.server.monitoring.health.InProgressRestoration;
 import io.littlehorse.server.monitoring.health.ServerHealthState;
 import io.littlehorse.server.monitoring.metrics.InstanceState;
 import io.littlehorse.server.monitoring.metrics.PrometheusMetricExporter;
+import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.MetadataCache;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -45,11 +46,12 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             KafkaStreams coreStreams,
             KafkaStreams timerStreams,
             TaskQueueManager taskQueueManager,
-            MetadataCache metadataCache) {
+            MetadataCache metadataCache,
+            BackendInternalComms internalComms) {
         this.prom = new PrometheusMetricExporter(config);
         this.numberOfPartitionPerTopic = config.partitionsByTopic();
 
-        this.coreState = new InstanceState(coreStreams);
+        this.coreState = new InstanceState(coreStreams, internalComms);
         this.prom.bind(
                 coreStreams,
                 timerStreams,
