@@ -1,13 +1,13 @@
-import { getVariable } from '@/app/utils'
-import { UserIcon, ExternalLinkIcon } from 'lucide-react'
+import { UserTaskDefDetails } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/UserTaskDefDetails'
+import { UserTaskRunDetails } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/UserTaskRunDetails'
+import { UserIcon } from '@heroicons/react/16/solid'
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid'
 import Link from 'next/link'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
-import { NodeProps } from '../index'
 import { Fade } from '../Fade'
+import { NodeProps } from '../index'
 import { NodeDetails } from '../NodeDetails'
-import { UserTaskRunDetails } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/UserTaskRunDetails'
-import { UserTaskDefDetails } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/UserTaskDefDetails'
 
 const Node: FC<NodeProps> = ({ data, selected }) => {
   if (!data.userTask) return null
@@ -24,21 +24,13 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
               target="_blank"
               href={`/userTaskDef/${userTask.userTaskDefName}`}
             >
-              {userTask.userTaskDefName} <ExternalLinkIcon className="h-4 w-4" />
+              {userTask.userTaskDefName} <ArrowTopRightOnSquareIcon className="h-4 w-4" />
             </Link>
           </div>
-          <div className="mb-2 flex gap-2 text-nowrap">
-            {nodeRun ? (
-              <UserTaskRunDetails userTaskNode={userTask} nodeRun={nodeRun} />
-            ) : (
-              <UserTaskDefDetails userTask={userTask} />
-            )}
-          </div>
-          {userTask.notes && (
-            <div className="rounded bg-gray-200 p-1">
-              <h3 className="mb-1 font-bold">Notes</h3>
-              <pre className="overflow-x-auto">{getVariable(userTask.notes)}</pre>
-            </div>
+          {nodeRun ? (
+            <UserTaskRunDetails userTaskNode={userTask} nodeRun={nodeRun} />
+          ) : (
+            <UserTaskDefDetails userTask={userTask} />
           )}
         </div>
       </NodeDetails>
