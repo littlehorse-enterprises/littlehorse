@@ -1,15 +1,16 @@
 package io.littlehorse.sdk.common;
 
 import io.grpc.stub.StreamObserver;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class RecordableStreamObserver<REQ, RES> {
+public class QueuedStreamObserver<REQ, RES> {
     private final RequestObserver requestObserver;
     private final StreamObserver<RES> responseObserver;
     private final Queue<NextAction> pendingResponses = new LinkedBlockingQueue<>();
 
-    public RecordableStreamObserver(StreamObserver<RES> responseObserver) {
+    public QueuedStreamObserver(StreamObserver<RES> responseObserver) {
         this.requestObserver = new RequestObserver();
         this.responseObserver = responseObserver;
     }
@@ -30,24 +31,24 @@ public class RecordableStreamObserver<REQ, RES> {
 
         @Override
         public void onNext(REQ value) {
-            pollNextAction().doNext();
+            pollNextAction().ifPresent(NextAction::doNext);
         }
 
         @Override
         public void onError(Throwable t) {
-            pollNextAction().doNext();
+            pollNextAction().ifPresent(NextAction::doNext);
         }
 
         @Override
         public void onCompleted() {}
     }
 
-    private NextAction pollNextAction() {
+    private Optional<NextAction> pollNextAction() {
         NextAction next = pendingResponses.poll();
         if (next == null) {
-            throw new IllegalStateException("There is no further actions");
+            responseObserver.onCompleted();
         }
-        return next;
+        return Optional.ofNullable(next);
     }
 
     private interface NextAction {
