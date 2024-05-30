@@ -54,11 +54,13 @@ export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, 
             {task.variables.map((variable, i) => (
               <li className="mb-1 flex gap-1" key={`variable.${i}`}>
                 <div className="bg-gray-200 px-2 font-mono text-fuchsia-500">
-                  {nodeRun ? data?.inputVariables[i].varName : `arg${i}`}
+                  {data?.inputVariables?.[i]?.varName ?? `arg${i}`}
                 </div>
                 <div> = </div>
                 <div className="truncate">
-                  {nodeRun ? getVariableValue(data?.inputVariables[i].value) : getVariable(variable)}
+                  {data?.inputVariables?.[i]?.value
+                    ? getVariableValue(data?.inputVariables[i].value)
+                    : getVariable(variable)}
                 </div>
               </li>
             ))}
