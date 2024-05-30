@@ -39,7 +39,6 @@ export const TaskDef: FC<Props> = ({ spec }) => {
       })
     },
   })
-  console.log(data)
   return (
     <>
       <Navigation href="/?type=TaskDef" title="Go back to TaskDefs" />
