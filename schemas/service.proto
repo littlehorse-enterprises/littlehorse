@@ -183,6 +183,9 @@ service LittleHorse {
   // Search for all available TenantIds for current Principal
   rpc SearchTenant(SearchTenantRequest) returns (TenantIdList) {}
 
+  // 
+  rpc SearchPrincipal(SearchPrincipalRequest) returns (PrincipalIdList) {}
+
   // Used by the Task Worker to:
   // 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
   // 2. Receive the assignemnt of LH Server's to poll from.
@@ -776,6 +779,29 @@ message TenantIdList {
       repeated TenantId results = 1;
       // Bookmark for cursor-based pagination; pass if applicable.
       optional bytes bookmark = 2;
+}
+
+message SearchPrincipalRequest {
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 1;
+  // Maximum results to return in one request.
+  optional int32 limit = 2;
+
+  oneof principal_criteria {
+    // 
+    bool isAdmin = 3;
+    // 
+    string tenant = 4;
+    // 
+    google.protobuf.Timestamp created_at = 5;
+  }
+}
+
+message PrincipalIdList {
+  // The resulting object id's.
+  repeated PrincipalId results = 1;
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 2;
 }
 
 // EVOLVING: Search for ExternalEvent's.
