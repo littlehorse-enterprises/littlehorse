@@ -1,7 +1,6 @@
 import { UserTaskDefDetails } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/UserTaskDefDetails'
 import { UserTaskRunDetails } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/UserTaskRunDetails'
-import { UserIcon } from '@heroicons/react/16/solid'
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid'
+import { ExternalLinkIcon, UserIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
@@ -24,7 +23,7 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
               target="_blank"
               href={`/userTaskDef/${userTask.userTaskDefName}`}
             >
-              {userTask.userTaskDefName} <ArrowTopRightOnSquareIcon className="h-4 w-4" />
+              {userTask.userTaskDefName} <ExternalLinkIcon className="h-4 w-4" />
             </Link>
           </div>
           {nodeRun ? (
