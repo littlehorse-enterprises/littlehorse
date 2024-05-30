@@ -108,7 +108,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                             <Link
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
-                              href={`/wfRun/${concatWfRunIds(taskRun.id?.wfRunId!)}?threadRunNumber=${taskRun.source?.taskNode?.nodeRunId?.threadRunNumber || taskRun.source?.userTaskTrigger?.nodeRunId?.threadRunNumber}&nodeName=${taskRun.source?.taskNode?.nodeRunId?.position}-${taskRun.source?.taskNode?.nodeRunId}-TASK`}
+                              href={`/wfRun/${concatWfRunIds(taskRun.id?.wfRunId!)}?threadRunNumber=${taskRun.source?.taskNode?.nodeRunId?.threadRunNumber ?? taskRun.source?.userTaskTrigger?.nodeRunId?.threadRunNumber}&nodeName=${taskRun.source?.taskNode?.nodeRunId?.position}-${taskRun.source?.taskNode?.nodeRunId}-TASK`}
                             >
                               {concatWfRunIds(taskRun.id?.wfRunId!)}
                             </Link>
