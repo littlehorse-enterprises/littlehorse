@@ -21,6 +21,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private ListNodeRunsRequest() {
+    bookmark_ = com.google.protobuf.ByteString.EMPTY;
   }
 
   @java.lang.Override
@@ -43,6 +44,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.ListNodeRunsRequest.class, io.littlehorse.sdk.common.proto.ListNodeRunsRequest.Builder.class);
   }
 
+  private int bitField0_;
   public static final int WF_RUN_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WfRunId wfRunId_;
   /**
@@ -81,6 +83,87 @@ private static final long serialVersionUID = 0L;
     return wfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : wfRunId_;
   }
 
+  public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 2;
+  private int threadRunNumber_ = 0;
+  /**
+   * <pre>
+   * Optionally specify the thread run number to filter NodeRun's by.
+   * </pre>
+   *
+   * <code>optional int32 thread_run_number = 2;</code>
+   * @return Whether the threadRunNumber field is set.
+   */
+  @java.lang.Override
+  public boolean hasThreadRunNumber() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <pre>
+   * Optionally specify the thread run number to filter NodeRun's by.
+   * </pre>
+   *
+   * <code>optional int32 thread_run_number = 2;</code>
+   * @return The threadRunNumber.
+   */
+  @java.lang.Override
+  public int getThreadRunNumber() {
+    return threadRunNumber_;
+  }
+
+  public static final int BOOKMARK_FIELD_NUMBER = 3;
+  private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
+  /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
+   * <code>optional bytes bookmark = 3;</code>
+   * @return Whether the bookmark field is set.
+   */
+  @java.lang.Override
+  public boolean hasBookmark() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <pre>
+   * Bookmark for cursor-based pagination; pass if applicable.
+   * </pre>
+   *
+   * <code>optional bytes bookmark = 3;</code>
+   * @return The bookmark.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString getBookmark() {
+    return bookmark_;
+  }
+
+  public static final int LIMIT_FIELD_NUMBER = 4;
+  private int limit_ = 0;
+  /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
+   * <code>optional int32 limit = 4;</code>
+   * @return Whether the limit field is set.
+   */
+  @java.lang.Override
+  public boolean hasLimit() {
+    return ((bitField0_ & 0x00000004) != 0);
+  }
+  /**
+   * <pre>
+   * Maximum results to return in one request.
+   * </pre>
+   *
+   * <code>optional int32 limit = 4;</code>
+   * @return The limit.
+   */
+  @java.lang.Override
+  public int getLimit() {
+    return limit_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -98,6 +181,15 @@ private static final long serialVersionUID = 0L;
     if (wfRunId_ != null) {
       output.writeMessage(1, getWfRunId());
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeInt32(2, threadRunNumber_);
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeBytes(3, bookmark_);
+    }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      output.writeInt32(4, limit_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -110,6 +202,18 @@ private static final long serialVersionUID = 0L;
     if (wfRunId_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getWfRunId());
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(2, threadRunNumber_);
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBytesSize(3, bookmark_);
+    }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(4, limit_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -131,6 +235,21 @@ private static final long serialVersionUID = 0L;
       if (!getWfRunId()
           .equals(other.getWfRunId())) return false;
     }
+    if (hasThreadRunNumber() != other.hasThreadRunNumber()) return false;
+    if (hasThreadRunNumber()) {
+      if (getThreadRunNumber()
+          != other.getThreadRunNumber()) return false;
+    }
+    if (hasBookmark() != other.hasBookmark()) return false;
+    if (hasBookmark()) {
+      if (!getBookmark()
+          .equals(other.getBookmark())) return false;
+    }
+    if (hasLimit() != other.hasLimit()) return false;
+    if (hasLimit()) {
+      if (getLimit()
+          != other.getLimit()) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -145,6 +264,18 @@ private static final long serialVersionUID = 0L;
     if (hasWfRunId()) {
       hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
       hash = (53 * hash) + getWfRunId().hashCode();
+    }
+    if (hasThreadRunNumber()) {
+      hash = (37 * hash) + THREAD_RUN_NUMBER_FIELD_NUMBER;
+      hash = (53 * hash) + getThreadRunNumber();
+    }
+    if (hasBookmark()) {
+      hash = (37 * hash) + BOOKMARK_FIELD_NUMBER;
+      hash = (53 * hash) + getBookmark().hashCode();
+    }
+    if (hasLimit()) {
+      hash = (37 * hash) + LIMIT_FIELD_NUMBER;
+      hash = (53 * hash) + getLimit();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -287,6 +418,9 @@ private static final long serialVersionUID = 0L;
         wfRunIdBuilder_.dispose();
         wfRunIdBuilder_ = null;
       }
+      threadRunNumber_ = 0;
+      bookmark_ = com.google.protobuf.ByteString.EMPTY;
+      limit_ = 0;
       return this;
     }
 
@@ -325,6 +459,20 @@ private static final long serialVersionUID = 0L;
             ? wfRunId_
             : wfRunIdBuilder_.build();
       }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.threadRunNumber_ = threadRunNumber_;
+        to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.bookmark_ = bookmark_;
+        to_bitField0_ |= 0x00000002;
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.limit_ = limit_;
+        to_bitField0_ |= 0x00000004;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -374,6 +522,15 @@ private static final long serialVersionUID = 0L;
       if (other.hasWfRunId()) {
         mergeWfRunId(other.getWfRunId());
       }
+      if (other.hasThreadRunNumber()) {
+        setThreadRunNumber(other.getThreadRunNumber());
+      }
+      if (other.hasBookmark()) {
+        setBookmark(other.getBookmark());
+      }
+      if (other.hasLimit()) {
+        setLimit(other.getLimit());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -407,6 +564,21 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
+            case 16: {
+              threadRunNumber_ = input.readInt32();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 16
+            case 26: {
+              bookmark_ = input.readBytes();
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 26
+            case 32: {
+              limit_ = input.readInt32();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 32
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -577,6 +749,174 @@ private static final long serialVersionUID = 0L;
         wfRunId_ = null;
       }
       return wfRunIdBuilder_;
+    }
+
+    private int threadRunNumber_ ;
+    /**
+     * <pre>
+     * Optionally specify the thread run number to filter NodeRun's by.
+     * </pre>
+     *
+     * <code>optional int32 thread_run_number = 2;</code>
+     * @return Whether the threadRunNumber field is set.
+     */
+    @java.lang.Override
+    public boolean hasThreadRunNumber() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <pre>
+     * Optionally specify the thread run number to filter NodeRun's by.
+     * </pre>
+     *
+     * <code>optional int32 thread_run_number = 2;</code>
+     * @return The threadRunNumber.
+     */
+    @java.lang.Override
+    public int getThreadRunNumber() {
+      return threadRunNumber_;
+    }
+    /**
+     * <pre>
+     * Optionally specify the thread run number to filter NodeRun's by.
+     * </pre>
+     *
+     * <code>optional int32 thread_run_number = 2;</code>
+     * @param value The threadRunNumber to set.
+     * @return This builder for chaining.
+     */
+    public Builder setThreadRunNumber(int value) {
+
+      threadRunNumber_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optionally specify the thread run number to filter NodeRun's by.
+     * </pre>
+     *
+     * <code>optional int32 thread_run_number = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearThreadRunNumber() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      threadRunNumber_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
+     * <code>optional bytes bookmark = 3;</code>
+     * @return Whether the bookmark field is set.
+     */
+    @java.lang.Override
+    public boolean hasBookmark() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
+     * <code>optional bytes bookmark = 3;</code>
+     * @return The bookmark.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getBookmark() {
+      return bookmark_;
+    }
+    /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
+     * <code>optional bytes bookmark = 3;</code>
+     * @param value The bookmark to set.
+     * @return This builder for chaining.
+     */
+    public Builder setBookmark(com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      bookmark_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Bookmark for cursor-based pagination; pass if applicable.
+     * </pre>
+     *
+     * <code>optional bytes bookmark = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearBookmark() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      bookmark_ = getDefaultInstance().getBookmark();
+      onChanged();
+      return this;
+    }
+
+    private int limit_ ;
+    /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
+     * <code>optional int32 limit = 4;</code>
+     * @return Whether the limit field is set.
+     */
+    @java.lang.Override
+    public boolean hasLimit() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
+     * <code>optional int32 limit = 4;</code>
+     * @return The limit.
+     */
+    @java.lang.Override
+    public int getLimit() {
+      return limit_;
+    }
+    /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
+     * <code>optional int32 limit = 4;</code>
+     * @param value The limit to set.
+     * @return This builder for chaining.
+     */
+    public Builder setLimit(int value) {
+
+      limit_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Maximum results to return in one request.
+     * </pre>
+     *
+     * <code>optional int32 limit = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearLimit() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      limit_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

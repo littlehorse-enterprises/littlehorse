@@ -1,5 +1,8 @@
 package io.littlehorse.canary.config;
 
+import static io.littlehorse.canary.config.CanaryConfig.LH_CANARY_PREFIX;
+
+import com.google.common.collect.Streams;
 import io.smallrye.config.PropertiesConfigSource;
 import io.smallrye.config.SmallRyeConfig;
 import io.smallrye.config.SmallRyeConfigBuilder;
@@ -8,7 +11,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Properties;
-import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.eclipse.microprofile.config.Config;
 
 public class ConfigLoader {
@@ -27,6 +31,7 @@ public class ConfigLoader {
         final SmallRyeConfig config = new SmallRyeConfigBuilder()
                 .addDefaultInterceptors()
                 .addDefaultSources()
+                .withDefaultValues(defaultValues())
                 .build();
         return new CanaryConfig(toMap(config));
     }
@@ -47,6 +52,7 @@ public class ConfigLoader {
                 .addDefaultInterceptors()
                 .addDefaultSources()
                 .withSources(new PropertiesConfigSource(path.toUri().toURL(), 200))
+                .withDefaultValues(defaultValues())
                 .build();
         return new CanaryConfig(toMap(config));
     }
@@ -67,15 +73,19 @@ public class ConfigLoader {
                 .addDefaultSources()
                 .withSources(new PropertiesConfigSource(
                         ConfigSourceUtil.propertiesToMap(properties), "PropertiesConfigSource[source=Properties]", 200))
+                .withDefaultValues(defaultValues())
                 .build();
         return new CanaryConfig(toMap(config));
     }
 
     private static Map<String, Object> toMap(final Config config) {
-        final Map<String, Object> configs = new TreeMap<>();
-        for (String key : config.getPropertyNames()) {
-            configs.put(key, config.getOptionalValue(key, String.class).orElse(""));
-        }
-        return configs;
+        return Streams.stream(config.getPropertyNames())
+                .collect(Collectors.toUnmodifiableMap(
+                        Function.identity(),
+                        key -> config.getOptionalValue(key, String.class).orElse("")));
+    }
+
+    private static Map<String, String> defaultValues() {
+        return Map.of(LH_CANARY_PREFIX + CanaryConfig.METRONOME_RUN_SAMPLE_RATE, "100");
     }
 }

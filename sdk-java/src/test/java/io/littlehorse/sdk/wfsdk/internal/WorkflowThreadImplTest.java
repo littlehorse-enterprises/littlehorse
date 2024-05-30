@@ -18,11 +18,13 @@ import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
+import io.littlehorse.sdk.common.proto.VariableAssignment.FormatString;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForCase;
 import io.littlehorse.sdk.common.proto.WorkflowRetentionPolicy;
+import io.littlehorse.sdk.wfsdk.LHFormatString;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
@@ -481,5 +483,31 @@ public class WorkflowThreadImplTest {
 
         UTATask taskTrigger = utn.getActions(0).getTask();
         assertThat(taskTrigger.getTask().getVariablesCount()).isEqualTo(0);
+    }
+
+    @Test
+    void testDynamicTask() {
+        Workflow workflow = new WorkflowImpl("obiwan", wf -> {
+            WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
+            wf.execute("some-static-task");
+
+            LHFormatString formatStr = wf.format("some-dynamic-task-{0}", myVar);
+            wf.execute(formatStr);
+            wf.execute(myVar);
+        });
+
+        PutWfSpecRequest wfSpec = workflow.compileWorkflow();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+
+        Node staticNode = entrypoint.getNodesOrThrow("1-some-static-task-TASK");
+        assertEquals("some-static-task", staticNode.getTask().getTaskDefId().getName());
+
+        Node formatStrNode = entrypoint.getNodesOrThrow("2-some-dynamic-task-{0}-TASK");
+        FormatString formatStr = formatStrNode.getTask().getDynamicTask().getFormatString();
+        assertEquals(
+                "some-dynamic-task-{0}", formatStr.getFormat().getLiteralValue().getStr());
+
+        Node varNode = entrypoint.getNodesOrThrow("3-my-var-TASK");
+        assertEquals("my-var", varNode.getTask().getDynamicTask().getVariableName());
     }
 }

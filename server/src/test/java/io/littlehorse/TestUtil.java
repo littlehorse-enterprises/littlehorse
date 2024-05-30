@@ -38,6 +38,7 @@ import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.ServerACLs;
+import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -91,6 +92,19 @@ public class TestUtil {
         return nodeRunModel;
     }
 
+    public static NodeRunModel nodeRun(String wfRunId) {
+        NodeRunModel nodeRunModel = new NodeRunModel();
+        nodeRunModel.setId(new NodeRunIdModel(wfRunId, 1, 0));
+        nodeRunModel.setStatus(LHStatus.RUNNING);
+        nodeRunModel.setType(NodeRun.NodeTypeCase.TASK);
+        nodeRunModel.setArrivalTime(new Date());
+        nodeRunModel.setWfSpecId(wfSpecId());
+        nodeRunModel.setThreadSpecName("test-thread");
+        nodeRunModel.setNodeName("test-node-name");
+        nodeRunModel.setTaskRun(taskNodeRun());
+        return nodeRunModel;
+    }
+
     public static UserTaskNodeRunModel userTaskNodeRun(String wfRunId, ProcessorExecutionContext processorContext) {
         UserTaskRunModel utr = userTaskRun(wfRunId, processorContext);
         UserTaskNodeRunModel out = new UserTaskNodeRunModel();
@@ -106,7 +120,7 @@ public class TestUtil {
         userTaskRun.setUserId("33333");
         userTaskRun.setUserGroup("1234567");
         userTaskRun.setScheduledTime(new Date());
-        userTaskRun.setNodeRunId(nodeRun().getObjectId());
+        userTaskRun.setNodeRunId(nodeRun(wfRunId).getObjectId());
         return userTaskRun;
     }
 
@@ -194,6 +208,7 @@ public class TestUtil {
     public static TaskNodeModel taskNode() {
         TaskNodeModel taskNode = new TaskNodeModel();
         taskNode.setTaskDefId(new TaskDefIdModel("test-task-def-name"));
+        taskNode.setTaskToExecuteType(TaskToExecuteCase.TASK_DEF_ID);
         return taskNode;
     }
 
@@ -246,9 +261,27 @@ public class TestUtil {
         return acl;
     }
 
+    public static ServerACLModel aclWithTenantResource() {
+        ServerACLModel acl = new ServerACLModel();
+        acl.setName(Optional.of("name"));
+        acl.setPrefix(Optional.empty());
+        acl.setResources(List.of(ACLResource.ACL_TENANT));
+        acl.setAllowedActions(List.of(ACLAction.WRITE_METADATA));
+        return acl;
+    }
+
     public static ServerACLsModel singleAcl() {
         return ServerACLsModel.fromProto(
                 ServerACLs.newBuilder().addAcls(acl().toProto()).build(), ServerACLsModel.class, null);
+    }
+
+    public static ServerACLsModel singleAclWithTenantResource() {
+        return ServerACLsModel.fromProto(
+                ServerACLs.newBuilder()
+                        .addAcls(aclWithTenantResource().toProto())
+                        .build(),
+                ServerACLsModel.class,
+                null);
     }
 
     public static ServerACLModel adminAcl() {

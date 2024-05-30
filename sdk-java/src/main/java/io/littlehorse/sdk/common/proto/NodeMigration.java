@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * EXPERIMENTAL: Specification for migrating a WfRun from a Node in one WfSpec
+ * to a Node in another WfSpec version.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.NodeMigration}
  */
 public final class NodeMigration extends
@@ -43,6 +48,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object newNodeName_ = "";
   /**
+   * <pre>
+   * The name of the Node on the new WfSpec to move to.
+   * </pre>
+   *
    * <code>string new_node_name = 1;</code>
    * @return The newNodeName.
    */
@@ -60,6 +69,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the Node on the new WfSpec to move to.
+   * </pre>
+   *
    * <code>string new_node_name = 1;</code>
    * @return The bytes for newNodeName.
    */
@@ -235,6 +248,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * EXPERIMENTAL: Specification for migrating a WfRun from a Node in one WfSpec
+   * to a Node in another WfSpec version.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.NodeMigration}
    */
   public static final class Builder extends
@@ -406,6 +424,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object newNodeName_ = "";
     /**
+     * <pre>
+     * The name of the Node on the new WfSpec to move to.
+     * </pre>
+     *
      * <code>string new_node_name = 1;</code>
      * @return The newNodeName.
      */
@@ -422,6 +444,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the Node on the new WfSpec to move to.
+     * </pre>
+     *
      * <code>string new_node_name = 1;</code>
      * @return The bytes for newNodeName.
      */
@@ -439,6 +465,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the Node on the new WfSpec to move to.
+     * </pre>
+     *
      * <code>string new_node_name = 1;</code>
      * @param value The newNodeName to set.
      * @return This builder for chaining.
@@ -452,6 +482,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the Node on the new WfSpec to move to.
+     * </pre>
+     *
      * <code>string new_node_name = 1;</code>
      * @return This builder for chaining.
      */
@@ -462,6 +496,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the Node on the new WfSpec to move to.
+     * </pre>
+     *
      * <code>string new_node_name = 1;</code>
      * @param value The bytes for newNodeName to set.
      * @return This builder for chaining.

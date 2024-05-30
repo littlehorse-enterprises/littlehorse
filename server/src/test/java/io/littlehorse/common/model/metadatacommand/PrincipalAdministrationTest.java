@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
@@ -16,6 +17,7 @@ import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.DeletePrincipalRequest;
 import io.littlehorse.sdk.common.proto.Principal;
+import io.littlehorse.sdk.common.proto.PrincipalId;
 import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
 import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.server.KafkaStreamsServerImpl;
@@ -106,13 +108,50 @@ public class PrincipalAdministrationTest {
     @Test
     public void supportStorePrincipalWithGlobalAcls() {
         defaultStore.put(new StoredGetable<>(new TenantModel(tenantId)));
+        StoredGetable storedRequester =
+                defaultStore.get(new PrincipalIdModel(requesterId).getStoreableKey(), StoredGetable.class);
+        PrincipalModel requester = (PrincipalModel) storedRequester.getStoredObject();
+        requester.getPerTenantAcls().clear();
+        requester.setGlobalAcls(TestUtil.singleAdminAcl("tyler"));
+        defaultStore.put(new StoredGetable<>(requester));
+
         putPrincipalRequest.getPerTenantAcls().clear();
-        putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAcl()));
         putPrincipalRequest.setGlobalAcls(TestUtil.singleAcl());
         sendCommand(putPrincipalRequest);
 
-        assertThat(storedPrincipal().getPerTenantAcls().keySet()).isNotEmpty();
+        assertThat(storedPrincipal().getPerTenantAcls().keySet()).isEmpty();
         assertThat(storedPrincipal().getGlobalAcls().getAcls()).containsExactly(TestUtil.acl());
+    }
+
+    @Test
+    public void shouldPreventPrivilegeEscalationOnGlobalAcls() {
+        defaultStore.put(new StoredGetable<>(new TenantModel(tenantId)));
+        StoredGetable storedRequester =
+                defaultStore.get(new PrincipalIdModel(requesterId).getStoreableKey(), StoredGetable.class);
+        PrincipalModel requester = (PrincipalModel) storedRequester.getStoredObject();
+        requester.getPerTenantAcls().clear();
+        requester.setGlobalAcls(new ServerACLsModel());
+        defaultStore.put(new StoredGetable<>(requester));
+
+        putPrincipalRequest.getPerTenantAcls().clear();
+        putPrincipalRequest.setGlobalAcls(TestUtil.singleAcl());
+        sendCommand(putPrincipalRequest);
+
+        metadataCache.clear();
+        StoredGetable<Principal, PrincipalModel> storedPrincipal =
+                defaultStore.get(new PrincipalIdModel(principalId.toString()).getStoreableKey(), StoredGetable.class);
+        assertThat(storedPrincipal).isNull();
+    }
+
+    @Test
+    public void supportPrincipalWithoutAcls() {
+        defaultStore.put(new StoredGetable<>(new TenantModel(tenantId)));
+        putPrincipalRequest.getPerTenantAcls().clear();
+        putPrincipalRequest.setGlobalAcls(new ServerACLsModel());
+        sendCommand(putPrincipalRequest);
+
+        assertThat(storedPrincipal().getPerTenantAcls().keySet()).isEmpty();
+        assertThat(storedPrincipal().getGlobalAcls().getAcls()).isEmpty();
     }
 
     @Test
@@ -120,8 +159,7 @@ public class PrincipalAdministrationTest {
         putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("acl-before-overwrite")));
         sendCommand(putPrincipalRequest);
 
-        putPrincipalRequest.setPerTenantAcls(
-                Map.of(tenantId.toString(), TestUtil.singleAdminAcl("acl-after-overwrite")));
+        putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("acl-after-overwrite")));
         putPrincipalRequest.setOverwrite(true);
 
         sendCommand(putPrincipalRequest);
@@ -133,11 +171,9 @@ public class PrincipalAdministrationTest {
 
     @Test
     public void shouldPreventPrincipalOverwriteIfItIsNotMarkedToOverwrite() {
-        putPrincipalRequest.setPerTenantAcls(
-                Map.of(tenantId.toString(), TestUtil.singleAdminAcl("acl-before-overwrite")));
+        putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("acl-before-overwrite")));
         sendCommand(putPrincipalRequest);
-        putPrincipalRequest.setPerTenantAcls(
-                Map.of(tenantId.toString(), TestUtil.singleAdminAcl("acl-after-overwrite")));
+        putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("acl-after-overwrite")));
         putPrincipalRequest.setOverwrite(false);
         metadataCache.clear();
         MetadataCommandModel command = sendCommand(putPrincipalRequest);
@@ -146,7 +182,6 @@ public class PrincipalAdministrationTest {
 
     @Test
     public void supportPrincipalDowngrade() {
-        String newPrincipalTenantId = "my-tenant";
         putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("acl-before-overwrite")));
         sendCommand(putPrincipalRequest);
         putPrincipalRequest.setId("other-principal");
@@ -160,7 +195,7 @@ public class PrincipalAdministrationTest {
 
     @Test
     public void supportPrincipalDeletion() {
-        putPrincipalRequest.setPerTenantAcls(Map.of(tenantId.toString(), TestUtil.singleAdminAcl("name")));
+        putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("name")));
         sendCommand(putPrincipalRequest);
 
         assertThat(storedPrincipal()).isNotNull();
@@ -182,7 +217,7 @@ public class PrincipalAdministrationTest {
         assertThat(thrown)
                 .isNotNull()
                 .isInstanceOf(Exception.class)
-                .hasMessage("UNAUTHENTICATED: You are not allowed to write over the tenant [other-tenant]");
+                .hasMessage("PERMISSION_DENIED: Unauthorized to edit Principals affecting specified tenants");
     }
 
     @Test
@@ -217,6 +252,23 @@ public class PrincipalAdministrationTest {
         verify(server, never()).sendErrorToClient(any(), any());
     }
 
+    @Test
+    void shouldNotAllowPrincipalWithoutGlobalACLsToHaveAnACLThatPointsToTenantResource() {
+        putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAclWithTenantResource()));
+        MetadataCommandModel command = sendCommand(putPrincipalRequest);
+
+        ArgumentCaptor<Exception> exceptionArgumentCaptor = ArgumentCaptor.forClass(Exception.class);
+
+        verify(server).sendErrorToClient(eq(command.getCommandId()), exceptionArgumentCaptor.capture());
+
+        Exception thrown = exceptionArgumentCaptor.getValue();
+        assertThat(thrown)
+                .isNotNull()
+                .isInstanceOf(LHApiException.class)
+                .hasMessage(
+                        "INVALID_ARGUMENT: PutPrincipalRequest does not allow non-Admin users to have any permissions on tenants");
+    }
+
     private PutPrincipalRequest principalRequestToProcess() {
         System.out.println("hi there");
         System.out.println(this.principalId);
@@ -224,7 +276,7 @@ public class PrincipalAdministrationTest {
                 .setId(principalId)
                 .setOverwrite(false)
                 .putPerTenantAcls(
-                        tenantId.toString(),
+                        tenantId,
                         ServerACLs.newBuilder()
                                 .addAcls(TestUtil.acl().toProto())
                                 .build())
@@ -232,7 +284,9 @@ public class PrincipalAdministrationTest {
     }
 
     private DeletePrincipalRequest deletePrincipalRequest() {
-        return DeletePrincipalRequest.newBuilder().setId(principalId.toString()).build();
+        return DeletePrincipalRequest.newBuilder()
+                .setId(PrincipalId.newBuilder().setId(principalId))
+                .build();
     }
 
     private PrincipalModel storedPrincipal() {

@@ -24,6 +24,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Answers;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,7 +53,7 @@ public class WfSpecModelTest {
     @Test
     public void shouldPreventInheritedVariablesFromParentWfSpec() {
         wfSpec.setParentWfSpec(null);
-        verify(childEntrypointThread, never()).validate();
+        verify(childEntrypointThread, never()).validate(Mockito.any());
         Throwable caughtException =
                 Assertions.catchThrowable(() -> wfSpec.validateAndMaybeBumpVersion(Optional.empty(), mockContext));
         Assertions.assertThat(caughtException)
@@ -65,7 +66,7 @@ public class WfSpecModelTest {
     public void shouldValidateInheritedVariableExists() {
         when(mockContext.service().getWfSpec("my-parent-wf", 1, 0)).thenReturn(parentWfSpec);
         wfSpec.setParentWfSpec(new ParentWfSpecReferenceModel("my-parent-wf", 1));
-        verify(childEntrypointThread, never()).validate();
+        verify(childEntrypointThread, never()).validate(Mockito.any());
         Throwable caughtException =
                 Assertions.catchThrowable(() -> wfSpec.validateAndMaybeBumpVersion(Optional.empty(), mockContext));
         Assertions.assertThat(caughtException)
@@ -82,7 +83,7 @@ public class WfSpecModelTest {
         parentEntrypoint.setVariableDefs(List.of(parentVariable));
         when(mockContext.service().getWfSpec("my-parent-wf", 2, 0)).thenReturn(parentWfSpec);
         wfSpec.setParentWfSpec(new ParentWfSpecReferenceModel("my-parent-wf", 2));
-        verify(childEntrypointThread, never()).validate();
+        verify(childEntrypointThread, never()).validate(Mockito.any());
         Throwable caughtException =
                 Assertions.catchThrowable(() -> wfSpec.validateAndMaybeBumpVersion(Optional.empty(), mockContext));
         Assertions.assertThat(caughtException)
@@ -99,7 +100,7 @@ public class WfSpecModelTest {
         ThreadVarDefModel privateVariable =
                 new ThreadVarDefModel(variableDef, false, false, WfRunVariableAccessLevel.PRIVATE_VAR);
         ThreadSpecModel entrypointThread = spy(wfSpec.getThreadSpecs().get(wfSpec.getEntrypointThreadName()));
-        doNothing().when(entrypointThread).validate();
+        doNothing().when(entrypointThread).validate(Mockito.any());
         oldVersion.getEntrypointThread().setVariableDefs(List.of(publicVariable));
         entrypointThread.setVariableDefs(List.of(privateVariable));
         wfSpec.setThreadSpecs(Map.of(wfSpec.getEntrypointThreadName(), entrypointThread));
@@ -116,7 +117,7 @@ public class WfSpecModelTest {
         ThreadVarDefModel privateVariable =
                 new ThreadVarDefModel(variableDef, false, false, WfRunVariableAccessLevel.PRIVATE_VAR);
         ThreadSpecModel entrypointThread = spy(wfSpec.getThreadSpecs().get(wfSpec.getEntrypointThreadName()));
-        doNothing().when(entrypointThread).validate();
+        doNothing().when(entrypointThread).validate(Mockito.any());
         oldVersion.getEntrypointThread().setVariableDefs(List.of(inheritedVar));
         when(mockContext.service().getWfSpec("my-parent-wf", 2, 0)).thenReturn(oldVersion);
         wfSpec.setParentWfSpec(new ParentWfSpecReferenceModel("my-parent-wf", 2));
@@ -135,7 +136,7 @@ public class WfSpecModelTest {
         ThreadVarDefModel fromVar = new ThreadVarDefModel(variableDef, false, false, from);
         ThreadVarDefModel toVar = new ThreadVarDefModel(variableDef, false, false, to);
         ThreadSpecModel entrypointThread = spy(wfSpec.getThreadSpecs().get(wfSpec.getEntrypointThreadName()));
-        doNothing().when(entrypointThread).validate();
+        doNothing().when(entrypointThread).validate(Mockito.any());
         oldVersion.getEntrypointThread().setVariableDefs(List.of(fromVar));
         if (to == WfRunVariableAccessLevel.INHERITED_VAR) {
             when(mockContext.service().getWfSpec("my-parent-wf", 2, 0)).thenReturn(oldVersion);

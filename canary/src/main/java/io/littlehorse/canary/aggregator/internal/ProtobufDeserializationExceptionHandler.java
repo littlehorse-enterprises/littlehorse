@@ -13,7 +13,7 @@ public class ProtobufDeserializationExceptionHandler implements DeserializationE
     public DeserializationHandlerResponse handle(
             final ProcessorContext context, final ConsumerRecord<byte[], byte[]> record, final Exception exception) {
 
-        if (ProtobufDeserializationException.class.isInstance(exception)) {
+        if (exception instanceof ProtobufDeserializationException) {
             return DeserializationHandlerResponse.CONTINUE;
         }
 

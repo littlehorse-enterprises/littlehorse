@@ -30,6 +30,9 @@ service LittleHorse {
   // Gets a TaskDef.
   rpc GetTaskDef(TaskDefId) returns (TaskDef) {}
 
+  // Gets the registered task worker group associated with a specific TaskDef.
+  rpc GetTaskWorkerGroup (TaskDefId) returns (TaskWorkerGroup) {}
+
   // Creates an ExternalEventDef.
   rpc PutExternalEventDef(PutExternalEventDefRequest) returns (ExternalEventDef) {}
 
@@ -48,24 +51,27 @@ service LittleHorse {
   // Returns the latest WfSpec with a specified name (and optionally a specified Major Version).
   rpc GetLatestWfSpec(GetLatestWfSpecRequest) returns (WfSpec) {}
 
-  // EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
-  // same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
-  // you must update WfRun's that are in the RUNNING state rather than allowing them to run to
-  // completion.
-  //
-  // As of 0.7.2, this feature is only partially implemented.
+  /*
+   * EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
+   * same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
+   * you must update WfRun's that are in the RUNNING state rather than allowing them to run to
+   * completion.
+   *
+   * As of 0.7.2, this feature is only partially implemented.
+   */
   rpc MigrateWfSpec(MigrateWfSpecRequest) returns (WfSpec) {}
 
   // Creates a UserTaskDef.
   rpc PutUserTaskDef(PutUserTaskDefRequest) returns (UserTaskDef) {}
 
-  // Gets a specific UserTaskDef.
-  //
-  // This RPC is highly useful for applications built around
-  // User Tasks. For example, a UI that dynamically displays form fields based on the User Task
-  // might first receive a UserTaskRun, then use that UserTaskRun to look up the UserTaskDef.
-  // The frontend would inspect the UserTaskDef and display a form field on the browser page
-  // for each field in the UserTaskDef.
+  /* Gets a specific UserTaskDef.
+   *
+   * This RPC is highly useful for applications built around
+   * User Tasks. For example, a UI that dynamically displays form fields based on the User Task
+   * might first receive a UserTaskRun, then use that UserTaskRun to look up the UserTaskDef.
+   * The frontend would inspect the UserTaskDef and display a form field on the browser page
+   * for each field in the UserTaskDef.
+   */
   rpc GetUserTaskDef(UserTaskDefId) returns (UserTaskDef) {}
 
   // Returns the most recent UserTaskDef with a specific name.
@@ -171,8 +177,11 @@ service LittleHorse {
   // Search for WfSpec's.
   rpc SearchWfSpec(SearchWfSpecRequest) returns (WfSpecIdList) {}
 
-  // Search for ExteranlEventDef's.
+  // Search for ExternalEventDef's.
   rpc SearchExternalEventDef(SearchExternalEventDefRequest) returns (ExternalEventDefIdList) {}
+
+  // Search for all available TenantIds for current Principal
+  rpc SearchTenant(SearchTenantRequest) returns (TenantIdList) {}
 
   // Used by the Task Worker to:
   // 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -201,6 +210,10 @@ service LittleHorse {
   rpc DeleteUserTaskDef(DeleteUserTaskDefRequest) returns (google.protobuf.Empty) {}
   // Deletes an ExternalEventDef.
   rpc DeleteExternalEventDef(DeleteExternalEventDefRequest) returns (google.protobuf.Empty) {}
+  // Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
+  // is the last remaining `Principal` with admin permissions. Admin permissions are defined
+  // as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
+  rpc DeletePrincipal(DeletePrincipalRequest) returns (google.protobuf.Empty) {}
 
   // Returns TaskDef Metrics for a specific TaskDef and a specific time window.
   rpc GetTaskDefMetricsWindow(TaskDefMetricsQueryRequest) returns (TaskDefMetrics) {}
@@ -213,6 +226,9 @@ service LittleHorse {
 
   // EXPERIMENTAL: Creates another Tenant in the LH Server.
   rpc PutTenant(PutTenantRequest) returns (Tenant) {}
+
+  // EXPERIMENTAL: Gets a Tenant from the LH Server.
+  rpc GetTenant(TenantId) returns (Tenant) {}
 
   // EXPERIMENTAL: Creates an Principal.
   rpc PutPrincipal(PutPrincipalRequest) returns (Principal) {}
@@ -747,6 +763,21 @@ message ExternalEventDefIdList {
   optional bytes bookmark = 2;
 }
 
+// Search for all available TenantIds for current Principal
+message SearchTenantRequest {
+      // Maximum results to return in one request.
+      optional int32 limit = 1;
+      // Bookmark for cursor-based pagination; pass if applicable.
+      optional bytes bookmark = 2;
+}
+
+message TenantIdList {
+      // The resulting object id's.
+      repeated TenantId results = 1;
+      // Bookmark for cursor-based pagination; pass if applicable.
+      optional bytes bookmark = 2;
+}
+
 // EVOLVING: Search for ExternalEvent's.
 //
 // Currently, this request allows you to search for ExternalEvent's based on either:
@@ -795,12 +826,26 @@ message ExternalEventIdList {
 message ListNodeRunsRequest {
   // The WfRun for whom we list NodeRun's.
   WfRunId wf_run_id = 1;
+
+  // Optionally specify the thread run number to filter NodeRun's by.
+  optional int32 thread_run_number = 2;
+
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 3;
+
+  // Maximum results to return in one request.
+  optional int32 limit = 4;
 }
 
 // A list of NodeRun Objects.
 message NodeRunList {
   // A list of NodeRun Objects.
   repeated NodeRun results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
 }
 
 // List all Variables for a specific WfRun. Note that List requests return actual Variable Objects,
@@ -1100,6 +1145,26 @@ message ListUserTaskRunRequest {
 message UserTaskRunList {
   // A list of UserTaskRun Objects
   repeated UserTaskRun results = 1;
+}
+
+// Describes a specific task worker
+message TaskWorkerMetadata {
+  // User-defined identifier for the worker.
+  string task_worker_id = 1;
+  // Timestamp indicating the last heartbeat sent by the worker.
+  google.protobuf.Timestamp latest_heartbeat = 2;
+  // The host(s) where the worker is polling tasks
+  repeated LHHostInfo hosts = 3;
+}
+
+// Describes all workers registered for a specific TaskDef.
+message TaskWorkerGroup {
+  // Identifier for the group.
+  TaskWorkerGroupId id = 1;
+  // Timestamp indicating when the worker group was initially registered.
+  google.protobuf.Timestamp created_at = 2;
+  // Metadata grouped by ClientId string.
+  map<string, TaskWorkerMetadata> task_workers = 3;
 }
 
 // List TaskRun's for a specific WfRun

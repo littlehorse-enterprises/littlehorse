@@ -6,10 +6,7 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.usertask.UserTaskSchema;
-import io.littlehorse.sdk.wfsdk.WorkflowThread;
-import io.littlehorse.sdk.wfsdk.UserTaskOutput;
-import io.littlehorse.sdk.wfsdk.WfRunVariable;
-import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.*;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 
@@ -17,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Properties;
 
 public class UserTasksExample {
@@ -53,7 +51,6 @@ public class UserTasksExample {
 
         wf.handleException(
             formOutput,
-            "USER_TASK_CANCELLED",
             handler -> {
                 String email = "test-ut-support@gmail.com";
                 handler.execute(EMAIL_TASK_NAME, email, "Task cancelled");

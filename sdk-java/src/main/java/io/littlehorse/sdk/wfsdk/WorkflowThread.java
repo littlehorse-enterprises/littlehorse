@@ -37,6 +37,30 @@ public interface WorkflowThread {
     TaskNodeOutput execute(String taskName, Serializable... args);
 
     /**
+     * Adds a TASK node to the ThreadSpec.
+     *
+     * @param taskName a WfRunVariable containing the name of the TaskDef to execute.
+     * @param args The input parameters to pass into the Task Run. If the type of an arg is a
+     *     `WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+     *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
+     *     pass that literal value in.
+     * @return A NodeOutput for that TASK node.
+     */
+    TaskNodeOutput execute(WfRunVariable taskName, Serializable... args);
+
+    /**
+     * Adds a TASK node to the ThreadSpec.
+     *
+     * @param taskName an LHFormatString containing the name of the TaskDef to execute.
+     * @param args The input parameters to pass into the Task Run. If the type of an arg is a
+     *     `WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+     *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
+     *     pass that literal value in.
+     * @return A NodeOutput for that TASK node.
+     */
+    TaskNodeOutput execute(LHFormatString taskName, Serializable... args);
+
+    /**
      * Adds a User Task Node, and assigns it to a specific user
      *
      * @param userTaskDefName is the UserTaskDef to assign.
@@ -158,6 +182,20 @@ public interface WorkflowThread {
      */
     void scheduleReminderTaskOnAssignment(
             UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, Serializable... args);
+
+    /**
+     * Cancels a User Task Run if it exceeds a specified deadline.
+     * @param userTask is a reference to the UserTaskNode that will be canceled after the deadline
+     * @param delaySeconds is the delay time after which the User Task Run should be canceled
+     */
+    void cancelUserTaskRunAfter(UserTaskOutput userTask, Serializable delaySeconds);
+
+    /**
+     * Cancels a User Task Run if it exceeds a specified deadline after it is assigned
+     * @param userTask is a reference to the UserTaskNode that will be canceled after the deadline
+     * @param delaySeconds is the delay time after which the User Task Run should be canceled
+     */
+    void cancelUserTaskRunAfterAssignment(UserTaskOutput userTask, Serializable delaySeconds);
 
     /**
      * Adds a task reminder once a user is assigned to the UserTask.

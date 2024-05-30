@@ -4,6 +4,13 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * An ExternalEventNode causes the WfRun to stop and wait for an ExternalEvent
+ * to arrive before continuing onwards.
+ *
+ * The output is just the content of the ExternalEvent.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ExternalEventNode}
  */
 public final class ExternalEventNode extends
@@ -41,6 +48,10 @@ private static final long serialVersionUID = 0L;
   public static final int EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.ExternalEventDefId externalEventDefId_;
   /**
+   * <pre>
+   * The ID of the ExternalEventDef that we are waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
    * @return Whether the externalEventDefId field is set.
    */
@@ -49,6 +60,10 @@ private static final long serialVersionUID = 0L;
     return externalEventDefId_ != null;
   }
   /**
+   * <pre>
+   * The ID of the ExternalEventDef that we are waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
    * @return The externalEventDefId.
    */
@@ -57,6 +72,10 @@ private static final long serialVersionUID = 0L;
     return externalEventDefId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance() : externalEventDefId_;
   }
   /**
+   * <pre>
+   * The ID of the ExternalEventDef that we are waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
    */
   @java.lang.Override
@@ -67,6 +86,11 @@ private static final long serialVersionUID = 0L;
   public static final int TIMEOUT_SECONDS_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.VariableAssignment timeoutSeconds_;
   /**
+   * <pre>
+   * Determines the maximum amount of time that the NodeRun will wait for the
+   * ExternalEvent to arrive.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
    * @return Whether the timeoutSeconds field is set.
    */
@@ -75,6 +99,11 @@ private static final long serialVersionUID = 0L;
     return timeoutSeconds_ != null;
   }
   /**
+   * <pre>
+   * Determines the maximum amount of time that the NodeRun will wait for the
+   * ExternalEvent to arrive.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
    * @return The timeoutSeconds.
    */
@@ -83,6 +112,11 @@ private static final long serialVersionUID = 0L;
     return timeoutSeconds_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : timeoutSeconds_;
   }
   /**
+   * <pre>
+   * Determines the maximum amount of time that the NodeRun will wait for the
+   * ExternalEvent to arrive.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
    */
   @java.lang.Override
@@ -269,6 +303,13 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * An ExternalEventNode causes the WfRun to stop and wait for an ExternalEvent
+   * to arrive before continuing onwards.
+   *
+   * The output is just the content of the ExternalEvent.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ExternalEventNode}
    */
   public static final class Builder extends
@@ -468,6 +509,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder> externalEventDefIdBuilder_;
     /**
+     * <pre>
+     * The ID of the ExternalEventDef that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      * @return Whether the externalEventDefId field is set.
      */
@@ -475,6 +520,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The ID of the ExternalEventDef that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      * @return The externalEventDefId.
      */
@@ -486,6 +535,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the ExternalEventDef that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public Builder setExternalEventDefId(io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
@@ -502,6 +555,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the ExternalEventDef that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public Builder setExternalEventDefId(
@@ -516,6 +573,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the ExternalEventDef that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public Builder mergeExternalEventDefId(io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
@@ -535,6 +596,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the ExternalEventDef that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public Builder clearExternalEventDefId() {
@@ -548,6 +613,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the ExternalEventDef that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder getExternalEventDefIdBuilder() {
@@ -556,6 +625,10 @@ private static final long serialVersionUID = 0L;
       return getExternalEventDefIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the ExternalEventDef that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefIdOrBuilder() {
@@ -567,6 +640,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the ExternalEventDef that we are waiting for.
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -587,6 +664,11 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> timeoutSecondsBuilder_;
     /**
+     * <pre>
+     * Determines the maximum amount of time that the NodeRun will wait for the
+     * ExternalEvent to arrive.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      * @return Whether the timeoutSeconds field is set.
      */
@@ -594,6 +676,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * Determines the maximum amount of time that the NodeRun will wait for the
+     * ExternalEvent to arrive.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      * @return The timeoutSeconds.
      */
@@ -605,6 +692,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Determines the maximum amount of time that the NodeRun will wait for the
+     * ExternalEvent to arrive.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      */
     public Builder setTimeoutSeconds(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -621,6 +713,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Determines the maximum amount of time that the NodeRun will wait for the
+     * ExternalEvent to arrive.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      */
     public Builder setTimeoutSeconds(
@@ -635,6 +732,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Determines the maximum amount of time that the NodeRun will wait for the
+     * ExternalEvent to arrive.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      */
     public Builder mergeTimeoutSeconds(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -654,6 +756,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Determines the maximum amount of time that the NodeRun will wait for the
+     * ExternalEvent to arrive.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      */
     public Builder clearTimeoutSeconds() {
@@ -667,6 +774,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Determines the maximum amount of time that the NodeRun will wait for the
+     * ExternalEvent to arrive.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getTimeoutSecondsBuilder() {
@@ -675,6 +787,11 @@ private static final long serialVersionUID = 0L;
       return getTimeoutSecondsFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Determines the maximum amount of time that the NodeRun will wait for the
+     * ExternalEvent to arrive.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getTimeoutSecondsOrBuilder() {
@@ -686,6 +803,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Determines the maximum amount of time that the NodeRun will wait for the
+     * ExternalEvent to arrive.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

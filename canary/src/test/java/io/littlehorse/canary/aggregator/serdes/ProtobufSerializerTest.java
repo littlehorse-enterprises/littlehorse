@@ -4,8 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.google.protobuf.util.Timestamps;
-import io.littlehorse.canary.proto.Beat;
-import io.littlehorse.canary.proto.LatencyBeat;
+import io.littlehorse.canary.proto.BeatValue;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
 
@@ -22,11 +21,7 @@ class ProtobufSerializerTest {
     @Test
     void beatSerialization() {
         ProtobufSerializer serializer = new ProtobufSerializer();
-        Beat metric = Beat.newBuilder()
-                .setTime(Timestamps.now())
-                .setLatencyBeat(
-                        LatencyBeat.newBuilder().setLatency(faker.number().randomNumber()))
-                .build();
+        BeatValue metric = BeatValue.newBuilder().setTime(Timestamps.now()).build();
 
         byte[] expected = metric.toByteArray();
         byte[] actual = serializer.serialize(null, metric);

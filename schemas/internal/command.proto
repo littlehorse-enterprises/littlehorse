@@ -214,15 +214,3 @@ message LHTimerPb {
     optional TenantId tenant_id = 5; // default if not set
     optional PrincipalId principal_id = 6; // anonymous if not set
 }
-
-message TaskWorkerMetadata {
-  string task_worker_id = 1;
-  google.protobuf.Timestamp latest_heartbeat = 2;
-  repeated LHHostInfo hosts = 3;
-}
-
-message TaskWorkerGroup {
-  TaskWorkerGroupId id = 1;
-  google.protobuf.Timestamp created_at = 2;
-  map<string, TaskWorkerMetadata> task_workers = 3;
-}

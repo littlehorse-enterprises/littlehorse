@@ -64,7 +64,6 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
                 LHSerializable.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
         timedOut = p.getTimedOut();
         this.executionContext = context;
-        this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
     @Override
@@ -85,7 +84,7 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
     }
 
     @Override
-    public boolean checkIfProcessingCompleted() {
+    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) {
         if (externalEventId != null) return true;
 
         NodeModel node = nodeRun.getNode();
@@ -107,7 +106,7 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput() {
+    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
         if (externalEventDefId == null) {
             throw new IllegalStateException("called getOutput() before node finished!");
         }
@@ -122,12 +121,12 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
      * happen.
      */
     @Override
-    public boolean maybeHalt() {
+    public boolean maybeHalt(ProcessorExecutionContext processorContext) {
         return true;
     }
 
     @Override
-    public void arrive(Date time) throws NodeFailureException {
+    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
         // Only thing to do is maybe schedule a timeout.
         if (getNode().getExternalEventNode().getTimeoutSeconds() != null) {
             try {

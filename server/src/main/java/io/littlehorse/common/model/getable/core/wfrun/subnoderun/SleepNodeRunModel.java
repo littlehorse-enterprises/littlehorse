@@ -57,12 +57,12 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
     }
 
     @Override
-    public boolean checkIfProcessingCompleted() {
+    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) {
         return this.isMatured();
     }
 
     @Override
-    public void arrive(Date time) throws NodeFailureException {
+    public void arrive(Date time, ProcessorExecutionContext processorContext) throws NodeFailureException {
         // We need to schedule the timer that says "hey the node is done"
         SleepNodeModel sleepNode = getNode().sleepNode;
         if (sleepNode == null) {
@@ -83,12 +83,12 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
     }
 
     @Override
-    public boolean maybeHalt() {
+    public boolean maybeHalt(ProcessorExecutionContext processorContext) {
         return true;
     }
 
     @Override
-    public Optional<VariableValueModel> getOutput() {
+    public Optional<VariableValueModel> getOutput(ProcessorExecutionContext processorContext) {
         return Optional.empty();
     }
 

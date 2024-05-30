@@ -77,6 +77,37 @@ public final class LittleHorseGrpc {
     return getGetTaskDefMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefId,
+      io.littlehorse.sdk.common.proto.TaskWorkerGroup> getGetTaskWorkerGroupMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetTaskWorkerGroup",
+      requestType = io.littlehorse.sdk.common.proto.TaskDefId.class,
+      responseType = io.littlehorse.sdk.common.proto.TaskWorkerGroup.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefId,
+      io.littlehorse.sdk.common.proto.TaskWorkerGroup> getGetTaskWorkerGroupMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskWorkerGroup> getGetTaskWorkerGroupMethod;
+    if ((getGetTaskWorkerGroupMethod = LittleHorseGrpc.getGetTaskWorkerGroupMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getGetTaskWorkerGroupMethod = LittleHorseGrpc.getGetTaskWorkerGroupMethod) == null) {
+          LittleHorseGrpc.getGetTaskWorkerGroupMethod = getGetTaskWorkerGroupMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskWorkerGroup>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetTaskWorkerGroup"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.TaskWorkerGroup.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetTaskWorkerGroup"))
+              .build();
+        }
+      }
+    }
+    return getGetTaskWorkerGroupMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutExternalEventDefRequest,
       io.littlehorse.sdk.common.proto.ExternalEventDef> getPutExternalEventDefMethod;
 
@@ -1224,6 +1255,37 @@ public final class LittleHorseGrpc {
     return getSearchExternalEventDefMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchTenantRequest,
+      io.littlehorse.sdk.common.proto.TenantIdList> getSearchTenantMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchTenant",
+      requestType = io.littlehorse.sdk.common.proto.SearchTenantRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.TenantIdList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchTenantRequest,
+      io.littlehorse.sdk.common.proto.TenantIdList> getSearchTenantMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchTenantRequest, io.littlehorse.sdk.common.proto.TenantIdList> getSearchTenantMethod;
+    if ((getSearchTenantMethod = LittleHorseGrpc.getSearchTenantMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getSearchTenantMethod = LittleHorseGrpc.getSearchTenantMethod) == null) {
+          LittleHorseGrpc.getSearchTenantMethod = getSearchTenantMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.SearchTenantRequest, io.littlehorse.sdk.common.proto.TenantIdList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchTenant"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.SearchTenantRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.TenantIdList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("SearchTenant"))
+              .build();
+        }
+      }
+    }
+    return getSearchTenantMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest,
       io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse> getRegisterTaskWorkerMethod;
 
@@ -1534,6 +1596,37 @@ public final class LittleHorseGrpc {
     return getDeleteExternalEventDefMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeletePrincipalRequest,
+      com.google.protobuf.Empty> getDeletePrincipalMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DeletePrincipal",
+      requestType = io.littlehorse.sdk.common.proto.DeletePrincipalRequest.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeletePrincipalRequest,
+      com.google.protobuf.Empty> getDeletePrincipalMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeletePrincipalRequest, com.google.protobuf.Empty> getDeletePrincipalMethod;
+    if ((getDeletePrincipalMethod = LittleHorseGrpc.getDeletePrincipalMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getDeletePrincipalMethod = LittleHorseGrpc.getDeletePrincipalMethod) == null) {
+          LittleHorseGrpc.getDeletePrincipalMethod = getDeletePrincipalMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeletePrincipalRequest, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeletePrincipal"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.DeletePrincipalRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("DeletePrincipal"))
+              .build();
+        }
+      }
+    }
+    return getDeletePrincipalMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest,
       io.littlehorse.sdk.common.proto.TaskDefMetrics> getGetTaskDefMetricsWindowMethod;
 
@@ -1687,6 +1780,37 @@ public final class LittleHorseGrpc {
       }
     }
     return getPutTenantMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TenantId,
+      io.littlehorse.sdk.common.proto.Tenant> getGetTenantMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetTenant",
+      requestType = io.littlehorse.sdk.common.proto.TenantId.class,
+      responseType = io.littlehorse.sdk.common.proto.Tenant.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TenantId,
+      io.littlehorse.sdk.common.proto.Tenant> getGetTenantMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.Tenant> getGetTenantMethod;
+    if ((getGetTenantMethod = LittleHorseGrpc.getGetTenantMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getGetTenantMethod = LittleHorseGrpc.getGetTenantMethod) == null) {
+          LittleHorseGrpc.getGetTenantMethod = getGetTenantMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.Tenant>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetTenant"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.Tenant.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetTenant"))
+              .build();
+        }
+      }
+    }
+    return getGetTenantMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutPrincipalRequest,
@@ -1848,6 +1972,16 @@ public final class LittleHorseGrpc {
     default void getTaskDef(io.littlehorse.sdk.common.proto.TaskDefId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskDef> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetTaskDefMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Gets the registered task worker group associated with a specific TaskDef.
+     * </pre>
+     */
+    default void getTaskWorkerGroup(io.littlehorse.sdk.common.proto.TaskDefId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskWorkerGroup> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetTaskWorkerGroupMethod(), responseObserver);
     }
 
     /**
@@ -2241,12 +2375,22 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Search for ExteranlEventDef's.
+     * Search for ExternalEventDef's.
      * </pre>
      */
     default void searchExternalEventDef(io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEventDefIdList> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchExternalEventDefMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Search for all available TenantIds for current Principal
+     * </pre>
+     */
+    default void searchTenant(io.littlehorse.sdk.common.proto.SearchTenantRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TenantIdList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchTenantMethod(), responseObserver);
     }
 
     /**
@@ -2356,6 +2500,18 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
+     * is the last remaining `Principal` with admin permissions. Admin permissions are defined
+     * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
+     * </pre>
+     */
+    default void deletePrincipal(io.littlehorse.sdk.common.proto.DeletePrincipalRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeletePrincipalMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
      * </pre>
      */
@@ -2402,6 +2558,16 @@ public final class LittleHorseGrpc {
     default void putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Tenant> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutTenantMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * </pre>
+     */
+    default void getTenant(io.littlehorse.sdk.common.proto.TenantId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Tenant> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetTenantMethod(), responseObserver);
     }
 
     /**
@@ -2482,6 +2648,17 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskDef> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetTaskDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Gets the registered task worker group associated with a specific TaskDef.
+     * </pre>
+     */
+    public void getTaskWorkerGroup(io.littlehorse.sdk.common.proto.TaskDefId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskWorkerGroup> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetTaskWorkerGroupMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -2911,13 +3088,24 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Search for ExteranlEventDef's.
+     * Search for ExternalEventDef's.
      * </pre>
      */
     public void searchExternalEventDef(io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEventDefIdList> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getSearchExternalEventDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Search for all available TenantIds for current Principal
+     * </pre>
+     */
+    public void searchTenant(io.littlehorse.sdk.common.proto.SearchTenantRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TenantIdList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchTenantMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -3037,6 +3225,19 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
+     * is the last remaining `Principal` with admin permissions. Admin permissions are defined
+     * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
+     * </pre>
+     */
+    public void deletePrincipal(io.littlehorse.sdk.common.proto.DeletePrincipalRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getDeletePrincipalMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
      * </pre>
      */
@@ -3088,6 +3289,17 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Tenant> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getPutTenantMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * </pre>
+     */
+    public void getTenant(io.littlehorse.sdk.common.proto.TenantId request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Tenant> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetTenantMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -3158,6 +3370,16 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.TaskDef getTaskDef(io.littlehorse.sdk.common.proto.TaskDefId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetTaskDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets the registered task worker group associated with a specific TaskDef.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.TaskWorkerGroup getTaskWorkerGroup(io.littlehorse.sdk.common.proto.TaskDefId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetTaskWorkerGroupMethod(), getCallOptions(), request);
     }
 
     /**
@@ -3551,12 +3773,22 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Search for ExteranlEventDef's.
+     * Search for ExternalEventDef's.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventDefIdList searchExternalEventDef(io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getSearchExternalEventDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for all available TenantIds for current Principal
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.TenantIdList searchTenant(io.littlehorse.sdk.common.proto.SearchTenantRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchTenantMethod(), getCallOptions(), request);
     }
 
     /**
@@ -3655,6 +3887,18 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
+     * is the last remaining `Principal` with admin permissions. Admin permissions are defined
+     * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
+     * </pre>
+     */
+    public com.google.protobuf.Empty deletePrincipal(io.littlehorse.sdk.common.proto.DeletePrincipalRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeletePrincipalMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
      * </pre>
      */
@@ -3701,6 +3945,16 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.Tenant putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getPutTenantMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.Tenant getTenant(io.littlehorse.sdk.common.proto.TenantId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetTenantMethod(), getCallOptions(), request);
     }
 
     /**
@@ -3770,6 +4024,17 @@ public final class LittleHorseGrpc {
         io.littlehorse.sdk.common.proto.TaskDefId request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetTaskDefMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Gets the registered task worker group associated with a specific TaskDef.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.TaskWorkerGroup> getTaskWorkerGroup(
+        io.littlehorse.sdk.common.proto.TaskDefId request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetTaskWorkerGroupMethod(), getCallOptions()), request);
     }
 
     /**
@@ -4199,13 +4464,24 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Search for ExteranlEventDef's.
+     * Search for ExternalEventDef's.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ExternalEventDefIdList> searchExternalEventDef(
         io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getSearchExternalEventDefMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Search for all available TenantIds for current Principal
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.TenantIdList> searchTenant(
+        io.littlehorse.sdk.common.proto.SearchTenantRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchTenantMethod(), getCallOptions()), request);
     }
 
     /**
@@ -4313,6 +4589,19 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
+     * is the last remaining `Principal` with admin permissions. Admin permissions are defined
+     * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deletePrincipal(
+        io.littlehorse.sdk.common.proto.DeletePrincipalRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getDeletePrincipalMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
      * </pre>
      */
@@ -4368,6 +4657,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Tenant> getTenant(
+        io.littlehorse.sdk.common.proto.TenantId request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetTenantMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * EXPERIMENTAL: Creates an Principal.
      * </pre>
      */
@@ -4402,61 +4702,65 @@ public final class LittleHorseGrpc {
 
   private static final int METHODID_PUT_TASK_DEF = 0;
   private static final int METHODID_GET_TASK_DEF = 1;
-  private static final int METHODID_PUT_EXTERNAL_EVENT_DEF = 2;
-  private static final int METHODID_GET_EXTERNAL_EVENT_DEF = 3;
-  private static final int METHODID_PUT_WORKFLOW_EVENT_DEF = 4;
-  private static final int METHODID_PUT_WF_SPEC = 5;
-  private static final int METHODID_GET_WF_SPEC = 6;
-  private static final int METHODID_GET_LATEST_WF_SPEC = 7;
-  private static final int METHODID_MIGRATE_WF_SPEC = 8;
-  private static final int METHODID_PUT_USER_TASK_DEF = 9;
-  private static final int METHODID_GET_USER_TASK_DEF = 10;
-  private static final int METHODID_GET_LATEST_USER_TASK_DEF = 11;
-  private static final int METHODID_RUN_WF = 12;
-  private static final int METHODID_GET_WF_RUN = 13;
-  private static final int METHODID_GET_USER_TASK_RUN = 14;
-  private static final int METHODID_ASSIGN_USER_TASK_RUN = 15;
-  private static final int METHODID_COMPLETE_USER_TASK_RUN = 16;
-  private static final int METHODID_CANCEL_USER_TASK_RUN = 17;
-  private static final int METHODID_LIST_USER_TASK_RUNS = 18;
-  private static final int METHODID_GET_NODE_RUN = 19;
-  private static final int METHODID_LIST_NODE_RUNS = 20;
-  private static final int METHODID_GET_TASK_RUN = 21;
-  private static final int METHODID_LIST_TASK_RUNS = 22;
-  private static final int METHODID_GET_VARIABLE = 23;
-  private static final int METHODID_LIST_VARIABLES = 24;
-  private static final int METHODID_PUT_EXTERNAL_EVENT = 25;
-  private static final int METHODID_GET_EXTERNAL_EVENT = 26;
-  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 27;
-  private static final int METHODID_LIST_EXTERNAL_EVENTS = 28;
-  private static final int METHODID_SEARCH_WF_RUN = 29;
-  private static final int METHODID_SEARCH_NODE_RUN = 30;
-  private static final int METHODID_SEARCH_TASK_RUN = 31;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 32;
-  private static final int METHODID_SEARCH_VARIABLE = 33;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 34;
-  private static final int METHODID_SEARCH_TASK_DEF = 35;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 36;
-  private static final int METHODID_SEARCH_WF_SPEC = 37;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 38;
-  private static final int METHODID_REGISTER_TASK_WORKER = 39;
-  private static final int METHODID_REPORT_TASK = 40;
-  private static final int METHODID_STOP_WF_RUN = 41;
-  private static final int METHODID_RESUME_WF_RUN = 42;
-  private static final int METHODID_DELETE_WF_RUN = 43;
-  private static final int METHODID_DELETE_TASK_DEF = 44;
-  private static final int METHODID_DELETE_WF_SPEC = 45;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 46;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 47;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 48;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 49;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 50;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 51;
-  private static final int METHODID_PUT_TENANT = 52;
-  private static final int METHODID_PUT_PRINCIPAL = 53;
-  private static final int METHODID_WHOAMI = 54;
-  private static final int METHODID_GET_SERVER_VERSION = 55;
-  private static final int METHODID_POLL_TASK = 56;
+  private static final int METHODID_GET_TASK_WORKER_GROUP = 2;
+  private static final int METHODID_PUT_EXTERNAL_EVENT_DEF = 3;
+  private static final int METHODID_GET_EXTERNAL_EVENT_DEF = 4;
+  private static final int METHODID_PUT_WORKFLOW_EVENT_DEF = 5;
+  private static final int METHODID_PUT_WF_SPEC = 6;
+  private static final int METHODID_GET_WF_SPEC = 7;
+  private static final int METHODID_GET_LATEST_WF_SPEC = 8;
+  private static final int METHODID_MIGRATE_WF_SPEC = 9;
+  private static final int METHODID_PUT_USER_TASK_DEF = 10;
+  private static final int METHODID_GET_USER_TASK_DEF = 11;
+  private static final int METHODID_GET_LATEST_USER_TASK_DEF = 12;
+  private static final int METHODID_RUN_WF = 13;
+  private static final int METHODID_GET_WF_RUN = 14;
+  private static final int METHODID_GET_USER_TASK_RUN = 15;
+  private static final int METHODID_ASSIGN_USER_TASK_RUN = 16;
+  private static final int METHODID_COMPLETE_USER_TASK_RUN = 17;
+  private static final int METHODID_CANCEL_USER_TASK_RUN = 18;
+  private static final int METHODID_LIST_USER_TASK_RUNS = 19;
+  private static final int METHODID_GET_NODE_RUN = 20;
+  private static final int METHODID_LIST_NODE_RUNS = 21;
+  private static final int METHODID_GET_TASK_RUN = 22;
+  private static final int METHODID_LIST_TASK_RUNS = 23;
+  private static final int METHODID_GET_VARIABLE = 24;
+  private static final int METHODID_LIST_VARIABLES = 25;
+  private static final int METHODID_PUT_EXTERNAL_EVENT = 26;
+  private static final int METHODID_GET_EXTERNAL_EVENT = 27;
+  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 28;
+  private static final int METHODID_LIST_EXTERNAL_EVENTS = 29;
+  private static final int METHODID_SEARCH_WF_RUN = 30;
+  private static final int METHODID_SEARCH_NODE_RUN = 31;
+  private static final int METHODID_SEARCH_TASK_RUN = 32;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 33;
+  private static final int METHODID_SEARCH_VARIABLE = 34;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 35;
+  private static final int METHODID_SEARCH_TASK_DEF = 36;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 37;
+  private static final int METHODID_SEARCH_WF_SPEC = 38;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 39;
+  private static final int METHODID_SEARCH_TENANT = 40;
+  private static final int METHODID_REGISTER_TASK_WORKER = 41;
+  private static final int METHODID_REPORT_TASK = 42;
+  private static final int METHODID_STOP_WF_RUN = 43;
+  private static final int METHODID_RESUME_WF_RUN = 44;
+  private static final int METHODID_DELETE_WF_RUN = 45;
+  private static final int METHODID_DELETE_TASK_DEF = 46;
+  private static final int METHODID_DELETE_WF_SPEC = 47;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 48;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 49;
+  private static final int METHODID_DELETE_PRINCIPAL = 50;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 51;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 52;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 53;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 54;
+  private static final int METHODID_PUT_TENANT = 55;
+  private static final int METHODID_GET_TENANT = 56;
+  private static final int METHODID_PUT_PRINCIPAL = 57;
+  private static final int METHODID_WHOAMI = 58;
+  private static final int METHODID_GET_SERVER_VERSION = 59;
+  private static final int METHODID_POLL_TASK = 60;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -4482,6 +4786,10 @@ public final class LittleHorseGrpc {
         case METHODID_GET_TASK_DEF:
           serviceImpl.getTaskDef((io.littlehorse.sdk.common.proto.TaskDefId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskDef>) responseObserver);
+          break;
+        case METHODID_GET_TASK_WORKER_GROUP:
+          serviceImpl.getTaskWorkerGroup((io.littlehorse.sdk.common.proto.TaskDefId) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskWorkerGroup>) responseObserver);
           break;
         case METHODID_PUT_EXTERNAL_EVENT_DEF:
           serviceImpl.putExternalEventDef((io.littlehorse.sdk.common.proto.PutExternalEventDefRequest) request,
@@ -4631,6 +4939,10 @@ public final class LittleHorseGrpc {
           serviceImpl.searchExternalEventDef((io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ExternalEventDefIdList>) responseObserver);
           break;
+        case METHODID_SEARCH_TENANT:
+          serviceImpl.searchTenant((io.littlehorse.sdk.common.proto.SearchTenantRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TenantIdList>) responseObserver);
+          break;
         case METHODID_REGISTER_TASK_WORKER:
           serviceImpl.registerTaskWorker((io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse>) responseObserver);
@@ -4667,6 +4979,10 @@ public final class LittleHorseGrpc {
           serviceImpl.deleteExternalEventDef((io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
+        case METHODID_DELETE_PRINCIPAL:
+          serviceImpl.deletePrincipal((io.littlehorse.sdk.common.proto.DeletePrincipalRequest) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
         case METHODID_GET_TASK_DEF_METRICS_WINDOW:
           serviceImpl.getTaskDefMetricsWindow((io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TaskDefMetrics>) responseObserver);
@@ -4685,6 +5001,10 @@ public final class LittleHorseGrpc {
           break;
         case METHODID_PUT_TENANT:
           serviceImpl.putTenant((io.littlehorse.sdk.common.proto.PutTenantRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Tenant>) responseObserver);
+          break;
+        case METHODID_GET_TENANT:
+          serviceImpl.getTenant((io.littlehorse.sdk.common.proto.TenantId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Tenant>) responseObserver);
           break;
         case METHODID_PUT_PRINCIPAL:
@@ -4734,6 +5054,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.TaskDefId,
               io.littlehorse.sdk.common.proto.TaskDef>(
                 service, METHODID_GET_TASK_DEF)))
+        .addMethod(
+          getGetTaskWorkerGroupMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.TaskDefId,
+              io.littlehorse.sdk.common.proto.TaskWorkerGroup>(
+                service, METHODID_GET_TASK_WORKER_GROUP)))
         .addMethod(
           getPutExternalEventDefMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -4994,6 +5321,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.ExternalEventDefIdList>(
                 service, METHODID_SEARCH_EXTERNAL_EVENT_DEF)))
         .addMethod(
+          getSearchTenantMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.SearchTenantRequest,
+              io.littlehorse.sdk.common.proto.TenantIdList>(
+                service, METHODID_SEARCH_TENANT)))
+        .addMethod(
           getRegisterTaskWorkerMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -5064,6 +5398,13 @@ public final class LittleHorseGrpc {
               com.google.protobuf.Empty>(
                 service, METHODID_DELETE_EXTERNAL_EVENT_DEF)))
         .addMethod(
+          getDeletePrincipalMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.DeletePrincipalRequest,
+              com.google.protobuf.Empty>(
+                service, METHODID_DELETE_PRINCIPAL)))
+        .addMethod(
           getGetTaskDefMetricsWindowMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -5098,6 +5439,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.PutTenantRequest,
               io.littlehorse.sdk.common.proto.Tenant>(
                 service, METHODID_PUT_TENANT)))
+        .addMethod(
+          getGetTenantMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.TenantId,
+              io.littlehorse.sdk.common.proto.Tenant>(
+                service, METHODID_GET_TENANT)))
         .addMethod(
           getPutPrincipalMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -5169,6 +5517,7 @@ public final class LittleHorseGrpc {
               .setSchemaDescriptor(new LittleHorseFileDescriptorSupplier())
               .addMethod(getPutTaskDefMethod())
               .addMethod(getGetTaskDefMethod())
+              .addMethod(getGetTaskWorkerGroupMethod())
               .addMethod(getPutExternalEventDefMethod())
               .addMethod(getGetExternalEventDefMethod())
               .addMethod(getPutWorkflowEventDefMethod())
@@ -5206,6 +5555,7 @@ public final class LittleHorseGrpc {
               .addMethod(getSearchUserTaskDefMethod())
               .addMethod(getSearchWfSpecMethod())
               .addMethod(getSearchExternalEventDefMethod())
+              .addMethod(getSearchTenantMethod())
               .addMethod(getRegisterTaskWorkerMethod())
               .addMethod(getPollTaskMethod())
               .addMethod(getReportTaskMethod())
@@ -5216,11 +5566,13 @@ public final class LittleHorseGrpc {
               .addMethod(getDeleteWfSpecMethod())
               .addMethod(getDeleteUserTaskDefMethod())
               .addMethod(getDeleteExternalEventDefMethod())
+              .addMethod(getDeletePrincipalMethod())
               .addMethod(getGetTaskDefMetricsWindowMethod())
               .addMethod(getGetWfSpecMetricsWindowMethod())
               .addMethod(getListTaskDefMetricsMethod())
               .addMethod(getListWfSpecMetricsMethod())
               .addMethod(getPutTenantMethod())
+              .addMethod(getGetTenantMethod())
               .addMethod(getPutPrincipalMethod())
               .addMethod(getWhoamiMethod())
               .addMethod(getGetServerVersionMethod())

@@ -5,6 +5,7 @@ import io.grpc.Context;
 import io.grpc.Grpc;
 import io.grpc.Server;
 import io.littlehorse.server.auth.RequestAuthorizer;
+import io.littlehorse.server.auth.RequestSanitizer;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -40,6 +41,7 @@ public class ServerListener implements Closeable {
                 .intercept(new RequestAuthorizer(
                         service, executionContextKey, metadataCache, coreStoreProvider, config.getConfig()))
                 .intercept(config.getAuthorizer())
+                .intercept(new RequestSanitizer())
                 .executor(executor)
                 .build();
     }

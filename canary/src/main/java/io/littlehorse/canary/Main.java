@@ -1,62 +1,113 @@
 package io.littlehorse.canary;
 
-import io.littlehorse.canary.aggregator.AggregatorBootstrap;
+import io.littlehorse.canary.aggregator.Aggregator;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.ConfigLoader;
-import io.littlehorse.canary.kafka.KafkaTopicBootstrap;
-import io.littlehorse.canary.metronome.MetronomeBootstrap;
-import io.littlehorse.canary.metronome.MetronomeWorkerBootstrap;
-import io.littlehorse.canary.prometheus.PrometheusExporterBootstrap;
-import io.littlehorse.canary.util.Shutdown;
+import io.littlehorse.canary.kafka.TopicCreator;
+import io.littlehorse.canary.metronome.MetronomeGetWfRunExecutor;
+import io.littlehorse.canary.metronome.MetronomeRunWfExecutor;
+import io.littlehorse.canary.metronome.MetronomeWorker;
+import io.littlehorse.canary.metronome.MetronomeWorkflow;
+import io.littlehorse.canary.metronome.internal.BeatProducer;
+import io.littlehorse.canary.metronome.internal.LocalRepository;
+import io.littlehorse.canary.prometheus.PrometheusExporter;
+import io.littlehorse.canary.prometheus.PrometheusServerExporter;
+import io.littlehorse.canary.util.LHClient;
+import io.littlehorse.canary.util.ShutdownHook;
+import io.littlehorse.sdk.common.config.LHConfig;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.admin.NewTopic;
 
 @Slf4j
 public class Main {
 
-    public static void main(final String[] args) throws IOException, InterruptedException {
-        final CanaryConfig config = args.length > 0 ? ConfigLoader.load(Paths.get(args[0])) : ConfigLoader.load();
-
-        log.debug("Canary configurations: {}", config);
-        log.debug("Canary active metrics: {}", config.getEnabledMetrics());
-        log.debug("KafkaAdmin configurations: {}", config.toKafkaAdminConfig());
-        log.debug("KafkaProducer configurations: {}", config.toKafkaProducerConfig());
-        log.debug("KafkaStreams configurations: {}", config.toKafkaStreamsConfig());
-        log.debug("LittleHorse configurations: {}", config.toLittleHorseConfig());
-
+    public static void main(final String[] args) throws InterruptedException {
         try {
-            initializeBootstraps(config);
+            initialize(args);
         } catch (Exception e) {
             log.error("Error starting application", e);
             System.exit(-1);
         }
 
         final CountDownLatch latch = new CountDownLatch(1);
-        Shutdown.addShutdownHook("Main Thread", latch::countDown);
+        ShutdownHook.add("Main Thread", latch::countDown);
         latch.await();
     }
 
-    private static void initializeBootstraps(final CanaryConfig config) {
-        final PrometheusExporterBootstrap prometheusExporterBootstrap = new PrometheusExporterBootstrap(config);
+    private static void initialize(final String[] args) throws IOException {
+        // dependencies
+        final CanaryConfig canaryConfig = args.length > 0 ? ConfigLoader.load(Paths.get(args[0])) : ConfigLoader.load();
 
-        final KafkaTopicBootstrap kafkaTopicBootstrap = new KafkaTopicBootstrap(config);
-        prometheusExporterBootstrap.addMeasurable(kafkaTopicBootstrap);
+        final PrometheusExporter prometheusExporter = new PrometheusExporter(canaryConfig.getCommonTags());
+        // create topics
+        if (canaryConfig.isTopicCreationEnabled()) {
+            final NewTopic topic = new NewTopic(
+                    canaryConfig.getTopicName(), canaryConfig.getTopicPartitions(), canaryConfig.getTopicReplicas());
 
-        if (config.isMetronomeWorkerEnabled()) {
-            final MetronomeWorkerBootstrap metronomeWorkerBootstrap = new MetronomeWorkerBootstrap(config);
-            prometheusExporterBootstrap.addMeasurable(metronomeWorkerBootstrap);
+            new TopicCreator(
+                    canaryConfig.toKafkaConfig().toMap(), canaryConfig.getTopicCreationTimeout(), List.of(topic));
         }
 
-        if (config.isMetronomeEnabled()) {
-            final MetronomeBootstrap metronomeBootstrap = new MetronomeBootstrap(config);
-            prometheusExporterBootstrap.addMeasurable(metronomeBootstrap);
+        // start metronome client
+        if (canaryConfig.isMetronomeEnabled()) {
+            final LHConfig lhConfig =
+                    new LHConfig(canaryConfig.toLittleHorseConfig().toMap());
+            final LHClient lhClient = new LHClient(
+                    lhConfig,
+                    canaryConfig.getWorkflowName(),
+                    canaryConfig.getWorkflowVersion(),
+                    canaryConfig.getWorkflowRevision());
+            prometheusExporter.addMeasurable(lhClient);
+            final BeatProducer producer = new BeatProducer(
+                    lhConfig.getApiBootstrapHost(),
+                    lhConfig.getApiBootstrapPort(),
+                    lhClient.getServerVersion(),
+                    canaryConfig.getTopicName(),
+                    canaryConfig.toKafkaConfig().toMap());
+
+            // start worker
+            if (canaryConfig.isMetronomeWorkerEnabled()) {
+                new MetronomeWorker(producer, lhConfig);
+            }
+
+            // register wf
+            if (canaryConfig.isWorkflowCreationEnabled()) {
+                new MetronomeWorkflow(lhClient, canaryConfig.getWorkflowName());
+            }
+
+            final LocalRepository repository = new LocalRepository(canaryConfig.getMetronomeDataPath());
+
+            new MetronomeRunWfExecutor(
+                    producer,
+                    lhClient,
+                    canaryConfig.getMetronomeRunFrequency(),
+                    canaryConfig.getMetronomeRunThreads(),
+                    canaryConfig.getMetronomeRunRequests(),
+                    canaryConfig.getMetronomeSampleRate(),
+                    repository);
+
+            new MetronomeGetWfRunExecutor(
+                    producer,
+                    lhClient,
+                    canaryConfig.getMetronomeGetFrequency(),
+                    canaryConfig.getMetronomeGetThreads(),
+                    canaryConfig.getMetronomeGetRetries(),
+                    repository);
         }
 
-        if (config.isAggregatorEnabled()) {
-            final AggregatorBootstrap aggregatorBootstrap = new AggregatorBootstrap(config);
-            prometheusExporterBootstrap.addMeasurable(aggregatorBootstrap);
+        // start the aggregator
+        if (canaryConfig.isAggregatorEnabled()) {
+            new PrometheusServerExporter(
+                    canaryConfig.getMetricsPort(), canaryConfig.getMetricsPath(), prometheusExporter);
+            final Aggregator aggregator = new Aggregator(
+                    canaryConfig.toKafkaConfig().toMap(),
+                    canaryConfig.getTopicName(),
+                    canaryConfig.getAggregatorStoreRetention());
+            prometheusExporter.addMeasurable(aggregator);
         }
     }
 }

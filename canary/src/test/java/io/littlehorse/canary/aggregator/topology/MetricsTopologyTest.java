@@ -3,79 +3,100 @@ package io.littlehorse.canary.aggregator.topology;
 import static io.littlehorse.canary.aggregator.topology.MetricsTopology.METRICS_STORE;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.common.collect.Streams;
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
 import io.littlehorse.canary.proto.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
-import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
-import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TopologyTestDriver;
-import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.test.TestRecord;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class MetricsTopologyTest {
+
+    public static final String HOST_1 = "localhost";
+    public static final int PORT_1 = 2023;
+
+    public static final String HOST_2 = "localhost2";
+    public static final int PORT_2 = 2024;
+
     private TopologyTestDriver testDriver;
-    private TestInputTopic<BeatKey, Beat> inputTopic;
-    private KeyValueStore<MetricKey, Double> store;
+    private TestInputTopic<BeatKey, BeatValue> inputTopic;
+    private KeyValueStore<MetricKey, MetricValue> store;
 
-    private static Beat newTaskRunBeat() {
-        return Beat.newBuilder()
-                .setTime(Timestamps.now())
-                .setTaskRunBeat(TaskRunBeat.newBuilder().setScheduledTime(Timestamps.now()))
-                .build();
+    private static String getRandomId() {
+        return UUID.randomUUID().toString();
     }
 
-    private static BeatKey newTaskRunBeatKey(
-            String expectedHost, int expectedPort, String idempotencyKey, int attemptNumber) {
-        return BeatKey.newBuilder()
-                .setServerHost(expectedHost)
-                .setServerPort(expectedPort)
-                .setTaskRunBeatKey(TaskRunBeatKey.newBuilder()
-                        .setIdempotencyKey(idempotencyKey)
-                        .setAttemptNumber(attemptNumber))
-                .build();
+    private static MetricValue newMetricValue(double value) {
+        return MetricValue.newBuilder().setValue(value).build();
     }
 
-    private static Beat newLatencyBeat(int latency) {
-        return Beat.newBuilder()
-                .setTime(Timestamps.now())
-                .setLatencyBeat(LatencyBeat.newBuilder().setLatency(latency))
-                .build();
+    private static MetricKey newMetricKey(String id) {
+        return newMetricKey(HOST_1, PORT_1, id);
     }
 
-    private static BeatKey newLatencyBeatKey(String expectedHost, int expectedPort, String expectedMetricName) {
-        return BeatKey.newBuilder()
-                .setServerHost(expectedHost)
-                .setServerPort(expectedPort)
-                .setLatencyBeatKey(LatencyBeatKey.newBuilder().setName(expectedMetricName))
-                .build();
+    private static MetricKey newMetricKey(String id, String status) {
+        return newMetricKey(HOST_1, PORT_1, id, status);
     }
 
-    private static MetricKey newMetricKey(String expectedHost, int expectedPort, String expectedMetricName) {
-        return MetricKey.newBuilder()
-                .setServerHost(expectedHost)
-                .setServerPort(expectedPort)
-                .setId(expectedMetricName)
-                .build();
+    private static MetricKey newMetricKey(String host, int port, String id) {
+        return newMetricKey(host, port, id, null);
+    }
+
+    private static MetricKey newMetricKey(String host, int port, String id, String status) {
+        MetricKey.Builder builder =
+                MetricKey.newBuilder().setServerHost(host).setServerPort(port).setId(id);
+
+        if (status != null) {
+            builder.addTags(Tag.newBuilder().setKey("status").setValue(status).build());
+        }
+
+        return builder.build();
+    }
+
+    private static TestRecord<BeatKey, BeatValue> newBeat(BeatType type, String id, Long latency) {
+        return newBeat(HOST_1, PORT_1, type, id, latency, null);
+    }
+
+    private static TestRecord<BeatKey, BeatValue> newBeat(BeatType type, String id, Long latency, String beatStatus) {
+        return newBeat(HOST_1, PORT_1, type, id, latency, beatStatus);
+    }
+
+    private static TestRecord<BeatKey, BeatValue> newBeat(
+            String host, int port, BeatType type, String id, Long latency, String beatStatus) {
+        BeatKey.Builder keyBuilder = BeatKey.newBuilder()
+                .setServerHost(host)
+                .setServerPort(port)
+                .setType(type)
+                .setId(id);
+        BeatValue.Builder valueBuilder = BeatValue.newBuilder().setTime(Timestamps.now());
+
+        if (beatStatus != null) {
+            keyBuilder.setStatus(beatStatus);
+        }
+
+        if (latency != null) {
+            valueBuilder.setLatency(latency);
+        }
+
+        return new TestRecord<>(keyBuilder.build(), valueBuilder.build());
     }
 
     @BeforeEach
     void beforeEach() throws IOException {
         String inputTopicName = "metrics";
 
-        Consumed<MetricKey, Double> serdes = Consumed.with(ProtobufSerdes.MetricKey(), Serdes.Double());
-
-        MetricsTopology metricsTopology =
-                new MetricsTopology(inputTopicName, Duration.ofMinutes(2).toMillis());
+        MetricsTopology metricsTopology = new MetricsTopology(inputTopicName, Duration.ofMinutes(2));
 
         Properties properties = new Properties();
         properties.put(
@@ -86,7 +107,7 @@ class MetricsTopologyTest {
         inputTopic = testDriver.createInputTopic(
                 inputTopicName,
                 ProtobufSerdes.BeatKey().serializer(),
-                ProtobufSerdes.Beat().serializer());
+                ProtobufSerdes.BeatValue().serializer());
 
         store = testDriver.getKeyValueStore(METRICS_STORE);
     }
@@ -94,70 +115,186 @@ class MetricsTopologyTest {
     @AfterEach
     void afterEach() {
         testDriver.close();
+        store.close();
     }
 
     @Test
-    void calculateLatency() {
-        String metricName = "my_metric";
-        String host = "localhost";
-        int port = 2023;
+    void calculateCountAndLatencyForWfRunRequest() {
+        BeatType expectedType = BeatType.WF_RUN_REQUEST;
+        String expectedTypeName = expectedType.name().toLowerCase();
 
-        BeatKey beatKey = newLatencyBeatKey(host, port, metricName);
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "ok"));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10L, "ok"));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30L, "ok"));
 
-        List<Beat> beats = List.of(newLatencyBeat(20), newLatencyBeat(40), newLatencyBeat(10), newLatencyBeat(10));
-        beats.forEach(metric -> inputTopic.pipeInput(beatKey, metric));
-
-        assertThat(store.get(newMetricKey(host, port, metricName + "_avg"))).isEqualTo(20.);
-        assertThat(store.get(newMetricKey(host, port, metricName + "_max"))).isEqualTo(40.);
+        assertThat(getCount()).isEqualTo(3);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg", "ok")))
+                .isEqualTo(newMetricValue(20.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max", "ok")))
+                .isEqualTo(newMetricValue(30.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count", "ok")))
+                .isEqualTo(newMetricValue(3.));
     }
 
     @Test
-    void countDuplicated() {
-        String host = "localhost";
-        int port = 2023;
+    void calculateCountForExhaustedRetries() {
+        BeatType expectedType = BeatType.GET_WF_RUN_EXHAUSTED_RETRIES;
+        String expectedTypeName = expectedType.name().toLowerCase();
 
-        BeatKey beatKey = newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0);
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), null));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), null));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), null));
 
-        List<Beat> beats = List.of(newTaskRunBeat(), newTaskRunBeat());
-        beats.forEach(metric -> inputTopic.pipeInput(beatKey, metric));
-
-        assertThat(store.get(newMetricKey(host, port, "duplicated_task_run_max_count")))
-                .isEqualTo(1.);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count")))
+                .isEqualTo(newMetricValue(3.));
     }
 
     @Test
-    void countDuplicatedForTwoTasks() {
-        String host = "localhost";
-        int port = 2023;
+    void calculateCountAndLatencyForWfRunRequestForTwoStatus() {
+        BeatType expectedType = BeatType.WF_RUN_REQUEST;
+        String expectedTypeName = expectedType.name().toLowerCase();
 
-        BeatKey beatKey1 = newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0);
-        BeatKey beatKey2 = newTaskRunBeatKey(host, port, UUID.randomUUID().toString(), 0);
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "ok"));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10L, "ok"));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30L, "ok"));
 
-        List<Beat> beats = List.of(newTaskRunBeat(), newTaskRunBeat());
-        beats.forEach(metric -> inputTopic.pipeInput(beatKey1, metric));
-        beats.forEach(metric -> inputTopic.pipeInput(beatKey2, metric));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "error"));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10L, "error"));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30L, "error"));
 
-        assertThat(store.get(newMetricKey(host, port, "duplicated_task_run_max_count")))
-                .isEqualTo(2.);
+        assertThat(getCount()).isEqualTo(6);
+
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg", "ok")))
+                .isEqualTo(newMetricValue(20.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max", "ok")))
+                .isEqualTo(newMetricValue(30.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count", "ok")))
+                .isEqualTo(newMetricValue(3.));
+
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg", "error")))
+                .isEqualTo(newMetricValue(20.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max", "error")))
+                .isEqualTo(newMetricValue(30.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count", "error")))
+                .isEqualTo(newMetricValue(3.));
     }
 
     @Test
-    void countDuplicatedForTwoServers() {
-        String host1 = "localhost";
-        String host2 = "localhost2";
-        int port1 = 2023;
-        int port2 = 2024;
+    void calculateCountAndLatencyForGetWfRunRequest() {
+        BeatType expectedType = BeatType.GET_WF_RUN_REQUEST;
+        String expectedTypeName = expectedType.name().toLowerCase();
 
-        BeatKey beatKey1 = newTaskRunBeatKey(host1, port1, UUID.randomUUID().toString(), 0);
-        BeatKey beatKey2 = newTaskRunBeatKey(host2, port2, UUID.randomUUID().toString(), 0);
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "completed"));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10L, "completed"));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30L, "completed"));
 
-        List<Beat> beats = List.of(newTaskRunBeat(), newTaskRunBeat());
-        beats.forEach(metric -> inputTopic.pipeInput(beatKey1, metric));
-        beats.forEach(metric -> inputTopic.pipeInput(beatKey2, metric));
+        assertThat(getCount()).isEqualTo(3);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg", "completed")))
+                .isEqualTo(newMetricValue(20.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max", "completed")))
+                .isEqualTo(newMetricValue(30.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count", "completed")))
+                .isEqualTo(newMetricValue(3.));
+    }
 
-        assertThat(store.get(newMetricKey(host1, port1, "duplicated_task_run_max_count")))
-                .isEqualTo(1.);
-        assertThat(store.get(newMetricKey(host2, port2, "duplicated_task_run_max_count")))
-                .isEqualTo(1.);
+    @Test
+    void calculateCountAndLatencyForTaskRunWithNoDuplicated() {
+        BeatType expectedType = BeatType.TASK_RUN_EXECUTION;
+        String expectedTypeName = expectedType.name().toLowerCase();
+
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10L));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30L));
+
+        assertThat(getCount()).isEqualTo(3);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg")))
+                .isEqualTo(newMetricValue(20.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max")))
+                .isEqualTo(newMetricValue(30.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count")))
+                .isEqualTo(newMetricValue(3.));
+    }
+
+    @Test
+    void calculateCountAndLatencyForTaskRunWithDuplicated() {
+        BeatType expectedType = BeatType.TASK_RUN_EXECUTION;
+        String expectedTypeName = expectedType.name().toLowerCase();
+        String expectedUniqueId = getRandomId();
+
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 20L));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 10L));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 30L));
+
+        assertThat(getCount()).isEqualTo(4);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg")))
+                .isEqualTo(newMetricValue(20.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max")))
+                .isEqualTo(newMetricValue(30.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count")))
+                .isEqualTo(newMetricValue(3.));
+        assertThat(store.get(newMetricKey("canary_duplicated_task_run_count"))).isEqualTo(newMetricValue(1.));
+    }
+
+    @Test
+    void calculateCountAndLatencyForTaskRunWithTwoDuplicated() {
+        BeatType expectedType = BeatType.TASK_RUN_EXECUTION;
+        String expectedTypeName = expectedType.name().toLowerCase();
+        String expectedUniqueId1 = getRandomId();
+        String expectedUniqueId2 = getRandomId();
+
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId1, 20L));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId1, 10L));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId1, 30L));
+
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId2, 20L));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId2, 30L));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId2, 40L));
+
+        assertThat(getCount()).isEqualTo(4);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg")))
+                .isEqualTo(newMetricValue(25.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max")))
+                .isEqualTo(newMetricValue(40.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count")))
+                .isEqualTo(newMetricValue(6.));
+        assertThat(store.get(newMetricKey("canary_duplicated_task_run_count"))).isEqualTo(newMetricValue(2.));
+    }
+
+    @Test
+    void calculateCountAndLatencyForTaskRunWithDuplicatedAndTwoServers() {
+        BeatType expectedType = BeatType.TASK_RUN_EXECUTION;
+        String expectedTypeName = expectedType.name().toLowerCase();
+        String expectedUniqueId = getRandomId();
+
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 20L));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 10L));
+        inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 30L));
+
+        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 20L, null));
+        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 10L, null));
+        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 30L, null));
+
+        assertThat(getCount()).isEqualTo(8);
+
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg")))
+                .isEqualTo(newMetricValue(20.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max")))
+                .isEqualTo(newMetricValue(30.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count")))
+                .isEqualTo(newMetricValue(3.));
+        assertThat(store.get(newMetricKey("canary_duplicated_task_run_count"))).isEqualTo(newMetricValue(1.));
+
+        assertThat(store.get(newMetricKey(HOST_2, PORT_2, "canary_" + expectedTypeName + "_avg")))
+                .isEqualTo(newMetricValue(20.));
+        assertThat(store.get(newMetricKey(HOST_2, PORT_2, "canary_" + expectedTypeName + "_max")))
+                .isEqualTo(newMetricValue(30.));
+        assertThat(store.get(newMetricKey(HOST_2, PORT_2, "canary_" + expectedTypeName + "_count")))
+                .isEqualTo(newMetricValue(3.));
+        assertThat(store.get(newMetricKey(HOST_2, PORT_2, "canary_duplicated_task_run_count")))
+                .isEqualTo(newMetricValue(1.));
+    }
+
+    private long getCount() {
+        return Streams.stream(store.all()).count();
     }
 }

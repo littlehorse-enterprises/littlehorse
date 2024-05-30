@@ -17,6 +17,7 @@ import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
+import java.util.Set;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -98,7 +99,7 @@ public class TagStorageManagerTest {
         TagsCache tagsCache = new TagsCache();
         CachedTag cachedTag = new CachedTag();
         cachedTag.setId(tag1.getStoreKey());
-        tagsCache.setTags(List.of(cachedTag));
+        tagsCache.setTags(Set.of(cachedTag));
 
         tagStorageManager.store(tags, tagsCache);
         assertThat(localStore.get(tag2.getStoreKey(), Tag.class)).isNotNull();

@@ -73,7 +73,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         taskQueueManager.onRequestDisconnected(this, tenantId);
         log.debug(
                 "Instance {}: Client {} disconnected from task queue {}",
-                taskQueueManager.getBackend().getInstanceId(),
+                taskQueueManager.getBackend().getInstanceName(),
                 clientId,
                 taskDefId);
     }
@@ -103,12 +103,6 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     }
 
     RequestExecutionContext getFreshExecutionContext() {
-        return new RequestExecutionContext(
-                principalId,
-                tenantId,
-                coreStoreProvider.getNativeGlobalStore(),
-                coreStoreProvider.nativeCoreStore(),
-                metadataCache,
-                config);
+        return new RequestExecutionContext(principalId, tenantId, coreStoreProvider, metadataCache, config);
     }
 }

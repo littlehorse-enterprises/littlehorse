@@ -8,46 +8,82 @@ public interface SleepNodeOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Sleeps the specified number of seconds.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
    * @return Whether the rawSeconds field is set.
    */
   boolean hasRawSeconds();
   /**
+   * <pre>
+   * Sleeps the specified number of seconds.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
    * @return The rawSeconds.
    */
   io.littlehorse.sdk.common.proto.VariableAssignment getRawSeconds();
   /**
+   * <pre>
+   * Sleeps the specified number of seconds.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment raw_seconds = 1;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getRawSecondsOrBuilder();
 
   /**
+   * <pre>
+   * Sleeps until the `long` timestamp (epoch millis) specified here.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
    * @return Whether the timestamp field is set.
    */
   boolean hasTimestamp();
   /**
+   * <pre>
+   * Sleeps until the `long` timestamp (epoch millis) specified here.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
    * @return The timestamp.
    */
   io.littlehorse.sdk.common.proto.VariableAssignment getTimestamp();
   /**
+   * <pre>
+   * Sleeps until the `long` timestamp (epoch millis) specified here.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment timestamp = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getTimestampOrBuilder();
 
   /**
+   * <pre>
+   * Sleeps until the ISO-formatted date specified here.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
    * @return Whether the isoDate field is set.
    */
   boolean hasIsoDate();
   /**
+   * <pre>
+   * Sleeps until the ISO-formatted date specified here.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
    * @return The isoDate.
    */
   io.littlehorse.sdk.common.proto.VariableAssignment getIsoDate();
   /**
+   * <pre>
+   * Sleeps until the ISO-formatted date specified here.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment iso_date = 3;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getIsoDateOrBuilder();

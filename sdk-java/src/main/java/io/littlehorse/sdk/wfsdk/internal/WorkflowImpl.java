@@ -56,13 +56,13 @@ public class WorkflowImpl extends Workflow {
     }
 
     public void addTaskDefBuilder(TaskDefBuilder tdb) {
-        TaskDefBuilder previous = taskDefBuilders.get(tdb.taskDefName);
+        TaskDefBuilder previous = taskDefBuilders.get(tdb.getTaskDefName());
         if (previous != null) {
             if (!previous.signature.equals(tdb.signature)) {
-                throw new RuntimeException("Tried to register two DIFFERENT tasks named " + tdb.taskDefName);
+                throw new RuntimeException("Tried to register two DIFFERENT tasks named " + tdb.getTaskDefName());
             }
         } else {
-            taskDefBuilders.put(tdb.taskDefName, tdb);
+            taskDefBuilders.put(tdb.getTaskDefName(), tdb);
         }
     }
 

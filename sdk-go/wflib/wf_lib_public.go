@@ -90,6 +90,18 @@ func (n *NodeOutput) JsonPath(path string) NodeOutput {
 	return n.jsonPathImpl(path)
 }
 
+func (n *NodeOutput) HandleExceptionOnChild(handler ThreadFunc, exceptionName *string) {
+	n.handleExceptionOnChild(handler, exceptionName)
+}
+
+func (n *NodeOutput) HandleErrorOnChild(handler ThreadFunc, errorName *string) {
+	n.handleErrorOnChild(handler, errorName)
+}
+
+func (n *NodeOutput) HandleAnyFailureOnChild(handler ThreadFunc) {
+	n.handleAnyFailureOnChild(handler)
+}
+
 func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
 	return w.jsonPathImpl(path)
 }
@@ -140,8 +152,8 @@ func (t *WorkflowThread) AddVariableWithDefault(
 	return t.addVariable(name, varType, defaultValue)
 }
 
-func (t *WorkflowThread) Execute(name string, args ...interface{}) NodeOutput {
-	return t.executeTask(name, args)
+func (t *WorkflowThread) Execute(taskDefName interface{}, args ...interface{}) NodeOutput {
+	return t.executeTask(taskDefName, args)
 }
 
 func (t *WorkflowThread) Mutate(
@@ -204,6 +216,14 @@ func (t *WorkflowThread) AssignUserTask(
 
 func (t *WorkflowThread) Format(format string, args ...*WfRunVariable) *LHFormatString {
 	return t.format(format, args)
+}
+
+func (t *WorkflowThread) CancelUserTaskAfter(userTask *UserTaskOutput, delaySeconds interface{}) {
+	t.cancelUserTaskAfter(userTask, delaySeconds)
+}
+
+func (t *WorkflowThread) CancelUserTaskAfterAssignment(userTask *UserTaskOutput, delaySeconds interface{}) {
+	t.cancelUserTaskAfterAssignment(userTask, delaySeconds)
 }
 
 func (t *WorkflowThread) ScheduleReminderTask(
@@ -279,5 +299,16 @@ func (u *UserTaskOutput) WithNotes(notes interface{}) *UserTaskOutput {
 		u.thread.throwError(err)
 	}
 	userTaskNode.Notes = notesVar
+	return u
+}
+
+func (u *UserTaskOutput) WithOnCancellationException(exceptionName interface{}) *UserTaskOutput {
+	userTaskNode := u.node.GetUserTask()
+	onCancellationExceptionName, err := u.thread.assignVariable(exceptionName)
+
+	if err != nil {
+		u.thread.throwError(err)
+	}
+	userTaskNode.OnCancellationExceptionName = onCancellationExceptionName
 	return u
 }

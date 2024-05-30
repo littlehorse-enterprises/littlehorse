@@ -1,16 +1,19 @@
 from __future__ import annotations
-from enum import Enum
-from collections import deque
-from inspect import signature
+
 import inspect
 import logging
+import typing
+from collections import deque
+from enum import Enum
+from inspect import signature
 from pathlib import Path
 from typing import Any, Callable, List, Optional, Union
-import typing
+
 from google.protobuf.json_format import MessageToJson
 from google.protobuf.message import Message
+
 from littlehorse.config import LHConfig
-from littlehorse.model.common_enums_pb2 import VariableType
+from littlehorse.model.common_enums_pb2 import LHErrorType, VariableType
 from littlehorse.model.common_wfspec_pb2 import (
     Comparator,
     TaskNode,
@@ -19,6 +22,7 @@ from littlehorse.model.common_wfspec_pb2 import (
     VariableDef,
     VariableMutation,
     VariableMutationType,
+    ExponentialBackoffRetryPolicy,
 )
 from littlehorse.model.object_id_pb2 import (
     ExternalEventDefId,
@@ -27,7 +31,6 @@ from littlehorse.model.object_id_pb2 import (
 )
 from littlehorse.model.service_pb2 import (
     PutExternalEventDefRequest,
-    PutTaskDefRequest,
     PutWfSpecRequest,
     AllowedUpdateType,
 )
@@ -57,8 +60,8 @@ from littlehorse.model.wf_spec_pb2 import (
     WfRunVariableAccessLevel,
     WorkflowRetentionPolicy,
 )
-from littlehorse.utils import negate_comparator, to_variable_type, to_variable_value
-from littlehorse.worker import WorkerContext
+from littlehorse.utils import negate_comparator, to_variable_value
+from littlehorse.worker import _create_task_def
 
 ENTRYPOINT = "entrypoint"
 
@@ -222,18 +225,6 @@ class NodeCase(Enum):
             return cls.THROW_EVENT
 
         raise TypeError("Unrecognized node type")
-
-
-class LHErrorType(Enum):
-    CHILD_FAILURE = "CHILD_FAILURE"
-    VAR_SUB_ERROR = "VAR_SUB_ERROR"
-    VAR_MUTATION_ERROR = "VAR_MUTATION_ERROR"
-    USER_TASK_CANCELLED = "USER_TASK_CANCELLED"
-    TIMEOUT = "TIMEOUT"
-    TASK_FAILURE = "TASK_FAILURE"
-    VAR_ERROR = "VAR_ERROR"
-    TASK_ERROR = "TASK_ERROR"
-    INTERNAL_ERROR = "INTERNAL_ERROR"
 
 
 class LHFormatString:
@@ -456,6 +447,87 @@ class WaitForThreadsNodeOutput(NodeOutput):
         self.node_name = node_name
         self.builder = builder
 
+    def handle_exception_on_child(
+        self, handler: ThreadInitializer, exception_name: Optional[str] = None
+    ) -> WaitForThreadsNodeOutput:
+        """
+        Specifies a Failure Handler to run in case any of the ThreadRun's
+        that we are waiting for in this WaitForThreadsNode fails with a
+        specific EXCEPTION.
+
+        Args:
+            handler (ThreadInitializer): the handler logic.
+            exception_name (Optional[str])): the specific EXCEPTION to handle.
+        """
+        self.builder._check_if_active()
+        thread_name = f"exn-handler-{self.node_name}" + (
+            f"-{exception_name}" if exception_name is not None else ""
+        )
+        thread_name = self.builder._workflow.add_sub_thread(thread_name, handler)
+        node = self.builder._find_node(self.node_name)
+        failure_handler: FailureHandlerDef
+        if exception_name is not None:
+            failure_handler = FailureHandlerDef(
+                handler_spec_name=thread_name,
+                specific_failure=exception_name,
+            )
+        else:
+            failure_handler = FailureHandlerDef(
+                handler_spec_name=thread_name,
+                any_failure_of_type=FailureHandlerDef.LHFailureType.FAILURE_TYPE_EXCEPTION,
+            )
+        node.sub_node.__getattribute__("per_thread_failure_handlers").append(
+            failure_handler,
+        )
+        return self
+
+    def handle_error_on_child(
+        self, handler: ThreadInitializer, error_type: Optional[LHErrorType] = None
+    ) -> WaitForThreadsNodeOutput:
+        """
+        Specifies a Failure Handler to run in case any of the ThreadRun's
+        that we are waiting for in this WaitForThreadsNode fails with a
+        specific ERROR.
+
+        Args:
+            handler (ThreadInitializer): the handler logic.
+            error_type (Optional[str])): the specific ERROR to handle.
+        """
+        self.builder._check_if_active()
+        thread_name = f"error-handler-{self.node_name}" + (
+            f"-{LHErrorType.Name(error_type)}" if error_type is not None else ""
+        )
+        thread_name = self.builder._workflow.add_sub_thread(thread_name, handler)
+        node = self.builder._find_node(self.node_name)
+        failure_handler: FailureHandlerDef
+        if error_type is not None:
+            failure_handler = FailureHandlerDef(
+                handler_spec_name=thread_name,
+                specific_failure=LHErrorType.Name(error_type),
+            )
+        else:
+            failure_handler = FailureHandlerDef(
+                handler_spec_name=thread_name,
+                any_failure_of_type=FailureHandlerDef.LHFailureType.FAILURE_TYPE_ERROR,
+            )
+        node.sub_node.__getattribute__("per_thread_failure_handlers").append(
+            failure_handler,
+        )
+        return self
+
+    def handle_any_failure_on_child(
+        self, handler: ThreadInitializer
+    ) -> WaitForThreadsNodeOutput:
+        self.builder._check_if_active()
+        thread_name = f"failure-handler-{self.node_name}-ANY_FAILURE"
+        thread_name = self.builder._workflow.add_sub_thread(thread_name, handler)
+        node = self.builder._find_node(self.node_name)
+        failure_handler = FailureHandlerDef(handler_spec_name=thread_name)
+        node.sub_node.__getattribute__("per_thread_failure_handlers").append(
+            failure_handler,
+        )
+        return self
+
 
 class WorkflowNode:
     def __init__(
@@ -549,7 +621,7 @@ class SpawnedThread:
 class SpawnedThreads:
     def __init__(
         self,
-        iterable: Optional[WfRunVariable],
+        iterable: Optional[WfRunVariable] = None,
         fixed_threads: Optional[list[SpawnedThread]] = None,
     ) -> None:
         self._iterable = iterable
@@ -571,7 +643,7 @@ class SpawnedThreads:
                     )
                     threads.append(thread_to_wait_for)
             return WaitForThreadsNode(
-                threads=WaitForThreadsNode.ThreadsToWaitFor(threads),
+                threads=WaitForThreadsNode.ThreadsToWaitFor(threads=threads),
             )
 
         def build_iterator_threads(
@@ -596,6 +668,8 @@ class UserTaskOutput(NodeOutput):
         user_task_def_name: str,
         user_id: Optional[Union[str, WfRunVariable]] = None,
         user_group: Optional[Union[str, WfRunVariable]] = None,
+        notes: Optional[Union[str, WfRunVariable, LHFormatString]] = None,
+        on_cancellation_exception_name: Optional[Union[str, WfRunVariable]] = None,
     ) -> None:
         super().__init__(node_name)
         self._thread = thread
@@ -603,6 +677,8 @@ class UserTaskOutput(NodeOutput):
         self._user_task_def_name = user_task_def_name
         self._user_group = user_group
         self._user_id = user_id
+        self._notes = notes
+        self._on_cancellation_exception_name = on_cancellation_exception_name
 
     def with_notes(
         self, notes: Union[str, WfRunVariable, LHFormatString]
@@ -613,11 +689,44 @@ class UserTaskOutput(NodeOutput):
 
         ug = to_variable_assignment(self._user_group) if self._user_group else None
         ui = to_variable_assignment(self._user_id) if self._user_id else None
+        if self._on_cancellation_exception_name:
+            exception_name = to_variable_assignment(
+                self._on_cancellation_exception_name
+            )
+        else:
+            exception_name = None
+
         ut_node = UserTaskNode(
             user_task_def_name=self._user_task_def_name,
             user_group=ug,
             user_id=ui,
             notes=to_variable_assignment(notes),
+            on_cancellation_exception_name=exception_name,
+        )
+        self._notes = notes
+
+        node.sub_node = ut_node
+        return self
+
+    def with_on_cancellation_exception(
+        self, exception_name: Union[str, WfRunVariable]
+    ) -> "UserTaskOutput":
+        node = self._thread._last_node()
+        if node.name != self._node_name:
+            raise ValueError("tried to mutate stale UserTaskOutput!")
+
+        ug = to_variable_assignment(self._user_group) if self._user_group else None
+        ui = to_variable_assignment(self._user_id) if self._user_id else None
+        if self._notes:
+            notes = to_variable_assignment(self._notes)
+        else:
+            notes = None
+        ut_node = UserTaskNode(
+            user_task_def_name=self._user_task_def_name,
+            user_group=ug,
+            user_id=ui,
+            notes=notes,
+            on_cancellation_exception_name=to_variable_assignment(exception_name),
         )
 
         node.sub_node = ut_node
@@ -625,13 +734,23 @@ class UserTaskOutput(NodeOutput):
 
 
 class WorkflowThread:
-    def __init__(self, workflow: "Workflow", initializer: "ThreadInitializer") -> None:
+    def __init__(
+        self,
+        workflow: "Workflow",
+        initializer: "ThreadInitializer",
+        default_retries: Optional[int] = None,
+        default_exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = None,
+    ) -> None:
         """This is used to define the logic of a ThreadSpec in a ThreadInitializer.
 
         Args:
             workflow (Workflow): Parent.
             initializer (ThreadInitializer): Initializer.
         """
+        self._default_exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = (
+            default_exponential_backoff
+        )
+        self._default_retries: Optional[int] = default_retries
         self._wf_run_variables: list[WfRunVariable] = []
         self._wf_interruptions: list[WorkflowInterruption] = []
         self._nodes: list[WorkflowNode] = []
@@ -733,7 +852,7 @@ class WorkflowThread:
         self.mutate(thread_number, VariableMutationType.ASSIGN, NodeOutput(node_name))
         return SpawnedThreads(thread_number, None)
 
-    def wait_for_threads(self, wait_for: SpawnedThreads) -> NodeOutput:
+    def wait_for_threads(self, wait_for: SpawnedThreads) -> WaitForThreadsNodeOutput:
         """Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.
 
         Args:
@@ -893,7 +1012,13 @@ class WorkflowThread:
         ut_node: UserTaskNode = typing.cast(UserTaskNode, cur_node.sub_node)
         ut_node.actions.append(trigger)
 
-    def execute(self, task_name: str, *args: Any) -> NodeOutput:
+    def execute(
+        self,
+        task_name: Union[str, LHFormatString, WfRunVariable],
+        *args: Any,
+        retries: Optional[int] = None,
+        exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = None,
+    ) -> NodeOutput:
         """Adds a TASK node to the ThreadSpec.
 
         Args:
@@ -903,16 +1028,54 @@ class WorkflowThread:
             WfRunVariable is passed in as the argument; otherwise, the
             library will attempt to cast the provided argument to a
             LittleHorse VariableValue and pass that literal value in.
+            retries(int): Retries in case an error
+            exponential_backoff (ExponentialBackoffRetryPolicy): Retries policy in case of error.
 
         Returns:
             NodeOutput: A NodeOutput for that TASK node.
         """
         self._check_if_active()
-        task_node = TaskNode(
-            task_def_id=TaskDefId(name=task_name),
-            variables=[to_variable_assignment(arg) for arg in args],
-        )
-        node_name = self.add_node(task_name, task_node)
+        task_node: TaskNode
+        readable_name: str
+        if isinstance(task_name, str):
+            readable_name = task_name
+            task_node = TaskNode(
+                task_def_id=TaskDefId(name=task_name),
+                variables=[to_variable_assignment(arg) for arg in args],
+                retries=retries if retries is not None else self._default_retries,
+                exponential_backoff=(
+                    exponential_backoff
+                    if exponential_backoff is not None
+                    else self._default_exponential_backoff
+                ),
+            )
+        elif isinstance(task_name, LHFormatString):
+            readable_name = task_name._format
+            task_node = TaskNode(
+                dynamic_task=to_variable_assignment(task_name),
+                variables=[to_variable_assignment(arg) for arg in args],
+                retries=retries if retries is not None else self._default_retries,
+                exponential_backoff=(
+                    exponential_backoff
+                    if exponential_backoff is not None
+                    else self._default_exponential_backoff
+                ),
+            )
+        else:
+            # WfRunVariable
+            readable_name = task_name.name
+            task_node = TaskNode(
+                dynamic_task=to_variable_assignment(task_name),
+                variables=[to_variable_assignment(arg) for arg in args],
+                retries=retries if retries is not None else self._default_retries,
+                exponential_backoff=(
+                    exponential_backoff
+                    if exponential_backoff is not None
+                    else self._default_exponential_backoff
+                ),
+            )
+
+        node_name = self.add_node(readable_name, task_node)
         return NodeOutput(node_name)
 
     def handle_any_failure(
@@ -994,7 +1157,9 @@ class WorkflowThread:
         any_error = FailureHandlerDef.LHFailureType.Name(
             FailureHandlerDef.FAILURE_TYPE_ERROR
         )
-        failure_name = error_type.name if error_type is not None else any_error
+        failure_name = (
+            LHErrorType.Name(error_type) if error_type is not None else any_error
+        )
         thread_name = f"exn-handler-{node.node_name}-{failure_name}"
         self._workflow.add_sub_thread(thread_name, initializer)
         failure_handler = FailureHandlerDef(
@@ -1152,6 +1317,7 @@ class WorkflowThread:
         trigger: UTActionTrigger = UTActionTrigger(
             reassign=UTActionTrigger.UTAReassign(user_group=ut_node.user_group),
             delay_seconds=to_variable_assignment(deadline_seconds),
+            hook=UTActionTrigger.UTHook.ON_TASK_ASSIGNED,
         )
         ut_node.actions.append(trigger)
 
@@ -1232,7 +1398,7 @@ class WorkflowThread:
 
         Args:
             left_hand (WfRunVariable): It is a handle to the WfRunVariable to mutate.
-            type (VariableMutationType): It is the mutation type to use,
+            operation (VariableMutationType): It is the mutation type to use,
             for example, `VariableMutationType.ASSIGN`.
             right_hand (Any): It is either a literal value
             (which the Library casts to a Variable Value), a
@@ -1511,6 +1677,54 @@ class WorkflowThread:
             variables_from_if_block.append(self._variable_mutations.popleft())
         return variables_from_if_block
 
+    def cancel_user_task_run_after(
+        self, user_task: UserTaskOutput, delay_in_seconds: Union[int, WfRunVariable]
+    ) -> None:
+        """
+        Cancels a User Task Run if it exceeds a specified deadline.
+        Args:
+            user_task: reference to the UserTaskNode that will be canceled after the deadline.
+            delay_in_seconds: delay time after which the User Task Run should be canceled.
+        """
+        self._check_if_active()
+        self._schedule_user_task_cancellation_after(
+            user_task, delay_in_seconds, UTActionTrigger.UTHook.ON_ARRIVAL
+        )
+
+    def cancel_user_task_run_after_assignment(
+        self, user_task: UserTaskOutput, delay_in_seconds: Union[int, WfRunVariable]
+    ) -> None:
+        """
+        Cancels a User Task Run if it exceeds a specified deadline after it is assigned.
+        Args:
+            user_task: reference to the UserTaskNode that will be canceled after the deadline.
+            delay_in_seconds: delay time after which the User Task Run should be canceled.
+        """
+        self._check_if_active()
+        self._schedule_user_task_cancellation_after(
+            user_task, delay_in_seconds, UTActionTrigger.UTHook.ON_TASK_ASSIGNED
+        )
+
+    def _schedule_user_task_cancellation_after(
+        self,
+        user_task: UserTaskOutput,
+        delay_in_seconds: Union[int, WfRunVariable],
+        hook: UTActionTrigger.UTHook,
+    ) -> None:
+        if self._last_node().name != user_task.node_name:
+            raise ValueError("Tried to reassign stale user task node!")
+
+        cancel = UTActionTrigger.UTACancel()
+
+        ut_node: UserTaskNode = typing.cast(UserTaskNode, self._last_node().sub_node)
+        ut_node.actions.append(
+            UTActionTrigger(
+                cancel=cancel,
+                delay_seconds=to_variable_assignment(delay_in_seconds),
+                hook=hook,
+            )
+        )
+
 
 ThreadInitializer = Callable[[WorkflowThread], None]
 
@@ -1539,6 +1753,10 @@ class Workflow:
         self._allowed_updates: Optional[AllowedUpdateType] = None
         self._parent_wf: Optional[WfSpec.ParentWfSpecReference] = None
         self._retention_policy: Optional[WorkflowRetentionPolicy] = None
+        self._default_exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = (
+            None
+        )
+        self._default_retries: Optional[int] = None
         if parent_wf is not None:
             self._parent_wf = WfSpec.ParentWfSpecReference(wf_spec_name=parent_wf)
 
@@ -1574,14 +1792,21 @@ class Workflow:
     def __str__(self) -> str:
         return to_json(self.compile())
 
-    def with_update_type(self, update_type: AllowedUpdateType) -> None:
-        """
-        Defines the type of update to perform when saving the WfSpec:
-            AllowedUpdateType.ALL_UPDATES (Default): Creates a new WfSpec with a different version (either major or revision).
-            AllowedUpdateType.MINOR_REVISION_UPDATES: Creates a new WfSpec with a different revision if the change is a major version it fails.
-            AllowedUpdateType.NO_UPDATES: Fail with the ALREADY_EXISTS response code.
+    def with_update_type(self, update_type: AllowedUpdateType) -> Workflow:
+        """Defines the type of update to perform when saving the WfSpec:
+
+        Args:
+            update_type(AllowedUpdateType):
+                AllowedUpdateType.ALL_UPDATES (Default): Creates a new WfSpec with a different version
+                (either major or revision).
+                AllowedUpdateType.MINOR_REVISION_UPDATES: Creates a new WfSpec with a different revision
+                if the change is a major version it fails.
+                AllowedUpdateType.NO_UPDATES: Fail with the ALREADY_EXISTS response code.
+
+        Returns: This instance.
         """
         self._allowed_updates = update_type
+        return self
 
     def compile(self) -> PutWfSpecRequest:
         """Compile the workflow into Protobuf Objects.
@@ -1594,7 +1819,12 @@ class Workflow:
         thread_specs: dict[str, ThreadSpec] = {}
 
         for name, initializer in threads_iterator:
-            builder = WorkflowThread(self, initializer)
+            builder = WorkflowThread(
+                self,
+                initializer,
+                self._default_retries,
+                self._default_exponential_backoff,
+            )
             thread_specs[name] = builder.compile()
 
         self._thread_initializers = []
@@ -1609,51 +1839,77 @@ class Workflow:
             retention_policy=self._retention_policy,
         )
 
-    def with_retention_policy(self, policy: WorkflowRetentionPolicy) -> None:
+    def with_retention_policy(self, policy: WorkflowRetentionPolicy) -> Workflow:
+        """Sets the retention policy for all WfRun's created by this WfSpec.
+
+        Args:
+            policy(WorkflowRetentionPolicy): Workflow Retention Policy
+
+        Returns: This instance.
+        """
         self._retention_policy = policy
+        return self
+
+    def with_retry_policy(
+        self,
+        retries: Optional[int] = None,
+        exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = None,
+    ) -> Workflow:
+        """Configures the default retry behaviour of the tasks.
+
+        Args:
+            retries(Optional[int]): Number of retries.
+            exponential_backoff(Optional[ExponentialBackoffRetryPolicy]): Tells the Workflow to configure (by default)
+                the specified ExponentialBackoffRetryPolicy as the retry policy.
+
+        Returns: This instance.
+        """
+        self._default_retries = retries
+        self._default_exponential_backoff = exponential_backoff
+        return self
 
 
-def create_workflow_spec(workflow: Workflow, config: LHConfig) -> None:
+def create_workflow_spec(
+    workflow: Workflow, config: LHConfig, timeout: Optional[int] = None
+) -> None:
     """Creates a given workflow spec at the LH Server.
 
     Args:
         workflow (Workflow): The workflow.
         config (LHConfig): The configuration to get connected to the LH Server.
+        timeout (Optional[int]): Timeout
     """
     stub = config.stub()
     request = workflow.compile()
     logging.info(f"Creating a new version of {workflow.name}:\n{workflow}")
-    stub.PutWfSpec(request)
+    stub.PutWfSpec(request, timeout=timeout)
 
 
-def create_task_def(task: Callable[..., Any], name: str, config: LHConfig) -> None:
+def create_task_def(
+    task: Callable[..., Any], name: str, config: LHConfig, timeout: Optional[int] = None
+) -> None:
     """Creates a new TaskDef at the LH Server.
 
     Args:
         task (Callable[..., Any]): The task.
         name (str): Name of the task.
         config (LHConfig): The configuration to get connected to the LH Server.
+        timeout (Optional[int]): Timeout
     """
-    stub = config.stub()
-    task_signature = signature(task)
-    input_vars = [
-        VariableDef(name=param.name, type=to_variable_type(param.annotation))
-        for param in task_signature.parameters.values()
-        if param.annotation is not WorkerContext
-    ]
-    request = PutTaskDefRequest(name=name, input_vars=input_vars)
-    stub.PutTaskDef(request)
-    logging.info(f"TaskDef {name} was created:\n{to_json(request)}")
+    _create_task_def(task, name, config, timeout=timeout)
 
 
-def create_external_event_def(name: str, config: LHConfig) -> None:
+def create_external_event_def(
+    name: str, config: LHConfig, timeout: Optional[int] = None
+) -> None:
     """Creates a new ExternalEventDef at the LH Server.
 
     Args:
         name (str): Name of the external event.
         config (LHConfig): The configuration to get connected to the LH Server.
+        timeout (Optional[int]): Timeout
     """
     stub = config.stub()
     request = PutExternalEventDefRequest(name=name)
-    stub.PutExternalEventDef(request)
+    stub.PutExternalEventDef(request, timeout=timeout)
     logging.info(f"ExternalEventDef {name} was created:\n{to_json(request)}")

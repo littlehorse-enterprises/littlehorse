@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * NOP node has no operations and is used for conditional branching.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.NopNode}
  */
 public final class NopNode extends
@@ -185,6 +189,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * NOP node has no operations and is used for conditional branching.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.NopNode}
    */
   public static final class Builder extends

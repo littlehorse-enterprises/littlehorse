@@ -57,7 +57,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
         MetadataCommandModel command = metadataContext.currentCommand();
         log.trace(
                 "{} Processing command of type {} with commandId {}",
-                config.getLHInstanceId(),
+                config.getLHInstanceName(),
                 command.getType(),
                 command.getCommandId());
 

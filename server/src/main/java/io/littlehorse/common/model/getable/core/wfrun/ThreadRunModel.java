@@ -245,7 +245,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         entrypointRun.setWfSpecId(wfSpecId);
         entrypointRun.setThreadSpecName(threadSpecName);
         entrypointRun.setArrivalTime(now);
-        entrypointRun.setSubNodeRun(entrypointNode.getSubNode().createSubNodeRun(now));
+        entrypointRun.setSubNodeRun(entrypointNode.getSubNode().createSubNodeRun(now, processorContext));
         putNodeRun(entrypointRun);
 
         for (ThreadVarDefModel threadVarDef : threadSpec.getVariableDefs()) {
@@ -392,7 +392,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             }
         }
 
-        getCurrentNodeRun().maybeHalt();
+        getCurrentNodeRun().maybeHalt(processorContext);
         maybeFinishHaltingProcess();
     }
 
@@ -419,7 +419,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             }
         }
 
-        if (getCurrentNodeRun().maybeHalt() && allChildrenHalted) {
+        if (getCurrentNodeRun().maybeHalt(processorContext) && allChildrenHalted) {
             setStatus(LHStatus.HALTED);
             return true;
         }
@@ -457,7 +457,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 return maybeAdvanceFromFailedNodeRun();
             }
 
-            boolean canAdvance = currentNR.checkIfProcessingCompleted();
+            boolean canAdvance = currentNR.checkIfProcessingCompleted(processorContext);
 
             if (!canAdvance) {
                 // then we're still waiting on the NodeRun, nothing happened.
@@ -470,7 +470,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 endTime = eventTime;
                 wfRun.handleThreadStatus(number, eventTime, status);
             } else {
-                NodeModel nextNode = currentNR.evaluateOutgoingEdgesAndMaybeMutateVariables();
+                NodeModel nextNode = currentNR.evaluateOutgoingEdgesAndMaybeMutateVariables(processorContext);
                 activateNode(nextNode);
             }
         } catch (NodeFailureException exn) {
@@ -498,7 +498,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 wfRun.getThreadRun(failure.getFailureHandlerThreadRunId()).getStatus() == LHStatus.COMPLETED;
         if (handled) {
             try {
-                NodeModel nextNode = nodeRun.evaluateOutgoingEdgesAndMaybeMutateVariables();
+                NodeModel nextNode = nodeRun.evaluateOutgoingEdgesAndMaybeMutateVariables(processorContext);
                 activateNode(nextNode);
             } catch (NodeFailureException exn) {
                 failWithoutGrace(exn.getFailure(), new Date());
@@ -633,7 +633,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             hr.parentHalted.parentThreadId = number;
             child.halt(hr);
             if (child.getCurrentNodeRun().isInProgress()) {
-                child.getCurrentNodeRun().maybeHalt();
+                child.getCurrentNodeRun().maybeHalt(processorContext);
             }
         }
 
@@ -669,11 +669,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         cnr.setWfSpecId(wfSpecId);
         cnr.setThreadSpecName(threadSpecName);
         cnr.setArrivalTime(arrivalTime);
-        cnr.setSubNodeRun(node.getSubNode().createSubNodeRun(arrivalTime));
+        cnr.setSubNodeRun(node.getSubNode().createSubNodeRun(arrivalTime, processorContext));
 
         putNodeRun(cnr);
 
-        cnr.arrive(arrivalTime);
+        cnr.arrive(arrivalTime, processorContext);
     }
 
     public ThreadRunModel getParent() {
@@ -683,7 +683,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public List<VarNameAndValModel> assignVarsForNode(TaskNodeModel node) throws LHVarSubError {
         List<VarNameAndValModel> out = new ArrayList<>();
-        TaskDefModel taskDef = node.getTaskDef();
+        TaskDefModel taskDef = node.getTaskDef(this, processorContext);
 
         if (taskDef.inputVars.size() != node.getVariables().size()) {
             throw new LHVarSubError(null, "Impossible: got different number of taskdef vars and node input vars");
@@ -850,7 +850,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 .getAllVariables()
                 .get(varName);
         if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
-            log.warn("{}", varName);
             // If we validate the WfSpec properly, it should be impossible for parentWfRunId to be null.
             WfRunIdModel parentWfRunId = getWfRun().getId().getParentWfRunId();
             WfRunModel parentWfRun = processorContext.getableManager().get(parentWfRunId);

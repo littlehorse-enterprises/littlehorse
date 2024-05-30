@@ -88,6 +88,7 @@ public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
         //
         // We shouldn't throw an error on this, we just return an empty optional.
         if (scheduledTask == null) {
+            log.warn("Processing pollTaskRequest for task {} that was already claimed", taskRunId);
             return PollTaskResponse.newBuilder().build();
         } else {
             taskRun.onTaskAttemptStarted(this);

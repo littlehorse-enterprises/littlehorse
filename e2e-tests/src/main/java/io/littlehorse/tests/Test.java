@@ -222,7 +222,7 @@ public abstract class Test {
         NodeRun result;
         try {
             result = client.getNodeRun(NodeRunId.newBuilder()
-                    .setWfRunId(LHLibUtil.wfRunId(wfRunId))
+                    .setWfRunId(LHLibUtil.wfRunIdFromString(wfRunId))
                     .setThreadRunNumber(threadRunNumber)
                     .setPosition(nodeRunPosition)
                     .build());
@@ -260,7 +260,7 @@ public abstract class Test {
 
         try {
             result = client.getVariable(VariableId.newBuilder()
-                    .setWfRunId(LHLibUtil.wfRunId(wfRunId))
+                    .setWfRunId(LHLibUtil.wfRunIdFromString(wfRunId))
                     .setThreadRunNumber(threadRunNumber)
                     .setName(name)
                     .build());
@@ -311,7 +311,7 @@ public abstract class Test {
         }
         PutExternalEventRequest.Builder req = PutExternalEventRequest.newBuilder()
                 .setContent(varVal)
-                .setWfRunId(LHLibUtil.wfRunId(wfRunId))
+                .setWfRunId(LHLibUtil.wfRunIdFromString(wfRunId))
                 .setExternalEventDefId(LHLibUtil.externalEventDefId(eventName))
                 .setGuid(guid);
         try {
@@ -323,7 +323,7 @@ public abstract class Test {
         return ExternalEventId.newBuilder()
                 .setExternalEventDefId(ExternalEventDefId.newBuilder().setName(eventName))
                 .setGuid(guid)
-                .setWfRunId(LHLibUtil.wfRunId(wfRunId))
+                .setWfRunId(LHLibUtil.wfRunIdFromString(wfRunId))
                 .build();
     }
 

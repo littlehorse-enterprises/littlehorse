@@ -11,7 +11,7 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
-import io.littlehorse.sdk.worker.internal.ConnectionManagerLivenessController;
+import io.littlehorse.sdk.worker.internal.LHLivenessController;
 import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.io.Closeable;
@@ -21,6 +21,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
 
@@ -43,6 +44,7 @@ public class LHTaskWorker implements Closeable {
     };
 
     private Object executable;
+    private Map<String, String> valuesForPlaceholders;
     private LHConfig config;
     private TaskDef taskDef;
     private Method taskMethod;
@@ -50,9 +52,6 @@ public class LHTaskWorker implements Closeable {
     private LHServerConnectionManager manager;
     private String taskDefName;
     private LittleHorseBlockingStub grpcClient;
-
-    private static final long KEEP_ALIVE_TIMEOUT = 60_000;
-
     /**
      * Creates an LHTaskWorker given an Object that has an annotated LHTaskMethod, and a
      * configuration Properties object.
@@ -70,8 +69,38 @@ public class LHTaskWorker implements Closeable {
         this.grpcClient = config.getBlockingStub();
     }
 
-    public LHTaskWorker(Object executable, String taskDefName, LHConfig config, LHServerConnectionManager manager) {
-        this(executable, taskDefName, config);
+    /**
+     *  Creates an LHTaskWorker given an Object that has an annotated LHTaskMethod, and a
+     *  configuration Properties object. You can have placeholders in the taskDefName in the form of:
+     *  a-task-name-${PLACEHOLDER_1}-${PLACEHOLDER-2}.
+     *  Each placeholder should be replaced by its corresponding value coming from the valuesForPlaceHolders map.
+     *  PLACEHOLDER_1: VALUE_1
+     *  PLACEHOLDER_2: VALUE_2
+     *  So after the values are replaced, you will have a taskDefName like: a-task-name-VALUE_1-VALUE_2
+     *
+     * @param executable is any Object which has exactly one method annotated with '@LHTaskMethod'.
+     *      *                    That method will be used to execute the tasks.
+     * @param taskDefName is the name of the `TaskDef` to execute.
+     * @param config is a valid LHConfig.
+     * @param valuesForPlaceholders map of values that will replace the placeholders on the taskDefName
+     */
+    public LHTaskWorker(
+            Object executable, String taskDefName, LHConfig config, Map<String, String> valuesForPlaceholders) {
+        this.config = config;
+        this.executable = executable;
+        this.valuesForPlaceholders = valuesForPlaceholders;
+        this.mappings = new ArrayList<>();
+        this.taskDefName = taskDefName;
+        this.grpcClient = config.getBlockingStub();
+    }
+
+    public LHTaskWorker(
+            Object executable,
+            String taskDefName,
+            Map<String, String> valuesForPlaceHolders,
+            LHConfig config,
+            LHServerConnectionManager manager) {
+        this(executable, taskDefName, config, valuesForPlaceHolders);
         this.manager = manager;
     }
 
@@ -88,12 +117,15 @@ public class LHTaskWorker implements Closeable {
         validateTaskDefAndExecutable();
         if (this.manager == null) {
             this.manager = new LHServerConnectionManager(
-                    taskMethod,
                     taskDef,
-                    config,
+                    config.getAsyncStub(),
+                    config.getTaskWorkerId(),
+                    config.getConnectListener(),
+                    new LHLivenessController(),
+                    taskMethod,
                     mappings,
                     executable,
-                    new ConnectionManagerLivenessController(KEEP_ALIVE_TIMEOUT));
+                    config);
         }
     }
 
@@ -119,7 +151,7 @@ public class LHTaskWorker implements Closeable {
      * recommended for production (in production you should manually use the PutTaskDef).
      */
     public void registerTaskDef() {
-        TaskDefBuilder tdb = new TaskDefBuilder(executable, taskDefName);
+        TaskDefBuilder tdb = new TaskDefBuilder(executable, taskDefName, this.valuesForPlaceholders);
         TaskDef result = grpcClient.putTaskDef(tdb.toPutTaskDefRequest());
         log.info("Created TaskDef:\n{}", LHLibUtil.protoToJson(result));
     }
@@ -143,7 +175,8 @@ public class LHTaskWorker implements Closeable {
                     });
         }
 
-        LHTaskSignature signature = new LHTaskSignature(taskDef.getId().getName(), executable);
+        LHTaskSignature signature =
+                new LHTaskSignature(taskDef.getId().getName(), executable, this.valuesForPlaceholders);
         taskMethod = signature.getTaskMethod();
 
         int numTaskMethodParams = taskMethod.getParameterCount();
@@ -200,12 +233,6 @@ public class LHTaskWorker implements Closeable {
     }
 
     public LHTaskWorkerHealth healthStatus() {
-        if (!manager.isClusterHealthy()) {
-            return new LHTaskWorkerHealth(false, LHTaskWorkerHealthReason.SERVER_REBALANCING);
-        } else if (!manager.wasThereAnyFailure() && manager.isClusterHealthy()) {
-            return new LHTaskWorkerHealth(true, LHTaskWorkerHealthReason.HEALTHY);
-        }
-
-        return new LHTaskWorkerHealth(false, LHTaskWorkerHealthReason.UNHEALTHY);
+        return manager.healthStatus();
     }
 }

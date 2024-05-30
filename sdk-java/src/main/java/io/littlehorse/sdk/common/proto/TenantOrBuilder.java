@@ -8,23 +8,35 @@ public interface TenantOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the Tenant.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * The ID of the Tenant.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.TenantId getId();
   /**
+   * <pre>
+   * The ID of the Tenant.
+   * </pre>
+   *
    * <code>.littlehorse.TenantId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.TenantIdOrBuilder getIdOrBuilder();
 
   /**
    * <pre>
-   * Future versions will include quotas on a per-Tenant basis.
+   * The time at which the Tenant was created.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
@@ -33,7 +45,7 @@ public interface TenantOrBuilder extends
   boolean hasCreatedAt();
   /**
    * <pre>
-   * Future versions will include quotas on a per-Tenant basis.
+   * The time at which the Tenant was created.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
@@ -42,7 +54,7 @@ public interface TenantOrBuilder extends
   com.google.protobuf.Timestamp getCreatedAt();
   /**
    * <pre>
-   * Future versions will include quotas on a per-Tenant basis.
+   * The time at which the Tenant was created.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>

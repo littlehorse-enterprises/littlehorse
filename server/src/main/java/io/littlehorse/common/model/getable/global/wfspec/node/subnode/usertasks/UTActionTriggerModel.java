@@ -7,9 +7,9 @@ import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.ActionCase;
-import io.littlehorse.sdk.common.proto.UTActionTrigger.UTACancel;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,7 +19,7 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
 
     public ActionCase actionType;
     public UTATaskModel task;
-    public UTACancel cancel;
+    public UTACancelModel cancel;
     public UTAReassignModel reassign;
 
     public UTHook hook;
@@ -39,7 +39,7 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
                 out.setTask(task.toProto());
                 break;
             case CANCEL:
-                out.setCancel(cancel);
+                out.setCancel(cancel.toProto());
                 break;
             case REASSIGN:
                 out.setReassign(reassign.toProto());
@@ -52,16 +52,16 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
         return out;
     }
 
-    public void schedule(UserTaskRunModel utr) throws LHVarSubError {
+    public void schedule(UserTaskRunModel utr, ProcessorExecutionContext processorContext) throws LHVarSubError {
         switch (actionType) {
             case TASK:
-                task.schedule(utr, this);
+                task.schedule(utr, this, processorContext);
                 break;
             case REASSIGN:
-                reassign.schedule(utr, this);
+                reassign.schedule(utr, this, processorContext);
                 break;
             case CANCEL:
-                log.warn("Unimplemented: Cancel trigger");
+                cancel.schedule(utr, this, processorContext);
                 break;
             case ACTION_NOT_SET:
                 // nothing to do
@@ -82,7 +82,7 @@ public class UTActionTriggerModel extends LHSerializable<UTActionTrigger> {
                 reassign = LHSerializable.fromProto(p.getReassign(), UTAReassignModel.class, context);
                 break;
             case CANCEL:
-                cancel = p.getCancel();
+                cancel = LHSerializable.fromProto(p.getCancel(), UTACancelModel.class, context);
                 break;
             case ACTION_NOT_SET:
                 throw new RuntimeException("Not possible");

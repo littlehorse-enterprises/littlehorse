@@ -4,6 +4,13 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Iterates over a JSON_ARR and starts a Child ThreadRun for each element in the
+ * list.
+ *
+ * Returns a JSON_ARR containing the thread_run_number of each spawned child.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.StartMultipleThreadsNode}
  */
 public final class StartMultipleThreadsNode extends
@@ -55,6 +62,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object threadSpecName_ = "";
   /**
+   * <pre>
+   * The name of the ThreadSpec to spawn.
+   * </pre>
+   *
    * <code>string thread_spec_name = 1;</code>
    * @return The threadSpecName.
    */
@@ -72,6 +83,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the ThreadSpec to spawn.
+   * </pre>
+   *
    * <code>string thread_spec_name = 1;</code>
    * @return The bytes for threadSpecName.
    */
@@ -117,6 +132,11 @@ private static final long serialVersionUID = 0L;
     return internalGetVariables().getMap().size();
   }
   /**
+   * <pre>
+   * Variables which are passed into the child ThreadRuns. These assignments are
+   * the same for all spawned threads.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
   @java.lang.Override
@@ -134,6 +154,11 @@ private static final long serialVersionUID = 0L;
     return getVariablesMap();
   }
   /**
+   * <pre>
+   * Variables which are passed into the child ThreadRuns. These assignments are
+   * the same for all spawned threads.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
   @java.lang.Override
@@ -141,6 +166,11 @@ private static final long serialVersionUID = 0L;
     return internalGetVariables().getMap();
   }
   /**
+   * <pre>
+   * Variables which are passed into the child ThreadRuns. These assignments are
+   * the same for all spawned threads.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
   @java.lang.Override
@@ -155,6 +185,11 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
+   * <pre>
+   * Variables which are passed into the child ThreadRuns. These assignments are
+   * the same for all spawned threads.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
   @java.lang.Override
@@ -172,6 +207,12 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
   public static final int ITERABLE_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.VariableAssignment iterable_;
   /**
+   * <pre>
+   * Assignment that resolves to a JSON_ARR. For each element in the list, a child
+   * ThreadRun is started. The reserved `INPUT` variable for each Child is set to the
+   * corresponding item in the list.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment iterable = 3;</code>
    * @return Whether the iterable field is set.
    */
@@ -180,6 +221,12 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     return iterable_ != null;
   }
   /**
+   * <pre>
+   * Assignment that resolves to a JSON_ARR. For each element in the list, a child
+   * ThreadRun is started. The reserved `INPUT` variable for each Child is set to the
+   * corresponding item in the list.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment iterable = 3;</code>
    * @return The iterable.
    */
@@ -188,6 +235,12 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     return iterable_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : iterable_;
   }
   /**
+   * <pre>
+   * Assignment that resolves to a JSON_ARR. For each element in the list, a child
+   * ThreadRun is started. The reserved `INPUT` variable for each Child is set to the
+   * corresponding item in the list.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment iterable = 3;</code>
    */
   @java.lang.Override
@@ -390,6 +443,13 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     return builder;
   }
   /**
+   * <pre>
+   * Iterates over a JSON_ARR and starts a Child ThreadRun for each element in the
+   * list.
+   *
+   * Returns a JSON_ARR containing the thread_run_number of each spawned child.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.StartMultipleThreadsNode}
    */
   public static final class Builder extends
@@ -620,6 +680,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
 
     private java.lang.Object threadSpecName_ = "";
     /**
+     * <pre>
+     * The name of the ThreadSpec to spawn.
+     * </pre>
+     *
      * <code>string thread_spec_name = 1;</code>
      * @return The threadSpecName.
      */
@@ -636,6 +700,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec to spawn.
+     * </pre>
+     *
      * <code>string thread_spec_name = 1;</code>
      * @return The bytes for threadSpecName.
      */
@@ -653,6 +721,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec to spawn.
+     * </pre>
+     *
      * <code>string thread_spec_name = 1;</code>
      * @param value The threadSpecName to set.
      * @return This builder for chaining.
@@ -666,6 +738,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec to spawn.
+     * </pre>
+     *
      * <code>string thread_spec_name = 1;</code>
      * @return This builder for chaining.
      */
@@ -676,6 +752,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec to spawn.
+     * </pre>
+     *
      * <code>string thread_spec_name = 1;</code>
      * @param value The bytes for threadSpecName to set.
      * @return This builder for chaining.
@@ -717,6 +797,11 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return internalGetVariables().getMap().size();
     }
     /**
+     * <pre>
+     * Variables which are passed into the child ThreadRuns. These assignments are
+     * the same for all spawned threads.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
      */
     @java.lang.Override
@@ -734,6 +819,11 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return getVariablesMap();
     }
     /**
+     * <pre>
+     * Variables which are passed into the child ThreadRuns. These assignments are
+     * the same for all spawned threads.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
      */
     @java.lang.Override
@@ -741,6 +831,11 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return internalGetVariables().getMap();
     }
     /**
+     * <pre>
+     * Variables which are passed into the child ThreadRuns. These assignments are
+     * the same for all spawned threads.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
      */
     @java.lang.Override
@@ -755,6 +850,11 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
+     * <pre>
+     * Variables which are passed into the child ThreadRuns. These assignments are
+     * the same for all spawned threads.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
      */
     @java.lang.Override
@@ -775,6 +875,11 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Variables which are passed into the child ThreadRuns. These assignments are
+     * the same for all spawned threads.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
      */
     public Builder removeVariables(
@@ -794,6 +899,11 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return internalGetMutableVariables().getMutableMap();
     }
     /**
+     * <pre>
+     * Variables which are passed into the child ThreadRuns. These assignments are
+     * the same for all spawned threads.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
      */
     public Builder putVariables(
@@ -807,6 +917,11 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Variables which are passed into the child ThreadRuns. These assignments are
+     * the same for all spawned threads.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
      */
     public Builder putAllVariables(
@@ -821,6 +936,12 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> iterableBuilder_;
     /**
+     * <pre>
+     * Assignment that resolves to a JSON_ARR. For each element in the list, a child
+     * ThreadRun is started. The reserved `INPUT` variable for each Child is set to the
+     * corresponding item in the list.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iterable = 3;</code>
      * @return Whether the iterable field is set.
      */
@@ -828,6 +949,12 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * Assignment that resolves to a JSON_ARR. For each element in the list, a child
+     * ThreadRun is started. The reserved `INPUT` variable for each Child is set to the
+     * corresponding item in the list.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iterable = 3;</code>
      * @return The iterable.
      */
@@ -839,6 +966,12 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Assignment that resolves to a JSON_ARR. For each element in the list, a child
+     * ThreadRun is started. The reserved `INPUT` variable for each Child is set to the
+     * corresponding item in the list.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iterable = 3;</code>
      */
     public Builder setIterable(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -855,6 +988,12 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Assignment that resolves to a JSON_ARR. For each element in the list, a child
+     * ThreadRun is started. The reserved `INPUT` variable for each Child is set to the
+     * corresponding item in the list.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iterable = 3;</code>
      */
     public Builder setIterable(
@@ -869,6 +1008,12 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Assignment that resolves to a JSON_ARR. For each element in the list, a child
+     * ThreadRun is started. The reserved `INPUT` variable for each Child is set to the
+     * corresponding item in the list.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iterable = 3;</code>
      */
     public Builder mergeIterable(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -888,6 +1033,12 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Assignment that resolves to a JSON_ARR. For each element in the list, a child
+     * ThreadRun is started. The reserved `INPUT` variable for each Child is set to the
+     * corresponding item in the list.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iterable = 3;</code>
      */
     public Builder clearIterable() {
@@ -901,6 +1052,12 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Assignment that resolves to a JSON_ARR. For each element in the list, a child
+     * ThreadRun is started. The reserved `INPUT` variable for each Child is set to the
+     * corresponding item in the list.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iterable = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getIterableBuilder() {
@@ -909,6 +1066,12 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return getIterableFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Assignment that resolves to a JSON_ARR. For each element in the list, a child
+     * ThreadRun is started. The reserved `INPUT` variable for each Child is set to the
+     * corresponding item in the list.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iterable = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getIterableOrBuilder() {
@@ -920,6 +1083,12 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Assignment that resolves to a JSON_ARR. For each element in the list, a child
+     * ThreadRun is started. The reserved `INPUT` variable for each Child is set to the
+     * corresponding item in the list.
+     * </pre>
+     *
      * <code>.littlehorse.VariableAssignment iterable = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

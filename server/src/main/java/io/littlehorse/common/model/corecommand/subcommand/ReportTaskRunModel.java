@@ -43,7 +43,7 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
     }
 
     public boolean hasResponse() {
-        return true;
+        return false;
     }
 
     @Override

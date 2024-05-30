@@ -59,6 +59,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
                 ? null
                 : (PrincipalIdModel) ObjectIdModel.fromString(clientIdStr.trim(), PrincipalIdModel.class);
         String tenantIdStr = headers.get(TENANT_ID);
+
         TenantIdModel tenantId = tenantIdStr == null
                 ? null
                 : (TenantIdModel) ObjectIdModel.fromString(tenantIdStr.trim(), TenantIdModel.class);
@@ -82,13 +83,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
     }
 
     private RequestExecutionContext contextFor(PrincipalIdModel clientId, TenantIdModel tenantId) {
-        return new RequestExecutionContext(
-                clientId,
-                tenantId,
-                coreStoreProvider.getNativeGlobalStore(),
-                coreStoreProvider.nativeCoreStore(),
-                metadataCache,
-                lhConfig);
+        return new RequestExecutionContext(clientId, tenantId, coreStoreProvider, metadataCache, lhConfig);
     }
 
     private static class AclVerifier {

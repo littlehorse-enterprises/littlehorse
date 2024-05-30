@@ -35,8 +35,8 @@ public class TaskDefLifecycleTest {
 
     @Test
     void shouldBeIdempotent() {
-        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), "greet");
-        TaskDefBuilder taskCopy = new TaskDefBuilder(new TaskWorker(), "greet");
+        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), "greet", null);
+        TaskDefBuilder taskCopy = new TaskDefBuilder(new TaskWorker(), "greet", null);
         TaskDef original = client.putTaskDef(task.toPutTaskDefRequest());
         TaskDef copy = client.putTaskDef(taskCopy.toPutTaskDefRequest());
         assertThat(TaskDefUtil.equals(TaskDefModel.fromProto(original, null), TaskDefModel.fromProto(copy, null)))
@@ -45,14 +45,14 @@ public class TaskDefLifecycleTest {
 
     @Test
     void shouldThrowAlreadyExistWhenTaskDefDifferent() {
-        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), "greet-with-update");
+        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), "greet-with-update", null);
         client.putTaskDef(task.toPutTaskDefRequest());
 
-        TaskDefBuilder taskUpdated = new TaskDefBuilder(new TaskWorkerUpdated(), "greet-with-update");
+        TaskDefBuilder taskUpdated = new TaskDefBuilder(new TaskWorkerUpdated(), "greet-with-update", null);
 
         assertThatThrownBy(() -> client.putTaskDef(taskUpdated.toPutTaskDefRequest()))
                 .isInstanceOf(StatusRuntimeException.class)
-                .hasMessage("ALREADY_EXISTS: TaskDef already exists and is immutable.");
+                .hasMessage("ALREADY_EXISTS: TaskDef [greet-with-update] already exists and is immutable.");
     }
 
     @Test

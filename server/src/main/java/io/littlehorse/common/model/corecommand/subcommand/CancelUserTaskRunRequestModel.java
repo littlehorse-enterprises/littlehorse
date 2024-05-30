@@ -18,6 +18,12 @@ public class CancelUserTaskRunRequestModel extends CoreSubCommand<CancelUserTask
 
     private UserTaskRunIdModel userTaskRunId;
 
+    public CancelUserTaskRunRequestModel() {}
+
+    public CancelUserTaskRunRequestModel(UserTaskRunIdModel userTaskRunId) {
+        this.userTaskRunId = userTaskRunId;
+    }
+
     @Override
     public CancelUserTaskRunRequest.Builder toProto() {
         return CancelUserTaskRunRequest.newBuilder().setUserTaskRunId(userTaskRunId.toProto());

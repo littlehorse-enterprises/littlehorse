@@ -5,17 +5,17 @@ import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.List;
+import java.util.Map;
 
 public class TaskDefBuilder {
 
     public Object executable;
-    public String taskDefName;
     public LHTaskSignature signature;
 
-    public TaskDefBuilder(Object executable, String taskDefName) throws TaskSchemaMismatchError {
-        signature = new LHTaskSignature(taskDefName, executable);
+    public TaskDefBuilder(Object executable, String taskDefName, Map<String, String> valuesForPlaceHolders)
+            throws TaskSchemaMismatchError {
+        signature = new LHTaskSignature(taskDefName, executable, valuesForPlaceHolders);
         this.executable = executable;
-        this.taskDefName = taskDefName;
     }
 
     public PutTaskDefRequest toPutTaskDefRequest() {
@@ -26,7 +26,7 @@ public class TaskDefBuilder {
         for (int i = 0; i < varNames.size(); i++) {
             out.addInputVars(VariableDef.newBuilder().setName(varNames.get(i)).setType(varTypes.get(i)));
         }
-        out.setName(taskDefName);
+        out.setName(this.signature.taskDefName);
 
         return out.build();
     }
@@ -38,11 +38,16 @@ public class TaskDefBuilder {
         if (!(o instanceof TaskDefBuilder)) return false;
         TaskDefBuilder other = (TaskDefBuilder) o;
 
-        return (signature.equals(other.signature) && taskDefName.equals(other.taskDefName));
+        return (signature.equals(other.signature)
+                && this.signature.getTaskDefName().equals(other.signature.getTaskDefName()));
     }
 
     @Override
     public int hashCode() {
-        return taskDefName.hashCode();
+        return this.signature.getTaskDefName().hashCode();
+    }
+
+    public String getTaskDefName() {
+        return this.signature.getTaskDefName();
     }
 }

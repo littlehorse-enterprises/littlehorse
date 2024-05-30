@@ -15,6 +15,7 @@ import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.LHWorkflowEvent;
 import io.littlehorse.test.WorkflowVerifier;
+import java.time.Duration;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +31,7 @@ public class WorkflowEventsTest {
     @Test
     void shouldBeAbleToGetWorkflowEventThrownFirst() {
         verifier.prepareRun(eventsWf, Arg.of("sleep-time", 0))
-                .waitForStatus(LHStatus.COMPLETED)
+                .waitForStatus(LHStatus.COMPLETED, Duration.ofSeconds(2))
                 .thenVerifyWfRun(wfRun -> {
                     WorkflowEvent result = client.awaitWorkflowEvent(AwaitWorkflowEventRequest.newBuilder()
                             .setWfRunId(wfRun.getId())

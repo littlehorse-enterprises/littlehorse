@@ -30,11 +30,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Utils;
+import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.DefaultProductionExceptionHandler;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.jetbrains.annotations.Nullable;
@@ -52,6 +54,8 @@ public class LHServerConfig extends ConfigBase {
 
     @Getter
     private WriteBufferManager globalRocksdbWriteBufferManager;
+
+    private String instanceName;
 
     // Kafka Global Configs
     public static final String KAFKA_BOOTSTRAP_KEY = "LHS_KAFKA_BOOTSTRAP_SERVERS";
@@ -78,6 +82,8 @@ public class LHServerConfig extends ConfigBase {
     public static final String NUM_WARMUP_REPLICAS_KEY = "LHS_STREAMS_NUM_WARMUP_REPLICAS";
     public static final String NUM_STANDBY_REPLICAS_KEY = "LHS_STREAMS_NUM_STANDBY_REPLICAS";
     public static final String ROCKSDB_COMPACTION_THREADS_KEY = "LHS_ROCKSDB_COMPACTION_THREADS";
+    public static final String STREAMS_METRICS_LEVEL_KEY = "LHS_STREAMS_METRICS_LEVEL";
+    public static final String LINGER_MS_KEY = "LHS_KAFKA_LINGER_MS";
 
     // General LittleHorse Runtime Behavior Config Env Vars
     public static final String NUM_NETWORK_THREADS_KEY = "LHS_NUM_NETWORK_THREADS";
@@ -128,6 +134,12 @@ public class LHServerConfig extends ConfigBase {
     private List<AdvertisedListenerConfig> advertisedListenerConfigs;
     private Map<String, ListenerProtocol> listenersProtocolMap;
     private Map<String, AuthorizationProtocol> listenersAuthorizationMap;
+
+    // EXPERIMENTAL Internal configs. Should not be used by real users; only for testing.
+    public static final String X_USE_AT_LEAST_ONCE_KEY = "LHS_X_USE_AT_LEAST_ONCE";
+    public static final String X_USE_STATE_UPDATER_KEY = "LHS_X_USE_STATE_UPDATER";
+    public static final String X_LEAVE_GROUP_ON_SHUTDOWN_KEY = "LHS_X_LEAVE_GROUP_ON_SHUTDOWN";
+    public static final String X_USE_STATIC_MEMBERSHIP_KEY = "LHS_X_USE_STATIC_MEMBERSHIP";
 
     protected String[] getEnvKeyPrefixes() {
         return new String[] {"LHS_"};
@@ -313,9 +325,25 @@ public class LHServerConfig extends ConfigBase {
         return getOrSetDefault(LHServerConfig.LHS_CLUSTER_ID_KEY, "cluster1");
     }
 
-    public String getLHInstanceId() {
-        return getOrSetDefault(
-                LHServerConfig.LHS_INSTANCE_ID_KEY, "unset-" + UUID.randomUUID().toString());
+    public Optional<Short> getLHInstanceId() {
+        String instanceId = getOrSetDefault(LHS_INSTANCE_ID_KEY, null);
+        if (instanceId == null) return Optional.empty();
+
+        short ordinalVal = Short.valueOf(instanceId);
+        if (ordinalVal < 0) {
+            throw new LHMisconfigurationException("LHS_INSTANCE_ID cannot be negative");
+        }
+        return Optional.of(ordinalVal);
+    }
+
+    public String getLHInstanceName() {
+        if (instanceName != null) return instanceName;
+
+        instanceName = getLHInstanceId().isPresent()
+                ? getLHInstanceId().get().toString()
+                : UUID.randomUUID().toString();
+
+        return instanceName;
     }
 
     public String getStateDirectory() {
@@ -621,7 +649,7 @@ public class LHServerConfig extends ConfigBase {
 
     public Properties getKafkaProducerConfig(String component) {
         Properties conf = new Properties();
-        conf.put("client.id", this.getClientId());
+        conf.put("client.id", this.getClientId(component));
         conf.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
         conf.put(
@@ -632,6 +660,7 @@ public class LHServerConfig extends ConfigBase {
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
                 org.apache.kafka.common.serialization.StringSerializer.class);
         conf.put(ProducerConfig.ACKS_CONFIG, "all");
+        conf.put(ProducerConfig.LINGER_MS_CONFIG, getOrSetDefault(LINGER_MS_KEY, "0"));
         addKafkaSecuritySettings(conf);
         return conf;
     }
@@ -728,10 +757,26 @@ public class LHServerConfig extends ConfigBase {
         return defaultVal;
     }
 
+    /*
+     * EXPERIMENTAL: Internal config to determine whether the server should leave the
+     * group on shutdown
+     */
+    public boolean leaveGroupOnShutdown() {
+        return getOrSetDefault(X_LEAVE_GROUP_ON_SHUTDOWN_KEY, "false").equals("true");
+    }
+
     public Properties getCoreStreamsConfig() {
         Properties props = getBaseStreamsConfig();
         props.put("application.id", getKafkaGroupId("core"));
-        props.put("processing.guarantee", "exactly_once_v2");
+        props.put("client.id", this.getClientId("core"));
+
+        if (getOrSetDefault(X_USE_AT_LEAST_ONCE_KEY, "false").equals("true")) {
+            log.warn("Using experimental override config to use at-least-once for Core topology");
+            props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.AT_LEAST_ONCE);
+        } else {
+            props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_V2);
+        }
+
         props.put("num.stream.threads", Integer.valueOf(getOrSetDefault(CORE_STREAM_THREADS_KEY, "1")));
         // The Core Topology is EOS. Note that we have engineered the application to not be sensitive
         // to commit latency (long story). The only thing that is affected by commit latency is the
@@ -750,16 +795,22 @@ public class LHServerConfig extends ConfigBase {
         //
         // That's not to mention that we will be writing fewer times to RocksDB. Huge win.
         int commitInterval = Integer.valueOf(getOrSetDefault(LHServerConfig.CORE_STREAMS_COMMIT_INTERVAL_KEY, "2000"));
-        props.put("commit.interval", commitInterval);
+        props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, commitInterval);
         props.put(
                 "statestore.cache.max.bytes",
                 Long.valueOf(getOrSetDefault(CORE_STATESTORE_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 32))));
+
+        // Kafka Streams calls KafkaProducer#commitTransaction() which flushes messages anyways. Sending earlier does
+        // not help at all in any way (this is because the Core topology is EOS). Therefore, having a big linger.ms
+        // does not have any downsides in theory.
+        props.put(StreamsConfig.producerPrefix("linger.ms"), 1000);
         return props;
     }
 
     public Properties getTimerStreamsConfig() {
         Properties props = getBaseStreamsConfig();
         props.put("application.id", this.getKafkaGroupId("timer"));
+        props.put("client.id", this.getClientId("timer"));
         props.put("processing.guarantee", "at_least_once");
         props.put("consumer.isolation.level", "read_uncommitted");
         props.put("num.stream.threads", Integer.valueOf(getOrSetDefault(TIMER_STREAM_THREADS_KEY, "1")));
@@ -779,24 +830,43 @@ public class LHServerConfig extends ConfigBase {
         // the LHS_CORE_STATESTORE_CACHE_BYTES config smaller (i.e. 16MB) due to the smaller commit interval.
         int commitInterval =
                 Integer.valueOf(getOrSetDefault(LHServerConfig.TIMER_STREAMS_COMMIT_INTERVAL_KEY, "30000"));
-        props.put("commit.interval", commitInterval);
+        props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, commitInterval);
 
         props.put(
                 "statestore.cache.max.bytes",
                 Long.valueOf(getOrSetDefault(TIMER_STATESTORE_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 64))));
+
+        // For the Timer, which is ALOS, the linger ms does potentially impact the latency of a timer coming in.
+        // Future work might allow this to be a separate config from the linger ms used for the GRPC server.
+        props.put(StreamsConfig.producerPrefix("linger.ms"), getOrSetDefault(LINGER_MS_KEY, "0"));
 
         return props;
     }
 
     private Properties getBaseStreamsConfig() {
         Properties props = new Properties();
+
+        if (getOrSetDefault(X_LEAVE_GROUP_ON_SHUTDOWN_KEY, "false").equals("true")) {
+            log.warn("Using experimental internal config to leave group on shutdonw!");
+            props.put(StreamsConfig.consumerPrefix("internal.leave.group.on.close"), true);
+        }
+
+        if (getOrSetDefault(X_USE_STATE_UPDATER_KEY, "false").equals("true")) {
+            log.warn("Using experimental internal config to use State Updater!");
+            props.put(StreamsConfig.InternalConfig.STATE_UPDATER_ENABLED, true);
+        }
+
+        if (getOrSetDefault(X_USE_STATIC_MEMBERSHIP_KEY, "false").equals("true")) {
+            log.warn("Using experimental internal config to enable static membership");
+            props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, getLHInstanceName());
+        }
+
         props.put(
                 "application.server",
                 getOrSetDefault(LHServerConfig.INTERNAL_ADVERTISED_HOST_KEY, "localhost") + ":"
                         + this.getInternalAdvertisedPort());
 
         props.put("bootstrap.servers", this.getBootstrapServers());
-        props.put("client.id", this.getClientId());
         props.put("state.dir", getStateDirectory());
         props.put("request.timeout.ms", 1000 * 60);
         props.put("producer.transaction.timeout.ms", 1000 * 60);
@@ -805,6 +875,9 @@ public class LHServerConfig extends ConfigBase {
         props.put("num.standby.replicas", Integer.valueOf(getOrSetDefault(NUM_STANDBY_REPLICAS_KEY, "0")));
         props.put("max.warmup.replicas", Integer.valueOf(getOrSetDefault(NUM_WARMUP_REPLICAS_KEY, "4")));
         props.put("probing.rebalance.interval.ms", 60 * 1000);
+        props.put(
+                "metrics.recording.level",
+                getOrSetDefault(STREAMS_METRICS_LEVEL_KEY, "info").toUpperCase());
 
         // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.
         props.put("default.deserialization.exception.handler", LogAndContinueExceptionHandler.class);
@@ -854,8 +927,8 @@ public class LHServerConfig extends ConfigBase {
         return props;
     }
 
-    private String getClientId() {
-        return this.getLHClusterId() + "-" + this.getLHInstanceId();
+    private String getClientId(String component) {
+        return this.getLHClusterId() + "-" + this.getLHInstanceName() + "-" + component;
     }
 
     public int getNumNetworkThreads() {

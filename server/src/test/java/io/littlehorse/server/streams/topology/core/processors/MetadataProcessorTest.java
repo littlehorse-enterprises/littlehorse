@@ -1,7 +1,5 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
-import static org.mockito.Mockito.*;
-
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.KafkaStreamsServerImpl;

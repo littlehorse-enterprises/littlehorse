@@ -251,7 +251,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
     }
 
     private void scheduleAction(UTActionTriggerModel trigger) throws LHVarSubError {
-        trigger.schedule(this);
+        trigger.schedule(this, processorContext);
     }
 
     public void deadlineReassign(DeadlineReassignUserTaskModel trigger) {
@@ -292,7 +292,9 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         this.events.add(new UserTaskEventModel(
                 new UTECancelledModel("UserTaskRun was cancelled"),
                 processorContext.currentCommand().getTime()));
-        failureToThrowKenobi = new FailureModel("User task cancelled", LHConstants.USER_TASK_CANCELLED);
+        ThreadRunModel currentThreadRun = this.getNodeRun().getThreadRun();
+        String failureName = this.getUtNode().assignExceptionNameVariable(currentThreadRun);
+        failureToThrowKenobi = new FailureModel("User task cancelled", failureName);
     }
 
     public void processTaskCompletedEvent(CompleteUserTaskRunRequestModel event) throws LHApiException {
@@ -364,62 +366,44 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         throw new NotImplementedException();
     }
 
-    public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
+    private List<List<String>> getIndexHelper() {
+        // We need all 15 combinations of the 4 tags, except for the combination
+        // that has none of them set. ((2^4) - 1) == 15, so there are 15 entries.
         return List.of(
-                new GetableIndex<UserTaskRunModel>(
-                        List.of(Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL)),
-                // Future: We will make this LOCAL if it's DONE or CANCELLED, and
-                // REMOTE if it's CLAIMED, UNASSIGNED, or ASSIGNED_NOT_CLAIMED.
-                new GetableIndex<UserTaskRunModel>(
-                        List.of(
-                                Pair.of("status", GetableIndex.ValueType.SINGLE),
-                                Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL)),
-                new GetableIndex<UserTaskRunModel>(
-                        List.of(Pair.of("status", GetableIndex.ValueType.SINGLE)), Optional.of(TagStorageType.LOCAL)),
-                new GetableIndex<UserTaskRunModel>(
-                        List.of(Pair.of("userId", GetableIndex.ValueType.SINGLE)),
-                        // This might become a REMOTE tag in the future.
-                        Optional.of(TagStorageType.LOCAL),
-                        userTaskRun -> userTaskRun.getUserId() != null),
-                new GetableIndex<UserTaskRunModel>(
-                        List.of(
-                                Pair.of("status", GetableIndex.ValueType.SINGLE),
-                                Pair.of("userId", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL),
-                        userTaskRun -> userTaskRun.getUserId() != null),
-                new GetableIndex<UserTaskRunModel>(
-                        List.of(
-                                Pair.of("userId", GetableIndex.ValueType.SINGLE),
-                                Pair.of("userGroup", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL),
-                        userTaskRun -> userTaskRun.getUserId() != null && userTaskRun.getUserGroup() != null),
-                new GetableIndex<UserTaskRunModel>(
-                        List.of(
-                                Pair.of("status", GetableIndex.ValueType.SINGLE),
-                                Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
-                                Pair.of("userId", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL),
-                        userTaskRun -> userTaskRun.getUserId() != null),
-                new GetableIndex<UserTaskRunModel>(
-                        List.of(
-                                Pair.of("status", GetableIndex.ValueType.SINGLE),
-                                Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
-                                Pair.of("userGroup", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL),
-                        userTaskRun -> userTaskRun.getUserGroup() != null),
-                new GetableIndex<UserTaskRunModel>(
-                        List.of(
-                                Pair.of("status", GetableIndex.ValueType.SINGLE),
-                                Pair.of("userGroup", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL),
-                        userTaskRun -> userTaskRun.getUserGroup() != null),
-                new GetableIndex<UserTaskRunModel>(
-                        List.of(Pair.of("userGroup", GetableIndex.ValueType.SINGLE)),
-                        // This might become REMOTE in the future.
-                        Optional.of(TagStorageType.LOCAL),
-                        userTaskRun -> userTaskRun.getUserGroup() != null));
+                List.of("status"),
+                List.of("status", "userTaskDefName"),
+                List.of("status", "userTaskDefName", "userId"),
+                List.of("status", "userTaskDefName", "userId", "userGroup"),
+                List.of("status", "userTaskDefName", "userGroup"),
+                List.of("status", "userGroup"),
+                List.of("status", "userId", "userGroup"),
+                List.of("status", "userId"),
+                List.of("userTaskDefName"),
+                List.of("userTaskDefName", "userId"),
+                List.of("userTaskDefName", "userId", "userGroup"),
+                List.of("userTaskDefName", "userGroup"),
+                List.of("userId"),
+                List.of("userId", "userGroup"),
+                List.of("userGroup"));
+    }
+
+    @Override
+    public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
+        List<GetableIndex<? extends AbstractGetable<?>>> out = new ArrayList<>(15);
+        for (List<String> index : getIndexHelper()) {
+            Predicate<UserTaskRunModel> isIndexActive = utr -> {
+                if (index.contains("userId") && utr.getUserId() == null) return false;
+                if (index.contains("userGroup") && utr.getUserGroup() == null) return false;
+                return true;
+            };
+
+            List<Pair<String, GetableIndex.ValueType>> attributes = index.stream()
+                    .map(attrib -> Pair.of(attrib, GetableIndex.ValueType.SINGLE))
+                    .toList();
+            out.add(new GetableIndex<UserTaskRunModel>(attributes, Optional.of(TagStorageType.LOCAL), isIndexActive));
+        }
+
+        return out;
     }
 
     public static TagStorageType tagStorageTypeForStatus(UserTaskRunStatus status) {

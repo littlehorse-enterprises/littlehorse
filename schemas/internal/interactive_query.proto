@@ -21,12 +21,18 @@ message GetObjectResponse {
 
 message WaitForCommandRequest {
     string command_id = 1;
+    int32 partition = 2;
 }
 
 message WaitForCommandResponse {
     string command_id = 1;
     google.protobuf.Timestamp result_time = 2;
-    bytes result = 3;
+    message PartitionMigratedResponse {
+    }
+    oneof yield {
+        bytes result = 3;
+        PartitionMigratedResponse partition_migrated_response = 4;
+    }
 }
 
 message ScanFilter {

@@ -1,25 +1,26 @@
 package io.littlehorse.canary.metronome;
 
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.canary.util.LHClient;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class MetronomeWorkflow {
+
     public static final String TASK_NAME = "canary-worker-task";
-    public static final String VARIABLE_NAME = "start-time";
-    public static final String CANARY_WORKFLOW = "canary-workflow";
-    private final Workflow workflow;
-    private final LittleHorseBlockingStub lhClient;
+    public static final String START_TIME_VARIABLE = "start-time";
+    public static final String SAMPLE_ITERATION_VARIABLE = "sample-iteration";
 
-    public MetronomeWorkflow(final LittleHorseBlockingStub lhClient) {
-        this.lhClient = lhClient;
+    public MetronomeWorkflow(final LHClient lhClient, final String workflowName) {
+        final Workflow workflow = Workflow.newWorkflow(
+                workflowName,
+                thread -> thread.execute(
+                        TASK_NAME,
+                        thread.addVariable(START_TIME_VARIABLE, VariableType.INT),
+                        thread.addVariable(SAMPLE_ITERATION_VARIABLE, VariableType.BOOL)));
+        lhClient.registerWorkflow(workflow);
 
-        workflow = Workflow.newWorkflow(
-                CANARY_WORKFLOW,
-                thread -> thread.execute(TASK_NAME, thread.addVariable(VARIABLE_NAME, VariableType.INT)));
-    }
-
-    public void register() {
-        workflow.registerWfSpec(lhClient);
+        log.info("Workflow {} Registered", workflowName);
     }
 }

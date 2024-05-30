@@ -416,6 +416,22 @@ class ExternalEventDefIdList(_message.Message):
     bookmark: bytes
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
+class SearchTenantRequest(_message.Message):
+    __slots__ = ["limit", "bookmark"]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    limit: int
+    bookmark: bytes
+    def __init__(self, limit: _Optional[int] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+
+class TenantIdList(_message.Message):
+    __slots__ = ["results", "bookmark"]
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.TenantId]
+    bookmark: bytes
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.TenantId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+
 class SearchExternalEventRequest(_message.Message):
     __slots__ = ["bookmark", "limit", "wf_run_id", "external_event_def_name_and_status"]
     class ByExtEvtDefNameAndStatusRequest(_message.Message):
@@ -444,16 +460,24 @@ class ExternalEventIdList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.ExternalEventId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class ListNodeRunsRequest(_message.Message):
-    __slots__ = ["wf_run_id"]
+    __slots__ = ["wf_run_id", "thread_run_number", "bookmark", "limit"]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
     wf_run_id: _object_id_pb2.WfRunId
-    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
+    thread_run_number: int
+    bookmark: bytes
+    limit: int
+    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., thread_run_number: _Optional[int] = ..., bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ...) -> None: ...
 
 class NodeRunList(_message.Message):
-    __slots__ = ["results"]
+    __slots__ = ["results", "bookmark"]
     RESULTS_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
     results: _containers.RepeatedCompositeFieldContainer[_node_run_pb2.NodeRun]
-    def __init__(self, results: _Optional[_Iterable[_Union[_node_run_pb2.NodeRun, _Mapping]]] = ...) -> None: ...
+    bookmark: bytes
+    def __init__(self, results: _Optional[_Iterable[_Union[_node_run_pb2.NodeRun, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class ListVariablesRequest(_message.Message):
     __slots__ = ["wf_run_id"]
@@ -696,6 +720,33 @@ class UserTaskRunList(_message.Message):
     RESULTS_FIELD_NUMBER: _ClassVar[int]
     results: _containers.RepeatedCompositeFieldContainer[_user_tasks_pb2.UserTaskRun]
     def __init__(self, results: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskRun, _Mapping]]] = ...) -> None: ...
+
+class TaskWorkerMetadata(_message.Message):
+    __slots__ = ["task_worker_id", "latest_heartbeat", "hosts"]
+    TASK_WORKER_ID_FIELD_NUMBER: _ClassVar[int]
+    LATEST_HEARTBEAT_FIELD_NUMBER: _ClassVar[int]
+    HOSTS_FIELD_NUMBER: _ClassVar[int]
+    task_worker_id: str
+    latest_heartbeat: _timestamp_pb2.Timestamp
+    hosts: _containers.RepeatedCompositeFieldContainer[LHHostInfo]
+    def __init__(self, task_worker_id: _Optional[str] = ..., latest_heartbeat: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., hosts: _Optional[_Iterable[_Union[LHHostInfo, _Mapping]]] = ...) -> None: ...
+
+class TaskWorkerGroup(_message.Message):
+    __slots__ = ["id", "created_at", "task_workers"]
+    class TaskWorkersEntry(_message.Message):
+        __slots__ = ["key", "value"]
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: TaskWorkerMetadata
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[TaskWorkerMetadata, _Mapping]] = ...) -> None: ...
+    ID_FIELD_NUMBER: _ClassVar[int]
+    CREATED_AT_FIELD_NUMBER: _ClassVar[int]
+    TASK_WORKERS_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.TaskWorkerGroupId
+    created_at: _timestamp_pb2.Timestamp
+    task_workers: _containers.MessageMap[str, TaskWorkerMetadata]
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.TaskWorkerGroupId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., task_workers: _Optional[_Mapping[str, TaskWorkerMetadata]] = ...) -> None: ...
 
 class ListTaskRunsRequest(_message.Message):
     __slots__ = ["wf_run_id"]
