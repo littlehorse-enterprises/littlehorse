@@ -432,6 +432,28 @@ class TenantIdList(_message.Message):
     bookmark: bytes
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.TenantId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
+class SearchPrincipalRequest(_message.Message):
+    __slots__ = ["bookmark", "limit", "isAdmin", "tenant", "created_at"]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
+    ISADMIN_FIELD_NUMBER: _ClassVar[int]
+    TENANT_FIELD_NUMBER: _ClassVar[int]
+    CREATED_AT_FIELD_NUMBER: _ClassVar[int]
+    bookmark: bytes
+    limit: int
+    isAdmin: bool
+    tenant: str
+    created_at: _timestamp_pb2.Timestamp
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., isAdmin: bool = ..., tenant: _Optional[str] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+
+class PrincipalIdList(_message.Message):
+    __slots__ = ["results", "bookmark"]
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.PrincipalId]
+    bookmark: bytes
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.PrincipalId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+
 class SearchExternalEventRequest(_message.Message):
     __slots__ = ["bookmark", "limit", "wf_run_id", "external_event_def_name_and_status"]
     class ByExtEvtDefNameAndStatusRequest(_message.Message):

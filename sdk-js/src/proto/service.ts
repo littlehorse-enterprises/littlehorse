@@ -32,6 +32,7 @@ import {
   ExternalEventDefId,
   ExternalEventId,
   NodeRunId,
+  PrincipalId,
   TaskDefId,
   TaskRunId,
   TaskWorkerGroupId,
@@ -804,6 +805,34 @@ export interface SearchTenantRequest {
 export interface TenantIdList {
   /** The resulting object id's. */
   results: TenantId[];
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?: Buffer | undefined;
+}
+
+export interface SearchPrincipalRequest {
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?:
+    | number
+    | undefined;
+  /**  */
+  isAdmin?:
+    | boolean
+    | undefined;
+  /**  */
+  tenant?:
+    | string
+    | undefined;
+  /**  */
+  createdAt?: string | undefined;
+}
+
+export interface PrincipalIdList {
+  /** The resulting object id's. */
+  results: PrincipalId[];
   /** Bookmark for cursor-based pagination; pass if applicable. */
   bookmark?: Buffer | undefined;
 }
@@ -3986,6 +4015,151 @@ export const TenantIdList = {
   },
 };
 
+function createBaseSearchPrincipalRequest(): SearchPrincipalRequest {
+  return { bookmark: undefined, limit: undefined, isAdmin: undefined, tenant: undefined, createdAt: undefined };
+}
+
+export const SearchPrincipalRequest = {
+  encode(message: SearchPrincipalRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.bookmark !== undefined) {
+      writer.uint32(10).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(16).int32(message.limit);
+    }
+    if (message.isAdmin !== undefined) {
+      writer.uint32(24).bool(message.isAdmin);
+    }
+    if (message.tenant !== undefined) {
+      writer.uint32(34).string(message.tenant);
+    }
+    if (message.createdAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(42).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchPrincipalRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchPrincipalRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isAdmin = reader.bool();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.tenant = reader.string();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<SearchPrincipalRequest>): SearchPrincipalRequest {
+    return SearchPrincipalRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SearchPrincipalRequest>): SearchPrincipalRequest {
+    const message = createBaseSearchPrincipalRequest();
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
+    message.isAdmin = object.isAdmin ?? undefined;
+    message.tenant = object.tenant ?? undefined;
+    message.createdAt = object.createdAt ?? undefined;
+    return message;
+  },
+};
+
+function createBasePrincipalIdList(): PrincipalIdList {
+  return { results: [], bookmark: undefined };
+}
+
+export const PrincipalIdList = {
+  encode(message: PrincipalIdList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.results) {
+      PrincipalId.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PrincipalIdList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePrincipalIdList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.results.push(PrincipalId.decode(reader, reader.uint32()));
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<PrincipalIdList>): PrincipalIdList {
+    return PrincipalIdList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PrincipalIdList>): PrincipalIdList {
+    const message = createBasePrincipalIdList();
+    message.results = object.results?.map((e) => PrincipalId.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
+    return message;
+  },
+};
+
 function createBaseSearchExternalEventRequest(): SearchExternalEventRequest {
   return { bookmark: undefined, limit: undefined, wfRunId: undefined, externalEventDefNameAndStatus: undefined };
 }
@@ -6962,6 +7136,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /**  */
+    searchPrincipal: {
+      name: "SearchPrincipal",
+      requestType: SearchPrincipalRequest,
+      requestStream: false,
+      responseType: PrincipalIdList,
+      responseStream: false,
+      options: {},
+    },
     /**
      * Used by the Task Worker to:
      * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -7368,6 +7551,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   ): Promise<DeepPartial<ExternalEventDefIdList>>;
   /** Search for all available TenantIds for current Principal */
   searchTenant(request: SearchTenantRequest, context: CallContext & CallContextExt): Promise<DeepPartial<TenantIdList>>;
+  /**  */
+  searchPrincipal(
+    request: SearchPrincipalRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<PrincipalIdList>>;
   /**
    * Used by the Task Worker to:
    * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -7666,6 +7854,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<SearchTenantRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<TenantIdList>;
+  /**  */
+  searchPrincipal(
+    request: DeepPartial<SearchPrincipalRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<PrincipalIdList>;
   /**
    * Used by the Task Worker to:
    * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
