@@ -787,13 +787,15 @@ message SearchPrincipalRequest {
   // Maximum results to return in one request.
   optional int32 limit = 2;
 
+  optional google.protobuf.Timestamp earliest_start = 3;
+  
+  optional google.protobuf.Timestamp latest_start = 4;
+
   oneof principal_criteria {
     // 
-    bool isAdmin = 3;
+    bool isAdmin = 5;
     // 
-    string tenant = 4;
-    // 
-    google.protobuf.Timestamp created_at = 5;
+    string tenant = 6;
   }
 }
 
