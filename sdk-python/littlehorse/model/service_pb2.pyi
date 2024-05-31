@@ -433,18 +433,20 @@ class TenantIdList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.TenantId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class SearchPrincipalRequest(_message.Message):
-    __slots__ = ["bookmark", "limit", "isAdmin", "tenant", "created_at"]
+    __slots__ = ["bookmark", "limit", "earliest_start", "latest_start", "isAdmin", "tenant"]
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
+    EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
+    LATEST_START_FIELD_NUMBER: _ClassVar[int]
     ISADMIN_FIELD_NUMBER: _ClassVar[int]
     TENANT_FIELD_NUMBER: _ClassVar[int]
-    CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
+    earliest_start: _timestamp_pb2.Timestamp
+    latest_start: _timestamp_pb2.Timestamp
     isAdmin: bool
     tenant: str
-    created_at: _timestamp_pb2.Timestamp
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., isAdmin: bool = ..., tenant: _Optional[str] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., isAdmin: bool = ..., tenant: _Optional[str] = ...) -> None: ...
 
 class PrincipalIdList(_message.Message):
     __slots__ = ["results", "bookmark"]

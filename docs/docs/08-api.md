@@ -1970,9 +1970,10 @@ Search for NodeRun's by certain criteria.
 | ----- | ----  | ---- | ----------- |
 | `bookmark` | optional| bytes | Bookmark for cursor-based pagination; pass if applicable. |
 | `limit` | optional| int32 | Maximum results to return in one request. |
+| `earliest_start` | optional| google.protobuf.Timestamp |  |
+| `latest_start` | optional| google.protobuf.Timestamp |  |
 | `isAdmin` | oneof `principal_criteria`| bool |  |
 | `tenant` | oneof `principal_criteria`| string |  |
-| `created_at` | oneof `principal_criteria`| google.protobuf.Timestamp |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 

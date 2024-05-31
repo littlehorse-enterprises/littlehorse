@@ -46,11 +46,41 @@ public interface SearchPrincipalRequestOrBuilder extends
   int getLimit();
 
   /**
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+   * @return Whether the earliestStart field is set.
+   */
+  boolean hasEarliestStart();
+  /**
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+   * @return The earliestStart.
+   */
+  com.google.protobuf.Timestamp getEarliestStart();
+  /**
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder();
+
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+   * @return Whether the latestStart field is set.
+   */
+  boolean hasLatestStart();
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+   * @return The latestStart.
+   */
+  com.google.protobuf.Timestamp getLatestStart();
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder();
+
+  /**
    * <pre>
    * 
    * </pre>
    *
-   * <code>bool isAdmin = 3;</code>
+   * <code>bool isAdmin = 5;</code>
    * @return Whether the isAdmin field is set.
    */
   boolean hasIsAdmin();
@@ -59,7 +89,7 @@ public interface SearchPrincipalRequestOrBuilder extends
    * 
    * </pre>
    *
-   * <code>bool isAdmin = 3;</code>
+   * <code>bool isAdmin = 5;</code>
    * @return The isAdmin.
    */
   boolean getIsAdmin();
@@ -69,7 +99,7 @@ public interface SearchPrincipalRequestOrBuilder extends
    * 
    * </pre>
    *
-   * <code>string tenant = 4;</code>
+   * <code>string tenant = 6;</code>
    * @return Whether the tenant field is set.
    */
   boolean hasTenant();
@@ -78,7 +108,7 @@ public interface SearchPrincipalRequestOrBuilder extends
    * 
    * </pre>
    *
-   * <code>string tenant = 4;</code>
+   * <code>string tenant = 6;</code>
    * @return The tenant.
    */
   java.lang.String getTenant();
@@ -87,38 +117,11 @@ public interface SearchPrincipalRequestOrBuilder extends
    * 
    * </pre>
    *
-   * <code>string tenant = 4;</code>
+   * <code>string tenant = 6;</code>
    * @return The bytes for tenant.
    */
   com.google.protobuf.ByteString
       getTenantBytes();
-
-  /**
-   * <pre>
-   * 
-   * </pre>
-   *
-   * <code>.google.protobuf.Timestamp created_at = 5;</code>
-   * @return Whether the createdAt field is set.
-   */
-  boolean hasCreatedAt();
-  /**
-   * <pre>
-   * 
-   * </pre>
-   *
-   * <code>.google.protobuf.Timestamp created_at = 5;</code>
-   * @return The createdAt.
-   */
-  com.google.protobuf.Timestamp getCreatedAt();
-  /**
-   * <pre>
-   * 
-   * </pre>
-   *
-   * <code>.google.protobuf.Timestamp created_at = 5;</code>
-   */
-  com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   io.littlehorse.sdk.common.proto.SearchPrincipalRequest.PrincipalCriteriaCase getPrincipalCriteriaCase();
 }

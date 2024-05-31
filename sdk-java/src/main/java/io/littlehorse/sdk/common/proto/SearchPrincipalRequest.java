@@ -46,9 +46,8 @@ private static final long serialVersionUID = 0L;
   public enum PrincipalCriteriaCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    ISADMIN(3),
-    TENANT(4),
-    CREATED_AT(5),
+    ISADMIN(5),
+    TENANT(6),
     PRINCIPALCRITERIA_NOT_SET(0);
     private final int value;
     private PrincipalCriteriaCase(int value) {
@@ -66,9 +65,8 @@ private static final long serialVersionUID = 0L;
 
     public static PrincipalCriteriaCase forNumber(int value) {
       switch (value) {
-        case 3: return ISADMIN;
-        case 4: return TENANT;
-        case 5: return CREATED_AT;
+        case 5: return ISADMIN;
+        case 6: return TENANT;
         case 0: return PRINCIPALCRITERIA_NOT_SET;
         default: return null;
       }
@@ -138,58 +136,110 @@ private static final long serialVersionUID = 0L;
     return limit_;
   }
 
-  public static final int ISADMIN_FIELD_NUMBER = 3;
+  public static final int EARLIEST_START_FIELD_NUMBER = 3;
+  private com.google.protobuf.Timestamp earliestStart_;
+  /**
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+   * @return Whether the earliestStart field is set.
+   */
+  @java.lang.Override
+  public boolean hasEarliestStart() {
+    return ((bitField0_ & 0x00000004) != 0);
+  }
+  /**
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+   * @return The earliestStart.
+   */
+  @java.lang.Override
+  public com.google.protobuf.Timestamp getEarliestStart() {
+    return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
+  }
+  /**
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder() {
+    return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
+  }
+
+  public static final int LATEST_START_FIELD_NUMBER = 4;
+  private com.google.protobuf.Timestamp latestStart_;
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+   * @return Whether the latestStart field is set.
+   */
+  @java.lang.Override
+  public boolean hasLatestStart() {
+    return ((bitField0_ & 0x00000008) != 0);
+  }
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+   * @return The latestStart.
+   */
+  @java.lang.Override
+  public com.google.protobuf.Timestamp getLatestStart() {
+    return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
+  }
+  /**
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder() {
+    return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
+  }
+
+  public static final int ISADMIN_FIELD_NUMBER = 5;
   /**
    * <pre>
    * 
    * </pre>
    *
-   * <code>bool isAdmin = 3;</code>
+   * <code>bool isAdmin = 5;</code>
    * @return Whether the isAdmin field is set.
    */
   @java.lang.Override
   public boolean hasIsAdmin() {
-    return principalCriteriaCase_ == 3;
+    return principalCriteriaCase_ == 5;
   }
   /**
    * <pre>
    * 
    * </pre>
    *
-   * <code>bool isAdmin = 3;</code>
+   * <code>bool isAdmin = 5;</code>
    * @return The isAdmin.
    */
   @java.lang.Override
   public boolean getIsAdmin() {
-    if (principalCriteriaCase_ == 3) {
+    if (principalCriteriaCase_ == 5) {
       return (java.lang.Boolean) principalCriteria_;
     }
     return false;
   }
 
-  public static final int TENANT_FIELD_NUMBER = 4;
+  public static final int TENANT_FIELD_NUMBER = 6;
   /**
    * <pre>
    * 
    * </pre>
    *
-   * <code>string tenant = 4;</code>
+   * <code>string tenant = 6;</code>
    * @return Whether the tenant field is set.
    */
   public boolean hasTenant() {
-    return principalCriteriaCase_ == 4;
+    return principalCriteriaCase_ == 6;
   }
   /**
    * <pre>
    * 
    * </pre>
    *
-   * <code>string tenant = 4;</code>
+   * <code>string tenant = 6;</code>
    * @return The tenant.
    */
   public java.lang.String getTenant() {
     java.lang.Object ref = "";
-    if (principalCriteriaCase_ == 4) {
+    if (principalCriteriaCase_ == 6) {
       ref = principalCriteria_;
     }
     if (ref instanceof java.lang.String) {
@@ -198,7 +248,7 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (principalCriteriaCase_ == 4) {
+      if (principalCriteriaCase_ == 6) {
         principalCriteria_ = s;
       }
       return s;
@@ -209,69 +259,26 @@ private static final long serialVersionUID = 0L;
    * 
    * </pre>
    *
-   * <code>string tenant = 4;</code>
+   * <code>string tenant = 6;</code>
    * @return The bytes for tenant.
    */
   public com.google.protobuf.ByteString
       getTenantBytes() {
     java.lang.Object ref = "";
-    if (principalCriteriaCase_ == 4) {
+    if (principalCriteriaCase_ == 6) {
       ref = principalCriteria_;
     }
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      if (principalCriteriaCase_ == 4) {
+      if (principalCriteriaCase_ == 6) {
         principalCriteria_ = b;
       }
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
-  }
-
-  public static final int CREATED_AT_FIELD_NUMBER = 5;
-  /**
-   * <pre>
-   * 
-   * </pre>
-   *
-   * <code>.google.protobuf.Timestamp created_at = 5;</code>
-   * @return Whether the createdAt field is set.
-   */
-  @java.lang.Override
-  public boolean hasCreatedAt() {
-    return principalCriteriaCase_ == 5;
-  }
-  /**
-   * <pre>
-   * 
-   * </pre>
-   *
-   * <code>.google.protobuf.Timestamp created_at = 5;</code>
-   * @return The createdAt.
-   */
-  @java.lang.Override
-  public com.google.protobuf.Timestamp getCreatedAt() {
-    if (principalCriteriaCase_ == 5) {
-       return (com.google.protobuf.Timestamp) principalCriteria_;
-    }
-    return com.google.protobuf.Timestamp.getDefaultInstance();
-  }
-  /**
-   * <pre>
-   * 
-   * </pre>
-   *
-   * <code>.google.protobuf.Timestamp created_at = 5;</code>
-   */
-  @java.lang.Override
-  public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
-    if (principalCriteriaCase_ == 5) {
-       return (com.google.protobuf.Timestamp) principalCriteria_;
-    }
-    return com.google.protobuf.Timestamp.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -294,15 +301,18 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeInt32(2, limit_);
     }
-    if (principalCriteriaCase_ == 3) {
-      output.writeBool(
-          3, (boolean)((java.lang.Boolean) principalCriteria_));
+    if (((bitField0_ & 0x00000004) != 0)) {
+      output.writeMessage(3, getEarliestStart());
     }
-    if (principalCriteriaCase_ == 4) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, principalCriteria_);
+    if (((bitField0_ & 0x00000008) != 0)) {
+      output.writeMessage(4, getLatestStart());
     }
     if (principalCriteriaCase_ == 5) {
-      output.writeMessage(5, (com.google.protobuf.Timestamp) principalCriteria_);
+      output.writeBool(
+          5, (boolean)((java.lang.Boolean) principalCriteria_));
+    }
+    if (principalCriteriaCase_ == 6) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, principalCriteria_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -321,17 +331,21 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, limit_);
     }
-    if (principalCriteriaCase_ == 3) {
+    if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(
-            3, (boolean)((java.lang.Boolean) principalCriteria_));
+        .computeMessageSize(3, getEarliestStart());
     }
-    if (principalCriteriaCase_ == 4) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, principalCriteria_);
+    if (((bitField0_ & 0x00000008) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, getLatestStart());
     }
     if (principalCriteriaCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, (com.google.protobuf.Timestamp) principalCriteria_);
+        .computeBoolSize(
+            5, (boolean)((java.lang.Boolean) principalCriteria_));
+    }
+    if (principalCriteriaCase_ == 6) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, principalCriteria_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -358,19 +372,25 @@ private static final long serialVersionUID = 0L;
       if (getLimit()
           != other.getLimit()) return false;
     }
+    if (hasEarliestStart() != other.hasEarliestStart()) return false;
+    if (hasEarliestStart()) {
+      if (!getEarliestStart()
+          .equals(other.getEarliestStart())) return false;
+    }
+    if (hasLatestStart() != other.hasLatestStart()) return false;
+    if (hasLatestStart()) {
+      if (!getLatestStart()
+          .equals(other.getLatestStart())) return false;
+    }
     if (!getPrincipalCriteriaCase().equals(other.getPrincipalCriteriaCase())) return false;
     switch (principalCriteriaCase_) {
-      case 3:
+      case 5:
         if (getIsAdmin()
             != other.getIsAdmin()) return false;
         break;
-      case 4:
+      case 6:
         if (!getTenant()
             .equals(other.getTenant())) return false;
-        break;
-      case 5:
-        if (!getCreatedAt()
-            .equals(other.getCreatedAt())) return false;
         break;
       case 0:
       default:
@@ -394,19 +414,23 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + LIMIT_FIELD_NUMBER;
       hash = (53 * hash) + getLimit();
     }
+    if (hasEarliestStart()) {
+      hash = (37 * hash) + EARLIEST_START_FIELD_NUMBER;
+      hash = (53 * hash) + getEarliestStart().hashCode();
+    }
+    if (hasLatestStart()) {
+      hash = (37 * hash) + LATEST_START_FIELD_NUMBER;
+      hash = (53 * hash) + getLatestStart().hashCode();
+    }
     switch (principalCriteriaCase_) {
-      case 3:
+      case 5:
         hash = (37 * hash) + ISADMIN_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
             getIsAdmin());
         break;
-      case 4:
+      case 6:
         hash = (37 * hash) + TENANT_FIELD_NUMBER;
         hash = (53 * hash) + getTenant().hashCode();
-        break;
-      case 5:
-        hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
-        hash = (53 * hash) + getCreatedAt().hashCode();
         break;
       case 0:
       default:
@@ -530,13 +554,20 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.SearchPrincipalRequest.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getEarliestStartFieldBuilder();
+        getLatestStartFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -544,8 +575,15 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       bookmark_ = com.google.protobuf.ByteString.EMPTY;
       limit_ = 0;
-      if (createdAtBuilder_ != null) {
-        createdAtBuilder_.clear();
+      earliestStart_ = null;
+      if (earliestStartBuilder_ != null) {
+        earliestStartBuilder_.dispose();
+        earliestStartBuilder_ = null;
+      }
+      latestStart_ = null;
+      if (latestStartBuilder_ != null) {
+        latestStartBuilder_.dispose();
+        latestStartBuilder_ = null;
       }
       principalCriteriaCase_ = 0;
       principalCriteria_ = null;
@@ -592,16 +630,24 @@ private static final long serialVersionUID = 0L;
         result.limit_ = limit_;
         to_bitField0_ |= 0x00000002;
       }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.earliestStart_ = earliestStartBuilder_ == null
+            ? earliestStart_
+            : earliestStartBuilder_.build();
+        to_bitField0_ |= 0x00000004;
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.latestStart_ = latestStartBuilder_ == null
+            ? latestStart_
+            : latestStartBuilder_.build();
+        to_bitField0_ |= 0x00000008;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.SearchPrincipalRequest result) {
       result.principalCriteriaCase_ = principalCriteriaCase_;
       result.principalCriteria_ = this.principalCriteria_;
-      if (principalCriteriaCase_ == 5 &&
-          createdAtBuilder_ != null) {
-        result.principalCriteria_ = createdAtBuilder_.build();
-      }
     }
 
     @java.lang.Override
@@ -654,19 +700,21 @@ private static final long serialVersionUID = 0L;
       if (other.hasLimit()) {
         setLimit(other.getLimit());
       }
+      if (other.hasEarliestStart()) {
+        mergeEarliestStart(other.getEarliestStart());
+      }
+      if (other.hasLatestStart()) {
+        mergeLatestStart(other.getLatestStart());
+      }
       switch (other.getPrincipalCriteriaCase()) {
         case ISADMIN: {
           setIsAdmin(other.getIsAdmin());
           break;
         }
         case TENANT: {
-          principalCriteriaCase_ = 4;
+          principalCriteriaCase_ = 6;
           principalCriteria_ = other.principalCriteria_;
           onChanged();
-          break;
-        }
-        case CREATED_AT: {
-          mergeCreatedAt(other.getCreatedAt());
           break;
         }
         case PRINCIPALCRITERIA_NOT_SET: {
@@ -709,24 +757,31 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 16
-            case 24: {
-              principalCriteria_ = input.readBool();
-              principalCriteriaCase_ = 3;
+            case 26: {
+              input.readMessage(
+                  getEarliestStartFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000004;
               break;
-            } // case 24
+            } // case 26
             case 34: {
-              java.lang.String s = input.readStringRequireUtf8();
-              principalCriteriaCase_ = 4;
-              principalCriteria_ = s;
+              input.readMessage(
+                  getLatestStartFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000008;
               break;
             } // case 34
-            case 42: {
-              input.readMessage(
-                  getCreatedAtFieldBuilder().getBuilder(),
-                  extensionRegistry);
+            case 40: {
+              principalCriteria_ = input.readBool();
               principalCriteriaCase_ = 5;
               break;
-            } // case 42
+            } // case 40
+            case 50: {
+              java.lang.String s = input.readStringRequireUtf8();
+              principalCriteriaCase_ = 6;
+              principalCriteria_ = s;
+              break;
+            } // case 50
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -871,27 +926,265 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private com.google.protobuf.Timestamp earliestStart_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> earliestStartBuilder_;
+    /**
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+     * @return Whether the earliestStart field is set.
+     */
+    public boolean hasEarliestStart() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+     * @return The earliestStart.
+     */
+    public com.google.protobuf.Timestamp getEarliestStart() {
+      if (earliestStartBuilder_ == null) {
+        return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
+      } else {
+        return earliestStartBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+     */
+    public Builder setEarliestStart(com.google.protobuf.Timestamp value) {
+      if (earliestStartBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        earliestStart_ = value;
+      } else {
+        earliestStartBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+     */
+    public Builder setEarliestStart(
+        com.google.protobuf.Timestamp.Builder builderForValue) {
+      if (earliestStartBuilder_ == null) {
+        earliestStart_ = builderForValue.build();
+      } else {
+        earliestStartBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+     */
+    public Builder mergeEarliestStart(com.google.protobuf.Timestamp value) {
+      if (earliestStartBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0) &&
+          earliestStart_ != null &&
+          earliestStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+          getEarliestStartBuilder().mergeFrom(value);
+        } else {
+          earliestStart_ = value;
+        }
+      } else {
+        earliestStartBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+     */
+    public Builder clearEarliestStart() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      earliestStart_ = null;
+      if (earliestStartBuilder_ != null) {
+        earliestStartBuilder_.dispose();
+        earliestStartBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+     */
+    public com.google.protobuf.Timestamp.Builder getEarliestStartBuilder() {
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return getEarliestStartFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+     */
+    public com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder() {
+      if (earliestStartBuilder_ != null) {
+        return earliestStartBuilder_.getMessageOrBuilder();
+      } else {
+        return earliestStart_ == null ?
+            com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
+      }
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+        getEarliestStartFieldBuilder() {
+      if (earliestStartBuilder_ == null) {
+        earliestStartBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                getEarliestStart(),
+                getParentForChildren(),
+                isClean());
+        earliestStart_ = null;
+      }
+      return earliestStartBuilder_;
+    }
+
+    private com.google.protobuf.Timestamp latestStart_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> latestStartBuilder_;
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     * @return Whether the latestStart field is set.
+     */
+    public boolean hasLatestStart() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     * @return The latestStart.
+     */
+    public com.google.protobuf.Timestamp getLatestStart() {
+      if (latestStartBuilder_ == null) {
+        return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
+      } else {
+        return latestStartBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     */
+    public Builder setLatestStart(com.google.protobuf.Timestamp value) {
+      if (latestStartBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        latestStart_ = value;
+      } else {
+        latestStartBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     */
+    public Builder setLatestStart(
+        com.google.protobuf.Timestamp.Builder builderForValue) {
+      if (latestStartBuilder_ == null) {
+        latestStart_ = builderForValue.build();
+      } else {
+        latestStartBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     */
+    public Builder mergeLatestStart(com.google.protobuf.Timestamp value) {
+      if (latestStartBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) != 0) &&
+          latestStart_ != null &&
+          latestStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+          getLatestStartBuilder().mergeFrom(value);
+        } else {
+          latestStart_ = value;
+        }
+      } else {
+        latestStartBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     */
+    public Builder clearLatestStart() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      latestStart_ = null;
+      if (latestStartBuilder_ != null) {
+        latestStartBuilder_.dispose();
+        latestStartBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     */
+    public com.google.protobuf.Timestamp.Builder getLatestStartBuilder() {
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return getLatestStartFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     */
+    public com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder() {
+      if (latestStartBuilder_ != null) {
+        return latestStartBuilder_.getMessageOrBuilder();
+      } else {
+        return latestStart_ == null ?
+            com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
+      }
+    }
+    /**
+     * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+        getLatestStartFieldBuilder() {
+      if (latestStartBuilder_ == null) {
+        latestStartBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                getLatestStart(),
+                getParentForChildren(),
+                isClean());
+        latestStart_ = null;
+      }
+      return latestStartBuilder_;
+    }
+
     /**
      * <pre>
      * 
      * </pre>
      *
-     * <code>bool isAdmin = 3;</code>
+     * <code>bool isAdmin = 5;</code>
      * @return Whether the isAdmin field is set.
      */
     public boolean hasIsAdmin() {
-      return principalCriteriaCase_ == 3;
+      return principalCriteriaCase_ == 5;
     }
     /**
      * <pre>
      * 
      * </pre>
      *
-     * <code>bool isAdmin = 3;</code>
+     * <code>bool isAdmin = 5;</code>
      * @return The isAdmin.
      */
     public boolean getIsAdmin() {
-      if (principalCriteriaCase_ == 3) {
+      if (principalCriteriaCase_ == 5) {
         return (java.lang.Boolean) principalCriteria_;
       }
       return false;
@@ -901,13 +1194,13 @@ private static final long serialVersionUID = 0L;
      * 
      * </pre>
      *
-     * <code>bool isAdmin = 3;</code>
+     * <code>bool isAdmin = 5;</code>
      * @param value The isAdmin to set.
      * @return This builder for chaining.
      */
     public Builder setIsAdmin(boolean value) {
 
-      principalCriteriaCase_ = 3;
+      principalCriteriaCase_ = 5;
       principalCriteria_ = value;
       onChanged();
       return this;
@@ -917,11 +1210,11 @@ private static final long serialVersionUID = 0L;
      * 
      * </pre>
      *
-     * <code>bool isAdmin = 3;</code>
+     * <code>bool isAdmin = 5;</code>
      * @return This builder for chaining.
      */
     public Builder clearIsAdmin() {
-      if (principalCriteriaCase_ == 3) {
+      if (principalCriteriaCase_ == 5) {
         principalCriteriaCase_ = 0;
         principalCriteria_ = null;
         onChanged();
@@ -934,32 +1227,32 @@ private static final long serialVersionUID = 0L;
      * 
      * </pre>
      *
-     * <code>string tenant = 4;</code>
+     * <code>string tenant = 6;</code>
      * @return Whether the tenant field is set.
      */
     @java.lang.Override
     public boolean hasTenant() {
-      return principalCriteriaCase_ == 4;
+      return principalCriteriaCase_ == 6;
     }
     /**
      * <pre>
      * 
      * </pre>
      *
-     * <code>string tenant = 4;</code>
+     * <code>string tenant = 6;</code>
      * @return The tenant.
      */
     @java.lang.Override
     public java.lang.String getTenant() {
       java.lang.Object ref = "";
-      if (principalCriteriaCase_ == 4) {
+      if (principalCriteriaCase_ == 6) {
         ref = principalCriteria_;
       }
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (principalCriteriaCase_ == 4) {
+        if (principalCriteriaCase_ == 6) {
           principalCriteria_ = s;
         }
         return s;
@@ -972,21 +1265,21 @@ private static final long serialVersionUID = 0L;
      * 
      * </pre>
      *
-     * <code>string tenant = 4;</code>
+     * <code>string tenant = 6;</code>
      * @return The bytes for tenant.
      */
     @java.lang.Override
     public com.google.protobuf.ByteString
         getTenantBytes() {
       java.lang.Object ref = "";
-      if (principalCriteriaCase_ == 4) {
+      if (principalCriteriaCase_ == 6) {
         ref = principalCriteria_;
       }
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        if (principalCriteriaCase_ == 4) {
+        if (principalCriteriaCase_ == 6) {
           principalCriteria_ = b;
         }
         return b;
@@ -999,14 +1292,14 @@ private static final long serialVersionUID = 0L;
      * 
      * </pre>
      *
-     * <code>string tenant = 4;</code>
+     * <code>string tenant = 6;</code>
      * @param value The tenant to set.
      * @return This builder for chaining.
      */
     public Builder setTenant(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      principalCriteriaCase_ = 4;
+      principalCriteriaCase_ = 6;
       principalCriteria_ = value;
       onChanged();
       return this;
@@ -1016,11 +1309,11 @@ private static final long serialVersionUID = 0L;
      * 
      * </pre>
      *
-     * <code>string tenant = 4;</code>
+     * <code>string tenant = 6;</code>
      * @return This builder for chaining.
      */
     public Builder clearTenant() {
-      if (principalCriteriaCase_ == 4) {
+      if (principalCriteriaCase_ == 6) {
         principalCriteriaCase_ = 0;
         principalCriteria_ = null;
         onChanged();
@@ -1032,7 +1325,7 @@ private static final long serialVersionUID = 0L;
      * 
      * </pre>
      *
-     * <code>string tenant = 4;</code>
+     * <code>string tenant = 6;</code>
      * @param value The bytes for tenant to set.
      * @return This builder for chaining.
      */
@@ -1040,188 +1333,10 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      principalCriteriaCase_ = 4;
+      principalCriteriaCase_ = 6;
       principalCriteria_ = value;
       onChanged();
       return this;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
-    /**
-     * <pre>
-     * 
-     * </pre>
-     *
-     * <code>.google.protobuf.Timestamp created_at = 5;</code>
-     * @return Whether the createdAt field is set.
-     */
-    @java.lang.Override
-    public boolean hasCreatedAt() {
-      return principalCriteriaCase_ == 5;
-    }
-    /**
-     * <pre>
-     * 
-     * </pre>
-     *
-     * <code>.google.protobuf.Timestamp created_at = 5;</code>
-     * @return The createdAt.
-     */
-    @java.lang.Override
-    public com.google.protobuf.Timestamp getCreatedAt() {
-      if (createdAtBuilder_ == null) {
-        if (principalCriteriaCase_ == 5) {
-          return (com.google.protobuf.Timestamp) principalCriteria_;
-        }
-        return com.google.protobuf.Timestamp.getDefaultInstance();
-      } else {
-        if (principalCriteriaCase_ == 5) {
-          return createdAtBuilder_.getMessage();
-        }
-        return com.google.protobuf.Timestamp.getDefaultInstance();
-      }
-    }
-    /**
-     * <pre>
-     * 
-     * </pre>
-     *
-     * <code>.google.protobuf.Timestamp created_at = 5;</code>
-     */
-    public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
-      if (createdAtBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        principalCriteria_ = value;
-        onChanged();
-      } else {
-        createdAtBuilder_.setMessage(value);
-      }
-      principalCriteriaCase_ = 5;
-      return this;
-    }
-    /**
-     * <pre>
-     * 
-     * </pre>
-     *
-     * <code>.google.protobuf.Timestamp created_at = 5;</code>
-     */
-    public Builder setCreatedAt(
-        com.google.protobuf.Timestamp.Builder builderForValue) {
-      if (createdAtBuilder_ == null) {
-        principalCriteria_ = builderForValue.build();
-        onChanged();
-      } else {
-        createdAtBuilder_.setMessage(builderForValue.build());
-      }
-      principalCriteriaCase_ = 5;
-      return this;
-    }
-    /**
-     * <pre>
-     * 
-     * </pre>
-     *
-     * <code>.google.protobuf.Timestamp created_at = 5;</code>
-     */
-    public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
-      if (createdAtBuilder_ == null) {
-        if (principalCriteriaCase_ == 5 &&
-            principalCriteria_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-          principalCriteria_ = com.google.protobuf.Timestamp.newBuilder((com.google.protobuf.Timestamp) principalCriteria_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          principalCriteria_ = value;
-        }
-        onChanged();
-      } else {
-        if (principalCriteriaCase_ == 5) {
-          createdAtBuilder_.mergeFrom(value);
-        } else {
-          createdAtBuilder_.setMessage(value);
-        }
-      }
-      principalCriteriaCase_ = 5;
-      return this;
-    }
-    /**
-     * <pre>
-     * 
-     * </pre>
-     *
-     * <code>.google.protobuf.Timestamp created_at = 5;</code>
-     */
-    public Builder clearCreatedAt() {
-      if (createdAtBuilder_ == null) {
-        if (principalCriteriaCase_ == 5) {
-          principalCriteriaCase_ = 0;
-          principalCriteria_ = null;
-          onChanged();
-        }
-      } else {
-        if (principalCriteriaCase_ == 5) {
-          principalCriteriaCase_ = 0;
-          principalCriteria_ = null;
-        }
-        createdAtBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * 
-     * </pre>
-     *
-     * <code>.google.protobuf.Timestamp created_at = 5;</code>
-     */
-    public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
-      return getCreatedAtFieldBuilder().getBuilder();
-    }
-    /**
-     * <pre>
-     * 
-     * </pre>
-     *
-     * <code>.google.protobuf.Timestamp created_at = 5;</code>
-     */
-    @java.lang.Override
-    public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
-      if ((principalCriteriaCase_ == 5) && (createdAtBuilder_ != null)) {
-        return createdAtBuilder_.getMessageOrBuilder();
-      } else {
-        if (principalCriteriaCase_ == 5) {
-          return (com.google.protobuf.Timestamp) principalCriteria_;
-        }
-        return com.google.protobuf.Timestamp.getDefaultInstance();
-      }
-    }
-    /**
-     * <pre>
-     * 
-     * </pre>
-     *
-     * <code>.google.protobuf.Timestamp created_at = 5;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-        getCreatedAtFieldBuilder() {
-      if (createdAtBuilder_ == null) {
-        if (!(principalCriteriaCase_ == 5)) {
-          principalCriteria_ = com.google.protobuf.Timestamp.getDefaultInstance();
-        }
-        createdAtBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                (com.google.protobuf.Timestamp) principalCriteria_,
-                getParentForChildren(),
-                isClean());
-        principalCriteria_ = null;
-      }
-      principalCriteriaCase_ = 5;
-      onChanged();
-      return createdAtBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

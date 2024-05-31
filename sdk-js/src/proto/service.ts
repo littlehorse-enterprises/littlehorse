@@ -815,19 +815,17 @@ export interface SearchPrincipalRequest {
     | Buffer
     | undefined;
   /** Maximum results to return in one request. */
-  limit?:
-    | number
+  limit?: number | undefined;
+  earliestStart?: string | undefined;
+  latestStart?:
+    | string
     | undefined;
   /**  */
   isAdmin?:
     | boolean
     | undefined;
   /**  */
-  tenant?:
-    | string
-    | undefined;
-  /**  */
-  createdAt?: string | undefined;
+  tenant?: string | undefined;
 }
 
 export interface PrincipalIdList {
@@ -4016,7 +4014,14 @@ export const TenantIdList = {
 };
 
 function createBaseSearchPrincipalRequest(): SearchPrincipalRequest {
-  return { bookmark: undefined, limit: undefined, isAdmin: undefined, tenant: undefined, createdAt: undefined };
+  return {
+    bookmark: undefined,
+    limit: undefined,
+    earliestStart: undefined,
+    latestStart: undefined,
+    isAdmin: undefined,
+    tenant: undefined,
+  };
 }
 
 export const SearchPrincipalRequest = {
@@ -4027,14 +4032,17 @@ export const SearchPrincipalRequest = {
     if (message.limit !== undefined) {
       writer.uint32(16).int32(message.limit);
     }
+    if (message.earliestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.earliestStart), writer.uint32(26).fork()).ldelim();
+    }
+    if (message.latestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(34).fork()).ldelim();
+    }
     if (message.isAdmin !== undefined) {
-      writer.uint32(24).bool(message.isAdmin);
+      writer.uint32(40).bool(message.isAdmin);
     }
     if (message.tenant !== undefined) {
-      writer.uint32(34).string(message.tenant);
-    }
-    if (message.createdAt !== undefined) {
-      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(42).fork()).ldelim();
+      writer.uint32(50).string(message.tenant);
     }
     return writer;
   },
@@ -4061,25 +4069,32 @@ export const SearchPrincipalRequest = {
           message.limit = reader.int32();
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.isAdmin = reader.bool();
+          message.earliestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         case 4:
           if (tag !== 34) {
             break;
           }
 
-          message.tenant = reader.string();
+          message.latestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         case 5:
-          if (tag !== 42) {
+          if (tag !== 40) {
             break;
           }
 
-          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.isAdmin = reader.bool();
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.tenant = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -4097,9 +4112,10 @@ export const SearchPrincipalRequest = {
     const message = createBaseSearchPrincipalRequest();
     message.bookmark = object.bookmark ?? undefined;
     message.limit = object.limit ?? undefined;
+    message.earliestStart = object.earliestStart ?? undefined;
+    message.latestStart = object.latestStart ?? undefined;
     message.isAdmin = object.isAdmin ?? undefined;
     message.tenant = object.tenant ?? undefined;
-    message.createdAt = object.createdAt ?? undefined;
     return message;
   },
 };
