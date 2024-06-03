@@ -26,7 +26,6 @@ export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, 
       setShowModal(true)
     }
   }, [data, setModal, setShowModal])
-
   if (!task) return null
   return (
     <NodeDetails>
@@ -70,7 +69,7 @@ export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, 
       {nodeRun && nodeRun.errorMessage && (
         <div className="mt-2 flex flex-col rounded bg-red-200 p-1">
           <h3 className="font-bold">Error</h3>
-          <pre className="overflow-x-auto">{nodeRun.errorMessage}</pre>
+          <pre className="overflow-x-auto">{data?.attempts[data.attempts.length - 1].error?.message}</pre>
         </div>
       )}
       {nodeRun && (
