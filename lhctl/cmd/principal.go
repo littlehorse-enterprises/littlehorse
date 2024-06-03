@@ -55,6 +55,9 @@ Search for Principals. You may provide any of the following option groups:
 
 [isAdmin, tenantId]
 
+* Note: To set the value of Boolean flags, you must use an '=' sign between the key
+and the value, like so: '--isAdmin=false'
+
 * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
 options with this group to put a time bound on Principals which are returned.
 The time bound applies to the time that the Principal was created.
@@ -76,14 +79,16 @@ Returns a list of ObjectId's that can be passed into 'lhctl get principals'.
 			LatestStart:   latest,
 		}
 
-		if isAdmin {
+		if cmd.Flags().Lookup("isAdmin").Changed {
 			search.PrincipalCriteria = &model.SearchPrincipalRequest_IsAdmin{
 				IsAdmin: isAdmin,
 			}
 		} else if tenantId != "" {
-			search.PrincipalCriteria = &model.SearchPrincipalRequest_Tenant{
-				Tenant: tenantId,
+			search.PrincipalCriteria = &model.SearchPrincipalRequest_TenantId{
+				TenantId: tenantId,
 			}
+		} else {
+			log.Fatal("Please specify a filter criteria.")
 		}
 
 		common.PrintResp(getGlobalClient(cmd).SearchPrincipal(requestContext(cmd), search))

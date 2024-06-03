@@ -72,8 +72,8 @@ public class SearchPrincipalRequestModel
             case ISADMIN:
                 builder.setIsAdmin(isAdmin);
                 break;
-            case TENANT:
-                builder.setTenant(tenantId);
+            case TENANTID:
+                builder.setTenantId(tenantId);
                 break;
             case PRINCIPALCRITERIA_NOT_SET:
                 throw new LHApiException(Status.FAILED_PRECONDITION, "Principal query criteria is not valid.");
@@ -105,8 +105,8 @@ public class SearchPrincipalRequestModel
             case ISADMIN:
                 isAdmin = p.getIsAdmin();
                 break;
-            case TENANT:
-                tenantId = p.getTenant();
+            case TENANTID:
+                tenantId = p.getTenantId();
                 break;
             case PRINCIPALCRITERIA_NOT_SET:
                 throw new LHSerdeError("Principal query criteria is not valid.");
