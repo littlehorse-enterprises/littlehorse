@@ -99,29 +99,29 @@ public interface SearchPrincipalRequestOrBuilder extends
    * 
    * </pre>
    *
-   * <code>string tenant = 6;</code>
-   * @return Whether the tenant field is set.
+   * <code>string tenantId = 6;</code>
+   * @return Whether the tenantId field is set.
    */
-  boolean hasTenant();
+  boolean hasTenantId();
   /**
    * <pre>
    * 
    * </pre>
    *
-   * <code>string tenant = 6;</code>
-   * @return The tenant.
+   * <code>string tenantId = 6;</code>
+   * @return The tenantId.
    */
-  java.lang.String getTenant();
+  java.lang.String getTenantId();
   /**
    * <pre>
    * 
    * </pre>
    *
-   * <code>string tenant = 6;</code>
-   * @return The bytes for tenant.
+   * <code>string tenantId = 6;</code>
+   * @return The bytes for tenantId.
    */
   com.google.protobuf.ByteString
-      getTenantBytes();
+      getTenantIdBytes();
 
   io.littlehorse.sdk.common.proto.SearchPrincipalRequest.PrincipalCriteriaCase getPrincipalCriteriaCase();
 }

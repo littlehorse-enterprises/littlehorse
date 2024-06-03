@@ -47,7 +47,7 @@ private static final long serialVersionUID = 0L;
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
     ISADMIN(5),
-    TENANT(6),
+    TENANTID(6),
     PRINCIPALCRITERIA_NOT_SET(0);
     private final int value;
     private PrincipalCriteriaCase(int value) {
@@ -66,7 +66,7 @@ private static final long serialVersionUID = 0L;
     public static PrincipalCriteriaCase forNumber(int value) {
       switch (value) {
         case 5: return ISADMIN;
-        case 6: return TENANT;
+        case 6: return TENANTID;
         case 0: return PRINCIPALCRITERIA_NOT_SET;
         default: return null;
       }
@@ -217,16 +217,16 @@ private static final long serialVersionUID = 0L;
     return false;
   }
 
-  public static final int TENANT_FIELD_NUMBER = 6;
+  public static final int TENANTID_FIELD_NUMBER = 6;
   /**
    * <pre>
    * 
    * </pre>
    *
-   * <code>string tenant = 6;</code>
-   * @return Whether the tenant field is set.
+   * <code>string tenantId = 6;</code>
+   * @return Whether the tenantId field is set.
    */
-  public boolean hasTenant() {
+  public boolean hasTenantId() {
     return principalCriteriaCase_ == 6;
   }
   /**
@@ -234,10 +234,10 @@ private static final long serialVersionUID = 0L;
    * 
    * </pre>
    *
-   * <code>string tenant = 6;</code>
-   * @return The tenant.
+   * <code>string tenantId = 6;</code>
+   * @return The tenantId.
    */
-  public java.lang.String getTenant() {
+  public java.lang.String getTenantId() {
     java.lang.Object ref = "";
     if (principalCriteriaCase_ == 6) {
       ref = principalCriteria_;
@@ -259,11 +259,11 @@ private static final long serialVersionUID = 0L;
    * 
    * </pre>
    *
-   * <code>string tenant = 6;</code>
-   * @return The bytes for tenant.
+   * <code>string tenantId = 6;</code>
+   * @return The bytes for tenantId.
    */
   public com.google.protobuf.ByteString
-      getTenantBytes() {
+      getTenantIdBytes() {
     java.lang.Object ref = "";
     if (principalCriteriaCase_ == 6) {
       ref = principalCriteria_;
@@ -389,8 +389,8 @@ private static final long serialVersionUID = 0L;
             != other.getIsAdmin()) return false;
         break;
       case 6:
-        if (!getTenant()
-            .equals(other.getTenant())) return false;
+        if (!getTenantId()
+            .equals(other.getTenantId())) return false;
         break;
       case 0:
       default:
@@ -429,8 +429,8 @@ private static final long serialVersionUID = 0L;
             getIsAdmin());
         break;
       case 6:
-        hash = (37 * hash) + TENANT_FIELD_NUMBER;
-        hash = (53 * hash) + getTenant().hashCode();
+        hash = (37 * hash) + TENANTID_FIELD_NUMBER;
+        hash = (53 * hash) + getTenantId().hashCode();
         break;
       case 0:
       default:
@@ -711,7 +711,7 @@ private static final long serialVersionUID = 0L;
           setIsAdmin(other.getIsAdmin());
           break;
         }
-        case TENANT: {
+        case TENANTID: {
           principalCriteriaCase_ = 6;
           principalCriteria_ = other.principalCriteria_;
           onChanged();
@@ -1227,11 +1227,11 @@ private static final long serialVersionUID = 0L;
      * 
      * </pre>
      *
-     * <code>string tenant = 6;</code>
-     * @return Whether the tenant field is set.
+     * <code>string tenantId = 6;</code>
+     * @return Whether the tenantId field is set.
      */
     @java.lang.Override
-    public boolean hasTenant() {
+    public boolean hasTenantId() {
       return principalCriteriaCase_ == 6;
     }
     /**
@@ -1239,11 +1239,11 @@ private static final long serialVersionUID = 0L;
      * 
      * </pre>
      *
-     * <code>string tenant = 6;</code>
-     * @return The tenant.
+     * <code>string tenantId = 6;</code>
+     * @return The tenantId.
      */
     @java.lang.Override
-    public java.lang.String getTenant() {
+    public java.lang.String getTenantId() {
       java.lang.Object ref = "";
       if (principalCriteriaCase_ == 6) {
         ref = principalCriteria_;
@@ -1265,12 +1265,12 @@ private static final long serialVersionUID = 0L;
      * 
      * </pre>
      *
-     * <code>string tenant = 6;</code>
-     * @return The bytes for tenant.
+     * <code>string tenantId = 6;</code>
+     * @return The bytes for tenantId.
      */
     @java.lang.Override
     public com.google.protobuf.ByteString
-        getTenantBytes() {
+        getTenantIdBytes() {
       java.lang.Object ref = "";
       if (principalCriteriaCase_ == 6) {
         ref = principalCriteria_;
@@ -1292,11 +1292,11 @@ private static final long serialVersionUID = 0L;
      * 
      * </pre>
      *
-     * <code>string tenant = 6;</code>
-     * @param value The tenant to set.
+     * <code>string tenantId = 6;</code>
+     * @param value The tenantId to set.
      * @return This builder for chaining.
      */
-    public Builder setTenant(
+    public Builder setTenantId(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       principalCriteriaCase_ = 6;
@@ -1309,10 +1309,10 @@ private static final long serialVersionUID = 0L;
      * 
      * </pre>
      *
-     * <code>string tenant = 6;</code>
+     * <code>string tenantId = 6;</code>
      * @return This builder for chaining.
      */
-    public Builder clearTenant() {
+    public Builder clearTenantId() {
       if (principalCriteriaCase_ == 6) {
         principalCriteriaCase_ = 0;
         principalCriteria_ = null;
@@ -1325,11 +1325,11 @@ private static final long serialVersionUID = 0L;
      * 
      * </pre>
      *
-     * <code>string tenant = 6;</code>
-     * @param value The bytes for tenant to set.
+     * <code>string tenantId = 6;</code>
+     * @param value The bytes for tenantId to set.
      * @return This builder for chaining.
      */
-    public Builder setTenantBytes(
+    public Builder setTenantIdBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);

@@ -1973,7 +1973,7 @@ Search for NodeRun's by certain criteria.
 | `earliest_start` | optional| google.protobuf.Timestamp |  |
 | `latest_start` | optional| google.protobuf.Timestamp |  |
 | `isAdmin` | oneof `principal_criteria`| bool |  |
-| `tenant` | oneof `principal_criteria`| string |  |
+| `tenantId` | oneof `principal_criteria`| string |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 

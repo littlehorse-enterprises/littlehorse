@@ -825,7 +825,7 @@ export interface SearchPrincipalRequest {
     | boolean
     | undefined;
   /**  */
-  tenant?: string | undefined;
+  tenantId?: string | undefined;
 }
 
 export interface PrincipalIdList {
@@ -4020,7 +4020,7 @@ function createBaseSearchPrincipalRequest(): SearchPrincipalRequest {
     earliestStart: undefined,
     latestStart: undefined,
     isAdmin: undefined,
-    tenant: undefined,
+    tenantId: undefined,
   };
 }
 
@@ -4041,8 +4041,8 @@ export const SearchPrincipalRequest = {
     if (message.isAdmin !== undefined) {
       writer.uint32(40).bool(message.isAdmin);
     }
-    if (message.tenant !== undefined) {
-      writer.uint32(50).string(message.tenant);
+    if (message.tenantId !== undefined) {
+      writer.uint32(50).string(message.tenantId);
     }
     return writer;
   },
@@ -4094,7 +4094,7 @@ export const SearchPrincipalRequest = {
             break;
           }
 
-          message.tenant = reader.string();
+          message.tenantId = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -4115,7 +4115,7 @@ export const SearchPrincipalRequest = {
     message.earliestStart = object.earliestStart ?? undefined;
     message.latestStart = object.latestStart ?? undefined;
     message.isAdmin = object.isAdmin ?? undefined;
-    message.tenant = object.tenant ?? undefined;
+    message.tenantId = object.tenantId ?? undefined;
     return message;
   },
 };
