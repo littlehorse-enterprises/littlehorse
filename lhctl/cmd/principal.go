@@ -47,6 +47,38 @@ var putPrincipalCmd = &cobra.Command{
 	},
 }
 
+var searchPrincipalCmd = &cobra.Command{
+	Use:   "principal",
+	Short: "Search for Principals",
+	Run: func(cmd *cobra.Command, args []string) {
+		isAdmin, _ := cmd.Flags().GetBool("isAdmin")
+		tenantId, _ := cmd.Flags().GetString("tenantId")
+		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
+		limit, _ := cmd.Flags().GetInt32("limit")
+
+		earliest, latest := loadEarliestAndLatestStart(cmd)
+
+		search := &model.SearchPrincipalRequest{
+			Bookmark:      bookmark,
+			Limit:         &limit,
+			EarliestStart: earliest,
+			LatestStart:   latest,
+		}
+
+		if isAdmin {
+			search.PrincipalCriteria = &model.SearchPrincipalRequest_IsAdmin{
+				IsAdmin: isAdmin,
+			}
+		} else if tenantId != "" {
+			search.PrincipalCriteria = &model.SearchPrincipalRequest_Tenant{
+				Tenant: tenantId,
+			}
+		}
+
+		common.PrintResp(getGlobalClient(cmd).SearchPrincipal(requestContext(cmd), search))
+	},
+}
+
 var deployPrincipalCmd = &cobra.Command{
 	Use:   "principal <file>",
 	Short: "Deploy Principal from a file",
@@ -147,6 +179,8 @@ func init() {
 	putPrincipalCmd.Flags().String("acl", "", "ACLs")
 	putPrincipalCmd.Flags().Bool("overwrite", false, "Overwrites principal information")
 	putPrincipalCmd.Flags().String("tenantId", "", "Tenant associated with the principal")
+
+	searchCmd.AddCommand(searchPrincipalCmd)
 
 	deployCmd.AddCommand(deployPrincipalCmd)
 	deleteCmd.AddCommand(deletePrincipalCmd)
