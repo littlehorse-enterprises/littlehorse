@@ -4,10 +4,10 @@ import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Field, Input, Label } from '@headlessui/react'
-import { RefreshCwIcon } from 'lucide-react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { TaskStatus } from 'littlehorse-client/dist/proto/common_enums'
 import { TaskDef as TaskDefProto } from 'littlehorse-client/dist/proto/task_def'
+import { RefreshCwIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, Fragment, useState } from 'react'
 import { PaginatedTaskRunList, searchTaskRun } from '../actions/searchTaskRun'
@@ -108,7 +108,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                             <Link
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
-                              href={`/wfRun/${concatWfRunIds(taskRun.id?.wfRunId!)}?threadRunNumber=${taskRun.source?.taskNode?.nodeRunId?.threadRunNumber ?? taskRun.source?.userTaskTrigger?.nodeRunId?.threadRunNumber}&nodeName=${taskRun.source?.taskNode?.nodeRunId?.position}-${taskRun.source?.taskNode?.nodeRunId}-TASK`}
+                              href={`/wfRun/${concatWfRunIds(taskRun.id?.wfRunId!)}?threadRunNumber=${taskRun.source?.taskNode?.nodeRunId?.threadRunNumber ?? taskRun.source?.userTaskTrigger?.nodeRunId?.threadRunNumber}&nodeRunName=${taskRun.source?.taskNode?.nodeRunId?.position}-${spec.id?.name}-TASK`}
                             >
                               {concatWfRunIds(taskRun.id?.wfRunId!)}
                             </Link>
