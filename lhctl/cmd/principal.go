@@ -50,6 +50,17 @@ var putPrincipalCmd = &cobra.Command{
 var searchPrincipalCmd = &cobra.Command{
 	Use:   "principal",
 	Short: "Search for Principals",
+	Long: `
+Search for Principals. You may provide any of the following option groups:
+
+[isAdmin, tenantId]
+
+* Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
+options with this group to put a time bound on Principals which are returned.
+The time bound applies to the time that the Principal was created.
+
+Returns a list of ObjectId's that can be passed into 'lhctl get principals'.
+	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		isAdmin, _ := cmd.Flags().GetBool("isAdmin")
 		tenantId, _ := cmd.Flags().GetString("tenantId")
@@ -181,6 +192,10 @@ func init() {
 	putPrincipalCmd.Flags().String("tenantId", "", "Tenant associated with the principal")
 
 	searchCmd.AddCommand(searchPrincipalCmd)
+	searchPrincipalCmd.Flags().String("tenantId", "", "List Principals associated with this Tenant ID")
+	searchPrincipalCmd.Flags().Bool("isAdmin", false, "List only Principals that are admins")
+	searchWfRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for Principals that were created no more than this number of minutes ago")
+	searchWfRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for Principals that were created at least this number of minutes ago")
 
 	deployCmd.AddCommand(deployPrincipalCmd)
 	deleteCmd.AddCommand(deletePrincipalCmd)
