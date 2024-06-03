@@ -1,7 +1,6 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
-
 import io.grpc.Status;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -24,7 +23,6 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -55,7 +53,8 @@ public class SearchPrincipalRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException {
-        return new TagScanBoundaryStrategy(searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable((latestStart)));
+        return new TagScanBoundaryStrategy(
+                searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable((latestStart)));
     }
 
     @Override
