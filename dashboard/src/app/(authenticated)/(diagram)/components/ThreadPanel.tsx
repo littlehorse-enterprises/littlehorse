@@ -1,7 +1,9 @@
-import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { WfRun } from 'littlehorse-client/dist/proto/wf_run'
 import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { FC, useMemo } from 'react'
+import { useReplaceQueryValue } from '../hooks/useReplaceQueryValue'
 import { useScrollbar } from '../hooks/useScrollbar'
 import { useThread } from '../hooks/useThread'
 
@@ -9,6 +11,8 @@ export const ThreadPanel: FC<{ spec: WfSpec; wfRun?: WfRun }> = ({ spec, wfRun }
   const { thread, setThread } = useThread()
   const threads = useMemo(() => extractThreads(spec, wfRun), [spec, wfRun])
   const { scroll, itemsRef, containerRef, maxScroll, scrollLeft, scrollRight } = useScrollbar()
+  const router = useRouter()
+  const replaceQuery = useReplaceQueryValue()
 
   return (
     <div className="relative mb-2 flex items-center">
@@ -21,7 +25,7 @@ export const ThreadPanel: FC<{ spec: WfSpec; wfRun?: WfRun }> = ({ spec, wfRun }
       </div>
       <div className="flex touch-pan-y items-center overflow-hidden text-nowrap" ref={containerRef}>
         <div
-          className="duration-[15ms] ease-[cubic-bezier(.05,0,0,1)] flex gap-2 will-change-transform"
+          className="flex gap-2 duration-[15ms] ease-[cubic-bezier(.05,0,0,1)] will-change-transform"
           style={{ transform: `translateX(${scroll}px)` }}
           ref={itemsRef}
         >
@@ -42,6 +46,7 @@ export const ThreadPanel: FC<{ spec: WfSpec; wfRun?: WfRun }> = ({ spec, wfRun }
                     ...current,
                   }
                 })
+                router.replace(replaceQuery('threadRunNumber', number?.toString() ?? '0'))
               }}
             >
               {`${name}${number !== undefined ? `-${number}` : ''}`}
