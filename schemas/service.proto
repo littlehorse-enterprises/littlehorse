@@ -795,7 +795,7 @@ message SearchPrincipalRequest {
     // 
     bool isAdmin = 5;
     // 
-    string tenant = 6;
+    string tenantId = 6;
   }
 }
 
