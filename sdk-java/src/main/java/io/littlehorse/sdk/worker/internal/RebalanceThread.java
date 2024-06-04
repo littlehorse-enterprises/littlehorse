@@ -81,7 +81,8 @@ final class RebalanceThread extends Thread {
                 mappings,
                 executable,
                 taskMethod,
-                new ScheduledTaskExecutor(bootstrapStub), config);
+                new ScheduledTaskExecutor(bootstrapStub),
+                config);
     }
 
     private void waitForInterval() {

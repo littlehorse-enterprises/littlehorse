@@ -1,11 +1,8 @@
 package io.littlehorse.sdk.worker.internal;
 
 import com.google.common.collect.Iterators;
-import io.grpc.stub.StreamObserver;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
-import io.littlehorse.sdk.common.proto.PollTaskRequest;
-import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.io.Closeable;
@@ -15,17 +12,16 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class PollThread extends Thread implements Closeable {
 
-    private Iterator<StreamObserver<PollTaskRequest>> activePollClients;
+    private Iterator<PollTaskStub> activePollClients;
     private final String taskWorkerId;
     private final TaskDefId taskDefId;
     private final String taskWorkerVersion;
-    private final Semaphore semaphore = new Semaphore(2);
+    private final Semaphore semaphore = new Semaphore(1000);
 
     public final LittleHorseGrpc.LittleHorseStub stub;
     private final List<VariableMapping> mappings;
@@ -62,26 +58,33 @@ public class PollThread extends Thread implements Closeable {
 
     @Override
     public void run() {
-        List<StreamObserver<PollTaskRequest>> pollClients = Stream.generate(this::createObserver).limit(2).collect(Collectors.toList());
+        List<PollTaskStub> pollClients =
+                Stream.generate(this::createObserver).limit(1000).collect(Collectors.toList());
         this.activePollClients = Iterators.cycle(pollClients);
         try {
             while (stillRunning) {
-                semaphore.acquire();
-                StreamObserver<PollTaskRequest> pollClient = activePollClients.next();
-                pollClient.onNext(PollTaskRequest.newBuilder()
-                        .setClientId(taskWorkerId)
-                        .setTaskDefId(taskDefId)
-                        .setTaskWorkerVersion(taskWorkerVersion)
-                        .build());
+                PollTaskStub pollClient = activePollClients.next();
+                if (pollClient.isReady()) {
+                    pollClient.doNext();
+                }
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    private StreamObserver<PollTaskRequest> createObserver() {
+    private PollTaskStub createObserver() {
         LittleHorseGrpc.LittleHorseStub specificStub = config.getAsyncStub();
-        return stub.pollTask(new ServerResponseObserver(specificStub));
+        return new PollTaskStub(
+                specificStub,
+                semaphore,
+                taskExecutor,
+                taskWorkerId,
+                taskDefId,
+                taskWorkerVersion,
+                mappings,
+                executable,
+                taskMethod);
     }
 
     @Override
@@ -91,33 +94,5 @@ public class PollThread extends Thread implements Closeable {
 
     public boolean isRunning() {
         return this.stillRunning;
-    }
-
-    private final class ServerResponseObserver implements StreamObserver<PollTaskResponse>{
-        private final LittleHorseGrpc.LittleHorseStub specificStub;
-        private ServerResponseObserver(LittleHorseGrpc.LittleHorseStub specificStub) {
-            this.specificStub = specificStub;
-        }
-
-        @Override
-        public void onNext(PollTaskResponse value) {
-            if (value.hasResult()) {
-                taskExecutor.doTask(value.getResult(), specificStub, mappings, executable, taskMethod);
-            } else {
-                log.info("Didn't successfully claim a task");
-            }
-            semaphore.release();
-        }
-
-        @Override
-        public void onError(Throwable t) {
-            log.error("Unexpected error from server", t);
-        }
-
-        @Override
-        public void onCompleted() {
-            log.error("Unexpected call to onCompleted() in the Server Connection.");
-            stillRunning = false;
-        }
     }
 }
