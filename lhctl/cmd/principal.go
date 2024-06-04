@@ -201,6 +201,7 @@ func init() {
 	searchPrincipalCmd.Flags().Bool("isAdmin", false, "List only Principals that are admins")
 	searchPrincipalCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for Principals that were created no more than this number of minutes ago")
 	searchPrincipalCmd.Flags().Int("latestMinutesAgo", -1, "Search only for Principals that were created at least this number of minutes ago")
+	searchPrincipalCmd.MarkFlagsOneRequired("tenantId", "isAdmin")
 
 	deployCmd.AddCommand(deployPrincipalCmd)
 	deleteCmd.AddCommand(deletePrincipalCmd)

@@ -781,6 +781,7 @@ message TenantIdList {
       optional bytes bookmark = 2;
 }
 
+// Search for Principals based on certain criteria.
 message SearchPrincipalRequest {
   // Bookmark for cursor-based pagination; pass if applicable.
   optional bytes bookmark = 1;
