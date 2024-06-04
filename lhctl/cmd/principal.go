@@ -87,8 +87,6 @@ Returns a list of ObjectId's that can be passed into 'lhctl get principals'.
 			search.PrincipalCriteria = &model.SearchPrincipalRequest_TenantId{
 				TenantId: tenantId,
 			}
-		} else {
-			log.Fatal("Please specify a filter criteria.")
 		}
 
 		common.PrintResp(getGlobalClient(cmd).SearchPrincipal(requestContext(cmd), search))
