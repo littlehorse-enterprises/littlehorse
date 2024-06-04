@@ -3,20 +3,20 @@ import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
 import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
 import { concatWfRunIds } from '@/app/utils'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { RefreshCwIcon } from 'lucide-react'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { LHStatus, lHStatusFromJSON } from 'littlehorse-client/dist/proto/common_enums'
+import { lHStatusFromJSON } from 'littlehorse-client/dist/proto/common_enums'
 import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
+import { RefreshCwIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { FC, Fragment, useMemo, useState } from 'react'
 import { PaginatedWfRunIdList, searchWfRun } from '../actions/searchWfRun'
 import { WfRunsHeader } from './WfRunsHeader'
 
-type Props = Pick<WfSpec, 'id'>
-export const WfRuns: FC<Props> = ({ id }) => {
+export const WfRuns: FC<WfSpec> = ({ id, ...spec }) => {
   const searchParams = useSearchParams()
-  const status = getStatus(searchParams.get('status')) || LHStatus.RUNNING
+  const status = searchParams.get('status') ? getStatus(searchParams.get('status')) || 'ALL' : 'ALL'
+  console.log('status:', status)
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
   const [window, setWindow] = useState<TimeRange>(TIME_RANGES[0])
   const { tenantId } = useWhoAmI()
@@ -43,7 +43,7 @@ export const WfRuns: FC<Props> = ({ id }) => {
         wfSpecRevision: id!.revision,
         variableFilters: [],
         limit,
-        status,
+        status: status === 'ALL' ? undefined : status,
         tenantId,
         bookmarkAsString: pageParam,
         ...startTime,
