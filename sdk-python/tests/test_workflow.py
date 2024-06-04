@@ -1662,10 +1662,10 @@ class TestWorkflow(unittest.TestCase):
         )
 
     def test_wf_task_timeout(self):
-        timeout = 5
+        timeout_seconds = 5
 
         def my_entrypoint(thread: WorkflowThread) -> None:
-            thread.execute("example_task", timeout=timeout)
+            thread.execute("example_task", timeout_seconds=timeout_seconds)
         
         wf = Workflow("my-wf", my_entrypoint)
 
@@ -1684,7 +1684,7 @@ class TestWorkflow(unittest.TestCase):
                             ),
                             "1-example_task-TASK": Node(
                                 task=TaskNode(task_def_id=TaskDefId(name="example_task"),
-                                              timeout_seconds=timeout),
+                                              timeout_seconds=timeout_seconds),
                                 outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")]
                             ),
                             "2-exit-EXIT": Node(exit=ExitNode()),
