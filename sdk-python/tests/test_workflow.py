@@ -1661,6 +1661,40 @@ class TestWorkflow(unittest.TestCase):
             ),
         )
 
+    def test_wf_task_timeout(self):
+        timeout = 5
+
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.execute("example_task", timeout=timeout)
+        
+        wf = Workflow("my-wf", my_entrypoint)
+
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        variable_defs=[],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[Edge(sink_node_name="1-example_task-TASK")],
+                            ),
+                            "1-example_task-TASK": Node(
+                                task=TaskNode(task_def_id=TaskDefId(name="example_task"),
+                                              timeout_seconds=timeout),
+                                outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")]
+                            ),
+                            "2-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    )
+                },
+            ),
+        )
+        
+
 
 class TestRetries(unittest.TestCase):
     def test_add_retries(self):

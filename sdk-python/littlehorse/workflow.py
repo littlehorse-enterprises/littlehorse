@@ -1016,6 +1016,7 @@ class WorkflowThread:
         self,
         task_name: Union[str, LHFormatString, WfRunVariable],
         *args: Any,
+        timeout: Optional[int] = None,
         retries: Optional[int] = None,
         exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = None,
     ) -> NodeOutput:
@@ -1042,6 +1043,7 @@ class WorkflowThread:
             task_node = TaskNode(
                 task_def_id=TaskDefId(name=task_name),
                 variables=[to_variable_assignment(arg) for arg in args],
+                timeout_seconds=timeout,
                 retries=retries if retries is not None else self._default_retries,
                 exponential_backoff=(
                     exponential_backoff
