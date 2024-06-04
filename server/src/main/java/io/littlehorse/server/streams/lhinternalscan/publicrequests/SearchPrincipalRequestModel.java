@@ -1,5 +1,6 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHStore;
@@ -89,8 +90,8 @@ public class SearchPrincipalRequestModel
         if (p.hasBookmark()) {
             try {
                 this.bookmark = BookmarkPb.parseFrom(p.getBookmark());
-            } catch (Exception exn) {
-                log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
+            } catch (InvalidProtocolBufferException exn) {
+                throw new LHSerdeError(String.format("Failed to load bookmark: %s", exn.getMessage()));
             }
         }
         if (p.hasLimit()) {
