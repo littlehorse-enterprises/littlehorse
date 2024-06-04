@@ -47,6 +47,52 @@ var putPrincipalCmd = &cobra.Command{
 	},
 }
 
+var searchPrincipalCmd = &cobra.Command{
+	Use:   "principal",
+	Short: "Search for Principals",
+	Long: `
+Search for Principals. You may provide any of the following option groups:
+
+[isAdmin, tenantId]
+
+* Note: To set the value of Boolean flags, you must use an '=' sign between the key
+and the value, like so: '--isAdmin=false'
+
+* Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
+options with this group to put a time bound on Principals which are returned.
+The time bound applies to the time that the Principal was created.
+
+Returns a list of ObjectId's that can be passed into 'lhctl get principals'.
+	`,
+	Run: func(cmd *cobra.Command, args []string) {
+		isAdmin, _ := cmd.Flags().GetBool("isAdmin")
+		tenantId, _ := cmd.Flags().GetString("tenantId")
+		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
+		limit, _ := cmd.Flags().GetInt32("limit")
+
+		earliest, latest := loadEarliestAndLatestStart(cmd)
+
+		search := &model.SearchPrincipalRequest{
+			Bookmark:      bookmark,
+			Limit:         &limit,
+			EarliestStart: earliest,
+			LatestStart:   latest,
+		}
+
+		if cmd.Flags().Lookup("isAdmin").Changed {
+			search.PrincipalCriteria = &model.SearchPrincipalRequest_IsAdmin{
+				IsAdmin: isAdmin,
+			}
+		} else if tenantId != "" {
+			search.PrincipalCriteria = &model.SearchPrincipalRequest_TenantId{
+				TenantId: tenantId,
+			}
+		}
+
+		common.PrintResp(getGlobalClient(cmd).SearchPrincipal(requestContext(cmd), search))
+	},
+}
+
 var deployPrincipalCmd = &cobra.Command{
 	Use:   "principal <file>",
 	Short: "Deploy Principal from a file",
@@ -147,6 +193,13 @@ func init() {
 	putPrincipalCmd.Flags().String("acl", "", "ACLs")
 	putPrincipalCmd.Flags().Bool("overwrite", false, "Overwrites principal information")
 	putPrincipalCmd.Flags().String("tenantId", "", "Tenant associated with the principal")
+
+	searchCmd.AddCommand(searchPrincipalCmd)
+	searchPrincipalCmd.Flags().String("tenantId", "", "List Principals associated with this Tenant ID")
+	searchPrincipalCmd.Flags().Bool("isAdmin", false, "List only Principals that are admins")
+	searchPrincipalCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for Principals that were created no more than this number of minutes ago")
+	searchPrincipalCmd.Flags().Int("latestMinutesAgo", -1, "Search only for Principals that were created at least this number of minutes ago")
+	searchPrincipalCmd.MarkFlagsOneRequired("tenantId", "isAdmin")
 
 	deployCmd.AddCommand(deployPrincipalCmd)
 	deleteCmd.AddCommand(deletePrincipalCmd)

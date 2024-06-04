@@ -1286,6 +1286,37 @@ public final class LittleHorseGrpc {
     return getSearchTenantMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchPrincipalRequest,
+      io.littlehorse.sdk.common.proto.PrincipalIdList> getSearchPrincipalMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchPrincipal",
+      requestType = io.littlehorse.sdk.common.proto.SearchPrincipalRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.PrincipalIdList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchPrincipalRequest,
+      io.littlehorse.sdk.common.proto.PrincipalIdList> getSearchPrincipalMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchPrincipalRequest, io.littlehorse.sdk.common.proto.PrincipalIdList> getSearchPrincipalMethod;
+    if ((getSearchPrincipalMethod = LittleHorseGrpc.getSearchPrincipalMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getSearchPrincipalMethod = LittleHorseGrpc.getSearchPrincipalMethod) == null) {
+          LittleHorseGrpc.getSearchPrincipalMethod = getSearchPrincipalMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.SearchPrincipalRequest, io.littlehorse.sdk.common.proto.PrincipalIdList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchPrincipal"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.SearchPrincipalRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.PrincipalIdList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("SearchPrincipal"))
+              .build();
+        }
+      }
+    }
+    return getSearchPrincipalMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest,
       io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse> getRegisterTaskWorkerMethod;
 
@@ -2395,6 +2426,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * 
+     * </pre>
+     */
+    default void searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PrincipalIdList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchPrincipalMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Used by the Task Worker to:
      * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
      * 2. Receive the assignemnt of LH Server's to poll from.
@@ -3110,6 +3151,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * 
+     * </pre>
+     */
+    public void searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PrincipalIdList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchPrincipalMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Used by the Task Worker to:
      * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
      * 2. Receive the assignemnt of LH Server's to poll from.
@@ -3789,6 +3841,16 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.TenantIdList searchTenant(io.littlehorse.sdk.common.proto.SearchTenantRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getSearchTenantMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * 
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.PrincipalIdList searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchPrincipalMethod(), getCallOptions(), request);
     }
 
     /**
@@ -4486,6 +4548,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * 
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.PrincipalIdList> searchPrincipal(
+        io.littlehorse.sdk.common.proto.SearchPrincipalRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchPrincipalMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Used by the Task Worker to:
      * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
      * 2. Receive the assignemnt of LH Server's to poll from.
@@ -4741,26 +4814,27 @@ public final class LittleHorseGrpc {
   private static final int METHODID_SEARCH_WF_SPEC = 38;
   private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 39;
   private static final int METHODID_SEARCH_TENANT = 40;
-  private static final int METHODID_REGISTER_TASK_WORKER = 41;
-  private static final int METHODID_REPORT_TASK = 42;
-  private static final int METHODID_STOP_WF_RUN = 43;
-  private static final int METHODID_RESUME_WF_RUN = 44;
-  private static final int METHODID_DELETE_WF_RUN = 45;
-  private static final int METHODID_DELETE_TASK_DEF = 46;
-  private static final int METHODID_DELETE_WF_SPEC = 47;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 48;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 49;
-  private static final int METHODID_DELETE_PRINCIPAL = 50;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 51;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 52;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 53;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 54;
-  private static final int METHODID_PUT_TENANT = 55;
-  private static final int METHODID_GET_TENANT = 56;
-  private static final int METHODID_PUT_PRINCIPAL = 57;
-  private static final int METHODID_WHOAMI = 58;
-  private static final int METHODID_GET_SERVER_VERSION = 59;
-  private static final int METHODID_POLL_TASK = 60;
+  private static final int METHODID_SEARCH_PRINCIPAL = 41;
+  private static final int METHODID_REGISTER_TASK_WORKER = 42;
+  private static final int METHODID_REPORT_TASK = 43;
+  private static final int METHODID_STOP_WF_RUN = 44;
+  private static final int METHODID_RESUME_WF_RUN = 45;
+  private static final int METHODID_DELETE_WF_RUN = 46;
+  private static final int METHODID_DELETE_TASK_DEF = 47;
+  private static final int METHODID_DELETE_WF_SPEC = 48;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 49;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 50;
+  private static final int METHODID_DELETE_PRINCIPAL = 51;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 52;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 53;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 54;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 55;
+  private static final int METHODID_PUT_TENANT = 56;
+  private static final int METHODID_GET_TENANT = 57;
+  private static final int METHODID_PUT_PRINCIPAL = 58;
+  private static final int METHODID_WHOAMI = 59;
+  private static final int METHODID_GET_SERVER_VERSION = 60;
+  private static final int METHODID_POLL_TASK = 61;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -4942,6 +5016,10 @@ public final class LittleHorseGrpc {
         case METHODID_SEARCH_TENANT:
           serviceImpl.searchTenant((io.littlehorse.sdk.common.proto.SearchTenantRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.TenantIdList>) responseObserver);
+          break;
+        case METHODID_SEARCH_PRINCIPAL:
+          serviceImpl.searchPrincipal((io.littlehorse.sdk.common.proto.SearchPrincipalRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PrincipalIdList>) responseObserver);
           break;
         case METHODID_REGISTER_TASK_WORKER:
           serviceImpl.registerTaskWorker((io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest) request,
@@ -5328,6 +5406,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.TenantIdList>(
                 service, METHODID_SEARCH_TENANT)))
         .addMethod(
+          getSearchPrincipalMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.SearchPrincipalRequest,
+              io.littlehorse.sdk.common.proto.PrincipalIdList>(
+                service, METHODID_SEARCH_PRINCIPAL)))
+        .addMethod(
           getRegisterTaskWorkerMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -5556,6 +5641,7 @@ public final class LittleHorseGrpc {
               .addMethod(getSearchWfSpecMethod())
               .addMethod(getSearchExternalEventDefMethod())
               .addMethod(getSearchTenantMethod())
+              .addMethod(getSearchPrincipalMethod())
               .addMethod(getRegisterTaskWorkerMethod())
               .addMethod(getPollTaskMethod())
               .addMethod(getReportTaskMethod())
