@@ -280,6 +280,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 | [SearchTenantRequest](#searchtenantrequest) | [TenantIdList](#tenantidlist) | Search for all available TenantIds for current Principal |
 
+### RPC `SearchPrincipal` {#searchprincipal}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [SearchPrincipalRequest](#searchprincipalrequest) | [PrincipalIdList](#principalidlist) |  |
+
 ### RPC `RegisterTaskWorker` {#registertaskworker}
 
 | Request Type | Response Type | Description |
@@ -1640,6 +1646,20 @@ Response from the server for PollTaskRequest.
 
 
 
+### Message `PrincipalIdList` {#principalidlist}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `results` | repeated| [PrincipalId](#principalid) | The resulting object id's. |
+| `bookmark` | optional| bytes | Bookmark for cursor-based pagination; pass if applicable. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `PutExternalEventDefRequest` {#putexternaleventdefrequest}
 
 Field to create an ExternalEventDef.
@@ -1936,6 +1956,24 @@ Search for NodeRun's by certain criteria.
 | `latest_start` | optional| google.protobuf.Timestamp | Only return NodeRun's created before this time. |
 | `node_type` | | [SearchNodeRunRequest.NodeType](#searchnoderunrequestnodetype) | Specifies the type of NodeRun to search for. |
 | `status` | | [LHStatus](#lhstatus) | Specifies the status of NodeRun to search for. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchPrincipalRequest` {#searchprincipalrequest}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `bookmark` | optional| bytes | Bookmark for cursor-based pagination; pass if applicable. |
+| `limit` | optional| int32 | Maximum results to return in one request. |
+| `earliest_start` | optional| google.protobuf.Timestamp |  |
+| `latest_start` | optional| google.protobuf.Timestamp |  |
+| `isAdmin` | oneof `principal_criteria`| bool |  |
+| `tenantId` | oneof `principal_criteria`| string |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 

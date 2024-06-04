@@ -231,6 +231,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.SearchTenantRequest.SerializeToString,
                 response_deserializer=service__pb2.TenantIdList.FromString,
                 )
+        self.SearchPrincipal = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchPrincipal',
+                request_serializer=service__pb2.SearchPrincipalRequest.SerializeToString,
+                response_deserializer=service__pb2.PrincipalIdList.FromString,
+                )
         self.RegisterTaskWorker = channel.unary_unary(
                 '/littlehorse.LittleHorse/RegisterTaskWorker',
                 request_serializer=service__pb2.RegisterTaskWorkerRequest.SerializeToString,
@@ -657,6 +662,13 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SearchPrincipal(self, request, context):
+        """
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def RegisterTaskWorker(self, request, context):
         """Used by the Task Worker to:
         1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -1011,6 +1023,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.SearchTenant,
                     request_deserializer=service__pb2.SearchTenantRequest.FromString,
                     response_serializer=service__pb2.TenantIdList.SerializeToString,
+            ),
+            'SearchPrincipal': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchPrincipal,
+                    request_deserializer=service__pb2.SearchPrincipalRequest.FromString,
+                    response_serializer=service__pb2.PrincipalIdList.SerializeToString,
             ),
             'RegisterTaskWorker': grpc.unary_unary_rpc_method_handler(
                     servicer.RegisterTaskWorker,
@@ -1816,6 +1833,23 @@ class LittleHorse(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchTenant',
             service__pb2.SearchTenantRequest.SerializeToString,
             service__pb2.TenantIdList.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SearchPrincipal(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchPrincipal',
+            service__pb2.SearchPrincipalRequest.SerializeToString,
+            service__pb2.PrincipalIdList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
