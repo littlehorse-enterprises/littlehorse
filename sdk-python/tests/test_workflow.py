@@ -1702,7 +1702,7 @@ class TestWorkflow(unittest.TestCase):
             thread.execute("use-default-timeout")
             thread.execute("use-custom-timeout", timeout_seconds=custom_timeout_seconds)
         
-        wf = Workflow("my-wf", my_entrypoint).with_timeout_seconds_policy(default_timeout_seconds)
+        wf = Workflow("my-wf", my_entrypoint).with_task_timeout_seconds(default_timeout_seconds)
 
         self.assertEqual(
             wf.compile(),

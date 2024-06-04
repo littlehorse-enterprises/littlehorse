@@ -1877,7 +1877,7 @@ class Workflow:
         self._default_exponential_backoff = exponential_backoff
         return self
     
-    def with_timeout_seconds_policy(
+    def with_task_timeout_seconds(
         self,
         timeout_seconds: Optional[int] = None
     ) -> Workflow:
