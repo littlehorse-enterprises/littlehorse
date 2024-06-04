@@ -125,7 +125,6 @@ public class SearchWfRunRequestModel
             } else {
                 out.add(new Attribute(
                         "wfSpecId", new WfSpecIdModel(wfSpecName, wfSpecMajorVersion, wfSpecRevision).toString()));
-                out.add(new Attribute("wfSpecName", wfSpecName));
             }
         } else {
             if (wfSpecRevision != null) {

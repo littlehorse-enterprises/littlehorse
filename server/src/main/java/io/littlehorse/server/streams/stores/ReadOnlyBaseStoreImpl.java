@@ -1,6 +1,5 @@
 package io.littlehorse.server.streams.stores;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
@@ -155,10 +154,6 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
         start = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, start));
         end = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, end));
-        ImmutableList.copyOf(nativeStore.all()).stream()
-                .map(stringBytesKeyValue -> stringBytesKeyValue.key)
-                .forEach(System.out::println);
-        log.info("looking for " + start + " to " + end);
         return new LHKeyValueIterator<>(nativeStore.range(start, end), cls, executionContext);
     }
 

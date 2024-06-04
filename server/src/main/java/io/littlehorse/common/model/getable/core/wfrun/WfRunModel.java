@@ -102,10 +102,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
                                 Pair.of("status", GetableIndex.ValueType.SINGLE)),
                         Optional.of(TagStorageType.LOCAL)),
                 new GetableIndex<>(
-                        List.of(
-                                Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE),
-                                Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL)),
+                        List.of(Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE)), Optional.of(TagStorageType.LOCAL)),
                 new GetableIndex<>(
                         List.of(Pair.of("majorVersion", GetableIndex.ValueType.SINGLE)),
                         Optional.of(TagStorageType.LOCAL)),
