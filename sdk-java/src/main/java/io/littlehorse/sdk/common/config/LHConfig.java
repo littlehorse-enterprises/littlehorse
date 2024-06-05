@@ -76,7 +76,7 @@ public class LHConfig extends ConfigBase {
     public static final String TASK_WORKER_VERSION_KEY = "LHW_TASK_WORKER_VERSION";
     public static final String DEFAULT_PUBLIC_LISTENER = "PLAIN";
     public static final String DEFAULT_PROTOCOL = "PLAINTEXT";
-    public static final String INFLIGHT_TASKS_KEY = "PLAINTEXT";
+    public static final String INFLIGHT_TASKS_KEY = "INFLIGHT_TASKS";
 
     private static final Set<String> configNames = Set.of(
             LHConfig.API_HOST_KEY,
