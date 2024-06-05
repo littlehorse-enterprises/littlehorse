@@ -78,6 +78,7 @@ public class InstanceState implements MeterBinder, KafkaStreams.StateListener, C
             activeTasks.set(currentActiveTaskIds);
             internalComms.handleRebalance(activeTasks.get());
         }
+        log.info("New state for core topology: {}", newState);
     }
 
     @Override
