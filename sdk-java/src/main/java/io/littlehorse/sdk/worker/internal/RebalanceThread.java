@@ -100,7 +100,7 @@ final class RebalanceThread extends Thread {
         public void onNext(RegisterTaskWorkerResponse response) {
             livenessController.notifySuccessCall(response);
             List<LHHostInfo> availableHosts = response.getYourHostsList();
-            /*for (LHHostInfo runningConnection : runningConnections.keySet()) {
+            for (LHHostInfo runningConnection : runningConnections.keySet()) {
                 if (!availableHosts.contains(runningConnection)) {
                     for (PollThread removed : runningConnections.remove(runningConnection)) {
                         removed.close();
@@ -133,7 +133,7 @@ final class RebalanceThread extends Thread {
                     }
                     runningConnections.put(runningConnection, newPollThreads);
                 }
-            }*/
+            }
             for (LHHostInfo lhHostInfo : availableHosts) {
                 if (!runningConnections.containsKey(lhHostInfo)) {
                     final List<PollThread> connections = new ArrayList<>();
