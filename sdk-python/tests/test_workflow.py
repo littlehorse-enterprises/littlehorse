@@ -1598,7 +1598,6 @@ class TestWorkflow(unittest.TestCase):
     def test_compile_wf_with_no_updates_type(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
             thread.add_variable("input-name", VariableType.STR)
-            thread.execute()
 
         wf = Workflow("my-wf", my_entrypoint)
         wf.with_update_type("NO_UPDATES")
