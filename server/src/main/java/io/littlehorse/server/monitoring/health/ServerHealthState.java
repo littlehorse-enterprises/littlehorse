@@ -118,7 +118,7 @@ public class ServerHealthState {
                 .lagInfoForPartition(
                         metadata.topicPartitions().stream().findFirst().get().partition())
                 .orElse(null);
-        if (lagInfo == null) {
+        if (lagInfo != null) {
             return Optional.of(new StandbyTaskState(metadata, lagInfo));
         } else {
             return Optional.empty();
