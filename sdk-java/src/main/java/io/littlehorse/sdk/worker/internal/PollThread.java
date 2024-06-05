@@ -39,6 +39,7 @@ public class PollThread extends Thread implements Closeable {
         this.stub = stub;
         this.bootstrapStub = bootstrapStub;
         this.semaphore = new Semaphore(inflightRequests);
+        taskMethod.setAccessible(true);
         List<PollTaskStub> pollClients = Stream.generate(() -> new PollTaskStub(
                         bootstrapStub,
                         stub,
