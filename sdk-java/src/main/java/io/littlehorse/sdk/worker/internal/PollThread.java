@@ -1,7 +1,6 @@
 package io.littlehorse.sdk.worker.internal;
 
 import com.google.common.collect.Iterators;
-import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
@@ -17,74 +16,60 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PollThread extends Thread implements Closeable {
 
-    private Iterator<PollTaskStub> activePollClients;
-    private final String taskWorkerId;
-    private final TaskDefId taskDefId;
-    private final String taskWorkerVersion;
-    private final Semaphore semaphore = new Semaphore(1000);
+    private final Iterator<PollTaskStub> activePollClients;
+    private final Semaphore semaphore;
 
     public final LittleHorseGrpc.LittleHorseStub stub;
-    private final List<VariableMapping> mappings;
-    private final Object executable;
-    private final Method taskMethod;
-    private final ScheduledTaskExecutor taskExecutor;
-
+    public final LittleHorseGrpc.LittleHorseStub bootstrapStub;
     private boolean stillRunning = true;
-    private final LHConfig config;
 
     public PollThread(
             String threadName,
+            int inflightRequests,
             LittleHorseGrpc.LittleHorseStub stub,
+            LittleHorseGrpc.LittleHorseStub bootstrapStub,
             TaskDefId taskDefId,
             String taskWorkerId,
             String taskWorkerVersion,
             List<VariableMapping> mappings,
             Object executable,
             Method taskMethod,
-            ScheduledTaskExecutor taskExecutor,
-            LHConfig config) {
+            ScheduledTaskExecutor taskExecutor) {
         super(threadName);
         this.stub = stub;
-        this.taskDefId = taskDefId;
-        this.taskWorkerId = taskWorkerId;
-        this.taskWorkerVersion = taskWorkerVersion;
-        this.mappings = mappings;
-        this.executable = executable;
-        this.taskMethod = taskMethod;
-        this.taskMethod.setAccessible(true);
-        this.taskExecutor = taskExecutor;
-        this.config = config;
+        this.bootstrapStub = bootstrapStub;
+        this.semaphore = new Semaphore(inflightRequests);
+        List<PollTaskStub> pollClients = Stream.generate(() -> new PollTaskStub(
+                        bootstrapStub,
+                        stub,
+                        semaphore,
+                        taskExecutor,
+                        taskWorkerId,
+                        taskDefId,
+                        taskWorkerVersion,
+                        mappings,
+                        executable,
+                        taskMethod))
+                .limit(inflightRequests)
+                .collect(Collectors.toList());
+        this.activePollClients = Iterators.cycle(pollClients);
     }
 
     @Override
     public void run() {
-        List<PollTaskStub> pollClients =
-                Stream.generate(this::createObserver).limit(1000).collect(Collectors.toList());
-        this.activePollClients = Iterators.cycle(pollClients);
         try {
             while (stillRunning) {
                 PollTaskStub pollClient = activePollClients.next();
                 if (pollClient.isReady()) {
                     pollClient.doNext();
                 }
+                if (pollClient.isClosed()) {
+                    stillRunning = false;
+                }
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-    }
-
-    private PollTaskStub createObserver() {
-        LittleHorseGrpc.LittleHorseStub specificStub = config.getAsyncStub();
-        return new PollTaskStub(
-                specificStub,
-                semaphore,
-                taskExecutor,
-                taskWorkerId,
-                taskDefId,
-                taskWorkerVersion,
-                mappings,
-                executable,
-                taskMethod);
     }
 
     @Override

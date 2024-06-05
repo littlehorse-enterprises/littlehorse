@@ -3,6 +3,7 @@ package io.littlehorse.sdk.worker.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+import io.grpc.stub.StreamObserver;
 import io.littlehorse.sdk.common.QueuedStreamObserver;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
@@ -15,6 +16,7 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
+import org.mockito.ArgumentCaptor;
 
 public class PollThreadTest {
 
@@ -33,10 +35,25 @@ public class PollThreadTest {
     @BeforeEach
     public void setup() throws NoSuchMethodException {
         this.taskMethod = this.getClass().getDeclaredMethod("myTaskMethod");
+        ArgumentCaptor<StreamObserver<PollTaskResponse>> argumentCaptor = ArgumentCaptor.forClass(StreamObserver.class);
+        QueuedStreamObserver.DelegatedStreamObserver<PollTaskRequest> delegatedObserver =
+                new QueuedStreamObserver.DelegatedStreamObserver<>();
+        when(stub.pollTask(any())).thenReturn(delegatedObserver);
         pollThread = new PollThread(
-                "test", stub, task, taskWorkerId, taskWorkerVersion, mappings, this, taskMethod, taskExecutor);
-        this.recordableObserver = new QueuedStreamObserver<>(pollThread);
-        when(stub.pollTask(any())).thenReturn(recordableObserver.getRequestObserver());
+                "test",
+                1,
+                stub,
+                bootstrapStub,
+                task,
+                taskWorkerId,
+                taskWorkerVersion,
+                mappings,
+                this,
+                taskMethod,
+                taskExecutor);
+        verify(stub, atLeast(0)).pollTask(argumentCaptor.capture());
+        this.recordableObserver = new QueuedStreamObserver<>(argumentCaptor.getValue());
+        delegatedObserver.setObserver(recordableObserver.getRequestObserver());
     }
 
     @Test
@@ -52,7 +69,7 @@ public class PollThreadTest {
         recordableObserver.record(response3);
         pollThread.start();
         Awaitility.await().until(() -> !pollThread.isAlive());
-        verify(taskExecutor, times(2)).doTask(any(), same(stub), eq(mappings), same(this), eq(taskMethod));
+        verify(taskExecutor, times(2)).doTask(any(), same(bootstrapStub), eq(mappings), same(this), eq(taskMethod));
         assertThat(pollThread.isRunning()).isFalse();
     }
 
@@ -67,7 +84,7 @@ public class PollThreadTest {
         recordableObserver.record(new RuntimeException("Failed"));
         pollThread.start();
         Awaitility.await().until(() -> !pollThread.isAlive());
-        verify(taskExecutor, times(2)).doTask(any(), same(stub), eq(mappings), same(this), eq(taskMethod));
+        verify(taskExecutor, times(2)).doTask(any(), same(bootstrapStub), eq(mappings), same(this), eq(taskMethod));
         assertThat(pollThread.isRunning()).isFalse();
     }
 

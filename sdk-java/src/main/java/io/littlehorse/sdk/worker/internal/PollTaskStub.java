@@ -25,8 +25,11 @@ public final class PollTaskStub {
     private final List<VariableMapping> mappings;
     private final Object executable;
     private final Method taskMethod;
+    private final LittleHorseGrpc.LittleHorseStub specificStub;
+    private final AtomicBoolean closed = new AtomicBoolean(false);
 
     public PollTaskStub(
+            LittleHorseGrpc.LittleHorseStub bootstrapStub,
             LittleHorseGrpc.LittleHorseStub specificStub,
             Semaphore semaphore,
             ScheduledTaskExecutor taskExecutor,
@@ -36,20 +39,25 @@ public final class PollTaskStub {
             List<VariableMapping> mappings,
             Object executable,
             Method taskMethod) {
-        this.responseObserver = new ServerResponseObserver(specificStub);
+        this.specificStub = specificStub;
+        this.responseObserver = new ServerResponseObserver(bootstrapStub);
         this.semaphore = semaphore;
         this.taskExecutor = taskExecutor;
-        observer = specificStub.pollTask(responseObserver);
         this.taskWorkerId = taskWorkerId;
         this.taskDefId = taskDefId;
         this.taskWorkerVersion = taskWorkerVersion;
         this.mappings = mappings;
         this.executable = executable;
         this.taskMethod = taskMethod;
+        this.observer = specificStub.pollTask(responseObserver);
     }
 
     public boolean isReady() {
         return ready.get();
+    }
+
+    public boolean isClosed() {
+        return closed.get();
     }
 
     public void doNext() throws InterruptedException {
@@ -63,16 +71,16 @@ public final class PollTaskStub {
     }
 
     private final class ServerResponseObserver implements StreamObserver<PollTaskResponse> {
-        private final LittleHorseGrpc.LittleHorseStub specificStub;
+        private final LittleHorseGrpc.LittleHorseStub bootstrapStub;
 
-        private ServerResponseObserver(LittleHorseGrpc.LittleHorseStub specificStub) {
-            this.specificStub = specificStub;
+        private ServerResponseObserver(LittleHorseGrpc.LittleHorseStub bootstrapStub) {
+            this.bootstrapStub = bootstrapStub;
         }
 
         @Override
         public void onNext(PollTaskResponse value) {
             if (value.hasResult()) {
-                taskExecutor.doTask(value.getResult(), specificStub, mappings, executable, taskMethod);
+                taskExecutor.doTask(value.getResult(), bootstrapStub, mappings, executable, taskMethod);
             } else {
                 log.info("Didn't successfully claim a task");
             }
@@ -83,11 +91,13 @@ public final class PollTaskStub {
         @Override
         public void onError(Throwable t) {
             log.error("Unexpected error from server", t);
+            closed.set(true);
         }
 
         @Override
         public void onCompleted() {
             log.error("Unexpected call to onCompleted() in the Server Connection.");
+            closed.set(true);
         }
     }
 }

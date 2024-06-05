@@ -70,9 +70,8 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
 
     @Override
     public void onError(Throwable t) {
-        log.error("eduwer", t);
         taskQueueManager.onRequestDisconnected(this, tenantId);
-        log.info(
+        log.trace(
                 "Instance {}: Client {} disconnected from task queue {}",
                 taskQueueManager.getBackend().getInstanceName(),
                 clientId,
