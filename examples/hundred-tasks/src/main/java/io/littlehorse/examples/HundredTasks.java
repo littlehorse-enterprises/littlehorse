@@ -26,10 +26,10 @@ public class HundredTasks {
             "hundred-tasks",
             wf -> {
                 for (int i = 0; i < 25; i++) {
-                    wf.execute("task-1").timeout(1000);
-                    wf.execute("task-2").timeout(1000);
-                    wf.execute("task-3").timeout(1000);
-                    wf.execute("task-4").timeout(1000);
+                    wf.execute("task-1");
+                    wf.execute("task-2");
+                    wf.execute("task-3");
+                    wf.execute("task-4");
                 }
             }
         );
