@@ -3,17 +3,22 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Listbox, ListboxButton, ListboxOptions } from '@headlessui/react'
 import { LHStatus } from 'littlehorse-client/dist/proto/common_enums'
+import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
 import { ClockIcon } from 'lucide-react'
 import Link from 'next/link'
-import { FC } from 'react'
+import { FC, useState } from 'react'
+import { useDebounce } from 'use-debounce'
 
 type Props = {
+  spec: WfSpec
   currentStatus: LHStatus | 'ALL'
   currentWindow: TimeRange
   setWindow: (window: TimeRange) => void
 }
 
-export const WfRunsHeader: FC<Props> = ({ currentStatus, currentWindow, setWindow }) => {
+export const WfRunsHeader: FC<Props> = ({ spec, currentStatus, currentWindow, setWindow }) => {
+  const [variableQuery, setVariableQuery] = useState<string | undefined>(undefined)
+  const [variableQueryDebounced] = useDebounce(variableQuery, 1000)
   return (
     <div className="mb-4 flex items-center justify-between">
       <h2 className="text-2xl font-bold">WfRun Search</h2>
@@ -58,12 +63,21 @@ export const WfRunsHeader: FC<Props> = ({ currentStatus, currentWindow, setWindo
         </div>
 
         <div className="flex gap-4">
-          <Select>
+          <Select onValueChange={value => setVariableQuery(value)}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select Variable" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="another">Another</SelectItem>
+              {Object.keys(spec.threadSpecs)
+                .flatMap(threadSpec =>
+                  spec.threadSpecs[threadSpec].variableDefs.map(variableDef => variableDef.varDef?.name || undefined)
+                )
+                .filter(value => value !== undefined)
+                .map(value => (
+                  <SelectItem key={value} value={value}>
+                    {value}
+                  </SelectItem>
+                ))}
             </SelectContent>
           </Select>
           <Input placeholder="Variable Value..." />

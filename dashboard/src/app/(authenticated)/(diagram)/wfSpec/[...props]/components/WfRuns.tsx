@@ -13,7 +13,7 @@ import { FC, Fragment, useMemo, useState } from 'react'
 import { PaginatedWfRunIdList, searchWfRun } from '../actions/searchWfRun'
 import { WfRunsHeader } from './WfRunsHeader'
 
-export const WfRuns: FC<WfSpec> = ({ id, ...spec }) => {
+export const WfRuns: FC<WfSpec> = spec => {
   const searchParams = useSearchParams()
   const status = searchParams.get('status') ? getStatus(searchParams.get('status')) || 'ALL' : 'ALL'
   console.log('status:', status)
@@ -38,9 +38,9 @@ export const WfRuns: FC<WfSpec> = ({ id, ...spec }) => {
     getNextPageParam: (lastPage: PaginatedWfRunIdList) => lastPage.bookmarkAsString,
     queryFn: async ({ pageParam }) => {
       return await searchWfRun({
-        wfSpecName: id!.name,
-        wfSpecMajorVersion: id!.majorVersion,
-        wfSpecRevision: id!.revision,
+        wfSpecName: spec.id!.name,
+        wfSpecMajorVersion: spec.id!.majorVersion,
+        wfSpecRevision: spec.id!.revision,
         variableFilters: [],
         limit,
         status: status === 'ALL' ? undefined : status,
@@ -53,7 +53,7 @@ export const WfRuns: FC<WfSpec> = ({ id, ...spec }) => {
 
   return (
     <div className="mb-4 flex flex-col">
-      <WfRunsHeader currentStatus={status} currentWindow={window} setWindow={setWindow} />
+      <WfRunsHeader currentStatus={status} currentWindow={window} setWindow={setWindow} spec={spec} />
       {isPending ? (
         <div className="flex min-h-[360px] items-center justify-center text-center">
           <RefreshCwIcon className="h-8 w-8 animate-spin fill-blue-500 stroke-none" />
