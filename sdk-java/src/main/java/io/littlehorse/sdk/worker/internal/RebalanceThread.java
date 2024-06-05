@@ -74,7 +74,7 @@ final class RebalanceThread extends Thread {
     private PollThread createConnection(LittleHorseGrpc.LittleHorseStub stub, String threadName) {
         return new PollThread(
                 threadName,
-                2,
+                config.getInflightTasks(),
                 bootstrapStub,
                 stub,
                 taskDef.getId(),
