@@ -16,7 +16,6 @@ import { WfRunsHeader } from './WfRunsHeader'
 export const WfRuns: FC<WfSpec> = spec => {
   const searchParams = useSearchParams()
   const status = searchParams.get('status') ? getStatus(searchParams.get('status')) || 'ALL' : 'ALL'
-  console.log('status:', status)
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
   const [window, setWindow] = useState<TimeRange>(TIME_RANGES[0])
   const { tenantId } = useWhoAmI()

@@ -18,7 +18,6 @@ export const searchWfRun = async ({
   ...req
 }: WfRunSearchProps): Promise<PaginatedWfRunIdList> => {
   const client = await lhClient({ tenantId })
-  console.log(req)
   const requestWithBookmark = bookmarkAsString ? { ...req, bookmark: Buffer.from(bookmarkAsString, 'base64') } : req
   const wfRunIdList = await client.searchWfRun(requestWithBookmark)
 

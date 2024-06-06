@@ -1,0 +1,120 @@
+import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
+import { useInfiniteQuery } from '@tanstack/react-query'
+import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
+import { RefreshCwIcon } from 'lucide-react'
+import Link from 'next/link'
+import { FC, Fragment, useState } from 'react'
+import { useDebounce } from 'use-debounce'
+import { PaginatedVariableIdList, searchVariables } from '../actions/searchVariables'
+
+type Props = {
+  spec: WfSpec
+}
+
+export const SearchVariableDialog: FC<Props> = ({ spec }) => {
+  const variables = Object.keys(spec.threadSpecs)
+    .flatMap(threadSpec =>
+      spec.threadSpecs[threadSpec].variableDefs.map(variableDef => variableDef.varDef?.name || undefined)
+    )
+    .filter(value => value !== undefined) as string[]
+  const [variableName, setVariableName] = useState(variables[0])
+  const [variableValue, setVariableValue] = useState('')
+  const [variableValueDebounced] = useDebounce(variableValue, 250)
+  const [limit, setLimit] = useState(10)
+  const { tenantId } = useWhoAmI()
+
+  const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
+    queryKey: ['searchVariables', tenantId, limit, variableName, variableValueDebounced],
+    initialPageParam: undefined,
+    getNextPageParam: (lastPage: PaginatedVariableIdList) => lastPage.bookmarkAsString,
+    queryFn: async ({ pageParam }) => {
+      return await searchVariables({
+        wfSpecName: spec.id!.name,
+        wfSpecMajorVersion: spec.id!.majorVersion,
+        wfSpecRevision: spec.id!.revision,
+        tenantId,
+        limit: 10,
+        bookmarkAsString: pageParam,
+        varName: variableName,
+        value: { str: variableValueDebounced },
+      })
+    },
+  })
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button>Search By Variable</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Search WfRuns by Variable</DialogTitle>
+          <DialogDescription>
+            Search for WfRuns by variable name and value. The search is case-sensitive.
+          </DialogDescription>
+        </DialogHeader>
+
+        <Select onValueChange={value => setVariableName(value)} value={variableName}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select Variable" />
+          </SelectTrigger>
+          <SelectContent>
+            {variables.map(value => (
+              <SelectItem key={value} value={value}>
+                {value}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Input
+          placeholder="Variable Value..."
+          onChange={e => {
+            setVariableValue(e.target.value)
+          }}
+        />
+
+        {isPending ? (
+          <div className="flex items-center justify-center">
+            <RefreshCwIcon className="h-8 w-8 animate-spin text-blue-500" />
+          </div>
+        ) : data?.pages[0].results.length ? (
+          data?.pages.map((page, i) => (
+            <Fragment key={i}>
+              {page.results.map(variableId => (
+                <div key={variableId.name}>
+                  <Link
+                    className="py-2 text-blue-500 hover:underline"
+                    href={`/wfRun/${variableId.wfRunId?.id}?threadRunNumber=${variableId.threadRunNumber}`}
+                  >
+                    {variableId.wfRunId?.id}
+                  </Link>
+                </div>
+              ))}
+            </Fragment>
+          ))
+        ) : (
+          <p className="text-center">
+            No data. Try another value for <span className="font-bold">{variableName}</span>
+          </p>
+        )}
+        <SearchFooter
+          currentLimit={limit}
+          setLimit={setLimit}
+          hasNextPage={hasNextPage}
+          fetchNextPage={fetchNextPage}
+        />
+      </DialogContent>
+    </Dialog>
+  )
+}

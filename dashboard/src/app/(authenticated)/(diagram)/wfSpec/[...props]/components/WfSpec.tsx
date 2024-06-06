@@ -11,7 +11,6 @@ type WfSpecProps = {
   spec: Spec
 }
 export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
-  console.log('spec:', spec)
   return (
     <>
       <Navigation href="/" title="Go back to WfSpecs" />
