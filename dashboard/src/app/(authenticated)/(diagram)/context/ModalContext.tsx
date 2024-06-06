@@ -4,10 +4,11 @@ import { ModalType } from '../components/Modals'
 import { UserTaskRun } from 'littlehorse-client/dist/proto/user_tasks'
 import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
 import { UserTaskNode } from 'littlehorse-client/dist/proto/wf_spec'
+import { Edge as EdgeProto } from 'littlehorse-client/dist/proto/wf_spec'
 
 export type Modal = {
   type: ModalType
-  data: TaskRun | UserTaskRun
+  data: TaskRun | UserTaskRun | EdgeProto
   nodeRun?: NodeRun
   userTaskNode?: UserTaskNode
 }
