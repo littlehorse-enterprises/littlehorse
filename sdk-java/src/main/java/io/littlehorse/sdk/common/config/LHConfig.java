@@ -76,6 +76,7 @@ public class LHConfig extends ConfigBase {
     public static final String TASK_WORKER_VERSION_KEY = "LHW_TASK_WORKER_VERSION";
     public static final String DEFAULT_PUBLIC_LISTENER = "PLAIN";
     public static final String DEFAULT_PROTOCOL = "PLAINTEXT";
+    public static final String INFLIGHT_TASKS_KEY = "INFLIGHT_TASKS";
 
     private static final Set<String> configNames = Set.of(
             LHConfig.API_HOST_KEY,
@@ -90,7 +91,8 @@ public class LHConfig extends ConfigBase {
             LHConfig.OAUTH_CLIENT_SECRET_KEY,
             LHConfig.NUM_WORKER_THREADS_KEY,
             LHConfig.SERVER_CONNECT_LISTENER_KEY,
-            LHConfig.TASK_WORKER_VERSION_KEY);
+            LHConfig.TASK_WORKER_VERSION_KEY,
+            LHConfig.INFLIGHT_TASKS_KEY);
 
     /**
      * Returns a set of all config names.
@@ -355,6 +357,10 @@ public class LHConfig extends ConfigBase {
 
     public String getTenantId() {
         return getOrSetDefault(TENANT_ID_KEY, null);
+    }
+
+    public Integer getInflightTasks() {
+        return Integer.valueOf(getOrSetDefault(INFLIGHT_TASKS_KEY, "1"));
     }
 
     public boolean isOauth() {
