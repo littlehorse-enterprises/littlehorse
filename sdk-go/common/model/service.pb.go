@@ -2728,6 +2728,7 @@ func (x *TenantIdList) GetBookmark() []byte {
 	return nil
 }
 
+// Search for Principals based on certain criteria.
 type SearchPrincipalRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -2736,9 +2737,11 @@ type SearchPrincipalRequest struct {
 	// Bookmark for cursor-based pagination; pass if applicable.
 	Bookmark []byte `protobuf:"bytes,1,opt,name=bookmark,proto3,oneof" json:"bookmark,omitempty"`
 	// Maximum results to return in one request.
-	Limit         *int32                 `protobuf:"varint,2,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
+	Limit *int32 `protobuf:"varint,2,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
+	// Specifies to return only Principals's created after this time
 	EarliestStart *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=earliest_start,json=earliestStart,proto3,oneof" json:"earliest_start,omitempty"`
-	LatestStart   *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=latest_start,json=latestStart,proto3,oneof" json:"latest_start,omitempty"`
+	// Specifies to return only Principals's created before this time
+	LatestStart *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=latest_start,json=latestStart,proto3,oneof" json:"latest_start,omitempty"`
 	// Types that are assignable to PrincipalCriteria:
 	//	*SearchPrincipalRequest_IsAdmin
 	//	*SearchPrincipalRequest_TenantId
@@ -2831,12 +2834,12 @@ type isSearchPrincipalRequest_PrincipalCriteria interface {
 }
 
 type SearchPrincipalRequest_IsAdmin struct {
-	//
+	// List only Principals that are admins
 	IsAdmin bool `protobuf:"varint,5,opt,name=isAdmin,proto3,oneof"`
 }
 
 type SearchPrincipalRequest_TenantId struct {
-	//
+	// List Principals associated with this Tenant ID
 	TenantId string `protobuf:"bytes,6,opt,name=tenantId,proto3,oneof"`
 }
 
