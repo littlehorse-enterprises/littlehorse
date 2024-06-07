@@ -925,7 +925,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         ctx.onNext(ServerVersionResponse.newBuilder()
                 .setMajorVersion(0)
                 .setMinorVersion(9)
-                .setPatchVersion(2)
+                .setPatchVersion(3)
                 .build());
         ctx.onCompleted();
     }
