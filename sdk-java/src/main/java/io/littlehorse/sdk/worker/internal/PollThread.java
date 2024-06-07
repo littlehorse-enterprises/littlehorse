@@ -1,37 +1,34 @@
 package io.littlehorse.sdk.worker.internal;
 
-import io.grpc.stub.StreamObserver;
+import com.google.common.collect.Iterators;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
-import io.littlehorse.sdk.common.proto.PollTaskRequest;
-import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.io.Closeable;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Semaphore;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class PollThread extends Thread implements Closeable, StreamObserver<PollTaskResponse> {
+public class PollThread extends Thread implements Closeable {
 
-    private StreamObserver<PollTaskRequest> pollClient;
-    private final String taskWorkerId;
-    private final TaskDefId taskDefId;
-    private final String taskWorkerVersion;
-    private final Semaphore semaphore = new Semaphore(1);
+    private final Iterator<PollTaskStub> activePollClients;
+    private final Semaphore availableInflightRequests;
 
     public final LittleHorseGrpc.LittleHorseStub stub;
-    private final List<VariableMapping> mappings;
-    private final Object executable;
-    private final Method taskMethod;
-    private final ScheduledTaskExecutor taskExecutor;
-
+    public final LittleHorseGrpc.LittleHorseStub bootstrapStub;
     private boolean stillRunning = true;
+    private final boolean requireConcurrency;
 
     public PollThread(
             String threadName,
+            int inflightRequests,
             LittleHorseGrpc.LittleHorseStub stub,
+            LittleHorseGrpc.LittleHorseStub bootstrapStub,
             TaskDefId taskDefId,
             String taskWorkerId,
             String taskWorkerVersion,
@@ -41,53 +38,41 @@ public class PollThread extends Thread implements Closeable, StreamObserver<Poll
             ScheduledTaskExecutor taskExecutor) {
         super(threadName);
         this.stub = stub;
-        this.taskDefId = taskDefId;
-        this.taskWorkerId = taskWorkerId;
-        this.taskWorkerVersion = taskWorkerVersion;
-        this.mappings = mappings;
-        this.executable = executable;
-        this.taskMethod = taskMethod;
-        this.taskMethod.setAccessible(true);
-        this.taskExecutor = taskExecutor;
+        this.bootstrapStub = bootstrapStub;
+        this.availableInflightRequests = new Semaphore(inflightRequests);
+        taskMethod.setAccessible(true);
+        this.requireConcurrency = inflightRequests > 1;
+        List<PollTaskStub> pollClients = Stream.generate(() -> new PollTaskStub(
+                        bootstrapStub,
+                        stub,
+                        availableInflightRequests,
+                        taskExecutor,
+                        taskWorkerId,
+                        taskDefId,
+                        taskWorkerVersion,
+                        mappings,
+                        executable,
+                        taskMethod))
+                .limit(inflightRequests)
+                .collect(Collectors.toList());
+        this.activePollClients = Iterators.cycle(pollClients);
     }
 
     @Override
     public void run() {
-        this.pollClient = stub.pollTask(this);
         try {
             while (stillRunning) {
-                semaphore.acquire();
-                pollClient.onNext(PollTaskRequest.newBuilder()
-                        .setClientId(taskWorkerId)
-                        .setTaskDefId(taskDefId)
-                        .setTaskWorkerVersion(taskWorkerVersion)
-                        .build());
+                PollTaskStub pollClient = activePollClients.next();
+                if (!requireConcurrency || pollClient.isReady()) {
+                    pollClient.doNext();
+                }
+                if (pollClient.isClosed()) {
+                    stillRunning = false;
+                }
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-    }
-
-    @Override
-    public void onNext(PollTaskResponse value) {
-        if (value.hasResult()) {
-            taskExecutor.doTask(value.getResult(), stub, mappings, executable, taskMethod);
-        } else {
-            log.info("Didn't successfully claim a task");
-        }
-        semaphore.release();
-    }
-
-    @Override
-    public void onError(Throwable t) {
-        log.error("Unexpected error from server", t);
-        this.stillRunning = false;
-    }
-
-    @Override
-    public void onCompleted() {
-        log.error("Unexpected call to onCompleted() in the Server Connection.");
-        this.stillRunning = false;
     }
 
     @Override
