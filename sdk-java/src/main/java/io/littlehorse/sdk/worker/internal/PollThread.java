@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PollThread extends Thread implements Closeable {
 
     private final Iterator<PollTaskStub> activePollClients;
-    private final Semaphore semaphore;
+    private final Semaphore availableInflightRequests;
 
     public final LittleHorseGrpc.LittleHorseStub stub;
     public final LittleHorseGrpc.LittleHorseStub bootstrapStub;
@@ -39,13 +39,13 @@ public class PollThread extends Thread implements Closeable {
         super(threadName);
         this.stub = stub;
         this.bootstrapStub = bootstrapStub;
-        this.semaphore = new Semaphore(inflightRequests);
+        this.availableInflightRequests = new Semaphore(inflightRequests);
         taskMethod.setAccessible(true);
         this.requireConcurrency = inflightRequests > 1;
         List<PollTaskStub> pollClients = Stream.generate(() -> new PollTaskStub(
                         bootstrapStub,
                         stub,
-                        semaphore,
+                        availableInflightRequests,
                         taskExecutor,
                         taskWorkerId,
                         taskDefId,
