@@ -46,38 +46,62 @@ public interface SearchPrincipalRequestOrBuilder extends
   int getLimit();
 
   /**
+   * <pre>
+   * Specifies to return only Principals's created after this time
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
    * @return Whether the earliestStart field is set.
    */
   boolean hasEarliestStart();
   /**
+   * <pre>
+   * Specifies to return only Principals's created after this time
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
    * @return The earliestStart.
    */
   com.google.protobuf.Timestamp getEarliestStart();
   /**
+   * <pre>
+   * Specifies to return only Principals's created after this time
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
    */
   com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder();
 
   /**
+   * <pre>
+   * Specifies to return only Principals's created before this time
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
    * @return Whether the latestStart field is set.
    */
   boolean hasLatestStart();
   /**
+   * <pre>
+   * Specifies to return only Principals's created before this time
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
    * @return The latestStart.
    */
   com.google.protobuf.Timestamp getLatestStart();
   /**
+   * <pre>
+   * Specifies to return only Principals's created before this time
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
    */
   com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder();
 
   /**
    * <pre>
-   * 
+   * List only Principals that are admins
    * </pre>
    *
    * <code>bool isAdmin = 5;</code>
@@ -86,7 +110,7 @@ public interface SearchPrincipalRequestOrBuilder extends
   boolean hasIsAdmin();
   /**
    * <pre>
-   * 
+   * List only Principals that are admins
    * </pre>
    *
    * <code>bool isAdmin = 5;</code>
@@ -96,7 +120,7 @@ public interface SearchPrincipalRequestOrBuilder extends
 
   /**
    * <pre>
-   * 
+   * List Principals associated with this Tenant ID
    * </pre>
    *
    * <code>string tenantId = 6;</code>
@@ -105,7 +129,7 @@ public interface SearchPrincipalRequestOrBuilder extends
   boolean hasTenantId();
   /**
    * <pre>
-   * 
+   * List Principals associated with this Tenant ID
    * </pre>
    *
    * <code>string tenantId = 6;</code>
@@ -114,7 +138,7 @@ public interface SearchPrincipalRequestOrBuilder extends
   java.lang.String getTenantId();
   /**
    * <pre>
-   * 
+   * List Principals associated with this Tenant ID
    * </pre>
    *
    * <code>string tenantId = 6;</code>

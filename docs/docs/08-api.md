@@ -1963,17 +1963,17 @@ Search for NodeRun's by certain criteria.
 
 ### Message `SearchPrincipalRequest` {#searchprincipalrequest}
 
-
+Search for Principals based on certain criteria.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
 | `bookmark` | optional| bytes | Bookmark for cursor-based pagination; pass if applicable. |
 | `limit` | optional| int32 | Maximum results to return in one request. |
-| `earliest_start` | optional| google.protobuf.Timestamp |  |
-| `latest_start` | optional| google.protobuf.Timestamp |  |
-| `isAdmin` | oneof `principal_criteria`| bool |  |
-| `tenantId` | oneof `principal_criteria`| string |  |
+| `earliest_start` | optional| google.protobuf.Timestamp | Specifies to return only Principals's created after this time |
+| `latest_start` | optional| google.protobuf.Timestamp | Specifies to return only Principals's created before this time |
+| `isAdmin` | oneof `principal_criteria`| bool | List only Principals that are admins |
+| `tenantId` | oneof `principal_criteria`| string | List Principals associated with this Tenant ID |
  <!-- end Fields -->
  <!-- end HasFields -->
 
