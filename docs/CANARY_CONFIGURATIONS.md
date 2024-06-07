@@ -158,11 +158,11 @@ Local DB path.
 
 ### Kafka Configurations
 
-LH Canary supports all kafka configurations. Use the prefix `lh.canary.` and append the kafka config.
+LH Canary supports all kafka configurations. Use the prefix `lh.canary.kafka` and append the kafka config.
 Examples
 
-- For `security.protocol`, use `lh.canary.security.protocol`.
-- For `bootstrap.servers`, use `lh.canary.bootstrap.servers`.
+- For `security.protocol`, use `lh.canary.kafka.security.protocol`.
+- For `bootstrap.servers`, use `lh.canary.kafka.bootstrap.servers`.
 
 ### LH Client Configurations
 
@@ -421,7 +421,7 @@ To construct the environment key variable name for server.properties configs, fo
 * Replace `.` with `_`.
 * Examples:
     * For `lh.canary.id`, use `LH_CANARY_ID`.
-    * For `lh.canary.bootstrap.servers`, use `LH_CANARY_BOOTSTRAP_SERVERS`.
+    * For `lh.canary.kafka.bootstrap.servers`, use `LH_CANARY_KAFKA_BOOTSTRAP_SERVERS`.
 
 By default, de log level for the canary is `INFO`. It is possible to change this
 setting the env `LOG_LEVEL`.
