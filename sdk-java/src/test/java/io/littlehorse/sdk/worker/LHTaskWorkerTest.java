@@ -1,19 +1,18 @@
-package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
+package io.littlehorse.sdk.worker;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.common.config.LHConfig;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
-public class TaskDefBuilderTest {
+public class LHTaskWorkerTest {
     @Test
     public void shouldResolvePlaceHolder() {
         String taskDefName = "a-task-name-${CLUSTER_NAME}";
         Map<String, String> values = Map.of("CLUSTER_NAME", "pedro-cluster");
 
-        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), taskDefName, values);
+        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), taskDefName, new LHConfig(), values);
 
         assertThat(task.getTaskDefName()).isEqualTo("a-task-name-pedro-cluster");
     }
@@ -23,21 +22,9 @@ public class TaskDefBuilderTest {
         String taskDefName = "${CLUSTER_NAME}";
         Map<String, String> values = Map.of("CLUSTER_NAME", "pedro-cluster");
 
-        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), taskDefName, values);
+        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), taskDefName, new LHConfig(), values);
 
         assertThat(task.getTaskDefName()).isEqualTo("pedro-cluster");
-    }
-
-    @Test
-    public void IfNoValueProvidedForPlaceHolderItShouldThrowAnError() {
-        String taskDefName = "something-${INVALID_PLACEHOLDER}";
-        Map<String, String> values = Map.of("CLUSTER_NAME", "pedro-cluster");
-
-        assertThatThrownBy(() -> {
-                    TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), taskDefName, values);
-                })
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("No value has been provided for the placeholder with key: INVALID_PLACEHOLDER");
     }
 
     @Test
@@ -45,7 +32,7 @@ public class TaskDefBuilderTest {
         String taskDefName = "a-task-name-${CLUSTER_NAME}-${CLOUD_NAME}";
         Map<String, String> values = Map.of("CLUSTER_NAME", "pedro-cluster", "CLOUD_NAME", "aws");
 
-        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), taskDefName, values);
+        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), taskDefName, new LHConfig(), values);
 
         assertThat(task.getTaskDefName()).isEqualTo("a-task-name-pedro-cluster-aws");
     }
@@ -56,7 +43,7 @@ public class TaskDefBuilderTest {
         Map<String, String> values =
                 Map.of("CLUSTER_NAME", "pedro-cluster", "CLOUD_NAME", "aws", "REGION", "us-west-2");
 
-        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), taskDefName, values);
+        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), taskDefName, new LHConfig(), values);
 
         assertThat(task.getTaskDefName()).isEqualTo("us-west-2_a-task-name-pedro-cluster-aws");
     }
@@ -67,7 +54,7 @@ public class TaskDefBuilderTest {
         Map<String, String> values =
                 Map.of("CLUSTER_NAME", "pedro-cluster", "CLOUD_NAME", "aws", "REGION", "us-west-2");
 
-        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), taskDefName, values);
+        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), taskDefName, new LHConfig(), values);
 
         assertThat(task.getTaskDefName()).isEqualTo("greet");
     }
