@@ -22,6 +22,7 @@ public class PollThread extends Thread implements Closeable {
     public final LittleHorseGrpc.LittleHorseStub stub;
     public final LittleHorseGrpc.LittleHorseStub bootstrapStub;
     private boolean stillRunning = true;
+    private final boolean requireConcurrency;
 
     public PollThread(
             String threadName,
@@ -40,6 +41,7 @@ public class PollThread extends Thread implements Closeable {
         this.bootstrapStub = bootstrapStub;
         this.semaphore = new Semaphore(inflightRequests);
         taskMethod.setAccessible(true);
+        this.requireConcurrency = inflightRequests > 1;
         List<PollTaskStub> pollClients = Stream.generate(() -> new PollTaskStub(
                         bootstrapStub,
                         stub,
@@ -61,7 +63,7 @@ public class PollThread extends Thread implements Closeable {
         try {
             while (stillRunning) {
                 PollTaskStub pollClient = activePollClients.next();
-                if (pollClient.isReady()) {
+                if (!requireConcurrency || pollClient.isReady()) {
                     pollClient.doNext();
                 }
                 if (pollClient.isClosed()) {
