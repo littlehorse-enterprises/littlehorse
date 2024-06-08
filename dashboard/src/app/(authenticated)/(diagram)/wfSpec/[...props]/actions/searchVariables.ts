@@ -17,10 +17,10 @@ export const searchVariables = async ({
   bookmarkAsString,
   ...req
 }: VariableSearchProps): Promise<PaginatedVariableIdList> => {
+  console.log(req)
   const client = await lhClient({ tenantId })
   const requestWithBookmark = bookmarkAsString ? { ...req, bookmark: Buffer.from(bookmarkAsString, 'base64') } : req
   const variableIdList = await client.searchVariable(requestWithBookmark)
-
   return {
     ...variableIdList,
     bookmarkAsString: variableIdList.bookmark?.toString('base64'),

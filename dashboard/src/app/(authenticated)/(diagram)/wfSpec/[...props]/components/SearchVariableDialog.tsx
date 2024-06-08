@@ -12,13 +12,14 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useInfiniteQuery } from '@tanstack/react-query'
+import { VariableValue } from 'littlehorse-client/dist/proto/variable'
 import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
 import { RefreshCwIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, Fragment, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { PaginatedVariableIdList, searchVariables } from '../actions/searchVariables'
-
+VariableValue
 type Props = {
   spec: WfSpec
 }
@@ -26,20 +27,23 @@ type Props = {
 export const SearchVariableDialog: FC<Props> = ({ spec }) => {
   const variables = Object.keys(spec.threadSpecs)
     .flatMap(threadSpec =>
-      spec.threadSpecs[threadSpec].variableDefs.map(variableDef => variableDef.varDef?.name || undefined)
+      spec.threadSpecs[threadSpec].variableDefs
+        .filter(variableDef => variableDef.searchable)
+        .map(variableDef => variableDef.varDef)
     )
-    .filter(value => value !== undefined) as string[]
-  const [variableName, setVariableName] = useState(variables[0])
+    .filter(value => value !== undefined)
+  const [variable, setVariable] = useState(variables[0])
   const [variableValue, setVariableValue] = useState('')
   const [variableValueDebounced] = useDebounce(variableValue, 250)
   const [limit, setLimit] = useState(10)
   const { tenantId } = useWhoAmI()
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ['searchVariables', tenantId, limit, variableName, variableValueDebounced],
+    queryKey: ['searchVariables', tenantId, limit, variable, variableValueDebounced],
     initialPageParam: undefined,
     getNextPageParam: (lastPage: PaginatedVariableIdList) => lastPage.bookmarkAsString,
     queryFn: async ({ pageParam }) => {
+      if (!variableValueDebounced) return { results: [], bookmarkAsString: undefined }
       return await searchVariables({
         wfSpecName: spec.id!.name,
         wfSpecMajorVersion: spec.id!.majorVersion,
@@ -47,8 +51,8 @@ export const SearchVariableDialog: FC<Props> = ({ spec }) => {
         tenantId,
         limit: 10,
         bookmarkAsString: pageParam,
-        varName: variableName,
-        value: { str: variableValueDebounced },
+        varName: variable.name,
+        value: convertToVariableValue({ type: variable.type.toLowerCase(), value: variableValueDebounced }),
       })
     },
   })
@@ -65,14 +69,17 @@ export const SearchVariableDialog: FC<Props> = ({ spec }) => {
           </DialogDescription>
         </DialogHeader>
 
-        <Select onValueChange={value => setVariableName(value)} value={variableName}>
+        <Select
+          onValueChange={value => setVariable(variables.find(v => v.name == value) || variables[0])}
+          value={variable.name}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select Variable" />
           </SelectTrigger>
           <SelectContent>
-            {variables.map(value => (
-              <SelectItem key={value} value={value}>
-                {value}
+            {variables.map(varDef => (
+              <SelectItem key={varDef.name} value={varDef.name}>
+                {varDef.name}
               </SelectItem>
             ))}
           </SelectContent>
@@ -105,7 +112,7 @@ export const SearchVariableDialog: FC<Props> = ({ spec }) => {
           ))
         ) : (
           <p className="text-center">
-            No data. Try another value for <span className="font-bold">{variableName}</span>
+            No data. Try another value for <span className="font-bold">{variable.name}</span>
           </p>
         )}
         <SearchFooter
@@ -117,4 +124,19 @@ export const SearchVariableDialog: FC<Props> = ({ spec }) => {
       </DialogContent>
     </Dialog>
   )
+}
+
+function convertToVariableValue({ type, value }: { type: string; value: string }): VariableValue {
+  switch (type) {
+    case 'str':
+      return { str: value }
+    case 'int':
+      return { int: parseInt(value) }
+    case 'bool':
+      return { bool: value.toLowerCase() === 'true' }
+    case 'double':
+      return { double: parseFloat(value) }
+    default:
+      return { str: value }
+  }
 }

@@ -5,7 +5,7 @@ import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
 import { ClockIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC } from 'react'
-import { SearchVariableDialog } from './SearchVariableDialog';
+import { SearchVariableDialog } from './SearchVariableDialog'
 
 type Props = {
   spec: WfSpec
@@ -56,7 +56,9 @@ export const WfRunsHeader: FC<Props> = ({ spec, currentStatus, currentWindow, se
             </Link>
           ))}
         </div>
-        <SearchVariableDialog spec={spec} />
+        {Object.keys(spec.threadSpecs).flatMap(threadSpec =>
+          spec.threadSpecs[threadSpec].variableDefs.filter(variableDef => variableDef.searchable)
+        ).length > 0 && <SearchVariableDialog spec={spec} />}
       </div>
     </div>
   )
