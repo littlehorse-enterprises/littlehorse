@@ -9,9 +9,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -22,29 +19,25 @@ public class LHTaskSignature {
     Method taskMethod;
     boolean hasWorkerContextAtEnd;
     String taskDefName;
+    String lhTaskMethodAnnotationValue;
     Object executable;
 
-    public LHTaskSignature(String taskDefName, Object executable, Map<String, String> valuesForPlaceHolders)
+    public LHTaskSignature(String taskDefName, Object executable, String lhTaskMethodAnnotationValue)
             throws TaskSchemaMismatchError {
         paramTypes = new ArrayList<>();
         varNames = new ArrayList<>();
         hasWorkerContextAtEnd = false;
         this.taskDefName = taskDefName;
         this.executable = executable;
+        this.lhTaskMethodAnnotationValue = lhTaskMethodAnnotationValue;
 
         for (Method method : executable.getClass().getMethods()) {
             if (method.isAnnotationPresent(LHTaskMethod.class)) {
                 String taskDefForThisMethod =
                         method.getAnnotation(LHTaskMethod.class).value();
 
-                if (!taskDefForThisMethod.equals(taskDefName)) {
+                if (!taskDefForThisMethod.equals(lhTaskMethodAnnotationValue)) {
                     continue;
-                }
-
-                if (valuesForPlaceHolders != null && !valuesForPlaceHolders.isEmpty()) {
-                    this.taskDefName = replacePlaceholdersInTaskDefName(taskDefForThisMethod, valuesForPlaceHolders);
-                } else {
-                    this.taskDefName = taskDefForThisMethod;
                 }
 
                 if (taskMethod != null) {
@@ -121,27 +114,5 @@ public class LHTaskSignature {
         }
 
         return true;
-    }
-
-    private String replacePlaceholdersInTaskDefName(String template, Map<String, String> values) {
-        final StringBuilder resultingText = new StringBuilder();
-
-        final Pattern placeholderPattern = Pattern.compile("\\$\\{(.*?)\\}", Pattern.DOTALL);
-
-        final Matcher matcher = placeholderPattern.matcher(template);
-
-        while (matcher.find()) {
-            final String placeholderKey = matcher.group(1);
-            final String replacement = values.get(placeholderKey);
-
-            if (replacement == null) {
-                throw new IllegalArgumentException(
-                        "No value has been provided for the placeholder with key: " + placeholderKey);
-            }
-            matcher.appendReplacement(resultingText, replacement);
-        }
-
-        matcher.appendTail(resultingText);
-        return resultingText.toString();
     }
 }

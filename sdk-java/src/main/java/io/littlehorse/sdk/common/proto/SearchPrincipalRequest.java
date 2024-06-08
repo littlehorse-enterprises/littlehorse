@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Search for Principals based on certain criteria.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.SearchPrincipalRequest}
  */
 public final class SearchPrincipalRequest extends
@@ -139,6 +143,10 @@ private static final long serialVersionUID = 0L;
   public static final int EARLIEST_START_FIELD_NUMBER = 3;
   private com.google.protobuf.Timestamp earliestStart_;
   /**
+   * <pre>
+   * Specifies to return only Principals's created after this time
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
    * @return Whether the earliestStart field is set.
    */
@@ -147,6 +155,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
+   * <pre>
+   * Specifies to return only Principals's created after this time
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
    * @return The earliestStart.
    */
@@ -155,6 +167,10 @@ private static final long serialVersionUID = 0L;
     return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
   }
   /**
+   * <pre>
+   * Specifies to return only Principals's created after this time
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
    */
   @java.lang.Override
@@ -165,6 +181,10 @@ private static final long serialVersionUID = 0L;
   public static final int LATEST_START_FIELD_NUMBER = 4;
   private com.google.protobuf.Timestamp latestStart_;
   /**
+   * <pre>
+   * Specifies to return only Principals's created before this time
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
    * @return Whether the latestStart field is set.
    */
@@ -173,6 +193,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000008) != 0);
   }
   /**
+   * <pre>
+   * Specifies to return only Principals's created before this time
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
    * @return The latestStart.
    */
@@ -181,6 +205,10 @@ private static final long serialVersionUID = 0L;
     return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
   }
   /**
+   * <pre>
+   * Specifies to return only Principals's created before this time
+   * </pre>
+   *
    * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
    */
   @java.lang.Override
@@ -191,7 +219,7 @@ private static final long serialVersionUID = 0L;
   public static final int ISADMIN_FIELD_NUMBER = 5;
   /**
    * <pre>
-   * 
+   * List only Principals that are admins
    * </pre>
    *
    * <code>bool isAdmin = 5;</code>
@@ -203,7 +231,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * 
+   * List only Principals that are admins
    * </pre>
    *
    * <code>bool isAdmin = 5;</code>
@@ -220,7 +248,7 @@ private static final long serialVersionUID = 0L;
   public static final int TENANTID_FIELD_NUMBER = 6;
   /**
    * <pre>
-   * 
+   * List Principals associated with this Tenant ID
    * </pre>
    *
    * <code>string tenantId = 6;</code>
@@ -231,7 +259,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * 
+   * List Principals associated with this Tenant ID
    * </pre>
    *
    * <code>string tenantId = 6;</code>
@@ -256,7 +284,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * 
+   * List Principals associated with this Tenant ID
    * </pre>
    *
    * <code>string tenantId = 6;</code>
@@ -533,6 +561,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Search for Principals based on certain criteria.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.SearchPrincipalRequest}
    */
   public static final class Builder extends
@@ -930,6 +962,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> earliestStartBuilder_;
     /**
+     * <pre>
+     * Specifies to return only Principals's created after this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      * @return Whether the earliestStart field is set.
      */
@@ -937,6 +973,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * Specifies to return only Principals's created after this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      * @return The earliestStart.
      */
@@ -948,6 +988,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies to return only Principals's created after this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
     public Builder setEarliestStart(com.google.protobuf.Timestamp value) {
@@ -964,6 +1008,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies to return only Principals's created after this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
     public Builder setEarliestStart(
@@ -978,6 +1026,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies to return only Principals's created after this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
     public Builder mergeEarliestStart(com.google.protobuf.Timestamp value) {
@@ -997,6 +1049,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies to return only Principals's created after this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
     public Builder clearEarliestStart() {
@@ -1010,6 +1066,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies to return only Principals's created after this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
     public com.google.protobuf.Timestamp.Builder getEarliestStartBuilder() {
@@ -1018,6 +1078,10 @@ private static final long serialVersionUID = 0L;
       return getEarliestStartFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Specifies to return only Principals's created after this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder() {
@@ -1029,6 +1093,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies to return only Principals's created after this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1049,6 +1117,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> latestStartBuilder_;
     /**
+     * <pre>
+     * Specifies to return only Principals's created before this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      * @return Whether the latestStart field is set.
      */
@@ -1056,6 +1128,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
+     * <pre>
+     * Specifies to return only Principals's created before this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      * @return The latestStart.
      */
@@ -1067,6 +1143,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies to return only Principals's created before this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      */
     public Builder setLatestStart(com.google.protobuf.Timestamp value) {
@@ -1083,6 +1163,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies to return only Principals's created before this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      */
     public Builder setLatestStart(
@@ -1097,6 +1181,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies to return only Principals's created before this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      */
     public Builder mergeLatestStart(com.google.protobuf.Timestamp value) {
@@ -1116,6 +1204,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies to return only Principals's created before this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      */
     public Builder clearLatestStart() {
@@ -1129,6 +1221,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies to return only Principals's created before this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      */
     public com.google.protobuf.Timestamp.Builder getLatestStartBuilder() {
@@ -1137,6 +1233,10 @@ private static final long serialVersionUID = 0L;
       return getLatestStartFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Specifies to return only Principals's created before this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder() {
@@ -1148,6 +1248,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies to return only Principals's created before this time
+     * </pre>
+     *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1166,7 +1270,7 @@ private static final long serialVersionUID = 0L;
 
     /**
      * <pre>
-     * 
+     * List only Principals that are admins
      * </pre>
      *
      * <code>bool isAdmin = 5;</code>
@@ -1177,7 +1281,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * 
+     * List only Principals that are admins
      * </pre>
      *
      * <code>bool isAdmin = 5;</code>
@@ -1191,7 +1295,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * 
+     * List only Principals that are admins
      * </pre>
      *
      * <code>bool isAdmin = 5;</code>
@@ -1207,7 +1311,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * 
+     * List only Principals that are admins
      * </pre>
      *
      * <code>bool isAdmin = 5;</code>
@@ -1224,7 +1328,7 @@ private static final long serialVersionUID = 0L;
 
     /**
      * <pre>
-     * 
+     * List Principals associated with this Tenant ID
      * </pre>
      *
      * <code>string tenantId = 6;</code>
@@ -1236,7 +1340,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * 
+     * List Principals associated with this Tenant ID
      * </pre>
      *
      * <code>string tenantId = 6;</code>
@@ -1262,7 +1366,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * 
+     * List Principals associated with this Tenant ID
      * </pre>
      *
      * <code>string tenantId = 6;</code>
@@ -1289,7 +1393,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * 
+     * List Principals associated with this Tenant ID
      * </pre>
      *
      * <code>string tenantId = 6;</code>
@@ -1306,7 +1410,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * 
+     * List Principals associated with this Tenant ID
      * </pre>
      *
      * <code>string tenantId = 6;</code>
@@ -1322,7 +1426,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * 
+     * List Principals associated with this Tenant ID
      * </pre>
      *
      * <code>string tenantId = 6;</code>
