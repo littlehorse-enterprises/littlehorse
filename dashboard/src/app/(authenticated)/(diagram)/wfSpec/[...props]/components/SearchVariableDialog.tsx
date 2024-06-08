@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useInfiniteQuery } from '@tanstack/react-query'
+import { VariableDef } from 'littlehorse-client/dist/proto/common_wfspec'
 import { VariableValue } from 'littlehorse-client/dist/proto/variable'
 import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
 import { RefreshCwIcon } from 'lucide-react'
@@ -19,7 +20,7 @@ import Link from 'next/link'
 import { FC, Fragment, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { PaginatedVariableIdList, searchVariables } from '../actions/searchVariables'
-VariableValue
+
 type Props = {
   spec: WfSpec
 }
@@ -31,7 +32,7 @@ export const SearchVariableDialog: FC<Props> = ({ spec }) => {
         .filter(variableDef => variableDef.searchable)
         .map(variableDef => variableDef.varDef)
     )
-    .filter(value => value !== undefined)
+    .filter(value => value !== undefined) as VariableDef[]
   const [variable, setVariable] = useState(variables[0])
   const [variableValue, setVariableValue] = useState('')
   const [variableValueDebounced] = useDebounce(variableValue, 250)
@@ -70,7 +71,7 @@ export const SearchVariableDialog: FC<Props> = ({ spec }) => {
         </DialogHeader>
 
         <Select
-          onValueChange={value => setVariable(variables.find(v => v.name == value) || variables[0])}
+          onValueChange={value => setVariable(variables.find(v => v.name == value) ?? variable)}
           value={variable.name}
         >
           <SelectTrigger>
