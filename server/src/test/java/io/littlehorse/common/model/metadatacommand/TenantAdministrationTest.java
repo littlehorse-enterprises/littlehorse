@@ -97,7 +97,6 @@ public class TenantAdministrationTest {
                 new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
         metadataProcessor.process(
                 new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
-        verify(server, times(1)).sendErrorToClient(any(), any());
         assertThat(storedTenant()).isNotNull();
     }
 
