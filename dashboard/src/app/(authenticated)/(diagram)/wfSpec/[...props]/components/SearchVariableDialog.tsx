@@ -11,6 +11,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
+import { WithBookmark } from '@/types'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { VariableDef } from 'littlehorse-client/dist/proto/common_wfspec'
 import { VariableValue } from 'littlehorse-client/dist/proto/variable'
@@ -19,11 +20,14 @@ import { RefreshCwIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, Fragment, useState } from 'react'
 import { useDebounce } from 'use-debounce'
-import { PaginatedVariableIdList, searchVariables } from '../actions/searchVariables'
+import { searchVariables } from '../actions/searchVariables'
 
 type Props = {
   spec: WfSpec
 }
+
+const LIMIT = 10
+
 
 export const SearchVariableDialog: FC<Props> = ({ spec }) => {
   const variables = Object.keys(spec.threadSpecs)
@@ -36,22 +40,22 @@ export const SearchVariableDialog: FC<Props> = ({ spec }) => {
   const [variable, setVariable] = useState(variables[0])
   const [variableValue, setVariableValue] = useState('')
   const [variableValueDebounced] = useDebounce(variableValue, 250)
-  const [limit, setLimit] = useState(10)
+  const [limit, setLimit] = useState(LIMIT)
   const { tenantId } = useWhoAmI()
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ['searchVariables', tenantId, limit, variable, variableValueDebounced],
     initialPageParam: undefined,
-    getNextPageParam: (lastPage: PaginatedVariableIdList) => lastPage.bookmarkAsString,
+    getNextPageParam: (lastPage: WithBookmark) => lastPage.bookmark,
     queryFn: async ({ pageParam }) => {
-      if (!variableValueDebounced) return { results: [], bookmarkAsString: undefined }
+      if (!variableValueDebounced) return { results: [], bookmark: undefined }
       return await searchVariables({
         wfSpecName: spec.id!.name,
         wfSpecMajorVersion: spec.id!.majorVersion,
         wfSpecRevision: spec.id!.revision,
         tenantId,
-        limit: 10,
-        bookmarkAsString: pageParam,
+        limit,
+        bookmark: pageParam,
         varName: variable.name,
         value: convertToVariableValue({ type: variable.type.toLowerCase(), value: variableValueDebounced }),
       })
