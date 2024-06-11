@@ -23,14 +23,15 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
     private final Date commandStartedAt;
     private final Date timeoutAt;
     // Wait until kafka streams rebalance finishes
-    private static final Duration successResponseTimeout = Duration.ofSeconds(30);
+    private final Duration successResponseTimeout;
 
     public POSTStreamObserver(
             StreamObserver<U> responseObserver,
             Class<U> responseCls,
             boolean shouldComplete,
             BackendInternalComms internalComms,
-            AbstractCommand<?> command) {
+            AbstractCommand<?> command,
+            Duration successResponseTimeout) {
         this.ctx = responseObserver;
         this.responseCls = responseCls;
         this.shouldComplete = shouldComplete;
@@ -38,6 +39,7 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
         this.command = command;
         this.commandStartedAt = new Date();
         this.timeoutAt = new Date(commandStartedAt.getTime() + successResponseTimeout.toMillis());
+        this.successResponseTimeout = successResponseTimeout;
     }
 
     @Override
@@ -46,7 +48,10 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
                 && grpcRuntimeException.getStatus().getCode().equals(Status.UNAVAILABLE.getCode());
         final boolean retryOneMoreTime = timeoutAt.compareTo(new Date()) > 0;
         if (isRetryable && retryOneMoreTime) {
-            internalComms.waitForCommand(command, this);
+            internalComms.waitForCommand(
+                    command,
+                    new POSTStreamObserver<>(
+                            ctx, responseCls, shouldComplete, internalComms, command, successResponseTimeout));
         } else {
             ctx.onError(t);
         }

@@ -229,6 +229,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Date;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -1002,8 +1003,13 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             boolean shouldCompleteStream,
             PrincipalIdModel principalId,
             TenantIdModel tenantId) {
-        StreamObserver<WaitForCommandResponse> commandObserver =
-                new POSTStreamObserver<>(responseObserver, responseCls, shouldCompleteStream, internalComms, command);
+        StreamObserver<WaitForCommandResponse> commandObserver = new POSTStreamObserver<>(
+                responseObserver,
+                responseCls,
+                shouldCompleteStream,
+                internalComms,
+                command,
+                Duration.ofMillis(config.getStreamsSessionTimeout()));
 
         Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command);
 
