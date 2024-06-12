@@ -183,7 +183,7 @@ service LittleHorse {
   // Search for all available TenantIds for current Principal
   rpc SearchTenant(SearchTenantRequest) returns (TenantIdList) {}
 
-  // 
+  //
   rpc SearchPrincipal(SearchPrincipalRequest) returns (PrincipalIdList) {}
 
   // Used by the Task Worker to:
@@ -803,7 +803,7 @@ message SearchPrincipalRequest {
 
   // Specifies to return only Principals's created after this time
   optional google.protobuf.Timestamp earliest_start = 3;
-  
+
   // Specifies to return only Principals's created before this time
   optional google.protobuf.Timestamp latest_start = 4;
 

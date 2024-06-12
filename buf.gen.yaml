@@ -1,0 +1,18 @@
+version: v2
+managed:
+  enabled: true
+plugins:
+  - remote: buf.build/community/stephenh-ts-proto:v1.176.0
+    out: sdk-js/src/proto
+    opt:
+      - env=node
+      - outputServices=nice-grpc
+      - outputServices=generic-definitions
+      - outputJsonMethods=false
+      - useExactTypes=false
+      - eslint_disable
+      - esModuleInterop=true
+      - useDate=string
+      - stringEnums=true
+      - paths=source_relative
+      - exportCommonSymbols=false
