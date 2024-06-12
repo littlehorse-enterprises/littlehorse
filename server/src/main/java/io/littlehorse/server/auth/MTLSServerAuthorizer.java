@@ -25,8 +25,5 @@ public class MTLSServerAuthorizer implements ServerAuthorizer {
         headers.put(CLIENT_ID, this.commonName);
 
         return next.startCall(call, headers);
-
-        // throw new UnsupportedOperationException("Unimplemented method
-        // 'interceptCall'");
     }
 }
