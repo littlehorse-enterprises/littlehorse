@@ -28,23 +28,30 @@ const Default: FC<SmoothStepEdgeProps<EdgeProto>> = ({
     borderRadius: pathOptions?.borderRadius,
     offset: pathOptions?.offset,
   })
+  const { setModal, setShowModal } = useModal()
+  const onClick = useCallback(() => {
+    if (!data) return
+    setModal({ type: 'edge', data })
+    setShowModal(true)
+  }, [data, setModal, setShowModal])
 
   return (
     <>
       <BaseEdge id={id} path={path} style={style} {...rest} />
       <EdgeLabelRenderer>
         <div
-          className="rounded-md bg-gray-200 px-2 text-xs text-gray-600"
           style={{
             position: 'absolute',
             transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px) `,
             pointerEvents: 'all',
           }}
         >
-          {(data?.variableMutations.length ?? 0) > 0 && (
-            <CircleAlertIcon size={16} className="absolute bottom-2 cursor-pointer" onClick={onClick} />
-          )}
-          <div className="rounded-md bg-red-500 px-2 text-center text-xs text-gray-600">{label}</div>
+          <div onClick={onClick} className="flex cursor-pointer flex-col items-center">
+            {(data?.variableMutations?.length ?? 0) > 0 && (
+              <CircleAlertIcon size={16} className={`fill-gray-200 ${label ? 'mb-1' : 'mb-6'}`} />
+            )}
+            <div className="rounded-md bg-gray-200 px-2 text-center text-xs text-gray-600">{label}</div>
+          </div>
         </div>
       </EdgeLabelRenderer>
     </>
