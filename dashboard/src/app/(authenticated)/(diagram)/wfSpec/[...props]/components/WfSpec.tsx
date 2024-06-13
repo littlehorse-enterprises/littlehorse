@@ -21,7 +21,7 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
         .map(name => (
           <Thread key={name} name={name} spec={spec.threadSpecs[name]} />
         ))}
-      <WfRuns id={spec.id} />
+      <WfRuns {...spec} />
     </>
   )
 }

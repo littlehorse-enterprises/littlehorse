@@ -23,6 +23,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.Date;
 import java.util.UUID;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serdes;
@@ -93,12 +94,20 @@ public class TenantAdministrationTest {
     public void shouldValidateExistingTenant() throws Exception {
         MetadataCommandModel command = new MetadataCommandModel(putTenantRequest);
         metadataProcessor.init(mockProcessorContext);
+
+        long firstTimestamp = 42L;
+        long secondTimestamp = 137L;
+
+        command.setTime(new Date(firstTimestamp));
         metadataProcessor.process(
-                new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
+                new Record<>(UUID.randomUUID().toString(), command.toProto().build(), firstTimestamp, metadata));
+
+        command.setTime(new Date(secondTimestamp));
         metadataProcessor.process(
-                new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
-        verify(server, times(1)).sendErrorToClient(any(), any());
+                new Record<>(UUID.randomUUID().toString(), command.toProto().build(), secondTimestamp, metadata));
+        verify(server, times(0)).sendErrorToClient(any(), any());
         assertThat(storedTenant()).isNotNull();
+        assertThat(storedTenant().getCreatedAt().getTime()).isEqualTo(firstTimestamp);
     }
 
     @Test
