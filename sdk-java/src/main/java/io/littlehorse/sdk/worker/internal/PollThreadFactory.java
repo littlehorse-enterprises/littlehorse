@@ -7,6 +7,9 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.concurrent.Semaphore;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PollThreadFactory {
     private final LHConfig config;
@@ -16,6 +19,7 @@ public class PollThreadFactory {
     private final List<VariableMapping> mappings;
     private final Object taskWorkerInstance;
     private final Method taskWorkerMethod;
+    private final ScheduledTaskExecutor executor;
 
     public PollThreadFactory(
             LHConfig config,
@@ -24,7 +28,8 @@ public class PollThreadFactory {
             String taskWorkerId,
             List<VariableMapping> mappings,
             Object taskWorkerInstance,
-            Method taskWorkerMethod) {
+            Method taskWorkerMethod,
+            ScheduledTaskExecutor executor) {
         this.config = config;
         this.bootstrapStub = bootstrapStub;
         this.targetTaskId = targetTaskId;
@@ -32,21 +37,26 @@ public class PollThreadFactory {
         this.mappings = mappings;
         this.taskWorkerInstance = taskWorkerInstance;
         this.taskWorkerMethod = taskWorkerMethod;
+        this.executor = executor;
+        this.taskWorkerMethod.setAccessible(true);
     }
 
     PollThread create(String threadName, LHHostInfo host) {
-        LittleHorseGrpc.LittleHorseStub specificStub = config.getAsyncStub(host.getHost(), host.getPort());
-        return new PollThread(
-                threadName,
-                config.getInflightTasks(),
-                bootstrapStub,
-                specificStub,
-                targetTaskId,
-                taskWorkerId,
-                config.getTaskWorkerVersion(),
-                mappings,
-                taskWorkerInstance,
-                taskWorkerMethod,
-                new ScheduledTaskExecutor(bootstrapStub));
+        int inflightRequests = config.getInflightTasks();
+        Semaphore availableInflightRequests = new Semaphore(inflightRequests);
+        var pollClients = Stream.generate(() -> new PollTaskStub(
+                        bootstrapStub,
+                        config.getAsyncStub(host.getHost(), host.getPort()),
+                        availableInflightRequests,
+                        executor,
+                        taskWorkerId,
+                        targetTaskId,
+                        config.getTaskWorkerVersion(),
+                        mappings,
+                        taskWorkerInstance,
+                        taskWorkerMethod))
+                .limit(inflightRequests)
+                .collect(Collectors.toList());
+        return new PollThread(threadName, inflightRequests, pollClients);
     }
 }

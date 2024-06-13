@@ -57,7 +57,11 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     }
 
     public String getTaskDefId() {
-        return taskDefId.getName();
+        if (taskDefId != null) {
+            return taskDefId.getName();
+        } else {
+            return null;
+        }
     }
 
     public String getClientId() {

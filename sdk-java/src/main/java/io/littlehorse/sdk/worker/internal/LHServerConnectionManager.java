@@ -33,7 +33,15 @@ public class LHServerConnectionManager {
                 config,
                 livenessController,
                 HEARTBEAT_INTERVAL_MS,
-                null);
+                new PollThreadFactory(
+                        config,
+                        bootstrapStub,
+                        taskDef.getId(),
+                        taskWorkerId,
+                        mappings,
+                        executable,
+                        taskMethod,
+                        new ScheduledTaskExecutor(bootstrapStub)));
         this.livenessController = livenessController;
         this.taskDef = taskDef;
     }

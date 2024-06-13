@@ -34,7 +34,9 @@ public class TaskQueueManager {
     }
 
     public void onRequestDisconnected(PollTaskRequestObserver observer, TenantIdModel tenantId) {
-        getSubQueue(new TenantTaskName(tenantId, observer.getTaskDefId())).onRequestDisconnected(observer);
+        if (observer.getTaskDefId() != null) {
+            getSubQueue(new TenantTaskName(tenantId, observer.getTaskDefId())).onRequestDisconnected(observer);
+        }
     }
 
     public void onTaskScheduled(

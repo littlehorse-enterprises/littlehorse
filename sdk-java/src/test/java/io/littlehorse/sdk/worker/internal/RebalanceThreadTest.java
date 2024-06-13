@@ -82,29 +82,31 @@ final class RebalanceThreadTest {
     }
 
     @Test
-    public void shouldCreatePollThreadsForEveryHostAfterARebalance() {
+    public void shouldCreatePollThreadsForEveryHostAfterARebalanceAndClosePreviousPollThreads() {
         when(livenessController.keepWorkerRunning()).thenReturn(true, true, true, false);
         LHHostInfo serverA = LHHostInfo.newBuilder().setHost("a").setPort(1234).build();
         LHHostInfo serverB = LHHostInfo.newBuilder().setHost("b").setPort(4567).build();
-        LHHostInfo serverC = LHHostInfo.newBuilder().setHost("c").setPort(8901).build();
-        RegisterTaskWorkerResponse.Builder response1 = RegisterTaskWorkerResponse.newBuilder()
-                .addYourHosts(serverA)
-                .addYourHosts(serverB)
-                .addYourHosts(serverC);
-        RegisterTaskWorkerResponse.Builder response2 = RegisterTaskWorkerResponse.newBuilder()
-                .addYourHosts(serverA)
-                .addYourHosts(serverB)
-                .addYourHosts(serverC);
-        RegisterTaskWorkerResponse.Builder response3 =
-                RegisterTaskWorkerResponse.newBuilder().addYourHosts(serverA).addYourHosts(serverC);
-        registerFakeResponses(response1.build(), response2.build(), response3.build())
+        PollThread pollThread1 = mock("pollThread1");
+        PollThread pollThread2 = mock("pollThread2");
+        when(pollThread1.isRunning()).thenReturn(true);
+        when(pollThreadFactory.create(any(), any())).thenReturn(pollThread1, pollThread2);
+        when(config.getWorkerThreads()).thenReturn(1);
+        RegisterTaskWorkerResponse.Builder response1 =
+                RegisterTaskWorkerResponse.newBuilder().addYourHosts(serverA).addYourHosts(serverB);
+        RegisterTaskWorkerResponse.Builder response2 =
+                RegisterTaskWorkerResponse.newBuilder().addYourHosts(serverA);
+        registerFakeResponses(response1.build(), response2.build())
                 .when(bootstrapStub)
                 .registerTaskWorker(any(), any());
 
         rebalanceThread.start();
 
         Awaitility.await().ignoreExceptions().until(() -> !rebalanceThread.isAlive());
-        Assertions.assertThat(rebalanceThread.runningConnections.keySet()).hasSize(2);
+        verify(pollThread1, never()).interrupt();
+        verify(pollThread1, never()).close();
+        verify(pollThread2, times(1)).interrupt();
+        verify(pollThread2, times(1)).close();
+        Assertions.assertThat(rebalanceThread.runningConnections.keySet()).hasSize(1);
     }
 
     @Test

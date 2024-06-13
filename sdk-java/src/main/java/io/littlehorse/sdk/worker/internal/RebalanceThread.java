@@ -64,10 +64,6 @@ final class RebalanceThread extends Thread {
                 heartBeatCallback);
     }
 
-    PollThread createConnection(LHHostInfo hostInfo, String threadName) {
-        return pollThreadFactory.create(threadName, hostInfo);
-    }
-
     private void waitForInterval() {
         try {
             Thread.sleep(heartbeatIntervalMs);
@@ -82,21 +78,24 @@ final class RebalanceThread extends Thread {
         public void onNext(RegisterTaskWorkerResponse response) {
             livenessController.notifySuccessCall(response);
             List<LHHostInfo> availableHosts = response.getYourHostsList();
-            for (LHHostInfo hostInfo : runningConnections.keySet()) {
-                List<PollThread> currentThreads = runningConnections.get(hostInfo);
-                List<PollThread> runningThreads = new ArrayList<>();
-                for (PollThread currentThread : currentThreads) {
-                    if (currentThread.isRunning()) {
-                        runningThreads.add(currentThread);
+            maybeCleanupDanglingNonRunningThreads(availableHosts);
+            cleanupDanglingThreadsFromAvailableHosts(availableHosts);
+
+            for (LHHostInfo lhHostInfo : availableHosts) {
+                if (!runningConnections.containsKey(lhHostInfo)) {
+                    final List<PollThread> connections = new ArrayList<>();
+                    for (int i = 0; i < config.getWorkerThreads(); i++) {
+                        String threadName = String.format("lh-poll-%s", i);
+                        PollThread connection = pollThreadFactory.create(threadName, lhHostInfo);
+                        connection.start();
+                        connections.add(connection);
                     }
+                    runningConnections.put(lhHostInfo, connections);
                 }
-                int numberMissingPollThreads = config.getWorkerThreads() - runningThreads.size();
-                for (int i = 0; i < numberMissingPollThreads; i++) {
-                    String threadName = String.format("lh-poll-%s", runningThreads.size() + 1);
-                    runningThreads.add(pollThreadFactory.create(threadName, hostInfo));
-                }
-                runningConnections.put(hostInfo, runningThreads);
             }
+        }
+
+        private void cleanupDanglingThreadsFromAvailableHosts(List<LHHostInfo> availableHosts) {
             List<LHHostInfo> toBeRemoved = new ArrayList<>();
             for (LHHostInfo lhHostInfo : runningConnections.keySet()) {
                 if (!availableHosts.contains(lhHostInfo)) {
@@ -106,21 +105,35 @@ final class RebalanceThread extends Thread {
             for (LHHostInfo toRemove : toBeRemoved) {
                 List<PollThread> pollThreads = runningConnections.get(toRemove);
                 for (PollThread pollThread : pollThreads) {
+                    pollThread.interrupt();
                     pollThread.close();
                 }
                 runningConnections.remove(toRemove);
             }
-            for (LHHostInfo lhHostInfo : availableHosts) {
-                if (!runningConnections.containsKey(lhHostInfo)) {
-                    final List<PollThread> connections = new ArrayList<>();
-                    for (int i = 0; i < config.getWorkerThreads(); i++) {
-                        String threadName = String.format("lh-poll-%s", i);
-                        PollThread connection = createConnection(lhHostInfo, threadName);
-                        connection.start();
-                        connections.add(connection);
+        }
+
+        private void maybeCleanupDanglingNonRunningThreads(List<LHHostInfo> availableHosts) {
+            for (LHHostInfo hostInfo : runningConnections.keySet()) {
+                List<PollThread> currentThreads = runningConnections.get(hostInfo);
+                List<PollThread> runningThreads = new ArrayList<>();
+                for (PollThread currentThread : currentThreads) {
+                    if (currentThread.isRunning()) {
+                        runningThreads.add(currentThread);
+                    } else {
+                        currentThread.interrupt();
+                        currentThread.close();
                     }
-                    runningConnections.put(lhHostInfo, connections);
                 }
+                if (availableHosts.contains(hostInfo)) {
+                    int numberMissingPollThreads = config.getWorkerThreads() - runningThreads.size();
+                    for (int i = 0; i < numberMissingPollThreads; i++) {
+                        String threadName = String.format("lh-poll-%s", runningThreads.size() + 1);
+                        PollThread pollThread = pollThreadFactory.create(threadName, hostInfo);
+                        pollThread.start();
+                        runningThreads.add(pollThread);
+                    }
+                }
+                runningConnections.put(hostInfo, runningThreads);
             }
         }
 
