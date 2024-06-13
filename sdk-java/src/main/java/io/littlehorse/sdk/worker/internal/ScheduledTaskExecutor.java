@@ -84,9 +84,9 @@ public class ScheduledTaskExecutor {
                 taskResult.setStatus(TaskStatus.TASK_EXCEPTION);
                 taskResult.setException(exnToTaskException(exception));
             } else {
-                log.error("Task Method threw an exception", exn.getCause());
+                log.error("Task Method threw an exception", exn.getTargetException());
                 taskResult.setStatus(TaskStatus.TASK_FAILED);
-                taskResult.setError(exnToTaskError(exn, taskResult.getStatus()));
+                taskResult.setError(exnToTaskError(exn.getTargetException(), taskResult.getStatus()));
             }
         } catch (Exception exn) {
             log.error("Unexpected exception during task execution", exn);
