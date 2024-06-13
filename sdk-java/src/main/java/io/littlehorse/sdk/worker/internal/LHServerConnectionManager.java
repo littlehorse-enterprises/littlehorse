@@ -30,12 +30,10 @@ public class LHServerConnectionManager {
                 taskWorkerId,
                 connectListenerName,
                 taskDef,
-                taskMethod,
-                mappings,
-                executable,
                 config,
                 livenessController,
-                HEARTBEAT_INTERVAL_MS);
+                HEARTBEAT_INTERVAL_MS,
+                null);
         this.livenessController = livenessController;
         this.taskDef = taskDef;
     }

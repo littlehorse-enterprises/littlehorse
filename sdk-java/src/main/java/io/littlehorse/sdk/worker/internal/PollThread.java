@@ -24,7 +24,7 @@ public class PollThread extends Thread implements Closeable {
     private boolean stillRunning = true;
     private final boolean requireConcurrency;
 
-    public PollThread(
+    PollThread(
             String threadName,
             int inflightRequests,
             LittleHorseGrpc.LittleHorseStub stub,

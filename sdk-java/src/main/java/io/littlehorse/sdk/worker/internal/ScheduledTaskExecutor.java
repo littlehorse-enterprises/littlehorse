@@ -27,10 +27,10 @@ import lombok.extern.slf4j.Slf4j;
 public class ScheduledTaskExecutor {
 
     private final int MAX_RETRY_ATTEMPTS = 5;
-    private final LittleHorseGrpc.LittleHorseStub bootstrapStub;
+    private final LittleHorseGrpc.LittleHorseStub retriesStub;
 
-    public ScheduledTaskExecutor(final LittleHorseGrpc.LittleHorseStub bootstrapStub) {
-        this.bootstrapStub = bootstrapStub;
+    public ScheduledTaskExecutor(final LittleHorseGrpc.LittleHorseStub retriesStub) {
+        this.retriesStub = retriesStub;
     }
 
     public void doTask(
@@ -152,7 +152,7 @@ public class ScheduledTaskExecutor {
 
     private void retry(ReportTaskRun reportedTaskRun, int retriesLeft) {
         if (retriesLeft > 0) {
-            bootstrapStub.reportTask(reportedTaskRun, new ReportTaskObserver(reportedTaskRun, --retriesLeft));
+            retriesStub.reportTask(reportedTaskRun, new ReportTaskObserver(reportedTaskRun, --retriesLeft));
         }
     }
 
