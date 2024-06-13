@@ -18,6 +18,7 @@ import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.stubbing.Stubber;
 
 final class RebalanceThreadTest {
 
@@ -58,12 +59,9 @@ final class RebalanceThreadTest {
     @Test
     public void shouldCreatePollThreadsForEveryHost() {
         when(livenessController.keepWorkerRunning()).thenReturn(true, true, true, false);
-        LHHostInfo serverA =
-                LHHostInfo.newBuilder().setHost("abc").setPort(1234).build();
-        LHHostInfo serverB =
-                LHHostInfo.newBuilder().setHost("def").setPort(4567).build();
-        LHHostInfo serverC =
-                LHHostInfo.newBuilder().setHost("ghi").setPort(8901).build();
+        LHHostInfo serverA = LHHostInfo.newBuilder().setHost("a").setPort(1234).build();
+        LHHostInfo serverB = LHHostInfo.newBuilder().setHost("b").setPort(4567).build();
+        LHHostInfo serverC = LHHostInfo.newBuilder().setHost("c").setPort(8901).build();
         RegisterTaskWorkerResponse.Builder response1 = RegisterTaskWorkerResponse.newBuilder()
                 .addYourHosts(serverA)
                 .addYourHosts(serverB)
@@ -72,30 +70,22 @@ final class RebalanceThreadTest {
                 .addYourHosts(serverA)
                 .addYourHosts(serverB)
                 .addYourHosts(serverC);
-        doAnswer(invocation -> {
-                    StreamObserver<RegisterTaskWorkerResponse> observer = invocation.getArgument(1);
-                    observer.onNext(response1.build());
-                    observer.onNext(response2.build());
-                    return null;
-                })
+        registerFakeResponses(response1.build(), response2.build())
                 .when(bootstrapStub)
                 .registerTaskWorker(any(), any());
 
         rebalanceThread.start();
 
         Awaitility.await().ignoreExceptions().until(() -> !rebalanceThread.isAlive());
-        Assertions.assertThat(rebalanceThread.getRunningConnections().keySet()).hasSize(3);
+        Assertions.assertThat(rebalanceThread.runningConnections.keySet()).hasSize(3);
     }
 
     @Test
     public void shouldCreatePollThreadsForEveryHostAfterARebalance() {
         when(livenessController.keepWorkerRunning()).thenReturn(true, true, true, false);
-        LHHostInfo serverA =
-                LHHostInfo.newBuilder().setHost("abc").setPort(1234).build();
-        LHHostInfo serverB =
-                LHHostInfo.newBuilder().setHost("def").setPort(4567).build();
-        LHHostInfo serverC =
-                LHHostInfo.newBuilder().setHost("ghi").setPort(8901).build();
+        LHHostInfo serverA = LHHostInfo.newBuilder().setHost("a").setPort(1234).build();
+        LHHostInfo serverB = LHHostInfo.newBuilder().setHost("b").setPort(4567).build();
+        LHHostInfo serverC = LHHostInfo.newBuilder().setHost("c").setPort(8901).build();
         RegisterTaskWorkerResponse.Builder response1 = RegisterTaskWorkerResponse.newBuilder()
                 .addYourHosts(serverA)
                 .addYourHosts(serverB)
@@ -106,33 +96,23 @@ final class RebalanceThreadTest {
                 .addYourHosts(serverC);
         RegisterTaskWorkerResponse.Builder response3 =
                 RegisterTaskWorkerResponse.newBuilder().addYourHosts(serverA).addYourHosts(serverC);
-        doAnswer(invocation -> {
-                    StreamObserver<RegisterTaskWorkerResponse> observer = invocation.getArgument(1);
-                    observer.onNext(response1.build());
-                    observer.onNext(response2.build());
-                    observer.onNext(response3.build());
-                    return null;
-                })
+        registerFakeResponses(response1.build(), response2.build(), response3.build())
                 .when(bootstrapStub)
                 .registerTaskWorker(any(), any());
 
         rebalanceThread.start();
 
         Awaitility.await().ignoreExceptions().until(() -> !rebalanceThread.isAlive());
-        Assertions.assertThat(rebalanceThread.getRunningConnections().keySet()).hasSize(2);
+        Assertions.assertThat(rebalanceThread.runningConnections.keySet()).hasSize(2);
     }
 
     @Test
-    public void shouldCreatePollThreadsForEveryHostAfterAClusterScaleUp() {
+    public void shouldCreatePollThreadsForEveryHostAfterAClusterScaleUp() throws Exception {
         when(livenessController.keepWorkerRunning()).thenReturn(true, true, true, false);
-        LHHostInfo serverA =
-                LHHostInfo.newBuilder().setHost("abc").setPort(1234).build();
-        LHHostInfo serverB =
-                LHHostInfo.newBuilder().setHost("def").setPort(4567).build();
-        LHHostInfo serverC =
-                LHHostInfo.newBuilder().setHost("ghi").setPort(8901).build();
-        LHHostInfo serverD =
-                LHHostInfo.newBuilder().setHost("ghi2").setPort(8902).build();
+        LHHostInfo serverA = LHHostInfo.newBuilder().setHost("a").setPort(1234).build();
+        LHHostInfo serverB = LHHostInfo.newBuilder().setHost("b").setPort(4567).build();
+        LHHostInfo serverC = LHHostInfo.newBuilder().setHost("c").setPort(8901).build();
+        LHHostInfo serverD = LHHostInfo.newBuilder().setHost("d").setPort(8902).build();
         RegisterTaskWorkerResponse.Builder response1 = RegisterTaskWorkerResponse.newBuilder()
                 .addYourHosts(serverA)
                 .addYourHosts(serverB)
@@ -146,20 +126,36 @@ final class RebalanceThreadTest {
                 .addYourHosts(serverB)
                 .addYourHosts(serverC)
                 .addYourHosts(serverD);
-        doAnswer(invocation -> {
-                    StreamObserver<RegisterTaskWorkerResponse> observer = invocation.getArgument(1);
-                    observer.onNext(response1.build());
-                    observer.onNext(response2.build());
-                    observer.onNext(response3.build());
-                    return null;
-                })
+        registerFakeResponses(response1.build(), response2.build(), response3.build())
                 .when(bootstrapStub)
                 .registerTaskWorker(any(), any());
-
         rebalanceThread.start();
 
         Awaitility.await().ignoreExceptions().until(() -> !rebalanceThread.isAlive());
-        Assertions.assertThat(rebalanceThread.getRunningConnections().keySet()).hasSize(4);
+        Assertions.assertThat(rebalanceThread.runningConnections.keySet()).hasSize(4);
+    }
+
+    private Stubber registerFakeResponses(RegisterTaskWorkerResponse... responses) {
+        Stubber out = null;
+        if (responses.length == 0) {
+            throw new IllegalArgumentException("At least one response is expected");
+        }
+        for (RegisterTaskWorkerResponse response : responses) {
+            if (out != null) {
+                out.doAnswer(invocation -> {
+                    StreamObserver<RegisterTaskWorkerResponse> observer = invocation.getArgument(1);
+                    observer.onNext(response);
+                    return null;
+                });
+            } else {
+                out = doAnswer(invocation -> {
+                    StreamObserver<RegisterTaskWorkerResponse> observer = invocation.getArgument(1);
+                    observer.onNext(response);
+                    return null;
+                });
+            }
+        }
+        return out;
     }
 
     public void myTestWorkerMethod() {

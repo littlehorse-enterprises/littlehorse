@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -27,9 +26,7 @@ final class RebalanceThread extends Thread {
     private final List<VariableMapping> mappings;
     private final Object executable;
     private final LHConfig config;
-
-    @Getter
-    private final Map<LHHostInfo, List<PollThread>> runningConnections = new ConcurrentHashMap<>();
+    final Map<LHHostInfo, List<PollThread>> runningConnections = new ConcurrentHashMap<>();
 
     private final LHLivenessController livenessController;
     private final long heartbeatIntervalMs;
