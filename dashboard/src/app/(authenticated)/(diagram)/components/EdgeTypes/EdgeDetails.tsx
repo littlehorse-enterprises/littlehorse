@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC, PropsWithChildren } from 'react'
+import { CSSProperties, FC, PropsWithChildren } from 'react'
 
 export const EdgeDetails: FC<PropsWithChildren<{ labelX: number; labelY: number; id: string }>> = ({
   children,
