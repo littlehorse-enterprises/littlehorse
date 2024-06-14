@@ -6,7 +6,7 @@ public class MyWorker {
 
     @LHTaskMethod("task-1")
     public String task1() {
-        return "task-1";
+        throw new RuntimeException("OOOps");
     }
 
     @LHTaskMethod("task-2")
