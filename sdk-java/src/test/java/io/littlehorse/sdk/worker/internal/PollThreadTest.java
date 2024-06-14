@@ -5,6 +5,8 @@ import static org.mockito.Mockito.*;
 
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.sdk.common.QueuedStreamObserver;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
 import io.littlehorse.sdk.common.proto.PollTaskResponse;
@@ -27,30 +29,28 @@ public class PollThreadTest {
     private final String taskWorkerId = "my-worker";
     private final String taskWorkerVersion = "0";
     private final List<VariableMapping> mappings = List.of();
+    private final LHConfig config = mock();
     private Method taskMethod;
 
     private PollThread pollThread;
     private QueuedStreamObserver<PollTaskRequest, PollTaskResponse> recordableObserver;
+    private PollThreadFactory pollThreadFactory;
 
     @BeforeEach
     public void setup() throws NoSuchMethodException {
         this.taskMethod = this.getClass().getDeclaredMethod("myTaskMethod");
+        when(config.getAsyncStub(anyString(), anyInt())).thenReturn(stub);
         ArgumentCaptor<StreamObserver<PollTaskResponse>> argumentCaptor = ArgumentCaptor.forClass(StreamObserver.class);
         QueuedStreamObserver.DelegatedStreamObserver<PollTaskRequest> delegatedObserver =
                 new QueuedStreamObserver.DelegatedStreamObserver<>();
+        when(config.getInflightTasks()).thenReturn(1);
         when(stub.pollTask(any())).thenReturn(delegatedObserver);
-        pollThread = new PollThread(
-                "test",
-                1,
-                stub,
-                bootstrapStub,
-                task,
-                taskWorkerId,
-                taskWorkerVersion,
-                mappings,
-                this,
-                taskMethod,
-                taskExecutor);
+        when(config.getTaskWorkerVersion()).thenReturn(taskWorkerVersion);
+        pollThreadFactory = new PollThreadFactory(
+                config, bootstrapStub, task, taskWorkerId, mappings, this, taskMethod, taskExecutor);
+
+        pollThread = pollThreadFactory.create(
+                "test", LHHostInfo.newBuilder().setHost("a").setPort(1).build());
         verify(stub, atLeast(0)).pollTask(argumentCaptor.capture());
         this.recordableObserver = new QueuedStreamObserver<>(argumentCaptor.getValue());
         delegatedObserver.setObserver(recordableObserver.getRequestObserver());

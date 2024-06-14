@@ -1,5 +1,7 @@
 package io.littlehorse.sdk.worker.internal;
 
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
@@ -25,7 +27,6 @@ public final class PollTaskStub {
     private final List<VariableMapping> mappings;
     private final Object executable;
     private final Method taskMethod;
-    private final LittleHorseGrpc.LittleHorseStub specificStub;
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
     public PollTaskStub(
@@ -39,7 +40,6 @@ public final class PollTaskStub {
             List<VariableMapping> mappings,
             Object executable,
             Method taskMethod) {
-        this.specificStub = specificStub;
         this.responseObserver = new ServerResponseObserver(bootstrapStub);
         this.semaphore = semaphore;
         this.taskExecutor = taskExecutor;
@@ -90,7 +90,12 @@ public final class PollTaskStub {
 
         @Override
         public void onError(Throwable t) {
-            log.error("Unexpected error from server", t);
+            if (t instanceof StatusRuntimeException
+                    && ((StatusRuntimeException) t).getStatus().getCode().equals(Status.CANCELLED.getCode())) {
+                log.debug("Connection closed");
+            } else {
+                log.error("Unexpected error from server", t);
+            }
             closed.set(true);
         }
 

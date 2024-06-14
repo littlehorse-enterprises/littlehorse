@@ -7,8 +7,6 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.TaskDef;
-import io.littlehorse.sdk.worker.internal.util.VariableMapping;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,32 +20,27 @@ final class RebalanceThread extends Thread {
     private final String connectListenerName;
     private final TaskDef taskDef;
     private final HeartBeatCallback heartBeatCallback = new HeartBeatCallback();
-    private final Method taskMethod;
-    private final List<VariableMapping> mappings;
-    private final Object executable;
     private final LHConfig config;
-    private final Map<LHHostInfo, List<PollThread>> runningConnections = new ConcurrentHashMap<>();
+    final Map<LHHostInfo, List<PollThread>> runningConnections = new ConcurrentHashMap<>();
+
     private final LHLivenessController livenessController;
     private final long heartbeatIntervalMs;
+    private final PollThreadFactory pollThreadFactory;
 
     public RebalanceThread(
             LittleHorseGrpc.LittleHorseStub bootstrapStub,
             String taskWorkerId,
             String connectListenerName,
             TaskDef taskDef,
-            Method taskMethod,
-            List<VariableMapping> mappings,
-            Object executable,
             LHConfig config,
             LHLivenessController livenessController,
-            long heartbeatIntervalMs) {
+            long heartbeatIntervalMs,
+            PollThreadFactory pollThreadFactory) {
         this.bootstrapStub = bootstrapStub;
         this.taskWorkerId = taskWorkerId;
         this.connectListenerName = connectListenerName;
         this.taskDef = taskDef;
-        this.taskMethod = taskMethod;
-        this.mappings = mappings;
-        this.executable = executable;
+        this.pollThreadFactory = pollThreadFactory;
         this.config = config;
         this.livenessController = livenessController;
         this.heartbeatIntervalMs = heartbeatIntervalMs;
@@ -71,21 +64,6 @@ final class RebalanceThread extends Thread {
                 heartBeatCallback);
     }
 
-    private PollThread createConnection(LittleHorseGrpc.LittleHorseStub stub, String threadName) {
-        return new PollThread(
-                threadName,
-                config.getInflightTasks(),
-                bootstrapStub,
-                stub,
-                taskDef.getId(),
-                taskWorkerId,
-                config.getTaskWorkerVersion(),
-                mappings,
-                executable,
-                taskMethod,
-                new ScheduledTaskExecutor(bootstrapStub));
-    }
-
     private void waitForInterval() {
         try {
             Thread.sleep(heartbeatIntervalMs);
@@ -100,53 +78,62 @@ final class RebalanceThread extends Thread {
         public void onNext(RegisterTaskWorkerResponse response) {
             livenessController.notifySuccessCall(response);
             List<LHHostInfo> availableHosts = response.getYourHostsList();
-            for (LHHostInfo runningConnection : runningConnections.keySet()) {
-                if (!availableHosts.contains(runningConnection)) {
-                    for (PollThread removed : runningConnections.remove(runningConnection)) {
-                        removed.close();
-                    }
-                }
-                LittleHorseGrpc.LittleHorseStub stub =
-                        config.getAsyncStub(runningConnection.getHost(), runningConnection.getPort());
-                List<PollThread> originalPollThreads = runningConnections.get(runningConnection);
-                // Check if any PollThreads have failed
-                boolean hasAPollThreadFailed = false;
-                for (PollThread p : originalPollThreads) {
-                    if (!p.isRunning()) {
-                        hasAPollThreadFailed = true;
-                        break;
-                    }
-                }
-                if (hasAPollThreadFailed) {
-                    ArrayList<PollThread> newPollThreads = new ArrayList<>();
-                    // This loop replaces each PollThread that stops running with a fresh PollThread
-                    for (int i = 0; i < originalPollThreads.size(); i++) {
-                        PollThread currentPollThread = originalPollThreads.get(i);
-                        if (currentPollThread.isRunning()) {
-                            newPollThreads.add(currentPollThread);
-                        } else {
-                            String threadName = String.format("lh-poll-%s", i);
-                            PollThread connection = createConnection(stub, threadName);
-                            connection.start();
-                            newPollThreads.add(connection);
-                        }
-                    }
-                    runningConnections.put(runningConnection, newPollThreads);
-                }
-            }
+            maybeCleanupDanglingNonRunningThreads(availableHosts);
+            cleanupDanglingThreadsFromAvailableHosts(availableHosts);
+
             for (LHHostInfo lhHostInfo : availableHosts) {
                 if (!runningConnections.containsKey(lhHostInfo)) {
                     final List<PollThread> connections = new ArrayList<>();
-                    LittleHorseGrpc.LittleHorseStub stub =
-                            config.getAsyncStub(lhHostInfo.getHost(), lhHostInfo.getPort());
                     for (int i = 0; i < config.getWorkerThreads(); i++) {
                         String threadName = String.format("lh-poll-%s", i);
-                        PollThread connection = createConnection(stub, threadName);
+                        PollThread connection = pollThreadFactory.create(threadName, lhHostInfo);
                         connection.start();
                         connections.add(connection);
                     }
                     runningConnections.put(lhHostInfo, connections);
                 }
+            }
+        }
+
+        private void cleanupDanglingThreadsFromAvailableHosts(List<LHHostInfo> availableHosts) {
+            List<LHHostInfo> toBeRemoved = new ArrayList<>();
+            for (LHHostInfo lhHostInfo : runningConnections.keySet()) {
+                if (!availableHosts.contains(lhHostInfo)) {
+                    toBeRemoved.add(lhHostInfo);
+                }
+            }
+            for (LHHostInfo toRemove : toBeRemoved) {
+                List<PollThread> pollThreads = runningConnections.get(toRemove);
+                for (PollThread pollThread : pollThreads) {
+                    pollThread.interrupt();
+                    pollThread.close();
+                }
+                runningConnections.remove(toRemove);
+            }
+        }
+
+        private void maybeCleanupDanglingNonRunningThreads(List<LHHostInfo> availableHosts) {
+            for (LHHostInfo hostInfo : runningConnections.keySet()) {
+                List<PollThread> currentThreads = runningConnections.get(hostInfo);
+                List<PollThread> runningThreads = new ArrayList<>();
+                for (PollThread currentThread : currentThreads) {
+                    if (currentThread.isRunning()) {
+                        runningThreads.add(currentThread);
+                    } else {
+                        currentThread.interrupt();
+                        currentThread.close();
+                    }
+                }
+                if (availableHosts.contains(hostInfo)) {
+                    int numberMissingPollThreads = config.getWorkerThreads() - runningThreads.size();
+                    for (int i = 0; i < numberMissingPollThreads; i++) {
+                        String threadName = String.format("lh-poll-%s", runningThreads.size() + 1);
+                        PollThread pollThread = pollThreadFactory.create(threadName, hostInfo);
+                        pollThread.start();
+                        runningThreads.add(pollThread);
+                    }
+                }
+                runningConnections.put(hostInfo, runningThreads);
             }
         }
 
