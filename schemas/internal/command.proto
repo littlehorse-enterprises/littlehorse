@@ -214,3 +214,7 @@ message LHTimerPb {
     optional TenantId tenant_id = 5; // default if not set
     optional PrincipalId principal_id = 6; // anonymous if not set
 }
+
+message DeleteTaskWorkerGroupRequest {
+    TaskDefId id = 1;
+}

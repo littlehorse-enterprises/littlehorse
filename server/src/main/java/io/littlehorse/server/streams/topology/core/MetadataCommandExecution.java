@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.topology.core;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
@@ -70,6 +71,10 @@ public class MetadataCommandExecution implements ExecutionContext {
 
     public MetadataCommandModel currentCommand() {
         return currentCommand;
+    }
+
+    public void forward(CoreSubCommand<?> coreCommand) {
+        return;
     }
 
     private KeyValueStore<String, Bytes> nativeMetadataStore() {
