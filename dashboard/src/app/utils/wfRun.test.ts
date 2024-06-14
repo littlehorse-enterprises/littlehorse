@@ -1,4 +1,4 @@
-import { WfRunId } from 'littlehorse-client/dist/proto/object_id'
+import { WfRunId } from 'littlehorse-client'
 import { concatWfRunIds } from '.'
 
 describe('concatWfRunIds', () => {

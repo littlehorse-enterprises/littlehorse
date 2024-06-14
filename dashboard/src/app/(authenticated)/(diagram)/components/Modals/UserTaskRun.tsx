@@ -1,11 +1,11 @@
-import { FC, useRef } from 'react'
 import { Modal } from '@/app/(authenticated)/(diagram)/context'
 import { useModal } from '@/app/(authenticated)/(diagram)/hooks/useModal'
-import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
-import { DialogBody } from 'next/dist/client/components/react-dev-overlay/internal/components/Dialog'
-import { XIcon } from 'lucide-react'
 import { getVariable, getVariableValue } from '@/app/utils'
-import { UserTaskRun as LHUserTaskRun, UserTaskRunStatus } from 'littlehorse-client/dist/proto/user_tasks'
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
+import { UserTaskRun as LHUserTaskRun, UserTaskRunStatus } from 'littlehorse-client'
+import { XIcon } from 'lucide-react'
+import { DialogBody } from 'next/dist/client/components/react-dev-overlay/internal/components/Dialog'
+import { FC, useRef } from 'react'
 
 export const UserTaskRun: FC<Modal> = ({ data, nodeRun, userTaskNode }) => {
   const lhUserTaskRun = data as LHUserTaskRun

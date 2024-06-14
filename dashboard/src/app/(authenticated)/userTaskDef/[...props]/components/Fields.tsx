@@ -1,5 +1,5 @@
 import { VARIABLE_TYPES } from '@/app/constants'
-import { UserTaskDef } from 'littlehorse-client/dist/proto/user_tasks'
+import { UserTaskDef } from 'littlehorse-client'
 import { FC } from 'react'
 
 type Props = Pick<UserTaskDef, 'fields'>

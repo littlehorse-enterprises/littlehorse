@@ -1,5 +1,5 @@
+import { UserTaskDefId } from 'littlehorse-client'
 import { TagIcon } from 'lucide-react'
-import { UserTaskDefId } from 'littlehorse-client/dist/proto/object_id'
 import Link from 'next/link'
 import { FC, Fragment } from 'react'
 import { SearchResultProps } from '.'

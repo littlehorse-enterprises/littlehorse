@@ -1,6 +1,6 @@
 import { VersionSelector } from '@/app/(authenticated)/components/VersionSelector'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { WfSpecId } from 'littlehorse-client/dist/proto/object_id'
+import { WfSpecId } from 'littlehorse-client'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useState } from 'react'
 import { getWfSpecVersions } from '../actions/getVersions'

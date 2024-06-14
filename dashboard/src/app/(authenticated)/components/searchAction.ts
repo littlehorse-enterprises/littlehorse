@@ -2,8 +2,7 @@
 import { SEARCH_DEFAULT_LIMIT, SearchType } from '@/app/constants'
 import { lhClient } from '@/app/lhClient'
 import { WithBookmark, WithTenant } from '@/types'
-import { WfSpecId } from 'littlehorse-client/dist/proto/object_id'
-import { WfSpecIdList } from 'littlehorse-client/dist/proto/service'
+import { WfSpecId, WfSpecIdList } from 'littlehorse-client'
 
 type Props = { prefix?: string; limit?: number } & WithBookmark
 

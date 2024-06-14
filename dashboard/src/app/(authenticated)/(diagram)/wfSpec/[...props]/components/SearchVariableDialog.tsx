@@ -13,9 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { WithBookmark } from '@/types'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { VariableDef } from 'littlehorse-client/dist/proto/common_wfspec'
-import { VariableValue } from 'littlehorse-client/dist/proto/variable'
-import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
+import { VariableDef, VariableValue, WfSpec } from 'littlehorse-client'
 import { RefreshCwIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, Fragment, useState } from 'react'
@@ -27,7 +25,6 @@ type Props = {
 }
 
 const LIMIT = 10
-
 
 export const SearchVariableDialog: FC<Props> = ({ spec }) => {
   const variables = Object.keys(spec.threadSpecs)

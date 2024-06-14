@@ -1,5 +1,5 @@
 import lhConfig from '@/lhConfig'
-import { ACLAction, ACLResource, Principal, ServerACLs } from 'littlehorse-client/dist/proto/acls'
+import { ACLAction, ACLResource, Principal, ServerACLs } from 'littlehorse-client'
 import { getServerSession } from 'next-auth'
 import { WhoAmI } from '../types'
 import { authOptions } from './api/auth/[...nextauth]/authOptions'

@@ -1,7 +1,6 @@
 import { TIME_RANGES, TIME_RANGES_NAMES, TimeRange, WF_RUN_STATUSES } from '@/app/constants'
 import { Listbox, ListboxButton, ListboxOptions } from '@headlessui/react'
-import { LHStatus } from 'littlehorse-client/dist/proto/common_enums'
-import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
+import { LHStatus, WfSpec } from 'littlehorse-client'
 import { ClockIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC } from 'react'

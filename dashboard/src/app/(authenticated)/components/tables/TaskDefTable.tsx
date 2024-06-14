@@ -1,4 +1,4 @@
-import { TaskDefId } from 'littlehorse-client/dist/proto/object_id'
+import { TaskDefId } from 'littlehorse-client'
 import Link from 'next/link'
 import { FC, Fragment } from 'react'
 import { SearchResultProps } from '.'

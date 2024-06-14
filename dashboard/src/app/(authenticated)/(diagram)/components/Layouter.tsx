@@ -1,9 +1,9 @@
 import dagre from 'dagre'
-import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
+import { NodeRun } from 'littlehorse-client'
 import { FC, useCallback, useEffect } from 'react'
 import { Edge, Node, useReactFlow, useStore } from 'reactflow'
 
-// used to calculate the width of the 
+// used to calculate the width of the
 export const EDGE_WIDTH = 200
 
 export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: string }> = ({

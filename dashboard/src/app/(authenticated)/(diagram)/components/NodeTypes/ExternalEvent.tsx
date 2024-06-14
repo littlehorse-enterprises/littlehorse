@@ -1,11 +1,11 @@
-import { MailOpenIcon, ExternalLinkIcon } from 'lucide-react'
-import { Node as NodeProto } from 'littlehorse-client/dist/proto/wf_spec'
+import { Node as NodeProto } from 'littlehorse-client'
+import { ExternalLinkIcon, MailOpenIcon } from 'lucide-react'
+import Link from 'next/link'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '.'
 import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
-import Link from 'next/link'
 
 const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   if (!data.externalEvent) return null
