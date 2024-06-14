@@ -2456,9 +2456,6 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * 
-     * </pre>
      */
     default void searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PrincipalIdList> responseObserver) {
@@ -3200,9 +3197,6 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * 
-     * </pre>
      */
     public void searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.PrincipalIdList> responseObserver) {
@@ -3914,9 +3908,6 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * 
-     * </pre>
      */
     public io.littlehorse.sdk.common.proto.PrincipalIdList searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -4636,9 +4627,6 @@ public final class LittleHorseGrpc {
     }
 
     /**
-     * <pre>
-     * 
-     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.PrincipalIdList> searchPrincipal(
         io.littlehorse.sdk.common.proto.SearchPrincipalRequest request) {
