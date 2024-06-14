@@ -24,7 +24,6 @@ public class PollThread extends Thread implements Closeable {
     @Override
     public void run() {
         try {
-            log.info(String.format("Thread %s started", getName()));
             while (stillRunning) {
                 PollTaskStub pollClient = activePollClientsIterator.next();
                 if (!requireConcurrency || pollClient.isReady()) {
@@ -34,7 +33,6 @@ public class PollThread extends Thread implements Closeable {
                     stillRunning = false;
                 }
             }
-            log.debug("still running");
         } catch (InterruptedException ex) {
             log.debug("Thread interrupted");
         } finally {
