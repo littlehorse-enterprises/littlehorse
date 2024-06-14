@@ -134,6 +134,11 @@ public final class CommandOuterClass {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_LHTimerPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_DeleteTaskWorkerGroupRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_DeleteTaskWorkerGroupRequest_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -290,8 +295,10 @@ public final class CommandOuterClass {
       "(\t\022\017\n\007payload\030\004 \001(\014\022-\n\ttenant_id\030\005 \001(\0132\025" +
       ".littlehorse.TenantIdH\000\210\001\001\0223\n\014principal_" +
       "id\030\006 \001(\0132\030.littlehorse.PrincipalIdH\001\210\001\001B" +
-      "\014\n\n_tenant_idB\017\n\r_principal_idB\037\n\033io.lit" +
-      "tlehorse.common.protoP\001b\006proto3"
+      "\014\n\n_tenant_idB\017\n\r_principal_id\"B\n\034Delete" +
+      "TaskWorkerGroupRequest\022\"\n\002id\030\001 \001(\0132\026.lit" +
+      "tlehorse.TaskDefIdB\037\n\033io.littlehorse.com" +
+      "mon.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -450,6 +457,12 @@ public final class CommandOuterClass {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_LHTimerPb_descriptor,
         new java.lang.String[] { "MaturationTime", "Key", "Topic", "Payload", "TenantId", "PrincipalId", "TenantId", "PrincipalId", });
+    internal_static_littlehorse_DeleteTaskWorkerGroupRequest_descriptor =
+      getDescriptor().getMessageTypes().get(22);
+    internal_static_littlehorse_DeleteTaskWorkerGroupRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_DeleteTaskWorkerGroupRequest_descriptor,
+        new java.lang.String[] { "Id", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.Service.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
