@@ -1,7 +1,7 @@
 'use server'
 import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
-import { NodeRun, SearchTaskRunRequest, TaskRun, TaskRunId, TaskRunIdList } from 'littlehorse-client'
+import { NodeRun, SearchTaskRunRequest, TaskRun, TaskRunId, TaskRunIdList } from 'littlehorse-client/proto'
 
 export interface runDetails {
   taskRun: TaskRun

@@ -1,6 +1,6 @@
 import { getVariable, getVariableValue } from '@/app/utils'
 import { useQuery } from '@tanstack/react-query'
-import { NodeRun, TaskNode } from 'littlehorse-client'
+import { NodeRun, TaskNode } from 'littlehorse-client/proto'
 import { ExternalLinkIcon, EyeIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, useCallback } from 'react'

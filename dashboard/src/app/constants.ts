@@ -1,4 +1,4 @@
-import { LHStatus, VariableType } from 'littlehorse-client'
+import { LHStatus, VariableType } from 'littlehorse-client/proto'
 
 export const SEARCH_LIMITS = [10, 20, 30, 60, 100] as const
 export type SearchLimit = (typeof SEARCH_LIMITS)[number]

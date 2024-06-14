@@ -1,5 +1,5 @@
 import { getVariable } from '@/app/utils'
-import { Comparator, Edge as EdgeProto, ThreadSpec } from 'littlehorse-client'
+import { Comparator, Edge as EdgeProto, ThreadSpec } from 'littlehorse-client/proto'
 import { Edge, MarkerType } from 'reactflow'
 
 export const extractEdges = (spec: ThreadSpec): Edge[] => {

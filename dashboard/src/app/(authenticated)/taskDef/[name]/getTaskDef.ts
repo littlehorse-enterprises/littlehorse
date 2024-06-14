@@ -2,7 +2,7 @@
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions'
 import { getClient } from '@/lhConfig'
-import { TaskDefId } from 'littlehorse-client'
+import { TaskDefId } from 'littlehorse-client/proto'
 import { getServerSession } from 'next-auth'
 import { cookies } from 'next/headers'
 

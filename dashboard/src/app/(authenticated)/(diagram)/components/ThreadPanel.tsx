@@ -1,4 +1,4 @@
-import { WfRun, WfSpec } from 'littlehorse-client'
+import { WfRun, WfSpec } from 'littlehorse-client/proto'
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { FC, useMemo } from 'react'

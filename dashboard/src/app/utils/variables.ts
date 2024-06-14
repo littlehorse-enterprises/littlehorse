@@ -1,4 +1,4 @@
-import { VariableAssignment, VariableValue } from 'littlehorse-client'
+import { VariableAssignment, VariableValue } from 'littlehorse-client/proto'
 
 export const getVariable = (variable?: VariableAssignment) => {
   if (!variable) return

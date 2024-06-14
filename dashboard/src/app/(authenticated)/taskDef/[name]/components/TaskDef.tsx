@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Field, Input, Label } from '@headlessui/react'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { TaskDef as TaskDefProto, TaskStatus } from 'littlehorse-client'
+import { TaskDef as TaskDefProto, TaskStatus } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, Fragment, useState } from 'react'

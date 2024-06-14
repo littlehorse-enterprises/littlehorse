@@ -14,5 +14,4 @@ plugins:
       - esModuleInterop=true
       - useDate=string
       - stringEnums=true
-      - paths=source_relative
       - exportCommonSymbols=false

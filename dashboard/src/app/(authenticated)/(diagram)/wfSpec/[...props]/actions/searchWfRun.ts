@@ -1,7 +1,7 @@
 'use server'
 import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
-import { SearchWfRunRequest, WfRunIdList } from 'littlehorse-client'
+import { SearchWfRunRequest, WfRunIdList } from 'littlehorse-client/proto'
 
 export interface PaginatedWfRunIdList extends WfRunIdList {
   bookmarkAsString: string | undefined

@@ -1,5 +1,5 @@
 import { Navigation } from '@/app/(authenticated)/components/Navigation'
-import { ExternalEventDef as ExternalEventDefProto } from 'littlehorse-client'
+import { ExternalEventDef as ExternalEventDefProto } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { Details } from './Details'
 

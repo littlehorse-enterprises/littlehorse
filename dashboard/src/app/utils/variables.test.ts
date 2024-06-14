@@ -1,4 +1,4 @@
-import { VariableAssignment } from 'littlehorse-client'
+import { VariableAssignment } from 'littlehorse-client/proto'
 import { getVariable } from './variables'
 
 describe('getVariable', () => {

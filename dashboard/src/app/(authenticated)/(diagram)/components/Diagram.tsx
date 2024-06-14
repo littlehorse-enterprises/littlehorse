@@ -1,6 +1,6 @@
 'use client'
 import { ThreadRunWithNodeRuns } from '@/app/(authenticated)/(diagram)/wfRun/[...ids]/getWfRun'
-import { NodeRun, WfRun, WfSpec } from 'littlehorse-client'
+import { NodeRun, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'

@@ -1,5 +1,5 @@
 import dagre from 'dagre'
-import { NodeRun } from 'littlehorse-client'
+import { NodeRun } from 'littlehorse-client/proto'
 import { FC, useCallback, useEffect } from 'react'
 import { Edge, Node, useReactFlow, useStore } from 'reactflow'
 

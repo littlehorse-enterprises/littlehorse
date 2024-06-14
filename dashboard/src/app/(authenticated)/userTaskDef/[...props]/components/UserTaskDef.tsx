@@ -13,7 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Button, Field, Input, Label } from '@headlessui/react'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { UserTaskDef as UserTaskDefProto, UserTaskRunStatus } from 'littlehorse-client'
+import { UserTaskDef as UserTaskDefProto, UserTaskRunStatus } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
 import Link from 'next/link'
 import React, { FC, Fragment, useState } from 'react'

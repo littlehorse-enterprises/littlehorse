@@ -1,4 +1,4 @@
-import { ExternalEventDefId } from 'littlehorse-client'
+import { ExternalEventDefId } from 'littlehorse-client/proto'
 import Link from 'next/link'
 import { FC, Fragment } from 'react'
 import { SearchResultProps } from '.'

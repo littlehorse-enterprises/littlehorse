@@ -1,4 +1,4 @@
-import { LHStatus } from 'littlehorse-client'
+import { LHStatus } from 'littlehorse-client/proto'
 import { FC, PropsWithChildren } from 'react'
 import { StatusPin } from './StatusPin'
 

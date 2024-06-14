@@ -2,7 +2,7 @@ import { UserAndGroupAssignmentInfo } from '@/app/(authenticated)/(diagram)/comp
 import { getUserTaskRun } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/getUserTaskRun'
 import { useModal } from '@/app/(authenticated)/(diagram)/hooks/useModal'
 import { useQuery } from '@tanstack/react-query'
-import { NodeRun, UserTaskNode } from 'littlehorse-client'
+import { NodeRun, UserTaskNode } from 'littlehorse-client/proto'
 import { EyeIcon } from 'lucide-react'
 import { FC, useCallback } from 'react'
 import { UserTaskNotes } from './UserTaskNotes'

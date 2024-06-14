@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { WithBookmark } from '@/types'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { VariableDef, VariableValue, WfSpec } from 'littlehorse-client'
+import { VariableDef, VariableValue, WfSpec } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, Fragment, useState } from 'react'

@@ -1,4 +1,4 @@
-import { Node as NodeProto } from 'littlehorse-client'
+import { Node as NodeProto } from 'littlehorse-client/proto'
 import { ExternalLinkIcon, MailOpenIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, memo } from 'react'

@@ -1,4 +1,4 @@
-import { WfRunId } from 'littlehorse-client'
+import { WfRunId } from 'littlehorse-client/proto'
 
 export const concatWfRunIds = (wfRunId: WfRunId) => {
   const ids = []

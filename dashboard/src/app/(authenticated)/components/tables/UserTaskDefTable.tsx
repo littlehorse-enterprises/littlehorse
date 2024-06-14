@@ -1,4 +1,4 @@
-import { UserTaskDefId } from 'littlehorse-client'
+import { UserTaskDefId } from 'littlehorse-client/proto'
 import { TagIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, Fragment } from 'react'

@@ -1,6 +1,6 @@
 'use client'
 import { Navigation } from '@/app/(authenticated)/components/Navigation'
-import { WfSpec as Spec } from 'littlehorse-client'
+import { WfSpec as Spec } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { Diagram } from '../../../components/Diagram'
 import { Details } from './Details'

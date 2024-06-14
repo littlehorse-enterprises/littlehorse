@@ -1,7 +1,7 @@
 'use server'
 import { lhClient } from '@/app/lhClient'
 import { WithBookmark, WithTenant } from '@/types'
-import { SearchVariableRequest, VariableIdList } from 'littlehorse-client'
+import { SearchVariableRequest, VariableIdList } from 'littlehorse-client/proto'
 
 export type VariableSearchProps = Omit<SearchVariableRequest, 'bookmark'> & WithTenant & WithBookmark
 export const searchVariables = async ({

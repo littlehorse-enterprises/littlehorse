@@ -1,6 +1,6 @@
 'use client'
 import { Disclosure } from '@headlessui/react'
-import { ThreadSpec } from 'littlehorse-client'
+import { ThreadSpec } from 'littlehorse-client/proto'
 import { ChevronUpIcon } from 'lucide-react'
 import { FC } from 'react'
 import { Mutations } from './Mutations'

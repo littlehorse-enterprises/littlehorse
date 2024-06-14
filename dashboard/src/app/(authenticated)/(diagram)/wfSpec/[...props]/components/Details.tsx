@@ -1,5 +1,5 @@
 'use client'
-import { WfSpec } from 'littlehorse-client'
+import { WfSpec } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { Versions } from './Versions'
 
