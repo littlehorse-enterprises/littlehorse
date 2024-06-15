@@ -477,7 +477,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
     }
 
     public void processStopRequest(StopWfRunRequestModel req) {
-        if (req.threadRunNumber >= threadRunsUseMeCarefully.size() || req.threadRunNumber < 0) {
+        if (req.threadRunNumber > getGreatestThreadRunNumber() || req.threadRunNumber < 0) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to stop a non-existent thread id.");
         }
 
@@ -499,8 +499,46 @@ public class WfRunModel extends CoreGetable<WfRun> {
         this.advance(new Date()); // Seems like a good idea, why not?
     }
 
+    public Pair<Boolean, Status> canRescueThreadRun(int threadRunNumber, ProcessorExecutionContext ctx) {
+        this.executionContext = ctx;
+        // Some validations
+        if (threadRunNumber > getGreatestThreadRunNumber() || threadRunNumber < 0) {
+            return Pair.of(false, Status.INVALID_ARGUMENT.withDescription("Tried to rescue a non-existent thread id."));
+        }
+        if (threadRunNumber > 0) {
+            return Pair.of(
+                    false,
+                    Status.UNIMPLEMENTED.withDescription("Currently only entrypoint ThreadRuns may be rescued."));
+        }
+
+        ThreadRunModel toRescue = getThreadRun(threadRunNumber);
+        if (toRescue == null) {
+            return Pair.of(
+                    false,
+                    Status.FAILED_PRECONDITION.withDescription("Specified ThreadRun has been garbage-collected."));
+        }
+        if (toRescue.getStatus() != LHStatus.ERROR) {
+            return Pair.of(
+                    false,
+                    Status.FAILED_PRECONDITION.withDescription(
+                            "Specified ThreadRun has status %s, not ERROR".formatted(toRescue.getStatus())));
+        }
+
+        // TODO: Once we allow rescuing ThreadRun's that aren't the entrypoint, we need to:
+        // - Validate that none of the Failures have been handled.
+        // - Ensure we change the status of the WfRun properly.
+
+        return Pair.of(true, Status.OK);
+    }
+
+    public Optional<Status> rescueThreadRun(
+            int threadRunNumber, boolean skipCurrentNode, ProcessorExecutionContext ctx) {
+        ThreadRunModel toRescue = getThreadRun(threadRunNumber);
+        return toRescue.rescue(skipCurrentNode, ctx);
+    }
+
     public void processResumeRequest(ResumeWfRunRequestModel req) {
-        if (req.threadRunNumber >= threadRunsUseMeCarefully.size() || req.threadRunNumber < 0) {
+        if (req.threadRunNumber > getGreatestThreadRunNumber() || req.threadRunNumber < 0) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to resume a non-existent thread id.");
         }
 
@@ -585,11 +623,8 @@ public class WfRunModel extends CoreGetable<WfRun> {
     public void handleThreadStatus(int threadRunNumber, Date time, LHStatus newStatus) {
         // WfRun Status is determined by the Entrypoint Thread
         if (threadRunNumber == 0) {
-            // TODO: In the future, there may be some other lifecycle hooks here, such as
-            // forcibly
-            // killing (or waiting for) any child threads. To be determined based on
-            // threading
-            // design.
+            // TODO: In the future, there may be some other lifecycle hooks here, such as forcibly
+            // killing (or waiting for) any child threads. To be determined based on threading design.
             if (newStatus == LHStatus.COMPLETED) {
                 endTime = time;
                 transitionTo(LHStatus.COMPLETED);
@@ -600,6 +635,9 @@ public class WfRunModel extends CoreGetable<WfRun> {
             } else if (newStatus == LHStatus.EXCEPTION) {
                 endTime = time;
                 transitionTo(LHStatus.EXCEPTION);
+            } else {
+                // The WfRun's status must always match the entrypoint ThreadRun.
+                transitionTo(newStatus);
             }
         }
 

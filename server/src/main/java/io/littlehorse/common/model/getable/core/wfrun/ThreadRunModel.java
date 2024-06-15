@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.getable.core.wfrun;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
@@ -359,6 +360,47 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         wfRun.pendingInterrupts.add(pi);
     }
 
+    /**
+     * Attempts to "rescue" the ThreadRun. If not possible, returns a `Status` that can
+     * be thrown to the client explaining why the ThreadRun could not be rescued.
+     * @param skipCurrentNode whether to skip past the current node. If set to `false`, then
+     * we attempt to execute the same Node again; else, we move to the next outgoing edge.
+     * @param ctx is a ProcessorExecutionContext.
+     * @return Optional.empty() if we can successfully rescue the ThreadRun; else, a Status
+     * explaining why not.
+     */
+    public Optional<Status> rescue(boolean skipCurrentNode, ProcessorExecutionContext ctx) {
+        // First, Optional<Status> refers to the grpc status which can be thrown as an error
+        // to the client.
+
+        // Note that any child ThreadRuns that were HALTED with the reason PARENT_HALTED
+        // will be automatically un-halted when the status of this ThreadRun moves from
+        // ERROR to RUNNING
+        if (this.status != LHStatus.ERROR) {
+            throw new IllegalStateException("This is a bug: ThreadRun %s on WfRun %s tried to be rescued from status %s"
+                    .formatted(number, wfRun.getId(), status));
+        }
+
+        try {
+            NodeRunModel currentNR = getCurrentNodeRun();
+            NodeModel toActivate;
+            if (skipCurrentNode) {
+                toActivate = currentNR.evaluateOutgoingEdgesAndMaybeMutateVariables(ctx);
+            } else {
+                toActivate = currentNR.getNode();
+            }
+            setStatus(LHStatus.RUNNING);
+            activateNode(toActivate);
+        } catch (NodeFailureException exn) {
+            setStatus(LHStatus.ERROR);
+            return Optional.of(
+                    Status.FAILED_PRECONDITION.withDescription("Could not rescue threadRun: " + exn.getMessage()));
+        }
+
+        this.setEndTime(null); // no longer terminated.
+        return Optional.empty();
+    }
+
     public void halt(ThreadHaltReasonModel reason) {
         reason.setThreadRun(this);
         if (isTerminated()) return;
@@ -398,6 +440,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public void setStatus(LHStatus status) {
         this.status = status;
+        wfRun.handleThreadStatus(number, new Date(), status);
     }
 
     /**

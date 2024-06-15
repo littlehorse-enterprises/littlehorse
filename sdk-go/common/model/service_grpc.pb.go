@@ -67,6 +67,7 @@ const (
 	LittleHorse_ReportTask_FullMethodName              = "/littlehorse.LittleHorse/ReportTask"
 	LittleHorse_StopWfRun_FullMethodName               = "/littlehorse.LittleHorse/StopWfRun"
 	LittleHorse_ResumeWfRun_FullMethodName             = "/littlehorse.LittleHorse/ResumeWfRun"
+	LittleHorse_RescueThreadRun_FullMethodName         = "/littlehorse.LittleHorse/RescueThreadRun"
 	LittleHorse_DeleteWfRun_FullMethodName             = "/littlehorse.LittleHorse/DeleteWfRun"
 	LittleHorse_DeleteTaskDef_FullMethodName           = "/littlehorse.LittleHorse/DeleteTaskDef"
 	LittleHorse_DeleteWfSpec_FullMethodName            = "/littlehorse.LittleHorse/DeleteWfSpec"
@@ -221,6 +222,19 @@ type LittleHorseClient interface {
 	StopWfRun(ctx context.Context, in *StopWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Resumes a WfRun or a specific ThreadRun of a WfRun.
 	ResumeWfRun(ctx context.Context, in *ResumeWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Rescues a failed ThreadRun (in the ERROR state only) by restarting it from
+	// the point of failure. Useful if a bug in Task Worker implementation caused
+	// a WfRun to fail and you did not have a FailureHandler for that NodeRun.
+	//
+	// The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/>
+	// - In the `ERROR` state.<br/>
+	// - Has no `FailureHandler` `ThreadRun`s <br/>
+	// - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure`
+	// yet.
+	//
+	// If that is not true, then the `ThreadRun` cannot be rescued and the request
+	// will return `FAILED_PRECONDITION`.
+	RescueThreadRun(ctx context.Context, in *RescueThreadRunRequest, opts ...grpc.CallOption) (*WfRun, error)
 	// Deletes a WfRun. The WfRun cannot be in the RUNNING state.
 	DeleteWfRun(ctx context.Context, in *DeleteWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a TaskDef.
@@ -708,6 +722,15 @@ func (c *littleHorseClient) ResumeWfRun(ctx context.Context, in *ResumeWfRunRequ
 	return out, nil
 }
 
+func (c *littleHorseClient) RescueThreadRun(ctx context.Context, in *RescueThreadRunRequest, opts ...grpc.CallOption) (*WfRun, error) {
+	out := new(WfRun)
+	err := c.cc.Invoke(ctx, LittleHorse_RescueThreadRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) DeleteWfRun(ctx context.Context, in *DeleteWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LittleHorse_DeleteWfRun_FullMethodName, in, out, opts...)
@@ -980,6 +1003,19 @@ type LittleHorseServer interface {
 	StopWfRun(context.Context, *StopWfRunRequest) (*emptypb.Empty, error)
 	// Resumes a WfRun or a specific ThreadRun of a WfRun.
 	ResumeWfRun(context.Context, *ResumeWfRunRequest) (*emptypb.Empty, error)
+	// Rescues a failed ThreadRun (in the ERROR state only) by restarting it from
+	// the point of failure. Useful if a bug in Task Worker implementation caused
+	// a WfRun to fail and you did not have a FailureHandler for that NodeRun.
+	//
+	// The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/>
+	// - In the `ERROR` state.<br/>
+	// - Has no `FailureHandler` `ThreadRun`s <br/>
+	// - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure`
+	// yet.
+	//
+	// If that is not true, then the `ThreadRun` cannot be rescued and the request
+	// will return `FAILED_PRECONDITION`.
+	RescueThreadRun(context.Context, *RescueThreadRunRequest) (*WfRun, error)
 	// Deletes a WfRun. The WfRun cannot be in the RUNNING state.
 	DeleteWfRun(context.Context, *DeleteWfRunRequest) (*emptypb.Empty, error)
 	// Deletes a TaskDef.
@@ -1159,6 +1195,9 @@ func (UnimplementedLittleHorseServer) StopWfRun(context.Context, *StopWfRunReque
 }
 func (UnimplementedLittleHorseServer) ResumeWfRun(context.Context, *ResumeWfRunRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ResumeWfRun not implemented")
+}
+func (UnimplementedLittleHorseServer) RescueThreadRun(context.Context, *RescueThreadRunRequest) (*WfRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RescueThreadRun not implemented")
 }
 func (UnimplementedLittleHorseServer) DeleteWfRun(context.Context, *DeleteWfRunRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteWfRun not implemented")
@@ -2072,6 +2111,24 @@ func _LittleHorse_ResumeWfRun_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_RescueThreadRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RescueThreadRunRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).RescueThreadRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_RescueThreadRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).RescueThreadRun(ctx, req.(*RescueThreadRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_DeleteWfRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteWfRunRequest)
 	if err := dec(in); err != nil {
@@ -2532,6 +2589,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ResumeWfRun",
 			Handler:    _LittleHorse_ResumeWfRun_Handler,
+		},
+		{
+			MethodName: "RescueThreadRun",
+			Handler:    _LittleHorse_RescueThreadRun_Handler,
 		},
 		{
 			MethodName: "DeleteWfRun",
