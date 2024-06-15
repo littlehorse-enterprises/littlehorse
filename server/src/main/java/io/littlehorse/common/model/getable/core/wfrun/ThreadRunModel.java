@@ -398,6 +398,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         this.setEndTime(null); // no longer terminated.
+        if (getNumber() == 0) {
+            // WfRun status needs to reflect the threadRun status.
+            wfRun.setStatus(LHStatus.RUNNING);
+        }
         return Optional.empty();
     }
 
@@ -440,7 +444,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public void setStatus(LHStatus status) {
         this.status = status;
-        wfRun.handleThreadStatus(number, new Date(), status);
     }
 
     /**
