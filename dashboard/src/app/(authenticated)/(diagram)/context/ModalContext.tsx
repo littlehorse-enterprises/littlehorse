@@ -1,13 +1,13 @@
-import { TaskRun } from 'littlehorse-client/dist/proto/task_run'
-import { Dispatch, SetStateAction, createContext } from 'react'
-import { ModalType } from '../components/Modals'
-import { UserTaskRun } from 'littlehorse-client/dist/proto/user_tasks'
 import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
-import { UserTaskNode } from 'littlehorse-client/dist/proto/wf_spec'
+import { TaskRun } from 'littlehorse-client/dist/proto/task_run'
+import { UserTaskRun } from 'littlehorse-client/dist/proto/user_tasks'
+import { Edge as EdgeProto, UserTaskNode } from 'littlehorse-client/dist/proto/wf_spec'
+import { Dispatch, FC, ProviderProps, SetStateAction, createContext } from 'react'
+import { ModalType, Modals } from '../components/Modals'
 
 export type Modal = {
   type: ModalType
-  data: TaskRun | UserTaskRun
+  data: TaskRun | UserTaskRun | EdgeProto
   nodeRun?: NodeRun
   userTaskNode?: UserTaskNode
 }
@@ -25,4 +25,11 @@ export const ModalContext = createContext<ModalContextType>({
   setShowModal: () => {},
 })
 
-export const ModalProvider = ModalContext.Provider
+export const ModalProvider: FC<ProviderProps<ModalContextType>> = ({ value, children }) => {
+  return (
+    <ModalContext.Provider value={value}>
+      {children}
+      <Modals />
+    </ModalContext.Provider>
+  )
+}
