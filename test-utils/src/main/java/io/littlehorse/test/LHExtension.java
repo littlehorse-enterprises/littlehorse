@@ -9,7 +9,7 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
 import io.littlehorse.test.exception.LHTestInitializationException;
-import io.littlehorse.test.internal.ExternalTestBootstrapper;
+import io.littlehorse.test.internal.StandaloneTestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -32,8 +32,7 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
         Awaitility.setDefaultTimeout(Duration.of(1000, ChronoUnit.MILLIS));
         getStore(context)
                 .getOrComputeIfAbsent(
-                        LH_TEST_CONTEXT, s -> new TestContext(new ExternalTestBootstrapper()), TestContext.class);
-        // LH_TEST_CONTEXT, s -> new TestContext(new StandaloneTestBootstrapper()), TestContext.class);
+                        LH_TEST_CONTEXT, s -> new TestContext(new StandaloneTestBootstrapper()), TestContext.class);
     }
 
     private ExtensionContext.Store getStore(ExtensionContext context) {
