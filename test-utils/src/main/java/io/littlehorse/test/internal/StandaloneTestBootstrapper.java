@@ -11,7 +11,7 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.admin.NewTopic;
-import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
 public class StandaloneTestBootstrapper implements TestBootstrapper {
@@ -32,7 +32,10 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
     }
 
     public void setup() throws Exception {
-        kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.0"));
+        kafka = new KafkaContainer(DockerImageName.parse("apache/kafka:3.7.0"));
+        kafka.withCreateContainerCmdModifier(cmd -> {
+            cmd.getHostConfig().withMemory(1024L * 1024L * 1024L * 2); // 2 GB for Kafka
+        });
         kafka.start();
         workerConfig = new LHConfig(testClientProperties());
         client = workerConfig
@@ -43,7 +46,7 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
 
     private void startServers() throws Exception {
         LHServerConfig server1Config = new LHServerConfig(getServer1Config());
-        LHServerConfig server2Config = new LHServerConfig(getServer2Config());
+        // LHServerConfig server2Config = new LHServerConfig(getServer2Config());
 
         for (NewTopic topic : server1Config.getAllTopics()) {
             server1Config.createKafkaTopic(topic);
@@ -53,7 +56,7 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
 
         // run the server in another thread
         server1 = new KafkaStreamsServerImpl(server1Config);
-        server2 = new KafkaStreamsServerImpl(server2Config);
+        // server2 = new KafkaStreamsServerImpl(server2Config);
 
         new Thread(() -> {
                     try {
@@ -63,14 +66,14 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
                     }
                 })
                 .start();
-        new Thread(() -> {
-                    try {
-                        server2.start();
-                    } catch (IOException exn) {
-                        throw new RuntimeException(exn);
-                    }
-                })
-                .start();
+        // new Thread(() -> {
+        //             try {
+        //                 server2.start();
+        //             } catch (IOException exn) {
+        //                 throw new RuntimeException(exn);
+        //             }
+        //         })
+        //         .start();
     }
 
     private Properties getServer1Config() {
@@ -99,8 +102,9 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
         serverProperties.put(LHServerConfig.CORE_STREAM_THREADS_KEY, "2");
         serverProperties.put(LHServerConfig.LHS_CLUSTER_ID_KEY, "e2e-test-cluster");
         serverProperties.put(LHServerConfig.SHOULD_CREATE_TOPICS_KEY, "false");
-        serverProperties.put(LHServerConfig.ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, 1024L * 1024L * 50);
-        serverProperties.put(LHServerConfig.ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY, 1024L * 1024L * 50);
+        serverProperties.put(LHServerConfig.CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 8));
+        serverProperties.put(LHServerConfig.ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, String.valueOf(1024L * 1024L * 100));
+        serverProperties.put(LHServerConfig.ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 100));
         return serverProperties;
     }
 

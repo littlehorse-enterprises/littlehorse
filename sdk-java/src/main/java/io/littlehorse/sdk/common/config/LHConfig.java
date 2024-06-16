@@ -360,7 +360,7 @@ public class LHConfig extends ConfigBase {
     }
 
     public Integer getInflightTasks() {
-        return Integer.valueOf(getOrSetDefault(INFLIGHT_TASKS_KEY, "1"));
+        return Integer.valueOf(getOrSetDefault(INFLIGHT_TASKS_KEY, String.valueOf(getWorkerThreads() * 2)));
     }
 
     public boolean isOauth() {
@@ -409,6 +409,6 @@ public class LHConfig extends ConfigBase {
      * @return the number of worker threads to run.
      */
     public int getWorkerThreads() {
-        return Integer.valueOf(getOrSetDefault(NUM_WORKER_THREADS_KEY, "2"));
+        return Integer.valueOf(getOrSetDefault(NUM_WORKER_THREADS_KEY, "4"));
     }
 }
