@@ -6,6 +6,7 @@ import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.server.streams.BackendInternalComms;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -16,18 +17,21 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
     private boolean shouldComplete;
     private final BackendInternalComms internalComms;
     private final AbstractCommand<?> command;
+    private final RequestExecutionContext requestContext;
 
     public POSTStreamObserver(
             StreamObserver<U> responseObserver,
             Class<U> responseCls,
             boolean shouldComplete,
             BackendInternalComms internalComms,
-            AbstractCommand<?> command) {
+            AbstractCommand<?> command,
+            RequestExecutionContext requestContext) {
         this.ctx = responseObserver;
         this.responseCls = responseCls;
         this.shouldComplete = shouldComplete;
         this.internalComms = internalComms;
         this.command = command;
+        this.requestContext = requestContext;
     }
 
     @Override
@@ -57,7 +61,7 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
         if (reply.hasResult()) {
             ctx.onNext(buildRespFromBytes(reply.getResult()));
         } else if (reply.hasPartitionMigratedResponse()) {
-            internalComms.waitForCommand(command, this);
+            internalComms.waitForCommand(command, this, requestContext);
         }
     }
 }

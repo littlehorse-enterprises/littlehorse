@@ -63,7 +63,6 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
-import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
@@ -227,7 +226,10 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    public void waitForCommand(AbstractCommand<?> command, StreamObserver<WaitForCommandResponse> observer) {
+    public void waitForCommand(
+            AbstractCommand<?> command,
+            StreamObserver<WaitForCommandResponse> observer,
+            RequestExecutionContext requestCtx) {
         String storeName =
                 switch (command.getStore()) {
                     case CORE -> ServerTopology.CORE_STORE;
@@ -249,12 +251,14 @@ public class BackendInternalComms implements Closeable {
                     .setCommandId(command.getCommandId())
                     .setPartition(meta.partition())
                     .build();
-            getInternalAsyncClient(meta.activeHost()).waitForCommand(req, observer);
+            getInternalAsyncClient(meta.activeHost(), InternalCallCredentials.forContext(requestCtx))
+                    .waitForCommand(req, observer);
         }
     }
 
-    public void doWaitForWorkflowEvent(AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx) {
-        WfRunIdModel wfRunId = LHSerializable.fromProto(req.getWfRunId(), WfRunIdModel.class, executionContext());
+    public void doWaitForWorkflowEvent(
+            AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx, RequestExecutionContext requestCtx) {
+        WfRunIdModel wfRunId = LHSerializable.fromProto(req.getWfRunId(), WfRunIdModel.class, requestCtx);
         KeyQueryMetadata meta = lookupPartitionKey(wfRunId);
 
         if (meta.activeHost().equals(thisHost)) {
@@ -263,8 +267,8 @@ public class BackendInternalComms implements Closeable {
         } else {
             InternalWaitForWfEventRequest internalReq =
                     InternalWaitForWfEventRequest.newBuilder().setRequest(req).build();
-            System.out.println("Doing external wait");
-            getInternalAsyncClient(meta.activeHost()).waitForWfEvent(internalReq, ctx);
+            getInternalAsyncClient(meta.activeHost(), InternalCallCredentials.forContext(requestCtx))
+                    .waitForWfEvent(internalReq, ctx);
         }
     }
 
@@ -392,13 +396,12 @@ public class BackendInternalComms implements Closeable {
         return getInternalClient(host, InternalCallCredentials.forContext(executionContext()));
     }
 
-    private LHInternalsStub getInternalAsyncClient(HostInfo host) {
+    private LHInternalsStub getInternalAsyncClient(HostInfo host, InternalCallCredentials credentials) {
         if (host.port() == -1) {
             throw new LHApiException(
                     Status.UNAVAILABLE, "Kafka Streams not ready or invalid server cluster configuration");
         }
-        return LHInternalsGrpc.newStub(getChannel(host))
-                .withCallCredentials(InternalCallCredentials.forContext(new BackgroundContext()));
+        return LHInternalsGrpc.newStub(getChannel(host)).withCallCredentials(credentials);
     }
 
     private ManagedChannel getChannel(HostInfo host) {

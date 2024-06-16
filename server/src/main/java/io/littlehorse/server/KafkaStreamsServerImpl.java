@@ -513,7 +513,8 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 authorization.principalId(),
                 coreStoreProvider,
                 metadataCache,
-                config);
+                config,
+                requestContext());
     }
 
     @Override
@@ -885,7 +886,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
     @Override
     public void awaitWorkflowEvent(AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx) {
-        internalComms.doWaitForWorkflowEvent(req, ctx);
+        internalComms.doWaitForWorkflowEvent(req, ctx, requestContext());
     }
 
     @Override
@@ -944,7 +945,8 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 PollTaskResponse.class,
                 false,
                 client.getPrincipalId(),
-                client.getTenantId());
+                client.getTenantId(),
+                client.getRequestContext());
     }
 
     public LHProducer getProducer() {
@@ -985,7 +987,8 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 responseCls,
                 shouldCompleteStream,
                 requestContext.authorization().principalId(),
-                requestContext.authorization().tenantId());
+                requestContext.authorization().tenantId(),
+                requestContext);
     }
 
     /*
@@ -1001,11 +1004,12 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             Class<RC> responseCls,
             boolean shouldCompleteStream,
             PrincipalIdModel principalId,
-            TenantIdModel tenantId) {
-        StreamObserver<WaitForCommandResponse> commandObserver =
-                new POSTStreamObserver<>(responseObserver, responseCls, shouldCompleteStream, internalComms, command);
+            TenantIdModel tenantId,
+            RequestExecutionContext context) {
+        StreamObserver<WaitForCommandResponse> commandObserver = new POSTStreamObserver<>(
+                responseObserver, responseCls, shouldCompleteStream, internalComms, command, context);
 
-        Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command);
+        Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command, context);
 
         command.setCommandId(LHUtil.generateGuid());
 
@@ -1028,11 +1032,12 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             RecordMetadata meta,
             Exception exn,
             StreamObserver<WaitForCommandResponse> observer,
-            AbstractCommand<?> command) {
+            AbstractCommand<?> command,
+            RequestExecutionContext context) {
         if (exn != null) {
             observer.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
         } else {
-            internalComms.waitForCommand(command, observer);
+            internalComms.waitForCommand(command, observer, context);
         }
     }
 
