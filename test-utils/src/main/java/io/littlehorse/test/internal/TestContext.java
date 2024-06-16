@@ -52,12 +52,20 @@ public class TestContext {
         this.wfSpecStoreLock = new ReentrantLock();
     }
 
-    public List<LHTaskWorker> discoverTaskWorkers(Object testInstance) {
-        List<LHTaskWorker> workers = new ArrayList<>();
+    public List<String> discoverTaskDefNames(Object testInstance) {
+        List<String> taskDefs = new ArrayList<>();
         List<LHTaskMethod> annotatedMethods =
                 ReflectionUtil.findAnnotatedMethods(testInstance.getClass(), LHTaskMethod.class);
         for (LHTaskMethod annotatedMethod : annotatedMethods) {
-            workers.add(new LHTaskWorker(testInstance, annotatedMethod.value(), config));
+            taskDefs.add(annotatedMethod.value());
+        }
+        return taskDefs;
+    }
+
+    public List<LHTaskWorker> discoverTaskWorkers(Object testInstance) {
+        List<LHTaskWorker> workers = new ArrayList<>();
+        for (String taskDef : discoverTaskDefNames(testInstance)) {
+            workers.add(new LHTaskWorker(testInstance, taskDef, config));
         }
         return workers;
     }

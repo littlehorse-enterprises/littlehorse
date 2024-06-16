@@ -18,8 +18,9 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
+import org.junit.jupiter.api.extension.TestInstancePreDestroyCallback;
 
-public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor {
+public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor, TestInstancePreDestroyCallback {
 
     private static final ExtensionContext.Namespace LH_TEST_NAMESPACE =
             ExtensionContext.Namespace.create(LHExtension.class);
@@ -27,8 +28,8 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
 
     @Override
     public void beforeAll(ExtensionContext context) {
-        Awaitility.setDefaultPollInterval(Duration.of(50, ChronoUnit.MILLIS));
-        Awaitility.setDefaultTimeout(Duration.of(1000, ChronoUnit.MILLIS));
+        Awaitility.setDefaultPollInterval(Duration.of(25, ChronoUnit.MILLIS));
+        Awaitility.setDefaultTimeout(Duration.of(2000, ChronoUnit.MILLIS));
         getStore(context)
                 .getOrComputeIfAbsent(
                         LH_TEST_CONTEXT, s -> new TestContext(new StandaloneTestBootstrapper()), TestContext.class);
@@ -72,6 +73,19 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
             throw new LHTestInitializationException("Something went wrong registering task workers", e);
         }
         testContext.instrument(testInstance);
+    }
+
+    @Override
+    public void preDestroyTestInstance(ExtensionContext context) {
+        ExtensionContext.Store store = getStore(context);
+        Object testInstance = context.getTestInstance().get();
+        TestContext testContext = store.get(LH_TEST_CONTEXT, TestContext.class);
+
+        for (String taskDef : testContext.discoverTaskDefNames(testInstance)) {
+            LHTaskWorker worker = (LHTaskWorker) store.get(taskDef);
+            worker.close();
+            store.remove(taskDef);
+        }
     }
 
     private void maybeCreateTenantAndPrincipal(TestContext testContext) {
