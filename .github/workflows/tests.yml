@@ -21,6 +21,8 @@ jobs:
         with:
           distribution: "corretto"
           java-version: ${{ matrix.java-version }}
+      - name: Validate Indentations
+        run: ./gradlew sdk-java:spotlessCheck
       - name: Tests
         run: ./gradlew sdk-java:test sdk-java:build
       - name: Java Documentaion
@@ -35,6 +37,8 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: "stable"
+      - name: Validate Formatting
+        run: if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then exit 1 ; fi
       - name: Tests
         run: go test ./...
   tests-sdk-python:
@@ -76,6 +80,8 @@ jobs:
         with:
           distribution: "corretto"
           java-version: 17
+      - name: Validate Indentations
+        run: ./gradlew canary:spotlessCheck
       - name: Tests
         run: ./gradlew canary:test canary:build
   tests-server:
@@ -90,7 +96,7 @@ jobs:
           distribution: "corretto"
           java-version: 17
       - name: Validate Indentations
-        run: ./gradlew spotlessCheck
+        run: ./gradlew server:spotlessCheck test-utils:spotlessCheck
       - name: Validate Build
         run: ./gradlew server:build -x test
       - name: Tests
