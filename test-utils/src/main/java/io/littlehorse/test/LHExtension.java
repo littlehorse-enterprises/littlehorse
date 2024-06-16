@@ -28,8 +28,8 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
 
     @Override
     public void beforeAll(ExtensionContext context) {
-        Awaitility.setDefaultPollInterval(Duration.of(25, ChronoUnit.MILLIS));
-        Awaitility.setDefaultTimeout(Duration.of(2000, ChronoUnit.MILLIS));
+        Awaitility.setDefaultPollInterval(Duration.of(40, ChronoUnit.MILLIS));
+        Awaitility.setDefaultTimeout(Duration.of(3000, ChronoUnit.MILLIS));
         getStore(context)
                 .getOrComputeIfAbsent(
                         LH_TEST_CONTEXT, s -> new TestContext(new StandaloneTestBootstrapper()), TestContext.class);

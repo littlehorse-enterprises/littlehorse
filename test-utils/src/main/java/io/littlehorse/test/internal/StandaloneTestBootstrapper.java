@@ -99,8 +99,8 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
         serverProperties.put(LHServerConfig.CORE_STREAM_THREADS_KEY, "2");
         serverProperties.put(LHServerConfig.LHS_CLUSTER_ID_KEY, "e2e-test-cluster");
         serverProperties.put(LHServerConfig.SHOULD_CREATE_TOPICS_KEY, "false");
-        serverProperties.put(LHServerConfig.ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, 1024L * 1024L * 100);
-        serverProperties.put(LHServerConfig.ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY, 1024L * 1024L * 100);
+        serverProperties.put(LHServerConfig.ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, 1024L * 1024L * 50);
+        serverProperties.put(LHServerConfig.ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY, 1024L * 1024L * 50);
         return serverProperties;
     }
 
