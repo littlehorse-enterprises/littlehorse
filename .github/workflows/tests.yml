@@ -21,10 +21,8 @@ jobs:
         with:
           distribution: "corretto"
           java-version: ${{ matrix.java-version }}
-      - name: Validate Indentations
-        run: ./gradlew sdk-java:spotlessCheck
       - name: Tests
-        run: ./gradlew sdk-java:test sdk-java:build
+        run: ./gradlew sdk-java:spotlessCheck sdk-java:test sdk-java:build
       - name: Java Documentaion
         run: ./gradlew sdk-java:javadoc
   tests-sdk-go:
@@ -80,10 +78,8 @@ jobs:
         with:
           distribution: "corretto"
           java-version: 17
-      - name: Validate Indentations
-        run: ./gradlew canary:spotlessCheck
       - name: Tests
-        run: ./gradlew canary:test canary:build
+        run: ./gradlew canary:spotlessCheck canary:test canary:build
   tests-server:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
     runs-on: ubuntu-latest
@@ -95,10 +91,8 @@ jobs:
         with:
           distribution: "corretto"
           java-version: 17
-      - name: Validate Indentations
-        run: ./gradlew server:spotlessCheck test-utils:spotlessCheck
       - name: Validate Build
-        run: ./gradlew server:build -x test
+        run: ./gradlew server:spotlessCheck test-utils:spotlessCheck server:build -x test
       - name: Tests
         run: ./gradlew server:test server:e2e
   tests-e2e:
