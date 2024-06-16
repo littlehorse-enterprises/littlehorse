@@ -92,9 +92,9 @@ jobs:
       - name: Validate Indentations
         run: ./gradlew spotlessCheck
       - name: Validate Build
-        run: ./gradlew build -x test
+        run: ./gradlew server:build -x test
       - name: Tests
-        run: ./gradlew server:test server:e2e server:build
+        run: ./gradlew server:test server:e2e
   tests-e2e:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
     runs-on: ubuntu-latest
