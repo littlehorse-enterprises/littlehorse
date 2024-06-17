@@ -6,9 +6,9 @@ import sys
 from typing import Any, Union
 
 from littlehorse.exceptions import SerdeException
-from littlehorse.model.common_enums_pb2 import VariableType
-from littlehorse.model.common_wfspec_pb2 import Comparator
-from littlehorse.model.variable_pb2 import VariableValue
+from littlehorse.model import VariableType
+from littlehorse.model import Comparator
+from littlehorse.model import VariableValue
 
 
 def read_binary(file_path: Union[str, Path]) -> bytes:

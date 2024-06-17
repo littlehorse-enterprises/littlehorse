@@ -73,6 +73,9 @@ for i in $(ls "$WORK_DIR"/schemas | grep -v -E "^internal" | sed 's/.proto/_pb2/
     sed -i "s/^import ${i}/import littlehorse.model.${i}/" "${WORK_DIR}"/sdk-python/littlehorse/model/*
 done
 
+touch "${WORK_DIR}/sdk-python/littlehorse/model/__init__.py"
+find "${WORK_DIR}/sdk-python/littlehorse/model" -type f -name "*.py" -exec sh -c 'echo "from .$(basename $1 .py) import *" > $(dirname $1)/__init__.py' _ {} \;
+
 # compile js protobuf
 echo "Compiling protobuf sdk-js"
 
