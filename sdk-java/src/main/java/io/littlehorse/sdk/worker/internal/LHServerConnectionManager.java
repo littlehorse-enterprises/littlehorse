@@ -52,6 +52,7 @@ public class LHServerConnectionManager {
 
     public void close() {
         livenessController.stop();
+        rebalanceThread.interrupt();
     }
 
     public LHTaskWorkerHealth healthStatus() {

@@ -111,10 +111,10 @@ task e2e(type: Test, dependsOn: compileJava){
     }
     jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
 
-    // // Run e2e tests in 2 parallel threads to reduce time taken and also increase the
-    // // likelihood of finding race conditions in the server
-    // maxParallelForks = 2
-    // systemProperty "junit.jupiter.execution.parallel.enabled", "true"
+    // Run e2e tests in 2 parallel threads to reduce time taken and also increase the
+    // likelihood of finding race conditions in the server
+    maxParallelForks = 2
+    systemProperty "junit.jupiter.execution.parallel.enabled", "true"
 }
 
 spotless {

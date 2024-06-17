@@ -46,7 +46,7 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
 
     private void startServers() throws Exception {
         LHServerConfig server1Config = new LHServerConfig(getServer1Config());
-        // LHServerConfig server2Config = new LHServerConfig(getServer2Config());
+        LHServerConfig server2Config = new LHServerConfig(getServer2Config());
 
         for (NewTopic topic : server1Config.getAllTopics()) {
             server1Config.createKafkaTopic(topic);
@@ -56,7 +56,7 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
 
         // run the server in another thread
         server1 = new KafkaStreamsServerImpl(server1Config);
-        // server2 = new KafkaStreamsServerImpl(server2Config);
+        server2 = new KafkaStreamsServerImpl(server2Config);
 
         new Thread(() -> {
                     try {
@@ -66,14 +66,14 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
                     }
                 })
                 .start();
-        // new Thread(() -> {
-        //             try {
-        //                 server2.start();
-        //             } catch (IOException exn) {
-        //                 throw new RuntimeException(exn);
-        //             }
-        //         })
-        //         .start();
+        new Thread(() -> {
+                    try {
+                        server2.start();
+                    } catch (IOException exn) {
+                        throw new RuntimeException(exn);
+                    }
+                })
+                .start();
     }
 
     private Properties getServer1Config() {
