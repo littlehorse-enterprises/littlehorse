@@ -13,8 +13,9 @@ from google.protobuf.json_format import MessageToJson
 from google.protobuf.message import Message
 
 from littlehorse.config import LHConfig
-from littlehorse.model import LHErrorType, VariableType
 from littlehorse.model import (
+    LHErrorType,
+    VariableType,
     Comparator,
     TaskNode,
     UTActionTrigger,
@@ -23,19 +24,13 @@ from littlehorse.model import (
     VariableMutation,
     VariableMutationType,
     ExponentialBackoffRetryPolicy,
-)
-from littlehorse.model import (
     ExternalEventDefId,
     TaskDefId,
     WorkflowEventDefId,
-)
-from littlehorse.model import (
     PutExternalEventDefRequest,
     PutWfSpecRequest,
     AllowedUpdateType,
-)
-from littlehorse.model import VariableValue
-from littlehorse.model import (
+    VariableValue,
     Edge,
     EdgeCondition,
     EntrypointNode,

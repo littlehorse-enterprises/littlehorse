@@ -2,14 +2,19 @@ from typing import Any
 import unittest
 import uuid
 from littlehorse.exceptions import TaskSchemaMismatchException
-from littlehorse.model import VariableType
-from littlehorse.model import VariableDef
-from littlehorse.model import NodeRunId, TaskRunId, WfRunId
-from littlehorse.model import ScheduledTask, RegisterTaskWorkerResponse
-from littlehorse.model import TaskDef
-from littlehorse.model import TaskNodeReference, TaskRunSource
-from littlehorse.model import UserTaskTriggerReference
-
+from littlehorse.model import (
+    VariableType,
+    VariableDef,
+    NodeRunId,
+    TaskRunId,
+    WfRunId,
+    ScheduledTask,
+    RegisterTaskWorkerResponse,
+    TaskDef,
+    TaskNodeReference,
+    TaskRunSource,
+    UserTaskTriggerReference,
+)
 
 from littlehorse.worker import (
     LHTask,

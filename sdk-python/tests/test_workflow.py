@@ -11,14 +11,10 @@ from littlehorse.model import (
     VariableMutationType,
     UTActionTrigger,
     ExponentialBackoffRetryPolicy,
-)
-from littlehorse.model import (
     ExternalEventDefId,
     TaskDefId,
-)
-from littlehorse.model import PutWfSpecRequest
-from littlehorse.model import VariableValue
-from littlehorse.model import (
+    PutWfSpecRequest,
+    VariableValue,
     Edge,
     EdgeCondition,
     EntrypointNode,
