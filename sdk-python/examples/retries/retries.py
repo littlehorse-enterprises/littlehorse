@@ -5,8 +5,7 @@ from pathlib import Path
 
 import littlehorse
 from littlehorse.config import LHConfig
-from littlehorse.model.common_enums_pb2 import VariableType
-from littlehorse.model.common_wfspec_pb2 import ExponentialBackoffRetryPolicy
+from littlehorse.model import VariableType, ExponentialBackoffRetryPolicy
 
 from littlehorse.worker import LHTaskWorker, WorkerContext
 from littlehorse.workflow import WorkflowThread, Workflow
