@@ -70,6 +70,10 @@ public final class PollTaskStub {
                 .build());
     }
 
+    public void acquireNextPermit() throws InterruptedException {
+        semaphore.acquire();
+    }
+
     private final class ServerResponseObserver implements StreamObserver<PollTaskResponse> {
         private final LittleHorseGrpc.LittleHorseStub bootstrapStub;
 
