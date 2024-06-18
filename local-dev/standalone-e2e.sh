@@ -7,5 +7,5 @@ WORK_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 
 cd "$WORK_DIR"
 
-./gradlew server:clean server:testJar
+./gradlew server:testJar
 java -cp "./server/build/libs/*" org.junit.platform.console.ConsoleLauncher junit execute --select-package e2e
