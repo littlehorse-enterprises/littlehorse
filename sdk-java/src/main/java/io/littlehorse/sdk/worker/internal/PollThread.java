@@ -28,6 +28,9 @@ public class PollThread extends Thread implements Closeable {
                 PollTaskStub pollClient = activePollClientsIterator.next();
                 if (!requireConcurrency || pollClient.isReady()) {
                     pollClient.doNext();
+                } else {
+                    // stop requests until it receives enough responses
+                    pollClient.acquireNextPermit();
                 }
                 if (pollClient.isClosed()) {
                     stillRunning = false;
