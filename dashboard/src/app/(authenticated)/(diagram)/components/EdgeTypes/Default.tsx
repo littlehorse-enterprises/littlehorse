@@ -1,4 +1,4 @@
-import { Edge as EdgeProto } from 'littlehorse-client/dist/proto/wf_spec'
+import { Edge as EdgeProto } from 'littlehorse-client/proto'
 import { CircleAlertIcon } from 'lucide-react'
 import { FC, memo, useCallback } from 'react'
 import { BaseEdge, EdgeLabelRenderer, Position, SmoothStepEdgeProps, getSmoothStepPath } from 'reactflow'

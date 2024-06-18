@@ -1,5 +1,5 @@
 'use client'
-import { ExternalEventDef } from 'littlehorse-client/dist/proto/external_event'
+import { ExternalEventDef } from 'littlehorse-client/proto'
 import { FC } from 'react'
 
 type DetailsProps = {

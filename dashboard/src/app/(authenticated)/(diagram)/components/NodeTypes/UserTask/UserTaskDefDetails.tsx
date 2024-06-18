@@ -1,6 +1,6 @@
 import { UserAndGroupAssignmentInfo } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/UserAndGroupAssignmentInfo'
 import { getVariable } from '@/app/utils'
-import { UserTaskNode } from 'littlehorse-client/dist/proto/wf_spec'
+import { UserTaskNode } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { UserTaskNotes } from './UserTaskNotes'
 

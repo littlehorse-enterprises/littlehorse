@@ -1,11 +1,7 @@
 'use server'
 
 import { lhClient } from '@/app/lhClient'
-import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
-import { WfRunId } from 'littlehorse-client/dist/proto/object_id'
-import { Variable } from 'littlehorse-client/dist/proto/variable'
-import { ThreadRun, WfRun } from 'littlehorse-client/dist/proto/wf_run'
-import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
+import { NodeRun, ThreadRun, Variable, WfRun, WfRunId, WfSpec } from 'littlehorse-client/proto'
 import { cookies } from 'next/headers'
 
 type Props = {

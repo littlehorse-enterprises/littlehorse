@@ -1,7 +1,6 @@
 import { getVariable, getVariableValue } from '@/app/utils'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { VariableMutation } from 'littlehorse-client/dist/proto/common_wfspec'
-import { Edge as EdgeProto } from 'littlehorse-client/dist/proto/wf_spec'
+import { Edge as EdgeProto, VariableMutation } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
