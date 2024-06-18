@@ -83,8 +83,10 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
 
         for (String taskDef : testContext.discoverTaskDefNames(testInstance)) {
             LHTaskWorker worker = (LHTaskWorker) store.get(taskDef);
-            worker.close();
-            store.remove(taskDef);
+            if (worker != null) {
+                worker.close();
+                store.remove(taskDef);
+            }
         }
     }
 
