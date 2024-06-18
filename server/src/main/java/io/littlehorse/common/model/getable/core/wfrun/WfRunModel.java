@@ -6,6 +6,8 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.MissingThreadRunException;
+import io.littlehorse.common.exceptions.UnRescuableThreadRunException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
@@ -499,29 +501,33 @@ public class WfRunModel extends CoreGetable<WfRun> {
         this.advance(new Date()); // Seems like a good idea, why not?
     }
 
-    public Pair<Boolean, Status> canRescueThreadRun(int threadRunNumber, ProcessorExecutionContext ctx) {
-        this.executionContext = ctx;
+    public Optional<Status> rescueThreadRun(int threadRunNumber, boolean skipCurrentNode, ProcessorExecutionContext ctx)
+            throws MissingThreadRunException, UnRescuableThreadRunException {
+        validateCanRescueThreadRun(threadRunNumber, ctx);
+        ThreadRunModel toRescue = getThreadRun(threadRunNumber);
+        return toRescue.rescue(skipCurrentNode, ctx);
+    }
+
+    private void validateCanRescueThreadRun(int threadRunNumber, ProcessorExecutionContext ctx)
+            throws MissingThreadRunException, UnRescuableThreadRunException {
         // Some validations
         if (threadRunNumber > getGreatestThreadRunNumber() || threadRunNumber < 0) {
-            return Pair.of(false, Status.INVALID_ARGUMENT.withDescription("Tried to rescue a non-existent thread id."));
+            throw new MissingThreadRunException("Tried to rescue a non-existent thread id.");
         }
 
         ThreadRunModel toRescue = getThreadRun(threadRunNumber);
         if (toRescue == null) {
-            return Pair.of(
-                    false,
-                    Status.FAILED_PRECONDITION.withDescription("Specified ThreadRun has been garbage-collected."));
+            throw new UnRescuableThreadRunException("Specified ThreadRun has been garbage-collected.");
         }
         if (toRescue.getStatus() != LHStatus.ERROR) {
-            return Pair.of(
-                    false,
-                    Status.FAILED_PRECONDITION.withDescription(
-                            "Specified ThreadRun has status %s, not ERROR".formatted(toRescue.getStatus())));
+            throw new UnRescuableThreadRunException(
+                    "Specified ThreadRun has status %s, not ERROR".formatted(toRescue.getStatus()));
         }
 
         NodeRunModel failedNode = toRescue.getCurrentNodeRun();
         if (failedNode.getFailures().isEmpty()) {
-            throw new IllegalStateException("A ThreadRun can only fail if there is a Failure on its current NodeRun");
+            throw new IllegalStateException(
+                    "This is a LH Bug: A ThreadRun can only fail if there is a Failure on its current NodeRun");
         }
 
         // Now we need to validate that the actual ERROR hasn't been handled by some exception handler somewhere.
@@ -529,20 +535,11 @@ public class WfRunModel extends CoreGetable<WfRun> {
         while (child.getParent() != null) {
             ThreadRunModel parent = child.getParent();
             if (parent.handledFailedChildren.contains(child.getNumber())) {
-                return Pair.of(
-                        false,
-                        Status.FAILED_PRECONDITION.withDescription(
-                                "Parent of specified ThreadRun has already handled the failure"));
+                throw new UnRescuableThreadRunException(
+                        "Parent of specified ThreadRun has already handled the failure");
             }
             child = parent;
         }
-        return Pair.of(true, Status.OK);
-    }
-
-    public Optional<Status> rescueThreadRun(
-            int threadRunNumber, boolean skipCurrentNode, ProcessorExecutionContext ctx) {
-        ThreadRunModel toRescue = getThreadRun(threadRunNumber);
-        return toRescue.rescue(skipCurrentNode, ctx);
     }
 
     public void processResumeRequest(ResumeWfRunRequestModel req) {

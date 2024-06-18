@@ -5,6 +5,8 @@ import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.MissingThreadRunException;
+import io.littlehorse.common.exceptions.UnRescuableThreadRunException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -13,9 +15,7 @@ import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
-import java.util.Optional;
 import lombok.Getter;
-import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 public class RescueThreadRunRequestModel extends CoreSubCommand<RescueThreadRunRequest> {
@@ -58,16 +58,12 @@ public class RescueThreadRunRequestModel extends CoreSubCommand<RescueThreadRunR
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find WfRun %s".formatted(wfRunId));
         }
 
-        Pair<Boolean, Status> canRescueAndStatus = wfRun.canRescueThreadRun(threadRunNumber, ctx);
-        boolean canRescue = canRescueAndStatus.getKey();
-        if (!canRescue) {
-            Status errorStatus = canRescueAndStatus.getRight();
-            throw new LHApiException(errorStatus);
-        }
-
-        Optional<Status> statusToThrow = wfRun.rescueThreadRun(threadRunNumber, skipCurrentNode, ctx);
-        if (statusToThrow.isPresent()) {
-            throw new LHApiException(statusToThrow.get());
+        try {
+            wfRun.rescueThreadRun(threadRunNumber, skipCurrentNode, ctx);
+        } catch (MissingThreadRunException exn) {
+            throw exn.toLHApiException();
+        } catch (UnRescuableThreadRunException exn) {
+            throw exn.toLHApiException();
         }
 
         return wfRun.toProto().build();
