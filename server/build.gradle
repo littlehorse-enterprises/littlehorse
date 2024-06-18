@@ -69,6 +69,8 @@ dependencies {
     testImplementation project(":test-utils")
 
     testImplementation 'org.awaitility:awaitility:4.2.0'
+    testImplementation 'org.junit.platform:junit-platform-console-standalone:1.11.0-M2'
+
 }
 
 
@@ -124,3 +126,27 @@ spotless {
         palantirJavaFormat()
     }
 }
+
+task testJar(type: Jar) {
+    from sourceSets.test.output
+    archiveClassifier.set('tests')
+    description = 'Assembles a jar archive containing the test classes.'
+    group = 'build'
+    manifest {
+        attributes(
+                'Class-Path': configurations.testRuntimeClasspath.files.collect { it.name }.join(' '),
+                'Main-Class': 'org.junit.platform.console.ConsoleLauncher'
+        )
+    }
+
+    dependsOn configurations.testRuntimeClasspath
+    from {
+        configurations.testRuntimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy(DuplicatesStrategy.INCLUDE)
+}
+
+
+
+
+
