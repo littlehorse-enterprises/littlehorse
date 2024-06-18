@@ -1117,6 +1117,33 @@ export interface ResumeWfRunRequest {
   threadRunNumber: number;
 }
 
+/** The request used to rescue a failed ThreadRun at a specific NodeRun. */
+export interface RescueThreadRunRequest {
+  /** The id of the `WfRun` which we are going to rescue. */
+  wfRunId:
+    | WfRunId
+    | undefined;
+  /**
+   * The number of the failed `ThreadRun` that we will rescue. The specified
+   * `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/>
+   * - In the `ERROR` state.<br/>
+   * - Has no `FailureHandler` `ThreadRun`s <br/>
+   * - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure`
+   * yet.
+   *
+   * If that is not true, then the `ThreadRun` cannot be rescued and the request
+   * will return `FAILED_PRECONDITION`.
+   */
+  threadRunNumber: number;
+  /**
+   * If set to `true`, then the ThreadRun will skip past the `Node` of the
+   * current failed `NodeRun` and advance according to the outgoing edges.
+   * If set to `false`, then the `ThreadRun` will schedule another `NodeRun` for
+   * the current `Node`
+   */
+  skipCurrentNode: boolean;
+}
+
 /** Query to retrieve a specific TaskDef Metrics Window. */
 export interface TaskDefMetricsQueryRequest {
   /**
@@ -5447,6 +5474,75 @@ export const ResumeWfRunRequest = {
   },
 };
 
+function createBaseRescueThreadRunRequest(): RescueThreadRunRequest {
+  return { wfRunId: undefined, threadRunNumber: 0, skipCurrentNode: false };
+}
+
+export const RescueThreadRunRequest = {
+  encode(message: RescueThreadRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.threadRunNumber !== 0) {
+      writer.uint32(16).int32(message.threadRunNumber);
+    }
+    if (message.skipCurrentNode !== false) {
+      writer.uint32(24).bool(message.skipCurrentNode);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): RescueThreadRunRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRescueThreadRunRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.threadRunNumber = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.skipCurrentNode = reader.bool();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<RescueThreadRunRequest>): RescueThreadRunRequest {
+    return RescueThreadRunRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<RescueThreadRunRequest>): RescueThreadRunRequest {
+    const message = createBaseRescueThreadRunRequest();
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
+    message.threadRunNumber = object.threadRunNumber ?? 0;
+    message.skipCurrentNode = object.skipCurrentNode ?? false;
+    return message;
+  },
+};
+
 function createBaseTaskDefMetricsQueryRequest(): TaskDefMetricsQueryRequest {
   return { windowStart: undefined, windowType: MetricsWindowLength.MINUTES_5, taskDefName: undefined };
 }
@@ -7224,6 +7320,28 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /**
+     * Rescues a failed ThreadRun (in the ERROR state only) by restarting it from
+     * the point of failure. Useful if a bug in Task Worker implementation caused
+     * a WfRun to fail and you did not have a FailureHandler for that NodeRun.
+     *
+     * The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/>
+     * - In the `ERROR` state.<br/>
+     * - Has no `FailureHandler` `ThreadRun`s <br/>
+     * - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure`
+     * yet.
+     *
+     * If that is not true, then the `ThreadRun` cannot be rescued and the request
+     * will return `FAILED_PRECONDITION`.
+     */
+    rescueThreadRun: {
+      name: "RescueThreadRun",
+      requestType: RescueThreadRunRequest,
+      requestStream: false,
+      responseType: WfRun,
+      responseStream: false,
+      options: {},
+    },
     /** Deletes a WfRun. The WfRun cannot be in the RUNNING state. */
     deleteWfRun: {
       name: "DeleteWfRun",
@@ -7606,6 +7724,21 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   stopWfRun(request: StopWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Resumes a WfRun or a specific ThreadRun of a WfRun. */
   resumeWfRun(request: ResumeWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
+  /**
+   * Rescues a failed ThreadRun (in the ERROR state only) by restarting it from
+   * the point of failure. Useful if a bug in Task Worker implementation caused
+   * a WfRun to fail and you did not have a FailureHandler for that NodeRun.
+   *
+   * The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/>
+   * - In the `ERROR` state.<br/>
+   * - Has no `FailureHandler` `ThreadRun`s <br/>
+   * - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure`
+   * yet.
+   *
+   * If that is not true, then the `ThreadRun` cannot be rescued and the request
+   * will return `FAILED_PRECONDITION`.
+   */
+  rescueThreadRun(request: RescueThreadRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfRun>>;
   /** Deletes a WfRun. The WfRun cannot be in the RUNNING state. */
   deleteWfRun(request: DeleteWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Deletes a TaskDef. */
@@ -7909,6 +8042,21 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   stopWfRun(request: DeepPartial<StopWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Resumes a WfRun or a specific ThreadRun of a WfRun. */
   resumeWfRun(request: DeepPartial<ResumeWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
+  /**
+   * Rescues a failed ThreadRun (in the ERROR state only) by restarting it from
+   * the point of failure. Useful if a bug in Task Worker implementation caused
+   * a WfRun to fail and you did not have a FailureHandler for that NodeRun.
+   *
+   * The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/>
+   * - In the `ERROR` state.<br/>
+   * - Has no `FailureHandler` `ThreadRun`s <br/>
+   * - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure`
+   * yet.
+   *
+   * If that is not true, then the `ThreadRun` cannot be rescued and the request
+   * will return `FAILED_PRECONDITION`.
+   */
+  rescueThreadRun(request: DeepPartial<RescueThreadRunRequest>, options?: CallOptions & CallOptionsExt): Promise<WfRun>;
   /** Deletes a WfRun. The WfRun cannot be in the RUNNING state. */
   deleteWfRun(request: DeepPartial<DeleteWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Deletes a TaskDef. */

@@ -202,6 +202,19 @@ service LittleHorse {
   rpc StopWfRun(StopWfRunRequest) returns (google.protobuf.Empty) {}
   // Resumes a WfRun or a specific ThreadRun of a WfRun.
   rpc ResumeWfRun(ResumeWfRunRequest) returns (google.protobuf.Empty) {}
+  // Rescues a failed ThreadRun (in the ERROR state only) by restarting it from 
+  // the point of failure. Useful if a bug in Task Worker implementation caused
+  // a WfRun to fail and you did not have a FailureHandler for that NodeRun.
+  //
+  // The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/>
+  // - In the `ERROR` state.<br/>
+  // - Has no `FailureHandler` `ThreadRun`s <br/>
+  // - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure`
+  // yet.
+  //
+  // If that is not true, then the `ThreadRun` cannot be rescued and the request
+  // will return `FAILED_PRECONDITION`.
+  rpc RescueThreadRun(RescueThreadRunRequest) returns (WfRun) {}
 
   // Deletes a WfRun. The WfRun cannot be in the RUNNING state.
   rpc DeleteWfRun(DeleteWfRunRequest) returns (google.protobuf.Empty) {}
@@ -1047,6 +1060,29 @@ message ResumeWfRunRequest {
   // the thread_run_number field, it defaults to zero, so resuming the entire WfRun is the
   // default behavior.
   int32 thread_run_number = 2;
+}
+
+// The request used to rescue a failed ThreadRun at a specific NodeRun.
+message RescueThreadRunRequest {
+    // The id of the `WfRun` which we are going to rescue.
+    WfRunId wf_run_id = 1;
+
+    // The number of the failed `ThreadRun` that we will rescue. The specified
+    // `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/>
+    // - In the `ERROR` state.<br/>
+    // - Has no `FailureHandler` `ThreadRun`s <br/>
+    // - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure`
+    // yet.
+    //
+    // If that is not true, then the `ThreadRun` cannot be rescued and the request
+    // will return `FAILED_PRECONDITION`.
+    int32 thread_run_number = 2;
+
+    // If set to `true`, then the ThreadRun will skip past the `Node` of the
+    // current failed `NodeRun` and advance according to the outgoing edges.
+    // If set to `false`, then the `ThreadRun` will schedule another `NodeRun` for
+    // the current `Node`
+    bool skip_current_node = 3;
 }
 
 // Query to retrieve a specific TaskDef Metrics Window.

@@ -316,6 +316,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 | [ResumeWfRunRequest](#resumewfrunrequest) | [.google.protobuf.Empty](#googleprotobufempty) | Resumes a WfRun or a specific ThreadRun of a WfRun. |
 
+### RPC `RescueThreadRun` {#rescuethreadrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [RescueThreadRunRequest](#rescuethreadrunrequest) | [WfRun](#wfrun) | Rescues a failed ThreadRun (in the ERROR state only) by restarting it from  the point of failure. Useful if a bug in Task Worker implementation caused a WfRun to fail and you did not have a FailureHandler for that NodeRun.<br/><br/>The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/> - In the `ERROR` state.<br/> - Has no `FailureHandler` `ThreadRun`s <br/> - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure` yet.<br/><br/>If that is not true, then the `ThreadRun` cannot be rescued and the request will return `FAILED_PRECONDITION`. |
+
 ### RPC `DeleteWfRun` {#deletewfrun}
 
 | Request Type | Response Type | Description |
@@ -1816,6 +1822,21 @@ Request used by the Task Worker SDK to report the result of a TaskRun execution.
 | `output` | oneof `result`| [VariableValue](#variablevalue) | Successfully completed task |
 | `error` | oneof `result`| [LHTaskError](#lhtaskerror) | Technical error |
 | `exception` | oneof `result`| [LHTaskException](#lhtaskexception) | Business exception |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `RescueThreadRunRequest` {#rescuethreadrunrequest}
+
+The request used to rescue a failed ThreadRun at a specific NodeRun.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `wf_run_id` | | [WfRunId](#wfrunid) | The id of the `WfRun` which we are going to rescue. |
+| `thread_run_number` | | int32 | The number of the failed `ThreadRun` that we will rescue. The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/> - In the `ERROR` state.<br/> - Has no `FailureHandler` `ThreadRun`s <br/> - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure` yet.<br/><br/>If that is not true, then the `ThreadRun` cannot be rescued and the request will return `FAILED_PRECONDITION`. |
+| `skip_current_node` | | bool | If set to `true`, then the ThreadRun will skip past the `Node` of the current failed `NodeRun` and advance according to the outgoing edges. If set to `false`, then the `ThreadRun` will schedule another `NodeRun` for the current `Node` |
  <!-- end Fields -->
  <!-- end HasFields -->
 

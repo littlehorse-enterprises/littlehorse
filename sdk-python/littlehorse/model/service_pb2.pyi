@@ -631,6 +631,16 @@ class ResumeWfRunRequest(_message.Message):
     thread_run_number: int
     def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., thread_run_number: _Optional[int] = ...) -> None: ...
 
+class RescueThreadRunRequest(_message.Message):
+    __slots__ = ["wf_run_id", "thread_run_number", "skip_current_node"]
+    WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    THREAD_RUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
+    SKIP_CURRENT_NODE_FIELD_NUMBER: _ClassVar[int]
+    wf_run_id: _object_id_pb2.WfRunId
+    thread_run_number: int
+    skip_current_node: bool
+    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., thread_run_number: _Optional[int] = ..., skip_current_node: bool = ...) -> None: ...
+
 class TaskDefMetricsQueryRequest(_message.Message):
     __slots__ = ["window_start", "window_type", "task_def_name"]
     WINDOW_START_FIELD_NUMBER: _ClassVar[int]
