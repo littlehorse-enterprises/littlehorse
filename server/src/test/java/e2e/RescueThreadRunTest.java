@@ -4,9 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.grpc.Status.Code;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.util.Arg;
+import io.littlehorse.sdk.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -18,7 +21,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.Test;
 
-@LHTest
+@LHTest(externalEventNames = {"rescue-complete-child", "rescue-complete-parent"})
 public class RescueThreadRunTest {
 
     private WorkflowVerifier verifier;
@@ -27,6 +30,9 @@ public class RescueThreadRunTest {
 
     @LHWorkflow("simple-rescue-threadrun")
     private Workflow simpleRescueThreadRun;
+
+    @LHWorkflow("multi-thread-rescue-threadrun")
+    private Workflow multiThreadRescueThreadRun;
 
     @LHWorkflow("simple-rescue-threadrun")
     public Workflow getSimpleWorkflow() {
@@ -40,6 +46,33 @@ public class RescueThreadRunTest {
 
             // Should continue on for free
             wf.execute("no-rescue-needed");
+        });
+    }
+
+    // This test allows us to test edge cases about starting and resuming failed child/parent threadruns
+    // when doing the RescueThreadRun RPC.
+    @LHWorkflow("multi-thread-rescue-threadrun")
+    public Workflow getMultiThreadWorkflow() {
+        return Workflow.newWorkflow("multi-thread-rescue-threadrun", wf -> {
+
+            // Allow us to control which threadRun fails and when
+            WfRunVariable parentFailures = wf.addVariable("parent-failures", 0);
+            WfRunVariable childFailures = wf.addVariable("child-failures", 0);
+
+            SpawnedThread childThreadHandle = wf.spawnThread(
+                    child -> {
+                        child.execute("throw-error-x-times", childFailures);
+
+                        // WaitForEvent allows us to control when each one completes
+                        child.waitForEvent("rescue-complete-child");
+                    },
+                    "child",
+                    null);
+
+            wf.execute("throw-error-x-times", parentFailures);
+            wf.waitForEvent("rescue-complete-parent");
+
+            wf.waitForThreads(SpawnedThreads.of(childThreadHandle));
         });
     }
 
@@ -90,6 +123,69 @@ public class RescueThreadRunTest {
                 .start();
     }
 
+    @Test
+    void childThreadRestartsIfParentIsRescued() {
+        verifier.prepareRun(multiThreadRescueThreadRun, Arg.of("parent-failures", 1))
+                .waitForNodeRunStatus(0, 2, LHStatus.ERROR)
+                .waitForThreadRunStatus(1, LHStatus.HALTED)
+                .thenRescueThreadRun(0, false)
+                .thenSendExternalEventWithContent("rescue-complete-parent", "Ahsoka Tano")
+                .thenSendExternalEventWithContent("rescue-complete-child", "Ima-Gun Di")
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyWfRun(wfRun -> {
+                    assertThat(wfRun.getThreadRuns(1).getStatus()).isEqualTo(LHStatus.COMPLETED);
+                })
+                .start();
+    }
+
+    @Test
+    void parentThreadRestartsFromWaitForThreadsNodeIfChildIsRescued() {
+        verifier.prepareRun(multiThreadRescueThreadRun, Arg.of("child-failures", 1))
+                .thenSendExternalEventWithContent("rescue-complete-parent", "Obi-Wan Kenobi")
+                .waitForNodeRunStatus(1, 1, LHStatus.ERROR)
+                // Parent will fail once child fails
+                .waitForThreadRunStatus(0, LHStatus.ERROR)
+                .thenVerifyWfRun(wfRun -> {
+                    assertThat(wfRun.getThreadRuns(0).getCurrentNodePosition()).isEqualTo(4);
+                })
+                // We should be on a WAIT_FOR_THREADS node right now
+                .thenVerifyNodeRun(0, 4, nodeRun -> {
+                    assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_THREADS);
+                    assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.ERROR);
+                })
+                .thenRescueThreadRun(1, false)
+                .thenSendExternalEventWithContent("rescue-complete-child", "Kit Fisto")
+                .waitForStatus(LHStatus.COMPLETED)
+                // The failed WAIT_FOR_THREADS NodeRun should remain as a historical artifact.
+                // What we want to do is verify that there was a *SECOND* attempt at waiting
+                // for threads.
+                .thenVerifyNodeRun(0, 5, nodeRun -> {
+                    assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.WAIT_THREADS);
+                })
+                .start();
+    }
+
+    @Test
+    void parentThreadOnExternalEventNodeNotAffectedByChildRescue() {
+        verifier.prepareRun(multiThreadRescueThreadRun, Arg.of("child-failures", 1))
+                .waitForNodeRunStatus(1, 1, LHStatus.ERROR)
+                // Parent should still be RUNNING but child is ERROR
+                .thenVerifyWfRun(wfRun -> {
+                    assertThat(wfRun.getThreadRuns(0).getStatus()).isEqualTo(LHStatus.RUNNING);
+                    assertThat(wfRun.getThreadRuns(0).getCurrentNodePosition()).isEqualTo(3);
+                    assertThat(wfRun.getThreadRuns(1).getStatus()).isEqualTo(LHStatus.ERROR);
+                })
+                .thenRescueThreadRun(1, false)
+                .thenSendExternalEventWithContent("rescue-complete-child", "Agen Kolar")
+                .thenSendExternalEventWithContent("rescue-complete-parent", "Saesee Tiin")
+                .waitForStatus(LHStatus.COMPLETED)
+                // We should only have ONE wait for threads node on the parent.
+                .thenVerifyNodeRun(0, 5, nodeRun -> {
+                    assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.EXIT);
+                })
+                .start();
+    }
+
     @LHTaskMethod("no-rescue-needed")
     public void noRescueNeeded() {
         // nothing to do
@@ -97,7 +193,7 @@ public class RescueThreadRunTest {
 
     @LHTaskMethod("throw-error-x-times")
     public void throwErrorXTimes(int timesToFail, WorkerContext ctx) {
-        String key = ctx.getWfRunId().getId();
+        String key = ctx.getWfRunId().getId() + "-" + ctx.getNodeRunId().getThreadRunNumber();
         int timesFailed = wfRunToTimesFailed.computeIfAbsent(key, (k) -> {
             return 0;
         });

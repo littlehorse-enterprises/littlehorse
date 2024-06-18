@@ -36,6 +36,7 @@ import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.ThreadHaltReason;
@@ -401,6 +402,19 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         if (getNumber() == 0) {
             // WfRun status needs to reflect the threadRun status.
             wfRun.setStatus(LHStatus.RUNNING);
+        } else {
+            ThreadRunModel parent = getParent();
+            if (parent.getStatus() == LHStatus.ERROR) {
+                NodeRunModel parentCurrentNR = parent.getCurrentNodeRun();
+                if (parentCurrentNR.getType() == NodeTypeCase.WAIT_THREADS
+                        || parentCurrentNR.getType() == NodeTypeCase.EXIT) {
+                    FailureModel parentFailure =
+                            parent.getCurrentNodeRun().getLatestFailure().get();
+                    if (parentFailure.getFailureName().equals(LHErrorType.CHILD_FAILURE.toString())) {
+                        return parent.rescue(false, ctx);
+                    }
+                }
+            }
         }
         return Optional.empty();
     }
