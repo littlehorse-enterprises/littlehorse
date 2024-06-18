@@ -13,8 +13,9 @@ from google.protobuf.json_format import MessageToJson
 from google.protobuf.message import Message
 
 from littlehorse.config import LHConfig
-from littlehorse.model.common_enums_pb2 import LHErrorType, VariableType
-from littlehorse.model.common_wfspec_pb2 import (
+from littlehorse.model import (
+    LHErrorType,
+    VariableType,
     Comparator,
     TaskNode,
     UTActionTrigger,
@@ -23,19 +24,13 @@ from littlehorse.model.common_wfspec_pb2 import (
     VariableMutation,
     VariableMutationType,
     ExponentialBackoffRetryPolicy,
-)
-from littlehorse.model.object_id_pb2 import (
     ExternalEventDefId,
     TaskDefId,
     WorkflowEventDefId,
-)
-from littlehorse.model.service_pb2 import (
     PutExternalEventDefRequest,
     PutWfSpecRequest,
     AllowedUpdateType,
-)
-from littlehorse.model.variable_pb2 import VariableValue
-from littlehorse.model.wf_spec_pb2 import (
+    VariableValue,
     Edge,
     EdgeCondition,
     EntrypointNode,
@@ -740,6 +735,7 @@ class WorkflowThread:
         initializer: "ThreadInitializer",
         default_retries: Optional[int] = None,
         default_exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = None,
+        default_timeout_seconds: Optional[int] = None,
     ) -> None:
         """This is used to define the logic of a ThreadSpec in a ThreadInitializer.
 
@@ -750,6 +746,7 @@ class WorkflowThread:
         self._default_exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = (
             default_exponential_backoff
         )
+        self._default_timeout_seconds: Optional[int] = default_timeout_seconds
         self._default_retries: Optional[int] = default_retries
         self._wf_run_variables: list[WfRunVariable] = []
         self._wf_interruptions: list[WorkflowInterruption] = []
@@ -1016,6 +1013,7 @@ class WorkflowThread:
         self,
         task_name: Union[str, LHFormatString, WfRunVariable],
         *args: Any,
+        timeout_seconds: Optional[int] = None,
         retries: Optional[int] = None,
         exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = None,
     ) -> NodeOutput:
@@ -1037,11 +1035,17 @@ class WorkflowThread:
         self._check_if_active()
         task_node: TaskNode
         readable_name: str
+
         if isinstance(task_name, str):
             readable_name = task_name
             task_node = TaskNode(
                 task_def_id=TaskDefId(name=task_name),
                 variables=[to_variable_assignment(arg) for arg in args],
+                timeout_seconds=(
+                    timeout_seconds
+                    if timeout_seconds is not None
+                    else self._default_timeout_seconds
+                ),
                 retries=retries if retries is not None else self._default_retries,
                 exponential_backoff=(
                     exponential_backoff
@@ -1054,6 +1058,11 @@ class WorkflowThread:
             task_node = TaskNode(
                 dynamic_task=to_variable_assignment(task_name),
                 variables=[to_variable_assignment(arg) for arg in args],
+                timeout_seconds=(
+                    timeout_seconds
+                    if timeout_seconds is not None
+                    else self._default_timeout_seconds
+                ),
                 retries=retries if retries is not None else self._default_retries,
                 exponential_backoff=(
                     exponential_backoff
@@ -1067,6 +1076,11 @@ class WorkflowThread:
             task_node = TaskNode(
                 dynamic_task=to_variable_assignment(task_name),
                 variables=[to_variable_assignment(arg) for arg in args],
+                timeout_seconds=(
+                    timeout_seconds
+                    if timeout_seconds is not None
+                    else self._default_timeout_seconds
+                ),
                 retries=retries if retries is not None else self._default_retries,
                 exponential_backoff=(
                     exponential_backoff
@@ -1753,6 +1767,7 @@ class Workflow:
         self._allowed_updates: Optional[AllowedUpdateType] = None
         self._parent_wf: Optional[WfSpec.ParentWfSpecReference] = None
         self._retention_policy: Optional[WorkflowRetentionPolicy] = None
+        self._default_timeout_seconds: Optional[int] = None
         self._default_exponential_backoff: Optional[ExponentialBackoffRetryPolicy] = (
             None
         )
@@ -1824,6 +1839,7 @@ class Workflow:
                 initializer,
                 self._default_retries,
                 self._default_exponential_backoff,
+                self._default_timeout_seconds,
             )
             thread_specs[name] = builder.compile()
 
@@ -1866,6 +1882,19 @@ class Workflow:
         """
         self._default_retries = retries
         self._default_exponential_backoff = exponential_backoff
+        return self
+
+    def with_task_timeout_seconds(
+        self, timeout_seconds: Optional[int] = None
+    ) -> Workflow:
+        """Configures the default timeout length (seconds) of the tasks.
+
+        Args:
+            timeout_seconds(Optional[int]): Length of time before the TaskRun times out.
+
+        Returns: This instance.
+        """
+        self._default_timeout_seconds = timeout_seconds
         return self
 
 

@@ -109,12 +109,13 @@ public class GetableManagerTest {
         assertThat(localStoreWrapper.get("3/0000000", StoredGetable.class)).isNotNull();
         List<String> keysBeforeDelete = getAllKeys(store);
         assertThat(keysBeforeDelete)
-                .hasSize(6)
+                .hasSize(7)
                 .anyMatch(key -> key.contains("0/3/0000000"))
                 .anyMatch(key -> key.contains("5/3/__majorVersion_test-spec-name"))
                 .anyMatch(key -> key.contains("5/3/__majorVersion_test-spec-name/00000__status_RUNNING"))
                 .anyMatch(key -> key.contains("5/3/__wfSpecName_test-spec-name"))
                 .anyMatch(key -> key.contains("5/3/__wfSpecName_test-spec-name__status_RUNNING"))
+                .anyMatch(key -> key.contains("5/3/__wfSpecId_test-spec-name/00000/00000"))
                 .anyMatch(key -> key.contains("5/3/__wfSpecId_test-spec-name/00000/00000__status_RUNNING"));
         getableManager.get(wfRunModel.getObjectId());
         getableManager.delete(wfRunModel.getObjectId());
@@ -526,7 +527,7 @@ public class GetableManagerTest {
             node.getTaskNode().getTaskDefId().setName("input-name2");
         });
         return Stream.of(
-                Arguments.of(wfRunModel, 5),
+                Arguments.of(wfRunModel, 6),
                 Arguments.of(taskRun, 2),
                 Arguments.of(variable, 3),
                 Arguments.of(externalEvent, 2));

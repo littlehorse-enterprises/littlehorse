@@ -1,6 +1,6 @@
 'use client'
 import { Navigation } from '@/app/(authenticated)/components/Navigation'
-import { WfSpec as Spec } from 'littlehorse-client/dist/proto/wf_spec'
+import { WfSpec as Spec } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { Diagram } from '../../../components/Diagram'
 import { Details } from './Details'
@@ -21,7 +21,7 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
         .map(name => (
           <Thread key={name} name={name} spec={spec.threadSpecs[name]} />
         ))}
-      <WfRuns id={spec.id} />
+      <WfRuns {...spec} />
     </>
   )
 }

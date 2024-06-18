@@ -81,7 +81,7 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
         }
         try {
             Awaitility.await()
-                    .atMost(Duration.ofSeconds(15))
+                    .atMost(Duration.ofSeconds(25))
                     .ignoreException(RuntimeException.class)
                     .until(() -> {
                         testContext

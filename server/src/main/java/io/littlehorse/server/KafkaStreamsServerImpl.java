@@ -21,6 +21,7 @@ import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunReq
 import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
+import io.littlehorse.common.model.corecommand.subcommand.RescueThreadRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
@@ -111,6 +112,7 @@ import io.littlehorse.sdk.common.proto.NodeRunList;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
 import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.sdk.common.proto.Principal;
+import io.littlehorse.sdk.common.proto.PrincipalIdList;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
@@ -122,11 +124,13 @@ import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
+import io.littlehorse.sdk.common.proto.RescueThreadRunRequest;
 import io.littlehorse.sdk.common.proto.ResumeWfRunRequest;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.SearchExternalEventRequest;
 import io.littlehorse.sdk.common.proto.SearchNodeRunRequest;
+import io.littlehorse.sdk.common.proto.SearchPrincipalRequest;
 import io.littlehorse.sdk.common.proto.SearchTaskDefRequest;
 import io.littlehorse.sdk.common.proto.SearchTaskRunRequest;
 import io.littlehorse.sdk.common.proto.SearchTenantRequest;
@@ -185,6 +189,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListWfMetrics
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchNodeRunRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchPrincipalRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTaskDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTenantRequestModel;
@@ -203,6 +208,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWfMe
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchPrincipalRequestReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTenantRequestReply;
@@ -729,6 +735,15 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         handleScan(SearchTenantRequestModel.fromProto(req, requestContext()), ctx, SearchTenantRequestReply.class);
     }
 
+    @Override
+    @Authorize(resources = ACLResource.ACL_PRINCIPAL, actions = ACLAction.READ)
+    public void searchPrincipal(SearchPrincipalRequest req, StreamObserver<PrincipalIdList> ctx) {
+        handleScan(
+                SearchPrincipalRequestModel.fromProto(req, SearchPrincipalRequestModel.class, requestContext()),
+                ctx,
+                SearchPrincipalRequestReply.class);
+    }
+
     // EMPLOYEE_TODO: this is a synchronous call. Make it asynchronous.
     // This will require refactoring the PaginatedTagQuery logic, which will be
     // hard. Once an employee can do this, they will have earned their lightsaber
@@ -824,6 +839,14 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
+    public void rescueThreadRun(RescueThreadRunRequest req, StreamObserver<WfRun> ctx) {
+        RescueThreadRunRequestModel reqModel =
+                LHSerializable.fromProto(req, RescueThreadRunRequestModel.class, requestContext());
+        processCommand(new CommandModel(reqModel), ctx, WfRun.class, true);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
     public void resumeWfRun(ResumeWfRunRequest req, StreamObserver<Empty> ctx) {
         ResumeWfRunRequestModel reqModel =
                 LHSerializable.fromProto(req, ResumeWfRunRequestModel.class, requestContext());
@@ -912,7 +935,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         ctx.onNext(ServerVersionResponse.newBuilder()
                 .setMajorVersion(0)
                 .setMinorVersion(9)
-                .setPatchVersion(1)
+                .setPatchVersion(3)
                 .build());
         ctx.onCompleted();
     }

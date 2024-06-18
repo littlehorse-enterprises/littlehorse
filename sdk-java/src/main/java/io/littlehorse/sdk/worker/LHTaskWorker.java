@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
 
@@ -44,14 +46,15 @@ public class LHTaskWorker implements Closeable {
     };
 
     private Object executable;
-    private Map<String, String> valuesForPlaceholders;
     private LHConfig config;
     private TaskDef taskDef;
     private Method taskMethod;
     private List<VariableMapping> mappings;
     private LHServerConnectionManager manager;
     private String taskDefName;
+    private String lhTaskMethodAnnotationValue;
     private LittleHorseBlockingStub grpcClient;
+
     /**
      * Creates an LHTaskWorker given an Object that has an annotated LHTaskMethod, and a
      * configuration Properties object.
@@ -66,6 +69,7 @@ public class LHTaskWorker implements Closeable {
         this.executable = executable;
         this.mappings = new ArrayList<>();
         this.taskDefName = taskDefName;
+        this.lhTaskMethodAnnotationValue = taskDefName;
         this.grpcClient = config.getBlockingStub();
     }
 
@@ -80,17 +84,17 @@ public class LHTaskWorker implements Closeable {
      *
      * @param executable is any Object which has exactly one method annotated with '@LHTaskMethod'.
      *      *                    That method will be used to execute the tasks.
-     * @param taskDefName is the name of the `TaskDef` to execute.
+     * @param taskDefNameTemplate is the name of the `TaskDef` to execute. May contain placeholders.
      * @param config is a valid LHConfig.
-     * @param valuesForPlaceholders map of values that will replace the placeholders on the taskDefName
+     * @param valuesForPlaceholders map of values that will replace the placeholders on the taskDefNameTemplate.
      */
     public LHTaskWorker(
-            Object executable, String taskDefName, LHConfig config, Map<String, String> valuesForPlaceholders) {
+            Object executable, String taskDefNameTemplate, LHConfig config, Map<String, String> valuesForPlaceholders) {
         this.config = config;
         this.executable = executable;
-        this.valuesForPlaceholders = valuesForPlaceholders;
         this.mappings = new ArrayList<>();
-        this.taskDefName = taskDefName;
+        this.taskDefName = replacePlaceholdersInTaskDefName(taskDefNameTemplate, valuesForPlaceholders);
+        this.lhTaskMethodAnnotationValue = taskDefNameTemplate;
         this.grpcClient = config.getBlockingStub();
     }
 
@@ -151,7 +155,7 @@ public class LHTaskWorker implements Closeable {
      * recommended for production (in production you should manually use the PutTaskDef).
      */
     public void registerTaskDef() {
-        TaskDefBuilder tdb = new TaskDefBuilder(executable, taskDefName, this.valuesForPlaceholders);
+        TaskDefBuilder tdb = new TaskDefBuilder(executable, this.taskDefName, this.lhTaskMethodAnnotationValue);
         TaskDef result = grpcClient.putTaskDef(tdb.toPutTaskDefRequest());
         log.info("Created TaskDef:\n{}", LHLibUtil.protoToJson(result));
     }
@@ -176,7 +180,7 @@ public class LHTaskWorker implements Closeable {
         }
 
         LHTaskSignature signature =
-                new LHTaskSignature(taskDef.getId().getName(), executable, this.valuesForPlaceholders);
+                new LHTaskSignature(taskDef.getId().getName(), executable, this.lhTaskMethodAnnotationValue);
         taskMethod = signature.getTaskMethod();
 
         int numTaskMethodParams = taskMethod.getParameterCount();
@@ -234,5 +238,27 @@ public class LHTaskWorker implements Closeable {
 
     public LHTaskWorkerHealth healthStatus() {
         return manager.healthStatus();
+    }
+
+    private static String replacePlaceholdersInTaskDefName(String template, Map<String, String> values) {
+        final StringBuilder resultingText = new StringBuilder();
+
+        final Pattern placeholderPattern = Pattern.compile("\\$\\{(.*?)\\}", Pattern.DOTALL);
+
+        final Matcher matcher = placeholderPattern.matcher(template);
+
+        while (matcher.find()) {
+            final String placeholderKey = matcher.group(1);
+            final String replacement = values.get(placeholderKey);
+
+            if (replacement == null) {
+                throw new IllegalArgumentException(
+                        "No value has been provided for the placeholder with key: " + placeholderKey);
+            }
+            matcher.appendReplacement(resultingText, replacement);
+        }
+
+        matcher.appendTail(resultingText);
+        return resultingText.toString();
     }
 }

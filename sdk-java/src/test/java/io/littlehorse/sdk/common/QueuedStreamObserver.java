@@ -4,6 +4,7 @@ import io.grpc.stub.StreamObserver;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import lombok.Setter;
 
 public class QueuedStreamObserver<REQ, RES> {
     private final RequestObserver requestObserver;
@@ -41,6 +42,27 @@ public class QueuedStreamObserver<REQ, RES> {
 
         @Override
         public void onCompleted() {}
+    }
+
+    public static class DelegatedStreamObserver<REQ> implements StreamObserver<REQ> {
+
+        @Setter
+        private StreamObserver<REQ> observer;
+
+        @Override
+        public void onNext(REQ value) {
+            observer.onNext(value);
+        }
+
+        @Override
+        public void onError(Throwable t) {
+            observer.onError(t);
+        }
+
+        @Override
+        public void onCompleted() {
+            observer.onCompleted();
+        }
     }
 
     private Optional<NextAction> pollNextAction() {

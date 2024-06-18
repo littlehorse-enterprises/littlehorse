@@ -123,6 +123,20 @@ public class RequestAuthorizerTest {
     }
 
     @Test
+    public void supportPermissionDeniedForNonExistingTenants() {
+        when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
+        when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-missing-tenant");
+        PrincipalModel newPrincipal = new PrincipalModel();
+        newPrincipal.setId(new PrincipalIdModel("principal-id"));
+        newPrincipal.setGlobalAcls(TestUtil.singleAdminAcl("name"));
+        metadataManager.put(newPrincipal);
+        MethodDescriptor<Object, Object> mockMethod = mock();
+        when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
+        startCall();
+        assertThat(resolvedAuthContext).isNull();
+    }
+
+    @Test
     public void supportAnonymousPrincipalWhenPrincipalIdIsNotFound() {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
         metadataManager.put(new TenantModel("my-tenant"));

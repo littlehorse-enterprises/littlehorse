@@ -8,8 +8,7 @@ type Props = { params: { ids: string[] } }
 
 export default async function Page({ params: { ids } }: Props) {
   try {
-    const { wfRun, wfSpec, nodeRuns } = await getWfRun({ ids })
-    return <WfRun wfRun={wfRun} wfSpec={wfSpec} nodeRuns={nodeRuns} />
+    return <WfRun {...await getWfRun({ ids })} />
   } catch (error) {
     if (error instanceof ClientError && error.code === Status.NOT_FOUND) return notFound()
     throw error

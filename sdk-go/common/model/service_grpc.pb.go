@@ -61,11 +61,13 @@ const (
 	LittleHorse_SearchWfSpec_FullMethodName            = "/littlehorse.LittleHorse/SearchWfSpec"
 	LittleHorse_SearchExternalEventDef_FullMethodName  = "/littlehorse.LittleHorse/SearchExternalEventDef"
 	LittleHorse_SearchTenant_FullMethodName            = "/littlehorse.LittleHorse/SearchTenant"
+	LittleHorse_SearchPrincipal_FullMethodName         = "/littlehorse.LittleHorse/SearchPrincipal"
 	LittleHorse_RegisterTaskWorker_FullMethodName      = "/littlehorse.LittleHorse/RegisterTaskWorker"
 	LittleHorse_PollTask_FullMethodName                = "/littlehorse.LittleHorse/PollTask"
 	LittleHorse_ReportTask_FullMethodName              = "/littlehorse.LittleHorse/ReportTask"
 	LittleHorse_StopWfRun_FullMethodName               = "/littlehorse.LittleHorse/StopWfRun"
 	LittleHorse_ResumeWfRun_FullMethodName             = "/littlehorse.LittleHorse/ResumeWfRun"
+	LittleHorse_RescueThreadRun_FullMethodName         = "/littlehorse.LittleHorse/RescueThreadRun"
 	LittleHorse_DeleteWfRun_FullMethodName             = "/littlehorse.LittleHorse/DeleteWfRun"
 	LittleHorse_DeleteTaskDef_FullMethodName           = "/littlehorse.LittleHorse/DeleteTaskDef"
 	LittleHorse_DeleteWfSpec_FullMethodName            = "/littlehorse.LittleHorse/DeleteWfSpec"
@@ -203,6 +205,8 @@ type LittleHorseClient interface {
 	SearchExternalEventDef(ctx context.Context, in *SearchExternalEventDefRequest, opts ...grpc.CallOption) (*ExternalEventDefIdList, error)
 	// Search for all available TenantIds for current Principal
 	SearchTenant(ctx context.Context, in *SearchTenantRequest, opts ...grpc.CallOption) (*TenantIdList, error)
+	//
+	SearchPrincipal(ctx context.Context, in *SearchPrincipalRequest, opts ...grpc.CallOption) (*PrincipalIdList, error)
 	// Used by the Task Worker to:
 	// 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
 	// 2. Receive the assignemnt of LH Server's to poll from.
@@ -218,6 +222,19 @@ type LittleHorseClient interface {
 	StopWfRun(ctx context.Context, in *StopWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Resumes a WfRun or a specific ThreadRun of a WfRun.
 	ResumeWfRun(ctx context.Context, in *ResumeWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Rescues a failed ThreadRun (in the ERROR state only) by restarting it from
+	// the point of failure. Useful if a bug in Task Worker implementation caused
+	// a WfRun to fail and you did not have a FailureHandler for that NodeRun.
+	//
+	// The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/>
+	// - In the `ERROR` state.<br/>
+	// - Has no `FailureHandler` `ThreadRun`s <br/>
+	// - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure`
+	// yet.
+	//
+	// If that is not true, then the `ThreadRun` cannot be rescued and the request
+	// will return `FAILED_PRECONDITION`.
+	RescueThreadRun(ctx context.Context, in *RescueThreadRunRequest, opts ...grpc.CallOption) (*WfRun, error)
 	// Deletes a WfRun. The WfRun cannot be in the RUNNING state.
 	DeleteWfRun(ctx context.Context, in *DeleteWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a TaskDef.
@@ -629,6 +646,15 @@ func (c *littleHorseClient) SearchTenant(ctx context.Context, in *SearchTenantRe
 	return out, nil
 }
 
+func (c *littleHorseClient) SearchPrincipal(ctx context.Context, in *SearchPrincipalRequest, opts ...grpc.CallOption) (*PrincipalIdList, error) {
+	out := new(PrincipalIdList)
+	err := c.cc.Invoke(ctx, LittleHorse_SearchPrincipal_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) RegisterTaskWorker(ctx context.Context, in *RegisterTaskWorkerRequest, opts ...grpc.CallOption) (*RegisterTaskWorkerResponse, error) {
 	out := new(RegisterTaskWorkerResponse)
 	err := c.cc.Invoke(ctx, LittleHorse_RegisterTaskWorker_FullMethodName, in, out, opts...)
@@ -690,6 +716,15 @@ func (c *littleHorseClient) StopWfRun(ctx context.Context, in *StopWfRunRequest,
 func (c *littleHorseClient) ResumeWfRun(ctx context.Context, in *ResumeWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LittleHorse_ResumeWfRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) RescueThreadRun(ctx context.Context, in *RescueThreadRunRequest, opts ...grpc.CallOption) (*WfRun, error) {
+	out := new(WfRun)
+	err := c.cc.Invoke(ctx, LittleHorse_RescueThreadRun_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -951,6 +986,8 @@ type LittleHorseServer interface {
 	SearchExternalEventDef(context.Context, *SearchExternalEventDefRequest) (*ExternalEventDefIdList, error)
 	// Search for all available TenantIds for current Principal
 	SearchTenant(context.Context, *SearchTenantRequest) (*TenantIdList, error)
+	//
+	SearchPrincipal(context.Context, *SearchPrincipalRequest) (*PrincipalIdList, error)
 	// Used by the Task Worker to:
 	// 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
 	// 2. Receive the assignemnt of LH Server's to poll from.
@@ -966,6 +1003,19 @@ type LittleHorseServer interface {
 	StopWfRun(context.Context, *StopWfRunRequest) (*emptypb.Empty, error)
 	// Resumes a WfRun or a specific ThreadRun of a WfRun.
 	ResumeWfRun(context.Context, *ResumeWfRunRequest) (*emptypb.Empty, error)
+	// Rescues a failed ThreadRun (in the ERROR state only) by restarting it from
+	// the point of failure. Useful if a bug in Task Worker implementation caused
+	// a WfRun to fail and you did not have a FailureHandler for that NodeRun.
+	//
+	// The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/>
+	// - In the `ERROR` state.<br/>
+	// - Has no `FailureHandler` `ThreadRun`s <br/>
+	// - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure`
+	// yet.
+	//
+	// If that is not true, then the `ThreadRun` cannot be rescued and the request
+	// will return `FAILED_PRECONDITION`.
+	RescueThreadRun(context.Context, *RescueThreadRunRequest) (*WfRun, error)
 	// Deletes a WfRun. The WfRun cannot be in the RUNNING state.
 	DeleteWfRun(context.Context, *DeleteWfRunRequest) (*emptypb.Empty, error)
 	// Deletes a TaskDef.
@@ -1128,6 +1178,9 @@ func (UnimplementedLittleHorseServer) SearchExternalEventDef(context.Context, *S
 func (UnimplementedLittleHorseServer) SearchTenant(context.Context, *SearchTenantRequest) (*TenantIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchTenant not implemented")
 }
+func (UnimplementedLittleHorseServer) SearchPrincipal(context.Context, *SearchPrincipalRequest) (*PrincipalIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchPrincipal not implemented")
+}
 func (UnimplementedLittleHorseServer) RegisterTaskWorker(context.Context, *RegisterTaskWorkerRequest) (*RegisterTaskWorkerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterTaskWorker not implemented")
 }
@@ -1142,6 +1195,9 @@ func (UnimplementedLittleHorseServer) StopWfRun(context.Context, *StopWfRunReque
 }
 func (UnimplementedLittleHorseServer) ResumeWfRun(context.Context, *ResumeWfRunRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ResumeWfRun not implemented")
+}
+func (UnimplementedLittleHorseServer) RescueThreadRun(context.Context, *RescueThreadRunRequest) (*WfRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RescueThreadRun not implemented")
 }
 func (UnimplementedLittleHorseServer) DeleteWfRun(context.Context, *DeleteWfRunRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteWfRun not implemented")
@@ -1939,6 +1995,24 @@ func _LittleHorse_SearchTenant_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_SearchPrincipal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchPrincipalRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SearchPrincipal(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SearchPrincipal_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SearchPrincipal(ctx, req.(*SearchPrincipalRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_RegisterTaskWorker_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RegisterTaskWorkerRequest)
 	if err := dec(in); err != nil {
@@ -2033,6 +2107,24 @@ func _LittleHorse_ResumeWfRun_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).ResumeWfRun(ctx, req.(*ResumeWfRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_RescueThreadRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RescueThreadRunRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).RescueThreadRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_RescueThreadRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).RescueThreadRun(ctx, req.(*RescueThreadRunRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2479,6 +2571,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_SearchTenant_Handler,
 		},
 		{
+			MethodName: "SearchPrincipal",
+			Handler:    _LittleHorse_SearchPrincipal_Handler,
+		},
+		{
 			MethodName: "RegisterTaskWorker",
 			Handler:    _LittleHorse_RegisterTaskWorker_Handler,
 		},
@@ -2493,6 +2589,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ResumeWfRun",
 			Handler:    _LittleHorse_ResumeWfRun_Handler,
+		},
+		{
+			MethodName: "RescueThreadRun",
+			Handler:    _LittleHorse_RescueThreadRun_Handler,
 		},
 		{
 			MethodName: "DeleteWfRun",

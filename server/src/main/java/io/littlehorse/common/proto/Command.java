@@ -68,6 +68,7 @@ private static final long serialVersionUID = 0L;
     CANCEL_USER_TASK(19),
     BULK_JOB(20),
     TASK_ATTEMPT_RETRY_READY(21),
+    RESCUE_THREAD_RUN(22),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -103,6 +104,7 @@ private static final long serialVersionUID = 0L;
         case 19: return CANCEL_USER_TASK;
         case 20: return BULK_JOB;
         case 21: return TASK_ATTEMPT_RETRY_READY;
+        case 22: return RESCUE_THREAD_RUN;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -720,10 +722,6 @@ private static final long serialVersionUID = 0L;
 
   public static final int TASK_ATTEMPT_RETRY_READY_FIELD_NUMBER = 21;
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
    * @return Whether the taskAttemptRetryReady field is set.
    */
@@ -732,10 +730,6 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 21;
   }
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
    * @return The taskAttemptRetryReady.
    */
@@ -747,10 +741,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.TaskAttemptRetryReady.getDefaultInstance();
   }
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
    */
   @java.lang.Override
@@ -759,6 +749,49 @@ private static final long serialVersionUID = 0L;
        return (io.littlehorse.common.proto.TaskAttemptRetryReady) command_;
     }
     return io.littlehorse.common.proto.TaskAttemptRetryReady.getDefaultInstance();
+  }
+
+  public static final int RESCUE_THREAD_RUN_FIELD_NUMBER = 22;
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
+   * @return Whether the rescueThreadRun field is set.
+   */
+  @java.lang.Override
+  public boolean hasRescueThreadRun() {
+    return commandCase_ == 22;
+  }
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
+   * @return The rescueThreadRun.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.RescueThreadRunRequest getRescueThreadRun() {
+    if (commandCase_ == 22) {
+       return (io.littlehorse.sdk.common.proto.RescueThreadRunRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.RescueThreadRunRequest.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.RescueThreadRunRequestOrBuilder getRescueThreadRunOrBuilder() {
+    if (commandCase_ == 22) {
+       return (io.littlehorse.sdk.common.proto.RescueThreadRunRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.RescueThreadRunRequest.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -834,6 +867,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 21) {
       output.writeMessage(21, (io.littlehorse.common.proto.TaskAttemptRetryReady) command_);
+    }
+    if (commandCase_ == 22) {
+      output.writeMessage(22, (io.littlehorse.sdk.common.proto.RescueThreadRunRequest) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -922,6 +958,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 21) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(21, (io.littlehorse.common.proto.TaskAttemptRetryReady) command_);
+    }
+    if (commandCase_ == 22) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(22, (io.littlehorse.sdk.common.proto.RescueThreadRunRequest) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1022,6 +1062,10 @@ private static final long serialVersionUID = 0L;
         if (!getTaskAttemptRetryReady()
             .equals(other.getTaskAttemptRetryReady())) return false;
         break;
+      case 22:
+        if (!getRescueThreadRun()
+            .equals(other.getRescueThreadRun())) return false;
+        break;
       case 0:
       default:
     }
@@ -1116,6 +1160,10 @@ private static final long serialVersionUID = 0L;
       case 21:
         hash = (37 * hash) + TASK_ATTEMPT_RETRY_READY_FIELD_NUMBER;
         hash = (53 * hash) + getTaskAttemptRetryReady().hashCode();
+        break;
+      case 22:
+        hash = (37 * hash) + RESCUE_THREAD_RUN_FIELD_NUMBER;
+        hash = (53 * hash) + getRescueThreadRun().hashCode();
         break;
       case 0:
       default:
@@ -1315,6 +1363,9 @@ private static final long serialVersionUID = 0L;
       if (taskAttemptRetryReadyBuilder_ != null) {
         taskAttemptRetryReadyBuilder_.clear();
       }
+      if (rescueThreadRunBuilder_ != null) {
+        rescueThreadRunBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -1438,6 +1489,10 @@ private static final long serialVersionUID = 0L;
       if (commandCase_ == 21 &&
           taskAttemptRetryReadyBuilder_ != null) {
         result.command_ = taskAttemptRetryReadyBuilder_.build();
+      }
+      if (commandCase_ == 22 &&
+          rescueThreadRunBuilder_ != null) {
+        result.command_ = rescueThreadRunBuilder_.build();
       }
     }
 
@@ -1564,6 +1619,10 @@ private static final long serialVersionUID = 0L;
         }
         case TASK_ATTEMPT_RETRY_READY: {
           mergeTaskAttemptRetryReady(other.getTaskAttemptRetryReady());
+          break;
+        }
+        case RESCUE_THREAD_RUN: {
+          mergeRescueThreadRun(other.getRescueThreadRun());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -1734,6 +1793,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 21;
               break;
             } // case 170
+            case 178: {
+              input.readMessage(
+                  getRescueThreadRunFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 22;
+              break;
+            } // case 178
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -4381,10 +4447,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.TaskAttemptRetryReady, io.littlehorse.common.proto.TaskAttemptRetryReady.Builder, io.littlehorse.common.proto.TaskAttemptRetryReadyOrBuilder> taskAttemptRetryReadyBuilder_;
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
      * @return Whether the taskAttemptRetryReady field is set.
      */
@@ -4393,10 +4455,6 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 21;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
      * @return The taskAttemptRetryReady.
      */
@@ -4415,10 +4473,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
      */
     public Builder setTaskAttemptRetryReady(io.littlehorse.common.proto.TaskAttemptRetryReady value) {
@@ -4435,10 +4489,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
      */
     public Builder setTaskAttemptRetryReady(
@@ -4453,10 +4503,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
      */
     public Builder mergeTaskAttemptRetryReady(io.littlehorse.common.proto.TaskAttemptRetryReady value) {
@@ -4480,10 +4526,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
      */
     public Builder clearTaskAttemptRetryReady() {
@@ -4503,20 +4545,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
      */
     public io.littlehorse.common.proto.TaskAttemptRetryReady.Builder getTaskAttemptRetryReadyBuilder() {
       return getTaskAttemptRetryReadyFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
      */
     @java.lang.Override
@@ -4531,10 +4565,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -4554,6 +4584,184 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 21;
       onChanged();
       return taskAttemptRetryReadyBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.RescueThreadRunRequest, io.littlehorse.sdk.common.proto.RescueThreadRunRequest.Builder, io.littlehorse.sdk.common.proto.RescueThreadRunRequestOrBuilder> rescueThreadRunBuilder_;
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
+     * @return Whether the rescueThreadRun field is set.
+     */
+    @java.lang.Override
+    public boolean hasRescueThreadRun() {
+      return commandCase_ == 22;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
+     * @return The rescueThreadRun.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.RescueThreadRunRequest getRescueThreadRun() {
+      if (rescueThreadRunBuilder_ == null) {
+        if (commandCase_ == 22) {
+          return (io.littlehorse.sdk.common.proto.RescueThreadRunRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.RescueThreadRunRequest.getDefaultInstance();
+      } else {
+        if (commandCase_ == 22) {
+          return rescueThreadRunBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.RescueThreadRunRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
+     */
+    public Builder setRescueThreadRun(io.littlehorse.sdk.common.proto.RescueThreadRunRequest value) {
+      if (rescueThreadRunBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        rescueThreadRunBuilder_.setMessage(value);
+      }
+      commandCase_ = 22;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
+     */
+    public Builder setRescueThreadRun(
+        io.littlehorse.sdk.common.proto.RescueThreadRunRequest.Builder builderForValue) {
+      if (rescueThreadRunBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        rescueThreadRunBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 22;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
+     */
+    public Builder mergeRescueThreadRun(io.littlehorse.sdk.common.proto.RescueThreadRunRequest value) {
+      if (rescueThreadRunBuilder_ == null) {
+        if (commandCase_ == 22 &&
+            command_ != io.littlehorse.sdk.common.proto.RescueThreadRunRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.RescueThreadRunRequest.newBuilder((io.littlehorse.sdk.common.proto.RescueThreadRunRequest) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 22) {
+          rescueThreadRunBuilder_.mergeFrom(value);
+        } else {
+          rescueThreadRunBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 22;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
+     */
+    public Builder clearRescueThreadRun() {
+      if (rescueThreadRunBuilder_ == null) {
+        if (commandCase_ == 22) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 22) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        rescueThreadRunBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
+     */
+    public io.littlehorse.sdk.common.proto.RescueThreadRunRequest.Builder getRescueThreadRunBuilder() {
+      return getRescueThreadRunFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.RescueThreadRunRequestOrBuilder getRescueThreadRunOrBuilder() {
+      if ((commandCase_ == 22) && (rescueThreadRunBuilder_ != null)) {
+        return rescueThreadRunBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 22) {
+          return (io.littlehorse.sdk.common.proto.RescueThreadRunRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.RescueThreadRunRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.RescueThreadRunRequest, io.littlehorse.sdk.common.proto.RescueThreadRunRequest.Builder, io.littlehorse.sdk.common.proto.RescueThreadRunRequestOrBuilder> 
+        getRescueThreadRunFieldBuilder() {
+      if (rescueThreadRunBuilder_ == null) {
+        if (!(commandCase_ == 22)) {
+          command_ = io.littlehorse.sdk.common.proto.RescueThreadRunRequest.getDefaultInstance();
+        }
+        rescueThreadRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.RescueThreadRunRequest, io.littlehorse.sdk.common.proto.RescueThreadRunRequest.Builder, io.littlehorse.sdk.common.proto.RescueThreadRunRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.RescueThreadRunRequest) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 22;
+      onChanged();
+      return rescueThreadRunBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

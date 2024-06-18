@@ -1,6 +1,6 @@
 'use client'
 import { concatWfRunIds, formatDate } from '@/app/utils'
-import { WfRun } from 'littlehorse-client/dist/proto/wf_run'
+import { WfRun } from 'littlehorse-client/proto'
 import Link from 'next/link'
 import { FC } from 'react'
 

@@ -1,21 +1,24 @@
 import { TIME_RANGES, TIME_RANGES_NAMES, TimeRange, WF_RUN_STATUSES } from '@/app/constants'
 import { Listbox, ListboxButton, ListboxOptions } from '@headlessui/react'
+import { LHStatus, WfSpec } from 'littlehorse-client/proto'
 import { ClockIcon } from 'lucide-react'
-import { LHStatus } from 'littlehorse-client/dist/proto/common_enums'
 import Link from 'next/link'
 import { FC } from 'react'
+import { SearchVariableDialog } from './SearchVariableDialog'
 
 type Props = {
-  currentStatus: LHStatus
+  spec: WfSpec
+  currentStatus: LHStatus | 'ALL'
   currentWindow: TimeRange
   setWindow: (window: TimeRange) => void
 }
 
-export const WfRunsHeader: FC<Props> = ({ currentStatus, currentWindow, setWindow }) => {
+export const WfRunsHeader: FC<Props> = ({ spec, currentStatus, currentWindow, setWindow }) => {
   return (
     <div className="mb-4 flex items-center justify-between">
       <h2 className="text-2xl font-bold">WfRun Search</h2>
-      <div className="flex">
+
+      <div className="flex items-center justify-between gap-4">
         <Listbox value={currentWindow} onChange={setWindow}>
           <div className="relative">
             <ListboxButton className="flex items-center gap-2 rounded-lg border-2 px-2 py-1 text-xs">
@@ -39,19 +42,22 @@ export const WfRunsHeader: FC<Props> = ({ currentStatus, currentWindow, setWindo
             </ListboxOptions>
           </div>
         </Listbox>
-      </div>
-      <div className="flex">
-        {WF_RUN_STATUSES.map(status => (
-          <Link
-            key={status}
-            href={`?status=${status}`}
-            replace
-            scroll={false}
-            className={`flex items-center border-y-2 border-l-2 p-2 text-xs first-of-type:rounded-l-lg first-of-type:border-l-2 last-of-type:rounded-r-lg last-of-type:border-r-2 ${status === currentStatus ? 'border-blue-500 bg-blue-500 text-white' : ' text-gray-500'}`}
-          >
-            {status}
-          </Link>
-        ))}
+        <div className="flex">
+          {['ALL', ...WF_RUN_STATUSES].map(status => (
+            <Link
+              key={status}
+              href={status === 'ALL' ? '?' : `?status=${status}`}
+              replace
+              scroll={false}
+              className={`flex items-center border-y-2 border-l-2 p-2 text-xs first-of-type:rounded-l-lg first-of-type:border-l-2 last-of-type:rounded-r-lg last-of-type:border-r-2 ${status === currentStatus ? 'border-blue-500 bg-blue-500 text-white' : ' text-gray-500'}`}
+            >
+              {status}
+            </Link>
+          ))}
+        </div>
+        {Object.keys(spec.threadSpecs).flatMap(threadSpec =>
+          spec.threadSpecs[threadSpec].variableDefs.filter(variableDef => variableDef.searchable)
+        ).length > 0 && <SearchVariableDialog spec={spec} />}
       </div>
     </div>
   )

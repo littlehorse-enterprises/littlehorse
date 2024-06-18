@@ -31,6 +31,7 @@ var searchWfRunCmd = &cobra.Command{
 Search for WfRuns. You may provide any of the following option groups:
 
 [wfSpecName, majorVersion, revision, status]
+[wfSpecName, majorVersion, revision]
 [wfSpecName, status]
 [wfSpecName]
 
@@ -40,13 +41,6 @@ Search for WfRuns. You may provide any of the following option groups:
 
 Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 	`,
-	PreRun: func(cmd *cobra.Command, args []string) {
-		majorVersionRaw, _ := cmd.Flags().GetInt32("majorVersion")
-		revisionRaw, _ := cmd.Flags().GetInt32("revision")
-		if majorVersionRaw != -1 && revisionRaw != -1 {
-			cmd.MarkFlagRequired("status")
-		}
-	},
 	Run: func(cmd *cobra.Command, args []string) {
 		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
 		statusRaw, _ := cmd.Flags().GetString("status")

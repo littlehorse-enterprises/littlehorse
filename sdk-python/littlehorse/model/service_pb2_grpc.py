@@ -231,6 +231,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.SearchTenantRequest.SerializeToString,
                 response_deserializer=service__pb2.TenantIdList.FromString,
                 )
+        self.SearchPrincipal = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchPrincipal',
+                request_serializer=service__pb2.SearchPrincipalRequest.SerializeToString,
+                response_deserializer=service__pb2.PrincipalIdList.FromString,
+                )
         self.RegisterTaskWorker = channel.unary_unary(
                 '/littlehorse.LittleHorse/RegisterTaskWorker',
                 request_serializer=service__pb2.RegisterTaskWorkerRequest.SerializeToString,
@@ -255,6 +260,11 @@ class LittleHorseStub(object):
                 '/littlehorse.LittleHorse/ResumeWfRun',
                 request_serializer=service__pb2.ResumeWfRunRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                )
+        self.RescueThreadRun = channel.unary_unary(
+                '/littlehorse.LittleHorse/RescueThreadRun',
+                request_serializer=service__pb2.RescueThreadRunRequest.SerializeToString,
+                response_deserializer=wf__run__pb2.WfRun.FromString,
                 )
         self.DeleteWfRun = channel.unary_unary(
                 '/littlehorse.LittleHorse/DeleteWfRun',
@@ -657,6 +667,13 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SearchPrincipal(self, request, context):
+        """
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def RegisterTaskWorker(self, request, context):
         """Used by the Task Worker to:
         1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
@@ -692,6 +709,24 @@ class LittleHorseServicer(object):
 
     def ResumeWfRun(self, request, context):
         """Resumes a WfRun or a specific ThreadRun of a WfRun.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RescueThreadRun(self, request, context):
+        """Rescues a failed ThreadRun (in the ERROR state only) by restarting it from 
+        the point of failure. Useful if a bug in Task Worker implementation caused
+        a WfRun to fail and you did not have a FailureHandler for that NodeRun.
+
+        The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/>
+        - In the `ERROR` state.<br/>
+        - Has no `FailureHandler` `ThreadRun`s <br/>
+        - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure`
+        yet.
+
+        If that is not true, then the `ThreadRun` cannot be rescued and the request
+        will return `FAILED_PRECONDITION`.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1012,6 +1047,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.SearchTenantRequest.FromString,
                     response_serializer=service__pb2.TenantIdList.SerializeToString,
             ),
+            'SearchPrincipal': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchPrincipal,
+                    request_deserializer=service__pb2.SearchPrincipalRequest.FromString,
+                    response_serializer=service__pb2.PrincipalIdList.SerializeToString,
+            ),
             'RegisterTaskWorker': grpc.unary_unary_rpc_method_handler(
                     servicer.RegisterTaskWorker,
                     request_deserializer=service__pb2.RegisterTaskWorkerRequest.FromString,
@@ -1036,6 +1076,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.ResumeWfRun,
                     request_deserializer=service__pb2.ResumeWfRunRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'RescueThreadRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.RescueThreadRun,
+                    request_deserializer=service__pb2.RescueThreadRunRequest.FromString,
+                    response_serializer=wf__run__pb2.WfRun.SerializeToString,
             ),
             'DeleteWfRun': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteWfRun,
@@ -1820,6 +1865,23 @@ class LittleHorse(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def SearchPrincipal(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchPrincipal',
+            service__pb2.SearchPrincipalRequest.SerializeToString,
+            service__pb2.PrincipalIdList.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def RegisterTaskWorker(request,
             target,
             options=(),
@@ -1901,6 +1963,23 @@ class LittleHorse(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ResumeWfRun',
             service__pb2.ResumeWfRunRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def RescueThreadRun(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/RescueThreadRun',
+            service__pb2.RescueThreadRunRequest.SerializeToString,
+            wf__run__pb2.WfRun.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

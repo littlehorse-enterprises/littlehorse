@@ -6,7 +6,7 @@ require (
 	github.com/coreos/go-oidc/v3 v3.6.0
 	github.com/magiconair/properties v1.8.7
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
-	github.com/spf13/cobra v1.7.0
+	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.8.4
 	github.com/ztrue/tracerr v0.4.0
 	golang.org/x/oauth2 v0.10.0
