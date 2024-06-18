@@ -1,6 +1,6 @@
 from typing import Optional
 
-from littlehorse.model.variable_pb2 import VariableValue
+from littlehorse.model import VariableValue
 
 
 class TaskSchemaMismatchException(Exception):

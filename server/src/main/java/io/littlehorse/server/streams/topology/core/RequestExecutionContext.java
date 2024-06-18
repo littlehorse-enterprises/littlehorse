@@ -8,8 +8,10 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.server.auth.PermissionDeniedException;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
@@ -57,6 +59,12 @@ public class RequestExecutionContext implements ExecutionContext {
         this.readOnlyGetableManager = new ReadOnlyGetableManager(tenantCoreStore);
         this.metadataManager = new ReadOnlyMetadataManager(clusterMetadataStore, tenantMetadataStore, metadataCache);
         this.service = new WfService(this.metadataManager, metadataCache, this);
+        if (!tenantId.getId().equals(LHConstants.DEFAULT_TENANT)) {
+            TenantModel storedTenant = metadataManager.get(tenantId);
+            if (storedTenant == null) {
+                throw new PermissionDeniedException("Tenant not allowed");
+            }
+        }
         this.authorization = authContextFor(clientId, tenantId);
         this.lhConfig = lhConfig;
     }

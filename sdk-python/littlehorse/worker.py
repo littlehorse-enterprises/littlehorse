@@ -13,26 +13,26 @@ from littlehorse.exceptions import (
     TaskSchemaMismatchException,
     LHTaskException as LHTaskPythonException,
 )
-from littlehorse.model.common_enums_pb2 import LHErrorType, TaskStatus
-from littlehorse.model.common_wfspec_pb2 import VariableDef
-from littlehorse.model.object_id_pb2 import (
+from littlehorse.model import (
+    LHErrorType,
+    TaskStatus,
+    VariableDef,
     NodeRunId,
     TaskDefId,
     TaskRunId,
     WfRunId,
-)
-from littlehorse.model.service_pb2 import (
     PollTaskRequest,
     PutTaskDefRequest,
     RegisterTaskWorkerRequest,
     RegisterTaskWorkerResponse,
     ReportTaskRun,
     ScheduledTask,
+    TaskDef,
+    LHTaskError,
+    LHTaskException,
+    VariableValue,
 )
 from google.protobuf.timestamp_pb2 import Timestamp
-from littlehorse.model.task_def_pb2 import TaskDef
-from littlehorse.model.task_run_pb2 import LHTaskError, LHTaskException
-from littlehorse.model.variable_pb2 import VariableValue
 from littlehorse.utils import extract_value, to_variable_type, to_variable_value
 from littlehorse.utils import to_type
 

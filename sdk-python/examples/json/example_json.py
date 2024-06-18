@@ -6,7 +6,7 @@ from typing import Any
 import littlehorse
 
 from littlehorse.config import LHConfig
-from littlehorse.model.common_enums_pb2 import VariableType
+from littlehorse.model import VariableType
 from littlehorse.worker import LHTaskWorker
 from littlehorse.workflow import WorkflowThread, Workflow
 
