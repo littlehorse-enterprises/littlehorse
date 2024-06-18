@@ -101,7 +101,7 @@ import random
 
 import littlehorse
 from littlehorse.config import LHConfig
-from littlehorse.model.common_enums_pb2 import VariableType
+from littlehorse.model import VariableType
 from littlehorse.worker import LHTaskWorker, WorkerContext
 from littlehorse.workflow import WorkflowThread, Workflow
 
@@ -367,7 +367,7 @@ async def greeting(name: str, ctx: LHWorkerContext) -> str:
     else:
         # this is not a retry
         pass
-    
+
     idempotency_key = ctx.idempotency_key
     return "asdf"
 

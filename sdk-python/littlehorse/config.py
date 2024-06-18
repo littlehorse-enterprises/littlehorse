@@ -13,7 +13,7 @@ from littlehorse.auth import (
     AsyncStreamUnaryMetadataInterceptor,
     AsyncUnaryStreamMetadataInterceptor,
 )
-from littlehorse.model.service_pb2_grpc import LittleHorseStub
+from littlehorse.model import LittleHorseStub
 from littlehorse.utils import read_binary
 import logging
 
