@@ -505,11 +505,6 @@ public class WfRunModel extends CoreGetable<WfRun> {
         if (threadRunNumber > getGreatestThreadRunNumber() || threadRunNumber < 0) {
             return Pair.of(false, Status.INVALID_ARGUMENT.withDescription("Tried to rescue a non-existent thread id."));
         }
-        if (threadRunNumber > 0) {
-            return Pair.of(
-                    false,
-                    Status.UNIMPLEMENTED.withDescription("Currently only entrypoint ThreadRuns may be rescued."));
-        }
 
         ThreadRunModel toRescue = getThreadRun(threadRunNumber);
         if (toRescue == null) {
@@ -524,10 +519,23 @@ public class WfRunModel extends CoreGetable<WfRun> {
                             "Specified ThreadRun has status %s, not ERROR".formatted(toRescue.getStatus())));
         }
 
-        // TODO: Once we allow rescuing ThreadRun's that aren't the entrypoint, we need to:
-        // - Validate that none of the Failures have been handled.
-        // - Ensure we change the status of the WfRun properly.
+        NodeRunModel failedNode = toRescue.getCurrentNodeRun();
+        if (failedNode.getFailures().isEmpty()) {
+            throw new IllegalStateException("A ThreadRun can only fail if there is a Failure on its current NodeRun");
+        }
 
+        // Now we need to validate that the actual ERROR hasn't been handled by some exception handler somewhere.
+        ThreadRunModel child = toRescue;
+        while (child.getParent() != null) {
+            ThreadRunModel parent = child.getParent();
+            if (parent.handledFailedChildren.contains(child.getNumber())) {
+                return Pair.of(
+                        false,
+                        Status.FAILED_PRECONDITION.withDescription(
+                                "Parent of specified ThreadRun has already handled the failure"));
+            }
+            child = parent;
+        }
         return Pair.of(true, Status.OK);
     }
 
