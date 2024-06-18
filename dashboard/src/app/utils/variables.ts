@@ -26,14 +26,6 @@ export const getVariableValue = (variable?: VariableValue) => {
 
 }
 
-function byteArrayToBase64(byteArray: []) {
-  return btoa(String.fromCharCode.apply(null, byteArray));
-}
-
-function base64ToString(base64) {
-  return atob(base64);
-}
-
 const getValueFromVariableName = ({
   variableName,
   jsonPath,
