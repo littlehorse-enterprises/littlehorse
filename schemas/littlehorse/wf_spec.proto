@@ -196,7 +196,7 @@ message StartMultipleThreadsNode {
 // the ThreadRun to run compensatory logic and gracefully continue rather than
 // failing immediately.
 message FailureHandlerDef {
-  // The name of the ThreadSpec to run as a 
+  // The name of the ThreadSpec to run as a
   string handler_spec_name = 2;
 
   // Specifies a type of Failure
@@ -218,7 +218,7 @@ message FailureHandlerDef {
     // Specifies that this FailureHandlerDef will be triggered for any failure matching
     // this type (ERROR or EXCEPTION).
     //
-    // 
+    //
     LHFailureType any_failure_of_type = 3;
   }
 }

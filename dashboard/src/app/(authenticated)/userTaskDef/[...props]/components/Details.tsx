@@ -1,5 +1,5 @@
 'use client'
-import { UserTaskDef } from 'littlehorse-client/dist/proto/user_tasks'
+import { UserTaskDef } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { Versions } from './Versions'
 

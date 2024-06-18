@@ -1,5 +1,5 @@
 import { VARIABLE_TYPES } from '@/app/constants'
-import { ThreadSpec, WfRunVariableAccessLevel } from 'littlehorse-client/dist/proto/wf_spec'
+import { ThreadSpec, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { FC } from 'react'
 
 type VariablesProps = Pick<ThreadSpec, 'variableDefs'>

@@ -1,5 +1,6 @@
 package io.littlehorse.test.internal;
 
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.config.LHConfig;
@@ -120,7 +121,7 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
 
     private Properties testClientProperties() {
         Properties configs = new Properties();
-        String tenantId = System.getenv().getOrDefault(LHConfig.TENANT_ID_KEY, "test-tenant");
+        String tenantId = System.getenv().getOrDefault(LHConfig.TENANT_ID_KEY, LHConstants.DEFAULT_TENANT);
         configs.put(LHConfig.TENANT_ID_KEY, tenantId);
         return configs;
     }

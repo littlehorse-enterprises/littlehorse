@@ -1,6 +1,4 @@
-import { VariableMutation } from 'littlehorse-client/dist/proto/common_wfspec'
-import { VariableValue } from 'littlehorse-client/dist/proto/variable'
-import { ThreadSpec } from 'littlehorse-client/dist/proto/wf_spec'
+import { ThreadSpec, VariableMutation, VariableValue } from 'littlehorse-client/proto'
 import { FC, useMemo } from 'react'
 
 type Props = Pick<ThreadSpec, 'nodes'>

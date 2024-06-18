@@ -1,5 +1,5 @@
+import { WfSpecId } from 'littlehorse-client/proto'
 import { TagIcon } from 'lucide-react'
-import { WfSpecId } from 'littlehorse-client/dist/proto/object_id'
 import Link from 'next/link'
 import { FC, Fragment } from 'react'
 import { SearchResultProps } from '.'

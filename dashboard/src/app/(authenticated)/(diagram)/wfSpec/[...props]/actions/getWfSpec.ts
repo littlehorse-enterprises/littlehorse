@@ -1,7 +1,7 @@
 'use server'
 import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
-import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
+import { WfSpec } from 'littlehorse-client/proto'
 
 type GetWfSpecProps = {
   name: string
