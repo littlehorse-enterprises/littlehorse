@@ -64,6 +64,8 @@ public class RescueThreadRunRequestModel extends CoreSubCommand<RescueThreadRunR
             throw exn.toLHApiException();
         } catch (UnRescuableThreadRunException exn) {
             throw exn.toLHApiException();
+        } catch (Exception exn) {
+            throw new LHApiException(Status.INTERNAL, exn.getMessage());
         }
 
         return wfRun.toProto().build();
