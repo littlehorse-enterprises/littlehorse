@@ -113,8 +113,9 @@ task e2e(type: Test, dependsOn: compileJava){
     }
     jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '-Xms4096m', '-Xmx4096m', '-Xss2m', '-XX:+UseParallelGC', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
 
-    maxParallelForks = 2
-    systemProperty "junit.jupiter.execution.parallel.enabled", "true"
+    // TODO: Enable parallelism once we find the problem
+    // // maxParallelForks = 2
+    // // systemProperty "junit.jupiter.execution.parallel.enabled", "true"
 }
 
 spotless {
