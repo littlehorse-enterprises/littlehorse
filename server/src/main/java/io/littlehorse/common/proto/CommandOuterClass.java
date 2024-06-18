@@ -297,8 +297,10 @@ public final class CommandOuterClass {
       "\004 \001(\014\022-\n\ttenant_id\030\005 \001(\0132\025.littlehorse.T" +
       "enantIdH\000\210\001\001\0223\n\014principal_id\030\006 \001(\0132\030.lit" +
       "tlehorse.PrincipalIdH\001\210\001\001B\014\n\n_tenant_idB" +
-      "\017\n\r_principal_idB\037\n\033io.littlehorse.commo" +
-      "n.protoP\001b\006proto3"
+      "\017\n\r_principal_id\"B\n\034DeleteTaskWorkerGrou" +
+      "pRequest\022\"\n\002id\030\001 \001(\0132\026.littlehorse.TaskD" +
+      "efIdB\037\n\033io.littlehorse.common.protoP\001b\006p" +
+      "roto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
