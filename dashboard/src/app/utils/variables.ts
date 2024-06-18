@@ -11,19 +11,15 @@ export const getVariable = (variable?: VariableAssignment) => {
 }
 
 export const getVariableValue = (variable?: VariableValue) => {
-  console.log("variable:", variable)
   if (!variable) return
 
   const key = Object.keys(variable)[0] as keyof VariableValue
-  console.log("key:", key, )
 
   if (variable.bytes) {
     return "[bytes]"
   } else {
     return variable[key]
   }
-
-
 }
 
 const getValueFromVariableName = ({
