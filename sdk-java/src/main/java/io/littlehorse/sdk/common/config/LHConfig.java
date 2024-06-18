@@ -360,7 +360,7 @@ public class LHConfig extends ConfigBase {
     }
 
     public Integer getInflightTasks() {
-        return Integer.valueOf(getOrSetDefault(INFLIGHT_TASKS_KEY, String.valueOf("1")));
+        return Integer.valueOf(getOrSetDefault(INFLIGHT_TASKS_KEY, "1"));
     }
 
     public boolean isOauth() {
