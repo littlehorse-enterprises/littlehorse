@@ -5,7 +5,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * Type of a Variable in LittleHorse. Corresponds to the possible value type's of a
+ * Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
  * VariableValue.
  * </pre>
  *
