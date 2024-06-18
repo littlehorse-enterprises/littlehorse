@@ -1,5 +1,5 @@
 'use client'
-import { TaskDef } from 'littlehorse-client/dist/proto/task_def'
+import { TaskDef } from 'littlehorse-client/proto'
 import { FC } from 'react'
 
 type DetailsProps = Pick<TaskDef, 'id'>

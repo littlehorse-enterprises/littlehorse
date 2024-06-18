@@ -2,9 +2,14 @@ package io.littlehorse.server;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
+import io.littlehorse.server.streams.stores.TenantScopedStore;
+import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -59,6 +64,12 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
         CoreStoreProvider mockStoreProvider = Mockito.mock();
         Mockito.when(mockStoreProvider.nativeCoreStore()).thenReturn(coreNativeStore);
         Mockito.when(mockStoreProvider.getNativeGlobalStore()).thenReturn(globalMetadataNativeStore);
+        ClusterScopedStore clusterInitStore =
+                ClusterScopedStore.newInstance(globalMetadataNativeStore, new BackgroundContext());
+        TenantScopedStore coreInitStore =
+                TenantScopedStore.newInstance(coreNativeStore, new TenantIdModel(tenantId), new BackgroundContext());
+        MetadataManager initManager = new MetadataManager(clusterInitStore, coreInitStore, metadataCache);
+        initManager.put(new TenantModel(new TenantIdModel(tenantId)));
         return new TestRequestExecutionContext(
                 new PrincipalIdModel(clientId),
                 new TenantIdModel(tenantId),
