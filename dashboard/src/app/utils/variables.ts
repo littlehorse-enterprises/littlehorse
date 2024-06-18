@@ -11,9 +11,27 @@ export const getVariable = (variable?: VariableAssignment) => {
 }
 
 export const getVariableValue = (variable?: VariableValue) => {
+  console.log("variable:", variable)
   if (!variable) return
+
   const key = Object.keys(variable)[0] as keyof VariableValue
-  return variable[key]
+  console.log("key:", key, )
+
+  if (variable.bytes) {
+    return "[bytes]"
+  } else {
+    return variable[key]
+  }
+
+
+}
+
+function byteArrayToBase64(byteArray: []) {
+  return btoa(String.fromCharCode.apply(null, byteArray));
+}
+
+function base64ToString(base64) {
+  return atob(base64);
 }
 
 const getValueFromVariableName = ({
