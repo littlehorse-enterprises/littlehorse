@@ -1,5 +1,4 @@
-import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
-import { Node } from 'littlehorse-client/dist/proto/wf_spec'
+import { Node, NodeRun } from 'littlehorse-client/proto'
 import { ComponentType } from 'react'
 import { NodeProps as NodeFlow } from 'reactflow'
 import { Entrypoint } from './Entrypoint'

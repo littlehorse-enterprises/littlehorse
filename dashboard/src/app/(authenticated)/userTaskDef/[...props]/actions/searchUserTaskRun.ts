@@ -1,10 +1,13 @@
 'use server'
 import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
-import { SearchUserTaskRunRequest, UserTaskRunIdList } from 'littlehorse-client/dist/proto/service'
-import { UserTaskRun } from 'littlehorse-client/dist/proto/user_tasks'
-import { UserTaskRunId } from 'littlehorse-client/dist/proto/object_id'
-import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
+import {
+  NodeRun,
+  SearchUserTaskRunRequest,
+  UserTaskRun,
+  UserTaskRunId,
+  UserTaskRunIdList,
+} from 'littlehorse-client/proto'
 
 export interface runDetails {
   userTaskRun: UserTaskRun

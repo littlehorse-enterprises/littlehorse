@@ -1,7 +1,7 @@
 import { getVariableValue } from '@/app/utils'
 import { cn } from '@/lib/utils'
 import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
-import { TaskRun as LHTaskRun } from 'littlehorse-client/dist/proto/task_run'
+import { TaskRun as LHTaskRun } from 'littlehorse-client/proto'
 import { ClipboardIcon } from 'lucide-react'
 import { FC, useMemo, useState } from 'react'
 import { Modal } from '../../context'
