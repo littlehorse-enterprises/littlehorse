@@ -28,8 +28,6 @@ import {
 import { Timestamp } from "./google/protobuf/timestamp";
 import { ExternalEventDefId, WfSpecId, WorkflowEventDefId } from "./object_id";
 
-export const protobufPackage = "littlehorse";
-
 /** Determines the Access Level for a Variable in a ThreadSpec/WfSpec. */
 export enum WfRunVariableAccessLevel {
   /** PUBLIC_VAR - A `PUBLIC_VAR` can be accessed (read + mutated) by child `WfRun`'s. */
@@ -3052,7 +3050,7 @@ export const NodeMigration = {
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
+type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }

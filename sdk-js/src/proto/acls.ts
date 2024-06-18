@@ -9,8 +9,6 @@ import _m0 from "protobufjs/minimal";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { PrincipalId, TenantId } from "./object_id";
 
-export const protobufPackage = "littlehorse";
-
 /** Defines a resource type for ACL's. */
 export enum ACLResource {
   /** ACL_WORKFLOW - Refers to `WfSpec` and `WfRun` */
@@ -884,7 +882,7 @@ export const PutTenantRequest = {
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
+type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }

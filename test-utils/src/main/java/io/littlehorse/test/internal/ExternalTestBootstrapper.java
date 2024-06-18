@@ -1,6 +1,5 @@
 package io.littlehorse.test.internal;
 
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import java.nio.file.Files;
@@ -18,10 +17,7 @@ public class ExternalTestBootstrapper implements TestBootstrapper {
             throw new IllegalStateException(String.format("Configuration file %s doesn't exist", LH_CONFIG_FILE));
         }
         workerConfig = new LHConfig(configPath.toString());
-        lhClient = workerConfig
-                .getBlockingStub()
-                .withCallCredentials(new StandaloneTestBootstrapper.MockCallCredentials(
-                        new TenantIdModel(workerConfig.getTenantId())));
+        lhClient = workerConfig.getBlockingStub();
     }
 
     @Override

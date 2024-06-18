@@ -11,8 +11,6 @@ import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRunId, TaskRunId, UserTaskDefId, UserTaskRunId } from "./object_id";
 import { VariableValue } from "./variable";
 
-export const protobufPackage = "littlehorse";
-
 /** The status that a UserTaskRun can be in. */
 export enum UserTaskRunStatus {
   /** UNASSIGNED - Not assigned to a specific user yet. */
@@ -1349,7 +1347,7 @@ export const UserTaskEvent_UTEAssigned = {
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
+type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }

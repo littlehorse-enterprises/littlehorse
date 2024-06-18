@@ -244,7 +244,7 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
    * If this is set to false and a `Principal` with the same `id` already exists *and*
    * has different ACL's configured, then the RPC throws `ALREADY_EXISTS`.
    *
-   * If this is set to `true`, then the RPC will override hte 
+   * If this is set to `true`, then the RPC will override hte
    * </pre>
    *
    * <code>bool overwrite = 5;</code>
@@ -1116,7 +1116,7 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
      * If this is set to false and a `Principal` with the same `id` already exists *and*
      * has different ACL's configured, then the RPC throws `ALREADY_EXISTS`.
      *
-     * If this is set to `true`, then the RPC will override hte 
+     * If this is set to `true`, then the RPC will override hte
      * </pre>
      *
      * <code>bool overwrite = 5;</code>
@@ -1131,7 +1131,7 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
      * If this is set to false and a `Principal` with the same `id` already exists *and*
      * has different ACL's configured, then the RPC throws `ALREADY_EXISTS`.
      *
-     * If this is set to `true`, then the RPC will override hte 
+     * If this is set to `true`, then the RPC will override hte
      * </pre>
      *
      * <code>bool overwrite = 5;</code>
@@ -1150,7 +1150,7 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
      * If this is set to false and a `Principal` with the same `id` already exists *and*
      * has different ACL's configured, then the RPC throws `ALREADY_EXISTS`.
      *
-     * If this is set to `true`, then the RPC will override hte 
+     * If this is set to `true`, then the RPC will override hte
      * </pre>
      *
      * <code>bool overwrite = 5;</code>

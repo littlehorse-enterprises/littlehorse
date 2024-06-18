@@ -10,8 +10,6 @@ import { VariableDef } from "./common_wfspec";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { TaskDefId } from "./object_id";
 
-export const protobufPackage = "littlehorse";
-
 /** A TaskDef defines a blueprint for a TaskRun that can be dispatched to Task Workers. */
 export interface TaskDef {
   /** The ID of this TaskDef. */
@@ -93,7 +91,7 @@ export const TaskDef = {
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
+type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }

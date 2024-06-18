@@ -10,8 +10,6 @@ import { LHStatus, lHStatusFromJSON, lHStatusToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { ExternalEventId, WfRunId, WfSpecId } from "./object_id";
 
-export const protobufPackage = "littlehorse";
-
 /** The type of a ThreadRUn. */
 export enum ThreadType {
   /** ENTRYPOINT - The ENTRYPOINT ThreadRun. Exactly one per WfRun. Always has number == 0. */
@@ -1289,7 +1287,7 @@ export const ThreadHaltReason = {
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
+type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }

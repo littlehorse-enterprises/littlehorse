@@ -13,8 +13,9 @@ from google.protobuf.json_format import MessageToJson
 from google.protobuf.message import Message
 
 from littlehorse.config import LHConfig
-from littlehorse.model.common_enums_pb2 import LHErrorType, VariableType
-from littlehorse.model.common_wfspec_pb2 import (
+from littlehorse.model import (
+    LHErrorType,
+    VariableType,
     Comparator,
     TaskNode,
     UTActionTrigger,
@@ -23,19 +24,13 @@ from littlehorse.model.common_wfspec_pb2 import (
     VariableMutation,
     VariableMutationType,
     ExponentialBackoffRetryPolicy,
-)
-from littlehorse.model.object_id_pb2 import (
     ExternalEventDefId,
     TaskDefId,
     WorkflowEventDefId,
-)
-from littlehorse.model.service_pb2 import (
     PutExternalEventDefRequest,
     PutWfSpecRequest,
     AllowedUpdateType,
-)
-from littlehorse.model.variable_pb2 import VariableValue
-from littlehorse.model.wf_spec_pb2 import (
+    VariableValue,
     Edge,
     EdgeCondition,
     EntrypointNode,
@@ -1046,7 +1041,11 @@ class WorkflowThread:
             task_node = TaskNode(
                 task_def_id=TaskDefId(name=task_name),
                 variables=[to_variable_assignment(arg) for arg in args],
-                timeout_seconds=timeout_seconds if timeout_seconds is not None else self._default_timeout_seconds,
+                timeout_seconds=(
+                    timeout_seconds
+                    if timeout_seconds is not None
+                    else self._default_timeout_seconds
+                ),
                 retries=retries if retries is not None else self._default_retries,
                 exponential_backoff=(
                     exponential_backoff
@@ -1059,7 +1058,11 @@ class WorkflowThread:
             task_node = TaskNode(
                 dynamic_task=to_variable_assignment(task_name),
                 variables=[to_variable_assignment(arg) for arg in args],
-                timeout_seconds=timeout_seconds if timeout_seconds is not None else self._default_timeout_seconds,
+                timeout_seconds=(
+                    timeout_seconds
+                    if timeout_seconds is not None
+                    else self._default_timeout_seconds
+                ),
                 retries=retries if retries is not None else self._default_retries,
                 exponential_backoff=(
                     exponential_backoff
@@ -1073,7 +1076,11 @@ class WorkflowThread:
             task_node = TaskNode(
                 dynamic_task=to_variable_assignment(task_name),
                 variables=[to_variable_assignment(arg) for arg in args],
-                timeout_seconds=timeout_seconds if timeout_seconds is not None else self._default_timeout_seconds,
+                timeout_seconds=(
+                    timeout_seconds
+                    if timeout_seconds is not None
+                    else self._default_timeout_seconds
+                ),
                 retries=retries if retries is not None else self._default_retries,
                 exponential_backoff=(
                     exponential_backoff
@@ -1832,7 +1839,7 @@ class Workflow:
                 initializer,
                 self._default_retries,
                 self._default_exponential_backoff,
-                self._default_timeout_seconds
+                self._default_timeout_seconds,
             )
             thread_specs[name] = builder.compile()
 
@@ -1876,10 +1883,9 @@ class Workflow:
         self._default_retries = retries
         self._default_exponential_backoff = exponential_backoff
         return self
-    
+
     def with_task_timeout_seconds(
-        self,
-        timeout_seconds: Optional[int] = None
+        self, timeout_seconds: Optional[int] = None
     ) -> Workflow:
         """Configures the default timeout length (seconds) of the tasks.
 

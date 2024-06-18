@@ -6,8 +6,6 @@
 
 /* eslint-disable */
 
-export const protobufPackage = "littlehorse";
-
 /** Status used for WfRun, ThreadRun, and NodeRun */
 export enum LHStatus {
   STARTING = "STARTING",

@@ -39,6 +39,7 @@ message Command {
         CancelUserTaskRunRequest cancel_user_task = 19;
         BulkUpdateJob bulk_job = 20;
         TaskAttemptRetryReady task_attempt_retry_ready = 21;
+        RescueThreadRunRequest rescue_thread_run = 22;
         // TODO: Add SaveUserTask
     }
 }

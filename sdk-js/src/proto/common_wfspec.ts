@@ -11,8 +11,6 @@ import { VariableType, variableTypeFromJSON, variableTypeToNumber } from "./comm
 import { TaskDefId } from "./object_id";
 import { VariableValue } from "./variable";
 
-export const protobufPackage = "littlehorse";
-
 /** Enumerates the available operations to mutate a variable in a WfRun. */
 export enum VariableMutationType {
   /** ASSIGN - Set the variable specified by the LHS to the value of the RHS. */
@@ -1251,7 +1249,7 @@ export const TaskNode = {
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
+type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }

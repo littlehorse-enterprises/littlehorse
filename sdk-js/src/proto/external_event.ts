@@ -11,8 +11,6 @@ import { Timestamp } from "./google/protobuf/timestamp";
 import { ExternalEventDefId, ExternalEventId } from "./object_id";
 import { VariableValue } from "./variable";
 
-export const protobufPackage = "littlehorse";
-
 /**
  * An ExternalEvent represents A Thing That Happened outside the context of a WfRun.
  * Generally, an ExternalEvent is used to represent a document getting signed, an incident
@@ -321,7 +319,7 @@ export const ExternalEventRetentionPolicy = {
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
+type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }

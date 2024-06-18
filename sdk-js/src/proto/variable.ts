@@ -10,8 +10,6 @@ import _m0 from "protobufjs/minimal";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { VariableId, WfSpecId } from "./object_id";
 
-export const protobufPackage = "littlehorse";
-
 /**
  * VariableValue is a structure containing a value in LittleHorse. It can be
  * used to pass input variables into a WfRun/ThreadRun/TaskRun/etc, as output
@@ -270,7 +268,7 @@ export const Variable = {
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
+type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }

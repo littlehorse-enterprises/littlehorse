@@ -9,8 +9,6 @@ import _m0 from "protobufjs/minimal";
 import { MetricsWindowLength, metricsWindowLengthFromJSON, metricsWindowLengthToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
 
-export const protobufPackage = "littlehorse";
-
 /** The ID of a WfSpec. */
 export interface WfSpecId {
   /** Name of the WfSpec. */
@@ -1204,7 +1202,7 @@ export const TenantId = {
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
+type DeepPartial<T> = T extends Builtin ? T
   : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
