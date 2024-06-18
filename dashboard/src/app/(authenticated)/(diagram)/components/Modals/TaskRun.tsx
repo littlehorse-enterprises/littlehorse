@@ -1,10 +1,11 @@
 import { getVariableValue } from '@/app/utils'
+import { cn } from '@/lib/utils'
 import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
+import { TaskRun as LHTaskRun } from 'littlehorse-client/dist/proto/task_run'
 import { ClipboardIcon } from 'lucide-react'
 import { FC, useMemo, useState } from 'react'
 import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
-import { TaskRun as LHTaskRun } from 'littlehorse-client/dist/proto/task_run'
 
 export const TaskRun: FC<Modal> = ({ data }) => {
   const lhTaskRun = data as LHTaskRun
@@ -25,7 +26,9 @@ export const TaskRun: FC<Modal> = ({ data }) => {
           </DialogTitle>
           <Description>
             <div className="">
-              <div className="flex items-center justify-between bg-green-200 p-2">
+              <div
+                className={cn('flex items-center justify-between p-2', attempt.error ? 'bg-red-200' : 'bg-green-200')}
+              >
                 <div className="flex items-center gap-1">
                   <div className="flex gap-1">
                     {lhTaskRun.attempts.reverse().map((_, i) => {
@@ -56,11 +59,21 @@ export const TaskRun: FC<Modal> = ({ data }) => {
                   <div className="">{attempt.endTime}</div>
                 </div>
               </div>
-              {attempt.output && (
-                <div className="mt-2 flex flex-col rounded bg-zinc-500 p-1 text-white">
-                  <h3 className="font-bold">Output</h3>
-                  <pre className="overflow-x-auto">{getVariableValue(attempt.output)}</pre>
+
+              {attempt.error || attempt.exception ? (
+                <div className="mt-2 flex flex-col rounded bg-red-200 p-1">
+                  <h3 className="font-bold">{attempt.error ? 'Error' : attempt.exception ? 'Exception' : 'N/A'}</h3>
+                  <pre className="overflow-x-auto">
+                    {attempt.error ? attempt.error.message : attempt.exception ? attempt.exception.message : 'N/A'}
+                  </pre>
                 </div>
+              ) : (
+                attempt.output && (
+                  <div className="mt-2 flex flex-col rounded bg-zinc-500 p-1 text-white">
+                    <h3 className="font-bold">Output</h3>
+                    <pre className="overflow-x-auto">{getVariableValue(attempt.output)}</pre>
+                  </div>
+                )
               )}
             </div>
           </Description>
