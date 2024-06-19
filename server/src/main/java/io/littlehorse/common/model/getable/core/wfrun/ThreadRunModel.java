@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.ThreadRunRescueFailedException;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
@@ -370,7 +371,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * @return Optional.empty() if we can successfully rescue the ThreadRun; else, a Status
      * explaining why not.
      */
-    public Optional<Status> rescue(boolean skipCurrentNode, ProcessorExecutionContext ctx) {
+    public void rescue(boolean skipCurrentNode, ProcessorExecutionContext ctx) throws ThreadRunRescueFailedException {
         // First, Optional<Status> refers to the grpc status which can be thrown as an error
         // to the client.
 
@@ -394,8 +395,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             activateNode(toActivate);
         } catch (NodeFailureException exn) {
             setStatus(LHStatus.ERROR);
-            return Optional.of(
-                    Status.FAILED_PRECONDITION.withDescription("Could not rescue threadRun: " + exn.getMessage()));
+            throw new ThreadRunRescueFailedException("Could not rescue threadRun: " + exn.getMessage());
         }
 
         this.setEndTime(null); // no longer terminated.
@@ -408,15 +408,15 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 NodeRunModel parentCurrentNR = parent.getCurrentNodeRun();
                 if (parentCurrentNR.getType() == NodeTypeCase.WAIT_THREADS
                         || parentCurrentNR.getType() == NodeTypeCase.EXIT) {
+
                     FailureModel parentFailure =
                             parent.getCurrentNodeRun().getLatestFailure().get();
                     if (parentFailure.getFailureName().equals(LHErrorType.CHILD_FAILURE.toString())) {
-                        return parent.rescue(false, ctx);
+                        parent.rescue(false, ctx);
                     }
                 }
             }
         }
-        return Optional.empty();
     }
 
     public void halt(ThreadHaltReasonModel reason) {
