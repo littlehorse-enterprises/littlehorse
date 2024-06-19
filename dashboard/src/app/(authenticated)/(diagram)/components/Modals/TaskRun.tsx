@@ -1,5 +1,5 @@
 import { getVariableValue } from '@/app/utils'
-import { cn } from '@/lib/utils'
+import { cn } from '@/components/utils'
 import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { TaskRun as LHTaskRun, TaskAttempt } from 'littlehorse-client/proto'
 import { ClipboardIcon } from 'lucide-react'
