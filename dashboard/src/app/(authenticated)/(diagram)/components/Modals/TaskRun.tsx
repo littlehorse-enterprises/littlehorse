@@ -1,6 +1,7 @@
 import { getVariableValue } from '@/app/utils'
+import { cn } from '@/components/utils'
 import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
-import { TaskRun as LHTaskRun } from 'littlehorse-client/proto'
+import { TaskRun as LHTaskRun, TaskAttempt } from 'littlehorse-client/proto'
 import { ClipboardIcon } from 'lucide-react'
 import { FC, useMemo, useState } from 'react'
 import { Modal } from '../../context'
@@ -25,7 +26,12 @@ export const TaskRun: FC<Modal> = ({ data }) => {
           </DialogTitle>
           <Description>
             <div className="">
-              <div className="flex items-center justify-between bg-green-200 p-2">
+              <div
+                className={cn(
+                  'flex items-center justify-between p-2',
+                  attempt.exception || attempt.error ? 'bg-red-200' : 'bg-green-200'
+                )}
+              >
                 <div className="flex items-center gap-1">
                   <div className="flex gap-1">
                     {lhTaskRun.attempts.reverse().map((_, i) => {
@@ -56,16 +62,31 @@ export const TaskRun: FC<Modal> = ({ data }) => {
                   <div className="">{attempt.endTime}</div>
                 </div>
               </div>
-              {attempt.output && (
-                <div className="mt-2 flex flex-col rounded bg-zinc-500 p-1 text-white">
-                  <h3 className="font-bold">Output</h3>
-                  <pre className="overflow-x-auto">{getVariableValue(attempt.output)}</pre>
-                </div>
-              )}
+
+              <AttemptErrorExceptionOutput attempt={attempt} />
             </div>
           </Description>
         </DialogPanel>
       </div>
     </Dialog>
+  )
+}
+
+function AttemptErrorExceptionOutput({ attempt }: { attempt: TaskAttempt }) {
+  if (!attempt.output && !attempt.error && !attempt.exception) return
+
+  return (
+    <div className={cn('mt-2 flex flex-col rounded p-1', attempt.output ? 'bg-zinc-500 text-white' : 'bg-red-200')}>
+      <h3 className="font-bold">
+        {attempt.error && 'Error'}
+        {attempt.exception && 'Exception'}
+        {attempt.output && 'Output'}
+      </h3>
+      <pre className="overflow-x-auto">
+        {attempt.error && attempt.error.message}
+        {attempt.exception && attempt.exception.message}
+        {attempt.output && getVariableValue(attempt.output)}
+      </pre>
+    </div>
   )
 }
