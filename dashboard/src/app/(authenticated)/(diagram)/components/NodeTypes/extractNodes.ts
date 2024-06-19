@@ -1,4 +1,4 @@
-import { Node as NodeProto, ThreadSpec } from 'littlehorse-client/dist/proto/wf_spec'
+import { Node as NodeProto, ThreadSpec } from 'littlehorse-client/proto'
 import { Node, NodeProps } from 'reactflow'
 
 export const extractNodes = (spec: ThreadSpec): Node[] => {

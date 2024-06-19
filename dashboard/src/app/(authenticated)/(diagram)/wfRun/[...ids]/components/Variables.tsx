@@ -1,7 +1,6 @@
 import { VARIABLE_TYPES } from '@/app/constants'
 import { getVariableValue } from '@/app/utils'
-import { Variable } from 'littlehorse-client/dist/proto/variable'
-import { ThreadVarDef, WfRunVariableAccessLevel } from 'littlehorse-client/dist/proto/wf_spec'
+import { ThreadVarDef, Variable, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { FC } from 'react'
 
 type VariablesProps = {

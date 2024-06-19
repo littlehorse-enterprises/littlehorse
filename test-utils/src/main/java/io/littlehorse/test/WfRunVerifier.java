@@ -1,5 +1,6 @@
 package io.littlehorse.test;
 
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
@@ -22,6 +23,7 @@ import io.littlehorse.test.internal.TestExecutionContext;
 import io.littlehorse.test.internal.step.AssignUserTask;
 import io.littlehorse.test.internal.step.AwaitWorkflowEventStep;
 import io.littlehorse.test.internal.step.CancelUserTaskRun;
+import io.littlehorse.test.internal.step.RescueThreadRunStep;
 import io.littlehorse.test.internal.step.SearchStep;
 import io.littlehorse.test.internal.step.SendExternalEventStep;
 import io.littlehorse.test.internal.step.VerifyNodeRunStep;
@@ -87,6 +89,17 @@ public class WfRunVerifier extends AbstractVerifier {
 
     public WfRunVerifier thenAwaitWorkflowEvent(String workflowEventDefName, Consumer<WorkflowEvent> verifier) {
         steps.add(new AwaitWorkflowEventStep(workflowEventDefName, verifier, steps.size() + 1));
+        return this;
+    }
+
+    public WfRunVerifier thenRescueThreadRun(int threadRunNumber, boolean skipCurrentNode) {
+        steps.add(new RescueThreadRunStep(threadRunNumber, skipCurrentNode, null, steps.size() + 1));
+        return this;
+    }
+
+    public WfRunVerifier thenRescueThreadRun(
+            int threadRunNumber, boolean skipCurrentNode, Consumer<StatusRuntimeException> exceptionConsumer) {
+        steps.add(new RescueThreadRunStep(threadRunNumber, skipCurrentNode, exceptionConsumer, steps.size() + 1));
         return this;
     }
 

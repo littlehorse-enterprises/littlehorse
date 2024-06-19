@@ -7,14 +7,14 @@ import {
   searchUserTaskRun,
 } from '@/app/(authenticated)/userTaskDef/[...props]/actions/searchUserTaskRun'
 
-import { RefreshCwIcon } from 'lucide-react'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Button, Field, Input, Label } from '@headlessui/react'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { UserTaskDef as UserTaskDefProto, UserTaskRunStatus } from 'littlehorse-client/dist/proto/user_tasks'
+import { UserTaskDef as UserTaskDefProto, UserTaskRunStatus } from 'littlehorse-client/proto'
+import { RefreshCwIcon } from 'lucide-react'
 import Link from 'next/link'
 import React, { FC, Fragment, useState } from 'react'
 import { useDebounce } from 'use-debounce'

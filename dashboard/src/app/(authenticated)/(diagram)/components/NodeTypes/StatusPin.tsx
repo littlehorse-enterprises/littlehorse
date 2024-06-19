@@ -1,14 +1,14 @@
+import { LHStatus } from 'littlehorse-client/proto'
 import {
-  TriangleAlertIcon,
-  CircleXIcon,
   BugIcon,
   CheckIcon,
-  EllipsisIcon,
+  CirclePauseIcon,
   CirclePlayIcon,
   CircleSlashIcon,
-  CirclePauseIcon,
+  CircleXIcon,
+  EllipsisIcon,
+  TriangleAlertIcon,
 } from 'lucide-react'
-import { LHStatus } from 'littlehorse-client/dist/proto/common_enums'
 import React, { FC } from 'react'
 
 type Pin = {
