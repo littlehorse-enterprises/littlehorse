@@ -21,9 +21,14 @@ import org.apache.kafka.streams.processor.api.Record;
 import java.util.Date;
 import java.util.List;
 import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.common.serialization.Serde;
+import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.state.KeyValueStore;
+
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonSerializer;
 
 public class MetadataCommandExecution implements ExecutionContext {
 
@@ -86,13 +91,15 @@ public class MetadataCommandExecution implements ExecutionContext {
         cpo.payload = commandModel;
         TenantIdModel tenantId = authorization().tenantId();
         PrincipalIdModel principalId = authorization().principalId();
-        Record<String, CommandProcessorOutput> out = new Record<>(
+        
+        Record<String, Bytes> out = new Record<>(
             cpo.partitionKey,
-            cpo,
+            new Bytes(cpo.payload.toBytes()),
             System.currentTimeMillis(),
             HeadersUtil.metadataHeadersFor(tenantId, principalId)
         );
-        this.processorContext.forward(out);
+
+        this.processorContext.forward(out);;
     }
 
     private KeyValueStore<String, Bytes> nativeMetadataStore() {
