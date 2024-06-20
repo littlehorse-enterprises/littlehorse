@@ -27,6 +27,7 @@ export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, 
   }, [data, setModal, setShowModal])
 
   if (!task) return null
+
   return (
     <NodeDetails>
       <div className="mb-2">

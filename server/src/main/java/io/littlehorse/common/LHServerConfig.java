@@ -931,6 +931,10 @@ public class LHServerConfig extends ConfigBase {
         return this.getLHClusterId() + "-" + this.getLHInstanceName() + "-" + component;
     }
 
+    public long getStreamsSessionTimeout() {
+        return Long.parseLong(props.getProperty(SESSION_TIMEOUT_KEY));
+    }
+
     public int getNumNetworkThreads() {
         int out = Integer.valueOf(getOrSetDefault(NUM_NETWORK_THREADS_KEY, "2"));
         if (out < 2) {

@@ -17,5 +17,4 @@ public class ThreadRunRescueFailedException extends Exception {
     public LHApiException toLHApiException() {
         return new LHApiException(Status.FAILED_PRECONDITION, getMessage());
     }
-
 }

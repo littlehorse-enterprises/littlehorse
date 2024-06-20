@@ -22,15 +22,15 @@ export const Variables: FC<VariablesProps> = ({ variableDefs, variables }) => {
       <h2 className="text-md mb-2 font-bold">Variables</h2>
       {variableDefs.map(variable => (
         <div key={variable.varDef?.name} className="mb-1 flex items-center gap-1">
-        <span className="rounded	bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{variable.varDef?.name}</span>
-        <span className="rounded bg-yellow-100 p-1 text-xs">{VARIABLE_TYPES[variable.varDef!.type]}</span>
-        {variable.required && <span className="rounded bg-orange-300 p-1 text-xs">Required</span>}
-        {variable.searchable && <span className="rounded bg-blue-300 p-1 text-xs">Searchable</span>}
-        <span className="rounded bg-green-300 p-1 text-xs">{accessLevels[variable.accessLevel]}</span>
-        <span>=</span>
-        <span className="truncate">
-             {getVariableValue(variables.find(v => v.id?.name === variable.varDef?.name)?.value)}
-        </span>
+          <span className="rounded	bg-gray-100 px-2 py-1 font-mono text-fuchsia-500">{variable.varDef?.name}</span>
+          <span className="rounded bg-yellow-100 p-1 text-xs">{VARIABLE_TYPES[variable.varDef!.type]}</span>
+          {variable.required && <span className="rounded bg-orange-300 p-1 text-xs">Required</span>}
+          {variable.searchable && <span className="rounded bg-blue-300 p-1 text-xs">Searchable</span>}
+          <span className="rounded bg-green-300 p-1 text-xs">{accessLevels[variable.accessLevel]}</span>
+          <span>=</span>
+          <span className="truncate">
+            {getVariableValue(variables.find(v => v.id?.name === variable.varDef?.name)?.value)}
+          </span>
         </div>
       ))}
     </div>

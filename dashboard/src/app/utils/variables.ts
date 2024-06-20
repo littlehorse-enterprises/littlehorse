@@ -15,7 +15,7 @@ export const getVariableValue = (variable?: VariableValue) => {
   const key = Object.keys(variable)[0] as keyof VariableValue
 
   if (variable.bytes) {
-    return "[bytes]"
+    return '[bytes]'
   } else {
     return variable[key]
   }

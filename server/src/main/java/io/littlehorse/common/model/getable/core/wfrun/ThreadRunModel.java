@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.core.wfrun;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.exceptions.ThreadRunRescueFailedException;
