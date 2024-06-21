@@ -40,6 +40,7 @@ message Command {
         BulkUpdateJob bulk_job = 20;
         TaskAttemptRetryReady task_attempt_retry_ready = 21;
         RescueThreadRunRequest rescue_thread_run = 22;
+        DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;
         // TODO: Add SaveUserTask
     }
 }
