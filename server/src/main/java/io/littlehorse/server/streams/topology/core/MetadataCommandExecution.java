@@ -8,7 +8,6 @@ import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
-import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
@@ -16,19 +15,13 @@ import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
-import org.apache.kafka.streams.processor.api.Record;
-
 import java.util.Date;
 import java.util.List;
 import org.apache.kafka.common.header.Headers;
-import org.apache.kafka.common.serialization.Serde;
-import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
-
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonSerializer;
 
 public class MetadataCommandExecution implements ExecutionContext {
 
@@ -91,15 +84,14 @@ public class MetadataCommandExecution implements ExecutionContext {
         cpo.payload = commandModel;
         TenantIdModel tenantId = authorization().tenantId();
         PrincipalIdModel principalId = authorization().principalId();
-        
-        Record<String, Bytes> out = new Record<>(
-            cpo.partitionKey,
-            new Bytes(cpo.payload.toBytes()),
-            System.currentTimeMillis(),
-            HeadersUtil.metadataHeadersFor(tenantId, principalId)
-        );
 
-        this.processorContext.forward(out);;
+        Record<String, Bytes> out = new Record<>(
+                cpo.partitionKey,
+                new Bytes(cpo.payload.toBytes()),
+                System.currentTimeMillis(),
+                HeadersUtil.metadataHeadersFor(tenantId, principalId));
+
+        this.processorContext.forward(out);
     }
 
     private KeyValueStore<String, Bytes> nativeMetadataStore() {

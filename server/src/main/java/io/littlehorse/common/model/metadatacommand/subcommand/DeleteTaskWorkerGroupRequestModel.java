@@ -16,9 +16,7 @@ public class DeleteTaskWorkerGroupRequestModel extends CoreSubCommand<DeleteTask
 
     private TaskDefIdModel taskDefId;
 
-    public DeleteTaskWorkerGroupRequestModel() {
-        
-    }
+    public DeleteTaskWorkerGroupRequestModel() {}
 
     public DeleteTaskWorkerGroupRequestModel(TaskDefIdModel taskDefId) {
         this.taskDefId = taskDefId;
