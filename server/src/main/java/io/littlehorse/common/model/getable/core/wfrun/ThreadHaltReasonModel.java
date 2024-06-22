@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.core.wfrun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.getable.core.wfrun.haltreason.FailingHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.HandlingFailureHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.InterruptedModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel;
@@ -25,6 +26,7 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
     public HandlingFailureHaltReasonModel handlingFailure;
     public PendingFailureHandlerHaltReasonModel pendingFailure;
     public ManualHaltModel manualHalt;
+    private FailingHaltReasonModel failing;
 
     public ReasonCase type;
 
@@ -50,6 +52,8 @@ public class ThreadHaltReasonModel extends LHSerializable<ThreadHaltReason> {
                 return handlingFailure;
             case MANUAL_HALT:
                 return manualHalt;
+            case FAILING:
+                return failing;
             case REASON_NOT_SET:
                 throw new RuntimeException("Not possible");
         }

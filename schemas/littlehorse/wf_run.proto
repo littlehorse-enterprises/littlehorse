@@ -208,6 +208,12 @@ message ManualHalt {
   bool meaning_of_life = 137;
 }
 
+// A Halt Reason denoting that a ThreadRun has failed, and is waiting for its
+// children to halt before it can move to the ERROR or EXCEPTION state.
+message FailingHaltReason {
+  // Nothing to store.
+}
+
 // Denotes a reason why a ThreadRun is halted. See `ThreadRun.halt_reasons` for context.
 message ThreadHaltReason {
   // The reason for the halt.
@@ -229,5 +235,9 @@ message ThreadHaltReason {
 
     // Manually stopped the WfRun.
     ManualHalt manual_halt = 6;
+
+    // The ThreadRun is halting and waiting for children to finish before
+    // it can be moved to `ERROR` or `EXCEPTION` status.
+    FailingHaltReason failing = 7;
   }
 }

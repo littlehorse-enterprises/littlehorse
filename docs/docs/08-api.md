@@ -2873,6 +2873,17 @@ from a TaskRun, as the value of a WfRun's Variable, etc.
 
 
 
+### Message `FailingHaltReason` {#failinghaltreason}
+
+A Halt Reason denoting that a ThreadRun has failed, and is waiting for its
+children to halt before it can move to the ERROR or EXCEPTION state.
+
+Nothing to store.
+
+ <!-- end HasFields -->
+
+
+
 ### Message `FailureBeingHandled` {#failurebeinghandled}
 
 Points to the Failure that is currently being handled in the ThreadRun.
@@ -3012,6 +3023,7 @@ Denotes a reason why a ThreadRun is halted. See `ThreadRun.halt_reasons` for con
 | `pending_failure` | oneof `reason`| [PendingFailureHandlerHaltReason](#pendingfailurehandlerhaltreason) | Waiting to handle a failure. |
 | `handling_failure` | oneof `reason`| [HandlingFailureHaltReason](#handlingfailurehaltreason) | Handling a failure. |
 | `manual_halt` | oneof `reason`| [ManualHalt](#manualhalt) | Manually stopped the WfRun. |
+| `failing` | oneof `reason`| [FailingHaltReason](#failinghaltreason) | The ThreadRun is halting and waiting for children to finish before it can be moved to `ERROR` or `EXCEPTION` status. |
  <!-- end Fields -->
  <!-- end HasFields -->
 

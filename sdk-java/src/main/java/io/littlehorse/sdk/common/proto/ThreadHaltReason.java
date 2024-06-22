@@ -54,6 +54,7 @@ private static final long serialVersionUID = 0L;
     PENDING_FAILURE(4),
     HANDLING_FAILURE(5),
     MANUAL_HALT(6),
+    FAILING(7),
     REASON_NOT_SET(0);
     private final int value;
     private ReasonCase(int value) {
@@ -77,6 +78,7 @@ private static final long serialVersionUID = 0L;
         case 4: return PENDING_FAILURE;
         case 5: return HANDLING_FAILURE;
         case 6: return MANUAL_HALT;
+        case 7: return FAILING;
         case 0: return REASON_NOT_SET;
         default: return null;
       }
@@ -350,6 +352,52 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.ManualHalt.getDefaultInstance();
   }
 
+  public static final int FAILING_FIELD_NUMBER = 7;
+  /**
+   * <pre>
+   * The ThreadRun is halting and waiting for children to finish before
+   * it can be moved to `ERROR` or `EXCEPTION` status.
+   * </pre>
+   *
+   * <code>.littlehorse.FailingHaltReason failing = 7;</code>
+   * @return Whether the failing field is set.
+   */
+  @java.lang.Override
+  public boolean hasFailing() {
+    return reasonCase_ == 7;
+  }
+  /**
+   * <pre>
+   * The ThreadRun is halting and waiting for children to finish before
+   * it can be moved to `ERROR` or `EXCEPTION` status.
+   * </pre>
+   *
+   * <code>.littlehorse.FailingHaltReason failing = 7;</code>
+   * @return The failing.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.FailingHaltReason getFailing() {
+    if (reasonCase_ == 7) {
+       return (io.littlehorse.sdk.common.proto.FailingHaltReason) reason_;
+    }
+    return io.littlehorse.sdk.common.proto.FailingHaltReason.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * The ThreadRun is halting and waiting for children to finish before
+   * it can be moved to `ERROR` or `EXCEPTION` status.
+   * </pre>
+   *
+   * <code>.littlehorse.FailingHaltReason failing = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.FailingHaltReasonOrBuilder getFailingOrBuilder() {
+    if (reasonCase_ == 7) {
+       return (io.littlehorse.sdk.common.proto.FailingHaltReason) reason_;
+    }
+    return io.littlehorse.sdk.common.proto.FailingHaltReason.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -381,6 +429,9 @@ private static final long serialVersionUID = 0L;
     }
     if (reasonCase_ == 6) {
       output.writeMessage(6, (io.littlehorse.sdk.common.proto.ManualHalt) reason_);
+    }
+    if (reasonCase_ == 7) {
+      output.writeMessage(7, (io.littlehorse.sdk.common.proto.FailingHaltReason) reason_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -414,6 +465,10 @@ private static final long serialVersionUID = 0L;
     if (reasonCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, (io.littlehorse.sdk.common.proto.ManualHalt) reason_);
+    }
+    if (reasonCase_ == 7) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, (io.littlehorse.sdk.common.proto.FailingHaltReason) reason_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -456,6 +511,10 @@ private static final long serialVersionUID = 0L;
         if (!getManualHalt()
             .equals(other.getManualHalt())) return false;
         break;
+      case 7:
+        if (!getFailing()
+            .equals(other.getFailing())) return false;
+        break;
       case 0:
       default:
     }
@@ -494,6 +553,10 @@ private static final long serialVersionUID = 0L;
       case 6:
         hash = (37 * hash) + MANUAL_HALT_FIELD_NUMBER;
         hash = (53 * hash) + getManualHalt().hashCode();
+        break;
+      case 7:
+        hash = (37 * hash) + FAILING_FIELD_NUMBER;
+        hash = (53 * hash) + getFailing().hashCode();
         break;
       case 0:
       default:
@@ -651,6 +714,9 @@ private static final long serialVersionUID = 0L;
       if (manualHaltBuilder_ != null) {
         manualHaltBuilder_.clear();
       }
+      if (failingBuilder_ != null) {
+        failingBuilder_.clear();
+      }
       reasonCase_ = 0;
       reason_ = null;
       return this;
@@ -715,6 +781,10 @@ private static final long serialVersionUID = 0L;
       if (reasonCase_ == 6 &&
           manualHaltBuilder_ != null) {
         result.reason_ = manualHaltBuilder_.build();
+      }
+      if (reasonCase_ == 7 &&
+          failingBuilder_ != null) {
+        result.reason_ = failingBuilder_.build();
       }
     }
 
@@ -785,6 +855,10 @@ private static final long serialVersionUID = 0L;
         }
         case MANUAL_HALT: {
           mergeManualHalt(other.getManualHalt());
+          break;
+        }
+        case FAILING: {
+          mergeFailing(other.getFailing());
           break;
         }
         case REASON_NOT_SET: {
@@ -859,6 +933,13 @@ private static final long serialVersionUID = 0L;
               reasonCase_ = 6;
               break;
             } // case 50
+            case 58: {
+              input.readMessage(
+                  getFailingFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              reasonCase_ = 7;
+              break;
+            } // case 58
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1957,6 +2038,193 @@ private static final long serialVersionUID = 0L;
       reasonCase_ = 6;
       onChanged();
       return manualHaltBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.FailingHaltReason, io.littlehorse.sdk.common.proto.FailingHaltReason.Builder, io.littlehorse.sdk.common.proto.FailingHaltReasonOrBuilder> failingBuilder_;
+    /**
+     * <pre>
+     * The ThreadRun is halting and waiting for children to finish before
+     * it can be moved to `ERROR` or `EXCEPTION` status.
+     * </pre>
+     *
+     * <code>.littlehorse.FailingHaltReason failing = 7;</code>
+     * @return Whether the failing field is set.
+     */
+    @java.lang.Override
+    public boolean hasFailing() {
+      return reasonCase_ == 7;
+    }
+    /**
+     * <pre>
+     * The ThreadRun is halting and waiting for children to finish before
+     * it can be moved to `ERROR` or `EXCEPTION` status.
+     * </pre>
+     *
+     * <code>.littlehorse.FailingHaltReason failing = 7;</code>
+     * @return The failing.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.FailingHaltReason getFailing() {
+      if (failingBuilder_ == null) {
+        if (reasonCase_ == 7) {
+          return (io.littlehorse.sdk.common.proto.FailingHaltReason) reason_;
+        }
+        return io.littlehorse.sdk.common.proto.FailingHaltReason.getDefaultInstance();
+      } else {
+        if (reasonCase_ == 7) {
+          return failingBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.FailingHaltReason.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * The ThreadRun is halting and waiting for children to finish before
+     * it can be moved to `ERROR` or `EXCEPTION` status.
+     * </pre>
+     *
+     * <code>.littlehorse.FailingHaltReason failing = 7;</code>
+     */
+    public Builder setFailing(io.littlehorse.sdk.common.proto.FailingHaltReason value) {
+      if (failingBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        reason_ = value;
+        onChanged();
+      } else {
+        failingBuilder_.setMessage(value);
+      }
+      reasonCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * The ThreadRun is halting and waiting for children to finish before
+     * it can be moved to `ERROR` or `EXCEPTION` status.
+     * </pre>
+     *
+     * <code>.littlehorse.FailingHaltReason failing = 7;</code>
+     */
+    public Builder setFailing(
+        io.littlehorse.sdk.common.proto.FailingHaltReason.Builder builderForValue) {
+      if (failingBuilder_ == null) {
+        reason_ = builderForValue.build();
+        onChanged();
+      } else {
+        failingBuilder_.setMessage(builderForValue.build());
+      }
+      reasonCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * The ThreadRun is halting and waiting for children to finish before
+     * it can be moved to `ERROR` or `EXCEPTION` status.
+     * </pre>
+     *
+     * <code>.littlehorse.FailingHaltReason failing = 7;</code>
+     */
+    public Builder mergeFailing(io.littlehorse.sdk.common.proto.FailingHaltReason value) {
+      if (failingBuilder_ == null) {
+        if (reasonCase_ == 7 &&
+            reason_ != io.littlehorse.sdk.common.proto.FailingHaltReason.getDefaultInstance()) {
+          reason_ = io.littlehorse.sdk.common.proto.FailingHaltReason.newBuilder((io.littlehorse.sdk.common.proto.FailingHaltReason) reason_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          reason_ = value;
+        }
+        onChanged();
+      } else {
+        if (reasonCase_ == 7) {
+          failingBuilder_.mergeFrom(value);
+        } else {
+          failingBuilder_.setMessage(value);
+        }
+      }
+      reasonCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * The ThreadRun is halting and waiting for children to finish before
+     * it can be moved to `ERROR` or `EXCEPTION` status.
+     * </pre>
+     *
+     * <code>.littlehorse.FailingHaltReason failing = 7;</code>
+     */
+    public Builder clearFailing() {
+      if (failingBuilder_ == null) {
+        if (reasonCase_ == 7) {
+          reasonCase_ = 0;
+          reason_ = null;
+          onChanged();
+        }
+      } else {
+        if (reasonCase_ == 7) {
+          reasonCase_ = 0;
+          reason_ = null;
+        }
+        failingBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * The ThreadRun is halting and waiting for children to finish before
+     * it can be moved to `ERROR` or `EXCEPTION` status.
+     * </pre>
+     *
+     * <code>.littlehorse.FailingHaltReason failing = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.FailingHaltReason.Builder getFailingBuilder() {
+      return getFailingFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * The ThreadRun is halting and waiting for children to finish before
+     * it can be moved to `ERROR` or `EXCEPTION` status.
+     * </pre>
+     *
+     * <code>.littlehorse.FailingHaltReason failing = 7;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.FailingHaltReasonOrBuilder getFailingOrBuilder() {
+      if ((reasonCase_ == 7) && (failingBuilder_ != null)) {
+        return failingBuilder_.getMessageOrBuilder();
+      } else {
+        if (reasonCase_ == 7) {
+          return (io.littlehorse.sdk.common.proto.FailingHaltReason) reason_;
+        }
+        return io.littlehorse.sdk.common.proto.FailingHaltReason.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * The ThreadRun is halting and waiting for children to finish before
+     * it can be moved to `ERROR` or `EXCEPTION` status.
+     * </pre>
+     *
+     * <code>.littlehorse.FailingHaltReason failing = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.FailingHaltReason, io.littlehorse.sdk.common.proto.FailingHaltReason.Builder, io.littlehorse.sdk.common.proto.FailingHaltReasonOrBuilder> 
+        getFailingFieldBuilder() {
+      if (failingBuilder_ == null) {
+        if (!(reasonCase_ == 7)) {
+          reason_ = io.littlehorse.sdk.common.proto.FailingHaltReason.getDefaultInstance();
+        }
+        failingBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.FailingHaltReason, io.littlehorse.sdk.common.proto.FailingHaltReason.Builder, io.littlehorse.sdk.common.proto.FailingHaltReasonOrBuilder>(
+                (io.littlehorse.sdk.common.proto.FailingHaltReason) reason_,
+                getParentForChildren(),
+                isClean());
+        reason_ = null;
+      }
+      reasonCase_ = 7;
+      onChanged();
+      return failingBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
