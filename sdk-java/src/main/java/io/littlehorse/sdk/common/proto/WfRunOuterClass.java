@@ -70,11 +70,6 @@ public final class WfRunOuterClass {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_ManualHalt_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_FailingHaltReason_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_FailingHaltReason_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_ThreadHaltReason_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -136,23 +131,21 @@ public final class WfRunOuterClass {
       "\031\n\021handler_thread_id\030\001 \001(\005\"(\n\014ParentHalt" +
       "ed\022\030\n\020parent_thread_id\030\001 \001(\005\"*\n\013Interrup" +
       "ted\022\033\n\023interrupt_thread_id\030\001 \001(\005\"&\n\nManu" +
-      "alHalt\022\030\n\017meaning_of_life\030\211\001 \001(\010\"\023\n\021Fail" +
-      "ingHaltReason\"\267\003\n\020ThreadHaltReason\0222\n\rpa" +
-      "rent_halted\030\001 \001(\0132\031.littlehorse.ParentHa" +
-      "ltedH\000\022/\n\013interrupted\030\002 \001(\0132\030.littlehors" +
-      "e.InterruptedH\000\022D\n\021pending_interrupt\030\003 \001" +
-      "(\0132\'.littlehorse.PendingInterruptHaltRea" +
-      "sonH\000\022G\n\017pending_failure\030\004 \001(\0132,.littleh" +
-      "orse.PendingFailureHandlerHaltReasonH\000\022B" +
-      "\n\020handling_failure\030\005 \001(\0132&.littlehorse.H" +
-      "andlingFailureHaltReasonH\000\022.\n\013manual_hal" +
-      "t\030\006 \001(\0132\027.littlehorse.ManualHaltH\000\0221\n\007fa" +
-      "iling\030\007 \001(\0132\036.littlehorse.FailingHaltRea" +
-      "sonH\000B\010\n\006reason*K\n\nThreadType\022\016\n\nENTRYPO" +
-      "INT\020\000\022\t\n\005CHILD\020\001\022\r\n\tINTERRUPT\020\002\022\023\n\017FAILU" +
-      "RE_HANDLER\020\003BG\n\037io.littlehorse.sdk.commo" +
-      "n.protoP\001Z\007.;model\252\002\030LittleHorse.Common." +
-      "Protob\006proto3"
+      "alHalt\022\030\n\017meaning_of_life\030\211\001 \001(\010\"\204\003\n\020Thr" +
+      "eadHaltReason\0222\n\rparent_halted\030\001 \001(\0132\031.l" +
+      "ittlehorse.ParentHaltedH\000\022/\n\013interrupted" +
+      "\030\002 \001(\0132\030.littlehorse.InterruptedH\000\022D\n\021pe" +
+      "nding_interrupt\030\003 \001(\0132\'.littlehorse.Pend" +
+      "ingInterruptHaltReasonH\000\022G\n\017pending_fail" +
+      "ure\030\004 \001(\0132,.littlehorse.PendingFailureHa" +
+      "ndlerHaltReasonH\000\022B\n\020handling_failure\030\005 " +
+      "\001(\0132&.littlehorse.HandlingFailureHaltRea" +
+      "sonH\000\022.\n\013manual_halt\030\006 \001(\0132\027.littlehorse" +
+      ".ManualHaltH\000B\010\n\006reason*K\n\nThreadType\022\016\n" +
+      "\nENTRYPOINT\020\000\022\t\n\005CHILD\020\001\022\r\n\tINTERRUPT\020\002\022" +
+      "\023\n\017FAILURE_HANDLER\020\003BG\n\037io.littlehorse.s" +
+      "dk.common.protoP\001Z\007.;model\252\002\030LittleHorse" +
+      ".Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -227,18 +220,12 @@ public final class WfRunOuterClass {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ManualHalt_descriptor,
         new java.lang.String[] { "MeaningOfLife", });
-    internal_static_littlehorse_FailingHaltReason_descriptor =
-      getDescriptor().getMessageTypes().get(11);
-    internal_static_littlehorse_FailingHaltReason_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_FailingHaltReason_descriptor,
-        new java.lang.String[] { });
     internal_static_littlehorse_ThreadHaltReason_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_littlehorse_ThreadHaltReason_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ThreadHaltReason_descriptor,
-        new java.lang.String[] { "ParentHalted", "Interrupted", "PendingInterrupt", "PendingFailure", "HandlingFailure", "ManualHalt", "Failing", "Reason", });
+        new java.lang.String[] { "ParentHalted", "Interrupted", "PendingInterrupt", "PendingFailure", "HandlingFailure", "ManualHalt", "Reason", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();

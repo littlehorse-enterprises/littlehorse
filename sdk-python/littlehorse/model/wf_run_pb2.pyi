@@ -142,24 +142,18 @@ class ManualHalt(_message.Message):
     meaning_of_life: bool
     def __init__(self, meaning_of_life: bool = ...) -> None: ...
 
-class FailingHaltReason(_message.Message):
-    __slots__ = []
-    def __init__(self) -> None: ...
-
 class ThreadHaltReason(_message.Message):
-    __slots__ = ["parent_halted", "interrupted", "pending_interrupt", "pending_failure", "handling_failure", "manual_halt", "failing"]
+    __slots__ = ["parent_halted", "interrupted", "pending_interrupt", "pending_failure", "handling_failure", "manual_halt"]
     PARENT_HALTED_FIELD_NUMBER: _ClassVar[int]
     INTERRUPTED_FIELD_NUMBER: _ClassVar[int]
     PENDING_INTERRUPT_FIELD_NUMBER: _ClassVar[int]
     PENDING_FAILURE_FIELD_NUMBER: _ClassVar[int]
     HANDLING_FAILURE_FIELD_NUMBER: _ClassVar[int]
     MANUAL_HALT_FIELD_NUMBER: _ClassVar[int]
-    FAILING_FIELD_NUMBER: _ClassVar[int]
     parent_halted: ParentHalted
     interrupted: Interrupted
     pending_interrupt: PendingInterruptHaltReason
     pending_failure: PendingFailureHandlerHaltReason
     handling_failure: HandlingFailureHaltReason
     manual_halt: ManualHalt
-    failing: FailingHaltReason
-    def __init__(self, parent_halted: _Optional[_Union[ParentHalted, _Mapping]] = ..., interrupted: _Optional[_Union[Interrupted, _Mapping]] = ..., pending_interrupt: _Optional[_Union[PendingInterruptHaltReason, _Mapping]] = ..., pending_failure: _Optional[_Union[PendingFailureHandlerHaltReason, _Mapping]] = ..., handling_failure: _Optional[_Union[HandlingFailureHaltReason, _Mapping]] = ..., manual_halt: _Optional[_Union[ManualHalt, _Mapping]] = ..., failing: _Optional[_Union[FailingHaltReason, _Mapping]] = ...) -> None: ...
+    def __init__(self, parent_halted: _Optional[_Union[ParentHalted, _Mapping]] = ..., interrupted: _Optional[_Union[Interrupted, _Mapping]] = ..., pending_interrupt: _Optional[_Union[PendingInterruptHaltReason, _Mapping]] = ..., pending_failure: _Optional[_Union[PendingFailureHandlerHaltReason, _Mapping]] = ..., handling_failure: _Optional[_Union[HandlingFailureHaltReason, _Mapping]] = ..., manual_halt: _Optional[_Union[ManualHalt, _Mapping]] = ...) -> None: ...

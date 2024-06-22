@@ -274,13 +274,6 @@ export interface ManualHalt {
   meaningOfLife: boolean;
 }
 
-/**
- * A Halt Reason denoting that a ThreadRun has failed, and is waiting for its
- * children to halt before it can move to the ERROR or EXCEPTION state.
- */
-export interface FailingHaltReason {
-}
-
 /** Denotes a reason why a ThreadRun is halted. See `ThreadRun.halt_reasons` for context. */
 export interface ThreadHaltReason {
   /** Parent threadRun halted. */
@@ -304,14 +297,7 @@ export interface ThreadHaltReason {
     | HandlingFailureHaltReason
     | undefined;
   /** Manually stopped the WfRun. */
-  manualHalt?:
-    | ManualHalt
-    | undefined;
-  /**
-   * The ThreadRun is halting and waiting for children to finish before
-   * it can be moved to `ERROR` or `EXCEPTION` status.
-   */
-  failing?: FailingHaltReason | undefined;
+  manualHalt?: ManualHalt | undefined;
 }
 
 function createBaseWfRun(): WfRun {
@@ -1180,40 +1166,6 @@ export const ManualHalt = {
   },
 };
 
-function createBaseFailingHaltReason(): FailingHaltReason {
-  return {};
-}
-
-export const FailingHaltReason = {
-  encode(_: FailingHaltReason, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): FailingHaltReason {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseFailingHaltReason();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  create(base?: DeepPartial<FailingHaltReason>): FailingHaltReason {
-    return FailingHaltReason.fromPartial(base ?? {});
-  },
-  fromPartial(_: DeepPartial<FailingHaltReason>): FailingHaltReason {
-    const message = createBaseFailingHaltReason();
-    return message;
-  },
-};
-
 function createBaseThreadHaltReason(): ThreadHaltReason {
   return {
     parentHalted: undefined,
@@ -1222,7 +1174,6 @@ function createBaseThreadHaltReason(): ThreadHaltReason {
     pendingFailure: undefined,
     handlingFailure: undefined,
     manualHalt: undefined,
-    failing: undefined,
   };
 }
 
@@ -1245,9 +1196,6 @@ export const ThreadHaltReason = {
     }
     if (message.manualHalt !== undefined) {
       ManualHalt.encode(message.manualHalt, writer.uint32(50).fork()).ldelim();
-    }
-    if (message.failing !== undefined) {
-      FailingHaltReason.encode(message.failing, writer.uint32(58).fork()).ldelim();
     }
     return writer;
   },
@@ -1301,13 +1249,6 @@ export const ThreadHaltReason = {
 
           message.manualHalt = ManualHalt.decode(reader, reader.uint32());
           continue;
-        case 7:
-          if (tag !== 58) {
-            break;
-          }
-
-          message.failing = FailingHaltReason.decode(reader, reader.uint32());
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1339,9 +1280,6 @@ export const ThreadHaltReason = {
       : undefined;
     message.manualHalt = (object.manualHalt !== undefined && object.manualHalt !== null)
       ? ManualHalt.fromPartial(object.manualHalt)
-      : undefined;
-    message.failing = (object.failing !== undefined && object.failing !== null)
-      ? FailingHaltReason.fromPartial(object.failing)
       : undefined;
     return message;
   },

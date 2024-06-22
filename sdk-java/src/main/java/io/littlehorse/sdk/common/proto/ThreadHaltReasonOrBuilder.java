@@ -169,35 +169,5 @@ public interface ThreadHaltReasonOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.ManualHaltOrBuilder getManualHaltOrBuilder();
 
-  /**
-   * <pre>
-   * The ThreadRun is halting and waiting for children to finish before
-   * it can be moved to `ERROR` or `EXCEPTION` status.
-   * </pre>
-   *
-   * <code>.littlehorse.FailingHaltReason failing = 7;</code>
-   * @return Whether the failing field is set.
-   */
-  boolean hasFailing();
-  /**
-   * <pre>
-   * The ThreadRun is halting and waiting for children to finish before
-   * it can be moved to `ERROR` or `EXCEPTION` status.
-   * </pre>
-   *
-   * <code>.littlehorse.FailingHaltReason failing = 7;</code>
-   * @return The failing.
-   */
-  io.littlehorse.sdk.common.proto.FailingHaltReason getFailing();
-  /**
-   * <pre>
-   * The ThreadRun is halting and waiting for children to finish before
-   * it can be moved to `ERROR` or `EXCEPTION` status.
-   * </pre>
-   *
-   * <code>.littlehorse.FailingHaltReason failing = 7;</code>
-   */
-  io.littlehorse.sdk.common.proto.FailingHaltReasonOrBuilder getFailingOrBuilder();
-
   io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase getReasonCase();
 }
