@@ -329,7 +329,7 @@ service LittleHorse {
 
 ### Pagination
 
-Both List Requests and Search Requests alike use [Cursor-Based Pagination](https://slack.engineering/evolving-api-pagination-at-slack/). For an example, we will look at the `rpc SearchTaskRun`. Note the `optiona bytes bookmark` field and the `optional int32 limit` field.
+Both List Requests and Search Requests alike use [Cursor-Based Pagination](https://slack.engineering/evolving-api-pagination-at-slack/). For an example, we will look at the `rpc SearchTaskRun`. Note the `optional bytes bookmark` field and the `optional int32 limit` field.
 
 ```protobuf
 // Searches for TaskRuns by various criteria.
@@ -347,39 +347,141 @@ The `limit` field determines the maximum number of results to be returned in a s
 
 Recall the `optional bytes bookmark` field in the `TaskRunIdList` proto. The `TaskRunIdList` is the response format for the request `rpc SearchTaskRun`. If the `rpc SearchTaskRun` has more results than can be returned in one request (see `limit`), then the `bookmark` field of the `TaskRunIdList` message is set to a byte-string that serves as a _cursor_.
 
-To retrieve the next page of results, simply pass in the `bookmark` from your previous request to your next request. An example of iterating through pages of results is shown below.
+To retrieve the next page of results, simply pass in the `bookmark` from your previous request to your next request.
+
+The below example shows how to iterate through a paginated list of `TaskRun`s.
 
 <Tabs>
   <TabItem value="java" label="Java" default>
 
 ```java
+package io.littlehorse.quickstart;
+
+import java.io.IOException;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.SearchTaskRunRequest;
+import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunIdList;
 
-TaskRunIdList results = client.searchTaskRun(SearchTaskRunRequest.newBuilder()
-        .setTaskDefName("my-task")
-        .setLimit(5)
-        .build());
-// Omitted: process the TaskRunId's in `results.getResultsList()`.
+public class Main {
 
-while (results.hasBookmark()) {
-    results = client.searchTaskRun(SearchTaskRunRequest.newBuilder()
-            .setTaskDefName("my-task")
-            .setLimit(5)
-            .setBookmark(results.getBookmark())
-            .build());
-    // Omitted: process the TaskRunId's in results.getResultsList();
+    public static void main(String[] args) throws IOException {
+        LHConfig config = new LHConfig();
+        LittleHorseBlockingStub client = config.getBlockingStub();
+
+        TaskRunIdList results = client.searchTaskRun(SearchTaskRunRequest.newBuilder()
+                .setTaskDefName("greet")
+                .setLimit(5)
+                .build());
+        processTaskRuns(results);
+
+        while (results.hasBookmark()) {
+            results = client.searchTaskRun(SearchTaskRunRequest.newBuilder()
+                    .setTaskDefName("greet")
+                    .setLimit(5)
+                    .setBookmark(results.getBookmark())
+                    .build());
+
+            processTaskRuns(results);
+        }
+    }
+
+    private static void processTaskRuns(TaskRunIdList taskRuns) {
+        System.out.println("Processing a batch of size: " + taskRuns.getResultsCount());
+        for (TaskRunId taskRun : taskRuns.getResultsList()) {
+            System.out.println(LHLibUtil.protoToJson(taskRun));
+        }
+    }
 }
 ```
+
   </TabItem>
   <TabItem value="go" label="Go">
 
-Go example coming soon. However, it should be highly similar to the Java example above.
+```go
+package main
 
+import (
+	"context"
+	"fmt"
+	"strconv"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	// Use the GRPC utilities to inspect GRPC errors
+)
+
+func main() {
+	// Get a client
+	config := common.NewConfigFromEnv()
+	client, _ := config.GetGrpcClient()
+
+	limit := int32(5)
+	req := model.SearchTaskRunRequest{
+		TaskDefName: "greet",
+		Limit:       &limit,
+	}
+	results, _ := (*client).SearchTaskRun(context.Background(), &req)
+
+	processTaskRuns(results)
+
+	// For some reason GoLang decided to use `for` instead of `while`...
+	for results.Bookmark != nil {
+		req.Bookmark = results.Bookmark
+		results, _ = (*client).SearchTaskRun(context.Background(), &req)
+		processTaskRuns(results)
+	}
+}
+
+func processTaskRuns(taskRuns *model.TaskRunIdList) {
+	fmt.Println("Processing a batch of size " + strconv.Itoa(len(taskRuns.Results)))
+
+	for _, taskRunId := range taskRuns.Results {
+		common.PrintProto(taskRunId)
+	}
+}
+
+```
   </TabItem>
   <TabItem value="python" label="Python">
 
-Python example coming soon. However, it should be highly similar to the Java example above.
+```python
+from littlehorse.config import LHConfig
+from littlehorse.model.service_pb2 import *
+from google.protobuf.json_format import MessageToJson
 
+
+def process_task_runs(task_run_ids: TaskRunIdList):
+    print("Processing a batch of size " + str(len(task_run_ids.results)))
+    for task_run_id in task_run_ids.results:
+        print(MessageToJson(task_run_id))
+
+
+if __name__ == '__main__':
+    config = LHConfig()
+    client = config.stub()
+
+    results: TaskRunIdList = client.SearchTaskRun(SearchTaskRunRequest(
+        task_def_name="greet",
+        limit=5,
+    ))
+
+    process_task_runs(results)
+
+    # the `HasField()` method is the proper way to check for presence of an
+    # `optional` field in python Protobuf.
+    while results.HasField("bookmark"):
+        new_request = SearchTaskRunRequest(
+            task_def_name="greet",
+            limit=5,
+            # pass in the bookmark from the previous call
+            bookmark=results.bookmark,
+        )
+        results = client.SearchTaskRun(new_request)
+        process_task_runs(results)
+
+```
   </TabItem>
 </Tabs>
