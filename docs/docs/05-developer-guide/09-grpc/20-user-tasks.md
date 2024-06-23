@@ -45,34 +45,9 @@ A `UserTaskRun` may be in one of the four statuses below:
 
 Before you can do anything useful with User Tasks, you need to be able to search for a list of `UserTaskRun`'s matching certain criteria. The endpoint `rpc SearchUserTaskRun` allows you to do this.
 
-The endpoint definition is provided below:
+You can find the documentation for `rpc SearchUserTaskRun` [here in our API documentation](../../08-api.md#rpc-searchusertaskrun-searchusertaskrun) (note that the `message SearchUserTaskRunRequest` docs are [here](../../08-api.md#message-searchusertaskrunrequest-searchusertaskrunrequest)).
 
-```protobuf
-service LittleHorse {
-  rpc SearchUserTaskRun(SearchUserTaskRunRequest) returns (UserTaskRunIdList) {}
-}
-
-message SearchUserTaskRunRequest {
-  optional bytes bookmark = 1;
-  optional int32 limit = 2;
-
-  optional UserTaskRunStatus status = 3;
-  optional string user_task_def_name = 4;
-
-  optional string user_id = 5;
-  optional string user_group = 6;
-
-  optional google.protobuf.Timestamp earliest_start = 7;
-  optional google.protobuf.Timestamp latest_start = 8;
-}
-
-message UserTaskRunIdList {
-  repeated UserTaskRunId results = 1;
-  optional bytes bookmark = 2;
-}
-```
-
-Note that there are six filters that can be provided:
+There are six filters that can be provided:
 * `status`: an enum of either `DONE`, `UNASSIGNED`, `ASSIGNED`, or `CANCELLED`.
 * `user_task_def_name`: the name of the associated `UserTaskDef`.
 * `user_id`: Only returns `UserTaskRun`'s assigned to a specific user.
@@ -87,43 +62,137 @@ The `user_id` and `user_group` fields are _not_ managed by LittleHorse. Rather, 
 :::
 
 See below for an example of searching for `UserTaskRun`'s with the following criteria:
-* Assigned to the `jedi-council` group, and specifically executed by `Obi-Wan`
-* Created in the past week
-* Already in the `DONE` status
+* Assigned to the `jedi-council` group, and specifically to be executed by `obiwan`
+* Created in the past week but at least 24 hours ago.
+* In the `ASSIGNED` status.
 * Of the type `approve-funds-for-mission`.
 
 <Tabs>
   <TabItem value="java" label="Java" default>
 
 ```java
-LittleHorseBlockingStub client = ...;
+package io.littlehorse.quickstart;
 
-Timestamp oneWeekAgo = Timestamp.newBuilder()
-        .setSeconds(Instant.now().minus(7, ChronoUnit.DAYS).getEpochSecond())
-        .build();
+import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import com.google.protobuf.Timestamp;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.UserTaskRunIdList;
+import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 
-// You can omit certain search criteria here if desired.
-SearchUserTaskRunRequest req = SearchUserTaskRunRequest.newBuilder()
-        .setUserId("obi-wan")
-        .setUserGroup("jedi-council")
-        .setUserTaskDefName("approve-funds-for-mission")
-        .setStatus(UserTaskStatus.DONE)
-        .setEarliestCreateTime(oneWeekAgo)
-        .build();
 
-UserTaskRunIdList results = client.searchUserTaskRun(req);
+public class Main {
+    public static void main(String[] args) throws IOException, InterruptedException {
+        LHConfig config = new LHConfig();
+        LittleHorseBlockingStub client = config.getBlockingStub();
+
+        Timestamp oneWeekAgo = Timestamp.newBuilder()
+                .setSeconds(Instant.now().minus(7, ChronoUnit.DAYS).getEpochSecond())
+                .build();
+
+        Timestamp oneDayAgo = Timestamp.newBuilder()
+                .setSeconds(Instant.now().minus(7, ChronoUnit.DAYS).getEpochSecond())
+                .build();
+
+        // You can omit certain search criteria here if desired. Only one criterion is needed
+        // but you may provide as many criteria as you wish. This request shows all of the
+        // available search criteria.
+        //
+        // Note that it is a paginated request as per the "Basics" section of our grpc docs.
+        SearchUserTaskRunRequest req = SearchUserTaskRunRequest.newBuilder()
+                .setUserId("obiwan")
+                .setUserGroup("jedi-council")
+                .setUserTaskDefName("it-request")
+                .setStatus(UserTaskRunStatus.ASSIGNED)
+                .setEarliestStart(oneWeekAgo)
+                .setLatestStart(oneDayAgo)
+                .build();
+
+        UserTaskRunIdList results = client.searchUserTaskRun(req);
+        System.out.println(LHLibUtil.protoToJson(results));
+
+        // Omitted: process the UserTaskRunIdList, maybe using pagination.
+    }
+}
 ```
 
   </TabItem>
   <TabItem value="go" label="Go">
 
-Go example coming soon. However, it should be highly similar to the Java example above.
+```go
+package main
 
+import (
+	"context"
+	"time"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"google.golang.org/protobuf/types/known/timestamppb"
+)
+
+func main() {
+	// Get a client
+	config := common.NewConfigFromEnv()
+	client, _ := config.GetGrpcClient()
+
+	oneWeekAgo := timestamppb.New(time.Now().Add(-7 * 24 * time.Hour))
+	oneDayAgo := timestamppb.New(time.Now().Add(-24 * time.Hour))
+
+	userTaskDefName := "it-request"
+	userGroup := "jedi-temple"
+	userId := "obi-wan"
+	status := model.UserTaskRunStatus_ASSIGNED
+
+	// You may provide any or all of the following options. The only requirement
+	// is that you must specify at least one criterion.
+	searchReq := &model.SearchUserTaskRunRequest{
+		UserTaskDefName: &userTaskDefName,
+		UserId:          &userId,
+		UserGroup:       &userGroup,
+		Status:          &status,
+		EarliestStart:   oneWeekAgo,
+		LatestStart:     oneDayAgo,
+	}
+
+	results, _ := (*client).SearchUserTaskRun(context.Background(), searchReq)
+	common.PrintProto(results)
+}
+```
   </TabItem>
   <TabItem value="python" label="Python">
 
-Python example coming soon. However, it should be highly similar to the Java example above.
+```python
+from littlehorse.config import LHConfig
+from littlehorse.model import *
+from datetime import datetime, timedelta
+from google.protobuf.timestamp_pb2 import Timestamp
+from google.protobuf.json_format import MessageToJson
 
+config = LHConfig()
+client = config.stub()
+
+one_week_ago = Timestamp()
+one_week_ago.FromDatetime(datetime.now() - timedelta(weeks=1))
+
+one_day_ago = Timestamp()
+one_day_ago.FromDatetime(datetime.now() - timedelta(days=1))
+
+results: UserTaskRunIdList = client.SearchUserTaskRun(SearchUserTaskRunRequest(
+    user_task_def_name="it-request",
+    user_id="obiwan",
+    user_group="jedi-council",
+    status=UserTaskRunStatus.ASSIGNED,
+    earliest_start=one_week_ago,
+    latest_start=one_day_ago,
+))
+
+print(MessageToJson(results))
+```
   </TabItem>
 </Tabs>
 
