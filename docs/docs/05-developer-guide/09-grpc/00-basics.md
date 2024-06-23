@@ -148,26 +148,41 @@ In the example below, we will make a `RunWf` request and provide the `id` of the
   <TabItem value="java" label="Java" default>
 
 ```java
-import io.grpc.StatusRuntimeException; // GRPC propagates errors through this exception.
-import io.grpc.Status.Code; // This is the proper enum for handling responses. NOTE: it is
-                            // different than the enum used for **throwing** errors on the
-                            // server side.
+package io.littlehorse.quickstart;
 
-LittleHorseBlockingStub client = ...;
-String wfRunId = "obi-wan-workflow-run-id";
+import java.io.IOException;
+import io.grpc.StatusRuntimeException;
+import io.grpc.Status.Code;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.RunWfRequest;
 
-try {
-    client.runWf(RunWfRequest.newBuilder()
-            .setWfSpecName("example-run-wf")
-            .putVariables("n", LHLibUtil.objToVarVal(n))
-            .build()
-    );
-} catch (StatusRuntimeException exn) {
-    if (exn.getStatus().getCode() == Code.ALREADY_EXISTS) {
-        System.out.println("Request failed because WfRun with this ID already exists!");
-    } else {
-        System.out.println("Yikes, we got a different error.");
-        throw exn;
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        LHConfig config = new LHConfig();
+        LittleHorseBlockingStub client = config.getBlockingStub();
+
+        // Only one WfRun may exist with a given ID.
+        String wfRunId = "some-wf-run-id";
+
+        try {
+            // Run a WfSpec and set the WfRunId beforehand.
+            client.runWf(RunWfRequest.newBuilder()
+                    .setWfSpecName("quickstart")
+                    .setId(wfRunId)
+                    .build());
+        } catch(StatusRuntimeException exn) {
+            // All GRPC errors are in the form of `StatusRuntimeException`, which extends
+            // `RuntimeException` and contains a `io.grpc.Status` object.
+            if (exn.getStatus().getCode() == Code.ALREADY_EXISTS) {
+                System.out.println("The wfRun already exists!");
+            } else {
+                System.out.println("Yikes, we have a different error.");
+                throw exn;
+            }
+        }
+
     }
 }
 ```
