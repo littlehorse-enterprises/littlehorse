@@ -70,6 +70,7 @@ public class TaskQueueManagerTest {
                 new PrincipalIdModel(""),
                 mock(),
                 new MetadataCache(),
+                mock(),
                 mock()));
         doReturn(requestContext).when(trackableObserver).getFreshExecutionContext();
     }
