@@ -7,7 +7,7 @@ Before you can run a `WfRun`, you need to create your `WfSpec`'s! This guide sho
 
 You can manage Metadata Objects (`WfSpec`, `TaskDef`, `ExternalEventDef`, and `UserTaskDef`) either using `lhctl` or with a grpc client. This section details how to manage them using the SDK's and grpc clients.
 
-Please note that as of LittleHorse `0.7.0`, all metadata requests are idempotent.
+Please note that, in LittleHorse, all metadata requests are idempotent. Additionally, if you make a metadata request to `Put` an object with the exact same specifications of the object that already exists, the API will return the `OK` grpc status. This is useful so that you can safely use CI/CD pipelines to manage metadata, or use a script that runs upon application startup to manage metadata, without having to catch `ALREADY_EXISTS` errors.
 
 
 ## `TaskDef`
@@ -81,30 +81,51 @@ _, err = (*client).DeleteTaskDef(context.Background(), &model.DeleteTaskDefReque
   </TabItem>
   <TabItem value="python" label="Python">
 
-Any `async` function could be a task.
+In the Python SDK, a function must be `async` in order to be used as a Task Function. No annotations are required.
+
+The easiest way to register a `TaskDef` to your LittleHorse Cluster is using the `littlehorse.create_task_def()` utility function. The following example defines a Task Function and creates a `TaskDef` in the LittleHorse Cluster.
 
 ```python
-async def greeting(name: str) -> str:
-    return f"Hello {name}!."
+import asyncio
+from littlehorse import create_task_def
+from littlehorse.config import LHConfig
+from littlehorse.model.service_pb2 import *
+from google.protobuf.json_format import MessageToJson
+
+
+# This is the Task Function. It must be `async`.
+async def greet(name: str) -> None:
+    print(f"Hello there, {name}!")
+
+
+async def main():
+    config = LHConfig()
+
+    # Let's use the string "greet-task" as the TaskDef's name
+    create_task_def(greet, "greet-task", config)
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
 ```
 
-You can use the `littlehorse.create_task_def()` util to create a new task at the server.
+You can delete a `TaskDef` in python using the `LittleHorseStub` and the [`rpc DeleteTaskDef`](../../08-api.md#rpc-deletetaskdef-deletetaskdef). An example is shown below:
 
 ```python
-async def main() -> None:
-    config = get_config()
-    littlehorse.create_task_def(greeting, "greet", config)
-    ...
-```
+from littlehorse.config import LHConfig
+from littlehorse.model import *
 
-If you want to get or delete a TaskDef you can use `config.stub()` function:
 
-```python
-config = get_config()
-stub = config.stub()
-task_id = TaskDefId(name="greet")
-stub.GetTaskDef(task_id)
-stub.DeleteTaskDef(DeleteTaskDefRequest(task_id))
+if __name__ == '__main__':
+    # Get the grpc client
+    config = LHConfig()
+    client = config.stub()
+
+    # Formulate the request
+    delete_td_request = DeleteTaskDefRequest(id=TaskDefId(name="greet-task"))
+
+    # Delete the TaskDef
+    client.DeleteTaskDef(delete_td_request)
 ```
 
   </TabItem>
@@ -126,43 +147,75 @@ Like other metadata requests, the `rpc PutWfSpec` is idempotent. However, as des
 You can execute the `PutWfSpecRequest` with a specific `AllowedUpdateType` as follows:
 
 ```java
-LittleHorseBlockingStub client = ...;
-Workflow wf = Workflow.newWorkflow("my-workflow", someWorkflowThreadFunc); // see WfSpec Development Docs
+package io.littlehorse.quickstart;
 
-// Optionally set the update type on the workflow.
-wf.withUpdateType(AllowedUpdateType.MINOR_REVISION_UPDATES);
+import java.io.IOException;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
+import io.littlehorse.sdk.common.proto.AllowedUpdateType;
+import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
+import io.littlehorse.sdk.common.proto.WfSpec;
 
-wf.registerWf(client);
+public class Main {
 
-// Alternatively, use the raw grpc client.
-PutWfSpecRequest request = wf.compile();
-client.putWfSpec(request);
+    private static void wfFunc(WorkflowThread wf) {
+        // The `greet` TaskDef must already exist
+        wf.execute("greet", "some-name");
+    }
+
+    public static void main(String[] args) throws IOException {
+        LHConfig config = new LHConfig();
+        LittleHorseBlockingStub client = config.getBlockingStub();
+
+        Workflow workflow = Workflow.newWorkflow("my-wfspec", Main::wfFunc);
+
+        // Only allow updates that do not change the API of the WfSpec
+        workflow.withUpdateType(AllowedUpdateType.MINOR_REVISION_UPDATES);
+
+        PutWfSpecRequest request = workflow.compileWorkflow();
+        WfSpec result = client.putWfSpec(request);
+
+        System.out.println(LHLibUtil.protoToJson(result));
+    }
+}
 ```
 
-You can get a `WfSpec` as follows:
+You can get or delete a `WfSpec` as follows:
 
 ```java
-LittleHorseBlockingStub client = ...;
-WfSpecId wfId = WfSpecId.newBuilder()
-        .setName("my-wf")
-        .setMajorVersion(2)
-        .setRevision(1)
-        .build();
+package io.littlehorse.quickstart;
 
-WfSpec wfSpec = client.getWfSpec(wfId);
+import java.io.IOException;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
+import io.littlehorse.sdk.common.proto.WfSpec;
+import io.littlehorse.sdk.common.proto.WfSpecId;
 
-// Get the latest `WfSpec` with a given name
-WfSpec latestWfSpec = client.getLatestWfSpec(
-    GetLatestWfSpecRequest.newBuilder().setName("my-wf").build()
-);
+public class Main {
 
-// Get the latest `WfSpec` with a given name and majorVersion 1
-WfSpec latestWfSpec = client.getLatestWfSpec(
-    GetLatestWfSpecRequest.newBuilder().setName("my-wf").setMajorVersion(1).build()
-);
+    public static void main(String[] args) throws IOException {
+        LHConfig config = new LHConfig();
+        LittleHorseBlockingStub client = config.getBlockingStub();
 
-// Delete a WfSpec
-client.deleteWfSpec(DeleteWfSpecRequest.newBuilder().setId(wfId).build());
+        WfSpecId wfSpecId = WfSpecId.newBuilder()
+                .setName("my-wfspec")
+                .setMajorVersion(0) // Set to whichever major version you want
+                .setRevision(0) // Set to whichever revision you want
+                .build();
+
+        WfSpec wfSpec = client.getWfSpec(wfSpecId);
+        System.out.println(LHLibUtil.protoToJson(wfSpec));
+
+        // Delete the WfSpec
+        DeleteWfSpecRequest req = DeleteWfSpecRequest.newBuilder().setId(wfSpecId).build();
+        client.deleteWfSpec(req);
+    }
+}
 ```
 
   </TabItem>
@@ -214,23 +267,65 @@ _, err = (*client).DeleteWfSpec(context.Background(), &model.DeleteWfSpecRequest
 Assuming you have a workflow, you can use the `littlehorse.create_workflow_spec()` utility function.
 
 ```python
-async def main() -> None:
-    config = LHConfig()
-    wf = Workflow("some-wf", my_wf_func)
-    wf.with_update_type(AllowedUpdateType.ALL_UPDATES)
+from littlehorse.config import LHConfig
+from littlehorse.model import *
+from littlehorse.workflow import Workflow, WorkflowThread
+from google.protobuf.json_format import MessageToJson
 
-    littlehorse.create_workflow_spec(wf, config)
+# The workflow logic. This function must have type annotations in
+# order to conform to the `ThreadInitializer` interface.
+def my_workflow_func(wf: WorkflowThread) -> None:
+    # the `greet` TaskDef must already exist
+    wf.execute("greet", "some-name")
+
+
+if __name__ == '__main__':
+    # Get the grpc client
+    config = LHConfig()
+    client = config.stub()
+
+    workflow: Workflow = Workflow("my-wfspec", my_workflow_func)
+    # Set the allowed update type
+    workflow.with_update_type(AllowedUpdateType.MINOR_REVISION_UPDATES)
+
+    # Create the WfSpec
+    request: PutWfSpecRequest = workflow.compile()
+    wf_spec: WfSpec = client.PutWfSpec(request)
+
+    print(MessageToJson(wf_spec))
 ```
 
 You can get or delete a WfSpec using a `stub`:
 
 ```python
-client = config.stub()
+from littlehorse.config import LHConfig
+from littlehorse.model import *
+from littlehorse.workflow import Workflow, WorkflowThread
+from google.protobuf.json_format import MessageToJson
 
-wf_spec_id = WfSpecId(name="my-workflow", majorVersion=2, revision=1)
-wf_spec = client.GetWfSpec(wf_spec_id)
+# The workflow logic. This function must have type annotations in
+# order to conform to the `ThreadInitializer` interface.
+def my_workflow_func(wf: WorkflowThread) -> None:
+    # the `greet` TaskDef must already exist
+    wf.execute("greet", "some-name")
 
-client.DeleteWfSpec(DeleteWfSpecRequest(wf_spec_id))
+
+if __name__ == '__main__':
+    # Get the grpc client
+    config = LHConfig()
+    client = config.stub()
+
+    wf_spec_id: WfSpecId = WfSpecId(
+        name="my-wfspec",
+        major_version=0, # replace with your preferred major version
+        revision=0, # replaced with your desired revision
+    )
+    wf_spec: WfSpec = client.GetWfSpec(wf_spec_id)
+
+    print(MessageToJson(wf_spec))
+
+    # Delete a WfSpec
+    client.DeleteWfSpec(DeleteWfSpecRequest(id=wf_spec_id))
 ```
 
   </TabItem>
@@ -243,24 +338,50 @@ As of now, the only field required to create an `ExternalEventDef` is the `name`
 <Tabs>
   <TabItem value="java" label="Java" default>
 
-To create an `ExternalEventDef` in Java
-```java
-LittleHorseBlockingStub client = ...;
-
-client.putExternalEventDef(PutExternalEventDefRequest.newBuilder().setName("some-event").build());
-```
-
-You can get an `ExternalEventDef` as follows:
+You can create, get, and delete an `ExternalEventDef` as follows:
 
 ```java
-LittleHorseBlockingStub client = ...;
+package io.littlehorse.quickstart;
 
-ExternalEventDefId id = ExternalEventDefId.newBuilder().setName("my-event").build();
+import java.io.IOException;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
+import io.littlehorse.sdk.common.proto.ExternalEventDef;
+import io.littlehorse.sdk.common.proto.ExternalEventDefId;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 
-ExternalEventDef eed = client.getExternalEventDef(id);
+public class Main {
 
-// Delete an ExternalEventDef
-client.deleteExternalEventDef(DeleteExternalEventDef.newBuilder().setId(id).build());
+    public static void main(String[] args) throws IOException, InterruptedException {
+        LHConfig config = new LHConfig();
+        LittleHorseBlockingStub client = config.getBlockingStub();
+
+        PutExternalEventDefRequest request = PutExternalEventDefRequest.newBuilder()
+                .setName("my-external-event-def")
+                .build();
+
+        client.putExternalEventDef(request);
+
+        // Metadata requests in LittleHorse take 50-100 ms to propagate to the global
+        // store.
+        Thread.sleep(100);
+
+        // Retrieve the ExternalEventDef
+        ExternalEventDefId id = ExternalEventDefId.newBuilder()
+                .setName("my-external-event-def")
+                .build();
+        ExternalEventDef eventDef = client.getExternalEventDef(id);
+        System.out.println(LHLibUtil.protoToJson(eventDef));
+
+        // Delete the ExternalEventDef
+        DeleteExternalEventDefRequest deleteRequest = DeleteExternalEventDefRequest.newBuilder()
+                .setId(id)
+                .build();
+        client.deleteExternalEventDef(deleteRequest);
+    }
+}
 ```
 
   </TabItem>
@@ -296,25 +417,35 @@ _, err = (*client).DeleteExternalEventDef(context.Background(), &model.DeleteExt
   </TabItem>
   <TabItem value="python" label="Python">
 
-To create a `ExternalEventDef` in python you can use the littlehorse utils:
+In python, you can use the `littlehorse.create_external_event_def` utility to more easily create an `ExternalEventDef` as follows:
 
 ```python
-config = LHConfig()
-client = config.stub()
+from littlehorse import create_external_event_def
+from littlehorse.config import LHConfig
+from littlehorse.model import *
+from google.protobuf.json_format import MessageToJson
 
-client.putExternalEventDef(PutExternalEventDefRequest(name="some-external-event"))
+from time import sleep
 
-# or, use a wrapper convenience method.
-littlehorse.create_external_event_def("my-external-event", config)
-```
 
-You can get or delete it using our stub:
+if __name__ == '__main__':
+    # Get the grpc client
+    config = LHConfig()
+    client = config.stub()
 
-```python
-client = config.stub()
-ext_event_def_id = ExternalEventDefId(name="my-workflow")
-client.GetExternalEventDef(ext_event_def_id)
-client.DeleteExternalEventDef(DeleteExternalEventDefRequest(ext_event_def_id))
+    create_external_event_def(name="my-external-event-def", config=config)
+
+    # In LittleHorse, metadata updates take 50-100ms to propagate to the global
+    # store.
+    sleep(0.2)
+
+    # Fetch the ExternalEventDef
+    external_event_def_id = ExternalEventDefId(name="my-external-event-def")
+    event_def: ExternalEventDef = client.GetExternalEventDef(external_event_def_id)
+    print(MessageToJson(event_def))
+
+    # Delete the ExternalEventDef
+    client.DeleteExternalEventDef(DeleteExternalEventDefRequest(id=external_event_def_id))
 ```
 
   </TabItem>
@@ -329,9 +460,25 @@ Note that a `UserTaskDef` is a versioned object (unlike a `WfSpec`, however, the
 <Tabs>
   <TabItem value="java" label="Java" default>
 
-The easiest way to create a `UserTaskDef` in Java is using the `UserTaskSchema` class. First, define a User Task Form using the `@UserTaskField` annotation:
+The easiest way to create a `UserTaskDef` in Java is using the `UserTaskSchema` class. Note that it infers the schema of the `UserTaskDef` from our `MyForm` class using the `UserTaskField` annotation.
+
+The below example shows you how to create a `UserTaskDef`, get it, and delete it.
 
 ```java
+package io.littlehorse.quickstart;
+
+import java.io.IOException;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.usertask.UserTaskSchema;
+import io.littlehorse.sdk.usertask.annotations.UserTaskField;
+import io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest;
+import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
+import io.littlehorse.sdk.common.proto.UserTaskDef;
+import io.littlehorse.sdk.common.proto.UserTaskDefId;
+
+// This Java class defines our form for the UserTaskDef
 class SomeForm {
     @UserTaskField(
         displayName = "Approved?",
@@ -339,21 +486,48 @@ class SomeForm {
     )
     public boolean isApproved;
 
-    @UserTaskField(displayName = "Explanation", description = "Explain your answer")
+    @UserTaskField(
+        displayName = "Explanation",
+        description = "Explain your answer",
+        required = false
+    )
     public String explanation;
 }
-```
 
-Next, use that class to create a `UserTaskDef`:
 
-```java
-LHConfig config = new LHConfig();
-LittleHorseBlockingStub client = config.getBlockingStub();
+public class Main {
+    public static void main(String[] args) throws IOException, InterruptedException {
+        LHConfig config = new LHConfig();
+        LittleHorseBlockingStub client = config.getBlockingStub();
 
-UserTaskSchema requestForm = new UserTaskSchema(
-        new SomeForm(), "some-form-usertaskdef");
+        String userTaskDefName = "my-user-task-def";
 
-client.putUserTaskDef(requestForm.compile());
+        // Compile the above Java class into a UserTaskDef
+        UserTaskSchema userTask = new UserTaskSchema(new SomeForm(), userTaskDefName);
+        PutUserTaskDefRequest putRequest = userTask.compile();
+
+        // Register the UserTaskDef into LittleHorse
+        client.putUserTaskDef(putRequest);
+
+        // Get the UserTaskDef. Note that metadata creation takes 50-100ms to propagate
+        // through the LittleHorse cluster.
+        Thread.sleep(200);
+
+        UserTaskDefId id = UserTaskDefId.newBuilder()
+                .setName(userTaskDefName)
+                .setVersion(0)
+                .build();
+        UserTaskDef result = client.getUserTaskDef(id);
+        System.out.println(LHLibUtil.protoToJson(result));
+
+        // Delete the UserTaskDef
+        DeleteUserTaskDefRequest deleteRequest = DeleteUserTaskDefRequest.newBuilder()
+                .setId(id)
+                .build();
+
+        client.deleteUserTaskDef(deleteRequest);
+    }
+}
 ```
 
   </TabItem>
@@ -387,18 +561,55 @@ result, err := (*client).PutUserTaskDef(context.Background(),
   </TabItem>
   <TabItem value="python" label="Python">
 
+In python, you can create a `UserTaskDef` using [`rpc PutUserTaskDef`](../../08-api.md#rpc-putusertaskdef-putusertaskdef).
+
 ```python
-stub = config.stub()
-stub.PutUserTaskDef(
-    PutUserTaskDefRequest(
-        name="some-form-usertaskdef",
-        description="This is a cool usertaskdef!",
+from littlehorse import create_external_event_def
+from littlehorse.config import LHConfig
+from littlehorse.model import *
+from google.protobuf.json_format import MessageToJson
+
+from time import sleep
+
+
+if __name__ == '__main__':
+    # Get the grpc client
+    config = LHConfig()
+    client = config.stub()
+
+    # Manually construct the PutUserTaskDefRequest, specifying the fields we want
+    # the UserTaskRun's to have.
+    put_user_task_def_req = PutUserTaskDefRequest(
+        name="my-user-task-def",
         fields=[
-            UserTaskField(name="my-first-int-field", type=VariableType.INT),
-            UserTaskField(name="my-first-str-field", type=VariableType.STR),
-        ],
+            UserTaskField(
+                name="isApproved",
+                description="Is the request Approved?",
+                display_name="Approved?",
+                required=True,
+            ),
+            UserTaskField(
+                name="explanation",
+                description="Explanation or comments for decision.",
+                required=False,
+                display_name="Comments",
+            )
+        ]
     )
-)
+
+    # Create the UserTaskDef
+    client.PutUserTaskDef(put_user_task_def_req)
+
+    # Wait for metadata to propagate
+    sleep(0.5)
+
+    # Get the UserTaskDef
+    user_task_def_id = UserTaskDefId(name="my-user-task-def", version=0)
+    user_task_def = client.GetUserTaskDef(user_task_def_id)
+    print(MessageToJson(user_task_def))
+
+    # Delete the UserTaskDef
+    client.DeleteUserTaskDef(DeleteUserTaskDefRequest(id=user_task_def_id))
 ```
 
   </TabItem>

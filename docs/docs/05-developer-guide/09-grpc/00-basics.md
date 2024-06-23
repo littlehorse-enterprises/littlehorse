@@ -249,7 +249,7 @@ Error handling in Go is messy due to some weird decisions made by the language a
 ```python
 import grpc
 from littlehorse.config import LHConfig
-from littlehorse.model.service_pb2 import RunWfRequest
+from littlehorse.model import RunWfRequest
 
 config = LHConfig()
 client = config.stub()
@@ -449,7 +449,7 @@ func processTaskRuns(taskRuns *model.TaskRunIdList) {
 
 ```python
 from littlehorse.config import LHConfig
-from littlehorse.model.service_pb2 import *
+from littlehorse.model import *
 from google.protobuf.json_format import MessageToJson
 
 
