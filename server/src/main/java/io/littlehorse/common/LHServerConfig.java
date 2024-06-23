@@ -22,7 +22,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -794,7 +801,7 @@ public class LHServerConfig extends ConfigBase {
         // changelog (the WfRun, NodeRun, and TaskRun each are saved on the first two commands).
         //
         // That's not to mention that we will be writing fewer times to RocksDB. Huge win.
-        int commitInterval = Integer.valueOf(getOrSetDefault(LHServerConfig.CORE_STREAMS_COMMIT_INTERVAL_KEY, "100"));
+        int commitInterval = Integer.valueOf(getOrSetDefault(LHServerConfig.CORE_STREAMS_COMMIT_INTERVAL_KEY, "3000"));
         props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, commitInterval);
         props.put(
                 "statestore.cache.max.bytes",
