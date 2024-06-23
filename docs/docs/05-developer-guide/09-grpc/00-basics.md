@@ -239,6 +239,9 @@ func main() {
 	}
 }
 ```
+:::note
+Error handling in Go is messy due to some weird decisions made by the language authors.
+:::
 
   </TabItem>
   <TabItem value="python" label="Python">
@@ -247,26 +250,32 @@ func main() {
 import grpc
 from littlehorse.config import LHConfig
 from littlehorse.model.service_pb2 import RunWfRequest
-from littlehorse.utils import to_variable_value
 
 config = LHConfig()
-stub = config.stub()
-wf_run_id = "obiwan-workflow-run-id"
+client = config.stub()
+wf_run_id = "obi-wan"
 
 try:
-    stub.RunWf(RunWfRequest(wf_spec_name="my-wf-spec", variables={
-        "my-variable": to_variable_value("some-value")
-    }))
+    client.RunWf(RunWfRequest(
+        wf_spec_name="quickstart",
+        id=wf_run_id,
+    ))
 except grpc.RpcError as e:
     if e.code() == grpc.StatusCode.ALREADY_EXISTS:
         # then a WfRun already exists with that id.
-        pass
+        print("WfRun with specified id already exists!")
+    else:
+        raise e
 ```
+
+:::note
+In python GRPC, the `.code()` method is an internal method of the `RpcError` class so your code linters may complain about it. The alternative to using that method is not much better: the [`grpc-status`](https://grpc.github.io/grpc/python/grpc_status.html) package requires adding another dependency to your project and is also `EXPERIMENTAL`.
+
+Note, however, that the `.code()` method is safe to use as the `littlehorse-client` package has tested it and pins to a version with which it works.
+:::
 
   </TabItem>
 </Tabs>
-
-Note: error handling in Go is extremely annoying and messy because it is a crappy language.
 
 ## Read-Only Requests and Mutating Requests
 
