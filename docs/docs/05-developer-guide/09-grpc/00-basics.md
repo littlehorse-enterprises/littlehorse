@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # Background
 
-The public LittleHorse API is a GRPC service exposed by the LH Server. We plan to add auto-generated GRPC documentation soon (i.e. before the upcoming release of `1.0.0`). In the meantime, you can find our service defined in our [source code](https://github.com/littlehorse-enterprises/littlehorse/schemas/service.proto).
+The public LittleHorse API is a GRPC service exposed by the LH Server. We have complete [auto-generated documetation](../../08-api.md) for our GRPC Service and Protocol Buffers on our docs site. For the highly curious readers, you can find the actual protocol buffer code that underpins our system in our [source code repository](https://github.com/littlehorse-enterprises/littlehorse/schemas/service.proto).
 
 :::tip
 For background, we would recommend checking out the GRPC documentation for a primer on GRPC in [Java](https://grpc.io/docs/languages/java/), [Go](https://grpc.io/docs/languages/go/), and [Python](https://grpc.io/docs/languages/python/).
@@ -190,7 +190,55 @@ public class Main {
   </TabItem>
   <TabItem value="go" label="Go">
 
-Go example coming soon. However, it should be highly similar to the Java example above.
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+
+	// Use the GRPC utilities to inspect GRPC errors
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+)
+
+func main() {
+	// Get a client
+	config := common.NewConfigFromEnv()
+	client, _ := config.GetGrpcClient()
+
+	wfRunId := "my-wf-run-id"
+	req := &model.RunWfRequest{
+		Id:         &wfRunId,
+		WfSpecName: "quickstart",
+	}
+
+	result, err := (*client).RunWf(context.Background(), req)
+	if err != nil {
+		// First, check if it is a GRPC error
+		st, ok := status.FromError(err)
+		if ok {
+			// Check the status
+			if st.Code() == codes.AlreadyExists {
+				fmt.Println("The WfRun with the specified ID already exists!")
+			} else {
+				fmt.Println("Got another error from LittleHorse")
+				log.Fatal(err)
+			}
+		} else {
+			// Handle non-GRPC errors
+			fmt.Println("Got a non-GRPC error")
+			log.Fatal(err)
+		}
+	} else {
+		common.PrintProto(result)
+	}
+}
+```
 
   </TabItem>
   <TabItem value="python" label="Python">
@@ -217,6 +265,8 @@ except grpc.RpcError as e:
 
   </TabItem>
 </Tabs>
+
+Note: error handling in Go is extremely annoying and messy because it is a crappy language.
 
 ## Read-Only Requests and Mutating Requests
 
@@ -272,7 +322,7 @@ service LittleHorse {
 
 Both List Requests and Search Requests alike use [Cursor-Based Pagination](https://slack.engineering/evolving-api-pagination-at-slack/). For an example, we will look at the `rpc SearchTaskRun`. Note the `optiona bytes bookmark` field and the `optional int32 limit` field.
 
-```proto
+```protobuf
 // Searches for TaskRuns by various criteria.
 message SearchTaskRunRequest {
     optional bytes bookmark = 1;
