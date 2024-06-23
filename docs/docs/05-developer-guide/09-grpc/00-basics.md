@@ -13,6 +13,127 @@ Because the public LittleHorse API is a GRPC service, you may notice that the `L
 
 This page describes several patterns in the LittleHorse API. Some of these patterns come directly from GRPC (such as error handling and status codes), and others such as our implementation of cursor-based pagination are specific to LittleHorse.
 
+## LittleHorse GRPC Quickstart
+
+The entities in our GRPC service are protocol buffers. You can find our up-to-date API contract in our [api documentation](../../08-api.md). Our SDK's in Java, Go, and Python ship with 
+pre-compiled protobufs for LittleHorse: you don't need to add an extra dependency or compile the protobuf yourself.
+
+The below is an example of how to access a GRPC client, build a protobuf, and make a request in Java, Go, and Python. The request we will make is the [`rpc PutExternalEventDef`](../../08-api.md#rpc-putexternaleventdef-putexternaleventdef).
+
+<Tabs>
+  <TabItem value="java" label="Java" default>
+
+```java
+package io.littlehorse.quickstart;
+
+import java.io.IOException;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+
+// All protobuf objects can be found in this package.
+import io.littlehorse.sdk.common.proto.ExternalEventDef;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        // First, create an LHConfig. Using the default constructor loads the
+        // configurations from your environment variables.
+        LHConfig config = new LHConfig();
+
+        // Get a GRPC client. Java GRPC has two types: "Blocking" and regular.
+        // "Blocking" stubs are easier to work with as they are synchronous.
+        LittleHorseBlockingStub client = config.getBlockingStub();
+
+        // Build the request
+        PutExternalEventDefRequest req = PutExternalEventDefRequest.newBuilder()
+                .setName("my-external-event")
+                .build();
+
+        // Make the request
+        ExternalEventDef result = client.putExternalEventDef(req);
+
+        // Print the result in JSON format
+        System.out.println(LHLibUtil.protoToJson(result));
+    }
+}
+```
+
+  </TabItem>
+  <TabItem value="go" label="Go">
+
+```go
+package main
+
+import (
+	"context"
+	"log"
+
+	// Common utilities are found in this package
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
+
+	// All protobuf data models and grpc clients are found in this package
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+)
+
+func main() {
+	// Create a config using the environment variables.
+	config := common.NewConfigFromEnv()
+
+	// Load the client
+	client, err := config.GetGrpcClient()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Create the request protobuf structure
+	req := &model.PutExternalEventDefRequest{
+		Name: "my-external-event-def",
+	}
+
+	// Make the request
+	var result *model.ExternalEventDef
+	result, err = (*client).PutExternalEventDef(context.Background(), req)
+
+	common.PrintProto(result)
+}
+```
+
+  </TabItem>
+  <TabItem value="python" label="Python">
+
+```python
+from littlehorse.config import LHConfig
+
+# All protobuf models are in this package
+from littlehorse.model import LittleHorseStub, PutExternalEventDefRequest, ExternalEventDef
+
+# You can use this utility to print protobuf prettily (:
+from google.protobuf.json_format import MessageToJson
+
+
+if __name__ == '__main__':
+    # Create a config object using the environment variables.
+    config: LHConfig = LHConfig()
+
+    # Create the GRPC Client (in grpc, a client is called a "stub")
+    client: LittleHorseStub = config.stub()
+
+    # Formulate the request, which is a protobuf object.
+    request = PutExternalEventDefRequest(name="my-external-event-def")
+
+    # Make the request!
+    result: ExternalEventDef = client.PutExternalEventDef(request)
+
+    # Print it out
+    print(MessageToJson(result))
+```
+
+  </TabItem>
+</Tabs>
+
+
 ## Error Handling
 
 The LittleHorse API uses the standard GRPC Error Codes, and we strictly follow the conventions described in [the official documentation](https://grpc.github.io/grpc/core/md_doc_statuscodes.html). The most common error codes you will encounter are `NOT_FOUND`, `FAILED_PRECONDITION`, `ALREADY_EXISTS`, and `INVALID_ARGUMENT`.
@@ -59,7 +180,25 @@ Go example coming soon. However, it should be highly similar to the Java example
   </TabItem>
   <TabItem value="python" label="Python">
 
-Python example coming soon. However, it should be highly similar to the Java example above.
+```python
+import grpc
+from littlehorse.config import LHConfig
+from littlehorse.model.service_pb2 import RunWfRequest
+from littlehorse.utils import to_variable_value
+
+config = LHConfig()
+stub = config.stub()
+wf_run_id = "obiwan-workflow-run-id"
+
+try:
+    stub.RunWf(RunWfRequest(wf_spec_name="my-wf-spec", variables={
+        "my-variable": to_variable_value("some-value")
+    }))
+except grpc.RpcError as e:
+    if e.code() == grpc.StatusCode.ALREADY_EXISTS:
+        # then a WfRun already exists with that id.
+        pass
+```
 
   </TabItem>
 </Tabs>
@@ -73,7 +212,7 @@ In LittleHorse, there are two predominant types of GRPC requests:
 
 In LittleHorse, all Read-Only Requests (with the exception of `rpc Whoami`) start with `Get`, `List`, or `Search`. Any other request is a Mutating Request.
 
-All Mutating Requests in LittleHorse _can be_ made idempotent if you pass in the proper information. For example, if you pass in the `id` field on the `rpc RunWf`, you can safely retry the request multiple times and only one `WfRun` will be created. For 
+All Mutating Requests in LittleHorse _can be_ made idempotent if you pass in the proper information. For example, if you pass in the `id` field on the `rpc RunWf`, you can safely retry the request multiple times and only one `WfRun` will be created.
 
 ## List and Search
 
