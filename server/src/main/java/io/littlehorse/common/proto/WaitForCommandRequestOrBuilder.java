@@ -18,4 +18,10 @@ public interface WaitForCommandRequestOrBuilder extends
    */
   com.google.protobuf.ByteString
       getCommandIdBytes();
+
+  /**
+   * <code>int32 partition = 2;</code>
+   * @return The partition.
+   */
+  int getPartition();
 }

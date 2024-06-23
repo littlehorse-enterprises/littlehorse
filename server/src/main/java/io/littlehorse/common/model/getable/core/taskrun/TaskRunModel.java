@@ -10,10 +10,14 @@ import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
+import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
@@ -29,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -42,19 +45,49 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
 
     private TaskRunIdModel id;
     private List<TaskAttemptModel> attempts;
-    private int maxAttempts;
     private TaskDefIdModel taskDefId;
     private List<VarNameAndValModel> inputVariables;
     private TaskRunSourceModel taskRunSource;
     private Date scheduledAt;
     private int timeoutSeconds;
-
-    @Getter(AccessLevel.NONE)
     private TaskStatus status;
+
+    private int simpleTotalAttempts;
+    private ExponentialBackoffRetryPolicyModel exponentialBackoffRetryPolicy;
 
     private ExecutionContext executionContext;
     // Only contains value in Processor execution context.
     private ProcessorExecutionContext processorContext;
+
+    public TaskRunModel() {
+        scheduledAt = new Date();
+        inputVariables = new ArrayList<>();
+        attempts = new ArrayList<>();
+    }
+
+    public TaskRunModel(
+            List<VarNameAndValModel> inputVars,
+            TaskRunSourceModel source,
+            TaskNodeModel node,
+            ProcessorExecutionContext processorContext,
+            TaskRunIdModel id,
+            TaskDefIdModel taskDefId) {
+        this();
+        this.inputVariables = inputVars;
+        this.taskRunSource = source;
+        this.taskDefId = taskDefId;
+        this.timeoutSeconds = node.getTimeoutSeconds();
+        this.executionContext = processorContext;
+        this.processorContext = processorContext;
+        this.id = id;
+
+        this.simpleTotalAttempts = 1 + node.getSimpleRetries();
+        this.exponentialBackoffRetryPolicy = node.getExponentialBackoffRetryPolicy();
+
+        this.attempts.add(new TaskAttemptModel());
+
+        transitionTo(TaskStatus.TASK_SCHEDULED);
+    }
 
     @Override
     public Class<TaskRun> getProtoBaseClass() {
@@ -65,7 +98,6 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     public void initFrom(Message proto, ExecutionContext context) {
         TaskRun p = (TaskRun) proto;
         taskDefId = LHSerializable.fromProto(p.getTaskDefId(), TaskDefIdModel.class, context);
-        maxAttempts = p.getMaxAttempts();
         scheduledAt = LHUtil.fromProtoTs(p.getScheduledAt());
         id = LHSerializable.fromProto(p.getId(), TaskRunIdModel.class, context);
         status = p.getStatus();
@@ -78,19 +110,27 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         for (VarNameAndVal v : p.getInputVariablesList()) {
             inputVariables.add(LHSerializable.fromProto(v, VarNameAndValModel.class, context));
         }
+        simpleTotalAttempts = p.getTotalAttempts();
+
+        if (p.hasExponentialBackoff()) {
+            exponentialBackoffRetryPolicy = LHSerializable.fromProto(
+                    p.getExponentialBackoff(), ExponentialBackoffRetryPolicyModel.class, context);
+        }
+
         this.executionContext = context;
         this.processorContext = context.castOnSupport(ProcessorExecutionContext.class);
     }
 
+    @Override
     public TaskRun.Builder toProto() {
         TaskRun.Builder out = TaskRun.newBuilder()
                 .setTaskDefId(taskDefId.toProto())
-                .setMaxAttempts(maxAttempts)
                 .setScheduledAt(LHUtil.fromDate(scheduledAt))
-                .setStatus(status)
+                .setStatus(getStatus())
                 .setSource(taskRunSource.toProto())
                 .setTimeoutSeconds(timeoutSeconds)
-                .setId(id.toProto());
+                .setId(id.toProto())
+                .setTotalAttempts(simpleTotalAttempts);
 
         for (VarNameAndValModel v : inputVariables) {
             out.addInputVariables(v.toProto());
@@ -98,10 +138,14 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         for (TaskAttemptModel attempt : attempts) {
             out.addAttempts(attempt.toProto());
         }
+        if (exponentialBackoffRetryPolicy != null) {
+            out.setExponentialBackoff(exponentialBackoffRetryPolicy.toProto());
+        }
 
         return out;
     }
 
+    @Override
     public Date getCreatedAt() {
         return scheduledAt;
     }
@@ -140,31 +184,57 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         return null;
     }
 
-    public TaskRunModel() {
-        scheduledAt = new Date();
-        inputVariables = new ArrayList<>();
-        attempts = new ArrayList<>();
-    }
-
-    public TaskRunModel(
-            List<VarNameAndValModel> inputVars,
-            TaskRunSourceModel source,
-            TaskNodeModel node,
-            ProcessorExecutionContext processorContext) {
-        this();
-        this.inputVariables = inputVars;
-        this.taskRunSource = source;
-        this.taskDefId = node.getTaskDefId();
-        this.maxAttempts = node.getRetries() + 1;
-        this.timeoutSeconds = node.getTimeoutSeconds();
-        this.executionContext = processorContext;
-        this.processorContext = processorContext;
-        transitionTo(TaskStatus.TASK_SCHEDULED);
-    }
-
     @Override
     public TaskRunIdModel getObjectId() {
         return id;
+    }
+
+    /**
+     * Returns the ID of the WfRun that this TaskRun belongs to.
+     * @return the ID of the WfRun that this TaskRun belongs to.
+     */
+    public WfRunIdModel getWfRunId() {
+        return taskRunSource.getSubSource().getWfRunId();
+    }
+
+    /**
+     * Returns the WfRunModel that this TaskRunModel's TaskRun belongs to.
+     * @return the WfRun.
+     */
+    public WfRunModel getWfRun() {
+        return processorContext.getableManager().get(getWfRunId());
+    }
+
+    /**
+     * Returns the status of this TaskRun, which is always given by the status of the latest
+     * attempt.
+     * @return
+     */
+    public TaskStatus getStatus() {
+        return getLatestAttempt().getStatus();
+    }
+
+    /**
+     * Returns whether the TaskRun is still running (that means that a TaskAttempt is currently running
+     * OR that there are TaskAttempts that are scheduled or will be scheduled once the retry backoff
+     * policy matures)
+     * @return whether the TaskRun is still running
+     */
+    public boolean isStillRunning() {
+        switch (status) {
+            case TASK_EXCEPTION:
+            case TASK_FAILED:
+            case TASK_INPUT_VAR_SUB_ERROR:
+            case TASK_OUTPUT_SERIALIZING_ERROR:
+            case TASK_SUCCESS:
+            case TASK_TIMEOUT:
+                return false;
+            case TASK_SCHEDULED:
+            case TASK_RUNNING:
+            case TASK_PENDING:
+            case UNRECOGNIZED:
+        }
+        return true;
     }
 
     public static TaskRunModel fromProto(TaskRun proto, ExecutionContext context) {
@@ -178,39 +248,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         return attempts.get(attempts.size() - 1);
     }
 
-    public boolean shouldRetry() {
-        // Shouldn't look at nodeRun to decide whether to retry task or not.
-        TaskAttemptModel latest = getLatestAttempt();
-        if (latest == null) {
-            // This really shouldn't happen I think
-            return false;
-        }
-
-        if (latest.getStatus() != TaskStatus.TASK_FAILED && latest.getStatus() != TaskStatus.TASK_TIMEOUT) {
-            // Can only retry timeout or task failure.
-            return false;
-        }
-
-        return attempts.size() < maxAttempts;
-    }
-
-    public void scheduleAttempt() {
-        ScheduledTaskModel scheduledTask = new ScheduledTaskModel();
-        scheduledTask.setVariables(inputVariables);
-        scheduledTask.setAttemptNumber(attempts.size());
-        scheduledTask.setCreatedAt(new Date());
-        scheduledTask.setSource(taskRunSource);
-        scheduledTask.setTaskDefId(taskDefId);
-        scheduledTask.setTaskRunId(id);
-
-        // initialization happens here
-        attempts.add(new TaskAttemptModel());
-
-        processorContext.getTaskManager().scheduleTask(scheduledTask);
-        // TODO: Update Metrics
-    }
-
-    public void processStart(TaskClaimEvent se) {
+    public void onTaskAttemptStarted(TaskClaimEvent se) {
         transitionTo(TaskStatus.TASK_RUNNING);
 
         // create a timer to mark the task is timeout if it does not finish
@@ -231,7 +269,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         attempt.setStatus(TaskStatus.TASK_RUNNING);
     }
 
-    public void updateTaskResult(ReportTaskRunModel ce) {
+    public void onTaskAttemptResultReported(ReportTaskRunModel ce) {
         if (ce.getAttemptNumber() >= attempts.size()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Specified Task Attempt does not exist!");
         }
@@ -262,18 +300,87 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         attempt.setEndTime(ce.getTime());
         attempt.setError(ce.getError());
         attempt.setException(ce.getException());
+        if (ce.getException() != null) {
+            attempt.setOutput(ce.getException().getContent());
+        }
 
         if (ce.getStatus() == TaskStatus.TASK_SUCCESS) {
             // Tell the WfRun that the TaskRun is done.
-            taskRunSource.getSubSource().onCompleted(attempt);
             transitionTo(TaskStatus.TASK_SUCCESS);
         } else if (shouldRetry()) {
-            transitionTo(TaskStatus.TASK_SCHEDULED);
-            scheduleAttempt();
+            scheduleRetryAtAppropriateTime();
         } else {
             transitionTo(ce.getStatus());
-            taskRunSource.getSubSource().onFailed(attempt);
         }
+
+        // The WfRun may need to advance.
+        processorContext.getableManager().get(getWfRunId()).advance(ce.getTime());
+    }
+
+    /**
+     * Called when a TASK_PENDING retry attempt is now ready to launch according to the retry backoff
+     * policy.
+     */
+    public void markAttemptReadyToSchedule() {
+        dispatchTaskToQueue();
+    }
+
+    /**
+     * Dispatches the latest TaskAttempt to the server's Task Queues.
+     */
+    public void dispatchTaskToQueue() {
+        if (attempts.isEmpty()) {
+            throw new IllegalStateException("can't have empty attempts queue");
+        }
+        TaskAttemptModel attempt = attempts.get(attempts.size() - 1);
+        if (attempt.getStatus() != TaskStatus.TASK_PENDING) {
+            throw new IllegalStateException("Cannot schedule task attempt that isn't in PENDING state");
+        }
+
+        attempt.setStatus(TaskStatus.TASK_SCHEDULED);
+        attempt.setScheduleTime(new Date());
+
+        ScheduledTaskModel scheduledTask = new ScheduledTaskModel();
+        scheduledTask.setVariables(inputVariables);
+        scheduledTask.setAttemptNumber(attempts.size() - 1);
+        scheduledTask.setCreatedAt(new Date());
+        scheduledTask.setSource(taskRunSource);
+        scheduledTask.setTaskDefId(taskDefId);
+        scheduledTask.setTaskRunId(id);
+
+        processorContext.getTaskManager().scheduleTask(scheduledTask);
+    }
+
+    private boolean shouldRetry() {
+        // Shouldn't look at nodeRun to decide whether to retry task or not.
+        TaskAttemptModel latest = getLatestAttempt();
+        if (latest == null) {
+            // This really shouldn't happen I think
+            return false;
+        }
+
+        if (latest.getStatus() != TaskStatus.TASK_FAILED && latest.getStatus() != TaskStatus.TASK_TIMEOUT) {
+            // Can only retry timeout or task failure.
+            return false;
+        }
+
+        return simpleTotalAttempts > attempts.size();
+    }
+
+    private void scheduleRetryAtAppropriateTime() {
+        if (exponentialBackoffRetryPolicy == null) {
+            attempts.add(new TaskAttemptModel());
+            dispatchTaskToQueue();
+            return;
+        }
+
+        long delayMs = exponentialBackoffRetryPolicy.calculateDelayForNextAttempt(attempts.size());
+        Date maturationTime = new Date(System.currentTimeMillis() + delayMs);
+        LHTimer timer = new LHTimer(new CommandModel(new TaskAttemptRetryReadyModel(id), maturationTime));
+        processorContext.getTaskManager().scheduleTimer(timer);
+
+        TaskAttemptModel nextAttempt = new TaskAttemptModel();
+        attempts.add(nextAttempt);
     }
 
     private void transitionTo(TaskStatus newStatus) {

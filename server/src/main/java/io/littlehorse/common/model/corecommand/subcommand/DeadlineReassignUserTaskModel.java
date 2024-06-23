@@ -8,12 +8,14 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.proto.DeadlineReassignUserTask;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,14 +26,19 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
     private UserTaskRunIdModel source;
     private VariableAssignmentModel newUserId;
     private VariableAssignmentModel newUserGroup;
+    private long epoch;
 
     public DeadlineReassignUserTaskModel() {}
 
     public DeadlineReassignUserTaskModel(
-            UserTaskRunIdModel source, VariableAssignmentModel newUserId, VariableAssignmentModel newUserGroup) {
+            UserTaskRunIdModel source,
+            VariableAssignmentModel newUserId,
+            VariableAssignmentModel newUserGroup,
+            long epoch) {
         this.source = source;
         this.newUserId = newUserId;
         this.newUserGroup = newUserGroup;
+        this.epoch = epoch;
     }
 
     @Override
@@ -40,7 +47,7 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
                 DeadlineReassignUserTask.newBuilder().setUserTask(source.toProto());
         if (newUserId != null) builder.setNewUserId(newUserId.toProto());
         if (newUserGroup != null) builder.setNewUserGroup(newUserGroup.toProto());
-
+        builder.setEpoch(this.epoch);
         return builder;
     }
 
@@ -49,6 +56,7 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
         DeadlineReassignUserTask p = (DeadlineReassignUserTask) proto;
         if (p.hasNewUserId()) newUserId = VariableAssignmentModel.fromProto(p.getNewUserId(), context);
         if (p.hasNewUserGroup()) newUserGroup = VariableAssignmentModel.fromProto(p.getNewUserGroup(), context);
+        this.epoch = p.getEpoch();
         source = LHSerializable.fromProto(p.getUserTask(), UserTaskRunIdModel.class, context);
     }
 
@@ -66,6 +74,10 @@ public class DeadlineReassignUserTaskModel extends CoreSubCommand<DeadlineReassi
         }
 
         userTaskRun.deadlineReassign(this);
+
+        WfRunModel wfRun =
+                executionContext.getableManager().get(userTaskRun.getId().getWfRunId());
+        wfRun.advance(new Date());
         return Empty.getDefaultInstance();
     }
 

@@ -21,12 +21,18 @@ message GetObjectResponse {
 
 message WaitForCommandRequest {
     string command_id = 1;
+    int32 partition = 2;
 }
 
 message WaitForCommandResponse {
     string command_id = 1;
     google.protobuf.Timestamp result_time = 2;
-    bytes result = 3;
+    message PartitionMigratedResponse {
+    }
+    oneof yield {
+        bytes result = 3;
+        PartitionMigratedResponse partition_migrated_response = 4;
+    }
 }
 
 message ScanFilter {
@@ -92,4 +98,9 @@ message PartitionBookmarkPb { // used for paginated responses
 message BookmarkPb { // Used for paginated responses
     map<int32, PartitionBookmarkPb> in_progress_partitions = 1;
     repeated int32 completed_partitions = 2;
+}
+
+message InternalWaitForWfEventRequest {
+    // For now, we just pass the raw input from the external server. That's all we need to know.
+    AwaitWorkflowEventRequest request = 1;
 }

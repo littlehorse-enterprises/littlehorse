@@ -17,7 +17,6 @@ private static final long serialVersionUID = 0L;
   }
   private WaitForCommandResponse() {
     commandId_ = "";
-    result_ = com.google.protobuf.ByteString.EMPTY;
   }
 
   @java.lang.Override
@@ -38,6 +37,445 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.InteractiveQuery.internal_static_littlehorse_WaitForCommandResponse_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.WaitForCommandResponse.class, io.littlehorse.common.proto.WaitForCommandResponse.Builder.class);
+  }
+
+  public interface PartitionMigratedResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.WaitForCommandResponse.PartitionMigratedResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code littlehorse.WaitForCommandResponse.PartitionMigratedResponse}
+   */
+  public static final class PartitionMigratedResponse extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:littlehorse.WaitForCommandResponse.PartitionMigratedResponse)
+      PartitionMigratedResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PartitionMigratedResponse.newBuilder() to construct.
+    private PartitionMigratedResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PartitionMigratedResponse() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PartitionMigratedResponse();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.common.proto.InteractiveQuery.internal_static_littlehorse_WaitForCommandResponse_PartitionMigratedResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.common.proto.InteractiveQuery.internal_static_littlehorse_WaitForCommandResponse_PartitionMigratedResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.class, io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse other = (io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code littlehorse.WaitForCommandResponse.PartitionMigratedResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.WaitForCommandResponse.PartitionMigratedResponse)
+        io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.common.proto.InteractiveQuery.internal_static_littlehorse_WaitForCommandResponse_PartitionMigratedResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.common.proto.InteractiveQuery.internal_static_littlehorse_WaitForCommandResponse_PartitionMigratedResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.class, io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.Builder.class);
+      }
+
+      // Construct using io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.common.proto.InteractiveQuery.internal_static_littlehorse_WaitForCommandResponse_PartitionMigratedResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse getDefaultInstanceForType() {
+        return io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse build() {
+        io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse buildPartial() {
+        io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse result = new io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse) {
+          return mergeFrom((io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse other) {
+        if (other == io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.WaitForCommandResponse.PartitionMigratedResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.WaitForCommandResponse.PartitionMigratedResponse)
+    private static final io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse();
+    }
+
+    public static io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PartitionMigratedResponse>
+        PARSER = new com.google.protobuf.AbstractParser<PartitionMigratedResponse>() {
+      @java.lang.Override
+      public PartitionMigratedResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<PartitionMigratedResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PartitionMigratedResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  private int yieldCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object yield_;
+  public enum YieldCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    RESULT(3),
+    PARTITION_MIGRATED_RESPONSE(4),
+    YIELD_NOT_SET(0);
+    private final int value;
+    private YieldCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static YieldCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static YieldCase forNumber(int value) {
+      switch (value) {
+        case 3: return RESULT;
+        case 4: return PARTITION_MIGRATED_RESPONSE;
+        case 0: return YIELD_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public YieldCase
+  getYieldCase() {
+    return YieldCase.forNumber(
+        yieldCase_);
   }
 
   public static final int COMMAND_ID_FIELD_NUMBER = 1;
@@ -106,14 +544,55 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int RESULT_FIELD_NUMBER = 3;
-  private com.google.protobuf.ByteString result_ = com.google.protobuf.ByteString.EMPTY;
+  /**
+   * <code>bytes result = 3;</code>
+   * @return Whether the result field is set.
+   */
+  @java.lang.Override
+  public boolean hasResult() {
+    return yieldCase_ == 3;
+  }
   /**
    * <code>bytes result = 3;</code>
    * @return The result.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString getResult() {
-    return result_;
+    if (yieldCase_ == 3) {
+      return (com.google.protobuf.ByteString) yield_;
+    }
+    return com.google.protobuf.ByteString.EMPTY;
+  }
+
+  public static final int PARTITION_MIGRATED_RESPONSE_FIELD_NUMBER = 4;
+  /**
+   * <code>.littlehorse.WaitForCommandResponse.PartitionMigratedResponse partition_migrated_response = 4;</code>
+   * @return Whether the partitionMigratedResponse field is set.
+   */
+  @java.lang.Override
+  public boolean hasPartitionMigratedResponse() {
+    return yieldCase_ == 4;
+  }
+  /**
+   * <code>.littlehorse.WaitForCommandResponse.PartitionMigratedResponse partition_migrated_response = 4;</code>
+   * @return The partitionMigratedResponse.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse getPartitionMigratedResponse() {
+    if (yieldCase_ == 4) {
+       return (io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse) yield_;
+    }
+    return io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.WaitForCommandResponse.PartitionMigratedResponse partition_migrated_response = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponseOrBuilder getPartitionMigratedResponseOrBuilder() {
+    if (yieldCase_ == 4) {
+       return (io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse) yield_;
+    }
+    return io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -136,8 +615,12 @@ private static final long serialVersionUID = 0L;
     if (resultTime_ != null) {
       output.writeMessage(2, getResultTime());
     }
-    if (!result_.isEmpty()) {
-      output.writeBytes(3, result_);
+    if (yieldCase_ == 3) {
+      output.writeBytes(
+          3, (com.google.protobuf.ByteString) yield_);
+    }
+    if (yieldCase_ == 4) {
+      output.writeMessage(4, (io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse) yield_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -155,9 +638,14 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getResultTime());
     }
-    if (!result_.isEmpty()) {
+    if (yieldCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(3, result_);
+        .computeBytesSize(
+            3, (com.google.protobuf.ByteString) yield_);
+    }
+    if (yieldCase_ == 4) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, (io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse) yield_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -181,8 +669,19 @@ private static final long serialVersionUID = 0L;
       if (!getResultTime()
           .equals(other.getResultTime())) return false;
     }
-    if (!getResult()
-        .equals(other.getResult())) return false;
+    if (!getYieldCase().equals(other.getYieldCase())) return false;
+    switch (yieldCase_) {
+      case 3:
+        if (!getResult()
+            .equals(other.getResult())) return false;
+        break;
+      case 4:
+        if (!getPartitionMigratedResponse()
+            .equals(other.getPartitionMigratedResponse())) return false;
+        break;
+      case 0:
+      default:
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -200,8 +699,18 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + RESULT_TIME_FIELD_NUMBER;
       hash = (53 * hash) + getResultTime().hashCode();
     }
-    hash = (37 * hash) + RESULT_FIELD_NUMBER;
-    hash = (53 * hash) + getResult().hashCode();
+    switch (yieldCase_) {
+      case 3:
+        hash = (37 * hash) + RESULT_FIELD_NUMBER;
+        hash = (53 * hash) + getResult().hashCode();
+        break;
+      case 4:
+        hash = (37 * hash) + PARTITION_MIGRATED_RESPONSE_FIELD_NUMBER;
+        hash = (53 * hash) + getPartitionMigratedResponse().hashCode();
+        break;
+      case 0:
+      default:
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -339,7 +848,11 @@ private static final long serialVersionUID = 0L;
         resultTimeBuilder_.dispose();
         resultTimeBuilder_ = null;
       }
-      result_ = com.google.protobuf.ByteString.EMPTY;
+      if (partitionMigratedResponseBuilder_ != null) {
+        partitionMigratedResponseBuilder_.clear();
+      }
+      yieldCase_ = 0;
+      yield_ = null;
       return this;
     }
 
@@ -367,6 +880,7 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.common.proto.WaitForCommandResponse buildPartial() {
       io.littlehorse.common.proto.WaitForCommandResponse result = new io.littlehorse.common.proto.WaitForCommandResponse(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
@@ -381,8 +895,14 @@ private static final long serialVersionUID = 0L;
             ? resultTime_
             : resultTimeBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.result_ = result_;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.common.proto.WaitForCommandResponse result) {
+      result.yieldCase_ = yieldCase_;
+      result.yield_ = this.yield_;
+      if (yieldCase_ == 4 &&
+          partitionMigratedResponseBuilder_ != null) {
+        result.yield_ = partitionMigratedResponseBuilder_.build();
       }
     }
 
@@ -438,8 +958,18 @@ private static final long serialVersionUID = 0L;
       if (other.hasResultTime()) {
         mergeResultTime(other.getResultTime());
       }
-      if (other.getResult() != com.google.protobuf.ByteString.EMPTY) {
-        setResult(other.getResult());
+      switch (other.getYieldCase()) {
+        case RESULT: {
+          setResult(other.getResult());
+          break;
+        }
+        case PARTITION_MIGRATED_RESPONSE: {
+          mergePartitionMigratedResponse(other.getPartitionMigratedResponse());
+          break;
+        }
+        case YIELD_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -480,10 +1010,17 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 18
             case 26: {
-              result_ = input.readBytes();
-              bitField0_ |= 0x00000004;
+              yield_ = input.readBytes();
+              yieldCase_ = 3;
               break;
             } // case 26
+            case 34: {
+              input.readMessage(
+                  getPartitionMigratedResponseFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              yieldCase_ = 4;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -499,6 +1036,21 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int yieldCase_ = 0;
+    private java.lang.Object yield_;
+    public YieldCase
+        getYieldCase() {
+      return YieldCase.forNumber(
+          yieldCase_);
+    }
+
+    public Builder clearYield() {
+      yieldCase_ = 0;
+      yield_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
     private java.lang.Object commandId_ = "";
@@ -692,14 +1244,22 @@ private static final long serialVersionUID = 0L;
       return resultTimeBuilder_;
     }
 
-    private com.google.protobuf.ByteString result_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes result = 3;</code>
+     * @return Whether the result field is set.
+     */
+    public boolean hasResult() {
+      return yieldCase_ == 3;
+    }
     /**
      * <code>bytes result = 3;</code>
      * @return The result.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString getResult() {
-      return result_;
+      if (yieldCase_ == 3) {
+        return (com.google.protobuf.ByteString) yield_;
+      }
+      return com.google.protobuf.ByteString.EMPTY;
     }
     /**
      * <code>bytes result = 3;</code>
@@ -708,8 +1268,8 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setResult(com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
-      result_ = value;
-      bitField0_ |= 0x00000004;
+      yieldCase_ = 3;
+      yield_ = value;
       onChanged();
       return this;
     }
@@ -718,10 +1278,154 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearResult() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      result_ = getDefaultInstance().getResult();
-      onChanged();
+      if (yieldCase_ == 3) {
+        yieldCase_ = 0;
+        yield_ = null;
+        onChanged();
+      }
       return this;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse, io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.Builder, io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponseOrBuilder> partitionMigratedResponseBuilder_;
+    /**
+     * <code>.littlehorse.WaitForCommandResponse.PartitionMigratedResponse partition_migrated_response = 4;</code>
+     * @return Whether the partitionMigratedResponse field is set.
+     */
+    @java.lang.Override
+    public boolean hasPartitionMigratedResponse() {
+      return yieldCase_ == 4;
+    }
+    /**
+     * <code>.littlehorse.WaitForCommandResponse.PartitionMigratedResponse partition_migrated_response = 4;</code>
+     * @return The partitionMigratedResponse.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse getPartitionMigratedResponse() {
+      if (partitionMigratedResponseBuilder_ == null) {
+        if (yieldCase_ == 4) {
+          return (io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse) yield_;
+        }
+        return io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.getDefaultInstance();
+      } else {
+        if (yieldCase_ == 4) {
+          return partitionMigratedResponseBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.WaitForCommandResponse.PartitionMigratedResponse partition_migrated_response = 4;</code>
+     */
+    public Builder setPartitionMigratedResponse(io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse value) {
+      if (partitionMigratedResponseBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        yield_ = value;
+        onChanged();
+      } else {
+        partitionMigratedResponseBuilder_.setMessage(value);
+      }
+      yieldCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WaitForCommandResponse.PartitionMigratedResponse partition_migrated_response = 4;</code>
+     */
+    public Builder setPartitionMigratedResponse(
+        io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.Builder builderForValue) {
+      if (partitionMigratedResponseBuilder_ == null) {
+        yield_ = builderForValue.build();
+        onChanged();
+      } else {
+        partitionMigratedResponseBuilder_.setMessage(builderForValue.build());
+      }
+      yieldCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WaitForCommandResponse.PartitionMigratedResponse partition_migrated_response = 4;</code>
+     */
+    public Builder mergePartitionMigratedResponse(io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse value) {
+      if (partitionMigratedResponseBuilder_ == null) {
+        if (yieldCase_ == 4 &&
+            yield_ != io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.getDefaultInstance()) {
+          yield_ = io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.newBuilder((io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse) yield_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          yield_ = value;
+        }
+        onChanged();
+      } else {
+        if (yieldCase_ == 4) {
+          partitionMigratedResponseBuilder_.mergeFrom(value);
+        } else {
+          partitionMigratedResponseBuilder_.setMessage(value);
+        }
+      }
+      yieldCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WaitForCommandResponse.PartitionMigratedResponse partition_migrated_response = 4;</code>
+     */
+    public Builder clearPartitionMigratedResponse() {
+      if (partitionMigratedResponseBuilder_ == null) {
+        if (yieldCase_ == 4) {
+          yieldCase_ = 0;
+          yield_ = null;
+          onChanged();
+        }
+      } else {
+        if (yieldCase_ == 4) {
+          yieldCase_ = 0;
+          yield_ = null;
+        }
+        partitionMigratedResponseBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.WaitForCommandResponse.PartitionMigratedResponse partition_migrated_response = 4;</code>
+     */
+    public io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.Builder getPartitionMigratedResponseBuilder() {
+      return getPartitionMigratedResponseFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.WaitForCommandResponse.PartitionMigratedResponse partition_migrated_response = 4;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponseOrBuilder getPartitionMigratedResponseOrBuilder() {
+      if ((yieldCase_ == 4) && (partitionMigratedResponseBuilder_ != null)) {
+        return partitionMigratedResponseBuilder_.getMessageOrBuilder();
+      } else {
+        if (yieldCase_ == 4) {
+          return (io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse) yield_;
+        }
+        return io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.WaitForCommandResponse.PartitionMigratedResponse partition_migrated_response = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse, io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.Builder, io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponseOrBuilder> 
+        getPartitionMigratedResponseFieldBuilder() {
+      if (partitionMigratedResponseBuilder_ == null) {
+        if (!(yieldCase_ == 4)) {
+          yield_ = io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.getDefaultInstance();
+        }
+        partitionMigratedResponseBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse, io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse.Builder, io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponseOrBuilder>(
+                (io.littlehorse.common.proto.WaitForCommandResponse.PartitionMigratedResponse) yield_,
+                getParentForChildren(),
+                isClean());
+        yield_ = null;
+      }
+      yieldCase_ = 4;
+      onChanged();
+      return partitionMigratedResponseBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

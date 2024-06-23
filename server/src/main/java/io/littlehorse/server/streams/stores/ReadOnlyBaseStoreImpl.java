@@ -4,13 +4,15 @@ import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
+import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.common.proto.StoredGetablePb;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
+import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -25,6 +27,7 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * class runs in two modes: Cluster-scoped, or Tenant-scoped. In the Tenant-Scoped mode, a prefix
  * is pre-pended to every key so that we can logically isolate Tenant-Scoped data.
  */
+@Slf4j
 abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
 
     @Getter
@@ -55,26 +58,7 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     public <U extends Message, T extends Storeable<U>> T get(String storeKey, Class<T> cls) {
         String keyToLookFor = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, storeKey));
         if (metadataCache != null) {
-            StoredGetablePb storedGetablePb = metadataCache.get(keyToLookFor);
-            if (storedGetablePb != null) {
-                return LHSerializable.fromProto(storedGetablePb, cls, executionContext);
-            } else {
-                if (metadataCache.containsKey(keyToLookFor)) {
-                    // we already know that the store does not contain this key
-                    return null;
-                }
-                // time to get things from the store
-                GeneratedMessageV3 stored = getFromNativeStore(keyToLookFor, cls);
-                if (stored instanceof StoredGetablePb storedGetable) {
-                    metadataCache.evictOrUpdate(storedGetable, keyToLookFor);
-                }
-                if (stored != null) {
-                    return LHSerializable.fromProto(stored, cls, executionContext);
-                }
-                // key is not in the store, now we try to cache this missing key
-                metadataCache.updateMissingKey(keyToLookFor);
-                return null;
-            }
+            return getMetadataObject(keyToLookFor, cls);
         } else {
             // time to get things from the store
             GeneratedMessageV3 stored = getFromNativeStore(keyToLookFor, cls);
@@ -83,6 +67,28 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
             }
             return LHSerializable.fromProto(stored, cls, executionContext);
         }
+    }
+
+    private <U extends Message, T extends Storeable<U>> T getMetadataObject(String keyToLookFor, Class<T> clazz) {
+        StoredGetable<? extends Message, ? extends MetadataGetable<?>> cachedGetable = metadataCache.get(keyToLookFor);
+        if (cachedGetable != null) {
+            return (T) cachedGetable;
+        } else {
+            if (metadataCache.containsKey(keyToLookFor)) {
+                // we already know that the store does not contain this key
+                return null;
+            }
+            GeneratedMessageV3 storedProto = getFromNativeStore(keyToLookFor, clazz);
+            if (storedProto != null) {
+                StoredGetable<U, MetadataGetable<U>> storedGetable =
+                        LHSerializable.fromProto(storedProto, StoredGetable.class, executionContext);
+                metadataCache.evictOrUpdate(storedGetable, keyToLookFor);
+                return (T) storedGetable;
+            }
+            // key is not in the store, now we try to cache this missing key
+            metadataCache.updateMissingKey(keyToLookFor);
+        }
+        return null;
     }
 
     @Override
@@ -148,7 +154,6 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
         start = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, start));
         end = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, end));
-
         return new LHKeyValueIterator<>(nativeStore.range(start, end), cls, executionContext);
     }
 

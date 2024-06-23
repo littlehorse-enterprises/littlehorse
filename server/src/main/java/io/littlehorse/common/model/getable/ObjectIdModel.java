@@ -46,7 +46,7 @@ public abstract class ObjectIdModel<T extends Message, U extends Message, V exte
 
     @Override
     public int hashCode() {
-        return getStoreableKey().hashCode();
+        return toString().hashCode();
     }
 
     @Override

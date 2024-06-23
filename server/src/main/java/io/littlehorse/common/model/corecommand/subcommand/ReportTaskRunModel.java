@@ -43,7 +43,7 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
     }
 
     public boolean hasResponse() {
-        return true;
+        return false;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Provided taskRunId was invalid");
         }
 
-        task.updateTaskResult(this);
+        task.onTaskAttemptResultReported(this);
         return Empty.getDefaultInstance();
     }
 

@@ -131,6 +131,11 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
             throws TestFailure, InterruptedException, IOException {
         String id = runWf(client, Arg.of("my-int", 5));
         sendEvent(client, id, INTERRUPT_NAME, "bad input should crash", null);
+
+        // See issue #684. This "sleep" here is necessary due to the regression that is mentioned
+        // in that issue.
+        Thread.sleep(1000);
+
         assertStatus(client, id, LHStatus.ERROR);
         Thread.sleep(3 * 1000);
         // should still be dead after the sleep node expires

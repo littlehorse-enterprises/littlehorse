@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.MetadataCommand;
@@ -57,7 +58,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
         MetadataCommandModel command = metadataContext.currentCommand();
         log.trace(
                 "{} Processing command of type {} with commandId {}",
-                config.getLHInstanceId(),
+                config.getLHInstanceName(),
                 command.getType(),
                 command.getCommandId());
 
@@ -82,7 +83,11 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
                 ctx.commit();
             }
         } catch (Exception exn) {
-            log.error("Caught exception processing {} command: {}", command.getType(), exn);
+            if (StatusRuntimeException.class.isAssignableFrom(exn.getClass())) {
+                log.trace("Sending exception when processing command {}: {}", command.getType(), exn.getMessage());
+            } else {
+                log.error("Caught exception processing {} command: {}", command.getType(), exn);
+            }
             if (command.hasResponse() && command.getCommandId() != null) {
                 server.sendErrorToClient(command.getCommandId(), exn);
             }

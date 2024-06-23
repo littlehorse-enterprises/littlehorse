@@ -8,14 +8,29 @@ public interface DeletePrincipalRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string id = 1;</code>
+   * <pre>
+   * The ID of the `Principal` to delete.
+   * </pre>
+   *
+   * <code>.littlehorse.PrincipalId id = 1;</code>
+   * @return Whether the id field is set.
+   */
+  boolean hasId();
+  /**
+   * <pre>
+   * The ID of the `Principal` to delete.
+   * </pre>
+   *
+   * <code>.littlehorse.PrincipalId id = 1;</code>
    * @return The id.
    */
-  java.lang.String getId();
+  io.littlehorse.sdk.common.proto.PrincipalId getId();
   /**
-   * <code>string id = 1;</code>
-   * @return The bytes for id.
+   * <pre>
+   * The ID of the `Principal` to delete.
+   * </pre>
+   *
+   * <code>.littlehorse.PrincipalId id = 1;</code>
    */
-  com.google.protobuf.ByteString
-      getIdBytes();
+  io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder getIdOrBuilder();
 }

@@ -21,6 +21,7 @@ public class FailureModel extends LHSerializable<Failure> {
 
     public VariableValueModel content;
     private boolean properlyHandled;
+    private Integer failureHandlerThreadRunId;
 
     public FailureModel() {}
 
@@ -32,7 +33,7 @@ public class FailureModel extends LHSerializable<Failure> {
     public FailureModel(String message, String failureName, VariableValueModel content) {
         this.message = message;
         this.failureName = failureName;
-        this.content = new VariableValueModel();
+        this.content = content;
     }
 
     public static FailureModel fromProto(Failure p, ExecutionContext context) {
@@ -52,6 +53,7 @@ public class FailureModel extends LHSerializable<Failure> {
                 .setWasProperlyHandled(properlyHandled);
 
         if (content != null) out.setContent(content.toProto());
+        if (failureHandlerThreadRunId != null) out.setFailureHandlerThreadrunId(failureHandlerThreadRunId);
 
         return out;
     }
@@ -65,6 +67,10 @@ public class FailureModel extends LHSerializable<Failure> {
 
         if (p.hasContent()) {
             content = VariableValueModel.fromProto(p.getContent(), context);
+        }
+
+        if (p.hasFailureHandlerThreadrunId()) {
+            failureHandlerThreadRunId = p.getFailureHandlerThreadrunId();
         }
     }
 

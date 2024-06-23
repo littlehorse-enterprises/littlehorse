@@ -8,7 +8,7 @@ import java.util.Set;
 public class LHConstants {
 
     // Other various constants used by code
-    public static final Duration PUNCTUATOR_INERVAL = Duration.ofSeconds(2);
+    public static final Duration PUNCTUATOR_INERVAL = Duration.ofMillis(500);
     public static final String EXT_EVT_HANDLER_VAR = "INPUT";
 
     // Make all global metadata use the same partition key so that they're processed
@@ -52,11 +52,14 @@ public class LHConstants {
     public static final String DEFAULT_TENANT = "default";
     public static final String ANONYMOUS_PRINCIPAL = "anonymous";
 
-    public static final String TENANT_ID_HEADER_NAME = "tenantId";
+    public static final String TENANT_ID_HEADER_NAME = "tenantid";
 
     public static final String PRINCIPAL_ID_HEADER_NAME = "principalId";
 
     // Store key for metric cache
     public static final String PARTITION_METRICS_KEY = "partitionMetrics";
+
+    public static final Duration MAX_INCOMING_REQUEST_IDLE_TIME = Duration.ofSeconds(60);
+    public static final int MAX_TASKRUNS_IN_ONE_TASKQUEUE = 20_000;
 }
 // NOTE: Use m6a.4xlarge

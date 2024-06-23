@@ -1,5 +1,7 @@
 package io.littlehorse.common.model.getable.global.wfspec;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
@@ -37,8 +39,6 @@ public class NodeMigrationModel extends LHSerializable<NodeMigration> {
     public void execute(ThreadRunModel thread) {
         NodeRunModel currentNode = thread.getCurrentNodeRun();
 
-        // TODO: handle TASK differently
-        currentNode.cancel();
-        thread.setWfSpecId();
+        throw new NotImplementedException();
     }
 }

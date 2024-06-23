@@ -69,12 +69,6 @@ class JsonIndex(_message.Message):
     field_type: _common_enums_pb2.VariableType
     def __init__(self, field_path: _Optional[str] = ..., field_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ...) -> None: ...
 
-class SearchableVariableDef(_message.Message):
-    __slots__ = ["var_def"]
-    VAR_DEF_FIELD_NUMBER: _ClassVar[int]
-    var_def: _common_wfspec_pb2.VariableDef
-    def __init__(self, var_def: _Optional[_Union[_common_wfspec_pb2.VariableDef, _Mapping]] = ...) -> None: ...
-
 class ThreadVarDef(_message.Message):
     __slots__ = ["var_def", "required", "searchable", "json_indexes", "access_level"]
     VAR_DEF_FIELD_NUMBER: _ClassVar[int]
@@ -219,7 +213,7 @@ class FailureDef(_message.Message):
     def __init__(self, failure_name: _Optional[str] = ..., message: _Optional[str] = ..., content: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
 
 class Node(_message.Message):
-    __slots__ = ["outgoing_edges", "failure_handlers", "entrypoint", "exit", "task", "external_event", "start_thread", "wait_for_threads", "nop", "sleep", "user_task", "start_multiple_threads"]
+    __slots__ = ["outgoing_edges", "failure_handlers", "entrypoint", "exit", "task", "external_event", "start_thread", "wait_for_threads", "nop", "sleep", "user_task", "start_multiple_threads", "throw_event"]
     OUTGOING_EDGES_FIELD_NUMBER: _ClassVar[int]
     FAILURE_HANDLERS_FIELD_NUMBER: _ClassVar[int]
     ENTRYPOINT_FIELD_NUMBER: _ClassVar[int]
@@ -232,6 +226,7 @@ class Node(_message.Message):
     SLEEP_FIELD_NUMBER: _ClassVar[int]
     USER_TASK_FIELD_NUMBER: _ClassVar[int]
     START_MULTIPLE_THREADS_FIELD_NUMBER: _ClassVar[int]
+    THROW_EVENT_FIELD_NUMBER: _ClassVar[int]
     outgoing_edges: _containers.RepeatedCompositeFieldContainer[Edge]
     failure_handlers: _containers.RepeatedCompositeFieldContainer[FailureHandlerDef]
     entrypoint: EntrypointNode
@@ -244,23 +239,34 @@ class Node(_message.Message):
     sleep: SleepNode
     user_task: UserTaskNode
     start_multiple_threads: StartMultipleThreadsNode
-    def __init__(self, outgoing_edges: _Optional[_Iterable[_Union[Edge, _Mapping]]] = ..., failure_handlers: _Optional[_Iterable[_Union[FailureHandlerDef, _Mapping]]] = ..., entrypoint: _Optional[_Union[EntrypointNode, _Mapping]] = ..., exit: _Optional[_Union[ExitNode, _Mapping]] = ..., task: _Optional[_Union[_common_wfspec_pb2.TaskNode, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventNode, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadNode, _Mapping]] = ..., wait_for_threads: _Optional[_Union[WaitForThreadsNode, _Mapping]] = ..., nop: _Optional[_Union[NopNode, _Mapping]] = ..., sleep: _Optional[_Union[SleepNode, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNode, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsNode, _Mapping]] = ...) -> None: ...
+    throw_event: ThrowEventNode
+    def __init__(self, outgoing_edges: _Optional[_Iterable[_Union[Edge, _Mapping]]] = ..., failure_handlers: _Optional[_Iterable[_Union[FailureHandlerDef, _Mapping]]] = ..., entrypoint: _Optional[_Union[EntrypointNode, _Mapping]] = ..., exit: _Optional[_Union[ExitNode, _Mapping]] = ..., task: _Optional[_Union[_common_wfspec_pb2.TaskNode, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventNode, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadNode, _Mapping]] = ..., wait_for_threads: _Optional[_Union[WaitForThreadsNode, _Mapping]] = ..., nop: _Optional[_Union[NopNode, _Mapping]] = ..., sleep: _Optional[_Union[SleepNode, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNode, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsNode, _Mapping]] = ..., throw_event: _Optional[_Union[ThrowEventNode, _Mapping]] = ...) -> None: ...
+
+class ThrowEventNode(_message.Message):
+    __slots__ = ["event_def_id", "content"]
+    EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    CONTENT_FIELD_NUMBER: _ClassVar[int]
+    event_def_id: _object_id_pb2.WorkflowEventDefId
+    content: _common_wfspec_pb2.VariableAssignment
+    def __init__(self, event_def_id: _Optional[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]] = ..., content: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
 
 class UserTaskNode(_message.Message):
-    __slots__ = ["user_task_def_name", "user_group", "user_id", "actions", "user_task_def_version", "notes"]
+    __slots__ = ["user_task_def_name", "user_group", "user_id", "actions", "user_task_def_version", "notes", "on_cancellation_exception_name"]
     USER_TASK_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
     USER_GROUP_FIELD_NUMBER: _ClassVar[int]
     USER_ID_FIELD_NUMBER: _ClassVar[int]
     ACTIONS_FIELD_NUMBER: _ClassVar[int]
     USER_TASK_DEF_VERSION_FIELD_NUMBER: _ClassVar[int]
     NOTES_FIELD_NUMBER: _ClassVar[int]
+    ON_CANCELLATION_EXCEPTION_NAME_FIELD_NUMBER: _ClassVar[int]
     user_task_def_name: str
     user_group: _common_wfspec_pb2.VariableAssignment
     user_id: _common_wfspec_pb2.VariableAssignment
     actions: _containers.RepeatedCompositeFieldContainer[_common_wfspec_pb2.UTActionTrigger]
     user_task_def_version: int
     notes: _common_wfspec_pb2.VariableAssignment
-    def __init__(self, user_task_def_name: _Optional[str] = ..., user_group: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., user_id: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., actions: _Optional[_Iterable[_Union[_common_wfspec_pb2.UTActionTrigger, _Mapping]]] = ..., user_task_def_version: _Optional[int] = ..., notes: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
+    on_cancellation_exception_name: _common_wfspec_pb2.VariableAssignment
+    def __init__(self, user_task_def_name: _Optional[str] = ..., user_group: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., user_id: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., actions: _Optional[_Iterable[_Union[_common_wfspec_pb2.UTActionTrigger, _Mapping]]] = ..., user_task_def_version: _Optional[int] = ..., notes: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., on_cancellation_exception_name: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
 
 class EdgeCondition(_message.Message):
     __slots__ = ["comparator", "left", "right"]

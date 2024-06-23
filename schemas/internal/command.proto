@@ -38,6 +38,8 @@ message Command {
         DeadlineReassignUserTask reassigned_user_task = 18;
         CancelUserTaskRunRequest cancel_user_task = 19;
         BulkUpdateJob bulk_job = 20;
+        TaskAttemptRetryReady task_attempt_retry_ready = 21;
+        RescueThreadRunRequest rescue_thread_run = 22;
         // TODO: Add SaveUserTask
     }
 }
@@ -60,6 +62,7 @@ message MetadataCommand {
         PutPrincipalRequest put_principal = 12;
         DeletePrincipalRequest delete_principal = 13;
         PutTenantRequest put_tenant = 14;
+        PutWorkflowEventDefRequest workflow_event_def = 15;
         // TODO: DeleteTenant
     }
 }
@@ -190,10 +193,15 @@ message TriggeredTaskRunPb {
     NodeRunId source = 2;
 }
 
+message TaskAttemptRetryReady {
+    TaskRunId id = 1;
+}
+
 message DeadlineReassignUserTask {
     optional VariableAssignment new_user_id = 1;
     optional VariableAssignment new_user_group = 2;
     UserTaskRunId user_task = 4;
+    int64 epoch = 5;
 }
 
 
@@ -206,16 +214,4 @@ message LHTimerPb {
     bytes payload = 4;
     optional TenantId tenant_id = 5; // default if not set
     optional PrincipalId principal_id = 6; // anonymous if not set
-}
-
-message TaskWorkerMetadata {
-  string task_worker_id = 1;
-  google.protobuf.Timestamp latest_heartbeat = 2;
-  repeated LHHostInfo hosts = 3;
-}
-
-message TaskWorkerGroup {
-  TaskWorkerGroupId id = 1;
-  google.protobuf.Timestamp created_at = 2;
-  map<string, TaskWorkerMetadata> task_workers = 3;
 }

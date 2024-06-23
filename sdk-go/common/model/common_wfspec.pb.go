@@ -676,6 +676,81 @@ func (*UTActionTrigger_Cancel) isUTActionTrigger_Action() {}
 
 func (*UTActionTrigger_Reassign) isUTActionTrigger_Action() {}
 
+// Defines an Exponential backoff policy for TaskRun retries. The delay for a retry
+// attempt `N` is defined as:
+//
+// min(base_interval_ms * (multiplier ^(N-1)), max_delay_ms)
+//
+// Note that timers in LittleHorse have a resolution of about 500-1000 milliseconds,
+// so timing is not exact.
+type ExponentialBackoffRetryPolicy struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Base delay in ms for the first retry. Note that in LittleHorse, timers have a
+	// resolution of 500-1000 milliseconds. Must be greater than zero.
+	BaseIntervalMs int32 `protobuf:"varint,1,opt,name=base_interval_ms,json=baseIntervalMs,proto3" json:"base_interval_ms,omitempty"`
+	// Maximum delay in milliseconds between retries.
+	MaxDelayMs int64 `protobuf:"varint,2,opt,name=max_delay_ms,json=maxDelayMs,proto3" json:"max_delay_ms,omitempty"`
+	// The multiplier to use in calculating the retry backoff policy. We recommend
+	// starting with 2.0. Must be at least 1.0.
+	Multiplier float32 `protobuf:"fixed32,3,opt,name=multiplier,proto3" json:"multiplier,omitempty"`
+}
+
+func (x *ExponentialBackoffRetryPolicy) Reset() {
+	*x = ExponentialBackoffRetryPolicy{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_common_wfspec_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ExponentialBackoffRetryPolicy) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExponentialBackoffRetryPolicy) ProtoMessage() {}
+
+func (x *ExponentialBackoffRetryPolicy) ProtoReflect() protoreflect.Message {
+	mi := &file_common_wfspec_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ExponentialBackoffRetryPolicy.ProtoReflect.Descriptor instead.
+func (*ExponentialBackoffRetryPolicy) Descriptor() ([]byte, []int) {
+	return file_common_wfspec_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ExponentialBackoffRetryPolicy) GetBaseIntervalMs() int32 {
+	if x != nil {
+		return x.BaseIntervalMs
+	}
+	return 0
+}
+
+func (x *ExponentialBackoffRetryPolicy) GetMaxDelayMs() int64 {
+	if x != nil {
+		return x.MaxDelayMs
+	}
+	return 0
+}
+
+func (x *ExponentialBackoffRetryPolicy) GetMultiplier() float32 {
+	if x != nil {
+		return x.Multiplier
+	}
+	return 0
+}
+
 // Defines a TaskRun execution. Used in a Node and also in the UserTask Trigger Actions.
 type TaskNode struct {
 	state         protoimpl.MessageState
@@ -683,14 +758,28 @@ type TaskNode struct {
 	unknownFields protoimpl.UnknownFields
 
 	// The type of TaskRun to schedule.
-	TaskDefId *TaskDefId `protobuf:"bytes,1,opt,name=task_def_id,json=taskDefId,proto3" json:"task_def_id,omitempty"`
+	//
+	// Types that are assignable to TaskToExecute:
+	//	*TaskNode_TaskDefId
+	//	*TaskNode_DynamicTask
+	TaskToExecute isTaskNode_TaskToExecute `protobuf_oneof:"task_to_execute"`
 	// How long until LittleHorse determines that the Task Worker had a technical ERROR if
-	// the worker does not yet reply to the Server.
+	// the worker does not yet reply to the Server. This is determined on a per-Attempt
+	// basis.
 	TimeoutSeconds int32 `protobuf:"varint,2,opt,name=timeout_seconds,json=timeoutSeconds,proto3" json:"timeout_seconds,omitempty"`
-	// EXPERIMENTAL: How many times we should retry on retryable ERROR's.
-	// Please note that this API may change before version 1.0.0, as we are going to
-	// add significant functionality including backoff policies.
+	// Configures the amount of retries allowed on this TaskNode.
+	//
+	// Retryable errors include:
+	// - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the
+	//   Task Worker in time.
+	// - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
+	//   the Task Function.
+	//
+	// Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+	// TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
 	Retries int32 `protobuf:"varint,3,opt,name=retries,proto3" json:"retries,omitempty"`
+	// If this field is set, then retries will use Exponential Backoff.
+	ExponentialBackoff *ExponentialBackoffRetryPolicy `protobuf:"bytes,5,opt,name=exponential_backoff,json=exponentialBackoff,proto3,oneof" json:"exponential_backoff,omitempty"`
 	// Input variables into the TaskDef.
 	Variables []*VariableAssignment `protobuf:"bytes,4,rep,name=variables,proto3" json:"variables,omitempty"`
 }
@@ -698,7 +787,7 @@ type TaskNode struct {
 func (x *TaskNode) Reset() {
 	*x = TaskNode{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_common_wfspec_proto_msgTypes[4]
+		mi := &file_common_wfspec_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -711,7 +800,7 @@ func (x *TaskNode) String() string {
 func (*TaskNode) ProtoMessage() {}
 
 func (x *TaskNode) ProtoReflect() protoreflect.Message {
-	mi := &file_common_wfspec_proto_msgTypes[4]
+	mi := &file_common_wfspec_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -724,12 +813,26 @@ func (x *TaskNode) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskNode.ProtoReflect.Descriptor instead.
 func (*TaskNode) Descriptor() ([]byte, []int) {
-	return file_common_wfspec_proto_rawDescGZIP(), []int{4}
+	return file_common_wfspec_proto_rawDescGZIP(), []int{5}
+}
+
+func (m *TaskNode) GetTaskToExecute() isTaskNode_TaskToExecute {
+	if m != nil {
+		return m.TaskToExecute
+	}
+	return nil
 }
 
 func (x *TaskNode) GetTaskDefId() *TaskDefId {
-	if x != nil {
+	if x, ok := x.GetTaskToExecute().(*TaskNode_TaskDefId); ok {
 		return x.TaskDefId
+	}
+	return nil
+}
+
+func (x *TaskNode) GetDynamicTask() *VariableAssignment {
+	if x, ok := x.GetTaskToExecute().(*TaskNode_DynamicTask); ok {
+		return x.DynamicTask
 	}
 	return nil
 }
@@ -748,12 +851,35 @@ func (x *TaskNode) GetRetries() int32 {
 	return 0
 }
 
+func (x *TaskNode) GetExponentialBackoff() *ExponentialBackoffRetryPolicy {
+	if x != nil {
+		return x.ExponentialBackoff
+	}
+	return nil
+}
+
 func (x *TaskNode) GetVariables() []*VariableAssignment {
 	if x != nil {
 		return x.Variables
 	}
 	return nil
 }
+
+type isTaskNode_TaskToExecute interface {
+	isTaskNode_TaskToExecute()
+}
+
+type TaskNode_TaskDefId struct {
+	TaskDefId *TaskDefId `protobuf:"bytes,1,opt,name=task_def_id,json=taskDefId,proto3,oneof"`
+}
+
+type TaskNode_DynamicTask struct {
+	DynamicTask *VariableAssignment `protobuf:"bytes,6,opt,name=dynamic_task,json=dynamicTask,proto3,oneof"`
+}
+
+func (*TaskNode_TaskDefId) isTaskNode_TaskToExecute() {}
+
+func (*TaskNode_DynamicTask) isTaskNode_TaskToExecute() {}
 
 // A FormatString formats a template String with values from the WfRun.
 type VariableAssignment_FormatString struct {
@@ -771,7 +897,7 @@ type VariableAssignment_FormatString struct {
 func (x *VariableAssignment_FormatString) Reset() {
 	*x = VariableAssignment_FormatString{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_common_wfspec_proto_msgTypes[5]
+		mi := &file_common_wfspec_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -784,7 +910,7 @@ func (x *VariableAssignment_FormatString) String() string {
 func (*VariableAssignment_FormatString) ProtoMessage() {}
 
 func (x *VariableAssignment_FormatString) ProtoReflect() protoreflect.Message {
-	mi := &file_common_wfspec_proto_msgTypes[5]
+	mi := &file_common_wfspec_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -827,7 +953,7 @@ type VariableMutation_NodeOutputSource struct {
 func (x *VariableMutation_NodeOutputSource) Reset() {
 	*x = VariableMutation_NodeOutputSource{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_common_wfspec_proto_msgTypes[6]
+		mi := &file_common_wfspec_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -840,7 +966,7 @@ func (x *VariableMutation_NodeOutputSource) String() string {
 func (*VariableMutation_NodeOutputSource) ProtoMessage() {}
 
 func (x *VariableMutation_NodeOutputSource) ProtoReflect() protoreflect.Message {
-	mi := &file_common_wfspec_proto_msgTypes[6]
+	mi := &file_common_wfspec_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -873,7 +999,7 @@ type UTActionTrigger_UTACancel struct {
 func (x *UTActionTrigger_UTACancel) Reset() {
 	*x = UTActionTrigger_UTACancel{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_common_wfspec_proto_msgTypes[7]
+		mi := &file_common_wfspec_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -886,7 +1012,7 @@ func (x *UTActionTrigger_UTACancel) String() string {
 func (*UTActionTrigger_UTACancel) ProtoMessage() {}
 
 func (x *UTActionTrigger_UTACancel) ProtoReflect() protoreflect.Message {
-	mi := &file_common_wfspec_proto_msgTypes[7]
+	mi := &file_common_wfspec_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -917,7 +1043,7 @@ type UTActionTrigger_UTATask struct {
 func (x *UTActionTrigger_UTATask) Reset() {
 	*x = UTActionTrigger_UTATask{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_common_wfspec_proto_msgTypes[8]
+		mi := &file_common_wfspec_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -930,7 +1056,7 @@ func (x *UTActionTrigger_UTATask) String() string {
 func (*UTActionTrigger_UTATask) ProtoMessage() {}
 
 func (x *UTActionTrigger_UTATask) ProtoReflect() protoreflect.Message {
-	mi := &file_common_wfspec_proto_msgTypes[8]
+	mi := &file_common_wfspec_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -977,7 +1103,7 @@ type UTActionTrigger_UTAReassign struct {
 func (x *UTActionTrigger_UTAReassign) Reset() {
 	*x = UTActionTrigger_UTAReassign{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_common_wfspec_proto_msgTypes[9]
+		mi := &file_common_wfspec_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -990,7 +1116,7 @@ func (x *UTActionTrigger_UTAReassign) String() string {
 func (*UTActionTrigger_UTAReassign) ProtoMessage() {}
 
 func (x *UTActionTrigger_UTAReassign) ProtoReflect() protoreflect.Message {
-	mi := &file_common_wfspec_proto_msgTypes[9]
+	mi := &file_common_wfspec_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1138,42 +1264,64 @@ var file_common_wfspec_proto_rawDesc = []byte{
 	0x0e, 0x0a, 0x0a, 0x4f, 0x4e, 0x5f, 0x41, 0x52, 0x52, 0x49, 0x56, 0x41, 0x4c, 0x10, 0x00, 0x12,
 	0x14, 0x0a, 0x10, 0x4f, 0x4e, 0x5f, 0x54, 0x41, 0x53, 0x4b, 0x5f, 0x41, 0x53, 0x53, 0x49, 0x47,
 	0x4e, 0x45, 0x44, 0x10, 0x01, 0x42, 0x08, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22,
-	0xc4, 0x01, 0x0a, 0x08, 0x54, 0x61, 0x73, 0x6b, 0x4e, 0x6f, 0x64, 0x65, 0x12, 0x36, 0x0a, 0x0b,
-	0x74, 0x61, 0x73, 0x6b, 0x5f, 0x64, 0x65, 0x66, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x16, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e,
-	0x54, 0x61, 0x73, 0x6b, 0x44, 0x65, 0x66, 0x49, 0x64, 0x52, 0x09, 0x74, 0x61, 0x73, 0x6b, 0x44,
-	0x65, 0x66, 0x49, 0x64, 0x12, 0x27, 0x0a, 0x0f, 0x74, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x5f,
-	0x73, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0e, 0x74,
-	0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x53, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x73, 0x12, 0x18, 0x0a,
-	0x07, 0x72, 0x65, 0x74, 0x72, 0x69, 0x65, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x07,
-	0x72, 0x65, 0x74, 0x72, 0x69, 0x65, 0x73, 0x12, 0x3d, 0x0a, 0x09, 0x76, 0x61, 0x72, 0x69, 0x61,
-	0x62, 0x6c, 0x65, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x6c, 0x69, 0x74,
+	0x8b, 0x01, 0x0a, 0x1d, 0x45, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x42,
+	0x61, 0x63, 0x6b, 0x6f, 0x66, 0x66, 0x52, 0x65, 0x74, 0x72, 0x79, 0x50, 0x6f, 0x6c, 0x69, 0x63,
+	0x79, 0x12, 0x28, 0x0a, 0x10, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x76,
+	0x61, 0x6c, 0x5f, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0e, 0x62, 0x61, 0x73,
+	0x65, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x4d, 0x73, 0x12, 0x20, 0x0a, 0x0c, 0x6d,
+	0x61, 0x78, 0x5f, 0x64, 0x65, 0x6c, 0x61, 0x79, 0x5f, 0x6d, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x03, 0x52, 0x0a, 0x6d, 0x61, 0x78, 0x44, 0x65, 0x6c, 0x61, 0x79, 0x4d, 0x73, 0x12, 0x1e, 0x0a,
+	0x0a, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x69, 0x65, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x02, 0x52, 0x0a, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x69, 0x65, 0x72, 0x22, 0x99, 0x03,
+	0x0a, 0x08, 0x54, 0x61, 0x73, 0x6b, 0x4e, 0x6f, 0x64, 0x65, 0x12, 0x38, 0x0a, 0x0b, 0x74, 0x61,
+	0x73, 0x6b, 0x5f, 0x64, 0x65, 0x66, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x16, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x54, 0x61,
+	0x73, 0x6b, 0x44, 0x65, 0x66, 0x49, 0x64, 0x48, 0x00, 0x52, 0x09, 0x74, 0x61, 0x73, 0x6b, 0x44,
+	0x65, 0x66, 0x49, 0x64, 0x12, 0x44, 0x0a, 0x0c, 0x64, 0x79, 0x6e, 0x61, 0x6d, 0x69, 0x63, 0x5f,
+	0x74, 0x61, 0x73, 0x6b, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x6c, 0x69, 0x74,
 	0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c,
-	0x65, 0x41, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x09, 0x76, 0x61, 0x72,
-	0x69, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x2a, 0x98, 0x01, 0x0a, 0x14, 0x56, 0x61, 0x72, 0x69, 0x61,
-	0x62, 0x6c, 0x65, 0x4d, 0x75, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x12,
-	0x0a, 0x0a, 0x06, 0x41, 0x53, 0x53, 0x49, 0x47, 0x4e, 0x10, 0x00, 0x12, 0x07, 0x0a, 0x03, 0x41,
-	0x44, 0x44, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x45, 0x58, 0x54, 0x45, 0x4e, 0x44, 0x10, 0x02,
-	0x12, 0x0c, 0x0a, 0x08, 0x53, 0x55, 0x42, 0x54, 0x52, 0x41, 0x43, 0x54, 0x10, 0x03, 0x12, 0x0c,
-	0x0a, 0x08, 0x4d, 0x55, 0x4c, 0x54, 0x49, 0x50, 0x4c, 0x59, 0x10, 0x04, 0x12, 0x0a, 0x0a, 0x06,
-	0x44, 0x49, 0x56, 0x49, 0x44, 0x45, 0x10, 0x05, 0x12, 0x15, 0x0a, 0x11, 0x52, 0x45, 0x4d, 0x4f,
-	0x56, 0x45, 0x5f, 0x49, 0x46, 0x5f, 0x50, 0x52, 0x45, 0x53, 0x45, 0x4e, 0x54, 0x10, 0x06, 0x12,
-	0x10, 0x0a, 0x0c, 0x52, 0x45, 0x4d, 0x4f, 0x56, 0x45, 0x5f, 0x49, 0x4e, 0x44, 0x45, 0x58, 0x10,
-	0x07, 0x12, 0x0e, 0x0a, 0x0a, 0x52, 0x45, 0x4d, 0x4f, 0x56, 0x45, 0x5f, 0x4b, 0x45, 0x59, 0x10,
-	0x08, 0x2a, 0x84, 0x01, 0x0a, 0x0a, 0x43, 0x6f, 0x6d, 0x70, 0x61, 0x72, 0x61, 0x74, 0x6f, 0x72,
-	0x12, 0x0d, 0x0a, 0x09, 0x4c, 0x45, 0x53, 0x53, 0x5f, 0x54, 0x48, 0x41, 0x4e, 0x10, 0x00, 0x12,
-	0x10, 0x0a, 0x0c, 0x47, 0x52, 0x45, 0x41, 0x54, 0x45, 0x52, 0x5f, 0x54, 0x48, 0x41, 0x4e, 0x10,
-	0x01, 0x12, 0x10, 0x0a, 0x0c, 0x4c, 0x45, 0x53, 0x53, 0x5f, 0x54, 0x48, 0x41, 0x4e, 0x5f, 0x45,
-	0x51, 0x10, 0x02, 0x12, 0x13, 0x0a, 0x0f, 0x47, 0x52, 0x45, 0x41, 0x54, 0x45, 0x52, 0x5f, 0x54,
-	0x48, 0x41, 0x4e, 0x5f, 0x45, 0x51, 0x10, 0x03, 0x12, 0x0a, 0x0a, 0x06, 0x45, 0x51, 0x55, 0x41,
-	0x4c, 0x53, 0x10, 0x04, 0x12, 0x0e, 0x0a, 0x0a, 0x4e, 0x4f, 0x54, 0x5f, 0x45, 0x51, 0x55, 0x41,
-	0x4c, 0x53, 0x10, 0x05, 0x12, 0x06, 0x0a, 0x02, 0x49, 0x4e, 0x10, 0x06, 0x12, 0x0a, 0x0a, 0x06,
-	0x4e, 0x4f, 0x54, 0x5f, 0x49, 0x4e, 0x10, 0x07, 0x42, 0x47, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c,
-	0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63,
-	0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x07, 0x2e,
-	0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0xaa, 0x02, 0x18, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48,
-	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x50, 0x72, 0x6f, 0x74,
-	0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x41, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x48, 0x00, 0x52, 0x0b, 0x64,
+	0x79, 0x6e, 0x61, 0x6d, 0x69, 0x63, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x27, 0x0a, 0x0f, 0x74, 0x69,
+	0x6d, 0x65, 0x6f, 0x75, 0x74, 0x5f, 0x73, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x73, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x05, 0x52, 0x0e, 0x74, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x53, 0x65, 0x63, 0x6f,
+	0x6e, 0x64, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x72, 0x65, 0x74, 0x72, 0x69, 0x65, 0x73, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x05, 0x52, 0x07, 0x72, 0x65, 0x74, 0x72, 0x69, 0x65, 0x73, 0x12, 0x60, 0x0a,
+	0x13, 0x65, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x5f, 0x62, 0x61, 0x63,
+	0x6b, 0x6f, 0x66, 0x66, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2a, 0x2e, 0x6c, 0x69, 0x74,
+	0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x45, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e,
+	0x74, 0x69, 0x61, 0x6c, 0x42, 0x61, 0x63, 0x6b, 0x6f, 0x66, 0x66, 0x52, 0x65, 0x74, 0x72, 0x79,
+	0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x48, 0x01, 0x52, 0x12, 0x65, 0x78, 0x70, 0x6f, 0x6e, 0x65,
+	0x6e, 0x74, 0x69, 0x61, 0x6c, 0x42, 0x61, 0x63, 0x6b, 0x6f, 0x66, 0x66, 0x88, 0x01, 0x01, 0x12,
+	0x3d, 0x0a, 0x09, 0x76, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x18, 0x04, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65,
+	0x2e, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x41, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x6d,
+	0x65, 0x6e, 0x74, 0x52, 0x09, 0x76, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x42, 0x11,
+	0x0a, 0x0f, 0x74, 0x61, 0x73, 0x6b, 0x5f, 0x74, 0x6f, 0x5f, 0x65, 0x78, 0x65, 0x63, 0x75, 0x74,
+	0x65, 0x42, 0x16, 0x0a, 0x14, 0x5f, 0x65, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x69, 0x61,
+	0x6c, 0x5f, 0x62, 0x61, 0x63, 0x6b, 0x6f, 0x66, 0x66, 0x2a, 0x98, 0x01, 0x0a, 0x14, 0x56, 0x61,
+	0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x4d, 0x75, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79,
+	0x70, 0x65, 0x12, 0x0a, 0x0a, 0x06, 0x41, 0x53, 0x53, 0x49, 0x47, 0x4e, 0x10, 0x00, 0x12, 0x07,
+	0x0a, 0x03, 0x41, 0x44, 0x44, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x45, 0x58, 0x54, 0x45, 0x4e,
+	0x44, 0x10, 0x02, 0x12, 0x0c, 0x0a, 0x08, 0x53, 0x55, 0x42, 0x54, 0x52, 0x41, 0x43, 0x54, 0x10,
+	0x03, 0x12, 0x0c, 0x0a, 0x08, 0x4d, 0x55, 0x4c, 0x54, 0x49, 0x50, 0x4c, 0x59, 0x10, 0x04, 0x12,
+	0x0a, 0x0a, 0x06, 0x44, 0x49, 0x56, 0x49, 0x44, 0x45, 0x10, 0x05, 0x12, 0x15, 0x0a, 0x11, 0x52,
+	0x45, 0x4d, 0x4f, 0x56, 0x45, 0x5f, 0x49, 0x46, 0x5f, 0x50, 0x52, 0x45, 0x53, 0x45, 0x4e, 0x54,
+	0x10, 0x06, 0x12, 0x10, 0x0a, 0x0c, 0x52, 0x45, 0x4d, 0x4f, 0x56, 0x45, 0x5f, 0x49, 0x4e, 0x44,
+	0x45, 0x58, 0x10, 0x07, 0x12, 0x0e, 0x0a, 0x0a, 0x52, 0x45, 0x4d, 0x4f, 0x56, 0x45, 0x5f, 0x4b,
+	0x45, 0x59, 0x10, 0x08, 0x2a, 0x84, 0x01, 0x0a, 0x0a, 0x43, 0x6f, 0x6d, 0x70, 0x61, 0x72, 0x61,
+	0x74, 0x6f, 0x72, 0x12, 0x0d, 0x0a, 0x09, 0x4c, 0x45, 0x53, 0x53, 0x5f, 0x54, 0x48, 0x41, 0x4e,
+	0x10, 0x00, 0x12, 0x10, 0x0a, 0x0c, 0x47, 0x52, 0x45, 0x41, 0x54, 0x45, 0x52, 0x5f, 0x54, 0x48,
+	0x41, 0x4e, 0x10, 0x01, 0x12, 0x10, 0x0a, 0x0c, 0x4c, 0x45, 0x53, 0x53, 0x5f, 0x54, 0x48, 0x41,
+	0x4e, 0x5f, 0x45, 0x51, 0x10, 0x02, 0x12, 0x13, 0x0a, 0x0f, 0x47, 0x52, 0x45, 0x41, 0x54, 0x45,
+	0x52, 0x5f, 0x54, 0x48, 0x41, 0x4e, 0x5f, 0x45, 0x51, 0x10, 0x03, 0x12, 0x0a, 0x0a, 0x06, 0x45,
+	0x51, 0x55, 0x41, 0x4c, 0x53, 0x10, 0x04, 0x12, 0x0e, 0x0a, 0x0a, 0x4e, 0x4f, 0x54, 0x5f, 0x45,
+	0x51, 0x55, 0x41, 0x4c, 0x53, 0x10, 0x05, 0x12, 0x06, 0x0a, 0x02, 0x49, 0x4e, 0x10, 0x06, 0x12,
+	0x0a, 0x0a, 0x06, 0x4e, 0x4f, 0x54, 0x5f, 0x49, 0x4e, 0x10, 0x07, 0x42, 0x47, 0x0a, 0x1f, 0x69,
+	0x6f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64,
+	0x6b, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01,
+	0x5a, 0x07, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0xaa, 0x02, 0x18, 0x4c, 0x69, 0x74, 0x74,
+	0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x50,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1189,7 +1337,7 @@ func file_common_wfspec_proto_rawDescGZIP() []byte {
 }
 
 var file_common_wfspec_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_common_wfspec_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_common_wfspec_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_common_wfspec_proto_goTypes = []interface{}{
 	(VariableMutationType)(0),                 // 0: littlehorse.VariableMutationType
 	(Comparator)(0),                           // 1: littlehorse.Comparator
@@ -1198,43 +1346,46 @@ var file_common_wfspec_proto_goTypes = []interface{}{
 	(*VariableMutation)(nil),                  // 4: littlehorse.VariableMutation
 	(*VariableDef)(nil),                       // 5: littlehorse.VariableDef
 	(*UTActionTrigger)(nil),                   // 6: littlehorse.UTActionTrigger
-	(*TaskNode)(nil),                          // 7: littlehorse.TaskNode
-	(*VariableAssignment_FormatString)(nil),   // 8: littlehorse.VariableAssignment.FormatString
-	(*VariableMutation_NodeOutputSource)(nil), // 9: littlehorse.VariableMutation.NodeOutputSource
-	(*UTActionTrigger_UTACancel)(nil),         // 10: littlehorse.UTActionTrigger.UTACancel
-	(*UTActionTrigger_UTATask)(nil),           // 11: littlehorse.UTActionTrigger.UTATask
-	(*UTActionTrigger_UTAReassign)(nil),       // 12: littlehorse.UTActionTrigger.UTAReassign
-	(*VariableValue)(nil),                     // 13: littlehorse.VariableValue
-	(VariableType)(0),                         // 14: littlehorse.VariableType
-	(*TaskDefId)(nil),                         // 15: littlehorse.TaskDefId
+	(*ExponentialBackoffRetryPolicy)(nil),     // 7: littlehorse.ExponentialBackoffRetryPolicy
+	(*TaskNode)(nil),                          // 8: littlehorse.TaskNode
+	(*VariableAssignment_FormatString)(nil),   // 9: littlehorse.VariableAssignment.FormatString
+	(*VariableMutation_NodeOutputSource)(nil), // 10: littlehorse.VariableMutation.NodeOutputSource
+	(*UTActionTrigger_UTACancel)(nil),         // 11: littlehorse.UTActionTrigger.UTACancel
+	(*UTActionTrigger_UTATask)(nil),           // 12: littlehorse.UTActionTrigger.UTATask
+	(*UTActionTrigger_UTAReassign)(nil),       // 13: littlehorse.UTActionTrigger.UTAReassign
+	(*VariableValue)(nil),                     // 14: littlehorse.VariableValue
+	(VariableType)(0),                         // 15: littlehorse.VariableType
+	(*TaskDefId)(nil),                         // 16: littlehorse.TaskDefId
 }
 var file_common_wfspec_proto_depIdxs = []int32{
-	13, // 0: littlehorse.VariableAssignment.literal_value:type_name -> littlehorse.VariableValue
-	8,  // 1: littlehorse.VariableAssignment.format_string:type_name -> littlehorse.VariableAssignment.FormatString
+	14, // 0: littlehorse.VariableAssignment.literal_value:type_name -> littlehorse.VariableValue
+	9,  // 1: littlehorse.VariableAssignment.format_string:type_name -> littlehorse.VariableAssignment.FormatString
 	0,  // 2: littlehorse.VariableMutation.operation:type_name -> littlehorse.VariableMutationType
 	3,  // 3: littlehorse.VariableMutation.source_variable:type_name -> littlehorse.VariableAssignment
-	13, // 4: littlehorse.VariableMutation.literal_value:type_name -> littlehorse.VariableValue
-	9,  // 5: littlehorse.VariableMutation.node_output:type_name -> littlehorse.VariableMutation.NodeOutputSource
-	14, // 6: littlehorse.VariableDef.type:type_name -> littlehorse.VariableType
-	13, // 7: littlehorse.VariableDef.default_value:type_name -> littlehorse.VariableValue
-	11, // 8: littlehorse.UTActionTrigger.task:type_name -> littlehorse.UTActionTrigger.UTATask
-	10, // 9: littlehorse.UTActionTrigger.cancel:type_name -> littlehorse.UTActionTrigger.UTACancel
-	12, // 10: littlehorse.UTActionTrigger.reassign:type_name -> littlehorse.UTActionTrigger.UTAReassign
+	14, // 4: littlehorse.VariableMutation.literal_value:type_name -> littlehorse.VariableValue
+	10, // 5: littlehorse.VariableMutation.node_output:type_name -> littlehorse.VariableMutation.NodeOutputSource
+	15, // 6: littlehorse.VariableDef.type:type_name -> littlehorse.VariableType
+	14, // 7: littlehorse.VariableDef.default_value:type_name -> littlehorse.VariableValue
+	12, // 8: littlehorse.UTActionTrigger.task:type_name -> littlehorse.UTActionTrigger.UTATask
+	11, // 9: littlehorse.UTActionTrigger.cancel:type_name -> littlehorse.UTActionTrigger.UTACancel
+	13, // 10: littlehorse.UTActionTrigger.reassign:type_name -> littlehorse.UTActionTrigger.UTAReassign
 	3,  // 11: littlehorse.UTActionTrigger.delay_seconds:type_name -> littlehorse.VariableAssignment
 	2,  // 12: littlehorse.UTActionTrigger.hook:type_name -> littlehorse.UTActionTrigger.UTHook
-	15, // 13: littlehorse.TaskNode.task_def_id:type_name -> littlehorse.TaskDefId
-	3,  // 14: littlehorse.TaskNode.variables:type_name -> littlehorse.VariableAssignment
-	3,  // 15: littlehorse.VariableAssignment.FormatString.format:type_name -> littlehorse.VariableAssignment
-	3,  // 16: littlehorse.VariableAssignment.FormatString.args:type_name -> littlehorse.VariableAssignment
-	7,  // 17: littlehorse.UTActionTrigger.UTATask.task:type_name -> littlehorse.TaskNode
-	4,  // 18: littlehorse.UTActionTrigger.UTATask.mutations:type_name -> littlehorse.VariableMutation
-	3,  // 19: littlehorse.UTActionTrigger.UTAReassign.user_id:type_name -> littlehorse.VariableAssignment
-	3,  // 20: littlehorse.UTActionTrigger.UTAReassign.user_group:type_name -> littlehorse.VariableAssignment
-	21, // [21:21] is the sub-list for method output_type
-	21, // [21:21] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	16, // 13: littlehorse.TaskNode.task_def_id:type_name -> littlehorse.TaskDefId
+	3,  // 14: littlehorse.TaskNode.dynamic_task:type_name -> littlehorse.VariableAssignment
+	7,  // 15: littlehorse.TaskNode.exponential_backoff:type_name -> littlehorse.ExponentialBackoffRetryPolicy
+	3,  // 16: littlehorse.TaskNode.variables:type_name -> littlehorse.VariableAssignment
+	3,  // 17: littlehorse.VariableAssignment.FormatString.format:type_name -> littlehorse.VariableAssignment
+	3,  // 18: littlehorse.VariableAssignment.FormatString.args:type_name -> littlehorse.VariableAssignment
+	8,  // 19: littlehorse.UTActionTrigger.UTATask.task:type_name -> littlehorse.TaskNode
+	4,  // 20: littlehorse.UTActionTrigger.UTATask.mutations:type_name -> littlehorse.VariableMutation
+	3,  // 21: littlehorse.UTActionTrigger.UTAReassign.user_id:type_name -> littlehorse.VariableAssignment
+	3,  // 22: littlehorse.UTActionTrigger.UTAReassign.user_group:type_name -> littlehorse.VariableAssignment
+	23, // [23:23] is the sub-list for method output_type
+	23, // [23:23] is the sub-list for method input_type
+	23, // [23:23] is the sub-list for extension type_name
+	23, // [23:23] is the sub-list for extension extendee
+	0,  // [0:23] is the sub-list for field type_name
 }
 
 func init() { file_common_wfspec_proto_init() }
@@ -1295,7 +1446,7 @@ func file_common_wfspec_proto_init() {
 			}
 		}
 		file_common_wfspec_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TaskNode); i {
+			switch v := v.(*ExponentialBackoffRetryPolicy); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1307,7 +1458,7 @@ func file_common_wfspec_proto_init() {
 			}
 		}
 		file_common_wfspec_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*VariableAssignment_FormatString); i {
+			switch v := v.(*TaskNode); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1319,7 +1470,7 @@ func file_common_wfspec_proto_init() {
 			}
 		}
 		file_common_wfspec_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*VariableMutation_NodeOutputSource); i {
+			switch v := v.(*VariableAssignment_FormatString); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1331,7 +1482,7 @@ func file_common_wfspec_proto_init() {
 			}
 		}
 		file_common_wfspec_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UTActionTrigger_UTACancel); i {
+			switch v := v.(*VariableMutation_NodeOutputSource); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1343,7 +1494,7 @@ func file_common_wfspec_proto_init() {
 			}
 		}
 		file_common_wfspec_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UTActionTrigger_UTATask); i {
+			switch v := v.(*UTActionTrigger_UTACancel); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1355,6 +1506,18 @@ func file_common_wfspec_proto_init() {
 			}
 		}
 		file_common_wfspec_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UTActionTrigger_UTATask); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_common_wfspec_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UTActionTrigger_UTAReassign); i {
 			case 0:
 				return &v.state
@@ -1383,15 +1546,19 @@ func file_common_wfspec_proto_init() {
 		(*UTActionTrigger_Cancel)(nil),
 		(*UTActionTrigger_Reassign)(nil),
 	}
-	file_common_wfspec_proto_msgTypes[6].OneofWrappers = []interface{}{}
-	file_common_wfspec_proto_msgTypes[9].OneofWrappers = []interface{}{}
+	file_common_wfspec_proto_msgTypes[5].OneofWrappers = []interface{}{
+		(*TaskNode_TaskDefId)(nil),
+		(*TaskNode_DynamicTask)(nil),
+	}
+	file_common_wfspec_proto_msgTypes[7].OneofWrappers = []interface{}{}
+	file_common_wfspec_proto_msgTypes[10].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_common_wfspec_proto_rawDesc,
 			NumEnums:      3,
-			NumMessages:   10,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

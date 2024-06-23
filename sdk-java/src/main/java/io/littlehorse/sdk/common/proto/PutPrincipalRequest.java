@@ -4,6 +4,12 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Creates or updates a Principal. If this request would remove admin privileges from the
+ * last admin principal (i.e. `ALL_ACTIONS` over `ACL_ALL_RESOURCES` in the `global_acls`),
+ * then the RPC throws `FAILED_PRECONDITION`.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.PutPrincipalRequest}
  */
 public final class PutPrincipalRequest extends
@@ -55,6 +61,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object id_ = "";
   /**
+   * <pre>
+   * The ID of the Principal that we are creating.
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The id.
    */
@@ -72,6 +82,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The ID of the Principal that we are creating.
+   * </pre>
+   *
    * <code>string id = 1;</code>
    * @return The bytes for id.
    */
@@ -117,6 +131,10 @@ private static final long serialVersionUID = 0L;
     return internalGetPerTenantAcls().getMap().size();
   }
   /**
+   * <pre>
+   * The per-tenant ACL's for the Principal
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 2;</code>
    */
   @java.lang.Override
@@ -134,6 +152,10 @@ private static final long serialVersionUID = 0L;
     return getPerTenantAclsMap();
   }
   /**
+   * <pre>
+   * The per-tenant ACL's for the Principal
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 2;</code>
    */
   @java.lang.Override
@@ -141,6 +163,10 @@ private static final long serialVersionUID = 0L;
     return internalGetPerTenantAcls().getMap();
   }
   /**
+   * <pre>
+   * The per-tenant ACL's for the Principal
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 2;</code>
    */
   @java.lang.Override
@@ -155,6 +181,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
+   * <pre>
+   * The per-tenant ACL's for the Principal
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 2;</code>
    */
   @java.lang.Override
@@ -172,6 +202,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
   public static final int GLOBAL_ACLS_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.ServerACLs globalAcls_;
   /**
+   * <pre>
+   * The ACL's for the principal in all tenants
+   * </pre>
+   *
    * <code>.littlehorse.ServerACLs global_acls = 3;</code>
    * @return Whether the globalAcls field is set.
    */
@@ -180,6 +214,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     return globalAcls_ != null;
   }
   /**
+   * <pre>
+   * The ACL's for the principal in all tenants
+   * </pre>
+   *
    * <code>.littlehorse.ServerACLs global_acls = 3;</code>
    * @return The globalAcls.
    */
@@ -188,6 +226,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     return globalAcls_ == null ? io.littlehorse.sdk.common.proto.ServerACLs.getDefaultInstance() : globalAcls_;
   }
   /**
+   * <pre>
+   * The ACL's for the principal in all tenants
+   * </pre>
+   *
    * <code>.littlehorse.ServerACLs global_acls = 3;</code>
    */
   @java.lang.Override
@@ -198,6 +240,13 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
   public static final int OVERWRITE_FIELD_NUMBER = 5;
   private boolean overwrite_ = false;
   /**
+   * <pre>
+   * If this is set to false and a `Principal` with the same `id` already exists *and*
+   * has different ACL's configured, then the RPC throws `ALREADY_EXISTS`.
+   *
+   * If this is set to `true`, then the RPC will override hte
+   * </pre>
+   *
    * <code>bool overwrite = 5;</code>
    * @return The overwrite.
    */
@@ -413,6 +462,12 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     return builder;
   }
   /**
+   * <pre>
+   * Creates or updates a Principal. If this request would remove admin privileges from the
+   * last admin principal (i.e. `ALL_ACTIONS` over `ACL_ALL_RESOURCES` in the `global_acls`),
+   * then the RPC throws `FAILED_PRECONDITION`.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.PutPrincipalRequest}
    */
   public static final class Builder extends
@@ -655,6 +710,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
 
     private java.lang.Object id_ = "";
     /**
+     * <pre>
+     * The ID of the Principal that we are creating.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @return The id.
      */
@@ -671,6 +730,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The ID of the Principal that we are creating.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @return The bytes for id.
      */
@@ -688,6 +751,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The ID of the Principal that we are creating.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @param value The id to set.
      * @return This builder for chaining.
@@ -701,6 +768,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ID of the Principal that we are creating.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @return This builder for chaining.
      */
@@ -711,6 +782,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ID of the Principal that we are creating.
+     * </pre>
+     *
      * <code>string id = 1;</code>
      * @param value The bytes for id to set.
      * @return This builder for chaining.
@@ -752,6 +827,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return internalGetPerTenantAcls().getMap().size();
     }
     /**
+     * <pre>
+     * The per-tenant ACL's for the Principal
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 2;</code>
      */
     @java.lang.Override
@@ -769,6 +848,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return getPerTenantAclsMap();
     }
     /**
+     * <pre>
+     * The per-tenant ACL's for the Principal
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 2;</code>
      */
     @java.lang.Override
@@ -776,6 +859,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return internalGetPerTenantAcls().getMap();
     }
     /**
+     * <pre>
+     * The per-tenant ACL's for the Principal
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 2;</code>
      */
     @java.lang.Override
@@ -790,6 +877,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
+     * <pre>
+     * The per-tenant ACL's for the Principal
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 2;</code>
      */
     @java.lang.Override
@@ -810,6 +901,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The per-tenant ACL's for the Principal
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 2;</code>
      */
     public Builder removePerTenantAcls(
@@ -829,6 +924,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return internalGetMutablePerTenantAcls().getMutableMap();
     }
     /**
+     * <pre>
+     * The per-tenant ACL's for the Principal
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 2;</code>
      */
     public Builder putPerTenantAcls(
@@ -842,6 +941,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The per-tenant ACL's for the Principal
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 2;</code>
      */
     public Builder putAllPerTenantAcls(
@@ -856,6 +959,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ServerACLs, io.littlehorse.sdk.common.proto.ServerACLs.Builder, io.littlehorse.sdk.common.proto.ServerACLsOrBuilder> globalAclsBuilder_;
     /**
+     * <pre>
+     * The ACL's for the principal in all tenants
+     * </pre>
+     *
      * <code>.littlehorse.ServerACLs global_acls = 3;</code>
      * @return Whether the globalAcls field is set.
      */
@@ -863,6 +970,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * The ACL's for the principal in all tenants
+     * </pre>
+     *
      * <code>.littlehorse.ServerACLs global_acls = 3;</code>
      * @return The globalAcls.
      */
@@ -874,6 +985,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The ACL's for the principal in all tenants
+     * </pre>
+     *
      * <code>.littlehorse.ServerACLs global_acls = 3;</code>
      */
     public Builder setGlobalAcls(io.littlehorse.sdk.common.proto.ServerACLs value) {
@@ -890,6 +1005,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ACL's for the principal in all tenants
+     * </pre>
+     *
      * <code>.littlehorse.ServerACLs global_acls = 3;</code>
      */
     public Builder setGlobalAcls(
@@ -904,6 +1023,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ACL's for the principal in all tenants
+     * </pre>
+     *
      * <code>.littlehorse.ServerACLs global_acls = 3;</code>
      */
     public Builder mergeGlobalAcls(io.littlehorse.sdk.common.proto.ServerACLs value) {
@@ -923,6 +1046,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ACL's for the principal in all tenants
+     * </pre>
+     *
      * <code>.littlehorse.ServerACLs global_acls = 3;</code>
      */
     public Builder clearGlobalAcls() {
@@ -936,6 +1063,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The ACL's for the principal in all tenants
+     * </pre>
+     *
      * <code>.littlehorse.ServerACLs global_acls = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.ServerACLs.Builder getGlobalAclsBuilder() {
@@ -944,6 +1075,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return getGlobalAclsFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ACL's for the principal in all tenants
+     * </pre>
+     *
      * <code>.littlehorse.ServerACLs global_acls = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.ServerACLsOrBuilder getGlobalAclsOrBuilder() {
@@ -955,6 +1090,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The ACL's for the principal in all tenants
+     * </pre>
+     *
      * <code>.littlehorse.ServerACLs global_acls = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -973,6 +1112,13 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
 
     private boolean overwrite_ ;
     /**
+     * <pre>
+     * If this is set to false and a `Principal` with the same `id` already exists *and*
+     * has different ACL's configured, then the RPC throws `ALREADY_EXISTS`.
+     *
+     * If this is set to `true`, then the RPC will override hte
+     * </pre>
+     *
      * <code>bool overwrite = 5;</code>
      * @return The overwrite.
      */
@@ -981,6 +1127,13 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return overwrite_;
     }
     /**
+     * <pre>
+     * If this is set to false and a `Principal` with the same `id` already exists *and*
+     * has different ACL's configured, then the RPC throws `ALREADY_EXISTS`.
+     *
+     * If this is set to `true`, then the RPC will override hte
+     * </pre>
+     *
      * <code>bool overwrite = 5;</code>
      * @param value The overwrite to set.
      * @return This builder for chaining.
@@ -993,6 +1146,13 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * If this is set to false and a `Principal` with the same `id` already exists *and*
+     * has different ACL's configured, then the RPC throws `ALREADY_EXISTS`.
+     *
+     * If this is set to `true`, then the RPC will override hte
+     * </pre>
+     *
      * <code>bool overwrite = 5;</code>
      * @return This builder for chaining.
      */

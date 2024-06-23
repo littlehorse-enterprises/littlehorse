@@ -18,6 +18,12 @@ public class CancelUserTaskRunRequestModel extends CoreSubCommand<CancelUserTask
 
     private UserTaskRunIdModel userTaskRunId;
 
+    public CancelUserTaskRunRequestModel() {}
+
+    public CancelUserTaskRunRequestModel(UserTaskRunIdModel userTaskRunId) {
+        this.userTaskRunId = userTaskRunId;
+    }
+
     @Override
     public CancelUserTaskRunRequest.Builder toProto() {
         return CancelUserTaskRunRequest.newBuilder().setUserTaskRunId(userTaskRunId.toProto());
@@ -42,6 +48,10 @@ public class CancelUserTaskRunRequestModel extends CoreSubCommand<CancelUserTask
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified UserTaskRun");
         }
         userTaskRun.cancel();
+        executionContext
+                .getableManager()
+                .get(userTaskRunId.getWfRunId())
+                .advance(executionContext.currentCommand().getTime());
         return Empty.getDefaultInstance();
     }
 

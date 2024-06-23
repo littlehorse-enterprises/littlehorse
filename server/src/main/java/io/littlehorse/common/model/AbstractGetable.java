@@ -3,6 +3,7 @@ package io.littlehorse.common.model;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -12,6 +13,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -31,6 +33,8 @@ import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecMetricsIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
 import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecMetricsModel;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -89,6 +93,10 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.PRINCIPAL;
         } else if (cls.equals(TenantModel.class)) {
             return GetableClassEnum.TENANT;
+        } else if (cls.equals(WorkflowEventDefModel.class)) {
+            return GetableClassEnum.WORKFLOW_EVENT_DEF;
+        } else if (cls.equals(WorkflowEventModel.class)) {
+            return GetableClassEnum.WORKFLOW_EVENT;
         } else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -126,6 +134,10 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return PrincipalModel.class;
             case TENANT:
                 return TenantModel.class;
+            case WORKFLOW_EVENT_DEF:
+                return WorkflowEventDefModel.class;
+            case WORKFLOW_EVENT:
+                return WorkflowEventModel.class;
             case UNRECOGNIZED:
                 // default:
         }
@@ -164,6 +176,10 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return PrincipalIdModel.class;
             case TENANT:
                 return TenantIdModel.class;
+            case WORKFLOW_EVENT_DEF:
+                return WorkflowEventDefIdModel.class;
+            case WORKFLOW_EVENT:
+                return WorkflowEventIdModel.class;
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");
@@ -182,22 +198,18 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 continue;
             }
             Optional<TagStorageType> tagStorageType = indexConfiguration.getTagStorageType();
-            List<IndexedField> singleIndexedValues = indexConfiguration.getAttributes().stream()
-                    .filter(stringValueTypePair -> {
-                        return stringValueTypePair.getValue().equals(GetableIndex.ValueType.SINGLE);
-                    })
-                    .map(stringValueTypePair -> {
-                        return this.getIndexValues(stringValueTypePair.getKey(), tagStorageType)
-                                .get(0);
-                    })
-                    .toList();
-            List<IndexedField> dynamicIndexedFields = indexConfiguration.getAttributes().stream()
-                    .filter(stringValueTypePair -> {
-                        return stringValueTypePair.getValue().equals(GetableIndex.ValueType.DYNAMIC);
-                    })
-                    .flatMap(stringValueTypePair ->
-                            this.getIndexValues(stringValueTypePair.getKey(), tagStorageType).stream())
-                    .toList();
+            List<IndexedField> singleIndexedValues = new ArrayList<>();
+            List<IndexedField> dynamicIndexedFields = new ArrayList<>();
+            for (Pair<String, GetableIndex.ValueType> stringValueTypePair : indexConfiguration.getAttributes()) {
+                if (stringValueTypePair.getValue().equals(GetableIndex.ValueType.SINGLE)) {
+                    IndexedField indexedField = this.getIndexValues(stringValueTypePair.getKey(), tagStorageType)
+                            .get(0);
+                    singleIndexedValues.add(indexedField);
+                } else if (stringValueTypePair.getValue().equals(GetableIndex.ValueType.DYNAMIC)) {
+                    dynamicIndexedFields.addAll(this.getIndexValues(stringValueTypePair.getKey(), tagStorageType));
+                }
+            }
+
             List<List<IndexedField>> combine = combine(singleIndexedValues, dynamicIndexedFields);
             for (List<IndexedField> list : combine) {
                 List<Pair<String, String>> pairs = list.stream()

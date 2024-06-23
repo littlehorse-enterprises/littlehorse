@@ -90,6 +90,18 @@ func (n *NodeOutput) JsonPath(path string) NodeOutput {
 	return n.jsonPathImpl(path)
 }
 
+func (n *NodeOutput) HandleExceptionOnChild(handler ThreadFunc, exceptionName *string) {
+	n.handleExceptionOnChild(handler, exceptionName)
+}
+
+func (n *NodeOutput) HandleErrorOnChild(handler ThreadFunc, errorName *string) {
+	n.handleErrorOnChild(handler, errorName)
+}
+
+func (n *NodeOutput) HandleAnyFailureOnChild(handler ThreadFunc) {
+	n.handleAnyFailureOnChild(handler)
+}
+
 func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
 	return w.jsonPathImpl(path)
 }
@@ -140,8 +152,8 @@ func (t *WorkflowThread) AddVariableWithDefault(
 	return t.addVariable(name, varType, defaultValue)
 }
 
-func (t *WorkflowThread) Execute(name string, args ...interface{}) NodeOutput {
-	return t.executeTask(name, args)
+func (t *WorkflowThread) Execute(taskDefName interface{}, args ...interface{}) NodeOutput {
+	return t.executeTask(taskDefName, args)
 }
 
 func (t *WorkflowThread) Mutate(
@@ -156,6 +168,10 @@ func (t *WorkflowThread) Condition(
 	lhs interface{}, op model.Comparator, rhs interface{},
 ) *WorkflowCondition {
 	return t.condition(lhs, op, rhs)
+}
+
+func (t *WorkflowThread) ThrowEvent(workflowEventDefName string, content interface{}) {
+	t.throwEvent(workflowEventDefName, content)
 }
 
 type IfElseBody func(t *WorkflowThread)
@@ -202,11 +218,26 @@ func (t *WorkflowThread) Format(format string, args ...*WfRunVariable) *LHFormat
 	return t.format(format, args)
 }
 
+func (t *WorkflowThread) CancelUserTaskAfter(userTask *UserTaskOutput, delaySeconds interface{}) {
+	t.cancelUserTaskAfter(userTask, delaySeconds)
+}
+
+func (t *WorkflowThread) CancelUserTaskAfterAssignment(userTask *UserTaskOutput, delaySeconds interface{}) {
+	t.cancelUserTaskAfterAssignment(userTask, delaySeconds)
+}
+
 func (t *WorkflowThread) ScheduleReminderTask(
 	userTask *UserTaskOutput, delaySeconds interface{},
 	taskDefName string, args ...interface{},
 ) {
 	t.scheduleReminderTask(userTask, delaySeconds, taskDefName, args)
+}
+
+func (t *WorkflowThread) ScheduleReminderTaskOnAssignment(
+	userTask *UserTaskOutput, delaySeconds interface{},
+	taskDefName string, args ...interface{},
+) {
+	t.scheduleReminderTaskOnAssignment(userTask, delaySeconds, taskDefName, args)
 }
 
 func (t *WorkflowThread) ReleaseToGroupOnDeadline(
@@ -258,4 +289,26 @@ func (t *WorkflowThread) HandleAnyFailure(
 	handler ThreadFunc,
 ) {
 	t.handleAnyFailure(nodeOutput, handler)
+}
+
+func (u *UserTaskOutput) WithNotes(notes interface{}) *UserTaskOutput {
+	userTaskNode := u.node.GetUserTask()
+	notesVar, err := u.thread.assignVariable(notes)
+
+	if err != nil {
+		u.thread.throwError(err)
+	}
+	userTaskNode.Notes = notesVar
+	return u
+}
+
+func (u *UserTaskOutput) WithOnCancellationException(exceptionName interface{}) *UserTaskOutput {
+	userTaskNode := u.node.GetUserTask()
+	onCancellationExceptionName, err := u.thread.assignVariable(exceptionName)
+
+	if err != nil {
+		u.thread.throwError(err)
+	}
+	userTaskNode.OnCancellationExceptionName = onCancellationExceptionName
+	return u
 }

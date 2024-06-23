@@ -3,6 +3,7 @@ package io.littlehorse;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
+import io.littlehorse.common.model.getable.core.taskrun.TaskAttemptModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskNodeReferenceModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunSourceModel;
@@ -16,6 +17,8 @@ import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.FailureDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
@@ -35,6 +38,7 @@ import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.ServerACLs;
+import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -47,6 +51,7 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
+import org.mockito.Answers;
 import org.mockito.Mockito;
 
 public class TestUtil {
@@ -87,6 +92,19 @@ public class TestUtil {
         return nodeRunModel;
     }
 
+    public static NodeRunModel nodeRun(String wfRunId) {
+        NodeRunModel nodeRunModel = new NodeRunModel();
+        nodeRunModel.setId(new NodeRunIdModel(wfRunId, 1, 0));
+        nodeRunModel.setStatus(LHStatus.RUNNING);
+        nodeRunModel.setType(NodeRun.NodeTypeCase.TASK);
+        nodeRunModel.setArrivalTime(new Date());
+        nodeRunModel.setWfSpecId(wfSpecId());
+        nodeRunModel.setThreadSpecName("test-thread");
+        nodeRunModel.setNodeName("test-node-name");
+        nodeRunModel.setTaskRun(taskNodeRun());
+        return nodeRunModel;
+    }
+
     public static UserTaskNodeRunModel userTaskNodeRun(String wfRunId, ProcessorExecutionContext processorContext) {
         UserTaskRunModel utr = userTaskRun(wfRunId, processorContext);
         UserTaskNodeRunModel out = new UserTaskNodeRunModel();
@@ -102,7 +120,7 @@ public class TestUtil {
         userTaskRun.setUserId("33333");
         userTaskRun.setUserGroup("1234567");
         userTaskRun.setScheduledTime(new Date());
-        userTaskRun.setNodeRunId(nodeRun().getObjectId());
+        userTaskRun.setNodeRunId(nodeRun(wfRunId).getObjectId());
         return userTaskRun;
     }
 
@@ -131,14 +149,21 @@ public class TestUtil {
     }
 
     public static TaskRunModel taskRun() {
+        return taskRun(taskRunId(), new TaskDefIdModel("test-name"));
+    }
+
+    public static TaskRunModel taskRun(TaskRunIdModel taskRunId, TaskDefIdModel taskDefId) {
         TaskRunModel taskRun = new TaskRunModel();
-        taskRun.setId(taskRunId());
+        taskRun.setId(taskRunId);
         taskRun.setTaskRunSource(new TaskRunSourceModel(
                 new TaskNodeReferenceModel(nodeRun().getObjectId(), wfSpecId()), Mockito.mock()));
-        taskRun.setTaskDefId(new TaskDefIdModel("test-name"));
-        taskRun.setMaxAttempts(10);
+        taskRun.setTaskDefId(taskDefId);
         taskRun.setScheduledAt(new Date());
         taskRun.setStatus(TaskStatus.TASK_SCHEDULED);
+
+        TaskAttemptModel attempt = new TaskAttemptModel();
+        attempt.setStatus(TaskStatus.TASK_SCHEDULED);
+        taskRun.getAttempts().add(attempt);
         return taskRun;
     }
 
@@ -183,6 +208,7 @@ public class TestUtil {
     public static TaskNodeModel taskNode() {
         TaskNodeModel taskNode = new TaskNodeModel();
         taskNode.setTaskDefId(new TaskDefIdModel("test-task-def-name"));
+        taskNode.setTaskToExecuteType(TaskToExecuteCase.TASK_DEF_ID);
         return taskNode;
     }
 
@@ -215,11 +241,15 @@ public class TestUtil {
     }
 
     public static ScheduledTaskModel scheduledTaskModel() {
+        return scheduledTaskModel(UUID.randomUUID().toString());
+    }
+
+    public static ScheduledTaskModel scheduledTaskModel(String wfRunId) {
         return new ScheduledTaskModel(
                 taskDef("my-task").getObjectId(),
                 List.of(),
-                userTaskRun(UUID.randomUUID().toString(), Mockito.mock()),
-                Mockito.mock());
+                userTaskRun(wfRunId, Mockito.mock()),
+                Mockito.mock(Answers.RETURNS_DEEP_STUBS));
     }
 
     public static ServerACLModel acl() {
@@ -231,9 +261,27 @@ public class TestUtil {
         return acl;
     }
 
+    public static ServerACLModel aclWithTenantResource() {
+        ServerACLModel acl = new ServerACLModel();
+        acl.setName(Optional.of("name"));
+        acl.setPrefix(Optional.empty());
+        acl.setResources(List.of(ACLResource.ACL_TENANT));
+        acl.setAllowedActions(List.of(ACLAction.WRITE_METADATA));
+        return acl;
+    }
+
     public static ServerACLsModel singleAcl() {
         return ServerACLsModel.fromProto(
                 ServerACLs.newBuilder().addAcls(acl().toProto()).build(), ServerACLsModel.class, null);
+    }
+
+    public static ServerACLsModel singleAclWithTenantResource() {
+        return ServerACLsModel.fromProto(
+                ServerACLs.newBuilder()
+                        .addAcls(aclWithTenantResource().toProto())
+                        .build(),
+                ServerACLsModel.class,
+                null);
     }
 
     public static ServerACLModel adminAcl() {
@@ -260,5 +308,18 @@ public class TestUtil {
                 Stores.keyValueStoreBuilder(Stores.inMemoryKeyValueStore(storeName), Serdes.String(), Serdes.Bytes())
                         .withLoggingDisabled()
                         .build());
+    }
+
+    public static FailureHandlerDefModel exceptionHandler(String failureName) {
+        FailureHandlerDefModel handlerDef = new FailureHandlerDefModel();
+        handlerDef.handlerSpecName = "my-handler";
+        handlerDef.specificFailure = failureName;
+        return handlerDef;
+    }
+
+    public static FailureDefModel exceptionFailureDef(String failureName) {
+        FailureDefModel failureDef = new FailureDefModel();
+        failureDef.failureName = failureName;
+        return failureDef;
     }
 }

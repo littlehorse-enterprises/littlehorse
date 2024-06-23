@@ -4,6 +4,12 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Defines the beginning of the ThreadRun execution.
+ *
+ * Output is NULL
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.EntrypointNode}
  */
 public final class EntrypointNode extends
@@ -185,6 +191,12 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Defines the beginning of the ThreadRun execution.
+   *
+   * Output is NULL
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.EntrypointNode}
    */
   public static final class Builder extends

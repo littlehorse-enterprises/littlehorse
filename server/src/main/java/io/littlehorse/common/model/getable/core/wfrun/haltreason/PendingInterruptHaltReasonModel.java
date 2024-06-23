@@ -2,7 +2,7 @@ package io.littlehorse.common.model.getable.core.wfrun.haltreason;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.sdk.common.proto.PendingInterruptHaltReason;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -12,16 +12,19 @@ public class PendingInterruptHaltReasonModel extends LHSerializable<PendingInter
 
     public ExternalEventIdModel externalEventId;
 
-    public boolean isResolved(WfRunModel wfRunModel) {
+    @Override
+    public boolean isResolved(ThreadRunModel haltedThread) {
         // Should always return false because this HaltReason is manually
         // removed upon creation of the Interrupt Thread
         return false;
     }
 
+    @Override
     public Class<PendingInterruptHaltReason> getProtoBaseClass() {
         return PendingInterruptHaltReason.class;
     }
 
+    @Override
     public PendingInterruptHaltReason.Builder toProto() {
         PendingInterruptHaltReason.Builder out = PendingInterruptHaltReason.newBuilder();
         out.setExternalEventId(externalEventId.toProto());

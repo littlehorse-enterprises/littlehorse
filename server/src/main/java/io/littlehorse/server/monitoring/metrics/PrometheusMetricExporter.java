@@ -2,6 +2,9 @@ package io.littlehorse.server.monitoring.metrics;
 
 import io.javalin.http.Handler;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.server.monitoring.StandbyMetrics;
+import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
+import io.littlehorse.server.streams.util.MetadataCache;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
@@ -23,6 +26,7 @@ public class PrometheusMetricExporter implements Closeable {
     private List<KafkaStreamsMetrics> kafkaStreamsMeters;
     private PrometheusMeterRegistry prometheusRegistry;
     private LHServerConfig config;
+    private TaskQueueManagerMetrics taskQueueManagerMetrics;
 
     public PrometheusMetricExporter(LHServerConfig config) {
         this.config = config;
@@ -36,13 +40,30 @@ public class PrometheusMetricExporter implements Closeable {
         return prometheusRegistry;
     }
 
-    public void bind(KafkaStreams coreStreams, KafkaStreams timerStreams) {
+    public void bind(
+            KafkaStreams coreStreams,
+            KafkaStreams timerStreams,
+            TaskQueueManager taskQueueManager,
+            MetadataCache metadataCache,
+            StandbyMetrics standbyMetrics,
+            InstanceState coreState) {
+
         this.kafkaStreamsMeters = List.of(
                 new KafkaStreamsMetrics(coreStreams, Tags.of("topology", "core")),
                 new KafkaStreamsMetrics(timerStreams, Tags.of("topology", "timer")));
+
         for (KafkaStreamsMetrics ksm : kafkaStreamsMeters) {
             ksm.bindTo(prometheusRegistry);
         }
+
+        LHCacheMetrics cacheMetrics = new LHCacheMetrics(metadataCache, "metadata");
+        cacheMetrics.bindTo(prometheusRegistry);
+
+        standbyMetrics.bindTo(prometheusRegistry);
+        coreState.bindTo(prometheusRegistry);
+
+        taskQueueManagerMetrics = new TaskQueueManagerMetrics(taskQueueManager);
+        taskQueueManagerMetrics.bindTo(prometheusRegistry);
 
         JvmMemoryMetrics jvmMeter = new JvmMemoryMetrics();
         jvmMeter.bindTo(prometheusRegistry);
@@ -66,8 +87,9 @@ public class PrometheusMetricExporter implements Closeable {
 
     @Override
     public void close() {
-        kafkaStreamsMeters.stream().forEach(metric -> metric.close());
+        kafkaStreamsMeters.forEach(metric -> metric.close());
         prometheusRegistry.close();
+        taskQueueManagerMetrics.close();
         log.info("Prometheus stopped");
     }
 }

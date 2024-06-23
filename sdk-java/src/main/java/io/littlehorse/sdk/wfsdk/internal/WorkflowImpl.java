@@ -1,6 +1,7 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
+import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
@@ -11,6 +12,7 @@ import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -54,13 +56,13 @@ public class WorkflowImpl extends Workflow {
     }
 
     public void addTaskDefBuilder(TaskDefBuilder tdb) {
-        TaskDefBuilder previous = taskDefBuilders.get(tdb.taskDefName);
+        TaskDefBuilder previous = taskDefBuilders.get(tdb.getTaskDefName());
         if (previous != null) {
             if (!previous.signature.equals(tdb.signature)) {
-                throw new RuntimeException("Tried to register two DIFFERENT tasks named " + tdb.taskDefName);
+                throw new RuntimeException("Tried to register two DIFFERENT tasks named " + tdb.getTaskDefName());
             }
         } else {
-            taskDefBuilders.put(tdb.taskDefName, tdb);
+            taskDefBuilders.put(tdb.getTaskDefName(), tdb);
         }
     }
 
@@ -123,5 +125,13 @@ public class WorkflowImpl extends Workflow {
         }
         threadFuncs.add(Pair.of(subThreadName, subThreadFunc));
         return subThreadName;
+    }
+
+    protected Optional<ExponentialBackoffRetryPolicy> getDefaultExponentialBackoffRetryPolicy() {
+        return Optional.ofNullable(defaultExponentialBackoff);
+    }
+
+    protected int getDefaultSimpleRetries() {
+        return defaultSimpleRetries;
     }
 }

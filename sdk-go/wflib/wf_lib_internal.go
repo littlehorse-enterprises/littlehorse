@@ -90,10 +90,25 @@ func (l *LHWorkflow) compile() (*model.PutWfSpecRequest, error) {
 	return &l.spec, nil
 }
 
-func (t *WorkflowThread) createTaskNode(taskDefName string, args []interface{}) *model.TaskNode {
+func (t *WorkflowThread) createTaskNode(taskDefName interface{}, args []interface{}) *model.TaskNode {
+
 	taskNode := &model.TaskNode{
-		TaskDefId: &model.TaskDefId{Name: taskDefName},
 		Variables: make([]*model.VariableAssignment, 0),
+	}
+
+	taskDefNameStr, ok := taskDefName.(string)
+	if ok {
+		taskNode.TaskToExecute = &model.TaskNode_TaskDefId{
+			TaskDefId: &model.TaskDefId{Name: taskDefNameStr},
+		}
+	} else {
+		taskDefVarAssn, err := t.assignVariable(taskDefName)
+		if err != nil {
+			t.throwError(err)
+		}
+		taskNode.TaskToExecute = &model.TaskNode_DynamicTask{
+			DynamicTask: taskDefVarAssn,
+		}
 	}
 
 	for _, arg := range args {
@@ -106,12 +121,27 @@ func (t *WorkflowThread) createTaskNode(taskDefName string, args []interface{}) 
 	return taskNode
 }
 
-func (t *WorkflowThread) executeTask(name string, args []interface{}) NodeOutput {
+func (t *WorkflowThread) executeTask(taskDefName interface{}, args []interface{}) NodeOutput {
 	t.checkIfIsActive()
-	nodeName, node := t.createBlankNode(name, "TASK")
+
+	// Need to fancily determine the name for the node
+	var readableNodeName string
+	switch td := taskDefName.(type) {
+	case WfRunVariable:
+		readableNodeName = td.Name
+	case *WfRunVariable:
+		readableNodeName = td.Name
+	case string:
+		readableNodeName = td
+	case LHFormatString:
+		readableNodeName = td.format
+	case *LHFormatString:
+		readableNodeName = td.format
+	}
+	nodeName, node := t.createBlankNode(readableNodeName, "TASK")
 
 	node.Node = &model.Node_Task{
-		Task: t.createTaskNode(name, args),
+		Task: t.createTaskNode(taskDefName, args),
 	}
 
 	return NodeOutput{
@@ -238,6 +268,86 @@ func (t *WorkflowThread) scheduleReminderTask(
 		&model.UTActionTrigger{
 			Action:       &utaTask,
 			Hook:         model.UTActionTrigger_ON_ARRIVAL,
+			DelaySeconds: delayAssn,
+		},
+	)
+}
+
+func (t *WorkflowThread) cancelUserTaskAfter(userTask *UserTaskOutput, delaySeconds interface{}) {
+	t.checkIfIsActive()
+
+	delayAssn, err := t.assignVariable(delaySeconds)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	utaCancel := model.UTActionTrigger_Cancel{
+		Cancel: &model.UTActionTrigger_UTACancel{},
+	}
+
+	if userTask.Output.nodeName != *(t.lastNodeName) {
+		log.Fatal("Tried to edit a stale UserTask node!")
+	}
+	curNode := t.spec.Nodes[*t.lastNodeName]
+	curNode.GetUserTask().Actions = append(curNode.GetUserTask().Actions,
+		&model.UTActionTrigger{
+			Action:       &utaCancel,
+			Hook:         model.UTActionTrigger_ON_ARRIVAL,
+			DelaySeconds: delayAssn,
+		},
+	)
+}
+func (t *WorkflowThread) cancelUserTaskAfterAssignment(userTask *UserTaskOutput, delaySeconds interface{}) {
+	t.checkIfIsActive()
+
+	delayAssn, err := t.assignVariable(delaySeconds)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	utaCancel := model.UTActionTrigger_Cancel{
+		Cancel: &model.UTActionTrigger_UTACancel{},
+	}
+
+	if userTask.Output.nodeName != *(t.lastNodeName) {
+		log.Fatal("Tried to edit a stale UserTask node!")
+	}
+	curNode := t.spec.Nodes[*t.lastNodeName]
+	curNode.GetUserTask().Actions = append(curNode.GetUserTask().Actions,
+		&model.UTActionTrigger{
+			Action:       &utaCancel,
+			Hook:         model.UTActionTrigger_ON_TASK_ASSIGNED,
+			DelaySeconds: delayAssn,
+		},
+	)
+}
+
+func (t *WorkflowThread) scheduleReminderTaskOnAssignment(
+	userTask *UserTaskOutput, delaySeconds interface{},
+	taskDefName string, args ...interface{},
+) {
+	t.checkIfIsActive()
+
+	delayAssn, err := t.assignVariable(delaySeconds)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	utaTask := model.UTActionTrigger_Task{
+		Task: &model.UTActionTrigger_UTATask{
+			Task: t.createTaskNode(taskDefName, args),
+		},
+	}
+
+	if userTask.Output.nodeName != *(t.lastNodeName) {
+		log.Fatal("Tried to edit a stale UserTask node!")
+	}
+
+	curNode := t.spec.Nodes[*t.lastNodeName]
+	curNode.GetUserTask().Actions = append(curNode.GetUserTask().Actions,
+		&model.UTActionTrigger{
+			Action:       &utaTask,
+			Hook:         model.UTActionTrigger_ON_TASK_ASSIGNED,
 			DelaySeconds: delayAssn,
 		},
 	)
@@ -446,6 +556,94 @@ func (n *NodeOutput) jsonPathImpl(path string) NodeOutput {
 		thread:   n.thread,
 		jsonPath: &path,
 	}
+}
+
+func (n *NodeOutput) handleExceptionOnChild(handler ThreadFunc, exceptionName *string) {
+	n.thread.checkIfIsActive()
+	node := n.thread.spec.Nodes[n.nodeName]
+	if node.GetWaitForThreads() == nil {
+		n.thread.throwError(errors.New("can only call handleExceptionOnChild on WaitForThreads Node"))
+	}
+
+	var threadName string
+	if exceptionName != nil {
+		threadName = "exn-handler-" + n.nodeName + "-" + *exceptionName
+	} else {
+		threadName = "exn-handler-" + n.nodeName
+	}
+	threadName = n.thread.wf.addSubThread(threadName, handler)
+
+	var failureHandler *model.FailureHandlerDef
+	if exceptionName != nil {
+		failureHandler = &model.FailureHandlerDef{
+			HandlerSpecName: threadName,
+			FailureToCatch: &model.FailureHandlerDef_SpecificFailure{
+				SpecificFailure: *exceptionName,
+			},
+		}
+	} else {
+		failureHandler = &model.FailureHandlerDef{
+			HandlerSpecName: threadName,
+			FailureToCatch: &model.FailureHandlerDef_AnyFailureOfType{
+				AnyFailureOfType: model.FailureHandlerDef_FAILURE_TYPE_EXCEPTION,
+			},
+		}
+	}
+	node.GetWaitForThreads().PerThreadFailureHandlers = append(
+		node.GetWaitForThreads().PerThreadFailureHandlers, failureHandler)
+	common.PrintProto(node)
+}
+
+func (n *NodeOutput) handleErrorOnChild(handler ThreadFunc, errorName *string) {
+	n.thread.checkIfIsActive()
+	node := n.thread.spec.Nodes[n.nodeName]
+	if node.GetWaitForThreads() == nil {
+		n.thread.throwError(errors.New("can only call handleErrorOnChild on WaitForThreads Node"))
+	}
+
+	var threadName string
+	if errorName != nil {
+		threadName = "error-handler-" + n.nodeName + "-" + *errorName
+	} else {
+		threadName = "error-handler-" + n.nodeName
+	}
+	threadName = n.thread.wf.addSubThread(threadName, handler)
+
+	var failureHandler *model.FailureHandlerDef
+	if errorName != nil {
+		failureHandler = &model.FailureHandlerDef{
+			HandlerSpecName: threadName,
+			FailureToCatch: &model.FailureHandlerDef_SpecificFailure{
+				SpecificFailure: *errorName,
+			},
+		}
+	} else {
+		failureHandler = &model.FailureHandlerDef{
+			HandlerSpecName: threadName,
+			FailureToCatch: &model.FailureHandlerDef_AnyFailureOfType{
+				AnyFailureOfType: model.FailureHandlerDef_FAILURE_TYPE_ERROR,
+			},
+		}
+	}
+	node.GetWaitForThreads().PerThreadFailureHandlers = append(
+		node.GetWaitForThreads().PerThreadFailureHandlers, failureHandler)
+}
+
+func (n *NodeOutput) handleAnyFailureOnChild(handler ThreadFunc) {
+	n.thread.checkIfIsActive()
+	node := n.thread.spec.Nodes[n.nodeName]
+	if node.GetWaitForThreads() == nil {
+		n.thread.throwError(errors.New("can only call handleErrorOnChild on WaitForThreads Node"))
+	}
+
+	threadName := "failure-handler-" + n.nodeName + "-ANY_FAILURE"
+	threadName = n.thread.wf.addSubThread(threadName, handler)
+
+	failureHandler := &model.FailureHandlerDef{
+		HandlerSpecName: threadName,
+	}
+	node.GetWaitForThreads().PerThreadFailureHandlers = append(
+		node.GetWaitForThreads().PerThreadFailureHandlers, failureHandler)
 }
 
 func (t *WorkflowThread) throwError(e error) {
@@ -786,7 +984,7 @@ func (t *WorkflowThread) spawnThread(
 
 func (t *WorkflowThread) waitForThreads(s ...*SpawnedThread) *NodeOutput {
 	t.checkIfIsActive()
-	nodeName, node := t.createBlankNode("wait", "WAIT_THREADS")
+	nodeName, node := t.createBlankNode("threads", "WAIT_FOR_THREADS")
 	node.Node = &model.Node_WaitForThreads{
 		WaitForThreads: &model.WaitForThreadsNode{
 			ThreadsToWaitFor: &model.WaitForThreadsNode_Threads{
@@ -903,6 +1101,24 @@ func (t *WorkflowThread) waitForEvent(eventName string) *NodeOutput {
 		nodeName: nodeName,
 		jsonPath: nil,
 		thread:   t,
+	}
+}
+
+func (t *WorkflowThread) throwEvent(workflowEventDefName string, content interface{}) {
+	t.checkIfIsActive()
+	_, node := t.createBlankNode("throw-"+workflowEventDefName, "THROW_EVENT")
+
+	contentAssn, err := t.assignVariable(content)
+	if err != nil {
+		t.throwError(tracerr.Wrap(err))
+	}
+	node.Node = &model.Node_ThrowEvent{
+		ThrowEvent: &model.ThrowEventNode{
+			EventDefId: &model.WorkflowEventDefId{
+				Name: workflowEventDefName,
+			},
+			Content: contentAssn,
+		},
 	}
 }
 

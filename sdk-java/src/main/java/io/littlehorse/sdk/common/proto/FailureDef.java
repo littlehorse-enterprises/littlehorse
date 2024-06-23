@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Defines a Failure that can be thrown.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.FailureDef}
  */
 public final class FailureDef extends
@@ -45,6 +49,12 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object failureName_ = "";
   /**
+   * <pre>
+   * The code for the failure. If in UPPER_CASE, it must be one of the LHErrorType
+   * enums, and represents an ERROR. If it is in kebab-case, then it is a user-defined
+   * EXCEPTION.
+   * </pre>
+   *
    * <code>string failure_name = 1;</code>
    * @return The failureName.
    */
@@ -62,6 +72,12 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The code for the failure. If in UPPER_CASE, it must be one of the LHErrorType
+   * enums, and represents an ERROR. If it is in kebab-case, then it is a user-defined
+   * EXCEPTION.
+   * </pre>
+   *
    * <code>string failure_name = 1;</code>
    * @return The bytes for failureName.
    */
@@ -84,6 +100,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object message_ = "";
   /**
+   * <pre>
+   * Human-readable message denoting why the Failure occurred.
+   * </pre>
+   *
    * <code>string message = 2;</code>
    * @return The message.
    */
@@ -101,6 +121,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Human-readable message denoting why the Failure occurred.
+   * </pre>
+   *
    * <code>string message = 2;</code>
    * @return The bytes for message.
    */
@@ -122,6 +146,10 @@ private static final long serialVersionUID = 0L;
   public static final int CONTENT_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.VariableAssignment content_;
   /**
+   * <pre>
+   * If specified, the thrown Failure will have this content.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableAssignment content = 3;</code>
    * @return Whether the content field is set.
    */
@@ -130,6 +158,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * If specified, the thrown Failure will have this content.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableAssignment content = 3;</code>
    * @return The content.
    */
@@ -138,6 +170,10 @@ private static final long serialVersionUID = 0L;
     return content_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : content_;
   }
   /**
+   * <pre>
+   * If specified, the thrown Failure will have this content.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableAssignment content = 3;</code>
    */
   @java.lang.Override
@@ -328,6 +364,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Defines a Failure that can be thrown.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.FailureDef}
    */
   public static final class Builder extends
@@ -542,6 +582,12 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object failureName_ = "";
     /**
+     * <pre>
+     * The code for the failure. If in UPPER_CASE, it must be one of the LHErrorType
+     * enums, and represents an ERROR. If it is in kebab-case, then it is a user-defined
+     * EXCEPTION.
+     * </pre>
+     *
      * <code>string failure_name = 1;</code>
      * @return The failureName.
      */
@@ -558,6 +604,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The code for the failure. If in UPPER_CASE, it must be one of the LHErrorType
+     * enums, and represents an ERROR. If it is in kebab-case, then it is a user-defined
+     * EXCEPTION.
+     * </pre>
+     *
      * <code>string failure_name = 1;</code>
      * @return The bytes for failureName.
      */
@@ -575,6 +627,12 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The code for the failure. If in UPPER_CASE, it must be one of the LHErrorType
+     * enums, and represents an ERROR. If it is in kebab-case, then it is a user-defined
+     * EXCEPTION.
+     * </pre>
+     *
      * <code>string failure_name = 1;</code>
      * @param value The failureName to set.
      * @return This builder for chaining.
@@ -588,6 +646,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The code for the failure. If in UPPER_CASE, it must be one of the LHErrorType
+     * enums, and represents an ERROR. If it is in kebab-case, then it is a user-defined
+     * EXCEPTION.
+     * </pre>
+     *
      * <code>string failure_name = 1;</code>
      * @return This builder for chaining.
      */
@@ -598,6 +662,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The code for the failure. If in UPPER_CASE, it must be one of the LHErrorType
+     * enums, and represents an ERROR. If it is in kebab-case, then it is a user-defined
+     * EXCEPTION.
+     * </pre>
+     *
      * <code>string failure_name = 1;</code>
      * @param value The bytes for failureName to set.
      * @return This builder for chaining.
@@ -614,6 +684,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object message_ = "";
     /**
+     * <pre>
+     * Human-readable message denoting why the Failure occurred.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @return The message.
      */
@@ -630,6 +704,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Human-readable message denoting why the Failure occurred.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @return The bytes for message.
      */
@@ -647,6 +725,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Human-readable message denoting why the Failure occurred.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @param value The message to set.
      * @return This builder for chaining.
@@ -660,6 +742,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Human-readable message denoting why the Failure occurred.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @return This builder for chaining.
      */
@@ -670,6 +756,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Human-readable message denoting why the Failure occurred.
+     * </pre>
+     *
      * <code>string message = 2;</code>
      * @param value The bytes for message to set.
      * @return This builder for chaining.
@@ -688,6 +778,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> contentBuilder_;
     /**
+     * <pre>
+     * If specified, the thrown Failure will have this content.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment content = 3;</code>
      * @return Whether the content field is set.
      */
@@ -695,6 +789,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * If specified, the thrown Failure will have this content.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment content = 3;</code>
      * @return The content.
      */
@@ -706,6 +804,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If specified, the thrown Failure will have this content.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment content = 3;</code>
      */
     public Builder setContent(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -722,6 +824,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If specified, the thrown Failure will have this content.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment content = 3;</code>
      */
     public Builder setContent(
@@ -736,6 +842,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If specified, the thrown Failure will have this content.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment content = 3;</code>
      */
     public Builder mergeContent(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -755,6 +865,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If specified, the thrown Failure will have this content.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment content = 3;</code>
      */
     public Builder clearContent() {
@@ -768,6 +882,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If specified, the thrown Failure will have this content.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment content = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getContentBuilder() {
@@ -776,6 +894,10 @@ private static final long serialVersionUID = 0L;
       return getContentFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * If specified, the thrown Failure will have this content.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment content = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getContentOrBuilder() {
@@ -787,6 +909,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If specified, the thrown Failure will have this content.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment content = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

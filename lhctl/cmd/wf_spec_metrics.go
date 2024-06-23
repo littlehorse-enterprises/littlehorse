@@ -51,7 +51,7 @@ as your wfSpecName, and 0 as your wfSpecVersion.
 		ts := timestamppb.Now()
 
 		common.PrintResp(getGlobalClient(cmd).ListWfSpecMetrics(
-			requestContext(),
+			requestContext(cmd),
 			&model.ListWfMetricsRequest{
 				LastWindowStart: ts,
 				WindowLength:    model.MetricsWindowLength(windowType),

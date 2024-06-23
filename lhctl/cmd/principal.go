@@ -1,26 +1,31 @@
 package cmd
 
 import (
+	"log"
+	"os"
 	"strings"
-	"github.com/spf13/cobra"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"github.com/spf13/cobra"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 )
 
-
 var putPrincipalCmd = &cobra.Command{
-	Use:   "principal",
+	Use:   "principal [id]",
 	Short: "Create principal.",
 	Run: func(cmd *cobra.Command, args []string) {
 		acl, _ := cmd.Flags().GetString("acl")
 		tenantId, _ := cmd.Flags().GetString("tenantId")
+		overwrite, _ := cmd.Flags().GetBool("overwrite")
 		id := args[0]
 		serverAcls := []*model.ServerACL{}
 		per_tenant_acls := make(map[string]*model.ServerACLs)
-		for resource, actions := range parseAcl(acl){
+		for resource, actions := range parseAcl(acl) {
 			allowedResources := []model.ACLResource{resource}
 			serverAcl := model.ServerACL{
-				Resources: allowedResources,
+				Resources:      allowedResources,
 				AllowedActions: actions,
 			}
 			serverAcls = append(serverAcls, &serverAcl)
@@ -31,13 +36,92 @@ var putPrincipalCmd = &cobra.Command{
 		}
 
 		putRequest := model.PutPrincipalRequest{
-			Id: id,
+			Id:            id,
 			PerTenantAcls: per_tenant_acls,
+			Overwrite:     overwrite,
 		}
 		common.PrintResp(getGlobalClient(cmd).PutPrincipal(
-			requestContext(),
+			requestContext(cmd),
 			&putRequest,
 		))
+	},
+}
+
+var searchPrincipalCmd = &cobra.Command{
+	Use:   "principal",
+	Short: "Search for Principals",
+	Long: `
+Search for Principals. You may provide any of the following option groups:
+
+[isAdmin, tenantId]
+
+* Note: To set the value of Boolean flags, you must use an '=' sign between the key
+and the value, like so: '--isAdmin=false'
+
+* Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
+options with this group to put a time bound on Principals which are returned.
+The time bound applies to the time that the Principal was created.
+
+Returns a list of ObjectId's that can be passed into 'lhctl get principals'.
+	`,
+	Run: func(cmd *cobra.Command, args []string) {
+		isAdmin, _ := cmd.Flags().GetBool("isAdmin")
+		tenantId, _ := cmd.Flags().GetString("tenantId")
+		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
+		limit, _ := cmd.Flags().GetInt32("limit")
+
+		earliest, latest := loadEarliestAndLatestStart(cmd)
+
+		search := &model.SearchPrincipalRequest{
+			Bookmark:      bookmark,
+			Limit:         &limit,
+			EarliestStart: earliest,
+			LatestStart:   latest,
+		}
+
+		if cmd.Flags().Lookup("isAdmin").Changed {
+			search.PrincipalCriteria = &model.SearchPrincipalRequest_IsAdmin{
+				IsAdmin: isAdmin,
+			}
+		} else if tenantId != "" {
+			search.PrincipalCriteria = &model.SearchPrincipalRequest_TenantId{
+				TenantId: tenantId,
+			}
+		}
+
+		common.PrintResp(getGlobalClient(cmd).SearchPrincipal(requestContext(cmd), search))
+	},
+}
+
+var deployPrincipalCmd = &cobra.Command{
+	Use:   "principal <file>",
+	Short: "Deploy Principal from a file",
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) != 1 {
+			log.Fatal("Must provide one arg: the file of the principal to deploy")
+		}
+		putPrincipalReq := &model.PutPrincipalRequest{}
+
+		// First, read the file
+		dat, err := os.ReadFile(args[0])
+		if err != nil {
+			log.Fatal("Failed to read file: ", err)
+		}
+
+		useProto, err := cmd.Flags().GetBool("proto")
+		if err != nil {
+			log.Fatal("Unexpected error: ", err)
+		}
+		if useProto {
+			err = proto.Unmarshal(dat, putPrincipalReq)
+		} else {
+			err = protojson.Unmarshal(dat, putPrincipalReq)
+		}
+		if err != nil {
+			log.Fatal("Failed reading deploy file: " + err.Error())
+		}
+
+		common.PrintResp(getGlobalClient(cmd).PutPrincipal(requestContext(cmd), putPrincipalReq))
 	},
 }
 
@@ -67,24 +151,56 @@ func parseAcl(input string) map[model.ACLResource][]model.ACLAction {
 }
 
 var (
-	actionsMap = map[string]model.ACLAction {
-		"read": model.ACLAction_READ,
-		"run": model.ACLAction_RUN,
+	actionsMap = map[string]model.ACLAction{
+		"read":  model.ACLAction_READ,
+		"run":   model.ACLAction_RUN,
 		"write": model.ACLAction_WRITE_METADATA,
-		"all": model.ACLAction_ALL_ACTIONS,
+		"all":   model.ACLAction_ALL_ACTIONS,
 	}
-	entitiesMap = map[string]model.ACLResource {
-		"acl_workflow": model.ACLResource_ACL_WORKFLOW,
-		"acl_task": model.ACLResource_ACL_TASK,
+	entitiesMap = map[string]model.ACLResource{
+		"acl_workflow":       model.ACLResource_ACL_WORKFLOW,
+		"acl_task":           model.ACLResource_ACL_TASK,
 		"acl_external_event": model.ACLResource_ACL_EXTERNAL_EVENT,
-		"acl_user_task": model.ACLResource_ACL_USER_TASK,
-		"acl_principal": model.ACLResource_ACL_PRINCIPAL,
-		"acl_tenant": model.ACLResource_ACL_TENANT,
-		"all": model.ACLResource_ACL_ALL_RESOURCES,
+		"acl_user_task":      model.ACLResource_ACL_USER_TASK,
+		"acl_principal":      model.ACLResource_ACL_PRINCIPAL,
+		"acl_tenant":         model.ACLResource_ACL_TENANT,
+		"all":                model.ACLResource_ACL_ALL_RESOURCES,
 	}
 )
+
+var deletePrincipalCmd = &cobra.Command{
+	Use:   "principal <id>",
+	Short: "Delete a Principal.",
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) != 1 {
+			log.Fatal("You must provide one argument: the ID of Principal to delete.")
+
+		}
+
+		common.PrintResp(getGlobalClient(cmd).DeletePrincipal(
+			requestContext(cmd),
+			&model.DeletePrincipalRequest{
+				Id: &model.PrincipalId{
+					Id: args[0],
+				},
+			},
+		))
+	},
+}
 
 func init() {
 	putCmd.AddCommand(putPrincipalCmd)
 	putPrincipalCmd.Flags().String("acl", "", "ACLs")
+	putPrincipalCmd.Flags().Bool("overwrite", false, "Overwrites principal information")
+	putPrincipalCmd.Flags().String("tenantId", "", "Tenant associated with the principal")
+
+	searchCmd.AddCommand(searchPrincipalCmd)
+	searchPrincipalCmd.Flags().String("tenantId", "", "List Principals associated with this Tenant ID")
+	searchPrincipalCmd.Flags().Bool("isAdmin", false, "List only Principals that are admins")
+	searchPrincipalCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for Principals that were created no more than this number of minutes ago")
+	searchPrincipalCmd.Flags().Int("latestMinutesAgo", -1, "Search only for Principals that were created at least this number of minutes ago")
+	searchPrincipalCmd.MarkFlagsOneRequired("tenantId", "isAdmin")
+
+	deployCmd.AddCommand(deployPrincipalCmd)
+	deleteCmd.AddCommand(deletePrincipalCmd)
 }

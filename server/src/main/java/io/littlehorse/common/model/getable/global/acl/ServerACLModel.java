@@ -21,6 +21,8 @@ public class ServerACLModel extends LHSerializable<ServerACL> {
     private List<ACLAction> allowedActions = new ArrayList<>();
     private Optional<String> name = Optional.empty();
     private Optional<String> prefix = Optional.empty();
+    public static final ACLResource ADMIN_RESOURCE = ACLResource.ACL_ALL_RESOURCES;
+    public static final ACLAction ADMIN_ACTION = ACLAction.ALL_ACTIONS;
 
     public ServerACLModel() {}
 
@@ -57,6 +59,13 @@ public class ServerACLModel extends LHSerializable<ServerACL> {
     }
 
     public boolean isAdmin() {
-        return resources.contains(ACLResource.ACL_ALL_RESOURCES) && allowedActions.contains(ACLAction.ALL_ACTIONS);
+        return resources.contains(ADMIN_RESOURCE) && allowedActions.contains(ADMIN_ACTION);
+    }
+
+    public boolean allows(ACLResource resource, ACLAction action) {
+        boolean hasEnoughActions = (allowedActions.contains(action) || allowedActions.contains(ACLAction.ALL_ACTIONS));
+        boolean hasEnoughResources =
+                (resources.contains(resource) || resources.contains(ACLResource.ACL_ALL_RESOURCES));
+        return hasEnoughActions && hasEnoughResources;
     }
 }

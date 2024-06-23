@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
+import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -147,7 +148,10 @@ public class SpawnThreadsForEachWithFailureHandlerTest {
                 .thenVerifyNodeRun(2, 2, nr -> {
                     // Make sure the second thread still executed the task
                     assertThat(nr.getNodeTypeCase()).isEqualTo(NodeTypeCase.TASK);
-                    assertThat(nr.getStatus()).isEqualByComparingTo(LHStatus.COMPLETED);
+                    assertThat(nr.getStatus()).isEqualByComparingTo(LHStatus.HALTED);
+                })
+                .thenVerifyTaskRun(2, 2, task -> {
+                    assertThat(task.getStatus()).isEqualTo(TaskStatus.TASK_SUCCESS);
                 })
                 .start();
     }

@@ -1,6 +1,7 @@
 package common
 
 import (
+	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
@@ -25,7 +26,8 @@ const (
 	API_PORT_KEY     = "LHC_API_PORT"
 	API_PROTOCOL_KEY = "LHC_API_PROTOCOL"
 
-	TENANT_ID = "LHC_TENANT_ID"
+	TENANT_ID_HEADER = "tenantid"
+	TENANT_ID_KEY    = "LHC_TENANT_ID"
 
 	CERT_FILE_KEY    = "LHC_CLIENT_CERT"
 	KEY_FILE_KEY     = "LHC_CLIENT_KEY"
@@ -89,6 +91,7 @@ func (config *LHConfig) GetGrpcConn(url string) (*grpc.ClientConn, error) {
 				PermitWithoutStream: true,
 			},
 		))
+		opts = append(opts, grpc.WithPerRPCCredentials(&tenantIdHeaderCreds{TenantId: config.TenantId}))
 
 		if config.ApiProtocol == DEFAULT_PROTOCOL {
 			opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -153,7 +156,7 @@ func NewConfigFromEnv() *LHConfig {
 		CertFile: stringPtr(os.Getenv(CERT_FILE_KEY)),
 		KeyFile:  stringPtr(os.Getenv(KEY_FILE_KEY)),
 		CaCert:   stringPtr(os.Getenv(CA_CERT_FILE_KEY)),
-		TenantId: stringPtr(os.Getenv(TENANT_ID)),
+		TenantId: stringPtr(os.Getenv(TENANT_ID_KEY)),
 
 		NumWorkerThreads:      int32FromEnv(NUM_WORKER_THREADS_KEY, 8),
 		TaskWorkerVersion:     os.Getenv(TASK_WORKER_VERSION_KEY),
@@ -191,7 +194,7 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 		CertFile: stringPtr(p.GetString(CERT_FILE_KEY, "")),
 		KeyFile:  stringPtr(p.GetString(KEY_FILE_KEY, "")),
 		CaCert:   stringPtr(p.GetString(CA_CERT_FILE_KEY, "")),
-		TenantId: stringPtr(p.GetString(TENANT_ID, "")),
+		TenantId: stringPtr(p.GetString(TENANT_ID_KEY, "")),
 
 		NumWorkerThreads:      int32FromProp(p, NUM_WORKER_THREADS_KEY, 8),
 		TaskWorkerVersion:     p.GetString(TASK_WORKER_VERSION_KEY, ""),
@@ -316,4 +319,19 @@ func loadMTLS(caCertFileName *string, certFileName string, keyFileName string) c
 	}
 
 	return credentials.NewTLS(tlsConfig)
+}
+
+type tenantIdHeaderCreds struct {
+	TenantId *string
+}
+
+func (c *tenantIdHeaderCreds) GetRequestMetadata(ctx context.Context, uri ...string) (map[string]string, error) {
+	if c == nil || c.TenantId == nil {
+		return map[string]string{}, nil
+	}
+	return map[string]string{TENANT_ID_HEADER: *c.TenantId}, nil
+}
+
+func (c *tenantIdHeaderCreds) RequireTransportSecurity() bool {
+	return false
 }

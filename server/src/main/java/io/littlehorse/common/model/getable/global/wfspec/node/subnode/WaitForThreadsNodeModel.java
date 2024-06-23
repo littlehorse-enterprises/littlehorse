@@ -5,6 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
@@ -20,6 +21,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -92,12 +94,14 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
         return out;
     }
 
-    public WaitForThreadsRunModel createSubNodeRun(Date time) {
-        return new WaitForThreadsRunModel(context.castOnSupport(ProcessorExecutionContext.class));
+    @Override
+    public WaitForThreadsRunModel createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
+        return new WaitForThreadsRunModel();
     }
 
-    public List<WaitForThreadModel> getThreadsToWaitFor(NodeRunModel nodeRun, Date currentCommandTime)
-            throws LHVarSubError {
+    public List<WaitForThreadModel> getThreadsToWaitFor(
+            NodeRunModel nodeRun, Date currentCommandTime, ProcessorExecutionContext context)
+            throws LHVarSubError, NodeFailureException {
         ThreadRunModel thread = nodeRun.getThreadRun();
         List<WaitForThreadModel> out = new ArrayList<>();
 
@@ -108,7 +112,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
                             .asInt()
                             .getIntVal()
                             .intValue();
-                    out.add(new WaitForThreadModel(nodeRun, threadRunNumber, currentCommandTime));
+                    out.add(new WaitForThreadModel(nodeRun, threadRunNumber, currentCommandTime, context));
                 }
                 break;
             case THREAD_LIST:
@@ -116,7 +120,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
 
                 for (Object threadNumberObj : threadListVar.getJsonArrVal()) {
                     out.add(new WaitForThreadModel(
-                            nodeRun, Integer.valueOf(threadNumberObj.toString()), currentCommandTime));
+                            nodeRun, Integer.valueOf(threadNumberObj.toString()), currentCommandTime, context));
                 }
                 break;
             case THREADSTOWAITFOR_NOT_SET:
@@ -146,11 +150,11 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
     }
 
     @Override
-    public void validate() throws LHApiException {
+    public void validate(MetadataCommandExecution ctx) throws LHApiException {
         switch (type) {
             case THREADS:
                 for (ThreadToWaitForModel ttwf : threads.getThreads()) {
-                    if (!ttwf.getThreadRunNumber().canBeType(VariableType.INT, node.getThreadSpecModel())) {
+                    if (!ttwf.getThreadRunNumber().canBeType(VariableType.INT, node.getThreadSpec())) {
                         throw new LHApiException(
                                 Status.INVALID_ARGUMENT,
                                 "`threadRunNumber` for WAIT_FOR_THREAD node must resolve to INT!");
@@ -158,7 +162,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
                 }
                 break;
             case THREAD_LIST:
-                if (!threadList.canBeType(VariableType.JSON_ARR, node.getThreadSpecModel())) {
+                if (!threadList.canBeType(VariableType.JSON_ARR, node.getThreadSpec())) {
                     throw new LHApiException(
                             Status.INVALID_ARGUMENT,
                             "`threadRunNumber` for WAIT_FOR_THREAD node must resolve to JSON_ARR!");

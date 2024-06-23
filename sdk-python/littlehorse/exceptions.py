@@ -1,3 +1,8 @@
+from typing import Optional
+
+from littlehorse.model import VariableValue
+
+
 class TaskSchemaMismatchException(Exception):
     def __init__(self, message: str):
         self.message = message
@@ -17,6 +22,10 @@ class SerdeException(Exception):
 
 
 class LHTaskException(Exception):
-    def __init__(self, message: str):
+    def __init__(
+        self, exception_name: str, message: str, content: Optional[VariableValue] = None
+    ):
         self.message = message
+        self.exception_name = exception_name
+        self.content = content if content is not None else VariableValue()
         super().__init__(self.message)

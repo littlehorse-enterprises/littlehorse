@@ -8,7 +8,6 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
-import io.littlehorse.common.model.getable.core.taskrun.TaskAttemptModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunSourceModel;
 import io.littlehorse.common.model.getable.core.taskrun.UserTaskTriggerReferenceModel;
@@ -18,8 +17,10 @@ import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTETas
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -94,7 +95,7 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
         UserTaskRunIdModel userTaskRunId = userTaskNR.getUserTaskRun().getUserTaskRunId();
         UserTaskRunModel userTaskRun = executionContext.getableManager().get(userTaskRunId);
 
-        if (userTaskNR.status != LHStatus.RUNNING) {
+        if (userTaskNR.getStatus() != LHStatus.RUNNING) {
             log.info("NodeRun is not RUNNING anymore, so can't take action!");
             return null;
         }
@@ -103,11 +104,13 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
         log.info("Scheduling a one-off task for wfRun {} due to UserTask", wfRunId);
 
         try {
-            List<VarNameAndValModel> inputVars = taskToSchedule.assignInputVars(thread);
+            List<VarNameAndValModel> inputVars = taskToSchedule.assignInputVars(thread, executionContext);
             TaskRunIdModel taskRunId = new TaskRunIdModel(wfRunId, executionContext);
+            TaskDefModel taskDef = taskToSchedule.getTaskDef(thread, executionContext);
+            TaskDefIdModel id = taskDef.getId();
 
-            ScheduledTaskModel toSchedule = new ScheduledTaskModel(
-                    taskToSchedule.getTaskDef().getObjectId(), inputVars, userTaskRun, executionContext);
+            ScheduledTaskModel toSchedule =
+                    new ScheduledTaskModel(taskDef.getObjectId(), inputVars, userTaskRun, executionContext);
             toSchedule.setTaskRunId(taskRunId);
 
             TaskRunModel taskRun = new TaskRunModel(
@@ -115,15 +118,14 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
                     new TaskRunSourceModel(
                             new UserTaskTriggerReferenceModel(userTaskRun, executionContext), executionContext),
                     taskToSchedule,
-                    executionContext);
-            taskRun.setId(taskRunId);
-            taskRun.getAttempts().add(new TaskAttemptModel());
+                    executionContext,
+                    taskRunId,
+                    id);
+
             executionContext.getableManager().put(taskRun);
-            executionContext.getTaskManager().scheduleTask(toSchedule);
 
+            taskRun.dispatchTaskToQueue();
             userTaskRun.getEvents().add(new UserTaskEventModel(new UTETaskExecutedModel(taskRunId), new Date()));
-
-            executionContext.getableManager().put(userTaskNR); // should be unnecessary
         } catch (LHVarSubError exn) {
             log.error("Failed scheduling a Triggered Task Run, but the WfRun will continue", exn);
         }

@@ -43,42 +43,109 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.TaskNode.class, io.littlehorse.sdk.common.proto.TaskNode.Builder.class);
   }
 
+  private int bitField0_;
+  private int taskToExecuteCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object taskToExecute_;
+  public enum TaskToExecuteCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    TASK_DEF_ID(1),
+    DYNAMIC_TASK(6),
+    TASKTOEXECUTE_NOT_SET(0);
+    private final int value;
+    private TaskToExecuteCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static TaskToExecuteCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static TaskToExecuteCase forNumber(int value) {
+      switch (value) {
+        case 1: return TASK_DEF_ID;
+        case 6: return DYNAMIC_TASK;
+        case 0: return TASKTOEXECUTE_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public TaskToExecuteCase
+  getTaskToExecuteCase() {
+    return TaskToExecuteCase.forNumber(
+        taskToExecuteCase_);
+  }
+
   public static final int TASK_DEF_ID_FIELD_NUMBER = 1;
-  private io.littlehorse.sdk.common.proto.TaskDefId taskDefId_;
   /**
-   * <pre>
-   * The type of TaskRun to schedule.
-   * </pre>
-   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return Whether the taskDefId field is set.
    */
   @java.lang.Override
   public boolean hasTaskDefId() {
-    return taskDefId_ != null;
+    return taskToExecuteCase_ == 1;
   }
   /**
-   * <pre>
-   * The type of TaskRun to schedule.
-   * </pre>
-   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    * @return The taskDefId.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId() {
-    return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
+    if (taskToExecuteCase_ == 1) {
+       return (io.littlehorse.sdk.common.proto.TaskDefId) taskToExecute_;
+    }
+    return io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance();
   }
   /**
-   * <pre>
-   * The type of TaskRun to schedule.
-   * </pre>
-   *
    * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder() {
-    return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
+    if (taskToExecuteCase_ == 1) {
+       return (io.littlehorse.sdk.common.proto.TaskDefId) taskToExecute_;
+    }
+    return io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance();
+  }
+
+  public static final int DYNAMIC_TASK_FIELD_NUMBER = 6;
+  /**
+   * <code>.littlehorse.VariableAssignment dynamic_task = 6;</code>
+   * @return Whether the dynamicTask field is set.
+   */
+  @java.lang.Override
+  public boolean hasDynamicTask() {
+    return taskToExecuteCase_ == 6;
+  }
+  /**
+   * <code>.littlehorse.VariableAssignment dynamic_task = 6;</code>
+   * @return The dynamicTask.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignment getDynamicTask() {
+    if (taskToExecuteCase_ == 6) {
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) taskToExecute_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.VariableAssignment dynamic_task = 6;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getDynamicTaskOrBuilder() {
+    if (taskToExecuteCase_ == 6) {
+       return (io.littlehorse.sdk.common.proto.VariableAssignment) taskToExecute_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
   }
 
   public static final int TIMEOUT_SECONDS_FIELD_NUMBER = 2;
@@ -86,7 +153,8 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * How long until LittleHorse determines that the Task Worker had a technical ERROR if
-   * the worker does not yet reply to the Server.
+   * the worker does not yet reply to the Server. This is determined on a per-Attempt
+   * basis.
    * </pre>
    *
    * <code>int32 timeout_seconds = 2;</code>
@@ -101,9 +169,16 @@ private static final long serialVersionUID = 0L;
   private int retries_ = 0;
   /**
    * <pre>
-   * EXPERIMENTAL: How many times we should retry on retryable ERROR's.
-   * Please note that this API may change before version 1.0.0, as we are going to
-   * add significant functionality including backoff policies.
+   * Configures the amount of retries allowed on this TaskNode.
+   *
+   * Retryable errors include:
+   * - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the
+   *   Task Worker in time.
+   * - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
+   *   the Task Function.
+   *
+   * Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+   * TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
    * </pre>
    *
    * <code>int32 retries = 3;</code>
@@ -112,6 +187,44 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public int getRetries() {
     return retries_;
+  }
+
+  public static final int EXPONENTIAL_BACKOFF_FIELD_NUMBER = 5;
+  private io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy exponentialBackoff_;
+  /**
+   * <pre>
+   * If this field is set, then retries will use Exponential Backoff.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+   * @return Whether the exponentialBackoff field is set.
+   */
+  @java.lang.Override
+  public boolean hasExponentialBackoff() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <pre>
+   * If this field is set, then retries will use Exponential Backoff.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+   * @return The exponentialBackoff.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy getExponentialBackoff() {
+    return exponentialBackoff_ == null ? io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance() : exponentialBackoff_;
+  }
+  /**
+   * <pre>
+   * If this field is set, then retries will use Exponential Backoff.
+   * </pre>
+   *
+   * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder getExponentialBackoffOrBuilder() {
+    return exponentialBackoff_ == null ? io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance() : exponentialBackoff_;
   }
 
   public static final int VARIABLES_FIELD_NUMBER = 4;
@@ -189,8 +302,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (taskDefId_ != null) {
-      output.writeMessage(1, getTaskDefId());
+    if (taskToExecuteCase_ == 1) {
+      output.writeMessage(1, (io.littlehorse.sdk.common.proto.TaskDefId) taskToExecute_);
     }
     if (timeoutSeconds_ != 0) {
       output.writeInt32(2, timeoutSeconds_);
@@ -201,6 +314,12 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < variables_.size(); i++) {
       output.writeMessage(4, variables_.get(i));
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(5, getExponentialBackoff());
+    }
+    if (taskToExecuteCase_ == 6) {
+      output.writeMessage(6, (io.littlehorse.sdk.common.proto.VariableAssignment) taskToExecute_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -210,9 +329,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (taskDefId_ != null) {
+    if (taskToExecuteCase_ == 1) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getTaskDefId());
+        .computeMessageSize(1, (io.littlehorse.sdk.common.proto.TaskDefId) taskToExecute_);
     }
     if (timeoutSeconds_ != 0) {
       size += com.google.protobuf.CodedOutputStream
@@ -225,6 +344,14 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < variables_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, variables_.get(i));
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, getExponentialBackoff());
+    }
+    if (taskToExecuteCase_ == 6) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, (io.littlehorse.sdk.common.proto.VariableAssignment) taskToExecute_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -241,17 +368,30 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.TaskNode other = (io.littlehorse.sdk.common.proto.TaskNode) obj;
 
-    if (hasTaskDefId() != other.hasTaskDefId()) return false;
-    if (hasTaskDefId()) {
-      if (!getTaskDefId()
-          .equals(other.getTaskDefId())) return false;
-    }
     if (getTimeoutSeconds()
         != other.getTimeoutSeconds()) return false;
     if (getRetries()
         != other.getRetries()) return false;
+    if (hasExponentialBackoff() != other.hasExponentialBackoff()) return false;
+    if (hasExponentialBackoff()) {
+      if (!getExponentialBackoff()
+          .equals(other.getExponentialBackoff())) return false;
+    }
     if (!getVariablesList()
         .equals(other.getVariablesList())) return false;
+    if (!getTaskToExecuteCase().equals(other.getTaskToExecuteCase())) return false;
+    switch (taskToExecuteCase_) {
+      case 1:
+        if (!getTaskDefId()
+            .equals(other.getTaskDefId())) return false;
+        break;
+      case 6:
+        if (!getDynamicTask()
+            .equals(other.getDynamicTask())) return false;
+        break;
+      case 0:
+      default:
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -263,17 +403,29 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasTaskDefId()) {
-      hash = (37 * hash) + TASK_DEF_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getTaskDefId().hashCode();
-    }
     hash = (37 * hash) + TIMEOUT_SECONDS_FIELD_NUMBER;
     hash = (53 * hash) + getTimeoutSeconds();
     hash = (37 * hash) + RETRIES_FIELD_NUMBER;
     hash = (53 * hash) + getRetries();
+    if (hasExponentialBackoff()) {
+      hash = (37 * hash) + EXPONENTIAL_BACKOFF_FIELD_NUMBER;
+      hash = (53 * hash) + getExponentialBackoff().hashCode();
+    }
     if (getVariablesCount() > 0) {
       hash = (37 * hash) + VARIABLES_FIELD_NUMBER;
       hash = (53 * hash) + getVariablesList().hashCode();
+    }
+    switch (taskToExecuteCase_) {
+      case 1:
+        hash = (37 * hash) + TASK_DEF_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getTaskDefId().hashCode();
+        break;
+      case 6:
+        hash = (37 * hash) + DYNAMIC_TASK_FIELD_NUMBER;
+        hash = (53 * hash) + getDynamicTask().hashCode();
+        break;
+      case 0:
+      default:
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -398,32 +550,47 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.TaskNode.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getExponentialBackoffFieldBuilder();
+        getVariablesFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      taskDefId_ = null;
       if (taskDefIdBuilder_ != null) {
-        taskDefIdBuilder_.dispose();
-        taskDefIdBuilder_ = null;
+        taskDefIdBuilder_.clear();
+      }
+      if (dynamicTaskBuilder_ != null) {
+        dynamicTaskBuilder_.clear();
       }
       timeoutSeconds_ = 0;
       retries_ = 0;
+      exponentialBackoff_ = null;
+      if (exponentialBackoffBuilder_ != null) {
+        exponentialBackoffBuilder_.dispose();
+        exponentialBackoffBuilder_ = null;
+      }
       if (variablesBuilder_ == null) {
         variables_ = java.util.Collections.emptyList();
       } else {
         variables_ = null;
         variablesBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000020);
+      taskToExecuteCase_ = 0;
+      taskToExecute_ = null;
       return this;
     }
 
@@ -452,15 +619,16 @@ private static final long serialVersionUID = 0L;
       io.littlehorse.sdk.common.proto.TaskNode result = new io.littlehorse.sdk.common.proto.TaskNode(this);
       buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
 
     private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.TaskNode result) {
       if (variablesBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0)) {
+        if (((bitField0_ & 0x00000020) != 0)) {
           variables_ = java.util.Collections.unmodifiableList(variables_);
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000020);
         }
         result.variables_ = variables_;
       } else {
@@ -470,16 +638,32 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.TaskNode result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.taskDefId_ = taskDefIdBuilder_ == null
-            ? taskDefId_
-            : taskDefIdBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
+      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.timeoutSeconds_ = timeoutSeconds_;
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
+      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.retries_ = retries_;
+      }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.exponentialBackoff_ = exponentialBackoffBuilder_ == null
+            ? exponentialBackoff_
+            : exponentialBackoffBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.TaskNode result) {
+      result.taskToExecuteCase_ = taskToExecuteCase_;
+      result.taskToExecute_ = this.taskToExecute_;
+      if (taskToExecuteCase_ == 1 &&
+          taskDefIdBuilder_ != null) {
+        result.taskToExecute_ = taskDefIdBuilder_.build();
+      }
+      if (taskToExecuteCase_ == 6 &&
+          dynamicTaskBuilder_ != null) {
+        result.taskToExecute_ = dynamicTaskBuilder_.build();
       }
     }
 
@@ -527,20 +711,20 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.TaskNode other) {
       if (other == io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance()) return this;
-      if (other.hasTaskDefId()) {
-        mergeTaskDefId(other.getTaskDefId());
-      }
       if (other.getTimeoutSeconds() != 0) {
         setTimeoutSeconds(other.getTimeoutSeconds());
       }
       if (other.getRetries() != 0) {
         setRetries(other.getRetries());
       }
+      if (other.hasExponentialBackoff()) {
+        mergeExponentialBackoff(other.getExponentialBackoff());
+      }
       if (variablesBuilder_ == null) {
         if (!other.variables_.isEmpty()) {
           if (variables_.isEmpty()) {
             variables_ = other.variables_;
-            bitField0_ = (bitField0_ & ~0x00000008);
+            bitField0_ = (bitField0_ & ~0x00000020);
           } else {
             ensureVariablesIsMutable();
             variables_.addAll(other.variables_);
@@ -553,13 +737,26 @@ private static final long serialVersionUID = 0L;
             variablesBuilder_.dispose();
             variablesBuilder_ = null;
             variables_ = other.variables_;
-            bitField0_ = (bitField0_ & ~0x00000008);
+            bitField0_ = (bitField0_ & ~0x00000020);
             variablesBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getVariablesFieldBuilder() : null;
           } else {
             variablesBuilder_.addAllMessages(other.variables_);
           }
+        }
+      }
+      switch (other.getTaskToExecuteCase()) {
+        case TASK_DEF_ID: {
+          mergeTaskDefId(other.getTaskDefId());
+          break;
+        }
+        case DYNAMIC_TASK: {
+          mergeDynamicTask(other.getDynamicTask());
+          break;
+        }
+        case TASKTOEXECUTE_NOT_SET: {
+          break;
         }
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -592,17 +789,17 @@ private static final long serialVersionUID = 0L;
               input.readMessage(
                   getTaskDefIdFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000001;
+              taskToExecuteCase_ = 1;
               break;
             } // case 10
             case 16: {
               timeoutSeconds_ = input.readInt32();
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000004;
               break;
             } // case 16
             case 24: {
               retries_ = input.readInt32();
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000008;
               break;
             } // case 24
             case 34: {
@@ -618,6 +815,20 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 34
+            case 42: {
+              input.readMessage(
+                  getExponentialBackoffFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 42
+            case 50: {
+              input.readMessage(
+                  getDynamicTaskFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              taskToExecuteCase_ = 6;
+              break;
+            } // case 50
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -633,42 +844,52 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int taskToExecuteCase_ = 0;
+    private java.lang.Object taskToExecute_;
+    public TaskToExecuteCase
+        getTaskToExecuteCase() {
+      return TaskToExecuteCase.forNumber(
+          taskToExecuteCase_);
+    }
+
+    public Builder clearTaskToExecute() {
+      taskToExecuteCase_ = 0;
+      taskToExecute_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.TaskDefId taskDefId_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> taskDefIdBuilder_;
     /**
-     * <pre>
-     * The type of TaskRun to schedule.
-     * </pre>
-     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      * @return Whether the taskDefId field is set.
      */
+    @java.lang.Override
     public boolean hasTaskDefId() {
-      return ((bitField0_ & 0x00000001) != 0);
+      return taskToExecuteCase_ == 1;
     }
     /**
-     * <pre>
-     * The type of TaskRun to schedule.
-     * </pre>
-     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      * @return The taskDefId.
      */
+    @java.lang.Override
     public io.littlehorse.sdk.common.proto.TaskDefId getTaskDefId() {
       if (taskDefIdBuilder_ == null) {
-        return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
+        if (taskToExecuteCase_ == 1) {
+          return (io.littlehorse.sdk.common.proto.TaskDefId) taskToExecute_;
+        }
+        return io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance();
       } else {
-        return taskDefIdBuilder_.getMessage();
+        if (taskToExecuteCase_ == 1) {
+          return taskDefIdBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance();
       }
     }
     /**
-     * <pre>
-     * The type of TaskRun to schedule.
-     * </pre>
-     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder setTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
@@ -676,125 +897,260 @@ private static final long serialVersionUID = 0L;
         if (value == null) {
           throw new NullPointerException();
         }
-        taskDefId_ = value;
+        taskToExecute_ = value;
+        onChanged();
       } else {
         taskDefIdBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000001;
-      onChanged();
+      taskToExecuteCase_ = 1;
       return this;
     }
     /**
-     * <pre>
-     * The type of TaskRun to schedule.
-     * </pre>
-     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder setTaskDefId(
         io.littlehorse.sdk.common.proto.TaskDefId.Builder builderForValue) {
       if (taskDefIdBuilder_ == null) {
-        taskDefId_ = builderForValue.build();
+        taskToExecute_ = builderForValue.build();
+        onChanged();
       } else {
         taskDefIdBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000001;
-      onChanged();
+      taskToExecuteCase_ = 1;
       return this;
     }
     /**
-     * <pre>
-     * The type of TaskRun to schedule.
-     * </pre>
-     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder mergeTaskDefId(io.littlehorse.sdk.common.proto.TaskDefId value) {
       if (taskDefIdBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0) &&
-          taskDefId_ != null &&
-          taskDefId_ != io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance()) {
-          getTaskDefIdBuilder().mergeFrom(value);
+        if (taskToExecuteCase_ == 1 &&
+            taskToExecute_ != io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance()) {
+          taskToExecute_ = io.littlehorse.sdk.common.proto.TaskDefId.newBuilder((io.littlehorse.sdk.common.proto.TaskDefId) taskToExecute_)
+              .mergeFrom(value).buildPartial();
         } else {
-          taskDefId_ = value;
+          taskToExecute_ = value;
         }
+        onChanged();
       } else {
-        taskDefIdBuilder_.mergeFrom(value);
+        if (taskToExecuteCase_ == 1) {
+          taskDefIdBuilder_.mergeFrom(value);
+        } else {
+          taskDefIdBuilder_.setMessage(value);
+        }
       }
-      bitField0_ |= 0x00000001;
-      onChanged();
+      taskToExecuteCase_ = 1;
       return this;
     }
     /**
-     * <pre>
-     * The type of TaskRun to schedule.
-     * </pre>
-     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public Builder clearTaskDefId() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      taskDefId_ = null;
-      if (taskDefIdBuilder_ != null) {
-        taskDefIdBuilder_.dispose();
-        taskDefIdBuilder_ = null;
+      if (taskDefIdBuilder_ == null) {
+        if (taskToExecuteCase_ == 1) {
+          taskToExecuteCase_ = 0;
+          taskToExecute_ = null;
+          onChanged();
+        }
+      } else {
+        if (taskToExecuteCase_ == 1) {
+          taskToExecuteCase_ = 0;
+          taskToExecute_ = null;
+        }
+        taskDefIdBuilder_.clear();
       }
-      onChanged();
       return this;
     }
     /**
-     * <pre>
-     * The type of TaskRun to schedule.
-     * </pre>
-     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefId.Builder getTaskDefIdBuilder() {
-      bitField0_ |= 0x00000001;
-      onChanged();
       return getTaskDefIdFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * The type of TaskRun to schedule.
-     * </pre>
-     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
+    @java.lang.Override
     public io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder() {
-      if (taskDefIdBuilder_ != null) {
+      if ((taskToExecuteCase_ == 1) && (taskDefIdBuilder_ != null)) {
         return taskDefIdBuilder_.getMessageOrBuilder();
       } else {
-        return taskDefId_ == null ?
-            io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
+        if (taskToExecuteCase_ == 1) {
+          return (io.littlehorse.sdk.common.proto.TaskDefId) taskToExecute_;
+        }
+        return io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance();
       }
     }
     /**
-     * <pre>
-     * The type of TaskRun to schedule.
-     * </pre>
-     *
      * <code>.littlehorse.TaskDefId task_def_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder> 
         getTaskDefIdFieldBuilder() {
       if (taskDefIdBuilder_ == null) {
+        if (!(taskToExecuteCase_ == 1)) {
+          taskToExecute_ = io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance();
+        }
         taskDefIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             io.littlehorse.sdk.common.proto.TaskDefId, io.littlehorse.sdk.common.proto.TaskDefId.Builder, io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder>(
-                getTaskDefId(),
+                (io.littlehorse.sdk.common.proto.TaskDefId) taskToExecute_,
                 getParentForChildren(),
                 isClean());
-        taskDefId_ = null;
+        taskToExecute_ = null;
       }
+      taskToExecuteCase_ = 1;
+      onChanged();
       return taskDefIdBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> dynamicTaskBuilder_;
+    /**
+     * <code>.littlehorse.VariableAssignment dynamic_task = 6;</code>
+     * @return Whether the dynamicTask field is set.
+     */
+    @java.lang.Override
+    public boolean hasDynamicTask() {
+      return taskToExecuteCase_ == 6;
+    }
+    /**
+     * <code>.littlehorse.VariableAssignment dynamic_task = 6;</code>
+     * @return The dynamicTask.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment getDynamicTask() {
+      if (dynamicTaskBuilder_ == null) {
+        if (taskToExecuteCase_ == 6) {
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) taskToExecute_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+      } else {
+        if (taskToExecuteCase_ == 6) {
+          return dynamicTaskBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.VariableAssignment dynamic_task = 6;</code>
+     */
+    public Builder setDynamicTask(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+      if (dynamicTaskBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        taskToExecute_ = value;
+        onChanged();
+      } else {
+        dynamicTaskBuilder_.setMessage(value);
+      }
+      taskToExecuteCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableAssignment dynamic_task = 6;</code>
+     */
+    public Builder setDynamicTask(
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
+      if (dynamicTaskBuilder_ == null) {
+        taskToExecute_ = builderForValue.build();
+        onChanged();
+      } else {
+        dynamicTaskBuilder_.setMessage(builderForValue.build());
+      }
+      taskToExecuteCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableAssignment dynamic_task = 6;</code>
+     */
+    public Builder mergeDynamicTask(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+      if (dynamicTaskBuilder_ == null) {
+        if (taskToExecuteCase_ == 6 &&
+            taskToExecute_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+          taskToExecute_ = io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment) taskToExecute_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          taskToExecute_ = value;
+        }
+        onChanged();
+      } else {
+        if (taskToExecuteCase_ == 6) {
+          dynamicTaskBuilder_.mergeFrom(value);
+        } else {
+          dynamicTaskBuilder_.setMessage(value);
+        }
+      }
+      taskToExecuteCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableAssignment dynamic_task = 6;</code>
+     */
+    public Builder clearDynamicTask() {
+      if (dynamicTaskBuilder_ == null) {
+        if (taskToExecuteCase_ == 6) {
+          taskToExecuteCase_ = 0;
+          taskToExecute_ = null;
+          onChanged();
+        }
+      } else {
+        if (taskToExecuteCase_ == 6) {
+          taskToExecuteCase_ = 0;
+          taskToExecute_ = null;
+        }
+        dynamicTaskBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableAssignment dynamic_task = 6;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getDynamicTaskBuilder() {
+      return getDynamicTaskFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.VariableAssignment dynamic_task = 6;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getDynamicTaskOrBuilder() {
+      if ((taskToExecuteCase_ == 6) && (dynamicTaskBuilder_ != null)) {
+        return dynamicTaskBuilder_.getMessageOrBuilder();
+      } else {
+        if (taskToExecuteCase_ == 6) {
+          return (io.littlehorse.sdk.common.proto.VariableAssignment) taskToExecute_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.VariableAssignment dynamic_task = 6;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
+        getDynamicTaskFieldBuilder() {
+      if (dynamicTaskBuilder_ == null) {
+        if (!(taskToExecuteCase_ == 6)) {
+          taskToExecute_ = io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+        }
+        dynamicTaskBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                (io.littlehorse.sdk.common.proto.VariableAssignment) taskToExecute_,
+                getParentForChildren(),
+                isClean());
+        taskToExecute_ = null;
+      }
+      taskToExecuteCase_ = 6;
+      onChanged();
+      return dynamicTaskBuilder_;
     }
 
     private int timeoutSeconds_ ;
     /**
      * <pre>
      * How long until LittleHorse determines that the Task Worker had a technical ERROR if
-     * the worker does not yet reply to the Server.
+     * the worker does not yet reply to the Server. This is determined on a per-Attempt
+     * basis.
      * </pre>
      *
      * <code>int32 timeout_seconds = 2;</code>
@@ -807,7 +1163,8 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * How long until LittleHorse determines that the Task Worker had a technical ERROR if
-     * the worker does not yet reply to the Server.
+     * the worker does not yet reply to the Server. This is determined on a per-Attempt
+     * basis.
      * </pre>
      *
      * <code>int32 timeout_seconds = 2;</code>
@@ -817,21 +1174,22 @@ private static final long serialVersionUID = 0L;
     public Builder setTimeoutSeconds(int value) {
 
       timeoutSeconds_ = value;
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
      * <pre>
      * How long until LittleHorse determines that the Task Worker had a technical ERROR if
-     * the worker does not yet reply to the Server.
+     * the worker does not yet reply to the Server. This is determined on a per-Attempt
+     * basis.
      * </pre>
      *
      * <code>int32 timeout_seconds = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearTimeoutSeconds() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000004);
       timeoutSeconds_ = 0;
       onChanged();
       return this;
@@ -840,9 +1198,16 @@ private static final long serialVersionUID = 0L;
     private int retries_ ;
     /**
      * <pre>
-     * EXPERIMENTAL: How many times we should retry on retryable ERROR's.
-     * Please note that this API may change before version 1.0.0, as we are going to
-     * add significant functionality including backoff policies.
+     * Configures the amount of retries allowed on this TaskNode.
+     *
+     * Retryable errors include:
+     * - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the
+     *   Task Worker in time.
+     * - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
+     *   the Task Function.
+     *
+     * Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+     * TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
      * </pre>
      *
      * <code>int32 retries = 3;</code>
@@ -854,9 +1219,16 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * EXPERIMENTAL: How many times we should retry on retryable ERROR's.
-     * Please note that this API may change before version 1.0.0, as we are going to
-     * add significant functionality including backoff policies.
+     * Configures the amount of retries allowed on this TaskNode.
+     *
+     * Retryable errors include:
+     * - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the
+     *   Task Worker in time.
+     * - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
+     *   the Task Function.
+     *
+     * Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+     * TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
      * </pre>
      *
      * <code>int32 retries = 3;</code>
@@ -866,33 +1238,195 @@ private static final long serialVersionUID = 0L;
     public Builder setRetries(int value) {
 
       retries_ = value;
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * EXPERIMENTAL: How many times we should retry on retryable ERROR's.
-     * Please note that this API may change before version 1.0.0, as we are going to
-     * add significant functionality including backoff policies.
+     * Configures the amount of retries allowed on this TaskNode.
+     *
+     * Retryable errors include:
+     * - TASK_TIMEOUT: the TaskRun was started but the scheduler didn't hear back from the
+     *   Task Worker in time.
+     * - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
+     *   the Task Function.
+     *
+     * Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+     * TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
      * </pre>
      *
      * <code>int32 retries = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearRetries() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000008);
       retries_ = 0;
       onChanged();
       return this;
     }
 
+    private io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy exponentialBackoff_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder> exponentialBackoffBuilder_;
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     * @return Whether the exponentialBackoff field is set.
+     */
+    public boolean hasExponentialBackoff() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     * @return The exponentialBackoff.
+     */
+    public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy getExponentialBackoff() {
+      if (exponentialBackoffBuilder_ == null) {
+        return exponentialBackoff_ == null ? io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance() : exponentialBackoff_;
+      } else {
+        return exponentialBackoffBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     */
+    public Builder setExponentialBackoff(io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy value) {
+      if (exponentialBackoffBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        exponentialBackoff_ = value;
+      } else {
+        exponentialBackoffBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     */
+    public Builder setExponentialBackoff(
+        io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder builderForValue) {
+      if (exponentialBackoffBuilder_ == null) {
+        exponentialBackoff_ = builderForValue.build();
+      } else {
+        exponentialBackoffBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     */
+    public Builder mergeExponentialBackoff(io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy value) {
+      if (exponentialBackoffBuilder_ == null) {
+        if (((bitField0_ & 0x00000010) != 0) &&
+          exponentialBackoff_ != null &&
+          exponentialBackoff_ != io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance()) {
+          getExponentialBackoffBuilder().mergeFrom(value);
+        } else {
+          exponentialBackoff_ = value;
+        }
+      } else {
+        exponentialBackoffBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     */
+    public Builder clearExponentialBackoff() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      exponentialBackoff_ = null;
+      if (exponentialBackoffBuilder_ != null) {
+        exponentialBackoffBuilder_.dispose();
+        exponentialBackoffBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder getExponentialBackoffBuilder() {
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return getExponentialBackoffFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder getExponentialBackoffOrBuilder() {
+      if (exponentialBackoffBuilder_ != null) {
+        return exponentialBackoffBuilder_.getMessageOrBuilder();
+      } else {
+        return exponentialBackoff_ == null ?
+            io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.getDefaultInstance() : exponentialBackoff_;
+      }
+    }
+    /**
+     * <pre>
+     * If this field is set, then retries will use Exponential Backoff.
+     * </pre>
+     *
+     * <code>optional .littlehorse.ExponentialBackoffRetryPolicy exponential_backoff = 5;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder> 
+        getExponentialBackoffFieldBuilder() {
+      if (exponentialBackoffBuilder_ == null) {
+        exponentialBackoffBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy.Builder, io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicyOrBuilder>(
+                getExponentialBackoff(),
+                getParentForChildren(),
+                isClean());
+        exponentialBackoff_ = null;
+      }
+      return exponentialBackoffBuilder_;
+    }
+
     private java.util.List<io.littlehorse.sdk.common.proto.VariableAssignment> variables_ =
       java.util.Collections.emptyList();
     private void ensureVariablesIsMutable() {
-      if (!((bitField0_ & 0x00000008) != 0)) {
+      if (!((bitField0_ & 0x00000020) != 0)) {
         variables_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.VariableAssignment>(variables_);
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000020;
        }
     }
 
@@ -1086,7 +1620,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearVariables() {
       if (variablesBuilder_ == null) {
         variables_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000020);
         onChanged();
       } else {
         variablesBuilder_.clear();
@@ -1191,7 +1725,7 @@ private static final long serialVersionUID = 0L;
         variablesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
                 variables_,
-                ((bitField0_ & 0x00000008) != 0),
+                ((bitField0_ & 0x00000020) != 0),
                 getParentForChildren(),
                 isClean());
         variables_ = null;

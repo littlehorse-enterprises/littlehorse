@@ -37,6 +37,30 @@ public interface WorkflowThread {
     TaskNodeOutput execute(String taskName, Serializable... args);
 
     /**
+     * Adds a TASK node to the ThreadSpec.
+     *
+     * @param taskName a WfRunVariable containing the name of the TaskDef to execute.
+     * @param args The input parameters to pass into the Task Run. If the type of an arg is a
+     *     `WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+     *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
+     *     pass that literal value in.
+     * @return A NodeOutput for that TASK node.
+     */
+    TaskNodeOutput execute(WfRunVariable taskName, Serializable... args);
+
+    /**
+     * Adds a TASK node to the ThreadSpec.
+     *
+     * @param taskName an LHFormatString containing the name of the TaskDef to execute.
+     * @param args The input parameters to pass into the Task Run. If the type of an arg is a
+     *     `WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+     *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
+     *     pass that literal value in.
+     * @return A NodeOutput for that TASK node.
+     */
+    TaskNodeOutput execute(LHFormatString taskName, Serializable... args);
+
+    /**
      * Adds a User Task Node, and assigns it to a specific user
      *
      * @param userTaskDefName is the UserTaskDef to assign.
@@ -129,7 +153,7 @@ public interface WorkflowThread {
      *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
      *     pass that literal value in.
      */
-    void scheduleReminderTask(UserTaskOutput userTask, int delaySeconds, String taskDefName, Object... args);
+    void scheduleReminderTask(UserTaskOutput userTask, int delaySeconds, String taskDefName, Serializable... args);
 
     /**
      * Adds a Reminder Task to a User Task Node.
@@ -142,7 +166,50 @@ public interface WorkflowThread {
      *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
      *     pass that literal value in.
      */
-    void scheduleReminderTask(UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, Object... args);
+    void scheduleReminderTask(
+            UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, Serializable... args);
+
+    /**
+     * Adds a task reminder once a user is assigned to UserTask.
+     *
+     * @param userTask is a reference to the UserTaskNode that we schedule the action after.
+     * @param delaySeconds is the delay time after which the Task should be executed.
+     * @param taskDefName The name of the TaskDef to execute.
+     * @param args The input parameters to pass into the Task Run. If the type of an arg is a
+     *     `WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+     *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
+     *     pass that literal value in.
+     */
+    void scheduleReminderTaskOnAssignment(
+            UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, Serializable... args);
+
+    /**
+     * Cancels a User Task Run if it exceeds a specified deadline.
+     * @param userTask is a reference to the UserTaskNode that will be canceled after the deadline
+     * @param delaySeconds is the delay time after which the User Task Run should be canceled
+     */
+    void cancelUserTaskRunAfter(UserTaskOutput userTask, Serializable delaySeconds);
+
+    /**
+     * Cancels a User Task Run if it exceeds a specified deadline after it is assigned
+     * @param userTask is a reference to the UserTaskNode that will be canceled after the deadline
+     * @param delaySeconds is the delay time after which the User Task Run should be canceled
+     */
+    void cancelUserTaskRunAfterAssignment(UserTaskOutput userTask, Serializable delaySeconds);
+
+    /**
+     * Adds a task reminder once a user is assigned to the UserTask.
+     *
+     * @param userTask is a reference to the UserTaskNode that we schedule the action after.
+     * @param delaySeconds is the delay time after which the Task should be executed.
+     * @param taskDefName The name of the TaskDef to execute.
+     * @param args The input parameters to pass into the Task Run. If the type of an arg is a
+     *     `WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+     *     library will attempt to cast the provided argument to a LittleHorse VariableValue and
+     *     pass that literal value in.
+     */
+    void scheduleReminderTaskOnAssignment(
+            UserTaskOutput userTask, int delaySeconds, String taskDefName, Serializable... args);
 
     /**
      * Conditionally executes some workflow code; equivalent to an while() statement in programming.
@@ -312,6 +379,14 @@ public interface WorkflowThread {
      *     (which allows you to use the output of a Node Run to mutate variables).
      */
     void mutate(WfRunVariable lhs, VariableMutationType type, Object rhs);
+
+    /**
+     * EXPERIMENTAL: Makes the active ThreadSpec throw a WorkflowEvent with a specific WorkflowEventDef
+     * and provided content.
+     * @param workflowEventDefName is the name of the WorkflowEvent to throw.
+     * @param content is the content of the WorkflowEvent that is thrown.
+     */
+    void throwEvent(String workflowEventDefName, Serializable content);
 
     /**
      * Given a WfRunVariable of type JSON_ARR, this function iterates over each object in that list

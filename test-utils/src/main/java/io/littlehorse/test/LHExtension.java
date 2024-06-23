@@ -1,17 +1,8 @@
 package io.littlehorse.test;
 
-import com.google.protobuf.Empty;
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
-import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
-import io.littlehorse.sdk.common.proto.ACLAction;
-import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
-import io.littlehorse.sdk.common.proto.Principal;
-import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
-import io.littlehorse.sdk.common.proto.ServerACL;
-import io.littlehorse.sdk.common.proto.ServerACLs;
+import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
@@ -22,12 +13,14 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
+import org.junit.jupiter.api.extension.TestInstancePreDestroyCallback;
 
-public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor {
+public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor, TestInstancePreDestroyCallback {
 
     private static final ExtensionContext.Namespace LH_TEST_NAMESPACE =
             ExtensionContext.Namespace.create(LHExtension.class);
@@ -35,13 +28,11 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
 
     @Override
     public void beforeAll(ExtensionContext context) {
-        Awaitility.setDefaultPollInterval(Duration.of(50, ChronoUnit.MILLIS));
-        Awaitility.setDefaultTimeout(Duration.of(1000, ChronoUnit.MILLIS));
+        Awaitility.setDefaultPollInterval(Duration.of(40, ChronoUnit.MILLIS));
+        Awaitility.setDefaultTimeout(Duration.of(3500, ChronoUnit.MILLIS));
         getStore(context)
                 .getOrComputeIfAbsent(
-                        LH_TEST_CONTEXT,
-                        s -> new TestContext(new StandaloneTestBootstrapper(new PrincipalIdModel(getPrincipalId()))),
-                        TestContext.class);
+                        LH_TEST_CONTEXT, s -> new TestContext(new StandaloneTestBootstrapper()), TestContext.class);
     }
 
     private ExtensionContext.Store getStore(ExtensionContext context) {
@@ -75,52 +66,45 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
             List<ExternalEventDef> externalEventDefinitions =
                     testContext.discoverExternalEventDefinitions(testInstance);
             externalEventDefinitions.forEach(testContext::registerExternalEventDef);
+
+            List<PutWorkflowEventDefRequest> workflowEvents = testContext.discoverWorkflowEvents(testInstance);
+            workflowEvents.forEach(testContext::registerWorkflowEventDef);
         } catch (IllegalAccessException e) {
             throw new LHTestInitializationException("Something went wrong registering task workers", e);
         }
         testContext.instrument(testInstance);
     }
 
-    private void maybeCreateTenantAndPrincipal(TestContext testContext) {
-        String principalId = getPrincipalId();
-        if (testContext.getConfig().getTenantId() == null) {
-            return;
-        }
-        try {
-            testContext
-                    .getAnonymousClient()
-                    .putTenant(PutTenantRequest.newBuilder()
-                            .setId(testContext.getConfig().getTenantId())
-                            .build());
-            ServerACLs acls = ServerACLs.newBuilder()
-                    .addAcls(ServerACL.newBuilder()
-                            .addAllowedActions(ACLAction.ALL_ACTIONS)
-                            .addResources(ACLResource.ACL_ALL_RESOURCES)
-                            .build())
-                    .build();
-            testContext
-                    .getAnonymousClient()
-                    .putPrincipal(PutPrincipalRequest.newBuilder()
-                            .setId(principalId)
-                            .setGlobalAcls(acls)
-                            .putPerTenantAcls(testContext.getConfig().getTenantId(), acls)
-                            .build());
-            // wait until the principal is propagated into the server
-            Awaitility.await()
-                    .atMost(Duration.ofSeconds(15))
-                    .ignoreException(RuntimeException.class)
-                    .until(() -> {
-                        Principal whoami = testContext.getLhClient().whoami(Empty.getDefaultInstance());
-                        return whoami.getId().getId().equals(principalId);
-                    });
-        } catch (StatusRuntimeException ex) {
-            if (!ex.getStatus().getCode().equals(Status.Code.ALREADY_EXISTS)) {
-                throw ex;
+    @Override
+    public void preDestroyTestInstance(ExtensionContext context) {
+        ExtensionContext.Store store = getStore(context);
+        Object testInstance = context.getTestInstance().get();
+        TestContext testContext = store.get(LH_TEST_CONTEXT, TestContext.class);
+
+        for (String taskDef : testContext.discoverTaskDefNames(testInstance)) {
+            LHTaskWorker worker = (LHTaskWorker) store.get(taskDef);
+            if (worker != null) {
+                worker.close();
+                store.remove(taskDef);
             }
         }
     }
 
-    private String getPrincipalId() {
-        return System.getenv().getOrDefault("LH_CLIENT_ID", "tyler");
+    private void maybeCreateTenantAndPrincipal(TestContext testContext) {
+        if (testContext.getConfig().getTenantId() == null) {
+            return;
+        }
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(25))
+                .ignoreExceptionsMatching(exn -> RuntimeException.class.isAssignableFrom(exn.getClass()))
+                .until(() -> {
+                    testContext
+                            .getLhClient()
+                            .withDeadlineAfter(2, TimeUnit.SECONDS)
+                            .putTenant(PutTenantRequest.newBuilder()
+                                    .setId(testContext.getConfig().getTenantId())
+                                    .build());
+                    return true;
+                });
     }
 }

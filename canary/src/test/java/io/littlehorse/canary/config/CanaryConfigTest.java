@@ -3,7 +3,6 @@ package io.littlehorse.canary.config;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
-import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
@@ -34,14 +33,15 @@ class CanaryConfigTest {
     }
 
     @Test
-    void getFilterRules() {
+    void getCommonTags() {
         Map<String, Object> input = Map.of(
-                "lh.canary.metrics.filter.enable[0]", "test_ms",
-                "lh.canary.metrics.filter.enable[1]", "test_ms2");
+                "lh.canary.metrics.common.tags.application_id", "my_id",
+                "lh.canary.metrics.common.tags.extra", "extra_tag");
+
         CanaryConfig canaryConfig = new CanaryConfig(input);
 
-        List<String> output = canaryConfig.getEnabledMetrics();
+        Map<String, String> output = canaryConfig.getCommonTags();
 
-        assertThat(output).containsExactlyInAnyOrder("test_ms", "test_ms2");
+        assertThat(output).contains(entry("application_id", "my_id"), entry("extra", "extra_tag"));
     }
 }

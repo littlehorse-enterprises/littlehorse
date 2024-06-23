@@ -20,12 +20,18 @@ import lombok.Getter;
 @Getter
 public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
 
-    public String name;
-    public Date createdAt;
+    private ExternalEventDefIdModel id;
+    private Date createdAt;
     private ExternalEventRetentionPolicyModel retentionPolicy;
 
     public ExternalEventDefModel() {
         this.retentionPolicy = new ExternalEventRetentionPolicyModel();
+    }
+
+    public ExternalEventDefModel(String name, ExternalEventRetentionPolicyModel retentionPolicy) {
+        this();
+        this.id = new ExternalEventDefIdModel(name);
+        this.retentionPolicy = retentionPolicy;
     }
 
     public Date getCreatedAt() {
@@ -39,7 +45,7 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
     }
 
     public String getName() {
-        return name;
+        return id.getName();
     }
 
     public Class<ExternalEventDef> getProtoBaseClass() {
@@ -48,7 +54,7 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
 
     public ExternalEventDef.Builder toProto() {
         ExternalEventDef.Builder b = ExternalEventDef.newBuilder()
-                .setName(name)
+                .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
                 .setRetentionPolicy(retentionPolicy.toProto());
         return b;
@@ -57,7 +63,7 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
     @Override
     public void initFrom(Message p, ExecutionContext context) {
         ExternalEventDef proto = (ExternalEventDef) p;
-        name = proto.getName();
+        id = LHSerializable.fromProto(proto.getId(), ExternalEventDefIdModel.class, context);
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         retentionPolicy =
                 LHSerializable.fromProto(proto.getRetentionPolicy(), ExternalEventRetentionPolicyModel.class, context);
@@ -74,7 +80,7 @@ public class ExternalEventDefModel extends MetadataGetable<ExternalEventDef> {
     }
 
     public ExternalEventDefIdModel getObjectId() {
-        return new ExternalEventDefIdModel(name);
+        return id;
     }
 
     @Override

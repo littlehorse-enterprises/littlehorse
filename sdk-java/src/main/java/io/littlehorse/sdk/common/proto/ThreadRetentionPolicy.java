@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * ThreadRetentionPolicy specifies how long to keep record of a ThreadRun and its associated
+ * NodeRun's and TaskRun's and Variables after the ThreadRun has been completed.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ThreadRetentionPolicy}
  */
 public final class ThreadRetentionPolicy extends
@@ -283,6 +288,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * ThreadRetentionPolicy specifies how long to keep record of a ThreadRun and its associated
+   * NodeRun's and TaskRun's and Variables after the ThreadRun has been completed.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ThreadRetentionPolicy}
    */
   public static final class Builder extends

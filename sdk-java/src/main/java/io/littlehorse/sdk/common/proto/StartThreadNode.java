@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Starts a Child ThreadRun with a specific ThreadSpec.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.StartThreadNode}
  */
 public final class StartThreadNode extends
@@ -55,6 +59,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object threadSpecName_ = "";
   /**
+   * <pre>
+   * The name of the ThreadSpec to spawn.
+   * </pre>
+   *
    * <code>string thread_spec_name = 1;</code>
    * @return The threadSpecName.
    */
@@ -72,6 +80,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the ThreadSpec to spawn.
+   * </pre>
+   *
    * <code>string thread_spec_name = 1;</code>
    * @return The bytes for threadSpecName.
    */
@@ -117,6 +129,10 @@ private static final long serialVersionUID = 0L;
     return internalGetVariables().getMap().size();
   }
   /**
+   * <pre>
+   * The input variables to pass into the Child ThreadRun.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
   @java.lang.Override
@@ -134,6 +150,10 @@ private static final long serialVersionUID = 0L;
     return getVariablesMap();
   }
   /**
+   * <pre>
+   * The input variables to pass into the Child ThreadRun.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
   @java.lang.Override
@@ -141,6 +161,10 @@ private static final long serialVersionUID = 0L;
     return internalGetVariables().getMap();
   }
   /**
+   * <pre>
+   * The input variables to pass into the Child ThreadRun.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
   @java.lang.Override
@@ -155,6 +179,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
+   * <pre>
+   * The input variables to pass into the Child ThreadRun.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
   @java.lang.Override
@@ -348,6 +376,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     return builder;
   }
   /**
+   * <pre>
+   * Starts a Child ThreadRun with a specific ThreadSpec.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.StartThreadNode}
    */
   public static final class Builder extends
@@ -558,6 +590,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
 
     private java.lang.Object threadSpecName_ = "";
     /**
+     * <pre>
+     * The name of the ThreadSpec to spawn.
+     * </pre>
+     *
      * <code>string thread_spec_name = 1;</code>
      * @return The threadSpecName.
      */
@@ -574,6 +610,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec to spawn.
+     * </pre>
+     *
      * <code>string thread_spec_name = 1;</code>
      * @return The bytes for threadSpecName.
      */
@@ -591,6 +631,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec to spawn.
+     * </pre>
+     *
      * <code>string thread_spec_name = 1;</code>
      * @param value The threadSpecName to set.
      * @return This builder for chaining.
@@ -604,6 +648,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec to spawn.
+     * </pre>
+     *
      * <code>string thread_spec_name = 1;</code>
      * @return This builder for chaining.
      */
@@ -614,6 +662,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The name of the ThreadSpec to spawn.
+     * </pre>
+     *
      * <code>string thread_spec_name = 1;</code>
      * @param value The bytes for threadSpecName to set.
      * @return This builder for chaining.
@@ -655,6 +707,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return internalGetVariables().getMap().size();
     }
     /**
+     * <pre>
+     * The input variables to pass into the Child ThreadRun.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
      */
     @java.lang.Override
@@ -672,6 +728,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return getVariablesMap();
     }
     /**
+     * <pre>
+     * The input variables to pass into the Child ThreadRun.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
      */
     @java.lang.Override
@@ -679,6 +739,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return internalGetVariables().getMap();
     }
     /**
+     * <pre>
+     * The input variables to pass into the Child ThreadRun.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
      */
     @java.lang.Override
@@ -693,6 +757,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
+     * <pre>
+     * The input variables to pass into the Child ThreadRun.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
      */
     @java.lang.Override
@@ -713,6 +781,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The input variables to pass into the Child ThreadRun.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
      */
     public Builder removeVariables(
@@ -732,6 +804,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return internalGetMutableVariables().getMutableMap();
     }
     /**
+     * <pre>
+     * The input variables to pass into the Child ThreadRun.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
      */
     public Builder putVariables(
@@ -745,6 +821,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The input variables to pass into the Child ThreadRun.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
      */
     public Builder putAllVariables(

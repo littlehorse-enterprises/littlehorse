@@ -70,6 +70,103 @@ func TestUserTaskAssignToUserByVar(t *testing.T) {
 	assert.Equal(t, "user", utNode.UserId.GetVariableName())
 }
 
+func TestUserTaskWithNotes(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		t.AssignUserTask("sample-user-task", nil, "group").WithNotes("sample notes")
+	}, "my-workflow")
+
+	putWf, _ := wf.Compile()
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-sample-user-task-USER_TASK"]
+
+	utNode := node.GetUserTask()
+	assert.NotNil(t, utNode)
+
+	assert.Equal(t, "sample notes", utNode.GetNotes().GetLiteralValue().GetStr())
+}
+
+func TestUserTaskWithOnCancellationExceptionName(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		t.AssignUserTask("sample-user-task", nil, "group").WithOnCancellationException("no-response")
+	}, "my-workflow")
+
+	putWf, _ := wf.Compile()
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-sample-user-task-USER_TASK"]
+
+	utNode := node.GetUserTask()
+	assert.NotNil(t, utNode)
+
+	assert.Equal(t, "no-response", utNode.GetOnCancellationExceptionName().GetLiteralValue().GetStr())
+}
+
+func TestReminderTask(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		userVar := t.AddVariable("user", model.VariableType_STR)
+		uto := t.AssignUserTask("my-task", userVar, nil)
+		t.ScheduleReminderTaskOnAssignment(uto, 20, "my-task", "my-arg")
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-my-task-USER_TASK"]
+
+	utNode := node.GetUserTask()
+	assert.NotNil(t, utNode)
+	reminderAction := utNode.Actions[0]
+	assert.NotNil(t, reminderAction)
+	assert.Equal(t, model.UTActionTrigger_ON_TASK_ASSIGNED, reminderAction.Hook)
+
+}
+
+func TestCancelUserTaskAfterDeadline(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		userVar := t.AddVariable("user", model.VariableType_STR)
+		uto := t.AssignUserTask("my-task", userVar, nil)
+		t.CancelUserTaskAfter(uto, 20)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-my-task-USER_TASK"]
+
+	utNode := node.GetUserTask()
+	assert.NotNil(t, utNode)
+	cancelUserTask := utNode.Actions[0]
+	assert.NotNil(t, cancelUserTask)
+	assert.Equal(t, model.UTActionTrigger_ON_ARRIVAL, cancelUserTask.Hook)
+}
+
+func TestCancelUserTaskAfterAssignment(t *testing.T) {
+	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
+		userVar := t.AddVariable("user", model.VariableType_STR)
+		uto := t.AssignUserTask("my-task", userVar, nil)
+		t.CancelUserTaskAfterAssignment(uto, 20)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-my-task-USER_TASK"]
+
+	utNode := node.GetUserTask()
+	assert.NotNil(t, utNode)
+	cancelUserTask := utNode.Actions[0]
+	assert.NotNil(t, cancelUserTask)
+	assert.Equal(t, model.UTActionTrigger_ON_TASK_ASSIGNED, cancelUserTask.Hook)
+}
+
 func TestUserTaskAssignToUserWithGroup(t *testing.T) {
 	wf := wflib.NewWorkflow(func(t *wflib.WorkflowThread) {
 		t.AssignUserTask("my-task", "yoda", "jedi-council")
@@ -483,4 +580,168 @@ func TestRetentionPolicy(t *testing.T) {
 
 	thread := putWf.ThreadSpecs[putWf.EntrypointThreadName]
 	assert.Equal(t, int(thread.RetentionPolicy.GetSecondsAfterThreadTermination()), int(137))
+}
+
+func TestThrowEvent(t *testing.T) {
+	wf := wflib.NewWorkflow(func(wf *wflib.WorkflowThread) {
+		myVar := wf.AddVariable("my-var", model.VariableType_STR)
+		wf.ThrowEvent("my-event", myVar)
+		wf.ThrowEvent("another-event", "my-content")
+	}, "throw-event")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-throw-my-event-THROW_EVENT"]
+	assert.Equal(t, node.GetThrowEvent().Content.GetVariableName(), "my-var")
+	assert.Equal(t, node.GetThrowEvent().EventDefId.Name, "my-event")
+
+	node = entrypoint.Nodes["2-throw-another-event-THROW_EVENT"]
+	assert.Equal(t, node.GetThrowEvent().Content.GetLiteralValue().GetStr(), "my-content")
+	assert.Equal(t, node.GetThrowEvent().EventDefId.Name, "another-event")
+}
+
+func TestDynamicTask(t *testing.T) {
+	wf := wflib.NewWorkflow(func(wf *wflib.WorkflowThread) {
+		myVar := wf.AddVariable("my-var", model.VariableType_STR)
+		wf.Execute("some-static-task")
+
+		formatStr := wf.Format("some-dynamic-task-{0}")
+		wf.Execute(formatStr, myVar)
+		wf.Execute(myVar)
+	}, "obiwan")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	staticNode := entrypoint.Nodes["1-some-static-task-TASK"]
+	assert.Equal(t, staticNode.GetTask().GetTaskDefId().Name, "some-static-task")
+
+	formatStrNode := entrypoint.Nodes["2-some-dynamic-task-{0}-TASK"]
+	assert.Equal(
+		t,
+		formatStrNode.GetTask().GetDynamicTask().GetFormatString().GetFormat().GetLiteralValue().GetStr(),
+		"some-dynamic-task-{0}",
+	)
+
+	varNode := entrypoint.Nodes["3-my-var-TASK"]
+	assert.Equal(t, varNode.GetTask().GetDynamicTask().GetVariableName(), "my-var")
+}
+
+func TestWaitForThreadsHandleExceptionOnChild(t *testing.T) {
+	failureHandler := func(wf *wflib.WorkflowThread) {
+		wf.Execute("some-task")
+	}
+
+	childThread := func(wf *wflib.WorkflowThread) {
+		wf.Execute("some-task")
+	}
+
+	wfFunc := func(t *wflib.WorkflowThread) {
+		child := t.SpawnThread(childThread, "child", nil)
+		result := t.WaitForThreads(child)
+
+		exceptionName := "my-exception"
+		result.HandleExceptionOnChild(failureHandler, &exceptionName)
+		result.HandleExceptionOnChild(failureHandler, nil)
+	}
+
+	wf, err := wflib.NewWorkflow(wfFunc, "some-wf").Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := wf.ThreadSpecs[wf.EntrypointThreadName]
+	node := entrypoint.Nodes["2-threads-WAIT_FOR_THREADS"]
+
+	wftn := node.GetWaitForThreads()
+	assert.Equal(t, 2, len(wftn.PerThreadFailureHandlers))
+
+	specificHandler := wftn.PerThreadFailureHandlers[0]
+	anyHandler := wftn.PerThreadFailureHandlers[1]
+
+	assert.Equal(t, "my-exception", specificHandler.GetSpecificFailure())
+	assert.Equal(t, "exn-handler-2-threads-WAIT_FOR_THREADS-my-exception", specificHandler.HandlerSpecName)
+
+	assert.Equal(t, model.FailureHandlerDef_FAILURE_TYPE_EXCEPTION, anyHandler.GetAnyFailureOfType())
+	assert.Equal(t, "exn-handler-2-threads-WAIT_FOR_THREADS", anyHandler.HandlerSpecName)
+}
+
+func TestWaitForThreadsHandleAnyFailureOnChild(t *testing.T) {
+	failureHandler := func(wf *wflib.WorkflowThread) {
+		wf.Execute("some-task")
+	}
+
+	childThread := func(wf *wflib.WorkflowThread) {
+		wf.Execute("another-task")
+	}
+
+	wfFunc := func(t *wflib.WorkflowThread) {
+		child := t.SpawnThread(childThread, "child", nil)
+		result := t.WaitForThreads(child)
+
+		result.HandleAnyFailureOnChild(failureHandler)
+	}
+
+	wf, err := wflib.NewWorkflow(wfFunc, "some-wf").Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := wf.ThreadSpecs[wf.EntrypointThreadName]
+	node := entrypoint.Nodes["2-threads-WAIT_FOR_THREADS"]
+	wftn := node.GetWaitForThreads()
+
+	assert.Equal(t, 1, len(wftn.PerThreadFailureHandlers))
+
+	anyFailureHandler := wftn.PerThreadFailureHandlers[0]
+
+	assert.Equal(t, "failure-handler-2-threads-WAIT_FOR_THREADS-ANY_FAILURE", anyFailureHandler.HandlerSpecName)
+}
+
+func TestWaitForThreadsHandleErrorOnChild(t *testing.T) {
+	errorHandler := func(wf *wflib.WorkflowThread) {
+		wf.Execute("some-task")
+	}
+
+	childThread := func(wf *wflib.WorkflowThread) {
+		wf.Execute("some-task")
+	}
+
+	wfFunc := func(t *wflib.WorkflowThread) {
+		child := t.SpawnThread(childThread, "child", nil)
+		result := t.WaitForThreads(child)
+
+		timeout := "TIMEOUT"
+		result.HandleErrorOnChild(errorHandler, &timeout)
+		result.HandleErrorOnChild(errorHandler, nil)
+	}
+
+	wf, err := wflib.NewWorkflow(wfFunc, "some-wf").Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := wf.ThreadSpecs[wf.EntrypointThreadName]
+	node := entrypoint.Nodes["2-threads-WAIT_FOR_THREADS"]
+	wftn := node.GetWaitForThreads()
+
+	assert.Equal(t, 4, len(wf.ThreadSpecs))
+
+	assert.Equal(t, 2, len(wftn.PerThreadFailureHandlers))
+
+	timeoutHandler := wftn.PerThreadFailureHandlers[0]
+	anyErrorHandler := wftn.PerThreadFailureHandlers[1]
+
+	assert.Equal(t, "TIMEOUT", timeoutHandler.GetSpecificFailure())
+	assert.Equal(t, "error-handler-2-threads-WAIT_FOR_THREADS-TIMEOUT", timeoutHandler.HandlerSpecName)
+
+	assert.Equal(t, model.FailureHandlerDef_FAILURE_TYPE_ERROR, anyErrorHandler.GetAnyFailureOfType())
+	assert.Equal(t, "error-handler-2-threads-WAIT_FOR_THREADS", anyErrorHandler.HandlerSpecName)
 }

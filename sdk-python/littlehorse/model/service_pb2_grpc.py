@@ -14,6 +14,7 @@ import littlehorse.model.user_tasks_pb2 as user__tasks__pb2
 import littlehorse.model.variable_pb2 as variable__pb2
 import littlehorse.model.wf_run_pb2 as wf__run__pb2
 import littlehorse.model.wf_spec_pb2 as wf__spec__pb2
+import littlehorse.model.workflow_event_pb2 as workflow__event__pb2
 
 
 class LittleHorseStub(object):
@@ -35,6 +36,11 @@ class LittleHorseStub(object):
                 request_serializer=object__id__pb2.TaskDefId.SerializeToString,
                 response_deserializer=task__def__pb2.TaskDef.FromString,
                 )
+        self.GetTaskWorkerGroup = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetTaskWorkerGroup',
+                request_serializer=object__id__pb2.TaskDefId.SerializeToString,
+                response_deserializer=service__pb2.TaskWorkerGroup.FromString,
+                )
         self.PutExternalEventDef = channel.unary_unary(
                 '/littlehorse.LittleHorse/PutExternalEventDef',
                 request_serializer=service__pb2.PutExternalEventDefRequest.SerializeToString,
@@ -44,6 +50,11 @@ class LittleHorseStub(object):
                 '/littlehorse.LittleHorse/GetExternalEventDef',
                 request_serializer=object__id__pb2.ExternalEventDefId.SerializeToString,
                 response_deserializer=external__event__pb2.ExternalEventDef.FromString,
+                )
+        self.PutWorkflowEventDef = channel.unary_unary(
+                '/littlehorse.LittleHorse/PutWorkflowEventDef',
+                request_serializer=service__pb2.PutWorkflowEventDefRequest.SerializeToString,
+                response_deserializer=workflow__event__pb2.WorkflowEventDef.FromString,
                 )
         self.PutWfSpec = channel.unary_unary(
                 '/littlehorse.LittleHorse/PutWfSpec',
@@ -155,6 +166,11 @@ class LittleHorseStub(object):
                 request_serializer=object__id__pb2.ExternalEventId.SerializeToString,
                 response_deserializer=external__event__pb2.ExternalEvent.FromString,
                 )
+        self.AwaitWorkflowEvent = channel.unary_unary(
+                '/littlehorse.LittleHorse/AwaitWorkflowEvent',
+                request_serializer=service__pb2.AwaitWorkflowEventRequest.SerializeToString,
+                response_deserializer=workflow__event__pb2.WorkflowEvent.FromString,
+                )
         self.ListExternalEvents = channel.unary_unary(
                 '/littlehorse.LittleHorse/ListExternalEvents',
                 request_serializer=service__pb2.ListExternalEventsRequest.SerializeToString,
@@ -210,6 +226,16 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.SearchExternalEventDefRequest.SerializeToString,
                 response_deserializer=service__pb2.ExternalEventDefIdList.FromString,
                 )
+        self.SearchTenant = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchTenant',
+                request_serializer=service__pb2.SearchTenantRequest.SerializeToString,
+                response_deserializer=service__pb2.TenantIdList.FromString,
+                )
+        self.SearchPrincipal = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchPrincipal',
+                request_serializer=service__pb2.SearchPrincipalRequest.SerializeToString,
+                response_deserializer=service__pb2.PrincipalIdList.FromString,
+                )
         self.RegisterTaskWorker = channel.unary_unary(
                 '/littlehorse.LittleHorse/RegisterTaskWorker',
                 request_serializer=service__pb2.RegisterTaskWorkerRequest.SerializeToString,
@@ -234,6 +260,11 @@ class LittleHorseStub(object):
                 '/littlehorse.LittleHorse/ResumeWfRun',
                 request_serializer=service__pb2.ResumeWfRunRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                )
+        self.RescueThreadRun = channel.unary_unary(
+                '/littlehorse.LittleHorse/RescueThreadRun',
+                request_serializer=service__pb2.RescueThreadRunRequest.SerializeToString,
+                response_deserializer=wf__run__pb2.WfRun.FromString,
                 )
         self.DeleteWfRun = channel.unary_unary(
                 '/littlehorse.LittleHorse/DeleteWfRun',
@@ -260,6 +291,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.DeleteExternalEventDefRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
+        self.DeletePrincipal = channel.unary_unary(
+                '/littlehorse.LittleHorse/DeletePrincipal',
+                request_serializer=acls__pb2.DeletePrincipalRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                )
         self.GetTaskDefMetricsWindow = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetTaskDefMetricsWindow',
                 request_serializer=service__pb2.TaskDefMetricsQueryRequest.SerializeToString,
@@ -283,6 +319,11 @@ class LittleHorseStub(object):
         self.PutTenant = channel.unary_unary(
                 '/littlehorse.LittleHorse/PutTenant',
                 request_serializer=acls__pb2.PutTenantRequest.SerializeToString,
+                response_deserializer=acls__pb2.Tenant.FromString,
+                )
+        self.GetTenant = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetTenant',
+                request_serializer=object__id__pb2.TenantId.SerializeToString,
                 response_deserializer=acls__pb2.Tenant.FromString,
                 )
         self.PutPrincipal = channel.unary_unary(
@@ -319,6 +360,13 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetTaskWorkerGroup(self, request, context):
+        """Gets the registered task worker group associated with a specific TaskDef.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def PutExternalEventDef(self, request, context):
         """Creates an ExternalEventDef.
         """
@@ -328,6 +376,13 @@ class LittleHorseServicer(object):
 
     def GetExternalEventDef(self, request, context):
         """Gets an ExternalEventDef.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PutWorkflowEventDef(self, request, context):
+        """EXPERIMENTAL: Creates a WorkflowEventDef.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -355,12 +410,13 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def MigrateWfSpec(self, request, context):
-        """EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
+        """
+        EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
         same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
         you must update WfRun's that are in the RUNNING state rather than allowing them to run to
         completion.
 
-        As of 0.7.0, this feature is only partially implemented.
+        As of 0.7.2, this feature is only partially implemented.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -511,6 +567,17 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def AwaitWorkflowEvent(self, request, context):
+        """Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
+        WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
+        is not thrown before the deadline specified by the client.
+
+        To specify the deadline, the client should use GRPC deadlines.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ListExternalEvents(self, request, context):
         """List ExternalEvent's for a specific WfRun.
         """
@@ -587,7 +654,21 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def SearchExternalEventDef(self, request, context):
-        """Search for ExteranlEventDef's.
+        """Search for ExternalEventDef's.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SearchTenant(self, request, context):
+        """Search for all available TenantIds for current Principal
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SearchPrincipal(self, request, context):
+        """
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -633,6 +714,24 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def RescueThreadRun(self, request, context):
+        """Rescues a failed ThreadRun (in the ERROR state only) by restarting it from 
+        the point of failure. Useful if a bug in Task Worker implementation caused
+        a WfRun to fail and you did not have a FailureHandler for that NodeRun.
+
+        The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/>
+        - In the `ERROR` state.<br/>
+        - Has no `FailureHandler` `ThreadRun`s <br/>
+        - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure`
+        yet.
+
+        If that is not true, then the `ThreadRun` cannot be rescued and the request
+        will return `FAILED_PRECONDITION`.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def DeleteWfRun(self, request, context):
         """Deletes a WfRun. The WfRun cannot be in the RUNNING state.
         """
@@ -663,6 +762,15 @@ class LittleHorseServicer(object):
 
     def DeleteExternalEventDef(self, request, context):
         """Deletes an ExternalEventDef.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeletePrincipal(self, request, context):
+        """Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
+        is the last remaining `Principal` with admin permissions. Admin permissions are defined
+        as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -703,6 +811,13 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetTenant(self, request, context):
+        """EXPERIMENTAL: Gets a Tenant from the LH Server.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def PutPrincipal(self, request, context):
         """EXPERIMENTAL: Creates an Principal.
         """
@@ -737,6 +852,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=object__id__pb2.TaskDefId.FromString,
                     response_serializer=task__def__pb2.TaskDef.SerializeToString,
             ),
+            'GetTaskWorkerGroup': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetTaskWorkerGroup,
+                    request_deserializer=object__id__pb2.TaskDefId.FromString,
+                    response_serializer=service__pb2.TaskWorkerGroup.SerializeToString,
+            ),
             'PutExternalEventDef': grpc.unary_unary_rpc_method_handler(
                     servicer.PutExternalEventDef,
                     request_deserializer=service__pb2.PutExternalEventDefRequest.FromString,
@@ -746,6 +866,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.GetExternalEventDef,
                     request_deserializer=object__id__pb2.ExternalEventDefId.FromString,
                     response_serializer=external__event__pb2.ExternalEventDef.SerializeToString,
+            ),
+            'PutWorkflowEventDef': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutWorkflowEventDef,
+                    request_deserializer=service__pb2.PutWorkflowEventDefRequest.FromString,
+                    response_serializer=workflow__event__pb2.WorkflowEventDef.SerializeToString,
             ),
             'PutWfSpec': grpc.unary_unary_rpc_method_handler(
                     servicer.PutWfSpec,
@@ -857,6 +982,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=object__id__pb2.ExternalEventId.FromString,
                     response_serializer=external__event__pb2.ExternalEvent.SerializeToString,
             ),
+            'AwaitWorkflowEvent': grpc.unary_unary_rpc_method_handler(
+                    servicer.AwaitWorkflowEvent,
+                    request_deserializer=service__pb2.AwaitWorkflowEventRequest.FromString,
+                    response_serializer=workflow__event__pb2.WorkflowEvent.SerializeToString,
+            ),
             'ListExternalEvents': grpc.unary_unary_rpc_method_handler(
                     servicer.ListExternalEvents,
                     request_deserializer=service__pb2.ListExternalEventsRequest.FromString,
@@ -912,6 +1042,16 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.SearchExternalEventDefRequest.FromString,
                     response_serializer=service__pb2.ExternalEventDefIdList.SerializeToString,
             ),
+            'SearchTenant': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchTenant,
+                    request_deserializer=service__pb2.SearchTenantRequest.FromString,
+                    response_serializer=service__pb2.TenantIdList.SerializeToString,
+            ),
+            'SearchPrincipal': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchPrincipal,
+                    request_deserializer=service__pb2.SearchPrincipalRequest.FromString,
+                    response_serializer=service__pb2.PrincipalIdList.SerializeToString,
+            ),
             'RegisterTaskWorker': grpc.unary_unary_rpc_method_handler(
                     servicer.RegisterTaskWorker,
                     request_deserializer=service__pb2.RegisterTaskWorkerRequest.FromString,
@@ -936,6 +1076,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.ResumeWfRun,
                     request_deserializer=service__pb2.ResumeWfRunRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'RescueThreadRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.RescueThreadRun,
+                    request_deserializer=service__pb2.RescueThreadRunRequest.FromString,
+                    response_serializer=wf__run__pb2.WfRun.SerializeToString,
             ),
             'DeleteWfRun': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteWfRun,
@@ -962,6 +1107,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.DeleteExternalEventDefRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
+            'DeletePrincipal': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeletePrincipal,
+                    request_deserializer=acls__pb2.DeletePrincipalRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
             'GetTaskDefMetricsWindow': grpc.unary_unary_rpc_method_handler(
                     servicer.GetTaskDefMetricsWindow,
                     request_deserializer=service__pb2.TaskDefMetricsQueryRequest.FromString,
@@ -985,6 +1135,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'PutTenant': grpc.unary_unary_rpc_method_handler(
                     servicer.PutTenant,
                     request_deserializer=acls__pb2.PutTenantRequest.FromString,
+                    response_serializer=acls__pb2.Tenant.SerializeToString,
+            ),
+            'GetTenant': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetTenant,
+                    request_deserializer=object__id__pb2.TenantId.FromString,
                     response_serializer=acls__pb2.Tenant.SerializeToString,
             ),
             'PutPrincipal': grpc.unary_unary_rpc_method_handler(
@@ -1047,6 +1202,23 @@ class LittleHorse(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def GetTaskWorkerGroup(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetTaskWorkerGroup',
+            object__id__pb2.TaskDefId.SerializeToString,
+            service__pb2.TaskWorkerGroup.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def PutExternalEventDef(request,
             target,
             options=(),
@@ -1077,6 +1249,23 @@ class LittleHorse(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetExternalEventDef',
             object__id__pb2.ExternalEventDefId.SerializeToString,
             external__event__pb2.ExternalEventDef.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def PutWorkflowEventDef(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/PutWorkflowEventDef',
+            service__pb2.PutWorkflowEventDefRequest.SerializeToString,
+            workflow__event__pb2.WorkflowEventDef.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1455,6 +1644,23 @@ class LittleHorse(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def AwaitWorkflowEvent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/AwaitWorkflowEvent',
+            service__pb2.AwaitWorkflowEventRequest.SerializeToString,
+            workflow__event__pb2.WorkflowEvent.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def ListExternalEvents(request,
             target,
             options=(),
@@ -1642,6 +1848,40 @@ class LittleHorse(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def SearchTenant(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchTenant',
+            service__pb2.SearchTenantRequest.SerializeToString,
+            service__pb2.TenantIdList.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SearchPrincipal(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchPrincipal',
+            service__pb2.SearchPrincipalRequest.SerializeToString,
+            service__pb2.PrincipalIdList.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def RegisterTaskWorker(request,
             target,
             options=(),
@@ -1723,6 +1963,23 @@ class LittleHorse(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ResumeWfRun',
             service__pb2.ResumeWfRunRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def RescueThreadRun(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/RescueThreadRun',
+            service__pb2.RescueThreadRunRequest.SerializeToString,
+            wf__run__pb2.WfRun.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -1812,6 +2069,23 @@ class LittleHorse(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def DeletePrincipal(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/DeletePrincipal',
+            acls__pb2.DeletePrincipalRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def GetTaskDefMetricsWindow(request,
             target,
             options=(),
@@ -1892,6 +2166,23 @@ class LittleHorse(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/PutTenant',
             acls__pb2.PutTenantRequest.SerializeToString,
+            acls__pb2.Tenant.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetTenant(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetTenant',
+            object__id__pb2.TenantId.SerializeToString,
             acls__pb2.Tenant.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

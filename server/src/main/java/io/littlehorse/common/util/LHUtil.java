@@ -10,6 +10,7 @@ import com.google.protobuf.Timestamp;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.nio.charset.StandardCharsets;
@@ -94,7 +95,7 @@ public class LHUtil {
     }
 
     public static String toLhDbFormat(Date date) {
-        return date == null ? "null" : String.format("%012d", date.getTime());
+        return date == null ? "null" : String.valueOf(date.getTime());
     }
 
     public static Date getWindowStart(Date time, MetricsWindowLength type) {
@@ -129,14 +130,7 @@ public class LHUtil {
 
     /** @precondition every input string is a valid LHName. */
     public static String getCompositeId(String... components) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < components.length; i++) {
-            builder.append(components[i]);
-            if (i + 1 < components.length) {
-                builder.append('/');
-            }
-        }
-        return builder.toString();
+        return String.join("/", components);
     }
 
     public static boolean isValidLHName(String name) {
@@ -217,12 +211,11 @@ public class LHUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static List<Object> strToJsonArr(String jsonStr) {
+    public static List<Object> strToJsonArr(String jsonStr) throws LHApiException {
         try {
             return mapper.readValue(jsonStr, List.class);
         } catch (JsonProcessingException exn) {
-            log.error(exn.getMessage(), exn);
-            return null;
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid JSON_ARR value: %s".formatted(exn.getMessage()));
         }
     }
 
@@ -231,8 +224,7 @@ public class LHUtil {
         try {
             return mapper.readValue(jsonStr, Map.class);
         } catch (JsonProcessingException exn) {
-            log.error(exn.getMessage(), exn);
-            return null;
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid JSON_OBJ value: %s".formatted(exn.getMessage()));
         }
     }
 
@@ -246,8 +238,8 @@ public class LHUtil {
             try {
                 return mapper.writeValueAsString(obj);
             } catch (Exception exn) {
-                log.error("Failed writing map or list to json, returning null.", exn);
-                return null;
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT, "Unable to serialize argument: %s".formatted(exn.getMessage()));
             }
         }
         return obj.toString();

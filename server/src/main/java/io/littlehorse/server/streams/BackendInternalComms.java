@@ -22,21 +22,36 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
-import io.littlehorse.common.proto.*;
+import io.littlehorse.common.proto.BookmarkPb;
+import io.littlehorse.common.proto.GetObjectRequest;
+import io.littlehorse.common.proto.GetObjectResponse;
+import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.InternalGetAdvertisedHostsResponse;
+import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
+import io.littlehorse.common.proto.InternalScanResponse;
+import io.littlehorse.common.proto.InternalWaitForWfEventRequest;
+import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsStub;
+import io.littlehorse.common.proto.PartitionBookmarkPb;
+import io.littlehorse.common.proto.ScanResultTypePb;
+import io.littlehorse.common.proto.WaitForCommandRequest;
+import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
+import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.server.auth.InternalAuthorizer;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
@@ -48,7 +63,7 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
-import io.littlehorse.server.streams.topology.core.BackgroundContext;
+import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.AsyncWaiters;
@@ -66,7 +81,6 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -83,6 +97,8 @@ import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.StreamsMetadata;
 import org.apache.kafka.streams.TaskMetadata;
 import org.apache.kafka.streams.ThreadMetadata;
+import org.apache.kafka.streams.errors.InvalidStateStoreException;
+import org.apache.kafka.streams.processor.TaskId;
 import org.apache.kafka.streams.state.HostInfo;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -106,7 +122,7 @@ public class BackendInternalComms implements Closeable {
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
     private final Context.Key<RequestExecutionContext> contextKey;
-    private final Pattern objectIdExtractorPattern = Pattern.compile("[0-9]+/[0-9]+/");
+    private final Pattern tenantScopedObjectIdExtractorPattern = Pattern.compile("[0-9]+/[0-9]+/");
     private final MetadataCache metadataCache;
 
     public BackendInternalComms(
@@ -116,7 +132,7 @@ public class BackendInternalComms implements Closeable {
             Executor executor,
             MetadataCache metadataCache,
             Context.Key<RequestExecutionContext> contextKey,
-            BiFunction<Integer, String, ReadOnlyKeyValueStore<String, Bytes>> storeProvider) {
+            CoreStoreProvider coreStoreProvider) {
         this.config = config;
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
@@ -140,25 +156,12 @@ public class BackendInternalComms implements Closeable {
                 .permitKeepAliveWithoutCalls(true)
                 .executor(executor)
                 .addService(new InterBrokerCommServer())
-                .intercept(new InternalAuthorizer(contextKey, storeProvider, metadataCache, config))
+                .intercept(new InternalAuthorizer(contextKey, coreStoreProvider, metadataCache, config))
                 .build();
 
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
         this.producer = config.getProducer();
         this.asyncWaiters = new AsyncWaiters();
-
-        // TODO: Optimize this later.
-        new Thread(() -> {
-                    while (true) {
-                        try {
-                            Thread.sleep(20 * 1000);
-                            this.asyncWaiters.cleanupOldWaiters();
-                        } catch (InterruptedException exn) {
-                            throw new RuntimeException(exn);
-                        }
-                    }
-                })
-                .start();
     }
 
     public void start() throws IOException {
@@ -182,6 +185,20 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
+    private KeyQueryMetadata lookupPartitionKey(ObjectIdModel<?, ?, ?> id) {
+        return lookupPartitionKey(
+                id.getStore().getStoreName(), id.getPartitionKey().get());
+    }
+
+    private KeyQueryMetadata lookupPartitionKey(String storeName, String partitionKey) {
+        KeyQueryMetadata metadata = coreStreams.queryMetadataForKey(
+                storeName, partitionKey, Serdes.String().serializer());
+        if (metadata.activeHost().port() == -1 && metadata.activeHost().host().equals("unavailable")) {
+            throw new LHApiException(Status.UNAVAILABLE, "Kafka Streams not ready yet");
+        }
+        return metadata;
+    }
+
     public <U extends Message, T extends AbstractGetable<U>> T getObject(
             ObjectIdModel<?, U, T> objectId, Class<T> clazz, ExecutionContext context) throws LHSerdeError {
 
@@ -190,10 +207,7 @@ public class BackendInternalComms implements Closeable {
                     "Can't get object without partition key; metadata objects have their own store");
         }
 
-        String storeName = objectId.getStore().getStoreName();
-
-        KeyQueryMetadata metadata = coreStreams.queryMetadataForKey(
-                storeName, objectId.getPartitionKey().get(), Serdes.String().serializer());
+        KeyQueryMetadata metadata = lookupPartitionKey(objectId);
 
         if (metadata.activeHost().equals(thisHost)) {
             return getObjectLocal(objectId, clazz, metadata.partition());
@@ -212,11 +226,18 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    public void waitForCommand(AbstractCommand<?> command, StreamObserver<WaitForCommandResponse> observer) {
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-                ServerTopology.CORE_STORE,
-                command.getPartitionKey(),
-                Serdes.String().serializer());
+    public void waitForCommand(
+            AbstractCommand<?> command,
+            StreamObserver<WaitForCommandResponse> observer,
+            RequestExecutionContext requestCtx) {
+        String storeName =
+                switch (command.getStore()) {
+                    case CORE -> ServerTopology.CORE_STORE;
+                    case METADATA -> ServerTopology.METADATA_STORE;
+                    case REPARTITION -> ServerTopology.CORE_REPARTITION_STORE;
+                    case UNRECOGNIZED -> throw new LHApiException(Status.INTERNAL);
+                };
+        KeyQueryMetadata meta = lookupPartitionKey(storeName, command.getPartitionKey());
 
         /*
          * As a prerequisite to this method being called, the command has already
@@ -224,12 +245,30 @@ public class BackendInternalComms implements Closeable {
          * of the in-sync replicas).
          */
         if (meta.activeHost().equals(thisHost)) {
-            localWaitForCommand(command.getCommandId(), observer);
+            localWaitForCommand(command.getCommandId(), meta.partition(), observer);
         } else {
             WaitForCommandRequest req = WaitForCommandRequest.newBuilder()
                     .setCommandId(command.getCommandId())
+                    .setPartition(meta.partition())
                     .build();
-            getInternalAsyncClient(meta.activeHost()).waitForCommand(req, observer);
+            getInternalAsyncClient(meta.activeHost(), InternalCallCredentials.forContext(requestCtx))
+                    .waitForCommand(req, observer);
+        }
+    }
+
+    public void doWaitForWorkflowEvent(
+            AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx, RequestExecutionContext requestCtx) {
+        WfRunIdModel wfRunId = LHSerializable.fromProto(req.getWfRunId(), WfRunIdModel.class, requestCtx);
+        KeyQueryMetadata meta = lookupPartitionKey(wfRunId);
+
+        if (meta.activeHost().equals(thisHost)) {
+            localWaitForWfEvent(
+                    InternalWaitForWfEventRequest.newBuilder().setRequest(req).build(), ctx);
+        } else {
+            InternalWaitForWfEventRequest internalReq =
+                    InternalWaitForWfEventRequest.newBuilder().setRequest(req).build();
+            getInternalAsyncClient(meta.activeHost(), InternalCallCredentials.forContext(requestCtx))
+                    .waitForWfEvent(internalReq, ctx);
         }
     }
 
@@ -300,45 +339,56 @@ public class BackendInternalComms implements Closeable {
         return producer;
     }
 
+    public void onWorkflowEventThrown(WorkflowEventModel event) {
+        asyncWaiters.registerWorkflowEventHappened(event);
+    }
+
     public void onResponseReceived(String commandId, WaitForCommandResponse response) {
-        asyncWaiters.put(commandId, response);
+        asyncWaiters.registerCommandProcessed(commandId, response);
     }
 
     public void sendErrorToClientForCommand(String commandId, Exception caught) {
         asyncWaiters.markCommandFailed(commandId, caught);
     }
 
-    private void localWaitForCommand(String commandId, StreamObserver<WaitForCommandResponse> observer) {
-        asyncWaiters.put(commandId, observer);
+    private void localWaitForCommand(String commandId, int partition, StreamObserver<WaitForCommandResponse> observer) {
+        asyncWaiters.registerObserverWaitingForCommand(commandId, partition, observer);
         // Once the command has been recorded, we've got nothing to do: the
         // CommandProcessor will notify the StreamObserver once the command is
         // processed.
     }
 
-    public ReadOnlyKeyValueStore<String, Bytes> getRawStore(
-            Integer specificPartition, boolean enableStaleStores, String storeName) {
+    private void localWaitForWfEvent(InternalWaitForWfEventRequest req, StreamObserver<WorkflowEvent> observer) {
+        asyncWaiters.registerObserverWaitingForWorkflowEvent(req, observer, executionContext());
+    }
+
+    public ReadOnlyKeyValueStore<String, Bytes> getRawStore(Integer specificPartition, String storeName) {
         StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
                 StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore());
-
-        if (enableStaleStores) {
-            params = params.enableStaleStores();
-        }
 
         if (specificPartition != null) {
             params = params.withPartition(specificPartition);
         }
 
-        return coreStreams.store(params);
+        try {
+            return coreStreams.store(params);
+        } catch (InvalidStateStoreException exn) {
+            throw new LHApiException(Status.UNAVAILABLE, "Handling rebalance; retry in a second or two");
+        }
     }
 
-    private ReadOnlyTenantScopedStore getStore(Integer specificPartition, boolean enableStaleStores, String storeName) {
-        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, enableStaleStores, storeName);
+    private ReadOnlyTenantScopedStore getStore(Integer specificPartition, String storeName) {
+        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, storeName);
         RequestExecutionContext requestContext = executionContext();
         AuthorizationContext authContext = requestContext.authorization();
         return ReadOnlyTenantScopedStore.newInstance(rawStore, authContext.tenantId(), requestContext);
     }
 
     public LHInternalsBlockingStub getInternalClient(HostInfo host, InternalCallCredentials internalCredentials) {
+        if (host.port() == -1) {
+            throw new LHApiException(
+                    Status.UNAVAILABLE, "Kafka Streams not ready or invalid server cluster configuration");
+        }
         return LHInternalsGrpc.newBlockingStub(getChannel(host)).withCallCredentials(internalCredentials);
     }
 
@@ -346,9 +396,12 @@ public class BackendInternalComms implements Closeable {
         return getInternalClient(host, InternalCallCredentials.forContext(executionContext()));
     }
 
-    private LHInternalsStub getInternalAsyncClient(HostInfo host) {
-        return LHInternalsGrpc.newStub(getChannel(host))
-                .withCallCredentials(InternalCallCredentials.forContext(new BackgroundContext()));
+    private LHInternalsStub getInternalAsyncClient(HostInfo host, InternalCallCredentials credentials) {
+        if (host.port() == -1) {
+            throw new LHApiException(
+                    Status.UNAVAILABLE, "Kafka Streams not ready or invalid server cluster configuration");
+        }
+        return LHInternalsGrpc.newStub(getChannel(host)).withCallCredentials(credentials);
     }
 
     private ManagedChannel getChannel(HostInfo host) {
@@ -373,7 +426,7 @@ public class BackendInternalComms implements Closeable {
             ObjectIdModel<?, U, T> objectId, Class<T> clazz, int partition) {
 
         ReadOnlyTenantScopedStore store =
-                getStore(partition, false, objectId.getStore().getStoreName());
+                getStore(partition, objectId.getStore().getStoreName());
         StoredGetable<U, T> storeResult =
                 (StoredGetable<U, T>) store.get(objectId.getStoreableKey(), StoredGetable.class);
         if (storeResult == null) {
@@ -381,6 +434,14 @@ public class BackendInternalComms implements Closeable {
         }
 
         return storeResult.getStoredObject();
+    }
+
+    public void registerWorkflowEventProcessed(WorkflowEventModel event) {
+        asyncWaiters.registerWorkflowEventHappened(event);
+    }
+
+    public void handleRebalance(Set<TaskId> taskIds) {
+        asyncWaiters.handleRebalance(taskIds);
     }
 
     /*
@@ -395,7 +456,7 @@ public class BackendInternalComms implements Closeable {
                     ObjectIdModel.fromString(request.getObjectId(), AbstractGetable.getIdCls(request.getObjectType()));
 
             String storeName = id.getStore().getStoreName();
-            ReadOnlyTenantScopedStore store = getStore(request.getPartition(), false, storeName);
+            ReadOnlyTenantScopedStore store = getStore(request.getPartition(), storeName);
 
             @SuppressWarnings("unchecked")
             StoredGetable<?, ?> entity = store.get(id.getStoreableKey(), StoredGetable.class);
@@ -426,7 +487,12 @@ public class BackendInternalComms implements Closeable {
 
         @Override
         public void waitForCommand(WaitForCommandRequest req, StreamObserver<WaitForCommandResponse> ctx) {
-            localWaitForCommand(req.getCommandId(), ctx);
+            localWaitForCommand(req.getCommandId(), req.getPartition(), ctx);
+        }
+
+        @Override
+        public void waitForWfEvent(InternalWaitForWfEventRequest req, StreamObserver<WorkflowEvent> ctx) {
+            localWaitForWfEvent(req, ctx);
         }
 
         @Override
@@ -566,20 +632,21 @@ public class BackendInternalComms implements Closeable {
             case VARIABLE:
             case TASK_RUN:
             case TASK_WORKER_GROUP:
+            case WORKFLOW_EVENT:
+            case WORKFLOW_EVENT_DEF:
             case UNRECOGNIZED:
         }
         return false;
     }
 
     private InternalScanResponse specificPartitionTagScan(InternalScan search) {
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-                search.getStoreName(), search.getPartitionKey(), Serdes.String().serializer());
+        KeyQueryMetadata meta = lookupPartitionKey(search.getStoreName(), search.getPartitionKey());
         InternalScanResponse.Builder out = InternalScanResponse.newBuilder();
         HostInfo activeHost = meta.activeHost();
 
         if (activeHost.equals(thisHost)) {
 
-            ReadOnlyTenantScopedStore store = getStore(meta.partition(), false, search.getStoreName());
+            ReadOnlyTenantScopedStore store = getStore(meta.partition(), search.getStoreName());
             String prefix = search.getTagScan().getKeyPrefix() + "/";
 
             try (LHKeyValueIterator<Tag> tagScanResultIterator = store.prefixScan(prefix, Tag.class)) {
@@ -626,11 +693,10 @@ public class BackendInternalComms implements Closeable {
         }
         InternalScanResponse.Builder out = InternalScanResponse.newBuilder();
 
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-                req.storeName, req.partitionKey, Serdes.String().serializer());
+        KeyQueryMetadata meta = lookupPartitionKey(req.storeName, req.partitionKey);
         int partition = meta.partition();
 
-        ReadOnlyTenantScopedStore store = getStore(partition, false, req.storeName);
+        ReadOnlyTenantScopedStore store = getStore(partition, req.storeName);
         PartitionBookmarkPb partBookmark = reqBookmark.getInProgressPartitionsOrDefault(partition, null);
 
         String endKey = req.boundedObjectIdScan.getEndObjectId() + "~";
@@ -642,7 +708,6 @@ public class BackendInternalComms implements Closeable {
         }
         String bookmarkKey = null;
         boolean brokenBecauseOutOfData = true;
-
         try (LHKeyValueIterator<?> iter =
                 store.range(startKey, StoredGetable.getRocksDBKey(endKey, req.getObjectType()), StoredGetable.class)) {
 
@@ -693,14 +758,16 @@ public class BackendInternalComms implements Closeable {
 
             // TODO: This is a leaky abstraction.
             String storeableKey = next.getKey();
-            Matcher matcher = objectIdExtractorPattern.matcher(storeableKey);
+            Matcher matcher = tenantScopedObjectIdExtractorPattern.matcher(storeableKey);
             if (matcher.find()) {
                 int prefixEndIndex = matcher.end(0);
                 String objectIdStr = storeableKey.substring(prefixEndIndex);
                 return ByteString.copyFrom(
                         ObjectIdModel.fromString(objectIdStr, idCls).toBytes());
             } else {
-                throw new IllegalStateException("Invalid object id");
+                // search for global getables
+                return ByteString.copyFrom(ObjectIdModel.fromString(storeableKey.split("/")[1], idCls)
+                        .toBytes());
             }
         } else {
             throw new RuntimeException("Impossible: unknown result type");
@@ -796,8 +863,7 @@ public class BackendInternalComms implements Closeable {
             // Every processor has the global store, so we can always do the scan locally.
             return thisHost;
         }
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-                storeName, partitionKey, Serdes.String().serializer());
+        KeyQueryMetadata meta = lookupPartitionKey(storeName, partitionKey);
         return meta.activeHost();
     }
 
@@ -961,7 +1027,7 @@ public class BackendInternalComms implements Closeable {
 
     private LHKeyValueIterator<Tag> createTagIterator(
             String startKey, String endKey, GetableClassEnum objectType, String storeName, int specificPartition) {
-        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, false, storeName);
+        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, storeName);
         if (isClusterScoped(objectType)) {
             ReadOnlyClusterScopedStore clusterStore =
                     ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext());
@@ -976,7 +1042,7 @@ public class BackendInternalComms implements Closeable {
 
     private LHKeyValueIterator<?> createObjectIdIteratorGlobalStore(
             String startKey, String endKey, GetableClassEnum objectType, String storeName, int specificPartition) {
-        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, false, storeName);
+        ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(specificPartition, storeName);
         if (isClusterScoped(objectType)) {
             ReadOnlyClusterScopedStore clusterStore =
                     ReadOnlyClusterScopedStore.newInstance(rawStore, executionContext());

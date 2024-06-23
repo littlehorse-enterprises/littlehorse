@@ -19,28 +19,31 @@ public class LHTaskSignature {
     Method taskMethod;
     boolean hasWorkerContextAtEnd;
     String taskDefName;
-
+    String lhTaskMethodAnnotationValue;
     Object executable;
 
-    public LHTaskSignature(String taskDefName, Object executable) throws TaskSchemaMismatchError {
+    public LHTaskSignature(String taskDefName, Object executable, String lhTaskMethodAnnotationValue)
+            throws TaskSchemaMismatchError {
         paramTypes = new ArrayList<>();
         varNames = new ArrayList<>();
         hasWorkerContextAtEnd = false;
         this.taskDefName = taskDefName;
         this.executable = executable;
+        this.lhTaskMethodAnnotationValue = lhTaskMethodAnnotationValue;
 
         for (Method method : executable.getClass().getMethods()) {
             if (method.isAnnotationPresent(LHTaskMethod.class)) {
                 String taskDefForThisMethod =
                         method.getAnnotation(LHTaskMethod.class).value();
 
-                if (!taskDefForThisMethod.equals(taskDefName)) {
+                if (!taskDefForThisMethod.equals(lhTaskMethodAnnotationValue)) {
                     continue;
                 }
 
                 if (taskMethod != null) {
                     throw new TaskSchemaMismatchError("Found two annotated task methods!");
                 }
+
                 taskMethod = method;
             }
         }

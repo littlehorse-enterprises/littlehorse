@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
-import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.server.streams.ServerTopology;
@@ -55,6 +54,16 @@ public class MetadataGlobalStoreProcessorTest {
     }
 
     @Test
+    public void shouldStoreTaskDef() {
+        StoredGetable taskDef = new StoredGetable<>(TestUtil.taskDef("my-task"));
+        String fullKey = tenantId + "/" + taskDef.getFullStoreKey();
+        Bytes valueBytes = Bytes.wrap(taskDef.toBytes());
+        metadataProcessor.process(new Record<>(fullKey, valueBytes, 0L));
+        assertThat(metadataCache.get(fullKey)).isNotNull();
+        verify(mockStore).put(eq(fullKey), any());
+    }
+
+    @Test
     public void shouldStoreClusterMetadataObject() {
         StoredGetable tenant = new StoredGetable<>(new TenantModel(new TenantIdModel("my-tenant")));
         String fullKey = tenant.getFullStoreKey();
@@ -66,9 +75,8 @@ public class MetadataGlobalStoreProcessorTest {
 
     @Test
     public void shouldDeleteMetadataObject() {
-        String fullKey = "";
-        // store a value
-        WfSpecModel wfSpec = TestUtil.wfSpec("my-wf-spec");
+        StoredGetable wfSpec = new StoredGetable<>(TestUtil.wfSpec("my-wf-spec"));
+        String fullKey = tenantId + "/" + wfSpec.getFullStoreKey();
         Bytes valueBytes = Bytes.wrap(wfSpec.toBytes());
         metadataProcessor.process(new Record<>(fullKey, valueBytes, 0L));
         // delete the value

@@ -1,0 +1,149 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "common_enums.proto";
+import "common_wfspec.proto";
+import "variable.proto";
+import "object_id.proto";
+import "user_tasks.proto";
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Common.Proto";
+
+// A TaskRun resents a single instance of a TaskDef being executed.
+message TaskRun {
+  // The ID of the TaskRun. Note that the TaskRunId contains the WfRunId.
+  TaskRunId id = 1;
+
+  // The ID of the TaskDef being executed.
+  TaskDefId task_def_id = 2;
+
+  // All attempts scheduled for this TaskRun. A TaskAttempt represents an occurrence of
+  // the TaskRun being put on a Task Queue to be executed by the Task Workers.
+  repeated TaskAttempt attempts = 3;
+
+  // The input variables to pass into this TaskRun. Note that this is a list and not
+  // a map, because ordering matters. Depending on the language implementation, not
+  // every LittleHorse Task Worker SDK has the ability to determine the names of the
+  // variables from the method signature, so we provide both names and ordering.
+  repeated VarNameAndVal input_variables = 5;
+
+  // The source (in the WfRun) that caused this TaskRun to be created. Currently, this
+  // can be either a TASK node, or a User Task Action Task Trigger in a USER_TASK node (such
+  // as a task used to send reminders).
+  TaskRunSource source = 6;
+
+  // When the TaskRun was scheduled.
+  google.protobuf.Timestamp scheduled_at = 7;
+
+  // The status of the TaskRun.
+  TaskStatus status = 8;
+
+  // The timeout before LH considers a TaskAttempt to be timed out.
+  int32 timeout_seconds = 9;
+
+  // The maximum number of attempts that may be scheduled for this TaskRun. NOTE: setting
+  // total_attempts to 1 means that there are no retries.
+  int32 total_attempts = 4;
+
+  // Optional backoff policy .
+  optional ExponentialBackoffRetryPolicy exponential_backoff = 10;
+}
+
+// A key-value pair of variable name and value.
+message VarNameAndVal {
+  // The variable name.
+  string var_name = 1;
+
+  // The value of the variable for this TaskRun.
+  VariableValue value = 2;
+}
+
+// A single time that a TaskRun was scheduled for execution on a Task Queue.
+message TaskAttempt {
+  // Optional information provided by the Task Worker SDK for debugging. Usually, if set
+  // it contains a stacktrace or it contains information logged via `WorkerContext#log()`.
+  optional VariableValue log_output = 2;
+
+  // The time the TaskAttempt was scheduled on the Task Queue. Not set for a TaskAttempt that is
+  // in the TASK_PENDING status; for example, when waiting between retries with exponential
+  // backoff.
+  optional google.protobuf.Timestamp schedule_time = 3;
+
+  // The time the TaskAttempt was pulled off the queue and sent to a TaskWorker.
+  optional google.protobuf.Timestamp start_time = 4;
+
+  // The time the TaskAttempt was finished (either completed, reported as failed, or
+  // timed out)
+  optional google.protobuf.Timestamp end_time = 5;
+
+  // EXPERIMENTAL: the ID of the Task Worker who executed this TaskRun.
+  string task_worker_id = 7;
+
+  // The version of the Task Worker that executed the TaskAttempt.
+  optional string task_worker_version = 8;
+
+  // The status of this TaskAttempt.
+  TaskStatus status = 9;
+
+  // The result of this TaskAttempt. Can either be a successful run which returns an
+  // output value, a technical ERROR which returns a LHTaskError, or the Task Function
+  // can throw a business EXCEPTION (eg. `credit-card-declined`).
+  oneof result {
+    // Denotes the Task Function executed properly and returned an output.
+    VariableValue output = 1;
+
+    // An unexpected technical error was encountered. May or may not be retriable.
+    LHTaskError error = 10;
+
+    // The Task Function encountered a business problem and threw a technical exception.
+    LHTaskException exception = 11;
+  }
+}
+
+// The source of a TaskRun; i.e. why it was scheduled.
+message TaskRunSource {
+  // The source of the TaskRun.
+  oneof task_run_source {
+    // Reference to a NodeRun of type TASK which scheduled this TaskRun.
+    TaskNodeReference task_node = 1;
+
+    // Reference to the specific UserTaskRun trigger action which scheduled this TaskRun
+    UserTaskTriggerReference user_task_trigger = 2;
+  }
+
+  // The ID of the WfSpec that is being executed. Always set in ScheduledTask.source so
+  // that the WorkerContext can know this information.
+  optional WfSpecId wf_spec_id = 3;
+}
+
+// Reference to a NodeRun of type TASK which caused a TaskRun to be scheduled.
+message TaskNodeReference {
+  // The ID of the NodeRun which caused this TASK to be scheduled.
+  NodeRunId node_run_id = 1;
+}
+
+// Message denoting a TaskRun failed for technical reasons.
+message LHTaskError {
+  // The technical error code.
+  LHErrorType type = 1;
+
+  // Human readable message for debugging.
+  string message = 2;
+}
+
+// Message denoting a TaskRun's execution signaled that something went wrong in the
+// business process, throwing a littlehorse 'EXCEPTION'.
+message LHTaskException {
+  // The user-defined Failure name, for example, "credit-card-declined"
+  string name = 1;
+
+  // Human readadble description of the failure.
+  string message = 2;
+
+  VariableValue content = 3;
+}

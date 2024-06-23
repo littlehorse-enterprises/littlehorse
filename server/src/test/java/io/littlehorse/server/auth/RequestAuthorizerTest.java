@@ -25,6 +25,7 @@ import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.TestCoreStoreProvider;
 import io.littlehorse.server.TestMetadataManager;
 import io.littlehorse.server.TestRequestExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
@@ -57,8 +58,8 @@ public class RequestAuthorizerTest {
     private final TestRequestExecutionContext requestContext = TestRequestExecutionContext.create();
     private TestMetadataManager metadataManager =
             TestMetadataManager.create(requestContext.getGlobalMetadataNativeStore(), "my-tenant", requestContext);
-    private final RequestAuthorizer requestAuthorizer =
-            new RequestAuthorizer(server, contextKey, metadataCache, requestContext::resolveStoreName, lhConfig);
+    private final RequestAuthorizer requestAuthorizer = new RequestAuthorizer(
+            server, contextKey, metadataCache, new TestCoreStoreProvider(requestContext), lhConfig);
     private ServerCall<Object, Object> mockCall = mock();
     private final Metadata mockMetadata = mock();
 
@@ -122,6 +123,20 @@ public class RequestAuthorizerTest {
     }
 
     @Test
+    public void supportPermissionDeniedForNonExistingTenants() {
+        when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
+        when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-missing-tenant");
+        PrincipalModel newPrincipal = new PrincipalModel();
+        newPrincipal.setId(new PrincipalIdModel("principal-id"));
+        newPrincipal.setGlobalAcls(TestUtil.singleAdminAcl("name"));
+        metadataManager.put(newPrincipal);
+        MethodDescriptor<Object, Object> mockMethod = mock();
+        when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
+        startCall();
+        assertThat(resolvedAuthContext).isNull();
+    }
+
+    @Test
     public void supportAnonymousPrincipalWhenPrincipalIdIsNotFound() {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
         metadataManager.put(new TenantModel("my-tenant"));
@@ -140,9 +155,11 @@ public class RequestAuthorizerTest {
             TenantModel customTenant = new TenantModel("my-tenant");
             PrincipalModel adminPrincipal = buildAdminPrincipal();
             PrincipalModel limitedPrincipal = buildLimitedPrincipal();
+            PrincipalModel tenantAdminPrincipal = buildTenantAdminPrincipal();
             metadataManager.put(customTenant);
             metadataManager.put(adminPrincipal);
             metadataManager.put(limitedPrincipal);
+            metadataManager.put(tenantAdminPrincipal);
         }
 
         @Test
@@ -162,11 +179,29 @@ public class RequestAuthorizerTest {
             Mockito.verify(mockCall).close(any(), eq(mockMetadata));
         }
 
+        @Test
+        public void supportTenantAdmins() {
+            MethodDescriptor<Object, Object> mockMethod = mock();
+            when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
+            when(mockMethod.getBareMethodName()).thenReturn("PutTaskDef");
+            when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("tenant-admin-principal");
+            when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-tenant");
+            startCall();
+            assertThat(resolvedAuthContext).isNotNull();
+        }
+
         private PrincipalModel buildLimitedPrincipal() {
             PrincipalModel limitedPrincipal = new PrincipalModel();
             limitedPrincipal.setId(new PrincipalIdModel("limited-principal"));
             limitedPrincipal.setPerTenantAcls(Map.of("my-tenant", TestUtil.singleAcl()));
             return limitedPrincipal;
+        }
+
+        private PrincipalModel buildTenantAdminPrincipal() {
+            PrincipalModel tenantAdminPrincipal = new PrincipalModel();
+            tenantAdminPrincipal.setId(new PrincipalIdModel("tenant-admin-principal"));
+            tenantAdminPrincipal.setPerTenantAcls(Map.of("my-tenant", TestUtil.singleAdminAcl("")));
+            return tenantAdminPrincipal;
         }
 
         private PrincipalModel buildAdminPrincipal() {

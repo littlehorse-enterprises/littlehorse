@@ -8,11 +8,21 @@ public interface JsonIndexOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Denotes the path in JSONPath format (according to the Java Jayway library) that
+   * has a field we should index.
+   * </pre>
+   *
    * <code>string field_path = 1;</code>
    * @return The fieldPath.
    */
   java.lang.String getFieldPath();
   /**
+   * <pre>
+   * Denotes the path in JSONPath format (according to the Java Jayway library) that
+   * has a field we should index.
+   * </pre>
+   *
    * <code>string field_path = 1;</code>
    * @return The bytes for fieldPath.
    */
@@ -20,11 +30,19 @@ public interface JsonIndexOrBuilder extends
       getFieldPathBytes();
 
   /**
+   * <pre>
+   * Is the type of the field we are indexing.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType field_type = 2;</code>
    * @return The enum numeric value on the wire for fieldType.
    */
   int getFieldTypeValue();
   /**
+   * <pre>
+   * Is the type of the field we are indexing.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType field_type = 2;</code>
    * @return The fieldType.
    */

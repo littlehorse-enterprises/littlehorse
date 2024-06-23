@@ -14,7 +14,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskRunId;
-import io.littlehorse.sdk.common.proto.TaskRunSource;
+import io.littlehorse.sdk.common.proto.TaskRunSourceOrBuilder;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
@@ -77,7 +77,7 @@ public class LHLibUtil {
         return mapper.readValue(json, cls);
     }
 
-    public static WfRunId getWfRunId(TaskRunSource taskRunSource) {
+    public static WfRunId getWfRunId(TaskRunSourceOrBuilder taskRunSource) {
         switch (taskRunSource.getTaskRunSourceCase()) {
             case TASK_NODE:
                 return taskRunSource.getTaskNode().getNodeRunId().getWfRunId();
@@ -89,8 +89,16 @@ public class LHLibUtil {
         return null;
     }
 
-    public static WfRunId wfRunId(String id) {
-        return WfRunId.newBuilder().setId(id).build();
+    public static WfRunId wfRunIdFromString(String id) {
+        if (!id.contains("_")) {
+            return WfRunId.newBuilder().setId(id).build();
+        }
+        String parentId = id.substring(0, id.lastIndexOf("_"));
+        String childId = id.substring(id.lastIndexOf("_") + 1);
+        return WfRunId.newBuilder()
+                .setId(childId)
+                .setParentWfRunId(LHLibUtil.wfRunIdFromString(parentId))
+                .build();
     }
 
     public static ExternalEventDefId externalEventDefId(String name) {

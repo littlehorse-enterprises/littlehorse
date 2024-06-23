@@ -1,19 +1,28 @@
 from typing import Any
 import unittest
 import uuid
-import time
 from littlehorse.exceptions import TaskSchemaMismatchException
-from littlehorse.model.common_enums_pb2 import VariableType
-from littlehorse.model.common_wfspec_pb2 import VariableDef
-from littlehorse.model.object_id_pb2 import NodeRunId, TaskRunId, WfRunId
-from littlehorse.model.service_pb2 import ScheduledTask
-from littlehorse.model.task_def_pb2 import TaskDef
-from littlehorse.model.task_run_pb2 import TaskNodeReference, TaskRunSource
-from littlehorse.model.user_tasks_pb2 import UserTaskTriggerReference
-from littlehorse.model.service_pb2 import RegisterTaskWorkerResponse
+from littlehorse.model import (
+    VariableType,
+    VariableDef,
+    NodeRunId,
+    TaskRunId,
+    WfRunId,
+    ScheduledTask,
+    RegisterTaskWorkerResponse,
+    TaskDef,
+    TaskNodeReference,
+    TaskRunSource,
+    UserTaskTriggerReference,
+)
 
-
-from littlehorse.worker import LHTask, WorkerContext, LHLivenessController
+from littlehorse.worker import (
+    LHTask,
+    WorkerContext,
+    LHLivenessController,
+    LHTaskWorkerHealth,
+    TaskWorkerHealthReason,
+)
 
 
 class TestWorkerContext(unittest.TestCase):
@@ -324,29 +333,41 @@ class TestLHTask(unittest.TestCase):
 
 class TestLHLivenessController(unittest.TestCase):
     def test_keep_running_when_no_failure_detected(self):
-        controller = LHLivenessController(100)
-        self.assertTrue(controller.keep_worker_running())
+        controller = LHLivenessController()
+        self.assertTrue(controller.keep_worker_running)
 
-    def test_stop_running_after_timeout(self):
-        controller = LHLivenessController(100)
-        controller.notify_call_failure()
-        self.assertTrue(controller.keep_worker_running())
-        time.sleep(150 / 1000)
-        self.assertFalse(controller.keep_worker_running())
+    def test_get_health(self):
+        controller = LHLivenessController()
 
-    def test_recover_from_failure(self):
-        controller = LHLivenessController(100)
-        controller.notify_call_failure()
-        controller.notify_success_call(RegisterTaskWorkerResponse())
-        time.sleep(150 / 1000)
-        self.assertTrue(controller.keep_worker_running())
+        self.assertEqual(
+            controller.health(),
+            LHTaskWorkerHealth(True, TaskWorkerHealthReason.HEALTHY),
+        )
 
-    def test_keep_running_on_server_unhealthy(self):
-        reply = RegisterTaskWorkerResponse(is_cluster_healthy=False)
-        controller = LHLivenessController(100)
-        controller.notify_success_call(reply)
-        time.sleep(150 / 1000)
-        self.assertTrue(controller.keep_worker_running())
+        controller.notify_worker_failure()
+
+        self.assertEqual(
+            controller.health(),
+            LHTaskWorkerHealth(False, TaskWorkerHealthReason.UNHEALTHY),
+        )
+
+        controller.notify_success_call(
+            RegisterTaskWorkerResponse(is_cluster_healthy=True)
+        )
+
+        self.assertEqual(
+            controller.health(),
+            LHTaskWorkerHealth(True, TaskWorkerHealthReason.HEALTHY),
+        )
+
+        controller.notify_success_call(
+            RegisterTaskWorkerResponse(is_cluster_healthy=False)
+        )
+
+        self.assertEqual(
+            controller.health(),
+            LHTaskWorkerHealth(False, TaskWorkerHealthReason.SERVER_REBALANCING),
+        )
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
+import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 
 public class TaskNodeOutputImpl extends NodeOutputImpl implements TaskNodeOutput {
@@ -9,7 +10,14 @@ public class TaskNodeOutputImpl extends NodeOutputImpl implements TaskNodeOutput
     }
 
     @Override
-    public void withRetries(int retries) {
+    public TaskNodeOutputImpl withExponentialBackoff(ExponentialBackoffRetryPolicy policy) {
+        parent.overrideTaskExponentialBackoffPolicy(this, policy);
+        return this;
+    }
+
+    @Override
+    public TaskNodeOutputImpl withRetries(int retries) {
         parent.overrideTaskRetries(this, retries);
+        return this;
     }
 }

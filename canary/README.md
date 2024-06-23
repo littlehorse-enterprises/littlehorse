@@ -1,5 +1,7 @@
 # LittleHorse Canary App
 
+## Commands
+
 Start a local kafka cluster:
 
 ```
@@ -23,3 +25,7 @@ Get metrics:
 ```
 http -b :4023/metrics
 ```
+
+## Documentations
+
+Configurations at [../docs/CANARY_CONFIGURATIONS](../docs/CANARY_CONFIGURATIONS.md)

@@ -22,7 +22,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -30,11 +37,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Utils;
+import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.DefaultProductionExceptionHandler;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.jetbrains.annotations.Nullable;
@@ -52,6 +61,8 @@ public class LHServerConfig extends ConfigBase {
 
     @Getter
     private WriteBufferManager globalRocksdbWriteBufferManager;
+
+    private String instanceName;
 
     // Kafka Global Configs
     public static final String KAFKA_BOOTSTRAP_KEY = "LHS_KAFKA_BOOTSTRAP_SERVERS";
@@ -77,6 +88,9 @@ public class LHServerConfig extends ConfigBase {
     public static final String KAFKA_STATE_DIR_KEY = "LHS_STATE_DIR";
     public static final String NUM_WARMUP_REPLICAS_KEY = "LHS_STREAMS_NUM_WARMUP_REPLICAS";
     public static final String NUM_STANDBY_REPLICAS_KEY = "LHS_STREAMS_NUM_STANDBY_REPLICAS";
+    public static final String ROCKSDB_COMPACTION_THREADS_KEY = "LHS_ROCKSDB_COMPACTION_THREADS";
+    public static final String STREAMS_METRICS_LEVEL_KEY = "LHS_STREAMS_METRICS_LEVEL";
+    public static final String LINGER_MS_KEY = "LHS_KAFKA_LINGER_MS";
 
     // General LittleHorse Runtime Behavior Config Env Vars
     public static final String NUM_NETWORK_THREADS_KEY = "LHS_NUM_NETWORK_THREADS";
@@ -93,12 +107,16 @@ public class LHServerConfig extends ConfigBase {
     public static final String INTERNAL_SERVER_KEY_KEY = "LHS_INTERNAL_SERVER_KEY";
 
     // Kafka authentication/security
+    public static final String KAFKA_SECURITY_PROTOCOL_KEY = "LHS_KAFKA_SECURITY_PROTOCOL";
     public static final String KAFKA_TRUSTSTORE_KEY = "LHS_KAFKA_TRUSTSTORE";
     public static final String KAFKA_TRUSTSTORE_PASSWORD_KEY = "LHS_KAFKA_TRUSTSTORE_PASSWORD";
     public static final String KAFKA_TRUSTSTORE_PASSWORD_FILE_KEY = "LHS_KAFKA_TRUSTSTORE_PASSWORD_FILE";
     public static final String KAFKA_KEYSTORE_KEY = "LHS_KAFKA_KEYSTORE";
     public static final String KAFKA_KEYSTORE_PASSWORD_KEY = "LHS_KAFKA_KEYSTORE_PASSWORD";
     public static final String KAFKA_KEYSTORE_PASSWORD_FILE_KEY = "LHS_KAFKA_KEYSTORE_PASSWORD_FILE";
+    public static final String KAFKA_SASL_MECHANISM_KEY = "LHS_KAFKA_SASL_MECHANISM";
+    public static final String KAFKA_SASL_JAAS_CONFIG_KEY = "LHS_KAFKA_SASL_JAAS_CONFIG";
+    public static final String KAFKA_SASL_JAAS_CONFIG_FILE_KEY = "LHS_KAFKA_SASL_JAAS_CONFIG_FILE";
 
     // PROMETHEUS
     public static final String HEALTH_SERVICE_PORT_KEY = "LHS_HEALTH_SERVICE_PORT";
@@ -106,6 +124,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String HEALTH_PATH_LIVENESS_KEY = "LHS_HEALTH_PATH_LIVENESS";
     public static final String HEALTH_PATH_STATUS_KEY = "LHS_HEALTH_PATH_STATUS";
     public static final String HEALTH_PATH_DISK_USAGE_KEY = "LHS_HEALTH_PATH_DISK_USAGE";
+    public static final String HEALTH_PATH_STANDBY_KEY = "HEALTH_PATH_STANDBY";
 
     // ADVERTISED LISTENERS
     public static final String ADVERTISED_LISTENERS_KEY = "LHS_ADVERTISED_LISTENERS";
@@ -122,6 +141,12 @@ public class LHServerConfig extends ConfigBase {
     private List<AdvertisedListenerConfig> advertisedListenerConfigs;
     private Map<String, ListenerProtocol> listenersProtocolMap;
     private Map<String, AuthorizationProtocol> listenersAuthorizationMap;
+
+    // EXPERIMENTAL Internal configs. Should not be used by real users; only for testing.
+    public static final String X_USE_AT_LEAST_ONCE_KEY = "LHS_X_USE_AT_LEAST_ONCE";
+    public static final String X_USE_STATE_UPDATER_KEY = "LHS_X_USE_STATE_UPDATER";
+    public static final String X_LEAVE_GROUP_ON_SHUTDOWN_KEY = "LHS_X_LEAVE_GROUP_ON_SHUTDOWN";
+    public static final String X_USE_STATIC_MEMBERSHIP_KEY = "LHS_X_USE_STATIC_MEMBERSHIP";
 
     protected String[] getEnvKeyPrefixes() {
         return new String[] {"LHS_"};
@@ -201,7 +226,22 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public List<NewTopic> getAllTopics() {
-        return getAllTopics(getLHClusterId(), getReplicationFactor(), getClusterPartitions());
+        return getAllTopics(getLHClusterId(), getReplicationFactor(), partitionsByTopic());
+    }
+
+    public Map<String, Integer> partitionsByTopic() {
+        Map<String, Integer> out = new HashMap<>();
+        String clusterId = getLHClusterId();
+        int clusterPartitions = getClusterPartitions();
+        out.put(getCoreCmdTopicName(clusterId), clusterPartitions);
+        out.put(getRepartitionTopicName(clusterId), clusterPartitions);
+        out.put(getTimerTopic(clusterId), clusterPartitions);
+        out.put(getCoreStoreChangelogTopic(clusterId), clusterPartitions);
+        out.put(getRepartitionStoreChangelogTopic(clusterId), clusterPartitions);
+        out.put(getTimerStoreChangelogTopic(clusterId), clusterPartitions);
+        out.put(getMetadataStoreChangelogTopic(clusterId), 1); // global store
+        out.put(getMetadataCmdTopicName(clusterId), 1); // global store
+        return out;
     }
 
     // Internal topics are manually created because:
@@ -212,36 +252,54 @@ public class LHServerConfig extends ConfigBase {
     // creation. Thus, internal topics that are not explicitly created here will be
     // automatically created by Kafka Stream. Please make sure to manually create all internal topics.
     // Kafka has opened KIP-698 to solve this.
-    public static List<NewTopic> getAllTopics(String clusterId, short replicationFactor, int clusterPartitions) {
+    public static List<NewTopic> getAllTopics(
+            String clusterId, short replicationFactor, Map<String, Integer> partitionsByTopic) {
         HashMap<String, String> compactedTopicConfig = new HashMap<>() {
             {
                 put(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_COMPACT);
             }
         };
+        String coreCommandTopicName = getCoreCmdTopicName(clusterId);
+        NewTopic coreCommand =
+                new NewTopic(coreCommandTopicName, partitionsByTopic.get(coreCommandTopicName), replicationFactor);
 
-        NewTopic coreCommand = new NewTopic(getCoreCmdTopicName(clusterId), clusterPartitions, replicationFactor);
+        String repartitionTopicName = getRepartitionTopicName(clusterId);
+        NewTopic repartition =
+                new NewTopic(repartitionTopicName, partitionsByTopic.get(repartitionTopicName), replicationFactor);
 
-        NewTopic repartition = new NewTopic(getRepartitionTopicName(clusterId), clusterPartitions, replicationFactor);
+        String timerTopicName = getTimerTopic(clusterId);
+        NewTopic timer = new NewTopic(timerTopicName, partitionsByTopic.get(timerTopicName), replicationFactor);
 
-        NewTopic timer = new NewTopic(getTimerTopic(clusterId), clusterPartitions, replicationFactor);
-
+        String coreChangelogTopicName = getCoreStoreChangelogTopic(clusterId);
         NewTopic coreStoreChangelog = new NewTopic(
-                        getCoreStoreChangelogTopic(clusterId), clusterPartitions, replicationFactor)
+                        coreChangelogTopicName, partitionsByTopic.get(coreChangelogTopicName), replicationFactor)
                 .configs(compactedTopicConfig);
 
+        String repartitionStoreChangelogTopicName = getRepartitionStoreChangelogTopic(clusterId);
         NewTopic repartitionStoreChangelog = new NewTopic(
-                        getRepartitionStoreChangelogTopic(clusterId), clusterPartitions, replicationFactor)
+                        repartitionStoreChangelogTopicName,
+                        partitionsByTopic.get(repartitionStoreChangelogTopicName),
+                        replicationFactor)
                 .configs(compactedTopicConfig);
 
+        String timerStoreChangelogTopicName = getTimerStoreChangelogTopic(clusterId);
         NewTopic timerStoreChangelog = new NewTopic(
-                        getTimerStoreChangelogTopic(clusterId), clusterPartitions, replicationFactor)
+                        timerStoreChangelogTopicName,
+                        partitionsByTopic.get(timerStoreChangelogTopicName),
+                        replicationFactor)
                 .configs(compactedTopicConfig);
 
-        NewTopic metadataStoreChangelog = new NewTopic(getMetadataStoreChangelogTopic(clusterId), 1, replicationFactor)
+        String metadataStoreChangelogTopicName = getMetadataStoreChangelogTopic(clusterId);
+        NewTopic metadataStoreChangelog = new NewTopic(
+                        metadataStoreChangelogTopicName,
+                        partitionsByTopic.get(metadataStoreChangelogTopicName),
+                        replicationFactor)
                 .configs(compactedTopicConfig);
 
-        NewTopic metadataCommand =
-                new NewTopic(getMetadataCmdTopicName(clusterId), 1, replicationFactor).configs(compactedTopicConfig);
+        String metadataCommandTopicName = getMetadataCmdTopicName(clusterId);
+        NewTopic metadataCommand = new NewTopic(
+                        metadataCommandTopicName, partitionsByTopic.get(metadataCommandTopicName), replicationFactor)
+                .configs(compactedTopicConfig);
 
         return List.of(
                 coreCommand,
@@ -274,9 +332,25 @@ public class LHServerConfig extends ConfigBase {
         return getOrSetDefault(LHServerConfig.LHS_CLUSTER_ID_KEY, "cluster1");
     }
 
-    public String getLHInstanceId() {
-        return getOrSetDefault(
-                LHServerConfig.LHS_INSTANCE_ID_KEY, "unset-" + UUID.randomUUID().toString());
+    public Optional<Short> getLHInstanceId() {
+        String instanceId = getOrSetDefault(LHS_INSTANCE_ID_KEY, null);
+        if (instanceId == null) return Optional.empty();
+
+        short ordinalVal = Short.valueOf(instanceId);
+        if (ordinalVal < 0) {
+            throw new LHMisconfigurationException("LHS_INSTANCE_ID cannot be negative");
+        }
+        return Optional.of(ordinalVal);
+    }
+
+    public String getLHInstanceName() {
+        if (instanceName != null) return instanceName;
+
+        instanceName = getLHInstanceId().isPresent()
+                ? getLHInstanceId().get().toString()
+                : UUID.randomUUID().toString();
+
+        return instanceName;
     }
 
     public String getStateDirectory() {
@@ -311,6 +385,10 @@ public class LHServerConfig extends ConfigBase {
 
     public String getDiskUsagePath() {
         return getOrSetDefault(LHServerConfig.HEALTH_PATH_DISK_USAGE_KEY, "/diskUsage");
+    }
+
+    public String getStandbyStatusPath() {
+        return getOrSetDefault(LHServerConfig.HEALTH_PATH_STANDBY_KEY, "/standby-status");
     }
 
     public int getInternalBindPort() {
@@ -559,6 +637,10 @@ public class LHServerConfig extends ConfigBase {
         return Boolean.valueOf(getOrSetDefault(SHOULD_CREATE_TOPICS_KEY, "true"));
     }
 
+    public int getRocksDBCompactionThreads() {
+        return Integer.valueOf(getOrSetDefault(ROCKSDB_COMPACTION_THREADS_KEY, "1"));
+    }
+
     public long getCoreMemtableSize() {
         // 64MB default
         return Long.valueOf(getOrSetDefault(CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 64)));
@@ -574,6 +656,7 @@ public class LHServerConfig extends ConfigBase {
 
     public Properties getKafkaProducerConfig(String component) {
         Properties conf = new Properties();
+        conf.put("client.id", this.getClientId(component));
         conf.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
         conf.put(
@@ -584,6 +667,7 @@ public class LHServerConfig extends ConfigBase {
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
                 org.apache.kafka.common.serialization.StringSerializer.class);
         conf.put(ProducerConfig.ACKS_CONFIG, "all");
+        conf.put(ProducerConfig.LINGER_MS_CONFIG, getOrSetDefault(LINGER_MS_KEY, "0"));
         addKafkaSecuritySettings(conf);
         return conf;
     }
@@ -599,54 +683,107 @@ public class LHServerConfig extends ConfigBase {
      * Either way, this all should be configurable.
      */
     private void addKafkaSecuritySettings(Properties conf) {
+        String securityProtocol = getOrSetDefault(KAFKA_SECURITY_PROTOCOL_KEY, "PLAINTEXT");
+
         String keystoreLoc = getOrSetDefault(KAFKA_KEYSTORE_KEY, null);
-        String keystorePassword = getOrSetDefault(KAFKA_KEYSTORE_PASSWORD_KEY, null);
-        String keystorePasswordFile = getOrSetDefault(KAFKA_KEYSTORE_PASSWORD_FILE_KEY, null);
+        String keystorePassword =
+                getFromConfigOrFile(KAFKA_KEYSTORE_PASSWORD_KEY, KAFKA_KEYSTORE_PASSWORD_FILE_KEY, null);
+
         String truststoreLoc = getOrSetDefault(KAFKA_TRUSTSTORE_KEY, null);
-        String truststorePassword = getOrSetDefault(KAFKA_TRUSTSTORE_PASSWORD_KEY, null);
-        String truststorePasswordFile = getOrSetDefault(KAFKA_TRUSTSTORE_PASSWORD_FILE_KEY, null);
+        String truststorePassword =
+                getFromConfigOrFile(KAFKA_TRUSTSTORE_PASSWORD_KEY, KAFKA_TRUSTSTORE_PASSWORD_FILE_KEY, null);
 
-        if (keystorePasswordFile != null) {
-            log.info("Loading Keystore Password form file");
-            keystorePassword = loadSettingFromFile(keystorePasswordFile);
+        String saslMechanism = getOrSetDefault(KAFKA_SASL_MECHANISM_KEY, null);
+        String jaasConfig = getFromConfigOrFile(KAFKA_SASL_JAAS_CONFIG_KEY, KAFKA_SASL_JAAS_CONFIG_FILE_KEY, null);
+
+        conf.put("security.protocol", securityProtocol);
+        if (securityProtocol.equals("PLAINTEXT")) {
+            if (keystoreLoc != null
+                    || keystorePassword != null
+                    || truststoreLoc != null
+                    || truststorePassword != null
+                    || jaasConfig != null
+                    || saslMechanism != null) {
+                throw new LHMisconfigurationException(
+                        "Check your LHS_KAFKA_SECURITY_PROTOCOL. Cannot have PLAINTEXT with other security configs.");
+            }
+            log.info("Connecting to Kafka with PLAINTEXT");
+
+        } else if (securityProtocol.equals("SSL")) {
+            if (keystoreLoc != null) {
+                if (keystorePassword == null) {
+                    throw new LHMisconfigurationException(
+                            "Must set LHS_KAFKA_KEYSTORE_PASSWORD or LHS_KAFKA_KEYSTORE_PASSWORD_FILE if"
+                                    + " LHS_KAFKA_KEYSTORE location is set");
+                }
+                conf.put("ssl.keystore.type", "PKCS12");
+                conf.put("ssl.keystore.location", keystoreLoc);
+                conf.put("ssl.keystore.password", keystorePassword);
+                log.info("Connecting to Kafka with MTLS.");
+            } else {
+                log.info("Connecting to Kafka with TLS.");
+            }
+
+        } else if (securityProtocol.equals("SASL_SSL")) {
+            if (saslMechanism == null || jaasConfig == null) {
+                throw new LHMisconfigurationException("Must set SASL mechanism and Jaas Config using SASL_SSL");
+            }
+            conf.put("sasl.mechanism", saslMechanism);
+            conf.put("sasl.jaas.config", jaasConfig);
+        } else {
+            throw new LHMisconfigurationException(
+                    "Only SASL_SSL, PLAINTEXT, and SSL supported for LHS_KAFKA_SECURITY_PROTOCOL");
         }
 
-        if (truststorePasswordFile != null) {
-            log.info("Loading Truststore Password form files");
-            truststorePassword = loadSettingFromFile(truststorePasswordFile);
+        if (truststoreLoc != null) {
+            if (truststorePassword == null) {
+                throw new LHMisconfigurationException("LHS_KAFKA_TRUSTORE set but no password provided");
+            }
+            conf.put("ssl.truststore.type", "PKCS12");
+            conf.put("ssl.truststore.location", truststoreLoc);
+            conf.put("ssl.truststore.password", truststorePassword);
         }
+    }
 
-        if (keystoreLoc == null && keystorePassword == null && truststoreLoc == null && truststorePassword == null) {
-            log.info("Using plaintext kafka access");
-            return;
+    /**
+     * Some configs can be set either directly or via a file (generally, passwords).
+     * @param primary is the config which *might* have the config set.
+     * @param fileLocation is the file which *might* have the config set.
+     * @param defaultVal is the value to return if none are set.
+     * @return the config if set or the default.
+     * @throws LHMisconfigurationException if both primary and fileLocation are set.
+     */
+    private String getFromConfigOrFile(String primary, String fileLocation, String defaultVal) {
+        String primaryVal = getOrSetDefault(primary, null);
+        String fileLocationVal = getOrSetDefault(fileLocation, null);
+        if (primaryVal != null && fileLocationVal != null) {
+            throw new LHMisconfigurationException("Cannot set both %s and %s".formatted(primary, fileLocation));
         }
+        if (primaryVal != null) return primaryVal;
+        if (fileLocationVal != null) return loadSettingFromFile(fileLocationVal);
+        return defaultVal;
+    }
 
-        if (keystoreLoc == null || keystorePassword == null || truststoreLoc == null || truststorePassword == null) {
-            throw new RuntimeException("Must provide all or none of the following configs: "
-                    + KAFKA_KEYSTORE_KEY
-                    + ", "
-                    + KAFKA_KEYSTORE_PASSWORD_KEY
-                    + ", "
-                    + KAFKA_TRUSTSTORE_KEY
-                    + ", "
-                    + KAFKA_TRUSTSTORE_PASSWORD_KEY);
-        }
-
-        conf.put("security.protocol", "SSL");
-
-        conf.put("ssl.keystore.type", "PKCS12");
-        conf.put("ssl.keystore.location", keystoreLoc);
-        conf.put("ssl.keystore.password", keystorePassword);
-
-        conf.put("ssl.truststore.type", "PKCS12");
-        conf.put("ssl.truststore.location", truststoreLoc);
-        conf.put("ssl.truststore.password", truststorePassword);
+    /*
+     * EXPERIMENTAL: Internal config to determine whether the server should leave the
+     * group on shutdown
+     */
+    public boolean leaveGroupOnShutdown() {
+        return getOrSetDefault(X_LEAVE_GROUP_ON_SHUTDOWN_KEY, "false").equals("true");
     }
 
     public Properties getCoreStreamsConfig() {
         Properties props = getBaseStreamsConfig();
         props.put("application.id", getKafkaGroupId("core"));
-        props.put("processing.guarantee", "exactly_once_v2");
+        props.put("client.id", this.getClientId("core"));
+
+        if (getOrSetDefault(X_USE_AT_LEAST_ONCE_KEY, "false").equals("true")) {
+            log.warn("Using experimental override config to use at-least-once for Core topology");
+            props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.AT_LEAST_ONCE);
+        } else {
+            props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_V2);
+        }
+
         props.put("num.stream.threads", Integer.valueOf(getOrSetDefault(CORE_STREAM_THREADS_KEY, "1")));
         // The Core Topology is EOS. Note that we have engineered the application to not be sensitive
         // to commit latency (long story). The only thing that is affected by commit latency is the
@@ -664,17 +801,23 @@ public class LHServerConfig extends ConfigBase {
         // changelog (the WfRun, NodeRun, and TaskRun each are saved on the first two commands).
         //
         // That's not to mention that we will be writing fewer times to RocksDB. Huge win.
-        int commitInterval = Integer.valueOf(getOrSetDefault(LHServerConfig.CORE_STREAMS_COMMIT_INTERVAL_KEY, "2000"));
-        props.put("commit.interval", commitInterval);
+        int commitInterval = Integer.valueOf(getOrSetDefault(LHServerConfig.CORE_STREAMS_COMMIT_INTERVAL_KEY, "3000"));
+        props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, commitInterval);
         props.put(
                 "statestore.cache.max.bytes",
                 Long.valueOf(getOrSetDefault(CORE_STATESTORE_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 32))));
+
+        // Kafka Streams calls KafkaProducer#commitTransaction() which flushes messages anyways. Sending earlier does
+        // not help at all in any way (this is because the Core topology is EOS). Therefore, having a big linger.ms
+        // does not have any downsides in theory.
+        props.put(StreamsConfig.producerPrefix("linger.ms"), 1000);
         return props;
     }
 
     public Properties getTimerStreamsConfig() {
         Properties props = getBaseStreamsConfig();
         props.put("application.id", this.getKafkaGroupId("timer"));
+        props.put("client.id", this.getClientId("timer"));
         props.put("processing.guarantee", "at_least_once");
         props.put("consumer.isolation.level", "read_uncommitted");
         props.put("num.stream.threads", Integer.valueOf(getOrSetDefault(TIMER_STREAM_THREADS_KEY, "1")));
@@ -694,17 +837,37 @@ public class LHServerConfig extends ConfigBase {
         // the LHS_CORE_STATESTORE_CACHE_BYTES config smaller (i.e. 16MB) due to the smaller commit interval.
         int commitInterval =
                 Integer.valueOf(getOrSetDefault(LHServerConfig.TIMER_STREAMS_COMMIT_INTERVAL_KEY, "30000"));
-        props.put("commit.interval", commitInterval);
+        props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, commitInterval);
 
         props.put(
                 "statestore.cache.max.bytes",
                 Long.valueOf(getOrSetDefault(TIMER_STATESTORE_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 64))));
+
+        // For the Timer, which is ALOS, the linger ms does potentially impact the latency of a timer coming in.
+        // Future work might allow this to be a separate config from the linger ms used for the GRPC server.
+        props.put(StreamsConfig.producerPrefix("linger.ms"), getOrSetDefault(LINGER_MS_KEY, "0"));
 
         return props;
     }
 
     private Properties getBaseStreamsConfig() {
         Properties props = new Properties();
+
+        if (getOrSetDefault(X_LEAVE_GROUP_ON_SHUTDOWN_KEY, "false").equals("true")) {
+            log.warn("Using experimental internal config to leave group on shutdonw!");
+            props.put(StreamsConfig.consumerPrefix("internal.leave.group.on.close"), true);
+        }
+
+        if (getOrSetDefault(X_USE_STATE_UPDATER_KEY, "false").equals("true")) {
+            log.warn("Using experimental internal config to use State Updater!");
+            props.put(StreamsConfig.InternalConfig.STATE_UPDATER_ENABLED, true);
+        }
+
+        if (getOrSetDefault(X_USE_STATIC_MEMBERSHIP_KEY, "false").equals("true")) {
+            log.warn("Using experimental internal config to enable static membership");
+            props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, getLHInstanceName());
+        }
+
         props.put(
                 "application.server",
                 getOrSetDefault(LHServerConfig.INTERNAL_ADVERTISED_HOST_KEY, "localhost") + ":"
@@ -719,6 +882,9 @@ public class LHServerConfig extends ConfigBase {
         props.put("num.standby.replicas", Integer.valueOf(getOrSetDefault(NUM_STANDBY_REPLICAS_KEY, "0")));
         props.put("max.warmup.replicas", Integer.valueOf(getOrSetDefault(NUM_WARMUP_REPLICAS_KEY, "4")));
         props.put("probing.rebalance.interval.ms", 60 * 1000);
+        props.put(
+                "metrics.recording.level",
+                getOrSetDefault(STREAMS_METRICS_LEVEL_KEY, "info").toUpperCase());
 
         // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.
         props.put("default.deserialization.exception.handler", LogAndContinueExceptionHandler.class);
@@ -745,7 +911,9 @@ public class LHServerConfig extends ConfigBase {
             // As of Kafka 3.6, there is nothing we can do to optimize the group coordinator traffic.
         }
 
-        RocksConfigSetter.serverConfig = this;
+        // Set the RocksDB Config Setter, and inject this LHServerConfig into the options set
+        // into it.
+        props.put(RocksConfigSetter.LH_SERVER_CONFIG_KEY, this);
         props.put("rocksdb.config.setter", RocksConfigSetter.class);
 
         // Until KIP-924 is implemented, for cluster stability it is best to avoid rebalances.
@@ -764,6 +932,14 @@ public class LHServerConfig extends ConfigBase {
         addKafkaSecuritySettings(props);
 
         return props;
+    }
+
+    private String getClientId(String component) {
+        return this.getLHClusterId() + "-" + this.getLHInstanceName() + "-" + component;
+    }
+
+    public long getStreamsSessionTimeout() {
+        return Long.parseLong(props.getProperty(SESSION_TIMEOUT_KEY));
     }
 
     public int getNumNetworkThreads() {
@@ -865,7 +1041,7 @@ public class LHServerConfig extends ConfigBase {
             return null;
         }
         if (serverCertFile == null || serverKeyFile == null) {
-            throw new RuntimeException("CA cert file provided but missing cert or key");
+            throw new LHMisconfigurationException("CA cert file provided but missing cert or key");
         }
         File serverCert = new File(serverCertFile);
         File serverKey = new File(serverKeyFile);
@@ -888,7 +1064,7 @@ public class LHServerConfig extends ConfigBase {
         }
 
         if (serverCertFile == null || serverKeyFile == null) {
-            throw new RuntimeException("CA cert file provided but missing cert or key");
+            throw new LHMisconfigurationException("CA cert file provided but missing cert or key");
         }
         File serverCert = new File(serverCertFile);
         File serverKey = new File(serverKeyFile);

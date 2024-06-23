@@ -12,9 +12,13 @@ public class InterruptedModel extends LHSerializable<Interrupted> implements Sub
 
     public int interruptThreadId;
 
-    public boolean isResolved(WfRunModel wfRunModel) {
+    public boolean isResolved(ThreadRunModel haltedThread) {
+        WfRunModel wfRunModel = haltedThread.getWfRun();
         ThreadRunModel iThread = wfRunModel.getThreadRun(interruptThreadId);
-        return iThread.status == LHStatus.COMPLETED;
+        if (iThread.status == LHStatus.COMPLETED) {
+            return true;
+        }
+        return false;
     }
 
     public Class<Interrupted> getProtoBaseClass() {

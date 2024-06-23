@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.EdgeCondition;
 import io.littlehorse.sdk.common.proto.EntrypointNode;
 import io.littlehorse.sdk.common.proto.ExitNode;
+import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventNode;
 import io.littlehorse.sdk.common.proto.FailureDef;
@@ -25,6 +26,7 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
+import io.littlehorse.sdk.common.proto.ThrowEventNode;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTATask;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
@@ -36,7 +38,9 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
+import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
+import io.littlehorse.sdk.wfsdk.LHFormatString;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
@@ -199,19 +203,46 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new UserTaskOutputImpl(nodeName, this);
     }
 
+    @Override
     public void scheduleReminderTask(
-            UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Object... args) {
-        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, args);
+            UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Serializable... args) {
+        // List<Object> nextArgs = new ArrayList<>();
+        // for (Object arg : args) nextArgs.add(arg);
+        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_ARRIVAL, args);
     }
 
-    public void scheduleReminderTask(UserTaskOutput ut, int delaySeconds, String taskDefName, Object... args) {
-        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, args);
+    @Override
+    public void scheduleReminderTask(UserTaskOutput ut, int delaySeconds, String taskDefName, Serializable... args) {
+        // List<Object> nextArgs = new ArrayList<>();
+        // for (Object arg : args) nextArgs.add(arg);
+        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_ARRIVAL, args);
     }
 
-    public void scheduleTaskAfterHelper(UserTaskOutput ut, Object delaySeconds, String taskDefName, Object... args) {
+    @Override
+    public void scheduleReminderTaskOnAssignment(
+            UserTaskOutput ut, int delaySeconds, String taskDefName, Serializable... args) {
+        // List<Object> nextArgs = new ArrayList<>();
+        // for (Object arg : args) nextArgs.add(arg);
+        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_TASK_ASSIGNED, args);
+    }
+
+    @Override
+    public void scheduleReminderTaskOnAssignment(
+            UserTaskOutput ut, WfRunVariable delaySeconds, String taskDefName, Serializable... args) {
+        scheduleTaskAfterHelper(ut, delaySeconds, taskDefName, UTActionTrigger.UTHook.ON_TASK_ASSIGNED, args);
+    }
+
+    public void scheduleTaskAfterHelper(
+            UserTaskOutput ut,
+            Serializable delaySeconds,
+            String taskDefName,
+            UTActionTrigger.UTHook utHook,
+            Serializable... args) {
         checkIfIsActive();
         VariableAssignment assn = assignVariable(delaySeconds);
-        TaskNode taskNode = createTaskNode(taskDefName, args);
+        TaskNode taskNode = createTaskNode(
+                TaskNode.newBuilder().setTaskDefId(TaskDefId.newBuilder().setName(taskDefName)), args);
+        parent.addTaskDefName(taskDefName);
         UTATask utaTask = UTATask.newBuilder().setTask(taskNode).build();
 
         UserTaskOutputImpl utImpl = (UserTaskOutputImpl) ut;
@@ -220,14 +251,40 @@ final class WorkflowThreadImpl implements WorkflowThread {
         }
 
         Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
-        UTActionTrigger.Builder newUtActionBuilder = UTActionTrigger.newBuilder()
-                .setTask(utaTask)
-                .setHook(UTActionTrigger.UTHook.ON_ARRIVAL)
-                .setDelaySeconds(assn);
+        UTActionTrigger.Builder newUtActionBuilder =
+                UTActionTrigger.newBuilder().setTask(utaTask).setHook(utHook).setDelaySeconds(assn);
         curNode.getUserTaskBuilder().addActions(newUtActionBuilder);
         spec.putNodes(lastNodeName, curNode.build());
         // TODO LH-334: return a modified child class of NodeOutput which lets
         // us mutate variables
+    }
+
+    @Override
+    public void cancelUserTaskRunAfter(UserTaskOutput userTask, Serializable delaySeconds) {
+        checkIfIsActive();
+        scheduleUserTaskCancellationAfterDeadline(userTask, delaySeconds, UTActionTrigger.UTHook.ON_ARRIVAL);
+    }
+
+    @Override
+    public void cancelUserTaskRunAfterAssignment(UserTaskOutput userTask, Serializable delaySeconds) {
+        checkIfIsActive();
+        scheduleUserTaskCancellationAfterDeadline(userTask, delaySeconds, UTActionTrigger.UTHook.ON_TASK_ASSIGNED);
+    }
+
+    private void scheduleUserTaskCancellationAfterDeadline(
+            UserTaskOutput userTask, Serializable delaySeconds, UTActionTrigger.UTHook hook) {
+        VariableAssignment assn = assignVariable(delaySeconds);
+        UTActionTrigger.UTACancel utaCancel =
+                UTActionTrigger.UTACancel.newBuilder().build();
+        UserTaskOutputImpl utImpl = (UserTaskOutputImpl) userTask;
+        if (!lastNodeName.equals(utImpl.nodeName)) {
+            throw new RuntimeException("Tried to edit a stale User Task node!");
+        }
+        Node.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
+        UTActionTrigger.Builder newUtActionBuilder =
+                UTActionTrigger.newBuilder().setCancel(utaCancel).setHook(hook).setDelaySeconds(assn);
+        curNode.getUserTaskBuilder().addActions(newUtActionBuilder);
+        spec.putNodes(lastNodeName, curNode.build());
     }
 
     public LHFormatStringImpl format(String format, WfRunVariable... args) {
@@ -237,15 +294,30 @@ final class WorkflowThreadImpl implements WorkflowThread {
     @Override
     public TaskNodeOutputImpl execute(String taskName, Serializable... args) {
         checkIfIsActive();
-        TaskNode taskNode = createTaskNode(taskName, args);
+        parent.addTaskDefName(taskName);
+        TaskNode taskNode = createTaskNode(
+                TaskNode.newBuilder().setTaskDefId(TaskDefId.newBuilder().setName(taskName)), args);
         String nodeName = addNode(taskName, NodeCase.TASK, taskNode);
         return new TaskNodeOutputImpl(nodeName, this);
     }
 
-    private TaskNode createTaskNode(String taskName, Object... args) {
-        TaskNode.Builder taskNode =
-                TaskNode.newBuilder().setTaskDefId(TaskDefId.newBuilder().setName(taskName));
-        parent.addTaskDefName(taskName);
+    @Override
+    public TaskNodeOutputImpl execute(WfRunVariable taskName, Serializable... args) {
+        checkIfIsActive();
+        TaskNode taskNode = createTaskNode(TaskNode.newBuilder().setDynamicTask(assignVariable(taskName)), args);
+        String nodeName = addNode(((WfRunVariableImpl) taskName).getName(), NodeCase.TASK, taskNode);
+        return new TaskNodeOutputImpl(nodeName, this);
+    }
+
+    @Override
+    public TaskNodeOutputImpl execute(LHFormatString taskName, Serializable... args) {
+        checkIfIsActive();
+        TaskNode taskNode = createTaskNode(TaskNode.newBuilder().setDynamicTask(assignVariable(taskName)), args);
+        String nodeName = addNode(((LHFormatStringImpl) taskName).getFormat(), NodeCase.TASK, taskNode);
+        return new TaskNodeOutputImpl(nodeName, this);
+    }
+
+    private TaskNode createTaskNode(TaskNode.Builder taskNode, Serializable... args) {
 
         for (Object var : args) {
             taskNode.addVariables(assignVariable(var));
@@ -255,8 +327,12 @@ final class WorkflowThreadImpl implements WorkflowThread {
             taskNode.setTimeoutSeconds(parent.getDefaultTaskTimeout());
         }
 
-        // Can be overriden via NodeOutput.withRetries();
-        taskNode.setRetries(parent.getDefaultTaskRetries());
+        taskNode.setRetries(parent.getDefaultSimpleRetries());
+
+        if (parent.getDefaultExponentialBackoffRetryPolicy().isPresent()) {
+            taskNode.setExponentialBackoff(
+                    parent.getDefaultExponentialBackoffRetryPolicy().get());
+        }
 
         return taskNode.build();
     }
@@ -494,6 +570,20 @@ final class WorkflowThreadImpl implements WorkflowThread {
         spec.putNodes(node.nodeName, nb.build());
     }
 
+    public void overrideTaskExponentialBackoffPolicy(TaskNodeOutputImpl node, ExponentialBackoffRetryPolicy policy) {
+        checkIfIsActive();
+        Node.Builder nb = spec.getNodesOrThrow(node.nodeName).toBuilder();
+        if (nb.getNodeCase() != NodeCase.TASK) {
+            throw new IllegalStateException("Impossible to not have task node here");
+        }
+
+        TaskNode.Builder taskBuilder = nb.getTaskBuilder();
+        taskBuilder.setExponentialBackoff(policy);
+
+        nb.setTask(taskBuilder);
+        spec.putNodes(node.nodeName, nb.build());
+    }
+
     public void addTimeoutToExtEvt(NodeOutputImpl node, int timeoutSeconds) {
         checkIfIsActive();
         Node.Builder n = spec.getNodesOrThrow(node.nodeName).toBuilder();
@@ -593,6 +683,19 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new WaitForThreadsNodeOutputImpl(nodeName, this, spec);
     }
 
+    @Override
+    public void throwEvent(String workflowEventDefName, Serializable content) {
+        checkIfIsActive();
+        ThrowEventNode node = ThrowEventNode.newBuilder()
+                .setEventDefId(WorkflowEventDefId.newBuilder()
+                        .setName(workflowEventDefName)
+                        .build())
+                .setContent(assignVariable(content))
+                .build();
+        addNode("throw-" + workflowEventDefName, NodeCase.THROW_EVENT, node);
+    }
+
+    @Override
     public NodeOutputImpl waitForEvent(String externalEventDefName) {
         checkIfIsActive();
         ExternalEventNode waitNode = ExternalEventNode.newBuilder()
@@ -765,6 +868,9 @@ final class WorkflowThreadImpl implements WorkflowThread {
                 break;
             case START_MULTIPLE_THREADS:
                 node.setStartMultipleThreads((StartMultipleThreadsNode) subNode);
+                break;
+            case THROW_EVENT:
+                node.setThrowEvent((ThrowEventNode) subNode);
                 break;
             case NODE_NOT_SET:
                 // not possible

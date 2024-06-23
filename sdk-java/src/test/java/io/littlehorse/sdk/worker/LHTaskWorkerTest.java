@@ -1,64 +1,93 @@
 package io.littlehorse.sdk.worker;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
+import io.littlehorse.sdk.common.config.LHConfig;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 public class LHTaskWorkerTest {
-    private final LHServerConnectionManager manager = mock();
-
     @Test
-    public void theWorkerIsHealthyIfNoCallFailureHasBeenNotifiedAndClusterIsHealthy() {
-        final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
+    public void shouldResolvePlaceHolder() {
+        String taskDefName = "a-task-name-${CLUSTER_NAME}";
+        Map<String, String> values = Map.of("CLUSTER_NAME", "pedro-cluster");
 
-        when(manager.wasThereAnyFailure()).thenReturn(false);
-        when(manager.isClusterHealthy()).thenReturn(true);
+        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), taskDefName, new LHConfig(), values);
 
-        LHTaskWorkerHealth workerHealth = worker.healthStatus();
-
-        assertThat(workerHealth.isHealthy()).isTrue();
-        assertThat(workerHealth.getReason()).isEqualTo(LHTaskWorkerHealthReason.HEALTHY);
+        assertThat(task.getTaskDefName()).isEqualTo("a-task-name-pedro-cluster");
     }
 
     @Test
-    public void theWorkerIsUnhealthyIfAFailureHasBeenNotifiedEvenIfClusterIsHealthy() {
-        final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
+    public void shouldResolvePlaceHolderWhenItIsTheOnlyTextOnTheStringTemplate() {
+        String taskDefName = "${CLUSTER_NAME}";
+        Map<String, String> values = Map.of("CLUSTER_NAME", "pedro-cluster");
 
-        when(manager.wasThereAnyFailure()).thenReturn(true);
-        when(manager.isClusterHealthy()).thenReturn(true);
+        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), taskDefName, new LHConfig(), values);
 
-        assertThat(worker.healthStatus().isHealthy()).isFalse();
-        assertThat(worker.healthStatus().getReason()).isEqualTo(LHTaskWorkerHealthReason.UNHEALTHY);
+        assertThat(task.getTaskDefName()).isEqualTo("pedro-cluster");
     }
 
     @Test
-    public void theWorkerIsUnhealthyIfNoFailureOnCallsButClusterIsUnhealthy() {
-        final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
+    public void shouldResolve2PlaceHolders() {
+        String taskDefName = "a-task-name-${CLUSTER_NAME}-${CLOUD_NAME}";
+        Map<String, String> values = Map.of("CLUSTER_NAME", "pedro-cluster", "CLOUD_NAME", "aws");
 
-        when(manager.wasThereAnyFailure()).thenReturn(false);
-        when(manager.isClusterHealthy()).thenReturn(false);
+        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), taskDefName, new LHConfig(), values);
 
-        assertThat(worker.healthStatus().isHealthy()).isFalse();
-        assertThat(worker.healthStatus().getReason()).isEqualTo(LHTaskWorkerHealthReason.SERVER_REBALANCING);
+        assertThat(task.getTaskDefName()).isEqualTo("a-task-name-pedro-cluster-aws");
     }
 
     @Test
-    public void theWorkerIsUnhealthyIfFailureOnCallsAndClusterIsUnhealthy() {
-        final LHTaskWorker worker = new LHTaskWorker(new GreetWorker(), "test_task", mock(), manager);
+    public void shouldResolve3PlaceHoldersWithOnePlaceholderAtTheBeginningOfTheTemplate() {
+        String taskDefName = "${REGION}_a-task-name-${CLUSTER_NAME}-${CLOUD_NAME}";
+        Map<String, String> values =
+                Map.of("CLUSTER_NAME", "pedro-cluster", "CLOUD_NAME", "aws", "REGION", "us-west-2");
 
-        when(manager.wasThereAnyFailure()).thenReturn(true);
-        when(manager.isClusterHealthy()).thenReturn(false);
+        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), taskDefName, new LHConfig(), values);
 
-        assertThat(worker.healthStatus().isHealthy()).isFalse();
-        assertThat(worker.healthStatus().getReason()).isEqualTo(LHTaskWorkerHealthReason.SERVER_REBALANCING);
+        assertThat(task.getTaskDefName()).isEqualTo("us-west-2_a-task-name-pedro-cluster-aws");
+    }
+
+    @Test
+    public void taskDefNameRemainsTheSameIfItHasNoPlaceholders() {
+        String taskDefName = "greet";
+        Map<String, String> values =
+                Map.of("CLUSTER_NAME", "pedro-cluster", "CLOUD_NAME", "aws", "REGION", "us-west-2");
+
+        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), taskDefName, new LHConfig(), values);
+
+        assertThat(task.getTaskDefName()).isEqualTo("greet");
     }
 }
 
-class GreetWorker {
-    @LHTaskMethod("greet-task")
-    public void greet() {
-        System.out.println("Greeting");
+class TaskWorker {
+    @LHTaskMethod("greet")
+    public String greeting(String name) {
+        return "hello there, " + name;
+    }
+
+    @LHTaskMethod("something-${INVALID_PLACEHOLDER}")
+    public String withInvalidPlaceHolder(String name) {
+        return "task with invalid placeholder " + name;
+    }
+
+    @LHTaskMethod("${REGION}_a-task-name-${CLUSTER_NAME}-${CLOUD_NAME}")
+    public String withPlaceHolderAtTheBeginning(String name) {
+        return "task with placeholder at the beginning " + name;
+    }
+
+    @LHTaskMethod("a-task-name-${CLUSTER_NAME}-${CLOUD_NAME}")
+    public String with2PlaceHolderAtTheBeginning(String name) {
+        return "task with 2 placeholders at the beginning " + name;
+    }
+
+    @LHTaskMethod("a-task-name-${CLUSTER_NAME}")
+    public String with1PlaceHolderAtTheBeginning(String name) {
+        return "task with 1 placeholders at the beginning " + name;
+    }
+
+    @LHTaskMethod("${CLUSTER_NAME}")
+    public String onlyWithPlaceHolder(String name) {
+        return "task only with placeholder " + name;
     }
 }

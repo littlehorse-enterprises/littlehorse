@@ -4,6 +4,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
+import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -13,6 +14,7 @@ import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
@@ -71,6 +73,14 @@ public class WfService {
         return metadataManager.get(new ExternalEventDefIdModel(name));
     }
 
+    public WorkflowEventDefModel getWorkflowEventDef(String name) {
+        return getWorkflowEventDef(new WorkflowEventDefIdModel(name));
+    }
+
+    public WorkflowEventDefModel getWorkflowEventDef(WorkflowEventDefIdModel id) {
+        return metadataManager.get(id);
+    }
+
     public TaskDefModel getTaskDef(String name) {
         /*TaskDefIdModel id = new TaskDefIdModel(name);
         Supplier<TaskDef> findTaskDef = () -> {
@@ -126,12 +136,12 @@ public class WfService {
         return out;
     }
 
-    public List<String> adminPrincipalIds() {
-        List<Tag> result =
-                metadataManager.tagScan(GetableClassEnum.PRINCIPAL, List.of(new Attribute("isAdmin", "true")));
-        List<String> adminPrincipalIds = new ArrayList<>();
+    public List<PrincipalIdModel> adminPrincipalIds() {
+        List<Tag> result = metadataManager.clusterScopedTagScan(
+                GetableClassEnum.PRINCIPAL, List.of(new Attribute("isAdmin", "true")));
+        List<PrincipalIdModel> adminPrincipalIds = new ArrayList<>();
         for (Tag storedTag : result) {
-            adminPrincipalIds.add(storedTag.getDescribedObjectId());
+            adminPrincipalIds.add(new PrincipalIdModel((storedTag.getDescribedObjectId())));
         }
         return adminPrincipalIds;
     }

@@ -8,54 +8,142 @@ public interface WaitForThreadsNodeOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for the threads specified
+   * here.
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
    * @return Whether the threads field is set.
    */
   boolean hasThreads();
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for the threads specified
+   * here.
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
    * @return The threads.
    */
   io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitFor getThreads();
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for the threads specified
+   * here.
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsNode.ThreadsToWaitFor threads = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WaitForThreadsNode.ThreadsToWaitForOrBuilder getThreadsOrBuilder();
 
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+   * in the JSON_ARR value specified here. Each element in the list must be an INT
+   * representing the `number` of a ThreadRun that we're waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
    * @return Whether the threadList field is set.
    */
   boolean hasThreadList();
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+   * in the JSON_ARR value specified here. Each element in the list must be an INT
+   * representing the `number` of a ThreadRun that we're waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
    * @return The threadList.
    */
   io.littlehorse.sdk.common.proto.VariableAssignment getThreadList();
   /**
+   * <pre>
+   * Specifies that the WaitForThreadsRun will wait for a list of ThreadRun's contained
+   * in the JSON_ARR value specified here. Each element in the list must be an INT
+   * representing the `number` of a ThreadRun that we're waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment thread_list = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getThreadListOrBuilder();
 
   /**
+   * <pre>
+   * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+   * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+   * (if any). The FailureHandler will be a child of the child, which means that it has
+   * access to all of the variables in the scope of the failed Child ThreadRun.
+   *
+   * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+   * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+   * failed.
+   * </pre>
+   *
    * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef> 
       getPerThreadFailureHandlersList();
   /**
+   * <pre>
+   * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+   * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+   * (if any). The FailureHandler will be a child of the child, which means that it has
+   * access to all of the variables in the scope of the failed Child ThreadRun.
+   *
+   * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+   * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+   * failed.
+   * </pre>
+   *
    * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
    */
   io.littlehorse.sdk.common.proto.FailureHandlerDef getPerThreadFailureHandlers(int index);
   /**
+   * <pre>
+   * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+   * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+   * (if any). The FailureHandler will be a child of the child, which means that it has
+   * access to all of the variables in the scope of the failed Child ThreadRun.
+   *
+   * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+   * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+   * failed.
+   * </pre>
+   *
    * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
    */
   int getPerThreadFailureHandlersCount();
   /**
+   * <pre>
+   * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+   * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+   * (if any). The FailureHandler will be a child of the child, which means that it has
+   * access to all of the variables in the scope of the failed Child ThreadRun.
+   *
+   * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+   * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+   * failed.
+   * </pre>
+   *
    * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder> 
       getPerThreadFailureHandlersOrBuilderList();
   /**
+   * <pre>
+   * If any of the child ThreadRun's that we are waiting for throw a Failure, we will
+   * evaluate it against these FailureHandlerDef's and run the first matching FailureHandler
+   * (if any). The FailureHandler will be a child of the child, which means that it has
+   * access to all of the variables in the scope of the failed Child ThreadRun.
+   *
+   * This is different from Node-level Failure Handlers, which would be _siblings_ of the
+   * ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
+   * failed.
+   * </pre>
+   *
    * <code>repeated .littlehorse.FailureHandlerDef per_thread_failure_handlers = 3;</code>
    */
   io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder getPerThreadFailureHandlersOrBuilder(

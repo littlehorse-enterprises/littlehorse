@@ -13,19 +13,17 @@ import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.Principal;
 import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
 import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
-import io.littlehorse.server.streams.storeinternals.index.Attribute;
-import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -74,10 +72,21 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
     @Override
     public Principal process(MetadataCommandExecution context) {
         MetadataManager metadataManager = context.metadataManager();
-        PrincipalModel oldPrincipal = metadataManager.get(new PrincipalIdModel(id));
-
+        PrincipalModel oldPrincipal = context.service().getPrincipal(new PrincipalIdModel(id));
+        PrincipalModel requester =
+                context.service().getPrincipal(context.authorization().principalId());
         PrincipalModel toSave = new PrincipalModel();
         toSave.setId(new PrincipalIdModel(id));
+
+        char[] disallowedCharacters = {'/', '\\'};
+        // Check if the ID contains any disallowed characters
+        for (char disallowedChar : disallowedCharacters) {
+            if (id.contains(String.valueOf(disallowedChar))) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT, "Principal ID cannot contain slashes or backslashes.");
+            }
+        }
+
         if (oldPrincipal != null) {
             if (!overwrite) {
                 throw new LHApiException(
@@ -92,10 +101,20 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
 
             toSave.setCreatedAt(oldPrincipal.getCreatedAt());
         }
-
-        if (perTenantAcls.isEmpty()) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Must provide list of tenants");
+        boolean canWriteAdminPrincipals = requester.isAdmin();
+        if (!globalAcls.getAcls().isEmpty() && !canWriteAdminPrincipals) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "Only admin users can create a principal with global privileges");
         }
+
+        List<TenantIdModel> affectedTenants =
+                perTenantAcls.keySet().stream().map(TenantIdModel::new).toList();
+        if (!requester.hasPermissionToEditPrincipalsIn(affectedTenants)) {
+            throw new LHApiException(
+                    Status.PERMISSION_DENIED, "Unauthorized to edit Principals affecting specified tenants");
+        }
+
+        validateIfPerTenantACLsHasAssociatedTenantResource();
 
         for (Map.Entry<String, ServerACLsModel> perTenantAcl : perTenantAcls.entrySet()) {
             TenantIdModel tenantId = new TenantIdModel(perTenantAcl.getKey());
@@ -113,6 +132,24 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
 
         metadataManager.put(toSave);
         return toSave.toProto().build();
+    }
+
+    /**
+     * Validates whether the perTenantACLs contain any resource associated with TENANT.
+     */
+    private void validateIfPerTenantACLsHasAssociatedTenantResource() {
+        if (hasTenantResource()) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    "PutPrincipalRequest does not allow non-Admin users to have any permissions on tenants");
+        }
+    }
+
+    private boolean hasTenantResource() {
+        return !perTenantAcls.isEmpty()
+                && perTenantAcls.values().stream().anyMatch(mappedACL -> mappedACL.getAcls().stream()
+                        .anyMatch(actualACL -> actualACL.getResources().stream()
+                                .anyMatch(aclResource -> aclResource.equals(ACLResource.ACL_TENANT))));
     }
 
     private void ensureThatThereIsStillAnAdminPrincipal(PrincipalModel old, MetadataCommandExecution context) {
@@ -134,20 +171,12 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
         //
         // Therefore, we need to check that there is still some other Admin Principal
         // somewhere before we remove it.
-        if (!adminPrincipalIds(context).anyMatch(adminPrincipalId -> !Objects.equals(adminPrincipalId, this.id))) {
+        if (!context.service().adminPrincipalIds().stream()
+                .anyMatch(adminPrincipalId -> !Objects.equals(adminPrincipalId.getId(), this.id))) {
             throw new LHApiException(
                     Status.FAILED_PRECONDITION,
                     "Cannot remove admin privileges from Principal %s: %s is the last Admin left.".formatted(id, id));
         }
-    }
-
-    private Stream<String> adminPrincipalIds(MetadataCommandExecution context) {
-        Attribute tagAdminAttribute = new Attribute("isAdmin", Boolean.TRUE.toString());
-        return context
-                .metadataManager()
-                .tagScan(PrincipalModel.getTypeEnum(PrincipalModel.class), List.of(tagAdminAttribute))
-                .stream()
-                .map(Tag::getDescribedObjectId);
     }
 
     @Override

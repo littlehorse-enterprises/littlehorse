@@ -50,8 +50,8 @@ public class UTAReassignModel extends LHSerializable<UTAReassign> {
         return UTAReassign.class;
     }
 
-    public void schedule(UserTaskRunModel utr, UTActionTriggerModel trigger) throws LHVarSubError {
-        ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
+    public void schedule(UserTaskRunModel utr, UTActionTriggerModel trigger, ProcessorExecutionContext processorContext)
+            throws LHVarSubError {
         LHTaskManager taskManager = processorContext.getTaskManager();
         NodeRunModel nodeRunModel = utr.getNodeRun();
 
@@ -65,7 +65,8 @@ public class UTAReassignModel extends LHSerializable<UTAReassign> {
 
         // Create the command
         CommandModel command = new CommandModel(
-                new DeadlineReassignUserTaskModel(utr.getId(), userId, userGroup), Date.from(maturationTime));
+                new DeadlineReassignUserTaskModel(utr.getId(), userId, userGroup, utr.getEpoch()),
+                Date.from(maturationTime));
 
         // Schedule the task
         LHTimer timer = new LHTimer(command);

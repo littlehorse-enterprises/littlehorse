@@ -4,8 +4,8 @@ from pathlib import Path
 
 import littlehorse
 from littlehorse.config import LHConfig
+from littlehorse.model import LHErrorType
 from littlehorse.worker import LHTaskWorker
-from littlehorse.workflow import LHErrorType
 from littlehorse.workflow import WorkflowThread, Workflow
 
 logging.basicConfig(level=logging.INFO)

@@ -43,7 +43,7 @@ func run(cmd *cobra.Command, args []string) {
 	fmt.Println("Starting OAuth2 PKCE authorization flow")
 
 	// https://github.com/coreos/go-oidc/blob/v3/example/idtoken/app.go
-	ctx := requestContext()
+	ctx := requestContext(cmd)
 
 	oauthProvider, err := oidc.NewProvider(ctx, lhConfig.OauthConfig.AuthServer)
 	if err != nil {
