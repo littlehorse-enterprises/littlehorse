@@ -543,26 +543,104 @@ The `UserTaskRun` will be assigned to `user_id: "sarah"` and `user_group: null`.
   <TabItem value="java" label="Java" default>
 
 ```java
-LittleHorseBlockingStub client = ...;
-UserTaskRunId id = ...; // For example, via searching as above
+package io.littlehorse.quickstart;
 
-client.assignUserTaskRun(AssignUserTaskRunRequest.newBuilder()
-        .setUserId("bob")
-        .setUserGroup("sales")
-        .setUserTaskRunId(id)
-        .setOverrideClaim(true)
-        .build());
+import java.io.IOException;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.UserTaskRunId;
+import io.littlehorse.sdk.common.proto.WfRunId;
+
+
+public class Main {
+    public static void main(String[] args) throws IOException, InterruptedException {
+        LHConfig config = new LHConfig();
+        LittleHorseBlockingStub client = config.getBlockingStub();
+
+        // Get a UserTaskRunId somehow. For example, you could search for one as shown
+        // in the section above.
+        UserTaskRunId id = UserTaskRunId.newBuilder()
+                .setWfRunId(WfRunId.newBuilder().setId("a7476518fdff4dd49f47dbe40df3c5a6"))
+                .setUserTaskGuid("709cac9fcd424d87810a6cabf66d400e")
+                .build();
+
+        // Reassign the UserTaskRun.
+        client.assignUserTaskRun(AssignUserTaskRunRequest.newBuilder()
+                .setUserId("mace-windu")
+                .setUserGroup("jedi-temple")
+                .setOverrideClaim(true)
+                .setUserTaskRunId(id)
+                .build());
+    }
+}
 ```
 
   </TabItem>
   <TabItem value="go" label="Go">
 
-Go example coming soon. However, it should be highly similar to the Java example above.
+```go
+package main
+
+import (
+	"context"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+)
+
+func main() {
+	// Get a client
+	config := common.NewConfigFromEnv()
+	client, _ := config.GetGrpcClient()
+
+	// Get a UserTaskRunId
+	id := &model.UserTaskRunId{
+		WfRunId: &model.WfRunId{
+			Id: "a7476518fdff4dd49f47dbe40df3c5a6",
+		},
+		UserTaskGuid: "709cac9fcd424d87810a6cabf66d400e",
+	}
+
+	newUserId := "yoda"
+	newUserGroup := "jedi-temple"
+
+	(*client).AssignUserTaskRun(context.Background(), &model.AssignUserTaskRunRequest{
+		UserTaskRunId: id,
+		UserGroup:     &newUserGroup,
+		UserId:        &newUserId,
+		OverrideClaim: true,
+	})
+}
+
+```
 
   </TabItem>
   <TabItem value="python" label="Python">
 
-Python example coming soon. However, it should be highly similar to the Java example above.
+```python
+from littlehorse import to_variable_value
+from littlehorse.config import LHConfig
+from littlehorse.model import *
+
+
+if __name__ == '__main__':
+    config = LHConfig()
+    client = config.stub()
+
+    # Get a UserTaskRunId from somewhere; for example, use the search described above
+    id = UserTaskRunId(
+        wf_run_id=WfRunId(id="a7476518fdff4dd49f47dbe40df3c5a6"),
+        user_task_guid="709cac9fcd424d87810a6cabf66d400e"
+    )
+
+    client.AssignUserTaskRun(AssignUserTaskRunRequest(
+        user_task_run_id=id,
+        user_id="yaddle",
+        user_group="jedi-temple",
+        override_claim=True,
+    ))
+```
 
   </TabItem>
 </Tabs>
@@ -572,10 +650,8 @@ Python example coming soon. However, it should be highly similar to the Java exa
 
 The last useful operation you may need to do when building an application using User Tasks is to "cancel" a `UserTaskRun`.
 
-:::warning
-Currently, when a `UserTaskRun` is moved to the `CANCELLED` state, the `NodeRun` treats it as an `ERROR` condition. However, we have an [open ticket](https://github.com/littlehorse-enterprises/littlehorse/issues/599) to change this behavior to throw a business `EXCEPTION` rather than a technical `ERROR`. This is because the cancellation of a `UserTaskRun` is a business process-level failure, not a technical failure.
-
-We anticipate implementing that ticket before releasing `1.0.0`.
+:::info
+By default, when a `UserTaskRun` is cancelled, the `NodeRun` fails with an `ERROR`. However, in the `WfSpec` SDK's you can configure this behavior on a case-by-case basis. For example, you can override the behavior to throw a specific business `EXCEPTION` upon cancellation.
 :::
 
 The request `rpc CancelUserTaskRun` is quite simple. The only edge-case is that the request throws `FAILED_PRECONDITION` if the `UserTaskRun` is already in the `DONE` status.
@@ -592,23 +668,90 @@ A simple example is shown below:
   <TabItem value="java" label="Java" default>
 
 ```java
-LittleHorseBlockingStub client = ...;
-UserTaskRunId id = ...; // For example, via searching as above
+package io.littlehorse.quickstart;
 
-client.cancelUserTaskRun(CancelUserTaskRunRequest.newBuilder()
-        .setUserTaskRunId(id)
-        .build());
+import java.io.IOException;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.UserTaskRunId;
+import io.littlehorse.sdk.common.proto.WfRunId;
+
+
+public class Main {
+    public static void main(String[] args) throws IOException, InterruptedException {
+        LHConfig config = new LHConfig();
+        LittleHorseBlockingStub client = config.getBlockingStub();
+
+        // Get a UserTaskRunId somehow. For example, you could search for one as shown
+        // in the section above.
+        UserTaskRunId id = UserTaskRunId.newBuilder()
+                .setWfRunId(WfRunId.newBuilder().setId("a7476518fdff4dd49f47dbe40df3c5a6"))
+                .setUserTaskGuid("709cac9fcd424d87810a6cabf66d400e")
+                .build();
+
+        // Reassign the UserTaskRun.
+        client.cancelUserTaskRun(CancelUserTaskRunRequest.newBuilder()
+                .setUserTaskRunId(id)
+                .build());
+    }
+}
 ```
 
   </TabItem>
   <TabItem value="go" label="Go">
 
-Go example coming soon. However, it should be highly similar to the Java example above.
+```go
+package main
+
+import (
+	"context"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+)
+
+func main() {
+	// Get a client
+	config := common.NewConfigFromEnv()
+	client, _ := config.GetGrpcClient()
+
+	// Get a UserTaskRunId
+	id := &model.UserTaskRunId{
+		WfRunId: &model.WfRunId{
+			Id: "a7476518fdff4dd49f47dbe40df3c5a6",
+		},
+		UserTaskGuid: "709cac9fcd424d87810a6cabf66d400e",
+	}
+
+	(*client).CancelUserTaskRun(context.Background(), &model.CancelUserTaskRunRequest{
+		UserTaskRunId: id,
+	})
+}
+```
 
   </TabItem>
   <TabItem value="python" label="Python">
 
-Python example coming soon. However, it should be highly similar to the Java example above.
+```python
+from littlehorse.config import LHConfig
+from littlehorse.model import *
+
+
+if __name__ == '__main__':
+    config = LHConfig()
+    client = config.stub()
+
+    # Get a UserTaskRunId from somewhere; for example, use the search described above
+    id = UserTaskRunId(
+        wf_run_id=WfRunId(id="a7476518fdff4dd49f47dbe40df3c5a6"),
+        user_task_guid="709cac9fcd424d87810a6cabf66d400e"
+    )
+
+    client.CancelUserTaskRun(CancelUserTaskRunRequest(
+        user_task_run_id=id,
+    ))
+```
 
   </TabItem>
 </Tabs>
