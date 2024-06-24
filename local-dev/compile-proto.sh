@@ -10,24 +10,7 @@ docker_run="docker run --user $(id -u):$(id -g) --rm -it -v ${WORK_DIR}:/littleh
 
 # compile protoc
 echo "Compiling docker image 'lh-protoc:23.4'"
-docker build -q --tag lh-protoc:23.4 -<<EOF
-FROM ubuntu:22.04
-ENV PROTOC_VERSION="23.4"
-RUN apt update && \
-    apt install -y --no-install-recommends python3 pip wget ca-certificates unzip golang nodejs npm && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    wget -q https://github.com/protocolbuffers/protobuf/releases/download/v23.4/protoc-23.4-linux-x86_64.zip -O /tmp/protoc.zip && \
-    unzip -d /usr/local/ /tmp/protoc.zip && \
-    wget -q https://repo1.maven.org/maven2/io/grpc/protoc-gen-grpc-java/1.57.2/protoc-gen-grpc-java-1.57.2-linux-x86_64.exe -O /usr/local/bin/protoc-gen-grpc-java && \
-    GOBIN=/usr/local/bin go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.31.0 && \
-    GOBIN=/usr/local/bin go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.3.0 && \
-    GOBIN=/usr/local/bin go install github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc@latest && \
-    pip install grpcio-tools==1.57.0 && \
-    npm install -g ts-proto && \
-    chmod +x /usr/local/bin/* && \
-    rm -f /tmp/*
-EOF
+docker build -q --tag lh-protoc:23.4 -f "${SCRIPT_DIR}/Dockerfile" "${SCRIPT_DIR}"
 
 # check protoc version
 echo "Docker image compiled, protoc --version: " $($docker_run protoc --version)
@@ -70,7 +53,7 @@ $docker_run python3 -m grpc_tools.protoc \
 # fix python packages, no option python_package https://github.com/protocolbuffers/protobuf/issues/7061
 echo "Fixing python objects"
 for i in $(ls "$WORK_DIR"/schemas/littlehorse | grep -v -E "^internal" | sed 's/.proto/_pb2/'); do
-    sed -i "s/^import ${i}/import littlehorse.model.${i}/" "${WORK_DIR}"/sdk-python/littlehorse/model/*
+    sed -i '' "s/^import ${i}/import littlehorse.model.${i}/" "${WORK_DIR}"/sdk-python/littlehorse/model/*
 done
 
 find "${WORK_DIR}/sdk-python/littlehorse/model" -type f -name "*.py" -print0 | sort -z | xargs -0 -I {} sh -c 'echo "from .$(basename $1 .py) import *" >> $(dirname $1)/__init__.py' _ {}
