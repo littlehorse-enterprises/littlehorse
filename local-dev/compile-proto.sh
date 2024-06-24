@@ -53,8 +53,10 @@ $docker_run python3 -m grpc_tools.protoc \
 # fix python packages, no option python_package https://github.com/protocolbuffers/protobuf/issues/7061
 echo "Fixing python objects"
 for i in $(ls "$WORK_DIR"/schemas/littlehorse | grep -v -E "^internal" | sed 's/.proto/_pb2/'); do
-    sed -i '' "s/^import ${i}/import littlehorse.model.${i}/" "${WORK_DIR}"/sdk-python/littlehorse/model/*
+    sed -i.bak "s/^import ${i}/import littlehorse.model.${i}/" "${WORK_DIR}"/sdk-python/littlehorse/model/*
 done
+
+rm -f "${WORK_DIR}"/sdk-python/littlehorse/model/*.bak
 
 find "${WORK_DIR}/sdk-python/littlehorse/model" -type f -name "*.py" -print0 | sort -z | xargs -0 -I {} sh -c 'echo "from .$(basename $1 .py) import *" >> $(dirname $1)/__init__.py' _ {}
 
