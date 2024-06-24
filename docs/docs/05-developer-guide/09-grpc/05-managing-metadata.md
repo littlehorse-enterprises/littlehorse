@@ -109,7 +109,7 @@ if __name__ == '__main__':
     asyncio.run(main())
 ```
 
-You can delete a `TaskDef` in python using the `LittleHorseStub` and the [`rpc DeleteTaskDef`](../../08-api.md#rpc-deletetaskdef-deletetaskdef). An example is shown below:
+You can delete a `TaskDef` in python using the `LittleHorseStub` and the [`rpc DeleteTaskDef`](../../08-api.md#deletetaskdef). An example is shown below:
 
 ```python
 from littlehorse.config import LHConfig
@@ -561,7 +561,7 @@ result, err := (*client).PutUserTaskDef(context.Background(),
   </TabItem>
   <TabItem value="python" label="Python">
 
-In python, you can create a `UserTaskDef` using [`rpc PutUserTaskDef`](../../08-api.md#rpc-putusertaskdef-putusertaskdef).
+In python, you can create a `UserTaskDef` using [`rpc PutUserTaskDef`](../../08-api.md#putusertaskdef).
 
 ```python
 from littlehorse import create_external_event_def

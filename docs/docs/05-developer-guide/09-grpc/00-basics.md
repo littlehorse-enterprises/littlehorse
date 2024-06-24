@@ -18,7 +18,7 @@ This page describes several patterns in the LittleHorse API. Some of these patte
 The entities in our GRPC service are protocol buffers. You can find our up-to-date API contract in our [api documentation](../../08-api.md). Our SDK's in Java, Go, and Python ship with 
 pre-compiled protobufs for LittleHorse: you don't need to add an extra dependency or compile the protobuf yourself.
 
-The below is an example of how to access a GRPC client, build a protobuf, and make a request in Java, Go, and Python. The request we will make is the [`rpc PutExternalEventDef`](../../08-api.md#rpc-putexternaleventdef-putexternaleventdef).
+The below is an example of how to access a GRPC client, build a protobuf, and make a request in Java, Go, and Python. The request we will make is the [`rpc PutExternalEventDef`](../../08-api.md#putexternaleventdef).
 
 <Tabs>
   <TabItem value="java" label="Java" default>

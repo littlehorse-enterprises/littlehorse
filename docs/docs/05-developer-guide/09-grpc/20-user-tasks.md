@@ -45,7 +45,7 @@ A `UserTaskRun` may be in one of the four statuses below:
 
 Before you can do anything useful with User Tasks, you need to be able to search for a list of `UserTaskRun`'s matching certain criteria. The endpoint `rpc SearchUserTaskRun` allows you to do this.
 
-You can find the documentation for `rpc SearchUserTaskRun` [here in our API documentation](../../08-api.md#rpc-searchusertaskrun-searchusertaskrun) (note that the `message SearchUserTaskRunRequest` docs are [here](../../08-api.md#message-searchusertaskrunrequest-searchusertaskrunrequest)).
+You can find the documentation for `rpc SearchUserTaskRun` [here in our API documentation](../../08-api.md#searchusertaskrun).
 
 There are six filters that can be provided:
 * `status`: an enum of either `DONE`, `UNASSIGNED`, `ASSIGNED`, or `CANCELLED`.
@@ -209,37 +209,159 @@ Once you have the `UserTaskRun`, you can inspect the results (if it's already co
   <TabItem value="java" label="Java" default>
 
 ```java
-LittleHorseBlockingStub client = ...;
-UserTaskRunId id = ...; // For example, via searching as above
+package io.littlehorse.quickstart;
 
-UserTaskRun userTaskRun = client.getUserTaskRun(id);
+import java.io.IOException;
+import java.util.Map;
 
-// See current owners
-String currentUserId = userTaskRun.hasUserId() ? userTaskRun.getUserId() : null;
-String currentUserGroup = userTaskRun.hasUserGroup() ? userTaskRun.getUserGroup() : null;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.UserTaskDef;
+import io.littlehorse.sdk.common.proto.UserTaskField;
+import io.littlehorse.sdk.common.proto.UserTaskRun;
+import io.littlehorse.sdk.common.proto.UserTaskRunId;
+import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
+import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WfRunId;
 
-// See results. If the userTaskRun is not completed, the map will be empty.
-// Otherwise, there will be a result for every required field.
-Map<String, VariableValue> results = userTaskRun.getResultsMap();
 
-// See the fields on the UserTaskDef. This is useful for front-end's which need
-// to dynamically display forms that accept the input.
-UserTaskDefId userTaskDefId = userTaskRun.getUserTaskDefId();
-UserTaskDef userTaskDef = client.getUserTaskDef(userTaskDefId);
-for (UserTaskField field : userTaskDef.getFieldsList()) {
-    System.out.println("Field %s has type %s".formatted(field.getName(), field.getType()));
+public class Main {
+    public static void main(String[] args) throws IOException, InterruptedException {
+        LHConfig config = new LHConfig();
+        LittleHorseBlockingStub client = config.getBlockingStub();
+
+        // Get a UserTaskRunId somehow. For example, you could search for one as shown
+        // in the section above.
+        UserTaskRunId id = UserTaskRunId.newBuilder()
+                .setWfRunId(WfRunId.newBuilder().setId("e0e49b53298a4965b059a1a5df095b09"))
+                .setUserTaskGuid("8bb5d43e14894c82bb1deab7a68b32ae")
+                .build();
+
+        // Fetch the UserTaskRun
+        UserTaskRun userTaskRun = client.getUserTaskRun(id);
+
+        // See the current owners
+        String userId = userTaskRun.hasUserId() ? userTaskRun.getUserId() : null;
+        String userGroup = userTaskRun.hasUserGroup() ? userTaskRun.getUserGroup() : null;
+        System.out.println(
+                "The UserTaskRun is assigned to group '%s' and user '%s'".formatted(userGroup, userId));
+
+        // In order to see the fields, you need to fetch the `UserTaskDef`.
+        UserTaskDef utd = client.getUserTaskDef(userTaskRun.getUserTaskDefId());
+        for (UserTaskField field : utd.getFieldsList()) {
+            System.out.println("Field %s has type %s".formatted(field.getName(), field.getType()));
+        }
+
+        // If the UserTaskRun is in the `DONE` state, it will have `results`.
+        if (userTaskRun.getStatus() == UserTaskRunStatus.DONE) {
+            for (Map.Entry<String, VariableValue> resultEntry : userTaskRun.getResultsMap().entrySet()) {
+                System.out.println(
+                        resultEntry.getKey() +
+                        ": " +
+                        LHLibUtil.protoToJson(resultEntry.getValue()));
+            }
+        }
+    }
 }
 ```
 
   </TabItem>
   <TabItem value="go" label="Go">
 
-Go example coming soon. However, it should be highly similar to the Java example above.
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+)
+
+func main() {
+	// Get a client
+	config := common.NewConfigFromEnv()
+	client, _ := config.GetGrpcClient()
+
+	// Get a UserTaskRunId
+	id := &model.UserTaskRunId{
+		WfRunId: &model.WfRunId{
+			Id: "e0e49b53298a4965b059a1a5df095b09",
+		},
+		UserTaskGuid: "8bb5d43e14894c82bb1deab7a68b32ae",
+	}
+
+	// Fetch the UserTaskRun
+	userTaskRun, err := (*client).GetUserTaskRun(context.Background(), id)
+	if err != nil {
+		log.Fatalf("Failed to get UserTaskRun: %v", err)
+	}
+
+	// See the current owners
+	userId := ""
+	if userTaskRun.UserId != nil {
+		userId = *userTaskRun.UserId
+	}
+	userGroup := ""
+	if userTaskRun.UserGroup != nil {
+		userGroup = *userTaskRun.UserGroup
+	}
+	fmt.Printf("The UserTaskRun is assigned to group '%s' and user '%s'\n", userGroup, userId)
+
+	// Fetch the UserTaskDef
+	utd, err := (*client).GetUserTaskDef(context.Background(), userTaskRun.UserTaskDefId)
+	if err != nil {
+		log.Fatalf("Failed to get UserTaskDef: %v", err)
+	}
+	for _, field := range utd.Fields {
+		fmt.Printf("Field %s has type %s\n", field.Name, field.Type)
+	}
+
+	// If the UserTaskRun is in the DONE state, it will have results
+	if userTaskRun.Status == model.UserTaskRunStatus_DONE {
+		fmt.Println(userTaskRun.Results)
+	}
+}
+```
 
   </TabItem>
   <TabItem value="python" label="Python">
 
-Python example coming soon. However, it should be highly similar to the Java example above.
+```python
+from littlehorse.config import LHConfig
+from littlehorse.model import *
+
+
+if __name__ == '__main__':
+    config = LHConfig()
+    client = config.stub()
+
+    # Get a UserTaskRunId from somewhere; for example, use the search described above
+    id = UserTaskRunId(
+        wf_run_id=WfRunId(id="e0e49b53298a4965b059a1a5df095b09"),
+        user_task_guid="8bb5d43e14894c82bb1deab7a68b32ae"
+    )
+
+    # Fetch the UserTaskRun
+    user_task_run: UserTaskRun = client.GetUserTaskRun(id)
+
+    # See the current owners
+    user_id = user_task_run.user_id if user_task_run.user_id else ""
+    user_group = user_task_run.user_group if user_task_run.user_group else ""
+    print(f"The UserTaskRun is assigned to group '{user_group}' and user '{user_id}'")
+
+    # Fetch the UserTaskDef
+    utd: UserTaskDef = client.GetUserTaskDef(user_task_run.user_task_def_id)
+    for field in utd.fields:
+        print(f"Field {field.name} has type {VariableType.Name(field.type)}")
+
+    # If the UserTaskRun is in the DONE state, it will have results
+    if user_task_run.status == UserTaskRunStatus.DONE:
+        print(user_task_run.results)
+```
 
   </TabItem>
 </Tabs>
@@ -262,36 +384,124 @@ message CompleteUserTaskRunRequest {
 }
 ```
 
+You can also consult our autogenerated API documentation for the [`rpc CompleteUserTaskRun`](../../08-api.md#completeusertaskrun) or for [`message CompleteUserTaskRunRequest`](../../08-api.md#completeusertaskrunrequest).
+
 The first field is the `UserTaskRunId` of the `UserTaskRun` which you intend to complete. The second is a map where each key is the name of a `field` in the `UserTaskDef`, and the value is a `VariableValue` representing the value of that User Task Field. The `user_id` field must be set and is the `user_id` of the person completing the `UserTaskRun`.
 
 The current behavior of the `user_id` field is that, if it differs from the current owner of the `UserTaskRun`, then the `UserTaskRun` will be re-assigned to the new `user_id`. We have an [open ticket](https://github.com/littlehorse-enterprises/littlehorse/issues/617) to make this behavior configurable. If this is an important feature for you, please comment on the ticket! We're happy to bump its priority; alternatively, we do accept Pull Requests :smile:.
 
-In the examples below, the user `alice` will complete a `UserTaskRun` that has two fields: a `STR` field called `model` set to `"explorer"`, and a `INT` field called `year` set to `2022`.
+In the examples below, the user `obiwan` will complete a `UserTaskRun` that has two fields: a `STR` field called `requestedItem` set to `"lightsaber"`, and a `STR` field called `justification`.
 
 <Tabs>
   <TabItem value="java" label="Java" default>
 
 ```java
-LittleHorseBlockingStub client = ...;
-UserTaskRunId id = ...; // For example, via searching as above
+package io.littlehorse.quickstart;
 
-client.completeUserTaskRun(CompleteUserTaskRunRequest.newBuilder()
-        .setUserId("alice")
-        .putResults("model", LHLibUtil.objToVarVal("explorer"))
-        .putResults("year", LHLibUtil.objToVarVal(2022))
-        .setUserTaskRunId(id)
-        .build());
+import java.io.IOException;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.UserTaskRunId;
+import io.littlehorse.sdk.common.proto.WfRunId;
+
+
+public class Main {
+    public static void main(String[] args) throws IOException, InterruptedException {
+        LHConfig config = new LHConfig();
+        LittleHorseBlockingStub client = config.getBlockingStub();
+
+        // Get a UserTaskRunId somehow. For example, you could search for one as shown
+        // in the section above.
+        UserTaskRunId id = UserTaskRunId.newBuilder()
+                .setWfRunId(WfRunId.newBuilder().setId("e0e49b53298a4965b059a1a5df095b09"))
+                .setUserTaskGuid("8bb5d43e14894c82bb1deab7a68b32ae")
+                .build();
+
+        // Complete the UserTaskRun. The key of `putResults` is the `name` of the `UserTaskField`,
+        // and the value comes from the `LHLibUtil#objToVarVal()` method which is a convenience
+        // for creating a `VariableValue`.
+        client.completeUserTaskRun(CompleteUserTaskRunRequest.newBuilder()
+                .setUserId("obiwan") // if different than the current value, it will overwrite it.
+                .putResults("requestedItem", LHLibUtil.objToVarVal("lightsaber"))
+                .putResults("justification", LHLibUtil.objToVarVal("Darth Maul kicked it down the mine shaft"))
+                .setUserTaskRunId(id)
+                .build());
+    }
+}
 ```
 
   </TabItem>
   <TabItem value="go" label="Go">
 
-Go example coming soon. However, it should be highly similar to the Java example above.
+```go
+package main
+
+import (
+	"context"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+)
+
+func main() {
+	// Get a client
+	config := common.NewConfigFromEnv()
+	client, _ := config.GetGrpcClient()
+
+	// Get a UserTaskRunId
+	id := &model.UserTaskRunId{
+		WfRunId: &model.WfRunId{
+			Id: "f2491b41b7354382988215b789187b74",
+		},
+		UserTaskGuid: "aa87109f001b432394cec35713ef3359",
+	}
+
+	completeRequest := &model.CompleteUserTaskRunRequest{
+		UserTaskRunId: id,
+		UserId:        "obi-wan",
+		Results:       make(map[string]*model.VariableValue),
+	}
+
+	requestedItem, _ := common.InterfaceToVarVal("lightsaber")
+	justification, _ := common.InterfaceToVarVal("Darth Maul took it away!")
+
+	completeRequest.Results["requestedItem"] = requestedItem
+	completeRequest.Results["justification"] = justification
+
+	(*client).CompleteUserTaskRun(context.Background(), completeRequest)
+}
+```
 
   </TabItem>
   <TabItem value="python" label="Python">
 
-Python example coming soon. However, it should be highly similar to the Java example above.
+```python
+from littlehorse import to_variable_value
+from littlehorse.config import LHConfig
+from littlehorse.model import *
+
+
+if __name__ == '__main__':
+    config = LHConfig()
+    client = config.stub()
+
+    # Get a UserTaskRunId from somewhere; for example, use the search described above
+    id = UserTaskRunId(
+        wf_run_id=WfRunId(id="ec9d975af1524f4cbcb988512b258623"),
+        user_task_guid="f686ec1384404c27a90f86dcb4fd9edf"
+    )
+
+    client.CompleteUserTaskRun(CompleteUserTaskRunRequest(
+        user_task_run_id=id,
+        user_id="obiwan",
+        results={
+            "requestedItem": to_variable_value("lightsaber"),
+            "justification": to_variable_value("Darth Maul kicked my old one off the balcony!")
+        }
+    ))
+```
 
   </TabItem>
 </Tabs>
@@ -311,6 +521,8 @@ message AssignUserTaskRunRequest {
   optional string user_id = 4;
 }
 ```
+
+
 
 If the `override_claim` field is set to `false` and the `UserTaskRun` is already assigned to a specific `user_id`, then the request will fail with `FAILED_PRECONDITION`.
 
