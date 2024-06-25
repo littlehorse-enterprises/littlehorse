@@ -1,5 +1,8 @@
 # Basics
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 To develop a `WfSpec` in LittleHorse, you can use the `Workflow` struct or object in our SDK's. Generally, the `Workflow` entity constructor requires two arguments:
 
 1. The name of the `WfSpec` to create.
@@ -8,6 +11,118 @@ To develop a `WfSpec` in LittleHorse, you can use the `Workflow` struct or objec
 The `Workflow` object translates your `ThreadFunc` into a `WfSpec`. As per the [Metadata Management Documentation](/docs/developer-guide/grpc/managing-metadata), you can easily deploy a `WfSpec` once you've gotten the `Workflow` object.
 
 The `ThreadFunc` takes in one argument: a `WorkflowThread`. Everything you do goes through the `ThreadFunc`. The `ThreadFunc` defines a `ThreadSpec`, and the `ThreadFunc` passed into the `Workflow` object or struct is used to build the Entrypoint Thread.
+
+## Quickstart
+
+Below you can find executable files that define a `WfSpec` with a single step: execute the `greet` TaskDef with the supplied `first-name` variable which comes as input. As a prerequisite, you need to have the `greet` `TaskDef` already registered in your LittleHorse Cluster.
+
+:::tip
+If you haven't yet created a `TaskDef` named `greet`, you can do it by following our [Task Worker Development Quickstart](../05-task-worker-development.md#quickstart).
+:::
+
+<Tabs>
+  <TabItem value="java" label="Java" default>
+
+```java
+package io.littlehorse.quickstart;
+
+import java.io.IOException;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.wfsdk.WfRunVariable;
+import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
+import io.littlehorse.sdk.common.proto.VariableType;
+
+
+public class Main {
+    public static void main(String[] args) throws IOException, InterruptedException {
+        LHConfig config = new LHConfig();
+
+        // The `Workflow` object uses the DSL to compile the WfSpec
+        Workflow workflowGenerator = Workflow.newWorkflow("my-wf-spec", Main::wfLogic);
+
+        // Convenience method to register the `WfSpec` automatically.
+        workflowGenerator.registerWfSpec(config.getBlockingStub());
+    }
+
+    // NOTE: this can be static or non-static.
+    static void wfLogic(WorkflowThread wf) {
+        // Required input variable.
+        WfRunVariable firstName = wf.addVariable("first-name", VariableType.STR).required();
+
+        // Execute the `greet` Task and pass in `first-name` as an argument.
+        wf.execute("greet", firstName);
+    }
+}
+```
+
+  </TabItem>
+  <TabItem value="go" label="Go">
+
+```go
+package main
+
+import (
+	"context"
+	"log"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/wflib"
+)
+
+func wfLogic(wf *wflib.WorkflowThread) {
+	firstName := wf.AddVariable("first-name", model.VariableType_STR).Required()
+	wf.Execute("greet", firstName)
+}
+
+func main() {
+	// Get a client
+	config := common.NewConfigFromEnv()
+	client, _ := config.GetGrpcClient()
+
+	workflowGenerator := wflib.NewWorkflow(wfLogic, "my-wfspec")
+
+	request, err := workflowGenerator.Compile()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	(*client).PutWfSpec(context.Background(), request)
+}
+```
+
+  </TabItem>
+  <TabItem value="python" label="Python" default>
+
+```python
+from littlehorse.workflow import WorkflowThread, WfRunVariable, Workflow
+from littlehorse.config import LHConfig
+from littlehorse.model import VariableType, PutWfSpecRequest
+
+
+def workflow_logic(wf: WorkflowThread) -> None:
+    first_name: WfRunVariable = wf.add_variable("first-name", VariableType.STR).required()
+    wf.execute("greet", first_name)
+
+if __name__ == '__main__':
+    config = LHConfig()
+    client = config.stub()
+
+    workflow_generator = Workflow("my-wfspec", workflow_logic)
+    request: PutWfSpecRequest = workflow_generator.compile()
+
+    client.PutWfSpec(request)
+```
+
+  </TabItem>
+</Tabs>
+
+At this point, whether you used python, go, or Java for the WfSpec, you should be able to run the `WfSpec` via the following command:
+
+```
+lhctl run my-wfspec first-name Obi-Wan
+```
 
 ## Defining a `WfRunVariable`
 
@@ -44,13 +159,13 @@ Putting an Index on a `Variable` or making the `Variable` "Required" means that 
 
 ### Defining Variables
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 <Tabs>
   <TabItem value="java" label="Java" default>
 
 ```java
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
+import io.littlehorse.sdk.wfsdk.WfRunVariable;
+
 public void threadFunction(WorkflowThread thread) {
     WfRunVariable myVar = thread.addVariable("my-variable", VariableTypePb.STR);
 }
@@ -145,7 +260,7 @@ To execute the `foo` task, you simply do the following:
   <TabItem value="java" label="Java" default>
 
 ```java
-public void myWf(ThreadFunction thread) {
+public void myWf(WorkflowThread thread) {
     NodeOutput output = thread.execute("foo");
 }
 ```

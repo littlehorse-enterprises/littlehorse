@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # Background
 
-The public LittleHorse API is a GRPC service exposed by the LH Server. We have complete [auto-generated documetation](../../08-api.md) for our GRPC Service and Protocol Buffers on our docs site. For the highly curious readers, you can find the actual protocol buffer code that underpins our system in our [source code repository](https://github.com/littlehorse-enterprises/littlehorse/schemas/service.proto).
+The public LittleHorse API is a GRPC service exposed by the LH Server. We have complete [auto-generated documentation](../../08-api.md) for our GRPC Service and Protocol Buffers on our docs site. For the highly curious readers, you can find the actual protocol buffer code that underpins our system in our [source code repository](https://github.com/littlehorse-enterprises/littlehorse/schemas/service.proto).
 
 :::tip
 For background, we would recommend checking out the GRPC documentation for a primer on GRPC in [Java](https://grpc.io/docs/languages/java/), [Go](https://grpc.io/docs/languages/go/), and [Python](https://grpc.io/docs/languages/python/).
