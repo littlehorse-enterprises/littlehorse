@@ -27,7 +27,7 @@ The syntax to handle a `Failure` is similar no matter which type of `Node` you a
 This section is concerned with throwing an `EXCEPTION` at the `ThreadSpec` level inside a `WfSpec`. If you want to throw an `EXCEPTION` at the Task Worker level, please refer to the [Task Worker Development Docs](/docs/developer-guide/task-worker-development#throwing-workflow-exceptions)
 :::
 
-In programming languages such as Java and Python (please, let's not mention Go...I have opinions about Go but it's best I don't discuss it), you can `throw` or `raise` an `Exception`. For example:
+In well-designed programming languages such as Java and Python, you can `throw` or `raise` an `Exception`. For example:
 
 ```python
 class MyError(Exception):
@@ -43,7 +43,7 @@ do_something_else()
 Raising a `MyError` here interrupts the flow of the program and prevents `do_something_else()` from being called. Similarly, throwing an `EXCEPTION` in LittleHorse can stop the flow of the `ThreadRun`.
 
 :::info
-Even though GoLang itself highly stupidly doesn't allow you to interrupt program execution with exceptions, you can still use the Go SDK to define a `WfSpec` that throws a LittleHorse `EXCEPTION`.
+Even though GoLang itself doesn't allow you to interrupt program execution with exceptions, you can still use the Go SDK to define a `WfSpec` that throws a LittleHorse `EXCEPTION`.
 :::
 
 Let's throw an `EXCEPTION` with the name `payment-failed`. To do this, we will need the `WorkflowThread#fail()` method, which takes two arguments:
@@ -110,36 +110,36 @@ You'll notice that we have two Failure Handlers defined in the example below. Th
 
 ```java
 // ...
-NodeOutput threadsResult = thread.waitForThreads(...);
+NodeOutput threadsResult = wf.waitForThreads(...);
 
-thread.handleException(
+wf.handleException(
     threadsResult,
-    "my-exn", // handle only 'my-exn'
+    "my-exn", // handle only the "out-of-stock" exception
     handler -> {
         handler.execute("some-failure-handler-for-my-exn");
     }
 );
 
-thread.handleException(
+// The `handleException()` method with only two arguments catches all EXCEPTIONS
+wf.handleException(
     threadsResult,
-    null, // handle any business exception
     handler -> {
         handler.execute("some-other-task-in-failure-handler");
     }
 );
 
 // We get here unless the Failure Handler fails.
-thread.execute("another-task");
+wf.execute("another-task");
 ```
 
   </TabItem>
   <TabItem value="go" label="Go">
 
 ```go
-threadsResult := thread.WaitForThreads(...)
+threadsResult := wf.WaitForThreads(...)
 
 exnName := "my-exn"
-thread.HandleException(
+wf.HandleException(
     &threadsResult,
     &exnName, // handle specific exception
     func(handler *wflib.WorkflowThread) {
@@ -147,7 +147,7 @@ thread.HandleException(
     },
 )
 
-thread.HandleException(
+wf.HandleException(
     &taskOutput,
     &nil, // handle any exception
     func(handler *wflib.WorkflowThread) {
@@ -156,7 +156,7 @@ thread.HandleException(
 )
 
 // We will always get here unless the Failure Handler fails.
-thread.Execute("another-task");
+wf.Execute("another-task");
 ```
 
   </TabItem>
@@ -195,9 +195,9 @@ In this example, we will handle a `TIMEOUT` error from a `TaskRun`.
   <TabItem value="java" label="Java" default>
 
 ```java
-NodeOutput taskOutput = thread.execute("flaky-task");
+NodeOutput taskOutput = wf.execute("flaky-task");
 
-thread.handleError(
+wf.handleError(
     taskOutput,
     "TIMEOUT", // handle only TIMEOUT errors. Leave null to catch any ERROR.
     handler -> {
@@ -211,10 +211,10 @@ thread.handleError(
   <TabItem value="go" label="Go">
 
 ```go
-threadsResult := thread.WaitForThreads(...)
+threadsResult := wf.WaitForThreads(...)
 
 errorName := "TIMEOUT"
-thread.HandleError(
+wf.HandleError(
     &threadsResult,
     &errorName, // handle only TIMEOUT error. Leave nil to catch all ERROR.
     func(handler *wflib.WorkflowThread) {

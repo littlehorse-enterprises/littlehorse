@@ -144,16 +144,28 @@ As described in our [Failure Handling Concept Docs](/docs/concepts/exception-han
 
 If your Task Worker throws an uncaught error (depending on your language), then it is treated as a LittleHorse `ERROR` with the error code `LHErrorType.TASK_FAILURE`. However, sometimes your Task Worker notices that a business process-level failure (what LittleHorse calls an `EXCEPTION`) has occurred. For example, the Task Worker could notice that a credit card got declined. In this case, you can make the `TaskRun` throw a LittleHorse `EXCEPTION` by using the `LHTaskException` object.
 
+:::info
+The LittleHorse `EXCEPTION` result is NOT retryable. That means that if your Task Method throws an `LHTaskException`, it will not be retried. If it throws any error/exception _other than_ the `LHTaskException`, it will be treated as a LittleHorse `ERROR`, which is retryable.
+:::
+
 In the following example, we will throw the `out-of-stock` user-defined business `EXCEPTION` if the item is out of stock.
 
 <Tabs>
   <TabItem value="java" label="Java" default>
 
 ```java
-@LHTaskMethod("ship-item")
-public String shipItem() throws Exception {
-    if (isOutOfStock()) {
-        throw new LHTaskException("out-of-stock", "some descriptive message");
+package io.littlehorse.quickstart;
+
+import io.littlehorse.sdk.common.exception.LHTaskException;
+import io.littlehorse.sdk.worker.LHTaskMethod;
+
+class MyWorker {
+    @LHTaskMethod("ship-item")
+    public String shipItem(String itemSku) {
+        if (isOutOfStock(itemSku)) {
+            throw new LHTaskException("out-of-stock", "Some human readable message");
+        }
+        return "Item " + itemSku + " successfully shipped!";
     }
 }
 ```
@@ -161,20 +173,79 @@ public String shipItem() throws Exception {
   </TabItem>
   <TabItem value="go" label="Go">
 
-The Go SDK currently (as of `0.7.2`) does not yet support throwing `LHTaskException`s.
+The Go SDK currently (as of `0.10.0`) does not yet support throwing `LHTaskException`s.
 
   </TabItem>
   <TabItem value="python" label="Python">
 
 ```python
-async def ship_ite() -> None:
+from littlehorse.exceptions import LHTaskExceptio
+
+async def ship_item(item_sku: str) -> str:
     if is_out_of_stock():
         raise LHTaskException("out-of-stock", "some descriptive message")
+
+    return f"successfully shipped {item_sku}!"
 ```
 
   </TabItem>
 </Tabs>
 
+The first argument to the `LHTaskException` constructor is the _name_ of the `EXCEPTION` we are going to throw. This is useful if you want to be able to catch specific `EXCEPTION`s with specific types in your [Failure Handlers](./08-wfspec-development/06-exception-handling.md). The second argument is a _human-readable_ error message that shows up on the `NodeRun`'s output as the `error_message` field, which is useful for debugging purposes.
+
+If you want to throw a `Failure` that has content which can be caught in your Failure Handler using the `INPUT` variable name, you can use a _third_ argument named `content`. It is optional in python and is available in an overloaded method signature in Java. The below is an example of how you might throw such an `EXCEPTION`:
+
+
+<Tabs>
+  <TabItem value="java" label="Java" default>
+
+```java
+package io.littlehorse.quickstart;
+
+import io.littlehorse.sdk.common.exception.LHTaskException;
+import io.littlehorse.sdk.worker.LHTaskMethod;
+
+class MyWorker {
+    @LHTaskMethod("ship-item")
+    public String shipItem(String itemSku) {
+        if (isOutOfStock(itemSku)) {
+            int daysUntilBackInStock = calculateDaysUntilBackInStock(itemSku);
+
+            // The `content` of the `Failure` that is thrown will be an INT variable containing
+            // the number of days until the item is expected to be back in stock.
+            throw new LHTaskException(
+                    "out-of-stock",
+                    "Some human readable message",
+                    daysUntilBackInStock);
+        }
+        return "Item " + itemSku + " successfully shipped!";
+    }
+}
+```
+
+  </TabItem>
+  <TabItem value="go" label="Go">
+
+The Go SDK currently (as of `0.10.0`) does not yet support throwing `LHTaskException`s.
+
+  </TabItem>
+  <TabItem value="python" label="Python">
+
+```python
+from littlehorse import to_variable_value
+from littlehorse.exceptions import LHTaskException
+
+async def ship_item(item_sku: str) -> None:
+    if is_out_of_stock(item_sku):
+        days_until_back_in_stock = get_days_until_back_in_stock(item_sku)
+        failure_content = to_variable_value(days_until_back_in_stock)
+        raise LHTaskException("out-of-stock", "some descriptive message", content=failure_content)
+
+    return f"successfully shipped {item_sku}!"
+```
+
+  </TabItem>
+</Tabs>
 
 ### Json Deserialization
 
