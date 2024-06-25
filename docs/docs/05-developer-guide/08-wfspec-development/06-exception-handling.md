@@ -27,7 +27,7 @@ The syntax to handle a `Failure` is similar no matter which type of `Node` you a
 This section is concerned with throwing an `EXCEPTION` at the `ThreadSpec` level inside a `WfSpec`. If you want to throw an `EXCEPTION` at the Task Worker level, please refer to the [Task Worker Development Docs](/docs/developer-guide/task-worker-development#throwing-workflow-exceptions)
 :::
 
-In well-designed programming languages such as Java and Python, you can `throw` or `raise` an `Exception`. For example:
+In most programming languages such as Java and Python, you can `throw` or `raise` an `Exception`. For example:
 
 ```python
 class MyError(Exception):
