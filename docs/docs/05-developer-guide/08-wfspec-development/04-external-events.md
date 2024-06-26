@@ -1,5 +1,9 @@
 # External Events
 
+:::info
+Before you can use an `ExternalEventDef` in a `WfSpec`, you need to create the `ExternalEventDef` metadata object in LittleHorse. You can do that following our [metadata management docs](../09-grpc/05-managing-metadata.md#externaleventdef).
+:::
+
 You can use `WorkflowThread#WaitForEvent()` to add an `EXTERNAL_EVENT` Node that causes the `WfRun` to block until an `ExternalEvent` arrives. It's simple:
 
 import Tabs from '@theme/Tabs';

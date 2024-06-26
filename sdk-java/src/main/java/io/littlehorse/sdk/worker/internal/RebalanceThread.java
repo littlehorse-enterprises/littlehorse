@@ -54,6 +54,15 @@ final class RebalanceThread extends Thread {
         }
     }
 
+    public void close() {
+        for (List<PollThread> pThreadList : runningConnections.values()) {
+            for (PollThread pThread : pThreadList) {
+                pThread.interrupt();
+                pThread.close();
+            }
+        }
+    }
+
     public void doHeartBeat() {
         bootstrapStub.registerTaskWorker(
                 RegisterTaskWorkerRequest.newBuilder()

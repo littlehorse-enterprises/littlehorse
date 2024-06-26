@@ -1,9 +1,9 @@
 package io.littlehorse.common.model.getable.core.wfrun;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.ThreadRunRescueFailedException;
 import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutModel;
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
@@ -370,7 +370,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * @return Optional.empty() if we can successfully rescue the ThreadRun; else, a Status
      * explaining why not.
      */
-    public Optional<Status> rescue(boolean skipCurrentNode, ProcessorExecutionContext ctx) {
+    public void rescue(boolean skipCurrentNode, ProcessorExecutionContext ctx) throws ThreadRunRescueFailedException {
         // First, Optional<Status> refers to the grpc status which can be thrown as an error
         // to the client.
 
@@ -394,8 +394,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             activateNode(toActivate);
         } catch (NodeFailureException exn) {
             setStatus(LHStatus.ERROR);
-            return Optional.of(
-                    Status.FAILED_PRECONDITION.withDescription("Could not rescue threadRun: " + exn.getMessage()));
+            throw new ThreadRunRescueFailedException("Could not rescue threadRun: " + exn.getMessage());
         }
 
         this.setEndTime(null); // no longer terminated.
@@ -408,15 +407,15 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 NodeRunModel parentCurrentNR = parent.getCurrentNodeRun();
                 if (parentCurrentNR.getType() == NodeTypeCase.WAIT_THREADS
                         || parentCurrentNR.getType() == NodeTypeCase.EXIT) {
+
                     FailureModel parentFailure =
                             parent.getCurrentNodeRun().getLatestFailure().get();
                     if (parentFailure.getFailureName().equals(LHErrorType.CHILD_FAILURE.toString())) {
-                        return parent.rescue(false, ctx);
+                        parent.rescue(false, ctx);
                     }
                 }
             }
         }
-        return Optional.empty();
     }
 
     public void halt(ThreadHaltReasonModel reason) {
@@ -534,7 +533,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 activateNode(nextNode);
             }
         } catch (NodeFailureException exn) {
-            handleNodeFailure(exn);
+            respondToNodeFailure(exn);
         }
 
         return true;
@@ -552,7 +551,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             throw new IllegalStateException("The Failure should be handleable, otherwise we fail earlier");
         }
 
-        if (failure.getFailureHandlerThreadRunId() == null) return false;
+        if (failure.getFailureHandlerThreadRunId() == null) {
+
+            return false;
+        }
 
         boolean handled =
                 wfRun.getThreadRun(failure.getFailureHandlerThreadRunId()).getStatus() == LHStatus.COMPLETED;
@@ -572,12 +574,23 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * Handles a node failure. Starts a failure handler, or fails the ThreadRun.
      * @param exn
      */
-    private void handleNodeFailure(NodeFailureException exn) {
+    private void respondToNodeFailure(NodeFailureException exn) {
         NodeModel node = getCurrentNode();
         FailureModel failure = exn.getFailure();
 
         Optional<FailureHandlerDefModel> handlerOption = node.getHandlerFor(failure);
         if (handlerOption.isEmpty()) {
+            for (int childId : childThreadIds) {
+                ThreadRunModel child = wfRun.getThreadRun(childId);
+                ThreadHaltReasonModel hr = new ThreadHaltReasonModel();
+                hr.type = ReasonCase.PARENT_HALTED;
+                hr.parentHalted = new ParentHaltedModel();
+                hr.parentHalted.parentThreadId = number;
+                child.halt(hr);
+                if (child.getCurrentNodeRun().isInProgress()) {
+                    child.getCurrentNodeRun().maybeHalt(processorContext);
+                }
+            }
             failWithoutGrace(failure, endTime);
         } else {
             handleFailure(failure, handlerOption.get());
@@ -681,21 +694,22 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * as failed as well.
      */
     private void failWithoutGrace(FailureModel failure, Date time) {
+        for (int childId : childThreadIds) {
+            ThreadRunModel child = wfRun.getThreadRun(childId);
+            if (child == null) {
+                // already gc'ed
+                continue;
+            }
+            if (child.isRunning()) {
+                log.trace("Not failing threadRun yet; child is halting still");
+                if (child.getStatus() != LHStatus.HALTING) {
+                    throw new IllegalStateException("Should be HALTING! Bug in LittleHorse.");
+                }
+            }
+        }
         this.errorMessage = failure.message;
         this.status = failure.getStatus();
         this.endTime = time;
-
-        for (int childId : childThreadIds) {
-            ThreadRunModel child = wfRun.getThreadRun(childId);
-            ThreadHaltReasonModel hr = new ThreadHaltReasonModel();
-            hr.type = ReasonCase.PARENT_HALTED;
-            hr.parentHalted = new ParentHaltedModel();
-            hr.parentHalted.parentThreadId = number;
-            child.halt(hr);
-            if (child.getCurrentNodeRun().isInProgress()) {
-                child.getCurrentNodeRun().maybeHalt(processorContext);
-            }
-        }
 
         if (interruptTriggerId != null) {
             // then we're an interrupt thread and need to fail the parent. Parent is guaranteed to
