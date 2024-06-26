@@ -7,12 +7,14 @@ import { FC, useCallback } from 'react'
 import { useModal } from '../../../hooks/useModal'
 import { NodeDetails } from '../NodeDetails'
 import { getTaskRun } from './getTaskRun'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
 
 export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, nodeRun }) => {
+  const { tenantId } = useWhoAmI()
   const { data } = useQuery({
-    queryKey: ['taskRun', nodeRun],
+    queryKey: ['taskRun', nodeRun, tenantId],
     queryFn: async () => {
-      if (nodeRun?.task?.taskRunId) return await getTaskRun(nodeRun.task.taskRunId)
+      if (nodeRun?.task?.taskRunId) return await getTaskRun({ tenantId, ...nodeRun.task.taskRunId })
       return null
     },
   })
