@@ -36,6 +36,7 @@ public class DeleteTaskDefRequestModel extends MetadataSubCommand<DeleteTaskDefR
     @Override
     public Empty process(MetadataCommandExecution context) {
         context.metadataManager().delete(id);
+        context.forward(new DeleteTaskWorkerGroupRequestModel(id));
         return Empty.getDefaultInstance();
     }
 

@@ -3,6 +3,8 @@ package io.littlehorse.server.streams.topology.core;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
@@ -13,10 +15,12 @@ import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.Date;
 import java.util.List;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 
 public class MetadataCommandExecution implements ExecutionContext {
@@ -70,6 +74,24 @@ public class MetadataCommandExecution implements ExecutionContext {
 
     public MetadataCommandModel currentCommand() {
         return currentCommand;
+    }
+
+    public void forward(CoreSubCommand<?> coreCommand) {
+        CommandModel commandModel = new CommandModel(coreCommand, new Date());
+        CommandProcessorOutput cpo = new CommandProcessorOutput();
+        cpo.partitionKey = coreCommand.getPartitionKey();
+        cpo.topic = this.lhConfig.getCoreCmdTopicName();
+        cpo.payload = commandModel;
+        TenantIdModel tenantId = authorization().tenantId();
+        PrincipalIdModel principalId = authorization().principalId();
+
+        Record<String, Bytes> out = new Record<>(
+                cpo.partitionKey,
+                new Bytes(cpo.payload.toBytes()),
+                System.currentTimeMillis(),
+                HeadersUtil.metadataHeadersFor(tenantId, principalId));
+
+        this.processorContext.forward(out);
     }
 
     private KeyValueStore<String, Bytes> nativeMetadataStore() {

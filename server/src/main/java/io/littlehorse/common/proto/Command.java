@@ -69,6 +69,7 @@ private static final long serialVersionUID = 0L;
     BULK_JOB(20),
     TASK_ATTEMPT_RETRY_READY(21),
     RESCUE_THREAD_RUN(22),
+    DELETE_TASK_WORKER_GROUP(23),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -105,6 +106,7 @@ private static final long serialVersionUID = 0L;
         case 20: return BULK_JOB;
         case 21: return TASK_ATTEMPT_RETRY_READY;
         case 22: return RESCUE_THREAD_RUN;
+        case 23: return DELETE_TASK_WORKER_GROUP;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -753,10 +755,6 @@ private static final long serialVersionUID = 0L;
 
   public static final int RESCUE_THREAD_RUN_FIELD_NUMBER = 22;
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
    * @return Whether the rescueThreadRun field is set.
    */
@@ -765,10 +763,6 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 22;
   }
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
    * @return The rescueThreadRun.
    */
@@ -780,10 +774,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.RescueThreadRunRequest.getDefaultInstance();
   }
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
    */
   @java.lang.Override
@@ -792,6 +782,49 @@ private static final long serialVersionUID = 0L;
        return (io.littlehorse.sdk.common.proto.RescueThreadRunRequest) command_;
     }
     return io.littlehorse.sdk.common.proto.RescueThreadRunRequest.getDefaultInstance();
+  }
+
+  public static final int DELETE_TASK_WORKER_GROUP_FIELD_NUMBER = 23;
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+   * @return Whether the deleteTaskWorkerGroup field is set.
+   */
+  @java.lang.Override
+  public boolean hasDeleteTaskWorkerGroup() {
+    return commandCase_ == 23;
+  }
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+   * @return The deleteTaskWorkerGroup.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest getDeleteTaskWorkerGroup() {
+    if (commandCase_ == 23) {
+       return (io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest) command_;
+    }
+    return io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.DeleteTaskWorkerGroupRequestOrBuilder getDeleteTaskWorkerGroupOrBuilder() {
+    if (commandCase_ == 23) {
+       return (io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest) command_;
+    }
+    return io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -870,6 +903,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 22) {
       output.writeMessage(22, (io.littlehorse.sdk.common.proto.RescueThreadRunRequest) command_);
+    }
+    if (commandCase_ == 23) {
+      output.writeMessage(23, (io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -962,6 +998,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 22) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(22, (io.littlehorse.sdk.common.proto.RescueThreadRunRequest) command_);
+    }
+    if (commandCase_ == 23) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(23, (io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1066,6 +1106,10 @@ private static final long serialVersionUID = 0L;
         if (!getRescueThreadRun()
             .equals(other.getRescueThreadRun())) return false;
         break;
+      case 23:
+        if (!getDeleteTaskWorkerGroup()
+            .equals(other.getDeleteTaskWorkerGroup())) return false;
+        break;
       case 0:
       default:
     }
@@ -1164,6 +1208,10 @@ private static final long serialVersionUID = 0L;
       case 22:
         hash = (37 * hash) + RESCUE_THREAD_RUN_FIELD_NUMBER;
         hash = (53 * hash) + getRescueThreadRun().hashCode();
+        break;
+      case 23:
+        hash = (37 * hash) + DELETE_TASK_WORKER_GROUP_FIELD_NUMBER;
+        hash = (53 * hash) + getDeleteTaskWorkerGroup().hashCode();
         break;
       case 0:
       default:
@@ -1366,6 +1414,9 @@ private static final long serialVersionUID = 0L;
       if (rescueThreadRunBuilder_ != null) {
         rescueThreadRunBuilder_.clear();
       }
+      if (deleteTaskWorkerGroupBuilder_ != null) {
+        deleteTaskWorkerGroupBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -1493,6 +1544,10 @@ private static final long serialVersionUID = 0L;
       if (commandCase_ == 22 &&
           rescueThreadRunBuilder_ != null) {
         result.command_ = rescueThreadRunBuilder_.build();
+      }
+      if (commandCase_ == 23 &&
+          deleteTaskWorkerGroupBuilder_ != null) {
+        result.command_ = deleteTaskWorkerGroupBuilder_.build();
       }
     }
 
@@ -1623,6 +1678,10 @@ private static final long serialVersionUID = 0L;
         }
         case RESCUE_THREAD_RUN: {
           mergeRescueThreadRun(other.getRescueThreadRun());
+          break;
+        }
+        case DELETE_TASK_WORKER_GROUP: {
+          mergeDeleteTaskWorkerGroup(other.getDeleteTaskWorkerGroup());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -1800,6 +1859,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 22;
               break;
             } // case 178
+            case 186: {
+              input.readMessage(
+                  getDeleteTaskWorkerGroupFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 23;
+              break;
+            } // case 186
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -4589,10 +4655,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.RescueThreadRunRequest, io.littlehorse.sdk.common.proto.RescueThreadRunRequest.Builder, io.littlehorse.sdk.common.proto.RescueThreadRunRequestOrBuilder> rescueThreadRunBuilder_;
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
      * @return Whether the rescueThreadRun field is set.
      */
@@ -4601,10 +4663,6 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 22;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
      * @return The rescueThreadRun.
      */
@@ -4623,10 +4681,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
      */
     public Builder setRescueThreadRun(io.littlehorse.sdk.common.proto.RescueThreadRunRequest value) {
@@ -4643,10 +4697,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
      */
     public Builder setRescueThreadRun(
@@ -4661,10 +4711,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
      */
     public Builder mergeRescueThreadRun(io.littlehorse.sdk.common.proto.RescueThreadRunRequest value) {
@@ -4688,10 +4734,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
      */
     public Builder clearRescueThreadRun() {
@@ -4711,20 +4753,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
      */
     public io.littlehorse.sdk.common.proto.RescueThreadRunRequest.Builder getRescueThreadRunBuilder() {
       return getRescueThreadRunFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
      */
     @java.lang.Override
@@ -4739,10 +4773,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -4762,6 +4792,184 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 22;
       onChanged();
       return rescueThreadRunBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest, io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest.Builder, io.littlehorse.common.proto.DeleteTaskWorkerGroupRequestOrBuilder> deleteTaskWorkerGroupBuilder_;
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+     * @return Whether the deleteTaskWorkerGroup field is set.
+     */
+    @java.lang.Override
+    public boolean hasDeleteTaskWorkerGroup() {
+      return commandCase_ == 23;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+     * @return The deleteTaskWorkerGroup.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest getDeleteTaskWorkerGroup() {
+      if (deleteTaskWorkerGroupBuilder_ == null) {
+        if (commandCase_ == 23) {
+          return (io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest) command_;
+        }
+        return io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest.getDefaultInstance();
+      } else {
+        if (commandCase_ == 23) {
+          return deleteTaskWorkerGroupBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+     */
+    public Builder setDeleteTaskWorkerGroup(io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest value) {
+      if (deleteTaskWorkerGroupBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        deleteTaskWorkerGroupBuilder_.setMessage(value);
+      }
+      commandCase_ = 23;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+     */
+    public Builder setDeleteTaskWorkerGroup(
+        io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest.Builder builderForValue) {
+      if (deleteTaskWorkerGroupBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        deleteTaskWorkerGroupBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 23;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+     */
+    public Builder mergeDeleteTaskWorkerGroup(io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest value) {
+      if (deleteTaskWorkerGroupBuilder_ == null) {
+        if (commandCase_ == 23 &&
+            command_ != io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest.newBuilder((io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 23) {
+          deleteTaskWorkerGroupBuilder_.mergeFrom(value);
+        } else {
+          deleteTaskWorkerGroupBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 23;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+     */
+    public Builder clearDeleteTaskWorkerGroup() {
+      if (deleteTaskWorkerGroupBuilder_ == null) {
+        if (commandCase_ == 23) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 23) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        deleteTaskWorkerGroupBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+     */
+    public io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest.Builder getDeleteTaskWorkerGroupBuilder() {
+      return getDeleteTaskWorkerGroupFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.DeleteTaskWorkerGroupRequestOrBuilder getDeleteTaskWorkerGroupOrBuilder() {
+      if ((commandCase_ == 23) && (deleteTaskWorkerGroupBuilder_ != null)) {
+        return deleteTaskWorkerGroupBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 23) {
+          return (io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest) command_;
+        }
+        return io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest, io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest.Builder, io.littlehorse.common.proto.DeleteTaskWorkerGroupRequestOrBuilder> 
+        getDeleteTaskWorkerGroupFieldBuilder() {
+      if (deleteTaskWorkerGroupBuilder_ == null) {
+        if (!(commandCase_ == 23)) {
+          command_ = io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest.getDefaultInstance();
+        }
+        deleteTaskWorkerGroupBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest, io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest.Builder, io.littlehorse.common.proto.DeleteTaskWorkerGroupRequestOrBuilder>(
+                (io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 23;
+      onChanged();
+      return deleteTaskWorkerGroupBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
