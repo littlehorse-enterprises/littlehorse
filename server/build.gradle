@@ -1,9 +1,9 @@
 plugins {
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'java'
     id 'maven-publish'
-    id 'com.diffplug.spotless' version '6.20.0'
+    id 'com.diffplug.spotless' version '6.25.0'
 }
 
 sourceCompatibility=17
@@ -32,8 +32,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
     testImplementation 'org.assertj:assertj-core:3.24.2'
     testImplementation 'org.junit-pioneer:junit-pioneer:2.0.0'
-    testImplementation 'org.mockito:mockito-core:5.2.0'
-    testImplementation 'org.mockito:mockito-junit-jupiter:5.2.0'
+    testImplementation 'org.mockito:mockito-core:5.11.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.11.0'
     testImplementation 'net.datafaker:datafaker:1.9.0'
     testImplementation "io.grpc:grpc-testing:${grpcVersion}"
 
