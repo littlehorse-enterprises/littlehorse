@@ -21,6 +21,9 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.ParentHaltedMod
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingFailureHandlerHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingInterruptHaltReasonModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.NodeMigrationModel;
+import io.littlehorse.common.model.getable.global.wfspec.ThreadSpecMigrationModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.EdgeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
@@ -44,6 +47,7 @@ import io.littlehorse.sdk.common.proto.ThreadHaltReason.ReasonCase;
 import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -53,6 +57,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.AccessLevel;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
@@ -85,14 +91,15 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public ThreadType type;
 
-    private ExecutionContext executionContext;
+    private ExecutionContext ctx;
     // Only contains value in Processor execution context.
     private ProcessorExecutionContext processorContext;
+    private ThreadSpecMigrationModel migration;
 
     public ThreadRunModel() {}
 
     public ThreadRunModel(ProcessorExecutionContext processorContext) {
-        this.executionContext = processorContext;
+        this.ctx = processorContext;
         this.processorContext = processorContext;
     }
 
@@ -104,7 +111,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         threadSpecName = proto.getThreadSpecName();
         currentNodePosition = proto.getCurrentNodePosition();
         startTime = LHUtil.fromProtoTs(proto.getStartTime());
-        wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class, executionContext);
+        wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class, ctx);
         if (proto.hasEndTime()) {
             endTime = LHUtil.fromProtoTs(proto.getEndTime());
         }
@@ -134,7 +141,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         for (int handledFailedChildId : proto.getHandledFailedChildrenList()) {
             handledFailedChildren.add(handledFailedChildId);
         }
-        executionContext = context;
+        ctx = context;
         processorContext = context.castOnSupport(ProcessorExecutionContext.class);
         type = proto.getType();
     }
@@ -191,19 +198,19 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public WfRunModel wfRun;
 
-    private ThreadSpecModel threadSpecModel;
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private ThreadSpecModel threadSpecModelDoNotUseMe;
 
     public ThreadSpecModel getThreadSpec() {
-        if (threadSpecModel == null) {
-            threadSpecModel = wfRun.getWfSpec().threadSpecs.get(threadSpecName);
+        if (threadSpecModelDoNotUseMe == null) {
+            threadSpecModelDoNotUseMe = ctx.metadataManager().get(wfSpecId).threadSpecs.get(threadSpecName);
         }
-        return threadSpecModel;
+        return threadSpecModelDoNotUseMe;
     }
 
     public NodeModel getCurrentNode() {
         NodeRunModel currRun = getCurrentNodeRun();
-
-        // TODO (#465): Determine which version of WfSpec we should get the ThreadSpec from.
         ThreadSpecModel threadSpec = getThreadSpec();
         if (currRun == null) {
             return threadSpec.nodes.get(threadSpec.getEntrypointNodeName());

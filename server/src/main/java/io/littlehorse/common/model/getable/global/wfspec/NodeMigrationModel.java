@@ -1,7 +1,11 @@
 package io.littlehorse.common.model.getable.global.wfspec;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.sdk.common.proto.NodeMigration;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
@@ -30,5 +34,11 @@ public class NodeMigrationModel extends LHSerializable<NodeMigration> {
         NodeMigration p = (NodeMigration) proto;
         newNodeName = p.getNewNodeName();
         this.context = executionContext;
+    }
+
+    public void execute(ThreadRunModel thread) {
+        NodeRunModel currentNode = thread.getCurrentNodeRun();
+
+        throw new NotImplementedException();
     }
 }
