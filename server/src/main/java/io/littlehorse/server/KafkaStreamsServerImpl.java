@@ -272,8 +272,8 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         this.taskQueueManager = new TaskQueueManager(this, LHConstants.MAX_TASKRUNS_IN_ONE_TASKQUEUE);
 
         if (config.getLHInstanceId().isPresent()) {
-            // overrideStreamsProcessId("core");
-            // overrideStreamsProcessId("timer");
+            overrideStreamsProcessId("core");
+            overrideStreamsProcessId("timer");
         }
         this.coreStreams = new KafkaStreams(
                 ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager),
