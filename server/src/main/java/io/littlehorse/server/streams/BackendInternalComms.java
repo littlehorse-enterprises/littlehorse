@@ -452,22 +452,28 @@ public class BackendInternalComms implements Closeable {
 
         @Override
         public void getObject(GetObjectRequest request, StreamObserver<GetObjectResponse> observer) {
-            ObjectIdModel<?, ?, ?> id =
-                    ObjectIdModel.fromString(request.getObjectId(), AbstractGetable.getIdCls(request.getObjectType()));
+            try {
+                ObjectIdModel<?, ?, ?> id = ObjectIdModel.fromString(
+                        request.getObjectId(), AbstractGetable.getIdCls(request.getObjectType()));
 
-            String storeName = id.getStore().getStoreName();
-            ReadOnlyTenantScopedStore store = getStore(request.getPartition(), storeName);
+                String storeName = id.getStore().getStoreName();
+                ReadOnlyTenantScopedStore store = getStore(request.getPartition(), storeName);
 
-            @SuppressWarnings("unchecked")
-            StoredGetable<?, ?> entity = store.get(id.getStoreableKey(), StoredGetable.class);
+                @SuppressWarnings("unchecked")
+                StoredGetable<?, ?> entity = store.get(id.getStoreableKey(), StoredGetable.class);
 
-            if (entity == null) {
-                observer.onError(new LHApiException(Status.NOT_FOUND, "Requested object was not found."));
-            } else {
-                observer.onNext(GetObjectResponse.newBuilder()
-                        .setResponse(entity.getStoredObject().toProto().build().toByteString())
-                        .build());
-                observer.onCompleted();
+                if (entity == null) {
+                    observer.onError(new LHApiException(Status.NOT_FOUND, "Requested object was not found."));
+                } else {
+                    observer.onNext(GetObjectResponse.newBuilder()
+                            .setResponse(
+                                    entity.getStoredObject().toProto().build().toByteString())
+                            .build());
+                    observer.onCompleted();
+                }
+            } catch (InvalidStateStoreException ex) {
+                log.error("Not ready Kafka streams state: %s msg: %s".formatted(coreStreams.state(), ex.toString()));
+                observer.onError(ex);
             }
         }
 
