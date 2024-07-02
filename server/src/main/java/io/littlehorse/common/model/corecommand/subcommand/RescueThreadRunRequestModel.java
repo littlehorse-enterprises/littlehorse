@@ -6,6 +6,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.MissingThreadRunException;
+import io.littlehorse.common.exceptions.ThreadRunRescueFailedException;
 import io.littlehorse.common.exceptions.UnRescuableThreadRunException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
@@ -63,6 +64,8 @@ public class RescueThreadRunRequestModel extends CoreSubCommand<RescueThreadRunR
         } catch (MissingThreadRunException exn) {
             throw exn.toLHApiException();
         } catch (UnRescuableThreadRunException exn) {
+            throw exn.toLHApiException();
+        } catch (ThreadRunRescueFailedException exn) {
             throw exn.toLHApiException();
         } catch (Exception exn) {
             throw new LHApiException(Status.INTERNAL, exn.getMessage());
