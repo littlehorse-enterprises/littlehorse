@@ -16,7 +16,6 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseStub;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
-import io.littlehorse.sdk.common.proto.TenantId;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -167,6 +166,14 @@ public class LHConfig extends ConfigBase {
     }
 
     /**
+     * Gets a Future gRPC stub for the LH Public API on the bootstrap host.
+     * @return a future gRPC stub for that host/port combo.
+     */
+    public LittleHorseGrpc.LittleHorseFutureStub getFutureStub() {
+        return getBaseFutureStub(getApiBootstrapHost(), getApiBootstrapPort());
+    }
+
+    /**
      * Gets an Async gRPC stub for the LH Public API on the configured host/port, which is generally
      * the loadbalancer url.
      *
@@ -221,20 +228,6 @@ public class LHConfig extends ConfigBase {
     }
 
     /**
-     * Gets an Async gRPC stub for the LH Public API on a specified host and port. Generally used by
-     * the Task Worker, which needs to connect directly to a specific LH Server rather than the
-     * bootstrap host (loadbalancer).
-     *
-     * @param host is the host that the LH Server lives on.
-     * @param port is the port that the LH Server lives on.
-     * @param tenantId is the current authenticated tenant.
-     * @return an async gRPC stub for that host/port combo.
-     */
-    public LittleHorseStub getAsyncStub(String host, int port, TenantId tenantId) {
-        return getBaseAsyncStub(host, port).withCallCredentials(new TenantMetadataProvider(tenantId.getId()));
-    }
-
-    /**
      * Gets a Blocking gRPC stub for the LH Public API on a specified host and port. Generally used
      * by the Task Worker, which needs to connect directly to a specific LH Server rather than the
      * bootstrap host (loadbalancer).
@@ -250,17 +243,15 @@ public class LHConfig extends ConfigBase {
     }
 
     /**
-     * Gets a Blocking gRPC stub for the LH Public API on a specified host and port. Generally used
-     * by the Task Worker, which needs to connect directly to a specific LH Server rather than the
-     * bootstrap host (loadbalancer).
-     *
+     * Gets a Future gRPC stub for the LH Public API on a specified host and port.
      * @param host is the host that the LH Server lives on.
      * @param port is the port that the LH Server lives on.
-     * @param tenantId is the current authenticated tenant.
-     * @return a blocking gRPC stub for that host/port combo.
+     * @return a future gRPC stub for that host/port combo.
      */
-    public LittleHorseBlockingStub getBlockingStub(String host, int port, TenantId tenantId) {
-        return getBaseBlockingStub(host, port).withCallCredentials(new TenantMetadataProvider(tenantId.getId()));
+    public LittleHorseBlockingStub getFutureStub(String host, int port) {
+        return getCredentials()
+                .map(callCredentials -> getBaseBlockingStub(host, port).withCallCredentials(callCredentials))
+                .orElseGet(() -> getBaseBlockingStub(host, port));
     }
 
     /*
@@ -342,6 +333,15 @@ public class LHConfig extends ConfigBase {
     private LittleHorseBlockingStub getBaseBlockingStub(String host, int port) {
         String tenantId = getTenantId();
         LittleHorseBlockingStub blockingStub = LittleHorseGrpc.newBlockingStub(getChannel(host, port));
+        if (tenantId != null) {
+            return blockingStub.withCallCredentials(new TenantMetadataProvider(tenantId));
+        }
+        return blockingStub;
+    }
+
+    private LittleHorseGrpc.LittleHorseFutureStub getBaseFutureStub(String host, int port) {
+        String tenantId = getTenantId();
+        LittleHorseGrpc.LittleHorseFutureStub blockingStub = LittleHorseGrpc.newFutureStub(getChannel(host, port));
         if (tenantId != null) {
             return blockingStub.withCallCredentials(new TenantMetadataProvider(tenantId));
         }
