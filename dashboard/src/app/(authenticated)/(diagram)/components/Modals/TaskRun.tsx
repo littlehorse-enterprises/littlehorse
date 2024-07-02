@@ -73,15 +73,14 @@ function AttemptErrorExceptionOutput({ attempt }: { attempt: TaskAttempt }) {
 
   return (
     <div
-      className={cn('flex max-w-full flex-col rounded p-1', attempt.output ? 'bg-zinc-500 text-white' : 'bg-red-200')}
+      className={cn('flex w-full flex-col rounded p-1 overflow-auto', attempt.output ? 'bg-zinc-500 text-white' : 'bg-red-200')}
     >
       <h3 className="font-bold">
         {attempt.error && 'Error'}
         {attempt.exception && 'Exception'}
         {attempt.output && 'Output'}
       </h3>
-      <pre className="overflow-x-auto">
-        {`{\n    \"glossary\": {\n        \"title\": \"example glossary\",\n\t\t\"GlossDiv\": {\n            \"title\": \"S\",\n\t\t\t\"GlossList\": {\n                \"GlossEntry\": {\n                    \"ID\": \"SGML\",\n\t\t\t\t\t\"SortAs\": \"SGML\",\n\t\t\t\t\t\"GlossTerm\": \"Standard Generalized Markup Language\",\n\t\t\t\t\t\"Acronym\": \"SGML\",\n\t\t\t\t\t\"Abbrev\": \"ISO 8879:1986\",\n\t\t\t\t\t\"GlossDef\": {\n                        \"para\": \"A meta-markupsssssssssssssssssssssmarkupsssssssssssssssssssssmarkupsssssssssssssssssssssmarkupsssssssssssssssssssss language, used to create markup languages such as DocBook.\",\n\t\t\t\t\t\t\"GlossSeeAlso\": [\"GML\", \"XML\"]\n                    },\n\t\t\t\t\t\"GlossSee\": \"markup\"\n                }\n            }\n        }\n    }\n}`}
+      <pre className="overflow-auto">
         {attempt.error && attempt.error.message}
         {attempt.exception && attempt.exception.message}
         {attempt.output && getVariableValue(attempt.output)}
