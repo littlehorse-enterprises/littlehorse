@@ -76,7 +76,14 @@ public class InstanceState implements MeterBinder, KafkaStreams.StateListener, C
 
         if (newState == KafkaStreams.State.RUNNING) {
             activeTasks.set(currentActiveTaskIds);
-            internalComms.handleRebalance(activeTasks.get());
+            try {
+                internalComms.handleRebalance(activeTasks.get());
+            } catch (Exception toIgnore) {
+                // There is nothing that we can do here if the server rebalance logic fails.
+                // This can fail with a IllegalStateException or any other Runtime exception
+                // if kafka streams is closing the instance
+                log.warn("Failed to handle async waiters reassignment: " + toIgnore.getMessage());
+            }
         }
         log.info("New state for core topology: {}", newState);
     }
