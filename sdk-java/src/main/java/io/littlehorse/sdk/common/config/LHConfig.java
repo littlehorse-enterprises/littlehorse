@@ -13,6 +13,7 @@ import io.littlehorse.sdk.common.auth.TenantMetadataProvider;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseFutureStub;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseStub;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -167,6 +168,14 @@ public class LHConfig extends ConfigBase {
     }
 
     /**
+     * Gets a Future gRPC stub for the LH Public API on the bootstrap host.
+     * @return a future gRPC stub for that host/port combo.
+     */
+    public LittleHorseFutureStub getFutureStub() {
+        return getBaseFutureStub(getApiBootstrapHost(), getApiBootstrapPort());
+    }
+
+    /**
      * Gets an Async gRPC stub for the LH Public API on the configured host/port, which is generally
      * the loadbalancer url.
      *
@@ -263,6 +272,29 @@ public class LHConfig extends ConfigBase {
         return getBaseBlockingStub(host, port).withCallCredentials(new TenantMetadataProvider(tenantId.getId()));
     }
 
+    /**
+     * Gets a Future gRPC stub for the LH Public API on a specified host and port.
+     * @param host is the host that the LH Server lives on.
+     * @param port is the port that the LH Server lives on.
+     * @return a future gRPC stub for that host/port combo.
+     */
+    public LittleHorseFutureStub getFutureStub(String host, int port) {
+        return getCredentials()
+                .map(callCredentials -> getBaseFutureStub(host, port).withCallCredentials(callCredentials))
+                .orElseGet(() -> getBaseFutureStub(host, port));
+    }
+
+    /**
+     * Gets a Future gRPC stub for the LH Public API on a specified host and port.
+     * @param host is the host that the LH Server lives on.
+     * @param port is the port that the LH Server lives on.
+     * @param tenantId is the current authenticated tenant.
+     * @return a future gRPC stub for that host/port combo.
+     */
+    public LittleHorseFutureStub getFutureStub(String host, int port, TenantId tenantId) {
+        return getBaseFutureStub(host, port).withCallCredentials(new TenantMetadataProvider(tenantId.getId()));
+    }
+
     /*
     CallCredentials for tenant and/or OAuth provider. Empty if
     there is no OAuth and tenant configuration
@@ -342,6 +374,15 @@ public class LHConfig extends ConfigBase {
     private LittleHorseBlockingStub getBaseBlockingStub(String host, int port) {
         String tenantId = getTenantId();
         LittleHorseBlockingStub blockingStub = LittleHorseGrpc.newBlockingStub(getChannel(host, port));
+        if (tenantId != null) {
+            return blockingStub.withCallCredentials(new TenantMetadataProvider(tenantId));
+        }
+        return blockingStub;
+    }
+
+    private LittleHorseGrpc.LittleHorseFutureStub getBaseFutureStub(String host, int port) {
+        String tenantId = getTenantId();
+        LittleHorseGrpc.LittleHorseFutureStub blockingStub = LittleHorseGrpc.newFutureStub(getChannel(host, port));
         if (tenantId != null) {
             return blockingStub.withCallCredentials(new TenantMetadataProvider(tenantId));
         }
