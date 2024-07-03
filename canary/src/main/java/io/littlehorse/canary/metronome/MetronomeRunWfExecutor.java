@@ -115,6 +115,7 @@ public class MetronomeRunWfExecutor {
 
         @Override
         public void onSuccess(final WfRun result) {
+            lhClient.incrementWfRunCountMetric();
             if (isSampleIteration) {
                 sendMetricBeat(wfRunId, startedAt, BeatStatus.OK.name());
                 repository.save(wfRunId, 0);
@@ -123,6 +124,7 @@ public class MetronomeRunWfExecutor {
 
         @Override
         public void onFailure(final Throwable t) {
+            lhClient.incrementWfRunCountMetric();
             sendMetricBeat(wfRunId, startedAt, BeatStatus.ERROR.name());
         }
     }

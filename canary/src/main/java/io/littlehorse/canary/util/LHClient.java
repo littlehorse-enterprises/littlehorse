@@ -72,6 +72,10 @@ public class LHClient implements MeterBinder {
         wfRunCounter.bindTo(registry);
     }
 
+    public void incrementWfRunCountMetric() {
+        wfRunCounter.increment();
+    }
+
     private static class CounterMetric implements MeterBinder {
         private final String metricName;
         private Counter counter;
