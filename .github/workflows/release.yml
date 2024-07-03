@@ -6,105 +6,173 @@ on:
       - "[0-9]+.[0-9]+.[0-9]+*" # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
 permissions:
       packages: write
-      contents: read
+      contents: write
 jobs:
-  publish-docker:
-    uses: ./.github/workflows/publish-docker.yml
+  # publish-docker:
+  #   uses: ./.github/workflows/publish-docker.yml
 
-  sdk-java:
-    runs-on: ubuntu-latest
+  # sdk-java:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - publish-docker
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - name: Setup Java
+  #       uses: actions/setup-java@v4
+  #       with:
+  #         distribution: "corretto"
+  #         java-version: "11"
+  #     - name: Tests
+  #       run: ./gradlew sdk-java:test
+  #     - name: Import GPG key
+  #       uses: crazy-max/ghaction-import-gpg@v5
+  #       with:
+  #         gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+  #         passphrase: ${{ secrets.GPG_PASSPHRASE }}
+  #     - name: Generate KeyRing
+  #       run: |
+  #         gpg --keyring secring.gpg --export-secret-keys --passphrase ${{ secrets.GPG_PASSPHRASE }} --batch --yes --pinentry-mode=loopback > ~/.gnupg/secring.gpg
+  #         ls ~/.gnupg/
+  #     - name: Publish
+  #       run: |
+  #         ./gradlew sdk-java:publish -Psigning.secretKeyRingFile=/home/runner/.gnupg/secring.gpg -Psigning.password=${{ secrets.GPG_PASSPHRASE }} -Psigning.keyId=${{ vars.GPG_KEY_ID }} -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
+  #         echo Login at https://s01.oss.sonatype.org/
+
+  # sdk-python:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - publish-docker
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: "3.9"
+  #     - name: Install Dependencies
+  #       run: |
+  #         python -m pip install --upgrade pip setuptools wheel
+  #         pip install poetry
+  #     - name: Tests
+  #       working-directory: ./sdk-python
+  #       run: |
+  #         poetry install
+  #         poetry run python -m unittest -v
+  #         poetry build
+  #     - name: Publish Package
+  #       uses: pypa/gh-action-pypi-publish@v1.8.10
+  #       with:
+  #         user: __token__
+  #         password: ${{ secrets.PYPI_API_TOKEN }}
+  #         packages-dir: ./sdk-python/dist/
+
+  # sdk-js:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - publish-docker
+  #   env:
+  #     working-directory: ./sdk-js
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+
+  #     - name: Setup NodeJS
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 20
+  #         registry-url: 'https://registry.npmjs.org'
+  #         cache: 'npm'
+  #         cache-dependency-path: ${{env.working-directory}}
+
+  #     - name: Install dependencies
+  #       working-directory: ${{env.working-directory}}
+  #       run: npm ci
+
+  #     - name: Run unit tests
+  #       working-directory: ${{env.working-directory}}
+  #       run: npm test
+
+  #     - name: Use tag
+  #       working-directory: ${{env.working-directory}}
+  #       env:
+  #         TAG: ${{ github.ref_name }}
+  #       run: cat package.json | jq -r ".version = \"${TAG}\"" | tee package.json
+
+  #     - name: Build
+  #       working-directory: ${{env.working-directory}}
+  #       run: npm run build
+
+  #     - name: Publish
+  #       working-directory: ${{env.working-directory}}
+  #       env:
+  #         NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+  #       run: npm publish --access public
+
+  lhctl:
     needs:
-      - publish-docker
+      - create-release
+    strategy:
+      fail-fast: true
+      matrix:
+        build:
+          - linux x64
+          - macos aarch64
+          - windows x64
+        include:
+          - build: linux x64
+            os: ubuntu-latest
+            target: linux-amd64
+          - build: macos aarch64
+            os: macos-latest
+            target: darwin-aarch64
+          - build: windows x64
+            os: windows-latest
+            target: windows-amd64
+
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Java
-        uses: actions/setup-java@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
         with:
-          distribution: "corretto"
-          java-version: "11"
-      - name: Tests
-        run: ./gradlew sdk-java:test
-      - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v5
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-      - name: Generate KeyRing
-        run: |
-          gpg --keyring secring.gpg --export-secret-keys --passphrase ${{ secrets.GPG_PASSPHRASE }} --batch --yes --pinentry-mode=loopback > ~/.gnupg/secring.gpg
-          ls ~/.gnupg/
-      - name: Publish
-        run: |
-          ./gradlew sdk-java:publish -Psigning.secretKeyRingFile=/home/runner/.gnupg/secring.gpg -Psigning.password=${{ secrets.GPG_PASSPHRASE }} -Psigning.keyId=${{ vars.GPG_KEY_ID }} -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
-          echo Login at https://s01.oss.sonatype.org/
-
-  sdk-python:
-    runs-on: ubuntu-latest
-    needs:
-      - publish-docker
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.9"
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip setuptools wheel
-          pip install poetry
-      - name: Tests
-        working-directory: ./sdk-python
-        run: |
-          poetry install
-          poetry run python -m unittest -v
-          poetry build
-      - name: Publish Package
-        uses: pypa/gh-action-pypi-publish@v1.8.10
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
-          packages-dir: ./sdk-python/dist/
-
-  sdk-js:
-    runs-on: ubuntu-latest
-    needs:
-      - publish-docker
-    env:
-      working-directory: ./sdk-js
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup NodeJS
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
-          cache-dependency-path: ${{env.working-directory}}
-
-      - name: Install dependencies
-        working-directory: ${{env.working-directory}}
-        run: npm ci
-
-      - name: Run unit tests
-        working-directory: ${{env.working-directory}}
-        run: npm test
-
-      - name: Use tag
-        working-directory: ${{env.working-directory}}
-        env:
-          TAG: ${{ github.ref_name }}
-        run: cat package.json | jq -r ".version = \"${TAG}\"" | tee package.json
+          go-version: "1.20"
 
       - name: Build
-        working-directory: ${{env.working-directory}}
-        run: npm run build
+        run: go build -o build/lhctl ./lhctl
 
-      - name: Publish
-        working-directory: ${{env.working-directory}}
+      - name: Zip build
+        if: matrix.target == 'windows-amd64'
+        run:  Compress-Archive -Path build/lhctl -Destination build/lhctl-${{matrix.target}}.zip
+      
+      - name: Tar build
+        if: matrix.target != 'windows-amd64'
+        run: tar -czvf build/lhctl-${{matrix.target}}.tar.gz build/lhctl
+      
+      - name: Upload release archive
+        uses: actions/upload-release-asset@v1.0.2
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-        run: npm publish --access public
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }} 
+          asset_path: ./build/lhctl-${{matrix.target}}.${{ matrix.build == 'windows x64' && 'zip' || 'tar.gz' }}
+          asset_name: lhctl-${{matrix.target}}.${{ matrix.build == 'windows x64' && 'zip' || 'tar.gz' }}
+          asset_content_type: application/octet-stream
+      
+  create-release:
+    runs-on: ubuntu-latest
+    outputs: 
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && '' || github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: false
