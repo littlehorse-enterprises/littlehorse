@@ -24,7 +24,6 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
@@ -224,9 +223,7 @@ public class LHConfig extends ConfigBase {
      * @return an async gRPC stub for that host/port combo.
      */
     public LittleHorseStub getAsyncStub(String host, int port) {
-        return getCredentials()
-                .map(callCredentials -> getBaseAsyncStub(host, port).withCallCredentials(callCredentials))
-                .orElseGet(() -> getBaseAsyncStub(host, port));
+        return getBaseAsyncStub(host, port).withCallCredentials(getCredentials());
     }
 
     /**
@@ -240,7 +237,7 @@ public class LHConfig extends ConfigBase {
      * @return an async gRPC stub for that host/port combo.
      */
     public LittleHorseStub getAsyncStub(String host, int port, TenantId tenantId) {
-        return getBaseAsyncStub(host, port).withCallCredentials(new TenantMetadataProvider(tenantId.getId()));
+        return getBaseAsyncStub(host, port).withCallCredentials(getCredentials(tenantId));
     }
 
     /**
@@ -253,9 +250,7 @@ public class LHConfig extends ConfigBase {
      * @return a blocking gRPC stub for that host/port combo.
      */
     public LittleHorseBlockingStub getBlockingStub(String host, int port) {
-        return getCredentials()
-                .map(callCredentials -> getBaseBlockingStub(host, port).withCallCredentials(callCredentials))
-                .orElseGet(() -> getBaseBlockingStub(host, port));
+        return getBaseBlockingStub(host, port).withCallCredentials(getCredentials());
     }
 
     /**
@@ -269,7 +264,7 @@ public class LHConfig extends ConfigBase {
      * @return a blocking gRPC stub for that host/port combo.
      */
     public LittleHorseBlockingStub getBlockingStub(String host, int port, TenantId tenantId) {
-        return getBaseBlockingStub(host, port).withCallCredentials(new TenantMetadataProvider(tenantId.getId()));
+        return getBaseBlockingStub(host, port).withCallCredentials(getCredentials(tenantId));
     }
 
     /**
@@ -279,9 +274,7 @@ public class LHConfig extends ConfigBase {
      * @return a future gRPC stub for that host/port combo.
      */
     public LittleHorseFutureStub getFutureStub(String host, int port) {
-        return getCredentials()
-                .map(callCredentials -> getBaseFutureStub(host, port).withCallCredentials(callCredentials))
-                .orElseGet(() -> getBaseFutureStub(host, port));
+        return getBaseFutureStub(host, port).withCallCredentials(getCredentials());
     }
 
     /**
@@ -292,25 +285,25 @@ public class LHConfig extends ConfigBase {
      * @return a future gRPC stub for that host/port combo.
      */
     public LittleHorseFutureStub getFutureStub(String host, int port, TenantId tenantId) {
-        return getBaseFutureStub(host, port).withCallCredentials(new TenantMetadataProvider(tenantId.getId()));
+        return getBaseFutureStub(host, port).withCallCredentials(getCredentials(tenantId));
     }
 
-    /*
-    CallCredentials for tenant and/or OAuth provider. Empty if
-    there is no OAuth and tenant configuration
-     */
-    private Optional<CallCredentials> getCredentials() {
+    private CallCredentials getCredentials(TenantId tenantId) {
         boolean isOAuth = isOauth();
-        String tenantId = getTenantId();
-        if (isOAuth && tenantId != null) {
-            return Optional.of(
-                    new CompositeCallCredentials(oauthCredentialsProvider, new TenantMetadataProvider(tenantId)));
-        } else if (isOAuth) {
-            return Optional.of(oauthCredentialsProvider);
-        } else if (tenantId != null) {
-            return Optional.of(new TenantMetadataProvider(getTenantId()));
+        if (isOAuth) {
+            return new CompositeCallCredentials(oauthCredentialsProvider, new TenantMetadataProvider(tenantId));
         } else {
-            return Optional.empty();
+            return new TenantMetadataProvider(getTenantId());
+        }
+    }
+
+    private CallCredentials getCredentials() {
+        boolean isOAuth = isOauth();
+        TenantId tenantId = getTenantId();
+        if (isOAuth) {
+            return new CompositeCallCredentials(oauthCredentialsProvider, new TenantMetadataProvider(tenantId));
+        } else {
+            return new TenantMetadataProvider(getTenantId());
         }
     }
 
@@ -372,21 +365,11 @@ public class LHConfig extends ConfigBase {
      * Get a blocking stub with the application defaults
      */
     private LittleHorseBlockingStub getBaseBlockingStub(String host, int port) {
-        String tenantId = getTenantId();
-        LittleHorseBlockingStub blockingStub = LittleHorseGrpc.newBlockingStub(getChannel(host, port));
-        if (tenantId != null) {
-            return blockingStub.withCallCredentials(new TenantMetadataProvider(tenantId));
-        }
-        return blockingStub;
+        return LittleHorseGrpc.newBlockingStub(getChannel(host, port));
     }
 
     private LittleHorseGrpc.LittleHorseFutureStub getBaseFutureStub(String host, int port) {
-        String tenantId = getTenantId();
-        LittleHorseGrpc.LittleHorseFutureStub blockingStub = LittleHorseGrpc.newFutureStub(getChannel(host, port));
-        if (tenantId != null) {
-            return blockingStub.withCallCredentials(new TenantMetadataProvider(tenantId));
-        }
-        return blockingStub;
+        return LittleHorseGrpc.newFutureStub(getChannel(host, port));
     }
 
     /**
@@ -425,8 +408,9 @@ public class LHConfig extends ConfigBase {
                 TASK_WORKER_ID_KEY, "worker-" + UUID.randomUUID().toString().replaceAll("-", ""));
     }
 
-    public String getTenantId() {
-        return getOrSetDefault(TENANT_ID_KEY, null);
+    public TenantId getTenantId() {
+        String tenantId = getOrSetDefault(TENANT_ID_KEY, "default");
+        return TenantId.newBuilder().setId(tenantId).build();
     }
 
     public Integer getInflightTasks() {

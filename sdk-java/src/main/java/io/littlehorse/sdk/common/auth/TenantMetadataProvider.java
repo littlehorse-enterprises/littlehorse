@@ -2,15 +2,19 @@ package io.littlehorse.sdk.common.auth;
 
 import io.grpc.CallCredentials;
 import io.grpc.Metadata;
+import io.littlehorse.sdk.common.proto.TenantId;
 import java.util.Objects;
 import java.util.concurrent.Executor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class TenantMetadataProvider extends CallCredentials {
     private static final Metadata.Key<String> tenantHeader =
             Metadata.Key.of("tenantId", Metadata.ASCII_STRING_MARSHALLER);
     private final String tenantId;
+
+    public TenantMetadataProvider(TenantId tenantId) {
+        Objects.requireNonNull(tenantId);
+        this.tenantId = tenantId.getId();
+    }
 
     public TenantMetadataProvider(String tenantId) {
         Objects.requireNonNull(tenantId);
