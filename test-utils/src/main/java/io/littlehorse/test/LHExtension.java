@@ -102,7 +102,7 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
                             .getLhClient()
                             .withDeadlineAfter(2, TimeUnit.SECONDS)
                             .putTenant(PutTenantRequest.newBuilder()
-                                    .setId(testContext.getConfig().getTenantId())
+                                    .setId(testContext.getConfig().getTenantId().getId())
                                     .build());
                     return true;
                 });

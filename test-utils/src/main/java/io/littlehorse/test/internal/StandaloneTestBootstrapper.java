@@ -41,7 +41,8 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
         workerConfig = new LHConfig(testClientProperties());
         client = workerConfig
                 .getBlockingStub()
-                .withCallCredentials(new MockCallCredentials(new TenantIdModel(workerConfig.getTenantId())));
+                .withCallCredentials(new MockCallCredentials(
+                        new TenantIdModel(workerConfig.getTenantId().getId())));
         startServers();
     }
 
