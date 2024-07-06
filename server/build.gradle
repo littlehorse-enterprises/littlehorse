@@ -61,12 +61,17 @@ dependencies {
     implementation 'io.micrometer:micrometer-registry-prometheus:1.11.2'
     implementation 'io.javalin:javalin:5.6.0'
 
-    // Lombok stuffs
+    // Lombok stuff
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testImplementation project(":test-utils")
+
+    // JSON and YAML processing
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2'
+    implementation 'com.jayway.jsonpath:json-path:2.9.0'
 
     testImplementation 'org.awaitility:awaitility:4.2.0'
     testImplementation 'org.junit.platform:junit-platform-console-standalone:1.11.0-M2'
