@@ -14,7 +14,7 @@ export const TaskRun: FC<Modal> = ({ data }) => {
   const attempt = useMemo(() => lhTaskRun.attempts[attemptIndex], [attemptIndex, lhTaskRun.attempts])
   return (
     <Dialog open={showModal} onOpenChange={open => setShowModal(open)}>
-      <DialogContent>
+      <DialogContent className="flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             <h2 className="text-lg font-bold">TaskRun</h2>
@@ -73,7 +73,10 @@ function AttemptErrorExceptionOutput({ attempt }: { attempt: TaskAttempt }) {
 
   return (
     <div
-      className={cn('flex w-full flex-col rounded p-1 overflow-auto', attempt.output ? 'bg-zinc-500 text-white' : 'bg-red-200')}
+      className={cn(
+        'flex w-full flex-col overflow-auto rounded p-1',
+        attempt.output ? 'bg-zinc-500 text-white' : 'bg-red-200'
+      )}
     >
       <h3 className="font-bold">
         {attempt.error && 'Error'}
