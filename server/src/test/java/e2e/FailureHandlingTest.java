@@ -1,7 +1,7 @@
 package e2e;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.exception.LHTaskException;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Failure;
@@ -87,7 +87,7 @@ public class FailureHandlingTest {
                         Map<String, String> outputData = LHLibUtil.deserializeFromjson(
                                 failure.getContent().getJsonObj(), Map.class);
                         Assertions.assertThat(outputData).containsOnlyKeys("date", "server");
-                    } catch (JsonProcessingException e) {
+                    } catch (LHJsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
                     Assertions.assertThat(failure.getFailureHandlerThreadrunId())
