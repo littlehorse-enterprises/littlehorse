@@ -408,6 +408,64 @@ message EdgeCondition {
   VariableAssignment right = 3;
 }
 
+enum BooleanOperator {
+    AND = 0;
+    OR = 1;
+}
+
+message ComplexCondition {
+    EdgeCondition left = 1;
+
+    BooleanOperator operator = 2;
+
+    oneof right {
+        EdgeCondition simple = 3;
+        ComplexCondition complex = 4;
+    }
+}
+
+
+/*
+if (a < b || c < d)
+
+flowControl: {
+    "condition_v2": {
+        "left": {
+            "condition": "a < b"
+        },
+        "right": {
+            "condition": "c < d"
+        },
+        "operator": "OR"
+    }
+}
+
+///////////////////////
+if (a < b || ((c < d && e < f))
+
+flowControl: {
+    "condition_v2": {
+        "left": {
+            "condition": "a < b"
+        },
+        "right": {
+            "condition_v2": {
+                "left": {
+                    "condition": "c < d"
+                },
+                "right": {
+                    "condition": "e < f",
+                },
+                "operator": "AND"
+            }
+        },
+        "operator": "OR"
+    }
+}
+
+
+*/
+
 // The Edge is the line in the workflow that connects one Node to another.
 message Edge {
   // The name of the Node that the Edge points to.
@@ -417,7 +475,11 @@ message Edge {
   // to travel after the completion of a NodeRun, the Edges are evaluated in
   // order. The first one to either have no condition or have a condition which
   // evaluates to `true` is taken.
-  optional EdgeCondition condition = 2;
+  oneof flow_control {
+      EdgeCondition condition = 2;
+
+      ComplexCondition condition_v2 = 4;
+  }
 
   // Ordered list of Variable Mutations to execute when traversing this Edge.
   repeated VariableMutation variable_mutations = 3;
