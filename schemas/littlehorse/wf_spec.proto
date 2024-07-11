@@ -261,6 +261,16 @@ message WaitForThreadsNode {
   // ThreadRuns that we're waiting for, and would run only when the overall nodeRun has
   // failed.
   repeated FailureHandlerDef per_thread_failure_handlers = 3;
+
+  WaitForThreadsPolicy policy = 4;
+
+  enum WaitForThreadsPolicy {
+    // Wait for all threads to complete before continuing
+    ALL_THREADS = 0;
+
+    // Complete on any thread finishing and halt the others
+    ANY_THREAD = 1;
+  }
 }
 
 // An ExternalEventNode causes the WfRun to stop and wait for an ExternalEvent
