@@ -110,25 +110,7 @@ jobs:
         run: npm publish --access public
 
   lhctl:
-    strategy:
-      fail-fast: true
-      matrix:
-        build:
-          - linux x64
-          - macos aarch64
-          - windows x64
-        include:
-          - build: linux x64
-            os: ubuntu-latest
-            target: linux-amd64
-          - build: macos aarch64
-            os: macos-latest
-            target: darwin-aarch64
-          - build: windows x64
-            os: windows-latest
-            target: windows-amd64
-
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -139,26 +121,15 @@ jobs:
           go-version: "1.20"
 
       - name: Build
-        if: matrix.target == 'windows-amd64'
-        run: go build -o build/lhctl.exe ./lhctl
-
-      - name: Build
-        if: matrix.target != 'windows-amd64'
-        run: go build -o build/lhctl ./lhctl
-
-      - name: Zip build
-        if: matrix.target == 'windows-amd64'
-        run:  Compress-Archive -Path build/lhctl.exe -Destination build/lhctl-${{matrix.target}}.zip
-
-      - name: Tar build
-        if: matrix.target != 'windows-amd64'
-        run: tar -czvf build/lhctl-${{matrix.target}}.tar.gz -C build lhctl
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          args: release --snapshot --clean
       
       - name: Upload release archive
         uses: actions/upload-artifact@v4
         with:
-          name: lhctl-${{matrix.target}}
-          path: build/lhctl-${{matrix.target}}.*
+          name: lhctl
+          path: dist/lhctl_*.*
 
   create-release:
     needs:
@@ -182,11 +153,11 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
-          path: build
+          path: dist
           merge-multiple: true
 
       - name: Create Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run:
-          gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -F CHANGELOG.md build/lhctl-*
+          gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -F CHANGELOG.md dist/lhctl_*
