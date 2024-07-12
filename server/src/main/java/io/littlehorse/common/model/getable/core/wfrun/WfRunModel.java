@@ -7,6 +7,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.MissingThreadRunException;
+import io.littlehorse.common.exceptions.ThreadRunRescueFailedException;
 import io.littlehorse.common.exceptions.UnRescuableThreadRunException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
@@ -501,11 +502,11 @@ public class WfRunModel extends CoreGetable<WfRun> {
         this.advance(new Date()); // Seems like a good idea, why not?
     }
 
-    public Optional<Status> rescueThreadRun(int threadRunNumber, boolean skipCurrentNode, ProcessorExecutionContext ctx)
-            throws MissingThreadRunException, UnRescuableThreadRunException {
+    public void rescueThreadRun(int threadRunNumber, boolean skipCurrentNode, ProcessorExecutionContext ctx)
+            throws MissingThreadRunException, UnRescuableThreadRunException, ThreadRunRescueFailedException {
         validateCanRescueThreadRun(threadRunNumber, ctx);
         ThreadRunModel toRescue = getThreadRun(threadRunNumber);
-        return toRescue.rescue(skipCurrentNode, ctx);
+        toRescue.rescue(skipCurrentNode, ctx);
     }
 
     private void validateCanRescueThreadRun(int threadRunNumber, ProcessorExecutionContext ctx)

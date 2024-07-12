@@ -22,7 +22,7 @@ jobs:
           distribution: "corretto"
           java-version: ${{ matrix.java-version }}
       - name: Tests
-        run: ./gradlew sdk-java:test sdk-java:build
+        run: ./gradlew sdk-java:spotlessCheck sdk-java:test sdk-java:build
       - name: Java Documentaion
         run: ./gradlew sdk-java:javadoc
   tests-sdk-go:
@@ -35,6 +35,8 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: "stable"
+      - name: Validate Formatting
+        run: if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then exit 1 ; fi
       - name: Tests
         run: go test ./...
   tests-sdk-python:
@@ -77,7 +79,7 @@ jobs:
           distribution: "corretto"
           java-version: 17
       - name: Tests
-        run: ./gradlew canary:test canary:build
+        run: ./gradlew canary:spotlessCheck canary:test canary:build
   tests-server:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
     runs-on: ubuntu-latest
@@ -90,11 +92,9 @@ jobs:
           distribution: "corretto"
           java-version: 17
       - name: Validate Indentations
-        run: ./gradlew spotlessCheck
-      - name: Validate Build
-        run: ./gradlew build -x test
+        run: ./gradlew server:spotlessCheck test-utils:spotlessCheck
       - name: Tests
-        run: ./gradlew server:test server:e2e server:build
+        run: ./gradlew server:test server:e2e
   tests-e2e:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
     runs-on: ubuntu-latest

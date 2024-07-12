@@ -134,7 +134,7 @@ To do an `if` statement, you use `WorkflowThread::doIf()`. The method takes two 
 1. A `WorkflowCondition` (see above).
 2. An `IfElseBody` implementation.
 
-The `IfElseBody` is just a type: think of it as a functional interface that's the same as a `ThreadFunc` but it's used differently. Generally, an `IfElseBody` is provided by an anonymous function (think a `lambda` function in python).
+The `IfElseBody` is just a type: think of it as a functional interface that's the same as a `ThreadFunc` but it's used differently. Generally, an `IfElseBody` is provided by an anonymous function; however, in Python it is required to pass a proper function (not a `lambda`).
 
 Here's an example of executing a `my-task` Task if `foo < 3`:
 
@@ -225,6 +225,9 @@ In python you have to use a first-class function, pay attention to `if_body` fun
 This is also applicable for methods.
 
 ```python
+from littlehorse.model import VariableType, Comparator
+from littlehorse.workflow import WorkflowThread
+
 foo = wf.add_variable("foo", VariableType.INT)
 
 def if_body(wf: WorkflowThread) -> None:

@@ -3,10 +3,11 @@ package io.littlehorse.canary.util;
 import static io.littlehorse.canary.metronome.MetronomeWorkflow.SAMPLE_ITERATION_VARIABLE;
 import static io.littlehorse.canary.metronome.MetronomeWorkflow.START_TIME_VARIABLE;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.protobuf.Empty;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.*;
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseFutureStub;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -16,7 +17,8 @@ import lombok.NonNull;
 
 public class LHClient implements MeterBinder {
 
-    private final LittleHorseBlockingStub blockingStub;
+    private final LittleHorseFutureStub futureStub;
+    private final LittleHorseGrpc.LittleHorseBlockingStub blockingStub;
     private final String workflowName;
     private final int workflowRevision;
     private final int workflowVersion;
@@ -25,7 +27,8 @@ public class LHClient implements MeterBinder {
 
     public LHClient(
             final LHConfig lhConfig, final String workflowName, final int workflowVersion, final int workflowRevision) {
-        blockingStub = lhConfig.getBlockingStub();
+        this.futureStub = lhConfig.getFutureStub();
+        this.blockingStub = lhConfig.getBlockingStub();
         this.workflowName = workflowName;
         this.workflowRevision = workflowRevision;
         this.workflowVersion = workflowVersion;
@@ -45,8 +48,8 @@ public class LHClient implements MeterBinder {
         workflow.registerWfSpec(blockingStub);
     }
 
-    public WfRun runCanaryWf(final String id, final Instant start, final boolean sampleIteration) {
-        final WfRun newWfRun = blockingStub.runWf(RunWfRequest.newBuilder()
+    public ListenableFuture<WfRun> runCanaryWf(final String id, final Instant start, final boolean sampleIteration) {
+        return futureStub.runWf(RunWfRequest.newBuilder()
                 .setWfSpecName(workflowName)
                 .setId(id)
                 .setRevision(workflowRevision)
@@ -58,8 +61,6 @@ public class LHClient implements MeterBinder {
                         SAMPLE_ITERATION_VARIABLE,
                         VariableValue.newBuilder().setBool(sampleIteration).build())
                 .build());
-        wfRunCounter.increment();
-        return newWfRun;
     }
 
     public WfRun getCanaryWfRun(final String id) {
@@ -69,6 +70,10 @@ public class LHClient implements MeterBinder {
     @Override
     public void bindTo(@NonNull final MeterRegistry registry) {
         wfRunCounter.bindTo(registry);
+    }
+
+    public void incrementWfRunCountMetric() {
+        wfRunCounter.increment();
     }
 
     private static class CounterMetric implements MeterBinder {

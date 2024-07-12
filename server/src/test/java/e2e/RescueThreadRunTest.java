@@ -26,7 +26,7 @@ public class RescueThreadRunTest {
 
     private WorkflowVerifier verifier;
 
-    private Map<String, Integer> wfRunToTimesFailed = new ConcurrentHashMap<>();
+    private static Map<String, Integer> wfRunToTimesFailed = new ConcurrentHashMap<>();
 
     @LHWorkflow("simple-rescue-threadrun")
     private Workflow simpleRescueThreadRun;

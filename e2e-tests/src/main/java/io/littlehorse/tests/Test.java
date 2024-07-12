@@ -1,8 +1,8 @@
 package io.littlehorse.tests;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
@@ -281,7 +281,7 @@ public abstract class Test {
                 getVariable(client, wfRunId, threadRunNumber, varName).getValue();
         try {
             return LHLibUtil.deserializeFromjson(varVal.getJsonArr(), List.class);
-        } catch (JsonProcessingException exn) {
+        } catch (LHJsonProcessingException exn) {
             throw new TestFailure(this, "Couldn't deserialize variable " + varName + ":" + exn.getMessage());
         }
     }
@@ -293,7 +293,7 @@ public abstract class Test {
                 getVariable(client, wfRunId, threadRunNumber, varName).getValue();
         try {
             return LHLibUtil.deserializeFromjson(varVal.getJsonObj(), cls);
-        } catch (JsonProcessingException exn) {
+        } catch (LHJsonProcessingException exn) {
             throw new TestFailure(this, "Couldn't deserialize variable " + varName + ":" + exn.getMessage());
         }
     }

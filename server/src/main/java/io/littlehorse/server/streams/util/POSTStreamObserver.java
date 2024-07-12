@@ -8,6 +8,7 @@ import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.server.streams.BackendInternalComms;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.time.Duration;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
     private boolean shouldComplete;
     private final BackendInternalComms internalComms;
     private final AbstractCommand<?> command;
+    private final RequestExecutionContext requestContext;
     private final Date commandStartedAt;
     private final Date timeoutAt;
     // Wait until kafka streams rebalance finishes
@@ -31,6 +33,7 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
             boolean shouldComplete,
             BackendInternalComms internalComms,
             AbstractCommand<?> command,
+            RequestExecutionContext requestContext,
             Duration successResponseTimeout) {
         this.ctx = responseObserver;
         this.responseCls = responseCls;
@@ -40,6 +43,7 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
         this.commandStartedAt = new Date();
         this.timeoutAt = new Date(commandStartedAt.getTime() + successResponseTimeout.toMillis());
         this.successResponseTimeout = successResponseTimeout;
+        this.requestContext = requestContext;
     }
 
     @Override
@@ -51,7 +55,14 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
             internalComms.waitForCommand(
                     command,
                     new POSTStreamObserver<>(
-                            ctx, responseCls, shouldComplete, internalComms, command, successResponseTimeout));
+                            ctx,
+                            responseCls,
+                            shouldComplete,
+                            internalComms,
+                            command,
+                            requestContext,
+                            successResponseTimeout),
+                    requestContext);
         } else {
             ctx.onError(t);
         }
@@ -79,7 +90,7 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
         if (reply.hasResult()) {
             ctx.onNext(buildRespFromBytes(reply.getResult()));
         } else if (reply.hasPartitionMigratedResponse()) {
-            internalComms.waitForCommand(command, this);
+            internalComms.waitForCommand(command, this, requestContext);
         }
     }
 }
