@@ -65,7 +65,8 @@ public class PutWfSpecRequestModelTest {
             .withLoggingDisabled()
             .build();
 
-    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
+    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
+            new MockProcessorContext<>();
     private TenantScopedStore defaultStore =
             TenantScopedStore.newInstance(nativeInMemoryStore, new TenantIdModel(DEFAULT_TENANT_ID), executionContext);
     private TenantScopedStore tenantAStore =

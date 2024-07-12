@@ -36,7 +36,8 @@ public class MetadataProcessorTest {
             .withLoggingDisabled()
             .build();
 
-    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
+    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
+            new MockProcessorContext<>();
 
     private final Headers metadata =
             HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.ANONYMOUS_PRINCIPAL);

@@ -67,7 +67,8 @@ public class PrincipalAdministrationTest {
 
     private ExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
 
-    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
+    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
+            new MockProcessorContext<>();
 
     private MetadataProcessor metadataProcessor;
 

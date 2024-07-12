@@ -58,7 +58,8 @@ public class TenantAdministrationTest {
                     Stores.inMemoryKeyValueStore(ServerTopology.METADATA_STORE), Serdes.String(), Serdes.Bytes())
             .withLoggingDisabled()
             .build();
-    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
+    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
+            new MockProcessorContext<>();
 
     private MetadataProcessor metadataProcessor;
 

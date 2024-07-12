@@ -51,7 +51,8 @@ public class PutWorkflowEventDefRequestModelTest {
             .build();
     private ExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
 
-    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
+    private final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext =
+            new MockProcessorContext<>();
 
     @Mock
     private LHServerConfig config;
