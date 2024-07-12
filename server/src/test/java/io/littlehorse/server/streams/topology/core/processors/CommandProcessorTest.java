@@ -11,12 +11,8 @@ import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.Command;
-import io.littlehorse.common.proto.MetadataCommand;
-import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
-import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.server.KafkaStreamsServerImpl;
-import io.littlehorse.server.TestCommandExecutionContext;
 import io.littlehorse.server.TestProcessorExecutionContext;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.StoredGetable;
@@ -102,7 +98,6 @@ public class CommandProcessorTest {
                 tenantProcessorContext.getGlobalTaskQueueManager(),
                 tenantProcessorContext.getMetadataCache(),
                 tenantProcessorContext.getServer());
-        defaultProcessorContext.getableManager();
         ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(
                 mockProcessorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), executionContext);
         NodeRunModel nodeRun = TestUtil.nodeRun();
@@ -120,51 +115,6 @@ public class CommandProcessorTest {
         commandProcessor.init(mockProcessorContext);
         verify(server, times(2)).onTaskScheduled(any(), eq(scheduledTask.getTaskDefId()), any(), any());
     }
-
-    @Test
-    void deleteTaskWorkerGroupOnDeleteTaskDefRequest() {
-        RunWfRequest runWfSubCommand =
-                RunWfRequest.newBuilder().setWfSpecName("name").build();
-        Command commandToExecute =
-                Command.newBuilder().setRunWf(runWfSubCommand).build();
-
-        TaskDefId taskDefId = TaskDefId.newBuilder().setName("hello").build();
-        DeleteTaskDefRequest deleteTaskDefRequest = DeleteTaskDefRequest.newBuilder().setId(taskDefId).build();
-        MetadataCommand metadataCommand = MetadataCommand.newBuilder().setDeleteTaskDef(deleteTaskDefRequest).build();
-
-        TestCommandExecutionContext commandExecutionContext = TestCommandExecutionContext.create(metadataCommand);
-        commandExecutionContext.metadataManager().put(TestUtil.taskDef("TaskDef"));
-
-        tenantProcessorContext = TestProcessorExecutionContext.create(
-                commandToExecute, HeadersUtil.metadataHeadersFor("my-tenant", "tyler"), mockProcessorContext);
-        defaultProcessorContext = new TestProcessorExecutionContext(
-                commandToExecute,
-                HeadersUtil.metadataHeadersFor(LHConstants.DEFAULT_TENANT, LHConstants.DEFAULT_TENANT),
-                tenantProcessorContext.getLhConfig(),
-                mockProcessorContext,
-                tenantProcessorContext.getGlobalTaskQueueManager(),
-                tenantProcessorContext.getMetadataCache(),
-                tenantProcessorContext.getServer());
-        defaultProcessorContext.getableManager();
-        ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(
-                mockProcessorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE), executionContext);
-        NodeRunModel nodeRun = TestUtil.nodeRun();
-        UserTaskRunModel userTaskRunModel =
-                TestUtil.userTaskRun(UUID.randomUUID().toString(), nodeRun, tenantProcessorContext);
-        tenantProcessorContext.getableManager().put(nodeRun);
-        final ScheduledTaskModel scheduledTask = new ScheduledTaskModel(
-                TestUtil.taskDef("my-task").getObjectId(), List.of(), userTaskRunModel, tenantProcessorContext);
-        tenantProcessorContext.getTaskManager().scheduleTask(scheduledTask);
-        defaultProcessorContext.getTaskManager().scheduleTask(scheduledTask);
-        tenantProcessorContext.endExecution();
-        defaultProcessorContext.endExecution();
-        defaultStore.put(scheduledTask);
-        clusterStore.put(new StoredGetable<>(new TenantModel("my-tenant")));
-        commandProcessor.init(mockProcessorContext);
-        verify(server, times(2)).onTaskScheduled(any(), eq(scheduledTask.getTaskDefId()), any(), any());
-    }
-
-    
 
     /*@Test
     void shouldProcessGenericCommandWithResponse() {
