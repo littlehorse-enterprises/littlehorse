@@ -25,7 +25,7 @@ import org.apache.kafka.streams.state.KeyValueStore;
 
 public class MetadataCommandExecution implements ExecutionContext {
 
-    private final ProcessorContext<String, Bytes> processorContext;
+    private final ProcessorContext<String, CommandProcessorOutput> processorContext;
     private final MetadataCache metadataCache;
     private final AuthorizationContext authContext;
     private MetadataManager metadataManager;
@@ -34,7 +34,7 @@ public class MetadataCommandExecution implements ExecutionContext {
 
     public MetadataCommandExecution(
             Headers recordMetadata,
-            ProcessorContext<String, Bytes> processorContext,
+            ProcessorContext<String, CommandProcessorOutput> processorContext,
             MetadataCache metadataCache,
             LHServerConfig lhConfig,
             MetadataCommand currentCommand) {
@@ -85,9 +85,9 @@ public class MetadataCommandExecution implements ExecutionContext {
         TenantIdModel tenantId = authorization().tenantId();
         PrincipalIdModel principalId = authorization().principalId();
 
-        Record<String, Bytes> out = new Record<>(
+        Record<String, CommandProcessorOutput> out = new Record<>(
                 cpo.partitionKey,
-                new Bytes(cpo.payload.toBytes()),
+                cpo,
                 System.currentTimeMillis(),
                 HeadersUtil.metadataHeadersFor(tenantId, principalId));
 

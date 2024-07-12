@@ -29,6 +29,7 @@ public class DeleteTaskWorkerGroupRequestModel extends CoreSubCommand<DeleteTask
 
     @Override
     public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+        System.out.println("Hello World i'm running");
         executionContext.getableManager().delete(new TaskWorkerGroupIdModel(taskDefId));
         return Empty.getDefaultInstance();
     }

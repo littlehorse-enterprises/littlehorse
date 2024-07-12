@@ -23,6 +23,7 @@ import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyM
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.TriggeredTaskRun;
+import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskWorkerGroupRequestModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.Command.CommandCase;
 import io.littlehorse.common.proto.LHStoreType;
@@ -60,6 +61,7 @@ public class CommandModel extends AbstractCommand<Command> {
     private TaskAttemptRetryReadyModel taskAttemptRetryReady;
     private BulkUpdateJobModel bulkJob;
     private RescueThreadRunRequestModel rescueThreadRun;
+    private DeleteTaskWorkerGroupRequestModel deleteTaskWorkerGroup;
 
     public Class<Command> getProtoBaseClass() {
         return Command.class;
@@ -143,6 +145,9 @@ public class CommandModel extends AbstractCommand<Command> {
             case RESCUE_THREAD_RUN:
                 out.setRescueThreadRun(rescueThreadRun.toProto());
                 break;
+            case DELETE_TASK_WORKER_GROUP:
+                out.setDeleteTaskWorkerGroup(deleteTaskWorkerGroup.toProto());
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -223,6 +228,10 @@ public class CommandModel extends AbstractCommand<Command> {
                 rescueThreadRun =
                         LHSerializable.fromProto(p.getRescueThreadRun(), RescueThreadRunRequestModel.class, context);
                 break;
+            case DELETE_TASK_WORKER_GROUP:
+                deleteTaskWorkerGroup = LHSerializable.fromProto(
+                        p.getDeleteTaskWorkerGroup(), DeleteTaskWorkerGroupRequestModel.class, context);
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -269,6 +278,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return taskAttemptRetryReady;
             case RESCUE_THREAD_RUN:
                 return rescueThreadRun;
+            case DELETE_TASK_WORKER_GROUP:
+                return deleteTaskWorkerGroup;
             case COMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -333,6 +344,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(RescueThreadRunRequestModel.class)) {
             type = CommandCase.RESCUE_THREAD_RUN;
             rescueThreadRun = (RescueThreadRunRequestModel) cmd;
+        } else if (cls.equals(DeleteTaskWorkerGroupRequestModel.class)) {
+            type = CommandCase.DELETE_TASK_WORKER_GROUP;
+            deleteTaskWorkerGroup = (DeleteTaskWorkerGroupRequestModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

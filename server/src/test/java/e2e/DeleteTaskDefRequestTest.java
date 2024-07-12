@@ -12,8 +12,8 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 @LHTest
 public class DeleteTaskDefRequestTest {
@@ -27,9 +27,8 @@ public class DeleteTaskDefRequestTest {
     public void shouldDoBasic() {
         verifier.prepareRun(basicWf).waitForStatus(LHStatus.COMPLETED).start();
 
-        SearchTaskDefRequest searchTaskDefRequest = SearchTaskDefRequest
-          .newBuilder()
-          .build();
+        SearchTaskDefRequest searchTaskDefRequest =
+                SearchTaskDefRequest.newBuilder().build();
 
         TaskDefIdList taskDefIdList = verifier.getLhClient().searchTaskDef(searchTaskDefRequest);
 
@@ -37,10 +36,8 @@ public class DeleteTaskDefRequestTest {
 
         Assertions.assertEquals("ag-one", taskDefId2.getName());
 
-        DeleteTaskDefRequest deleteTaskDefRequest = DeleteTaskDefRequest
-          .newBuilder()
-          .setId(taskDefId2)
-          .build();
+        DeleteTaskDefRequest deleteTaskDefRequest =
+                DeleteTaskDefRequest.newBuilder().setId(taskDefId2).build();
 
         TaskWorkerGroup taskWorkerGroup = verifier.getLhClient().getTaskWorkerGroup(taskDefId2);
 
