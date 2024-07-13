@@ -5,6 +5,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -18,7 +19,7 @@ import org.mockito.Mockito;
 public class TestCommandExecutionContext extends MetadataCommandExecution {
     public TestCommandExecutionContext(
             Headers recordMetadata,
-            ProcessorContext<String, Bytes> processorContext,
+            ProcessorContext<String, CommandProcessorOutput> processorContext,
             MetadataCache metadataCache,
             LHServerConfig lhConfig,
             MetadataCommand currentCommand) {
@@ -26,7 +27,7 @@ public class TestCommandExecutionContext extends MetadataCommandExecution {
     }
 
     public static TestCommandExecutionContext create(MetadataCommand commandToExecute) {
-        final MockProcessorContext<String, Bytes> mockProcessorContext = new MockProcessorContext<>();
+        final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
         KeyValueStore<String, Bytes> globalMetadataNativeStore =
                 TestUtil.testStore(ServerTopology.GLOBAL_METADATA_STORE);
         KeyValueStore<String, Bytes> metadataNativeStore = TestUtil.testStore(ServerTopology.METADATA_STORE);

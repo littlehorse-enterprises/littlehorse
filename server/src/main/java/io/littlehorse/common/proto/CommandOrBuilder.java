@@ -310,31 +310,46 @@ public interface CommandOrBuilder extends
   io.littlehorse.common.proto.TaskAttemptRetryReadyOrBuilder getTaskAttemptRetryReadyOrBuilder();
 
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
    * @return Whether the rescueThreadRun field is set.
    */
   boolean hasRescueThreadRun();
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
    * @return The rescueThreadRun.
    */
   io.littlehorse.sdk.common.proto.RescueThreadRunRequest getRescueThreadRun();
   /**
+   * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
+   */
+  io.littlehorse.sdk.common.proto.RescueThreadRunRequestOrBuilder getRescueThreadRunOrBuilder();
+
+  /**
    * <pre>
    * TODO: Add SaveUserTask
    * </pre>
    *
-   * <code>.littlehorse.RescueThreadRunRequest rescue_thread_run = 22;</code>
+   * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+   * @return Whether the deleteTaskWorkerGroup field is set.
    */
-  io.littlehorse.sdk.common.proto.RescueThreadRunRequestOrBuilder getRescueThreadRunOrBuilder();
+  boolean hasDeleteTaskWorkerGroup();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+   * @return The deleteTaskWorkerGroup.
+   */
+  io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest getDeleteTaskWorkerGroup();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+   */
+  io.littlehorse.common.proto.DeleteTaskWorkerGroupRequestOrBuilder getDeleteTaskWorkerGroupOrBuilder();
 
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

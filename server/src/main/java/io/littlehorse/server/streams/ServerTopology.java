@@ -79,6 +79,7 @@ public class ServerTopology {
     public static final String METADATA_SOURCE = "metadata-source";
 
     public static final String METADATA_PROCESSOR = "metadata-processor";
+    public static final String METADATA_PROCESSOR_SINK = "metadata-processor-sink";
 
     public static final String METADATA_STORE = "metadata-store";
 
@@ -117,6 +118,12 @@ public class ServerTopology {
                 METADATA_PROCESSOR, () -> new MetadataProcessor(config, server, metadataCache), METADATA_SOURCE);
         StoreBuilder<KeyValueStore<String, Bytes>> metadataStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(METADATA_STORE), Serdes.String(), Serdes.Bytes());
+        topo.addSink(
+                METADATA_PROCESSOR_SINK,
+                sinkTopicNameExtractor, // topic extractor
+                Serdes.String().serializer(), // key serializer
+                sinkValueSerializer, // value serializer
+                METADATA_PROCESSOR); // parent name
         topo.addStateStore(metadataStoreBuilder, METADATA_PROCESSOR);
 
         // Core sub-topology.

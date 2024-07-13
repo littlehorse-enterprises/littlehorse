@@ -391,18 +391,15 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     @Authorize(resources = ACLResource.ACL_TASK_WORKER_GROUP, actions = ACLAction.READ)
     public void getTaskWorkerGroup(TaskDefId taskDefIdPb, StreamObserver<TaskWorkerGroup> ctx) {
         TaskDefIdModel taskDefId = TaskDefIdModel.fromProto(taskDefIdPb, TaskDefIdModel.class, requestContext());
+        TaskWorkerGroupIdModel twgid = new TaskWorkerGroupIdModel(taskDefId);
+
         try {
-            TaskWorkerGroupModel taskWorkerGroup = internalComms.getObject(
-                    new TaskWorkerGroupIdModel(taskDefId), TaskWorkerGroupModel.class, requestContext());
-            if (taskWorkerGroup == null) {
-                ctx.onError(new LHApiException(
-                        Status.NOT_FOUND, "Couldn't find a TaskWorkerGroup for %s".formatted(taskDefIdPb.getName())));
-            } else {
-                ctx.onNext(taskWorkerGroup.toProto().build());
-                ctx.onCompleted();
-            }
+            TaskWorkerGroupModel taskWorkerGroup =
+                    internalComms.getObject(twgid, TaskWorkerGroupModel.class, requestContext());
+            ctx.onNext(taskWorkerGroup.toProto().build());
+            ctx.onCompleted();
         } catch (Exception exn) {
-            if (!LHUtil.isUserError(exn)) log.error("Error handling request: " + exn.getMessage());
+            if (!LHUtil.isUserError(exn)) log.error("Error handling request", exn);
             ctx.onError(exn);
         }
     }
