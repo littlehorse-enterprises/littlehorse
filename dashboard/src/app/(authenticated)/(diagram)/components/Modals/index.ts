@@ -13,7 +13,7 @@ export const ModalComponents = {
   taskRun: TaskRun,
   userTaskRun: UserTaskRun,
   edge: Edge,
-  externalEventRun: ExternalEvent,
+  externalEvent: ExternalEvent,
 } as const
 
 export type ModalType = keyof typeof ModalComponents

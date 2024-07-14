@@ -9,15 +9,15 @@ import { NodeProps } from '..'
 import { useModal } from '../../../hooks/useModal'
 import { Fade } from '../Fade'
 import { NodeDetails } from '../NodeDetails'
-import { getExternalEventRun } from './getExternalEventRun'
+import { getExternalEvent } from './getExternalEvent'
 
 const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   const { tenantId } = useWhoAmI()
-  const { data: externalEventRun } = useQuery({
-    queryKey: ['externalEventRun', data.nodeRun, tenantId],
+  const { data: externalEvent } = useQuery({
+    queryKey: ['externalEvent', data.nodeRun, tenantId],
     queryFn: async () => {
       if (data.nodeRun?.externalEvent?.externalEventId)
-        return await getExternalEventRun({ tenantId, ...data.nodeRun.externalEvent.externalEventId })
+        return await getExternalEvent({ tenantId, ...data.nodeRun.externalEvent.externalEventId })
       return null
     },
   })
@@ -25,16 +25,16 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   const { setModal, setShowModal } = useModal()
 
   const onClick = useCallback(() => {
-    if (externalEventRun) {
-      setModal({ type: 'externalEventRun', data: externalEventRun })
+    if (externalEvent) {
+      setModal({ type: 'externalEvent', data: externalEvent })
       setShowModal(true)
     }
-  }, [externalEventRun, setModal, setShowModal])
+  }, [externalEvent, setModal, setShowModal])
 
   if (!data.externalEvent) return null
-  const { fade, externalEvent, nodeNeedsToBeHighlighted, nodeRun } = data
+  const { fade, externalEvent: externalEventNode, nodeNeedsToBeHighlighted, nodeRun } = data
+  console.log('externalEventNode', externalEventNode)
   console.log('externalEvent', externalEvent)
-  console.log('externalEventRun', externalEventRun)
 
   return (
     <>
@@ -45,9 +45,9 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
             <Link
               className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
               target="_blank"
-              href={`/externalEventDef/${externalEvent.externalEventDefId?.name}`}
+              href={`/externalEventDef/${externalEventNode.externalEventDefId?.name}`}
             >
-              {externalEvent.externalEventDefId?.name} <ExternalLinkIcon className="h-4 w-4" />
+              {externalEventNode.externalEventDefId?.name} <ExternalLinkIcon className="h-4 w-4" />
             </Link>
           </div>
           {nodeRun && (
