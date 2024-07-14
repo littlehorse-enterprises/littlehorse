@@ -8,12 +8,12 @@ import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
@@ -23,13 +23,13 @@ import org.apache.kafka.streams.processor.api.Record;
  * such as WfSpec/TaskDef/ExternalEventDef/UserTaskDef.
  */
 @Slf4j
-public class MetadataProcessor implements Processor<String, MetadataCommand, String, Bytes> {
+public class MetadataProcessor implements Processor<String, MetadataCommand, String, CommandProcessorOutput> {
 
     private final LHServerConfig config;
     private final KafkaStreamsServerImpl server;
     private final MetadataCache metadataCache;
 
-    private ProcessorContext<String, Bytes> ctx;
+    private ProcessorContext<String, CommandProcessorOutput> ctx;
 
     public MetadataProcessor(LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
         this.config = config;
@@ -37,7 +37,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
         this.metadataCache = metadataCache;
     }
 
-    public void init(final ProcessorContext<String, Bytes> ctx) {
+    public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
         this.ctx = ctx;
     }
 
