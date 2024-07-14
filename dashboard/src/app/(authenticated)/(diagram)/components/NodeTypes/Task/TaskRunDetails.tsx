@@ -1,4 +1,5 @@
 import { getVariable, getVariableValue } from '@/app/utils'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useQuery } from '@tanstack/react-query'
 import { NodeRun, TaskNode } from 'littlehorse-client/proto'
 import { ExternalLinkIcon, EyeIcon } from 'lucide-react'
@@ -7,9 +8,8 @@ import { FC, useCallback } from 'react'
 import { useModal } from '../../../hooks/useModal'
 import { NodeDetails } from '../NodeDetails'
 import { getTaskRun } from './getTaskRun'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
 
-export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, nodeRun }) => {
+export const TaskRunDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, nodeRun }) => {
   const { tenantId } = useWhoAmI()
   const { data } = useQuery({
     queryKey: ['taskRun', nodeRun, tenantId],

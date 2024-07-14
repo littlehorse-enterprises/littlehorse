@@ -4,7 +4,7 @@ import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '..'
 import { Fade } from '../Fade'
-import { TaskDetails } from './TaskDetails'
+import { TaskRunDetails } from './TaskRunDetails'
 
 const Node: FC<NodeProps> = ({ selected, data }) => {
   const { fade, nodeNeedsToBeHighlighted } = data
@@ -12,7 +12,7 @@ const Node: FC<NodeProps> = ({ selected, data }) => {
   const { task } = data
   return (
     <>
-      <TaskDetails task={task} nodeRun={data.nodeRun} />
+      <TaskRunDetails task={task} nodeRun={data.nodeRun} />
       <Fade fade={fade} status={data.nodeRun?.status}>
         <div
           className={
