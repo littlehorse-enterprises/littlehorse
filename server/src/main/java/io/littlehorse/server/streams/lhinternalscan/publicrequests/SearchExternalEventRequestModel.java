@@ -1,21 +1,23 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
 import io.littlehorse.sdk.common.proto.ExternalEventIdList;
 import io.littlehorse.sdk.common.proto.SearchExternalEventRequest;
-import io.littlehorse.sdk.common.proto.SearchExternalEventRequest.ExtEvtCriteriaCase;
 import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
@@ -26,6 +28,7 @@ import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.List;
 import java.util.Optional;
+import java.util.Date;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,10 +42,10 @@ public class SearchExternalEventRequestModel
                 ExternalEventIdModel,
                 SearchExternalEventReply> {
 
-    public ExtEvtCriteriaCase type;
-    private WfRunIdModel wfRunId;
     private String externalEventDefName;
-    private Optional<Boolean> isClaimed = Optional.empty();
+    private Date earliestStart;
+    private Date latestStart;
+    private String externalEventDefId;
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.EXTERNAL_EVENT;
@@ -63,58 +66,30 @@ public class SearchExternalEventRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
-        type = p.getExtEvtCriteriaCase();
-        switch (type) {
-            case WF_RUN_ID:
-                wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
-                break;
-            case EXTERNAL_EVENT_DEF_NAME_AND_STATUS:
-                SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest externalEventDefNameAndStatus =
-                        p.getExternalEventDefNameAndStatus();
-                externalEventDefName = externalEventDefNameAndStatus.getExternalEventDefName();
-                if (externalEventDefNameAndStatus.hasIsClaimed()) {
-                    isClaimed = Optional.of(externalEventDefNameAndStatus.getIsClaimed());
-                } else {
-                    isClaimed = Optional.empty();
-                }
-                break;
-            case EXTEVTCRITERIA_NOT_SET:
-                throw new IllegalArgumentException("%s type is not supported yet".formatted(type));
-        }
+        
+        if (p.hasEarliestStart()) earliestStart = LHUtil.fromProtoTs(p.getEarliestStart());
+        if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
+
+        externalEventDefId = p.getExternalEventDefId();
     }
 
     public SearchExternalEventRequest.Builder toProto() {
-        SearchExternalEventRequest.Builder out = SearchExternalEventRequest.newBuilder();
-        if (bookmark != null) {
-            out.setBookmark(bookmark.toByteString());
-        }
-        if (limit != null) {
-            out.setLimit(limit);
-        }
-        switch (type) {
-            case WF_RUN_ID:
-                out.setWfRunId(wfRunId.toProto());
-                break;
-            case EXTERNAL_EVENT_DEF_NAME_AND_STATUS:
-                SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest.Builder byExtEvtDefNameAndStatusPb =
-                        SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest.newBuilder()
-                                .setExternalEventDefName(externalEventDefName);
-                isClaimed.ifPresent(b -> byExtEvtDefNameAndStatusPb.setIsClaimed(b));
-                out.setExternalEventDefNameAndStatus(byExtEvtDefNameAndStatusPb);
-                break;
-            case EXTEVTCRITERIA_NOT_SET:
-                throw new IllegalArgumentException("%s type is not supported yet".formatted(type));
-        }
+        SearchExternalEventRequest.Builder builder = SearchExternalEventRequest.newBuilder();
+        
+        if (bookmark != null) builder.setBookmark(bookmark.toByteString());
 
-        return out;
+        if (limit != null) builder.setLimit(limit);
+
+        if (earliestStart != null) builder.setEarliestStart(LHUtil.fromDate(earliestStart));
+        if (latestStart != null) builder.setLatestStart(LHUtil.fromDate(latestStart));
+
+        builder.setExternalEventDefId(externalEventDefId);
+
+        return builder;
     }
 
     public List<Attribute> getSearchAttributes() {
-        return isClaimed
-                .map(claimed -> List.of(
-                        new Attribute("extEvtDefName", externalEventDefName),
-                        new Attribute("isClaimed", String.valueOf(claimed))))
-                .orElse(List.of(new Attribute("extEvtDefName", externalEventDefName)));
+        return List.of(new Attribute("externalEventDefId", new ExternalEventDefIdModel(externalEventDefId).toString()));
     }
 
     @Override
@@ -138,23 +113,11 @@ public class SearchExternalEventRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        if (type == ExtEvtCriteriaCase.WF_RUN_ID) {
-            return ObjectIdScanBoundaryStrategy.from(wfRunId);
-        } else if (type.equals(ExtEvtCriteriaCase.EXTERNAL_EVENT_DEF_NAME_AND_STATUS)) {
-            return new TagScanBoundaryStrategy(searchAttributeString, Optional.empty(), Optional.empty());
-        } else {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Unrecognized search criteria: %s".formatted(type));
-        }
+        return new TagScanBoundaryStrategy(searchAttributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
     }
 
     @Override
     public LHStore getStoreType() {
-        if (type == ExtEvtCriteriaCase.WF_RUN_ID) {
-            return LHStore.CORE;
-        } else if (type.equals(ExtEvtCriteriaCase.EXTERNAL_EVENT_DEF_NAME_AND_STATUS)) {
-            return LHStore.REPARTITION;
-        } else {
-            throw new IllegalArgumentException("%s type is not supported yet".formatted(type));
-        }
+        return LHStore.CORE;
     }
 }
