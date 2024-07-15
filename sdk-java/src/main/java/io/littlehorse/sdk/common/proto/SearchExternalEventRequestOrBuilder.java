@@ -46,34 +46,76 @@ public interface SearchExternalEventRequestOrBuilder extends
   int getLimit();
 
   /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   * @return Whether the wfRunId field is set.
+   * <pre>
+   * Specifies to return only Principals's created after this time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+   * @return Whether the earliestStart field is set.
    */
-  boolean hasWfRunId();
+  boolean hasEarliestStart();
   /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   * @return The wfRunId.
+   * <pre>
+   * Specifies to return only Principals's created after this time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+   * @return The earliestStart.
    */
-  io.littlehorse.sdk.common.proto.WfRunId getWfRunId();
+  com.google.protobuf.Timestamp getEarliestStart();
   /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
+   * <pre>
+   * Specifies to return only Principals's created after this time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder();
+  com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder();
 
   /**
-   * <code>.littlehorse.SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest external_event_def_name_and_status = 4;</code>
-   * @return Whether the externalEventDefNameAndStatus field is set.
+   * <pre>
+   * Specifies to return only Principals's created before this time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+   * @return Whether the latestStart field is set.
    */
-  boolean hasExternalEventDefNameAndStatus();
+  boolean hasLatestStart();
   /**
-   * <code>.littlehorse.SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest external_event_def_name_and_status = 4;</code>
-   * @return The externalEventDefNameAndStatus.
+   * <pre>
+   * Specifies to return only Principals's created before this time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+   * @return The latestStart.
    */
-  io.littlehorse.sdk.common.proto.SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest getExternalEventDefNameAndStatus();
+  com.google.protobuf.Timestamp getLatestStart();
   /**
-   * <code>.littlehorse.SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest external_event_def_name_and_status = 4;</code>
+   * <pre>
+   * Specifies to return only Principals's created before this time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
    */
-  io.littlehorse.sdk.common.proto.SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequestOrBuilder getExternalEventDefNameAndStatusOrBuilder();
+  com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder();
 
-  io.littlehorse.sdk.common.proto.SearchExternalEventRequest.ExtEvtCriteriaCase getExtEvtCriteriaCase();
+  /**
+   * <pre>
+   * Search for external event definitions by Id
+   * </pre>
+   *
+   * <code>string external_event_def_id = 5;</code>
+   * @return The externalEventDefId.
+   */
+  java.lang.String getExternalEventDefId();
+  /**
+   * <pre>
+   * Search for external event definitions by Id
+   * </pre>
+   *
+   * <code>string external_event_def_id = 5;</code>
+   * @return The bytes for externalEventDefId.
+   */
+  com.google.protobuf.ByteString
+      getExternalEventDefIdBytes();
 }

@@ -1924,41 +1924,16 @@ Search for ExternalEventDef's.
 
 ### Message `SearchExternalEventRequest` {#searchexternaleventrequest}
 
-EVOLVING: Search for ExternalEvent's.
-
-Currently, this request allows you to search for ExternalEvent's based on either:
-1. A WfRunId
-2. An ExternalEventDefName and status.
-
-This specific RPC is under discussions for a Refactor and will soon experience breaking changes.
-It is recommended for applications needing to search by WfRunId to instead use the
-`rpc ListExternalEvents` call, as we plan to remove the 'by WfRunId' option from this request.
-
-Specifically, we plan to remove the "by wfRunId" option (which is redundant with the ListExternalEvents
-request), and "flatten" the "ByExtEvtDefNameAndStatusRequest" fields into the main message.
+Search for ExternalEvents based on certain criteria.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
 | `bookmark` | optional| bytes | Bookmark for cursor-based pagination; pass if applicable. |
 | `limit` | optional| int32 | Maximum results to return in one request. |
-| `wf_run_id` | oneof `ext_evt_criteria`| [WfRunId](#wfrunid) |  |
-| `external_event_def_name_and_status` | oneof `ext_evt_criteria`| [SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest](#searchexternaleventrequestbyextevtdefnameandstatusrequest) |  |
- <!-- end Fields -->
- <!-- end HasFields -->
-
-
-
-### Message `SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest` {#searchexternaleventrequestbyextevtdefnameandstatusrequest}
-
-EVOLVING: message encapsulating criteria to search for ExternalEvent's by their status
-and ExternalEventDefName.
-
-
-| Field | Label | Type | Description |
-| ----- | ----  | ---- | ----------- |
-| `external_event_def_name` | | string |  |
-| `is_claimed` | optional| bool |  |
+| `earliest_start` | optional| google.protobuf.Timestamp | Specifies to return only Principals's created after this time |
+| `latest_start` | optional| google.protobuf.Timestamp | Specifies to return only Principals's created before this time |
+| `external_event_def_id` | | string | Search for external event definitions by Id |
  <!-- end Fields -->
  <!-- end HasFields -->
 

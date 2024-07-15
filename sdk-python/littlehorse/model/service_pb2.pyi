@@ -457,23 +457,18 @@ class PrincipalIdList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.PrincipalId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class SearchExternalEventRequest(_message.Message):
-    __slots__ = ["bookmark", "limit", "wf_run_id", "external_event_def_name_and_status"]
-    class ByExtEvtDefNameAndStatusRequest(_message.Message):
-        __slots__ = ["external_event_def_name", "is_claimed"]
-        EXTERNAL_EVENT_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
-        IS_CLAIMED_FIELD_NUMBER: _ClassVar[int]
-        external_event_def_name: str
-        is_claimed: bool
-        def __init__(self, external_event_def_name: _Optional[str] = ..., is_claimed: bool = ...) -> None: ...
+    __slots__ = ["bookmark", "limit", "earliest_start", "latest_start", "external_event_def_id"]
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
-    WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
-    EXTERNAL_EVENT_DEF_NAME_AND_STATUS_FIELD_NUMBER: _ClassVar[int]
+    EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
+    LATEST_START_FIELD_NUMBER: _ClassVar[int]
+    EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
-    wf_run_id: _object_id_pb2.WfRunId
-    external_event_def_name_and_status: SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., external_event_def_name_and_status: _Optional[_Union[SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest, _Mapping]] = ...) -> None: ...
+    earliest_start: _timestamp_pb2.Timestamp
+    latest_start: _timestamp_pb2.Timestamp
+    external_event_def_id: str
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., external_event_def_id: _Optional[str] = ...) -> None: ...
 
 class ExternalEventIdList(_message.Message):
     __slots__ = ["results", "bookmark"]
