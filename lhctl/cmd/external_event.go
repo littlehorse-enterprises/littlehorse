@@ -56,58 +56,30 @@ var getExternalEventCmd = &cobra.Command{
 	},
 }
 
-var searchExternalEventCommand = &cobra.Command{
+var searchExternalEventCmd = &cobra.Command{
 	Use:   "externalEvent",
 	Short: "Search for ExternalEvent's by WfRunId",
 	Long: `
 Search for ExternalEvent's by the WfRunId.
 
 Returns a list of ObjectId's that can be passed into 'lhctl get externalEvent'.
-
-Choose one of the following option groups:
-[wfRunId]
-[externalEventDef]
-[externalEventDef, claimed]
-[externalEventDef, unclaimed]
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		wfRunId, _ := cmd.Flags().GetString("wfRunId")
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
-		externalEventDef, _ := cmd.Flags().GetString("externalEventDef")
-		claimed, _ := cmd.Flags().GetBool("claimed")
-		unclaimed, _ := cmd.Flags().GetBool("unclaimed")
+		externalEventDefId, _ := cmd.Flags().GetString("externalEventDefId")
+
+		earliest, latest := loadEarliestAndLatestStart(cmd)
 
 		search := &model.SearchExternalEventRequest{
-			Bookmark: bookmark,
-			Limit:    &limit,
+			Bookmark:           bookmark,
+			Limit:              &limit,
+			EarliestStart:      earliest,
+			LatestStart:        latest,
+			ExternalEventDefId: externalEventDefId,
 		}
 
-		if wfRunId != "" {
-			search.ExtEvtCriteria = &model.SearchExternalEventRequest_WfRunId{
-				WfRunId: common.StrToWfRunId(wfRunId),
-			}
-		} else {
-			var extEvtCriteria *model.SearchExternalEventRequest_ExternalEventDefNameAndStatus
-			if unclaimed || claimed {
-				isClaimed := claimed && !unclaimed
-
-				extEvtCriteria = &model.SearchExternalEventRequest_ExternalEventDefNameAndStatus{
-					ExternalEventDefNameAndStatus: &model.SearchExternalEventRequest_ByExtEvtDefNameAndStatusRequest{
-						ExternalEventDefName: externalEventDef,
-						IsClaimed:            &isClaimed,
-					},
-				}
-			} else {
-				extEvtCriteria = &model.SearchExternalEventRequest_ExternalEventDefNameAndStatus{
-					ExternalEventDefNameAndStatus: &model.SearchExternalEventRequest_ByExtEvtDefNameAndStatusRequest{
-						ExternalEventDefName: externalEventDef,
-					},
-				}
-			}
-			search.ExtEvtCriteria = extEvtCriteria
-		}
 		common.PrintResp(getGlobalClient(cmd).SearchExternalEvent(requestContext(cmd), search))
 	},
 }
@@ -140,12 +112,8 @@ Lists all ExternalEvent's for a given WfRun Id.
 
 func init() {
 	getCmd.AddCommand(getExternalEventCmd)
-	searchCmd.AddCommand(searchExternalEventCommand)
+	searchCmd.AddCommand(searchExternalEventCmd)
 	listCmd.AddCommand(listExternalEventCmd)
 
-	searchExternalEventCommand.Flags().String("wfRunId", "", "WfRunId of ExternalEvent's to search for")
-	searchExternalEventCommand.Flags().String("externalEventDef", "", "ExternalEventDef name of ExternalEvent's to search for")
-	searchExternalEventCommand.Flags().Bool("claimed", false, "List only claimed events")
-	searchExternalEventCommand.Flags().Bool("unclaimed", false, "List only unclaimed events")
-	searchExternalEventCommand.MarkFlagsMutuallyExclusive("claimed", "unclaimed")
+	searchExternalEventCmd.Flags().String("externalEventDefId", "", "ExternalEventDefId of ExternalEvent's to search for")
 }
