@@ -14,7 +14,7 @@ public class MetronomeWorkflow {
     public static final String SAMPLE_ITERATION_VARIABLE = "sample-iteration";
 
     public MetronomeWorkflow(final LHClient lhClient, final String workflowName) {
-        Workflow workflow = Workflow.newWorkflow(
+        final Workflow workflow = Workflow.newWorkflow(
                 workflowName,
                 thread -> thread.execute(
                         TASK_NAME,
