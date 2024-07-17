@@ -33,8 +33,6 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
 
   if (!data.externalEvent) return null
   const { fade, externalEvent: externalEventNode, nodeNeedsToBeHighlighted, nodeRun } = data
-  console.log('externalEventNode', externalEventNode)
-  console.log('externalEvent', externalEvent)
 
   return (
     <>

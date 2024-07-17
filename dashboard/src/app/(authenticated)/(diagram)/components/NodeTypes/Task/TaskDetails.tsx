@@ -9,7 +9,7 @@ import { useModal } from '../../../hooks/useModal'
 import { NodeDetails } from '../NodeDetails'
 import { getTaskRun } from './getTaskRun'
 
-export const TaskRunDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, nodeRun }) => {
+export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, nodeRun }) => {
   const { tenantId } = useWhoAmI()
   const { data } = useQuery({
     queryKey: ['taskRun', nodeRun, tenantId],
