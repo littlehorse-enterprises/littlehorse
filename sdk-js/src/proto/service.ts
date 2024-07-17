@@ -850,16 +850,20 @@ export interface SearchExternalEventRequest {
   limit?:
     | number
     | undefined;
-  /** Specifies to return only Principals's created after this time */
+  /** Specifies to return only ExternalEvents created after this time */
   earliestStart?:
     | string
     | undefined;
-  /** Specifies to return only Principals's created before this time */
+  /** Specifies to return only ExternalEvents created before this time */
   latestStart?:
     | string
     | undefined;
-  /** Search for external event definitions by Id */
-  externalEventDefId: string;
+  /** Search for external events by Id */
+  externalEventDefId:
+    | ExternalEventDefId
+    | undefined;
+  /** Search for external events that are claimed or not by a Workflow */
+  isClaimed?: boolean | undefined;
 }
 
 /** List of ExternalEvent Id's */
@@ -4202,7 +4206,8 @@ function createBaseSearchExternalEventRequest(): SearchExternalEventRequest {
     limit: undefined,
     earliestStart: undefined,
     latestStart: undefined,
-    externalEventDefId: "",
+    externalEventDefId: undefined,
+    isClaimed: undefined,
   };
 }
 
@@ -4220,8 +4225,11 @@ export const SearchExternalEventRequest = {
     if (message.latestStart !== undefined) {
       Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(34).fork()).ldelim();
     }
-    if (message.externalEventDefId !== "") {
-      writer.uint32(42).string(message.externalEventDefId);
+    if (message.externalEventDefId !== undefined) {
+      ExternalEventDefId.encode(message.externalEventDefId, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.isClaimed !== undefined) {
+      writer.uint32(48).bool(message.isClaimed);
     }
     return writer;
   },
@@ -4266,7 +4274,14 @@ export const SearchExternalEventRequest = {
             break;
           }
 
-          message.externalEventDefId = reader.string();
+          message.externalEventDefId = ExternalEventDefId.decode(reader, reader.uint32());
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.isClaimed = reader.bool();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -4286,7 +4301,10 @@ export const SearchExternalEventRequest = {
     message.limit = object.limit ?? undefined;
     message.earliestStart = object.earliestStart ?? undefined;
     message.latestStart = object.latestStart ?? undefined;
-    message.externalEventDefId = object.externalEventDefId ?? "";
+    message.externalEventDefId = (object.externalEventDefId !== undefined && object.externalEventDefId !== null)
+      ? ExternalEventDefId.fromPartial(object.externalEventDefId)
+      : undefined;
+    message.isClaimed = object.isClaimed ?? undefined;
     return message;
   },
 };

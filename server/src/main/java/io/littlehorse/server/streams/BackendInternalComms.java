@@ -80,6 +80,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiPredicate;
 import java.util.regex.Matcher;
@@ -123,13 +124,13 @@ public class BackendInternalComms implements Closeable {
 
     private final Context.Key<RequestExecutionContext> contextKey;
     private final Pattern tenantScopedObjectIdExtractorPattern = Pattern.compile("[0-9]+/[0-9]+/");
-    private final MetadataCache metadataCache;
+    private Executor networkThreadPool;
 
     public BackendInternalComms(
             LHServerConfig config,
             KafkaStreams coreStreams,
             KafkaStreams timerStreams,
-            Executor executor,
+            ScheduledExecutorService networkThreadPool,
             MetadataCache metadataCache,
             Context.Key<RequestExecutionContext> contextKey,
             CoreStoreProvider coreStoreProvider) {
@@ -137,7 +138,7 @@ public class BackendInternalComms implements Closeable {
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
         this.contextKey = contextKey;
-        this.metadataCache = metadataCache;
+        this.networkThreadPool = networkThreadPool;
         otherHosts = new ConcurrentHashMap<>();
 
         ServerBuilder<?> builder;
@@ -154,14 +155,14 @@ public class BackendInternalComms implements Closeable {
                 .keepAliveTimeout(3, TimeUnit.SECONDS)
                 .permitKeepAliveTime(10, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
-                .executor(executor)
+                .executor(networkThreadPool)
                 .addService(new InterBrokerCommServer())
                 .intercept(new InternalAuthorizer(contextKey, coreStoreProvider, metadataCache, config))
                 .build();
 
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
         this.producer = config.getProducer();
-        this.asyncWaiters = new AsyncWaiters();
+        this.asyncWaiters = new AsyncWaiters(networkThreadPool);
     }
 
     public void start() throws IOException {
@@ -411,9 +412,11 @@ public class BackendInternalComms implements Closeable {
             if (clientCreds == null) {
                 channel = ManagedChannelBuilder.forAddress(host.host(), host.port())
                         .usePlaintext()
+                        .executor(networkThreadPool)
                         .build();
             } else {
                 channel = Grpc.newChannelBuilderForAddress(host.host(), host.port(), clientCreds)
+                        .executor(networkThreadPool)
                         .build();
             }
             channels.put(key, channel);

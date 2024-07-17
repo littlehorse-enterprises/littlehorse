@@ -59,7 +59,7 @@ LittleHorseBlockingStub client = ...;
 String idempotencyKey = "asdf13hoasdifoje"; // optional
 
 client.PutExternalEvent(PutExternalEventRequest.newBuilder()
-        .setExternalEventDefName("my-external-event-def")
+        .setExternalEventDefId(ExternalEventDefId.newBuilder().setName("my-external-event-def"))
         .setWfRunId(WfRunId.newBuilder().setId("asdf-1234"))
         .setContent(LHLibUtil.objToVarVal(someObject))
         .setGuid(idempotencyKey) // optional

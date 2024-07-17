@@ -47,7 +47,7 @@ public interface SearchExternalEventRequestOrBuilder extends
 
   /**
    * <pre>
-   * Specifies to return only Principals's created after this time
+   * Specifies to return only ExternalEvents created after this time
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
@@ -56,7 +56,7 @@ public interface SearchExternalEventRequestOrBuilder extends
   boolean hasEarliestStart();
   /**
    * <pre>
-   * Specifies to return only Principals's created after this time
+   * Specifies to return only ExternalEvents created after this time
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
@@ -65,7 +65,7 @@ public interface SearchExternalEventRequestOrBuilder extends
   com.google.protobuf.Timestamp getEarliestStart();
   /**
    * <pre>
-   * Specifies to return only Principals's created after this time
+   * Specifies to return only ExternalEvents created after this time
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
@@ -74,7 +74,7 @@ public interface SearchExternalEventRequestOrBuilder extends
 
   /**
    * <pre>
-   * Specifies to return only Principals's created before this time
+   * Specifies to return only ExternalEvents created before this time
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
@@ -83,7 +83,7 @@ public interface SearchExternalEventRequestOrBuilder extends
   boolean hasLatestStart();
   /**
    * <pre>
-   * Specifies to return only Principals's created before this time
+   * Specifies to return only ExternalEvents created before this time
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
@@ -92,7 +92,7 @@ public interface SearchExternalEventRequestOrBuilder extends
   com.google.protobuf.Timestamp getLatestStart();
   /**
    * <pre>
-   * Specifies to return only Principals's created before this time
+   * Specifies to return only ExternalEvents created before this time
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
@@ -101,21 +101,47 @@ public interface SearchExternalEventRequestOrBuilder extends
 
   /**
    * <pre>
-   * Search for external event definitions by Id
+   * Search for external events by Id
    * </pre>
    *
-   * <code>string external_event_def_id = 5;</code>
-   * @return The externalEventDefId.
+   * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
+   * @return Whether the externalEventDefId field is set.
    */
-  java.lang.String getExternalEventDefId();
+  boolean hasExternalEventDefId();
   /**
    * <pre>
-   * Search for external event definitions by Id
+   * Search for external events by Id
    * </pre>
    *
-   * <code>string external_event_def_id = 5;</code>
-   * @return The bytes for externalEventDefId.
+   * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
+   * @return The externalEventDefId.
    */
-  com.google.protobuf.ByteString
-      getExternalEventDefIdBytes();
+  io.littlehorse.sdk.common.proto.ExternalEventDefId getExternalEventDefId();
+  /**
+   * <pre>
+   * Search for external events by Id
+   * </pre>
+   *
+   * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefIdOrBuilder();
+
+  /**
+   * <pre>
+   * Search for external events that are claimed or not by a Workflow
+   * </pre>
+   *
+   * <code>optional bool is_claimed = 6;</code>
+   * @return Whether the isClaimed field is set.
+   */
+  boolean hasIsClaimed();
+  /**
+   * <pre>
+   * Search for external events that are claimed or not by a Workflow
+   * </pre>
+   *
+   * <code>optional bool is_claimed = 6;</code>
+   * @return The isClaimed.
+   */
+  boolean getIsClaimed();
 }

@@ -43,7 +43,6 @@ public class SearchExternalEventRequestModel
                 ExternalEventIdModel,
                 SearchExternalEventReply> {
 
-    private String externalEventDefName;
     private Date earliestStart;
     private Date latestStart;
     private ExternalEventDefId externalEventDefId;
@@ -90,7 +89,7 @@ public class SearchExternalEventRequestModel
     }
 
     public List<Attribute> getSearchAttributes() {
-        return List.of(new Attribute("externalEventDefId", new ExternalEventDefIdModel(externalEventDefId).toString()));
+        return List.of(new Attribute("externalEventDefId", new ExternalEventDefIdModel(externalEventDefId.getName()).toString()));
     }
 
     @Override
