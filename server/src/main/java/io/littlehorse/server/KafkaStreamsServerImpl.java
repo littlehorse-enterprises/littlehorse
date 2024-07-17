@@ -261,6 +261,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     private Context.Key<RequestExecutionContext> contextKey = Context.key("executionContextKey");
     private final MetadataCache metadataCache;
     private final CoreStoreProvider coreStoreProvider;
+    private final ScheduledExecutorService networkThreadpool;
 
     private RequestExecutionContext requestContext() {
         return contextKey.get();
@@ -288,7 +289,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
         });
 
-        ScheduledExecutorService networkThreadpool = Executors.newScheduledThreadPool(config.getNumNetworkThreads());
+        this.networkThreadpool = Executors.newScheduledThreadPool(config.getNumNetworkThreads());
         coreStoreProvider = new CoreStoreProvider(this.coreStreams);
         this.internalComms = new BackendInternalComms(
                 config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey, coreStoreProvider);
@@ -1036,7 +1037,11 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 internalComms,
                 command,
                 context,
-                Duration.ofMillis(config.getStreamsSessionTimeout()));
+                // Streams Session Timeout is how long it takes to notice that the server is down.
+                // Then we need the rebalance to occur, and the new server must process the command.
+                // So we give it a buffer of 10 additional seconds.
+                Duration.ofMillis(10_000 + config.getStreamsSessionTimeout()),
+                networkThreadpool);
 
         Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command, context);
 
