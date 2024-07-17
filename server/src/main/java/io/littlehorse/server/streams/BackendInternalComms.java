@@ -123,13 +123,14 @@ public class BackendInternalComms implements Closeable {
 
     private final Context.Key<RequestExecutionContext> contextKey;
     private final Pattern tenantScopedObjectIdExtractorPattern = Pattern.compile("[0-9]+/[0-9]+/");
+    private Executor networkThreadPool;
     private final MetadataCache metadataCache;
 
     public BackendInternalComms(
             LHServerConfig config,
             KafkaStreams coreStreams,
             KafkaStreams timerStreams,
-            Executor executor,
+            Executor networkThreadPool,
             MetadataCache metadataCache,
             Context.Key<RequestExecutionContext> contextKey,
             CoreStoreProvider coreStoreProvider) {
@@ -138,6 +139,7 @@ public class BackendInternalComms implements Closeable {
         this.channels = new HashMap<>();
         this.contextKey = contextKey;
         this.metadataCache = metadataCache;
+        this.networkThreadPool = networkThreadPool;
         otherHosts = new ConcurrentHashMap<>();
 
         ServerBuilder<?> builder;
@@ -154,7 +156,7 @@ public class BackendInternalComms implements Closeable {
                 .keepAliveTimeout(3, TimeUnit.SECONDS)
                 .permitKeepAliveTime(10, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
-                .executor(executor)
+                .executor(networkThreadPool)
                 .addService(new InterBrokerCommServer())
                 .intercept(new InternalAuthorizer(contextKey, coreStoreProvider, metadataCache, config))
                 .build();
@@ -411,9 +413,11 @@ public class BackendInternalComms implements Closeable {
             if (clientCreds == null) {
                 channel = ManagedChannelBuilder.forAddress(host.host(), host.port())
                         .usePlaintext()
+                        .executor(networkThreadPool)
                         .build();
             } else {
                 channel = Grpc.newChannelBuilderForAddress(host.host(), host.port(), clientCreds)
+                        .executor(networkThreadPool)
                         .build();
             }
             channels.put(key, channel);
