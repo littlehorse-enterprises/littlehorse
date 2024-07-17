@@ -1931,9 +1931,10 @@ Search for ExternalEvents based on certain criteria.
 | ----- | ----  | ---- | ----------- |
 | `bookmark` | optional| bytes | Bookmark for cursor-based pagination; pass if applicable. |
 | `limit` | optional| int32 | Maximum results to return in one request. |
-| `earliest_start` | optional| google.protobuf.Timestamp | Specifies to return only Principals's created after this time |
-| `latest_start` | optional| google.protobuf.Timestamp | Specifies to return only Principals's created before this time |
-| `external_event_def_id` | | string | Search for external event definitions by Id |
+| `earliest_start` | optional| google.protobuf.Timestamp | Specifies to return only ExternalEvents created after this time |
+| `latest_start` | optional| google.protobuf.Timestamp | Specifies to return only ExternalEvents created before this time |
+| `external_event_def_id` | | [ExternalEventDefId](#externaleventdefid) | Search for external events by Id |
+| `is_claimed` | optional| bool | Search for external events that are claimed or not by a Workflow |
  <!-- end Fields -->
  <!-- end HasFields -->
 

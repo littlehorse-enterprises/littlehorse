@@ -43,10 +43,10 @@ public class SearchExternalEventRequestModel
                 ExternalEventIdModel,
                 SearchExternalEventReply> {
 
-    private String externalEventDefName;
     private Date earliestStart;
     private Date latestStart;
     private ExternalEventDefId externalEventDefId;
+    private Optional<Boolean> isClaimed = Optional.empty();
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.EXTERNAL_EVENT;
@@ -70,6 +70,7 @@ public class SearchExternalEventRequestModel
         
         if (p.hasEarliestStart()) earliestStart = LHUtil.fromProtoTs(p.getEarliestStart());
         if (p.hasLatestStart()) latestStart = LHUtil.fromProtoTs(p.getLatestStart());
+        if (p.hasIsClaimed()) isClaimed = Optional.of(p.getIsClaimed());
 
         externalEventDefId = p.getExternalEventDefId();
     }
@@ -83,6 +84,7 @@ public class SearchExternalEventRequestModel
 
         if (earliestStart != null) builder.setEarliestStart(LHUtil.fromDate(earliestStart));
         if (latestStart != null) builder.setLatestStart(LHUtil.fromDate(latestStart));
+        if (isClaimed != null) builder.setIsClaimed(is);
 
         builder.setExternalEventDefId(externalEventDefId);
 
@@ -90,7 +92,7 @@ public class SearchExternalEventRequestModel
     }
 
     public List<Attribute> getSearchAttributes() {
-        return List.of(new Attribute("externalEventDefId", new ExternalEventDefIdModel(externalEventDefId).toString()));
+        return List.of(new Attribute("externalEventDefId", new ExternalEventDefIdModel(externalEventDefId.getName()).toString()));
     }
 
     @Override

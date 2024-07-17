@@ -1,12 +1,12 @@
-import { UserTaskDefDetails } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/UserTaskDefDetails'
-import { UserTaskRunDetails } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/UserTaskRunDetails'
-import { ExternalLinkIcon, UserIcon } from 'lucide-react'
-import Link from 'next/link'
-import { FC, memo } from 'react'
-import { Handle, Position } from 'reactflow'
-import { Fade } from '../Fade'
-import { NodeProps } from '../index'
-import { NodeDetails } from '../NodeDetails'
+import { UserTaskDefDetails } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/UserTaskDefDetails';
+import { UserTaskRunDetails } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/UserTaskRunDetails';
+import { ExternalLinkIcon, UserIcon } from 'lucide-react';
+import Link from 'next/link';
+import { FC, memo } from 'react';
+import { Handle, Position } from 'reactflow';
+import { Fade } from '../Fade';
+import { NodeProps } from '../index';
+import { NodeDetails } from '../NodeDetails';
 
 const Node: FC<NodeProps> = ({ data, selected }) => {
   if (!data.userTask) return null
@@ -41,7 +41,7 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
             (nodeNeedsToBeHighlighted ? ' shadow-lg shadow-blue-500' : '')
           }
         >
-          <UserIcon className="h-4 w-4 fill-blue-500" />
+          <UserIcon className="h-4 w-4 text-blue-500" />
           {data.userTask?.userTaskDefName}
           <Handle type="source" position={Position.Right} className="bg-transparent" />
           <Handle type="target" position={Position.Left} className="bg-transparent" />
