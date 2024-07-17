@@ -125,7 +125,6 @@ public class BackendInternalComms implements Closeable {
     private final Context.Key<RequestExecutionContext> contextKey;
     private final Pattern tenantScopedObjectIdExtractorPattern = Pattern.compile("[0-9]+/[0-9]+/");
     private Executor networkThreadPool;
-    private final MetadataCache metadataCache;
 
     public BackendInternalComms(
             LHServerConfig config,
@@ -139,7 +138,6 @@ public class BackendInternalComms implements Closeable {
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
         this.contextKey = contextKey;
-        this.metadataCache = metadataCache;
         this.networkThreadPool = networkThreadPool;
         otherHosts = new ConcurrentHashMap<>();
 
