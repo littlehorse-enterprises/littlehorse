@@ -1,30 +1,30 @@
-import { getTaskDef } from '@/app/(authenticated)/taskDef/[name]/getTaskDef'
-import { getVariable, getVariableValue } from '@/app/utils'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { useQuery } from '@tanstack/react-query'
-import { NodeRun, TaskNode } from 'littlehorse-client/proto'
-import { ExternalLinkIcon, EyeIcon } from 'lucide-react'
-import Link from 'next/link'
-import { FC, useCallback, useRef } from 'react'
-import { useModal } from '../../../hooks/useModal'
-import { NodeDetails } from '../NodeDetails'
-import { getTaskRun } from './getTaskRun'
+import { getTaskDef } from '@/app/(authenticated)/taskDef/[name]/getTaskDef';
+import { getVariable, getVariableValue } from '@/app/utils';
+import { useWhoAmI } from '@/contexts/WhoAmIContext';
+import { useQuery } from '@tanstack/react-query';
+import { NodeRun, TaskNode } from 'littlehorse-client/proto';
+import { ExternalLinkIcon, EyeIcon } from 'lucide-react';
+import Link from 'next/link';
+import { FC, useCallback } from 'react';
+import { useModal } from '../../../hooks/useModal';
+import { NodeDetails } from '../NodeDetails';
+import { getTaskRun } from './getTaskRun';
 
 export const TaskDetails: FC<{ taskNode?: TaskNode; nodeRun?: NodeRun }> = ({ taskNode, nodeRun }) => {
   const { tenantId } = useWhoAmI()
   const { data } = useQuery({
     queryKey: ['taskRun', nodeRun, tenantId],
     queryFn: async () => {
-      if (!nodeRun?.task?.taskRunId) return
+      if (!nodeRun?.task?.taskRunId) return null
       return await getTaskRun({ tenantId, ...nodeRun.task.taskRunId })
     },
   })
-  const ref = useRef(null)
 
   const { data: taskDef } = useQuery({
-    queryKey: ['taskDef', taskNode, tenantId, ref],
+    queryKey: ['taskDef', taskNode, tenantId, nodeRun],
     queryFn: async () => {
-      if (!taskNode?.taskDefId?.name) return
+      if (!taskNode?.taskDefId?.name) return null
+      if (nodeRun?.task?.taskRunId) return null
       const taskDef = await getTaskDef({
         name: taskNode?.taskDefId?.name,
       })
@@ -46,7 +46,7 @@ export const TaskDetails: FC<{ taskNode?: TaskNode; nodeRun?: NodeRun }> = ({ ta
 
   return (
     <NodeDetails>
-      <div className="mb-2" ref={ref}>
+      <div className="mb-2">
         <div className="flex items-center gap-1 whitespace-nowrap text-nowrap">
           <h3 className="font-bold">TaskDef</h3>
           {nodeRun ? (
@@ -73,7 +73,7 @@ export const TaskDetails: FC<{ taskNode?: TaskNode; nodeRun?: NodeRun }> = ({ ta
                   {data?.inputVariables?.[i]?.varName ??
                     taskDef?.inputVars[i].name ??
                     variable.variableName ??
-                    `arg${i + 1}`}
+                    `arg${i}`}
                 </div>
                 <div> = </div>
                 <div className="truncate">
