@@ -39,6 +39,8 @@ message Command {
         CancelUserTaskRunRequest cancel_user_task = 19;
         BulkUpdateJob bulk_job = 20;
         TaskAttemptRetryReady task_attempt_retry_ready = 21;
+        RescueThreadRunRequest rescue_thread_run = 22;
+        DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;
         // TODO: Add SaveUserTask
     }
 }
@@ -213,4 +215,8 @@ message LHTimerPb {
     bytes payload = 4;
     optional TenantId tenant_id = 5; // default if not set
     optional PrincipalId principal_id = 6; // anonymous if not set
+}
+
+message DeleteTaskWorkerGroupRequest {
+    TaskDefId id = 1;
 }

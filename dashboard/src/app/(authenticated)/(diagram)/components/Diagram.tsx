@@ -1,8 +1,7 @@
 'use client'
 import { ThreadRunWithNodeRuns } from '@/app/(authenticated)/(diagram)/wfRun/[...ids]/getWfRun'
-import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
-import { WfRun } from 'littlehorse-client/dist/proto/wf_run'
-import { WfSpec } from 'littlehorse-client/dist/proto/wf_spec'
+import { NodeRun, WfRun, WfSpec } from 'littlehorse-client/proto'
+import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'
 import 'reactflow/dist/base.css'
@@ -13,7 +12,6 @@ import { Layouter } from './Layouter'
 import nodeTypes from './NodeTypes'
 import { extractNodes } from './NodeTypes/extractNodes'
 import { ThreadPanel } from './ThreadPanel'
-import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
 
 type Props = {
   wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }
@@ -48,8 +46,8 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
     : spec.entrypointThreadName
 
   const searchParams: ReadonlyURLSearchParams = useSearchParams()
-  const threadRunNumberFromRedirection: number = Number(searchParams.get('threadRunNumber'))
-  const nodeRunNameToBeHighlighted: string = searchParams.get('nodeRunName')!
+  const threadRunNumberFromRedirection = Number(searchParams.get('threadRunNumber'))
+  const nodeRunNameToBeHighlighted = searchParams.get('nodeRunName')!
 
   let threadToShowByDefault = determineDefaultThreadRun(currentThread, wfRun, threadRunNumberFromRedirection, spec)
 

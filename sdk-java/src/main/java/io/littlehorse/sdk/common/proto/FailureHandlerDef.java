@@ -220,7 +220,7 @@ private static final long serialVersionUID = 0L;
   private volatile java.lang.Object handlerSpecName_ = "";
   /**
    * <pre>
-   * The name of the ThreadSpec to run as a 
+   * The name of the ThreadSpec to run as a
    * </pre>
    *
    * <code>string handler_spec_name = 2;</code>
@@ -241,7 +241,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The name of the ThreadSpec to run as a 
+   * The name of the ThreadSpec to run as a
    * </pre>
    *
    * <code>string handler_spec_name = 2;</code>
@@ -340,8 +340,6 @@ private static final long serialVersionUID = 0L;
    * <pre>
    * Specifies that this FailureHandlerDef will be triggered for any failure matching
    * this type (ERROR or EXCEPTION).
-   *
-   * 
    * </pre>
    *
    * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
@@ -354,8 +352,6 @@ private static final long serialVersionUID = 0L;
    * <pre>
    * Specifies that this FailureHandlerDef will be triggered for any failure matching
    * this type (ERROR or EXCEPTION).
-   *
-   * 
    * </pre>
    *
    * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
@@ -371,8 +367,6 @@ private static final long serialVersionUID = 0L;
    * <pre>
    * Specifies that this FailureHandlerDef will be triggered for any failure matching
    * this type (ERROR or EXCEPTION).
-   *
-   * 
    * </pre>
    *
    * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
@@ -810,7 +804,7 @@ private static final long serialVersionUID = 0L;
     private java.lang.Object handlerSpecName_ = "";
     /**
      * <pre>
-     * The name of the ThreadSpec to run as a 
+     * The name of the ThreadSpec to run as a
      * </pre>
      *
      * <code>string handler_spec_name = 2;</code>
@@ -830,7 +824,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The name of the ThreadSpec to run as a 
+     * The name of the ThreadSpec to run as a
      * </pre>
      *
      * <code>string handler_spec_name = 2;</code>
@@ -851,7 +845,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The name of the ThreadSpec to run as a 
+     * The name of the ThreadSpec to run as a
      * </pre>
      *
      * <code>string handler_spec_name = 2;</code>
@@ -868,7 +862,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The name of the ThreadSpec to run as a 
+     * The name of the ThreadSpec to run as a
      * </pre>
      *
      * <code>string handler_spec_name = 2;</code>
@@ -882,7 +876,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The name of the ThreadSpec to run as a 
+     * The name of the ThreadSpec to run as a
      * </pre>
      *
      * <code>string handler_spec_name = 2;</code>
@@ -1038,8 +1032,6 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * Specifies that this FailureHandlerDef will be triggered for any failure matching
      * this type (ERROR or EXCEPTION).
-     *
-     * 
      * </pre>
      *
      * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
@@ -1053,8 +1045,6 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * Specifies that this FailureHandlerDef will be triggered for any failure matching
      * this type (ERROR or EXCEPTION).
-     *
-     * 
      * </pre>
      *
      * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
@@ -1071,8 +1061,6 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * Specifies that this FailureHandlerDef will be triggered for any failure matching
      * this type (ERROR or EXCEPTION).
-     *
-     * 
      * </pre>
      *
      * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
@@ -1089,8 +1077,6 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * Specifies that this FailureHandlerDef will be triggered for any failure matching
      * this type (ERROR or EXCEPTION).
-     *
-     * 
      * </pre>
      *
      * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
@@ -1109,8 +1095,6 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * Specifies that this FailureHandlerDef will be triggered for any failure matching
      * this type (ERROR or EXCEPTION).
-     *
-     * 
      * </pre>
      *
      * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>
@@ -1130,8 +1114,6 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * Specifies that this FailureHandlerDef will be triggered for any failure matching
      * this type (ERROR or EXCEPTION).
-     *
-     * 
      * </pre>
      *
      * <code>.littlehorse.FailureHandlerDef.LHFailureType any_failure_of_type = 3;</code>

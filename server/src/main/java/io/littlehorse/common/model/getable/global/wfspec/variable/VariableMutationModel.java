@@ -155,7 +155,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
         } catch (LHVarSubError exn) {
             throw exn;
         } catch (Exception exn) {
-            log.error(exn.getMessage(), exn);
+            log.trace(exn.getMessage(), exn);
             throw new LHVarSubError(exn, "Caught unexpected error when mutating variables: " + exn.getMessage());
         }
     }

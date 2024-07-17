@@ -57,7 +57,8 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
             throw new LHApiException(Status.PERMISSION_DENIED, "Unauthorized to create tenants");
         }
 
-        if (metadataManager.get(new TenantIdModel(id)) == null) {
+        TenantModel old = metadataManager.get(new TenantIdModel(id));
+        if (old == null) {
             if (Pattern.matches(".*[\\\\/].*", this.id)) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, "/ and \\ are not valid characters for Tenant");
             }
@@ -67,7 +68,7 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
             metadataManager.put(toSave);
             return toSave.toProto().build();
         } else {
-            throw new LHApiException(Status.ALREADY_EXISTS, "Tenant %s already exists".formatted(id));
+            return old.toProto().build();
         }
     }
 }

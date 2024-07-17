@@ -1,7 +1,5 @@
 package io.littlehorse.test;
 
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
@@ -15,12 +13,14 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
+import org.junit.jupiter.api.extension.TestInstancePreDestroyCallback;
 
-public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor {
+public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor, TestInstancePreDestroyCallback {
 
     private static final ExtensionContext.Namespace LH_TEST_NAMESPACE =
             ExtensionContext.Namespace.create(LHExtension.class);
@@ -28,8 +28,8 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
 
     @Override
     public void beforeAll(ExtensionContext context) {
-        Awaitility.setDefaultPollInterval(Duration.of(50, ChronoUnit.MILLIS));
-        Awaitility.setDefaultTimeout(Duration.of(1000, ChronoUnit.MILLIS));
+        Awaitility.setDefaultPollInterval(Duration.of(40, ChronoUnit.MILLIS));
+        Awaitility.setDefaultTimeout(Duration.of(3500, ChronoUnit.MILLIS));
         getStore(context)
                 .getOrComputeIfAbsent(
                         LH_TEST_CONTEXT, s -> new TestContext(new StandaloneTestBootstrapper()), TestContext.class);
@@ -75,26 +75,36 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
         testContext.instrument(testInstance);
     }
 
+    @Override
+    public void preDestroyTestInstance(ExtensionContext context) {
+        ExtensionContext.Store store = getStore(context);
+        Object testInstance = context.getTestInstance().get();
+        TestContext testContext = store.get(LH_TEST_CONTEXT, TestContext.class);
+
+        for (String taskDef : testContext.discoverTaskDefNames(testInstance)) {
+            LHTaskWorker worker = (LHTaskWorker) store.get(taskDef);
+            if (worker != null) {
+                worker.close();
+                store.remove(taskDef);
+            }
+        }
+    }
+
     private void maybeCreateTenantAndPrincipal(TestContext testContext) {
         if (testContext.getConfig().getTenantId() == null) {
             return;
         }
-        try {
-            Awaitility.await()
-                    .atMost(Duration.ofSeconds(15))
-                    .ignoreException(RuntimeException.class)
-                    .until(() -> {
-                        testContext
-                                .getLhClient()
-                                .putTenant(PutTenantRequest.newBuilder()
-                                        .setId(testContext.getConfig().getTenantId())
-                                        .build());
-                        return true;
-                    });
-        } catch (StatusRuntimeException ex) {
-            if (!ex.getStatus().getCode().equals(Status.Code.ALREADY_EXISTS)) {
-                throw ex;
-            }
-        }
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(25))
+                .ignoreExceptionsMatching(exn -> RuntimeException.class.isAssignableFrom(exn.getClass()))
+                .until(() -> {
+                    testContext
+                            .getLhClient()
+                            .withDeadlineAfter(2, TimeUnit.SECONDS)
+                            .putTenant(PutTenantRequest.newBuilder()
+                                    .setId(testContext.getConfig().getTenantId().getId())
+                                    .build());
+                    return true;
+                });
     }
 }

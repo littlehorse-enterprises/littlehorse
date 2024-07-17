@@ -1,7 +1,7 @@
 import { getVariable, getVariableValue } from '@/app/utils'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useQuery } from '@tanstack/react-query'
-import { TaskNode } from 'littlehorse-client/dist/proto/common_wfspec'
-import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
+import { NodeRun, TaskNode } from 'littlehorse-client/proto'
 import { ExternalLinkIcon, EyeIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, useCallback } from 'react'
@@ -10,10 +10,11 @@ import { NodeDetails } from '../NodeDetails'
 import { getTaskRun } from './getTaskRun'
 
 export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, nodeRun }) => {
+  const { tenantId } = useWhoAmI()
   const { data } = useQuery({
-    queryKey: ['taskRun', nodeRun],
+    queryKey: ['taskRun', nodeRun, tenantId],
     queryFn: async () => {
-      if (nodeRun?.task?.taskRunId) return await getTaskRun(nodeRun.task.taskRunId)
+      if (nodeRun?.task?.taskRunId) return await getTaskRun({ tenantId, ...nodeRun.task.taskRunId })
       return null
     },
   })
@@ -28,6 +29,7 @@ export const TaskDetails: FC<{ task?: TaskNode; nodeRun?: NodeRun }> = ({ task, 
   }, [data, setModal, setShowModal])
 
   if (!task) return null
+
   return (
     <NodeDetails>
       <div className="mb-2">

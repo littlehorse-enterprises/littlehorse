@@ -27,8 +27,10 @@ public interface TestBootstrapper {
             executor.execute(() -> {
                 try {
                     Metadata headers = new Metadata();
-                    headers.put(ServerAuthorizer.TENANT_ID, tenantId.getId());
-                    metadataApplier.apply(headers);
+                    if (tenantId != null && tenantId.getId() != null) {
+                        headers.put(ServerAuthorizer.TENANT_ID, tenantId.getId());
+                        metadataApplier.apply(headers);
+                    }
                 } catch (Exception e) {
                     metadataApplier.fail(Status.UNAUTHENTICATED.withCause(e));
                 }

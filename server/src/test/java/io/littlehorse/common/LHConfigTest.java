@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.server.auth.AuthorizationProtocol;
 import io.littlehorse.server.auth.OAuthConfig;
@@ -652,5 +653,11 @@ public class LHConfigTest {
                     .isExactlyInstanceOf(LHMisconfigurationException.class)
                     .hasMessage("Invalid configuration: File location specified on LHS_LISTENER_TEST_CERT is invalid");
         }
+    }
+
+    @Test
+    void shouldUseDefaultTenantByDefault() {
+        LHConfig defaultConfig = new LHConfig(Map.of());
+        assertThat(defaultConfig.getTenantId().getId()).isEqualTo("default");
     }
 }

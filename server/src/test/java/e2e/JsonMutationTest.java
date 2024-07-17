@@ -2,8 +2,8 @@ package e2e;
 
 import static org.assertj.core.api.Assertions.*;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -36,7 +36,7 @@ public class JsonMutationTest {
                 @SuppressWarnings("unchecked")
                 Map<String, String> jsonMap = LHLibUtil.deserializeFromjson(variableValue.getJsonObj(), Map.class);
                 assertThat(jsonMap).doesNotContainKey("foo");
-            } catch (JsonProcessingException e) {
+            } catch (LHJsonProcessingException e) {
                 throw new RuntimeException(e);
             }
         };
@@ -55,7 +55,7 @@ public class JsonMutationTest {
                 @SuppressWarnings("unchecked")
                 Map<String, String> jsonMap = LHLibUtil.deserializeFromjson(variableValue.getJsonObj(), Map.class);
                 assertThat(jsonMap).containsOnlyKeys("baz");
-            } catch (JsonProcessingException e) {
+            } catch (LHJsonProcessingException e) {
                 throw new RuntimeException(e);
             }
         };

@@ -280,6 +280,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 | [SearchTenantRequest](#searchtenantrequest) | [TenantIdList](#tenantidlist) | Search for all available TenantIds for current Principal |
 
+### RPC `SearchPrincipal` {#searchprincipal}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [SearchPrincipalRequest](#searchprincipalrequest) | [PrincipalIdList](#principalidlist) |  |
+
 ### RPC `RegisterTaskWorker` {#registertaskworker}
 
 | Request Type | Response Type | Description |
@@ -309,6 +315,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
 | [ResumeWfRunRequest](#resumewfrunrequest) | [.google.protobuf.Empty](#googleprotobufempty) | Resumes a WfRun or a specific ThreadRun of a WfRun. |
+
+### RPC `RescueThreadRun` {#rescuethreadrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [RescueThreadRunRequest](#rescuethreadrunrequest) | [WfRun](#wfrun) | Rescues a failed ThreadRun (in the ERROR state only) by restarting it from  the point of failure. Useful if a bug in Task Worker implementation caused a WfRun to fail and you did not have a FailureHandler for that NodeRun.<br/><br/>The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/> - In the `ERROR` state.<br/> - Has no `FailureHandler` `ThreadRun`s <br/> - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure` yet.<br/><br/>If that is not true, then the `ThreadRun` cannot be rescued and the request will return `FAILED_PRECONDITION`. |
 
 ### RPC `DeleteWfRun` {#deletewfrun}
 
@@ -1640,6 +1652,20 @@ Response from the server for PollTaskRequest.
 
 
 
+### Message `PrincipalIdList` {#principalidlist}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `results` | repeated| [PrincipalId](#principalid) | The resulting object id's. |
+| `bookmark` | optional| bytes | Bookmark for cursor-based pagination; pass if applicable. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `PutExternalEventDefRequest` {#putexternaleventdefrequest}
 
 Field to create an ExternalEventDef.
@@ -1801,6 +1827,21 @@ Request used by the Task Worker SDK to report the result of a TaskRun execution.
 
 
 
+### Message `RescueThreadRunRequest` {#rescuethreadrunrequest}
+
+The request used to rescue a failed ThreadRun at a specific NodeRun.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `wf_run_id` | | [WfRunId](#wfrunid) | The id of the `WfRun` which we are going to rescue. |
+| `thread_run_number` | | int32 | The number of the failed `ThreadRun` that we will rescue. The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/> - In the `ERROR` state.<br/> - Has no `FailureHandler` `ThreadRun`s <br/> - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure` yet.<br/><br/>If that is not true, then the `ThreadRun` cannot be rescued and the request will return `FAILED_PRECONDITION`. |
+| `skip_current_node` | | bool | If set to `true`, then the ThreadRun will skip past the `Node` of the current failed `NodeRun` and advance according to the outgoing edges. If set to `false`, then the `ThreadRun` will schedule another `NodeRun` for the current `Node` |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `ResumeWfRunRequest` {#resumewfrunrequest}
 
 Resume a WfRun.
@@ -1936,6 +1977,24 @@ Search for NodeRun's by certain criteria.
 | `latest_start` | optional| google.protobuf.Timestamp | Only return NodeRun's created before this time. |
 | `node_type` | | [SearchNodeRunRequest.NodeType](#searchnoderunrequestnodetype) | Specifies the type of NodeRun to search for. |
 | `status` | | [LHStatus](#lhstatus) | Specifies the status of NodeRun to search for. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchPrincipalRequest` {#searchprincipalrequest}
+
+Search for Principals based on certain criteria.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `bookmark` | optional| bytes | Bookmark for cursor-based pagination; pass if applicable. |
+| `limit` | optional| int32 | Maximum results to return in one request. |
+| `earliest_start` | optional| google.protobuf.Timestamp | Specifies to return only Principals's created after this time |
+| `latest_start` | optional| google.protobuf.Timestamp | Specifies to return only Principals's created before this time |
+| `isAdmin` | oneof `principal_criteria`| bool | List only Principals that are admins |
+| `tenantId` | oneof `principal_criteria`| string | List Principals associated with this Tenant ID |
  <!-- end Fields -->
  <!-- end HasFields -->
 

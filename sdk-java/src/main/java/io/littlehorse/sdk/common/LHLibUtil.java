@@ -10,6 +10,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
+import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -69,12 +70,20 @@ public class LHLibUtil {
 
     private static ObjectMapper mapper = new ObjectMapper();
 
-    public static String serializeToJson(Object o) throws JsonProcessingException {
-        return mapper.writeValueAsString(o);
+    public static String serializeToJson(Object o) throws LHJsonProcessingException {
+        try {
+            return mapper.writeValueAsString(o);
+        } catch (JsonProcessingException exn) {
+            throw new LHJsonProcessingException(exn);
+        }
     }
 
-    public static <T extends Object> T deserializeFromjson(String json, Class<T> cls) throws JsonProcessingException {
-        return mapper.readValue(json, cls);
+    public static <T extends Object> T deserializeFromjson(String json, Class<T> cls) throws LHJsonProcessingException {
+        try {
+            return mapper.readValue(json, cls);
+        } catch (JsonProcessingException exn) {
+            throw new LHJsonProcessingException(exn);
+        }
     }
 
     public static WfRunId getWfRunId(TaskRunSourceOrBuilder taskRunSource) {
@@ -148,7 +157,7 @@ public class LHLibUtil {
             String jsonStr;
             try {
                 jsonStr = LHLibUtil.serializeToJson(o);
-            } catch (JsonProcessingException exn) {
+            } catch (LHJsonProcessingException exn) {
                 exn.printStackTrace();
                 throw new LHSerdeError(exn, "Failed deserializing json");
             }

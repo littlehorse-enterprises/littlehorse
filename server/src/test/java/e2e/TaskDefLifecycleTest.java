@@ -35,8 +35,8 @@ public class TaskDefLifecycleTest {
 
     @Test
     void shouldBeIdempotent() {
-        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), "greet", null);
-        TaskDefBuilder taskCopy = new TaskDefBuilder(new TaskWorker(), "greet", null);
+        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), "greet", "greet");
+        TaskDefBuilder taskCopy = new TaskDefBuilder(new TaskWorker(), "greet", "greet");
         TaskDef original = client.putTaskDef(task.toPutTaskDefRequest());
         TaskDef copy = client.putTaskDef(taskCopy.toPutTaskDefRequest());
         assertThat(TaskDefUtil.equals(TaskDefModel.fromProto(original, null), TaskDefModel.fromProto(copy, null)))
@@ -45,10 +45,11 @@ public class TaskDefLifecycleTest {
 
     @Test
     void shouldThrowAlreadyExistWhenTaskDefDifferent() {
-        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), "greet-with-update", null);
+        TaskDefBuilder task = new TaskDefBuilder(new TaskWorker(), "greet-with-update", "greet-with-update");
         client.putTaskDef(task.toPutTaskDefRequest());
 
-        TaskDefBuilder taskUpdated = new TaskDefBuilder(new TaskWorkerUpdated(), "greet-with-update", null);
+        TaskDefBuilder taskUpdated =
+                new TaskDefBuilder(new TaskWorkerUpdated(), "greet-with-update", "greet-with-update");
 
         assertThatThrownBy(() -> client.putTaskDef(taskUpdated.toPutTaskDefRequest()))
                 .isInstanceOf(StatusRuntimeException.class)

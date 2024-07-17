@@ -5,16 +5,15 @@ import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.List;
-import java.util.Map;
 
 public class TaskDefBuilder {
 
     public Object executable;
     public LHTaskSignature signature;
 
-    public TaskDefBuilder(Object executable, String taskDefName, Map<String, String> valuesForPlaceHolders)
+    public TaskDefBuilder(Object executable, String taskDefName, String lhTaskMethodAnnotationValue)
             throws TaskSchemaMismatchError {
-        signature = new LHTaskSignature(taskDefName, executable, valuesForPlaceHolders);
+        signature = new LHTaskSignature(taskDefName, executable, lhTaskMethodAnnotationValue);
         this.executable = executable;
     }
 

@@ -1,13 +1,14 @@
 'use client'
 import { Navigation } from '@/app/(authenticated)/components/Navigation'
+import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
+import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Field, Input, Label } from '@headlessui/react'
-import { RefreshCwIcon } from 'lucide-react'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { TaskStatus } from 'littlehorse-client/dist/proto/common_enums'
-import { TaskDef as TaskDefProto } from 'littlehorse-client/dist/proto/task_def'
+import { TaskDef as TaskDefProto, TaskStatus } from 'littlehorse-client/proto'
+import { RefreshCwIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, Fragment, useState } from 'react'
 import { PaginatedTaskRunList, searchTaskRun } from '../actions/searchTaskRun'
@@ -22,6 +23,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
   const { tenantId } = useWhoAmI()
+  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ['taskRun', selectedStatus, tenantId, 10, createdAfter, createdBefore],
@@ -31,7 +33,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
       return await searchTaskRun({
         tenantId,
         bookmarkAsString: pageParam,
-        limit: 10,
+        limit,
         status: selectedStatus == 'ALL' ? undefined : selectedStatus,
         taskDefName: spec.id?.name || '',
         earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
@@ -108,7 +110,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                             <Link
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
-                              href={`/wfRun/${concatWfRunIds(taskRun.id?.wfRunId!)}?threadRunNumber=${taskRun.source?.taskNode?.nodeRunId?.threadRunNumber || taskRun.source?.userTaskTrigger?.nodeRunId?.threadRunNumber}&nodeName=${taskRun.source?.taskNode?.nodeRunId?.position}-${taskRun.source?.taskNode?.nodeRunId}-TASK`}
+                              href={`/wfRun/${concatWfRunIds(taskRun.id?.wfRunId!)}?threadRunNumber=${taskRun.source?.taskNode?.nodeRunId?.threadRunNumber ?? taskRun.source?.userTaskTrigger?.nodeRunId?.threadRunNumber}&nodeRunName=${taskRun.source?.taskNode?.nodeRunId?.position}-${spec.id?.name}-TASK`}
                             >
                               {concatWfRunIds(taskRun.id?.wfRunId!)}
                             </Link>
@@ -132,6 +134,15 @@ export const TaskDef: FC<Props> = ({ spec }) => {
           </Table>
         </div>
       )}
+
+      <div className="mt-6">
+        <SearchFooter
+          currentLimit={limit}
+          setLimit={setLimit}
+          hasNextPage={hasNextPage}
+          fetchNextPage={fetchNextPage}
+        />
+      </div>
     </>
   )
 }

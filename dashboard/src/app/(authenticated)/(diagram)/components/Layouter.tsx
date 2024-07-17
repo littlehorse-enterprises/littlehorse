@@ -1,7 +1,10 @@
 import dagre from 'dagre'
-import { NodeRun } from 'littlehorse-client/dist/proto/node_run'
+import { NodeRun } from 'littlehorse-client/proto'
 import { FC, useCallback, useEffect } from 'react'
 import { Edge, Node, useReactFlow, useStore } from 'reactflow'
+
+// used to calculate the width of the
+export const EDGE_WIDTH = 200
 
 export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: string }> = ({
   nodeRuns,
@@ -22,7 +25,7 @@ export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: s
       })
 
       edges.forEach(edge => {
-        dagreGraph.setEdge(edge.source, edge.target, { width: edge.label ? 200 : undefined })
+        dagreGraph.setEdge(edge.source, edge.target, { width: edge.label ? EDGE_WIDTH : undefined })
       })
 
       dagre.layout(dagreGraph)

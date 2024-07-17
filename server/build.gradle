@@ -61,14 +61,21 @@ dependencies {
     implementation 'io.micrometer:micrometer-registry-prometheus:1.11.2'
     implementation 'io.javalin:javalin:5.6.0'
 
-    // Lombok stuffs
+    // Lombok stuff
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testImplementation project(":test-utils")
 
+    // JSON and YAML processing
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2'
+    implementation 'com.jayway.jsonpath:json-path:2.9.0'
+
     testImplementation 'org.awaitility:awaitility:4.2.0'
+    testImplementation 'org.junit.platform:junit-platform-console-standalone:1.11.0-M2'
+
 }
 
 
@@ -109,7 +116,11 @@ task e2e(type: Test, dependsOn: compileJava){
         events 'passed', 'skipped', 'failed'
         exceptionFormat = 'full'
     }
-    jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
+    jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '-Xms4096m', '-Xmx4096m', '-Xss2m', '-XX:+UseParallelGC', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
+
+    // TODO: Enable parallelism once we find the problem
+    // // maxParallelForks = 2
+    // // systemProperty "junit.jupiter.execution.parallel.enabled", "true"
 }
 
 spotless {
@@ -119,3 +130,27 @@ spotless {
         palantirJavaFormat()
     }
 }
+
+task testJar(type: Jar) {
+    from sourceSets.test.output
+    archiveClassifier.set('tests')
+    description = 'Assembles a jar archive containing the test classes.'
+    group = 'build'
+    manifest {
+        attributes(
+                'Class-Path': configurations.testRuntimeClasspath.files.collect { it.name }.join(' '),
+                'Main-Class': 'org.junit.platform.console.ConsoleLauncher'
+        )
+    }
+
+    dependsOn configurations.testRuntimeClasspath
+    from {
+        configurations.testRuntimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy(DuplicatesStrategy.INCLUDE)
+}
+
+
+
+
+

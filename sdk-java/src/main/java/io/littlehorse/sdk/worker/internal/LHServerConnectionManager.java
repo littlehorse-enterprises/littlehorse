@@ -30,12 +30,18 @@ public class LHServerConnectionManager {
                 taskWorkerId,
                 connectListenerName,
                 taskDef,
-                taskMethod,
-                mappings,
-                executable,
                 config,
                 livenessController,
-                HEARTBEAT_INTERVAL_MS);
+                HEARTBEAT_INTERVAL_MS,
+                new PollThreadFactory(
+                        config,
+                        bootstrapStub,
+                        taskDef.getId(),
+                        taskWorkerId,
+                        mappings,
+                        executable,
+                        taskMethod,
+                        new ScheduledTaskExecutor(bootstrapStub)));
         this.livenessController = livenessController;
         this.taskDef = taskDef;
     }
@@ -46,6 +52,8 @@ public class LHServerConnectionManager {
 
     public void close() {
         livenessController.stop();
+        rebalanceThread.close();
+        rebalanceThread.interrupt();
     }
 
     public LHTaskWorkerHealth healthStatus() {

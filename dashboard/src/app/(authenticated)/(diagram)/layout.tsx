@@ -11,8 +11,8 @@ export default function RootLayout({
   const [modal, setModal] = useState<Modal | null>(null)
   const [showModal, setShowModal] = useState(false)
   return (
-    <ReactFlowProvider>
-      <ModalProvider value={{ modal, setModal, showModal, setShowModal }}>{children}</ModalProvider>
-    </ReactFlowProvider>
+    <ModalProvider value={{ modal, setModal, showModal, setShowModal }}>
+      <ReactFlowProvider>{children}</ReactFlowProvider>
+    </ModalProvider>
   )
 }

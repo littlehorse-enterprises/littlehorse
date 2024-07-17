@@ -2,8 +2,8 @@ package e2e;
 
 import static org.assertj.core.api.Assertions.*;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -38,7 +38,7 @@ public class VarMutationListsTest {
                 @SuppressWarnings("unchecked")
                 List<Object> variableList = LHLibUtil.deserializeFromjson(variableValue.getJsonArr(), List.class);
                 assertThat(variableList).containsExactly(expectedOutput);
-            } catch (JsonProcessingException exn) {
+            } catch (LHJsonProcessingException exn) {
                 throw new RuntimeException(exn);
             }
         };
@@ -56,7 +56,7 @@ public class VarMutationListsTest {
                 @SuppressWarnings("unchecked")
                 List<Object> variableList = LHLibUtil.deserializeFromjson(variableValue.getJsonArr(), List.class);
                 assertThat(variableList).containsExactly(workflowInput);
-            } catch (JsonProcessingException exn) {
+            } catch (LHJsonProcessingException exn) {
                 throw new RuntimeException(exn);
             }
         };

@@ -13,7 +13,7 @@ import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
-import io.littlehorse.server.streams.storeinternals.GetableStorageManager;
+import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -54,7 +54,7 @@ public class UserTaskRunModelStorageManagerTest {
     private String tenantId = "myTenant";
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
-    private GetableStorageManager getableStorageManager;
+    private GetableManager getableManager;
     private String wfRunId = "1234567890";
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
@@ -73,8 +73,8 @@ public class UserTaskRunModelStorageManagerTest {
             userTaskRun.setStatus(userTaskRunStatus);
             userTaskRun.setId(new UserTaskRunIdModel(
                     new WfRunIdModel(wfRunId + "1"), UUID.randomUUID().toString()));
-            getableStorageManager.put(userTaskRun);
-            getableStorageManager.commit();
+            getableManager.put(userTaskRun);
+            getableManager.commit();
         }
     }
 
@@ -83,8 +83,8 @@ public class UserTaskRunModelStorageManagerTest {
 
         // when(mockCoreDao.context()).thenReturn(testContext);
         localStoreWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), executionContext);
-        getableStorageManager =
-                new GetableStorageManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
+        getableManager =
+                new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 

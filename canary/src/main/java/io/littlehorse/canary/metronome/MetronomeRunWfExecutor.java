@@ -1,11 +1,15 @@
 package io.littlehorse.canary.metronome;
 
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import io.littlehorse.canary.metronome.internal.BeatProducer;
 import io.littlehorse.canary.metronome.internal.LocalRepository;
 import io.littlehorse.canary.proto.BeatStatus;
 import io.littlehorse.canary.proto.BeatType;
 import io.littlehorse.canary.util.LHClient;
 import io.littlehorse.canary.util.ShutdownHook;
+import io.littlehorse.sdk.common.proto.WfRun;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -70,16 +74,8 @@ public class MetronomeRunWfExecutor {
 
         log.debug("Executing run {}", wfId);
 
-        try {
-            lhClient.runCanaryWf(wfId, start, isSampleIteration);
-        } catch (Exception e) {
-            sendMetricBeat(wfId, start, BeatStatus.ERROR.name());
-            return;
-        }
-        if (isSampleIteration) {
-            sendMetricBeat(wfId, start, BeatStatus.OK.name());
-            repository.save(wfId, 0);
-        }
+        final ListenableFuture<WfRun> future = lhClient.runCanaryWf(wfId, start, isSampleIteration);
+        Futures.addCallback(future, new MetronomeCallback(wfId, start, isSampleIteration), requestsExecutor);
     }
 
     private void sendMetricBeat(final String wfId, final Instant start, final String status) {
@@ -91,7 +87,7 @@ public class MetronomeRunWfExecutor {
         final HashSet<Integer> sample = createSampleRuns();
         for (int i = 0; i < runs; i++) {
             final boolean isSampleIteration = sample.contains(i);
-            requestsExecutor.submit(() -> this.executeRun(isSampleIteration));
+            this.executeRun(isSampleIteration);
         }
     }
 
@@ -104,5 +100,32 @@ public class MetronomeRunWfExecutor {
         Collections.shuffle(range);
         final List<Integer> sample = range.subList(0, sampleSize);
         return new HashSet<>(sample);
+    }
+
+    private class MetronomeCallback implements FutureCallback<WfRun> {
+        private final boolean isSampleIteration;
+        private final String wfRunId;
+        private final Instant startedAt;
+
+        private MetronomeCallback(final String wfRunId, final Instant startedAt, final boolean isSampleIteration) {
+            this.isSampleIteration = isSampleIteration;
+            this.wfRunId = wfRunId;
+            this.startedAt = startedAt;
+        }
+
+        @Override
+        public void onSuccess(final WfRun result) {
+            lhClient.incrementWfRunCountMetric();
+            if (isSampleIteration) {
+                sendMetricBeat(wfRunId, startedAt, BeatStatus.OK.name());
+                repository.save(wfRunId, 0);
+            }
+        }
+
+        @Override
+        public void onFailure(final Throwable t) {
+            lhClient.incrementWfRunCountMetric();
+            sendMetricBeat(wfRunId, startedAt, BeatStatus.ERROR.name());
+        }
     }
 }

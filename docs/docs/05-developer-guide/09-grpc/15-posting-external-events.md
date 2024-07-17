@@ -56,10 +56,13 @@ In Java, we can use `LHLibUtil#objToVarVal()` to convert an aribitrary Java valu
 ```java
 LittleHorseBlockingStub client = ...;
 
+String idempotencyKey = "asdf13hoasdifoje"; // optional
+
 client.PutExternalEvent(PutExternalEventRequest.newBuilder()
-        .setExternalEventDefName("my-external-event-def")
-        .setWfRunId("asdf-1234")
+        .setExternalEventDefId(ExternalEventDefId.newBuilder().setName("my-external-event-def"))
+        .setWfRunId(WfRunId.newBuilder().setId("asdf-1234"))
         .setContent(LHLibUtil.objToVarVal(someObject))
+        .setGuid(idempotencyKey) // optional
         .build());
 ```
 
@@ -69,11 +72,14 @@ client.PutExternalEvent(PutExternalEventRequest.newBuilder()
 In Go, you can use the `common.InterfaceToVarVal()` method to create the `content` parameter.
 
 ```go
-eventContent, err := common.InterfaceToVarVal("some-interface")
-result, err := (*client).PutExternalEvent(context.Background(), &model.PutExternalEventRequest{
-	WfRunId: "asdf-1353",
-	ExternalEventDefName: "some-external-event-def",
-	Content: eventContent,
+idempotencyKey := "asdfo2htoijsvlk" // optional
+
+eventContent, _ := common.InterfaceToVarVal("some-interface")
+result, _ := (*client).PutExternalEvent(context.Background(), &model.PutExternalEventRequest{
+	WfRunId:            &model.WfRunId{Id: "some-wfrun-id"},
+	ExternalEventDefId: &model.ExternalEventDefId{Name: "some-external-event-def"},
+	Content:            eventContent,
+	Guid:               &idempotencyKey, // optional
 })
 ```
 
@@ -82,13 +88,21 @@ result, err := (*client).PutExternalEvent(context.Background(), &model.PutExtern
 In Python, you can use the `littlehorse.to_variable_value()` method to create the `content` parameter.
 
 ```python
+import littlehorse
+from littlehorse.config import LHConfig
+from littlehorse.model import *
+
 config = LHConfig()
-stub = config.stub()
-stub.PutExternalEvent(
+client = config.stub()
+
+idempotency_key = "asfjok23jtoadfjl" # optional
+
+client.PutExternalEvent(
     PutExternalEventRequest(
-        wf_run_id="asdf-1234",
-        external_event_def_name="my-external-event-def",
+        wf_run_id=WfRunId(id="asdf-1234"),
+        external_event_def_id=ExternalEventDefId(name="my-external-event-def"),
         content=littlehorse.to_variable_value("my value"),
+        guid=idempotency_key, # optional
     )
 )
 ```
