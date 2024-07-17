@@ -32,7 +32,7 @@ export const Search: FC<{}> = () => {
       <SearchHeader currentType={type} setPrefix={setPrefix} />
       {isPending ? (
         <div className="flex min-h-[360px] items-center justify-center text-center">
-          <RefreshCwIcon className="h-8 w-8 animate-spin fill-blue-500 stroke-none" />
+          <RefreshCwIcon className="h-8 w-8 animate-spin text-blue-500" />
         </div>
       ) : (
         <div className="min-h-[360px]">
