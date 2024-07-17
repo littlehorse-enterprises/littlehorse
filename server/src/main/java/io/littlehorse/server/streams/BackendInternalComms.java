@@ -80,6 +80,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiPredicate;
 import java.util.regex.Matcher;
@@ -130,7 +131,7 @@ public class BackendInternalComms implements Closeable {
             LHServerConfig config,
             KafkaStreams coreStreams,
             KafkaStreams timerStreams,
-            Executor networkThreadPool,
+            ScheduledExecutorService networkThreadPool,
             MetadataCache metadataCache,
             Context.Key<RequestExecutionContext> contextKey,
             CoreStoreProvider coreStoreProvider) {
@@ -163,7 +164,7 @@ public class BackendInternalComms implements Closeable {
 
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
         this.producer = config.getProducer();
-        this.asyncWaiters = new AsyncWaiters();
+        this.asyncWaiters = new AsyncWaiters(networkThreadPool);
     }
 
     public void start() throws IOException {

@@ -235,8 +235,8 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
@@ -288,7 +288,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
         });
 
-        Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
+        ScheduledExecutorService networkThreadpool = Executors.newScheduledThreadPool(config.getNumNetworkThreads());
         coreStoreProvider = new CoreStoreProvider(this.coreStreams);
         this.internalComms = new BackendInternalComms(
                 config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey, coreStoreProvider);
