@@ -1,5 +1,7 @@
 'use client'
 import { Navigation } from '@/app/(authenticated)/components/Navigation'
+import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
+import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
@@ -21,6 +23,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
   const { tenantId } = useWhoAmI()
+  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ['taskRun', selectedStatus, tenantId, 10, createdAfter, createdBefore],
@@ -30,7 +33,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
       return await searchTaskRun({
         tenantId,
         bookmarkAsString: pageParam,
-        limit: 10,
+        limit,
         status: selectedStatus == 'ALL' ? undefined : selectedStatus,
         taskDefName: spec.id?.name || '',
         earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
@@ -131,6 +134,15 @@ export const TaskDef: FC<Props> = ({ spec }) => {
           </Table>
         </div>
       )}
+
+      <div className="mt-6">
+        <SearchFooter
+          currentLimit={limit}
+          setLimit={setLimit}
+          hasNextPage={hasNextPage}
+          fetchNextPage={fetchNextPage}
+        />
+      </div>
     </>
   )
 }
