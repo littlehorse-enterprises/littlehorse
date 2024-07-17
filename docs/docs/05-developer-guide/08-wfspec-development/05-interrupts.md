@@ -132,6 +132,9 @@ def my_entrypoint(wf: WorkflowThread) -> None:
    </TabItem>
 </Tabs>
 
+## How to trigger an Interrupt event
+Please refer to: [Posting External Events](../09-grpc/15-posting-external-events.md))
+
 ## Notes and Best Practices
 
 First, only one `ThreadSpec` may register an Interrupt Handler for a given `ExternalEventDef`.

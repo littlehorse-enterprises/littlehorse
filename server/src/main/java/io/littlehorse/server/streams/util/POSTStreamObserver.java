@@ -11,6 +11,8 @@ import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.time.Duration;
 import java.util.Date;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -26,6 +28,7 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
     private final Date timeoutAt;
     // Wait until kafka streams rebalance finishes
     private final Duration successResponseTimeout;
+    private final ScheduledExecutorService retryExecutor;
 
     public POSTStreamObserver(
             StreamObserver<U> responseObserver,
@@ -34,7 +37,8 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
             BackendInternalComms internalComms,
             AbstractCommand<?> command,
             RequestExecutionContext requestContext,
-            Duration successResponseTimeout) {
+            Duration successResponseTimeout,
+            ScheduledExecutorService retryExecutor) {
         this.ctx = responseObserver;
         this.responseCls = responseCls;
         this.shouldComplete = shouldComplete;
@@ -44,6 +48,7 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
         this.timeoutAt = new Date(commandStartedAt.getTime() + successResponseTimeout.toMillis());
         this.successResponseTimeout = successResponseTimeout;
         this.requestContext = requestContext;
+        this.retryExecutor = retryExecutor;
     }
 
     @Override
@@ -52,17 +57,23 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
                 && grpcRuntimeException.getStatus().getCode().equals(Status.UNAVAILABLE.getCode());
         final boolean retryOneMoreTime = timeoutAt.compareTo(new Date()) > 0;
         if (isRetryable && retryOneMoreTime) {
-            internalComms.waitForCommand(
-                    command,
-                    new POSTStreamObserver<>(
-                            ctx,
-                            responseCls,
-                            shouldComplete,
-                            internalComms,
-                            command,
-                            requestContext,
-                            successResponseTimeout),
-                    requestContext);
+            retryExecutor.schedule(
+                    () -> {
+                        internalComms.waitForCommand(
+                                command,
+                                new POSTStreamObserver<>(
+                                        ctx,
+                                        responseCls,
+                                        shouldComplete,
+                                        internalComms,
+                                        command,
+                                        requestContext,
+                                        successResponseTimeout,
+                                        retryExecutor),
+                                requestContext);
+                    },
+                    1,
+                    TimeUnit.SECONDS);
         } else {
             ctx.onError(t);
         }

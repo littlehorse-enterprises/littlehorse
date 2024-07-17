@@ -1,25 +1,25 @@
 'use client'
 
-import { Navigation } from '@/app/(authenticated)/components/Navigation'
-import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
+import { Navigation } from '@/app/(authenticated)/components/Navigation';
+import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter';
 import {
   PaginatedUserTaskRunList,
   searchUserTaskRun,
-} from '@/app/(authenticated)/userTaskDef/[...props]/actions/searchUserTaskRun'
+} from '@/app/(authenticated)/userTaskDef/[...props]/actions/searchUserTaskRun';
 
-import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
-import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { Button, Field, Input, Label } from '@headlessui/react'
-import { useInfiniteQuery } from '@tanstack/react-query'
-import { UserTaskDef as UserTaskDefProto, UserTaskRunStatus } from 'littlehorse-client/proto'
-import { RefreshCwIcon } from 'lucide-react'
-import Link from 'next/link'
-import React, { FC, Fragment, useState } from 'react'
-import { useDebounce } from 'use-debounce'
-import { Details } from './Details'
-import { Fields } from './Fields'
+import { SEARCH_DEFAULT_LIMIT } from '@/app/constants';
+import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useWhoAmI } from '@/contexts/WhoAmIContext';
+import { Button, Field, Input, Label } from '@headlessui/react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { UserTaskDef as UserTaskDefProto, UserTaskRunStatus } from 'littlehorse-client/proto';
+import { RefreshCwIcon } from 'lucide-react';
+import Link from 'next/link';
+import React, { FC, Fragment, useState } from 'react';
+import { useDebounce } from 'use-debounce';
+import { Details } from './Details';
+import { Fields } from './Fields';
 
 type Props = {
   spec: UserTaskDefProto
@@ -137,7 +137,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
 
       {isPending ? (
         <div className="flex min-h-[360px] items-center justify-center text-center">
-          <RefreshCwIcon className="h-8 w-8 animate-spin fill-blue-500 stroke-none" />
+          <RefreshCwIcon className="h-8 w-8 animate-spin text-blue-500" />
         </div>
       ) : (
         <div className="flex min-h-[360px] flex-col gap-4">
