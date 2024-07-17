@@ -8,9 +8,10 @@ import (
 	"log"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
-	"github.com/spf13/cobra"
 )
 
 // getExternalEventCmd represents the externalEvent command
@@ -69,15 +70,19 @@ Returns a list of ObjectId's that can be passed into 'lhctl get externalEvent'.
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 		externalEventDefId, _ := cmd.Flags().GetString("externalEventDefId")
+		isClaimed, _ := cmd.Flags().GetBool("isClaimed")
 
 		earliest, latest := loadEarliestAndLatestStart(cmd)
 
 		search := &model.SearchExternalEventRequest{
-			Bookmark:           bookmark,
-			Limit:              &limit,
-			EarliestStart:      earliest,
-			LatestStart:        latest,
-			ExternalEventDefId: externalEventDefId,
+			Bookmark:      bookmark,
+			Limit:         &limit,
+			IsClaimed:     &isClaimed,
+			EarliestStart: earliest,
+			LatestStart:   latest,
+			ExternalEventDefId: &model.ExternalEventDefId{
+				Name: externalEventDefId,
+			},
 		}
 
 		common.PrintResp(getGlobalClient(cmd).SearchExternalEvent(requestContext(cmd), search))
@@ -115,5 +120,9 @@ func init() {
 	searchCmd.AddCommand(searchExternalEventCmd)
 	listCmd.AddCommand(listExternalEventCmd)
 
-	searchExternalEventCmd.Flags().String("externalEventDefId", "", "ExternalEventDefId of ExternalEvent's to search for")
+	searchExternalEventCmd.Flags().String("externalEventDefName", "", "ExternalEventDef Name of ExternalEvents to search for")
+	searchTaskRunCmd.MarkFlagRequired("taskDefName")
+	searchTaskRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for TaskRuns that started no more than this number of minutes ago")
+	searchTaskRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for TaskRuns that started at least this number of minutes ago")
+	searchExternalEventCmd.Flags().Bool("isClaimed", false, "Search only for ExternalEvents that have been claimed")
 }
