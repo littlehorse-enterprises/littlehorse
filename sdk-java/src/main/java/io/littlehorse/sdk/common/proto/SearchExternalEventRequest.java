@@ -21,7 +21,6 @@ private static final long serialVersionUID = 0L;
   }
   private SearchExternalEventRequest() {
     bookmark_ = com.google.protobuf.ByteString.EMPTY;
-    externalEventDefId_ = "";
   }
 
   @java.lang.Override
@@ -176,50 +175,60 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER = 5;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object externalEventDefId_ = "";
+  private io.littlehorse.sdk.common.proto.ExternalEventDefId externalEventDefId_;
   /**
    * <pre>
    * Search for external event definitions by Id
    * </pre>
    *
-   * <code>string external_event_def_id = 5;</code>
-   * @return The externalEventDefId.
+   * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
+   * @return Whether the externalEventDefId field is set.
    */
   @java.lang.Override
-  public java.lang.String getExternalEventDefId() {
-    java.lang.Object ref = externalEventDefId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      externalEventDefId_ = s;
-      return s;
-    }
+  public boolean hasExternalEventDefId() {
+    return externalEventDefId_ != null;
   }
   /**
    * <pre>
    * Search for external event definitions by Id
    * </pre>
    *
-   * <code>string external_event_def_id = 5;</code>
-   * @return The bytes for externalEventDefId.
+   * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
+   * @return The externalEventDefId.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getExternalEventDefIdBytes() {
-    java.lang.Object ref = externalEventDefId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      externalEventDefId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public io.littlehorse.sdk.common.proto.ExternalEventDefId getExternalEventDefId() {
+    return externalEventDefId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance() : externalEventDefId_;
+  }
+  /**
+   * <pre>
+   * Search for external event definitions by Id
+   * </pre>
+   *
+   * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefIdOrBuilder() {
+    return externalEventDefId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance() : externalEventDefId_;
+  }
+
+  public static final int IS_CLAIMED_FIELD_NUMBER = 6;
+  private boolean isClaimed_ = false;
+  /**
+   * <code>optional bool is_claimed = 6;</code>
+   * @return Whether the isClaimed field is set.
+   */
+  @java.lang.Override
+  public boolean hasIsClaimed() {
+    return ((bitField0_ & 0x00000010) != 0);
+  }
+  /**
+   * <code>optional bool is_claimed = 6;</code>
+   * @return The isClaimed.
+   */
+  @java.lang.Override
+  public boolean getIsClaimed() {
+    return isClaimed_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -248,8 +257,11 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000008) != 0)) {
       output.writeMessage(4, getLatestStart());
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(externalEventDefId_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, externalEventDefId_);
+    if (externalEventDefId_ != null) {
+      output.writeMessage(5, getExternalEventDefId());
+    }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      output.writeBool(6, isClaimed_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -276,8 +288,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getLatestStart());
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(externalEventDefId_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, externalEventDefId_);
+    if (externalEventDefId_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, getExternalEventDefId());
+    }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(6, isClaimed_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -314,8 +331,16 @@ private static final long serialVersionUID = 0L;
       if (!getLatestStart()
           .equals(other.getLatestStart())) return false;
     }
-    if (!getExternalEventDefId()
-        .equals(other.getExternalEventDefId())) return false;
+    if (hasExternalEventDefId() != other.hasExternalEventDefId()) return false;
+    if (hasExternalEventDefId()) {
+      if (!getExternalEventDefId()
+          .equals(other.getExternalEventDefId())) return false;
+    }
+    if (hasIsClaimed() != other.hasIsClaimed()) return false;
+    if (hasIsClaimed()) {
+      if (getIsClaimed()
+          != other.getIsClaimed()) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -343,8 +368,15 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + LATEST_START_FIELD_NUMBER;
       hash = (53 * hash) + getLatestStart().hashCode();
     }
-    hash = (37 * hash) + EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getExternalEventDefId().hashCode();
+    if (hasExternalEventDefId()) {
+      hash = (37 * hash) + EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getExternalEventDefId().hashCode();
+    }
+    if (hasIsClaimed()) {
+      hash = (37 * hash) + IS_CLAIMED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getIsClaimed());
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -481,6 +513,7 @@ private static final long serialVersionUID = 0L;
               .alwaysUseFieldBuilders) {
         getEarliestStartFieldBuilder();
         getLatestStartFieldBuilder();
+        getExternalEventDefIdFieldBuilder();
       }
     }
     @java.lang.Override
@@ -499,7 +532,12 @@ private static final long serialVersionUID = 0L;
         latestStartBuilder_.dispose();
         latestStartBuilder_ = null;
       }
-      externalEventDefId_ = "";
+      externalEventDefId_ = null;
+      if (externalEventDefIdBuilder_ != null) {
+        externalEventDefIdBuilder_.dispose();
+        externalEventDefIdBuilder_ = null;
+      }
+      isClaimed_ = false;
       return this;
     }
 
@@ -555,7 +593,13 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000008;
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.externalEventDefId_ = externalEventDefId_;
+        result.externalEventDefId_ = externalEventDefIdBuilder_ == null
+            ? externalEventDefId_
+            : externalEventDefIdBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000020) != 0)) {
+        result.isClaimed_ = isClaimed_;
+        to_bitField0_ |= 0x00000010;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -616,10 +660,11 @@ private static final long serialVersionUID = 0L;
       if (other.hasLatestStart()) {
         mergeLatestStart(other.getLatestStart());
       }
-      if (!other.getExternalEventDefId().isEmpty()) {
-        externalEventDefId_ = other.externalEventDefId_;
-        bitField0_ |= 0x00000010;
-        onChanged();
+      if (other.hasExternalEventDefId()) {
+        mergeExternalEventDefId(other.getExternalEventDefId());
+      }
+      if (other.hasIsClaimed()) {
+        setIsClaimed(other.getIsClaimed());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -672,10 +717,17 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 34
             case 42: {
-              externalEventDefId_ = input.readStringRequireUtf8();
+              input.readMessage(
+                  getExternalEventDefIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000010;
               break;
             } // case 42
+            case 48: {
+              isClaimed_ = input.readBool();
+              bitField0_ |= 0x00000020;
+              break;
+            } // case 48
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1115,25 +1167,33 @@ private static final long serialVersionUID = 0L;
       return latestStartBuilder_;
     }
 
-    private java.lang.Object externalEventDefId_ = "";
+    private io.littlehorse.sdk.common.proto.ExternalEventDefId externalEventDefId_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder> externalEventDefIdBuilder_;
     /**
      * <pre>
      * Search for external event definitions by Id
      * </pre>
      *
-     * <code>string external_event_def_id = 5;</code>
+     * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
+     * @return Whether the externalEventDefId field is set.
+     */
+    public boolean hasExternalEventDefId() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <pre>
+     * Search for external event definitions by Id
+     * </pre>
+     *
+     * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
      * @return The externalEventDefId.
      */
-    public java.lang.String getExternalEventDefId() {
-      java.lang.Object ref = externalEventDefId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        externalEventDefId_ = s;
-        return s;
+    public io.littlehorse.sdk.common.proto.ExternalEventDefId getExternalEventDefId() {
+      if (externalEventDefIdBuilder_ == null) {
+        return externalEventDefId_ == null ? io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance() : externalEventDefId_;
       } else {
-        return (java.lang.String) ref;
+        return externalEventDefIdBuilder_.getMessage();
       }
     }
     /**
@@ -1141,35 +1201,35 @@ private static final long serialVersionUID = 0L;
      * Search for external event definitions by Id
      * </pre>
      *
-     * <code>string external_event_def_id = 5;</code>
-     * @return The bytes for externalEventDefId.
+     * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
      */
-    public com.google.protobuf.ByteString
-        getExternalEventDefIdBytes() {
-      java.lang.Object ref = externalEventDefId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        externalEventDefId_ = b;
-        return b;
+    public Builder setExternalEventDefId(io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
+      if (externalEventDefIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        externalEventDefId_ = value;
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        externalEventDefIdBuilder_.setMessage(value);
       }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
     }
     /**
      * <pre>
      * Search for external event definitions by Id
      * </pre>
      *
-     * <code>string external_event_def_id = 5;</code>
-     * @param value The externalEventDefId to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
      */
     public Builder setExternalEventDefId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      externalEventDefId_ = value;
+        io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder builderForValue) {
+      if (externalEventDefIdBuilder_ == null) {
+        externalEventDefId_ = builderForValue.build();
+      } else {
+        externalEventDefIdBuilder_.setMessage(builderForValue.build());
+      }
       bitField0_ |= 0x00000010;
       onChanged();
       return this;
@@ -1179,12 +1239,38 @@ private static final long serialVersionUID = 0L;
      * Search for external event definitions by Id
      * </pre>
      *
-     * <code>string external_event_def_id = 5;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
+     */
+    public Builder mergeExternalEventDefId(io.littlehorse.sdk.common.proto.ExternalEventDefId value) {
+      if (externalEventDefIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000010) != 0) &&
+          externalEventDefId_ != null &&
+          externalEventDefId_ != io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance()) {
+          getExternalEventDefIdBuilder().mergeFrom(value);
+        } else {
+          externalEventDefId_ = value;
+        }
+      } else {
+        externalEventDefIdBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Search for external event definitions by Id
+     * </pre>
+     *
+     * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
      */
     public Builder clearExternalEventDefId() {
-      externalEventDefId_ = getDefaultInstance().getExternalEventDefId();
       bitField0_ = (bitField0_ & ~0x00000010);
+      externalEventDefId_ = null;
+      if (externalEventDefIdBuilder_ != null) {
+        externalEventDefIdBuilder_.dispose();
+        externalEventDefIdBuilder_ = null;
+      }
       onChanged();
       return this;
     }
@@ -1193,16 +1279,85 @@ private static final long serialVersionUID = 0L;
      * Search for external event definitions by Id
      * </pre>
      *
-     * <code>string external_event_def_id = 5;</code>
-     * @param value The bytes for externalEventDefId to set.
+     * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder getExternalEventDefIdBuilder() {
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return getExternalEventDefIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Search for external event definitions by Id
+     * </pre>
+     *
+     * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefIdOrBuilder() {
+      if (externalEventDefIdBuilder_ != null) {
+        return externalEventDefIdBuilder_.getMessageOrBuilder();
+      } else {
+        return externalEventDefId_ == null ?
+            io.littlehorse.sdk.common.proto.ExternalEventDefId.getDefaultInstance() : externalEventDefId_;
+      }
+    }
+    /**
+     * <pre>
+     * Search for external event definitions by Id
+     * </pre>
+     *
+     * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder> 
+        getExternalEventDefIdFieldBuilder() {
+      if (externalEventDefIdBuilder_ == null) {
+        externalEventDefIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder>(
+                getExternalEventDefId(),
+                getParentForChildren(),
+                isClean());
+        externalEventDefId_ = null;
+      }
+      return externalEventDefIdBuilder_;
+    }
+
+    private boolean isClaimed_ ;
+    /**
+     * <code>optional bool is_claimed = 6;</code>
+     * @return Whether the isClaimed field is set.
+     */
+    @java.lang.Override
+    public boolean hasIsClaimed() {
+      return ((bitField0_ & 0x00000020) != 0);
+    }
+    /**
+     * <code>optional bool is_claimed = 6;</code>
+     * @return The isClaimed.
+     */
+    @java.lang.Override
+    public boolean getIsClaimed() {
+      return isClaimed_;
+    }
+    /**
+     * <code>optional bool is_claimed = 6;</code>
+     * @param value The isClaimed to set.
      * @return This builder for chaining.
      */
-    public Builder setExternalEventDefIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      externalEventDefId_ = value;
-      bitField0_ |= 0x00000010;
+    public Builder setIsClaimed(boolean value) {
+
+      isClaimed_ = value;
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional bool is_claimed = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearIsClaimed() {
+      bitField0_ = (bitField0_ & ~0x00000020);
+      isClaimed_ = false;
       onChanged();
       return this;
     }

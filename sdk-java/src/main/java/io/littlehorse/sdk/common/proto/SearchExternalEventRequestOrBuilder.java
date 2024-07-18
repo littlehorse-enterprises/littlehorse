@@ -104,18 +104,36 @@ public interface SearchExternalEventRequestOrBuilder extends
    * Search for external event definitions by Id
    * </pre>
    *
-   * <code>string external_event_def_id = 5;</code>
-   * @return The externalEventDefId.
+   * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
+   * @return Whether the externalEventDefId field is set.
    */
-  java.lang.String getExternalEventDefId();
+  boolean hasExternalEventDefId();
   /**
    * <pre>
    * Search for external event definitions by Id
    * </pre>
    *
-   * <code>string external_event_def_id = 5;</code>
-   * @return The bytes for externalEventDefId.
+   * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
+   * @return The externalEventDefId.
    */
-  com.google.protobuf.ByteString
-      getExternalEventDefIdBytes();
+  io.littlehorse.sdk.common.proto.ExternalEventDefId getExternalEventDefId();
+  /**
+   * <pre>
+   * Search for external event definitions by Id
+   * </pre>
+   *
+   * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefIdOrBuilder();
+
+  /**
+   * <code>optional bool is_claimed = 6;</code>
+   * @return Whether the isClaimed field is set.
+   */
+  boolean hasIsClaimed();
+  /**
+   * <code>optional bool is_claimed = 6;</code>
+   * @return The isClaimed.
+   */
+  boolean getIsClaimed();
 }

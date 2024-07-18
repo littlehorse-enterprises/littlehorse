@@ -836,7 +836,9 @@ message SearchExternalEventRequest {
   optional google.protobuf.Timestamp latest_start = 4;
 
   // Search for external event definitions by Id
-  string external_event_def_id = 5;
+  ExternalEventDefId external_event_def_id = 5;
+
+  optional bool is_claimed = 6;
 }
 
 // List of ExternalEvent Id's

@@ -1933,7 +1933,8 @@ Search for ExternalEvents based on certain criteria.
 | `limit` | optional| int32 | Maximum results to return in one request. |
 | `earliest_start` | optional| google.protobuf.Timestamp | Specifies to return only Principals's created after this time |
 | `latest_start` | optional| google.protobuf.Timestamp | Specifies to return only Principals's created before this time |
-| `external_event_def_id` | | string | Search for external event definitions by Id |
+| `external_event_def_id` | | [ExternalEventDefId](#externaleventdefid) | Search for external event definitions by Id |
+| `is_claimed` | optional| bool |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 

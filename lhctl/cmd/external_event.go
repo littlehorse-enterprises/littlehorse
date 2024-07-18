@@ -69,15 +69,22 @@ Returns a list of ObjectId's that can be passed into 'lhctl get externalEvent'.
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 		externalEventDefId, _ := cmd.Flags().GetString("externalEventDefId")
+		isClaimed, _ := cmd.Flags().GetBool("isClaimed")
 
 		earliest, latest := loadEarliestAndLatestStart(cmd)
 
 		search := &model.SearchExternalEventRequest{
-			Bookmark:           bookmark,
-			Limit:              &limit,
-			EarliestStart:      earliest,
-			LatestStart:        latest,
-			ExternalEventDefId: externalEventDefId,
+			Bookmark:      bookmark,
+			Limit:         &limit,
+			EarliestStart: earliest,
+			LatestStart:   latest,
+			ExternalEventDefId: &model.ExternalEventDefId{
+				Name: externalEventDefId,
+			},
+		}
+
+		if cmd.Flags().Lookup("isClaimed").Changed {
+			search.IsClaimed = &isClaimed
 		}
 
 		common.PrintResp(getGlobalClient(cmd).SearchExternalEvent(requestContext(cmd), search))
@@ -116,4 +123,5 @@ func init() {
 	listCmd.AddCommand(listExternalEventCmd)
 
 	searchExternalEventCmd.Flags().String("externalEventDefId", "", "ExternalEventDefId of ExternalEvent's to search for")
+	searchExternalEventCmd.Flags().Bool("isClaimed", false, "List only ExternalEvents that are claimed")
 }
