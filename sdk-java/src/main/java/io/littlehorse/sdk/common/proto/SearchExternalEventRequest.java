@@ -102,7 +102,7 @@ private static final long serialVersionUID = 0L;
   private com.google.protobuf.Timestamp earliestStart_;
   /**
    * <pre>
-   * Specifies to return only Principals's created after this time
+   * Specifies to return only ExternalEvents created after this time
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
@@ -114,7 +114,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Specifies to return only Principals's created after this time
+   * Specifies to return only ExternalEvents created after this time
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
@@ -126,7 +126,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Specifies to return only Principals's created after this time
+   * Specifies to return only ExternalEvents created after this time
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
@@ -140,7 +140,7 @@ private static final long serialVersionUID = 0L;
   private com.google.protobuf.Timestamp latestStart_;
   /**
    * <pre>
-   * Specifies to return only Principals's created before this time
+   * Specifies to return only ExternalEvents created before this time
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
@@ -152,7 +152,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Specifies to return only Principals's created before this time
+   * Specifies to return only ExternalEvents created before this time
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
@@ -164,7 +164,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Specifies to return only Principals's created before this time
+   * Specifies to return only ExternalEvents created before this time
    * </pre>
    *
    * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
@@ -178,7 +178,7 @@ private static final long serialVersionUID = 0L;
   private io.littlehorse.sdk.common.proto.ExternalEventDefId externalEventDefId_;
   /**
    * <pre>
-   * Search for external event definitions by Id
+   * Search for external events by Id
    * </pre>
    *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -190,7 +190,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Search for external event definitions by Id
+   * Search for external events by Id
    * </pre>
    *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -202,7 +202,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Search for external event definitions by Id
+   * Search for external events by Id
    * </pre>
    *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -215,6 +215,10 @@ private static final long serialVersionUID = 0L;
   public static final int IS_CLAIMED_FIELD_NUMBER = 6;
   private boolean isClaimed_ = false;
   /**
+   * <pre>
+   * Search for external events that are claimed or not by a Workflow
+   * </pre>
+   *
    * <code>optional bool is_claimed = 6;</code>
    * @return Whether the isClaimed field is set.
    */
@@ -223,6 +227,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000010) != 0);
   }
   /**
+   * <pre>
+   * Search for external events that are claimed or not by a Workflow
+   * </pre>
+   *
    * <code>optional bool is_claimed = 6;</code>
    * @return The isClaimed.
    */
@@ -862,7 +870,7 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> earliestStartBuilder_;
     /**
      * <pre>
-     * Specifies to return only Principals's created after this time
+     * Specifies to return only ExternalEvents created after this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
@@ -873,7 +881,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies to return only Principals's created after this time
+     * Specifies to return only ExternalEvents created after this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
@@ -888,7 +896,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies to return only Principals's created after this time
+     * Specifies to return only ExternalEvents created after this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
@@ -908,7 +916,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies to return only Principals's created after this time
+     * Specifies to return only ExternalEvents created after this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
@@ -926,7 +934,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies to return only Principals's created after this time
+     * Specifies to return only ExternalEvents created after this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
@@ -949,7 +957,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies to return only Principals's created after this time
+     * Specifies to return only ExternalEvents created after this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
@@ -966,7 +974,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies to return only Principals's created after this time
+     * Specifies to return only ExternalEvents created after this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
@@ -978,7 +986,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies to return only Principals's created after this time
+     * Specifies to return only ExternalEvents created after this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
@@ -993,7 +1001,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies to return only Principals's created after this time
+     * Specifies to return only ExternalEvents created after this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
@@ -1017,7 +1025,7 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> latestStartBuilder_;
     /**
      * <pre>
-     * Specifies to return only Principals's created before this time
+     * Specifies to return only ExternalEvents created before this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
@@ -1028,7 +1036,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies to return only Principals's created before this time
+     * Specifies to return only ExternalEvents created before this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
@@ -1043,7 +1051,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies to return only Principals's created before this time
+     * Specifies to return only ExternalEvents created before this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
@@ -1063,7 +1071,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies to return only Principals's created before this time
+     * Specifies to return only ExternalEvents created before this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
@@ -1081,7 +1089,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies to return only Principals's created before this time
+     * Specifies to return only ExternalEvents created before this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
@@ -1104,7 +1112,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies to return only Principals's created before this time
+     * Specifies to return only ExternalEvents created before this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
@@ -1121,7 +1129,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies to return only Principals's created before this time
+     * Specifies to return only ExternalEvents created before this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
@@ -1133,7 +1141,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies to return only Principals's created before this time
+     * Specifies to return only ExternalEvents created before this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
@@ -1148,7 +1156,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies to return only Principals's created before this time
+     * Specifies to return only ExternalEvents created before this time
      * </pre>
      *
      * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
@@ -1172,7 +1180,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder> externalEventDefIdBuilder_;
     /**
      * <pre>
-     * Search for external event definitions by Id
+     * Search for external events by Id
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1183,7 +1191,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external event definitions by Id
+     * Search for external events by Id
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1198,7 +1206,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external event definitions by Id
+     * Search for external events by Id
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1218,7 +1226,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external event definitions by Id
+     * Search for external events by Id
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1236,7 +1244,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external event definitions by Id
+     * Search for external events by Id
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1259,7 +1267,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external event definitions by Id
+     * Search for external events by Id
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1276,7 +1284,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external event definitions by Id
+     * Search for external events by Id
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1288,7 +1296,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external event definitions by Id
+     * Search for external events by Id
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1303,7 +1311,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external event definitions by Id
+     * Search for external events by Id
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1324,6 +1332,10 @@ private static final long serialVersionUID = 0L;
 
     private boolean isClaimed_ ;
     /**
+     * <pre>
+     * Search for external events that are claimed or not by a Workflow
+     * </pre>
+     *
      * <code>optional bool is_claimed = 6;</code>
      * @return Whether the isClaimed field is set.
      */
@@ -1332,6 +1344,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
+     * <pre>
+     * Search for external events that are claimed or not by a Workflow
+     * </pre>
+     *
      * <code>optional bool is_claimed = 6;</code>
      * @return The isClaimed.
      */
@@ -1340,6 +1356,10 @@ private static final long serialVersionUID = 0L;
       return isClaimed_;
     }
     /**
+     * <pre>
+     * Search for external events that are claimed or not by a Workflow
+     * </pre>
+     *
      * <code>optional bool is_claimed = 6;</code>
      * @param value The isClaimed to set.
      * @return This builder for chaining.
@@ -1352,6 +1372,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Search for external events that are claimed or not by a Workflow
+     * </pre>
+     *
      * <code>optional bool is_claimed = 6;</code>
      * @return This builder for chaining.
      */

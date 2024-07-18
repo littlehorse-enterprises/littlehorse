@@ -11,6 +11,7 @@ import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
 import io.littlehorse.sdk.common.proto.ExternalEventIdList;
 import io.littlehorse.sdk.common.proto.SearchExternalEventRequest;
@@ -37,7 +38,6 @@ public class SearchExternalEventRequestModel
                 ExternalEventIdModel,
                 SearchExternalEventReply> {
 
-    private String externalEventDefName;
     private Date earliestStart;
     private Date latestStart;
     private ExternalEventDefIdModel externalEventDefId;

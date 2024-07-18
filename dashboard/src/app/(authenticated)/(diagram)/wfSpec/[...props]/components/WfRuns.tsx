@@ -54,7 +54,7 @@ export const WfRuns: FC<WfSpec> = spec => {
       <WfRunsHeader currentStatus={status} currentWindow={window} setWindow={setWindow} spec={spec} />
       {isPending ? (
         <div className="flex min-h-[360px] items-center justify-center text-center">
-          <RefreshCwIcon className="h-8 w-8 animate-spin fill-blue-500 stroke-none" />
+          <RefreshCwIcon className="h-8 w-8 animate-spin text-blue-500" />
         </div>
       ) : (
         <div className="flex min-h-[360px] flex-col gap-4">

@@ -850,16 +850,19 @@ export interface SearchExternalEventRequest {
   limit?:
     | number
     | undefined;
-  /** Specifies to return only Principals's created after this time */
+  /** Specifies to return only ExternalEvents created after this time */
   earliestStart?:
     | string
     | undefined;
-  /** Specifies to return only Principals's created before this time */
+  /** Specifies to return only ExternalEvents created before this time */
   latestStart?:
     | string
     | undefined;
-  /** Search for external event definitions by Id */
-  externalEventDefId: ExternalEventDefId | undefined;
+  /** Search for external events by Id */
+  externalEventDefId:
+    | ExternalEventDefId
+    | undefined;
+  /** Search for external events that are claimed or not by a Workflow */
   isClaimed?: boolean | undefined;
 }
 

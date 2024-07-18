@@ -829,15 +829,16 @@ message SearchExternalEventRequest {
   // Maximum results to return in one request.
   optional int32 limit = 2;
 
-  // Specifies to return only Principals's created after this time
+  // Specifies to return only ExternalEvents created after this time
   optional google.protobuf.Timestamp earliest_start = 3;
 
-  // Specifies to return only Principals's created before this time
+  // Specifies to return only ExternalEvents created before this time
   optional google.protobuf.Timestamp latest_start = 4;
 
-  // Search for external event definitions by Id
+  // Search for external events by Id
   ExternalEventDefId external_event_def_id = 5;
 
+  // Search for external events that are claimed or not by a Workflow
   optional bool is_claimed = 6;
 }
 

@@ -2914,13 +2914,14 @@ type SearchExternalEventRequest struct {
 	Bookmark []byte `protobuf:"bytes,1,opt,name=bookmark,proto3,oneof" json:"bookmark,omitempty"`
 	// Maximum results to return in one request.
 	Limit *int32 `protobuf:"varint,2,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
-	// Specifies to return only Principals's created after this time
+	// Specifies to return only ExternalEvents created after this time
 	EarliestStart *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=earliest_start,json=earliestStart,proto3,oneof" json:"earliest_start,omitempty"`
-	// Specifies to return only Principals's created before this time
+	// Specifies to return only ExternalEvents created before this time
 	LatestStart *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=latest_start,json=latestStart,proto3,oneof" json:"latest_start,omitempty"`
-	// Search for external event definitions by Id
+	// Search for external events by Id
 	ExternalEventDefId *ExternalEventDefId `protobuf:"bytes,5,opt,name=external_event_def_id,json=externalEventDefId,proto3" json:"external_event_def_id,omitempty"`
-	IsClaimed          *bool               `protobuf:"varint,6,opt,name=is_claimed,json=isClaimed,proto3,oneof" json:"is_claimed,omitempty"`
+	// Search for external events that are claimed or not by a Workflow
+	IsClaimed *bool `protobuf:"varint,6,opt,name=is_claimed,json=isClaimed,proto3,oneof" json:"is_claimed,omitempty"`
 }
 
 func (x *SearchExternalEventRequest) Reset() {
