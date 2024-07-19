@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { ExternalEventDef as ExternalEventDefProto } from 'littlehorse-client/proto'
+import { ExternalEventDefId, ExternalEventDef as ExternalEventDefProto } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, Fragment, useState } from 'react'
@@ -35,10 +35,8 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
         tenantId,
         bookmarkAsString: pageParam,
         limit,
-        externalEventDefNameAndStatus: {
-          externalEventDefName: spec.id?.name ?? '',
-          isClaimed,
-        },
+        externalEventDefId:  ExternalEventDefId.create({name: spec.id?.name}),
+        isClaimed: isClaimed
         // earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
         // latestStart: createdBefore ? localDateTimeToUTCIsoString(createdBefore) : undefined,
       })
