@@ -443,8 +443,8 @@ public class BackendInternalComms implements Closeable {
         asyncWaiters.registerWorkflowEventHappened(event);
     }
 
-    public void handleRebalance(Set<TaskId> taskIds) {
-        asyncWaiters.handleRebalance(taskIds);
+    public void handleRebalance(Set<TaskId> newActiveTaskIds) {
+        asyncWaiters.handleRebalance(newActiveTaskIds);
     }
 
     /*

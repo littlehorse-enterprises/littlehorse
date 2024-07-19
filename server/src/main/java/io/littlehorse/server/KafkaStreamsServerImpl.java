@@ -1139,6 +1139,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     }
 
     public void drainPartitionTaskQueue(TaskId streamsTaskId) {
+        log.debug("Draining partition task queue for: {}", streamsTaskId);
         taskQueueManager.drainPartition(streamsTaskId);
     }
 

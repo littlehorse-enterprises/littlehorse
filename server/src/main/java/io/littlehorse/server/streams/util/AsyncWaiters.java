@@ -12,6 +12,7 @@ import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import lombok.extern.slf4j.Slf4j;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import org.apache.kafka.streams.processor.TaskId;
 
+@Slf4j
 public class AsyncWaiters {
 
     private final ConcurrentHashMap<String, CommandWaiter> commandWaiters;
@@ -53,6 +55,7 @@ public class AsyncWaiters {
     }
 
     public void markCommandFailed(String commandId, Exception exception) {
+        log.debug("Marking comand {} failed with exception {}", exception);
         CommandWaiter tmp = new CommandWaiter(commandId, -1);
         CommandWaiter waiter = commandWaiters.putIfAbsent(commandId, tmp);
         if (waiter == null) waiter = tmp;
