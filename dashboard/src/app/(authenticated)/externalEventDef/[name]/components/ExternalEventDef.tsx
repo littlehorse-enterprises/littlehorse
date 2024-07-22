@@ -4,6 +4,7 @@ import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
@@ -59,7 +60,7 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
           <Label htmlFor="isClaimed">Is Claimed</Label>
         </div>
       </div>
-      {/* <div className="mb-5 flex max-w-fit items-start justify-between">
+      <div className="mb-5 flex max-w-fit items-start justify-between">
         <div className="flex items-center justify-between">
           <Label>Created after:</Label>
           <Input
@@ -79,7 +80,7 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
             className="focus:shadow-outline ml-4 w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
           />
         </div>
-      </div> */}
+      </div>
 
       {isPending ? (
         <div className="flex min-h-[360px] items-center justify-center text-center">
