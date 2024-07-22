@@ -1,10 +1,10 @@
-import { WfRun, WfSpec } from 'littlehorse-client/proto';
-import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { FC, useMemo } from 'react';
-import { useReplaceQueryValue } from '../hooks/useReplaceQueryValue';
-import { useScrollbar } from '../hooks/useScrollbar';
-import { useThread } from '../hooks/useThread';
+import { WfRun, WfSpec } from 'littlehorse-client/proto'
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { FC, useMemo } from 'react'
+import { useReplaceQueryValue } from '../hooks/useReplaceQueryValue'
+import { useScrollbar } from '../hooks/useScrollbar'
+import { useThread } from '../hooks/useThread'
 
 export const ThreadPanel: FC<{ spec: WfSpec; wfRun?: WfRun }> = ({ spec, wfRun }) => {
   const { thread, setThread } = useThread()
