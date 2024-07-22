@@ -33,9 +33,13 @@ export const searchExternalEvent = async ({
   const externalEvevntIdList: ExternalEventIdList = await client.searchExternalEvent(requestWithBookmark)
   const hydrateWithExternalEventDetails = (): Promise<runDetails>[] => {
     return externalEvevntIdList.results.map(async (externalEvevntId: ExternalEventId) => {
+      if (!externalEvevntId.externalEventDefId) {
+        throw new Error('externalEventDefId is required')
+      }
       const externalEvent = await client.getExternalEvent({
         wfRunId: externalEvevntId.wfRunId,
         guid: externalEvevntId.guid,
+        externalEventDefId: externalEvevntId.externalEventDefId,
       })
       const nodeRun = await client.getNodeRun(externalEvent.id!)
 
