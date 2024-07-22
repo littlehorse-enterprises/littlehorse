@@ -3,15 +3,12 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
 import io.littlehorse.sdk.common.proto.ExternalEventIdList;
 import io.littlehorse.sdk.common.proto.SearchExternalEventRequest;
@@ -19,7 +16,6 @@ import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
-import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
@@ -41,7 +37,7 @@ public class SearchExternalEventRequestModel
     private Date earliestStart;
     private Date latestStart;
     private ExternalEventDefIdModel externalEventDefId;
-    private Optional<Boolean> isClaimed = Optional.empty();
+    private Boolean isClaimed = null;
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.EXTERNAL_EVENT;
@@ -69,7 +65,7 @@ public class SearchExternalEventRequestModel
         externalEventDefId =
                 ExternalEventDefIdModel.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
 
-        if (p.hasIsClaimed()) isClaimed = Optional.of(p.getIsClaimed());
+        if (p.hasIsClaimed()) isClaimed = p.getIsClaimed();
     }
 
     public SearchExternalEventRequest.Builder toProto() {
@@ -84,37 +80,23 @@ public class SearchExternalEventRequestModel
 
         builder.setExternalEventDefId(externalEventDefId.toProto());
 
-        if (isClaimed.isPresent()) builder.setIsClaimed(isClaimed.get());
+        if (isClaimed != null) builder.setIsClaimed(isClaimed);
 
         return builder;
     }
 
     public List<Attribute> getSearchAttributes() {
-        if (isClaimed.isPresent())
+        if (isClaimed != null)
             return List.of(
-                    new Attribute("externalEventDefId", externalEventDefId.toString()),
+                    new Attribute("extEvtDefName", externalEventDefId.toString()),
                     new Attribute("isClaimed", isClaimed.toString()));
 
-        return List.of(new Attribute("externalEventDefId", externalEventDefId.toString()));
+        return List.of(new Attribute("extEvtDefName", externalEventDefId.toString()));
     }
 
     @Override
     public TagStorageType indexTypeForSearch() throws LHApiException {
-        List<String> searchAttributes =
-                getSearchAttributes().stream().map(Attribute::getEscapedKey).toList();
-        List<GetableIndex<? extends AbstractGetable<?>>> indexConfigurations =
-                new ExternalEventModel().getIndexConfigurations();
-        GetableIndex<? extends AbstractGetable<?>> getableIndex = indexConfigurations.stream()
-                .filter(getableIndexConfiguration -> {
-                    return getableIndexConfiguration.searchAttributesMatch(searchAttributes);
-                })
-                .findFirst()
-                .orElse(null);
-        if (getableIndex != null) {
-            return getableIndex.getTagStorageType().get();
-        } else {
-            return TagStorageType.LOCAL;
-        }
+        return TagStorageType.LOCAL;
     }
 
     @Override
