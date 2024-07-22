@@ -2,9 +2,8 @@
 import { Navigation } from '@/app/(authenticated)/components/Navigation'
 import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
-import { concatWfRunIds, utcToLocalDateTime } from '@/app/utils'
+import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
@@ -35,10 +34,10 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
         tenantId,
         bookmarkAsString: pageParam,
         limit,
-        externalEventDefId:  ExternalEventDefId.create({name: spec.id?.name}),
-        isClaimed: isClaimed
-        // earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
-        // latestStart: createdBefore ? localDateTimeToUTCIsoString(createdBefore) : undefined,
+        externalEventDefId: ExternalEventDefId.create({ name: spec.id?.name }),
+        isClaimed,
+        earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
+        latestStart: createdBefore ? localDateTimeToUTCIsoString(createdBefore) : undefined,
       })
     },
   })
