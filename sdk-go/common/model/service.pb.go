@@ -2918,9 +2918,9 @@ type SearchExternalEventRequest struct {
 	EarliestStart *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=earliest_start,json=earliestStart,proto3,oneof" json:"earliest_start,omitempty"`
 	// Specifies to return only ExternalEvents created before this time
 	LatestStart *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=latest_start,json=latestStart,proto3,oneof" json:"latest_start,omitempty"`
-	// Search for external events by Id
+	// Search for ExternalEvents by their ExternalEventDefId
 	ExternalEventDefId *ExternalEventDefId `protobuf:"bytes,5,opt,name=external_event_def_id,json=externalEventDefId,proto3" json:"external_event_def_id,omitempty"`
-	// Search for external events that are claimed or not by a Workflow
+	// Optional search for only ExternalEvents that are claimed or not
 	IsClaimed *bool `protobuf:"varint,6,opt,name=is_claimed,json=isClaimed,proto3,oneof" json:"is_claimed,omitempty"`
 }
 

@@ -178,7 +178,7 @@ private static final long serialVersionUID = 0L;
   private io.littlehorse.sdk.common.proto.ExternalEventDefId externalEventDefId_;
   /**
    * <pre>
-   * Search for external events by Id
+   * Search for ExternalEvents by their ExternalEventDefId
    * </pre>
    *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -190,7 +190,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Search for external events by Id
+   * Search for ExternalEvents by their ExternalEventDefId
    * </pre>
    *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -202,7 +202,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Search for external events by Id
+   * Search for ExternalEvents by their ExternalEventDefId
    * </pre>
    *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -216,7 +216,7 @@ private static final long serialVersionUID = 0L;
   private boolean isClaimed_ = false;
   /**
    * <pre>
-   * Search for external events that are claimed or not by a Workflow
+   * Optional search for only ExternalEvents that are claimed or not
    * </pre>
    *
    * <code>optional bool is_claimed = 6;</code>
@@ -228,7 +228,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Search for external events that are claimed or not by a Workflow
+   * Optional search for only ExternalEvents that are claimed or not
    * </pre>
    *
    * <code>optional bool is_claimed = 6;</code>
@@ -1180,7 +1180,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.ExternalEventDefId, io.littlehorse.sdk.common.proto.ExternalEventDefId.Builder, io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder> externalEventDefIdBuilder_;
     /**
      * <pre>
-     * Search for external events by Id
+     * Search for ExternalEvents by their ExternalEventDefId
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1191,7 +1191,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external events by Id
+     * Search for ExternalEvents by their ExternalEventDefId
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1206,7 +1206,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external events by Id
+     * Search for ExternalEvents by their ExternalEventDefId
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1226,7 +1226,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external events by Id
+     * Search for ExternalEvents by their ExternalEventDefId
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1244,7 +1244,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external events by Id
+     * Search for ExternalEvents by their ExternalEventDefId
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1267,7 +1267,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external events by Id
+     * Search for ExternalEvents by their ExternalEventDefId
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1284,7 +1284,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external events by Id
+     * Search for ExternalEvents by their ExternalEventDefId
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1296,7 +1296,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external events by Id
+     * Search for ExternalEvents by their ExternalEventDefId
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1311,7 +1311,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external events by Id
+     * Search for ExternalEvents by their ExternalEventDefId
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1333,7 +1333,7 @@ private static final long serialVersionUID = 0L;
     private boolean isClaimed_ ;
     /**
      * <pre>
-     * Search for external events that are claimed or not by a Workflow
+     * Optional search for only ExternalEvents that are claimed or not
      * </pre>
      *
      * <code>optional bool is_claimed = 6;</code>
@@ -1345,7 +1345,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external events that are claimed or not by a Workflow
+     * Optional search for only ExternalEvents that are claimed or not
      * </pre>
      *
      * <code>optional bool is_claimed = 6;</code>
@@ -1357,7 +1357,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external events that are claimed or not by a Workflow
+     * Optional search for only ExternalEvents that are claimed or not
      * </pre>
      *
      * <code>optional bool is_claimed = 6;</code>
@@ -1373,7 +1373,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Search for external events that are claimed or not by a Workflow
+     * Optional search for only ExternalEvents that are claimed or not
      * </pre>
      *
      * <code>optional bool is_claimed = 6;</code>

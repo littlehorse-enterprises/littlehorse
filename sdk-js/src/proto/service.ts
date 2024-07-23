@@ -858,11 +858,11 @@ export interface SearchExternalEventRequest {
   latestStart?:
     | string
     | undefined;
-  /** Search for external events by Id */
+  /** Search for ExternalEvents by their ExternalEventDefId */
   externalEventDefId:
     | ExternalEventDefId
     | undefined;
-  /** Search for external events that are claimed or not by a Workflow */
+  /** Optional search for only ExternalEvents that are claimed or not */
   isClaimed?: boolean | undefined;
 }
 

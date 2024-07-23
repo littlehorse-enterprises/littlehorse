@@ -835,10 +835,10 @@ message SearchExternalEventRequest {
   // Specifies to return only ExternalEvents created before this time
   optional google.protobuf.Timestamp latest_start = 4;
 
-  // Search for external events by Id
+  // Search for ExternalEvents by their ExternalEventDefId
   ExternalEventDefId external_event_def_id = 5;
 
-  // Search for external events that are claimed or not by a Workflow
+  // Optional search for only ExternalEvents that are claimed or not
   optional bool is_claimed = 6;
 }
 

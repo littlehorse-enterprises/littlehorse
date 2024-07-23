@@ -101,7 +101,7 @@ public interface SearchExternalEventRequestOrBuilder extends
 
   /**
    * <pre>
-   * Search for external events by Id
+   * Search for ExternalEvents by their ExternalEventDefId
    * </pre>
    *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -110,7 +110,7 @@ public interface SearchExternalEventRequestOrBuilder extends
   boolean hasExternalEventDefId();
   /**
    * <pre>
-   * Search for external events by Id
+   * Search for ExternalEvents by their ExternalEventDefId
    * </pre>
    *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -119,7 +119,7 @@ public interface SearchExternalEventRequestOrBuilder extends
   io.littlehorse.sdk.common.proto.ExternalEventDefId getExternalEventDefId();
   /**
    * <pre>
-   * Search for external events by Id
+   * Search for ExternalEvents by their ExternalEventDefId
    * </pre>
    *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -128,7 +128,7 @@ public interface SearchExternalEventRequestOrBuilder extends
 
   /**
    * <pre>
-   * Search for external events that are claimed or not by a Workflow
+   * Optional search for only ExternalEvents that are claimed or not
    * </pre>
    *
    * <code>optional bool is_claimed = 6;</code>
@@ -137,7 +137,7 @@ public interface SearchExternalEventRequestOrBuilder extends
   boolean hasIsClaimed();
   /**
    * <pre>
-   * Search for external events that are claimed or not by a Workflow
+   * Optional search for only ExternalEvents that are claimed or not
    * </pre>
    *
    * <code>optional bool is_claimed = 6;</code>

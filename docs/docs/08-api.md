@@ -1933,8 +1933,8 @@ Search for ExternalEvents based on certain criteria.
 | `limit` | optional| int32 | Maximum results to return in one request. |
 | `earliest_start` | optional| google.protobuf.Timestamp | Specifies to return only ExternalEvents created after this time |
 | `latest_start` | optional| google.protobuf.Timestamp | Specifies to return only ExternalEvents created before this time |
-| `external_event_def_id` | | [ExternalEventDefId](#externaleventdefid) | Search for external events by Id |
-| `is_claimed` | optional| bool | Search for external events that are claimed or not by a Workflow |
+| `external_event_def_id` | | [ExternalEventDefId](#externaleventdefid) | Search for ExternalEvents by their ExternalEventDefId |
+| `is_claimed` | optional| bool | Optional search for only ExternalEvents that are claimed or not |
  <!-- end Fields -->
  <!-- end HasFields -->
 

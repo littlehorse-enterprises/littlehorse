@@ -59,9 +59,9 @@ var getExternalEventCmd = &cobra.Command{
 
 var searchExternalEventCmd = &cobra.Command{
 	Use:   "externalEvent",
-	Short: "Search for ExternalEvent's by WfRunId",
+	Short: "Search for ExternalEvent's by ExternalEventDef Name",
 	Long: `
-Search for ExternalEvent's by their WfRunId.
+Search for ExternalEvent's by their ExternalEventDef Name.
 
 Returns a list of ObjectId's that can be passed into 'lhctl get externalEvent'.
 
@@ -79,7 +79,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get externalEvent'.
 
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
-		externalEventDefId, _ := cmd.Flags().GetString("externalEventDefId")
+		externalEventDefName, _ := cmd.Flags().GetString("externalEventDefName")
 		isClaimed, _ := cmd.Flags().GetBool("isClaimed")
 
 		earliest, latest := loadEarliestAndLatestStart(cmd)
@@ -90,7 +90,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get externalEvent'.
 			EarliestStart: earliest,
 			LatestStart:   latest,
 			ExternalEventDefId: &model.ExternalEventDefId{
-				Name: externalEventDefId,
+				Name: externalEventDefName,
 			},
 		}
 
@@ -133,9 +133,8 @@ func init() {
 	searchCmd.AddCommand(searchExternalEventCmd)
 	listCmd.AddCommand(listExternalEventCmd)
 
-	searchExternalEventCmd.Flags().String("externalEventDefId", "", "ExternalEventDefId of ExternalEvent's to search for")
+	searchExternalEventCmd.Flags().String("externalEventDefName", "", "ExternalEventDef Name of ExternalEvents to search for")
 	searchExternalEventCmd.Flags().Bool("isClaimed", false, "List only ExternalEvents that are claimed")
 	searchExternalEventCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for Principals that were created no more than this number of minutes ago")
 	searchExternalEventCmd.Flags().Int("latestMinutesAgo", -1, "Search only for Principals that were created at least this number of minutes ago")
-
 }
