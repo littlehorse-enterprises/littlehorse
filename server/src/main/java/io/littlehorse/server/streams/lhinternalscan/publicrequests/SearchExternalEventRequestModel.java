@@ -1,7 +1,6 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
-
 import io.grpc.Status;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -104,10 +103,11 @@ public class SearchExternalEventRequestModel
         if (externalEventDefId.getName().isBlank()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument: ExternalEventDefId.");
         }
-        
+
         if (context.service().getExternalEventDef(externalEventDefId.getName()) == null) {
             throw new LHApiException(
-                Status.INVALID_ARGUMENT, "ExternalEventDef \"%s\" does not exist.".formatted(externalEventDefId.getName()));
+                    Status.INVALID_ARGUMENT,
+                    "ExternalEventDef \"%s\" does not exist.".formatted(externalEventDefId.getName()));
         }
 
         return TagStorageType.LOCAL;
