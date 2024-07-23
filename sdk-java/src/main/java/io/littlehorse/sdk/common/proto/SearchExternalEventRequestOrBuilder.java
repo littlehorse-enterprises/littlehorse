@@ -46,34 +46,111 @@ public interface SearchExternalEventRequestOrBuilder extends
   int getLimit();
 
   /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   * @return Whether the wfRunId field is set.
+   * <pre>
+   * Specifies to return only ExternalEvents created after this time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+   * @return Whether the earliestStart field is set.
    */
-  boolean hasWfRunId();
+  boolean hasEarliestStart();
   /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   * @return The wfRunId.
+   * <pre>
+   * Specifies to return only ExternalEvents created after this time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
+   * @return The earliestStart.
    */
-  io.littlehorse.sdk.common.proto.WfRunId getWfRunId();
+  com.google.protobuf.Timestamp getEarliestStart();
   /**
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
+   * <pre>
+   * Specifies to return only ExternalEvents created after this time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp earliest_start = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder();
+  com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder();
 
   /**
-   * <code>.littlehorse.SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest external_event_def_name_and_status = 4;</code>
-   * @return Whether the externalEventDefNameAndStatus field is set.
+   * <pre>
+   * Specifies to return only ExternalEvents created before this time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+   * @return Whether the latestStart field is set.
    */
-  boolean hasExternalEventDefNameAndStatus();
+  boolean hasLatestStart();
   /**
-   * <code>.littlehorse.SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest external_event_def_name_and_status = 4;</code>
-   * @return The externalEventDefNameAndStatus.
+   * <pre>
+   * Specifies to return only ExternalEvents created before this time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
+   * @return The latestStart.
    */
-  io.littlehorse.sdk.common.proto.SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest getExternalEventDefNameAndStatus();
+  com.google.protobuf.Timestamp getLatestStart();
   /**
-   * <code>.littlehorse.SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest external_event_def_name_and_status = 4;</code>
+   * <pre>
+   * Specifies to return only ExternalEvents created before this time
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp latest_start = 4;</code>
    */
-  io.littlehorse.sdk.common.proto.SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequestOrBuilder getExternalEventDefNameAndStatusOrBuilder();
+  com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder();
 
-  io.littlehorse.sdk.common.proto.SearchExternalEventRequest.ExtEvtCriteriaCase getExtEvtCriteriaCase();
+  /**
+   * <pre>
+   * Search for ExternalEvents by their ExternalEventDefId
+   *
+   * * Note: If ExternalEventDefId is not provided or does not exist,
+   *         gRPC status code 'INVALID_ARGUMENT' will be returned.
+   * </pre>
+   *
+   * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
+   * @return Whether the externalEventDefId field is set.
+   */
+  boolean hasExternalEventDefId();
+  /**
+   * <pre>
+   * Search for ExternalEvents by their ExternalEventDefId
+   *
+   * * Note: If ExternalEventDefId is not provided or does not exist,
+   *         gRPC status code 'INVALID_ARGUMENT' will be returned.
+   * </pre>
+   *
+   * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
+   * @return The externalEventDefId.
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventDefId getExternalEventDefId();
+  /**
+   * <pre>
+   * Search for ExternalEvents by their ExternalEventDefId
+   *
+   * * Note: If ExternalEventDefId is not provided or does not exist,
+   *         gRPC status code 'INVALID_ARGUMENT' will be returned.
+   * </pre>
+   *
+   * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefIdOrBuilder();
+
+  /**
+   * <pre>
+   * Optionally search for only ExternalEvents that are claimed or not.
+   * </pre>
+   *
+   * <code>optional bool is_claimed = 6;</code>
+   * @return Whether the isClaimed field is set.
+   */
+  boolean hasIsClaimed();
+  /**
+   * <pre>
+   * Optionally search for only ExternalEvents that are claimed or not.
+   * </pre>
+   *
+   * <code>optional bool is_claimed = 6;</code>
+   * @return The isClaimed.
+   */
+  boolean getIsClaimed();
 }

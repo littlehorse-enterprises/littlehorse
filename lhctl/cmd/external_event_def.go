@@ -129,7 +129,7 @@ func init() {
 	deployCmd.AddCommand(deployExternalEventDefCmd)
 
 	searchCmd.AddCommand(searchExternalEventDefCmd)
-	searchExternalEventCommand.Flags().String("prefix", "", "Prefix of name of ExternalEventDefs to search for.")
+	searchExternalEventCmd.Flags().String("prefix", "", "Prefix of name of ExternalEventDefs to search for.")
 
 	deleteCmd.AddCommand(deleteExternalEventDefCmd)
 }
