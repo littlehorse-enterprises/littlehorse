@@ -2486,7 +2486,7 @@ func (x *WfSpecIdList) GetBookmark() []byte {
 	return nil
 }
 
-// Search for ExternalEventDef's.
+// Search for ExternalEventDefs based on certain criteria.
 type SearchExternalEventDefRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -2905,6 +2905,11 @@ func (x *PrincipalIdList) GetBookmark() []byte {
 }
 
 // Search for ExternalEvents based on certain criteria.
+//
+// Required field ExternalEventDefId specifies which ExternalEventDef
+// to search for ExternalEvents under.
+//
+// At this time, it is not possible to make a search for all ExternalEvents.
 type SearchExternalEventRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -2919,8 +2924,11 @@ type SearchExternalEventRequest struct {
 	// Specifies to return only ExternalEvents created before this time
 	LatestStart *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=latest_start,json=latestStart,proto3,oneof" json:"latest_start,omitempty"`
 	// Search for ExternalEvents by their ExternalEventDefId
+	//
+	// * Note: If ExternalEventDefId is not provided or does not exist,
+	//         gRPC status code 'INVALID_ARGUMENT' will be returned.
 	ExternalEventDefId *ExternalEventDefId `protobuf:"bytes,5,opt,name=external_event_def_id,json=externalEventDefId,proto3" json:"external_event_def_id,omitempty"`
-	// Optional search for only ExternalEvents that are claimed or not
+	// Optionally search for only ExternalEvents that are claimed or not.
 	IsClaimed *bool `protobuf:"varint,6,opt,name=is_claimed,json=isClaimed,proto3,oneof" json:"is_claimed,omitempty"`
 }
 

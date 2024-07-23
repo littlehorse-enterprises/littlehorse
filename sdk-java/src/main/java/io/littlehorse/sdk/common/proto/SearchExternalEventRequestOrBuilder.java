@@ -102,6 +102,9 @@ public interface SearchExternalEventRequestOrBuilder extends
   /**
    * <pre>
    * Search for ExternalEvents by their ExternalEventDefId
+   *
+   * * Note: If ExternalEventDefId is not provided or does not exist,
+   *         gRPC status code 'INVALID_ARGUMENT' will be returned.
    * </pre>
    *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -111,6 +114,9 @@ public interface SearchExternalEventRequestOrBuilder extends
   /**
    * <pre>
    * Search for ExternalEvents by their ExternalEventDefId
+   *
+   * * Note: If ExternalEventDefId is not provided or does not exist,
+   *         gRPC status code 'INVALID_ARGUMENT' will be returned.
    * </pre>
    *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -120,6 +126,9 @@ public interface SearchExternalEventRequestOrBuilder extends
   /**
    * <pre>
    * Search for ExternalEvents by their ExternalEventDefId
+   *
+   * * Note: If ExternalEventDefId is not provided or does not exist,
+   *         gRPC status code 'INVALID_ARGUMENT' will be returned.
    * </pre>
    *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -128,7 +137,7 @@ public interface SearchExternalEventRequestOrBuilder extends
 
   /**
    * <pre>
-   * Optional search for only ExternalEvents that are claimed or not
+   * Optionally search for only ExternalEvents that are claimed or not.
    * </pre>
    *
    * <code>optional bool is_claimed = 6;</code>
@@ -137,7 +146,7 @@ public interface SearchExternalEventRequestOrBuilder extends
   boolean hasIsClaimed();
   /**
    * <pre>
-   * Optional search for only ExternalEvents that are claimed or not
+   * Optionally search for only ExternalEvents that are claimed or not.
    * </pre>
    *
    * <code>optional bool is_claimed = 6;</code>

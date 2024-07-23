@@ -6,6 +6,11 @@ package io.littlehorse.sdk.common.proto;
 /**
  * <pre>
  * Search for ExternalEvents based on certain criteria.
+ *
+ * Required field ExternalEventDefId specifies which ExternalEventDef
+ * to search for ExternalEvents under.
+ *
+ * At this time, it is not possible to make a search for all ExternalEvents.
  * </pre>
  *
  * Protobuf type {@code littlehorse.SearchExternalEventRequest}
@@ -179,6 +184,9 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * Search for ExternalEvents by their ExternalEventDefId
+   *
+   * * Note: If ExternalEventDefId is not provided or does not exist,
+   *         gRPC status code 'INVALID_ARGUMENT' will be returned.
    * </pre>
    *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -191,6 +199,9 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * Search for ExternalEvents by their ExternalEventDefId
+   *
+   * * Note: If ExternalEventDefId is not provided or does not exist,
+   *         gRPC status code 'INVALID_ARGUMENT' will be returned.
    * </pre>
    *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -203,6 +214,9 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * Search for ExternalEvents by their ExternalEventDefId
+   *
+   * * Note: If ExternalEventDefId is not provided or does not exist,
+   *         gRPC status code 'INVALID_ARGUMENT' will be returned.
    * </pre>
    *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -216,7 +230,7 @@ private static final long serialVersionUID = 0L;
   private boolean isClaimed_ = false;
   /**
    * <pre>
-   * Optional search for only ExternalEvents that are claimed or not
+   * Optionally search for only ExternalEvents that are claimed or not.
    * </pre>
    *
    * <code>optional bool is_claimed = 6;</code>
@@ -228,7 +242,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Optional search for only ExternalEvents that are claimed or not
+   * Optionally search for only ExternalEvents that are claimed or not.
    * </pre>
    *
    * <code>optional bool is_claimed = 6;</code>
@@ -485,6 +499,11 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * Search for ExternalEvents based on certain criteria.
+   *
+   * Required field ExternalEventDefId specifies which ExternalEventDef
+   * to search for ExternalEvents under.
+   *
+   * At this time, it is not possible to make a search for all ExternalEvents.
    * </pre>
    *
    * Protobuf type {@code littlehorse.SearchExternalEventRequest}
@@ -1181,6 +1200,9 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Search for ExternalEvents by their ExternalEventDefId
+     *
+     * * Note: If ExternalEventDefId is not provided or does not exist,
+     *         gRPC status code 'INVALID_ARGUMENT' will be returned.
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1192,6 +1214,9 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Search for ExternalEvents by their ExternalEventDefId
+     *
+     * * Note: If ExternalEventDefId is not provided or does not exist,
+     *         gRPC status code 'INVALID_ARGUMENT' will be returned.
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1207,6 +1232,9 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Search for ExternalEvents by their ExternalEventDefId
+     *
+     * * Note: If ExternalEventDefId is not provided or does not exist,
+     *         gRPC status code 'INVALID_ARGUMENT' will be returned.
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1227,6 +1255,9 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Search for ExternalEvents by their ExternalEventDefId
+     *
+     * * Note: If ExternalEventDefId is not provided or does not exist,
+     *         gRPC status code 'INVALID_ARGUMENT' will be returned.
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1245,6 +1276,9 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Search for ExternalEvents by their ExternalEventDefId
+     *
+     * * Note: If ExternalEventDefId is not provided or does not exist,
+     *         gRPC status code 'INVALID_ARGUMENT' will be returned.
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1268,6 +1302,9 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Search for ExternalEvents by their ExternalEventDefId
+     *
+     * * Note: If ExternalEventDefId is not provided or does not exist,
+     *         gRPC status code 'INVALID_ARGUMENT' will be returned.
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1285,6 +1322,9 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Search for ExternalEvents by their ExternalEventDefId
+     *
+     * * Note: If ExternalEventDefId is not provided or does not exist,
+     *         gRPC status code 'INVALID_ARGUMENT' will be returned.
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1297,6 +1337,9 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Search for ExternalEvents by their ExternalEventDefId
+     *
+     * * Note: If ExternalEventDefId is not provided or does not exist,
+     *         gRPC status code 'INVALID_ARGUMENT' will be returned.
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1312,6 +1355,9 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * Search for ExternalEvents by their ExternalEventDefId
+     *
+     * * Note: If ExternalEventDefId is not provided or does not exist,
+     *         gRPC status code 'INVALID_ARGUMENT' will be returned.
      * </pre>
      *
      * <code>.littlehorse.ExternalEventDefId external_event_def_id = 5;</code>
@@ -1333,7 +1379,7 @@ private static final long serialVersionUID = 0L;
     private boolean isClaimed_ ;
     /**
      * <pre>
-     * Optional search for only ExternalEvents that are claimed or not
+     * Optionally search for only ExternalEvents that are claimed or not.
      * </pre>
      *
      * <code>optional bool is_claimed = 6;</code>
@@ -1345,7 +1391,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional search for only ExternalEvents that are claimed or not
+     * Optionally search for only ExternalEvents that are claimed or not.
      * </pre>
      *
      * <code>optional bool is_claimed = 6;</code>
@@ -1357,7 +1403,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional search for only ExternalEvents that are claimed or not
+     * Optionally search for only ExternalEvents that are claimed or not.
      * </pre>
      *
      * <code>optional bool is_claimed = 6;</code>
@@ -1373,7 +1419,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional search for only ExternalEvents that are claimed or not
+     * Optionally search for only ExternalEvents that are claimed or not.
      * </pre>
      *
      * <code>optional bool is_claimed = 6;</code>

@@ -1,6 +1,8 @@
 package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+
+import io.grpc.Status;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
@@ -38,6 +40,7 @@ public class SearchExternalEventRequestModel
     private Date latestStart;
     private ExternalEventDefIdModel externalEventDefId;
     private Boolean isClaimed = null;
+    private ExecutionContext context;
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.EXTERNAL_EVENT;
@@ -66,6 +69,8 @@ public class SearchExternalEventRequestModel
                 ExternalEventDefIdModel.fromProto(p.getExternalEventDefId(), ExternalEventDefIdModel.class, context);
 
         if (p.hasIsClaimed()) isClaimed = p.getIsClaimed();
+
+        this.context = context;
     }
 
     public SearchExternalEventRequest.Builder toProto() {
@@ -96,6 +101,15 @@ public class SearchExternalEventRequestModel
 
     @Override
     public TagStorageType indexTypeForSearch() throws LHApiException {
+        if (externalEventDefId.getName().isBlank()) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument: ExternalEventDefId.");
+        }
+        
+        if (context.service().getExternalEventDef(externalEventDefId.getName()) == null) {
+            throw new LHApiException(
+                Status.INVALID_ARGUMENT, "ExternalEventDef \"%s\" does not exist.".formatted(externalEventDefId.getName()));
+        }
+
         return TagStorageType.LOCAL;
     }
 

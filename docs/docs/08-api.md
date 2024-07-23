@@ -1909,7 +1909,7 @@ This is used and handled internally by the Task Worker SDK.
 
 ### Message `SearchExternalEventDefRequest` {#searchexternaleventdefrequest}
 
-Search for ExternalEventDef's.
+Search for ExternalEventDefs based on certain criteria.
 
 
 | Field | Label | Type | Description |
@@ -1926,6 +1926,11 @@ Search for ExternalEventDef's.
 
 Search for ExternalEvents based on certain criteria.
 
+Required field ExternalEventDefId specifies which ExternalEventDef
+to search for ExternalEvents under.
+
+At this time, it is not possible to make a search for all ExternalEvents.
+
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
@@ -1933,8 +1938,8 @@ Search for ExternalEvents based on certain criteria.
 | `limit` | optional| int32 | Maximum results to return in one request. |
 | `earliest_start` | optional| google.protobuf.Timestamp | Specifies to return only ExternalEvents created after this time |
 | `latest_start` | optional| google.protobuf.Timestamp | Specifies to return only ExternalEvents created before this time |
-| `external_event_def_id` | | [ExternalEventDefId](#externaleventdefid) | Search for ExternalEvents by their ExternalEventDefId |
-| `is_claimed` | optional| bool | Optional search for only ExternalEvents that are claimed or not |
+| `external_event_def_id` | | [ExternalEventDefId](#externaleventdefid) | Search for ExternalEvents by their ExternalEventDefId<br/><br/>* Note: If ExternalEventDefId is not provided or does not exist,         gRPC status code 'INVALID_ARGUMENT' will be returned. |
+| `is_claimed` | optional| bool | Optionally search for only ExternalEvents that are claimed or not. |
  <!-- end Fields -->
  <!-- end HasFields -->
 

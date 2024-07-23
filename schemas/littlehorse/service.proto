@@ -757,7 +757,7 @@ message WfSpecIdList {
   optional bytes bookmark = 2;
 }
 
-// Search for ExternalEventDef's.
+// Search for ExternalEventDefs based on certain criteria.
 message SearchExternalEventDefRequest {
   // Bookmark for cursor-based pagination; pass if applicable.
   optional bytes bookmark = 1;
@@ -823,6 +823,11 @@ message PrincipalIdList {
 }
 
 // Search for ExternalEvents based on certain criteria.
+//
+// Required field ExternalEventDefId specifies which ExternalEventDef
+// to search for ExternalEvents under.
+//
+// At this time, it is not possible to make a search for all ExternalEvents.
 message SearchExternalEventRequest {
   // Bookmark for cursor-based pagination; pass if applicable.
   optional bytes bookmark = 1;
@@ -836,9 +841,12 @@ message SearchExternalEventRequest {
   optional google.protobuf.Timestamp latest_start = 4;
 
   // Search for ExternalEvents by their ExternalEventDefId
+  //
+  // * Note: If ExternalEventDefId is not provided or does not exist,
+  //         gRPC status code 'INVALID_ARGUMENT' will be returned.
   ExternalEventDefId external_event_def_id = 5;
 
-  // Optional search for only ExternalEvents that are claimed or not
+  // Optionally search for only ExternalEvents that are claimed or not.
   optional bool is_claimed = 6;
 }
 

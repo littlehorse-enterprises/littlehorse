@@ -764,7 +764,7 @@ export interface WfSpecIdList {
   bookmark?: Buffer | undefined;
 }
 
-/** Search for ExternalEventDef's. */
+/** Search for ExternalEventDefs based on certain criteria. */
 export interface SearchExternalEventDefRequest {
   /** Bookmark for cursor-based pagination; pass if applicable. */
   bookmark?:
@@ -840,7 +840,14 @@ export interface PrincipalIdList {
   bookmark?: Buffer | undefined;
 }
 
-/** Search for ExternalEvents based on certain criteria. */
+/**
+ * Search for ExternalEvents based on certain criteria.
+ *
+ * Required field ExternalEventDefId specifies which ExternalEventDef
+ * to search for ExternalEvents under.
+ *
+ * At this time, it is not possible to make a search for all ExternalEvents.
+ */
 export interface SearchExternalEventRequest {
   /** Bookmark for cursor-based pagination; pass if applicable. */
   bookmark?:
@@ -858,11 +865,16 @@ export interface SearchExternalEventRequest {
   latestStart?:
     | string
     | undefined;
-  /** Search for ExternalEvents by their ExternalEventDefId */
+  /**
+   * Search for ExternalEvents by their ExternalEventDefId
+   *
+   * * Note: If ExternalEventDefId is not provided or does not exist,
+   *         gRPC status code 'INVALID_ARGUMENT' will be returned.
+   */
   externalEventDefId:
     | ExternalEventDefId
     | undefined;
-  /** Optional search for only ExternalEvents that are claimed or not */
+  /** Optionally search for only ExternalEvents that are claimed or not. */
   isClaimed?: boolean | undefined;
 }
 
