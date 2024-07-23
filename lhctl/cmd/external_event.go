@@ -61,9 +61,19 @@ var searchExternalEventCmd = &cobra.Command{
 	Use:   "externalEvent",
 	Short: "Search for ExternalEvent's by WfRunId",
 	Long: `
-Search for ExternalEvent's by the WfRunId.
+Search for ExternalEvent's by their WfRunId.
 
 Returns a list of ObjectId's that can be passed into 'lhctl get externalEvent'.
+
+* Note: '--isClaimed' is a Boolean flag with 3 states:
+	- return ALL (flag is not present)
+	- return only TRUE (flag is present or reads '--isClaimed=true')
+	- return only FALSE (flag reads '--isClaimed=false')
+
+* Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
+	options with this group to put a time bound on ExternalEvents which are
+	returned. The time bound applies to the time that the ExternalEvents
+	were created.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 
