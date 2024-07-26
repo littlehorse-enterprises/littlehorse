@@ -68,7 +68,7 @@ At LittleHorse, we spent almost two years developing a cutting-edge system from 
 
 ### Connect to Anything
 
-LittleHorse has clients in Java, Go, and Python, with a .NET release coming in `0.6.0`. This allows you to easily integrate existing systems into a LittleHorse Workflow with minimal code change (in Java, for example, all you need to do to turn a Method into a LittleHorse Task Worker is add the `@LHTaskMethod` annotation).
+LittleHorse has clients in Java, Go, and Python. This allows you to easily integrate existing systems into a LittleHorse Workflow with minimal code change (in Java, for example, all you need to do to turn a Method into a LittleHorse Task Worker is add the `@LHTaskMethod` annotation).
 
 Additionally, LittleHorse supports integration with external systems through the [External Event](./04-concepts/04-external-events.md) feature, which allows LittleHorse Workflows to respond to events originating outside of the LittleHorse ecosystem.
 
@@ -80,13 +80,13 @@ Due to the synchronous nature of LittleHorse replication, we support an RPO of z
 
 ### Highly Secure
 
-LittleHorse natively implements OAuth, TLS, and mTLS for authentication and encryption. Release `0.7.0` will include fine-grained ACL's to further lock down the system. Additionally, LittleHorse can be deployed into your own infrastructure (on-prem, private, or public cloud) so that no data leaves your four walls.
+LittleHorse natively implements OAuth, TLS, and mTLS for authentication and encryption. LittleHorse also supports fine-grained ACL's to further lock down the system. Additionally, LittleHorse can be deployed into your own infrastructure (on-prem, private, or public cloud) so that no data leaves your four walls.
 
 ### High Performance
 
 The LittleHorse Scheduler can scale horizontally to dozens or hundreds of servers. With only a handful of LH Server `Pod`s utlizing a total of just 48 cores on AWS EKS, we were able to schedule over 15,000 tasks per second. We are confident that LittleHorse can scale to meet the demands of any customer's use case.
 
-Additionally, LittleHorse is high-performance system that introduces minimal delay. The latency between a Task being completed and the next Task being scheduled can be as low as 12-20ms; for comparison, a leading competitor's delays can 100-300ms.
+Additionally, LittleHorse is high-performance system that introduces minimal delay. The latency between a Task being completed and the next Task being scheduled can be as low as 12-20ms; for comparison, a leading competitor's delays can reach 100-300ms.
 
 ### User Tasks
 
