@@ -6,7 +6,7 @@ on:
       - "[0-9]+.[0-9]+.[0-9]+*" # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
 permissions:
       packages: write
-      contents: read
+      contents: write
 jobs:
   publish-docker:
     uses: ./.github/workflows/publish-docker.yml
@@ -17,9 +17,9 @@ jobs:
       - publish-docker
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: "corretto"
           java-version: "11"
@@ -45,7 +45,7 @@ jobs:
       - publish-docker
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -75,7 +75,7 @@ jobs:
       working-directory: ./sdk-js
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup NodeJS
         uses: actions/setup-node@v4
@@ -106,5 +106,58 @@ jobs:
       - name: Publish
         working-directory: ${{env.working-directory}}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
         run: npm publish --access public
+
+  lhctl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.20"
+
+      - name: Build
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          args: release --snapshot --clean
+      
+      - name: Upload release archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: lhctl
+          path: dist/lhctl_*.*
+
+  create-release:
+    needs:
+      - lhctl
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@v3
+        id: git-cliff
+        with:
+          config: cliff.toml
+          args: --verbose --current
+        env:
+          OUTPUT: CHANGELOG.md
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run:
+          gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -F CHANGELOG.md dist/lhctl_*

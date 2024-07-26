@@ -17,7 +17,7 @@ public class LHProducer implements Closeable {
     private KafkaProducer<String, Bytes> prod;
 
     public LHProducer(LHServerConfig config) {
-        prod = new KafkaProducer<>(config.getKafkaProducerConfig(config.getLHInstanceId()));
+        prod = new KafkaProducer<>(config.getKafkaProducerConfig(config.getLHInstanceName()));
     }
 
     public Future<RecordMetadata> send(String key, AbstractCommand<?> t, String topic, Callback cb, Header... headers) {

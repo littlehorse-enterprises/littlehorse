@@ -1,8 +1,8 @@
 package io.littlehorse.sdk.worker.internal.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionError;
+import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.TaskDef;
@@ -116,7 +116,7 @@ public class VariableMapping {
 
         try {
             return LHLibUtil.deserializeFromjson(jsonStr, type);
-        } catch (JsonProcessingException exn) {
+        } catch (LHJsonProcessingException exn) {
             throw new InputVarSubstitutionError(
                     "Failed deserializing the Java object for variable " + taskDefParamName, exn);
         }

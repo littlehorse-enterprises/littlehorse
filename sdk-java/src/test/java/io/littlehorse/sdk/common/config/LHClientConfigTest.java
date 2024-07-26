@@ -80,7 +80,7 @@ public class LHClientConfigTest {
 
     @Test
     void haveAllConfigs() {
-        assertThat(LHConfig.configNames().size()).isEqualTo(13);
+        assertThat(LHConfig.configNames().size()).isEqualTo(14);
     }
 
     @Test

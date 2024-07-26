@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import MagicMock
 
-from littlehorse.model.common_enums_pb2 import LHErrorType, VariableType
-from littlehorse.model.common_wfspec_pb2 import (
+from littlehorse.model import LHErrorType, VariableType
+from littlehorse.model import (
     Comparator,
     TaskNode,
     VariableAssignment,
@@ -11,14 +11,10 @@ from littlehorse.model.common_wfspec_pb2 import (
     VariableMutationType,
     UTActionTrigger,
     ExponentialBackoffRetryPolicy,
-)
-from littlehorse.model.object_id_pb2 import (
     ExternalEventDefId,
     TaskDefId,
-)
-from littlehorse.model.service_pb2 import PutWfSpecRequest
-from littlehorse.model.variable_pb2 import VariableValue
-from littlehorse.model.wf_spec_pb2 import (
+    PutWfSpecRequest,
+    VariableValue,
     Edge,
     EdgeCondition,
     EntrypointNode,
@@ -1655,6 +1651,93 @@ class TestWorkflow(unittest.TestCase):
                                 outgoing_edges=[Edge(sink_node_name="1-exit-EXIT")],
                             ),
                             "1-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    )
+                },
+            ),
+        )
+
+    def test_wf_task_timeout(self):
+        timeout_seconds = 5
+
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.execute("example-task", timeout_seconds=timeout_seconds)
+
+        wf = Workflow("my-wf", my_entrypoint)
+
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        variable_defs=[],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[
+                                    Edge(sink_node_name="1-example-task-TASK")
+                                ],
+                            ),
+                            "1-example-task-TASK": Node(
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="example-task"),
+                                    timeout_seconds=timeout_seconds,
+                                ),
+                                outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
+                            ),
+                            "2-exit-EXIT": Node(exit=ExitNode()),
+                        },
+                    )
+                },
+            ),
+        )
+
+    def test_wf_task_default_timeout(self):
+        default_timeout_seconds = 5
+        custom_timeout_seconds = 10
+
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.execute("use-default-timeout")
+            thread.execute("use-custom-timeout", timeout_seconds=custom_timeout_seconds)
+
+        wf = Workflow("my-wf", my_entrypoint).with_task_timeout_seconds(
+            default_timeout_seconds
+        )
+
+        self.assertEqual(
+            wf.compile(),
+            PutWfSpecRequest(
+                entrypoint_thread_name="entrypoint",
+                name="my-wf",
+                thread_specs={
+                    "entrypoint": ThreadSpec(
+                        variable_defs=[],
+                        nodes={
+                            "0-entrypoint-ENTRYPOINT": Node(
+                                entrypoint=EntrypointNode(),
+                                outgoing_edges=[
+                                    Edge(sink_node_name="1-use-default-timeout-TASK")
+                                ],
+                            ),
+                            "1-use-default-timeout-TASK": Node(
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="use-default-timeout"),
+                                    timeout_seconds=default_timeout_seconds,
+                                ),
+                                outgoing_edges=[
+                                    Edge(sink_node_name="2-use-custom-timeout-TASK")
+                                ],
+                            ),
+                            "2-use-custom-timeout-TASK": Node(
+                                task=TaskNode(
+                                    task_def_id=TaskDefId(name="use-custom-timeout"),
+                                    timeout_seconds=custom_timeout_seconds,
+                                ),
+                                outgoing_edges=[Edge(sink_node_name="3-exit-EXIT")],
+                            ),
+                            "3-exit-EXIT": Node(exit=ExitNode()),
                         },
                     )
                 },

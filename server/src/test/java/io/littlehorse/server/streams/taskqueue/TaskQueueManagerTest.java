@@ -27,6 +27,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import org.apache.kafka.streams.processor.TaskId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,6 +42,7 @@ public class TaskQueueManagerTest {
     private final TaskQueueManager queueManager = new TaskQueueManager(mockServer, Integer.MAX_VALUE);
     private final TaskDefModel taskDef = TestUtil.taskDef("my-task");
     private final TaskDefIdModel taskId = taskDef.getId();
+    private final TaskId streamsTaskId = TaskId.parse("0_1");
     private final ProcessorExecutionContext processorContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
     private final RequestExecutionContext requestContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
     private final UserTaskRunModel userTaskRun =
@@ -68,13 +70,14 @@ public class TaskQueueManagerTest {
                 new PrincipalIdModel(""),
                 mock(),
                 new MetadataCache(),
+                mock(),
                 mock()));
         doReturn(requestContext).when(trackableObserver).getFreshExecutionContext();
     }
 
     @Test
     public void shouldSchedulePendingTask() {
-        queueManager.onTaskScheduled(taskId, taskToSchedule, tenantId);
+        queueManager.onTaskScheduled(streamsTaskId, taskId, taskToSchedule, tenantId);
         // Task was scheduled, now we need to verify only one task is returned to the client
         trackableObserver.onNext(pollTask);
         verify(mockServer, times(1)).returnTaskToClient(taskToSchedule, trackableObserver);
@@ -87,7 +90,7 @@ public class TaskQueueManagerTest {
     public void shouldFeedHungryClientWhenATaskIsScheduled() {
         trackableObserver.onNext(pollTask);
         verify(mockServer, never()).returnTaskToClient(taskToSchedule, trackableObserver);
-        queueManager.onTaskScheduled(taskId, taskToSchedule, tenantId);
+        queueManager.onTaskScheduled(streamsTaskId, taskId, taskToSchedule, tenantId);
         verify(mockServer, times(1)).returnTaskToClient(taskToSchedule, trackableObserver);
     }
 
@@ -97,8 +100,8 @@ public class TaskQueueManagerTest {
         int numberOfTaskToSchedule = 100_000;
         try {
             for (int i = 0; i < numberOfTaskToSchedule; i++) {
-                service.submit(
-                        Executors.callable(() -> queueManager.onTaskScheduled(taskId, taskToSchedule, tenantId)));
+                service.submit(Executors.callable(
+                        () -> queueManager.onTaskScheduled(streamsTaskId, taskId, taskToSchedule, tenantId)));
             }
         } finally {
             service.shutdown();

@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A Node is a step in a ThreadRun.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.Node}
  */
 public final class Node extends
@@ -104,6 +108,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.Edge> outgoingEdges_;
   /**
+   * <pre>
+   * Defines the flow of execution and determines where the ThreadRun goes next.
+   * </pre>
+   *
    * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
    */
   @java.lang.Override
@@ -111,6 +119,10 @@ private static final long serialVersionUID = 0L;
     return outgoingEdges_;
   }
   /**
+   * <pre>
+   * Defines the flow of execution and determines where the ThreadRun goes next.
+   * </pre>
+   *
    * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
    */
   @java.lang.Override
@@ -119,6 +131,10 @@ private static final long serialVersionUID = 0L;
     return outgoingEdges_;
   }
   /**
+   * <pre>
+   * Defines the flow of execution and determines where the ThreadRun goes next.
+   * </pre>
+   *
    * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
    */
   @java.lang.Override
@@ -126,6 +142,10 @@ private static final long serialVersionUID = 0L;
     return outgoingEdges_.size();
   }
   /**
+   * <pre>
+   * Defines the flow of execution and determines where the ThreadRun goes next.
+   * </pre>
+   *
    * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
    */
   @java.lang.Override
@@ -133,6 +153,10 @@ private static final long serialVersionUID = 0L;
     return outgoingEdges_.get(index);
   }
   /**
+   * <pre>
+   * Defines the flow of execution and determines where the ThreadRun goes next.
+   * </pre>
+   *
    * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
    */
   @java.lang.Override
@@ -145,6 +169,14 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef> failureHandlers_;
   /**
+   * <pre>
+   * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+   * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+   * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+   * and it runs to completion, then the ThreadRun advances from the Node; else, it
+   * fails.
+   * </pre>
+   *
    * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
    */
   @java.lang.Override
@@ -152,6 +184,14 @@ private static final long serialVersionUID = 0L;
     return failureHandlers_;
   }
   /**
+   * <pre>
+   * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+   * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+   * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+   * and it runs to completion, then the ThreadRun advances from the Node; else, it
+   * fails.
+   * </pre>
+   *
    * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
    */
   @java.lang.Override
@@ -160,6 +200,14 @@ private static final long serialVersionUID = 0L;
     return failureHandlers_;
   }
   /**
+   * <pre>
+   * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+   * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+   * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+   * and it runs to completion, then the ThreadRun advances from the Node; else, it
+   * fails.
+   * </pre>
+   *
    * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
    */
   @java.lang.Override
@@ -167,6 +215,14 @@ private static final long serialVersionUID = 0L;
     return failureHandlers_.size();
   }
   /**
+   * <pre>
+   * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+   * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+   * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+   * and it runs to completion, then the ThreadRun advances from the Node; else, it
+   * fails.
+   * </pre>
+   *
    * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
    */
   @java.lang.Override
@@ -174,6 +230,14 @@ private static final long serialVersionUID = 0L;
     return failureHandlers_.get(index);
   }
   /**
+   * <pre>
+   * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+   * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+   * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+   * and it runs to completion, then the ThreadRun advances from the Node; else, it
+   * fails.
+   * </pre>
+   *
    * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
    */
   @java.lang.Override
@@ -184,6 +248,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int ENTRYPOINT_FIELD_NUMBER = 5;
   /**
+   * <pre>
+   * Creates an EntrypointRun. Every ThreadRun has one Entrypoint node.
+   * </pre>
+   *
    * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
    * @return Whether the entrypoint field is set.
    */
@@ -192,6 +260,10 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 5;
   }
   /**
+   * <pre>
+   * Creates an EntrypointRun. Every ThreadRun has one Entrypoint node.
+   * </pre>
+   *
    * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
    * @return The entrypoint.
    */
@@ -203,6 +275,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.EntrypointNode.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Creates an EntrypointRun. Every ThreadRun has one Entrypoint node.
+   * </pre>
+   *
    * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
    */
   @java.lang.Override
@@ -215,6 +291,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int EXIT_FIELD_NUMBER = 6;
   /**
+   * <pre>
+   * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+   * </pre>
+   *
    * <code>.littlehorse.ExitNode exit = 6;</code>
    * @return Whether the exit field is set.
    */
@@ -223,6 +303,10 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 6;
   }
   /**
+   * <pre>
+   * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+   * </pre>
+   *
    * <code>.littlehorse.ExitNode exit = 6;</code>
    * @return The exit.
    */
@@ -234,6 +318,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.ExitNode.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+   * </pre>
+   *
    * <code>.littlehorse.ExitNode exit = 6;</code>
    */
   @java.lang.Override
@@ -246,6 +334,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int TASK_FIELD_NUMBER = 7;
   /**
+   * <pre>
+   * Creates a TaskNodeRUn
+   * </pre>
+   *
    * <code>.littlehorse.TaskNode task = 7;</code>
    * @return Whether the task field is set.
    */
@@ -254,6 +346,10 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 7;
   }
   /**
+   * <pre>
+   * Creates a TaskNodeRUn
+   * </pre>
+   *
    * <code>.littlehorse.TaskNode task = 7;</code>
    * @return The task.
    */
@@ -265,6 +361,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.TaskNode.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Creates a TaskNodeRUn
+   * </pre>
+   *
    * <code>.littlehorse.TaskNode task = 7;</code>
    */
   @java.lang.Override
@@ -277,6 +377,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int EXTERNAL_EVENT_FIELD_NUMBER = 8;
   /**
+   * <pre>
+   * Creates an ExternalEventRun
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
    * @return Whether the externalEvent field is set.
    */
@@ -285,6 +389,10 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 8;
   }
   /**
+   * <pre>
+   * Creates an ExternalEventRun
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
    * @return The externalEvent.
    */
@@ -296,6 +404,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.ExternalEventNode.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Creates an ExternalEventRun
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
    */
   @java.lang.Override
@@ -308,6 +420,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int START_THREAD_FIELD_NUMBER = 9;
   /**
+   * <pre>
+   * Creates a StartThreadNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
    * @return Whether the startThread field is set.
    */
@@ -316,6 +432,10 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 9;
   }
   /**
+   * <pre>
+   * Creates a StartThreadNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
    * @return The startThread.
    */
@@ -327,6 +447,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.StartThreadNode.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Creates a StartThreadNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
    */
   @java.lang.Override
@@ -339,6 +463,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int WAIT_FOR_THREADS_FIELD_NUMBER = 10;
   /**
+   * <pre>
+   * Creates a WaitForThreadsNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
    * @return Whether the waitForThreads field is set.
    */
@@ -347,6 +475,10 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 10;
   }
   /**
+   * <pre>
+   * Creates a WaitForThreadsNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
    * @return The waitForThreads.
    */
@@ -358,6 +490,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.WaitForThreadsNode.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Creates a WaitForThreadsNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
    */
   @java.lang.Override
@@ -370,6 +506,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int NOP_FIELD_NUMBER = 11;
   /**
+   * <pre>
+   * Creates a NopNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.NopNode nop = 11;</code>
    * @return Whether the nop field is set.
    */
@@ -378,6 +518,10 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 11;
   }
   /**
+   * <pre>
+   * Creates a NopNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.NopNode nop = 11;</code>
    * @return The nop.
    */
@@ -389,6 +533,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.NopNode.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Creates a NopNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.NopNode nop = 11;</code>
    */
   @java.lang.Override
@@ -401,6 +549,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int SLEEP_FIELD_NUMBER = 12;
   /**
+   * <pre>
+   * Creates a SleepNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.SleepNode sleep = 12;</code>
    * @return Whether the sleep field is set.
    */
@@ -409,6 +561,10 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 12;
   }
   /**
+   * <pre>
+   * Creates a SleepNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.SleepNode sleep = 12;</code>
    * @return The sleep.
    */
@@ -420,6 +576,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.SleepNode.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Creates a SleepNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.SleepNode sleep = 12;</code>
    */
   @java.lang.Override
@@ -432,6 +592,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int USER_TASK_FIELD_NUMBER = 13;
   /**
+   * <pre>
+   * Creates a UserTaskNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskNode user_task = 13;</code>
    * @return Whether the userTask field is set.
    */
@@ -440,6 +604,10 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 13;
   }
   /**
+   * <pre>
+   * Creates a UserTaskNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskNode user_task = 13;</code>
    * @return The userTask.
    */
@@ -451,6 +619,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.UserTaskNode.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Creates a UserTaskNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.UserTaskNode user_task = 13;</code>
    */
   @java.lang.Override
@@ -463,6 +635,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int START_MULTIPLE_THREADS_FIELD_NUMBER = 15;
   /**
+   * <pre>
+   * Creates a StartMultipleThreadsNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.StartMultipleThreadsNode start_multiple_threads = 15;</code>
    * @return Whether the startMultipleThreads field is set.
    */
@@ -471,6 +647,10 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 15;
   }
   /**
+   * <pre>
+   * Creates a StartMultipleThreadsNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.StartMultipleThreadsNode start_multiple_threads = 15;</code>
    * @return The startMultipleThreads.
    */
@@ -482,6 +662,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.StartMultipleThreadsNode.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Creates a StartMultipleThreadsNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.StartMultipleThreadsNode start_multiple_threads = 15;</code>
    */
   @java.lang.Override
@@ -494,6 +678,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int THROW_EVENT_FIELD_NUMBER = 16;
   /**
+   * <pre>
+   * Creates a ThrowEventNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
    * @return Whether the throwEvent field is set.
    */
@@ -502,6 +690,10 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 16;
   }
   /**
+   * <pre>
+   * Creates a ThrowEventNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
    * @return The throwEvent.
    */
@@ -513,6 +705,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.ThrowEventNode.getDefaultInstance();
   }
   /**
+   * <pre>
+   * Creates a ThrowEventNodeRun
+   * </pre>
+   *
    * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
    */
   @java.lang.Override
@@ -870,6 +1066,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * A Node is a step in a ThreadRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.Node}
    */
   public static final class Builder extends
@@ -1378,6 +1578,10 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.Edge, io.littlehorse.sdk.common.proto.Edge.Builder, io.littlehorse.sdk.common.proto.EdgeOrBuilder> outgoingEdgesBuilder_;
 
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.Edge> getOutgoingEdgesList() {
@@ -1388,6 +1592,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public int getOutgoingEdgesCount() {
@@ -1398,6 +1606,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.Edge getOutgoingEdges(int index) {
@@ -1408,6 +1620,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public Builder setOutgoingEdges(
@@ -1425,6 +1641,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public Builder setOutgoingEdges(
@@ -1439,6 +1659,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public Builder addOutgoingEdges(io.littlehorse.sdk.common.proto.Edge value) {
@@ -1455,6 +1679,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public Builder addOutgoingEdges(
@@ -1472,6 +1700,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public Builder addOutgoingEdges(
@@ -1486,6 +1718,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public Builder addOutgoingEdges(
@@ -1500,6 +1736,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public Builder addAllOutgoingEdges(
@@ -1515,6 +1755,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public Builder clearOutgoingEdges() {
@@ -1528,6 +1772,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public Builder removeOutgoingEdges(int index) {
@@ -1541,6 +1789,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.Edge.Builder getOutgoingEdgesBuilder(
@@ -1548,6 +1800,10 @@ private static final long serialVersionUID = 0L;
       return getOutgoingEdgesFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.EdgeOrBuilder getOutgoingEdgesOrBuilder(
@@ -1558,6 +1814,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.EdgeOrBuilder> 
@@ -1569,6 +1829,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.Edge.Builder addOutgoingEdgesBuilder() {
@@ -1576,6 +1840,10 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.Edge.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.Edge.Builder addOutgoingEdgesBuilder(
@@ -1584,6 +1852,10 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.Edge.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Defines the flow of execution and determines where the ThreadRun goes next.
+     * </pre>
+     *
      * <code>repeated .littlehorse.Edge outgoing_edges = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.Edge.Builder> 
@@ -1618,6 +1890,14 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.FailureHandlerDef, io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder, io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder> failureHandlersBuilder_;
 
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef> getFailureHandlersList() {
@@ -1628,6 +1908,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public int getFailureHandlersCount() {
@@ -1638,6 +1926,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.FailureHandlerDef getFailureHandlers(int index) {
@@ -1648,6 +1944,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public Builder setFailureHandlers(
@@ -1665,6 +1969,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public Builder setFailureHandlers(
@@ -1679,6 +1991,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public Builder addFailureHandlers(io.littlehorse.sdk.common.proto.FailureHandlerDef value) {
@@ -1695,6 +2015,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public Builder addFailureHandlers(
@@ -1712,6 +2040,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public Builder addFailureHandlers(
@@ -1726,6 +2062,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public Builder addFailureHandlers(
@@ -1740,6 +2084,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public Builder addAllFailureHandlers(
@@ -1755,6 +2107,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public Builder clearFailureHandlers() {
@@ -1768,6 +2128,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public Builder removeFailureHandlers(int index) {
@@ -1781,6 +2149,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder getFailureHandlersBuilder(
@@ -1788,6 +2164,14 @@ private static final long serialVersionUID = 0L;
       return getFailureHandlersFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder getFailureHandlersOrBuilder(
@@ -1798,6 +2182,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.FailureHandlerDefOrBuilder> 
@@ -1809,6 +2201,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder addFailureHandlersBuilder() {
@@ -1816,6 +2216,14 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.FailureHandlerDef.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder addFailureHandlersBuilder(
@@ -1824,6 +2232,14 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.FailureHandlerDef.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Specifies handlers for failures (EXCEPTION or ERROR or both) which might be thrown
+     * by the NodeRun. If a Failure is thrown by the Node execution, then the first
+     * matching Failure Handler (if present) is run. If there is a matching Failure Handler
+     * and it runs to completion, then the ThreadRun advances from the Node; else, it
+     * fails.
+     * </pre>
+     *
      * <code>repeated .littlehorse.FailureHandlerDef failure_handlers = 4;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.FailureHandlerDef.Builder> 
@@ -1848,6 +2264,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.EntrypointNode, io.littlehorse.sdk.common.proto.EntrypointNode.Builder, io.littlehorse.sdk.common.proto.EntrypointNodeOrBuilder> entrypointBuilder_;
     /**
+     * <pre>
+     * Creates an EntrypointRun. Every ThreadRun has one Entrypoint node.
+     * </pre>
+     *
      * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      * @return Whether the entrypoint field is set.
      */
@@ -1856,6 +2276,10 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 5;
     }
     /**
+     * <pre>
+     * Creates an EntrypointRun. Every ThreadRun has one Entrypoint node.
+     * </pre>
+     *
      * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      * @return The entrypoint.
      */
@@ -1874,6 +2298,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates an EntrypointRun. Every ThreadRun has one Entrypoint node.
+     * </pre>
+     *
      * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      */
     public Builder setEntrypoint(io.littlehorse.sdk.common.proto.EntrypointNode value) {
@@ -1890,6 +2318,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates an EntrypointRun. Every ThreadRun has one Entrypoint node.
+     * </pre>
+     *
      * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      */
     public Builder setEntrypoint(
@@ -1904,6 +2336,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates an EntrypointRun. Every ThreadRun has one Entrypoint node.
+     * </pre>
+     *
      * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      */
     public Builder mergeEntrypoint(io.littlehorse.sdk.common.proto.EntrypointNode value) {
@@ -1927,6 +2363,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates an EntrypointRun. Every ThreadRun has one Entrypoint node.
+     * </pre>
+     *
      * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      */
     public Builder clearEntrypoint() {
@@ -1946,12 +2386,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates an EntrypointRun. Every ThreadRun has one Entrypoint node.
+     * </pre>
+     *
      * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      */
     public io.littlehorse.sdk.common.proto.EntrypointNode.Builder getEntrypointBuilder() {
       return getEntrypointFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Creates an EntrypointRun. Every ThreadRun has one Entrypoint node.
+     * </pre>
+     *
      * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      */
     @java.lang.Override
@@ -1966,6 +2414,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates an EntrypointRun. Every ThreadRun has one Entrypoint node.
+     * </pre>
+     *
      * <code>.littlehorse.EntrypointNode entrypoint = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1990,6 +2442,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ExitNode, io.littlehorse.sdk.common.proto.ExitNode.Builder, io.littlehorse.sdk.common.proto.ExitNodeOrBuilder> exitBuilder_;
     /**
+     * <pre>
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * </pre>
+     *
      * <code>.littlehorse.ExitNode exit = 6;</code>
      * @return Whether the exit field is set.
      */
@@ -1998,6 +2454,10 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 6;
     }
     /**
+     * <pre>
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * </pre>
+     *
      * <code>.littlehorse.ExitNode exit = 6;</code>
      * @return The exit.
      */
@@ -2016,6 +2476,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * </pre>
+     *
      * <code>.littlehorse.ExitNode exit = 6;</code>
      */
     public Builder setExit(io.littlehorse.sdk.common.proto.ExitNode value) {
@@ -2032,6 +2496,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * </pre>
+     *
      * <code>.littlehorse.ExitNode exit = 6;</code>
      */
     public Builder setExit(
@@ -2046,6 +2514,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * </pre>
+     *
      * <code>.littlehorse.ExitNode exit = 6;</code>
      */
     public Builder mergeExit(io.littlehorse.sdk.common.proto.ExitNode value) {
@@ -2069,6 +2541,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * </pre>
+     *
      * <code>.littlehorse.ExitNode exit = 6;</code>
      */
     public Builder clearExit() {
@@ -2088,12 +2564,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * </pre>
+     *
      * <code>.littlehorse.ExitNode exit = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.ExitNode.Builder getExitBuilder() {
       return getExitFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * </pre>
+     *
      * <code>.littlehorse.ExitNode exit = 6;</code>
      */
     @java.lang.Override
@@ -2108,6 +2592,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node.
+     * </pre>
+     *
      * <code>.littlehorse.ExitNode exit = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -2132,6 +2620,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskNode, io.littlehorse.sdk.common.proto.TaskNode.Builder, io.littlehorse.sdk.common.proto.TaskNodeOrBuilder> taskBuilder_;
     /**
+     * <pre>
+     * Creates a TaskNodeRUn
+     * </pre>
+     *
      * <code>.littlehorse.TaskNode task = 7;</code>
      * @return Whether the task field is set.
      */
@@ -2140,6 +2632,10 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 7;
     }
     /**
+     * <pre>
+     * Creates a TaskNodeRUn
+     * </pre>
+     *
      * <code>.littlehorse.TaskNode task = 7;</code>
      * @return The task.
      */
@@ -2158,6 +2654,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates a TaskNodeRUn
+     * </pre>
+     *
      * <code>.littlehorse.TaskNode task = 7;</code>
      */
     public Builder setTask(io.littlehorse.sdk.common.proto.TaskNode value) {
@@ -2174,6 +2674,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a TaskNodeRUn
+     * </pre>
+     *
      * <code>.littlehorse.TaskNode task = 7;</code>
      */
     public Builder setTask(
@@ -2188,6 +2692,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a TaskNodeRUn
+     * </pre>
+     *
      * <code>.littlehorse.TaskNode task = 7;</code>
      */
     public Builder mergeTask(io.littlehorse.sdk.common.proto.TaskNode value) {
@@ -2211,6 +2719,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a TaskNodeRUn
+     * </pre>
+     *
      * <code>.littlehorse.TaskNode task = 7;</code>
      */
     public Builder clearTask() {
@@ -2230,12 +2742,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a TaskNodeRUn
+     * </pre>
+     *
      * <code>.littlehorse.TaskNode task = 7;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskNode.Builder getTaskBuilder() {
       return getTaskFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Creates a TaskNodeRUn
+     * </pre>
+     *
      * <code>.littlehorse.TaskNode task = 7;</code>
      */
     @java.lang.Override
@@ -2250,6 +2770,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates a TaskNodeRUn
+     * </pre>
+     *
      * <code>.littlehorse.TaskNode task = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -2274,6 +2798,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ExternalEventNode, io.littlehorse.sdk.common.proto.ExternalEventNode.Builder, io.littlehorse.sdk.common.proto.ExternalEventNodeOrBuilder> externalEventBuilder_;
     /**
+     * <pre>
+     * Creates an ExternalEventRun
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      * @return Whether the externalEvent field is set.
      */
@@ -2282,6 +2810,10 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 8;
     }
     /**
+     * <pre>
+     * Creates an ExternalEventRun
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      * @return The externalEvent.
      */
@@ -2300,6 +2832,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates an ExternalEventRun
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      */
     public Builder setExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventNode value) {
@@ -2316,6 +2852,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates an ExternalEventRun
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      */
     public Builder setExternalEvent(
@@ -2330,6 +2870,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates an ExternalEventRun
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      */
     public Builder mergeExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventNode value) {
@@ -2353,6 +2897,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates an ExternalEventRun
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      */
     public Builder clearExternalEvent() {
@@ -2372,12 +2920,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates an ExternalEventRun
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.ExternalEventNode.Builder getExternalEventBuilder() {
       return getExternalEventFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Creates an ExternalEventRun
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      */
     @java.lang.Override
@@ -2392,6 +2948,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates an ExternalEventRun
+     * </pre>
+     *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -2416,6 +2976,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.StartThreadNode, io.littlehorse.sdk.common.proto.StartThreadNode.Builder, io.littlehorse.sdk.common.proto.StartThreadNodeOrBuilder> startThreadBuilder_;
     /**
+     * <pre>
+     * Creates a StartThreadNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      * @return Whether the startThread field is set.
      */
@@ -2424,6 +2988,10 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 9;
     }
     /**
+     * <pre>
+     * Creates a StartThreadNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      * @return The startThread.
      */
@@ -2442,6 +3010,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates a StartThreadNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      */
     public Builder setStartThread(io.littlehorse.sdk.common.proto.StartThreadNode value) {
@@ -2458,6 +3030,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a StartThreadNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      */
     public Builder setStartThread(
@@ -2472,6 +3048,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a StartThreadNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      */
     public Builder mergeStartThread(io.littlehorse.sdk.common.proto.StartThreadNode value) {
@@ -2495,6 +3075,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a StartThreadNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      */
     public Builder clearStartThread() {
@@ -2514,12 +3098,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a StartThreadNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      */
     public io.littlehorse.sdk.common.proto.StartThreadNode.Builder getStartThreadBuilder() {
       return getStartThreadFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Creates a StartThreadNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      */
     @java.lang.Override
@@ -2534,6 +3126,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates a StartThreadNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartThreadNode start_thread = 9;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -2558,6 +3154,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WaitForThreadsNode, io.littlehorse.sdk.common.proto.WaitForThreadsNode.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNodeOrBuilder> waitForThreadsBuilder_;
     /**
+     * <pre>
+     * Creates a WaitForThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      * @return Whether the waitForThreads field is set.
      */
@@ -2566,6 +3166,10 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 10;
     }
     /**
+     * <pre>
+     * Creates a WaitForThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      * @return The waitForThreads.
      */
@@ -2584,6 +3188,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates a WaitForThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      */
     public Builder setWaitForThreads(io.littlehorse.sdk.common.proto.WaitForThreadsNode value) {
@@ -2600,6 +3208,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a WaitForThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      */
     public Builder setWaitForThreads(
@@ -2614,6 +3226,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a WaitForThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      */
     public Builder mergeWaitForThreads(io.littlehorse.sdk.common.proto.WaitForThreadsNode value) {
@@ -2637,6 +3253,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a WaitForThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      */
     public Builder clearWaitForThreads() {
@@ -2656,12 +3276,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a WaitForThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      */
     public io.littlehorse.sdk.common.proto.WaitForThreadsNode.Builder getWaitForThreadsBuilder() {
       return getWaitForThreadsFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Creates a WaitForThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      */
     @java.lang.Override
@@ -2676,6 +3304,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates a WaitForThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.WaitForThreadsNode wait_for_threads = 10;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -2700,6 +3332,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.NopNode, io.littlehorse.sdk.common.proto.NopNode.Builder, io.littlehorse.sdk.common.proto.NopNodeOrBuilder> nopBuilder_;
     /**
+     * <pre>
+     * Creates a NopNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.NopNode nop = 11;</code>
      * @return Whether the nop field is set.
      */
@@ -2708,6 +3344,10 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 11;
     }
     /**
+     * <pre>
+     * Creates a NopNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.NopNode nop = 11;</code>
      * @return The nop.
      */
@@ -2726,6 +3366,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates a NopNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.NopNode nop = 11;</code>
      */
     public Builder setNop(io.littlehorse.sdk.common.proto.NopNode value) {
@@ -2742,6 +3386,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a NopNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.NopNode nop = 11;</code>
      */
     public Builder setNop(
@@ -2756,6 +3404,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a NopNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.NopNode nop = 11;</code>
      */
     public Builder mergeNop(io.littlehorse.sdk.common.proto.NopNode value) {
@@ -2779,6 +3431,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a NopNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.NopNode nop = 11;</code>
      */
     public Builder clearNop() {
@@ -2798,12 +3454,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a NopNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.NopNode nop = 11;</code>
      */
     public io.littlehorse.sdk.common.proto.NopNode.Builder getNopBuilder() {
       return getNopFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Creates a NopNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.NopNode nop = 11;</code>
      */
     @java.lang.Override
@@ -2818,6 +3482,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates a NopNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.NopNode nop = 11;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -2842,6 +3510,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.SleepNode, io.littlehorse.sdk.common.proto.SleepNode.Builder, io.littlehorse.sdk.common.proto.SleepNodeOrBuilder> sleepBuilder_;
     /**
+     * <pre>
+     * Creates a SleepNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.SleepNode sleep = 12;</code>
      * @return Whether the sleep field is set.
      */
@@ -2850,6 +3522,10 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 12;
     }
     /**
+     * <pre>
+     * Creates a SleepNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.SleepNode sleep = 12;</code>
      * @return The sleep.
      */
@@ -2868,6 +3544,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates a SleepNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.SleepNode sleep = 12;</code>
      */
     public Builder setSleep(io.littlehorse.sdk.common.proto.SleepNode value) {
@@ -2884,6 +3564,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a SleepNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.SleepNode sleep = 12;</code>
      */
     public Builder setSleep(
@@ -2898,6 +3582,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a SleepNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.SleepNode sleep = 12;</code>
      */
     public Builder mergeSleep(io.littlehorse.sdk.common.proto.SleepNode value) {
@@ -2921,6 +3609,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a SleepNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.SleepNode sleep = 12;</code>
      */
     public Builder clearSleep() {
@@ -2940,12 +3632,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a SleepNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.SleepNode sleep = 12;</code>
      */
     public io.littlehorse.sdk.common.proto.SleepNode.Builder getSleepBuilder() {
       return getSleepFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Creates a SleepNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.SleepNode sleep = 12;</code>
      */
     @java.lang.Override
@@ -2960,6 +3660,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates a SleepNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.SleepNode sleep = 12;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -2984,6 +3688,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.UserTaskNode, io.littlehorse.sdk.common.proto.UserTaskNode.Builder, io.littlehorse.sdk.common.proto.UserTaskNodeOrBuilder> userTaskBuilder_;
     /**
+     * <pre>
+     * Creates a UserTaskNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      * @return Whether the userTask field is set.
      */
@@ -2992,6 +3700,10 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 13;
     }
     /**
+     * <pre>
+     * Creates a UserTaskNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      * @return The userTask.
      */
@@ -3010,6 +3722,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates a UserTaskNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      */
     public Builder setUserTask(io.littlehorse.sdk.common.proto.UserTaskNode value) {
@@ -3026,6 +3742,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a UserTaskNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      */
     public Builder setUserTask(
@@ -3040,6 +3760,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a UserTaskNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      */
     public Builder mergeUserTask(io.littlehorse.sdk.common.proto.UserTaskNode value) {
@@ -3063,6 +3787,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a UserTaskNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      */
     public Builder clearUserTask() {
@@ -3082,12 +3810,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a UserTaskNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      */
     public io.littlehorse.sdk.common.proto.UserTaskNode.Builder getUserTaskBuilder() {
       return getUserTaskFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Creates a UserTaskNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      */
     @java.lang.Override
@@ -3102,6 +3838,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates a UserTaskNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.UserTaskNode user_task = 13;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -3126,6 +3866,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.StartMultipleThreadsNode, io.littlehorse.sdk.common.proto.StartMultipleThreadsNode.Builder, io.littlehorse.sdk.common.proto.StartMultipleThreadsNodeOrBuilder> startMultipleThreadsBuilder_;
     /**
+     * <pre>
+     * Creates a StartMultipleThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartMultipleThreadsNode start_multiple_threads = 15;</code>
      * @return Whether the startMultipleThreads field is set.
      */
@@ -3134,6 +3878,10 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 15;
     }
     /**
+     * <pre>
+     * Creates a StartMultipleThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartMultipleThreadsNode start_multiple_threads = 15;</code>
      * @return The startMultipleThreads.
      */
@@ -3152,6 +3900,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates a StartMultipleThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartMultipleThreadsNode start_multiple_threads = 15;</code>
      */
     public Builder setStartMultipleThreads(io.littlehorse.sdk.common.proto.StartMultipleThreadsNode value) {
@@ -3168,6 +3920,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a StartMultipleThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartMultipleThreadsNode start_multiple_threads = 15;</code>
      */
     public Builder setStartMultipleThreads(
@@ -3182,6 +3938,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a StartMultipleThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartMultipleThreadsNode start_multiple_threads = 15;</code>
      */
     public Builder mergeStartMultipleThreads(io.littlehorse.sdk.common.proto.StartMultipleThreadsNode value) {
@@ -3205,6 +3965,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a StartMultipleThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartMultipleThreadsNode start_multiple_threads = 15;</code>
      */
     public Builder clearStartMultipleThreads() {
@@ -3224,12 +3988,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a StartMultipleThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartMultipleThreadsNode start_multiple_threads = 15;</code>
      */
     public io.littlehorse.sdk.common.proto.StartMultipleThreadsNode.Builder getStartMultipleThreadsBuilder() {
       return getStartMultipleThreadsFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Creates a StartMultipleThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartMultipleThreadsNode start_multiple_threads = 15;</code>
      */
     @java.lang.Override
@@ -3244,6 +4016,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates a StartMultipleThreadsNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.StartMultipleThreadsNode start_multiple_threads = 15;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -3268,6 +4044,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ThrowEventNode, io.littlehorse.sdk.common.proto.ThrowEventNode.Builder, io.littlehorse.sdk.common.proto.ThrowEventNodeOrBuilder> throwEventBuilder_;
     /**
+     * <pre>
+     * Creates a ThrowEventNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
      * @return Whether the throwEvent field is set.
      */
@@ -3276,6 +4056,10 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 16;
     }
     /**
+     * <pre>
+     * Creates a ThrowEventNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
      * @return The throwEvent.
      */
@@ -3294,6 +4078,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates a ThrowEventNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
      */
     public Builder setThrowEvent(io.littlehorse.sdk.common.proto.ThrowEventNode value) {
@@ -3310,6 +4098,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a ThrowEventNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
      */
     public Builder setThrowEvent(
@@ -3324,6 +4116,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a ThrowEventNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
      */
     public Builder mergeThrowEvent(io.littlehorse.sdk.common.proto.ThrowEventNode value) {
@@ -3347,6 +4143,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a ThrowEventNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
      */
     public Builder clearThrowEvent() {
@@ -3366,12 +4166,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Creates a ThrowEventNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
      */
     public io.littlehorse.sdk.common.proto.ThrowEventNode.Builder getThrowEventBuilder() {
       return getThrowEventFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Creates a ThrowEventNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
      */
     @java.lang.Override
@@ -3386,6 +4194,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Creates a ThrowEventNodeRun
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNode throw_event = 16;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

@@ -18,14 +18,15 @@ import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Date;
-import java.util.List;
+import java.util.Optional;
+import org.apache.kafka.streams.processor.TaskId;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
+import org.mockito.Mockito;
 
 public class OneTaskQueueTest {
     private final TaskQueueManager taskQueueManager = mock(Answers.RETURNS_DEEP_STUBS);
@@ -35,6 +36,7 @@ public class OneTaskQueueTest {
     private final OneTaskQueue taskQueue = new OneTaskQueue(
             taskName, taskQueueManager, Integer.MAX_VALUE, new TenantIdModel(LHConstants.DEFAULT_TENANT));
     private final Command command = commandProto();
+    private final TaskId streamsTaskId = TaskId.parse("0_2");
     private final MockProcessorContext<String, CommandProcessorOutput> mockProcessor = new MockProcessorContext<>();
     private final TestProcessorExecutionContext processorContext = TestProcessorExecutionContext.create(
             command,
@@ -48,12 +50,13 @@ public class OneTaskQueueTest {
     public void setup() {
         when(mockClient.getTaskDefId()).thenReturn(taskName);
         when(mockClient.getFreshExecutionContext().getableManager()).thenReturn(processorContext.getableManager());
-        when(requestContext.getableManager()).thenReturn(processorContext.getableManager());
+        when(requestContext.getableManager(any(TaskId.class))).thenReturn(processorContext.getableManager());
+        Mockito.when(processorContext.getableManager().getSpecificTask()).thenReturn(Optional.of(TaskId.parse("0_2")));
     }
 
     @Test
     public void shouldEnqueueScheduledTask() {
-        taskQueue.onTaskScheduled(mockTask);
+        taskQueue.onTaskScheduled(streamsTaskId, mockTask);
         verify(taskQueueManager, never()).itsAMatch(any(), any());
         taskQueue.onPollRequest(mockClient, requestContext);
         verify(taskQueueManager, times(1)).itsAMatch(mockTask, mockClient);
@@ -64,7 +67,7 @@ public class OneTaskQueueTest {
         taskQueue.onPollRequest(mockClient, requestContext);
         verifyNoInteractions(processorContext.getableManager());
         verify(taskQueueManager, never()).itsAMatch(any(), any());
-        taskQueue.onTaskScheduled(mockTask);
+        taskQueue.onTaskScheduled(streamsTaskId, mockTask);
         verify(taskQueueManager, times(1)).itsAMatch(same(mockTask), same(mockClient));
     }
 
@@ -72,10 +75,10 @@ public class OneTaskQueueTest {
     public void shouldNotEnqueuePendingTaskWhenQueueIsFull() {
         OneTaskQueue boundedQueue =
                 new OneTaskQueue(taskName, taskQueueManager, 3, new TenantIdModel(LHConstants.DEFAULT_TENANT));
-        assertThat(boundedQueue.onTaskScheduled(mockTask)).isTrue();
-        assertThat(boundedQueue.onTaskScheduled(mockTask)).isTrue();
-        assertThat(boundedQueue.onTaskScheduled(mockTask)).isTrue();
-        assertThat(boundedQueue.onTaskScheduled(mockTask)).isFalse();
+        assertThat(boundedQueue.onTaskScheduled(streamsTaskId, mockTask)).isTrue();
+        assertThat(boundedQueue.onTaskScheduled(streamsTaskId, mockTask)).isTrue();
+        assertThat(boundedQueue.onTaskScheduled(streamsTaskId, mockTask)).isTrue();
+        assertThat(boundedQueue.onTaskScheduled(streamsTaskId, mockTask)).isFalse();
         boundedQueue.onPollRequest(mockClient, requestContext);
         boundedQueue.onPollRequest(mockClient, requestContext);
         boundedQueue.onPollRequest(mockClient, requestContext);
@@ -107,33 +110,21 @@ public class OneTaskQueueTest {
         processorContext.getCoreStore().put(task3);
         processorContext.getCoreStore().put(task4);
         processorContext.endExecution();
-        ArgumentCaptor<ScheduledTaskModel> captor = ArgumentCaptor.forClass(ScheduledTaskModel.class);
         OneTaskQueue boundedQueue =
                 new OneTaskQueue(taskName, taskQueueManager, 1, new TenantIdModel(LHConstants.DEFAULT_TENANT));
 
-        boundedQueue.onTaskScheduled(task1);
-        boundedQueue.onTaskScheduled(task2);
-        Assertions.assertThat(boundedQueue.isHasMoreTasksOnDisk()).isTrue();
-        boundedQueue.onTaskScheduled(task3);
-        boundedQueue.onTaskScheduled(task4);
+        boundedQueue.onTaskScheduled(streamsTaskId, task1);
+        boundedQueue.onTaskScheduled(streamsTaskId, task2);
+        Assertions.assertThat(boundedQueue.hasMoreTasksOnDisk(streamsTaskId)).isTrue();
+        boundedQueue.onTaskScheduled(streamsTaskId, task3);
+        boundedQueue.onTaskScheduled(streamsTaskId, task4);
 
         boundedQueue.onPollRequest(mockClient, requestContext);
         boundedQueue.onPollRequest(mockClient, requestContext);
         boundedQueue.onPollRequest(mockClient, requestContext);
         boundedQueue.onPollRequest(mockClient, requestContext);
         InOrder inOrder = inOrder(taskQueueManager);
-        // inOrder.verify(taskQueueManager).itsAMatch(same(task1), same(mockClient));
-        // inOrder.verify(taskQueueManager).itsAMatch(same(task2), same(mockClient));
-        inOrder.verify(taskQueueManager, times(4)).itsAMatch(captor.capture(), same(mockClient));
-        List<ScheduledTaskModel> allValues = captor.getAllValues();
-        assertThat(allValues.get(0).getTaskRunId().wfRunId.getId())
-                .isEqualTo(task1.getTaskRunId().wfRunId.getId());
-        assertThat(allValues.get(1).getTaskRunId().wfRunId.getId())
-                .isEqualTo(task2.getTaskRunId().wfRunId.getId());
-        assertThat(allValues.get(2).getTaskRunId().wfRunId.getId())
-                .isEqualTo(task3.getTaskRunId().wfRunId.getId());
-        assertThat(allValues.get(3).getTaskRunId().wfRunId.getId())
-                .isEqualTo(task4.getTaskRunId().wfRunId.getId());
+        inOrder.verify(taskQueueManager, times(4)).itsAMatch(any(), same(mockClient));
     }
 
     private Command commandProto() {

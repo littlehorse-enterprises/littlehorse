@@ -18,7 +18,7 @@ npm install littlehorse-client
 
 LHC_API_HOST=local.littlehorse.cloud
 LHC_API_PORT=2023
-LHC_API_PROTOCOL=SSL
+LHC_API_PROTOCOL=TLS
 LHC_TENANT_ID=example
 ```
 

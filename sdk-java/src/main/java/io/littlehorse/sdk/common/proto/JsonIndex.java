@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Defines an index to make a JSON_OBJ or JSON_ARR variable searchable over a specific
+ * JSON Path.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.JsonIndex}
  */
 public final class JsonIndex extends
@@ -44,6 +49,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object fieldPath_ = "";
   /**
+   * <pre>
+   * Denotes the path in JSONPath format (according to the Java Jayway library) that
+   * has a field we should index.
+   * </pre>
+   *
    * <code>string field_path = 1;</code>
    * @return The fieldPath.
    */
@@ -61,6 +71,11 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Denotes the path in JSONPath format (according to the Java Jayway library) that
+   * has a field we should index.
+   * </pre>
+   *
    * <code>string field_path = 1;</code>
    * @return The bytes for fieldPath.
    */
@@ -82,6 +97,10 @@ private static final long serialVersionUID = 0L;
   public static final int FIELD_TYPE_FIELD_NUMBER = 2;
   private int fieldType_ = 0;
   /**
+   * <pre>
+   * Is the type of the field we are indexing.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType field_type = 2;</code>
    * @return The enum numeric value on the wire for fieldType.
    */
@@ -89,6 +108,10 @@ private static final long serialVersionUID = 0L;
     return fieldType_;
   }
   /**
+   * <pre>
+   * Is the type of the field we are indexing.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType field_type = 2;</code>
    * @return The fieldType.
    */
@@ -264,6 +287,11 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Defines an index to make a JSON_OBJ or JSON_ARR variable searchable over a specific
+   * JSON Path.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.JsonIndex}
    */
   public static final class Builder extends
@@ -447,6 +475,11 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object fieldPath_ = "";
     /**
+     * <pre>
+     * Denotes the path in JSONPath format (according to the Java Jayway library) that
+     * has a field we should index.
+     * </pre>
+     *
      * <code>string field_path = 1;</code>
      * @return The fieldPath.
      */
@@ -463,6 +496,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Denotes the path in JSONPath format (according to the Java Jayway library) that
+     * has a field we should index.
+     * </pre>
+     *
      * <code>string field_path = 1;</code>
      * @return The bytes for fieldPath.
      */
@@ -480,6 +518,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Denotes the path in JSONPath format (according to the Java Jayway library) that
+     * has a field we should index.
+     * </pre>
+     *
      * <code>string field_path = 1;</code>
      * @param value The fieldPath to set.
      * @return This builder for chaining.
@@ -493,6 +536,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Denotes the path in JSONPath format (according to the Java Jayway library) that
+     * has a field we should index.
+     * </pre>
+     *
      * <code>string field_path = 1;</code>
      * @return This builder for chaining.
      */
@@ -503,6 +551,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Denotes the path in JSONPath format (according to the Java Jayway library) that
+     * has a field we should index.
+     * </pre>
+     *
      * <code>string field_path = 1;</code>
      * @param value The bytes for fieldPath to set.
      * @return This builder for chaining.
@@ -519,6 +572,10 @@ private static final long serialVersionUID = 0L;
 
     private int fieldType_ = 0;
     /**
+     * <pre>
+     * Is the type of the field we are indexing.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType field_type = 2;</code>
      * @return The enum numeric value on the wire for fieldType.
      */
@@ -526,6 +583,10 @@ private static final long serialVersionUID = 0L;
       return fieldType_;
     }
     /**
+     * <pre>
+     * Is the type of the field we are indexing.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType field_type = 2;</code>
      * @param value The enum numeric value on the wire for fieldType to set.
      * @return This builder for chaining.
@@ -537,6 +598,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the type of the field we are indexing.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType field_type = 2;</code>
      * @return The fieldType.
      */
@@ -546,6 +611,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * Is the type of the field we are indexing.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType field_type = 2;</code>
      * @param value The fieldType to set.
      * @return This builder for chaining.
@@ -560,6 +629,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Is the type of the field we are indexing.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType field_type = 2;</code>
      * @return This builder for chaining.
      */

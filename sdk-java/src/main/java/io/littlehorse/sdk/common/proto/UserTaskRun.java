@@ -142,9 +142,13 @@ private static final long serialVersionUID = 0L;
   private volatile java.lang.Object userGroup_ = "";
   /**
    * <pre>
-   * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
-   * to a group. At least one of user_group or user_id will be set for any given
-   * UserTaskRun.
+   * Denotes the UserTaskRun as belonging to a specific User Group.
+   *
+   * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
+   * is the responsibility of the application to keep track of user/group identity and ensure
+   * that the user_group does indeed exist.
+   *
+   * Either `user_id` or `user_group` or both are set at any time.
    * </pre>
    *
    * <code>optional string user_group = 3;</code>
@@ -156,9 +160,13 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
-   * to a group. At least one of user_group or user_id will be set for any given
-   * UserTaskRun.
+   * Denotes the UserTaskRun as belonging to a specific User Group.
+   *
+   * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
+   * is the responsibility of the application to keep track of user/group identity and ensure
+   * that the user_group does indeed exist.
+   *
+   * Either `user_id` or `user_group` or both are set at any time.
    * </pre>
    *
    * <code>optional string user_group = 3;</code>
@@ -179,9 +187,13 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
-   * to a group. At least one of user_group or user_id will be set for any given
-   * UserTaskRun.
+   * Denotes the UserTaskRun as belonging to a specific User Group.
+   *
+   * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
+   * is the responsibility of the application to keep track of user/group identity and ensure
+   * that the user_group does indeed exist.
+   *
+   * Either `user_id` or `user_group` or both are set at any time.
    * </pre>
    *
    * <code>optional string user_group = 3;</code>
@@ -207,10 +219,14 @@ private static final long serialVersionUID = 0L;
   private volatile java.lang.Object userId_ = "";
   /**
    * <pre>
-   * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
-   * to a user. At least one of user_group or user_id will be set for any given
-   * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
-   * UNASSIGNED status.
+   * Denotes the UserTaskRun as assigned to a specific User ID. If this is set, then
+   * the UserTaskRun is either in the ASSIGNED, DONE, or CANCELLED status.
+   *
+   * The `user_id` does not refer to a User that is stored in LittleHorse; rather, it
+   * is the responsibility of the application to keep track of user identity and ensure
+   * that the user_id does indeed exist.
+   *
+   * Either `user_id` or `user_group` or both are set at any time.
    * </pre>
    *
    * <code>optional string user_id = 4;</code>
@@ -222,10 +238,14 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
-   * to a user. At least one of user_group or user_id will be set for any given
-   * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
-   * UNASSIGNED status.
+   * Denotes the UserTaskRun as assigned to a specific User ID. If this is set, then
+   * the UserTaskRun is either in the ASSIGNED, DONE, or CANCELLED status.
+   *
+   * The `user_id` does not refer to a User that is stored in LittleHorse; rather, it
+   * is the responsibility of the application to keep track of user identity and ensure
+   * that the user_id does indeed exist.
+   *
+   * Either `user_id` or `user_group` or both are set at any time.
    * </pre>
    *
    * <code>optional string user_id = 4;</code>
@@ -246,10 +266,14 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
-   * to a user. At least one of user_group or user_id will be set for any given
-   * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
-   * UNASSIGNED status.
+   * Denotes the UserTaskRun as assigned to a specific User ID. If this is set, then
+   * the UserTaskRun is either in the ASSIGNED, DONE, or CANCELLED status.
+   *
+   * The `user_id` does not refer to a User that is stored in LittleHorse; rather, it
+   * is the responsibility of the application to keep track of user identity and ensure
+   * that the user_id does indeed exist.
+   *
+   * Either `user_id` or `user_group` or both are set at any time.
    * </pre>
    *
    * <code>optional string user_id = 4;</code>
@@ -1655,9 +1679,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     private java.lang.Object userGroup_ = "";
     /**
      * <pre>
-     * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
-     * to a group. At least one of user_group or user_id will be set for any given
-     * UserTaskRun.
+     * Denotes the UserTaskRun as belonging to a specific User Group.
+     *
+     * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
+     * is the responsibility of the application to keep track of user/group identity and ensure
+     * that the user_group does indeed exist.
+     *
+     * Either `user_id` or `user_group` or both are set at any time.
      * </pre>
      *
      * <code>optional string user_group = 3;</code>
@@ -1668,9 +1696,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
-     * to a group. At least one of user_group or user_id will be set for any given
-     * UserTaskRun.
+     * Denotes the UserTaskRun as belonging to a specific User Group.
+     *
+     * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
+     * is the responsibility of the application to keep track of user/group identity and ensure
+     * that the user_group does indeed exist.
+     *
+     * Either `user_id` or `user_group` or both are set at any time.
      * </pre>
      *
      * <code>optional string user_group = 3;</code>
@@ -1690,9 +1722,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
-     * to a group. At least one of user_group or user_id will be set for any given
-     * UserTaskRun.
+     * Denotes the UserTaskRun as belonging to a specific User Group.
+     *
+     * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
+     * is the responsibility of the application to keep track of user/group identity and ensure
+     * that the user_group does indeed exist.
+     *
+     * Either `user_id` or `user_group` or both are set at any time.
      * </pre>
      *
      * <code>optional string user_group = 3;</code>
@@ -1713,9 +1749,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
-     * to a group. At least one of user_group or user_id will be set for any given
-     * UserTaskRun.
+     * Denotes the UserTaskRun as belonging to a specific User Group.
+     *
+     * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
+     * is the responsibility of the application to keep track of user/group identity and ensure
+     * that the user_group does indeed exist.
+     *
+     * Either `user_id` or `user_group` or both are set at any time.
      * </pre>
      *
      * <code>optional string user_group = 3;</code>
@@ -1732,9 +1772,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
-     * to a group. At least one of user_group or user_id will be set for any given
-     * UserTaskRun.
+     * Denotes the UserTaskRun as belonging to a specific User Group.
+     *
+     * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
+     * is the responsibility of the application to keep track of user/group identity and ensure
+     * that the user_group does indeed exist.
+     *
+     * Either `user_id` or `user_group` or both are set at any time.
      * </pre>
      *
      * <code>optional string user_group = 3;</code>
@@ -1748,9 +1792,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * The user_group to which this UserTaskRun is assigned. Not Set if not assigned
-     * to a group. At least one of user_group or user_id will be set for any given
-     * UserTaskRun.
+     * Denotes the UserTaskRun as belonging to a specific User Group.
+     *
+     * The `user_group` does not refer to a group that is stored in LittleHorse; rather, it
+     * is the responsibility of the application to keep track of user/group identity and ensure
+     * that the user_group does indeed exist.
+     *
+     * Either `user_id` or `user_group` or both are set at any time.
      * </pre>
      *
      * <code>optional string user_group = 3;</code>
@@ -1770,10 +1818,14 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     private java.lang.Object userId_ = "";
     /**
      * <pre>
-     * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
-     * to a user. At least one of user_group or user_id will be set for any given
-     * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
-     * UNASSIGNED status.
+     * Denotes the UserTaskRun as assigned to a specific User ID. If this is set, then
+     * the UserTaskRun is either in the ASSIGNED, DONE, or CANCELLED status.
+     *
+     * The `user_id` does not refer to a User that is stored in LittleHorse; rather, it
+     * is the responsibility of the application to keep track of user identity and ensure
+     * that the user_id does indeed exist.
+     *
+     * Either `user_id` or `user_group` or both are set at any time.
      * </pre>
      *
      * <code>optional string user_id = 4;</code>
@@ -1784,10 +1836,14 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
-     * to a user. At least one of user_group or user_id will be set for any given
-     * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
-     * UNASSIGNED status.
+     * Denotes the UserTaskRun as assigned to a specific User ID. If this is set, then
+     * the UserTaskRun is either in the ASSIGNED, DONE, or CANCELLED status.
+     *
+     * The `user_id` does not refer to a User that is stored in LittleHorse; rather, it
+     * is the responsibility of the application to keep track of user identity and ensure
+     * that the user_id does indeed exist.
+     *
+     * Either `user_id` or `user_group` or both are set at any time.
      * </pre>
      *
      * <code>optional string user_id = 4;</code>
@@ -1807,10 +1863,14 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
-     * to a user. At least one of user_group or user_id will be set for any given
-     * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
-     * UNASSIGNED status.
+     * Denotes the UserTaskRun as assigned to a specific User ID. If this is set, then
+     * the UserTaskRun is either in the ASSIGNED, DONE, or CANCELLED status.
+     *
+     * The `user_id` does not refer to a User that is stored in LittleHorse; rather, it
+     * is the responsibility of the application to keep track of user identity and ensure
+     * that the user_id does indeed exist.
+     *
+     * Either `user_id` or `user_group` or both are set at any time.
      * </pre>
      *
      * <code>optional string user_id = 4;</code>
@@ -1831,10 +1891,14 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
-     * to a user. At least one of user_group or user_id will be set for any given
-     * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
-     * UNASSIGNED status.
+     * Denotes the UserTaskRun as assigned to a specific User ID. If this is set, then
+     * the UserTaskRun is either in the ASSIGNED, DONE, or CANCELLED status.
+     *
+     * The `user_id` does not refer to a User that is stored in LittleHorse; rather, it
+     * is the responsibility of the application to keep track of user identity and ensure
+     * that the user_id does indeed exist.
+     *
+     * Either `user_id` or `user_group` or both are set at any time.
      * </pre>
      *
      * <code>optional string user_id = 4;</code>
@@ -1851,10 +1915,14 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
-     * to a user. At least one of user_group or user_id will be set for any given
-     * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
-     * UNASSIGNED status.
+     * Denotes the UserTaskRun as assigned to a specific User ID. If this is set, then
+     * the UserTaskRun is either in the ASSIGNED, DONE, or CANCELLED status.
+     *
+     * The `user_id` does not refer to a User that is stored in LittleHorse; rather, it
+     * is the responsibility of the application to keep track of user identity and ensure
+     * that the user_id does indeed exist.
+     *
+     * Either `user_id` or `user_group` or both are set at any time.
      * </pre>
      *
      * <code>optional string user_id = 4;</code>
@@ -1868,10 +1936,14 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * The user_id to which this UserTaskRun is assigned. Not Set if not assigned
-     * to a user. At least one of user_group or user_id will be set for any given
-     * UserTaskRun. If user_id is set, then the UserTaskRun cannot be in the
-     * UNASSIGNED status.
+     * Denotes the UserTaskRun as assigned to a specific User ID. If this is set, then
+     * the UserTaskRun is either in the ASSIGNED, DONE, or CANCELLED status.
+     *
+     * The `user_id` does not refer to a User that is stored in LittleHorse; rather, it
+     * is the responsibility of the application to keep track of user identity and ensure
+     * that the user_id does indeed exist.
+     *
+     * Either `user_id` or `user_group` or both are set at any time.
      * </pre>
      *
      * <code>optional string user_id = 4;</code>

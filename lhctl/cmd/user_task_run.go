@@ -86,8 +86,6 @@ The following option groups are supported:
 
 		userId, _ := cmd.Flags().GetString("userId")
 		userGroup, _ := cmd.Flags().GetString("userGroup")
-		// userId and userGroup can't both be non-empty because the flags are
-		// mutually exclusive.
 
 		reassign := &model.AssignUserTaskRunRequest{
 			UserTaskRunId: &model.UserTaskRunId{
@@ -333,7 +331,6 @@ func init() {
 	assignUserTaskRunCmd.Flags().String("userId", "", "User Id to assign to.")
 	assignUserTaskRunCmd.Flags().String("userGroup", "", "User Group to assign to.")
 	assignUserTaskRunCmd.Flags().Bool("overrideClaim", false, "Whether to forcefully steal task if it's already assigned.")
-	assignUserTaskRunCmd.MarkFlagsMutuallyExclusive("userId", "userGroup")
 
 	searchUserTaskRunCmd.Flags().String("userTaskDefName", "", "UserTaskDef ID of User Task Run's to search for.")
 	searchUserTaskRunCmd.Flags().String("userId", "", "Search for User Task Runs assigned to this User ID.")

@@ -8,24 +8,44 @@ public interface ServerACLsOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The associated ACL's
+   * </pre>
+   *
    * <code>repeated .littlehorse.ServerACL acls = 1;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.ServerACL> 
       getAclsList();
   /**
+   * <pre>
+   * The associated ACL's
+   * </pre>
+   *
    * <code>repeated .littlehorse.ServerACL acls = 1;</code>
    */
   io.littlehorse.sdk.common.proto.ServerACL getAcls(int index);
   /**
+   * <pre>
+   * The associated ACL's
+   * </pre>
+   *
    * <code>repeated .littlehorse.ServerACL acls = 1;</code>
    */
   int getAclsCount();
   /**
+   * <pre>
+   * The associated ACL's
+   * </pre>
+   *
    * <code>repeated .littlehorse.ServerACL acls = 1;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.ServerACLOrBuilder> 
       getAclsOrBuilderList();
   /**
+   * <pre>
+   * The associated ACL's
+   * </pre>
+   *
    * <code>repeated .littlehorse.ServerACL acls = 1;</code>
    */
   io.littlehorse.sdk.common.proto.ServerACLOrBuilder getAclsOrBuilder(

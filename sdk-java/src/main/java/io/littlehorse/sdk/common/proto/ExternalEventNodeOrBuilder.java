@@ -8,31 +8,58 @@ public interface ExternalEventNodeOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the ExternalEventDef that we are waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
    * @return Whether the externalEventDefId field is set.
    */
   boolean hasExternalEventDefId();
   /**
+   * <pre>
+   * The ID of the ExternalEventDef that we are waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
    * @return The externalEventDefId.
    */
   io.littlehorse.sdk.common.proto.ExternalEventDefId getExternalEventDefId();
   /**
+   * <pre>
+   * The ID of the ExternalEventDef that we are waiting for.
+   * </pre>
+   *
    * <code>.littlehorse.ExternalEventDefId external_event_def_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.ExternalEventDefIdOrBuilder getExternalEventDefIdOrBuilder();
 
   /**
+   * <pre>
+   * Determines the maximum amount of time that the NodeRun will wait for the
+   * ExternalEvent to arrive.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
    * @return Whether the timeoutSeconds field is set.
    */
   boolean hasTimeoutSeconds();
   /**
+   * <pre>
+   * Determines the maximum amount of time that the NodeRun will wait for the
+   * ExternalEvent to arrive.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
    * @return The timeoutSeconds.
    */
   io.littlehorse.sdk.common.proto.VariableAssignment getTimeoutSeconds();
   /**
+   * <pre>
+   * Determines the maximum amount of time that the NodeRun will wait for the
+   * ExternalEvent to arrive.
+   * </pre>
+   *
    * <code>.littlehorse.VariableAssignment timeout_seconds = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getTimeoutSecondsOrBuilder();

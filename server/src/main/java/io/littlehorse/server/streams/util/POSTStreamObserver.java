@@ -2,8 +2,17 @@ package io.littlehorse.server.streams.util;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
+import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.proto.WaitForCommandResponse;
+import io.littlehorse.server.streams.BackendInternalComms;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+import java.time.Duration;
+import java.util.Date;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -12,16 +21,62 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
     private StreamObserver<U> ctx;
     private Class<U> responseCls;
     private boolean shouldComplete;
+    private final BackendInternalComms internalComms;
+    private final AbstractCommand<?> command;
+    private final RequestExecutionContext requestContext;
+    private final Date commandStartedAt;
+    private final Date timeoutAt;
+    // Wait until kafka streams rebalance finishes
+    private final Duration successResponseTimeout;
+    private final ScheduledExecutorService retryExecutor;
 
-    public POSTStreamObserver(StreamObserver<U> responseObserver, Class<U> responseCls, boolean shouldComplete) {
+    public POSTStreamObserver(
+            StreamObserver<U> responseObserver,
+            Class<U> responseCls,
+            boolean shouldComplete,
+            BackendInternalComms internalComms,
+            AbstractCommand<?> command,
+            RequestExecutionContext requestContext,
+            Duration successResponseTimeout,
+            ScheduledExecutorService retryExecutor) {
         this.ctx = responseObserver;
         this.responseCls = responseCls;
         this.shouldComplete = shouldComplete;
+        this.internalComms = internalComms;
+        this.command = command;
+        this.commandStartedAt = new Date();
+        this.timeoutAt = new Date(commandStartedAt.getTime() + successResponseTimeout.toMillis());
+        this.successResponseTimeout = successResponseTimeout;
+        this.requestContext = requestContext;
+        this.retryExecutor = retryExecutor;
     }
 
     @Override
     public void onError(Throwable t) {
-        ctx.onError(t);
+        final boolean isRetryable = t instanceof StatusRuntimeException grpcRuntimeException
+                && grpcRuntimeException.getStatus().getCode().equals(Status.UNAVAILABLE.getCode());
+        final boolean retryOneMoreTime = timeoutAt.compareTo(new Date()) > 0;
+        if (isRetryable && retryOneMoreTime) {
+            retryExecutor.schedule(
+                    () -> {
+                        internalComms.waitForCommand(
+                                command,
+                                new POSTStreamObserver<>(
+                                        ctx,
+                                        responseCls,
+                                        shouldComplete,
+                                        internalComms,
+                                        command,
+                                        requestContext,
+                                        successResponseTimeout,
+                                        retryExecutor),
+                                requestContext);
+                    },
+                    1,
+                    TimeUnit.SECONDS);
+        } else {
+            ctx.onError(t);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -43,6 +98,10 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
 
     @Override
     public void onNext(WaitForCommandResponse reply) {
-        ctx.onNext(buildRespFromBytes(reply.getResult()));
+        if (reply.hasResult()) {
+            ctx.onNext(buildRespFromBytes(reply.getResult()));
+        } else if (reply.hasPartitionMigratedResponse()) {
+            internalComms.waitForCommand(command, this, requestContext);
+        }
     }
 }

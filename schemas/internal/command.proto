@@ -39,6 +39,8 @@ message Command {
         CancelUserTaskRunRequest cancel_user_task = 19;
         BulkUpdateJob bulk_job = 20;
         TaskAttemptRetryReady task_attempt_retry_ready = 21;
+        RescueThreadRunRequest rescue_thread_run = 22;
+        DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;
         // TODO: Add SaveUserTask
     }
 }
@@ -215,14 +217,6 @@ message LHTimerPb {
     optional PrincipalId principal_id = 6; // anonymous if not set
 }
 
-message TaskWorkerMetadata {
-  string task_worker_id = 1;
-  google.protobuf.Timestamp latest_heartbeat = 2;
-  repeated LHHostInfo hosts = 3;
-}
-
-message TaskWorkerGroup {
-  TaskWorkerGroupId id = 1;
-  google.protobuf.Timestamp created_at = 2;
-  map<string, TaskWorkerMetadata> task_workers = 3;
+message DeleteTaskWorkerGroupRequest {
+    TaskDefId id = 1;
 }

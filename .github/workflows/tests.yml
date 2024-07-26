@@ -15,14 +15,14 @@ jobs:
         java-version: ["11", "17"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java ${{ matrix.java-version }}
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: "corretto"
           java-version: ${{ matrix.java-version }}
       - name: Tests
-        run: ./gradlew sdk-java:test sdk-java:build
+        run: ./gradlew sdk-java:spotlessCheck sdk-java:test sdk-java:build
       - name: Java Documentaion
         run: ./gradlew sdk-java:javadoc
   tests-sdk-go:
@@ -30,11 +30,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
           go-version: "stable"
+      - name: Validate Formatting
+        run: if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then exit 1 ; fi
       - name: Tests
         run: go test ./...
   tests-sdk-python:
@@ -45,7 +47,7 @@ jobs:
         python-version: ["3.9", "3.10", "3.11", "3.12"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -70,39 +72,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: "corretto"
           java-version: 17
       - name: Tests
-        run: ./gradlew canary:test canary:build
+        run: ./gradlew canary:spotlessCheck canary:test canary:build
   tests-server:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: "corretto"
           java-version: 17
       - name: Validate Indentations
-        run: ./gradlew spotlessCheck
-      - name: Validate Build
-        run: ./gradlew build -x test
+        run: ./gradlew server:spotlessCheck test-utils:spotlessCheck
       - name: Tests
-        run: ./gradlew server:test server:e2e server:build
+        run: ./gradlew server:test server:e2e
   tests-e2e:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: "corretto"
           java-version: 17
@@ -115,19 +115,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v3
-        with:
-          package_json_file: ./dashboard/package.json
-
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache-dependency-path: dashboard/pnpm-lock.yaml
-          cache: pnpm
 
       - name: Build Dashboard
         working-directory: ./dashboard
         run: |
-          pnpm install
-          pnpm test
+          npm ci
+          npm run test

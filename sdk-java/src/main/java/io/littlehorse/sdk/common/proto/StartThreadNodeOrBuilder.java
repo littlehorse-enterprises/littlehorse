@@ -8,11 +8,19 @@ public interface StartThreadNodeOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The name of the ThreadSpec to spawn.
+   * </pre>
+   *
    * <code>string thread_spec_name = 1;</code>
    * @return The threadSpecName.
    */
   java.lang.String getThreadSpecName();
   /**
+   * <pre>
+   * The name of the ThreadSpec to spawn.
+   * </pre>
+   *
    * <code>string thread_spec_name = 1;</code>
    * @return The bytes for threadSpecName.
    */
@@ -20,10 +28,18 @@ public interface StartThreadNodeOrBuilder extends
       getThreadSpecNameBytes();
 
   /**
+   * <pre>
+   * The input variables to pass into the Child ThreadRun.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
   int getVariablesCount();
   /**
+   * <pre>
+   * The input variables to pass into the Child ThreadRun.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
   boolean containsVariables(
@@ -35,11 +51,19 @@ public interface StartThreadNodeOrBuilder extends
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>
   getVariables();
   /**
+   * <pre>
+   * The input variables to pass into the Child ThreadRun.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>
   getVariablesMap();
   /**
+   * <pre>
+   * The input variables to pass into the Child ThreadRun.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
   /* nullable */
@@ -48,6 +72,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment getVariablesOrDefault(
       /* nullable */
 io.littlehorse.sdk.common.proto.VariableAssignment defaultValue);
   /**
+   * <pre>
+   * The input variables to pass into the Child ThreadRun.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.VariableAssignment&gt; variables = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignment getVariablesOrThrow(

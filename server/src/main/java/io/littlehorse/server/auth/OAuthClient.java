@@ -53,11 +53,17 @@ public class OAuthClient {
                     ? null
                     : successResponse.getExpirationTime().toInstant();
 
+            // This makes the assumption that our human users are using OIDC. However, that decision
+            // appears to have been made and is a design decision rather than an implementation detail,
+            // so I think that this is safe.
+            boolean isMachineClient = !successResponse.getScope().contains("openid");
+
             return TokenStatus.builder()
                     .clientId(clientId)
                     .token(token)
                     .userName(successResponse.getUsername())
                     .expiration(expiration)
+                    .isMachineClient(isMachineClient)
                     .build();
         } catch (ParseException | IOException e) {
             log.error(e.getMessage(), e);

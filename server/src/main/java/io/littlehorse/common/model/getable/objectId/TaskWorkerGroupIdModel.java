@@ -6,7 +6,7 @@ import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.TaskWorkerGroup;
+import io.littlehorse.sdk.common.proto.TaskWorkerGroup;
 import io.littlehorse.sdk.common.proto.TaskWorkerGroupId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;

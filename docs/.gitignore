@@ -1,0 +1,14 @@
+# Ignore binary and build stuff
+build/
+
+# Emacs-related stuff
+*\#
+*~
+
+# Python cache stuff
+*__pycache__*
+
+
+node_modules/
+
+.docusaurus

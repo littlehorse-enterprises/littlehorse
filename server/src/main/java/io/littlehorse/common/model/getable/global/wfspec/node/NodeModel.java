@@ -35,9 +35,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Getter
 @Setter
 public class NodeModel extends LHSerializable<Node> {
@@ -219,21 +217,6 @@ public class NodeModel extends LHSerializable<Node> {
             }
         }
 
-        if (!outgoingEdges.isEmpty()) {
-            EdgeModel last = outgoingEdges.get(outgoingEdges.size() - 1);
-            if (last.getCondition() != null) {
-                // throw new LHValidationError(
-                // null,
-                // "Last outgoing edge has non-null condition!"
-                // );
-
-                log.warn(
-                        """
-                                    There is no default edge, better know what you're doing!.
-                                    Future releases will validate that everything is ok.
-                                """);
-            }
-        }
         validateFailureHandlers();
 
         getSubNode().validate(ctx);

@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Defines a blueprint for a ThreadRun, which is a thread of execution inside a
+ * WfRun.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ThreadSpec}
  */
 public final class ThreadSpec extends
@@ -80,6 +85,10 @@ private static final long serialVersionUID = 0L;
     return internalGetNodes().getMap().size();
   }
   /**
+   * <pre>
+   * The Nodes inside this ThreadSpec. Maps from name to Node.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.Node&gt; nodes = 1;</code>
    */
   @java.lang.Override
@@ -97,6 +106,10 @@ private static final long serialVersionUID = 0L;
     return getNodesMap();
   }
   /**
+   * <pre>
+   * The Nodes inside this ThreadSpec. Maps from name to Node.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.Node&gt; nodes = 1;</code>
    */
   @java.lang.Override
@@ -104,6 +117,10 @@ private static final long serialVersionUID = 0L;
     return internalGetNodes().getMap();
   }
   /**
+   * <pre>
+   * The Nodes inside this ThreadSpec. Maps from name to Node.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.Node&gt; nodes = 1;</code>
    */
   @java.lang.Override
@@ -118,6 +135,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
+   * <pre>
+   * The Nodes inside this ThreadSpec. Maps from name to Node.
+   * </pre>
+   *
    * <code>map&lt;string, .littlehorse.Node&gt; nodes = 1;</code>
    */
   @java.lang.Override
@@ -136,6 +157,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef> variableDefs_;
   /**
+   * <pre>
+   * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
    */
   @java.lang.Override
@@ -143,6 +168,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
     return variableDefs_;
   }
   /**
+   * <pre>
+   * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
    */
   @java.lang.Override
@@ -151,6 +180,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
     return variableDefs_;
   }
   /**
+   * <pre>
+   * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
    */
   @java.lang.Override
@@ -158,6 +191,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
     return variableDefs_.size();
   }
   /**
+   * <pre>
+   * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
    */
   @java.lang.Override
@@ -165,6 +202,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
     return variableDefs_.get(index);
   }
   /**
+   * <pre>
+   * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+   * </pre>
+   *
    * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
    */
   @java.lang.Override
@@ -177,6 +218,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.InterruptDef> interruptDefs_;
   /**
+   * <pre>
+   * Defines all interrupts for this ThreadSpec.
+   * </pre>
+   *
    * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
    */
   @java.lang.Override
@@ -184,6 +229,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
     return interruptDefs_;
   }
   /**
+   * <pre>
+   * Defines all interrupts for this ThreadSpec.
+   * </pre>
+   *
    * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
    */
   @java.lang.Override
@@ -192,6 +241,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
     return interruptDefs_;
   }
   /**
+   * <pre>
+   * Defines all interrupts for this ThreadSpec.
+   * </pre>
+   *
    * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
    */
   @java.lang.Override
@@ -199,6 +252,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
     return interruptDefs_.size();
   }
   /**
+   * <pre>
+   * Defines all interrupts for this ThreadSpec.
+   * </pre>
+   *
    * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
    */
   @java.lang.Override
@@ -206,6 +263,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
     return interruptDefs_.get(index);
   }
   /**
+   * <pre>
+   * Defines all interrupts for this ThreadSpec.
+   * </pre>
+   *
    * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
    */
   @java.lang.Override
@@ -217,6 +278,12 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
   public static final int RETENTION_POLICY_FIELD_NUMBER = 4;
   private io.littlehorse.sdk.common.proto.ThreadRetentionPolicy retentionPolicy_;
   /**
+   * <pre>
+   * Optional retention policy to clean up ThreadRun's of this ThreadSpec after they
+   * have been completed. This is important for long-lived WfRun's that could have
+   * hundreds of ThreadRun's, because a ThreadRun has a record inside the WfRun itself.
+   * </pre>
+   *
    * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
    * @return Whether the retentionPolicy field is set.
    */
@@ -225,6 +292,12 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Optional retention policy to clean up ThreadRun's of this ThreadSpec after they
+   * have been completed. This is important for long-lived WfRun's that could have
+   * hundreds of ThreadRun's, because a ThreadRun has a record inside the WfRun itself.
+   * </pre>
+   *
    * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
    * @return The retentionPolicy.
    */
@@ -233,6 +306,12 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
     return retentionPolicy_ == null ? io.littlehorse.sdk.common.proto.ThreadRetentionPolicy.getDefaultInstance() : retentionPolicy_;
   }
   /**
+   * <pre>
+   * Optional retention policy to clean up ThreadRun's of this ThreadSpec after they
+   * have been completed. This is important for long-lived WfRun's that could have
+   * hundreds of ThreadRun's, because a ThreadRun has a record inside the WfRun itself.
+   * </pre>
+   *
    * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
    */
   @java.lang.Override
@@ -451,6 +530,11 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
     return builder;
   }
   /**
+   * <pre>
+   * Defines a blueprint for a ThreadRun, which is a thread of execution inside a
+   * WfRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ThreadSpec}
    */
   public static final class Builder extends
@@ -817,6 +901,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return internalGetNodes().getMap().size();
     }
     /**
+     * <pre>
+     * The Nodes inside this ThreadSpec. Maps from name to Node.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.Node&gt; nodes = 1;</code>
      */
     @java.lang.Override
@@ -834,6 +922,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return getNodesMap();
     }
     /**
+     * <pre>
+     * The Nodes inside this ThreadSpec. Maps from name to Node.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.Node&gt; nodes = 1;</code>
      */
     @java.lang.Override
@@ -841,6 +933,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return internalGetNodes().getMap();
     }
     /**
+     * <pre>
+     * The Nodes inside this ThreadSpec. Maps from name to Node.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.Node&gt; nodes = 1;</code>
      */
     @java.lang.Override
@@ -855,6 +951,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
+     * <pre>
+     * The Nodes inside this ThreadSpec. Maps from name to Node.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.Node&gt; nodes = 1;</code>
      */
     @java.lang.Override
@@ -875,6 +975,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The Nodes inside this ThreadSpec. Maps from name to Node.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.Node&gt; nodes = 1;</code>
      */
     public Builder removeNodes(
@@ -894,6 +998,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return internalGetMutableNodes().getMutableMap();
     }
     /**
+     * <pre>
+     * The Nodes inside this ThreadSpec. Maps from name to Node.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.Node&gt; nodes = 1;</code>
      */
     public Builder putNodes(
@@ -907,6 +1015,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The Nodes inside this ThreadSpec. Maps from name to Node.
+     * </pre>
+     *
      * <code>map&lt;string, .littlehorse.Node&gt; nodes = 1;</code>
      */
     public Builder putAllNodes(
@@ -930,6 +1042,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
         io.littlehorse.sdk.common.proto.ThreadVarDef, io.littlehorse.sdk.common.proto.ThreadVarDef.Builder, io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder> variableDefsBuilder_;
 
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef> getVariableDefsList() {
@@ -940,6 +1056,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public int getVariableDefsCount() {
@@ -950,6 +1070,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadVarDef getVariableDefs(int index) {
@@ -960,6 +1084,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public Builder setVariableDefs(
@@ -977,6 +1105,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public Builder setVariableDefs(
@@ -991,6 +1123,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public Builder addVariableDefs(io.littlehorse.sdk.common.proto.ThreadVarDef value) {
@@ -1007,6 +1143,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public Builder addVariableDefs(
@@ -1024,6 +1164,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public Builder addVariableDefs(
@@ -1038,6 +1182,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public Builder addVariableDefs(
@@ -1052,6 +1200,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public Builder addAllVariableDefs(
@@ -1067,6 +1219,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public Builder clearVariableDefs() {
@@ -1080,6 +1236,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public Builder removeVariableDefs(int index) {
@@ -1093,6 +1253,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadVarDef.Builder getVariableDefsBuilder(
@@ -1100,6 +1264,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return getVariableDefsFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder getVariableDefsOrBuilder(
@@ -1110,6 +1278,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.ThreadVarDefOrBuilder> 
@@ -1121,6 +1293,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadVarDef.Builder addVariableDefsBuilder() {
@@ -1128,6 +1304,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
           io.littlehorse.sdk.common.proto.ThreadVarDef.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadVarDef.Builder addVariableDefsBuilder(
@@ -1136,6 +1316,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
           index, io.littlehorse.sdk.common.proto.ThreadVarDef.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Defines Variables that are local to ThreadRun's of this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.ThreadVarDef variable_defs = 2;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.ThreadVarDef.Builder> 
@@ -1170,6 +1354,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
         io.littlehorse.sdk.common.proto.InterruptDef, io.littlehorse.sdk.common.proto.InterruptDef.Builder, io.littlehorse.sdk.common.proto.InterruptDefOrBuilder> interruptDefsBuilder_;
 
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.InterruptDef> getInterruptDefsList() {
@@ -1180,6 +1368,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public int getInterruptDefsCount() {
@@ -1190,6 +1382,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.InterruptDef getInterruptDefs(int index) {
@@ -1200,6 +1396,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public Builder setInterruptDefs(
@@ -1217,6 +1417,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public Builder setInterruptDefs(
@@ -1231,6 +1435,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public Builder addInterruptDefs(io.littlehorse.sdk.common.proto.InterruptDef value) {
@@ -1247,6 +1455,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public Builder addInterruptDefs(
@@ -1264,6 +1476,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public Builder addInterruptDefs(
@@ -1278,6 +1494,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public Builder addInterruptDefs(
@@ -1292,6 +1512,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public Builder addAllInterruptDefs(
@@ -1307,6 +1531,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public Builder clearInterruptDefs() {
@@ -1320,6 +1548,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public Builder removeInterruptDefs(int index) {
@@ -1333,6 +1565,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.InterruptDef.Builder getInterruptDefsBuilder(
@@ -1340,6 +1576,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return getInterruptDefsFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.InterruptDefOrBuilder getInterruptDefsOrBuilder(
@@ -1350,6 +1590,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.InterruptDefOrBuilder> 
@@ -1361,6 +1605,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.InterruptDef.Builder addInterruptDefsBuilder() {
@@ -1368,6 +1616,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
           io.littlehorse.sdk.common.proto.InterruptDef.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.InterruptDef.Builder addInterruptDefsBuilder(
@@ -1376,6 +1628,10 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
           index, io.littlehorse.sdk.common.proto.InterruptDef.getDefaultInstance());
     }
     /**
+     * <pre>
+     * Defines all interrupts for this ThreadSpec.
+     * </pre>
+     *
      * <code>repeated .littlehorse.InterruptDef interrupt_defs = 3;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.InterruptDef.Builder> 
@@ -1401,6 +1657,12 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ThreadRetentionPolicy, io.littlehorse.sdk.common.proto.ThreadRetentionPolicy.Builder, io.littlehorse.sdk.common.proto.ThreadRetentionPolicyOrBuilder> retentionPolicyBuilder_;
     /**
+     * <pre>
+     * Optional retention policy to clean up ThreadRun's of this ThreadSpec after they
+     * have been completed. This is important for long-lived WfRun's that could have
+     * hundreds of ThreadRun's, because a ThreadRun has a record inside the WfRun itself.
+     * </pre>
+     *
      * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
      * @return Whether the retentionPolicy field is set.
      */
@@ -1408,6 +1670,12 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
+     * <pre>
+     * Optional retention policy to clean up ThreadRun's of this ThreadSpec after they
+     * have been completed. This is important for long-lived WfRun's that could have
+     * hundreds of ThreadRun's, because a ThreadRun has a record inside the WfRun itself.
+     * </pre>
+     *
      * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
      * @return The retentionPolicy.
      */
@@ -1419,6 +1687,12 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Optional retention policy to clean up ThreadRun's of this ThreadSpec after they
+     * have been completed. This is important for long-lived WfRun's that could have
+     * hundreds of ThreadRun's, because a ThreadRun has a record inside the WfRun itself.
+     * </pre>
+     *
      * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
      */
     public Builder setRetentionPolicy(io.littlehorse.sdk.common.proto.ThreadRetentionPolicy value) {
@@ -1435,6 +1709,12 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Optional retention policy to clean up ThreadRun's of this ThreadSpec after they
+     * have been completed. This is important for long-lived WfRun's that could have
+     * hundreds of ThreadRun's, because a ThreadRun has a record inside the WfRun itself.
+     * </pre>
+     *
      * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
      */
     public Builder setRetentionPolicy(
@@ -1449,6 +1729,12 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Optional retention policy to clean up ThreadRun's of this ThreadSpec after they
+     * have been completed. This is important for long-lived WfRun's that could have
+     * hundreds of ThreadRun's, because a ThreadRun has a record inside the WfRun itself.
+     * </pre>
+     *
      * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
      */
     public Builder mergeRetentionPolicy(io.littlehorse.sdk.common.proto.ThreadRetentionPolicy value) {
@@ -1468,6 +1754,12 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Optional retention policy to clean up ThreadRun's of this ThreadSpec after they
+     * have been completed. This is important for long-lived WfRun's that could have
+     * hundreds of ThreadRun's, because a ThreadRun has a record inside the WfRun itself.
+     * </pre>
+     *
      * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
      */
     public Builder clearRetentionPolicy() {
@@ -1481,6 +1773,12 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Optional retention policy to clean up ThreadRun's of this ThreadSpec after they
+     * have been completed. This is important for long-lived WfRun's that could have
+     * hundreds of ThreadRun's, because a ThreadRun has a record inside the WfRun itself.
+     * </pre>
+     *
      * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadRetentionPolicy.Builder getRetentionPolicyBuilder() {
@@ -1489,6 +1787,12 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       return getRetentionPolicyFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Optional retention policy to clean up ThreadRun's of this ThreadSpec after they
+     * have been completed. This is important for long-lived WfRun's that could have
+     * hundreds of ThreadRun's, because a ThreadRun has a record inside the WfRun itself.
+     * </pre>
+     *
      * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadRetentionPolicyOrBuilder getRetentionPolicyOrBuilder() {
@@ -1500,6 +1804,12 @@ io.littlehorse.sdk.common.proto.Node defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Optional retention policy to clean up ThreadRun's of this ThreadSpec after they
+     * have been completed. This is important for long-lived WfRun's that could have
+     * hundreds of ThreadRun's, because a ThreadRun has a record inside the WfRun itself.
+     * </pre>
+     *
      * <code>optional .littlehorse.ThreadRetentionPolicy retention_policy = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

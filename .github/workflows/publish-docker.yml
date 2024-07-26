@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: "corretto"
           java-version: 17
@@ -31,7 +31,7 @@ jobs:
       - build-server
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download Server Jar artifact
         uses: actions/download-artifact@v4
@@ -50,10 +50,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: "corretto"
           java-version: 17
@@ -79,7 +79,7 @@ jobs:
       - build-server
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Build and Publish
         uses: ./.github/actions/publish-image
@@ -92,24 +92,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-
-      - uses: pnpm/action-setup@v2
-        with:
-          package_json_file: ./dashboard/package.json
+        uses: actions/checkout@v4
 
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache-dependency-path: dashboard/pnpm-lock.yaml
-          cache: pnpm
 
       - name: Build Dashboard
         working-directory: ./dashboard
         run: |
-          pnpm install
-          pnpm build
+          npm ci
+          npm run build
 
       - name: Build and Publish
         uses: ./.github/actions/publish-image
@@ -124,24 +118,18 @@ jobs:
       - build-server
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-
-      - uses: pnpm/action-setup@v2
-        with:
-          package_json_file: ./dashboard/package.json
+        uses: actions/checkout@v4
 
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache-dependency-path: dashboard/pnpm-lock.yaml
-          cache: pnpm
 
       - name: Build Dashboard
         working-directory: ./dashboard
         run: |
-          pnpm install
-          pnpm build
+          npm ci
+          npm run build
 
       - name: Dowload Server Jar artifact
         uses: actions/download-artifact@v4

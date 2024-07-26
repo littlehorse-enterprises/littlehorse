@@ -17,12 +17,12 @@ public final class StandbyMetrics implements MeterBinder, Closeable {
     private final String STANDBY_PARTITIONS_METRIC_NAME = "standby_partitions";
     private final String STORE_NAME = "store_name";
     private final String INSTANCE_ID = "instance_id";
-    private final Map<String, InstanceStore> standbyStores;
+    private final Map<String, StandbyStoresOnInstance> standbyStores;
     private MeterRegistry registry;
     private final ScheduledExecutorService mainExecutor;
     private final String instanceId;
 
-    public StandbyMetrics(final Map<String, InstanceStore> standbyStores, String instanceId) {
+    public StandbyMetrics(final Map<String, StandbyStoresOnInstance> standbyStores, String instanceId) {
         this.standbyStores = standbyStores;
         mainExecutor = Executors.newSingleThreadScheduledExecutor();
         this.instanceId = instanceId;
@@ -37,14 +37,14 @@ public final class StandbyMetrics implements MeterBinder, Closeable {
     void registerMetrics() {
         // Partitions per store
         standbyStores.forEach((storeName, storeStatus) -> Gauge.builder(
-                        STANDBY_PARTITIONS_METRIC_NAME, storeStatus, InstanceStore::registeredPartitions)
+                        STANDBY_PARTITIONS_METRIC_NAME, storeStatus, StandbyStoresOnInstance::registeredPartitions)
                 .tag(STORE_NAME, storeName)
                 .tag(INSTANCE_ID, instanceId)
                 .register(registry));
 
         // total lag per store
         standbyStores.forEach(
-                (storeName, storeStatus) -> Gauge.builder(METRIC_NAME, storeStatus, InstanceStore::totalLag)
+                (storeName, storeStatus) -> Gauge.builder(METRIC_NAME, storeStatus, StandbyStoresOnInstance::totalLag)
                         .tag(STORE_NAME, storeName)
                         .tag(INSTANCE_ID, instanceId)
                         .register(registry));

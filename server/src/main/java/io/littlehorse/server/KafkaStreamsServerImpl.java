@@ -21,6 +21,7 @@ import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunReq
 import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
+import io.littlehorse.common.model.corecommand.subcommand.RescueThreadRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
@@ -31,10 +32,12 @@ import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -44,6 +47,7 @@ import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
@@ -51,6 +55,7 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
@@ -66,6 +71,7 @@ import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
@@ -73,6 +79,7 @@ import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
+import io.littlehorse.sdk.common.proto.DeletePrincipalRequest;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
@@ -105,6 +112,7 @@ import io.littlehorse.sdk.common.proto.NodeRunList;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
 import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.sdk.common.proto.Principal;
+import io.littlehorse.sdk.common.proto.PrincipalIdList;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
@@ -116,11 +124,13 @@ import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
+import io.littlehorse.sdk.common.proto.RescueThreadRunRequest;
 import io.littlehorse.sdk.common.proto.ResumeWfRunRequest;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.SearchExternalEventRequest;
 import io.littlehorse.sdk.common.proto.SearchNodeRunRequest;
+import io.littlehorse.sdk.common.proto.SearchPrincipalRequest;
 import io.littlehorse.sdk.common.proto.SearchTaskDefRequest;
 import io.littlehorse.sdk.common.proto.SearchTaskRunRequest;
 import io.littlehorse.sdk.common.proto.SearchTenantRequest;
@@ -138,8 +148,10 @@ import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunIdList;
 import io.littlehorse.sdk.common.proto.TaskRunList;
+import io.littlehorse.sdk.common.proto.TaskWorkerGroup;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest;
 import io.littlehorse.sdk.common.proto.Tenant;
+import io.littlehorse.sdk.common.proto.TenantId;
 import io.littlehorse.sdk.common.proto.TenantIdList;
 import io.littlehorse.sdk.common.proto.UserTaskDef;
 import io.littlehorse.sdk.common.proto.UserTaskDefId;
@@ -177,6 +189,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListWfMetrics
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchNodeRunRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchPrincipalRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTaskDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTenantRequestModel;
@@ -195,6 +208,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWfMe
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchPrincipalRequestReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTenantRequestReply;
@@ -212,17 +226,24 @@ import io.littlehorse.server.streams.topology.core.WfService;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import io.littlehorse.server.streams.util.POSTStreamObserver;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.Date;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
+import org.apache.kafka.streams.processor.TaskId;
 
 @Slf4j
 public class KafkaStreamsServerImpl extends LittleHorseImplBase {
@@ -240,6 +261,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     private Context.Key<RequestExecutionContext> contextKey = Context.key("executionContextKey");
     private final MetadataCache metadataCache;
     private final CoreStoreProvider coreStoreProvider;
+    private final ScheduledExecutorService networkThreadpool;
 
     private RequestExecutionContext requestContext() {
         return contextKey.get();
@@ -249,14 +271,30 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         this.metadataCache = new MetadataCache();
         this.config = config;
         this.taskQueueManager = new TaskQueueManager(this, LHConstants.MAX_TASKRUNS_IN_ONE_TASKQUEUE);
+
+        if (config.getLHInstanceId().isPresent()) {
+            overrideStreamsProcessId("core");
+            overrideStreamsProcessId("timer");
+        }
         this.coreStreams = new KafkaStreams(
                 ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager),
                 config.getCoreStreamsConfig());
         this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
-        this.healthService = new HealthService(config, coreStreams, timerStreams, taskQueueManager, metadataCache);
-        coreStreams.setStandbyUpdateListener(healthService);
-        Executor networkThreadpool = Executors.newFixedThreadPool(config.getNumNetworkThreads());
+        coreStreams.setUncaughtExceptionHandler(throwable -> {
+            log.error("Uncaught exception for " + throwable.getMessage());
+            return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
+        });
+        timerStreams.setUncaughtExceptionHandler(throwable -> {
+            log.error("Uncaught exception for " + throwable.getMessage());
+            return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
+        });
+
+        this.networkThreadpool = Executors.newScheduledThreadPool(config.getNumNetworkThreads());
         coreStoreProvider = new CoreStoreProvider(this.coreStreams);
+        this.internalComms = new BackendInternalComms(
+                config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey, coreStoreProvider);
+        this.healthService =
+                new HealthService(config, coreStreams, timerStreams, taskQueueManager, metadataCache, internalComms);
         this.listenerManager = new ListenersManager(
                 config,
                 this,
@@ -265,13 +303,10 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 metadataCache,
                 contextKey,
                 coreStoreProvider);
-
-        this.internalComms = new BackendInternalComms(
-                config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey, coreStoreProvider);
     }
 
-    public String getInstanceId() {
-        return config.getLHInstanceId();
+    public String getInstanceName() {
+        return config.getLHInstanceName();
     }
 
     @Override
@@ -287,12 +322,18 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         }
     }
 
-    @Override
-    @Authorize(resources = ACLResource.ACL_PRINCIPAL, actions = ACLAction.WRITE_METADATA)
     public void putPrincipal(PutPrincipalRequest req, StreamObserver<Principal> ctx) {
         PutPrincipalRequestModel reqModel =
                 LHSerializable.fromProto(req, PutPrincipalRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, Principal.class, true);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_PRINCIPAL, actions = ACLAction.WRITE_METADATA)
+    public void deletePrincipal(DeletePrincipalRequest req, StreamObserver<Empty> ctx) {
+        DeletePrincipalRequestModel reqModel =
+                LHSerializable.fromProto(req, DeletePrincipalRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class, true);
     }
 
     @Override
@@ -344,6 +385,23 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         } else {
             ctx.onNext(td.toProto().build());
             ctx.onCompleted();
+        }
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_TASK_WORKER_GROUP, actions = ACLAction.READ)
+    public void getTaskWorkerGroup(TaskDefId taskDefIdPb, StreamObserver<TaskWorkerGroup> ctx) {
+        TaskDefIdModel taskDefId = TaskDefIdModel.fromProto(taskDefIdPb, TaskDefIdModel.class, requestContext());
+        TaskWorkerGroupIdModel twgid = new TaskWorkerGroupIdModel(taskDefId);
+
+        try {
+            TaskWorkerGroupModel taskWorkerGroup =
+                    internalComms.getObject(twgid, TaskWorkerGroupModel.class, requestContext());
+            ctx.onNext(taskWorkerGroup.toProto().build());
+            ctx.onCompleted();
+        } catch (Exception exn) {
+            if (!LHUtil.isUserError(exn)) log.error("Error handling request", exn);
+            ctx.onError(exn);
         }
     }
 
@@ -471,7 +529,8 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 authorization.principalId(),
                 coreStoreProvider,
                 metadataCache,
-                config);
+                config,
+                requestContext());
     }
 
     @Override
@@ -500,8 +559,33 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     @Override
     @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.WRITE_METADATA)
     public void reportTask(ReportTaskRun req, StreamObserver<Empty> ctx) {
+        // There is no need to wait for the ReportTaskRun to actually be processed, because
+        // we would just return a google.protobuf.Empty anyways. All we need to do is wait for
+        // the Command to be persisted into Kafka.
         ReportTaskRunModel reqModel = LHSerializable.fromProto(req, ReportTaskRunModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx, Empty.class, true);
+
+        TenantIdModel tenantId = requestContext().authorization().tenantId();
+        PrincipalIdModel principalId = requestContext().authorization().principalId();
+        Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
+
+        CommandModel command = new CommandModel(reqModel, new Date());
+
+        Callback kafkaProducerCallback = (meta, exn) -> {
+            if (exn == null) {
+                ctx.onNext(Empty.getDefaultInstance());
+                ctx.onCompleted();
+            } else {
+                ctx.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
+            }
+        };
+
+        LHProducer producer = internalComms.getProducer();
+        producer.send(
+                command.getPartitionKey(),
+                command,
+                command.getTopic(config),
+                kafkaProducerCallback,
+                commandMetadata.toArray());
     }
 
     @Override
@@ -513,7 +597,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             ctx.onNext(wfRun.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
-            if (!LHUtil.isUserError(exn)) log.error("Error handling request", exn);
+            if (!LHUtil.isUserError(exn)) log.error("Error handling request: " + exn.getMessage());
             ctx.onError(exn);
         }
     }
@@ -527,7 +611,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             ctx.onNext(nodeRun.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
-            if (!LHUtil.isUserError(exn)) log.error("Error handling request", exn);
+            if (!LHUtil.isUserError(exn)) log.error("Error handling request: " + exn.getMessage());
             ctx.onError(exn);
         }
     }
@@ -541,7 +625,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             ctx.onNext(taskRun.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
-            if (!LHUtil.isUserError(exn)) log.error("Error handling request", exn);
+            if (!LHUtil.isUserError(exn)) log.error("Error handling request: " + exn.getMessage());
             ctx.onError(exn);
         }
     }
@@ -555,7 +639,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             ctx.onNext(userTaskRun.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
-            if (!LHUtil.isUserError(exn)) log.error("Error handling request", exn);
+            if (!LHUtil.isUserError(exn)) log.error("Error handling request: " + exn.getMessage());
             ctx.onError(exn);
         }
     }
@@ -569,7 +653,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             ctx.onNext(variable.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
-            if (!LHUtil.isUserError(exn)) log.error("Error handling request", exn);
+            if (!LHUtil.isUserError(exn)) log.error("Error handling request: " + exn.getMessage());
             ctx.onError(exn);
         }
     }
@@ -583,7 +667,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             ctx.onNext(externalEvent.toProto().build());
             ctx.onCompleted();
         } catch (Exception exn) {
-            if (!LHUtil.isUserError(exn)) log.error("Error handling request", exn);
+            if (!LHUtil.isUserError(exn)) log.error("Error handling request: " + exn.getMessage());
             ctx.onError(exn);
         }
     }
@@ -664,6 +748,15 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     @Authorize(resources = ACLResource.ACL_TENANT, actions = ACLAction.READ)
     public void searchTenant(SearchTenantRequest req, StreamObserver<TenantIdList> ctx) {
         handleScan(SearchTenantRequestModel.fromProto(req, requestContext()), ctx, SearchTenantRequestReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_PRINCIPAL, actions = ACLAction.READ)
+    public void searchPrincipal(SearchPrincipalRequest req, StreamObserver<PrincipalIdList> ctx) {
+        handleScan(
+                SearchPrincipalRequestModel.fromProto(req, SearchPrincipalRequestModel.class, requestContext()),
+                ctx,
+                SearchPrincipalRequestReply.class);
     }
 
     // EMPLOYEE_TODO: this is a synchronous call. Make it asynchronous.
@@ -761,6 +854,14 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
+    public void rescueThreadRun(RescueThreadRunRequest req, StreamObserver<WfRun> ctx) {
+        RescueThreadRunRequestModel reqModel =
+                LHSerializable.fromProto(req, RescueThreadRunRequestModel.class, requestContext());
+        processCommand(new CommandModel(reqModel), ctx, WfRun.class, true);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
     public void resumeWfRun(ResumeWfRunRequest req, StreamObserver<Empty> ctx) {
         ResumeWfRunRequestModel reqModel =
                 LHSerializable.fromProto(req, ResumeWfRunRequestModel.class, requestContext());
@@ -809,7 +910,23 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
     @Override
     public void awaitWorkflowEvent(AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx) {
-        internalComms.doWaitForWorkflowEvent(req, ctx);
+        internalComms.doWaitForWorkflowEvent(req, ctx, requestContext());
+    }
+
+    @Override
+    @Authorize(
+            resources = {ACLResource.ACL_TENANT},
+            actions = ACLAction.READ)
+    public void getTenant(TenantId req, StreamObserver<Tenant> ctx) {
+        RequestExecutionContext reqContext = requestContext();
+        TenantIdModel tenantId = TenantIdModel.fromProto(req, TenantIdModel.class, reqContext);
+        TenantModel result = reqContext.metadataManager().get(tenantId);
+        if (result == null) {
+            ctx.onError(new LHApiException(Status.NOT_FOUND, "Could not find tenant %s".formatted(tenantId)));
+        } else {
+            ctx.onNext(result.toProto().build());
+            ctx.onCompleted();
+        }
     }
 
     @Override
@@ -832,7 +949,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     public void getServerVersion(Empty request, StreamObserver<ServerVersionResponse> ctx) {
         ctx.onNext(ServerVersionResponse.newBuilder()
                 .setMajorVersion(0)
-                .setMinorVersion(8)
+                .setMinorVersion(10)
                 .setPatchVersion(1)
                 .build());
         ctx.onCompleted();
@@ -852,7 +969,8 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 PollTaskResponse.class,
                 false,
                 client.getPrincipalId(),
-                client.getTenantId());
+                client.getTenantId(),
+                client.getRequestContext());
     }
 
     public LHProducer getProducer() {
@@ -893,7 +1011,8 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 responseCls,
                 shouldCompleteStream,
                 requestContext.authorization().principalId(),
-                requestContext.authorization().tenantId());
+                requestContext.authorization().tenantId(),
+                requestContext);
     }
 
     /*
@@ -909,11 +1028,22 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             Class<RC> responseCls,
             boolean shouldCompleteStream,
             PrincipalIdModel principalId,
-            TenantIdModel tenantId) {
-        StreamObserver<WaitForCommandResponse> commandObserver =
-                new POSTStreamObserver<>(responseObserver, responseCls, shouldCompleteStream);
+            TenantIdModel tenantId,
+            RequestExecutionContext context) {
+        StreamObserver<WaitForCommandResponse> commandObserver = new POSTStreamObserver<>(
+                responseObserver,
+                responseCls,
+                shouldCompleteStream,
+                internalComms,
+                command,
+                context,
+                // Streams Session Timeout is how long it takes to notice that the server is down.
+                // Then we need the rebalance to occur, and the new server must process the command.
+                // So we give it a buffer of 10 additional seconds.
+                Duration.ofMillis(10_000 + config.getStreamsSessionTimeout()),
+                networkThreadpool);
 
-        Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command);
+        Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command, context);
 
         command.setCommandId(LHUtil.generateGuid());
 
@@ -936,16 +1066,22 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             RecordMetadata meta,
             Exception exn,
             StreamObserver<WaitForCommandResponse> observer,
-            AbstractCommand<?> command) {
+            AbstractCommand<?> command,
+            RequestExecutionContext context) {
         if (exn != null) {
             observer.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
         } else {
-            internalComms.waitForCommand(command, observer);
+            internalComms.waitForCommand(command, observer, context);
         }
     }
 
-    public void onTaskScheduled(TaskDefIdModel taskDef, ScheduledTaskModel scheduledTask, TenantIdModel tenantId) {
-        taskQueueManager.onTaskScheduled(taskDef, scheduledTask, tenantId);
+    public void onTaskScheduled(
+            TaskId streamsTaskId, TaskDefIdModel taskDef, ScheduledTaskModel scheduledTask, TenantIdModel tenantId) {
+        taskQueueManager.onTaskScheduled(streamsTaskId, taskDef, scheduledTask, tenantId);
+    }
+
+    public void drainPartitionTaskQueue(TaskId streamsTaskId) {
+        taskQueueManager.drainPartition(streamsTaskId);
     }
 
     public void start() throws IOException {
@@ -956,6 +1092,28 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         healthService.start();
     }
 
+    private void overrideStreamsProcessId(String topology) {
+        String fakeUuid = String.format(
+                "%08d-0000-0000-0000-000000000000", config.getLHInstanceId().get());
+        String fileContent = String.format("{\"processId\":\"" + fakeUuid + "\"}");
+
+        try {
+            Path stateDir = Path.of(config.getStateDirectory());
+            Path streamsDir = stateDir.resolve(config.getKafkaGroupId(topology));
+            Path streamsMetadataFile = streamsDir.resolve("kafka-streams-process-metadata");
+            if (!Files.exists(streamsMetadataFile.getParent())) {
+                Files.createDirectories(streamsMetadataFile.getParent());
+            }
+            try (FileWriter writer = new FileWriter(streamsMetadataFile.toFile())) {
+                writer.write(fileContent);
+                log.info("Overwrote kafka-streams-process-metadata with content: {}", fileContent);
+            }
+
+        } catch (IOException exn) {
+            throw new LHMisconfigurationException("Failed overriding Streams Process ID", exn);
+        }
+    }
+
     public void close() {
         CountDownLatch latch = new CountDownLatch(4);
 
@@ -963,6 +1121,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                     log.info("Closing timer");
                     timerStreams.close();
                     latch.countDown();
+                    log.info("Done closing timer Kafka Streams");
                 })
                 .start();
 
@@ -970,6 +1129,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                     log.info("Closing core");
                     coreStreams.close();
                     latch.countDown();
+                    log.info("Done closing core Kafka Streams");
                 })
                 .start();
 
@@ -992,6 +1152,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
         try {
             latch.await();
+            log.info("Done shutting down all internal server processes");
         } catch (Exception exn) {
             throw new RuntimeException(exn);
         }

@@ -48,8 +48,6 @@ public class ServerACLsModel extends LHSerializable<ServerACLs> {
      * @return True if the action on the resource is allowed; otherwise, false.
      */
     public boolean allows(ACLResource resource, ACLAction action) {
-        return acls.stream()
-                .anyMatch(acl -> acl.getResources().contains(resource)
-                        && acl.getAllowedActions().contains(action));
+        return acls.stream().anyMatch(acl -> acl.allows(resource, action));
     }
 }

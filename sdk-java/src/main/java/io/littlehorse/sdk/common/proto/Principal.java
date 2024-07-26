@@ -5,7 +5,12 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * This is a GlobalGetable.
+ * A Principal represents the identity of a client of LittleHorse, whether human or
+ * machine. The ACL's on the Principal control what actions the client is allowed
+ * to take.
+ *
+ * A Principal is not scoped to a Tenant; rather, a Principal is scoped to the Cluster
+ * and may have access to one or more Tenants.
  * </pre>
  *
  * Protobuf type {@code littlehorse.Principal}
@@ -58,9 +63,10 @@ private static final long serialVersionUID = 0L;
   private io.littlehorse.sdk.common.proto.PrincipalId id_;
   /**
    * <pre>
-   * Principals are agnostic of the Authentication protocol that you use. In OAuth,
-   * the id is retrieved by looking at the claims on the request. In mTLS, the
-   * id is retrived by looking at the Subject Name of the client certificate.
+   * The ID of the Principal. In OAuth for human users, this is the user_id. In
+   * OAuth for machine clients, this is the Client ID.
+   *
+   * mTLS for Principal identification is not yet implemented.
    * </pre>
    *
    * <code>.littlehorse.PrincipalId id = 1;</code>
@@ -72,9 +78,10 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Principals are agnostic of the Authentication protocol that you use. In OAuth,
-   * the id is retrieved by looking at the claims on the request. In mTLS, the
-   * id is retrived by looking at the Subject Name of the client certificate.
+   * The ID of the Principal. In OAuth for human users, this is the user_id. In
+   * OAuth for machine clients, this is the Client ID.
+   *
+   * mTLS for Principal identification is not yet implemented.
    * </pre>
    *
    * <code>.littlehorse.PrincipalId id = 1;</code>
@@ -86,9 +93,10 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Principals are agnostic of the Authentication protocol that you use. In OAuth,
-   * the id is retrieved by looking at the claims on the request. In mTLS, the
-   * id is retrived by looking at the Subject Name of the client certificate.
+   * The ID of the Principal. In OAuth for human users, this is the user_id. In
+   * OAuth for machine clients, this is the Client ID.
+   *
+   * mTLS for Principal identification is not yet implemented.
    * </pre>
    *
    * <code>.littlehorse.PrincipalId id = 1;</code>
@@ -101,6 +109,10 @@ private static final long serialVersionUID = 0L;
   public static final int CREATED_AT_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp createdAt_;
   /**
+   * <pre>
+   * The time at which the Principal was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
@@ -109,6 +121,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ != null;
   }
   /**
+   * <pre>
+   * The time at which the Principal was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
@@ -117,6 +133,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
   /**
+   * <pre>
+   * The time at which the Principal was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   @java.lang.Override
@@ -153,7 +173,7 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-   * execute *within that Tenant*
+   * execute *within that Tenant*.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
@@ -175,7 +195,7 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-   * execute *within that Tenant*
+   * execute *within that Tenant*.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
@@ -187,7 +207,7 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-   * execute *within that Tenant*
+   * execute *within that Tenant*.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
@@ -206,7 +226,7 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
   /**
    * <pre>
    * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-   * execute *within that Tenant*
+   * execute *within that Tenant*.
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
@@ -479,7 +499,12 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
   }
   /**
    * <pre>
-   * This is a GlobalGetable.
+   * A Principal represents the identity of a client of LittleHorse, whether human or
+   * machine. The ACL's on the Principal control what actions the client is allowed
+   * to take.
+   *
+   * A Principal is not scoped to a Tenant; rather, a Principal is scoped to the Cluster
+   * and may have access to one or more Tenants.
    * </pre>
    *
    * Protobuf type {@code littlehorse.Principal}
@@ -741,9 +766,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
         io.littlehorse.sdk.common.proto.PrincipalId, io.littlehorse.sdk.common.proto.PrincipalId.Builder, io.littlehorse.sdk.common.proto.PrincipalIdOrBuilder> idBuilder_;
     /**
      * <pre>
-     * Principals are agnostic of the Authentication protocol that you use. In OAuth,
-     * the id is retrieved by looking at the claims on the request. In mTLS, the
-     * id is retrived by looking at the Subject Name of the client certificate.
+     * The ID of the Principal. In OAuth for human users, this is the user_id. In
+     * OAuth for machine clients, this is the Client ID.
+     *
+     * mTLS for Principal identification is not yet implemented.
      * </pre>
      *
      * <code>.littlehorse.PrincipalId id = 1;</code>
@@ -754,9 +780,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     }
     /**
      * <pre>
-     * Principals are agnostic of the Authentication protocol that you use. In OAuth,
-     * the id is retrieved by looking at the claims on the request. In mTLS, the
-     * id is retrived by looking at the Subject Name of the client certificate.
+     * The ID of the Principal. In OAuth for human users, this is the user_id. In
+     * OAuth for machine clients, this is the Client ID.
+     *
+     * mTLS for Principal identification is not yet implemented.
      * </pre>
      *
      * <code>.littlehorse.PrincipalId id = 1;</code>
@@ -771,9 +798,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     }
     /**
      * <pre>
-     * Principals are agnostic of the Authentication protocol that you use. In OAuth,
-     * the id is retrieved by looking at the claims on the request. In mTLS, the
-     * id is retrived by looking at the Subject Name of the client certificate.
+     * The ID of the Principal. In OAuth for human users, this is the user_id. In
+     * OAuth for machine clients, this is the Client ID.
+     *
+     * mTLS for Principal identification is not yet implemented.
      * </pre>
      *
      * <code>.littlehorse.PrincipalId id = 1;</code>
@@ -793,9 +821,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     }
     /**
      * <pre>
-     * Principals are agnostic of the Authentication protocol that you use. In OAuth,
-     * the id is retrieved by looking at the claims on the request. In mTLS, the
-     * id is retrived by looking at the Subject Name of the client certificate.
+     * The ID of the Principal. In OAuth for human users, this is the user_id. In
+     * OAuth for machine clients, this is the Client ID.
+     *
+     * mTLS for Principal identification is not yet implemented.
      * </pre>
      *
      * <code>.littlehorse.PrincipalId id = 1;</code>
@@ -813,9 +842,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     }
     /**
      * <pre>
-     * Principals are agnostic of the Authentication protocol that you use. In OAuth,
-     * the id is retrieved by looking at the claims on the request. In mTLS, the
-     * id is retrived by looking at the Subject Name of the client certificate.
+     * The ID of the Principal. In OAuth for human users, this is the user_id. In
+     * OAuth for machine clients, this is the Client ID.
+     *
+     * mTLS for Principal identification is not yet implemented.
      * </pre>
      *
      * <code>.littlehorse.PrincipalId id = 1;</code>
@@ -838,9 +868,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     }
     /**
      * <pre>
-     * Principals are agnostic of the Authentication protocol that you use. In OAuth,
-     * the id is retrieved by looking at the claims on the request. In mTLS, the
-     * id is retrived by looking at the Subject Name of the client certificate.
+     * The ID of the Principal. In OAuth for human users, this is the user_id. In
+     * OAuth for machine clients, this is the Client ID.
+     *
+     * mTLS for Principal identification is not yet implemented.
      * </pre>
      *
      * <code>.littlehorse.PrincipalId id = 1;</code>
@@ -857,9 +888,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     }
     /**
      * <pre>
-     * Principals are agnostic of the Authentication protocol that you use. In OAuth,
-     * the id is retrieved by looking at the claims on the request. In mTLS, the
-     * id is retrived by looking at the Subject Name of the client certificate.
+     * The ID of the Principal. In OAuth for human users, this is the user_id. In
+     * OAuth for machine clients, this is the Client ID.
+     *
+     * mTLS for Principal identification is not yet implemented.
      * </pre>
      *
      * <code>.littlehorse.PrincipalId id = 1;</code>
@@ -871,9 +903,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     }
     /**
      * <pre>
-     * Principals are agnostic of the Authentication protocol that you use. In OAuth,
-     * the id is retrieved by looking at the claims on the request. In mTLS, the
-     * id is retrived by looking at the Subject Name of the client certificate.
+     * The ID of the Principal. In OAuth for human users, this is the user_id. In
+     * OAuth for machine clients, this is the Client ID.
+     *
+     * mTLS for Principal identification is not yet implemented.
      * </pre>
      *
      * <code>.littlehorse.PrincipalId id = 1;</code>
@@ -888,9 +921,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     }
     /**
      * <pre>
-     * Principals are agnostic of the Authentication protocol that you use. In OAuth,
-     * the id is retrieved by looking at the claims on the request. In mTLS, the
-     * id is retrived by looking at the Subject Name of the client certificate.
+     * The ID of the Principal. In OAuth for human users, this is the user_id. In
+     * OAuth for machine clients, this is the Client ID.
+     *
+     * mTLS for Principal identification is not yet implemented.
      * </pre>
      *
      * <code>.littlehorse.PrincipalId id = 1;</code>
@@ -913,6 +947,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
     /**
+     * <pre>
+     * The time at which the Principal was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return Whether the createdAt field is set.
      */
@@ -920,6 +958,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * The time at which the Principal was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return The createdAt.
      */
@@ -931,6 +973,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The time at which the Principal was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
@@ -947,6 +993,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The time at which the Principal was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(
@@ -961,6 +1011,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The time at which the Principal was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
@@ -980,6 +1034,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The time at which the Principal was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder clearCreatedAt() {
@@ -993,6 +1051,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * The time at which the Principal was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
@@ -1001,6 +1063,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       return getCreatedAtFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The time at which the Principal was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
@@ -1012,6 +1078,10 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
       }
     }
     /**
+     * <pre>
+     * The time at which the Principal was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1057,7 +1127,7 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     /**
      * <pre>
      * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-     * execute *within that Tenant*
+     * execute *within that Tenant*.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
@@ -1079,7 +1149,7 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     /**
      * <pre>
      * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-     * execute *within that Tenant*
+     * execute *within that Tenant*.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
@@ -1091,7 +1161,7 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     /**
      * <pre>
      * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-     * execute *within that Tenant*
+     * execute *within that Tenant*.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
@@ -1110,7 +1180,7 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     /**
      * <pre>
      * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-     * execute *within that Tenant*
+     * execute *within that Tenant*.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
@@ -1135,7 +1205,7 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     /**
      * <pre>
      * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-     * execute *within that Tenant*
+     * execute *within that Tenant*.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
@@ -1159,7 +1229,7 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     /**
      * <pre>
      * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-     * execute *within that Tenant*
+     * execute *within that Tenant*.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>
@@ -1177,7 +1247,7 @@ io.littlehorse.sdk.common.proto.ServerACLs defaultValue) {
     /**
      * <pre>
      * Maps a Tenant ID to a list of ACL's that the Principal has permission to
-     * execute *within that Tenant*
+     * execute *within that Tenant*.
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.ServerACLs&gt; per_tenant_acls = 3;</code>

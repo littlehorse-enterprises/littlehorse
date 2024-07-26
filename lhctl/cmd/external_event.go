@@ -8,9 +8,10 @@ import (
 	"log"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
-	"github.com/spf13/cobra"
 )
 
 // getExternalEventCmd represents the externalEvent command
@@ -56,58 +57,47 @@ var getExternalEventCmd = &cobra.Command{
 	},
 }
 
-var searchExternalEventCommand = &cobra.Command{
+var searchExternalEventCmd = &cobra.Command{
 	Use:   "externalEvent",
-	Short: "Search for ExternalEvent's by WfRunId",
+	Short: "Search for ExternalEvent's by ExternalEventDef Name",
 	Long: `
-Search for ExternalEvent's by the WfRunId.
+Search for ExternalEvent's by their ExternalEventDef Name.
 
 Returns a list of ObjectId's that can be passed into 'lhctl get externalEvent'.
 
-Choose one of the following option groups:
-[wfRunId]
-[externalEventDef]
-[externalEventDef, claimed]
-[externalEventDef, unclaimed]
+* Note: '--isClaimed' is a Boolean flag with 3 states:
+	- return ALL (flag is not present)
+	- return only TRUE (flag is present or reads '--isClaimed=true')
+	- return only FALSE (flag reads '--isClaimed=false')
+
+* Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
+	options with this group to put a time bound on ExternalEvents which are
+	returned. The time bound applies to the time that the ExternalEvents
+	were created.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		wfRunId, _ := cmd.Flags().GetString("wfRunId")
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
-		externalEventDef, _ := cmd.Flags().GetString("externalEventDef")
-		claimed, _ := cmd.Flags().GetBool("claimed")
-		unclaimed, _ := cmd.Flags().GetBool("unclaimed")
+		externalEventDefName, _ := cmd.Flags().GetString("externalEventDefName")
+		isClaimed, _ := cmd.Flags().GetBool("isClaimed")
+
+		earliest, latest := loadEarliestAndLatestStart(cmd)
 
 		search := &model.SearchExternalEventRequest{
-			Bookmark: bookmark,
-			Limit:    &limit,
+			Bookmark:      bookmark,
+			Limit:         &limit,
+			EarliestStart: earliest,
+			LatestStart:   latest,
+			ExternalEventDefId: &model.ExternalEventDefId{
+				Name: externalEventDefName,
+			},
 		}
 
-		if wfRunId != "" {
-			search.ExtEvtCriteria = &model.SearchExternalEventRequest_WfRunId{
-				WfRunId: common.StrToWfRunId(wfRunId),
-			}
-		} else {
-			var extEvtCriteria *model.SearchExternalEventRequest_ExternalEventDefNameAndStatus
-			if unclaimed || claimed {
-				isClaimed := claimed && !unclaimed
-
-				extEvtCriteria = &model.SearchExternalEventRequest_ExternalEventDefNameAndStatus{
-					ExternalEventDefNameAndStatus: &model.SearchExternalEventRequest_ByExtEvtDefNameAndStatusRequest{
-						ExternalEventDefName: externalEventDef,
-						IsClaimed:            &isClaimed,
-					},
-				}
-			} else {
-				extEvtCriteria = &model.SearchExternalEventRequest_ExternalEventDefNameAndStatus{
-					ExternalEventDefNameAndStatus: &model.SearchExternalEventRequest_ByExtEvtDefNameAndStatusRequest{
-						ExternalEventDefName: externalEventDef,
-					},
-				}
-			}
-			search.ExtEvtCriteria = extEvtCriteria
+		if cmd.Flags().Lookup("isClaimed").Changed {
+			search.IsClaimed = &isClaimed
 		}
+
 		common.PrintResp(getGlobalClient(cmd).SearchExternalEvent(requestContext(cmd), search))
 	},
 }
@@ -140,12 +130,11 @@ Lists all ExternalEvent's for a given WfRun Id.
 
 func init() {
 	getCmd.AddCommand(getExternalEventCmd)
-	searchCmd.AddCommand(searchExternalEventCommand)
+	searchCmd.AddCommand(searchExternalEventCmd)
 	listCmd.AddCommand(listExternalEventCmd)
 
-	searchExternalEventCommand.Flags().String("wfRunId", "", "WfRunId of ExternalEvent's to search for")
-	searchExternalEventCommand.Flags().String("externalEventDef", "", "ExternalEventDef name of ExternalEvent's to search for")
-	searchExternalEventCommand.Flags().Bool("claimed", false, "List only claimed events")
-	searchExternalEventCommand.Flags().Bool("unclaimed", false, "List only unclaimed events")
-	searchExternalEventCommand.MarkFlagsMutuallyExclusive("claimed", "unclaimed")
+	searchExternalEventCmd.Flags().String("externalEventDefName", "", "ExternalEventDef Name of ExternalEvents to search for")
+	searchExternalEventCmd.Flags().Bool("isClaimed", false, "List only ExternalEvents that are claimed")
+	searchExternalEventCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for Principals that were created no more than this number of minutes ago")
+	searchExternalEventCmd.Flags().Int("latestMinutesAgo", -1, "Search only for Principals that were created at least this number of minutes ago")
 }

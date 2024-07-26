@@ -30,6 +30,9 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     @Getter
     private final TenantIdModel tenantId;
 
+    @Getter
+    private final RequestExecutionContext requestContext;
+
     private CoreStoreProvider coreStoreProvider;
     private final MetadataCache metadataCache;
     private LHServerConfig config;
@@ -41,7 +44,8 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
             PrincipalIdModel principalId,
             CoreStoreProvider coreStoreProvider,
             MetadataCache metadataCache,
-            LHServerConfig config) {
+            LHServerConfig config,
+            RequestExecutionContext requestContext) {
         this.responseObserver = responseObserver;
         this.taskQueueManager = manager;
         this.principalId = principalId;
@@ -50,6 +54,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         this.metadataCache = metadataCache;
         this.config = config;
         this.clientId = null;
+        this.requestContext = requestContext;
     }
 
     public String getTaskWorkerVersion() {
@@ -73,7 +78,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         taskQueueManager.onRequestDisconnected(this, tenantId);
         log.debug(
                 "Instance {}: Client {} disconnected from task queue {}",
-                taskQueueManager.getBackend().getInstanceId(),
+                taskQueueManager.getBackend().getInstanceName(),
                 clientId,
                 taskDefId);
     }
@@ -103,12 +108,6 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     }
 
     RequestExecutionContext getFreshExecutionContext() {
-        return new RequestExecutionContext(
-                principalId,
-                tenantId,
-                coreStoreProvider.getNativeGlobalStore(),
-                coreStoreProvider.nativeCoreStore(),
-                metadataCache,
-                config);
+        return new RequestExecutionContext(principalId, tenantId, coreStoreProvider, metadataCache, config);
     }
 }

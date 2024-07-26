@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.streams.processor.TaskId;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 
@@ -82,12 +83,14 @@ public class LHTaskManager {
     }
 
     void forwardPendingTasks() {
+        TaskId taskId = processorContext.taskId();
         for (Map.Entry<String, ScheduledTaskModel> entry : scheduledTaskPuts.entrySet()) {
             String scheduledTaskId = entry.getKey();
             ScheduledTaskModel scheduledTask = entry.getValue();
             if (scheduledTask != null) {
                 this.coreStore.put(scheduledTask);
-                taskQueueManager.onTaskScheduled(scheduledTask.getTaskDefId(), scheduledTask, authContext.tenantId());
+                taskQueueManager.onTaskScheduled(
+                        taskId, scheduledTask.getTaskDefId(), scheduledTask, authContext.tenantId());
             } else {
                 this.coreStore.delete(scheduledTaskId, StoreableType.SCHEDULED_TASK);
             }

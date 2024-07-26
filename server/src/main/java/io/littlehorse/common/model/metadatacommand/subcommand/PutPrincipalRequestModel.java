@@ -13,24 +13,17 @@ import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.Principal;
 import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
 import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
-import io.littlehorse.server.streams.storeinternals.index.Attribute;
-import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -79,7 +72,7 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
     @Override
     public Principal process(MetadataCommandExecution context) {
         MetadataManager metadataManager = context.metadataManager();
-        PrincipalModel oldPrincipal = metadataManager.get(new PrincipalIdModel(id));
+        PrincipalModel oldPrincipal = context.service().getPrincipal(new PrincipalIdModel(id));
         PrincipalModel requester =
                 context.service().getPrincipal(context.authorization().principalId());
         PrincipalModel toSave = new PrincipalModel();
@@ -114,7 +107,12 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
                     Status.INVALID_ARGUMENT, "Only admin users can create a principal with global privileges");
         }
 
-        ensureThatIsAllowedToWriteInRequestedTenants(requester);
+        List<TenantIdModel> affectedTenants =
+                perTenantAcls.keySet().stream().map(TenantIdModel::new).toList();
+        if (!requester.hasPermissionToEditPrincipalsIn(affectedTenants)) {
+            throw new LHApiException(
+                    Status.PERMISSION_DENIED, "Unauthorized to edit Principals affecting specified tenants");
+        }
 
         validateIfPerTenantACLsHasAssociatedTenantResource();
 
@@ -154,26 +152,6 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
                                 .anyMatch(aclResource -> aclResource.equals(ACLResource.ACL_TENANT))));
     }
 
-    /**
-     * Validates whether the specified Principal is authorized to write to the requested tenants.
-     * @param requester principal that is executing the request
-     */
-    private void ensureThatIsAllowedToWriteInRequestedTenants(PrincipalModel requester) {
-        boolean allowsGlobalPrincipalCreation =
-                requester.getGlobalAcls().allows(ACLResource.ACL_PRINCIPAL, ACLAction.WRITE_METADATA);
-        if (!requester.isAdmin() && !allowsGlobalPrincipalCreation) {
-            Set<String> unauthorizedTenants = perTenantAcls.keySet().stream()
-                    .filter(Predicate.not(
-                            tenantId -> requester.getPerTenantAcls().containsKey(tenantId)))
-                    .collect(Collectors.toSet());
-            if (!unauthorizedTenants.isEmpty()) {
-                throw new LHApiException(
-                        Status.UNAUTHENTICATED,
-                        "You are not allowed to write over the tenant %s".formatted(unauthorizedTenants));
-            }
-        }
-    }
-
     private void ensureThatThereIsStillAnAdminPrincipal(PrincipalModel old, MetadataCommandExecution context) {
         if (!old.isAdmin()) {
             // If the old isn't admin, then we aren't taking away admin privileges, so we
@@ -193,20 +171,12 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
         //
         // Therefore, we need to check that there is still some other Admin Principal
         // somewhere before we remove it.
-        if (!adminPrincipalIds(context).anyMatch(adminPrincipalId -> !Objects.equals(adminPrincipalId, this.id))) {
+        if (!context.service().adminPrincipalIds().stream()
+                .anyMatch(adminPrincipalId -> !Objects.equals(adminPrincipalId.getId(), this.id))) {
             throw new LHApiException(
                     Status.FAILED_PRECONDITION,
                     "Cannot remove admin privileges from Principal %s: %s is the last Admin left.".formatted(id, id));
         }
-    }
-
-    private Stream<String> adminPrincipalIds(MetadataCommandExecution context) {
-        Attribute tagAdminAttribute = new Attribute("isAdmin", Boolean.TRUE.toString());
-        return context
-                .metadataManager()
-                .tagScan(PrincipalModel.getTypeEnum(PrincipalModel.class), List.of(tagAdminAttribute))
-                .stream()
-                .map(Tag::getDescribedObjectId);
     }
 
     @Override

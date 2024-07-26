@@ -3,14 +3,16 @@ package io.littlehorse.server.monitoring;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.server.monitoring.health.InProgressRestoration;
 import io.littlehorse.server.monitoring.health.ServerHealthState;
+import io.littlehorse.server.monitoring.metrics.InstanceState;
 import io.littlehorse.server.monitoring.metrics.PrometheusMetricExporter;
+import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.util.MetadataCache;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.io.Closeable;
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
@@ -32,8 +34,8 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
     private Map<TopicPartition, InProgressRestoration> restorations;
     private final Map<String, Integer> numberOfPartitionPerTopic;
-    private final Map<String, InstanceStore> standbyStores = new ConcurrentHashMap<>();
-    private State coreState;
+    private InstanceState coreState;
+    private final Map<String, StandbyStoresOnInstance> standbyStores = new ConcurrentHashMap<>();
     private State timerState;
 
     private KafkaStreams coreStreams;
@@ -44,23 +46,26 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             KafkaStreams coreStreams,
             KafkaStreams timerStreams,
             TaskQueueManager taskQueueManager,
-            MetadataCache metadataCache) {
+            MetadataCache metadataCache,
+            BackendInternalComms internalComms) {
         this.prom = new PrometheusMetricExporter(config);
         this.numberOfPartitionPerTopic = config.partitionsByTopic();
 
+        this.coreState = new InstanceState(coreStreams, internalComms);
         this.prom.bind(
                 coreStreams,
                 timerStreams,
                 taskQueueManager,
                 metadataCache,
-                new StandbyMetrics(standbyStores, config.getLHInstanceId()));
+                new StandbyMetrics(standbyStores, config.getLHInstanceName()),
+                coreState);
         this.server = Javalin.create();
 
         this.coreStreams = coreStreams;
         this.timerStreams = timerStreams;
 
         this.config = config;
-        this.restorations = new HashMap<>();
+        this.restorations = new ConcurrentHashMap<>();
 
         this.server.get(config.getPrometheusExporterPath(), prom.handleRequest());
         this.server.get(config.getLivenessPath(), this::getLiveness);
@@ -68,13 +73,12 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         this.server.get(config.getDiskUsagePath(), this::getDiskUsage);
         this.server.get(config.getStandbyStatusPath(), this::getStandbyStatus);
 
+        coreStreams.setStandbyUpdateListener(this);
         coreStreams.setGlobalStateRestoreListener(this);
         timerStreams.setGlobalStateRestoreListener(this);
+        timerStreams.setStandbyUpdateListener(this);
 
-        coreStreams.setStateListener((newState, oldState) -> {
-            log.info("New state for core topology: {}", newState);
-            coreState = newState;
-        });
+        coreStreams.setStateListener(coreState);
         timerStreams.setStateListener((newState, oldState) -> {
             log.info("New state for timer topology: {}", newState);
             timerState = newState;
@@ -126,7 +130,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
     private void getLiveness(Context ctx) {
         Predicate<State> isAlive = state -> state == State.RUNNING || state == State.REBALANCING;
 
-        if (isAlive.test(timerState) && isAlive.test(coreState)) {
+        if (isAlive.test(timerState) && isAlive.test(coreState.getCurrentState())) {
             ctx.result("OK!");
         } else {
             ctx.status(500);
@@ -136,7 +140,8 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
     private void getStatus(Context ctx) {
         try {
-            ServerHealthState result = new ServerHealthState(config, coreStreams, timerStreams, restorations);
+            ServerHealthState result =
+                    new ServerHealthState(config, coreStreams, timerStreams, restorations, standbyStores);
             ctx.json(result);
         } catch (Exception exn) {
             exn.printStackTrace();
@@ -154,8 +159,9 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
     @Override
     public void onUpdateStart(TopicPartition topicPartition, String storeName, long startingOffset) {
-        InstanceStore instanceStore = standbyStores.getOrDefault(
-                storeName, new InstanceStore(storeName, numberOfPartitionPerTopic.get(topicPartition.topic())));
+        StandbyStoresOnInstance instanceStore = standbyStores.getOrDefault(
+                storeName,
+                new StandbyStoresOnInstance(storeName, numberOfPartitionPerTopic.get(topicPartition.topic())));
         instanceStore.recordOffsets(topicPartition, startingOffset, -1);
         standbyStores.put(storeName, instanceStore);
     }
@@ -168,8 +174,9 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             long batchEndOffset,
             long batchSize,
             long currentEndOffset) {
-        InstanceStore instanceStore = standbyStores.getOrDefault(
-                storeName, new InstanceStore(storeName, numberOfPartitionPerTopic.get(topicPartition.topic())));
+        StandbyStoresOnInstance instanceStore = standbyStores.getOrDefault(
+                storeName,
+                new StandbyStoresOnInstance(storeName, numberOfPartitionPerTopic.get(topicPartition.topic())));
         instanceStore.recordOffsets(topicPartition, batchEndOffset, currentEndOffset);
         standbyStores.put(storeName, instanceStore);
     }
@@ -181,8 +188,9 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             long storeOffset,
             long currentEndOffset,
             SuspendReason reason) {
-        InstanceStore instanceStore = standbyStores.getOrDefault(
-                storeName, new InstanceStore(storeName, numberOfPartitionPerTopic.get(topicPartition.topic())));
+        StandbyStoresOnInstance instanceStore = standbyStores.getOrDefault(
+                storeName,
+                new StandbyStoresOnInstance(storeName, numberOfPartitionPerTopic.get(topicPartition.topic())));
         instanceStore.suspendPartition(topicPartition, storeOffset, currentEndOffset, reason);
         standbyStores.put(storeName, instanceStore);
     }

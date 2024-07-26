@@ -163,7 +163,7 @@ Valid options for Status:
 
 func loadEarliestAndLatestStart(cmd *cobra.Command) (*timestamppb.Timestamp, *timestamppb.Timestamp) {
 	earliestMinutesAgo, _ := cmd.Flags().GetInt("earliestMinutesAgo")
-	latestMinutesAgo, _ := cmd.Flags().GetInt32("latestMinutesAgo")
+	latestMinutesAgo, _ := cmd.Flags().GetInt("latestMinutesAgo")
 	earliestStartTime := &timestamppb.Timestamp{}
 	latestStartTime := &timestamppb.Timestamp{}
 

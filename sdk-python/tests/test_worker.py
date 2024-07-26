@@ -2,14 +2,19 @@ from typing import Any
 import unittest
 import uuid
 from littlehorse.exceptions import TaskSchemaMismatchException
-from littlehorse.model.common_enums_pb2 import VariableType
-from littlehorse.model.common_wfspec_pb2 import VariableDef
-from littlehorse.model.object_id_pb2 import NodeRunId, TaskRunId, WfRunId
-from littlehorse.model.service_pb2 import ScheduledTask, RegisterTaskWorkerResponse
-from littlehorse.model.task_def_pb2 import TaskDef
-from littlehorse.model.task_run_pb2 import TaskNodeReference, TaskRunSource
-from littlehorse.model.user_tasks_pb2 import UserTaskTriggerReference
-
+from littlehorse.model import (
+    VariableType,
+    VariableDef,
+    NodeRunId,
+    TaskRunId,
+    WfRunId,
+    ScheduledTask,
+    RegisterTaskWorkerResponse,
+    TaskDef,
+    TaskNodeReference,
+    TaskRunSource,
+    UserTaskTriggerReference,
+)
 
 from littlehorse.worker import (
     LHTask,

@@ -4,6 +4,13 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * The UserTaskNode creates a UserTaskRun, which is used to get input from a human
+ * user into the workflow.
+ *
+ * The output is a JSON_OBJ variable with one key/value pair for each UserTaskField.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.UserTaskNode}
  */
 public final class UserTaskNode extends
@@ -45,6 +52,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object userTaskDefName_ = "";
   /**
+   * <pre>
+   * Denotes the name of the `UserTaskDef` that should create the `UserTaskRun`.
+   * </pre>
+   *
    * <code>string user_task_def_name = 1;</code>
    * @return The userTaskDefName.
    */
@@ -62,6 +73,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Denotes the name of the `UserTaskDef` that should create the `UserTaskRun`.
+   * </pre>
+   *
    * <code>string user_task_def_name = 1;</code>
    * @return The bytes for userTaskDefName.
    */
@@ -84,7 +99,7 @@ private static final long serialVersionUID = 0L;
   private io.littlehorse.sdk.common.proto.VariableAssignment userGroup_;
   /**
    * <pre>
-   * to whom should the User Task Run be assigned?
+   * Denotes the user_group to which the UserTaskRun is assigned upon creation.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
@@ -96,7 +111,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * to whom should the User Task Run be assigned?
+   * Denotes the user_group to which the UserTaskRun is assigned upon creation.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
@@ -108,7 +123,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * to whom should the User Task Run be assigned?
+   * Denotes the user_group to which the UserTaskRun is assigned upon creation.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
@@ -121,6 +136,10 @@ private static final long serialVersionUID = 0L;
   public static final int USER_ID_FIELD_NUMBER = 3;
   private io.littlehorse.sdk.common.proto.VariableAssignment userId_;
   /**
+   * <pre>
+   * Denotes the user_id to which the UserTaskRun is assigned upon creation.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
    * @return Whether the userId field is set.
    */
@@ -129,6 +148,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * Denotes the user_id to which the UserTaskRun is assigned upon creation.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
    * @return The userId.
    */
@@ -137,6 +160,10 @@ private static final long serialVersionUID = 0L;
     return userId_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : userId_;
   }
   /**
+   * <pre>
+   * Denotes the user_id to which the UserTaskRun is assigned upon creation.
+   * </pre>
+   *
    * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
    */
   @java.lang.Override
@@ -149,9 +176,9 @@ private static final long serialVersionUID = 0L;
   private java.util.List<io.littlehorse.sdk.common.proto.UTActionTrigger> actions_;
   /**
    * <pre>
-   * This is used to, for example, send a push notification to a mobile app
-   * to remind someone that they need to fill out a task, or to re-assign
-   * the task to another group of people
+   * Specifies a list of actions that happen on various time-based triggers. Actions
+   * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+   * a "reminder" TaskRun.
    * </pre>
    *
    * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -162,9 +189,9 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * This is used to, for example, send a push notification to a mobile app
-   * to remind someone that they need to fill out a task, or to re-assign
-   * the task to another group of people
+   * Specifies a list of actions that happen on various time-based triggers. Actions
+   * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+   * a "reminder" TaskRun.
    * </pre>
    *
    * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -176,9 +203,9 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * This is used to, for example, send a push notification to a mobile app
-   * to remind someone that they need to fill out a task, or to re-assign
-   * the task to another group of people
+   * Specifies a list of actions that happen on various time-based triggers. Actions
+   * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+   * a "reminder" TaskRun.
    * </pre>
    *
    * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -189,9 +216,9 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * This is used to, for example, send a push notification to a mobile app
-   * to remind someone that they need to fill out a task, or to re-assign
-   * the task to another group of people
+   * Specifies a list of actions that happen on various time-based triggers. Actions
+   * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+   * a "reminder" TaskRun.
    * </pre>
    *
    * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -202,9 +229,9 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * This is used to, for example, send a push notification to a mobile app
-   * to remind someone that they need to fill out a task, or to re-assign
-   * the task to another group of people
+   * Specifies a list of actions that happen on various time-based triggers. Actions
+   * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+   * a "reminder" TaskRun.
    * </pre>
    *
    * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -219,9 +246,8 @@ private static final long serialVersionUID = 0L;
   private int userTaskDefVersion_ = 0;
   /**
    * <pre>
-   * So, once the WfSpec is created, this will be pinned to a version. Customer
-   * can optionally specify a specific version or can leave it null, in which
-   * case we just use the latest
+   * If set, then the UserTaskRun will always have this specific version of the
+   * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
    * </pre>
    *
    * <code>optional int32 user_task_def_version = 5;</code>
@@ -233,9 +259,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * So, once the WfSpec is created, this will be pinned to a version. Customer
-   * can optionally specify a specific version or can leave it null, in which
-   * case we just use the latest
+   * If set, then the UserTaskRun will always have this specific version of the
+   * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
    * </pre>
    *
    * <code>optional int32 user_task_def_version = 5;</code>
@@ -250,7 +275,7 @@ private static final long serialVersionUID = 0L;
   private io.littlehorse.sdk.common.proto.VariableAssignment notes_;
   /**
    * <pre>
-   * Allow WfRun-specific notes for this User Task.
+   * Specifies the value to be displayed on the `notes` field of the UserTaskRun.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
@@ -262,7 +287,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Allow WfRun-specific notes for this User Task.
+   * Specifies the value to be displayed on the `notes` field of the UserTaskRun.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
@@ -274,7 +299,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Allow WfRun-specific notes for this User Task.
+   * Specifies the value to be displayed on the `notes` field of the UserTaskRun.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
@@ -288,7 +313,9 @@ private static final long serialVersionUID = 0L;
   private io.littlehorse.sdk.common.proto.VariableAssignment onCancellationExceptionName_;
   /**
    * <pre>
-   * Specifies the name of the exception thrown when the User Task is canceled
+   * Specifies the name of the exception thrown when the User Task is canceled. If
+   * not set, then the cancellation or timeout of a User Task Run throws an ERROR
+   * rather than an EXCEPTION.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>
@@ -300,7 +327,9 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Specifies the name of the exception thrown when the User Task is canceled
+   * Specifies the name of the exception thrown when the User Task is canceled. If
+   * not set, then the cancellation or timeout of a User Task Run throws an ERROR
+   * rather than an EXCEPTION.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>
@@ -312,7 +341,9 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Specifies the name of the exception thrown when the User Task is canceled
+   * Specifies the name of the exception thrown when the User Task is canceled. If
+   * not set, then the cancellation or timeout of a User Task Run throws an ERROR
+   * rather than an EXCEPTION.
    * </pre>
    *
    * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>
@@ -572,6 +603,13 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * The UserTaskNode creates a UserTaskRun, which is used to get input from a human
+   * user into the workflow.
+   *
+   * The output is a JSON_OBJ variable with one key/value pair for each UserTaskField.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.UserTaskNode}
    */
   public static final class Builder extends
@@ -911,6 +949,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object userTaskDefName_ = "";
     /**
+     * <pre>
+     * Denotes the name of the `UserTaskDef` that should create the `UserTaskRun`.
+     * </pre>
+     *
      * <code>string user_task_def_name = 1;</code>
      * @return The userTaskDefName.
      */
@@ -927,6 +969,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Denotes the name of the `UserTaskDef` that should create the `UserTaskRun`.
+     * </pre>
+     *
      * <code>string user_task_def_name = 1;</code>
      * @return The bytes for userTaskDefName.
      */
@@ -944,6 +990,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Denotes the name of the `UserTaskDef` that should create the `UserTaskRun`.
+     * </pre>
+     *
      * <code>string user_task_def_name = 1;</code>
      * @param value The userTaskDefName to set.
      * @return This builder for chaining.
@@ -957,6 +1007,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Denotes the name of the `UserTaskDef` that should create the `UserTaskRun`.
+     * </pre>
+     *
      * <code>string user_task_def_name = 1;</code>
      * @return This builder for chaining.
      */
@@ -967,6 +1021,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Denotes the name of the `UserTaskDef` that should create the `UserTaskRun`.
+     * </pre>
+     *
      * <code>string user_task_def_name = 1;</code>
      * @param value The bytes for userTaskDefName to set.
      * @return This builder for chaining.
@@ -986,7 +1044,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> userGroupBuilder_;
     /**
      * <pre>
-     * to whom should the User Task Run be assigned?
+     * Denotes the user_group to which the UserTaskRun is assigned upon creation.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
@@ -997,7 +1055,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * to whom should the User Task Run be assigned?
+     * Denotes the user_group to which the UserTaskRun is assigned upon creation.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
@@ -1012,7 +1070,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * to whom should the User Task Run be assigned?
+     * Denotes the user_group to which the UserTaskRun is assigned upon creation.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
@@ -1032,7 +1090,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * to whom should the User Task Run be assigned?
+     * Denotes the user_group to which the UserTaskRun is assigned upon creation.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
@@ -1050,7 +1108,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * to whom should the User Task Run be assigned?
+     * Denotes the user_group to which the UserTaskRun is assigned upon creation.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
@@ -1073,7 +1131,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * to whom should the User Task Run be assigned?
+     * Denotes the user_group to which the UserTaskRun is assigned upon creation.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
@@ -1090,7 +1148,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * to whom should the User Task Run be assigned?
+     * Denotes the user_group to which the UserTaskRun is assigned upon creation.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
@@ -1102,7 +1160,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * to whom should the User Task Run be assigned?
+     * Denotes the user_group to which the UserTaskRun is assigned upon creation.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
@@ -1117,7 +1175,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * to whom should the User Task Run be assigned?
+     * Denotes the user_group to which the UserTaskRun is assigned upon creation.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment user_group = 2;</code>
@@ -1140,6 +1198,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> userIdBuilder_;
     /**
+     * <pre>
+     * Denotes the user_id to which the UserTaskRun is assigned upon creation.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
      * @return Whether the userId field is set.
      */
@@ -1147,6 +1209,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * Denotes the user_id to which the UserTaskRun is assigned upon creation.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
      * @return The userId.
      */
@@ -1158,6 +1224,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Denotes the user_id to which the UserTaskRun is assigned upon creation.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
      */
     public Builder setUserId(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -1174,6 +1244,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Denotes the user_id to which the UserTaskRun is assigned upon creation.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
      */
     public Builder setUserId(
@@ -1188,6 +1262,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Denotes the user_id to which the UserTaskRun is assigned upon creation.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
      */
     public Builder mergeUserId(io.littlehorse.sdk.common.proto.VariableAssignment value) {
@@ -1207,6 +1285,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Denotes the user_id to which the UserTaskRun is assigned upon creation.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
      */
     public Builder clearUserId() {
@@ -1220,6 +1302,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Denotes the user_id to which the UserTaskRun is assigned upon creation.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getUserIdBuilder() {
@@ -1228,6 +1314,10 @@ private static final long serialVersionUID = 0L;
       return getUserIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Denotes the user_id to which the UserTaskRun is assigned upon creation.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getUserIdOrBuilder() {
@@ -1239,6 +1329,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Denotes the user_id to which the UserTaskRun is assigned upon creation.
+     * </pre>
+     *
      * <code>optional .littlehorse.VariableAssignment user_id = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1269,9 +1363,9 @@ private static final long serialVersionUID = 0L;
 
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1285,9 +1379,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1301,9 +1395,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1317,9 +1411,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1340,9 +1434,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1360,9 +1454,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1382,9 +1476,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1405,9 +1499,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1425,9 +1519,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1445,9 +1539,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1466,9 +1560,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1485,9 +1579,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1504,9 +1598,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1517,9 +1611,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1533,9 +1627,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1550,9 +1644,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1563,9 +1657,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1577,9 +1671,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * This is used to, for example, send a push notification to a mobile app
-     * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people
+     * Specifies a list of actions that happen on various time-based triggers. Actions
+     * include reassigning the UserTaskRun, cancelling the UserTaskRun, or executing
+     * a "reminder" TaskRun.
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTrigger actions = 4;</code>
@@ -1606,9 +1700,8 @@ private static final long serialVersionUID = 0L;
     private int userTaskDefVersion_ ;
     /**
      * <pre>
-     * So, once the WfSpec is created, this will be pinned to a version. Customer
-     * can optionally specify a specific version or can leave it null, in which
-     * case we just use the latest
+     * If set, then the UserTaskRun will always have this specific version of the
+     * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
      * </pre>
      *
      * <code>optional int32 user_task_def_version = 5;</code>
@@ -1620,9 +1713,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * So, once the WfSpec is created, this will be pinned to a version. Customer
-     * can optionally specify a specific version or can leave it null, in which
-     * case we just use the latest
+     * If set, then the UserTaskRun will always have this specific version of the
+     * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
      * </pre>
      *
      * <code>optional int32 user_task_def_version = 5;</code>
@@ -1634,9 +1726,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * So, once the WfSpec is created, this will be pinned to a version. Customer
-     * can optionally specify a specific version or can leave it null, in which
-     * case we just use the latest
+     * If set, then the UserTaskRun will always have this specific version of the
+     * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
      * </pre>
      *
      * <code>optional int32 user_task_def_version = 5;</code>
@@ -1652,9 +1743,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * So, once the WfSpec is created, this will be pinned to a version. Customer
-     * can optionally specify a specific version or can leave it null, in which
-     * case we just use the latest
+     * If set, then the UserTaskRun will always have this specific version of the
+     * UserTaskDef. Otherwise, the UserTaskRun will have the latest version.
      * </pre>
      *
      * <code>optional int32 user_task_def_version = 5;</code>
@@ -1672,7 +1762,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> notesBuilder_;
     /**
      * <pre>
-     * Allow WfRun-specific notes for this User Task.
+     * Specifies the value to be displayed on the `notes` field of the UserTaskRun.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
@@ -1683,7 +1773,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Allow WfRun-specific notes for this User Task.
+     * Specifies the value to be displayed on the `notes` field of the UserTaskRun.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
@@ -1698,7 +1788,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Allow WfRun-specific notes for this User Task.
+     * Specifies the value to be displayed on the `notes` field of the UserTaskRun.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
@@ -1718,7 +1808,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Allow WfRun-specific notes for this User Task.
+     * Specifies the value to be displayed on the `notes` field of the UserTaskRun.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
@@ -1736,7 +1826,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Allow WfRun-specific notes for this User Task.
+     * Specifies the value to be displayed on the `notes` field of the UserTaskRun.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
@@ -1759,7 +1849,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Allow WfRun-specific notes for this User Task.
+     * Specifies the value to be displayed on the `notes` field of the UserTaskRun.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
@@ -1776,7 +1866,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Allow WfRun-specific notes for this User Task.
+     * Specifies the value to be displayed on the `notes` field of the UserTaskRun.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
@@ -1788,7 +1878,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Allow WfRun-specific notes for this User Task.
+     * Specifies the value to be displayed on the `notes` field of the UserTaskRun.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
@@ -1803,7 +1893,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Allow WfRun-specific notes for this User Task.
+     * Specifies the value to be displayed on the `notes` field of the UserTaskRun.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment notes = 6;</code>
@@ -1827,7 +1917,9 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> onCancellationExceptionNameBuilder_;
     /**
      * <pre>
-     * Specifies the name of the exception thrown when the User Task is canceled
+     * Specifies the name of the exception thrown when the User Task is canceled. If
+     * not set, then the cancellation or timeout of a User Task Run throws an ERROR
+     * rather than an EXCEPTION.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>
@@ -1838,7 +1930,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies the name of the exception thrown when the User Task is canceled
+     * Specifies the name of the exception thrown when the User Task is canceled. If
+     * not set, then the cancellation or timeout of a User Task Run throws an ERROR
+     * rather than an EXCEPTION.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>
@@ -1853,7 +1947,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies the name of the exception thrown when the User Task is canceled
+     * Specifies the name of the exception thrown when the User Task is canceled. If
+     * not set, then the cancellation or timeout of a User Task Run throws an ERROR
+     * rather than an EXCEPTION.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>
@@ -1873,7 +1969,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies the name of the exception thrown when the User Task is canceled
+     * Specifies the name of the exception thrown when the User Task is canceled. If
+     * not set, then the cancellation or timeout of a User Task Run throws an ERROR
+     * rather than an EXCEPTION.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>
@@ -1891,7 +1989,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies the name of the exception thrown when the User Task is canceled
+     * Specifies the name of the exception thrown when the User Task is canceled. If
+     * not set, then the cancellation or timeout of a User Task Run throws an ERROR
+     * rather than an EXCEPTION.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>
@@ -1914,7 +2014,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies the name of the exception thrown when the User Task is canceled
+     * Specifies the name of the exception thrown when the User Task is canceled. If
+     * not set, then the cancellation or timeout of a User Task Run throws an ERROR
+     * rather than an EXCEPTION.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>
@@ -1931,7 +2033,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies the name of the exception thrown when the User Task is canceled
+     * Specifies the name of the exception thrown when the User Task is canceled. If
+     * not set, then the cancellation or timeout of a User Task Run throws an ERROR
+     * rather than an EXCEPTION.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>
@@ -1943,7 +2047,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies the name of the exception thrown when the User Task is canceled
+     * Specifies the name of the exception thrown when the User Task is canceled. If
+     * not set, then the cancellation or timeout of a User Task Run throws an ERROR
+     * rather than an EXCEPTION.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>
@@ -1958,7 +2064,9 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Specifies the name of the exception thrown when the User Task is canceled
+     * Specifies the name of the exception thrown when the User Task is canceled. If
+     * not set, then the cancellation or timeout of a User Task Run throws an ERROR
+     * rather than an EXCEPTION.
      * </pre>
      *
      * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>

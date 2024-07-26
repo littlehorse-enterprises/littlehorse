@@ -30,7 +30,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class AsyncWaitersTest {
 
-    public AsyncWaiters asyncWaiters = new AsyncWaiters();
+    public AsyncWaiters asyncWaiters = new AsyncWaiters(mock());
     private final InternalWaitForWfEventRequest mockRequest = mock(Answers.RETURNS_DEEP_STUBS);
     private final RequestExecutionContext requestContext = mock(Answers.RETURNS_DEEP_STUBS);
     private final WorkflowEventModel mockEvent = mock(Answers.RETURNS_DEEP_STUBS);
@@ -71,7 +71,7 @@ public class AsyncWaitersTest {
         TestStreamObserver<WaitForCommandResponse> clientObserver1 = new TestStreamObserver<>();
         String commandId = "command-1";
         WaitForCommandResponse mockResponse = Mockito.mock();
-        asyncWaiters.registerObserverWaitingForCommand(commandId, clientObserver1);
+        asyncWaiters.registerObserverWaitingForCommand(commandId, 0, clientObserver1);
         asyncWaiters.registerCommandProcessed(commandId, mockResponse);
         Assertions.assertThat(clientObserver1.isCompleted()).isTrue();
         List<WaitForCommandResponse> commands = clientObserver1.getValues();
@@ -85,9 +85,9 @@ public class AsyncWaitersTest {
         String commandId = "command-1";
         WaitForCommandResponse mockResponse = Mockito.mock();
         asyncWaiters.registerCommandProcessed(commandId, mockResponse);
-        asyncWaiters.registerObserverWaitingForCommand(commandId, clientObserver1);
+        asyncWaiters.registerObserverWaitingForCommand(commandId, 0, clientObserver1);
         // new clients should not get the previous response
-        asyncWaiters.registerObserverWaitingForCommand(commandId, clientObserver1);
+        asyncWaiters.registerObserverWaitingForCommand(commandId, 0, clientObserver1);
         Assertions.assertThat(clientObserver1.isCompleted()).isTrue();
         List<WaitForCommandResponse> commands = clientObserver1.getValues();
         Assertions.assertThat(commands).hasSize(1);
@@ -103,7 +103,7 @@ public class AsyncWaitersTest {
             String commandId = UUID.randomUUID().toString();
             TestStreamObserver<WaitForCommandResponse> clientObserver = new TestStreamObserver<>();
             commandObservers.put(commandId, clientObserver);
-            executorService.submit(() -> asyncWaiters.registerObserverWaitingForCommand(commandId, clientObserver));
+            executorService.submit(() -> asyncWaiters.registerObserverWaitingForCommand(commandId, 0, clientObserver));
             executorService.submit(() -> asyncWaiters.registerCommandProcessed(commandId, Mockito.mock()));
         }
         executorService.shutdown();
