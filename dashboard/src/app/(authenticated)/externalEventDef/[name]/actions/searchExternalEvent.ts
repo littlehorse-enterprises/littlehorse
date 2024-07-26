@@ -11,7 +11,7 @@ import {
 
 export interface runDetails {
   externalEvent: ExternalEvent
-  nodeRun: NodeRun
+  nodeRun: NodeRun | null
 }
 export interface PaginatedExternalEventList extends ExternalEventIdList {
   resultsWithDetails: runDetails[]
@@ -31,6 +31,7 @@ export const searchExternalEvent = async ({
   const client = await lhClient({ tenantId })
   const requestWithBookmark = bookmarkAsString ? { ...req, bookmark: Buffer.from(bookmarkAsString, 'base64') } : req
   const externalEventIdList: ExternalEventIdList = await client.searchExternalEvent(requestWithBookmark)
+
   const hydrateWithExternalEventDetails = (): Promise<runDetails>[] => {
     return externalEventIdList.results.map(async (externalEventId: ExternalEventId) => {
       if (!externalEventId.externalEventDefId) {
@@ -41,7 +42,11 @@ export const searchExternalEvent = async ({
         wfRunId: externalEventId.wfRunId,
         guid: externalEventId.guid,
       })
-      const nodeRun = await client.getNodeRun(externalEvent.id!)
+
+      let nodeRun = null
+      try {
+        nodeRun = await client.getNodeRun(externalEvent.id!)
+      } catch {}
 
       return {
         externalEvent,
