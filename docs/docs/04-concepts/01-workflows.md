@@ -1,42 +1,72 @@
----
-sidebar_label: Workflows
----
+# Workflows
 
-# `WfSpec` and `WfRun`
+In LittleHorse, the [`WfSpec`](../08-api.md#wfspec) object is a _Metadata Object_ defining the blueprint for a [`WfRun`](../08-api.md#wfrun), which is a running instance of a workflow.
 
-In the LittleHorse API, there are two types of Objects:
+A simple way of thinking about it is that a `WfSpec` is a directed graph consisting of `Node`s and `Edge`s, where a `Node` defines a "step" of the workflow process, and an `Edge` tells the workflow what `Node` to go to next.
 
-* Metadata objects, which are like blueprints.
-* Execution objects, which are instantiations of Metadata objects.
 
-You will find several instances of duality between a Metadata Object and an Execution Object. The `WfSpec`/`WfRun` duality is the first such instance of this duality.
+## Workflow Structure
 
-## `WfSpec`
+A `WfSpec` (Workflow Specification) is a blueprint that defines the control flow of your `WfRun`s (Workflow Run). Before you can run a `WfRun`, you must first register a `WfSpec` in LittleHorse (for an example of how to do that, see [here](../05-developer-guide/08-wfspec-development/01-basics.md#quickstart)).
 
-A `WfSpec`, short for Workflow Specification, is a metadata object that LittleHorse uses to define a blueprint for how a business process or technical process works. Essentially, the `WfSpec` contains business logic for a process. You can use the `RunWf` grpc call to instruct the LittleHorse server to run an instance of that `WfSpec`, thus creating a `WfRun`.
+A `WfSpec` contains a set of `ThreadSpec`s, with one _special_ `ThreadSpec` that is known as the _entrypoint_. When you run a `WfSpec` to create a `WfRun`, the first `ThreadSpec` that is run is the _entrypoint_.
 
-A `WfSpec` consists of one or more `ThreadSpec`s, which in turn contain a set of `Node`s and a set of edges between those `Node`s. A `Node` defines a unit of work (for example, "execute this computer task" or "wait for this callback to come in from an external system"), and the edges define the control flow in the `ThreadRun`.
+:::info
+You can see the exact structure of a `WfSpec` as a protobuf message [in our api docs](../08-api.md#wfspec).
+:::
 
-In the programming analogy, you could think of a `WfSpec` as the actual source code for your program.
+### `ThreadSpec`s
 
-A `WfSpec` has a composite ID of a `name` and an integer `version`.
+A `ThreadSpec` is a blueprint for a single thread of execution in a `WfSpec`. When a `ThreadSpec` is run, you get a `ThreadRun`. Logically, a `ThreadSpec` is a directed graph of `Node`s and `Edge`s, where a `Node` represents a "step" to execute in the `ThreadRun`, and the `Edge`s tell LittleHorse what `Node` the `ThreadRun` should move to next.
 
-### `WfSpec` Versioning
+In the LittleHorse Dashboard, when you click on a `WfSpec` you are shown the _entrypoint_ `ThreadSpec`. In the picture you see, the circles and boxes are `Node`s, and the arrows are `Edge`s.
 
-A `WfSpec` is a versioned resource. Each `WfSpec` is uniquely identified by its `name` (a String), its `majorVersion` (an auto-incremented number, managed by LittleHorse), and its `revision` (another auto-incremented number).
+A `ThreadRun` can only execute one `Node` at a time. If you want a `WfRun` to execute multiple things at a time (either to parallelize `TaskRun`'s for performance reasons, or to wait for two business events to happen in parallel, or any other reason), then you need your `WfRun` to start multiple `ThreadRun`s at a time. See the section on Child Threads below for how this works.
 
-When you create a `WfSpec` with the same `name` as another previous `WfSpec`, LittleHorse will either increment the `revision` (if there are no "breaking changes") or increment the `majorVersion` and set `revision` to zero (if there _are_ "breaking changes"). A "breaking change" in this regard is defined as changing either:
+For the highly curious reader, you can inspect the structure of a `ThreadRun` in our [api docs here](../08-api.md#threadrun). At a high level it contains a status and a pointer to the current `NodeRun` that's being executed. The real data is stored in the `NodeRun`, which you can retrieve from the API as a separate object.
 
-* The set of required input variables to the `WfSpec`, or
-* The set of indexed searchable variables in the `WfSpec`.
+### Nodes
 
-When you run a `WfSpec` (thus creating a `WfRun`), you may optionally specify the version of the `WfSpec` that you wish to run. If you specify a specific version, then LittleHorse will run the `WfSpec` specified by the `RunWf` request. If no version number is provided, then `LittleHorse` will automatically run the latest version of the `WfSpec` with the provided name. For instructions on how this works in practice, please check out our [Metadata Management docs](/docs/developer-guide/grpc/managing-metadata).
+A `Node` is a "step" in a `ThreadRun`. LittleHorse allows for many different types of `Node`s in a `WfSpec`, including:
 
-This versioning scheme allows you to improve the business logic of your `WfSpec` without changing the client code that invokes the `WfSpec`: all your clients need to do is specify the `name` of their `WfSpec`, and the latest logic will be run transparently. Alternatively, you can "pin" your clients to run a specific version of your `WfSpec`.
+* [`TASK`](../08-api.md#tasknode) nodes, which allow for executing a `TaskRun`.
+* [`USER_TASK`](../08-api.md#usertasknode) nodes, which allow for executing [User Tasks](./05-user-tasks.md).
+* [`EXTERNAL_EVENT`](../08-api.md#externaleventnode) nodes, which allow for waiting for an [External Event](./04-external-events.md) to arrive.
+* [`START_THREAD`](../08-api.md#startthreadnode) nodes, which allow for starting child `ThreadRun`s.
+* [`WAIT_FOR_THREADS`](../08-api.md#waitforthreadsnode) nodes, which allow for waiting for child `ThreadRun`s to complete.
 
-Once a `WfRun` is launched with the `WfSpec` specified by (`name` "foo", `version` 123), the `WfRun` will always be associated with that specific version. In other words, deploying a new version of a `WfSpec` does not affect already-running `WfRun`s.
+:::info
+For a complete list of all of the available node types, check out the [`Node`](../08-api.md#node) protobuf message.
+:::
 
-Future versions of LittleHorse will add an optional "on-the-fly" upgrade mechanism.
+### `NodeRun`s
+
+When a `ThreadRun` arrives at a `Node`, LittleHorse creates a [`NodeRun`](../08-api.md#noderun), which is an instance of a `Node`. In the case of a `TASK` Node, a `TaskNodeRun` is created (which also causes the creation of a [Task](./03-tasks.md) which is dispatched to a Task Worker).
+
+A `NodeRun` is a real [object in the LH API](../08-api.md#noderun), which stores data about:
+
+* When the `ThreadRun` arrived at the `Node`
+* When the `NodeRun` was completed (if at all).
+* The status of the `NodeRun`.
+* A pointer to any related objects (for example, a Task `NodeRun` has a pointer to a `TaskRun`).
+
+When you click on a `NodeRun` in the dashboard, that information is fetched and displayed on a screen. You can also retrieve information about a `NodeRun` via some `lhctl` commands:
+
+* `lhctl list nodeRun <wfRunId>`: shows all `NodeRun`'s from a `WfRun`.
+* `lhctl get nodeRun <wfRunId> <x> <y>`: retrieves the `y`th `NodeRun` from the `x`th `ThreadRun` in the specified `WfRun`.
+
+### Variables
+
+Just as a program or function can store state in variables, a `WfRun` can store state in `Variable`s as well. Variables in LittleHorse are defined in the `ThreadSpec`, and as such are scoped to a `ThreadRun`. Note that a child `ThreadRun` may access the variables of its parents.
+
+Like `NodeRun`'s, a `Variable` is an object that you can fetch from the LittleHorse API. A `Variable` is uniquely identified by a [`VariableId`](../08-api.md#variableid), which has three fields:
+1. The `wf_run_id`, which is the ID of the associated `WfRun`.
+2. The `thread_run_number`, which is the ID of the associated `ThreadRun` (since a `Variable` lives within a specific `ThreadRun`).
+3. The `name`, which is the name of the `Variable`.
+
+You can fetch `Variable`s using [`rpc GetVariable`](../08-api.md#getvariable), [`rpc SearchVariable`](../08-api.md#searchvariable), and [`rpc ListVariables`](../08-api.md#listvariables).
+
+## `WfRun` Structure
 
 
 ## `WfRun`

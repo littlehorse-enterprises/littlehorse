@@ -1,9 +1,12 @@
 # Concepts
 
-A `WfSpec` in LittleHorse is a Protobuf that defines your technical or business process (it can also be representated in JSON). While the LittleHorse Server only understands the protobuf format of the `WfSpec`, the well-defined nature of the data format allowed LittleHorse to create SDK's in Java and GoLang that let you create `WfSpec`s from natural code. Since most of the LittleHorse concepts map nicely to programming concepts, this is a very natural and easy way to define your `WfSpec`s.
+The LittleHorse Server is, at its core, a _Workflow Engine_. What makes LittleHorse unique is that it is built with developers in mind. The way users define workflow specifications in LittleHorse (a `WfSpec`) was designed from the ground up to be developer-friendly and have concepts that are analogous to the primitives used in day-to-day programming languages.
 
-The Developer Guide discusses in detail how to develop `WfSpec`s with your SDK of choice.
+This section covers the following concepts:
 
-**This section discusses how the `WfSpecs` and `WfRun`s created by those SDKs behave.**
-
-NOTE: If you really want to, you can develop workflows using raw JSON. Tutorials for how to do that are incoming. For now, we refer you to the [protocol buffer definition](https://github.com/littlehorse-enterprises/lh-proto/src/master/).
+* The structure of a `WfSpec` and a `WfRun`
+* How Task Workers execute Tasks
+* How User Tasks allow humans to interact with a workflow
+* How External Events allow the outside world to interact with LittleHorse
+* Control Flow in LittleHorse
+* Authentication, Authorization and Multi-Tenancy using `Principal`s and `Tenant`s

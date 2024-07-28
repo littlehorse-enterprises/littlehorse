@@ -1,29 +1,34 @@
+---
+sidebar_label: Overview
+---
+
 # LittleHorse Overview
 
-The LittleHorse Server is a high-performance platform for building workflow-driven applications for a variety of use-cases, including:
+The LittleHorse Orchestrator is a high-performance platform for building workflow-driven applications for a variety of use-cases, including:
 
-- Business Process Management
-- Logistics Automation
-- Financial Transactions
-- SAGA Transactions
-- Event-Driven Microservices
+- **Microservice Orchestration**: The LittleHorse Orchestrator allows teams to enjoy the benefits of microservices (such as independent deployment and elasticity) while mitigating some of the challenges such as observability, error handling, and schema evolution.
+- **Business Process Management**: LittleHorse is perfect for orchestrating long-running business workflows. The `WfSpec` pattern makes it much easier for your code to exactly reflect business requirements; reducing friction between Product and Eng teams.
+- **Generative AI Workflows**: LLM's are fantastic, but they are prone to hallucination and sometimes don't have all the answers. When that happens, LittleHorse [User Tasks](./04-concepts/05-user-tasks.md) allow you to seamlessly put a human-in-the-loop to correct the situation.
+- **Compliance**: User Tasks are also perfect for regulation-driven processes in which people from different departments within an organization must "sign off" on certain transactions.
+- **Legacy App Modernization**: LittleHorse workflows can easily span across both modern microservices and legacy monoliths, allowing you to easily connect both worlds into one business process.
+- **SAGA Transactions**: LittleHorse's advanced Exception Handling capabilities simplify the process of rolling back transactions across multiple systems in case of a problem (for example, canceling a shipment if payment fails).
 - And more.
 
 Building applications on LittleHorse enables engineering teams to save on infrastructure costs, reduce time to market, and deliver more robust software with less downtime.
 
-The code for the LittleHorse Server and all clients is available at [our github](https://github.com/littlehorse-enterprises/littlehorse), but if you want to get started we recommend you check out our [Quickstart](./05-developer-guide/00-install.md). All code is free for production use under the Server-Side Public License. 
+The code for the LittleHorse Orchestrator and all clients is available at [our github](https://github.com/littlehorse-enterprises/littlehorse), but if you want to get started we recommend you check out our [Quickstart](./05-developer-guide/00-install.md). All code is free for production use under the Server-Side Public License. 
 
 ## How it Works
 
 An application built on LittleHorse has the following three components:
 
-- `WfSpec` Workflow Definition
-- LittleHorse Server
+- A [Workflow Specification](./04-concepts/01-workflows.md), also known as a `WfSpec`
+- A LittleHorse Cluster
 - Task Workers
 
-The `WfSpec`, short for Workflow Specification, is a metadata object that tells the LittleHorse Server which Tasks to schedule and when they should be scheduled. The Task Workers connect to the LittleHorse Server and execute Tasks as they are scheduled.
+The `WfSpec`, short for Workflow Specification, is a metadata object that tells the LittleHorse Orchestrator which Tasks to schedule and when they should be scheduled. The Task Workers connect to the LittleHorse Orchestrator and execute Tasks as they are scheduled.
 
-You as the user of LittleHorse define your own `WfSpec`s, and write your own Task Workers which connect to the LH Server.
+You as the user of LittleHorse define your own `WfSpec`s, and write your own Task Workers which connect to the LH Orchestrator.
 
 A depiction of where LittleHorse sits in the tech stack can be seen below:
 
@@ -68,9 +73,9 @@ At LittleHorse, we spent almost two years developing a cutting-edge system from 
 
 ### Connect to Anything
 
-LittleHorse has clients in Java, Go, and Python, with a .NET release coming in `0.6.0`. This allows you to easily integrate existing systems into a LittleHorse Workflow with minimal code change (in Java, for example, all you need to do to turn a Method into a LittleHorse Task Worker is add the `@LHTaskMethod` annotation).
+LittleHorse has clients in Java, Go, and Python. This allows you to easily integrate existing systems into a LittleHorse Workflow with minimal code change (in Java, for example, all you need to do to turn a Method into a LittleHorse Task Worker is add the `@LHTaskMethod` annotation).
 
-Additionally, LittleHorse supports integration with external systems through the [External Event](./04-concepts/04-external-events.md) feature, which allows LittleHorse Workflows to respond to events originating outside of the LittleHorse ecosystem.
+Additionally, LittleHorse supports integration with external systems through the [External Events](./04-concepts/04-external-events.md) feature, which allows LittleHorse Workflows to respond to events originating outside of the LittleHorse ecosystem.
 
 ### Support Mission-Critical Workflows
 
@@ -98,7 +103,9 @@ LittleHorse has rich and native support for assigning work to humans as well as 
 
 ## What LittleHorse is NOT
 
-As the creator of LittleHorse, we believe that LittleHorse can help almost any IT organization. However, LittleHorse is able to excel at workflow-driven applications because we consciously decided _not_ to solve certain problems, listed below.
+As the creators of LittleHorse, we believe that LittleHorse can help almost any IT organization. However, the reason why LittleHorse is so useful is because we very explicitly chose to focus on the specific problem of _high-performance process orchestration._
+
+As a result, there are several problems that we don't attempt to solve, and some systems that we are not. They are listed below:
 
 ### Fully-Featured Database
 
@@ -118,9 +125,27 @@ In the past, we described LittleHorse as a "microservice orchestration engine" b
 
 Rather than being a competitor or replacement for the aforementioned runtime systems, LittleHorse is unopinionated about where your code runs. LittleHorse (and especially LittleHorse Cloud) is compatible with any deployment system; all you need to do is provide the LittleHorse Server URL to your software system and it is LittleHorse-enabled, no matter where it runs.
 
+### Microservice-Specific Solution
+
+You do not need microservices in order to benefit from LittleHorse.
+
+It is true that LittleHorse solves many problems that microservice developers face (such as orchestrating transactions across multiple systems, error handling, and observability); however, you can use LittleHorse workflows with a monolithic architecture (in fact, we use this exact strategy in our LittleHorse Cloud back-office implementation).
+
+In monolithic applications, LittleHorse can help several difficult problems such as:
+* Long-running workflows that span days or weeks and require human input.
+* Atomic updates to external systems and API's.
+* Observability and auditing of transactions.
+* Ensuring that code and business requirements are well-connected.
+
+The way to integrate LittleHorse with a monolithic app server (for example, Spring Boot) is:
+
+1. The app server upserts the `WfSpec` upon startup via `rpc PutWfSpec`.
+2. Web endpoints (eg. REST, GRPC) on the app server result in calls to LittleHorse to run a `WfRun`.
+3. The app server process also runs Task Workers to implement the tasks in the workflow.
+
 ### API Management System
 
-LittleHorse is not an API Management System like Apigee or Kong.
+LittleHorse is not an API Management System like Apigee or Kong. Those systems define 
 
 ### ETL System
 

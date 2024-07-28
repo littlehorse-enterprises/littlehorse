@@ -24,7 +24,7 @@ The valid Mutation Types come from the `VariableMutationType` enum and are:
 - `REMOVE_KEY`
 - `REMOVE_INDEX`
 
-Refer to the [Concepts Documentation](/docs/04-concepts/06-variables.md) for a description of what each mutation type does.
+A description of each `VariableType` can be found on the [protobuf documentation](../../08-api.md#variabletype).
 
 ## Examples
 
