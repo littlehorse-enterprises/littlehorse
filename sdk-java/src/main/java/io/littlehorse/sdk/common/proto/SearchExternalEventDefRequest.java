@@ -5,7 +5,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * Search for ExternalEventDef's.
+ * Search for ExternalEventDefs based on certain criteria.
  * </pre>
  *
  * Protobuf type {@code littlehorse.SearchExternalEventDefRequest}
@@ -353,7 +353,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Search for ExternalEventDef's.
+   * Search for ExternalEventDefs based on certain criteria.
    * </pre>
    *
    * Protobuf type {@code littlehorse.SearchExternalEventDefRequest}

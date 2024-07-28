@@ -757,7 +757,7 @@ message WfSpecIdList {
   optional bytes bookmark = 2;
 }
 
-// Search for ExternalEventDef's.
+// Search for ExternalEventDefs based on certain criteria.
 message SearchExternalEventDefRequest {
   // Bookmark for cursor-based pagination; pass if applicable.
   optional bytes bookmark = 1;
@@ -822,36 +822,32 @@ message PrincipalIdList {
   optional bytes bookmark = 2;
 }
 
-// EVOLVING: Search for ExternalEvent's.
+// Search for ExternalEvents based on certain criteria.
 //
-// Currently, this request allows you to search for ExternalEvent's based on either:
-// 1. A WfRunId
-// 2. An ExternalEventDefName and status.
+// Required field ExternalEventDefId specifies which ExternalEventDef
+// to search for ExternalEvents under.
 //
-// This specific RPC is under discussions for a Refactor and will soon experience breaking changes.
-// It is recommended for applications needing to search by WfRunId to instead use the
-// `rpc ListExternalEvents` call, as we plan to remove the 'by WfRunId' option from this request.
-//
-// Specifically, we plan to remove the "by wfRunId" option (which is redundant with the ListExternalEvents
-// request), and "flatten" the "ByExtEvtDefNameAndStatusRequest" fields into the main message.
+// At this time, it is not possible to make a search for all ExternalEvents.
 message SearchExternalEventRequest {
   // Bookmark for cursor-based pagination; pass if applicable.
   optional bytes bookmark = 1;
   // Maximum results to return in one request.
   optional int32 limit = 2;
 
-  // EVOLVING: message encapsulating criteria to search for ExternalEvent's by their status
-  // and ExternalEventDefName.
-  message ByExtEvtDefNameAndStatusRequest {
-    string external_event_def_name = 1;
-    optional bool is_claimed = 2;
-  }
+  // Specifies to return only ExternalEvents created after this time
+  optional google.protobuf.Timestamp earliest_start = 3;
 
-  // EVOLVING
-  oneof ext_evt_criteria {
-    WfRunId wf_run_id = 3;
-    ByExtEvtDefNameAndStatusRequest external_event_def_name_and_status = 4;
-  }
+  // Specifies to return only ExternalEvents created before this time
+  optional google.protobuf.Timestamp latest_start = 4;
+
+  // Search for ExternalEvents by their ExternalEventDefId
+  //
+  // * Note: If ExternalEventDefId is not provided or does not exist,
+  //         gRPC status code 'INVALID_ARGUMENT' will be returned.
+  ExternalEventDefId external_event_def_id = 5;
+
+  // Optionally search for only ExternalEvents that are claimed or not.
+  optional bool is_claimed = 6;
 }
 
 // List of ExternalEvent Id's
