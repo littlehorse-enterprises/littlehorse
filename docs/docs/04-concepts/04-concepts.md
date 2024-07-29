@@ -5,5 +5,3 @@ A `WfSpec` in LittleHorse is a Protobuf that defines your technical or business 
 The Developer Guide discusses in detail how to develop `WfSpec`s with your SDK of choice.
 
 **This section discusses how the `WfSpecs` and `WfRun`s created by those SDKs behave.**
-
-NOTE: If you really want to, you can develop workflows using raw JSON. Tutorials for how to do that are incoming. For now, we refer you to the [protocol buffer definition](https://github.com/littlehorse-enterprises/lh-proto/src/master/).
