@@ -1909,7 +1909,7 @@ This is used and handled internally by the Task Worker SDK.
 
 ### Message `SearchExternalEventDefRequest` {#searchexternaleventdefrequest}
 
-Search for ExternalEventDef's.
+Search for ExternalEventDefs based on certain criteria.
 
 
 | Field | Label | Type | Description |
@@ -1924,41 +1924,22 @@ Search for ExternalEventDef's.
 
 ### Message `SearchExternalEventRequest` {#searchexternaleventrequest}
 
-EVOLVING: Search for ExternalEvent's.
+Search for ExternalEvents based on certain criteria.
 
-Currently, this request allows you to search for ExternalEvent's based on either:
-1. A WfRunId
-2. An ExternalEventDefName and status.
+Required field ExternalEventDefId specifies which ExternalEventDef
+to search for ExternalEvents under.
 
-This specific RPC is under discussions for a Refactor and will soon experience breaking changes.
-It is recommended for applications needing to search by WfRunId to instead use the
-`rpc ListExternalEvents` call, as we plan to remove the 'by WfRunId' option from this request.
-
-Specifically, we plan to remove the "by wfRunId" option (which is redundant with the ListExternalEvents
-request), and "flatten" the "ByExtEvtDefNameAndStatusRequest" fields into the main message.
+At this time, it is not possible to make a search for all ExternalEvents.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
 | `bookmark` | optional| bytes | Bookmark for cursor-based pagination; pass if applicable. |
 | `limit` | optional| int32 | Maximum results to return in one request. |
-| `wf_run_id` | oneof `ext_evt_criteria`| [WfRunId](#wfrunid) |  |
-| `external_event_def_name_and_status` | oneof `ext_evt_criteria`| [SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest](#searchexternaleventrequestbyextevtdefnameandstatusrequest) |  |
- <!-- end Fields -->
- <!-- end HasFields -->
-
-
-
-### Message `SearchExternalEventRequest.ByExtEvtDefNameAndStatusRequest` {#searchexternaleventrequestbyextevtdefnameandstatusrequest}
-
-EVOLVING: message encapsulating criteria to search for ExternalEvent's by their status
-and ExternalEventDefName.
-
-
-| Field | Label | Type | Description |
-| ----- | ----  | ---- | ----------- |
-| `external_event_def_name` | | string |  |
-| `is_claimed` | optional| bool |  |
+| `earliest_start` | optional| google.protobuf.Timestamp | Specifies to return only ExternalEvents created after this time |
+| `latest_start` | optional| google.protobuf.Timestamp | Specifies to return only ExternalEvents created before this time |
+| `external_event_def_id` | | [ExternalEventDefId](#externaleventdefid) | Search for ExternalEvents by their ExternalEventDefId<br/><br/>* Note: If ExternalEventDefId is not provided or does not exist,         gRPC status code 'INVALID_ARGUMENT' will be returned. |
+| `is_claimed` | optional| bool | Optionally search for only ExternalEvents that are claimed or not. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
