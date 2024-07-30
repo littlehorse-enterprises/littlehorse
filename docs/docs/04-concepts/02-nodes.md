@@ -43,7 +43,7 @@ The `ENTRYPOINT` node is equivalent to the entrypoint `ThreadSpec` and `ThreadRu
 
 ### `EXIT` Node
 
-The `EXIT` node marks the end of a `ThreadSpec`/`ThreadRun`. Noramlly, when a `ThreadRun` reaches an `EXIT` node, the `ThreadRun` is marked as completed.
+The `EXIT` node marks the end of a `ThreadSpec`/`ThreadRun`. Normally, when a `ThreadRun` reaches an `EXIT` node, the `ThreadRun` is marked as completed.
 
 In many programming languages, you can explicitly `throw` or `raise` an exception, which causes that thread in your program to fail. You can achieve the same effect in LittleHorse by assigning a `Failure` to an `EXIT` node (in the Java SDK, this is accomplished via `WorkflowThread::fail()`). See the WfRun Lifecycle section for more information.
 
