@@ -30,7 +30,7 @@ In addition to that template-engine functionality, Helm also manages versions of
 
 First, it is quite simple to write a Helm chart. This means that most DevOps teams can quickly write a helm chart that can be used by microservice teams across their organization.
 
-Secondly, Helm is a client library (well, it has been since the removal of Tiller...but that's another blog post). Therefore, you don't need to run any privileged pods inside the K8s cluster; all you need is a CI server with permissiosn to create the necessary K8s resources.
+Secondly, Helm is a client library (well, it has been since the removal of Tiller...but that's another blog post). Therefore, you don't need to run any privileged pods inside the K8s cluster; all you need is a CI server with permission to create the necessary K8s resources.
 
 ### Limitations
 
