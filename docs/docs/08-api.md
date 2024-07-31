@@ -3732,6 +3732,22 @@ Status of a TaskRun.
 
 
 
+### Enum TimeUnit {#timeunit}
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| MILLISECOND | 0 |  |
+| SECOND | 1 |  |
+| MINUTE | 2 |  |
+| HOUR | 3 |  |
+| DAY | 4 |  |
+| WEEK | 5 |  |
+| MONTH | 6 |  |
+
+
+
+
 ### Enum VariableType {#variabletype}
 Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
 VariableValue.

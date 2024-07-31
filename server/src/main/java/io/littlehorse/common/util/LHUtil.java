@@ -2,6 +2,11 @@ package io.littlehorse.common.util;
 
 import static com.google.protobuf.util.Timestamps.fromMillis;
 
+import com.cronutils.model.Cron;
+import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.time.ExecutionTime;
+import com.cronutils.parser.CronParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
@@ -17,10 +22,14 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -332,5 +341,11 @@ public class LHUtil {
             }
         }
         return false;
+    }
+
+    public static Optional<Date> nextDate(String cronExpression, Date dateAt) {
+        CronParser quartzCronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+        Cron parsedQuartzCronExpression = quartzCronParser.parse(cronExpression);
+        return ExecutionTime.forCron(parsedQuartzCronExpression).nextExecution(ZonedDateTime.ofInstant(dateAt.toInstant(), ZoneId.systemDefault())).map(zonedDateTime -> Date.from(zonedDateTime.toInstant()));
     }
 }
