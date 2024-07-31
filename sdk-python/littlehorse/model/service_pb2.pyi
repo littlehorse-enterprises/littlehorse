@@ -168,6 +168,31 @@ class RunWfRequest(_message.Message):
     parent_wf_run_id: _object_id_pb2.WfRunId
     def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., id: _Optional[str] = ..., parent_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
 
+class ScheduleWfRequest(_message.Message):
+    __slots__ = ["id", "wf_spec_name", "major_version", "revision", "variables", "parent_wf_run_id", "cron_expression"]
+    class VariablesEntry(_message.Message):
+        __slots__ = ["key", "value"]
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: _variable_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    ID_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+    MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    REVISION_FIELD_NUMBER: _ClassVar[int]
+    VARIABLES_FIELD_NUMBER: _ClassVar[int]
+    PARENT_WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    CRON_EXPRESSION_FIELD_NUMBER: _ClassVar[int]
+    id: str
+    wf_spec_name: str
+    major_version: int
+    revision: int
+    variables: _containers.MessageMap[str, _variable_pb2.VariableValue]
+    parent_wf_run_id: _object_id_pb2.WfRunId
+    cron_expression: str
+    def __init__(self, id: _Optional[str] = ..., wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., parent_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., cron_expression: _Optional[str] = ...) -> None: ...
+
 class VariableMatch(_message.Message):
     __slots__ = ["var_name", "value"]
     VAR_NAME_FIELD_NUMBER: _ClassVar[int]

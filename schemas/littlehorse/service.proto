@@ -441,6 +441,30 @@ message RunWfRequest {
   optional WfRunId parent_wf_run_id = 6;
 }
 
+message ScheduleWfRequest {
+  optional string id = 1;
+  // The name of the WfSpec to run.
+  string wf_spec_name = 2;
+
+  // Optionally specify the major version of the WfSpec to run. This guarantees that
+  // the "signature" of the WfSpec (i.e. the required input variables, and searchable
+  // variables) will not change for this app.
+  optional int32 major_version = 3;
+
+  // Optionally specify the specific revision of the WfSpec to run. It is not recommended
+  // to use this in practice, as the WfSpec logic should be de-coupled from the applications
+  // that run WfRun's.
+  optional int32 revision = 4;
+
+  // A map from Variable Name to Values for those variables. The provided variables are
+  // passed as input to the Entrypoint ThreadRun.
+  map<string, VariableValue> variables = 5;
+
+  optional WfRunId parent_wf_run_id = 6;
+
+  string cron_expression = 7;
+}
+
 // Used by a SearchWfRunRequest to filter WfRun's and only return those whose Variable's
 // match a certain filter.
 message VariableMatch {

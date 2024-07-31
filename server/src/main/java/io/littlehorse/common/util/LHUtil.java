@@ -23,7 +23,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Date;
@@ -346,6 +345,8 @@ public class LHUtil {
     public static Optional<Date> nextDate(String cronExpression, Date dateAt) {
         CronParser quartzCronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         Cron parsedQuartzCronExpression = quartzCronParser.parse(cronExpression);
-        return ExecutionTime.forCron(parsedQuartzCronExpression).nextExecution(ZonedDateTime.ofInstant(dateAt.toInstant(), ZoneId.systemDefault())).map(zonedDateTime -> Date.from(zonedDateTime.toInstant()));
+        return ExecutionTime.forCron(parsedQuartzCronExpression)
+                .nextExecution(ZonedDateTime.ofInstant(dateAt.toInstant(), ZoneId.systemDefault()))
+                .map(zonedDateTime -> Date.from(zonedDateTime.toInstant()));
     }
 }

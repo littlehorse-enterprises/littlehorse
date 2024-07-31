@@ -36,7 +36,6 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
     private String id;
     private WfRunIdModel parentWfRunId;
 
-
     public String getPartitionKey() {
         if (id == null) id = LHUtil.generateGuid();
 

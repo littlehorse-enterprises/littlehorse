@@ -327,6 +327,42 @@ export interface RunWfRequest_VariablesEntry {
   value: VariableValue | undefined;
 }
 
+export interface ScheduleWfRequest {
+  id?:
+    | string
+    | undefined;
+  /** The name of the WfSpec to run. */
+  wfSpecName: string;
+  /**
+   * Optionally specify the major version of the WfSpec to run. This guarantees that
+   * the "signature" of the WfSpec (i.e. the required input variables, and searchable
+   * variables) will not change for this app.
+   */
+  majorVersion?:
+    | number
+    | undefined;
+  /**
+   * Optionally specify the specific revision of the WfSpec to run. It is not recommended
+   * to use this in practice, as the WfSpec logic should be de-coupled from the applications
+   * that run WfRun's.
+   */
+  revision?:
+    | number
+    | undefined;
+  /**
+   * A map from Variable Name to Values for those variables. The provided variables are
+   * passed as input to the Entrypoint ThreadRun.
+   */
+  variables: { [key: string]: VariableValue };
+  parentWfRunId?: WfRunId | undefined;
+  cronExpression: string;
+}
+
+export interface ScheduleWfRequest_VariablesEntry {
+  key: string;
+  value: VariableValue | undefined;
+}
+
 /**
  * Used by a SearchWfRunRequest to filter WfRun's and only return those whose Variable's
  * match a certain filter.
@@ -2388,6 +2424,196 @@ export const RunWfRequest_VariablesEntry = {
   },
   fromPartial(object: DeepPartial<RunWfRequest_VariablesEntry>): RunWfRequest_VariablesEntry {
     const message = createBaseRunWfRequest_VariablesEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? VariableValue.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseScheduleWfRequest(): ScheduleWfRequest {
+  return {
+    id: undefined,
+    wfSpecName: "",
+    majorVersion: undefined,
+    revision: undefined,
+    variables: {},
+    parentWfRunId: undefined,
+    cronExpression: "",
+  };
+}
+
+export const ScheduleWfRequest = {
+  encode(message: ScheduleWfRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.wfSpecName !== "") {
+      writer.uint32(18).string(message.wfSpecName);
+    }
+    if (message.majorVersion !== undefined) {
+      writer.uint32(24).int32(message.majorVersion);
+    }
+    if (message.revision !== undefined) {
+      writer.uint32(32).int32(message.revision);
+    }
+    Object.entries(message.variables).forEach(([key, value]) => {
+      ScheduleWfRequest_VariablesEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).ldelim();
+    });
+    if (message.parentWfRunId !== undefined) {
+      WfRunId.encode(message.parentWfRunId, writer.uint32(50).fork()).ldelim();
+    }
+    if (message.cronExpression !== "") {
+      writer.uint32(58).string(message.cronExpression);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ScheduleWfRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseScheduleWfRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.wfSpecName = reader.string();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.majorVersion = reader.int32();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.revision = reader.int32();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          const entry5 = ScheduleWfRequest_VariablesEntry.decode(reader, reader.uint32());
+          if (entry5.value !== undefined) {
+            message.variables[entry5.key] = entry5.value;
+          }
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.parentWfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.cronExpression = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ScheduleWfRequest>): ScheduleWfRequest {
+    return ScheduleWfRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ScheduleWfRequest>): ScheduleWfRequest {
+    const message = createBaseScheduleWfRequest();
+    message.id = object.id ?? undefined;
+    message.wfSpecName = object.wfSpecName ?? "";
+    message.majorVersion = object.majorVersion ?? undefined;
+    message.revision = object.revision ?? undefined;
+    message.variables = Object.entries(object.variables ?? {}).reduce<{ [key: string]: VariableValue }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = VariableValue.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    message.parentWfRunId = (object.parentWfRunId !== undefined && object.parentWfRunId !== null)
+      ? WfRunId.fromPartial(object.parentWfRunId)
+      : undefined;
+    message.cronExpression = object.cronExpression ?? "";
+    return message;
+  },
+};
+
+function createBaseScheduleWfRequest_VariablesEntry(): ScheduleWfRequest_VariablesEntry {
+  return { key: "", value: undefined };
+}
+
+export const ScheduleWfRequest_VariablesEntry = {
+  encode(message: ScheduleWfRequest_VariablesEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      VariableValue.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ScheduleWfRequest_VariablesEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseScheduleWfRequest_VariablesEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = VariableValue.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ScheduleWfRequest_VariablesEntry>): ScheduleWfRequest_VariablesEntry {
+    return ScheduleWfRequest_VariablesEntry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ScheduleWfRequest_VariablesEntry>): ScheduleWfRequest_VariablesEntry {
+    const message = createBaseScheduleWfRequest_VariablesEntry();
     message.key = object.key ?? "";
     message.value = (object.value !== undefined && object.value !== null)
       ? VariableValue.fromPartial(object.value)

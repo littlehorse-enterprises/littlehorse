@@ -2,22 +2,12 @@ package io.littlehorse.common.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.cronutils.model.Cron;
-import com.cronutils.model.CronType;
-import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.model.time.ExecutionTime;
-import com.cronutils.parser.CronParser;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
-
-import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 
 public class TaskDefUtilTest {

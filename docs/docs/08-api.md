@@ -1091,6 +1091,19 @@ ID for a Principal.
 
 
 
+### Message `ScheduledWfRunId` {#scheduledwfrunid}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `id` | | string |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `TaskDefId` {#taskdefid}
 
 ID for a TaskDef.
@@ -1875,6 +1888,39 @@ Create a Workflow Run.
 
 
 ### Message `RunWfRequest.VariablesEntry` {#runwfrequestvariablesentry}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `key` | | string |  |
+| `value` | | [VariableValue](#variablevalue) |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ScheduleWfRequest` {#schedulewfrequest}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `id` | optional| string |  |
+| `wf_spec_name` | | string | The name of the WfSpec to run. |
+| `major_version` | optional| int32 | Optionally specify the major version of the WfSpec to run. This guarantees that the "signature" of the WfSpec (i.e. the required input variables, and searchable variables) will not change for this app. |
+| `revision` | optional| int32 | Optionally specify the specific revision of the WfSpec to run. It is not recommended to use this in practice, as the WfSpec logic should be de-coupled from the applications that run WfRun's. |
+| `variables` | map| [ScheduleWfRequest.VariablesEntry](#schedulewfrequestvariablesentry) | A map from Variable Name to Values for those variables. The provided variables are passed as input to the Entrypoint ThreadRun. |
+| `parent_wf_run_id` | optional| [WfRunId](#wfrunid) |  |
+| `cron_expression` | | string |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ScheduleWfRequest.VariablesEntry` {#schedulewfrequestvariablesentry}
 
 
 

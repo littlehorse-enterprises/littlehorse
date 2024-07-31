@@ -24,6 +24,7 @@ import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.TriggeredTaskRun;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskWorkerGroupRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.ScheduledCommandModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.Command.CommandCase;
 import io.littlehorse.common.proto.LHStoreType;
@@ -62,6 +63,7 @@ public class CommandModel extends AbstractCommand<Command> {
     private BulkUpdateJobModel bulkJob;
     private RescueThreadRunRequestModel rescueThreadRun;
     private DeleteTaskWorkerGroupRequestModel deleteTaskWorkerGroup;
+    private ScheduledCommandModel scheduleCommand;
 
     public Class<Command> getProtoBaseClass() {
         return Command.class;

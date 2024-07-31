@@ -41,8 +41,14 @@ message Command {
         TaskAttemptRetryReady task_attempt_retry_ready = 21;
         RescueThreadRunRequest rescue_thread_run = 22;
         DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;
+        ScheduledCommand schedule_command = 24;
         // TODO: Add SaveUserTask
     }
+}
+
+message ScheduledCommand {
+    Command command_to_execute = 1;
+    string cron_expression = 2;
 }
 
 // This flows through the Metadata Command Topic

@@ -1,15 +1,13 @@
 package io.littlehorse.common.util;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 class LHUtilTest {
 
@@ -44,5 +42,4 @@ class LHUtilTest {
     private Date timeToDate(LocalDateTime dateTime) {
         return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
-
 }

@@ -325,31 +325,46 @@ public interface CommandOrBuilder extends
   io.littlehorse.sdk.common.proto.RescueThreadRunRequestOrBuilder getRescueThreadRunOrBuilder();
 
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
    * @return Whether the deleteTaskWorkerGroup field is set.
    */
   boolean hasDeleteTaskWorkerGroup();
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
    * @return The deleteTaskWorkerGroup.
    */
   io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest getDeleteTaskWorkerGroup();
   /**
+   * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+   */
+  io.littlehorse.common.proto.DeleteTaskWorkerGroupRequestOrBuilder getDeleteTaskWorkerGroupOrBuilder();
+
+  /**
    * <pre>
    * TODO: Add SaveUserTask
    * </pre>
    *
-   * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+   * <code>.littlehorse.ScheduledCommand schedule_command = 24;</code>
+   * @return Whether the scheduleCommand field is set.
    */
-  io.littlehorse.common.proto.DeleteTaskWorkerGroupRequestOrBuilder getDeleteTaskWorkerGroupOrBuilder();
+  boolean hasScheduleCommand();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.ScheduledCommand schedule_command = 24;</code>
+   * @return The scheduleCommand.
+   */
+  io.littlehorse.common.proto.ScheduledCommand getScheduleCommand();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.ScheduledCommand schedule_command = 24;</code>
+   */
+  io.littlehorse.common.proto.ScheduledCommandOrBuilder getScheduleCommandOrBuilder();
 
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }
