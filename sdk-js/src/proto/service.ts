@@ -45,6 +45,7 @@ import {
   WorkflowEventDefId,
   WorkflowEventId,
 } from "./object_id";
+import { ScheduledWfRun } from "./scheduled_wf_run";
 import { TaskDef } from "./task_def";
 import { LHTaskError, LHTaskException, TaskRun, TaskRunSource, VarNameAndVal } from "./task_run";
 import {
@@ -7153,6 +7154,14 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    scheduleWf: {
+      name: "ScheduleWf",
+      requestType: ScheduleWfRequest,
+      requestStream: false,
+      responseType: ScheduledWfRun,
+      responseStream: false,
+      options: {},
+    },
     /**
      * Gets a WfRun. Although useful for development and debugging, this RPC is not often
      * used by applications.
@@ -7728,6 +7737,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   ): Promise<DeepPartial<UserTaskDef>>;
   /** Runs a WfSpec to create a WfRun. */
   runWf(request: RunWfRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfRun>>;
+  scheduleWf(request: ScheduleWfRequest, context: CallContext & CallContextExt): Promise<DeepPartial<ScheduledWfRun>>;
   /**
    * Gets a WfRun. Although useful for development and debugging, this RPC is not often
    * used by applications.
@@ -8040,6 +8050,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   ): Promise<UserTaskDef>;
   /** Runs a WfSpec to create a WfRun. */
   runWf(request: DeepPartial<RunWfRequest>, options?: CallOptions & CallOptionsExt): Promise<WfRun>;
+  scheduleWf(request: DeepPartial<ScheduleWfRequest>, options?: CallOptions & CallOptionsExt): Promise<ScheduledWfRun>;
   /**
    * Gets a WfRun. Although useful for development and debugging, this RPC is not often
    * used by applications.

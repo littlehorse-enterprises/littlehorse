@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "object_id.proto";
+import "variable.proto";
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Common.Proto";
+
+message ScheduledWfRun {
+  ScheduledWfRunId id = 1;
+  WfSpecId wf_spec_id = 2;
+
+  // A map from Variable Name to Values for those variables. The provided variables are
+  // passed as input to the Entrypoint ThreadRun.
+  map<string, VariableValue> variables = 3;
+
+  optional WfRunId parent_wf_run_id = 4;
+
+  string cron_expression = 5;
+  ScheduleStatus status = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+enum ScheduleStatus {
+  STARTED = 0;
+  SUSPENDED = 1;
+}

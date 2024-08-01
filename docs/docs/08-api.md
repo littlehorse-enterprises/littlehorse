@@ -34,6 +34,8 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 
 
+
+
 ### RPC `PutTaskDef` {#puttaskdef}
 
 | Request Type | Response Type | Description |
@@ -117,6 +119,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
 | [RunWfRequest](#runwfrequest) | [WfRun](#wfrun) | Runs a WfSpec to create a WfRun. |
+
+### RPC `ScheduleWf` {#schedulewf}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [ScheduleWfRequest](#schedulewfrequest) | [ScheduledWfRun](#scheduledwfrun) |  |
 
 ### RPC `GetWfRun` {#getwfrun}
 
@@ -1282,6 +1290,41 @@ An ID for a WorkflowEvent.
 | `wf_run_id` | | [WfRunId](#wfrunid) | The Id of the WfRun that threw the event. |
 | `workflow_event_def_id` | | [WorkflowEventDefId](#workfloweventdefid) | The ID of the WorkflowEventDef that this WorkflowEvent is a member of. |
 | `number` | | int32 | A sequence number that makes the WorkflowEventId unique among all WorkflowEvent's of the same type thrown by the WfRun. This field starts at zero and is incremented every time a WorkflowEvent of the same type is thrown by the same WfRun. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+
+
+### Message `ScheduledWfRun` {#scheduledwfrun}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `id` | | [ScheduledWfRunId](#scheduledwfrunid) |  |
+| `wf_spec_id` | | [WfSpecId](#wfspecid) |  |
+| `variables` | map| [ScheduledWfRun.VariablesEntry](#scheduledwfrunvariablesentry) | A map from Variable Name to Values for those variables. The provided variables are passed as input to the Entrypoint ThreadRun. |
+| `parent_wf_run_id` | optional| [WfRunId](#wfrunid) |  |
+| `cron_expression` | | string |  |
+| `status` | | [ScheduleStatus](#schedulestatus) |  |
+| `created_at` | | google.protobuf.Timestamp |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ScheduledWfRun.VariablesEntry` {#scheduledwfrunvariablesentry}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `key` | | string |  |
+| `value` | | [VariableValue](#variablevalue) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3879,6 +3922,19 @@ The status of a single ThreadRun that we are waiting for.
 
 
  <!-- end Enums -->
+
+ <!-- end Enums -->
+
+
+
+### Enum ScheduleStatus {#schedulestatus}
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| STARTED | 0 |  |
+| SUSPENDED | 1 |  |
+
 
  <!-- end Enums -->
 

@@ -150,6 +150,9 @@ public class CommandModel extends AbstractCommand<Command> {
             case DELETE_TASK_WORKER_GROUP:
                 out.setDeleteTaskWorkerGroup(deleteTaskWorkerGroup.toProto());
                 break;
+            case SCHEDULE_COMMAND:
+                out.setScheduleCommand(scheduleCommand.toProto());
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -234,6 +237,10 @@ public class CommandModel extends AbstractCommand<Command> {
                 deleteTaskWorkerGroup = LHSerializable.fromProto(
                         p.getDeleteTaskWorkerGroup(), DeleteTaskWorkerGroupRequestModel.class, context);
                 break;
+            case SCHEDULE_COMMAND:
+                scheduleCommand =
+                        LHSerializable.fromProto(p.getScheduleCommand(), ScheduledCommandModel.class, context);
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -282,6 +289,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return rescueThreadRun;
             case DELETE_TASK_WORKER_GROUP:
                 return deleteTaskWorkerGroup;
+            case SCHEDULE_COMMAND:
+                return scheduleCommand;
             case COMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -349,6 +358,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(DeleteTaskWorkerGroupRequestModel.class)) {
             type = CommandCase.DELETE_TASK_WORKER_GROUP;
             deleteTaskWorkerGroup = (DeleteTaskWorkerGroupRequestModel) cmd;
+        } else if (cls.equals(ScheduledCommandModel.class)) {
+            type = CommandCase.SCHEDULE_COMMAND;
+            scheduleCommand = (ScheduledCommandModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

@@ -1,13 +1,19 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.ScheduledCommandModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
@@ -85,8 +91,16 @@ public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
             LHTimer timer = new LHTimer(new CommandModel(scheduledCommand));
             timer.maturationTime = scheduledTime.get();
             executionContext.getTaskManager().scheduleTimer(timer);
+            WfSpecModel spec = executionContext.service().getWfSpec(wfSpecName, majorVersion, revision);
+            WfSpecIdModel wfSpecId = spec.getId();
+            ScheduledWfRunIdModel scheduledId = new ScheduledWfRunIdModel(id);
+            ScheduledWfRunModel scheduledWfRun =
+                    new ScheduledWfRunModel(scheduledId, wfSpecId, variables, parentWfRunId, cronExpression);
+            executionContext.getableManager().put(scheduledWfRun);
+            return scheduledWfRun.toProto().build();
+        } else {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid next date");
         }
-        return null;
     }
 
     @Override

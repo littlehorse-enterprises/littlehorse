@@ -17,6 +17,7 @@ import "wf_spec.proto";
 import "task_def.proto";
 import "acls.proto";
 import "workflow_event.proto";
+import "scheduled_wf_run.proto";
 
 option go_package = ".;model";
 option java_multiple_files = true;
@@ -79,6 +80,8 @@ service LittleHorse {
 
   // Runs a WfSpec to create a WfRun.
   rpc RunWf(RunWfRequest) returns (WfRun) {}
+
+  rpc ScheduleWf(ScheduleWfRequest) returns (ScheduledWfRun) {}
 
   // Gets a WfRun. Although useful for development and debugging, this RPC is not often
   // used by applications.
