@@ -2845,7 +2845,7 @@ from a TaskRun, as the value of a WfRun's Variable, etc.
 | `double` | oneof `value`| double | A 64-bit floating point number. |
 | `bool` | oneof `value`| bool | A boolean. |
 | `str` | oneof `value`| string | A string. |
-| `int` | oneof `value`| int64 | A 64-bit integer. |
+| `int` | oneof `value`| int64 | The `INT` variable type is stored as a 64-bit integer. The `INT` can be cast to a `DOUBLE`. |
 | `bytes` | oneof `value`| bytes | An arbitrary String of bytes. |
  <!-- end Fields -->
  <!-- end HasFields -->
@@ -3738,13 +3738,15 @@ VariableValue.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| JSON_OBJ | 0 | An object represented as a json string. |
-| JSON_ARR | 1 | A list represented as a json array string. |
-| DOUBLE | 2 | A 64-bit floating point number. |
-| BOOL | 3 | A boolean |
-| STR | 4 | A string |
-| INT | 5 | A 64-bit integer |
-| BYTES | 6 | A byte array |
+| JSON_OBJ | 0 | An object represented as a json string. <br>
+
+The `JSON_OBJ` variable allows you to store complex objects in the JSON format. When using the Java and GoLang SDK's, the `JSON_OBJ` variable type is often used transparently to the user. For example, the Java Task Worker SDK can inspect your method signature and automatically deserialize an input variable into a POJO. |
+| JSON_ARR | 1 | The `JSON_ARR` variable allows you to store collections of objects as a JSON array. The behavior is similar to the `JSON_OBJ` variable type. |
+| DOUBLE | 2 | The `DOUBLE` variable type is a 64-bit floating point number. It can be cast to an `INT`. |
+| BOOL | 3 | Boolean denotes a simple boolean switch. |
+| STR | 4 | The `STR` variable type is stored as a String. `INT`, `DOUBLE`, and `BOOL` variables can be cast to a `STR`. |
+| INT | 5 | The `INT` variable type is stored as a 64-bit integer. The `INT` can be cast to a `DOUBLE`. |
+| BYTES | 6 | The `BYTES` variable type allows you to store an arbitrary byte string. |
 
 
  <!-- end Enums -->

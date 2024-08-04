@@ -66,6 +66,8 @@ Like `NodeRun`'s, a `Variable` is an object that you can fetch from the LittleHo
 
 You can fetch `Variable`s using [`rpc GetVariable`](../08-api.md#getvariable), [`rpc SearchVariable`](../08-api.md#searchvariable), and [`rpc ListVariables`](../08-api.md#listvariables).
 
+Variables can be of certain types, which you can find in the [`VariableType`](../08-api.md#variabletype) enum.
+
 ## `WfRun` Structure
 
 

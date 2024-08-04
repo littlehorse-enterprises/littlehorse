@@ -5,6 +5,10 @@ sidebar_label: User Tasks
 
 The purpose of a Workflow Engine is to coordinate processes that assign work. A `TaskRun` represents a unit of work assigned to a computer, but what about work assigned to a human? That's where User Tasks come in.
 
+:::tip
+This page covers the concept of User Tasks. For a more practical take, see our [`WfSpec` Development Docs](../05-developer-guide/08-wfspec-development/08-user-tasks.md) or our [grpc docs](../05-developer-guide/09-grpc/20-user-tasks.md).
+:::
+
 ## Motivation
 
 User tasks require the input, decision-making, or expertise of an actual person. Some common examples of user tasks include:
@@ -18,17 +22,33 @@ You might ask, why not just use an `ExternalEvent`? Technically, it is possible 
 
 The addition of the User Tasks feature allows LittleHorse to seamlessly automate workflows spanning humans and computers across multiple departments within an organization and beyond.
 
-## `UserTaskDef`
+## Schemas of User Tasks
 
-A `UserTaskDef` is a Metadata Object defining a task that can be assigned to a human.
+In the LittleHorse API, User Tasks are represented and controlled by three objects: 
+
+1. The [`UserTaskDef`](../08-api.md#usertaskdef) object defines the schema of...
+2. The [`UserTaskRun`](../08-api.md#usertaskrun) object, which is created when a `ThreadRun` arrives at a...
+3. [`UserTaskNode`](../08-api.md#usertasknode) object, which is a type of `Node` in a `WfSpec`.
+
+When a person executes a User Task, he or she must fill out one or more pieces of information in a _form_ somewhere (most often, this will be on a UI). The fields in these forms are defined by the `fields` of a `UserTaskDef`.
+
+### Using User Task Output
+
+As discussed in the [Workflow Concept docs](./01-workflows.md), every step (i.e. `Node`) in a workflow returns some output, which can be used to modify a workflow `Variable`.
+
+The returned output has the variable type `JSON_OBJ`, and individual fields can be accessed for variable mutations using the appropriate `.jsonPath()` methods in our SDK's.
 
 :::info
-A `UserTaskDef` does not include any information about _who_ should execute the task. User Task assignment is a property of the `USER_TASK` `NODE` and also of the 
+For detailed tutorials on _how_ to use User Tasks, check our [`WfSpec` Development Guide](../05-developer-guide/08-wfspec-development/08-user-tasks.md) and our [grpc guide](../05-developer-guide/09-grpc/20-user-tasks.md).
 :::
 
-A `UserTaskDef` consists of a series of fields, where each field has a name and a type. Currently, only primitieve types (`INT`, `STR`, `BOOL`, `DOUBLE`) are supported for User Task fields.
+## Users and Groups
 
-## `UserTaskRun`
+A `UserTaskRun` may be assigned to either a `user_id` or a `user_group`. Both `user_id` and `user_group` are just plain Strings in LittleHorse, and are not validated with any external third-party identity provider (however, [LittleHorse Enterprises LLC](https://littlehorse.io) has a commercial product which connects User Tasks to an Identity Provider using the OIDC protocol).
+
+
+
+## User Task Lifecycle
 
 A `UserTaskRun` is an instance of a `UserTaskDef` assigned to a human user or group of users. Just like a `TaskRun`, the `UserTaskRun` is an object that can be retrieved from the LittleHorse API using `lhctl` or the grpc clients.
 

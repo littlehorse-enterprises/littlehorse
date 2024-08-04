@@ -272,19 +272,29 @@ func (MetricsWindowLength) EnumDescriptor() ([]byte, []int) {
 type VariableType int32
 
 const (
-	// An object represented as a json string.
+	// An object represented as a json string. <br>
+	//
+	// The `JSON_OBJ` variable allows you to store complex objects in the JSON format.
+	// When using the Java and GoLang SDK's, the `JSON_OBJ` variable type is often
+	// used transparently to the user. For example, the Java Task Worker SDK can
+	// inspect your method signature and automatically deserialize an input variable
+	// into a POJO.
 	VariableType_JSON_OBJ VariableType = 0
-	// A list represented as a json array string.
+	// The `JSON_ARR` variable allows you to store collections of objects as a JSON
+	// array. The behavior is similar to the `JSON_OBJ` variable type.
 	VariableType_JSON_ARR VariableType = 1
-	// A 64-bit floating point number.
+	// The `DOUBLE` variable type is a 64-bit floating point number. It can
+	// be cast to an `INT`.
 	VariableType_DOUBLE VariableType = 2
-	// A boolean
+	// Boolean denotes a simple boolean switch.
 	VariableType_BOOL VariableType = 3
-	// A string
+	// The `STR` variable type is stored as a String. `INT`, `DOUBLE`,
+	// and `BOOL` variables can be cast to a `STR`.
 	VariableType_STR VariableType = 4
-	// A 64-bit integer
+	// The `INT` variable type is stored as a 64-bit integer. The
+	// `INT` can be cast to a `DOUBLE`.
 	VariableType_INT VariableType = 5
-	// A byte array
+	// The `BYTES` variable type allows you to store an arbitrary byte string.
 	VariableType_BYTES VariableType = 6
 )
 
