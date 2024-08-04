@@ -50,36 +50,36 @@ A `UserTaskRun` may be assigned to either a `user_id` or a `user_group`. Both `u
 
 ## User Task Lifecycle
 
-A `UserTaskRun` is an instance of a `UserTaskDef` assigned to a human user or group of users. Just like a `TaskRun`, the `UserTaskRun` is an object that can be retrieved from the LittleHorse API using `lhctl` or the grpc clients.
+An instance of a User Task (a `UserTaskRun`) is created according to a `UserTaskDef` specification when a `ThreadRun` arrives at a `UserTaskNode`. In plain English, when a Workflow Run gets to a "user task" step, we create a `UserTaskRun` and assign it to either a `user_id`, `user_group`, or both.
 
-A `UserTaskRun` can be assigned to either a specific user (by an arbitrary user id) or a group of users (by an arbitrary user group id). At creation time, `UserTaskRun` are assigned to the user id or group id that is specified in the `UserTaskNode`. User Tasks in LittleHorse support automatic reassignment, reminder `TaskRun`s, automatic cancellation after a configurable timeout, and are also searchable based on their owner.
+### Users and Groups
+
+A `UserTaskRun` may be assigned to either a `user_id` or a `user_group`. Both `user_id` and `user_group` are just plain Strings in LittleHorse, and are not validated with any external third-party identity provider (however, [LittleHorse Enterprises LLC](https://littlehorse.io) has a commercial product which connects User Tasks to an Identity Provider using the OIDC protocol).
+
+At creation time, `UserTaskRun` are assigned to the user id or group id that is specified in the `UserTaskNode`. User Tasks in LittleHorse support automatic reassignment, reminder `TaskRun`s, automatic cancellation after a configurable timeout, and are also searchable based on their owner.
+
+A `UserTaskRun` is an instance of a `UserTaskDef` assigned to a human user or group of users. Just like a `TaskRun`, the `UserTaskRun` is an object that can be retrieved from the LittleHorse API using `lhctl` or the grpc clients.
 
 Like `TaskRun`s, the output of the `UserTaskRun` is used as the output of the associated `NodeRun`. In other words, the output of a `USER_TASK` node is a Json Variable Value with a key for each field in the `UserTaskDef`.
 
-## `UserTaskRun` Lifecycle
+### `UserTaskRun` Statuses
 
 A `UserTaskRun` can be in any of the following statuses:
 
-* `UNASSIGNED`, meaning that it isn't assigned to a specific user. If a `UserTaskRun` is `UNASSIGNED`, it is guaranteed to be associated with a `userGroup`. 
+* `UNASSIGNED`, meaning that it isn't assigned to a specific user. If a `UserTaskRun` is `UNASSIGNED`, it is guaranteed to be associated with a `user_group`, and the `user_id` field will be un-set.
 
-* `ASSIGNED` means that a task is assigned to a specific `userId`. The `UserTaskRun` may or may not have a `userGroup`.
+* `ASSIGNED` means that a task is assigned to a specific `user_id`. The `UserTaskRun` may or may not have a `user_group`.
 
 * `CANCELLED` denotes that the `UserTaskRun` has been cancelled for some reason, either manually, due to timeout, or due to other conditions in the `WfRun`. `CANCELLED` is currently a terminal state.
 
 * `DONE` Once a user execute a user task, it moves to the terminal `DONE` state. 
 
-## `UserTaskRun` Completion
-
-A `UserTaskRun` only when it is assigned to a User. Then you can provide a value for each field and complete the UserTask, the resulting state will be `DONE`. This can be done via lhctl or grpc client calls. 
-
-## Searching for `UserTaskRun`
-
- There are several ways to look up for an specific `UserTaskRun`. You can use a combination of `userId`, `userGroupId`, `userTaskStatus` and `userTaskDefName`. For these searches, you will receive a list of `UserTaskRunId`s for `UserTaskRun`s that match with these criteria.
-
-
 ## Lifecycle Hooks
 
-You can trigger action when some hooks takes place. Currently LitteHorse supports:
+Another useful feature of LittleHorse User Tasks are hooks which allow you to automate certain lifecycle behaviors of User Tasks when certain time periods expire.
 
-* `ON_ARRIVAL`, triggered when Workflow execution reaches the UserTaskNode. Useful when you need to send users reminders
-* `ON_TASK_ASSIGNED`, triggered when the UserTaskRun is assigned to a user. Useful when you need schedule reasignment if the asignee does not execute this task.
+
+
+:::note
+Check our [`WfSpec` Development Docs](../05-developer-guide/08-wfspec-development/08-user-tasks.md#automatic-reassignment) to see how this works.
+:::
