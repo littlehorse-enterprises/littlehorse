@@ -78,7 +78,10 @@ A `UserTaskRun` can be in any of the following statuses:
 
 Another useful feature of LittleHorse User Tasks are hooks which allow you to automate certain lifecycle behaviors of User Tasks when certain time periods expire.
 
-
+Use-cases include:
+* Re-assigning a User Task to a different user after a certain period of time expires.
+* Sending reminders to users or groups of users after a certain time period.
+* Releasing ownership of a User Task from a specific user to a group of users after a period of inactivity.
 
 :::note
 Check our [`WfSpec` Development Docs](../05-developer-guide/08-wfspec-development/08-user-tasks.md#automatic-reassignment) to see how this works.
