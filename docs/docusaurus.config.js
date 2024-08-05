@@ -7,8 +7,8 @@ const lightCodeTheme = themes.github;
 
 /** @type {import('@docusaurus/types').Config} */
 module.exports = {
-  title: "LittleHorse",
-  tagline: "Workflow-Driven Microservices",
+  title: "LittleHorse Orchestrator",
+  tagline: "By Engineers, For Engineers",
   favicon: "img/logo.jpg",
 
   // Set the production url of your site here
@@ -23,7 +23,10 @@ module.exports = {
   // projectName: 'docusaurus', // Usually your repo name.
 
   onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
+
+  // Colt gets very grumpy when links don't work.
+  onBrokenMarkdownLinks: "throw",
+  onBrokenAnchors: "throw",
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want

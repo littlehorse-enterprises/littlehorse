@@ -13,30 +13,60 @@ package io.littlehorse.sdk.common.proto;
 public enum LHStatus
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
+   * <pre>
+   * The entity is starting.
+   * </pre>
+   *
    * <code>STARTING = 0;</code>
    */
   STARTING(0),
   /**
+   * <pre>
+   * The entity is running.
+   * </pre>
+   *
    * <code>RUNNING = 1;</code>
    */
   RUNNING(1),
   /**
+   * <pre>
+   * The entity is completed. This is a terminal state.
+   * </pre>
+   *
    * <code>COMPLETED = 2;</code>
    */
   COMPLETED(2),
   /**
+   * <pre>
+   * The entity will move to `HALTED` as soon as all preconditions for halting are
+   * satisfied.
+   * </pre>
+   *
    * <code>HALTING = 3;</code>
    */
   HALTING(3),
   /**
+   * <pre>
+   * The entity is halted, either by user intervention or by the workflow scheduler.
+   * </pre>
+   *
    * <code>HALTED = 4;</code>
    */
   HALTED(4),
   /**
+   * <pre>
+   * The entity has failed due to a technical failure, such as a type conversion error,
+   * a task timeout due to network failure, or a task worker crash.
+   * </pre>
+   *
    * <code>ERROR = 5;</code>
    */
   ERROR(5),
   /**
+   * <pre>
+   * The entity has failed due to a business exception defined by the user.
+   * </pre>
+   *
    * <code>EXCEPTION = 6;</code>
    */
   EXCEPTION(6),
@@ -44,30 +74,60 @@ public enum LHStatus
   ;
 
   /**
+   * <pre>
+   * The entity is starting.
+   * </pre>
+   *
    * <code>STARTING = 0;</code>
    */
   public static final int STARTING_VALUE = 0;
   /**
+   * <pre>
+   * The entity is running.
+   * </pre>
+   *
    * <code>RUNNING = 1;</code>
    */
   public static final int RUNNING_VALUE = 1;
   /**
+   * <pre>
+   * The entity is completed. This is a terminal state.
+   * </pre>
+   *
    * <code>COMPLETED = 2;</code>
    */
   public static final int COMPLETED_VALUE = 2;
   /**
+   * <pre>
+   * The entity will move to `HALTED` as soon as all preconditions for halting are
+   * satisfied.
+   * </pre>
+   *
    * <code>HALTING = 3;</code>
    */
   public static final int HALTING_VALUE = 3;
   /**
+   * <pre>
+   * The entity is halted, either by user intervention or by the workflow scheduler.
+   * </pre>
+   *
    * <code>HALTED = 4;</code>
    */
   public static final int HALTED_VALUE = 4;
   /**
+   * <pre>
+   * The entity has failed due to a technical failure, such as a type conversion error,
+   * a task timeout due to network failure, or a task worker crash.
+   * </pre>
+   *
    * <code>ERROR = 5;</code>
    */
   public static final int ERROR_VALUE = 5;
   /**
+   * <pre>
+   * The entity has failed due to a business exception defined by the user.
+   * </pre>
+   *
    * <code>EXCEPTION = 6;</code>
    */
   public static final int EXCEPTION_VALUE = 6;

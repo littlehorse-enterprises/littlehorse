@@ -135,7 +135,7 @@ if __name__ == '__main__':
 
 In LittleHorse, the easiest way to deploy a `WfSpec` is using the `Workflow` class or struct provided by our Java, Go, and Python SDK's. The `Workflow` class takes in a `WorkflowThread` function reference that defines your `WfSpec` logic (this is covered in the [Developing Workflows Documentation](/docs/developer-guide/wfspec-development/)), and has a `compile()` method which returns a `PutWfSpecRequest`.
 
-Like other metadata requests, the `rpc PutWfSpec` is idempotent. However, as described in our [`WfSpec` Versioning docs](/docs/concepts/workflows#wfspec-versioning), `WfSpec` objects have compound versioning that enforces certain compatibility rules between versions. In the `PutWfSpecRequest`, you have the option to set the `allowed_updates` field of the `PutWfSpecRequest`. There are three values:
+Like other metadata requests, the `rpc PutWfSpec` is idempotent. However, as described in our [`WfSpec` Versioning docs](../../04-concepts/30-advanced/00-wfspec-versioning.md), `WfSpec` objects have compound versioning that enforces certain compatibility rules between versions. In the `PutWfSpecRequest`, you have the option to set the `allowed_updates` field of the `PutWfSpecRequest`. There are three values:
 
 1. `ALL_UPDATES`: both breaking changes and minor revisions are accepted.
 2. `MINOR_REVISION_UPDATES`: breaking changes are rejected, but minor revisions are accepted.
