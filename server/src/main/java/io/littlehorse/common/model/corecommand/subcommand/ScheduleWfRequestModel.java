@@ -14,10 +14,9 @@ import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
-import io.littlehorse.common.model.metadatacommand.subcommand.ScheduledCommandModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.ScheduleWfRunCommandModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.ScheduleWfRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -78,7 +77,7 @@ public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
 
     @Override
     public boolean hasResponse() {
-        return false;
+        return true;
     }
 
     @Override
@@ -86,13 +85,19 @@ public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
         Date eventTime = executionContext.currentCommand().getTime();
         Optional<Date> scheduledTime = LHUtil.nextDate(cronExpression, eventTime);
         if (scheduledTime.isPresent()) {
-            ScheduledCommandModel scheduledCommand =
-                    new ScheduledCommandModel(new CommandModel(createRunWfCommand(executionContext)), cronExpression);
+            WfRunIdModel wfRunId = new WfRunIdModel(LHUtil.generateGuid(), parentWfRunId);
+            WfSpecModel spec = executionContext.service().getWfSpec(wfSpecName, majorVersion, revision);
+            if (spec == null) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "WfSpec %s %s.%s does not exist".formatted(wfSpecName, majorVersion, revision));
+            }
+            WfSpecIdModel wfSpecId = spec.getId();
+            ScheduleWfRunCommandModel scheduledCommand =
+                    new ScheduleWfRunCommandModel(id, wfRunId, wfSpecId, variables, cronExpression);
             LHTimer timer = new LHTimer(new CommandModel(scheduledCommand));
             timer.maturationTime = scheduledTime.get();
             executionContext.getTaskManager().scheduleTimer(timer);
-            WfSpecModel spec = executionContext.service().getWfSpec(wfSpecName, majorVersion, revision);
-            WfSpecIdModel wfSpecId = spec.getId();
             ScheduledWfRunIdModel scheduledId = new ScheduledWfRunIdModel(id);
             ScheduledWfRunModel scheduledWfRun =
                     new ScheduledWfRunModel(scheduledId, wfSpecId, variables, parentWfRunId, cronExpression);
@@ -112,23 +117,5 @@ public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
             return parentWfRunId.getPartitionKey().get();
         }
         return id;
-    }
-
-    private RunWfRequestModel createRunWfCommand(ExecutionContext context) {
-        RunWfRequest.Builder protoBuilder = RunWfRequest.newBuilder();
-        protoBuilder.setWfSpecName(wfSpecName);
-        if (majorVersion != null) {
-            protoBuilder.setMajorVersion(majorVersion);
-        }
-        if (revision != null) {
-            protoBuilder.setRevision(revision);
-        }
-        for (Map.Entry<String, VariableValueModel> e : variables.entrySet()) {
-            protoBuilder.putVariables(e.getKey(), e.getValue().toProto().build());
-        }
-        if (parentWfRunId != null) {
-            protoBuilder.setParentWfRunId(parentWfRunId.toProto());
-        }
-        return LHSerializable.fromProto(protoBuilder.build(), RunWfRequestModel.class, context);
     }
 }

@@ -88,7 +88,7 @@ public class ScheduledWfRunModel extends CoreGetable<ScheduledWfRun> {
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        return null;
+        return List.of();
     }
 
     @Override

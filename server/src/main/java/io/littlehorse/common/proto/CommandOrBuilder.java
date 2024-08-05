@@ -340,31 +340,46 @@ public interface CommandOrBuilder extends
   io.littlehorse.common.proto.DeleteTaskWorkerGroupRequestOrBuilder getDeleteTaskWorkerGroupOrBuilder();
 
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
-   * <code>.littlehorse.ScheduledCommand schedule_command = 24;</code>
-   * @return Whether the scheduleCommand field is set.
+   * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
+   * @return Whether the scheduleWfRun field is set.
    */
-  boolean hasScheduleCommand();
+  boolean hasScheduleWfRun();
+  /**
+   * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
+   * @return The scheduleWfRun.
+   */
+  io.littlehorse.common.proto.ScheduleWfRun getScheduleWfRun();
+  /**
+   * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
+   */
+  io.littlehorse.common.proto.ScheduleWfRunOrBuilder getScheduleWfRunOrBuilder();
+
   /**
    * <pre>
    * TODO: Add SaveUserTask
    * </pre>
    *
-   * <code>.littlehorse.ScheduledCommand schedule_command = 24;</code>
-   * @return The scheduleCommand.
+   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
+   * @return Whether the scheduleWfRunRequest field is set.
    */
-  io.littlehorse.common.proto.ScheduledCommand getScheduleCommand();
+  boolean hasScheduleWfRunRequest();
   /**
    * <pre>
    * TODO: Add SaveUserTask
    * </pre>
    *
-   * <code>.littlehorse.ScheduledCommand schedule_command = 24;</code>
+   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
+   * @return The scheduleWfRunRequest.
    */
-  io.littlehorse.common.proto.ScheduledCommandOrBuilder getScheduleCommandOrBuilder();
+  io.littlehorse.sdk.common.proto.ScheduleWfRequest getScheduleWfRunRequest();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
+   */
+  io.littlehorse.sdk.common.proto.ScheduleWfRequestOrBuilder getScheduleWfRunRequestOrBuilder();
 
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }
