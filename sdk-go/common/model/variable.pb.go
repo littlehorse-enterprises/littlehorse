@@ -161,7 +161,8 @@ type VariableValue_Str struct {
 }
 
 type VariableValue_Int struct {
-	// A 64-bit integer.
+	// The `INT` variable type is stored as a 64-bit integer. The
+	// `INT` can be cast to a `DOUBLE`.
 	Int int64 `protobuf:"varint,7,opt,name=int,proto3,oneof"`
 }
 

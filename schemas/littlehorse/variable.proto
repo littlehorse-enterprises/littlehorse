@@ -34,7 +34,8 @@ message VariableValue {
     // A string.
     string str = 6;
 
-    // A 64-bit integer.
+    // The `INT` variable type is stored as a 64-bit integer. The
+    // `INT` can be cast to a `DOUBLE`.
     int64 int = 7;
 
     // An arbitrary String of bytes.

@@ -154,7 +154,7 @@ In order to do that, however, you must first put an index on your `Variable` by 
 Additionally, you can use the `.required()` method to make a `Variable` required as input to the `ThreadRun`. If you do this on your Entrypoint `ThreadRun`, then the `RunWfRequest` must specify a value for that `Variable`.
 
 :::note
-Putting an Index on a `Variable` or making the `Variable` "Required" means that the `Variable` becomes part of the public API of the `WfSpec`. That means you will increment a "major version" upon adding or removing an Index on a `Variable`. For more info, check out our docs on [WfSpec Versioning](../../04-concepts/01-workflows.md#wfspec-versioning).
+Putting an Index on a `Variable` or making the `Variable` "Required" means that the `Variable` becomes part of the public API of the `WfSpec`. That means you will increment a "major version" upon adding or removing an Index on a `Variable`. For more info, check out our docs on [WfSpec Versioning](../../04-concepts/30-advanced/00-wfspec-versioning.md).
 :::
 
 ### Defining Variables
