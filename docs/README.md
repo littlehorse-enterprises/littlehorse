@@ -21,7 +21,7 @@ npm run build
 npm run serve
 ```
 
-The `npm run build` shouldn't complain about broken hyperlinks, and when you open the site it should work.
+The `npm run build` command will indeed fail if you have broken markdown links.
 
 ## Local Development
 

@@ -8,12 +8,27 @@ option csharp_namespace = "LittleHorse.Common.Proto";
 
 // Status used for WfRun, ThreadRun, and NodeRun
 enum LHStatus {
+  // The entity is starting.
   STARTING = 0;
+
+  // The entity is running.
   RUNNING = 1;
+
+  // The entity is completed. This is a terminal state.
   COMPLETED = 2;
+
+  // The entity will move to `HALTED` as soon as all preconditions for halting are
+  // satisfied.
   HALTING = 3;
+
+  // The entity is halted, either by user intervention or by the workflow scheduler.
   HALTED = 4;
+
+  // The entity has failed due to a technical failure, such as a type conversion error,
+  // a task timeout due to network failure, or a task worker crash.
   ERROR = 5;
+
+  // The entity has failed due to a business exception defined by the user.
   EXCEPTION = 6;
 }
 
@@ -64,7 +79,7 @@ enum MetricsWindowLength {
 // Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
 // VariableValue.
 enum VariableType {
-  // An object represented as a json string. <br>
+  // An object represented as a json string. <br/>
   //
   // The `JSON_OBJ` variable allows you to store complex objects in the JSON format.
   // When using the Java and GoLang SDK's, the `JSON_OBJ` variable type is often

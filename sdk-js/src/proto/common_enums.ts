@@ -8,12 +8,25 @@
 
 /** Status used for WfRun, ThreadRun, and NodeRun */
 export enum LHStatus {
+  /** STARTING - The entity is starting. */
   STARTING = "STARTING",
+  /** RUNNING - The entity is running. */
   RUNNING = "RUNNING",
+  /** COMPLETED - The entity is completed. This is a terminal state. */
   COMPLETED = "COMPLETED",
+  /**
+   * HALTING - The entity will move to `HALTED` as soon as all preconditions for halting are
+   * satisfied.
+   */
   HALTING = "HALTING",
+  /** HALTED - The entity is halted, either by user intervention or by the workflow scheduler. */
   HALTED = "HALTED",
+  /**
+   * ERROR - The entity has failed due to a technical failure, such as a type conversion error,
+   * a task timeout due to network failure, or a task worker crash.
+   */
   ERROR = "ERROR",
+  /** EXCEPTION - The entity has failed due to a business exception defined by the user. */
   EXCEPTION = "EXCEPTION",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
@@ -257,7 +270,7 @@ export function metricsWindowLengthToNumber(object: MetricsWindowLength): number
  */
 export enum VariableType {
   /**
-   * JSON_OBJ - An object represented as a json string. <br>
+   * JSON_OBJ - An object represented as a json string. <br/>
    *
    * The `JSON_OBJ` variable allows you to store complex objects in the JSON format.
    * When using the Java and GoLang SDK's, the `JSON_OBJ` variable type is often

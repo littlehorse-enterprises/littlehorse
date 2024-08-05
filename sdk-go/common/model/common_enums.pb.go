@@ -24,12 +24,21 @@ const (
 type LHStatus int32
 
 const (
-	LHStatus_STARTING  LHStatus = 0
-	LHStatus_RUNNING   LHStatus = 1
+	// The entity is starting.
+	LHStatus_STARTING LHStatus = 0
+	// The entity is running.
+	LHStatus_RUNNING LHStatus = 1
+	// The entity is completed. This is a terminal state.
 	LHStatus_COMPLETED LHStatus = 2
-	LHStatus_HALTING   LHStatus = 3
-	LHStatus_HALTED    LHStatus = 4
-	LHStatus_ERROR     LHStatus = 5
+	// The entity will move to `HALTED` as soon as all preconditions for halting are
+	// satisfied.
+	LHStatus_HALTING LHStatus = 3
+	// The entity is halted, either by user intervention or by the workflow scheduler.
+	LHStatus_HALTED LHStatus = 4
+	// The entity has failed due to a technical failure, such as a type conversion error,
+	// a task timeout due to network failure, or a task worker crash.
+	LHStatus_ERROR LHStatus = 5
+	// The entity has failed due to a business exception defined by the user.
 	LHStatus_EXCEPTION LHStatus = 6
 )
 
@@ -272,7 +281,7 @@ func (MetricsWindowLength) EnumDescriptor() ([]byte, []int) {
 type VariableType int32
 
 const (
-	// An object represented as a json string. <br>
+	// An object represented as a json string. <br/>
 	//
 	// The `JSON_OBJ` variable allows you to store complex objects in the JSON format.
 	// When using the Java and GoLang SDK's, the `JSON_OBJ` variable type is often

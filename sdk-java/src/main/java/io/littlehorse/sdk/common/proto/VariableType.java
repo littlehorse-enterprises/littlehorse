@@ -15,7 +15,7 @@ public enum VariableType
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
    * <pre>
-   * An object represented as a json string. &lt;br&gt;
+   * An object represented as a json string. &lt;br/&gt;
    *
    * The `JSON_OBJ` variable allows you to store complex objects in the JSON format.
    * When using the Java and GoLang SDK's, the `JSON_OBJ` variable type is often
@@ -84,7 +84,7 @@ public enum VariableType
 
   /**
    * <pre>
-   * An object represented as a json string. &lt;br&gt;
+   * An object represented as a json string. &lt;br/&gt;
    *
    * The `JSON_OBJ` variable allows you to store complex objects in the JSON format.
    * When using the Java and GoLang SDK's, the `JSON_OBJ` variable type is often
