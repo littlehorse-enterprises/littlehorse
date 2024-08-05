@@ -340,46 +340,31 @@ public interface CommandOrBuilder extends
   io.littlehorse.common.proto.DeleteTaskWorkerGroupRequestOrBuilder getDeleteTaskWorkerGroupOrBuilder();
 
   /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
    * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
    * @return Whether the scheduleWfRun field is set.
    */
   boolean hasScheduleWfRun();
   /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
    * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
    * @return The scheduleWfRun.
    */
   io.littlehorse.common.proto.ScheduleWfRun getScheduleWfRun();
   /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
    * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
    */
   io.littlehorse.common.proto.ScheduleWfRunOrBuilder getScheduleWfRunOrBuilder();
-
-  /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
-   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
-   * @return Whether the scheduleWfRunRequest field is set.
-   */
-  boolean hasScheduleWfRunRequest();
-  /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
-   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
-   * @return The scheduleWfRunRequest.
-   */
-  io.littlehorse.sdk.common.proto.ScheduleWfRequest getScheduleWfRunRequest();
-  /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
-   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
-   */
-  io.littlehorse.sdk.common.proto.ScheduleWfRequestOrBuilder getScheduleWfRunRequestOrBuilder();
 
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.getable.CoreObjectId;
+import io.littlehorse.common.model.getable.MetadataId;
 import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
@@ -10,7 +10,7 @@ import io.littlehorse.sdk.common.proto.ScheduledWfRunId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 
-public class ScheduledWfRunIdModel extends CoreObjectId<ScheduledWfRunId, ScheduledWfRun, ScheduledWfRunModel> {
+public class ScheduledWfRunIdModel extends MetadataId<ScheduledWfRunId, ScheduledWfRun, ScheduledWfRunModel> {
 
     private String id;
 

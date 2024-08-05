@@ -3,30 +3,29 @@ package io.littlehorse.common.model.corecommand.subcommand;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
-import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.model.metadatacommand.subcommand.ScheduleWfRunCommandModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ScheduleWfRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
+public class ScheduleWfRequestModel extends MetadataSubCommand<ScheduleWfRequest> {
     private String id;
     private String wfSpecName;
     private Integer majorVersion;
@@ -81,9 +80,12 @@ public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
     }
 
     @Override
-    public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public Message process(MetadataCommandExecution executionContext) {
         Date eventTime = executionContext.currentCommand().getTime();
         Optional<Date> scheduledTime = LHUtil.nextDate(cronExpression, eventTime);
+        if (id == null) {
+            id = LHUtil.generateGuid();
+        }
         if (scheduledTime.isPresent()) {
             WfRunIdModel wfRunId = new WfRunIdModel(LHUtil.generateGuid(), parentWfRunId);
             WfSpecModel spec = executionContext.service().getWfSpec(wfSpecName, majorVersion, revision);
@@ -95,27 +97,17 @@ public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
             WfSpecIdModel wfSpecId = spec.getId();
             ScheduleWfRunCommandModel scheduledCommand =
                     new ScheduleWfRunCommandModel(id, wfRunId, wfSpecId, variables, cronExpression);
+            scheduledCommand.getPartitionKey();
             LHTimer timer = new LHTimer(new CommandModel(scheduledCommand));
             timer.maturationTime = scheduledTime.get();
-            executionContext.getTaskManager().scheduleTimer(timer);
+            executionContext.forward(timer);
             ScheduledWfRunIdModel scheduledId = new ScheduledWfRunIdModel(id);
             ScheduledWfRunModel scheduledWfRun =
                     new ScheduledWfRunModel(scheduledId, wfSpecId, variables, parentWfRunId, cronExpression);
-            executionContext.getableManager().put(scheduledWfRun);
+            executionContext.metadataManager().put(scheduledWfRun);
             return scheduledWfRun.toProto().build();
         } else {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid next date");
         }
-    }
-
-    @Override
-    public String getPartitionKey() {
-        if (id == null) id = LHUtil.generateGuid();
-
-        // Child wfrun needs access to state of parent, so it needs to be on the same partition
-        if (parentWfRunId != null) {
-            return parentWfRunId.getPartitionKey().get();
-        }
-        return id;
     }
 }

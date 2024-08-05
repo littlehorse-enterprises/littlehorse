@@ -3,7 +3,7 @@ package io.littlehorse.common.model.getable.core.wfrun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class ScheduledWfRunModel extends CoreGetable<ScheduledWfRun> {
+public class ScheduledWfRunModel extends MetadataGetable<ScheduledWfRun> {
     private ScheduledWfRunIdModel id;
     private WfSpecIdModel wfSPecId;
     private Map<String, VariableValueModel> variables = new HashMap<>();
@@ -50,7 +50,7 @@ public class ScheduledWfRunModel extends CoreGetable<ScheduledWfRun> {
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         ScheduledWfRun p = (ScheduledWfRun) proto;
         id = ScheduledWfRunIdModel.fromProto(p.getId(), ScheduledWfRunIdModel.class, context);
-        wfSPecId = WfSpecIdModel.fromProto(proto, WfSpecIdModel.class, context);
+        wfSPecId = WfSpecIdModel.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
         cronExpression = p.getCronExpression();
         createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
 

@@ -71,7 +71,6 @@ private static final long serialVersionUID = 0L;
     RESCUE_THREAD_RUN(22),
     DELETE_TASK_WORKER_GROUP(23),
     SCHEDULE_WF_RUN(24),
-    SCHEDULE_WF_RUN_REQUEST(25),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -110,7 +109,6 @@ private static final long serialVersionUID = 0L;
         case 22: return RESCUE_THREAD_RUN;
         case 23: return DELETE_TASK_WORKER_GROUP;
         case 24: return SCHEDULE_WF_RUN;
-        case 25: return SCHEDULE_WF_RUN_REQUEST;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -821,6 +819,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int SCHEDULE_WF_RUN_FIELD_NUMBER = 24;
   /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
    * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
    * @return Whether the scheduleWfRun field is set.
    */
@@ -829,6 +831,10 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 24;
   }
   /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
    * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
    * @return The scheduleWfRun.
    */
@@ -840,6 +846,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.ScheduleWfRun.getDefaultInstance();
   }
   /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
    * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
    */
   @java.lang.Override
@@ -848,49 +858,6 @@ private static final long serialVersionUID = 0L;
        return (io.littlehorse.common.proto.ScheduleWfRun) command_;
     }
     return io.littlehorse.common.proto.ScheduleWfRun.getDefaultInstance();
-  }
-
-  public static final int SCHEDULE_WF_RUN_REQUEST_FIELD_NUMBER = 25;
-  /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
-   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
-   * @return Whether the scheduleWfRunRequest field is set.
-   */
-  @java.lang.Override
-  public boolean hasScheduleWfRunRequest() {
-    return commandCase_ == 25;
-  }
-  /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
-   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
-   * @return The scheduleWfRunRequest.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ScheduleWfRequest getScheduleWfRunRequest() {
-    if (commandCase_ == 25) {
-       return (io.littlehorse.sdk.common.proto.ScheduleWfRequest) command_;
-    }
-    return io.littlehorse.sdk.common.proto.ScheduleWfRequest.getDefaultInstance();
-  }
-  /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
-   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ScheduleWfRequestOrBuilder getScheduleWfRunRequestOrBuilder() {
-    if (commandCase_ == 25) {
-       return (io.littlehorse.sdk.common.proto.ScheduleWfRequest) command_;
-    }
-    return io.littlehorse.sdk.common.proto.ScheduleWfRequest.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -975,9 +942,6 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 24) {
       output.writeMessage(24, (io.littlehorse.common.proto.ScheduleWfRun) command_);
-    }
-    if (commandCase_ == 25) {
-      output.writeMessage(25, (io.littlehorse.sdk.common.proto.ScheduleWfRequest) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1078,10 +1042,6 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 24) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(24, (io.littlehorse.common.proto.ScheduleWfRun) command_);
-    }
-    if (commandCase_ == 25) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(25, (io.littlehorse.sdk.common.proto.ScheduleWfRequest) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1194,10 +1154,6 @@ private static final long serialVersionUID = 0L;
         if (!getScheduleWfRun()
             .equals(other.getScheduleWfRun())) return false;
         break;
-      case 25:
-        if (!getScheduleWfRunRequest()
-            .equals(other.getScheduleWfRunRequest())) return false;
-        break;
       case 0:
       default:
     }
@@ -1304,10 +1260,6 @@ private static final long serialVersionUID = 0L;
       case 24:
         hash = (37 * hash) + SCHEDULE_WF_RUN_FIELD_NUMBER;
         hash = (53 * hash) + getScheduleWfRun().hashCode();
-        break;
-      case 25:
-        hash = (37 * hash) + SCHEDULE_WF_RUN_REQUEST_FIELD_NUMBER;
-        hash = (53 * hash) + getScheduleWfRunRequest().hashCode();
         break;
       case 0:
       default:
@@ -1516,9 +1468,6 @@ private static final long serialVersionUID = 0L;
       if (scheduleWfRunBuilder_ != null) {
         scheduleWfRunBuilder_.clear();
       }
-      if (scheduleWfRunRequestBuilder_ != null) {
-        scheduleWfRunRequestBuilder_.clear();
-      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -1654,10 +1603,6 @@ private static final long serialVersionUID = 0L;
       if (commandCase_ == 24 &&
           scheduleWfRunBuilder_ != null) {
         result.command_ = scheduleWfRunBuilder_.build();
-      }
-      if (commandCase_ == 25 &&
-          scheduleWfRunRequestBuilder_ != null) {
-        result.command_ = scheduleWfRunRequestBuilder_.build();
       }
     }
 
@@ -1796,10 +1741,6 @@ private static final long serialVersionUID = 0L;
         }
         case SCHEDULE_WF_RUN: {
           mergeScheduleWfRun(other.getScheduleWfRun());
-          break;
-        }
-        case SCHEDULE_WF_RUN_REQUEST: {
-          mergeScheduleWfRunRequest(other.getScheduleWfRunRequest());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -1991,13 +1932,6 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 24;
               break;
             } // case 194
-            case 202: {
-              input.readMessage(
-                  getScheduleWfRunRequestFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 25;
-              break;
-            } // case 202
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -5071,6 +5005,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.ScheduleWfRun, io.littlehorse.common.proto.ScheduleWfRun.Builder, io.littlehorse.common.proto.ScheduleWfRunOrBuilder> scheduleWfRunBuilder_;
     /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
      * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
      * @return Whether the scheduleWfRun field is set.
      */
@@ -5079,6 +5017,10 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 24;
     }
     /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
      * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
      * @return The scheduleWfRun.
      */
@@ -5097,6 +5039,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
      * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
      */
     public Builder setScheduleWfRun(io.littlehorse.common.proto.ScheduleWfRun value) {
@@ -5113,6 +5059,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
      * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
      */
     public Builder setScheduleWfRun(
@@ -5127,6 +5077,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
      * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
      */
     public Builder mergeScheduleWfRun(io.littlehorse.common.proto.ScheduleWfRun value) {
@@ -5150,6 +5104,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
      * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
      */
     public Builder clearScheduleWfRun() {
@@ -5169,12 +5127,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
      * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
      */
     public io.littlehorse.common.proto.ScheduleWfRun.Builder getScheduleWfRunBuilder() {
       return getScheduleWfRunFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
      * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
      */
     @java.lang.Override
@@ -5189,6 +5155,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
      * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -5208,184 +5178,6 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 24;
       onChanged();
       return scheduleWfRunBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ScheduleWfRequest, io.littlehorse.sdk.common.proto.ScheduleWfRequest.Builder, io.littlehorse.sdk.common.proto.ScheduleWfRequestOrBuilder> scheduleWfRunRequestBuilder_;
-    /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
-     * @return Whether the scheduleWfRunRequest field is set.
-     */
-    @java.lang.Override
-    public boolean hasScheduleWfRunRequest() {
-      return commandCase_ == 25;
-    }
-    /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
-     * @return The scheduleWfRunRequest.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ScheduleWfRequest getScheduleWfRunRequest() {
-      if (scheduleWfRunRequestBuilder_ == null) {
-        if (commandCase_ == 25) {
-          return (io.littlehorse.sdk.common.proto.ScheduleWfRequest) command_;
-        }
-        return io.littlehorse.sdk.common.proto.ScheduleWfRequest.getDefaultInstance();
-      } else {
-        if (commandCase_ == 25) {
-          return scheduleWfRunRequestBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.ScheduleWfRequest.getDefaultInstance();
-      }
-    }
-    /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
-     */
-    public Builder setScheduleWfRunRequest(io.littlehorse.sdk.common.proto.ScheduleWfRequest value) {
-      if (scheduleWfRunRequestBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        command_ = value;
-        onChanged();
-      } else {
-        scheduleWfRunRequestBuilder_.setMessage(value);
-      }
-      commandCase_ = 25;
-      return this;
-    }
-    /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
-     */
-    public Builder setScheduleWfRunRequest(
-        io.littlehorse.sdk.common.proto.ScheduleWfRequest.Builder builderForValue) {
-      if (scheduleWfRunRequestBuilder_ == null) {
-        command_ = builderForValue.build();
-        onChanged();
-      } else {
-        scheduleWfRunRequestBuilder_.setMessage(builderForValue.build());
-      }
-      commandCase_ = 25;
-      return this;
-    }
-    /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
-     */
-    public Builder mergeScheduleWfRunRequest(io.littlehorse.sdk.common.proto.ScheduleWfRequest value) {
-      if (scheduleWfRunRequestBuilder_ == null) {
-        if (commandCase_ == 25 &&
-            command_ != io.littlehorse.sdk.common.proto.ScheduleWfRequest.getDefaultInstance()) {
-          command_ = io.littlehorse.sdk.common.proto.ScheduleWfRequest.newBuilder((io.littlehorse.sdk.common.proto.ScheduleWfRequest) command_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          command_ = value;
-        }
-        onChanged();
-      } else {
-        if (commandCase_ == 25) {
-          scheduleWfRunRequestBuilder_.mergeFrom(value);
-        } else {
-          scheduleWfRunRequestBuilder_.setMessage(value);
-        }
-      }
-      commandCase_ = 25;
-      return this;
-    }
-    /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
-     */
-    public Builder clearScheduleWfRunRequest() {
-      if (scheduleWfRunRequestBuilder_ == null) {
-        if (commandCase_ == 25) {
-          commandCase_ = 0;
-          command_ = null;
-          onChanged();
-        }
-      } else {
-        if (commandCase_ == 25) {
-          commandCase_ = 0;
-          command_ = null;
-        }
-        scheduleWfRunRequestBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
-     */
-    public io.littlehorse.sdk.common.proto.ScheduleWfRequest.Builder getScheduleWfRunRequestBuilder() {
-      return getScheduleWfRunRequestFieldBuilder().getBuilder();
-    }
-    /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ScheduleWfRequestOrBuilder getScheduleWfRunRequestOrBuilder() {
-      if ((commandCase_ == 25) && (scheduleWfRunRequestBuilder_ != null)) {
-        return scheduleWfRunRequestBuilder_.getMessageOrBuilder();
-      } else {
-        if (commandCase_ == 25) {
-          return (io.littlehorse.sdk.common.proto.ScheduleWfRequest) command_;
-        }
-        return io.littlehorse.sdk.common.proto.ScheduleWfRequest.getDefaultInstance();
-      }
-    }
-    /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ScheduleWfRequest, io.littlehorse.sdk.common.proto.ScheduleWfRequest.Builder, io.littlehorse.sdk.common.proto.ScheduleWfRequestOrBuilder> 
-        getScheduleWfRunRequestFieldBuilder() {
-      if (scheduleWfRunRequestBuilder_ == null) {
-        if (!(commandCase_ == 25)) {
-          command_ = io.littlehorse.sdk.common.proto.ScheduleWfRequest.getDefaultInstance();
-        }
-        scheduleWfRunRequestBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.ScheduleWfRequest, io.littlehorse.sdk.common.proto.ScheduleWfRequest.Builder, io.littlehorse.sdk.common.proto.ScheduleWfRequestOrBuilder>(
-                (io.littlehorse.sdk.common.proto.ScheduleWfRequest) command_,
-                getParentForChildren(),
-                isClean());
-        command_ = null;
-      }
-      commandCase_ = 25;
-      onChanged();
-      return scheduleWfRunRequestBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

@@ -17,7 +17,6 @@ import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.RescueThreadRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.ScheduleWfRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyModel;
@@ -65,7 +64,6 @@ public class CommandModel extends AbstractCommand<Command> {
     private RescueThreadRunRequestModel rescueThreadRun;
     private DeleteTaskWorkerGroupRequestModel deleteTaskWorkerGroup;
     private ScheduleWfRunCommandModel scheduleWfRun;
-    private ScheduleWfRequestModel scheduleWfRunRequest;
 
     public Class<Command> getProtoBaseClass() {
         return Command.class;
@@ -155,9 +153,6 @@ public class CommandModel extends AbstractCommand<Command> {
             case SCHEDULE_WF_RUN:
                 out.setScheduleWfRun(scheduleWfRun.toProto());
                 break;
-            case SCHEDULE_WF_RUN_REQUEST:
-                out.setScheduleWfRunRequest(scheduleWfRunRequest.toProto());
-                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -246,10 +241,6 @@ public class CommandModel extends AbstractCommand<Command> {
                 scheduleWfRun =
                         LHSerializable.fromProto(p.getScheduleWfRun(), ScheduleWfRunCommandModel.class, context);
                 break;
-            case SCHEDULE_WF_RUN_REQUEST:
-                scheduleWfRunRequest =
-                        LHSerializable.fromProto(p.getScheduleWfRunRequest(), ScheduleWfRequestModel.class, context);
-                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -300,8 +291,6 @@ public class CommandModel extends AbstractCommand<Command> {
                 return deleteTaskWorkerGroup;
             case SCHEDULE_WF_RUN:
                 return scheduleWfRun;
-            case SCHEDULE_WF_RUN_REQUEST:
-                return scheduleWfRunRequest;
             case COMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -372,9 +361,6 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(ScheduleWfRunCommandModel.class)) {
             type = CommandCase.SCHEDULE_WF_RUN;
             scheduleWfRun = (ScheduleWfRunCommandModel) cmd;
-        } else if (cls.equals(ScheduleWfRequestModel.class)) {
-            type = CommandCase.SCHEDULE_WF_RUN_REQUEST;
-            scheduleWfRunRequest = (ScheduleWfRequestModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

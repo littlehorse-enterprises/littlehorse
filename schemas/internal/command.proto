@@ -43,7 +43,6 @@ message Command {
         RescueThreadRunRequest rescue_thread_run = 22;
         DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;
         ScheduleWfRun schedule_wf_run = 24;
-        ScheduleWfRequest schedule_wf_run_request = 25;
         // TODO: Add SaveUserTask
     }
 }
@@ -81,6 +80,7 @@ message MetadataCommand {
         DeletePrincipalRequest delete_principal = 13;
         PutTenantRequest put_tenant = 14;
         PutWorkflowEventDefRequest workflow_event_def = 15;
+        ScheduleWfRequest schedule_wf_run_request = 16;
         // TODO: DeleteTenant
     }
 }
