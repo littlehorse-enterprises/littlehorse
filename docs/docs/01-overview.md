@@ -145,7 +145,7 @@ The way to integrate LittleHorse with a monolithic app server (for example, Spri
 
 ### API Management System
 
-LittleHorse is not an API Management System like Apigee or Kong. Those systems define 
+API gateways like Kong and MuleSoft act as intermediaries that manage, monitor, and secure interactions between client applications and backend services. In contrast, LittleHorse orchestrates complex business processes and automates sequences of tasks across different systems. While API gateways focus request routing, traffic control, and governance, LittleHorse emphasizes process execution, task coordination, and long-running workflows.
 
 ### ETL System
 
