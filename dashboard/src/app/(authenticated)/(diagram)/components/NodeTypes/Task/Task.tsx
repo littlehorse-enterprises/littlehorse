@@ -13,7 +13,7 @@ const Node: FC<NodeProps> = ({ selected, data }) => {
 
   return (
     <>
-      <TaskDetails taskNode={task} nodeRun={data.nodeRun} />
+      <TaskDetails taskNode={task} nodeRun={data.nodeRun} selected={selected} />
       <Fade fade={fade} status={data.nodeRun?.status}>
         <div
           className={
