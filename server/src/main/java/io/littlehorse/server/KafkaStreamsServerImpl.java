@@ -36,6 +36,7 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
@@ -46,6 +47,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
@@ -130,6 +132,7 @@ import io.littlehorse.sdk.common.proto.ResumeWfRunRequest;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.ScheduleWfRequest;
 import io.littlehorse.sdk.common.proto.ScheduledWfRun;
+import io.littlehorse.sdk.common.proto.ScheduledWfRunId;
 import io.littlehorse.sdk.common.proto.ScheduledWfRunIdList;
 import io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.SearchExternalEventRequest;
@@ -325,6 +328,19 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
             ctx.onNext(wfSpec.toProto().build());
+            ctx.onCompleted();
+        }
+    }
+
+    @Override
+    public void getScheduledWf(ScheduledWfRunId req, StreamObserver<ScheduledWfRun> ctx) {
+        ScheduledWfRunIdModel scheduledWfId =
+                LHSerializable.fromProto(req, ScheduledWfRunIdModel.class, requestContext());
+        ScheduledWfRunModel scheduledWfRun = requestContext().metadataManager().get(scheduledWfId);
+        if (scheduledWfRun == null) {
+            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified object"));
+        } else {
+            ctx.onNext(scheduledWfRun.toProto().build());
             ctx.onCompleted();
         }
     }

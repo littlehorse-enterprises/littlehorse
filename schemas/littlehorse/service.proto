@@ -83,7 +83,9 @@ service LittleHorse {
 
   rpc ScheduleWf(ScheduleWfRequest) returns (ScheduledWfRun) {}
 
-  rpc SearchScheduledWf(SearchScheduledWfRunsRequest) returns (ScheduledWfRunIdList);
+  rpc SearchScheduledWf(SearchScheduledWfRunsRequest) returns (ScheduledWfRunIdList) {}
+
+  rpc GetScheduledWf(ScheduledWfRunId) returns (ScheduledWfRun) {}
 
   // Gets a WfRun. Although useful for development and debugging, this RPC is not often
   // used by applications.

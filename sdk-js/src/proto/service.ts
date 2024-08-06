@@ -7293,6 +7293,14 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    getScheduledWf: {
+      name: "GetScheduledWf",
+      requestType: ScheduledWfRunId,
+      requestStream: false,
+      responseType: ScheduledWfRun,
+      responseStream: false,
+      options: {},
+    },
     /**
      * Gets a WfRun. Although useful for development and debugging, this RPC is not often
      * used by applications.
@@ -7873,6 +7881,10 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: SearchScheduledWfRunsRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ScheduledWfRunIdList>>;
+  getScheduledWf(
+    request: ScheduledWfRunId,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ScheduledWfRun>>;
   /**
    * Gets a WfRun. Although useful for development and debugging, this RPC is not often
    * used by applications.
@@ -8190,6 +8202,10 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<SearchScheduledWfRunsRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ScheduledWfRunIdList>;
+  getScheduledWf(
+    request: DeepPartial<ScheduledWfRunId>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ScheduledWfRun>;
   /**
    * Gets a WfRun. Although useful for development and debugging, this RPC is not often
    * used by applications.

@@ -24,6 +24,24 @@ var getWfRunCmd = &cobra.Command{
 	},
 }
 
+var getScheduledWfRun = &cobra.Command{
+	Use:   "scheduled <id>",
+	Short: "Get a scheduled run.",
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) != 1 {
+			log.Fatal("You must provide one argument: the ID of ScheduledWfRun to get.")
+
+		}
+
+		common.PrintResp(getGlobalClient(cmd).GetScheduledWf(
+			requestContext(cmd),
+			&model.ScheduledWfRunId{
+				Id: args[0],
+			},
+		))
+	},
+}
+
 var searchWfRunCmd = &cobra.Command{
 	Use:   "wfRun",
 	Short: "Search for WfRuns",
@@ -287,6 +305,7 @@ var searchScheduledWfsCmd = &cobra.Command{
 
 func init() {
 	getCmd.AddCommand(getWfRunCmd)
+	getCmd.AddCommand(getScheduledWfRun)
 	searchCmd.AddCommand(searchWfRunCmd)
 	stopCmd.AddCommand(stopWfRunCmd)
 	resumeCmd.AddCommand(resumeWfRunCmd)
