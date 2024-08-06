@@ -124,13 +124,13 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-| [ScheduleWfRequest](#schedulewfrequest) | [ScheduledWfRun](#scheduledwfrun) |  |
+|  [ScheduleWfRequest](#schedulewfrequest)  |  [ScheduledWfRun](#scheduledwfrun)  |  |
 
 ### RPC `SearchScheduledWf` {#searchscheduledwf}
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-| [SearchScheduledWfRunsRequest](#searchscheduledwfrunsrequest) | [ScheduledWfRunIdList](#scheduledwfrunidlist) |  |
+|  [SearchScheduledWfRunsRequest](#searchscheduledwfrunsrequest)  |  [ScheduledWfRunIdList](#scheduledwfrunidlist)  |  |
 
 ### RPC `GetWfRun` {#getwfrun}
 
