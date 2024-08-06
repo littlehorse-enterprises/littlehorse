@@ -5,23 +5,11 @@ import TabItem from '@theme/TabItem';
 
 In LittleHorse, a `Failure` is analogous to an `Exception` in Programming.
 
-## Handling a Failure.
+:::tip
+Recall [from the Concepts docs](../../04-concepts/01-workflows.md#failure-handling) that in LittleHorse, an `ERROR` refers to a technical issue (eg. network outage or uncaught exception from a Task Worker), and an `EXCEPTION` refers to a business process-level exception (eg. insufficient funds in a credit card).
+:::
 
-In LittleHorse, there are two different types of Failures:
-* `EXCEPTION`, which denotes something that went wrong at the business-process level (eg. an executive rejected a transaction).
-* `ERROR`, which denotes a technical failure, such as a third-party API being unavailable due to a network partition.
-
-The `WorkflowThread` has three methods to allow you to handle various types of Failures:
-
-1. `handleException()`, which handles `EXCEPTION` business failures.
-2. `handleError()`, which handles `ERROR` technical failures.
-3. `handleAnyFailure()`, which catches any failure of any type.
-
-All three methods require a `NodeOutput` for the `Node` on which to add the `failureHandler` (see the [Concept Docs](/docs/04-concepts/10-exception-handling.md)). Additionally, all three methods require a `ThreadFunc` which defines the logic for the Failure Handler (either a lambda or a function pointer).
-
-The syntax to handle a `Failure` is similar no matter which type of `Node` you are handling a failure for.
-
-### Throwing an `EXCEPTION`
+## Throwing an `EXCEPTION`
 
 :::info
 This section is concerned with throwing an `EXCEPTION` at the `ThreadSpec` level inside a `WfSpec`. If you want to throw an `EXCEPTION` at the Task Worker level, please refer to the [Task Worker Development Docs](/docs/developer-guide/task-worker-development#throwing-workflow-exceptions)
@@ -90,6 +78,23 @@ wf.fail("payment-failed", "This is a human readable error message for developers
 :::tip
 Like many things in LittleHorse, a user-defined `EXCEPTION` must be in `sub-domain-case`. For those of you who love Kubernetes, this is the same regex used by K8s resource names.
 :::
+
+
+## Handling a Failure.
+
+In LittleHorse, there are two different types of Failures:
+* `EXCEPTION`, which denotes something that went wrong at the business-process level (eg. an executive rejected a transaction).
+* `ERROR`, which denotes a technical failure, such as a third-party API being unavailable due to a network partition.
+
+The `WorkflowThread` has three methods to allow you to handle various types of Failures:
+
+1. `handleException()`, which handles `EXCEPTION` business failures.
+2. `handleError()`, which handles `ERROR` technical failures.
+3. `handleAnyFailure()`, which catches any failure of any type.
+
+All three methods require a `NodeOutput` for the `Node` on which to add the `failureHandler`. Additionally, all three methods require a `ThreadFunc` which defines the logic for the Failure Handler (either a lambda or a function pointer).
+
+The syntax to handle a `Failure` is similar no matter which type of `Node` you are handling a failure for.
 
 ### Handling Exceptions
 
