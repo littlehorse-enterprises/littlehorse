@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractCommand;
+import io.littlehorse.common.model.corecommand.subcommand.DeleteScheduledWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ScheduleWfRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
@@ -50,6 +51,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private PutTenantRequestModel putTenant;
     private PutWorkflowEventDefRequestModel putWorkflowEventDef;
     private ScheduleWfRequestModel scheduleWfRun;
+    private DeleteScheduledWfRunRequestModel deleteScheduledWfRun;
 
     public MetadataCommandModel() {
         super();
@@ -116,6 +118,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
             case SCHEDULE_WF_RUN_REQUEST:
                 out.setScheduleWfRunRequest(scheduleWfRun.toProto());
                 break;
+            case DELETE_SCHEDULED_WF_RUN:
+                out.setDeleteScheduledWfRun(deleteScheduledWfRun.toProto());
+                break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
         }
@@ -179,6 +184,10 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 scheduleWfRun =
                         LHSerializable.fromProto(p.getScheduleWfRunRequest(), ScheduleWfRequestModel.class, context);
                 break;
+            case DELETE_SCHEDULED_WF_RUN:
+                deleteScheduledWfRun = LHSerializable.fromProto(
+                        p.getDeleteScheduledWfRun(), DeleteScheduledWfRunRequestModel.class, context);
+                break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
         }
@@ -213,6 +222,8 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 return putWorkflowEventDef;
             case SCHEDULE_WF_RUN_REQUEST:
                 return scheduleWfRun;
+            case DELETE_SCHEDULED_WF_RUN:
+                return deleteScheduledWfRun;
             case METADATACOMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -259,6 +270,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         } else if (cls.equals(ScheduleWfRequestModel.class)) {
             type = MetadataCommandCase.SCHEDULE_WF_RUN_REQUEST;
             scheduleWfRun = (ScheduleWfRequestModel) cmd;
+        } else if (cls.equals(DeleteScheduledWfRunRequestModel.class)) {
+            type = MetadataCommandCase.DELETE_SCHEDULED_WF_RUN;
+            deleteScheduledWfRun = (DeleteScheduledWfRunRequestModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

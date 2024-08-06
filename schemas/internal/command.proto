@@ -81,6 +81,7 @@ message MetadataCommand {
         PutTenantRequest put_tenant = 14;
         PutWorkflowEventDefRequest workflow_event_def = 15;
         ScheduleWfRequest schedule_wf_run_request = 16;
+        DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;
         // TODO: DeleteTenant
     }
 }

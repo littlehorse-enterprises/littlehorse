@@ -378,6 +378,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 |  [DeletePrincipalRequest](#deleteprincipalrequest)  |  .google.protobuf.Empty  | Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal` is the last remaining `Principal` with admin permissions. Admin permissions are defined as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope. |
 
+### RPC `DeleteScheduledWfRun` {#deletescheduledwfrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [DeleteScheduledWfRunRequest](#deletescheduledwfrunrequest)  |  .google.protobuf.Empty  |  |
+
 ### RPC `GetTaskDefMetricsWindow` {#gettaskdefmetricswindow}
 
 | Request Type | Response Type | Description |
@@ -1381,6 +1387,19 @@ Deletes an ExternalEvent.
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
 | `id` | | [ExternalEventId](#externaleventid) | The ID of the ExternalEvent to delete. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `DeleteScheduledWfRunRequest` {#deletescheduledwfrunrequest}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `id` | | [ScheduledWfRunId](#scheduledwfrunid) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 

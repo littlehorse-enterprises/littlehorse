@@ -1,13 +1,17 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
+import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.ScheduleWfRun;
@@ -84,6 +88,11 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
 
     @Override
     public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+        ScheduledWfRunModel scheduledWfRun =
+                executionContext.metadataManager().get(new ScheduledWfRunIdModel(scheduledCommandId));
+        if (scheduledWfRun == null) {
+            throw new LHApiException(Status.NOT_FOUND, "Scheduled execution not found");
+        }
         CommandModel commandToExecute = new CommandModel(createRunWfCommand(executionContext));
         Message response = commandToExecute.process(executionContext, config);
         Optional<Date> scheduledTime = LHUtil.nextDate(cronExpression, new Date());

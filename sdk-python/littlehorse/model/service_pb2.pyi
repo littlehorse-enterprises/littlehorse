@@ -116,6 +116,12 @@ class DeleteExternalEventRequest(_message.Message):
     id: _object_id_pb2.ExternalEventId
     def __init__(self, id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ...) -> None: ...
 
+class DeleteScheduledWfRunRequest(_message.Message):
+    __slots__ = ["id"]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.ScheduledWfRunId
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.ScheduledWfRunId, _Mapping]] = ...) -> None: ...
+
 class DeleteWfRunRequest(_message.Message):
     __slots__ = ["id"]
     ID_FIELD_NUMBER: _ClassVar[int]

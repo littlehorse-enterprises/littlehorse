@@ -312,6 +312,11 @@ class LittleHorseStub(object):
                 request_serializer=acls__pb2.DeletePrincipalRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
+        self.DeleteScheduledWfRun = channel.unary_unary(
+                '/littlehorse.LittleHorse/DeleteScheduledWfRun',
+                request_serializer=service__pb2.DeleteScheduledWfRunRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                )
         self.GetTaskDefMetricsWindow = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetTaskDefMetricsWindow',
                 request_serializer=service__pb2.TaskDefMetricsQueryRequest.SerializeToString,
@@ -810,6 +815,12 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def DeleteScheduledWfRun(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GetTaskDefMetricsWindow(self, request, context):
         """Returns TaskDef Metrics for a specific TaskDef and a specific time window.
         """
@@ -1159,6 +1170,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'DeletePrincipal': grpc.unary_unary_rpc_method_handler(
                     servicer.DeletePrincipal,
                     request_deserializer=acls__pb2.DeletePrincipalRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'DeleteScheduledWfRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteScheduledWfRun,
+                    request_deserializer=service__pb2.DeleteScheduledWfRunRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'GetTaskDefMetricsWindow': grpc.unary_unary_rpc_method_handler(
@@ -2181,6 +2197,23 @@ class LittleHorse(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/DeletePrincipal',
             acls__pb2.DeletePrincipalRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DeleteScheduledWfRun(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/DeleteScheduledWfRun',
+            service__pb2.DeleteScheduledWfRunRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -1782,6 +1782,37 @@ public final class LittleHorseGrpc {
     return getDeletePrincipalMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest,
+      com.google.protobuf.Empty> getDeleteScheduledWfRunMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DeleteScheduledWfRun",
+      requestType = io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest,
+      com.google.protobuf.Empty> getDeleteScheduledWfRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest, com.google.protobuf.Empty> getDeleteScheduledWfRunMethod;
+    if ((getDeleteScheduledWfRunMethod = LittleHorseGrpc.getDeleteScheduledWfRunMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getDeleteScheduledWfRunMethod = LittleHorseGrpc.getDeleteScheduledWfRunMethod) == null) {
+          LittleHorseGrpc.getDeleteScheduledWfRunMethod = getDeleteScheduledWfRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteScheduledWfRun"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("DeleteScheduledWfRun"))
+              .build();
+        }
+      }
+    }
+    return getDeleteScheduledWfRunMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest,
       io.littlehorse.sdk.common.proto.TaskDefMetrics> getGetTaskDefMetricsWindowMethod;
 
@@ -2713,6 +2744,13 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     */
+    default void deleteScheduledWfRun(io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteScheduledWfRunMethod(), responseObserver);
+    }
+
+    /**
      * <pre>
      * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
      * </pre>
@@ -3491,6 +3529,14 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     */
+    public void deleteScheduledWfRun(io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getDeleteScheduledWfRunMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
      * <pre>
      * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
      * </pre>
@@ -4196,6 +4242,13 @@ public final class LittleHorseGrpc {
     public com.google.protobuf.Empty deletePrincipal(io.littlehorse.sdk.common.proto.DeletePrincipalRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDeletePrincipalMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.google.protobuf.Empty deleteScheduledWfRun(io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteScheduledWfRunMethod(), getCallOptions(), request);
     }
 
     /**
@@ -4954,6 +5007,14 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteScheduledWfRun(
+        io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getDeleteScheduledWfRunMethod(), getCallOptions()), request);
+    }
+
+    /**
      * <pre>
      * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
      * </pre>
@@ -5109,16 +5170,17 @@ public final class LittleHorseGrpc {
   private static final int METHODID_DELETE_USER_TASK_DEF = 53;
   private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 54;
   private static final int METHODID_DELETE_PRINCIPAL = 55;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 56;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 57;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 58;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 59;
-  private static final int METHODID_PUT_TENANT = 60;
-  private static final int METHODID_GET_TENANT = 61;
-  private static final int METHODID_PUT_PRINCIPAL = 62;
-  private static final int METHODID_WHOAMI = 63;
-  private static final int METHODID_GET_SERVER_VERSION = 64;
-  private static final int METHODID_POLL_TASK = 65;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 56;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 57;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 58;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 59;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 60;
+  private static final int METHODID_PUT_TENANT = 61;
+  private static final int METHODID_GET_TENANT = 62;
+  private static final int METHODID_PUT_PRINCIPAL = 63;
+  private static final int METHODID_WHOAMI = 64;
+  private static final int METHODID_GET_SERVER_VERSION = 65;
+  private static final int METHODID_POLL_TASK = 66;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -5359,6 +5421,10 @@ public final class LittleHorseGrpc {
           break;
         case METHODID_DELETE_PRINCIPAL:
           serviceImpl.deletePrincipal((io.littlehorse.sdk.common.proto.DeletePrincipalRequest) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
+        case METHODID_DELETE_SCHEDULED_WF_RUN:
+          serviceImpl.deleteScheduledWfRun((io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         case METHODID_GET_TASK_DEF_METRICS_WINDOW:
@@ -5818,6 +5884,13 @@ public final class LittleHorseGrpc {
               com.google.protobuf.Empty>(
                 service, METHODID_DELETE_PRINCIPAL)))
         .addMethod(
+          getDeleteScheduledWfRunMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest,
+              com.google.protobuf.Empty>(
+                service, METHODID_DELETE_SCHEDULED_WF_RUN)))
+        .addMethod(
           getGetTaskDefMetricsWindowMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -5985,6 +6058,7 @@ public final class LittleHorseGrpc {
               .addMethod(getDeleteUserTaskDefMethod())
               .addMethod(getDeleteExternalEventDefMethod())
               .addMethod(getDeletePrincipalMethod())
+              .addMethod(getDeleteScheduledWfRunMethod())
               .addMethod(getGetTaskDefMetricsWindowMethod())
               .addMethod(getGetWfSpecMetricsWindowMethod())
               .addMethod(getListTaskDefMetricsMethod())

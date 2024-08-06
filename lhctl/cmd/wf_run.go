@@ -166,6 +166,25 @@ var deleteWfRunCmd = &cobra.Command{
 	},
 }
 
+var deleteScheduledWfRun = &cobra.Command{
+	Use:   "schedule <id>",
+	Short: "Delete a Scheduled Workflow Run.",
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) != 1 {
+			log.Fatal("You must provide one argument: the ID of ScheduledWfRun to delete.")
+		}
+
+		common.PrintResp(getGlobalClient(cmd).DeleteScheduledWfRun(
+			requestContext(cmd),
+			&model.DeleteScheduledWfRunRequest{
+				Id: &model.ScheduledWfRunId{
+					Id: args[0],
+				},
+			},
+		))
+	},
+}
+
 var scheduleWfCmd = &cobra.Command{
 	Use:   "run <cronExpression> <wfSpecName> <<var1 name>> <<var1 val>>...",
 	Short: "Run an instance of a WfSpec with provided Name and Input Variables.",
@@ -303,6 +322,8 @@ var searchScheduledWfsCmd = &cobra.Command{
 	},
 }
 
+
+
 func init() {
 	getCmd.AddCommand(getWfRunCmd)
 	getCmd.AddCommand(getScheduledWfRun)
@@ -310,6 +331,7 @@ func init() {
 	stopCmd.AddCommand(stopWfRunCmd)
 	resumeCmd.AddCommand(resumeWfRunCmd)
 	deleteCmd.AddCommand(deleteWfRunCmd)
+	deleteCmd.AddCommand(deleteScheduledWfRun)
 	scheduleCmd.AddCommand(scheduleWfCmd)
 	searchCmd.AddCommand(searchScheduledWfsCmd)
 

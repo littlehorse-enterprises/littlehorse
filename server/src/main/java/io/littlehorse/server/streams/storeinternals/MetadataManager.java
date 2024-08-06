@@ -68,9 +68,9 @@ public class MetadataManager extends ReadOnlyMetadataManager {
     }
 
     public <U extends Message, T extends MetadataGetable<U>> void delete(MetadataId<?, U, T> id) {
+        log.info("trying to delete " + id.getStoreableKey());
         @SuppressWarnings("unchecked")
         StoredGetable<U, T> storeResult = tenantStore.get(id.getStoreableKey(), StoredGetable.class);
-        log.trace("trying to delete " + id.getStoreableKey());
 
         if (storeResult == null) {
             throw new LHApiException(

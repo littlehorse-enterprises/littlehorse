@@ -154,7 +154,6 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
         start = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, start));
         end = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, end));
-        log.info("looking for: " + start);
         return new LHKeyValueIterator<>(nativeStore.range(start, end), cls, executionContext);
     }
 

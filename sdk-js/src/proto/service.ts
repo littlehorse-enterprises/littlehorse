@@ -260,6 +260,10 @@ export interface DeleteExternalEventRequest {
   id: ExternalEventId | undefined;
 }
 
+export interface DeleteScheduledWfRunRequest {
+  id: ScheduledWfRunId | undefined;
+}
+
 /** Deletes a WfRun. */
 export interface DeleteWfRunRequest {
   /** The ID of the WfRun to delete. */
@@ -2035,6 +2039,51 @@ export const DeleteExternalEventRequest = {
   fromPartial(object: DeepPartial<DeleteExternalEventRequest>): DeleteExternalEventRequest {
     const message = createBaseDeleteExternalEventRequest();
     message.id = (object.id !== undefined && object.id !== null) ? ExternalEventId.fromPartial(object.id) : undefined;
+    return message;
+  },
+};
+
+function createBaseDeleteScheduledWfRunRequest(): DeleteScheduledWfRunRequest {
+  return { id: undefined };
+}
+
+export const DeleteScheduledWfRunRequest = {
+  encode(message: DeleteScheduledWfRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      ScheduledWfRunId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteScheduledWfRunRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteScheduledWfRunRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = ScheduledWfRunId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<DeleteScheduledWfRunRequest>): DeleteScheduledWfRunRequest {
+    return DeleteScheduledWfRunRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DeleteScheduledWfRunRequest>): DeleteScheduledWfRunRequest {
+    const message = createBaseDeleteScheduledWfRunRequest();
+    message.id = (object.id !== undefined && object.id !== null) ? ScheduledWfRunId.fromPartial(object.id) : undefined;
     return message;
   },
 };
@@ -7733,6 +7782,14 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    deleteScheduledWfRun: {
+      name: "DeleteScheduledWfRun",
+      requestType: DeleteScheduledWfRunRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
     /** Returns TaskDef Metrics for a specific TaskDef and a specific time window. */
     getTaskDefMetricsWindow: {
       name: "GetTaskDefMetricsWindow",
@@ -8103,6 +8160,10 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
    */
   deletePrincipal(request: DeletePrincipalRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
+  deleteScheduledWfRun(
+    request: DeleteScheduledWfRunRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
   /** Returns TaskDef Metrics for a specific TaskDef and a specific time window. */
   getTaskDefMetricsWindow(
     request: TaskDefMetricsQueryRequest,
@@ -8430,6 +8491,10 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
    */
   deletePrincipal(request: DeepPartial<DeletePrincipalRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
+  deleteScheduledWfRun(
+    request: DeepPartial<DeleteScheduledWfRunRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
   /** Returns TaskDef Metrics for a specific TaskDef and a specific time window. */
   getTaskDefMetricsWindow(
     request: DeepPartial<TaskDefMetricsQueryRequest>,
