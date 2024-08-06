@@ -253,6 +253,38 @@ odd total number of args. See 'lhctl run --help' for details.`)
 	},
 }
 
+var searchScheduledWfsCmd = &cobra.Command{
+	Use:   "schedule <wfSpecName> <majorVersion> <revision>",
+	Short: "List all scheduled wf runs for a given wf spec",
+	Run: func(cmd *cobra.Command, args []string) {
+
+		var majorVersion *int32
+		if raw, _ := cmd.Flags().GetInt32("majorVersion"); raw == -1 {
+			majorVersion = nil
+		} else {
+			majorVersion = &raw
+		}
+
+		var revision *int32
+		if raw, _ := cmd.Flags().GetInt32("revision"); raw == -1 {
+			revision = nil
+		} else {
+			revision = &raw
+		}
+		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
+		req := &model.SearchScheduledWfRunsRequest{
+			WfSpecName: wfSpecName,
+			MajorVersion: majorVersion,
+			Revision: revision,
+		}
+
+		common.PrintResp(getGlobalClient(cmd).SearchScheduledWf(
+			requestContext(cmd),
+			req,
+		))
+	},
+}
+
 func init() {
 	getCmd.AddCommand(getWfRunCmd)
 	searchCmd.AddCommand(searchWfRunCmd)
@@ -260,6 +292,7 @@ func init() {
 	resumeCmd.AddCommand(resumeWfRunCmd)
 	deleteCmd.AddCommand(deleteWfRunCmd)
 	scheduleCmd.AddCommand(scheduleWfCmd)
+	searchCmd.AddCommand(searchScheduledWfsCmd)
 
 	searchWfRunCmd.Flags().String("status", "", "Status of WfRuns to search for")
 	searchWfRunCmd.Flags().String("wfSpecName", "", "wfSpecName to search for")
@@ -269,6 +302,9 @@ func init() {
 	searchWfRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for wfRuns that started at least this number of minutes ago")
 	searchWfRunCmd.MarkFlagRequired("wfSpecName")
 	searchWfRunCmd.MarkFlagsRequiredTogether("revision", "majorVersion")
+	searchScheduledWfsCmd.Flags().String("wfSpecName", "", "wfSpecName to search for")
+	searchScheduledWfsCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")
+	searchScheduledWfsCmd.Flags().Int32("revision", -1, "WfSpec Revision to search for")
 
 	scheduleWfCmd.Flags().String("wfSpecName", "", "wfSpecName to search for")
 	scheduleWfCmd.Flags().Int32("majorVersion", -1, "WfSpec Major Version to search for")

@@ -778,6 +778,22 @@ class UserTaskRunList(_message.Message):
     results: _containers.RepeatedCompositeFieldContainer[_user_tasks_pb2.UserTaskRun]
     def __init__(self, results: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskRun, _Mapping]]] = ...) -> None: ...
 
+class ScheduledWfRunIdList(_message.Message):
+    __slots__ = ["results"]
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.ScheduledWfRunId]
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.ScheduledWfRunId, _Mapping]]] = ...) -> None: ...
+
+class SearchScheduledWfRunsRequest(_message.Message):
+    __slots__ = ["wf_spec_name", "major_version", "revision"]
+    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+    MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    REVISION_FIELD_NUMBER: _ClassVar[int]
+    wf_spec_name: str
+    major_version: int
+    revision: int
+    def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ...) -> None: ...
+
 class TaskWorkerMetadata(_message.Message):
     __slots__ = ["task_worker_id", "latest_heartbeat", "hosts"]
     TASK_WORKER_ID_FIELD_NUMBER: _ClassVar[int]

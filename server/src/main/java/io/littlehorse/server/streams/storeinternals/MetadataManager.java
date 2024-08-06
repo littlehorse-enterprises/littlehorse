@@ -62,6 +62,7 @@ public class MetadataManager extends ReadOnlyMetadataManager {
         StoredGetable<U, T> toStore = new StoredGetable<U, T>(getable);
         tenantStore.put(toStore);
         for (Tag tag : getable.getIndexEntries()) {
+            log.info("Tag created: " + tag.getFullStoreKey());
             tenantStore.put(tag);
         }
     }

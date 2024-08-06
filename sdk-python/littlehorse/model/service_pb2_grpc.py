@@ -102,6 +102,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.ScheduleWfRequest.SerializeToString,
                 response_deserializer=scheduled__wf__run__pb2.ScheduledWfRun.FromString,
                 )
+        self.SearchScheduledWf = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchScheduledWf',
+                request_serializer=service__pb2.SearchScheduledWfRunsRequest.SerializeToString,
+                response_deserializer=service__pb2.ScheduledWfRunIdList.FromString,
+                )
         self.GetWfRun = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetWfRun',
                 request_serializer=object__id__pb2.WfRunId.SerializeToString,
@@ -463,6 +468,12 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ScheduleWf(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SearchScheduledWf(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -928,6 +939,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.ScheduleWf,
                     request_deserializer=service__pb2.ScheduleWfRequest.FromString,
                     response_serializer=scheduled__wf__run__pb2.ScheduledWfRun.SerializeToString,
+            ),
+            'SearchScheduledWf': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchScheduledWf,
+                    request_deserializer=service__pb2.SearchScheduledWfRunsRequest.FromString,
+                    response_serializer=service__pb2.ScheduledWfRunIdList.SerializeToString,
             ),
             'GetWfRun': grpc.unary_unary_rpc_method_handler(
                     servicer.GetWfRun,
@@ -1436,6 +1452,23 @@ class LittleHorse(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ScheduleWf',
             service__pb2.ScheduleWfRequest.SerializeToString,
             scheduled__wf__run__pb2.ScheduledWfRun.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SearchScheduledWf(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchScheduledWf',
+            service__pb2.SearchScheduledWfRunsRequest.SerializeToString,
+            service__pb2.ScheduledWfRunIdList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

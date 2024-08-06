@@ -21,10 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class ScheduledWfRunModel extends MetadataGetable<ScheduledWfRun> {
     private ScheduledWfRunIdModel id;
-    private WfSpecIdModel wfSPecId;
+    private WfSpecIdModel wfSpecId;
     private Map<String, VariableValueModel> variables = new HashMap<>();
     private WfRunIdModel parentWfRunId;
     private String cronExpression;
@@ -34,12 +35,12 @@ public class ScheduledWfRunModel extends MetadataGetable<ScheduledWfRun> {
 
     public ScheduledWfRunModel(
             ScheduledWfRunIdModel id,
-            WfSpecIdModel wfSPecId,
+            WfSpecIdModel wfSpecId,
             Map<String, VariableValueModel> variables,
             WfRunIdModel parentWfRunId,
             String cronExpression) {
         this.id = id;
-        this.wfSPecId = wfSPecId;
+        this.wfSpecId = wfSpecId;
         this.variables = variables;
         this.parentWfRunId = parentWfRunId;
         this.cronExpression = cronExpression;
@@ -50,7 +51,7 @@ public class ScheduledWfRunModel extends MetadataGetable<ScheduledWfRun> {
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         ScheduledWfRun p = (ScheduledWfRun) proto;
         id = ScheduledWfRunIdModel.fromProto(p.getId(), ScheduledWfRunIdModel.class, context);
-        wfSPecId = WfSpecIdModel.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
+        wfSpecId = WfSpecIdModel.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
         cronExpression = p.getCronExpression();
         createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
 
@@ -67,7 +68,7 @@ public class ScheduledWfRunModel extends MetadataGetable<ScheduledWfRun> {
     public ScheduledWfRun.Builder toProto() {
         ScheduledWfRun.Builder out = ScheduledWfRun.newBuilder()
                 .setId(id.toProto())
-                .setWfSpecId(wfSPecId.toProto())
+                .setWfSpecId(wfSpecId.toProto())
                 .setCronExpression(cronExpression)
                 .setCreatedAt(LHUtil.fromDate(createdAt));
         if (parentWfRunId != null) {
@@ -88,7 +89,16 @@ public class ScheduledWfRunModel extends MetadataGetable<ScheduledWfRun> {
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        return List.of();
+        return List.of(
+                new GetableIndex<>(
+                        List.of(Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL)),
+                new GetableIndex<>(
+                        List.of(Pair.of("majorVersion", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL)),
+                new GetableIndex<>(
+                        List.of(Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL)));
     }
 
     @Override
@@ -98,6 +108,20 @@ public class ScheduledWfRunModel extends MetadataGetable<ScheduledWfRun> {
 
     @Override
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
-        return null;
+        switch (key) {
+            case "wfSpecName" -> {
+                return List.of(new IndexedField(key, this.wfSpecId.getName(), tagStorageType.get()));
+            }
+            case "wfSpecId" -> {
+                return List.of(new IndexedField(key, wfSpecId.toString(), TagStorageType.LOCAL));
+            }
+            case "majorVersion" -> {
+                return List.of(new IndexedField(
+                        key,
+                        wfSpecId.getName() + "/" + LHUtil.toLHDbVersionFormat(wfSpecId.getMajorVersion()),
+                        TagStorageType.LOCAL));
+            }
+        }
+        return List.of();
     }
 }

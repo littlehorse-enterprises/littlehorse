@@ -480,6 +480,37 @@ public final class LittleHorseGrpc {
     return getScheduleWfMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest,
+      io.littlehorse.sdk.common.proto.ScheduledWfRunIdList> getSearchScheduledWfMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchScheduledWf",
+      requestType = io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.ScheduledWfRunIdList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest,
+      io.littlehorse.sdk.common.proto.ScheduledWfRunIdList> getSearchScheduledWfMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest, io.littlehorse.sdk.common.proto.ScheduledWfRunIdList> getSearchScheduledWfMethod;
+    if ((getSearchScheduledWfMethod = LittleHorseGrpc.getSearchScheduledWfMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getSearchScheduledWfMethod = LittleHorseGrpc.getSearchScheduledWfMethod) == null) {
+          LittleHorseGrpc.getSearchScheduledWfMethod = getSearchScheduledWfMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest, io.littlehorse.sdk.common.proto.ScheduledWfRunIdList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchScheduledWf"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.ScheduledWfRunIdList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("SearchScheduledWf"))
+              .build();
+        }
+      }
+    }
+    return getSearchScheduledWfMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfRunId,
       io.littlehorse.sdk.common.proto.WfRun> getGetWfRunMethod;
 
@@ -2204,6 +2235,13 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     */
+    default void searchScheduledWf(io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRunIdList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchScheduledWfMethod(), responseObserver);
+    }
+
+    /**
      * <pre>
      * Gets a WfRun. Although useful for development and debugging, this RPC is not often
      * used by applications.
@@ -2923,6 +2961,14 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRun> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getScheduleWfMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void searchScheduledWf(io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRunIdList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchScheduledWfMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -3671,6 +3717,13 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     */
+    public io.littlehorse.sdk.common.proto.ScheduledWfRunIdList searchScheduledWf(io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchScheduledWfMethod(), getCallOptions(), request);
+    }
+
+    /**
      * <pre>
      * Gets a WfRun. Although useful for development and debugging, this RPC is not often
      * used by applications.
@@ -4371,6 +4424,14 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ScheduledWfRunIdList> searchScheduledWf(
+        io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchScheduledWfMethod(), getCallOptions()), request);
+    }
+
+    /**
      * <pre>
      * Gets a WfRun. Although useful for development and debugging, this RPC is not often
      * used by applications.
@@ -4946,55 +5007,56 @@ public final class LittleHorseGrpc {
   private static final int METHODID_GET_LATEST_USER_TASK_DEF = 12;
   private static final int METHODID_RUN_WF = 13;
   private static final int METHODID_SCHEDULE_WF = 14;
-  private static final int METHODID_GET_WF_RUN = 15;
-  private static final int METHODID_GET_USER_TASK_RUN = 16;
-  private static final int METHODID_ASSIGN_USER_TASK_RUN = 17;
-  private static final int METHODID_COMPLETE_USER_TASK_RUN = 18;
-  private static final int METHODID_CANCEL_USER_TASK_RUN = 19;
-  private static final int METHODID_LIST_USER_TASK_RUNS = 20;
-  private static final int METHODID_GET_NODE_RUN = 21;
-  private static final int METHODID_LIST_NODE_RUNS = 22;
-  private static final int METHODID_GET_TASK_RUN = 23;
-  private static final int METHODID_LIST_TASK_RUNS = 24;
-  private static final int METHODID_GET_VARIABLE = 25;
-  private static final int METHODID_LIST_VARIABLES = 26;
-  private static final int METHODID_PUT_EXTERNAL_EVENT = 27;
-  private static final int METHODID_GET_EXTERNAL_EVENT = 28;
-  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 29;
-  private static final int METHODID_LIST_EXTERNAL_EVENTS = 30;
-  private static final int METHODID_SEARCH_WF_RUN = 31;
-  private static final int METHODID_SEARCH_NODE_RUN = 32;
-  private static final int METHODID_SEARCH_TASK_RUN = 33;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 34;
-  private static final int METHODID_SEARCH_VARIABLE = 35;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 36;
-  private static final int METHODID_SEARCH_TASK_DEF = 37;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 38;
-  private static final int METHODID_SEARCH_WF_SPEC = 39;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 40;
-  private static final int METHODID_SEARCH_TENANT = 41;
-  private static final int METHODID_SEARCH_PRINCIPAL = 42;
-  private static final int METHODID_REGISTER_TASK_WORKER = 43;
-  private static final int METHODID_REPORT_TASK = 44;
-  private static final int METHODID_STOP_WF_RUN = 45;
-  private static final int METHODID_RESUME_WF_RUN = 46;
-  private static final int METHODID_RESCUE_THREAD_RUN = 47;
-  private static final int METHODID_DELETE_WF_RUN = 48;
-  private static final int METHODID_DELETE_TASK_DEF = 49;
-  private static final int METHODID_DELETE_WF_SPEC = 50;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 51;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 52;
-  private static final int METHODID_DELETE_PRINCIPAL = 53;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 54;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 55;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 56;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 57;
-  private static final int METHODID_PUT_TENANT = 58;
-  private static final int METHODID_GET_TENANT = 59;
-  private static final int METHODID_PUT_PRINCIPAL = 60;
-  private static final int METHODID_WHOAMI = 61;
-  private static final int METHODID_GET_SERVER_VERSION = 62;
-  private static final int METHODID_POLL_TASK = 63;
+  private static final int METHODID_SEARCH_SCHEDULED_WF = 15;
+  private static final int METHODID_GET_WF_RUN = 16;
+  private static final int METHODID_GET_USER_TASK_RUN = 17;
+  private static final int METHODID_ASSIGN_USER_TASK_RUN = 18;
+  private static final int METHODID_COMPLETE_USER_TASK_RUN = 19;
+  private static final int METHODID_CANCEL_USER_TASK_RUN = 20;
+  private static final int METHODID_LIST_USER_TASK_RUNS = 21;
+  private static final int METHODID_GET_NODE_RUN = 22;
+  private static final int METHODID_LIST_NODE_RUNS = 23;
+  private static final int METHODID_GET_TASK_RUN = 24;
+  private static final int METHODID_LIST_TASK_RUNS = 25;
+  private static final int METHODID_GET_VARIABLE = 26;
+  private static final int METHODID_LIST_VARIABLES = 27;
+  private static final int METHODID_PUT_EXTERNAL_EVENT = 28;
+  private static final int METHODID_GET_EXTERNAL_EVENT = 29;
+  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 30;
+  private static final int METHODID_LIST_EXTERNAL_EVENTS = 31;
+  private static final int METHODID_SEARCH_WF_RUN = 32;
+  private static final int METHODID_SEARCH_NODE_RUN = 33;
+  private static final int METHODID_SEARCH_TASK_RUN = 34;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 35;
+  private static final int METHODID_SEARCH_VARIABLE = 36;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 37;
+  private static final int METHODID_SEARCH_TASK_DEF = 38;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 39;
+  private static final int METHODID_SEARCH_WF_SPEC = 40;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 41;
+  private static final int METHODID_SEARCH_TENANT = 42;
+  private static final int METHODID_SEARCH_PRINCIPAL = 43;
+  private static final int METHODID_REGISTER_TASK_WORKER = 44;
+  private static final int METHODID_REPORT_TASK = 45;
+  private static final int METHODID_STOP_WF_RUN = 46;
+  private static final int METHODID_RESUME_WF_RUN = 47;
+  private static final int METHODID_RESCUE_THREAD_RUN = 48;
+  private static final int METHODID_DELETE_WF_RUN = 49;
+  private static final int METHODID_DELETE_TASK_DEF = 50;
+  private static final int METHODID_DELETE_WF_SPEC = 51;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 52;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 53;
+  private static final int METHODID_DELETE_PRINCIPAL = 54;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 55;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 56;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 57;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 58;
+  private static final int METHODID_PUT_TENANT = 59;
+  private static final int METHODID_GET_TENANT = 60;
+  private static final int METHODID_PUT_PRINCIPAL = 61;
+  private static final int METHODID_WHOAMI = 62;
+  private static final int METHODID_GET_SERVER_VERSION = 63;
+  private static final int METHODID_POLL_TASK = 64;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -5072,6 +5134,10 @@ public final class LittleHorseGrpc {
         case METHODID_SCHEDULE_WF:
           serviceImpl.scheduleWf((io.littlehorse.sdk.common.proto.ScheduleWfRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRun>) responseObserver);
+          break;
+        case METHODID_SEARCH_SCHEDULED_WF:
+          serviceImpl.searchScheduledWf((io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRunIdList>) responseObserver);
           break;
         case METHODID_GET_WF_RUN:
           serviceImpl.getWfRun((io.littlehorse.sdk.common.proto.WfRunId) request,
@@ -5391,6 +5457,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.ScheduleWfRequest,
               io.littlehorse.sdk.common.proto.ScheduledWfRun>(
                 service, METHODID_SCHEDULE_WF)))
+        .addMethod(
+          getSearchScheduledWfMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest,
+              io.littlehorse.sdk.common.proto.ScheduledWfRunIdList>(
+                service, METHODID_SEARCH_SCHEDULED_WF)))
         .addMethod(
           getGetWfRunMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -5797,6 +5870,7 @@ public final class LittleHorseGrpc {
               .addMethod(getGetLatestUserTaskDefMethod())
               .addMethod(getRunWfMethod())
               .addMethod(getScheduleWfMethod())
+              .addMethod(getSearchScheduledWfMethod())
               .addMethod(getGetWfRunMethod())
               .addMethod(getGetUserTaskRunMethod())
               .addMethod(getAssignUserTaskRunMethod())

@@ -33,6 +33,7 @@ import {
   ExternalEventId,
   NodeRunId,
   PrincipalId,
+  ScheduledWfRunId,
   TaskDefId,
   TaskRunId,
   TaskWorkerGroupId,
@@ -1329,6 +1330,16 @@ export interface ListUserTaskRunRequest {
 export interface UserTaskRunList {
   /** A list of UserTaskRun Objects */
   results: UserTaskRun[];
+}
+
+export interface ScheduledWfRunIdList {
+  results: ScheduledWfRunId[];
+}
+
+export interface SearchScheduledWfRunsRequest {
+  wfSpecName: string;
+  majorVersion?: number | undefined;
+  revision?: number | undefined;
 }
 
 /** Describes a specific task worker */
@@ -6519,6 +6530,118 @@ export const UserTaskRunList = {
   },
 };
 
+function createBaseScheduledWfRunIdList(): ScheduledWfRunIdList {
+  return { results: [] };
+}
+
+export const ScheduledWfRunIdList = {
+  encode(message: ScheduledWfRunIdList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.results) {
+      ScheduledWfRunId.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ScheduledWfRunIdList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseScheduledWfRunIdList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.results.push(ScheduledWfRunId.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ScheduledWfRunIdList>): ScheduledWfRunIdList {
+    return ScheduledWfRunIdList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ScheduledWfRunIdList>): ScheduledWfRunIdList {
+    const message = createBaseScheduledWfRunIdList();
+    message.results = object.results?.map((e) => ScheduledWfRunId.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseSearchScheduledWfRunsRequest(): SearchScheduledWfRunsRequest {
+  return { wfSpecName: "", majorVersion: undefined, revision: undefined };
+}
+
+export const SearchScheduledWfRunsRequest = {
+  encode(message: SearchScheduledWfRunsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpecName !== "") {
+      writer.uint32(10).string(message.wfSpecName);
+    }
+    if (message.majorVersion !== undefined) {
+      writer.uint32(16).int32(message.majorVersion);
+    }
+    if (message.revision !== undefined) {
+      writer.uint32(24).int32(message.revision);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchScheduledWfRunsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchScheduledWfRunsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfSpecName = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.majorVersion = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.revision = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<SearchScheduledWfRunsRequest>): SearchScheduledWfRunsRequest {
+    return SearchScheduledWfRunsRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SearchScheduledWfRunsRequest>): SearchScheduledWfRunsRequest {
+    const message = createBaseSearchScheduledWfRunsRequest();
+    message.wfSpecName = object.wfSpecName ?? "";
+    message.majorVersion = object.majorVersion ?? undefined;
+    message.revision = object.revision ?? undefined;
+    return message;
+  },
+};
+
 function createBaseTaskWorkerMetadata(): TaskWorkerMetadata {
   return { taskWorkerId: "", latestHeartbeat: undefined, hosts: [] };
 }
@@ -7162,6 +7285,14 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    searchScheduledWf: {
+      name: "SearchScheduledWf",
+      requestType: SearchScheduledWfRunsRequest,
+      requestStream: false,
+      responseType: ScheduledWfRunIdList,
+      responseStream: false,
+      options: {},
+    },
     /**
      * Gets a WfRun. Although useful for development and debugging, this RPC is not often
      * used by applications.
@@ -7738,6 +7869,10 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   /** Runs a WfSpec to create a WfRun. */
   runWf(request: RunWfRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfRun>>;
   scheduleWf(request: ScheduleWfRequest, context: CallContext & CallContextExt): Promise<DeepPartial<ScheduledWfRun>>;
+  searchScheduledWf(
+    request: SearchScheduledWfRunsRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ScheduledWfRunIdList>>;
   /**
    * Gets a WfRun. Although useful for development and debugging, this RPC is not often
    * used by applications.
@@ -8051,6 +8186,10 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   /** Runs a WfSpec to create a WfRun. */
   runWf(request: DeepPartial<RunWfRequest>, options?: CallOptions & CallOptionsExt): Promise<WfRun>;
   scheduleWf(request: DeepPartial<ScheduleWfRequest>, options?: CallOptions & CallOptionsExt): Promise<ScheduledWfRun>;
+  searchScheduledWf(
+    request: DeepPartial<SearchScheduledWfRunsRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ScheduledWfRunIdList>;
   /**
    * Gets a WfRun. Although useful for development and debugging, this RPC is not often
    * used by applications.

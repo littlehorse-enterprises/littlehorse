@@ -83,6 +83,8 @@ service LittleHorse {
 
   rpc ScheduleWf(ScheduleWfRequest) returns (ScheduledWfRun) {}
 
+  rpc SearchScheduledWf(SearchScheduledWfRunsRequest) returns (ScheduledWfRunIdList);
+
   // Gets a WfRun. Although useful for development and debugging, this RPC is not often
   // used by applications.
   rpc GetWfRun(WfRunId) returns (WfRun) {}
@@ -1235,6 +1237,16 @@ message ListUserTaskRunRequest {
 message UserTaskRunList {
   // A list of UserTaskRun Objects
   repeated UserTaskRun results = 1;
+}
+
+message ScheduledWfRunIdList {
+  repeated ScheduledWfRunId results = 1;
+}
+
+message SearchScheduledWfRunsRequest {
+  string wf_spec_name = 1;
+  optional int32 major_version = 2;
+  optional int32 revision = 3;
 }
 
 // Describes a specific task worker

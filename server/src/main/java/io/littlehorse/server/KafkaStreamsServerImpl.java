@@ -130,10 +130,12 @@ import io.littlehorse.sdk.common.proto.ResumeWfRunRequest;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.ScheduleWfRequest;
 import io.littlehorse.sdk.common.proto.ScheduledWfRun;
+import io.littlehorse.sdk.common.proto.ScheduledWfRunIdList;
 import io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.SearchExternalEventRequest;
 import io.littlehorse.sdk.common.proto.SearchNodeRunRequest;
 import io.littlehorse.sdk.common.proto.SearchPrincipalRequest;
+import io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest;
 import io.littlehorse.sdk.common.proto.SearchTaskDefRequest;
 import io.littlehorse.sdk.common.proto.SearchTaskRunRequest;
 import io.littlehorse.sdk.common.proto.SearchTenantRequest;
@@ -193,6 +195,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExterna
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchNodeRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchPrincipalRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchScheduledWfRunsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTaskDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTenantRequestModel;
@@ -212,6 +215,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchEx
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchPrincipalRequestReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchScheduledWfRunsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTenantRequestReply;
@@ -512,6 +516,14 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         ListUserTaskRunRequestModel requestModel =
                 LHSerializable.fromProto(req, ListUserTaskRunRequestModel.class, requestContext());
         handleScan(requestModel, ctx, ListUserTaskRunReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void searchScheduledWf(SearchScheduledWfRunsRequest req, StreamObserver<ScheduledWfRunIdList> ctx) {
+        SearchScheduledWfRunsRequestModel requestModel =
+                LHSerializable.fromProto(req, SearchScheduledWfRunsRequestModel.class, requestContext());
+        handleScan(requestModel, ctx, SearchScheduledWfRunsReply.class);
     }
 
     @Override

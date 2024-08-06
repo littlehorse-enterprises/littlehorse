@@ -126,6 +126,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 | [ScheduleWfRequest](#schedulewfrequest) | [ScheduledWfRun](#scheduledwfrun) |  |
 
+### RPC `SearchScheduledWf` {#searchscheduledwf}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+| [SearchScheduledWfRunsRequest](#searchscheduledwfrunsrequest) | [ScheduledWfRunIdList](#scheduledwfrunidlist) |  |
+
 ### RPC `GetWfRun` {#getwfrun}
 
 | Request Type | Response Type | Description |
@@ -1996,6 +2002,19 @@ This is used and handled internally by the Task Worker SDK.
 
 
 
+### Message `ScheduledWfRunIdList` {#scheduledwfrunidlist}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `results` | repeated| [ScheduledWfRunId](#scheduledwfrunid) |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `SearchExternalEventDefRequest` {#searchexternaleventdefrequest}
 
 Search for ExternalEventDefs based on certain criteria.
@@ -2065,6 +2084,21 @@ Search for Principals based on certain criteria.
 | `latest_start` | optional| google.protobuf.Timestamp | Specifies to return only Principals's created before this time |
 | `isAdmin` | oneof `principal_criteria`| bool | List only Principals that are admins |
 | `tenantId` | oneof `principal_criteria`| string | List Principals associated with this Tenant ID |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchScheduledWfRunsRequest` {#searchscheduledwfrunsrequest}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `wf_spec_name` | | string |  |
+| `major_version` | optional| int32 |  |
+| `revision` | optional| int32 |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
