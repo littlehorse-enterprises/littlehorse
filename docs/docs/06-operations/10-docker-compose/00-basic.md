@@ -47,11 +47,11 @@ services:
       - "2023:2023"
   dashboard:
     container_name: lh-dashboard
-    image: ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:0.10.0
+    image: ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:0.10.1
     environment:
-      LHD_API_HOST: littlehorse
-      LHD_API_PORT: 2023
-      LHD_OAUTH_ENABLED: false
+      LHC_API_HOST: littlehorse
+      LHC_API_PORT: 2023
+      LHC_OAUTH_ENABLED: false
     restart: on-failure
     healthcheck:
       test: curl -f localhost:8080
