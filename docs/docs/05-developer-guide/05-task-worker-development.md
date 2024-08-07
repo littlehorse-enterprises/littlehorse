@@ -137,7 +137,7 @@ The Task Worker library has some features that make advanced use cases easier.
 
 ### Throwing Workflow `EXCEPTION`s
 
-As described in our [Failure Handling Concept Docs](/docs/concepts/exception-handling#business-exceptions), LittleHorse distinguishes between technical `ERROR`s and business `EXCEPTION`s:
+As described in our [Failure Handling Concept Docs](../04-concepts/01-workflows.md#failure-handling), LittleHorse distinguishes between technical `ERROR`s and business `EXCEPTION`s:
 
 * A technical `ERROR` denotes a technological failure, such as a Timeout caused by a network outage, or an unexpected error returned by your Task Worker.
 * A Business `EXCEPTION` represents an unhappy-path case in your business logic, such as when an item is out of stock or a credit card got declined.

@@ -349,7 +349,8 @@ private static final long serialVersionUID = 0L;
   public static final int INT_FIELD_NUMBER = 7;
   /**
    * <pre>
-   * A 64-bit integer.
+   * The `INT` variable type is stored as a 64-bit integer. The
+   * `INT` can be cast to a `DOUBLE`.
    * </pre>
    *
    * <code>int64 int = 7;</code>
@@ -361,7 +362,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * A 64-bit integer.
+   * The `INT` variable type is stored as a 64-bit integer. The
+   * `INT` can be cast to a `DOUBLE`.
    * </pre>
    *
    * <code>int64 int = 7;</code>
@@ -1404,7 +1406,8 @@ private static final long serialVersionUID = 0L;
 
     /**
      * <pre>
-     * A 64-bit integer.
+     * The `INT` variable type is stored as a 64-bit integer. The
+     * `INT` can be cast to a `DOUBLE`.
      * </pre>
      *
      * <code>int64 int = 7;</code>
@@ -1415,7 +1418,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * A 64-bit integer.
+     * The `INT` variable type is stored as a 64-bit integer. The
+     * `INT` can be cast to a `DOUBLE`.
      * </pre>
      *
      * <code>int64 int = 7;</code>
@@ -1429,7 +1433,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * A 64-bit integer.
+     * The `INT` variable type is stored as a 64-bit integer. The
+     * `INT` can be cast to a `DOUBLE`.
      * </pre>
      *
      * <code>int64 int = 7;</code>
@@ -1445,7 +1450,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * A 64-bit integer.
+     * The `INT` variable type is stored as a 64-bit integer. The
+     * `INT` can be cast to a `DOUBLE`.
      * </pre>
      *
      * <code>int64 int = 7;</code>

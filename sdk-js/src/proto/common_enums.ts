@@ -8,12 +8,25 @@
 
 /** Status used for WfRun, ThreadRun, and NodeRun */
 export enum LHStatus {
+  /** STARTING - The entity is starting. */
   STARTING = "STARTING",
+  /** RUNNING - The entity is running. */
   RUNNING = "RUNNING",
+  /** COMPLETED - The entity is completed. This is a terminal state. */
   COMPLETED = "COMPLETED",
+  /**
+   * HALTING - The entity will move to `HALTED` as soon as all preconditions for halting are
+   * satisfied.
+   */
   HALTING = "HALTING",
+  /** HALTED - The entity is halted, either by user intervention or by the workflow scheduler. */
   HALTED = "HALTED",
+  /**
+   * ERROR - The entity has failed due to a technical failure, such as a type conversion error,
+   * a task timeout due to network failure, or a task worker crash.
+   */
   ERROR = "ERROR",
+  /** EXCEPTION - The entity has failed due to a business exception defined by the user. */
   EXCEPTION = "EXCEPTION",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
@@ -256,19 +269,39 @@ export function metricsWindowLengthToNumber(object: MetricsWindowLength): number
  * VariableValue.
  */
 export enum VariableType {
-  /** JSON_OBJ - An object represented as a json string. */
+  /**
+   * JSON_OBJ - An object represented as a json string. <br/>
+   *
+   * The `JSON_OBJ` variable allows you to store complex objects in the JSON format.
+   * When using the Java and GoLang SDK's, the `JSON_OBJ` variable type is often
+   * used transparently to the user. For example, the Java Task Worker SDK can
+   * inspect your method signature and automatically deserialize an input variable
+   * into a POJO.
+   */
   JSON_OBJ = "JSON_OBJ",
-  /** JSON_ARR - A list represented as a json array string. */
+  /**
+   * JSON_ARR - The `JSON_ARR` variable allows you to store collections of objects as a JSON
+   * array. The behavior is similar to the `JSON_OBJ` variable type.
+   */
   JSON_ARR = "JSON_ARR",
-  /** DOUBLE - A 64-bit floating point number. */
+  /**
+   * DOUBLE - The `DOUBLE` variable type is a 64-bit floating point number. It can
+   * be cast to an `INT`.
+   */
   DOUBLE = "DOUBLE",
-  /** BOOL - A boolean */
+  /** BOOL - Boolean denotes a simple boolean switch. */
   BOOL = "BOOL",
-  /** STR - A string */
+  /**
+   * STR - The `STR` variable type is stored as a String. `INT`, `DOUBLE`,
+   * and `BOOL` variables can be cast to a `STR`.
+   */
   STR = "STR",
-  /** INT - A 64-bit integer */
+  /**
+   * INT - The `INT` variable type is stored as a 64-bit integer. The
+   * `INT` can be cast to a `DOUBLE`.
+   */
   INT = "INT",
-  /** BYTES - A byte array */
+  /** BYTES - The `BYTES` variable type allows you to store an arbitrary byte string. */
   BYTES = "BYTES",
   UNRECOGNIZED = "UNRECOGNIZED",
 }

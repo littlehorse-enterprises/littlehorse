@@ -36,7 +36,10 @@ export interface VariableValue {
   str?:
     | string
     | undefined;
-  /** A 64-bit integer. */
+  /**
+   * The `INT` variable type is stored as a 64-bit integer. The
+   * `INT` can be cast to a `DOUBLE`.
+   */
   int?:
     | number
     | undefined;
