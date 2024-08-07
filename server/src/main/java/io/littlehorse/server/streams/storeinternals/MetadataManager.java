@@ -62,14 +62,15 @@ public class MetadataManager extends ReadOnlyMetadataManager {
         StoredGetable<U, T> toStore = new StoredGetable<U, T>(getable);
         tenantStore.put(toStore);
         for (Tag tag : getable.getIndexEntries()) {
+            log.info("Tag created: " + tag.getFullStoreKey());
             tenantStore.put(tag);
         }
     }
 
     public <U extends Message, T extends MetadataGetable<U>> void delete(MetadataId<?, U, T> id) {
+        log.info("trying to delete " + id.getStoreableKey());
         @SuppressWarnings("unchecked")
         StoredGetable<U, T> storeResult = tenantStore.get(id.getStoreableKey(), StoredGetable.class);
-        log.trace("trying to delete " + id.getStoreableKey());
 
         if (storeResult == null) {
             throw new LHApiException(

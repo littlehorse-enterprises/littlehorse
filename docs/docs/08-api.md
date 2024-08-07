@@ -34,6 +34,8 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 
 
+
+
 ### RPC `PutTaskDef` {#puttaskdef}
 
 | Request Type | Response Type | Description |
@@ -117,6 +119,24 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
 |  [RunWfRequest](#runwfrequest)  |  [WfRun](#wfrun)  | Runs a WfSpec to create a WfRun. |
+
+### RPC `ScheduleWf` {#schedulewf}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [ScheduleWfRequest](#schedulewfrequest)  |  [ScheduledWfRun](#scheduledwfrun)  |  |
+
+### RPC `SearchScheduledWf` {#searchscheduledwf}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [SearchScheduledWfRunsRequest](#searchscheduledwfrunsrequest)  |  [ScheduledWfRunIdList](#scheduledwfrunidlist)  |  |
+
+### RPC `GetScheduledWf` {#getscheduledwf}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [ScheduledWfRunId](#scheduledwfrunid)  |  [ScheduledWfRun](#scheduledwfrun)  |  |
 
 ### RPC `GetWfRun` {#getwfrun}
 
@@ -357,6 +377,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
 |  [DeletePrincipalRequest](#deleteprincipalrequest)  |  .google.protobuf.Empty  | Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal` is the last remaining `Principal` with admin permissions. Admin permissions are defined as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope. |
+
+### RPC `DeleteScheduledWfRun` {#deletescheduledwfrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [DeleteScheduledWfRunRequest](#deletescheduledwfrunrequest)  |  .google.protobuf.Empty  |  |
 
 ### RPC `GetTaskDefMetricsWindow` {#gettaskdefmetricswindow}
 
@@ -1091,6 +1117,19 @@ ID for a Principal.
 
 
 
+### Message `ScheduledWfRunId` {#scheduledwfrunid}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `id` | | string |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `TaskDefId` {#taskdefid}
 
 ID for a TaskDef.
@@ -1276,6 +1315,41 @@ An ID for a WorkflowEvent.
 
 
 
+### Message `ScheduledWfRun` {#scheduledwfrun}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `id` | | [ScheduledWfRunId](#scheduledwfrunid) |  |
+| `wf_spec_id` | | [WfSpecId](#wfspecid) |  |
+| `variables` | map| [ScheduledWfRun.VariablesEntry](#scheduledwfrunvariablesentry) | A map from Variable Name to Values for those variables. The provided variables are passed as input to the Entrypoint ThreadRun. |
+| `parent_wf_run_id` | optional| [WfRunId](#wfrunid) |  |
+| `cron_expression` | | string |  |
+| `status` | | [ScheduleStatus](#schedulestatus) |  |
+| `created_at` | | google.protobuf.Timestamp |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ScheduledWfRun.VariablesEntry` {#scheduledwfrunvariablesentry}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `key` | | string |  |
+| `value` | | [VariableValue](#variablevalue) |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+
+
 ### Message `AwaitWorkflowEventRequest` {#awaitworkfloweventrequest}
 
 Request to await until a WorkflowEvent of a certain WorkflowEventDef on a certain WfRun
@@ -1313,6 +1387,19 @@ Deletes an ExternalEvent.
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
 | `id` | | [ExternalEventId](#externaleventid) | The ID of the ExternalEvent to delete. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `DeleteScheduledWfRunRequest` {#deletescheduledwfrunrequest}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `id` | | [ScheduledWfRunId](#scheduledwfrunid) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -1888,6 +1975,39 @@ Create a Workflow Run.
 
 
 
+### Message `ScheduleWfRequest` {#schedulewfrequest}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `id` | optional| string |  |
+| `wf_spec_name` | | string | The name of the WfSpec to run. |
+| `major_version` | optional| int32 | Optionally specify the major version of the WfSpec to run. This guarantees that the "signature" of the WfSpec (i.e. the required input variables, and searchable variables) will not change for this app. |
+| `revision` | optional| int32 | Optionally specify the specific revision of the WfSpec to run. It is not recommended to use this in practice, as the WfSpec logic should be de-coupled from the applications that run WfRun's. |
+| `variables` | map| [ScheduleWfRequest.VariablesEntry](#schedulewfrequestvariablesentry) | A map from Variable Name to Values for those variables. The provided variables are passed as input to the Entrypoint ThreadRun. |
+| `parent_wf_run_id` | optional| [WfRunId](#wfrunid) |  |
+| `cron_expression` | | string |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ScheduleWfRequest.VariablesEntry` {#schedulewfrequestvariablesentry}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `key` | | string |  |
+| `value` | | [VariableValue](#variablevalue) |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `ScheduledTask` {#scheduledtask}
 
 Message sent by server to Task Worker SDK specifying a specific TaskRun to be executed.
@@ -1902,6 +2022,19 @@ This is used and handled internally by the Task Worker SDK.
 | `variables` | repeated| [VarNameAndVal](#varnameandval) | Input variables for this TaskRun. |
 | `created_at` | | google.protobuf.Timestamp |  |
 | `source` | | [TaskRunSource](#taskrunsource) | Source of the TaskRun. Currently, there are two options: 1. A TASK node 2. A reminder task scheduled by a trigger on a User Task. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ScheduledWfRunIdList` {#scheduledwfrunidlist}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `results` | repeated| [ScheduledWfRunId](#scheduledwfrunid) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -1976,6 +2109,21 @@ Search for Principals based on certain criteria.
 | `latest_start` | optional| google.protobuf.Timestamp | Specifies to return only Principals's created before this time |
 | `isAdmin` | oneof `principal_criteria`| bool | List only Principals that are admins |
 | `tenantId` | oneof `principal_criteria`| string | List Principals associated with this Tenant ID |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchScheduledWfRunsRequest` {#searchscheduledwfrunsrequest}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `wf_spec_name` | | string |  |
+| `major_version` | optional| int32 |  |
+| `revision` | optional| int32 |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3732,6 +3880,22 @@ Status of a TaskRun.
 
 
 
+### Enum TimeUnit {#timeunit}
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| MILLISECOND | 0 |  |
+| SECOND | 1 |  |
+| MINUTE | 2 |  |
+| HOUR | 3 |  |
+| DAY | 4 |  |
+| WEEK | 5 |  |
+| MONTH | 6 |  |
+
+
+
+
 ### Enum VariableType {#variabletype}
 Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
 VariableValue.
@@ -3819,6 +3983,19 @@ The status of a single ThreadRun that we are waiting for.
 
 
  <!-- end Enums -->
+
+ <!-- end Enums -->
+
+
+
+### Enum ScheduleStatus {#schedulestatus}
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| STARTED | 0 |  |
+| SUSPENDED | 1 |  |
+
 
  <!-- end Enums -->
 

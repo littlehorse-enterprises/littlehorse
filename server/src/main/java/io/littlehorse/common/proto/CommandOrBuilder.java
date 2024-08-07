@@ -325,31 +325,46 @@ public interface CommandOrBuilder extends
   io.littlehorse.sdk.common.proto.RescueThreadRunRequestOrBuilder getRescueThreadRunOrBuilder();
 
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
    * @return Whether the deleteTaskWorkerGroup field is set.
    */
   boolean hasDeleteTaskWorkerGroup();
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
    * @return The deleteTaskWorkerGroup.
    */
   io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest getDeleteTaskWorkerGroup();
   /**
+   * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+   */
+  io.littlehorse.common.proto.DeleteTaskWorkerGroupRequestOrBuilder getDeleteTaskWorkerGroupOrBuilder();
+
+  /**
    * <pre>
    * TODO: Add SaveUserTask
    * </pre>
    *
-   * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
+   * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
+   * @return Whether the scheduleWfRun field is set.
    */
-  io.littlehorse.common.proto.DeleteTaskWorkerGroupRequestOrBuilder getDeleteTaskWorkerGroupOrBuilder();
+  boolean hasScheduleWfRun();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
+   * @return The scheduleWfRun.
+   */
+  io.littlehorse.common.proto.ScheduleWfRun getScheduleWfRun();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
+   */
+  io.littlehorse.common.proto.ScheduleWfRunOrBuilder getScheduleWfRunOrBuilder();
 
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

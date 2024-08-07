@@ -34,6 +34,9 @@ const (
 	LittleHorse_GetUserTaskDef_FullMethodName          = "/littlehorse.LittleHorse/GetUserTaskDef"
 	LittleHorse_GetLatestUserTaskDef_FullMethodName    = "/littlehorse.LittleHorse/GetLatestUserTaskDef"
 	LittleHorse_RunWf_FullMethodName                   = "/littlehorse.LittleHorse/RunWf"
+	LittleHorse_ScheduleWf_FullMethodName              = "/littlehorse.LittleHorse/ScheduleWf"
+	LittleHorse_SearchScheduledWf_FullMethodName       = "/littlehorse.LittleHorse/SearchScheduledWf"
+	LittleHorse_GetScheduledWf_FullMethodName          = "/littlehorse.LittleHorse/GetScheduledWf"
 	LittleHorse_GetWfRun_FullMethodName                = "/littlehorse.LittleHorse/GetWfRun"
 	LittleHorse_GetUserTaskRun_FullMethodName          = "/littlehorse.LittleHorse/GetUserTaskRun"
 	LittleHorse_AssignUserTaskRun_FullMethodName       = "/littlehorse.LittleHorse/AssignUserTaskRun"
@@ -74,6 +77,7 @@ const (
 	LittleHorse_DeleteUserTaskDef_FullMethodName       = "/littlehorse.LittleHorse/DeleteUserTaskDef"
 	LittleHorse_DeleteExternalEventDef_FullMethodName  = "/littlehorse.LittleHorse/DeleteExternalEventDef"
 	LittleHorse_DeletePrincipal_FullMethodName         = "/littlehorse.LittleHorse/DeletePrincipal"
+	LittleHorse_DeleteScheduledWfRun_FullMethodName    = "/littlehorse.LittleHorse/DeleteScheduledWfRun"
 	LittleHorse_GetTaskDefMetricsWindow_FullMethodName = "/littlehorse.LittleHorse/GetTaskDefMetricsWindow"
 	LittleHorse_GetWfSpecMetricsWindow_FullMethodName  = "/littlehorse.LittleHorse/GetWfSpecMetricsWindow"
 	LittleHorse_ListTaskDefMetrics_FullMethodName      = "/littlehorse.LittleHorse/ListTaskDefMetrics"
@@ -129,6 +133,9 @@ type LittleHorseClient interface {
 	GetLatestUserTaskDef(ctx context.Context, in *GetLatestUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDef, error)
 	// Runs a WfSpec to create a WfRun.
 	RunWf(ctx context.Context, in *RunWfRequest, opts ...grpc.CallOption) (*WfRun, error)
+	ScheduleWf(ctx context.Context, in *ScheduleWfRequest, opts ...grpc.CallOption) (*ScheduledWfRun, error)
+	SearchScheduledWf(ctx context.Context, in *SearchScheduledWfRunsRequest, opts ...grpc.CallOption) (*ScheduledWfRunIdList, error)
+	GetScheduledWf(ctx context.Context, in *ScheduledWfRunId, opts ...grpc.CallOption) (*ScheduledWfRun, error)
 	// Gets a WfRun. Although useful for development and debugging, this RPC is not often
 	// used by applications.
 	GetWfRun(ctx context.Context, in *WfRunId, opts ...grpc.CallOption) (*WfRun, error)
@@ -249,6 +256,7 @@ type LittleHorseClient interface {
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
 	// as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
 	DeletePrincipal(ctx context.Context, in *DeletePrincipalRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteScheduledWfRun(ctx context.Context, in *DeleteScheduledWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Returns TaskDef Metrics for a specific TaskDef and a specific time window.
 	GetTaskDefMetricsWindow(ctx context.Context, in *TaskDefMetricsQueryRequest, opts ...grpc.CallOption) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
@@ -397,6 +405,33 @@ func (c *littleHorseClient) GetLatestUserTaskDef(ctx context.Context, in *GetLat
 func (c *littleHorseClient) RunWf(ctx context.Context, in *RunWfRequest, opts ...grpc.CallOption) (*WfRun, error) {
 	out := new(WfRun)
 	err := c.cc.Invoke(ctx, LittleHorse_RunWf_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) ScheduleWf(ctx context.Context, in *ScheduleWfRequest, opts ...grpc.CallOption) (*ScheduledWfRun, error) {
+	out := new(ScheduledWfRun)
+	err := c.cc.Invoke(ctx, LittleHorse_ScheduleWf_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) SearchScheduledWf(ctx context.Context, in *SearchScheduledWfRunsRequest, opts ...grpc.CallOption) (*ScheduledWfRunIdList, error) {
+	out := new(ScheduledWfRunIdList)
+	err := c.cc.Invoke(ctx, LittleHorse_SearchScheduledWf_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetScheduledWf(ctx context.Context, in *ScheduledWfRunId, opts ...grpc.CallOption) (*ScheduledWfRun, error) {
+	out := new(ScheduledWfRun)
+	err := c.cc.Invoke(ctx, LittleHorse_GetScheduledWf_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -785,6 +820,15 @@ func (c *littleHorseClient) DeletePrincipal(ctx context.Context, in *DeletePrinc
 	return out, nil
 }
 
+func (c *littleHorseClient) DeleteScheduledWfRun(ctx context.Context, in *DeleteScheduledWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, LittleHorse_DeleteScheduledWfRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) GetTaskDefMetricsWindow(ctx context.Context, in *TaskDefMetricsQueryRequest, opts ...grpc.CallOption) (*TaskDefMetrics, error) {
 	out := new(TaskDefMetrics)
 	err := c.cc.Invoke(ctx, LittleHorse_GetTaskDefMetricsWindow_FullMethodName, in, out, opts...)
@@ -910,6 +954,9 @@ type LittleHorseServer interface {
 	GetLatestUserTaskDef(context.Context, *GetLatestUserTaskDefRequest) (*UserTaskDef, error)
 	// Runs a WfSpec to create a WfRun.
 	RunWf(context.Context, *RunWfRequest) (*WfRun, error)
+	ScheduleWf(context.Context, *ScheduleWfRequest) (*ScheduledWfRun, error)
+	SearchScheduledWf(context.Context, *SearchScheduledWfRunsRequest) (*ScheduledWfRunIdList, error)
+	GetScheduledWf(context.Context, *ScheduledWfRunId) (*ScheduledWfRun, error)
 	// Gets a WfRun. Although useful for development and debugging, this RPC is not often
 	// used by applications.
 	GetWfRun(context.Context, *WfRunId) (*WfRun, error)
@@ -1030,6 +1077,7 @@ type LittleHorseServer interface {
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
 	// as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
 	DeletePrincipal(context.Context, *DeletePrincipalRequest) (*emptypb.Empty, error)
+	DeleteScheduledWfRun(context.Context, *DeleteScheduledWfRunRequest) (*emptypb.Empty, error)
 	// Returns TaskDef Metrics for a specific TaskDef and a specific time window.
 	GetTaskDefMetricsWindow(context.Context, *TaskDefMetricsQueryRequest) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
@@ -1096,6 +1144,15 @@ func (UnimplementedLittleHorseServer) GetLatestUserTaskDef(context.Context, *Get
 }
 func (UnimplementedLittleHorseServer) RunWf(context.Context, *RunWfRequest) (*WfRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RunWf not implemented")
+}
+func (UnimplementedLittleHorseServer) ScheduleWf(context.Context, *ScheduleWfRequest) (*ScheduledWfRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ScheduleWf not implemented")
+}
+func (UnimplementedLittleHorseServer) SearchScheduledWf(context.Context, *SearchScheduledWfRunsRequest) (*ScheduledWfRunIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchScheduledWf not implemented")
+}
+func (UnimplementedLittleHorseServer) GetScheduledWf(context.Context, *ScheduledWfRunId) (*ScheduledWfRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetScheduledWf not implemented")
 }
 func (UnimplementedLittleHorseServer) GetWfRun(context.Context, *WfRunId) (*WfRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetWfRun not implemented")
@@ -1216,6 +1273,9 @@ func (UnimplementedLittleHorseServer) DeleteExternalEventDef(context.Context, *D
 }
 func (UnimplementedLittleHorseServer) DeletePrincipal(context.Context, *DeletePrincipalRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeletePrincipal not implemented")
+}
+func (UnimplementedLittleHorseServer) DeleteScheduledWfRun(context.Context, *DeleteScheduledWfRunRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteScheduledWfRun not implemented")
 }
 func (UnimplementedLittleHorseServer) GetTaskDefMetricsWindow(context.Context, *TaskDefMetricsQueryRequest) (*TaskDefMetrics, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTaskDefMetricsWindow not implemented")
@@ -1505,6 +1565,60 @@ func _LittleHorse_RunWf_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).RunWf(ctx, req.(*RunWfRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_ScheduleWf_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ScheduleWfRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).ScheduleWf(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_ScheduleWf_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).ScheduleWf(ctx, req.(*ScheduleWfRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_SearchScheduledWf_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchScheduledWfRunsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SearchScheduledWf(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SearchScheduledWf_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SearchScheduledWf(ctx, req.(*SearchScheduledWfRunsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetScheduledWf_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ScheduledWfRunId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetScheduledWf(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetScheduledWf_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetScheduledWf(ctx, req.(*ScheduledWfRunId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2237,6 +2351,24 @@ func _LittleHorse_DeletePrincipal_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_DeleteScheduledWfRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteScheduledWfRunRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).DeleteScheduledWfRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_DeleteScheduledWfRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).DeleteScheduledWfRun(ctx, req.(*DeleteScheduledWfRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_GetTaskDefMetricsWindow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(TaskDefMetricsQueryRequest)
 	if err := dec(in); err != nil {
@@ -2463,6 +2595,18 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_RunWf_Handler,
 		},
 		{
+			MethodName: "ScheduleWf",
+			Handler:    _LittleHorse_ScheduleWf_Handler,
+		},
+		{
+			MethodName: "SearchScheduledWf",
+			Handler:    _LittleHorse_SearchScheduledWf_Handler,
+		},
+		{
+			MethodName: "GetScheduledWf",
+			Handler:    _LittleHorse_GetScheduledWf_Handler,
+		},
+		{
 			MethodName: "GetWfRun",
 			Handler:    _LittleHorse_GetWfRun_Handler,
 		},
@@ -2617,6 +2761,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeletePrincipal",
 			Handler:    _LittleHorse_DeletePrincipal_Handler,
+		},
+		{
+			MethodName: "DeleteScheduledWfRun",
+			Handler:    _LittleHorse_DeleteScheduledWfRun_Handler,
 		},
 		{
 			MethodName: "GetTaskDefMetricsWindow",

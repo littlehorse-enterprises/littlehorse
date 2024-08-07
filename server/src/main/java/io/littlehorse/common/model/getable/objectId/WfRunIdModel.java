@@ -27,6 +27,11 @@ public class WfRunIdModel extends CoreObjectId<WfRunId, WfRun, WfRunModel> {
         this.id = id;
     }
 
+    public WfRunIdModel(String id, WfRunIdModel parentWfRunId) {
+        this.id = id;
+        this.parentWfRunId = parentWfRunId;
+    }
+
     public String getId() {
         return id;
     }

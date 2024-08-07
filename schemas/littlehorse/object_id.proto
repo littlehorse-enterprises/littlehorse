@@ -189,3 +189,7 @@ message TenantId {
   // The Tenant ID.
   string id = 1;
 }
+
+message ScheduledWfRunId {
+  string id = 1;
+}

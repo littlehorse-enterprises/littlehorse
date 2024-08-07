@@ -42,6 +42,7 @@ enum GetableClassEnum {
     TENANT = 14;
     WORKFLOW_EVENT_DEF = 15;
     WORKFLOW_EVENT = 16;
+    SCHEDULED_WF_RUN = 17;
 }
 
 message AttributePb {

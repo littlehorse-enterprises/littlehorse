@@ -24,6 +24,7 @@ import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.TriggeredTaskRun;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskWorkerGroupRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.ScheduleWfRunCommandModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.Command.CommandCase;
 import io.littlehorse.common.proto.LHStoreType;
@@ -62,6 +63,7 @@ public class CommandModel extends AbstractCommand<Command> {
     private BulkUpdateJobModel bulkJob;
     private RescueThreadRunRequestModel rescueThreadRun;
     private DeleteTaskWorkerGroupRequestModel deleteTaskWorkerGroup;
+    private ScheduleWfRunCommandModel scheduleWfRun;
 
     public Class<Command> getProtoBaseClass() {
         return Command.class;
@@ -148,6 +150,9 @@ public class CommandModel extends AbstractCommand<Command> {
             case DELETE_TASK_WORKER_GROUP:
                 out.setDeleteTaskWorkerGroup(deleteTaskWorkerGroup.toProto());
                 break;
+            case SCHEDULE_WF_RUN:
+                out.setScheduleWfRun(scheduleWfRun.toProto());
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -232,6 +237,10 @@ public class CommandModel extends AbstractCommand<Command> {
                 deleteTaskWorkerGroup = LHSerializable.fromProto(
                         p.getDeleteTaskWorkerGroup(), DeleteTaskWorkerGroupRequestModel.class, context);
                 break;
+            case SCHEDULE_WF_RUN:
+                scheduleWfRun =
+                        LHSerializable.fromProto(p.getScheduleWfRun(), ScheduleWfRunCommandModel.class, context);
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -280,6 +289,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return rescueThreadRun;
             case DELETE_TASK_WORKER_GROUP:
                 return deleteTaskWorkerGroup;
+            case SCHEDULE_WF_RUN:
+                return scheduleWfRun;
             case COMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -347,6 +358,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(DeleteTaskWorkerGroupRequestModel.class)) {
             type = CommandCase.DELETE_TASK_WORKER_GROUP;
             deleteTaskWorkerGroup = (DeleteTaskWorkerGroupRequestModel) cmd;
+        } else if (cls.equals(ScheduleWfRunCommandModel.class)) {
+            type = CommandCase.SCHEDULE_WF_RUN;
+            scheduleWfRun = (ScheduleWfRunCommandModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

@@ -10,6 +10,7 @@ import "object_id.proto";
 import "common_wfspec.proto";
 import "user_tasks.proto";
 import "common_enums.proto";
+import "variable.proto";
 import "storage.proto";
 import "acls.proto";
 import "job.proto";
@@ -41,8 +42,23 @@ message Command {
         TaskAttemptRetryReady task_attempt_retry_ready = 21;
         RescueThreadRunRequest rescue_thread_run = 22;
         DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;
+        ScheduleWfRun schedule_wf_run = 24;
         // TODO: Add SaveUserTask
     }
+}
+
+message ScheduleWfRun {
+    string scheduled_command_id = 1;
+    // The name of the WfSpec to run.
+    WfRunId wf_run_id = 3;
+    WfSpecId wf_spec_id = 4;
+    // A map from Variable Name to Values for those variables. The provided variables are
+    // passed as input to the Entrypoint ThreadRun.
+    map<string, VariableValue> variables = 5;
+
+    optional WfRunId parent_wf_run_id = 6;
+
+    string cron_expression = 7;
 }
 
 // This flows through the Metadata Command Topic
@@ -64,6 +80,8 @@ message MetadataCommand {
         DeletePrincipalRequest delete_principal = 13;
         PutTenantRequest put_tenant = 14;
         PutWorkflowEventDefRequest workflow_event_def = 15;
+        ScheduleWfRequest schedule_wf_run_request = 16;
+        DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;
         // TODO: DeleteTenant
     }
 }

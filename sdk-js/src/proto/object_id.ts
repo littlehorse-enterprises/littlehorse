@@ -213,6 +213,10 @@ export interface TenantId {
   id: string;
 }
 
+export interface ScheduledWfRunId {
+  id: string;
+}
+
 function createBaseWfSpecId(): WfSpecId {
   return { name: "", majorVersion: 0, revision: 0 };
 }
@@ -1195,6 +1199,51 @@ export const TenantId = {
   },
   fromPartial(object: DeepPartial<TenantId>): TenantId {
     const message = createBaseTenantId();
+    message.id = object.id ?? "";
+    return message;
+  },
+};
+
+function createBaseScheduledWfRunId(): ScheduledWfRunId {
+  return { id: "" };
+}
+
+export const ScheduledWfRunId = {
+  encode(message: ScheduledWfRunId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ScheduledWfRunId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseScheduledWfRunId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ScheduledWfRunId>): ScheduledWfRunId {
+    return ScheduledWfRunId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ScheduledWfRunId>): ScheduledWfRunId {
+    const message = createBaseScheduledWfRunId();
     message.id = object.id ?? "";
     return message;
   },

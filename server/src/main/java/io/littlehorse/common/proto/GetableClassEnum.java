@@ -76,6 +76,10 @@ public enum GetableClassEnum
    * <code>WORKFLOW_EVENT = 16;</code>
    */
   WORKFLOW_EVENT(16),
+  /**
+   * <code>SCHEDULED_WF_RUN = 17;</code>
+   */
+  SCHEDULED_WF_RUN(17),
   UNRECOGNIZED(-1),
   ;
 
@@ -147,6 +151,10 @@ public enum GetableClassEnum
    * <code>WORKFLOW_EVENT = 16;</code>
    */
   public static final int WORKFLOW_EVENT_VALUE = 16;
+  /**
+   * <code>SCHEDULED_WF_RUN = 17;</code>
+   */
+  public static final int SCHEDULED_WF_RUN_VALUE = 17;
 
 
   public final int getNumber() {
@@ -190,6 +198,7 @@ public enum GetableClassEnum
       case 14: return TENANT;
       case 15: return WORKFLOW_EVENT_DEF;
       case 16: return WORKFLOW_EVENT;
+      case 17: return SCHEDULED_WF_RUN;
       default: return null;
     }
   }
