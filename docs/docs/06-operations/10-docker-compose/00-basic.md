@@ -27,7 +27,7 @@ services:
       KAFKA_KRAFT_CLUSTER_ID: abcdefghijklmnopqrstuv
     restart: on-failure
     healthcheck:
-      test: kafka-topics.sh --bootstrap-server kafka:9092 --list > /dev/null 2>&1
+      test: /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --list > /dev/null 2>&1
       interval: 5s
   littlehorse:
     container_name: lh-server
@@ -53,11 +53,9 @@ services:
       LHC_API_PORT: 2023
       LHC_OAUTH_ENABLED: false
     restart: on-failure
-    healthcheck:
-      test: curl -f localhost:8080
-      interval: 5s
-    ports:
-      - "8080:8080"
+    depends_on:
+      littlehorse:
+        condition: service_healthy
 ```
 
 ## Using the Example
