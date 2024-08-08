@@ -43,6 +43,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.TaskDef.class, io.littlehorse.sdk.common.proto.TaskDef.Builder.class);
   }
 
+  private int bitField0_;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.TaskDefId id_;
   /**
@@ -180,6 +181,32 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
 
+  public static final int SCHEMA_OUTPUT_FIELD_NUMBER = 4;
+  private io.littlehorse.sdk.common.proto.TaskDefOutputSchema schemaOutput_;
+  /**
+   * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+   * @return Whether the schemaOutput field is set.
+   */
+  @java.lang.Override
+  public boolean hasSchemaOutput() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+   * @return The schemaOutput.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.TaskDefOutputSchema getSchemaOutput() {
+    return schemaOutput_ == null ? io.littlehorse.sdk.common.proto.TaskDefOutputSchema.getDefaultInstance() : schemaOutput_;
+  }
+  /**
+   * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder getSchemaOutputOrBuilder() {
+    return schemaOutput_ == null ? io.littlehorse.sdk.common.proto.TaskDefOutputSchema.getDefaultInstance() : schemaOutput_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -203,6 +230,9 @@ private static final long serialVersionUID = 0L;
     if (createdAt_ != null) {
       output.writeMessage(3, getCreatedAt());
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(4, getSchemaOutput());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -223,6 +253,10 @@ private static final long serialVersionUID = 0L;
     if (createdAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getCreatedAt());
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, getSchemaOutput());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -251,6 +285,11 @@ private static final long serialVersionUID = 0L;
       if (!getCreatedAt()
           .equals(other.getCreatedAt())) return false;
     }
+    if (hasSchemaOutput() != other.hasSchemaOutput()) return false;
+    if (hasSchemaOutput()) {
+      if (!getSchemaOutput()
+          .equals(other.getSchemaOutput())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -273,6 +312,10 @@ private static final long serialVersionUID = 0L;
     if (hasCreatedAt()) {
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
+    }
+    if (hasSchemaOutput()) {
+      hash = (37 * hash) + SCHEMA_OUTPUT_FIELD_NUMBER;
+      hash = (53 * hash) + getSchemaOutput().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -397,13 +440,22 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.TaskDef.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getIdFieldBuilder();
+        getInputVarsFieldBuilder();
+        getCreatedAtFieldBuilder();
+        getSchemaOutputFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -425,6 +477,11 @@ private static final long serialVersionUID = 0L;
       if (createdAtBuilder_ != null) {
         createdAtBuilder_.dispose();
         createdAtBuilder_ = null;
+      }
+      schemaOutput_ = null;
+      if (schemaOutputBuilder_ != null) {
+        schemaOutputBuilder_.dispose();
+        schemaOutputBuilder_ = null;
       }
       return this;
     }
@@ -482,6 +539,14 @@ private static final long serialVersionUID = 0L;
             ? createdAt_
             : createdAtBuilder_.build();
       }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.schemaOutput_ = schemaOutputBuilder_ == null
+            ? schemaOutput_
+            : schemaOutputBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -560,6 +625,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
       }
+      if (other.hasSchemaOutput()) {
+        mergeSchemaOutput(other.getSchemaOutput());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -613,6 +681,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 34: {
+              input.readMessage(
+                  getSchemaOutputFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1250,6 +1325,125 @@ private static final long serialVersionUID = 0L;
         createdAt_ = null;
       }
       return createdAtBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.TaskDefOutputSchema schemaOutput_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.TaskDefOutputSchema, io.littlehorse.sdk.common.proto.TaskDefOutputSchema.Builder, io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder> schemaOutputBuilder_;
+    /**
+     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+     * @return Whether the schemaOutput field is set.
+     */
+    public boolean hasSchemaOutput() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+     * @return The schemaOutput.
+     */
+    public io.littlehorse.sdk.common.proto.TaskDefOutputSchema getSchemaOutput() {
+      if (schemaOutputBuilder_ == null) {
+        return schemaOutput_ == null ? io.littlehorse.sdk.common.proto.TaskDefOutputSchema.getDefaultInstance() : schemaOutput_;
+      } else {
+        return schemaOutputBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+     */
+    public Builder setSchemaOutput(io.littlehorse.sdk.common.proto.TaskDefOutputSchema value) {
+      if (schemaOutputBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        schemaOutput_ = value;
+      } else {
+        schemaOutputBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+     */
+    public Builder setSchemaOutput(
+        io.littlehorse.sdk.common.proto.TaskDefOutputSchema.Builder builderForValue) {
+      if (schemaOutputBuilder_ == null) {
+        schemaOutput_ = builderForValue.build();
+      } else {
+        schemaOutputBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+     */
+    public Builder mergeSchemaOutput(io.littlehorse.sdk.common.proto.TaskDefOutputSchema value) {
+      if (schemaOutputBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) != 0) &&
+          schemaOutput_ != null &&
+          schemaOutput_ != io.littlehorse.sdk.common.proto.TaskDefOutputSchema.getDefaultInstance()) {
+          getSchemaOutputBuilder().mergeFrom(value);
+        } else {
+          schemaOutput_ = value;
+        }
+      } else {
+        schemaOutputBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+     */
+    public Builder clearSchemaOutput() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      schemaOutput_ = null;
+      if (schemaOutputBuilder_ != null) {
+        schemaOutputBuilder_.dispose();
+        schemaOutputBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.TaskDefOutputSchema.Builder getSchemaOutputBuilder() {
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return getSchemaOutputFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder getSchemaOutputOrBuilder() {
+      if (schemaOutputBuilder_ != null) {
+        return schemaOutputBuilder_.getMessageOrBuilder();
+      } else {
+        return schemaOutput_ == null ?
+            io.littlehorse.sdk.common.proto.TaskDefOutputSchema.getDefaultInstance() : schemaOutput_;
+      }
+    }
+    /**
+     * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.TaskDefOutputSchema, io.littlehorse.sdk.common.proto.TaskDefOutputSchema.Builder, io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder> 
+        getSchemaOutputFieldBuilder() {
+      if (schemaOutputBuilder_ == null) {
+        schemaOutputBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.TaskDefOutputSchema, io.littlehorse.sdk.common.proto.TaskDefOutputSchema.Builder, io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder>(
+                getSchemaOutput(),
+                getParentForChildren(),
+                isClean());
+        schemaOutput_ = null;
+      }
+      return schemaOutputBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

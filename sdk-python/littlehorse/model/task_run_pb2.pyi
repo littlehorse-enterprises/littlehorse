@@ -36,12 +36,14 @@ class TaskRun(_message.Message):
     def __init__(self, id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., attempts: _Optional[_Iterable[_Union[TaskAttempt, _Mapping]]] = ..., input_variables: _Optional[_Iterable[_Union[VarNameAndVal, _Mapping]]] = ..., source: _Optional[_Union[TaskRunSource, _Mapping]] = ..., scheduled_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., timeout_seconds: _Optional[int] = ..., total_attempts: _Optional[int] = ..., exponential_backoff: _Optional[_Union[_common_wfspec_pb2.ExponentialBackoffRetryPolicy, _Mapping]] = ...) -> None: ...
 
 class VarNameAndVal(_message.Message):
-    __slots__ = ["var_name", "value"]
+    __slots__ = ["var_name", "value", "masked"]
     VAR_NAME_FIELD_NUMBER: _ClassVar[int]
     VALUE_FIELD_NUMBER: _ClassVar[int]
+    MASKED_FIELD_NUMBER: _ClassVar[int]
     var_name: str
     value: _variable_pb2.VariableValue
-    def __init__(self, var_name: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    masked: bool
+    def __init__(self, var_name: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked: bool = ...) -> None: ...
 
 class TaskAttempt(_message.Message):
     __slots__ = ["log_output", "schedule_time", "start_time", "end_time", "task_worker_id", "task_worker_version", "status", "output", "error", "exception"]

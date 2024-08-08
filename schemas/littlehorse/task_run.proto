@@ -61,6 +61,7 @@ message VarNameAndVal {
 
   // The value of the variable for this TaskRun.
   VariableValue value = 2;
+  bool masked = 3;
 }
 
 // A single time that a TaskRun was scheduled for execution on a Task Queue.

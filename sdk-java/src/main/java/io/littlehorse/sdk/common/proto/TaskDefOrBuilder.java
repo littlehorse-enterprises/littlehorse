@@ -104,4 +104,19 @@ public interface TaskDefOrBuilder extends
    * <code>.google.protobuf.Timestamp created_at = 3;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
+
+  /**
+   * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+   * @return Whether the schemaOutput field is set.
+   */
+  boolean hasSchemaOutput();
+  /**
+   * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+   * @return The schemaOutput.
+   */
+  io.littlehorse.sdk.common.proto.TaskDefOutputSchema getSchemaOutput();
+  /**
+   * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder getSchemaOutputOrBuilder();
 }

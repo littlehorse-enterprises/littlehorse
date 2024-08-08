@@ -2,8 +2,11 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
+import io.littlehorse.sdk.common.proto.TaskDefOutputSchema;
+import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -21,6 +24,7 @@ public class LHTaskSignature {
     String taskDefName;
     String lhTaskMethodAnnotationValue;
     Object executable;
+    TaskDefOutputSchema outputSchema;
 
     public LHTaskSignature(String taskDefName, Object executable, String lhTaskMethodAnnotationValue)
             throws TaskSchemaMismatchError {
@@ -54,7 +58,18 @@ public class LHTaskSignature {
                     + " on "
                     + executable.getClass());
         }
-
+        VariableType returnType;
+        if (taskMethod.isAnnotationPresent(LHType.class)) {
+            returnType = taskMethod.getAnnotation(LHType.class).value();
+        } else {
+            returnType = LHLibUtil.javaClassToLHVarType(taskMethod.getReturnType());
+        }
+        outputSchema = TaskDefOutputSchema.newBuilder()
+                .setValueDef(VariableDef.newBuilder()
+                        .setType(returnType)
+                        .setName("output")
+                        .build())
+                .build();
         for (int i = 0; i < taskMethod.getParameterCount(); i++) {
             Parameter param = taskMethod.getParameters()[i];
             if (param.getType().equals(WorkerContext.class)) {
@@ -65,7 +80,12 @@ public class LHTaskSignature {
                     continue; // could also be `break;`
                 }
             }
-            VariableType paramLHType = LHLibUtil.javaClassToLHVarType(param.getType());
+            VariableType paramLHType;
+            if (param.isAnnotationPresent(LHType.class)) {
+                paramLHType = param.getAnnotation(LHType.class).value();
+            } else {
+                paramLHType = LHLibUtil.javaClassToLHVarType(param.getType());
+            }
 
             if (!param.isNamePresent()) {
                 log.warn("Was unable to inspect parameter names usingreflection; please compile with"
@@ -99,6 +119,10 @@ public class LHTaskSignature {
 
     public List<String> getVarNames() {
         return varNames;
+    }
+
+    public TaskDefOutputSchema getOutputSchema() {
+        return outputSchema;
     }
 
     @Override

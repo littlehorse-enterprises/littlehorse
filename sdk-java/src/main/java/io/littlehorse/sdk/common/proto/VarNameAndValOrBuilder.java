@@ -53,4 +53,10 @@ public interface VarNameAndValOrBuilder extends
    * <code>.littlehorse.VariableValue value = 2;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getValueOrBuilder();
+
+  /**
+   * <code>bool masked = 3;</code>
+   * @return The masked.
+   */
+  boolean getMasked();
 }

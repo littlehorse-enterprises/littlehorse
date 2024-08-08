@@ -109,6 +109,8 @@ enum VariableType {
 
   // The `BYTES` variable type allows you to store an arbitrary byte string.
   BYTES = 6;
+
+  MASK = 7;
 }
 
 // This enum is all of the types of technical failure that can occur in a WfRun.

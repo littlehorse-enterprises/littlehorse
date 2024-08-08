@@ -21,4 +21,10 @@ message TaskDef {
 
   // The time at which this TaskDef was created.
   google.protobuf.Timestamp created_at = 3;
+
+  optional TaskDefOutputSchema schema_output = 4;
+}
+
+message TaskDefOutputSchema {
+  VariableDef value_def = 1;
 }

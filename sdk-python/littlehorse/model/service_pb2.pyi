@@ -60,12 +60,14 @@ class PutWfSpecRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., thread_specs: _Optional[_Mapping[str, _wf_spec_pb2.ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[_wf_spec_pb2.WorkflowRetentionPolicy, _Mapping]] = ..., parent_wf_spec: _Optional[_Union[_wf_spec_pb2.WfSpec.ParentWfSpecReference, _Mapping]] = ..., allowed_updates: _Optional[_Union[AllowedUpdateType, str]] = ...) -> None: ...
 
 class PutTaskDefRequest(_message.Message):
-    __slots__ = ["name", "input_vars"]
+    __slots__ = ["name", "input_vars", "output_schema"]
     NAME_FIELD_NUMBER: _ClassVar[int]
     INPUT_VARS_FIELD_NUMBER: _ClassVar[int]
+    OUTPUT_SCHEMA_FIELD_NUMBER: _ClassVar[int]
     name: str
     input_vars: _containers.RepeatedCompositeFieldContainer[_common_wfspec_pb2.VariableDef]
-    def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ...) -> None: ...
+    output_schema: _task_def_pb2.TaskDefOutputSchema
+    def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., output_schema: _Optional[_Union[_task_def_pb2.TaskDefOutputSchema, _Mapping]] = ...) -> None: ...
 
 class PutWorkflowEventDefRequest(_message.Message):
     __slots__ = ["name", "type"]

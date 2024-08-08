@@ -303,6 +303,7 @@ export enum VariableType {
   INT = "INT",
   /** BYTES - The `BYTES` variable type allows you to store an arbitrary byte string. */
   BYTES = "BYTES",
+  MASK = "MASK",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -329,6 +330,9 @@ export function variableTypeFromJSON(object: any): VariableType {
     case 6:
     case "BYTES":
       return VariableType.BYTES;
+    case 7:
+    case "MASK":
+      return VariableType.MASK;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -352,6 +356,8 @@ export function variableTypeToNumber(object: VariableType): number {
       return 5;
     case VariableType.BYTES:
       return 6;
+    case VariableType.MASK:
+      return 7;
     case VariableType.UNRECOGNIZED:
     default:
       return -1;

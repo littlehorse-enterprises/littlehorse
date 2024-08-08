@@ -75,4 +75,19 @@ public interface PutTaskDefRequestOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableDefOrBuilder getInputVarsOrBuilder(
       int index);
+
+  /**
+   * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
+   * @return Whether the outputSchema field is set.
+   */
+  boolean hasOutputSchema();
+  /**
+   * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
+   * @return The outputSchema.
+   */
+  io.littlehorse.sdk.common.proto.TaskDefOutputSchema getOutputSchema();
+  /**
+   * <code>optional .littlehorse.TaskDefOutputSchema output_schema = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder getOutputSchemaOrBuilder();
 }

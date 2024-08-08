@@ -26,6 +26,9 @@ public class TaskDefBuilder {
             out.addInputVars(VariableDef.newBuilder().setName(varNames.get(i)).setType(varTypes.get(i)));
         }
         out.setName(this.signature.taskDefName);
+        if (signature.getOutputSchema() != null) {
+            out.setOutputSchema(signature.getOutputSchema());
+        }
 
         return out.build();
     }

@@ -128,6 +128,17 @@ private static final long serialVersionUID = 0L;
     return value_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : value_;
   }
 
+  public static final int MASKED_FIELD_NUMBER = 3;
+  private boolean masked_ = false;
+  /**
+   * <code>bool masked = 3;</code>
+   * @return The masked.
+   */
+  @java.lang.Override
+  public boolean getMasked() {
+    return masked_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -148,6 +159,9 @@ private static final long serialVersionUID = 0L;
     if (value_ != null) {
       output.writeMessage(2, getValue());
     }
+    if (masked_ != false) {
+      output.writeBool(3, masked_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -163,6 +177,10 @@ private static final long serialVersionUID = 0L;
     if (value_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getValue());
+    }
+    if (masked_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(3, masked_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -186,6 +204,8 @@ private static final long serialVersionUID = 0L;
       if (!getValue()
           .equals(other.getValue())) return false;
     }
+    if (getMasked()
+        != other.getMasked()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -203,6 +223,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + VALUE_FIELD_NUMBER;
       hash = (53 * hash) + getValue().hashCode();
     }
+    hash = (37 * hash) + MASKED_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getMasked());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -344,6 +367,7 @@ private static final long serialVersionUID = 0L;
         valueBuilder_.dispose();
         valueBuilder_ = null;
       }
+      masked_ = false;
       return this;
     }
 
@@ -384,6 +408,9 @@ private static final long serialVersionUID = 0L;
         result.value_ = valueBuilder_ == null
             ? value_
             : valueBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.masked_ = masked_;
       }
     }
 
@@ -439,6 +466,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasValue()) {
         mergeValue(other.getValue());
       }
+      if (other.getMasked() != false) {
+        setMasked(other.getMasked());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -477,6 +507,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
+            case 24: {
+              masked_ = input.readBool();
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 24
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -739,6 +774,38 @@ private static final long serialVersionUID = 0L;
         value_ = null;
       }
       return valueBuilder_;
+    }
+
+    private boolean masked_ ;
+    /**
+     * <code>bool masked = 3;</code>
+     * @return The masked.
+     */
+    @java.lang.Override
+    public boolean getMasked() {
+      return masked_;
+    }
+    /**
+     * <code>bool masked = 3;</code>
+     * @param value The masked to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMasked(boolean value) {
+
+      masked_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>bool masked = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearMasked() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      masked_ = false;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

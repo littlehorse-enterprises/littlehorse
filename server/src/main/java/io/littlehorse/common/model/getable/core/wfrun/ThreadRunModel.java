@@ -9,7 +9,6 @@ import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
-import io.littlehorse.common.model.getable.core.taskrun.VarNameAndValModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureBeingHandledModel;
@@ -20,10 +19,8 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.InterruptedMode
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.ParentHaltedModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingFailureHandlerHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingInterruptHaltReasonModel;
-import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.InterruptDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
@@ -753,36 +750,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public ThreadRunModel getParent() {
         if (parentThreadId == null) return null;
         return wfRun.getThreadRun(parentThreadId);
-    }
-
-    public List<VarNameAndValModel> assignVarsForNode(TaskNodeModel node) throws LHVarSubError {
-        List<VarNameAndValModel> out = new ArrayList<>();
-        TaskDefModel taskDef = node.getTaskDef(this, processorContext);
-
-        if (taskDef.inputVars.size() != node.getVariables().size()) {
-            throw new LHVarSubError(null, "Impossible: got different number of taskdef vars and node input vars");
-        }
-
-        for (int i = 0; i < taskDef.inputVars.size(); i++) {
-            VariableDefModel requiredVarDef = taskDef.inputVars.get(i);
-            VariableAssignmentModel assn = node.getVariables().get(i);
-            String varName = requiredVarDef.getName();
-            VariableValueModel val;
-
-            if (assn != null) {
-                val = assignVariable(assn);
-            } else {
-                throw new LHVarSubError(null, "Variable " + varName + " is unassigned.");
-            }
-            if (val.getType() != requiredVarDef.getType() && val.getType() != null) {
-                throw new LHVarSubError(
-                        null,
-                        "Variable " + varName + " should be " + requiredVarDef.getType() + " but is of type "
-                                + val.getType());
-            }
-            out.add(new VarNameAndValModel(varName, val));
-        }
-        return out;
     }
 
     public boolean isTerminated() {

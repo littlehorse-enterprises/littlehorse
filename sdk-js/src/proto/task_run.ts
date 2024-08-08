@@ -73,6 +73,7 @@ export interface VarNameAndVal {
   varName: string;
   /** The value of the variable for this TaskRun. */
   value: VariableValue | undefined;
+  masked: boolean;
 }
 
 /** A single time that a TaskRun was scheduled for execution on a Task Queue. */
@@ -328,7 +329,7 @@ export const TaskRun = {
 };
 
 function createBaseVarNameAndVal(): VarNameAndVal {
-  return { varName: "", value: undefined };
+  return { varName: "", value: undefined, masked: false };
 }
 
 export const VarNameAndVal = {
@@ -338,6 +339,9 @@ export const VarNameAndVal = {
     }
     if (message.value !== undefined) {
       VariableValue.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.masked !== false) {
+      writer.uint32(24).bool(message.masked);
     }
     return writer;
   },
@@ -363,6 +367,13 @@ export const VarNameAndVal = {
 
           message.value = VariableValue.decode(reader, reader.uint32());
           continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.masked = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -381,6 +392,7 @@ export const VarNameAndVal = {
     message.value = (object.value !== undefined && object.value !== null)
       ? VariableValue.fromPartial(object.value)
       : undefined;
+    message.masked = object.masked ?? false;
     return message;
   },
 };
