@@ -61,7 +61,7 @@ func StrToVarVal(input string, varType model.VariableType) (*model.VariableValue
 			out.Value = &model.VariableValue_Double{Double: tmp}
 		}
 
-	case model.VariableType_STR, model.VariableType_MASK:
+	case model.VariableType_STR:
 		out.Value = &model.VariableValue_Str{
 			Str: input,
 		}
