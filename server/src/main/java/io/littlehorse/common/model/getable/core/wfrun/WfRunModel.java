@@ -57,6 +57,7 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -651,5 +652,10 @@ public class WfRunModel extends CoreGetable<WfRun> {
         // child threads, so we need to signal to the other threads that they might
         // want to wake up. Ding Ding Ding! Get out of bed.
         advance(time);
+    }
+
+    private void startMigration() {
+        // TODO: For each ThreadRun, we should add the ThreadMigrationModel if there is one.
+        throw new NotImplementedException();
     }
 }
