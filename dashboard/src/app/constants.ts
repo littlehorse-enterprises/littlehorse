@@ -12,7 +12,6 @@ export const VARIABLE_TYPES: { [key in VariableType]: string } = {
   STR: 'String',
   INT: 'Integer',
   BYTES: 'Bytes',
-  MASK: 'Mask',
   UNRECOGNIZED: 'Unrecognized',
 }
 
