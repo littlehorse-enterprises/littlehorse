@@ -730,6 +730,7 @@ Declares a Variable.
 | `type` | | [VariableType](#variabletype) | The Type of the variable. |
 | `name` | | string | The name of the variable. |
 | `default_value` | optional| [VariableValue](#variablevalue) | Optional default value if the variable isn't set; for example, in a ThreadRun if you start a ThreadRun or WfRun without passing a variable in, then this is used. |
+| `masked_value` | | bool |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2544,6 +2545,7 @@ A single time that a TaskRun was scheduled for execution on a Task Queue.
 | `output` | oneof `result`| [VariableValue](#variablevalue) | Denotes the Task Function executed properly and returned an output. |
 | `error` | oneof `result`| [LHTaskError](#lhtaskerror) | An unexpected technical error was encountered. May or may not be retriable. |
 | `exception` | oneof `result`| [LHTaskException](#lhtaskexception) | The Task Function encountered a business problem and threw a technical exception. |
+| `masked_value` | | bool |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3763,7 +3765,6 @@ The `JSON_OBJ` variable allows you to store complex objects in the JSON format. 
 | STR | 4 | The `STR` variable type is stored as a String. `INT`, `DOUBLE`, and `BOOL` variables can be cast to a `STR`. |
 | INT | 5 | The `INT` variable type is stored as a 64-bit integer. The `INT` can be cast to a `DOUBLE`. |
 | BYTES | 6 | The `BYTES` variable type allows you to store an arbitrary byte string. |
-| MASK | 7 |  |
 
 
  <!-- end Enums -->

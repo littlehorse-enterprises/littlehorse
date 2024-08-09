@@ -3,6 +3,7 @@ package io.littlehorse.common.model.metadatacommand.subcommand;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefOutputSchemaModel;
@@ -62,6 +63,9 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         for (VariableDef entry : p.getInputVarsList()) {
             inputVars.add(VariableDefModel.fromProto(entry, context));
         }
+        if (p.hasOutputSchema()) {
+            outputSchema = LHSerializable.fromProto(p.getOutputSchema(), TaskDefOutputSchemaModel.class, context);
+        }
     }
 
     public boolean hasResponse() {
@@ -86,7 +90,9 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
                     Status.ALREADY_EXISTS,
                     MessageFormat.format("TaskDef [{0}] already exists and is immutable.", name));
         }
-
+        if (outputSchema != null) {
+            spec.setSchemaOutput(outputSchema);
+        }
         metadataManager.put(spec);
 
         return spec.toProto().build();

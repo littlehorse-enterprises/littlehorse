@@ -104,6 +104,8 @@ message TaskAttempt {
     // The Task Function encountered a business problem and threw a technical exception.
     LHTaskException exception = 11;
   }
+
+  bool masked_value = 12;
 }
 
 // The source of a TaskRun; i.e. why it was scheduled.

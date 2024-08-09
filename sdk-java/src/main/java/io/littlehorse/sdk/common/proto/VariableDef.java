@@ -162,6 +162,17 @@ private static final long serialVersionUID = 0L;
     return defaultValue_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : defaultValue_;
   }
 
+  public static final int MASKED_VALUE_FIELD_NUMBER = 4;
+  private boolean maskedValue_ = false;
+  /**
+   * <code>bool masked_value = 4;</code>
+   * @return The maskedValue.
+   */
+  @java.lang.Override
+  public boolean getMaskedValue() {
+    return maskedValue_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -185,6 +196,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(3, getDefaultValue());
     }
+    if (maskedValue_ != false) {
+      output.writeBool(4, maskedValue_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -204,6 +218,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getDefaultValue());
+    }
+    if (maskedValue_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(4, maskedValue_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -228,6 +246,8 @@ private static final long serialVersionUID = 0L;
       if (!getDefaultValue()
           .equals(other.getDefaultValue())) return false;
     }
+    if (getMaskedValue()
+        != other.getMaskedValue()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -247,6 +267,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + DEFAULT_VALUE_FIELD_NUMBER;
       hash = (53 * hash) + getDefaultValue().hashCode();
     }
+    hash = (37 * hash) + MASKED_VALUE_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getMaskedValue());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -395,6 +418,7 @@ private static final long serialVersionUID = 0L;
         defaultValueBuilder_.dispose();
         defaultValueBuilder_ = null;
       }
+      maskedValue_ = false;
       return this;
     }
 
@@ -440,6 +464,9 @@ private static final long serialVersionUID = 0L;
             ? defaultValue_
             : defaultValueBuilder_.build();
         to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.maskedValue_ = maskedValue_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -499,6 +526,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasDefaultValue()) {
         mergeDefaultValue(other.getDefaultValue());
       }
+      if (other.getMaskedValue() != false) {
+        setMaskedValue(other.getMaskedValue());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -542,6 +572,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 32: {
+              maskedValue_ = input.readBool();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 32
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -895,6 +930,38 @@ private static final long serialVersionUID = 0L;
         defaultValue_ = null;
       }
       return defaultValueBuilder_;
+    }
+
+    private boolean maskedValue_ ;
+    /**
+     * <code>bool masked_value = 4;</code>
+     * @return The maskedValue.
+     */
+    @java.lang.Override
+    public boolean getMaskedValue() {
+      return maskedValue_;
+    }
+    /**
+     * <code>bool masked_value = 4;</code>
+     * @param value The maskedValue to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMaskedValue(boolean value) {
+
+      maskedValue_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>bool masked_value = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearMaskedValue() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      maskedValue_ = false;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

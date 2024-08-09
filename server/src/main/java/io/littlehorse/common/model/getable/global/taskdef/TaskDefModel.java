@@ -29,6 +29,8 @@ public class TaskDefModel extends MetadataGetable<TaskDef> {
 
     public Date createdAt;
     public List<VariableDefModel> inputVars;
+
+    @Setter
     private TaskDefOutputSchemaModel schemaOutput;
 
     public TaskDefModel() {

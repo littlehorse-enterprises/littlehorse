@@ -11,8 +11,8 @@ public class MyWorker {
     private static final Logger log = LoggerFactory.getLogger(MyWorker.class);
 
     @LHTaskMethod("greet")
-    @LHType(VariableType.MASK)
-    public String greeting(@LHType(VariableType.MASK) String name) {
+    @LHType(masked = true)
+    public String greeting(@LHType(masked = true) String name) {
         log.debug("Executing task greet");
         return "hello there, " + name;
     }

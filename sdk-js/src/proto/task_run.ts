@@ -122,6 +122,7 @@ export interface TaskAttempt {
     | undefined;
   /** The Task Function encountered a business problem and threw a technical exception. */
   exception?: LHTaskException | undefined;
+  maskedValue: boolean;
 }
 
 /** The source of a TaskRun; i.e. why it was scheduled. */
@@ -409,6 +410,7 @@ function createBaseTaskAttempt(): TaskAttempt {
     output: undefined,
     error: undefined,
     exception: undefined,
+    maskedValue: false,
   };
 }
 
@@ -443,6 +445,9 @@ export const TaskAttempt = {
     }
     if (message.exception !== undefined) {
       LHTaskException.encode(message.exception, writer.uint32(90).fork()).ldelim();
+    }
+    if (message.maskedValue !== false) {
+      writer.uint32(96).bool(message.maskedValue);
     }
     return writer;
   },
@@ -524,6 +529,13 @@ export const TaskAttempt = {
 
           message.exception = LHTaskException.decode(reader, reader.uint32());
           continue;
+        case 12:
+          if (tag !== 96) {
+            break;
+          }
+
+          message.maskedValue = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -556,6 +568,7 @@ export const TaskAttempt = {
     message.exception = (object.exception !== undefined && object.exception !== null)
       ? LHTaskException.fromPartial(object.exception)
       : undefined;
+    message.maskedValue = object.maskedValue ?? false;
     return message;
   },
 };

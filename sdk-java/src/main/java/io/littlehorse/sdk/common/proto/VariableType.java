@@ -79,10 +79,6 @@ public enum VariableType
    * <code>BYTES = 6;</code>
    */
   BYTES(6),
-  /**
-   * <code>MASK = 7;</code>
-   */
-  MASK(7),
   UNRECOGNIZED(-1),
   ;
 
@@ -152,10 +148,6 @@ public enum VariableType
    * <code>BYTES = 6;</code>
    */
   public static final int BYTES_VALUE = 6;
-  /**
-   * <code>MASK = 7;</code>
-   */
-  public static final int MASK_VALUE = 7;
 
 
   public final int getNumber() {
@@ -189,7 +181,6 @@ public enum VariableType
       case 4: return STR;
       case 5: return INT;
       case 6: return BYTES;
-      case 7: return MASK;
       default: return null;
     }
   }

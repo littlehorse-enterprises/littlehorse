@@ -19,6 +19,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
     private VariableType type;
     private String name;
     private VariableValueModel defaultValue;
+    private boolean maskedValue;
 
     public Class<VariableDef> getProtoBaseClass() {
         return VariableDef.class;
@@ -32,12 +33,14 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         if (p.hasDefaultValue()) {
             defaultValue = VariableValueModel.fromProto(p.getDefaultValue(), context);
         }
+        maskedValue = p.getMaskedValue();
     }
 
     public VariableDef.Builder toProto() {
         VariableDef.Builder out = VariableDef.newBuilder().setType(type).setName(name);
 
         if (defaultValue != null) out.setDefaultValue(defaultValue.toProto());
+        out.setMaskedValue(maskedValue);
         return out;
     }
 
@@ -54,8 +57,6 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
     public void validateValue(VariableValueModel value) throws LHValidationError {
         if (value.getType() == null || value.getType() == type) {
             return;
-        } else if (type == VariableType.MASK && value.getType() == VariableType.STR) {
-            return;
         }
         throw new LHValidationError(
                 null, "Variable " + name + " should be " + type + " but is of type " + value.getType());
@@ -67,7 +68,7 @@ public class VariableDefModel extends LHSerializable<VariableDef> {
         } catch (LHValidationError e) {
             throw new LHVarSubError(e, e.getMessage());
         }
-        if (type == VariableType.MASK) {
+        if (maskedValue) {
             return new VarNameAndValModel(name, value, true);
         }
         return new VarNameAndValModel(name, value, false);

@@ -6,9 +6,11 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefMod
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.TaskDefOutputSchema;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import lombok.Getter;
 
 public class TaskDefOutputSchemaModel extends LHSerializable<TaskDefOutputSchema> {
 
+    @Getter
     private VariableDefModel valueDef;
 
     @Override

@@ -19,6 +19,7 @@ public class LHTaskSignature {
 
     List<VariableType> paramTypes;
     List<String> varNames;
+    List<Boolean> maskedParams;
     Method taskMethod;
     boolean hasWorkerContextAtEnd;
     String taskDefName;
@@ -30,6 +31,7 @@ public class LHTaskSignature {
             throws TaskSchemaMismatchError {
         paramTypes = new ArrayList<>();
         varNames = new ArrayList<>();
+        maskedParams = new ArrayList<>();
         hasWorkerContextAtEnd = false;
         this.taskDefName = taskDefName;
         this.executable = executable;
@@ -58,18 +60,19 @@ public class LHTaskSignature {
                     + " on "
                     + executable.getClass());
         }
-        VariableType returnType;
+        VariableType returnType = LHLibUtil.javaClassToLHVarType(taskMethod.getReturnType());
+        boolean maskedValue = false;
         if (taskMethod.isAnnotationPresent(LHType.class)) {
-            returnType = taskMethod.getAnnotation(LHType.class).value();
-        } else {
-            returnType = LHLibUtil.javaClassToLHVarType(taskMethod.getReturnType());
+            maskedValue = taskMethod.getAnnotation(LHType.class).masked();
         }
         outputSchema = TaskDefOutputSchema.newBuilder()
                 .setValueDef(VariableDef.newBuilder()
                         .setType(returnType)
                         .setName("output")
+                        .setMaskedValue(maskedValue)
                         .build())
                 .build();
+
         for (int i = 0; i < taskMethod.getParameterCount(); i++) {
             Parameter param = taskMethod.getParameters()[i];
             if (param.getType().equals(WorkerContext.class)) {
@@ -80,13 +83,12 @@ public class LHTaskSignature {
                     continue; // could also be `break;`
                 }
             }
-            VariableType paramLHType;
+            VariableType paramLHType = LHLibUtil.javaClassToLHVarType(param.getType());
+            boolean maskedParam = false;
             if (param.isAnnotationPresent(LHType.class)) {
-                paramLHType = param.getAnnotation(LHType.class).value();
-            } else {
-                paramLHType = LHLibUtil.javaClassToLHVarType(param.getType());
+                maskedParam = param.getAnnotation(LHType.class).masked();
             }
-
+            maskedParams.add(maskedParam);
             if (!param.isNamePresent()) {
                 log.warn("Was unable to inspect parameter names usingreflection; please compile with"
                         + " `javac -Parameters` to enable that.Will use param position as its"
@@ -103,6 +105,10 @@ public class LHTaskSignature {
 
     public List<VariableType> getParamTypes() {
         return paramTypes;
+    }
+
+    public List<Boolean> getMaskedParams() {
+        return maskedParams;
     }
 
     public String getTaskDefName() {

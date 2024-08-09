@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.getable.core.taskrun;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
@@ -37,7 +38,7 @@ public class VarNameAndValModel extends LHSerializable<VarNameAndVal> {
         out.setVarName(varName);
         out.setValue(value.toProto());
         if (masked && context instanceof RequestExecutionContext) {
-            out.setValue(new VariableValueModel("****").toProto());
+            out.setValue(new VariableValueModel(LHConstants.STRING_MASK).toProto());
         }
         out.setMasked(masked);
 

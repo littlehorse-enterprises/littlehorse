@@ -276,5 +276,11 @@ public interface TaskAttemptOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.LHTaskExceptionOrBuilder getExceptionOrBuilder();
 
+  /**
+   * <code>bool masked_value = 12;</code>
+   * @return The maskedValue.
+   */
+  boolean getMaskedValue();
+
   io.littlehorse.sdk.common.proto.TaskAttempt.ResultCase getResultCase();
 }
