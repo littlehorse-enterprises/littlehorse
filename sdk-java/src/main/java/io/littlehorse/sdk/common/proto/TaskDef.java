@@ -184,6 +184,10 @@ private static final long serialVersionUID = 0L;
   public static final int SCHEMA_OUTPUT_FIELD_NUMBER = 4;
   private io.littlehorse.sdk.common.proto.TaskDefOutputSchema schemaOutput_;
   /**
+   * <pre>
+   * Schema that validates the TaskDef's output
+   * </pre>
+   *
    * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
    * @return Whether the schemaOutput field is set.
    */
@@ -192,6 +196,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Schema that validates the TaskDef's output
+   * </pre>
+   *
    * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
    * @return The schemaOutput.
    */
@@ -200,6 +208,10 @@ private static final long serialVersionUID = 0L;
     return schemaOutput_ == null ? io.littlehorse.sdk.common.proto.TaskDefOutputSchema.getDefaultInstance() : schemaOutput_;
   }
   /**
+   * <pre>
+   * Schema that validates the TaskDef's output
+   * </pre>
+   *
    * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
    */
   @java.lang.Override
@@ -1331,6 +1343,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.TaskDefOutputSchema, io.littlehorse.sdk.common.proto.TaskDefOutputSchema.Builder, io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder> schemaOutputBuilder_;
     /**
+     * <pre>
+     * Schema that validates the TaskDef's output
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
      * @return Whether the schemaOutput field is set.
      */
@@ -1338,6 +1354,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
+     * <pre>
+     * Schema that validates the TaskDef's output
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
      * @return The schemaOutput.
      */
@@ -1349,6 +1369,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Schema that validates the TaskDef's output
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
      */
     public Builder setSchemaOutput(io.littlehorse.sdk.common.proto.TaskDefOutputSchema value) {
@@ -1365,6 +1389,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Schema that validates the TaskDef's output
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
      */
     public Builder setSchemaOutput(
@@ -1379,6 +1407,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Schema that validates the TaskDef's output
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
      */
     public Builder mergeSchemaOutput(io.littlehorse.sdk.common.proto.TaskDefOutputSchema value) {
@@ -1398,6 +1430,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Schema that validates the TaskDef's output
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
      */
     public Builder clearSchemaOutput() {
@@ -1411,6 +1447,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Schema that validates the TaskDef's output
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefOutputSchema.Builder getSchemaOutputBuilder() {
@@ -1419,6 +1459,10 @@ private static final long serialVersionUID = 0L;
       return getSchemaOutputFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Schema that validates the TaskDef's output
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.TaskDefOutputSchemaOrBuilder getSchemaOutputOrBuilder() {
@@ -1430,6 +1474,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Schema that validates the TaskDef's output
+     * </pre>
+     *
      * <code>optional .littlehorse.TaskDefOutputSchema schema_output = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

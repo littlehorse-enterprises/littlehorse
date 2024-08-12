@@ -167,8 +167,9 @@ type VarNameAndVal struct {
 	// The variable name.
 	VarName string `protobuf:"bytes,1,opt,name=var_name,json=varName,proto3" json:"var_name,omitempty"`
 	// The value of the variable for this TaskRun.
-	Value  *VariableValue `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
-	Masked bool           `protobuf:"varint,3,opt,name=masked,proto3" json:"masked,omitempty"`
+	Value *VariableValue `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	// Indicates whether the content of the `value` field has been masked
+	Masked bool `protobuf:"varint,3,opt,name=masked,proto3" json:"masked,omitempty"`
 }
 
 func (x *VarNameAndVal) Reset() {
@@ -256,8 +257,9 @@ type TaskAttempt struct {
 	//	*TaskAttempt_Output
 	//	*TaskAttempt_Error
 	//	*TaskAttempt_Exception
-	Result      isTaskAttempt_Result `protobuf_oneof:"result"`
-	MaskedValue bool                 `protobuf:"varint,12,opt,name=masked_value,json=maskedValue,proto3" json:"masked_value,omitempty"`
+	Result isTaskAttempt_Result `protobuf_oneof:"result"`
+	// Indicates whether the result of the attempt field has been masked
+	MaskedValue bool `protobuf:"varint,12,opt,name=masked_value,json=maskedValue,proto3" json:"masked_value,omitempty"`
 }
 
 func (x *TaskAttempt) Reset() {

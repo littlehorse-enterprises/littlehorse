@@ -118,6 +118,7 @@ message VariableDef {
   // used.
   optional VariableValue default_value = 3;
 
+  // If true, the variable value will show as a masked string.
   bool masked_value = 4;
 }
 

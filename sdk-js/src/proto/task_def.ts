@@ -19,11 +19,16 @@ export interface TaskDef {
   /** The input variables required to execute this TaskDef. */
   inputVars: VariableDef[];
   /** The time at which this TaskDef was created. */
-  createdAt: string | undefined;
+  createdAt:
+    | string
+    | undefined;
+  /** Schema that validates the TaskDef's output */
   schemaOutput?: TaskDefOutputSchema | undefined;
 }
 
+/** Schema that validates the TaskDef's output */
 export interface TaskDefOutputSchema {
+  /** The definition for the output content */
   valueDef: VariableDef | undefined;
 }
 

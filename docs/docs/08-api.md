@@ -730,7 +730,7 @@ Declares a Variable.
 | `type` | | [VariableType](#variabletype) | The Type of the variable. |
 | `name` | | string | The name of the variable. |
 | `default_value` | optional| [VariableValue](#variablevalue) | Optional default value if the variable isn't set; for example, in a ThreadRun if you start a ThreadRun or WfRun without passing a variable in, then this is used. |
-| `masked_value` | | bool |  |
+| `masked_value` | | bool | If true, the variable value will show as a masked string. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2477,7 +2477,7 @@ A TaskDef defines a blueprint for a TaskRun that can be dispatched to Task Worke
 | `id` | | [TaskDefId](#taskdefid) | The ID of this TaskDef. |
 | `input_vars` | repeated| [VariableDef](#variabledef) | The input variables required to execute this TaskDef. |
 | `created_at` | | google.protobuf.Timestamp | The time at which this TaskDef was created. |
-| `schema_output` | optional| [TaskDefOutputSchema](#taskdefoutputschema) |  |
+| `schema_output` | optional| [TaskDefOutputSchema](#taskdefoutputschema) | Schema that validates the TaskDef's output |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2485,12 +2485,12 @@ A TaskDef defines a blueprint for a TaskRun that can be dispatched to Task Worke
 
 ### Message `TaskDefOutputSchema` {#taskdefoutputschema}
 
-
+Schema that validates the TaskDef's output
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `value_def` | | [VariableDef](#variabledef) |  |
+| `value_def` | | [VariableDef](#variabledef) | The definition for the output content |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2545,7 +2545,7 @@ A single time that a TaskRun was scheduled for execution on a Task Queue.
 | `output` | oneof `result`| [VariableValue](#variablevalue) | Denotes the Task Function executed properly and returned an output. |
 | `error` | oneof `result`| [LHTaskError](#lhtaskerror) | An unexpected technical error was encountered. May or may not be retriable. |
 | `exception` | oneof `result`| [LHTaskException](#lhtaskexception) | The Task Function encountered a business problem and threw a technical exception. |
-| `masked_value` | | bool |  |
+| `masked_value` | | bool | Indicates whether the result of the attempt field has been masked |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2610,7 +2610,7 @@ A key-value pair of variable name and value.
 | ----- | ----  | ---- | ----------- |
 | `var_name` | | string | The variable name. |
 | `value` | | [VariableValue](#variablevalue) | The value of the variable for this TaskRun. |
-| `masked` | | bool |  |
+| `masked` | | bool | Indicates whether the content of the `value` field has been masked |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2844,7 +2844,7 @@ A Variable is an instance of a variable assigned to a WfRun.
 | `value` | | [VariableValue](#variablevalue) | The value of this Variable. |
 | `created_at` | | google.protobuf.Timestamp | When the Variable was created. |
 | `wf_spec_id` | | [WfSpecId](#wfspecid) | The ID of the WfSpec that this Variable belongs to. |
-| `masked` | | bool |  |
+| `masked` | | bool | Marks a variable to show masked values |
  <!-- end Fields -->
  <!-- end HasFields -->
 

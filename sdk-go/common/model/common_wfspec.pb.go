@@ -497,7 +497,8 @@ type VariableDef struct {
 	// if you start a ThreadRun or WfRun without passing a variable in, then this is
 	// used.
 	DefaultValue *VariableValue `protobuf:"bytes,3,opt,name=default_value,json=defaultValue,proto3,oneof" json:"default_value,omitempty"`
-	MaskedValue  bool           `protobuf:"varint,4,opt,name=masked_value,json=maskedValue,proto3" json:"masked_value,omitempty"`
+	// If true, the variable value will show as a masked string.
+	MaskedValue bool `protobuf:"varint,4,opt,name=masked_value,json=maskedValue,proto3" json:"masked_value,omitempty"`
 }
 
 func (x *VariableDef) Reset() {

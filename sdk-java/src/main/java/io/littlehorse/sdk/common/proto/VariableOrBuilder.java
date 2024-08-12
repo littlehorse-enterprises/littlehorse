@@ -119,6 +119,10 @@ public interface VariableOrBuilder extends
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
   /**
+   * <pre>
+   * Marks a variable to show masked values
+   * </pre>
+   *
    * <code>bool masked = 5;</code>
    * @return The masked.
    */

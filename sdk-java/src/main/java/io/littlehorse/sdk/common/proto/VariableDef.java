@@ -165,6 +165,10 @@ private static final long serialVersionUID = 0L;
   public static final int MASKED_VALUE_FIELD_NUMBER = 4;
   private boolean maskedValue_ = false;
   /**
+   * <pre>
+   * If true, the variable value will show as a masked string.
+   * </pre>
+   *
    * <code>bool masked_value = 4;</code>
    * @return The maskedValue.
    */
@@ -934,6 +938,10 @@ private static final long serialVersionUID = 0L;
 
     private boolean maskedValue_ ;
     /**
+     * <pre>
+     * If true, the variable value will show as a masked string.
+     * </pre>
+     *
      * <code>bool masked_value = 4;</code>
      * @return The maskedValue.
      */
@@ -942,6 +950,10 @@ private static final long serialVersionUID = 0L;
       return maskedValue_;
     }
     /**
+     * <pre>
+     * If true, the variable value will show as a masked string.
+     * </pre>
+     *
      * <code>bool masked_value = 4;</code>
      * @param value The maskedValue to set.
      * @return This builder for chaining.
@@ -954,6 +966,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If true, the variable value will show as a masked string.
+     * </pre>
+     *
      * <code>bool masked_value = 4;</code>
      * @return This builder for chaining.
      */

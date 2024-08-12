@@ -200,7 +200,8 @@ type Variable struct {
 	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	// The ID of the WfSpec that this Variable belongs to.
 	WfSpecId *WfSpecId `protobuf:"bytes,4,opt,name=wf_spec_id,json=wfSpecId,proto3" json:"wf_spec_id,omitempty"`
-	Masked   bool      `protobuf:"varint,5,opt,name=masked,proto3" json:"masked,omitempty"`
+	// Marks a variable to show masked values
+	Masked bool `protobuf:"varint,5,opt,name=masked,proto3" json:"masked,omitempty"`
 }
 
 func (x *Variable) Reset() {

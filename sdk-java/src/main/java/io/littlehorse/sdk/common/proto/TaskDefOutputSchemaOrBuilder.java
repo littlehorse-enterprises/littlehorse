@@ -8,16 +8,28 @@ public interface TaskDefOutputSchemaOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The definition for the output content
+   * </pre>
+   *
    * <code>.littlehorse.VariableDef value_def = 1;</code>
    * @return Whether the valueDef field is set.
    */
   boolean hasValueDef();
   /**
+   * <pre>
+   * The definition for the output content
+   * </pre>
+   *
    * <code>.littlehorse.VariableDef value_def = 1;</code>
    * @return The valueDef.
    */
   io.littlehorse.sdk.common.proto.VariableDef getValueDef();
   /**
+   * <pre>
+   * The definition for the output content
+   * </pre>
+   *
    * <code>.littlehorse.VariableDef value_def = 1;</code>
    */
   io.littlehorse.sdk.common.proto.VariableDefOrBuilder getValueDefOrBuilder();

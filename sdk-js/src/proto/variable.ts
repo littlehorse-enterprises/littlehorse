@@ -65,7 +65,10 @@ export interface Variable {
     | string
     | undefined;
   /** The ID of the WfSpec that this Variable belongs to. */
-  wfSpecId: WfSpecId | undefined;
+  wfSpecId:
+    | WfSpecId
+    | undefined;
+  /** Marks a variable to show masked values */
   masked: boolean;
 }
 

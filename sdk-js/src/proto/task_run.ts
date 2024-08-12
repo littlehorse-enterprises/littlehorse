@@ -72,7 +72,10 @@ export interface VarNameAndVal {
   /** The variable name. */
   varName: string;
   /** The value of the variable for this TaskRun. */
-  value: VariableValue | undefined;
+  value:
+    | VariableValue
+    | undefined;
+  /** Indicates whether the content of the `value` field has been masked */
   masked: boolean;
 }
 
@@ -121,7 +124,10 @@ export interface TaskAttempt {
     | LHTaskError
     | undefined;
   /** The Task Function encountered a business problem and threw a technical exception. */
-  exception?: LHTaskException | undefined;
+  exception?:
+    | LHTaskException
+    | undefined;
+  /** Indicates whether the result of the attempt field has been masked */
   maskedValue: boolean;
 }
 

@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Schema that validates the TaskDef's output
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.TaskDefOutputSchema}
  */
 public final class TaskDefOutputSchema extends
@@ -41,6 +45,10 @@ private static final long serialVersionUID = 0L;
   public static final int VALUE_DEF_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.VariableDef valueDef_;
   /**
+   * <pre>
+   * The definition for the output content
+   * </pre>
+   *
    * <code>.littlehorse.VariableDef value_def = 1;</code>
    * @return Whether the valueDef field is set.
    */
@@ -49,6 +57,10 @@ private static final long serialVersionUID = 0L;
     return valueDef_ != null;
   }
   /**
+   * <pre>
+   * The definition for the output content
+   * </pre>
+   *
    * <code>.littlehorse.VariableDef value_def = 1;</code>
    * @return The valueDef.
    */
@@ -57,6 +69,10 @@ private static final long serialVersionUID = 0L;
     return valueDef_ == null ? io.littlehorse.sdk.common.proto.VariableDef.getDefaultInstance() : valueDef_;
   }
   /**
+   * <pre>
+   * The definition for the output content
+   * </pre>
+   *
    * <code>.littlehorse.VariableDef value_def = 1;</code>
    */
   @java.lang.Override
@@ -227,6 +243,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Schema that validates the TaskDef's output
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.TaskDefOutputSchema}
    */
   public static final class Builder extends
@@ -406,6 +426,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableDef, io.littlehorse.sdk.common.proto.VariableDef.Builder, io.littlehorse.sdk.common.proto.VariableDefOrBuilder> valueDefBuilder_;
     /**
+     * <pre>
+     * The definition for the output content
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef value_def = 1;</code>
      * @return Whether the valueDef field is set.
      */
@@ -413,6 +437,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The definition for the output content
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef value_def = 1;</code>
      * @return The valueDef.
      */
@@ -424,6 +452,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The definition for the output content
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef value_def = 1;</code>
      */
     public Builder setValueDef(io.littlehorse.sdk.common.proto.VariableDef value) {
@@ -440,6 +472,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The definition for the output content
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef value_def = 1;</code>
      */
     public Builder setValueDef(
@@ -454,6 +490,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The definition for the output content
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef value_def = 1;</code>
      */
     public Builder mergeValueDef(io.littlehorse.sdk.common.proto.VariableDef value) {
@@ -473,6 +513,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The definition for the output content
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef value_def = 1;</code>
      */
     public Builder clearValueDef() {
@@ -486,6 +530,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The definition for the output content
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef value_def = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableDef.Builder getValueDefBuilder() {
@@ -494,6 +542,10 @@ private static final long serialVersionUID = 0L;
       return getValueDefFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The definition for the output content
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef value_def = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableDefOrBuilder getValueDefOrBuilder() {
@@ -505,6 +557,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The definition for the output content
+     * </pre>
+     *
      * <code>.littlehorse.VariableDef value_def = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

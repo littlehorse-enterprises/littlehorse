@@ -518,6 +518,10 @@ private static final long serialVersionUID = 0L;
   public static final int MASKED_VALUE_FIELD_NUMBER = 12;
   private boolean maskedValue_ = false;
   /**
+   * <pre>
+   * Indicates whether the result of the attempt field has been masked
+   * </pre>
+   *
    * <code>bool masked_value = 12;</code>
    * @return The maskedValue.
    */
@@ -2687,6 +2691,10 @@ private static final long serialVersionUID = 0L;
 
     private boolean maskedValue_ ;
     /**
+     * <pre>
+     * Indicates whether the result of the attempt field has been masked
+     * </pre>
+     *
      * <code>bool masked_value = 12;</code>
      * @return The maskedValue.
      */
@@ -2695,6 +2703,10 @@ private static final long serialVersionUID = 0L;
       return maskedValue_;
     }
     /**
+     * <pre>
+     * Indicates whether the result of the attempt field has been masked
+     * </pre>
+     *
      * <code>bool masked_value = 12;</code>
      * @param value The maskedValue to set.
      * @return This builder for chaining.
@@ -2707,6 +2719,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Indicates whether the result of the attempt field has been masked
+     * </pre>
+     *
      * <code>bool masked_value = 12;</code>
      * @return This builder for chaining.
      */

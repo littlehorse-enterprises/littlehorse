@@ -277,6 +277,10 @@ public interface TaskAttemptOrBuilder extends
   io.littlehorse.sdk.common.proto.LHTaskExceptionOrBuilder getExceptionOrBuilder();
 
   /**
+   * <pre>
+   * Indicates whether the result of the attempt field has been masked
+   * </pre>
+   *
    * <code>bool masked_value = 12;</code>
    * @return The maskedValue.
    */

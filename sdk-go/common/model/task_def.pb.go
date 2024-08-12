@@ -32,8 +32,9 @@ type TaskDef struct {
 	// The input variables required to execute this TaskDef.
 	InputVars []*VariableDef `protobuf:"bytes,2,rep,name=input_vars,json=inputVars,proto3" json:"input_vars,omitempty"`
 	// The time at which this TaskDef was created.
-	CreatedAt    *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	SchemaOutput *TaskDefOutputSchema   `protobuf:"bytes,4,opt,name=schema_output,json=schemaOutput,proto3,oneof" json:"schema_output,omitempty"`
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	// Schema that validates the TaskDef's output
+	SchemaOutput *TaskDefOutputSchema `protobuf:"bytes,4,opt,name=schema_output,json=schemaOutput,proto3,oneof" json:"schema_output,omitempty"`
 }
 
 func (x *TaskDef) Reset() {
@@ -96,11 +97,13 @@ func (x *TaskDef) GetSchemaOutput() *TaskDefOutputSchema {
 	return nil
 }
 
+// Schema that validates the TaskDef's output
 type TaskDefOutputSchema struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The definition for the output content
 	ValueDef *VariableDef `protobuf:"bytes,1,opt,name=value_def,json=valueDef,proto3" json:"value_def,omitempty"`
 }
 

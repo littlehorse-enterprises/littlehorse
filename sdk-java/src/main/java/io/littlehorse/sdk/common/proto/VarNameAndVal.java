@@ -131,6 +131,10 @@ private static final long serialVersionUID = 0L;
   public static final int MASKED_FIELD_NUMBER = 3;
   private boolean masked_ = false;
   /**
+   * <pre>
+   * Indicates whether the content of the `value` field has been masked
+   * </pre>
+   *
    * <code>bool masked = 3;</code>
    * @return The masked.
    */
@@ -778,6 +782,10 @@ private static final long serialVersionUID = 0L;
 
     private boolean masked_ ;
     /**
+     * <pre>
+     * Indicates whether the content of the `value` field has been masked
+     * </pre>
+     *
      * <code>bool masked = 3;</code>
      * @return The masked.
      */
@@ -786,6 +794,10 @@ private static final long serialVersionUID = 0L;
       return masked_;
     }
     /**
+     * <pre>
+     * Indicates whether the content of the `value` field has been masked
+     * </pre>
+     *
      * <code>bool masked = 3;</code>
      * @param value The masked to set.
      * @return This builder for chaining.
@@ -798,6 +810,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Indicates whether the content of the `value` field has been masked
+     * </pre>
+     *
      * <code>bool masked = 3;</code>
      * @return This builder for chaining.
      */

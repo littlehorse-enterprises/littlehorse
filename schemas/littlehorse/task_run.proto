@@ -61,6 +61,8 @@ message VarNameAndVal {
 
   // The value of the variable for this TaskRun.
   VariableValue value = 2;
+
+  // Indicates whether the content of the `value` field has been masked
   bool masked = 3;
 }
 
@@ -105,6 +107,7 @@ message TaskAttempt {
     LHTaskException exception = 11;
   }
 
+  // Indicates whether the result of the attempt field has been masked
   bool masked_value = 12;
 }
 

@@ -200,6 +200,10 @@ private static final long serialVersionUID = 0L;
   public static final int MASKED_FIELD_NUMBER = 5;
   private boolean masked_ = false;
   /**
+   * <pre>
+   * Marks a variable to show masked values
+   * </pre>
+   *
    * <code>bool masked = 5;</code>
    * @return The masked.
    */
@@ -1313,6 +1317,10 @@ private static final long serialVersionUID = 0L;
 
     private boolean masked_ ;
     /**
+     * <pre>
+     * Marks a variable to show masked values
+     * </pre>
+     *
      * <code>bool masked = 5;</code>
      * @return The masked.
      */
@@ -1321,6 +1329,10 @@ private static final long serialVersionUID = 0L;
       return masked_;
     }
     /**
+     * <pre>
+     * Marks a variable to show masked values
+     * </pre>
+     *
      * <code>bool masked = 5;</code>
      * @param value The masked to set.
      * @return This builder for chaining.
@@ -1333,6 +1345,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Marks a variable to show masked values
+     * </pre>
+     *
      * <code>bool masked = 5;</code>
      * @return This builder for chaining.
      */

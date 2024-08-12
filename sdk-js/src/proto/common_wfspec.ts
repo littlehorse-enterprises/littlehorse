@@ -281,7 +281,10 @@ export interface VariableDef {
    * if you start a ThreadRun or WfRun without passing a variable in, then this is
    * used.
    */
-  defaultValue?: VariableValue | undefined;
+  defaultValue?:
+    | VariableValue
+    | undefined;
+  /** If true, the variable value will show as a masked string. */
   maskedValue: boolean;
 }
 
