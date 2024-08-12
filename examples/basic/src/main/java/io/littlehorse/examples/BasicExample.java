@@ -24,8 +24,6 @@ public class BasicExample {
             "example-basic",
             wf -> {
                 WfRunVariable theName = wf.addVariable("input-name", VariableType.STR).searchable();
-                wf.addVariable("my-super-secret", "This is a secret");
-                wf.addVariable("my-ultra-secret", "This is a ultra secret").masked();
 
                 wf.execute("greet", theName);
             }
