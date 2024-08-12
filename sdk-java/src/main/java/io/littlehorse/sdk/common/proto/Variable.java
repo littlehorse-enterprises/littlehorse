@@ -197,6 +197,17 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
   }
 
+  public static final int MASKED_FIELD_NUMBER = 5;
+  private boolean masked_ = false;
+  /**
+   * <code>bool masked = 5;</code>
+   * @return The masked.
+   */
+  @java.lang.Override
+  public boolean getMasked() {
+    return masked_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -223,6 +234,9 @@ private static final long serialVersionUID = 0L;
     if (wfSpecId_ != null) {
       output.writeMessage(4, getWfSpecId());
     }
+    if (masked_ != false) {
+      output.writeBool(5, masked_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -247,6 +261,10 @@ private static final long serialVersionUID = 0L;
     if (wfSpecId_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getWfSpecId());
+    }
+    if (masked_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(5, masked_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -283,6 +301,8 @@ private static final long serialVersionUID = 0L;
       if (!getWfSpecId()
           .equals(other.getWfSpecId())) return false;
     }
+    if (getMasked()
+        != other.getMasked()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -310,6 +330,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
       hash = (53 * hash) + getWfSpecId().hashCode();
     }
+    hash = (37 * hash) + MASKED_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getMasked());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -465,6 +488,7 @@ private static final long serialVersionUID = 0L;
         wfSpecIdBuilder_.dispose();
         wfSpecIdBuilder_ = null;
       }
+      masked_ = false;
       return this;
     }
 
@@ -517,6 +541,9 @@ private static final long serialVersionUID = 0L;
         result.wfSpecId_ = wfSpecIdBuilder_ == null
             ? wfSpecId_
             : wfSpecIdBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.masked_ = masked_;
       }
     }
 
@@ -576,6 +603,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasWfSpecId()) {
         mergeWfSpecId(other.getWfSpecId());
       }
+      if (other.getMasked() != false) {
+        setMasked(other.getMasked());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -630,6 +660,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 34
+            case 40: {
+              masked_ = input.readBool();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1274,6 +1309,38 @@ private static final long serialVersionUID = 0L;
         wfSpecId_ = null;
       }
       return wfSpecIdBuilder_;
+    }
+
+    private boolean masked_ ;
+    /**
+     * <code>bool masked = 5;</code>
+     * @return The masked.
+     */
+    @java.lang.Override
+    public boolean getMasked() {
+      return masked_;
+    }
+    /**
+     * <code>bool masked = 5;</code>
+     * @param value The masked to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMasked(boolean value) {
+
+      masked_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>bool masked = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearMasked() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      masked_ = false;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

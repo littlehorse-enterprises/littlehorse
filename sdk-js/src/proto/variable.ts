@@ -66,6 +66,7 @@ export interface Variable {
     | undefined;
   /** The ID of the WfSpec that this Variable belongs to. */
   wfSpecId: WfSpecId | undefined;
+  masked: boolean;
 }
 
 function createBaseVariableValue(): VariableValue {
@@ -188,7 +189,7 @@ export const VariableValue = {
 };
 
 function createBaseVariable(): Variable {
-  return { id: undefined, value: undefined, createdAt: undefined, wfSpecId: undefined };
+  return { id: undefined, value: undefined, createdAt: undefined, wfSpecId: undefined, masked: false };
 }
 
 export const Variable = {
@@ -204,6 +205,9 @@ export const Variable = {
     }
     if (message.wfSpecId !== undefined) {
       WfSpecId.encode(message.wfSpecId, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.masked !== false) {
+      writer.uint32(40).bool(message.masked);
     }
     return writer;
   },
@@ -243,6 +247,13 @@ export const Variable = {
 
           message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
           continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.masked = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -265,6 +276,7 @@ export const Variable = {
     message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
       ? WfSpecId.fromPartial(object.wfSpecId)
       : undefined;
+    message.masked = object.masked ?? false;
     return message;
   },
 };

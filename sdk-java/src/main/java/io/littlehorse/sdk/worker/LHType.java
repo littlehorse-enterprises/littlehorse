@@ -37,4 +37,6 @@ public @interface LHType {
      * @return true if the value should be masked; false otherwise.
      */
     boolean masked();
+
+    String name() default "";
 }

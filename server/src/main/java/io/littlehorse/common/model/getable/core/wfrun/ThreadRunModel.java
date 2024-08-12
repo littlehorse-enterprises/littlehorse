@@ -265,9 +265,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 // TODO: Will need to update this when we add the required variable feature.
                 val = new VariableValueModel();
             }
-
-            VariableModel variable =
-                    new VariableModel(varName, val, wfRun.getId(), this.number, threadSpec.getWfSpec());
+            VariableModel variable = new VariableModel(
+                    varName, val, wfRun.getId(), this.number, threadSpec.getWfSpec(), varDef.isMaskedValue());
             processorContext.getableManager().put(variable);
         }
 

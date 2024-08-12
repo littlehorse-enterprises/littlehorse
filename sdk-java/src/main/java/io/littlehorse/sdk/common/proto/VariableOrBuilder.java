@@ -117,4 +117,10 @@ public interface VariableOrBuilder extends
    * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
+
+  /**
+   * <code>bool masked = 5;</code>
+   * @return The masked.
+   */
+  boolean getMasked();
 }

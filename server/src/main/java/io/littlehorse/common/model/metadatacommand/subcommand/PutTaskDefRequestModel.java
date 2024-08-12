@@ -81,6 +81,9 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         TaskDefModel spec = new TaskDefModel();
         spec.setId(new TaskDefIdModel(name));
         spec.inputVars = inputVars;
+        if (outputSchema != null) {
+            spec.setSchemaOutput(outputSchema);
+        }
 
         TaskDefModel oldVersion = metadataManager.get(new TaskDefIdModel(name));
         if (oldVersion != null) {
@@ -90,11 +93,8 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
                     Status.ALREADY_EXISTS,
                     MessageFormat.format("TaskDef [{0}] already exists and is immutable.", name));
         }
-        if (outputSchema != null) {
-            spec.setSchemaOutput(outputSchema);
-        }
-        metadataManager.put(spec);
 
+        metadataManager.put(spec);
         return spec.toProto().build();
     }
 

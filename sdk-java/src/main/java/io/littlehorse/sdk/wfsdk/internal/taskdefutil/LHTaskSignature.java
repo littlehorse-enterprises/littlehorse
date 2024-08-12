@@ -62,13 +62,18 @@ public class LHTaskSignature {
         }
         VariableType returnType = LHLibUtil.javaClassToLHVarType(taskMethod.getReturnType());
         boolean maskedValue = false;
+        String outputSchemaVarName = "output";
         if (taskMethod.isAnnotationPresent(LHType.class)) {
-            maskedValue = taskMethod.getAnnotation(LHType.class).masked();
+            LHType type = taskMethod.getAnnotation(LHType.class);
+            maskedValue = type.masked();
+            if (!type.name().isEmpty() || !type.name().isBlank()) {
+                outputSchemaVarName = type.name();
+            }
         }
         outputSchema = TaskDefOutputSchema.newBuilder()
                 .setValueDef(VariableDef.newBuilder()
                         .setType(returnType)
-                        .setName("output")
+                        .setName(outputSchemaVarName)
                         .setMaskedValue(maskedValue)
                         .build())
                 .build();
@@ -84,19 +89,30 @@ public class LHTaskSignature {
                 }
             }
             VariableType paramLHType = LHLibUtil.javaClassToLHVarType(param.getType());
-            boolean maskedParam = false;
-            if (param.isAnnotationPresent(LHType.class)) {
-                maskedParam = param.getAnnotation(LHType.class).masked();
-            }
-            maskedParams.add(maskedParam);
-            if (!param.isNamePresent()) {
-                log.warn("Was unable to inspect parameter names usingreflection; please compile with"
-                        + " `javac -Parameters` to enable that.Will use param position as its"
-                        + " name, which makes resulting TaskDefharder to understand.");
-            }
             paramTypes.add(paramLHType);
-            varNames.add(param.getName());
+            if (param.isAnnotationPresent(LHType.class)) {
+                LHType type = param.getAnnotation(LHType.class);
+                maskedParams.add(type.masked());
+                if (!type.name().isEmpty() && !type.name().isBlank()) {
+                    varNames.add(type.name());
+                } else {
+                    varNames.add(varNameFromParameterName(param));
+                }
+            } else {
+                maskedParams.add(false);
+                varNames.add(varNameFromParameterName(param));
+            }
         }
+    }
+
+    private String varNameFromParameterName(Parameter param) {
+        if (!param.isNamePresent()) {
+            log.warn(
+                    "Unable to inspect parameter names using reflection; please either compile with"
+                            + " `javac -parameters` to enable this, or specify a name via the LHType annotation. "
+                            + "Using the parameter position as its name, which makes the resulting TaskDef harder to understand.");
+        }
+        return param.getName();
     }
 
     public boolean getHasWorkerContextAtEnd() {

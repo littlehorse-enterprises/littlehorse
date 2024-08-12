@@ -2844,6 +2844,7 @@ A Variable is an instance of a variable assigned to a WfRun.
 | `value` | | [VariableValue](#variablevalue) | The value of this Variable. |
 | `created_at` | | google.protobuf.Timestamp | When the Variable was created. |
 | `wf_spec_id` | | [WfSpecId](#wfspecid) | The ID of the WfSpec that this Variable belongs to. |
+| `masked` | | bool |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
