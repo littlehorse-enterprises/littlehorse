@@ -18,7 +18,8 @@ A [`WfRun`](../08-api.md#wfrun), short for Workflow Run, is an instantiation of 
 
 In the programming analogy, you could think of a `WfRun` as a process that is running your `WfSpec` program. A `ThreadRun` is a thread in that program.
 
-A `WfRun` is created by the 
+A `WfRun` is created by the LittleHorse Server when a user requests the server to run a `WfSpec`, for example using the [`rpc RunWf`](../08-api.md#runwf).
+
 ### Threads
 
 A workflow consists of one or more threads. A thread in LittleHorse is analogous to a thread in programming: it has its own thread execution context (set of LH `Variables`) and it can execute one instruction (in LH, a `Node`) at a time.
