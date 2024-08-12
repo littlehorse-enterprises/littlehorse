@@ -53,19 +53,19 @@ lhctl run example-variables input-text 'this is a very long text' add-length fal
 #### By input-text
 
 ```
-lhctl search variable --name input-text --value 'this is a very long text' --varType STR --wfSpecName example-variables --wfSpecVersion 0
+lhctl search variable --name input-text --value 'this is a very long text' --varType STR --wfSpecName example-variables --wfSpecMajorVersion 0 --wfSpecRevision 0
 ```
 
 #### By user-id
 
 ```
-lhctl search variable --name user-id --value 1234 --varType INT --wfSpecName example-variables --wfSpecVersion 0
+lhctl search variable --name user-id --value 1234 --varType INT --wfSpecName example-variables --wfSpecMajorVersion 0 --wfSpecRevision 0
 ```
 
 #### By sentiment-score
 
 ```
-lhctl search variable --name sentiment-score --value <sentiment-score> --varType DOUBLE --wfSpecName example-variables --wfSpecVersion 0
+lhctl search variable --name sentiment-score --value <sentiment-score> --varType DOUBLE --wfSpecName example-variables --wfSpecMajorVersion 0 --wfSpecRevision 0
 ```
 
 > Notice the variable <sentiment-score>
@@ -73,5 +73,5 @@ lhctl search variable --name sentiment-score --value <sentiment-score> --varType
 #### By add-length
 
 ```
-lhctl search variable --name add-length --value false --varType BOOL --wfSpecName example-variables --wfSpecVersion 0
+lhctl search variable --name add-length --value false --varType BOOL --wfSpecName example-variables --wfSpecMajorVersion 0 --wfSpecRevision 0
 ```
