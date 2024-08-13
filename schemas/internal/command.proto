@@ -43,22 +43,23 @@ message Command {
         RescueThreadRunRequest rescue_thread_run = 22;
         DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;
         ScheduleWfRun schedule_wf_run = 24;
+        ScheduleWfRequest schedule_wf_run_request = 25;
+        DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;
         // TODO: Add SaveUserTask
     }
 }
 
 message ScheduleWfRun {
-    string scheduled_command_id = 1;
+    ScheduledWfRunId scheduled_id = 1;
     // The name of the WfSpec to run.
-    WfRunId wf_run_id = 3;
-    WfSpecId wf_spec_id = 4;
+    WfSpecId wf_spec_id = 2;
     // A map from Variable Name to Values for those variables. The provided variables are
     // passed as input to the Entrypoint ThreadRun.
-    map<string, VariableValue> variables = 5;
+    map<string, VariableValue> variables = 3;
 
-    optional WfRunId parent_wf_run_id = 6;
+    optional WfRunId parent_wf_run_id = 4;
 
-    string cron_expression = 7;
+    string cron_expression = 5;
 }
 
 // This flows through the Metadata Command Topic
@@ -80,8 +81,6 @@ message MetadataCommand {
         DeletePrincipalRequest delete_principal = 13;
         PutTenantRequest put_tenant = 14;
         PutWorkflowEventDefRequest workflow_event_def = 15;
-        ScheduleWfRequest schedule_wf_run_request = 16;
-        DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;
         // TODO: DeleteTenant
     }
 }

@@ -3,7 +3,7 @@ package io.littlehorse.common.model.getable.core.wfrun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.MetadataGetable;
+import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class ScheduledWfRunModel extends MetadataGetable<ScheduledWfRun> {
+public class ScheduledWfRunModel extends CoreGetable<ScheduledWfRun> {
     private ScheduledWfRunIdModel id;
     private WfSpecIdModel wfSpecId;
     private Map<String, VariableValueModel> variables = new HashMap<>();

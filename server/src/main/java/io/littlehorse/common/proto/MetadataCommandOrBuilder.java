@@ -205,61 +205,31 @@ public interface MetadataCommandOrBuilder extends
   io.littlehorse.sdk.common.proto.PutTenantRequestOrBuilder getPutTenantOrBuilder();
 
   /**
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
    * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
    * @return Whether the workflowEventDef field is set.
    */
   boolean hasWorkflowEventDef();
   /**
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
    * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
    * @return The workflowEventDef.
    */
   io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest getWorkflowEventDef();
   /**
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
    * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
    */
   io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequestOrBuilder getWorkflowEventDefOrBuilder();
-
-  /**
-   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 16;</code>
-   * @return Whether the scheduleWfRunRequest field is set.
-   */
-  boolean hasScheduleWfRunRequest();
-  /**
-   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 16;</code>
-   * @return The scheduleWfRunRequest.
-   */
-  io.littlehorse.sdk.common.proto.ScheduleWfRequest getScheduleWfRunRequest();
-  /**
-   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 16;</code>
-   */
-  io.littlehorse.sdk.common.proto.ScheduleWfRequestOrBuilder getScheduleWfRunRequestOrBuilder();
-
-  /**
-   * <pre>
-   * TODO: DeleteTenant
-   * </pre>
-   *
-   * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;</code>
-   * @return Whether the deleteScheduledWfRun field is set.
-   */
-  boolean hasDeleteScheduledWfRun();
-  /**
-   * <pre>
-   * TODO: DeleteTenant
-   * </pre>
-   *
-   * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;</code>
-   * @return The deleteScheduledWfRun.
-   */
-  io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest getDeleteScheduledWfRun();
-  /**
-   * <pre>
-   * TODO: DeleteTenant
-   * </pre>
-   *
-   * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;</code>
-   */
-  io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequestOrBuilder getDeleteScheduledWfRunOrBuilder();
 
   io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
 }

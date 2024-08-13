@@ -1,16 +1,13 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
-import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
@@ -29,33 +26,33 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
-    private String scheduledCommandId;
-    private WfRunIdModel wfRunId;
+    private ScheduledWfRunIdModel scheduledId;
     private WfSpecIdModel wfSpecId;
     private Map<String, VariableValueModel> variables = new HashMap<>();
     private String cronExpression;
+    private WfRunIdModel parentWfRunId;
 
     public ScheduleWfRunCommandModel() {}
 
     public ScheduleWfRunCommandModel(
-            String scheduledCommandId,
-            WfRunIdModel wfRunId,
+            ScheduledWfRunIdModel scheduledId,
             WfSpecIdModel wfSpecId,
+            WfRunIdModel parentWfRunId,
             Map<String, VariableValueModel> variables,
             String cronExpression) {
-        this.scheduledCommandId = scheduledCommandId;
-        this.wfRunId = wfRunId;
+        this.scheduledId = scheduledId;
         this.wfSpecId = wfSpecId;
         this.variables = variables;
         this.cronExpression = cronExpression;
+        this.parentWfRunId = parentWfRunId;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         ScheduleWfRun p = (ScheduleWfRun) proto;
-        scheduledCommandId = p.getScheduledCommandId();
-        wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
+        scheduledId = LHSerializable.fromProto(p.getScheduledId(), ScheduledWfRunIdModel.class, context);
         wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
+        parentWfRunId = LHSerializable.fromProto(p.getParentWfRunId(), WfRunIdModel.class, context);
         for (Map.Entry<String, VariableValue> e : p.getVariablesMap().entrySet()) {
             variables.put(e.getKey(), VariableValueModel.fromProto(e.getValue(), context));
         }
@@ -65,9 +62,9 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
     @Override
     public ScheduleWfRun.Builder toProto() {
         ScheduleWfRun.Builder out = ScheduleWfRun.newBuilder()
-                .setScheduledCommandId(scheduledCommandId)
-                .setWfRunId(wfRunId.toProto())
+                .setScheduledId(scheduledId.toProto())
                 .setWfSpecId(wfSpecId.toProto())
+                .setParentWfRunId(parentWfRunId.toProto())
                 .setCronExpression(cronExpression);
 
         for (Map.Entry<String, VariableValueModel> e : variables.entrySet()) {
@@ -88,21 +85,19 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
 
     @Override
     public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        ScheduledWfRunModel scheduledWfRun =
-                executionContext.metadataManager().get(new ScheduledWfRunIdModel(scheduledCommandId));
-        if (scheduledWfRun == null) {
-            throw new LHApiException(Status.NOT_FOUND, "Scheduled execution not found");
-        }
-        CommandModel commandToExecute = new CommandModel(createRunWfCommand(executionContext));
-        Message response = commandToExecute.process(executionContext, config);
+        CommandModel commandToExecute = new CommandModel(createRunWfCommand(executionContext), new Date());
+        LHTimer runWfTimer = new LHTimer(commandToExecute);
+        runWfTimer.maturationTime = new Date();
+        executionContext.getTaskManager().scheduleTimer(runWfTimer);
         Optional<Date> scheduledTime = LHUtil.nextDate(cronExpression, new Date());
+
         if (scheduledTime.isPresent()) {
-            log.info("new schedule at: " + scheduledTime.get());
-            CommandModel nextCommand = new CommandModel(copy(), scheduledTime.get());
-            LHTimer next = new LHTimer(nextCommand);
-            executionContext.getTaskManager().scheduleTimer(next);
+            CommandModel nextSchedule = new CommandModel(copy(), scheduledTime.get());
+            LHTimer nextScheduleTimer = new LHTimer(nextSchedule);
+            nextScheduleTimer.maturationTime = scheduledTime.get();
+            executionContext.getTaskManager().scheduleTimer(nextScheduleTimer);
         }
-        return response;
+        return null;
     }
 
     private RunWfRequestModel createRunWfCommand(ExecutionContext context) {
@@ -110,9 +105,9 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
         protoBuilder.setWfSpecName(wfSpecId.getName());
         protoBuilder.setMajorVersion(wfSpecId.getMajorVersion());
         protoBuilder.setRevision(wfSpecId.getRevision());
-        protoBuilder.setId(wfRunId.getId());
-        if (wfRunId.getParentWfRunId() != null) {
-            protoBuilder.setParentWfRunId(wfRunId.getParentWfRunId().toProto());
+        protoBuilder.setId(creatNextWfRunId().getId());
+        if (parentWfRunId != null) {
+            protoBuilder.setParentWfRunId(parentWfRunId.toProto());
         }
         for (Map.Entry<String, VariableValueModel> e : variables.entrySet()) {
             protoBuilder.putVariables(e.getKey(), e.getValue().toProto().build());
@@ -124,17 +119,15 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
 
     @Override
     public String getPartitionKey() {
-        return wfRunId.getPartitionKey().get();
+        return scheduledId.getPartitionKey().get();
     }
 
     private WfRunIdModel creatNextWfRunId() {
-        WfRunIdModel parentWfRunId = wfRunId.getParentWfRunId();
         String nextSimpleId = LHUtil.generateGuid();
         return new WfRunIdModel(nextSimpleId, parentWfRunId);
     }
 
     private ScheduleWfRunCommandModel copy() {
-        WfRunIdModel nextId = creatNextWfRunId();
-        return new ScheduleWfRunCommandModel(scheduledCommandId, nextId, wfSpecId, variables, cronExpression);
+        return new ScheduleWfRunCommandModel(scheduledId, wfSpecId, parentWfRunId, variables, cronExpression);
     }
 }

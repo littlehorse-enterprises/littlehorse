@@ -3,29 +3,28 @@ package io.littlehorse.common.model.corecommand.subcommand;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
-import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
-import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.model.metadatacommand.subcommand.ScheduleWfRunCommandModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ScheduleWfRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-public class ScheduleWfRequestModel extends MetadataSubCommand<ScheduleWfRequest> {
+public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
     private String id;
     private String wfSpecName;
     private Integer majorVersion;
@@ -80,34 +79,27 @@ public class ScheduleWfRequestModel extends MetadataSubCommand<ScheduleWfRequest
     }
 
     @Override
-    public Message process(MetadataCommandExecution executionContext) {
-        Date eventTime = executionContext.currentCommand().getTime();
-        Optional<Date> scheduledTime = LHUtil.nextDate(cronExpression, eventTime);
-        if (id == null) {
-            id = LHUtil.generateGuid();
+    public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+        WfSpecModel spec = executionContext.service().getWfSpec(wfSpecName, majorVersion, revision);
+        if (spec == null) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    "WfSpec %s %s.%s does not exist".formatted(wfSpecName, majorVersion, revision));
         }
-        if (scheduledTime.isPresent()) {
-            WfRunIdModel wfRunId = new WfRunIdModel(LHUtil.generateGuid(), parentWfRunId);
-            WfSpecModel spec = executionContext.service().getWfSpec(wfSpecName, majorVersion, revision);
-            if (spec == null) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        "WfSpec %s %s.%s does not exist".formatted(wfSpecName, majorVersion, revision));
-            }
-            WfSpecIdModel wfSpecId = spec.getId();
-            ScheduleWfRunCommandModel scheduledCommand =
-                    new ScheduleWfRunCommandModel(id, wfRunId, wfSpecId, variables, cronExpression);
-            scheduledCommand.getPartitionKey();
-            LHTimer timer = new LHTimer(new CommandModel(scheduledCommand));
-            timer.maturationTime = scheduledTime.get();
-            executionContext.forward(timer);
-            ScheduledWfRunIdModel scheduledId = new ScheduledWfRunIdModel(id);
-            ScheduledWfRunModel scheduledWfRun =
-                    new ScheduledWfRunModel(scheduledId, wfSpecId, variables, parentWfRunId, cronExpression);
-            executionContext.metadataManager().put(scheduledWfRun);
-            return scheduledWfRun.toProto().build();
-        } else {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid next date");
-        }
+        WfSpecIdModel wfSpecId = spec.getId();
+        ScheduledWfRunIdModel scheduledId = new ScheduledWfRunIdModel(id);
+        ScheduleWfRunCommandModel scheduledCommand =
+                new ScheduleWfRunCommandModel(scheduledId, wfSpecId, parentWfRunId, variables, cronExpression);
+        scheduledCommand.getPartitionKey();
+        LHTimer timer = new LHTimer(new CommandModel(scheduledCommand));
+        timer.maturationTime = new Date();
+        executionContext.getTaskManager().scheduleTimer(timer);
+        return null;
+    }
+
+    @Override
+    public String getPartitionKey() {
+        if (id == null) id = LHUtil.generateGuid();
+        return new ScheduledWfRunIdModel(id).getPartitionKey().get();
     }
 }

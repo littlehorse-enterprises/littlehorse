@@ -1,18 +1,18 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
-import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
-import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class DeleteScheduledWfRunRequestModel extends MetadataSubCommand<DeleteScheduledWfRunRequest> {
+public class DeleteScheduledWfRunRequestModel extends CoreSubCommand<DeleteScheduledWfRunRequest> {
 
     private ScheduledWfRunIdModel id;
 
@@ -38,8 +38,14 @@ public class DeleteScheduledWfRunRequestModel extends MetadataSubCommand<DeleteS
     }
 
     @Override
-    public Message process(MetadataCommandExecution executionContext) {
-        executionContext.metadataManager().delete(id);
-        return Empty.getDefaultInstance();
+    public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+        // TODO: implement scheduled wf run deletion
+        return null;
+    }
+
+    @Override
+    public String getPartitionKey() {
+        // TODO: determine partition key
+        return "";
     }
 }

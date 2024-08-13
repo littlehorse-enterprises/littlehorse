@@ -8,56 +8,44 @@ public interface ScheduleWfRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string scheduled_command_id = 1;</code>
-   * @return The scheduledCommandId.
+   * <code>.littlehorse.ScheduledWfRunId scheduled_id = 1;</code>
+   * @return Whether the scheduledId field is set.
    */
-  java.lang.String getScheduledCommandId();
+  boolean hasScheduledId();
   /**
-   * <code>string scheduled_command_id = 1;</code>
-   * @return The bytes for scheduledCommandId.
+   * <code>.littlehorse.ScheduledWfRunId scheduled_id = 1;</code>
+   * @return The scheduledId.
    */
-  com.google.protobuf.ByteString
-      getScheduledCommandIdBytes();
+  io.littlehorse.sdk.common.proto.ScheduledWfRunId getScheduledId();
+  /**
+   * <code>.littlehorse.ScheduledWfRunId scheduled_id = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.ScheduledWfRunIdOrBuilder getScheduledIdOrBuilder();
 
   /**
    * <pre>
    * The name of the WfSpec to run.
    * </pre>
    *
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   * @return Whether the wfRunId field is set.
-   */
-  boolean hasWfRunId();
-  /**
-   * <pre>
-   * The name of the WfSpec to run.
-   * </pre>
-   *
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   * @return The wfRunId.
-   */
-  io.littlehorse.sdk.common.proto.WfRunId getWfRunId();
-  /**
-   * <pre>
-   * The name of the WfSpec to run.
-   * </pre>
-   *
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   */
-  io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder();
-
-  /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    * @return Whether the wfSpecId field is set.
    */
   boolean hasWfSpecId();
   /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+   * <pre>
+   * The name of the WfSpec to run.
+   * </pre>
+   *
+   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    * @return The wfSpecId.
    */
   io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+   * <pre>
+   * The name of the WfSpec to run.
+   * </pre>
+   *
+   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
@@ -67,7 +55,7 @@ public interface ScheduleWfRunOrBuilder extends
    * passed as input to the Entrypoint ThreadRun.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
    */
   int getVariablesCount();
   /**
@@ -76,7 +64,7 @@ public interface ScheduleWfRunOrBuilder extends
    * passed as input to the Entrypoint ThreadRun.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
    */
   boolean containsVariables(
       java.lang.String key);
@@ -92,7 +80,7 @@ public interface ScheduleWfRunOrBuilder extends
    * passed as input to the Entrypoint ThreadRun.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
   getVariablesMap();
@@ -102,7 +90,7 @@ public interface ScheduleWfRunOrBuilder extends
    * passed as input to the Entrypoint ThreadRun.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
    */
   /* nullable */
 io.littlehorse.sdk.common.proto.VariableValue getVariablesOrDefault(
@@ -115,33 +103,33 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    * passed as input to the Entrypoint ThreadRun.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValue getVariablesOrThrow(
       java.lang.String key);
 
   /**
-   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
    * @return Whether the parentWfRunId field is set.
    */
   boolean hasParentWfRunId();
   /**
-   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
    * @return The parentWfRunId.
    */
   io.littlehorse.sdk.common.proto.WfRunId getParentWfRunId();
   /**
-   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
    */
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getParentWfRunIdOrBuilder();
 
   /**
-   * <code>string cron_expression = 7;</code>
+   * <code>string cron_expression = 5;</code>
    * @return The cronExpression.
    */
   java.lang.String getCronExpression();
   /**
-   * <code>string cron_expression = 7;</code>
+   * <code>string cron_expression = 5;</code>
    * @return The bytes for cronExpression.
    */
   com.google.protobuf.ByteString

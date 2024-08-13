@@ -336,15 +336,15 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
     @Override
     public void getScheduledWf(ScheduledWfRunId req, StreamObserver<ScheduledWfRun> ctx) {
-        ScheduledWfRunIdModel scheduledWfId =
-                LHSerializable.fromProto(req, ScheduledWfRunIdModel.class, requestContext());
-        ScheduledWfRunModel scheduledWfRun = requestContext().metadataManager().get(scheduledWfId);
+        /*ScheduledWfRunIdModel scheduledWfId =
+                LHSerializable.fromProto(req, ScheduledWfRunIdModel.class, requestContext());*/
+        /*ScheduledWfRunModel scheduledWfRun = requestContext().metadataManager().get(scheduledWfId);
         if (scheduledWfRun == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified object"));
         } else {
             ctx.onNext(scheduledWfRun.toProto().build());
             ctx.onCompleted();
-        }
+        }*/
     }
 
     public void putPrincipal(PutPrincipalRequest req, StreamObserver<Principal> ctx) {
@@ -555,7 +555,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
     public void scheduleWf(ScheduleWfRequest req, StreamObserver<ScheduledWfRun> ctx) {
         ScheduleWfRequestModel reqModel = LHSerializable.fromProto(req, ScheduleWfRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, ScheduledWfRun.class, true);
+        processCommand(new CommandModel(reqModel), ctx, ScheduledWfRun.class, true);
     }
 
     @Override
@@ -935,9 +935,9 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
     public void deleteScheduledWfRun(DeleteScheduledWfRunRequest req, StreamObserver<Empty> ctx) {
-        DeleteScheduledWfRunRequestModel reqModel =
+        /*DeleteScheduledWfRunRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteScheduledWfRunRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class, true);
+        processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class, true);*/
     }
 
     @Override

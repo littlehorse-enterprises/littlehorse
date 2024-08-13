@@ -62,8 +62,6 @@ private static final long serialVersionUID = 0L;
     DELETE_PRINCIPAL(13),
     PUT_TENANT(14),
     WORKFLOW_EVENT_DEF(15),
-    SCHEDULE_WF_RUN_REQUEST(16),
-    DELETE_SCHEDULED_WF_RUN(17),
     METADATACOMMAND_NOT_SET(0);
     private final int value;
     private MetadataCommandCase(int value) {
@@ -93,8 +91,6 @@ private static final long serialVersionUID = 0L;
         case 13: return DELETE_PRINCIPAL;
         case 14: return PUT_TENANT;
         case 15: return WORKFLOW_EVENT_DEF;
-        case 16: return SCHEDULE_WF_RUN_REQUEST;
-        case 17: return DELETE_SCHEDULED_WF_RUN;
         case 0: return METADATACOMMAND_NOT_SET;
         default: return null;
       }
@@ -526,6 +522,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int WORKFLOW_EVENT_DEF_FIELD_NUMBER = 15;
   /**
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
    * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
    * @return Whether the workflowEventDef field is set.
    */
@@ -534,6 +534,10 @@ private static final long serialVersionUID = 0L;
     return metadataCommandCase_ == 15;
   }
   /**
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
    * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
    * @return The workflowEventDef.
    */
@@ -545,6 +549,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.getDefaultInstance();
   }
   /**
+   * <pre>
+   * TODO: DeleteTenant
+   * </pre>
+   *
    * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
    */
   @java.lang.Override
@@ -553,80 +561,6 @@ private static final long serialVersionUID = 0L;
        return (io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest) metadataCommand_;
     }
     return io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.getDefaultInstance();
-  }
-
-  public static final int SCHEDULE_WF_RUN_REQUEST_FIELD_NUMBER = 16;
-  /**
-   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 16;</code>
-   * @return Whether the scheduleWfRunRequest field is set.
-   */
-  @java.lang.Override
-  public boolean hasScheduleWfRunRequest() {
-    return metadataCommandCase_ == 16;
-  }
-  /**
-   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 16;</code>
-   * @return The scheduleWfRunRequest.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ScheduleWfRequest getScheduleWfRunRequest() {
-    if (metadataCommandCase_ == 16) {
-       return (io.littlehorse.sdk.common.proto.ScheduleWfRequest) metadataCommand_;
-    }
-    return io.littlehorse.sdk.common.proto.ScheduleWfRequest.getDefaultInstance();
-  }
-  /**
-   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 16;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ScheduleWfRequestOrBuilder getScheduleWfRunRequestOrBuilder() {
-    if (metadataCommandCase_ == 16) {
-       return (io.littlehorse.sdk.common.proto.ScheduleWfRequest) metadataCommand_;
-    }
-    return io.littlehorse.sdk.common.proto.ScheduleWfRequest.getDefaultInstance();
-  }
-
-  public static final int DELETE_SCHEDULED_WF_RUN_FIELD_NUMBER = 17;
-  /**
-   * <pre>
-   * TODO: DeleteTenant
-   * </pre>
-   *
-   * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;</code>
-   * @return Whether the deleteScheduledWfRun field is set.
-   */
-  @java.lang.Override
-  public boolean hasDeleteScheduledWfRun() {
-    return metadataCommandCase_ == 17;
-  }
-  /**
-   * <pre>
-   * TODO: DeleteTenant
-   * </pre>
-   *
-   * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;</code>
-   * @return The deleteScheduledWfRun.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest getDeleteScheduledWfRun() {
-    if (metadataCommandCase_ == 17) {
-       return (io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest) metadataCommand_;
-    }
-    return io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.getDefaultInstance();
-  }
-  /**
-   * <pre>
-   * TODO: DeleteTenant
-   * </pre>
-   *
-   * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequestOrBuilder getDeleteScheduledWfRunOrBuilder() {
-    if (metadataCommandCase_ == 17) {
-       return (io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest) metadataCommand_;
-    }
-    return io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -684,12 +618,6 @@ private static final long serialVersionUID = 0L;
     }
     if (metadataCommandCase_ == 15) {
       output.writeMessage(15, (io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest) metadataCommand_);
-    }
-    if (metadataCommandCase_ == 16) {
-      output.writeMessage(16, (io.littlehorse.sdk.common.proto.ScheduleWfRequest) metadataCommand_);
-    }
-    if (metadataCommandCase_ == 17) {
-      output.writeMessage(17, (io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest) metadataCommand_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -754,14 +682,6 @@ private static final long serialVersionUID = 0L;
     if (metadataCommandCase_ == 15) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(15, (io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest) metadataCommand_);
-    }
-    if (metadataCommandCase_ == 16) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(16, (io.littlehorse.sdk.common.proto.ScheduleWfRequest) metadataCommand_);
-    }
-    if (metadataCommandCase_ == 17) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(17, (io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest) metadataCommand_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -838,14 +758,6 @@ private static final long serialVersionUID = 0L;
         if (!getWorkflowEventDef()
             .equals(other.getWorkflowEventDef())) return false;
         break;
-      case 16:
-        if (!getScheduleWfRunRequest()
-            .equals(other.getScheduleWfRunRequest())) return false;
-        break;
-      case 17:
-        if (!getDeleteScheduledWfRun()
-            .equals(other.getDeleteScheduledWfRun())) return false;
-        break;
       case 0:
       default:
     }
@@ -916,14 +828,6 @@ private static final long serialVersionUID = 0L;
       case 15:
         hash = (37 * hash) + WORKFLOW_EVENT_DEF_FIELD_NUMBER;
         hash = (53 * hash) + getWorkflowEventDef().hashCode();
-        break;
-      case 16:
-        hash = (37 * hash) + SCHEDULE_WF_RUN_REQUEST_FIELD_NUMBER;
-        hash = (53 * hash) + getScheduleWfRunRequest().hashCode();
-        break;
-      case 17:
-        hash = (37 * hash) + DELETE_SCHEDULED_WF_RUN_FIELD_NUMBER;
-        hash = (53 * hash) + getDeleteScheduledWfRun().hashCode();
         break;
       case 0:
       default:
@@ -1105,12 +1009,6 @@ private static final long serialVersionUID = 0L;
       if (workflowEventDefBuilder_ != null) {
         workflowEventDefBuilder_.clear();
       }
-      if (scheduleWfRunRequestBuilder_ != null) {
-        scheduleWfRunRequestBuilder_.clear();
-      }
-      if (deleteScheduledWfRunBuilder_ != null) {
-        deleteScheduledWfRunBuilder_.clear();
-      }
       metadataCommandCase_ = 0;
       metadataCommand_ = null;
       return this;
@@ -1210,14 +1108,6 @@ private static final long serialVersionUID = 0L;
       if (metadataCommandCase_ == 15 &&
           workflowEventDefBuilder_ != null) {
         result.metadataCommand_ = workflowEventDefBuilder_.build();
-      }
-      if (metadataCommandCase_ == 16 &&
-          scheduleWfRunRequestBuilder_ != null) {
-        result.metadataCommand_ = scheduleWfRunRequestBuilder_.build();
-      }
-      if (metadataCommandCase_ == 17 &&
-          deleteScheduledWfRunBuilder_ != null) {
-        result.metadataCommand_ = deleteScheduledWfRunBuilder_.build();
       }
     }
 
@@ -1320,14 +1210,6 @@ private static final long serialVersionUID = 0L;
         }
         case WORKFLOW_EVENT_DEF: {
           mergeWorkflowEventDef(other.getWorkflowEventDef());
-          break;
-        }
-        case SCHEDULE_WF_RUN_REQUEST: {
-          mergeScheduleWfRunRequest(other.getScheduleWfRunRequest());
-          break;
-        }
-        case DELETE_SCHEDULED_WF_RUN: {
-          mergeDeleteScheduledWfRun(other.getDeleteScheduledWfRun());
           break;
         }
         case METADATACOMMAND_NOT_SET: {
@@ -1456,20 +1338,6 @@ private static final long serialVersionUID = 0L;
               metadataCommandCase_ = 15;
               break;
             } // case 122
-            case 130: {
-              input.readMessage(
-                  getScheduleWfRunRequestFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              metadataCommandCase_ = 16;
-              break;
-            } // case 130
-            case 138: {
-              input.readMessage(
-                  getDeleteScheduledWfRunFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              metadataCommandCase_ = 17;
-              break;
-            } // case 138
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3265,6 +3133,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest, io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.Builder, io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequestOrBuilder> workflowEventDefBuilder_;
     /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
      * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
      * @return Whether the workflowEventDef field is set.
      */
@@ -3273,6 +3145,10 @@ private static final long serialVersionUID = 0L;
       return metadataCommandCase_ == 15;
     }
     /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
      * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
      * @return The workflowEventDef.
      */
@@ -3291,6 +3167,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
      * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
      */
     public Builder setWorkflowEventDef(io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest value) {
@@ -3307,6 +3187,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
      * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
      */
     public Builder setWorkflowEventDef(
@@ -3321,6 +3205,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
      * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
      */
     public Builder mergeWorkflowEventDef(io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest value) {
@@ -3344,6 +3232,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
      * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
      */
     public Builder clearWorkflowEventDef() {
@@ -3363,12 +3255,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
      * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
      */
     public io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.Builder getWorkflowEventDefBuilder() {
       return getWorkflowEventDefFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
      * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
      */
     @java.lang.Override
@@ -3383,6 +3283,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * TODO: DeleteTenant
+     * </pre>
+     *
      * <code>.littlehorse.PutWorkflowEventDefRequest workflow_event_def = 15;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -3402,326 +3306,6 @@ private static final long serialVersionUID = 0L;
       metadataCommandCase_ = 15;
       onChanged();
       return workflowEventDefBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ScheduleWfRequest, io.littlehorse.sdk.common.proto.ScheduleWfRequest.Builder, io.littlehorse.sdk.common.proto.ScheduleWfRequestOrBuilder> scheduleWfRunRequestBuilder_;
-    /**
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 16;</code>
-     * @return Whether the scheduleWfRunRequest field is set.
-     */
-    @java.lang.Override
-    public boolean hasScheduleWfRunRequest() {
-      return metadataCommandCase_ == 16;
-    }
-    /**
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 16;</code>
-     * @return The scheduleWfRunRequest.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ScheduleWfRequest getScheduleWfRunRequest() {
-      if (scheduleWfRunRequestBuilder_ == null) {
-        if (metadataCommandCase_ == 16) {
-          return (io.littlehorse.sdk.common.proto.ScheduleWfRequest) metadataCommand_;
-        }
-        return io.littlehorse.sdk.common.proto.ScheduleWfRequest.getDefaultInstance();
-      } else {
-        if (metadataCommandCase_ == 16) {
-          return scheduleWfRunRequestBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.ScheduleWfRequest.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 16;</code>
-     */
-    public Builder setScheduleWfRunRequest(io.littlehorse.sdk.common.proto.ScheduleWfRequest value) {
-      if (scheduleWfRunRequestBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        metadataCommand_ = value;
-        onChanged();
-      } else {
-        scheduleWfRunRequestBuilder_.setMessage(value);
-      }
-      metadataCommandCase_ = 16;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 16;</code>
-     */
-    public Builder setScheduleWfRunRequest(
-        io.littlehorse.sdk.common.proto.ScheduleWfRequest.Builder builderForValue) {
-      if (scheduleWfRunRequestBuilder_ == null) {
-        metadataCommand_ = builderForValue.build();
-        onChanged();
-      } else {
-        scheduleWfRunRequestBuilder_.setMessage(builderForValue.build());
-      }
-      metadataCommandCase_ = 16;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 16;</code>
-     */
-    public Builder mergeScheduleWfRunRequest(io.littlehorse.sdk.common.proto.ScheduleWfRequest value) {
-      if (scheduleWfRunRequestBuilder_ == null) {
-        if (metadataCommandCase_ == 16 &&
-            metadataCommand_ != io.littlehorse.sdk.common.proto.ScheduleWfRequest.getDefaultInstance()) {
-          metadataCommand_ = io.littlehorse.sdk.common.proto.ScheduleWfRequest.newBuilder((io.littlehorse.sdk.common.proto.ScheduleWfRequest) metadataCommand_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          metadataCommand_ = value;
-        }
-        onChanged();
-      } else {
-        if (metadataCommandCase_ == 16) {
-          scheduleWfRunRequestBuilder_.mergeFrom(value);
-        } else {
-          scheduleWfRunRequestBuilder_.setMessage(value);
-        }
-      }
-      metadataCommandCase_ = 16;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 16;</code>
-     */
-    public Builder clearScheduleWfRunRequest() {
-      if (scheduleWfRunRequestBuilder_ == null) {
-        if (metadataCommandCase_ == 16) {
-          metadataCommandCase_ = 0;
-          metadataCommand_ = null;
-          onChanged();
-        }
-      } else {
-        if (metadataCommandCase_ == 16) {
-          metadataCommandCase_ = 0;
-          metadataCommand_ = null;
-        }
-        scheduleWfRunRequestBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 16;</code>
-     */
-    public io.littlehorse.sdk.common.proto.ScheduleWfRequest.Builder getScheduleWfRunRequestBuilder() {
-      return getScheduleWfRunRequestFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 16;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ScheduleWfRequestOrBuilder getScheduleWfRunRequestOrBuilder() {
-      if ((metadataCommandCase_ == 16) && (scheduleWfRunRequestBuilder_ != null)) {
-        return scheduleWfRunRequestBuilder_.getMessageOrBuilder();
-      } else {
-        if (metadataCommandCase_ == 16) {
-          return (io.littlehorse.sdk.common.proto.ScheduleWfRequest) metadataCommand_;
-        }
-        return io.littlehorse.sdk.common.proto.ScheduleWfRequest.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 16;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ScheduleWfRequest, io.littlehorse.sdk.common.proto.ScheduleWfRequest.Builder, io.littlehorse.sdk.common.proto.ScheduleWfRequestOrBuilder> 
-        getScheduleWfRunRequestFieldBuilder() {
-      if (scheduleWfRunRequestBuilder_ == null) {
-        if (!(metadataCommandCase_ == 16)) {
-          metadataCommand_ = io.littlehorse.sdk.common.proto.ScheduleWfRequest.getDefaultInstance();
-        }
-        scheduleWfRunRequestBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.ScheduleWfRequest, io.littlehorse.sdk.common.proto.ScheduleWfRequest.Builder, io.littlehorse.sdk.common.proto.ScheduleWfRequestOrBuilder>(
-                (io.littlehorse.sdk.common.proto.ScheduleWfRequest) metadataCommand_,
-                getParentForChildren(),
-                isClean());
-        metadataCommand_ = null;
-      }
-      metadataCommandCase_ = 16;
-      onChanged();
-      return scheduleWfRunRequestBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest, io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.Builder, io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequestOrBuilder> deleteScheduledWfRunBuilder_;
-    /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
-     * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;</code>
-     * @return Whether the deleteScheduledWfRun field is set.
-     */
-    @java.lang.Override
-    public boolean hasDeleteScheduledWfRun() {
-      return metadataCommandCase_ == 17;
-    }
-    /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
-     * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;</code>
-     * @return The deleteScheduledWfRun.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest getDeleteScheduledWfRun() {
-      if (deleteScheduledWfRunBuilder_ == null) {
-        if (metadataCommandCase_ == 17) {
-          return (io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest) metadataCommand_;
-        }
-        return io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.getDefaultInstance();
-      } else {
-        if (metadataCommandCase_ == 17) {
-          return deleteScheduledWfRunBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.getDefaultInstance();
-      }
-    }
-    /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
-     * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;</code>
-     */
-    public Builder setDeleteScheduledWfRun(io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest value) {
-      if (deleteScheduledWfRunBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        metadataCommand_ = value;
-        onChanged();
-      } else {
-        deleteScheduledWfRunBuilder_.setMessage(value);
-      }
-      metadataCommandCase_ = 17;
-      return this;
-    }
-    /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
-     * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;</code>
-     */
-    public Builder setDeleteScheduledWfRun(
-        io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.Builder builderForValue) {
-      if (deleteScheduledWfRunBuilder_ == null) {
-        metadataCommand_ = builderForValue.build();
-        onChanged();
-      } else {
-        deleteScheduledWfRunBuilder_.setMessage(builderForValue.build());
-      }
-      metadataCommandCase_ = 17;
-      return this;
-    }
-    /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
-     * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;</code>
-     */
-    public Builder mergeDeleteScheduledWfRun(io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest value) {
-      if (deleteScheduledWfRunBuilder_ == null) {
-        if (metadataCommandCase_ == 17 &&
-            metadataCommand_ != io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.getDefaultInstance()) {
-          metadataCommand_ = io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.newBuilder((io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest) metadataCommand_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          metadataCommand_ = value;
-        }
-        onChanged();
-      } else {
-        if (metadataCommandCase_ == 17) {
-          deleteScheduledWfRunBuilder_.mergeFrom(value);
-        } else {
-          deleteScheduledWfRunBuilder_.setMessage(value);
-        }
-      }
-      metadataCommandCase_ = 17;
-      return this;
-    }
-    /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
-     * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;</code>
-     */
-    public Builder clearDeleteScheduledWfRun() {
-      if (deleteScheduledWfRunBuilder_ == null) {
-        if (metadataCommandCase_ == 17) {
-          metadataCommandCase_ = 0;
-          metadataCommand_ = null;
-          onChanged();
-        }
-      } else {
-        if (metadataCommandCase_ == 17) {
-          metadataCommandCase_ = 0;
-          metadataCommand_ = null;
-        }
-        deleteScheduledWfRunBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
-     * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;</code>
-     */
-    public io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.Builder getDeleteScheduledWfRunBuilder() {
-      return getDeleteScheduledWfRunFieldBuilder().getBuilder();
-    }
-    /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
-     * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequestOrBuilder getDeleteScheduledWfRunOrBuilder() {
-      if ((metadataCommandCase_ == 17) && (deleteScheduledWfRunBuilder_ != null)) {
-        return deleteScheduledWfRunBuilder_.getMessageOrBuilder();
-      } else {
-        if (metadataCommandCase_ == 17) {
-          return (io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest) metadataCommand_;
-        }
-        return io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.getDefaultInstance();
-      }
-    }
-    /**
-     * <pre>
-     * TODO: DeleteTenant
-     * </pre>
-     *
-     * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 17;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest, io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.Builder, io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequestOrBuilder> 
-        getDeleteScheduledWfRunFieldBuilder() {
-      if (deleteScheduledWfRunBuilder_ == null) {
-        if (!(metadataCommandCase_ == 17)) {
-          metadataCommand_ = io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.getDefaultInstance();
-        }
-        deleteScheduledWfRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest, io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.Builder, io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequestOrBuilder>(
-                (io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest) metadataCommand_,
-                getParentForChildren(),
-                isClean());
-        metadataCommand_ = null;
-      }
-      metadataCommandCase_ = 17;
-      onChanged();
-      return deleteScheduledWfRunBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

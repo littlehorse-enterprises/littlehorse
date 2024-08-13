@@ -16,7 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private ScheduleWfRun() {
-    scheduledCommandId_ = "";
     cronExpression_ = "";
   }
 
@@ -37,7 +36,7 @@ private static final long serialVersionUID = 0L;
   protected com.google.protobuf.MapField internalGetMapField(
       int number) {
     switch (number) {
-      case 5:
+      case 3:
         return internalGetVariables();
       default:
         throw new RuntimeException(
@@ -53,87 +52,40 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  public static final int SCHEDULED_COMMAND_ID_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object scheduledCommandId_ = "";
+  public static final int SCHEDULED_ID_FIELD_NUMBER = 1;
+  private io.littlehorse.sdk.common.proto.ScheduledWfRunId scheduledId_;
   /**
-   * <code>string scheduled_command_id = 1;</code>
-   * @return The scheduledCommandId.
+   * <code>.littlehorse.ScheduledWfRunId scheduled_id = 1;</code>
+   * @return Whether the scheduledId field is set.
    */
   @java.lang.Override
-  public java.lang.String getScheduledCommandId() {
-    java.lang.Object ref = scheduledCommandId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      scheduledCommandId_ = s;
-      return s;
-    }
+  public boolean hasScheduledId() {
+    return scheduledId_ != null;
   }
   /**
-   * <code>string scheduled_command_id = 1;</code>
-   * @return The bytes for scheduledCommandId.
+   * <code>.littlehorse.ScheduledWfRunId scheduled_id = 1;</code>
+   * @return The scheduledId.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getScheduledCommandIdBytes() {
-    java.lang.Object ref = scheduledCommandId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      scheduledCommandId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public io.littlehorse.sdk.common.proto.ScheduledWfRunId getScheduledId() {
+    return scheduledId_ == null ? io.littlehorse.sdk.common.proto.ScheduledWfRunId.getDefaultInstance() : scheduledId_;
+  }
+  /**
+   * <code>.littlehorse.ScheduledWfRunId scheduled_id = 1;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ScheduledWfRunIdOrBuilder getScheduledIdOrBuilder() {
+    return scheduledId_ == null ? io.littlehorse.sdk.common.proto.ScheduledWfRunId.getDefaultInstance() : scheduledId_;
   }
 
-  public static final int WF_RUN_ID_FIELD_NUMBER = 3;
-  private io.littlehorse.sdk.common.proto.WfRunId wfRunId_;
-  /**
-   * <pre>
-   * The name of the WfSpec to run.
-   * </pre>
-   *
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   * @return Whether the wfRunId field is set.
-   */
-  @java.lang.Override
-  public boolean hasWfRunId() {
-    return wfRunId_ != null;
-  }
-  /**
-   * <pre>
-   * The name of the WfSpec to run.
-   * </pre>
-   *
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   * @return The wfRunId.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WfRunId getWfRunId() {
-    return wfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : wfRunId_;
-  }
-  /**
-   * <pre>
-   * The name of the WfSpec to run.
-   * </pre>
-   *
-   * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
-    return wfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : wfRunId_;
-  }
-
-  public static final int WF_SPEC_ID_FIELD_NUMBER = 4;
+  public static final int WF_SPEC_ID_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
   /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+   * <pre>
+   * The name of the WfSpec to run.
+   * </pre>
+   *
+   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    * @return Whether the wfSpecId field is set.
    */
   @java.lang.Override
@@ -141,7 +93,11 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ != null;
   }
   /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+   * <pre>
+   * The name of the WfSpec to run.
+   * </pre>
+   *
+   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    * @return The wfSpecId.
    */
   @java.lang.Override
@@ -149,14 +105,18 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
   }
   /**
-   * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+   * <pre>
+   * The name of the WfSpec to run.
+   * </pre>
+   *
+   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
     return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
   }
 
-  public static final int VARIABLES_FIELD_NUMBER = 5;
+  public static final int VARIABLES_FIELD_NUMBER = 3;
   private static final class VariablesDefaultEntryHolder {
     static final com.google.protobuf.MapEntry<
         java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> defaultEntry =
@@ -188,7 +148,7 @@ private static final long serialVersionUID = 0L;
    * passed as input to the Entrypoint ThreadRun.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
    */
   @java.lang.Override
   public boolean containsVariables(
@@ -210,7 +170,7 @@ private static final long serialVersionUID = 0L;
    * passed as input to the Entrypoint ThreadRun.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
    */
   @java.lang.Override
   public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> getVariablesMap() {
@@ -222,7 +182,7 @@ private static final long serialVersionUID = 0L;
    * passed as input to the Entrypoint ThreadRun.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
    */
   @java.lang.Override
   public /* nullable */
@@ -241,7 +201,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
    * passed as input to the Entrypoint ThreadRun.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.VariableValue getVariablesOrThrow(
@@ -255,10 +215,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return map.get(key);
   }
 
-  public static final int PARENT_WF_RUN_ID_FIELD_NUMBER = 6;
+  public static final int PARENT_WF_RUN_ID_FIELD_NUMBER = 4;
   private io.littlehorse.sdk.common.proto.WfRunId parentWfRunId_;
   /**
-   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
    * @return Whether the parentWfRunId field is set.
    */
   @java.lang.Override
@@ -266,7 +226,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
    * @return The parentWfRunId.
    */
   @java.lang.Override
@@ -274,18 +234,18 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return parentWfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : parentWfRunId_;
   }
   /**
-   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getParentWfRunIdOrBuilder() {
     return parentWfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : parentWfRunId_;
   }
 
-  public static final int CRON_EXPRESSION_FIELD_NUMBER = 7;
+  public static final int CRON_EXPRESSION_FIELD_NUMBER = 5;
   @SuppressWarnings("serial")
   private volatile java.lang.Object cronExpression_ = "";
   /**
-   * <code>string cron_expression = 7;</code>
+   * <code>string cron_expression = 5;</code>
    * @return The cronExpression.
    */
   @java.lang.Override
@@ -302,7 +262,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
   }
   /**
-   * <code>string cron_expression = 7;</code>
+   * <code>string cron_expression = 5;</code>
    * @return The bytes for cronExpression.
    */
   @java.lang.Override
@@ -334,26 +294,23 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(scheduledCommandId_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, scheduledCommandId_);
-    }
-    if (wfRunId_ != null) {
-      output.writeMessage(3, getWfRunId());
+    if (scheduledId_ != null) {
+      output.writeMessage(1, getScheduledId());
     }
     if (wfSpecId_ != null) {
-      output.writeMessage(4, getWfSpecId());
+      output.writeMessage(2, getWfSpecId());
     }
     com.google.protobuf.GeneratedMessageV3
       .serializeStringMapTo(
         output,
         internalGetVariables(),
         VariablesDefaultEntryHolder.defaultEntry,
-        5);
+        3);
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(6, getParentWfRunId());
+      output.writeMessage(4, getParentWfRunId());
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(cronExpression_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 7, cronExpression_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, cronExpression_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -364,16 +321,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(scheduledCommandId_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, scheduledCommandId_);
-    }
-    if (wfRunId_ != null) {
+    if (scheduledId_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getWfRunId());
+        .computeMessageSize(1, getScheduledId());
     }
     if (wfSpecId_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, getWfSpecId());
+        .computeMessageSize(2, getWfSpecId());
     }
     for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> entry
          : internalGetVariables().getMap().entrySet()) {
@@ -383,14 +337,14 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
           .setValue(entry.getValue())
           .build();
       size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, variables__);
+          .computeMessageSize(3, variables__);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, getParentWfRunId());
+        .computeMessageSize(4, getParentWfRunId());
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(cronExpression_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, cronExpression_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, cronExpression_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -407,12 +361,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     io.littlehorse.common.proto.ScheduleWfRun other = (io.littlehorse.common.proto.ScheduleWfRun) obj;
 
-    if (!getScheduledCommandId()
-        .equals(other.getScheduledCommandId())) return false;
-    if (hasWfRunId() != other.hasWfRunId()) return false;
-    if (hasWfRunId()) {
-      if (!getWfRunId()
-          .equals(other.getWfRunId())) return false;
+    if (hasScheduledId() != other.hasScheduledId()) return false;
+    if (hasScheduledId()) {
+      if (!getScheduledId()
+          .equals(other.getScheduledId())) return false;
     }
     if (hasWfSpecId() != other.hasWfSpecId()) return false;
     if (hasWfSpecId()) {
@@ -439,11 +391,9 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + SCHEDULED_COMMAND_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getScheduledCommandId().hashCode();
-    if (hasWfRunId()) {
-      hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getWfRunId().hashCode();
+    if (hasScheduledId()) {
+      hash = (37 * hash) + SCHEDULED_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getScheduledId().hashCode();
     }
     if (hasWfSpecId()) {
       hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
@@ -572,7 +522,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     protected com.google.protobuf.MapField internalGetMapField(
         int number) {
       switch (number) {
-        case 5:
+        case 3:
           return internalGetVariables();
         default:
           throw new RuntimeException(
@@ -583,7 +533,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     protected com.google.protobuf.MapField internalGetMutableMapField(
         int number) {
       switch (number) {
-        case 5:
+        case 3:
           return internalGetMutableVariables();
         default:
           throw new RuntimeException(
@@ -611,7 +561,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
-        getWfRunIdFieldBuilder();
+        getScheduledIdFieldBuilder();
         getWfSpecIdFieldBuilder();
         getParentWfRunIdFieldBuilder();
       }
@@ -620,11 +570,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      scheduledCommandId_ = "";
-      wfRunId_ = null;
-      if (wfRunIdBuilder_ != null) {
-        wfRunIdBuilder_.dispose();
-        wfRunIdBuilder_ = null;
+      scheduledId_ = null;
+      if (scheduledIdBuilder_ != null) {
+        scheduledIdBuilder_.dispose();
+        scheduledIdBuilder_ = null;
       }
       wfSpecId_ = null;
       if (wfSpecIdBuilder_ != null) {
@@ -672,30 +621,27 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     private void buildPartial0(io.littlehorse.common.proto.ScheduleWfRun result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.scheduledCommandId_ = scheduledCommandId_;
+        result.scheduledId_ = scheduledIdBuilder_ == null
+            ? scheduledId_
+            : scheduledIdBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.wfRunId_ = wfRunIdBuilder_ == null
-            ? wfRunId_
-            : wfRunIdBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.wfSpecId_ = wfSpecIdBuilder_ == null
             ? wfSpecId_
             : wfSpecIdBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
+      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.variables_ = internalGetVariables();
         result.variables_.makeImmutable();
       }
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000010) != 0)) {
+      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.parentWfRunId_ = parentWfRunIdBuilder_ == null
             ? parentWfRunId_
             : parentWfRunIdBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
+      if (((from_bitField0_ & 0x00000010) != 0)) {
         result.cronExpression_ = cronExpression_;
       }
       result.bitField0_ |= to_bitField0_;
@@ -745,26 +691,21 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
     public Builder mergeFrom(io.littlehorse.common.proto.ScheduleWfRun other) {
       if (other == io.littlehorse.common.proto.ScheduleWfRun.getDefaultInstance()) return this;
-      if (!other.getScheduledCommandId().isEmpty()) {
-        scheduledCommandId_ = other.scheduledCommandId_;
-        bitField0_ |= 0x00000001;
-        onChanged();
-      }
-      if (other.hasWfRunId()) {
-        mergeWfRunId(other.getWfRunId());
+      if (other.hasScheduledId()) {
+        mergeScheduledId(other.getScheduledId());
       }
       if (other.hasWfSpecId()) {
         mergeWfSpecId(other.getWfSpecId());
       }
       internalGetMutableVariables().mergeFrom(
           other.internalGetVariables());
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       if (other.hasParentWfRunId()) {
         mergeParentWfRunId(other.getParentWfRunId());
       }
       if (!other.getCronExpression().isEmpty()) {
         cronExpression_ = other.cronExpression_;
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000010;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -794,45 +735,40 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
               done = true;
               break;
             case 10: {
-              scheduledCommandId_ = input.readStringRequireUtf8();
+              input.readMessage(
+                  getScheduledIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 26: {
-              input.readMessage(
-                  getWfRunIdFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 26
-            case 34: {
+            case 18: {
               input.readMessage(
                   getWfSpecIdFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000002;
               break;
-            } // case 34
-            case 42: {
+            } // case 18
+            case 26: {
               com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
               variables__ = input.readMessage(
                   VariablesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               internalGetMutableVariables().getMutableMap().put(
                   variables__.getKey(), variables__.getValue());
-              bitField0_ |= 0x00000008;
+              bitField0_ |= 0x00000004;
               break;
-            } // case 42
-            case 50: {
+            } // case 26
+            case 34: {
               input.readMessage(
                   getParentWfRunIdFieldBuilder().getBuilder(),
                   extensionRegistry);
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
+            case 42: {
+              cronExpression_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000010;
               break;
-            } // case 50
-            case 58: {
-              cronExpression_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000020;
-              break;
-            } // case 58
+            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -850,90 +786,137 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     private int bitField0_;
 
-    private java.lang.Object scheduledCommandId_ = "";
+    private io.littlehorse.sdk.common.proto.ScheduledWfRunId scheduledId_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ScheduledWfRunId, io.littlehorse.sdk.common.proto.ScheduledWfRunId.Builder, io.littlehorse.sdk.common.proto.ScheduledWfRunIdOrBuilder> scheduledIdBuilder_;
     /**
-     * <code>string scheduled_command_id = 1;</code>
-     * @return The scheduledCommandId.
+     * <code>.littlehorse.ScheduledWfRunId scheduled_id = 1;</code>
+     * @return Whether the scheduledId field is set.
      */
-    public java.lang.String getScheduledCommandId() {
-      java.lang.Object ref = scheduledCommandId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        scheduledCommandId_ = s;
-        return s;
+    public boolean hasScheduledId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.littlehorse.ScheduledWfRunId scheduled_id = 1;</code>
+     * @return The scheduledId.
+     */
+    public io.littlehorse.sdk.common.proto.ScheduledWfRunId getScheduledId() {
+      if (scheduledIdBuilder_ == null) {
+        return scheduledId_ == null ? io.littlehorse.sdk.common.proto.ScheduledWfRunId.getDefaultInstance() : scheduledId_;
       } else {
-        return (java.lang.String) ref;
+        return scheduledIdBuilder_.getMessage();
       }
     }
     /**
-     * <code>string scheduled_command_id = 1;</code>
-     * @return The bytes for scheduledCommandId.
+     * <code>.littlehorse.ScheduledWfRunId scheduled_id = 1;</code>
      */
-    public com.google.protobuf.ByteString
-        getScheduledCommandIdBytes() {
-      java.lang.Object ref = scheduledCommandId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        scheduledCommandId_ = b;
-        return b;
+    public Builder setScheduledId(io.littlehorse.sdk.common.proto.ScheduledWfRunId value) {
+      if (scheduledIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        scheduledId_ = value;
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        scheduledIdBuilder_.setMessage(value);
       }
-    }
-    /**
-     * <code>string scheduled_command_id = 1;</code>
-     * @param value The scheduledCommandId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setScheduledCommandId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      scheduledCommandId_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>string scheduled_command_id = 1;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.ScheduledWfRunId scheduled_id = 1;</code>
      */
-    public Builder clearScheduledCommandId() {
-      scheduledCommandId_ = getDefaultInstance().getScheduledCommandId();
+    public Builder setScheduledId(
+        io.littlehorse.sdk.common.proto.ScheduledWfRunId.Builder builderForValue) {
+      if (scheduledIdBuilder_ == null) {
+        scheduledId_ = builderForValue.build();
+      } else {
+        scheduledIdBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ScheduledWfRunId scheduled_id = 1;</code>
+     */
+    public Builder mergeScheduledId(io.littlehorse.sdk.common.proto.ScheduledWfRunId value) {
+      if (scheduledIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0) &&
+          scheduledId_ != null &&
+          scheduledId_ != io.littlehorse.sdk.common.proto.ScheduledWfRunId.getDefaultInstance()) {
+          getScheduledIdBuilder().mergeFrom(value);
+        } else {
+          scheduledId_ = value;
+        }
+      } else {
+        scheduledIdBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ScheduledWfRunId scheduled_id = 1;</code>
+     */
+    public Builder clearScheduledId() {
       bitField0_ = (bitField0_ & ~0x00000001);
+      scheduledId_ = null;
+      if (scheduledIdBuilder_ != null) {
+        scheduledIdBuilder_.dispose();
+        scheduledIdBuilder_ = null;
+      }
       onChanged();
       return this;
     }
     /**
-     * <code>string scheduled_command_id = 1;</code>
-     * @param value The bytes for scheduledCommandId to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.ScheduledWfRunId scheduled_id = 1;</code>
      */
-    public Builder setScheduledCommandIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      scheduledCommandId_ = value;
+    public io.littlehorse.sdk.common.proto.ScheduledWfRunId.Builder getScheduledIdBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
-      return this;
+      return getScheduledIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.ScheduledWfRunId scheduled_id = 1;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ScheduledWfRunIdOrBuilder getScheduledIdOrBuilder() {
+      if (scheduledIdBuilder_ != null) {
+        return scheduledIdBuilder_.getMessageOrBuilder();
+      } else {
+        return scheduledId_ == null ?
+            io.littlehorse.sdk.common.proto.ScheduledWfRunId.getDefaultInstance() : scheduledId_;
+      }
+    }
+    /**
+     * <code>.littlehorse.ScheduledWfRunId scheduled_id = 1;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ScheduledWfRunId, io.littlehorse.sdk.common.proto.ScheduledWfRunId.Builder, io.littlehorse.sdk.common.proto.ScheduledWfRunIdOrBuilder> 
+        getScheduledIdFieldBuilder() {
+      if (scheduledIdBuilder_ == null) {
+        scheduledIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ScheduledWfRunId, io.littlehorse.sdk.common.proto.ScheduledWfRunId.Builder, io.littlehorse.sdk.common.proto.ScheduledWfRunIdOrBuilder>(
+                getScheduledId(),
+                getParentForChildren(),
+                isClean());
+        scheduledId_ = null;
+      }
+      return scheduledIdBuilder_;
     }
 
-    private io.littlehorse.sdk.common.proto.WfRunId wfRunId_;
+    private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> wfRunIdBuilder_;
+        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
     /**
      * <pre>
      * The name of the WfSpec to run.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     * @return Whether the wfRunId field is set.
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
+     * @return Whether the wfSpecId field is set.
      */
-    public boolean hasWfRunId() {
+    public boolean hasWfSpecId() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
@@ -941,154 +924,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * The name of the WfSpec to run.
      * </pre>
      *
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     * @return The wfRunId.
-     */
-    public io.littlehorse.sdk.common.proto.WfRunId getWfRunId() {
-      if (wfRunIdBuilder_ == null) {
-        return wfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : wfRunId_;
-      } else {
-        return wfRunIdBuilder_.getMessage();
-      }
-    }
-    /**
-     * <pre>
-     * The name of the WfSpec to run.
-     * </pre>
-     *
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     */
-    public Builder setWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
-      if (wfRunIdBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        wfRunId_ = value;
-      } else {
-        wfRunIdBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The name of the WfSpec to run.
-     * </pre>
-     *
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     */
-    public Builder setWfRunId(
-        io.littlehorse.sdk.common.proto.WfRunId.Builder builderForValue) {
-      if (wfRunIdBuilder_ == null) {
-        wfRunId_ = builderForValue.build();
-      } else {
-        wfRunIdBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The name of the WfSpec to run.
-     * </pre>
-     *
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     */
-    public Builder mergeWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
-      if (wfRunIdBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
-          wfRunId_ != null &&
-          wfRunId_ != io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance()) {
-          getWfRunIdBuilder().mergeFrom(value);
-        } else {
-          wfRunId_ = value;
-        }
-      } else {
-        wfRunIdBuilder_.mergeFrom(value);
-      }
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The name of the WfSpec to run.
-     * </pre>
-     *
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     */
-    public Builder clearWfRunId() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      wfRunId_ = null;
-      if (wfRunIdBuilder_ != null) {
-        wfRunIdBuilder_.dispose();
-        wfRunIdBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The name of the WfSpec to run.
-     * </pre>
-     *
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     */
-    public io.littlehorse.sdk.common.proto.WfRunId.Builder getWfRunIdBuilder() {
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return getWfRunIdFieldBuilder().getBuilder();
-    }
-    /**
-     * <pre>
-     * The name of the WfSpec to run.
-     * </pre>
-     *
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     */
-    public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getWfRunIdOrBuilder() {
-      if (wfRunIdBuilder_ != null) {
-        return wfRunIdBuilder_.getMessageOrBuilder();
-      } else {
-        return wfRunId_ == null ?
-            io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : wfRunId_;
-      }
-    }
-    /**
-     * <pre>
-     * The name of the WfSpec to run.
-     * </pre>
-     *
-     * <code>.littlehorse.WfRunId wf_run_id = 3;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> 
-        getWfRunIdFieldBuilder() {
-      if (wfRunIdBuilder_ == null) {
-        wfRunIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder>(
-                getWfRunId(),
-                getParentForChildren(),
-                isClean());
-        wfRunId_ = null;
-      }
-      return wfRunIdBuilder_;
-    }
-
-    private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
-    /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
-     * @return Whether the wfSpecId field is set.
-     */
-    public boolean hasWfSpecId() {
-      return ((bitField0_ & 0x00000004) != 0);
-    }
-    /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      * @return The wfSpecId.
      */
     public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId() {
@@ -1099,7 +935,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+     * <pre>
+     * The name of the WfSpec to run.
+     * </pre>
+     *
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder setWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
       if (wfSpecIdBuilder_ == null) {
@@ -1110,12 +950,16 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       } else {
         wfSpecIdBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+     * <pre>
+     * The name of the WfSpec to run.
+     * </pre>
+     *
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder setWfSpecId(
         io.littlehorse.sdk.common.proto.WfSpecId.Builder builderForValue) {
@@ -1124,16 +968,20 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       } else {
         wfSpecIdBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+     * <pre>
+     * The name of the WfSpec to run.
+     * </pre>
+     *
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder mergeWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
       if (wfSpecIdBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0) &&
+        if (((bitField0_ & 0x00000002) != 0) &&
           wfSpecId_ != null &&
           wfSpecId_ != io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance()) {
           getWfSpecIdBuilder().mergeFrom(value);
@@ -1143,15 +991,19 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       } else {
         wfSpecIdBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+     * <pre>
+     * The name of the WfSpec to run.
+     * </pre>
+     *
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder clearWfSpecId() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000002);
       wfSpecId_ = null;
       if (wfSpecIdBuilder_ != null) {
         wfSpecIdBuilder_.dispose();
@@ -1161,15 +1013,23 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+     * <pre>
+     * The name of the WfSpec to run.
+     * </pre>
+     *
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecIdBuilder() {
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return getWfSpecIdFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+     * <pre>
+     * The name of the WfSpec to run.
+     * </pre>
+     *
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
       if (wfSpecIdBuilder_ != null) {
@@ -1180,7 +1040,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
-     * <code>.littlehorse.WfSpecId wf_spec_id = 4;</code>
+     * <pre>
+     * The name of the WfSpec to run.
+     * </pre>
+     *
+     * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
@@ -1215,7 +1079,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (!variables_.isMutable()) {
         variables_ = variables_.copy();
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return variables_;
     }
@@ -1228,7 +1092,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * passed as input to the Entrypoint ThreadRun.
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
      */
     @java.lang.Override
     public boolean containsVariables(
@@ -1250,7 +1114,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * passed as input to the Entrypoint ThreadRun.
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
      */
     @java.lang.Override
     public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> getVariablesMap() {
@@ -1262,7 +1126,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * passed as input to the Entrypoint ThreadRun.
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
      */
     @java.lang.Override
     public /* nullable */
@@ -1281,7 +1145,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * passed as input to the Entrypoint ThreadRun.
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.VariableValue getVariablesOrThrow(
@@ -1295,7 +1159,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return map.get(key);
     }
     public Builder clearVariables() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000004);
       internalGetMutableVariables().getMutableMap()
           .clear();
       return this;
@@ -1306,7 +1170,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * passed as input to the Entrypoint ThreadRun.
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
      */
     public Builder removeVariables(
         java.lang.String key) {
@@ -1321,7 +1185,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
         getMutableVariables() {
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       return internalGetMutableVariables().getMutableMap();
     }
     /**
@@ -1330,7 +1194,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * passed as input to the Entrypoint ThreadRun.
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
      */
     public Builder putVariables(
         java.lang.String key,
@@ -1339,7 +1203,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (value == null) { throw new NullPointerException("map value"); }
       internalGetMutableVariables().getMutableMap()
           .put(key, value);
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       return this;
     }
     /**
@@ -1348,13 +1212,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * passed as input to the Entrypoint ThreadRun.
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
      */
     public Builder putAllVariables(
         java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> values) {
       internalGetMutableVariables().getMutableMap()
           .putAll(values);
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       return this;
     }
 
@@ -1362,14 +1226,14 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> parentWfRunIdBuilder_;
     /**
-     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      * @return Whether the parentWfRunId field is set.
      */
     public boolean hasParentWfRunId() {
-      return ((bitField0_ & 0x00000010) != 0);
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      * @return The parentWfRunId.
      */
     public io.littlehorse.sdk.common.proto.WfRunId getParentWfRunId() {
@@ -1380,7 +1244,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
-     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      */
     public Builder setParentWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
       if (parentWfRunIdBuilder_ == null) {
@@ -1391,12 +1255,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       } else {
         parentWfRunIdBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      */
     public Builder setParentWfRunId(
         io.littlehorse.sdk.common.proto.WfRunId.Builder builderForValue) {
@@ -1405,16 +1269,16 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       } else {
         parentWfRunIdBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      */
     public Builder mergeParentWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
       if (parentWfRunIdBuilder_ == null) {
-        if (((bitField0_ & 0x00000010) != 0) &&
+        if (((bitField0_ & 0x00000008) != 0) &&
           parentWfRunId_ != null &&
           parentWfRunId_ != io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance()) {
           getParentWfRunIdBuilder().mergeFrom(value);
@@ -1424,15 +1288,15 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       } else {
         parentWfRunIdBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      */
     public Builder clearParentWfRunId() {
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000008);
       parentWfRunId_ = null;
       if (parentWfRunIdBuilder_ != null) {
         parentWfRunIdBuilder_.dispose();
@@ -1442,15 +1306,15 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
-     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunId.Builder getParentWfRunIdBuilder() {
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       onChanged();
       return getParentWfRunIdFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getParentWfRunIdOrBuilder() {
       if (parentWfRunIdBuilder_ != null) {
@@ -1461,7 +1325,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
-     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
+     * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> 
@@ -1479,7 +1343,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
     private java.lang.Object cronExpression_ = "";
     /**
-     * <code>string cron_expression = 7;</code>
+     * <code>string cron_expression = 5;</code>
      * @return The cronExpression.
      */
     public java.lang.String getCronExpression() {
@@ -1495,7 +1359,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
-     * <code>string cron_expression = 7;</code>
+     * <code>string cron_expression = 5;</code>
      * @return The bytes for cronExpression.
      */
     public com.google.protobuf.ByteString
@@ -1512,7 +1376,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
-     * <code>string cron_expression = 7;</code>
+     * <code>string cron_expression = 5;</code>
      * @param value The cronExpression to set.
      * @return This builder for chaining.
      */
@@ -1520,22 +1384,22 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       cronExpression_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
     /**
-     * <code>string cron_expression = 7;</code>
+     * <code>string cron_expression = 5;</code>
      * @return This builder for chaining.
      */
     public Builder clearCronExpression() {
       cronExpression_ = getDefaultInstance().getCronExpression();
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000010);
       onChanged();
       return this;
     }
     /**
-     * <code>string cron_expression = 7;</code>
+     * <code>string cron_expression = 5;</code>
      * @param value The bytes for cronExpression to set.
      * @return This builder for chaining.
      */
@@ -1544,7 +1408,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       cronExpression_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
