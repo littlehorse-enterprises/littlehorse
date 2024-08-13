@@ -39,6 +39,7 @@ const (
 	LittleHorse_AssignUserTaskRun_FullMethodName       = "/littlehorse.LittleHorse/AssignUserTaskRun"
 	LittleHorse_CompleteUserTaskRun_FullMethodName     = "/littlehorse.LittleHorse/CompleteUserTaskRun"
 	LittleHorse_CancelUserTaskRun_FullMethodName       = "/littlehorse.LittleHorse/CancelUserTaskRun"
+	LittleHorse_SaveUserTaskRunProgress_FullMethodName = "/littlehorse.LittleHorse/SaveUserTaskRunProgress"
 	LittleHorse_ListUserTaskRuns_FullMethodName        = "/littlehorse.LittleHorse/ListUserTaskRuns"
 	LittleHorse_GetNodeRun_FullMethodName              = "/littlehorse.LittleHorse/GetNodeRun"
 	LittleHorse_ListNodeRuns_FullMethodName            = "/littlehorse.LittleHorse/ListNodeRuns"
@@ -149,6 +150,12 @@ type LittleHorseClient interface {
 	CompleteUserTaskRun(ctx context.Context, in *CompleteUserTaskRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun.
 	CancelUserTaskRun(ctx context.Context, in *CancelUserTaskRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Saves the results of a UserTaskRun and logs who saved the content.<br/>
+	//
+	// <li> Throws FAILED_PRECONDITION if the UserTaskRun is in the `DONE` or `CANCELLED` state.</li>
+	// <li> If `policy` is set to `FAIL_IF_CLAIMED_BY_OTHER`, returns `FAILED_PRECONDITION` if the
+	// `user_id` field of the `UserTaskRun` does not match the `user_id` of the request.</li>
+	SaveUserTaskRunProgress(ctx context.Context, in *SaveUserTaskRunProgressRequest, opts ...grpc.CallOption) (*UserTaskRun, error)
 	// Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
 	// to model an entity.
 	ListUserTaskRuns(ctx context.Context, in *ListUserTaskRunRequest, opts ...grpc.CallOption) (*UserTaskRunList, error)
@@ -442,6 +449,15 @@ func (c *littleHorseClient) CompleteUserTaskRun(ctx context.Context, in *Complet
 func (c *littleHorseClient) CancelUserTaskRun(ctx context.Context, in *CancelUserTaskRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LittleHorse_CancelUserTaskRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) SaveUserTaskRunProgress(ctx context.Context, in *SaveUserTaskRunProgressRequest, opts ...grpc.CallOption) (*UserTaskRun, error) {
+	out := new(UserTaskRun)
+	err := c.cc.Invoke(ctx, LittleHorse_SaveUserTaskRunProgress_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -930,6 +946,12 @@ type LittleHorseServer interface {
 	CompleteUserTaskRun(context.Context, *CompleteUserTaskRunRequest) (*emptypb.Empty, error)
 	// Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun.
 	CancelUserTaskRun(context.Context, *CancelUserTaskRunRequest) (*emptypb.Empty, error)
+	// Saves the results of a UserTaskRun and logs who saved the content.<br/>
+	//
+	// <li> Throws FAILED_PRECONDITION if the UserTaskRun is in the `DONE` or `CANCELLED` state.</li>
+	// <li> If `policy` is set to `FAIL_IF_CLAIMED_BY_OTHER`, returns `FAILED_PRECONDITION` if the
+	// `user_id` field of the `UserTaskRun` does not match the `user_id` of the request.</li>
+	SaveUserTaskRunProgress(context.Context, *SaveUserTaskRunProgressRequest) (*UserTaskRun, error)
 	// Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
 	// to model an entity.
 	ListUserTaskRuns(context.Context, *ListUserTaskRunRequest) (*UserTaskRunList, error)
@@ -1111,6 +1133,9 @@ func (UnimplementedLittleHorseServer) CompleteUserTaskRun(context.Context, *Comp
 }
 func (UnimplementedLittleHorseServer) CancelUserTaskRun(context.Context, *CancelUserTaskRunRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CancelUserTaskRun not implemented")
+}
+func (UnimplementedLittleHorseServer) SaveUserTaskRunProgress(context.Context, *SaveUserTaskRunProgressRequest) (*UserTaskRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SaveUserTaskRunProgress not implemented")
 }
 func (UnimplementedLittleHorseServer) ListUserTaskRuns(context.Context, *ListUserTaskRunRequest) (*UserTaskRunList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUserTaskRuns not implemented")
@@ -1595,6 +1620,24 @@ func _LittleHorse_CancelUserTaskRun_Handler(srv interface{}, ctx context.Context
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).CancelUserTaskRun(ctx, req.(*CancelUserTaskRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_SaveUserTaskRunProgress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SaveUserTaskRunProgressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SaveUserTaskRunProgress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SaveUserTaskRunProgress_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SaveUserTaskRunProgress(ctx, req.(*SaveUserTaskRunProgressRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2481,6 +2524,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CancelUserTaskRun",
 			Handler:    _LittleHorse_CancelUserTaskRun_Handler,
+		},
+		{
+			MethodName: "SaveUserTaskRunProgress",
+			Handler:    _LittleHorse_SaveUserTaskRunProgress_Handler,
 		},
 		{
 			MethodName: "ListUserTaskRuns",

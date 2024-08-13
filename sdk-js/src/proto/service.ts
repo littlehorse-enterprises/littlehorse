@@ -51,6 +51,7 @@ import {
   AssignUserTaskRunRequest,
   CancelUserTaskRunRequest,
   CompleteUserTaskRunRequest,
+  SaveUserTaskRunProgressRequest,
   UserTaskDef,
   UserTaskField,
   UserTaskRun,
@@ -6991,6 +6992,21 @@ export const LittleHorseDefinition = {
       options: {},
     },
     /**
+     * Saves the results of a UserTaskRun and logs who saved the content.<br/>
+     *
+     * <li> Throws FAILED_PRECONDITION if the UserTaskRun is in the `DONE` or `CANCELLED` state.</li>
+     * <li> If `policy` is set to `FAIL_IF_CLAIMED_BY_OTHER`, returns `FAILED_PRECONDITION` if the
+     * `user_id` field of the `UserTaskRun` does not match the `user_id` of the request.</li>
+     */
+    saveUserTaskRunProgress: {
+      name: "SaveUserTaskRunProgress",
+      requestType: SaveUserTaskRunProgressRequest,
+      requestStream: false,
+      responseType: UserTaskRun,
+      responseStream: false,
+      options: {},
+    },
+    /**
      * Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
      * to model an entity.
      */
@@ -7540,6 +7556,17 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<Empty>>;
   /**
+   * Saves the results of a UserTaskRun and logs who saved the content.<br/>
+   *
+   * <li> Throws FAILED_PRECONDITION if the UserTaskRun is in the `DONE` or `CANCELLED` state.</li>
+   * <li> If `policy` is set to `FAIL_IF_CLAIMED_BY_OTHER`, returns `FAILED_PRECONDITION` if the
+   * `user_id` field of the `UserTaskRun` does not match the `user_id` of the request.</li>
+   */
+  saveUserTaskRunProgress(
+    request: SaveUserTaskRunProgressRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<UserTaskRun>>;
+  /**
    * Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
    * to model an entity.
    */
@@ -7851,6 +7878,17 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<CancelUserTaskRunRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<Empty>;
+  /**
+   * Saves the results of a UserTaskRun and logs who saved the content.<br/>
+   *
+   * <li> Throws FAILED_PRECONDITION if the UserTaskRun is in the `DONE` or `CANCELLED` state.</li>
+   * <li> If `policy` is set to `FAIL_IF_CLAIMED_BY_OTHER`, returns `FAILED_PRECONDITION` if the
+   * `user_id` field of the `UserTaskRun` does not match the `user_id` of the request.</li>
+   */
+  saveUserTaskRunProgress(
+    request: DeepPartial<SaveUserTaskRunProgressRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<UserTaskRun>;
   /**
    * Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
    * to model an entity.

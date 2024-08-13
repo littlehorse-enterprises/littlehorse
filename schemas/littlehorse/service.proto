@@ -105,6 +105,13 @@ service LittleHorse {
   // Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun.
   rpc CancelUserTaskRun(CancelUserTaskRunRequest) returns (google.protobuf.Empty) {}
 
+  // Saves the results of a UserTaskRun and logs who saved the content.<br/>
+  //
+  // <li> Throws FAILED_PRECONDITION if the UserTaskRun is in the `DONE` or `CANCELLED` state.</li>
+  // <li> If `policy` is set to `FAIL_IF_CLAIMED_BY_OTHER`, returns `FAILED_PRECONDITION` if the
+  // `user_id` field of the `UserTaskRun` does not match the `user_id` of the request.</li>
+  rpc SaveUserTaskRunProgress(SaveUserTaskRunProgressRequest) returns (UserTaskRun) {}
+
   // Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
   // to model an entity.
   rpc ListUserTaskRuns(ListUserTaskRunRequest) returns (UserTaskRunList) {}

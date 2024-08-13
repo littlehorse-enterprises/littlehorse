@@ -152,7 +152,7 @@ public final class CommandOuterClass {
       "tobuf/timestamp.proto\032\rservice.proto\032\017ob" +
       "ject_id.proto\032\023common_wfspec.proto\032\020user" +
       "_tasks.proto\032\022common_enums.proto\032\rstorag" +
-      "e.proto\032\nacls.proto\032\tjob.proto\"\366\n\n\007Comma" +
+      "e.proto\032\nacls.proto\032\tjob.proto\"\312\013\n\007Comma" +
       "nd\022(\n\004time\030\001 \001(\0132\032.google.protobuf.Times" +
       "tamp\022\027\n\ncommand_id\030\002 \001(\tH\001\210\001\001\0225\n\017report_" +
       "task_run\030\004 \001(\0132\032.littlehorse.ReportTaskR" +
@@ -187,122 +187,124 @@ public final class CommandOuterClass {
       "n\030\026 \001(\0132#.littlehorse.RescueThreadRunReq" +
       "uestH\000\022M\n\030delete_task_worker_group\030\027 \001(\013" +
       "2).littlehorse.DeleteTaskWorkerGroupRequ" +
-      "estH\000B\t\n\007commandB\r\n\013_command_id\"\373\006\n\017Meta" +
-      "dataCommand\022(\n\004time\030\001 \001(\0132\032.google.proto" +
-      "buf.Timestamp\022\027\n\ncommand_id\030\002 \001(\tH\001\210\001\001\0224" +
-      "\n\013put_wf_spec\030\004 \001(\0132\035.littlehorse.PutWfS" +
-      "pecRequestH\000\0226\n\014put_task_def\030\005 \001(\0132\036.lit" +
-      "tlehorse.PutTaskDefRequestH\000\022I\n\026put_exte" +
-      "rnal_event_def\030\006 \001(\0132\'.littlehorse.PutEx" +
-      "ternalEventDefRequestH\000\022:\n\016delete_wf_spe" +
-      "c\030\007 \001(\0132 .littlehorse.DeleteWfSpecReques" +
-      "tH\000\022<\n\017delete_task_def\030\010 \001(\0132!.littlehor" +
-      "se.DeleteTaskDefRequestH\000\022O\n\031delete_exte" +
-      "rnal_event_def\030\t \001(\0132*.littlehorse.Delet" +
-      "eExternalEventDefRequestH\000\022?\n\021put_user_t" +
-      "ask_def\030\n \001(\0132\".littlehorse.PutUserTaskD" +
-      "efRequestH\000\022E\n\024delete_user_task_def\030\013 \001(" +
-      "\0132%.littlehorse.DeleteUserTaskDefRequest" +
-      "H\000\0229\n\rput_principal\030\014 \001(\0132 .littlehorse." +
-      "PutPrincipalRequestH\000\022?\n\020delete_principa" +
-      "l\030\r \001(\0132#.littlehorse.DeletePrincipalReq" +
-      "uestH\000\0223\n\nput_tenant\030\016 \001(\0132\035.littlehorse" +
-      ".PutTenantRequestH\000\022E\n\022workflow_event_de" +
-      "f\030\017 \001(\0132\'.littlehorse.PutWorkflowEventDe" +
-      "fRequestH\000B\022\n\020metadata_commandB\r\n\013_comma" +
-      "nd_id\"\236\001\n\022AggregateWfMetrics\022)\n\nwf_spec_" +
-      "id\030\001 \001(\0132\025.littlehorse.WfSpecId\022(\n\ttenan" +
-      "t_id\030\002 \001(\0132\025.littlehorse.TenantId\0223\n\016met" +
-      "ric_updates\030\003 \003(\0132\033.littlehorse.WfMetric" +
-      "Update\"\244\001\n\024AggregateTaskMetrics\022+\n\013task_" +
-      "def_id\030\001 \001(\0132\026.littlehorse.TaskDefId\022(\n\t" +
-      "tenant_id\030\002 \001(\0132\025.littlehorse.TenantId\0225" +
-      "\n\016metric_updates\030\003 \003(\0132\035.littlehorse.Tas" +
-      "kMetricUpdate\"\271\002\n\016WfMetricUpdate\0220\n\014wind" +
-      "ow_start\030\001 \001(\0132\032.google.protobuf.Timesta" +
-      "mp\022.\n\004type\030\002 \001(\0162 .littlehorse.MetricsWi" +
-      "ndowLength\022)\n\nwf_spec_id\030\003 \001(\0132\025.littleh" +
-      "orse.WfSpecId\022\023\n\013num_entries\030\004 \001(\003\022\035\n\025st" +
-      "art_to_complete_max\030\005 \001(\003\022\037\n\027start_to_co" +
-      "mplete_total\030\006 \001(\003\022\027\n\017total_completed\030\007 " +
-      "\001(\003\022\025\n\rtotal_errored\030\010 \001(\003\022\025\n\rtotal_star" +
-      "ted\030\t \001(\003\"K\n\020PartitionMetrics\0227\n\021metrics" +
-      "_by_tenant\030\001 \003(\0132\034.littlehorse.MetricsBy" +
-      "Tenant\"\205\003\n\017MetricsByTenant\022(\n\ttenant_id\030" +
-      "\001 \001(\0132\025.littlehorse.TenantId\022L\n\021lh_statu" +
-      "s_changes\030\002 \003(\01321.littlehorse.MetricsByT" +
-      "enant.LhStatusChangesEntry\022P\n\023task_statu" +
-      "s_changes\030\003 \003(\01323.littlehorse.MetricsByT" +
-      "enant.TaskStatusChangesEntry\032R\n\024LhStatus" +
-      "ChangesEntry\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\013" +
-      "2\032.littlehorse.StatusChanges:\0028\001\032T\n\026Task" +
-      "StatusChangesEntry\022\013\n\003key\030\001 \001(\t\022)\n\005value" +
-      "\030\002 \001(\0132\032.littlehorse.StatusChanges:\0028\001\"<" +
-      "\n\rStatusChanges\022+\n\007changes\030\001 \003(\0132\032.littl" +
-      "ehorse.StatusChanged\"\320\001\n\rStatusChanged\022(" +
-      "\n\004time\030\001 \001(\0132\032.google.protobuf.Timestamp" +
-      "\0221\n\tlh_status\030\002 \001(\0132\034.littlehorse.LHStat" +
-      "usChangedH\000\0225\n\013task_status\030\003 \001(\0132\036.littl" +
-      "ehorse.TaskStatusChangedH\000\022!\n\031first_even" +
-      "t_to_last_delay\030\t \001(\003B\010\n\006status\"\205\001\n\017LHSt" +
-      "atusChanged\0223\n\017previous_status\030\001 \001(\0162\025.l" +
-      "ittlehorse.LHStatusH\000\210\001\001\022)\n\nnew_status\030\002" +
-      " \001(\0162\025.littlehorse.LHStatusB\022\n\020_previous" +
-      "_status\"\213\001\n\021TaskStatusChanged\0225\n\017previou" +
-      "s_status\030\001 \001(\0162\027.littlehorse.TaskStatusH" +
-      "\000\210\001\001\022+\n\nnew_status\030\002 \001(\0162\027.littlehorse.T" +
-      "askStatusB\022\n\020_previous_status\"\377\002\n\024Repart" +
-      "itionCommandPb\022(\n\004time\030\001 \001(\0132\032.google.pr" +
-      "otobuf.Timestamp\022\027\n\ncommand_id\030\002 \001(\tH\001\210\001" +
-      "\001\022;\n\021create_remote_tag\030\005 \001(\0132\036.littlehor" +
-      "se.CreateRemoteTagPbH\000\022;\n\021remove_remote_" +
-      "tag\030\006 \001(\0132\036.littlehorse.RemoveRemoteTagP" +
-      "bH\000\022?\n\024aggregate_wf_metrics\030\007 \001(\0132\037.litt" +
-      "lehorse.AggregateWfMetricsH\000\022C\n\026aggregat" +
-      "e_task_metrics\030\010 \001(\0132!.littlehorse.Aggre" +
-      "gateTaskMetricsH\000B\025\n\023repartition_command" +
-      "B\r\n\013_command_id\"\226\003\n\020TaskMetricUpdate\022+\n\013" +
-      "task_def_id\030\001 \001(\0132\026.littlehorse.TaskDefI" +
-      "d\0220\n\014window_start\030\002 \001(\0132\032.google.protobu" +
-      "f.Timestamp\022.\n\004type\030\003 \001(\0162 .littlehorse." +
-      "MetricsWindowLength\022\023\n\013num_entries\030\004 \001(\003" +
-      "\022\035\n\025schedule_to_start_max\030\005 \001(\003\022\037\n\027sched" +
-      "ule_to_start_total\030\006 \001(\003\022\035\n\025start_to_com" +
-      "plete_max\030\007 \001(\003\022\037\n\027start_to_complete_tot" +
-      "al\030\010 \001(\003\022\027\n\017total_completed\030\t \001(\003\022\025\n\rtot" +
-      "al_errored\030\n \001(\003\022\025\n\rtotal_started\030\013 \001(\003\022" +
-      "\027\n\017total_scheduled\030\014 \001(\003\"4\n\021CreateRemote" +
-      "TagPb\022\037\n\003tag\030\001 \001(\0132\022.littlehorse.TagPb\"=" +
-      "\n\021RemoveRemoteTagPb\022\021\n\tstore_key\030\001 \001(\t\022\025" +
-      "\n\rpartition_key\030\002 \001(\t\"\273\001\n\020TaskClaimEvent" +
-      "Pb\022+\n\013task_run_id\030\001 \001(\0132\026.littlehorse.Ta" +
-      "skRunId\022(\n\004time\030\002 \001(\0132\032.google.protobuf." +
-      "Timestamp\022\026\n\016task_worker_id\030\003 \001(\t\022 \n\023tas" +
-      "k_worker_version\030\004 \001(\tH\000\210\001\001B\026\n\024_task_wor" +
-      "ker_version\"I\n\032ExternalEventNodeTimeoutP" +
-      "b\022+\n\013node_run_id\030\001 \001(\0132\026.littlehorse.Nod" +
-      "eRunId\"A\n\022SleepNodeMaturedPb\022+\n\013node_run" +
-      "_id\030\001 \001(\0132\026.littlehorse.NodeRunId\"m\n\022Tri" +
-      "ggeredTaskRunPb\022/\n\020task_to_schedule\030\001 \001(" +
-      "\0132\025.littlehorse.TaskNode\022&\n\006source\030\002 \001(\013" +
-      "2\026.littlehorse.NodeRunId\";\n\025TaskAttemptR" +
-      "etryReady\022\"\n\002id\030\001 \001(\0132\026.littlehorse.Task" +
-      "RunId\"\364\001\n\030DeadlineReassignUserTask\0229\n\013ne" +
-      "w_user_id\030\001 \001(\0132\037.littlehorse.VariableAs" +
-      "signmentH\000\210\001\001\022<\n\016new_user_group\030\002 \001(\0132\037." +
-      "littlehorse.VariableAssignmentH\001\210\001\001\022-\n\tu" +
-      "ser_task\030\004 \001(\0132\032.littlehorse.UserTaskRun" +
-      "Id\022\r\n\005epoch\030\005 \001(\003B\016\n\014_new_user_idB\021\n\017_ne" +
-      "w_user_group\"\360\001\n\tLHTimerPb\0223\n\017maturation" +
-      "_time\030\001 \001(\0132\032.google.protobuf.Timestamp\022" +
-      "\013\n\003key\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\022\017\n\007payload\030\004" +
-      " \001(\014\022-\n\ttenant_id\030\005 \001(\0132\025.littlehorse.Te" +
-      "nantIdH\000\210\001\001\0223\n\014principal_id\030\006 \001(\0132\030.litt" +
-      "lehorse.PrincipalIdH\001\210\001\001B\014\n\n_tenant_idB\017" +
-      "\n\r_principal_id\"B\n\034DeleteTaskWorkerGroup" +
-      "Request\022\"\n\002id\030\001 \001(\0132\026.littlehorse.TaskDe" +
-      "fIdB\037\n\033io.littlehorse.common.protoP\001b\006pr" +
-      "oto3"
+      "estH\000\022R\n\033save_user_task_run_progress\030\030 \001" +
+      "(\0132+.littlehorse.SaveUserTaskRunProgress" +
+      "RequestH\000B\t\n\007commandB\r\n\013_command_id\"\373\006\n\017" +
+      "MetadataCommand\022(\n\004time\030\001 \001(\0132\032.google.p" +
+      "rotobuf.Timestamp\022\027\n\ncommand_id\030\002 \001(\tH\001\210" +
+      "\001\001\0224\n\013put_wf_spec\030\004 \001(\0132\035.littlehorse.Pu" +
+      "tWfSpecRequestH\000\0226\n\014put_task_def\030\005 \001(\0132\036" +
+      ".littlehorse.PutTaskDefRequestH\000\022I\n\026put_" +
+      "external_event_def\030\006 \001(\0132\'.littlehorse.P" +
+      "utExternalEventDefRequestH\000\022:\n\016delete_wf" +
+      "_spec\030\007 \001(\0132 .littlehorse.DeleteWfSpecRe" +
+      "questH\000\022<\n\017delete_task_def\030\010 \001(\0132!.littl" +
+      "ehorse.DeleteTaskDefRequestH\000\022O\n\031delete_" +
+      "external_event_def\030\t \001(\0132*.littlehorse.D" +
+      "eleteExternalEventDefRequestH\000\022?\n\021put_us" +
+      "er_task_def\030\n \001(\0132\".littlehorse.PutUserT" +
+      "askDefRequestH\000\022E\n\024delete_user_task_def\030" +
+      "\013 \001(\0132%.littlehorse.DeleteUserTaskDefReq" +
+      "uestH\000\0229\n\rput_principal\030\014 \001(\0132 .littleho" +
+      "rse.PutPrincipalRequestH\000\022?\n\020delete_prin" +
+      "cipal\030\r \001(\0132#.littlehorse.DeletePrincipa" +
+      "lRequestH\000\0223\n\nput_tenant\030\016 \001(\0132\035.littleh" +
+      "orse.PutTenantRequestH\000\022E\n\022workflow_even" +
+      "t_def\030\017 \001(\0132\'.littlehorse.PutWorkflowEve" +
+      "ntDefRequestH\000B\022\n\020metadata_commandB\r\n\013_c" +
+      "ommand_id\"\236\001\n\022AggregateWfMetrics\022)\n\nwf_s" +
+      "pec_id\030\001 \001(\0132\025.littlehorse.WfSpecId\022(\n\tt" +
+      "enant_id\030\002 \001(\0132\025.littlehorse.TenantId\0223\n" +
+      "\016metric_updates\030\003 \003(\0132\033.littlehorse.WfMe" +
+      "tricUpdate\"\244\001\n\024AggregateTaskMetrics\022+\n\013t" +
+      "ask_def_id\030\001 \001(\0132\026.littlehorse.TaskDefId" +
+      "\022(\n\ttenant_id\030\002 \001(\0132\025.littlehorse.Tenant" +
+      "Id\0225\n\016metric_updates\030\003 \003(\0132\035.littlehorse" +
+      ".TaskMetricUpdate\"\271\002\n\016WfMetricUpdate\0220\n\014" +
+      "window_start\030\001 \001(\0132\032.google.protobuf.Tim" +
+      "estamp\022.\n\004type\030\002 \001(\0162 .littlehorse.Metri" +
+      "csWindowLength\022)\n\nwf_spec_id\030\003 \001(\0132\025.lit" +
+      "tlehorse.WfSpecId\022\023\n\013num_entries\030\004 \001(\003\022\035" +
+      "\n\025start_to_complete_max\030\005 \001(\003\022\037\n\027start_t" +
+      "o_complete_total\030\006 \001(\003\022\027\n\017total_complete" +
+      "d\030\007 \001(\003\022\025\n\rtotal_errored\030\010 \001(\003\022\025\n\rtotal_" +
+      "started\030\t \001(\003\"K\n\020PartitionMetrics\0227\n\021met" +
+      "rics_by_tenant\030\001 \003(\0132\034.littlehorse.Metri" +
+      "csByTenant\"\205\003\n\017MetricsByTenant\022(\n\ttenant" +
+      "_id\030\001 \001(\0132\025.littlehorse.TenantId\022L\n\021lh_s" +
+      "tatus_changes\030\002 \003(\01321.littlehorse.Metric" +
+      "sByTenant.LhStatusChangesEntry\022P\n\023task_s" +
+      "tatus_changes\030\003 \003(\01323.littlehorse.Metric" +
+      "sByTenant.TaskStatusChangesEntry\032R\n\024LhSt" +
+      "atusChangesEntry\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002" +
+      " \001(\0132\032.littlehorse.StatusChanges:\0028\001\032T\n\026" +
+      "TaskStatusChangesEntry\022\013\n\003key\030\001 \001(\t\022)\n\005v" +
+      "alue\030\002 \001(\0132\032.littlehorse.StatusChanges:\002" +
+      "8\001\"<\n\rStatusChanges\022+\n\007changes\030\001 \003(\0132\032.l" +
+      "ittlehorse.StatusChanged\"\320\001\n\rStatusChang" +
+      "ed\022(\n\004time\030\001 \001(\0132\032.google.protobuf.Times" +
+      "tamp\0221\n\tlh_status\030\002 \001(\0132\034.littlehorse.LH" +
+      "StatusChangedH\000\0225\n\013task_status\030\003 \001(\0132\036.l" +
+      "ittlehorse.TaskStatusChangedH\000\022!\n\031first_" +
+      "event_to_last_delay\030\t \001(\003B\010\n\006status\"\205\001\n\017" +
+      "LHStatusChanged\0223\n\017previous_status\030\001 \001(\016" +
+      "2\025.littlehorse.LHStatusH\000\210\001\001\022)\n\nnew_stat" +
+      "us\030\002 \001(\0162\025.littlehorse.LHStatusB\022\n\020_prev" +
+      "ious_status\"\213\001\n\021TaskStatusChanged\0225\n\017pre" +
+      "vious_status\030\001 \001(\0162\027.littlehorse.TaskSta" +
+      "tusH\000\210\001\001\022+\n\nnew_status\030\002 \001(\0162\027.littlehor" +
+      "se.TaskStatusB\022\n\020_previous_status\"\377\002\n\024Re" +
+      "partitionCommandPb\022(\n\004time\030\001 \001(\0132\032.googl" +
+      "e.protobuf.Timestamp\022\027\n\ncommand_id\030\002 \001(\t" +
+      "H\001\210\001\001\022;\n\021create_remote_tag\030\005 \001(\0132\036.littl" +
+      "ehorse.CreateRemoteTagPbH\000\022;\n\021remove_rem" +
+      "ote_tag\030\006 \001(\0132\036.littlehorse.RemoveRemote" +
+      "TagPbH\000\022?\n\024aggregate_wf_metrics\030\007 \001(\0132\037." +
+      "littlehorse.AggregateWfMetricsH\000\022C\n\026aggr" +
+      "egate_task_metrics\030\010 \001(\0132!.littlehorse.A" +
+      "ggregateTaskMetricsH\000B\025\n\023repartition_com" +
+      "mandB\r\n\013_command_id\"\226\003\n\020TaskMetricUpdate" +
+      "\022+\n\013task_def_id\030\001 \001(\0132\026.littlehorse.Task" +
+      "DefId\0220\n\014window_start\030\002 \001(\0132\032.google.pro" +
+      "tobuf.Timestamp\022.\n\004type\030\003 \001(\0162 .littleho" +
+      "rse.MetricsWindowLength\022\023\n\013num_entries\030\004" +
+      " \001(\003\022\035\n\025schedule_to_start_max\030\005 \001(\003\022\037\n\027s" +
+      "chedule_to_start_total\030\006 \001(\003\022\035\n\025start_to" +
+      "_complete_max\030\007 \001(\003\022\037\n\027start_to_complete" +
+      "_total\030\010 \001(\003\022\027\n\017total_completed\030\t \001(\003\022\025\n" +
+      "\rtotal_errored\030\n \001(\003\022\025\n\rtotal_started\030\013 " +
+      "\001(\003\022\027\n\017total_scheduled\030\014 \001(\003\"4\n\021CreateRe" +
+      "moteTagPb\022\037\n\003tag\030\001 \001(\0132\022.littlehorse.Tag" +
+      "Pb\"=\n\021RemoveRemoteTagPb\022\021\n\tstore_key\030\001 \001" +
+      "(\t\022\025\n\rpartition_key\030\002 \001(\t\"\273\001\n\020TaskClaimE" +
+      "ventPb\022+\n\013task_run_id\030\001 \001(\0132\026.littlehors" +
+      "e.TaskRunId\022(\n\004time\030\002 \001(\0132\032.google.proto" +
+      "buf.Timestamp\022\026\n\016task_worker_id\030\003 \001(\t\022 \n" +
+      "\023task_worker_version\030\004 \001(\tH\000\210\001\001B\026\n\024_task" +
+      "_worker_version\"I\n\032ExternalEventNodeTime" +
+      "outPb\022+\n\013node_run_id\030\001 \001(\0132\026.littlehorse" +
+      ".NodeRunId\"A\n\022SleepNodeMaturedPb\022+\n\013node" +
+      "_run_id\030\001 \001(\0132\026.littlehorse.NodeRunId\"m\n" +
+      "\022TriggeredTaskRunPb\022/\n\020task_to_schedule\030" +
+      "\001 \001(\0132\025.littlehorse.TaskNode\022&\n\006source\030\002" +
+      " \001(\0132\026.littlehorse.NodeRunId\";\n\025TaskAtte" +
+      "mptRetryReady\022\"\n\002id\030\001 \001(\0132\026.littlehorse." +
+      "TaskRunId\"\364\001\n\030DeadlineReassignUserTask\0229" +
+      "\n\013new_user_id\030\001 \001(\0132\037.littlehorse.Variab" +
+      "leAssignmentH\000\210\001\001\022<\n\016new_user_group\030\002 \001(" +
+      "\0132\037.littlehorse.VariableAssignmentH\001\210\001\001\022" +
+      "-\n\tuser_task\030\004 \001(\0132\032.littlehorse.UserTas" +
+      "kRunId\022\r\n\005epoch\030\005 \001(\003B\016\n\014_new_user_idB\021\n" +
+      "\017_new_user_group\"\360\001\n\tLHTimerPb\0223\n\017matura" +
+      "tion_time\030\001 \001(\0132\032.google.protobuf.Timest" +
+      "amp\022\013\n\003key\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\022\017\n\007paylo" +
+      "ad\030\004 \001(\014\022-\n\ttenant_id\030\005 \001(\0132\025.littlehors" +
+      "e.TenantIdH\000\210\001\001\0223\n\014principal_id\030\006 \001(\0132\030." +
+      "littlehorse.PrincipalIdH\001\210\001\001B\014\n\n_tenant_" +
+      "idB\017\n\r_principal_id\"B\n\034DeleteTaskWorkerG" +
+      "roupRequest\022\"\n\002id\030\001 \001(\0132\026.littlehorse.Ta" +
+      "skDefIdB\037\n\033io.littlehorse.common.protoP\001" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -322,7 +324,7 @@ public final class CommandOuterClass {
     internal_static_littlehorse_Command_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_Command_descriptor,
-        new java.lang.String[] { "Time", "CommandId", "ReportTaskRun", "TaskClaimEvent", "RunWf", "PutExternalEvent", "StopWfRun", "ResumeWfRun", "SleepNodeMatured", "DeleteWfRun", "ExternalEventTimeout", "TaskWorkerHeartBeat", "DeleteExternalEvent", "AssignUserTaskRun", "CompleteUserTaskRun", "TriggeredTaskRun", "ReassignedUserTask", "CancelUserTask", "BulkJob", "TaskAttemptRetryReady", "RescueThreadRun", "DeleteTaskWorkerGroup", "Command", "CommandId", });
+        new java.lang.String[] { "Time", "CommandId", "ReportTaskRun", "TaskClaimEvent", "RunWf", "PutExternalEvent", "StopWfRun", "ResumeWfRun", "SleepNodeMatured", "DeleteWfRun", "ExternalEventTimeout", "TaskWorkerHeartBeat", "DeleteExternalEvent", "AssignUserTaskRun", "CompleteUserTaskRun", "TriggeredTaskRun", "ReassignedUserTask", "CancelUserTask", "BulkJob", "TaskAttemptRetryReady", "RescueThreadRun", "DeleteTaskWorkerGroup", "SaveUserTaskRunProgress", "Command", "CommandId", });
     internal_static_littlehorse_MetadataCommand_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_littlehorse_MetadataCommand_fieldAccessorTable = new

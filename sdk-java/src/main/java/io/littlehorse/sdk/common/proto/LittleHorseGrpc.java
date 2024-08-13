@@ -604,6 +604,37 @@ public final class LittleHorseGrpc {
     return getCancelUserTaskRunMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest,
+      io.littlehorse.sdk.common.proto.UserTaskRun> getSaveUserTaskRunProgressMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SaveUserTaskRunProgress",
+      requestType = io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.UserTaskRun.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest,
+      io.littlehorse.sdk.common.proto.UserTaskRun> getSaveUserTaskRunProgressMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest, io.littlehorse.sdk.common.proto.UserTaskRun> getSaveUserTaskRunProgressMethod;
+    if ((getSaveUserTaskRunProgressMethod = LittleHorseGrpc.getSaveUserTaskRunProgressMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getSaveUserTaskRunProgressMethod = LittleHorseGrpc.getSaveUserTaskRunProgressMethod) == null) {
+          LittleHorseGrpc.getSaveUserTaskRunProgressMethod = getSaveUserTaskRunProgressMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest, io.littlehorse.sdk.common.proto.UserTaskRun>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SaveUserTaskRunProgress"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.UserTaskRun.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("SaveUserTaskRunProgress"))
+              .build();
+        }
+      }
+    }
+    return getSaveUserTaskRunProgressMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListUserTaskRunRequest,
       io.littlehorse.sdk.common.proto.UserTaskRunList> getListUserTaskRunsMethod;
 
@@ -2226,6 +2257,19 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Saves the results of a UserTaskRun and logs who saved the content.&lt;br/&gt;
+     * &lt;li&gt; Throws FAILED_PRECONDITION if the UserTaskRun is in the `DONE` or `CANCELLED` state.&lt;/li&gt;
+     * &lt;li&gt; If `policy` is set to `FAIL_IF_CLAIMED_BY_OTHER`, returns `FAILED_PRECONDITION` if the
+     * `user_id` field of the `UserTaskRun` does not match the `user_id` of the request.&lt;/li&gt;
+     * </pre>
+     */
+    default void saveUserTaskRunProgress(io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRun> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSaveUserTaskRunProgressMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
      * to model an entity.
      * </pre>
@@ -2941,6 +2985,20 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getCancelUserTaskRunMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Saves the results of a UserTaskRun and logs who saved the content.&lt;br/&gt;
+     * &lt;li&gt; Throws FAILED_PRECONDITION if the UserTaskRun is in the `DONE` or `CANCELLED` state.&lt;/li&gt;
+     * &lt;li&gt; If `policy` is set to `FAIL_IF_CLAIMED_BY_OTHER`, returns `FAILED_PRECONDITION` if the
+     * `user_id` field of the `UserTaskRun` does not match the `user_id` of the request.&lt;/li&gt;
+     * </pre>
+     */
+    public void saveUserTaskRunProgress(io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRun> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSaveUserTaskRunProgressMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -3678,6 +3736,19 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Saves the results of a UserTaskRun and logs who saved the content.&lt;br/&gt;
+     * &lt;li&gt; Throws FAILED_PRECONDITION if the UserTaskRun is in the `DONE` or `CANCELLED` state.&lt;/li&gt;
+     * &lt;li&gt; If `policy` is set to `FAIL_IF_CLAIMED_BY_OTHER`, returns `FAILED_PRECONDITION` if the
+     * `user_id` field of the `UserTaskRun` does not match the `user_id` of the request.&lt;/li&gt;
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskRun saveUserTaskRunProgress(io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSaveUserTaskRunProgressMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
      * to model an entity.
      * </pre>
@@ -4375,6 +4446,20 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Saves the results of a UserTaskRun and logs who saved the content.&lt;br/&gt;
+     * &lt;li&gt; Throws FAILED_PRECONDITION if the UserTaskRun is in the `DONE` or `CANCELLED` state.&lt;/li&gt;
+     * &lt;li&gt; If `policy` is set to `FAIL_IF_CLAIMED_BY_OTHER`, returns `FAILED_PRECONDITION` if the
+     * `user_id` field of the `UserTaskRun` does not match the `user_id` of the request.&lt;/li&gt;
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.UserTaskRun> saveUserTaskRunProgress(
+        io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSaveUserTaskRunProgressMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
      * to model an entity.
      * </pre>
@@ -4889,50 +4974,51 @@ public final class LittleHorseGrpc {
   private static final int METHODID_ASSIGN_USER_TASK_RUN = 16;
   private static final int METHODID_COMPLETE_USER_TASK_RUN = 17;
   private static final int METHODID_CANCEL_USER_TASK_RUN = 18;
-  private static final int METHODID_LIST_USER_TASK_RUNS = 19;
-  private static final int METHODID_GET_NODE_RUN = 20;
-  private static final int METHODID_LIST_NODE_RUNS = 21;
-  private static final int METHODID_GET_TASK_RUN = 22;
-  private static final int METHODID_LIST_TASK_RUNS = 23;
-  private static final int METHODID_GET_VARIABLE = 24;
-  private static final int METHODID_LIST_VARIABLES = 25;
-  private static final int METHODID_PUT_EXTERNAL_EVENT = 26;
-  private static final int METHODID_GET_EXTERNAL_EVENT = 27;
-  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 28;
-  private static final int METHODID_LIST_EXTERNAL_EVENTS = 29;
-  private static final int METHODID_SEARCH_WF_RUN = 30;
-  private static final int METHODID_SEARCH_NODE_RUN = 31;
-  private static final int METHODID_SEARCH_TASK_RUN = 32;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 33;
-  private static final int METHODID_SEARCH_VARIABLE = 34;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 35;
-  private static final int METHODID_SEARCH_TASK_DEF = 36;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 37;
-  private static final int METHODID_SEARCH_WF_SPEC = 38;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 39;
-  private static final int METHODID_SEARCH_TENANT = 40;
-  private static final int METHODID_SEARCH_PRINCIPAL = 41;
-  private static final int METHODID_REGISTER_TASK_WORKER = 42;
-  private static final int METHODID_REPORT_TASK = 43;
-  private static final int METHODID_STOP_WF_RUN = 44;
-  private static final int METHODID_RESUME_WF_RUN = 45;
-  private static final int METHODID_RESCUE_THREAD_RUN = 46;
-  private static final int METHODID_DELETE_WF_RUN = 47;
-  private static final int METHODID_DELETE_TASK_DEF = 48;
-  private static final int METHODID_DELETE_WF_SPEC = 49;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 50;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 51;
-  private static final int METHODID_DELETE_PRINCIPAL = 52;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 53;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 54;
-  private static final int METHODID_LIST_TASK_DEF_METRICS = 55;
-  private static final int METHODID_LIST_WF_SPEC_METRICS = 56;
-  private static final int METHODID_PUT_TENANT = 57;
-  private static final int METHODID_GET_TENANT = 58;
-  private static final int METHODID_PUT_PRINCIPAL = 59;
-  private static final int METHODID_WHOAMI = 60;
-  private static final int METHODID_GET_SERVER_VERSION = 61;
-  private static final int METHODID_POLL_TASK = 62;
+  private static final int METHODID_SAVE_USER_TASK_RUN_PROGRESS = 19;
+  private static final int METHODID_LIST_USER_TASK_RUNS = 20;
+  private static final int METHODID_GET_NODE_RUN = 21;
+  private static final int METHODID_LIST_NODE_RUNS = 22;
+  private static final int METHODID_GET_TASK_RUN = 23;
+  private static final int METHODID_LIST_TASK_RUNS = 24;
+  private static final int METHODID_GET_VARIABLE = 25;
+  private static final int METHODID_LIST_VARIABLES = 26;
+  private static final int METHODID_PUT_EXTERNAL_EVENT = 27;
+  private static final int METHODID_GET_EXTERNAL_EVENT = 28;
+  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 29;
+  private static final int METHODID_LIST_EXTERNAL_EVENTS = 30;
+  private static final int METHODID_SEARCH_WF_RUN = 31;
+  private static final int METHODID_SEARCH_NODE_RUN = 32;
+  private static final int METHODID_SEARCH_TASK_RUN = 33;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 34;
+  private static final int METHODID_SEARCH_VARIABLE = 35;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 36;
+  private static final int METHODID_SEARCH_TASK_DEF = 37;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 38;
+  private static final int METHODID_SEARCH_WF_SPEC = 39;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 40;
+  private static final int METHODID_SEARCH_TENANT = 41;
+  private static final int METHODID_SEARCH_PRINCIPAL = 42;
+  private static final int METHODID_REGISTER_TASK_WORKER = 43;
+  private static final int METHODID_REPORT_TASK = 44;
+  private static final int METHODID_STOP_WF_RUN = 45;
+  private static final int METHODID_RESUME_WF_RUN = 46;
+  private static final int METHODID_RESCUE_THREAD_RUN = 47;
+  private static final int METHODID_DELETE_WF_RUN = 48;
+  private static final int METHODID_DELETE_TASK_DEF = 49;
+  private static final int METHODID_DELETE_WF_SPEC = 50;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 51;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 52;
+  private static final int METHODID_DELETE_PRINCIPAL = 53;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 54;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 55;
+  private static final int METHODID_LIST_TASK_DEF_METRICS = 56;
+  private static final int METHODID_LIST_WF_SPEC_METRICS = 57;
+  private static final int METHODID_PUT_TENANT = 58;
+  private static final int METHODID_GET_TENANT = 59;
+  private static final int METHODID_PUT_PRINCIPAL = 60;
+  private static final int METHODID_WHOAMI = 61;
+  private static final int METHODID_GET_SERVER_VERSION = 62;
+  private static final int METHODID_POLL_TASK = 63;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -5026,6 +5112,10 @@ public final class LittleHorseGrpc {
         case METHODID_CANCEL_USER_TASK_RUN:
           serviceImpl.cancelUserTaskRun((io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
+        case METHODID_SAVE_USER_TASK_RUN_PROGRESS:
+          serviceImpl.saveUserTaskRunProgress((io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.UserTaskRun>) responseObserver);
           break;
         case METHODID_LIST_USER_TASK_RUNS:
           serviceImpl.listUserTaskRuns((io.littlehorse.sdk.common.proto.ListUserTaskRunRequest) request,
@@ -5353,6 +5443,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest,
               com.google.protobuf.Empty>(
                 service, METHODID_CANCEL_USER_TASK_RUN)))
+        .addMethod(
+          getSaveUserTaskRunProgressMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest,
+              io.littlehorse.sdk.common.proto.UserTaskRun>(
+                service, METHODID_SAVE_USER_TASK_RUN_PROGRESS)))
         .addMethod(
           getListUserTaskRunsMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -5728,6 +5825,7 @@ public final class LittleHorseGrpc {
               .addMethod(getAssignUserTaskRunMethod())
               .addMethod(getCompleteUserTaskRunMethod())
               .addMethod(getCancelUserTaskRunMethod())
+              .addMethod(getSaveUserTaskRunProgressMethod())
               .addMethod(getListUserTaskRunsMethod())
               .addMethod(getGetNodeRunMethod())
               .addMethod(getListNodeRunsMethod())

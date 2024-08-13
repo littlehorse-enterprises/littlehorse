@@ -325,31 +325,34 @@ public interface CommandOrBuilder extends
   io.littlehorse.sdk.common.proto.RescueThreadRunRequestOrBuilder getRescueThreadRunOrBuilder();
 
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
    * @return Whether the deleteTaskWorkerGroup field is set.
    */
   boolean hasDeleteTaskWorkerGroup();
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
    * @return The deleteTaskWorkerGroup.
    */
   io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest getDeleteTaskWorkerGroup();
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
    */
   io.littlehorse.common.proto.DeleteTaskWorkerGroupRequestOrBuilder getDeleteTaskWorkerGroupOrBuilder();
+
+  /**
+   * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 24;</code>
+   * @return Whether the saveUserTaskRunProgress field is set.
+   */
+  boolean hasSaveUserTaskRunProgress();
+  /**
+   * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 24;</code>
+   * @return The saveUserTaskRunProgress.
+   */
+  io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest getSaveUserTaskRunProgress();
+  /**
+   * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 24;</code>
+   */
+  io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequestOrBuilder getSaveUserTaskRunProgressOrBuilder();
 
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }
