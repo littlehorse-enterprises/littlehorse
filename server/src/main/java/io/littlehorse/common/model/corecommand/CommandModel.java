@@ -17,6 +17,7 @@ import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.RescueThreadRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.SaveUserTaskRunProgressRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyModel;
@@ -62,6 +63,7 @@ public class CommandModel extends AbstractCommand<Command> {
     private BulkUpdateJobModel bulkJob;
     private RescueThreadRunRequestModel rescueThreadRun;
     private DeleteTaskWorkerGroupRequestModel deleteTaskWorkerGroup;
+    private SaveUserTaskRunProgressRequestModel saveUserTaskRunProgress;
 
     public Class<Command> getProtoBaseClass() {
         return Command.class;
@@ -148,6 +150,9 @@ public class CommandModel extends AbstractCommand<Command> {
             case DELETE_TASK_WORKER_GROUP:
                 out.setDeleteTaskWorkerGroup(deleteTaskWorkerGroup.toProto());
                 break;
+            case SAVE_USER_TASK_RUN_PROGRESS:
+                out.setSaveUserTaskRunProgress(saveUserTaskRunProgress.toProto());
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -232,6 +237,10 @@ public class CommandModel extends AbstractCommand<Command> {
                 deleteTaskWorkerGroup = LHSerializable.fromProto(
                         p.getDeleteTaskWorkerGroup(), DeleteTaskWorkerGroupRequestModel.class, context);
                 break;
+            case SAVE_USER_TASK_RUN_PROGRESS:
+                saveUserTaskRunProgress = LHSerializable.fromProto(
+                        p.getSaveUserTaskRunProgress(), SaveUserTaskRunProgressRequestModel.class, context);
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -280,6 +289,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return rescueThreadRun;
             case DELETE_TASK_WORKER_GROUP:
                 return deleteTaskWorkerGroup;
+            case SAVE_USER_TASK_RUN_PROGRESS:
+                return saveUserTaskRunProgress;
             case COMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -347,6 +358,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(DeleteTaskWorkerGroupRequestModel.class)) {
             type = CommandCase.DELETE_TASK_WORKER_GROUP;
             deleteTaskWorkerGroup = (DeleteTaskWorkerGroupRequestModel) cmd;
+        } else if (cls.equals(SaveUserTaskRunProgressRequestModel.class)) {
+            type = CommandCase.SAVE_USER_TASK_RUN_PROGRESS;
+            saveUserTaskRunProgress = (SaveUserTaskRunProgressRequestModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

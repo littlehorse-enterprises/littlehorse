@@ -1,7 +1,13 @@
 package io.littlehorse.examples;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest;
+import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -55,19 +61,28 @@ public class BasicExample {
         Properties props = getConfigProps();
         LHConfig config = new LHConfig(props);
 
-        // New workflow
-        Workflow workflow = getWorkflow();
+        SaveUserTaskRunProgressRequest req = SaveUserTaskRunProgressRequest.newBuilder()
+                .setUserTaskRunId(UserTaskRunId.newBuilder().setWfRunId(WfRunId.newBuilder().setId(args[0])).setUserTaskGuid(args[1]))
+                .setUserId("ahsoka")
+                .putResults("requestedItem", LHLibUtil.objToVarVal("lightsaber"))
+                .setPolicy(SaveUserTaskRunAssignmentPolicy.FAIL_IF_CLAIMED_BY_OTHER)
+                .build();
 
-        // New worker
-        LHTaskWorker worker = getTaskWorker(config);
+        System.out.println(LHLibUtil.protoToJson(config.getBlockingStub().saveUserTaskRunProgress(req)));
 
-        // Register task
-        worker.registerTaskDef();
+        // // New workflow
+        // Workflow workflow = getWorkflow();
 
-        // Register a workflow
-        workflow.registerWfSpec(config.getBlockingStub());
+        // // New worker
+        // LHTaskWorker worker = getTaskWorker(config);
 
-        // Run the worker
-        worker.start();
+        // // Register task
+        // worker.registerTaskDef();
+
+        // // Register a workflow
+        // workflow.registerWfSpec(config.getBlockingStub());
+
+        // // Run the worker
+        // worker.start();
     }
 }
