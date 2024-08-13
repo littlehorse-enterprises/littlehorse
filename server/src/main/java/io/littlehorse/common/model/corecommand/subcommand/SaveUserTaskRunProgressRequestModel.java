@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
 import com.google.protobuf.Message;
-
 import io.grpc.Status;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -11,15 +10,14 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest;
+import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
-import lombok.Getter;
-
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Getter;
 
 @Getter
 public class SaveUserTaskRunProgressRequestModel extends CoreSubCommand<SaveUserTaskRunProgressRequest> {
@@ -81,7 +79,10 @@ public class SaveUserTaskRunProgressRequestModel extends CoreSubCommand<SaveUser
         utr.processProgressSavedEvent(this, executionContext);
 
         // Never hurts to call advance() but it probably will never do anything here
-        executionContext.getableManager().get(userTaskRunId.getWfRunId()).advance(executionContext.currentCommand().getTime());
+        executionContext
+                .getableManager()
+                .get(userTaskRunId.getWfRunId())
+                .advance(executionContext.currentCommand().getTime());
         return utr.toProto().build();
     }
 

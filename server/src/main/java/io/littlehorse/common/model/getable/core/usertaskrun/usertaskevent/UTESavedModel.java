@@ -1,14 +1,12 @@
 package io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent;
 
-import java.util.Map;
-
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
-import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.UTESaved;
+import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

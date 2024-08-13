@@ -299,7 +299,8 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         failureToThrowKenobi = new FailureModel("User task cancelled", failureName);
     }
 
-    public void processProgressSavedEvent(SaveUserTaskRunProgressRequestModel req, ProcessorExecutionContext ctx) throws LHApiException {
+    public void processProgressSavedEvent(SaveUserTaskRunProgressRequestModel req, ProcessorExecutionContext ctx)
+            throws LHApiException {
         if (isTerminated()) {
             throw new LHApiException(Status.FAILED_PRECONDITION, "UserTaskRun is in status " + status);
         }
