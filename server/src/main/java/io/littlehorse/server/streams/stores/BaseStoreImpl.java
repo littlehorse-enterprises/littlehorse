@@ -32,7 +32,6 @@ abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore 
         if (metadataCache != null) {
             metadataCache.evictCache(key);
         }
-        log.info("storing " + key);
         nativeStore.put(key, new Bytes(thing.toBytes()));
     }
 

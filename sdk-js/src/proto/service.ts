@@ -7330,7 +7330,7 @@ export const LittleHorseDefinition = {
       name: "ScheduleWf",
       requestType: ScheduleWfRequest,
       requestStream: false,
-      responseType: ScheduledWfRun,
+      responseType: ScheduledWfRunId,
       responseStream: false,
       options: {},
     },
@@ -7933,7 +7933,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   ): Promise<DeepPartial<UserTaskDef>>;
   /** Runs a WfSpec to create a WfRun. */
   runWf(request: RunWfRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfRun>>;
-  scheduleWf(request: ScheduleWfRequest, context: CallContext & CallContextExt): Promise<DeepPartial<ScheduledWfRun>>;
+  scheduleWf(request: ScheduleWfRequest, context: CallContext & CallContextExt): Promise<DeepPartial<ScheduledWfRunId>>;
   searchScheduledWf(
     request: SearchScheduledWfRunsRequest,
     context: CallContext & CallContextExt,
@@ -8258,7 +8258,10 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   ): Promise<UserTaskDef>;
   /** Runs a WfSpec to create a WfRun. */
   runWf(request: DeepPartial<RunWfRequest>, options?: CallOptions & CallOptionsExt): Promise<WfRun>;
-  scheduleWf(request: DeepPartial<ScheduleWfRequest>, options?: CallOptions & CallOptionsExt): Promise<ScheduledWfRun>;
+  scheduleWf(
+    request: DeepPartial<ScheduleWfRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ScheduledWfRunId>;
   searchScheduledWf(
     request: DeepPartial<SearchScheduledWfRunsRequest>,
     options?: CallOptions & CallOptionsExt,

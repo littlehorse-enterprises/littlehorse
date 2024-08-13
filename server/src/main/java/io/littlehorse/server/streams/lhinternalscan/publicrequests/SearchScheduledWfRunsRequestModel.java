@@ -74,7 +74,7 @@ public class SearchScheduledWfRunsRequestModel
 
     @Override
     public LHStore getStoreType() {
-        return LHStore.GLOBAL_METADATA;
+        return LHStore.CORE;
     }
 
     @Override

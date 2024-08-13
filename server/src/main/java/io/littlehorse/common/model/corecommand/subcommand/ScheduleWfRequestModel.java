@@ -9,6 +9,7 @@ import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -17,6 +18,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.ScheduleWfRunComma
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ScheduleWfRequest;
+import io.littlehorse.sdk.common.proto.ScheduledWfRunId;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -79,7 +81,7 @@ public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
     }
 
     @Override
-    public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public ScheduledWfRunId process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         WfSpecModel spec = executionContext.service().getWfSpec(wfSpecName, majorVersion, revision);
         if (spec == null) {
             throw new LHApiException(
@@ -88,13 +90,16 @@ public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
         }
         WfSpecIdModel wfSpecId = spec.getId();
         ScheduledWfRunIdModel scheduledId = new ScheduledWfRunIdModel(id);
+        ScheduledWfRunModel scheduledWfRun =
+                new ScheduledWfRunModel(scheduledId, wfSpecId, variables, parentWfRunId, cronExpression);
+        executionContext.getableManager().put(scheduledWfRun);
         ScheduleWfRunCommandModel scheduledCommand =
                 new ScheduleWfRunCommandModel(scheduledId, wfSpecId, parentWfRunId, variables, cronExpression);
         scheduledCommand.getPartitionKey();
         LHTimer timer = new LHTimer(new CommandModel(scheduledCommand));
         timer.maturationTime = new Date();
         executionContext.getTaskManager().scheduleTimer(timer);
-        return null;
+        return scheduledId.toProto().build();
     }
 
     @Override

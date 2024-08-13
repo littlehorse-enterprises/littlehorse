@@ -133,7 +133,7 @@ type LittleHorseClient interface {
 	GetLatestUserTaskDef(ctx context.Context, in *GetLatestUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDef, error)
 	// Runs a WfSpec to create a WfRun.
 	RunWf(ctx context.Context, in *RunWfRequest, opts ...grpc.CallOption) (*WfRun, error)
-	ScheduleWf(ctx context.Context, in *ScheduleWfRequest, opts ...grpc.CallOption) (*ScheduledWfRun, error)
+	ScheduleWf(ctx context.Context, in *ScheduleWfRequest, opts ...grpc.CallOption) (*ScheduledWfRunId, error)
 	SearchScheduledWf(ctx context.Context, in *SearchScheduledWfRunsRequest, opts ...grpc.CallOption) (*ScheduledWfRunIdList, error)
 	GetScheduledWf(ctx context.Context, in *ScheduledWfRunId, opts ...grpc.CallOption) (*ScheduledWfRun, error)
 	// Gets a WfRun. Although useful for development and debugging, this RPC is not often
@@ -411,8 +411,8 @@ func (c *littleHorseClient) RunWf(ctx context.Context, in *RunWfRequest, opts ..
 	return out, nil
 }
 
-func (c *littleHorseClient) ScheduleWf(ctx context.Context, in *ScheduleWfRequest, opts ...grpc.CallOption) (*ScheduledWfRun, error) {
-	out := new(ScheduledWfRun)
+func (c *littleHorseClient) ScheduleWf(ctx context.Context, in *ScheduleWfRequest, opts ...grpc.CallOption) (*ScheduledWfRunId, error) {
+	out := new(ScheduledWfRunId)
 	err := c.cc.Invoke(ctx, LittleHorse_ScheduleWf_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -954,7 +954,7 @@ type LittleHorseServer interface {
 	GetLatestUserTaskDef(context.Context, *GetLatestUserTaskDefRequest) (*UserTaskDef, error)
 	// Runs a WfSpec to create a WfRun.
 	RunWf(context.Context, *RunWfRequest) (*WfRun, error)
-	ScheduleWf(context.Context, *ScheduleWfRequest) (*ScheduledWfRun, error)
+	ScheduleWf(context.Context, *ScheduleWfRequest) (*ScheduledWfRunId, error)
 	SearchScheduledWf(context.Context, *SearchScheduledWfRunsRequest) (*ScheduledWfRunIdList, error)
 	GetScheduledWf(context.Context, *ScheduledWfRunId) (*ScheduledWfRun, error)
 	// Gets a WfRun. Although useful for development and debugging, this RPC is not often
@@ -1145,7 +1145,7 @@ func (UnimplementedLittleHorseServer) GetLatestUserTaskDef(context.Context, *Get
 func (UnimplementedLittleHorseServer) RunWf(context.Context, *RunWfRequest) (*WfRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RunWf not implemented")
 }
-func (UnimplementedLittleHorseServer) ScheduleWf(context.Context, *ScheduleWfRequest) (*ScheduledWfRun, error) {
+func (UnimplementedLittleHorseServer) ScheduleWf(context.Context, *ScheduleWfRequest) (*ScheduledWfRunId, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ScheduleWf not implemented")
 }
 func (UnimplementedLittleHorseServer) SearchScheduledWf(context.Context, *SearchScheduledWfRunsRequest) (*ScheduledWfRunIdList, error) {

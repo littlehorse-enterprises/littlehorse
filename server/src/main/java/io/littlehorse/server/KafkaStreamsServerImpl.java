@@ -18,7 +18,6 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.DeleteScheduledWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
@@ -336,15 +335,15 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
     @Override
     public void getScheduledWf(ScheduledWfRunId req, StreamObserver<ScheduledWfRun> ctx) {
-        /*ScheduledWfRunIdModel scheduledWfId =
-                LHSerializable.fromProto(req, ScheduledWfRunIdModel.class, requestContext());*/
-        /*ScheduledWfRunModel scheduledWfRun = requestContext().metadataManager().get(scheduledWfId);
+        ScheduledWfRunIdModel scheduledWfId =
+                LHSerializable.fromProto(req, ScheduledWfRunIdModel.class, requestContext());
+        ScheduledWfRunModel scheduledWfRun = requestContext().getableManager().get(scheduledWfId);
         if (scheduledWfRun == null) {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified object"));
         } else {
             ctx.onNext(scheduledWfRun.toProto().build());
             ctx.onCompleted();
-        }*/
+        }
     }
 
     public void putPrincipal(PutPrincipalRequest req, StreamObserver<Principal> ctx) {
@@ -553,9 +552,9 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
-    public void scheduleWf(ScheduleWfRequest req, StreamObserver<ScheduledWfRun> ctx) {
+    public void scheduleWf(ScheduleWfRequest req, StreamObserver<ScheduledWfRunId> ctx) {
         ScheduleWfRequestModel reqModel = LHSerializable.fromProto(req, ScheduleWfRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx, ScheduledWfRun.class, true);
+        processCommand(new CommandModel(reqModel), ctx, ScheduledWfRunId.class, true);
     }
 
     @Override

@@ -52,7 +52,9 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
         ScheduleWfRun p = (ScheduleWfRun) proto;
         scheduledId = LHSerializable.fromProto(p.getScheduledId(), ScheduledWfRunIdModel.class, context);
         wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
-        parentWfRunId = LHSerializable.fromProto(p.getParentWfRunId(), WfRunIdModel.class, context);
+        if (p.hasParentWfRunId()) {
+            parentWfRunId = LHSerializable.fromProto(p.getParentWfRunId(), WfRunIdModel.class, context);
+        }
         for (Map.Entry<String, VariableValue> e : p.getVariablesMap().entrySet()) {
             variables.put(e.getKey(), VariableValueModel.fromProto(e.getValue(), context));
         }
@@ -64,8 +66,11 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
         ScheduleWfRun.Builder out = ScheduleWfRun.newBuilder()
                 .setScheduledId(scheduledId.toProto())
                 .setWfSpecId(wfSpecId.toProto())
-                .setParentWfRunId(parentWfRunId.toProto())
                 .setCronExpression(cronExpression);
+
+        if (parentWfRunId != null) {
+            out.setParentWfRunId(parentWfRunId.toProto());
+        }
 
         for (Map.Entry<String, VariableValueModel> e : variables.entrySet()) {
             out.putVariables(e.getKey(), e.getValue().toProto().build());
@@ -80,7 +85,7 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
 
     @Override
     public boolean hasResponse() {
-        return true;
+        return false;
     }
 
     @Override
