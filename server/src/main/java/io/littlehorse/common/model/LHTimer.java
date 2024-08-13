@@ -37,13 +37,20 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
         key = command.getPartitionKey();
     }
 
+    public LHTimer(String partitionKey) {
+        key = partitionKey;
+        maturationTime = new Date();
+    }
+
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         LHTimerPb p = (LHTimerPb) proto;
         maturationTime = LHUtil.fromProtoTs(p.getMaturationTime());
         topic = p.getTopic();
         key = p.getKey();
-        payload = p.getPayload().toByteArray();
+        if (p.hasPayload()) {
+            payload = p.getPayload().toByteArray();
+        }
 
         if (p.hasPrincipalId()) {
             principalId = LHSerializable.fromProto(p.getPrincipalId(), PrincipalIdModel.class, context);
@@ -66,10 +73,11 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
                 .setMaturationTime(LHUtil.fromDate(maturationTime))
                 .setKey(key)
                 .setTopic(topic)
-                .setPayload(ByteString.copyFrom(payload))
                 .setPrincipalId(principalId.toProto()) // TODO: allow nulls
                 .setTenantId(tenantId.toProto()); // TODO: Allow nulls
-
+        if (payload != null && payload.length > 0) {
+            out.setPayload(ByteString.copyFrom(payload));
+        }
         return out;
     }
 

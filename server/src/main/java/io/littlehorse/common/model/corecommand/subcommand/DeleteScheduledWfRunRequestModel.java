@@ -1,8 +1,10 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
@@ -39,8 +41,10 @@ public class DeleteScheduledWfRunRequestModel extends CoreSubCommand<DeleteSched
 
     @Override
     public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+        LHTimer timer = new LHTimer(id.getPartitionKey().get());
+        executionContext.getTaskManager().scheduleTimer(timer);
         // TODO: implement scheduled wf run deletion
-        return null;
+        return Empty.getDefaultInstance();
     }
 
     @Override

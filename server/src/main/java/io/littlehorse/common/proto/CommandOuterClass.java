@@ -317,16 +317,16 @@ public final class CommandOuterClass {
       "\002 \001(\0132\037.littlehorse.VariableAssignmentH\001" +
       "\210\001\001\022-\n\tuser_task\030\004 \001(\0132\032.littlehorse.Use" +
       "rTaskRunId\022\r\n\005epoch\030\005 \001(\003B\016\n\014_new_user_i" +
-      "dB\021\n\017_new_user_group\"\360\001\n\tLHTimerPb\0223\n\017ma" +
+      "dB\021\n\017_new_user_group\"\201\002\n\tLHTimerPb\0223\n\017ma" +
       "turation_time\030\001 \001(\0132\032.google.protobuf.Ti" +
-      "mestamp\022\013\n\003key\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\022\017\n\007p" +
-      "ayload\030\004 \001(\014\022-\n\ttenant_id\030\005 \001(\0132\025.little" +
-      "horse.TenantIdH\000\210\001\001\0223\n\014principal_id\030\006 \001(" +
-      "\0132\030.littlehorse.PrincipalIdH\001\210\001\001B\014\n\n_ten" +
-      "ant_idB\017\n\r_principal_id\"B\n\034DeleteTaskWor" +
-      "kerGroupRequest\022\"\n\002id\030\001 \001(\0132\026.littlehors" +
-      "e.TaskDefIdB\037\n\033io.littlehorse.common.pro" +
-      "toP\001b\006proto3"
+      "mestamp\022\013\n\003key\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\022\024\n\007p" +
+      "ayload\030\004 \001(\014H\000\210\001\001\022-\n\ttenant_id\030\005 \001(\0132\025.l" +
+      "ittlehorse.TenantIdH\001\210\001\001\0223\n\014principal_id" +
+      "\030\006 \001(\0132\030.littlehorse.PrincipalIdH\002\210\001\001B\n\n" +
+      "\010_payloadB\014\n\n_tenant_idB\017\n\r_principal_id" +
+      "\"B\n\034DeleteTaskWorkerGroupRequest\022\"\n\002id\030\001" +
+      " \001(\0132\026.littlehorse.TaskDefIdB\037\n\033io.littl" +
+      "ehorse.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -497,7 +497,7 @@ public final class CommandOuterClass {
     internal_static_littlehorse_LHTimerPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_LHTimerPb_descriptor,
-        new java.lang.String[] { "MaturationTime", "Key", "Topic", "Payload", "TenantId", "PrincipalId", "TenantId", "PrincipalId", });
+        new java.lang.String[] { "MaturationTime", "Key", "Topic", "Payload", "TenantId", "PrincipalId", "Payload", "TenantId", "PrincipalId", });
     internal_static_littlehorse_DeleteTaskWorkerGroupRequest_descriptor =
       getDescriptor().getMessageTypes().get(23);
     internal_static_littlehorse_DeleteTaskWorkerGroupRequest_fieldAccessorTable = new

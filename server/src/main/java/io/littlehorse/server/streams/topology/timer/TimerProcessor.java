@@ -36,7 +36,11 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
 
     public void process(final Record<String, LHTimer> record) {
         LHTimer timer = record.value();
-        timerStore.put(timer.getStoreKey(), timer);
+        if (timer.getPayload() != null && timer.getPayload().length > 0) {
+            timerStore.put(timer.getStoreKey(), timer);
+        } else {
+            timerStore.delete(timer.getStoreKey());
+        }
     }
 
     private void clearTimers(long timestamp) {

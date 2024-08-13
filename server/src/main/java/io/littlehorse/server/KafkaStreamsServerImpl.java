@@ -18,6 +18,7 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.DeleteScheduledWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
@@ -934,9 +935,9 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
     public void deleteScheduledWfRun(DeleteScheduledWfRunRequest req, StreamObserver<Empty> ctx) {
-        /*DeleteScheduledWfRunRequestModel reqModel =
+        DeleteScheduledWfRunRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteScheduledWfRunRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class, true);*/
+        processCommand(new CommandModel(reqModel), ctx, Empty.class, true);
     }
 
     @Override
