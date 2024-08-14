@@ -6,18 +6,21 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.UTESaved;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.HashMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class UTESavedModel extends LHSerializable<UTESaved> {
 
     private String userId;
     private Map<String, VariableValueModel> results;
+
+    public UTESavedModel() {
+        this.results = new HashMap<>();
+    }
 
     @Override
     public Class<UTESaved> getProtoBaseClass() {
