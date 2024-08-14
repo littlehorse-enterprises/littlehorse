@@ -27,6 +27,10 @@ public class SaveUserTaskRunProgressRequestModel extends CoreSubCommand<SaveUser
     private String userId;
     private SaveUserTaskRunAssignmentPolicy policy;
 
+    public SaveUserTaskRunProgressRequestModel() {
+        this.results = new HashMap<>();
+    }
+
     @Override
     public Class<SaveUserTaskRunProgressRequest> getProtoBaseClass() {
         return SaveUserTaskRunProgressRequest.class;
@@ -50,7 +54,6 @@ public class SaveUserTaskRunProgressRequestModel extends CoreSubCommand<SaveUser
         userTaskRunId = UserTaskRunIdModel.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
         userId = p.getUserId();
         policy = p.getPolicy();
-        results = new HashMap<>();
         for (Map.Entry<String, VariableValue> entry : p.getResultsMap().entrySet()) {
             VariableValueModel model = VariableValueModel.fromProto(entry.getValue(), context);
             results.put(entry.getKey(), model);
