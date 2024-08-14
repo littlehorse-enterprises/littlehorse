@@ -102,9 +102,9 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.ScheduleWfRequest.SerializeToString,
                 response_deserializer=scheduled__wf__run__pb2.ScheduledWfRun.FromString,
                 )
-        self.SearchScheduledWf = channel.unary_unary(
-                '/littlehorse.LittleHorse/SearchScheduledWf',
-                request_serializer=service__pb2.SearchScheduledWfRunsRequest.SerializeToString,
+        self.SearchScheduledWfRun = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchScheduledWfRun',
+                request_serializer=service__pb2.SearchScheduledWfRunRequest.SerializeToString,
                 response_deserializer=service__pb2.ScheduledWfRunIdList.FromString,
                 )
         self.GetScheduledWf = channel.unary_unary(
@@ -484,7 +484,7 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def SearchScheduledWf(self, request, context):
+    def SearchScheduledWfRun(self, request, context):
         """Search for existing schedules
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -965,9 +965,9 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.ScheduleWfRequest.FromString,
                     response_serializer=scheduled__wf__run__pb2.ScheduledWfRun.SerializeToString,
             ),
-            'SearchScheduledWf': grpc.unary_unary_rpc_method_handler(
-                    servicer.SearchScheduledWf,
-                    request_deserializer=service__pb2.SearchScheduledWfRunsRequest.FromString,
+            'SearchScheduledWfRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchScheduledWfRun,
+                    request_deserializer=service__pb2.SearchScheduledWfRunRequest.FromString,
                     response_serializer=service__pb2.ScheduledWfRunIdList.SerializeToString,
             ),
             'GetScheduledWf': grpc.unary_unary_rpc_method_handler(
@@ -1491,7 +1491,7 @@ class LittleHorse(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def SearchScheduledWf(request,
+    def SearchScheduledWfRun(request,
             target,
             options=(),
             channel_credentials=None,
@@ -1501,8 +1501,8 @@ class LittleHorse(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchScheduledWf',
-            service__pb2.SearchScheduledWfRunsRequest.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchScheduledWfRun',
+            service__pb2.SearchScheduledWfRunRequest.SerializeToString,
             service__pb2.ScheduledWfRunIdList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

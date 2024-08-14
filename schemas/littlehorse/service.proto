@@ -85,7 +85,7 @@ service LittleHorse {
   rpc ScheduleWf(ScheduleWfRequest) returns (ScheduledWfRun) {}
 
   // Search for existing schedules
-  rpc SearchScheduledWf(SearchScheduledWfRunsRequest) returns (ScheduledWfRunIdList) {}
+  rpc SearchScheduledWfRun(SearchScheduledWfRunRequest) returns (ScheduledWfRunIdList) {}
 
   // Find a specific ScheduledWfRun
   rpc GetScheduledWf(ScheduledWfRunId) returns (ScheduledWfRun) {}
@@ -1262,7 +1262,7 @@ message ScheduledWfRunIdList {
 }
 
 // Search filters for ScheduledWfRun's
-message SearchScheduledWfRunsRequest {
+message SearchScheduledWfRunRequest {
   // The name of the WfSpec to filter
   string wf_spec_name = 1;
   // The major version of the WfSpec to filter

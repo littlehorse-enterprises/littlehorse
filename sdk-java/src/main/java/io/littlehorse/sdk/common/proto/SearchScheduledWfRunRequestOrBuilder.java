@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface SearchScheduledWfRunsRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.SearchScheduledWfRunsRequest)
+public interface SearchScheduledWfRunRequestOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.SearchScheduledWfRunRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**

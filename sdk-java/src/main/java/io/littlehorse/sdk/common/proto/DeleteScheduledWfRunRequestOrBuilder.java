@@ -9,7 +9,7 @@ public interface DeleteScheduledWfRunRequestOrBuilder extends
 
   /**
    * <pre>
-   * Id to be deleted
+   * Id of the `ScheduledWfRun` to be deleted
    * </pre>
    *
    * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
@@ -18,7 +18,7 @@ public interface DeleteScheduledWfRunRequestOrBuilder extends
   boolean hasId();
   /**
    * <pre>
-   * Id to be deleted
+   * Id of the `ScheduledWfRun` to be deleted
    * </pre>
    *
    * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
@@ -27,7 +27,7 @@ public interface DeleteScheduledWfRunRequestOrBuilder extends
   io.littlehorse.sdk.common.proto.ScheduledWfRunId getId();
   /**
    * <pre>
-   * Id to be deleted
+   * Id of the `ScheduledWfRun` to be deleted
    * </pre>
    *
    * <code>.littlehorse.ScheduledWfRunId id = 1;</code>

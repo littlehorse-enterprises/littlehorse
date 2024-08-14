@@ -262,7 +262,7 @@ export interface DeleteExternalEventRequest {
 
 /** Delete an existing ScheduledWfRun, returns INVALID_ARGUMENT if object does not exist */
 export interface DeleteScheduledWfRunRequest {
-  /** Id to be deleted */
+  /** Id of the `ScheduledWfRun` to be deleted */
   id: ScheduledWfRunId | undefined;
 }
 
@@ -1351,7 +1351,7 @@ export interface ScheduledWfRunIdList {
 }
 
 /** Search filters for ScheduledWfRun's */
-export interface SearchScheduledWfRunsRequest {
+export interface SearchScheduledWfRunRequest {
   /** The name of the WfSpec to filter */
   wfSpecName: string;
   /** The major version of the WfSpec to filter */
@@ -6640,12 +6640,12 @@ export const ScheduledWfRunIdList = {
   },
 };
 
-function createBaseSearchScheduledWfRunsRequest(): SearchScheduledWfRunsRequest {
+function createBaseSearchScheduledWfRunRequest(): SearchScheduledWfRunRequest {
   return { wfSpecName: "", majorVersion: undefined, revision: undefined };
 }
 
-export const SearchScheduledWfRunsRequest = {
-  encode(message: SearchScheduledWfRunsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const SearchScheduledWfRunRequest = {
+  encode(message: SearchScheduledWfRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.wfSpecName !== "") {
       writer.uint32(10).string(message.wfSpecName);
     }
@@ -6658,10 +6658,10 @@ export const SearchScheduledWfRunsRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): SearchScheduledWfRunsRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchScheduledWfRunRequest {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSearchScheduledWfRunsRequest();
+    const message = createBaseSearchScheduledWfRunRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -6695,11 +6695,11 @@ export const SearchScheduledWfRunsRequest = {
     return message;
   },
 
-  create(base?: DeepPartial<SearchScheduledWfRunsRequest>): SearchScheduledWfRunsRequest {
-    return SearchScheduledWfRunsRequest.fromPartial(base ?? {});
+  create(base?: DeepPartial<SearchScheduledWfRunRequest>): SearchScheduledWfRunRequest {
+    return SearchScheduledWfRunRequest.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<SearchScheduledWfRunsRequest>): SearchScheduledWfRunsRequest {
-    const message = createBaseSearchScheduledWfRunsRequest();
+  fromPartial(object: DeepPartial<SearchScheduledWfRunRequest>): SearchScheduledWfRunRequest {
+    const message = createBaseSearchScheduledWfRunRequest();
     message.wfSpecName = object.wfSpecName ?? "";
     message.majorVersion = object.majorVersion ?? undefined;
     message.revision = object.revision ?? undefined;
@@ -7352,9 +7352,9 @@ export const LittleHorseDefinition = {
       options: {},
     },
     /** Search for existing schedules */
-    searchScheduledWf: {
-      name: "SearchScheduledWf",
-      requestType: SearchScheduledWfRunsRequest,
+    searchScheduledWfRun: {
+      name: "SearchScheduledWfRun",
+      requestType: SearchScheduledWfRunRequest,
       requestStream: false,
       responseType: ScheduledWfRunIdList,
       responseStream: false,
@@ -7955,8 +7955,8 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   /** Schedule repeated WfRun based on a cron expression */
   scheduleWf(request: ScheduleWfRequest, context: CallContext & CallContextExt): Promise<DeepPartial<ScheduledWfRun>>;
   /** Search for existing schedules */
-  searchScheduledWf(
-    request: SearchScheduledWfRunsRequest,
+  searchScheduledWfRun(
+    request: SearchScheduledWfRunRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ScheduledWfRunIdList>>;
   /** Find a specific ScheduledWfRun */
@@ -8283,8 +8283,8 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   /** Schedule repeated WfRun based on a cron expression */
   scheduleWf(request: DeepPartial<ScheduleWfRequest>, options?: CallOptions & CallOptionsExt): Promise<ScheduledWfRun>;
   /** Search for existing schedules */
-  searchScheduledWf(
-    request: DeepPartial<SearchScheduledWfRunsRequest>,
+  searchScheduledWfRun(
+    request: DeepPartial<SearchScheduledWfRunRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ScheduledWfRunIdList>;
   /** Find a specific ScheduledWfRun */

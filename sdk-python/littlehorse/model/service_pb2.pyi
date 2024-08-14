@@ -790,7 +790,7 @@ class ScheduledWfRunIdList(_message.Message):
     results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.ScheduledWfRunId]
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.ScheduledWfRunId, _Mapping]]] = ...) -> None: ...
 
-class SearchScheduledWfRunsRequest(_message.Message):
+class SearchScheduledWfRunRequest(_message.Message):
     __slots__ = ["wf_spec_name", "major_version", "revision"]
     WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
     MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]

@@ -200,7 +200,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExterna
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchNodeRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchPrincipalRequestModel;
-import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchScheduledWfRunsRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchScheduledWfRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTaskDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTenantRequestModel;
@@ -539,8 +539,8 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void searchScheduledWf(SearchScheduledWfRunsRequest req, StreamObserver<ScheduledWfRunIdList> ctx) {
-        SearchScheduledWfRunsRequestModel requestModel =
-                LHSerializable.fromProto(req, SearchScheduledWfRunsRequestModel.class, requestContext());
+        SearchScheduledWfRunRequestModel requestModel =
+                LHSerializable.fromProto(req, SearchScheduledWfRunRequestModel.class, requestContext());
         handleScan(requestModel, ctx, SearchScheduledWfRunsReply.class);
     }
 

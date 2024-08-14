@@ -126,11 +126,11 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 |  [ScheduleWfRequest](#schedulewfrequest)  |  [ScheduledWfRun](#scheduledwfrun)  | Schedule repeated WfRun based on a cron expression |
 
-### RPC `SearchScheduledWf` {#searchscheduledwf}
+### RPC `SearchScheduledWfRun` {#searchscheduledwfrun}
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-|  [SearchScheduledWfRunsRequest](#searchscheduledwfrunsrequest)  |  [ScheduledWfRunIdList](#scheduledwfrunidlist)  | Search for existing schedules |
+|  [SearchScheduledWfRunRequest](#searchscheduledwfrunrequest)  |  [ScheduledWfRunIdList](#scheduledwfrunidlist)  | Search for existing schedules |
 
 ### RPC `GetScheduledWf` {#getscheduledwf}
 
@@ -1398,7 +1398,7 @@ Delete an existing ScheduledWfRun, returns INVALID_ARGUMENT if object does not e
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `id` | | [ScheduledWfRunId](#scheduledwfrunid) | Id to be deleted |
+| `id` | | [ScheduledWfRunId](#scheduledwfrunid) | Id of the `ScheduledWfRun` to be deleted |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2113,7 +2113,7 @@ Search for Principals based on certain criteria.
 
 
 
-### Message `SearchScheduledWfRunsRequest` {#searchscheduledwfrunsrequest}
+### Message `SearchScheduledWfRunRequest` {#searchscheduledwfrunrequest}
 
 Search filters for ScheduledWfRun's
 

@@ -25,7 +25,7 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class SearchScheduledWfRunsRequestModel
+public class SearchScheduledWfRunRequestModel
         extends PublicScanRequest<
                 SearchScheduledWfRunsRequest,
                 ScheduledWfRunIdList,

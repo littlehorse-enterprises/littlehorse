@@ -46,7 +46,7 @@ private static final long serialVersionUID = 0L;
   private io.littlehorse.sdk.common.proto.ScheduledWfRunId id_;
   /**
    * <pre>
-   * Id to be deleted
+   * Id of the `ScheduledWfRun` to be deleted
    * </pre>
    *
    * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
@@ -58,7 +58,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Id to be deleted
+   * Id of the `ScheduledWfRun` to be deleted
    * </pre>
    *
    * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
@@ -70,7 +70,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Id to be deleted
+   * Id of the `ScheduledWfRun` to be deleted
    * </pre>
    *
    * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
@@ -427,7 +427,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.ScheduledWfRunId, io.littlehorse.sdk.common.proto.ScheduledWfRunId.Builder, io.littlehorse.sdk.common.proto.ScheduledWfRunIdOrBuilder> idBuilder_;
     /**
      * <pre>
-     * Id to be deleted
+     * Id of the `ScheduledWfRun` to be deleted
      * </pre>
      *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
@@ -438,7 +438,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Id to be deleted
+     * Id of the `ScheduledWfRun` to be deleted
      * </pre>
      *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
@@ -453,7 +453,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Id to be deleted
+     * Id of the `ScheduledWfRun` to be deleted
      * </pre>
      *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
@@ -473,7 +473,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Id to be deleted
+     * Id of the `ScheduledWfRun` to be deleted
      * </pre>
      *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
@@ -491,7 +491,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Id to be deleted
+     * Id of the `ScheduledWfRun` to be deleted
      * </pre>
      *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
@@ -514,7 +514,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Id to be deleted
+     * Id of the `ScheduledWfRun` to be deleted
      * </pre>
      *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
@@ -531,7 +531,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Id to be deleted
+     * Id of the `ScheduledWfRun` to be deleted
      * </pre>
      *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
@@ -543,7 +543,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Id to be deleted
+     * Id of the `ScheduledWfRun` to be deleted
      * </pre>
      *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
@@ -558,7 +558,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Id to be deleted
+     * Id of the `ScheduledWfRun` to be deleted
      * </pre>
      *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
