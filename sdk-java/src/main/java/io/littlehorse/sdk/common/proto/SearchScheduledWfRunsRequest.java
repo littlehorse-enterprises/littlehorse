@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Search filters for ScheduledWfRun's
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.SearchScheduledWfRunsRequest}
  */
 public final class SearchScheduledWfRunsRequest extends
@@ -44,6 +48,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object wfSpecName_ = "";
   /**
+   * <pre>
+   * The name of the WfSpec to filter
+   * </pre>
+   *
    * <code>string wf_spec_name = 1;</code>
    * @return The wfSpecName.
    */
@@ -61,6 +69,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the WfSpec to filter
+   * </pre>
+   *
    * <code>string wf_spec_name = 1;</code>
    * @return The bytes for wfSpecName.
    */
@@ -82,6 +94,10 @@ private static final long serialVersionUID = 0L;
   public static final int MAJOR_VERSION_FIELD_NUMBER = 2;
   private int majorVersion_ = 0;
   /**
+   * <pre>
+   * The major version of the WfSpec to filter
+   * </pre>
+   *
    * <code>optional int32 major_version = 2;</code>
    * @return Whether the majorVersion field is set.
    */
@@ -90,6 +106,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * The major version of the WfSpec to filter
+   * </pre>
+   *
    * <code>optional int32 major_version = 2;</code>
    * @return The majorVersion.
    */
@@ -101,6 +121,10 @@ private static final long serialVersionUID = 0L;
   public static final int REVISION_FIELD_NUMBER = 3;
   private int revision_ = 0;
   /**
+   * <pre>
+   * The revision number of the WfSpec to filter
+   * </pre>
+   *
    * <code>optional int32 revision = 3;</code>
    * @return Whether the revision field is set.
    */
@@ -109,6 +133,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * The revision number of the WfSpec to filter
+   * </pre>
+   *
    * <code>optional int32 revision = 3;</code>
    * @return The revision.
    */
@@ -306,6 +334,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Search filters for ScheduledWfRun's
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.SearchScheduledWfRunsRequest}
    */
   public static final class Builder extends
@@ -505,6 +537,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object wfSpecName_ = "";
     /**
+     * <pre>
+     * The name of the WfSpec to filter
+     * </pre>
+     *
      * <code>string wf_spec_name = 1;</code>
      * @return The wfSpecName.
      */
@@ -521,6 +557,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the WfSpec to filter
+     * </pre>
+     *
      * <code>string wf_spec_name = 1;</code>
      * @return The bytes for wfSpecName.
      */
@@ -538,6 +578,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the WfSpec to filter
+     * </pre>
+     *
      * <code>string wf_spec_name = 1;</code>
      * @param value The wfSpecName to set.
      * @return This builder for chaining.
@@ -551,6 +595,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the WfSpec to filter
+     * </pre>
+     *
      * <code>string wf_spec_name = 1;</code>
      * @return This builder for chaining.
      */
@@ -561,6 +609,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the WfSpec to filter
+     * </pre>
+     *
      * <code>string wf_spec_name = 1;</code>
      * @param value The bytes for wfSpecName to set.
      * @return This builder for chaining.
@@ -577,6 +629,10 @@ private static final long serialVersionUID = 0L;
 
     private int majorVersion_ ;
     /**
+     * <pre>
+     * The major version of the WfSpec to filter
+     * </pre>
+     *
      * <code>optional int32 major_version = 2;</code>
      * @return Whether the majorVersion field is set.
      */
@@ -585,6 +641,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * The major version of the WfSpec to filter
+     * </pre>
+     *
      * <code>optional int32 major_version = 2;</code>
      * @return The majorVersion.
      */
@@ -593,6 +653,10 @@ private static final long serialVersionUID = 0L;
       return majorVersion_;
     }
     /**
+     * <pre>
+     * The major version of the WfSpec to filter
+     * </pre>
+     *
      * <code>optional int32 major_version = 2;</code>
      * @param value The majorVersion to set.
      * @return This builder for chaining.
@@ -605,6 +669,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The major version of the WfSpec to filter
+     * </pre>
+     *
      * <code>optional int32 major_version = 2;</code>
      * @return This builder for chaining.
      */
@@ -617,6 +685,10 @@ private static final long serialVersionUID = 0L;
 
     private int revision_ ;
     /**
+     * <pre>
+     * The revision number of the WfSpec to filter
+     * </pre>
+     *
      * <code>optional int32 revision = 3;</code>
      * @return Whether the revision field is set.
      */
@@ -625,6 +697,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * The revision number of the WfSpec to filter
+     * </pre>
+     *
      * <code>optional int32 revision = 3;</code>
      * @return The revision.
      */
@@ -633,6 +709,10 @@ private static final long serialVersionUID = 0L;
       return revision_;
     }
     /**
+     * <pre>
+     * The revision number of the WfSpec to filter
+     * </pre>
+     *
      * <code>optional int32 revision = 3;</code>
      * @param value The revision to set.
      * @return This builder for chaining.
@@ -645,6 +725,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The revision number of the WfSpec to filter
+     * </pre>
+     *
      * <code>optional int32 revision = 3;</code>
      * @return This builder for chaining.
      */

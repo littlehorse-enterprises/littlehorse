@@ -8,24 +8,44 @@ public interface ScheduledWfRunIdListOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * A list of ScheduledWfRun Objects
+   * </pre>
+   *
    * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.ScheduledWfRunId> 
       getResultsList();
   /**
+   * <pre>
+   * A list of ScheduledWfRun Objects
+   * </pre>
+   *
    * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
    */
   io.littlehorse.sdk.common.proto.ScheduledWfRunId getResults(int index);
   /**
+   * <pre>
+   * A list of ScheduledWfRun Objects
+   * </pre>
+   *
    * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
    */
   int getResultsCount();
   /**
+   * <pre>
+   * A list of ScheduledWfRun Objects
+   * </pre>
+   *
    * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.ScheduledWfRunIdOrBuilder> 
       getResultsOrBuilderList();
   /**
+   * <pre>
+   * A list of ScheduledWfRun Objects
+   * </pre>
+   *
    * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
    */
   io.littlehorse.sdk.common.proto.ScheduledWfRunIdOrBuilder getResultsOrBuilder(

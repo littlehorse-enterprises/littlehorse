@@ -8,11 +8,19 @@ public interface SearchScheduledWfRunsRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The name of the WfSpec to filter
+   * </pre>
+   *
    * <code>string wf_spec_name = 1;</code>
    * @return The wfSpecName.
    */
   java.lang.String getWfSpecName();
   /**
+   * <pre>
+   * The name of the WfSpec to filter
+   * </pre>
+   *
    * <code>string wf_spec_name = 1;</code>
    * @return The bytes for wfSpecName.
    */
@@ -20,22 +28,38 @@ public interface SearchScheduledWfRunsRequestOrBuilder extends
       getWfSpecNameBytes();
 
   /**
+   * <pre>
+   * The major version of the WfSpec to filter
+   * </pre>
+   *
    * <code>optional int32 major_version = 2;</code>
    * @return Whether the majorVersion field is set.
    */
   boolean hasMajorVersion();
   /**
+   * <pre>
+   * The major version of the WfSpec to filter
+   * </pre>
+   *
    * <code>optional int32 major_version = 2;</code>
    * @return The majorVersion.
    */
   int getMajorVersion();
 
   /**
+   * <pre>
+   * The revision number of the WfSpec to filter
+   * </pre>
+   *
    * <code>optional int32 revision = 3;</code>
    * @return Whether the revision field is set.
    */
   boolean hasRevision();
   /**
+   * <pre>
+   * The revision number of the WfSpec to filter
+   * </pre>
+   *
    * <code>optional int32 revision = 3;</code>
    * @return The revision.
    */

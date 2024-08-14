@@ -5114,11 +5114,13 @@ func (x *UserTaskRunList) GetResults() []*UserTaskRun {
 	return nil
 }
 
+// List of ScheduledWfRun
 type ScheduledWfRunIdList struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// A list of ScheduledWfRun Objects
 	Results []*ScheduledWfRunId `protobuf:"bytes,1,rep,name=results,proto3" json:"results,omitempty"`
 }
 
@@ -5161,14 +5163,18 @@ func (x *ScheduledWfRunIdList) GetResults() []*ScheduledWfRunId {
 	return nil
 }
 
+// Search filters for ScheduledWfRun's
 type SearchScheduledWfRunsRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	WfSpecName   string `protobuf:"bytes,1,opt,name=wf_spec_name,json=wfSpecName,proto3" json:"wf_spec_name,omitempty"`
+	// The name of the WfSpec to filter
+	WfSpecName string `protobuf:"bytes,1,opt,name=wf_spec_name,json=wfSpecName,proto3" json:"wf_spec_name,omitempty"`
+	// The major version of the WfSpec to filter
 	MajorVersion *int32 `protobuf:"varint,2,opt,name=major_version,json=majorVersion,proto3,oneof" json:"major_version,omitempty"`
-	Revision     *int32 `protobuf:"varint,3,opt,name=revision,proto3,oneof" json:"revision,omitempty"`
+	// The revision number of the WfSpec to filter
+	Revision *int32 `protobuf:"varint,3,opt,name=revision,proto3,oneof" json:"revision,omitempty"`
 }
 
 func (x *SearchScheduledWfRunsRequest) Reset() {

@@ -1255,13 +1255,19 @@ message UserTaskRunList {
   repeated UserTaskRun results = 1;
 }
 
+// List of ScheduledWfRun
 message ScheduledWfRunIdList {
+  // A list of ScheduledWfRun Objects
   repeated ScheduledWfRunId results = 1;
 }
 
+// Search filters for ScheduledWfRun's
 message SearchScheduledWfRunsRequest {
+  // The name of the WfSpec to filter
   string wf_spec_name = 1;
+  // The major version of the WfSpec to filter
   optional int32 major_version = 2;
+  // The revision number of the WfSpec to filter
   optional int32 revision = 3;
 }
 

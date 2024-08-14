@@ -2028,12 +2028,12 @@ This is used and handled internally by the Task Worker SDK.
 
 ### Message `ScheduledWfRunIdList` {#scheduledwfrunidlist}
 
-
+List of ScheduledWfRun
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `results` | repeated| [ScheduledWfRunId](#scheduledwfrunid) |  |
+| `results` | repeated| [ScheduledWfRunId](#scheduledwfrunid) | A list of ScheduledWfRun Objects |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2115,14 +2115,14 @@ Search for Principals based on certain criteria.
 
 ### Message `SearchScheduledWfRunsRequest` {#searchscheduledwfrunsrequest}
 
-
+Search filters for ScheduledWfRun's
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `wf_spec_name` | | string |  |
-| `major_version` | optional| int32 |  |
-| `revision` | optional| int32 |  |
+| `wf_spec_name` | | string | The name of the WfSpec to filter |
+| `major_version` | optional| int32 | The major version of the WfSpec to filter |
+| `revision` | optional| int32 | The revision number of the WfSpec to filter |
  <!-- end Fields -->
  <!-- end HasFields -->
 

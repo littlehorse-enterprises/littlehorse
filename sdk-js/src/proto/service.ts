@@ -1344,13 +1344,21 @@ export interface UserTaskRunList {
   results: UserTaskRun[];
 }
 
+/** List of ScheduledWfRun */
 export interface ScheduledWfRunIdList {
+  /** A list of ScheduledWfRun Objects */
   results: ScheduledWfRunId[];
 }
 
+/** Search filters for ScheduledWfRun's */
 export interface SearchScheduledWfRunsRequest {
+  /** The name of the WfSpec to filter */
   wfSpecName: string;
-  majorVersion?: number | undefined;
+  /** The major version of the WfSpec to filter */
+  majorVersion?:
+    | number
+    | undefined;
+  /** The revision number of the WfSpec to filter */
   revision?: number | undefined;
 }
 

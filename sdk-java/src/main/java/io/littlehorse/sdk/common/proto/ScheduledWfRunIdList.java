@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * List of ScheduledWfRun
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ScheduledWfRunIdList}
  */
 public final class ScheduledWfRunIdList extends
@@ -43,6 +47,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.sdk.common.proto.ScheduledWfRunId> results_;
   /**
+   * <pre>
+   * A list of ScheduledWfRun Objects
+   * </pre>
+   *
    * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
    */
   @java.lang.Override
@@ -50,6 +58,10 @@ private static final long serialVersionUID = 0L;
     return results_;
   }
   /**
+   * <pre>
+   * A list of ScheduledWfRun Objects
+   * </pre>
+   *
    * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
    */
   @java.lang.Override
@@ -58,6 +70,10 @@ private static final long serialVersionUID = 0L;
     return results_;
   }
   /**
+   * <pre>
+   * A list of ScheduledWfRun Objects
+   * </pre>
+   *
    * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
    */
   @java.lang.Override
@@ -65,6 +81,10 @@ private static final long serialVersionUID = 0L;
     return results_.size();
   }
   /**
+   * <pre>
+   * A list of ScheduledWfRun Objects
+   * </pre>
+   *
    * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
    */
   @java.lang.Override
@@ -72,6 +92,10 @@ private static final long serialVersionUID = 0L;
     return results_.get(index);
   }
   /**
+   * <pre>
+   * A list of ScheduledWfRun Objects
+   * </pre>
+   *
    * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
    */
   @java.lang.Override
@@ -240,6 +264,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * List of ScheduledWfRun
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ScheduledWfRunIdList}
    */
   public static final class Builder extends
@@ -467,6 +495,10 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.ScheduledWfRunId, io.littlehorse.sdk.common.proto.ScheduledWfRunId.Builder, io.littlehorse.sdk.common.proto.ScheduledWfRunIdOrBuilder> resultsBuilder_;
 
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.ScheduledWfRunId> getResultsList() {
@@ -477,6 +509,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public int getResultsCount() {
@@ -487,6 +523,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ScheduledWfRunId getResults(int index) {
@@ -497,6 +537,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public Builder setResults(
@@ -514,6 +558,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public Builder setResults(
@@ -528,6 +576,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public Builder addResults(io.littlehorse.sdk.common.proto.ScheduledWfRunId value) {
@@ -544,6 +596,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public Builder addResults(
@@ -561,6 +617,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public Builder addResults(
@@ -575,6 +635,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public Builder addResults(
@@ -589,6 +653,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public Builder addAllResults(
@@ -604,6 +672,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public Builder clearResults() {
@@ -617,6 +689,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public Builder removeResults(int index) {
@@ -630,6 +706,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ScheduledWfRunId.Builder getResultsBuilder(
@@ -637,6 +717,10 @@ private static final long serialVersionUID = 0L;
       return getResultsFieldBuilder().getBuilder(index);
     }
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ScheduledWfRunIdOrBuilder getResultsOrBuilder(
@@ -647,6 +731,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.ScheduledWfRunIdOrBuilder> 
@@ -658,6 +746,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ScheduledWfRunId.Builder addResultsBuilder() {
@@ -665,6 +757,10 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.sdk.common.proto.ScheduledWfRunId.getDefaultInstance());
     }
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ScheduledWfRunId.Builder addResultsBuilder(
@@ -673,6 +769,10 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.sdk.common.proto.ScheduledWfRunId.getDefaultInstance());
     }
     /**
+     * <pre>
+     * A list of ScheduledWfRun Objects
+     * </pre>
+     *
      * <code>repeated .littlehorse.ScheduledWfRunId results = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.ScheduledWfRunId.Builder> 
