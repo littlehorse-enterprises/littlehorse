@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.processor.TaskId;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -21,7 +20,6 @@ import org.apache.kafka.streams.processor.api.Record;
 /**
  * This class provides useful methods for managing LH tasks
  */
-@Slf4j
 public class LHTaskManager {
 
     private final List<LHTimer> timersToSchedule = new ArrayList<>();
@@ -105,7 +103,6 @@ public class LHTaskManager {
         timer.topic = commandTopicName;
         CommandProcessorOutput output = new CommandProcessorOutput(timerTopicName, timer, timer.key);
         Headers headers = HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId());
-        log.debug("Partition key " + timer.key);
         processorContext.forward(new Record<>(timer.key, output, System.currentTimeMillis(), headers));
     }
 }
