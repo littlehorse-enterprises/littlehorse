@@ -154,15 +154,7 @@ private static final long serialVersionUID = 0L;
   public static final int PAYLOAD_FIELD_NUMBER = 4;
   private com.google.protobuf.ByteString payload_ = com.google.protobuf.ByteString.EMPTY;
   /**
-   * <code>optional bytes payload = 4;</code>
-   * @return Whether the payload field is set.
-   */
-  @java.lang.Override
-  public boolean hasPayload() {
-    return ((bitField0_ & 0x00000001) != 0);
-  }
-  /**
-   * <code>optional bytes payload = 4;</code>
+   * <code>bytes payload = 4;</code>
    * @return The payload.
    */
   @java.lang.Override
@@ -182,7 +174,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasTenantId() {
-    return ((bitField0_ & 0x00000002) != 0);
+    return ((bitField0_ & 0x00000001) != 0);
   }
   /**
    * <pre>
@@ -220,7 +212,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasPrincipalId() {
-    return ((bitField0_ & 0x00000004) != 0);
+    return ((bitField0_ & 0x00000002) != 0);
   }
   /**
    * <pre>
@@ -269,13 +261,13 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, topic_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (!payload_.isEmpty()) {
       output.writeBytes(4, payload_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(5, getTenantId());
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       output.writeMessage(6, getPrincipalId());
     }
     getUnknownFields().writeTo(output);
@@ -297,15 +289,15 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, topic_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (!payload_.isEmpty()) {
       size += com.google.protobuf.CodedOutputStream
         .computeBytesSize(4, payload_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, getTenantId());
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, getPrincipalId());
     }
@@ -333,11 +325,8 @@ private static final long serialVersionUID = 0L;
         .equals(other.getKey())) return false;
     if (!getTopic()
         .equals(other.getTopic())) return false;
-    if (hasPayload() != other.hasPayload()) return false;
-    if (hasPayload()) {
-      if (!getPayload()
-          .equals(other.getPayload())) return false;
-    }
+    if (!getPayload()
+        .equals(other.getPayload())) return false;
     if (hasTenantId() != other.hasTenantId()) return false;
     if (hasTenantId()) {
       if (!getTenantId()
@@ -367,10 +356,8 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getKey().hashCode();
     hash = (37 * hash) + TOPIC_FIELD_NUMBER;
     hash = (53 * hash) + getTopic().hashCode();
-    if (hasPayload()) {
-      hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
-      hash = (53 * hash) + getPayload().hashCode();
-    }
+    hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
+    hash = (53 * hash) + getPayload().hashCode();
     if (hasTenantId()) {
       hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
       hash = (53 * hash) + getTenantId().hashCode();
@@ -585,22 +572,21 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.topic_ = topic_;
       }
-      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.payload_ = payload_;
-        to_bitField0_ |= 0x00000001;
       }
+      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000010) != 0)) {
         result.tenantId_ = tenantIdBuilder_ == null
             ? tenantId_
             : tenantIdBuilder_.build();
-        to_bitField0_ |= 0x00000002;
+        to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000020) != 0)) {
         result.principalId_ = principalIdBuilder_ == null
             ? principalId_
             : principalIdBuilder_.build();
-        to_bitField0_ |= 0x00000004;
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -662,7 +648,7 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000004;
         onChanged();
       }
-      if (other.hasPayload()) {
+      if (other.getPayload() != com.google.protobuf.ByteString.EMPTY) {
         setPayload(other.getPayload());
       }
       if (other.hasTenantId()) {
@@ -1015,15 +1001,7 @@ private static final long serialVersionUID = 0L;
 
     private com.google.protobuf.ByteString payload_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <code>optional bytes payload = 4;</code>
-     * @return Whether the payload field is set.
-     */
-    @java.lang.Override
-    public boolean hasPayload() {
-      return ((bitField0_ & 0x00000008) != 0);
-    }
-    /**
-     * <code>optional bytes payload = 4;</code>
+     * <code>bytes payload = 4;</code>
      * @return The payload.
      */
     @java.lang.Override
@@ -1031,7 +1009,7 @@ private static final long serialVersionUID = 0L;
       return payload_;
     }
     /**
-     * <code>optional bytes payload = 4;</code>
+     * <code>bytes payload = 4;</code>
      * @param value The payload to set.
      * @return This builder for chaining.
      */
@@ -1043,7 +1021,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional bytes payload = 4;</code>
+     * <code>bytes payload = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearPayload() {

@@ -47,12 +47,7 @@ public interface LHTimerPbOrBuilder extends
       getTopicBytes();
 
   /**
-   * <code>optional bytes payload = 4;</code>
-   * @return Whether the payload field is set.
-   */
-  boolean hasPayload();
-  /**
-   * <code>optional bytes payload = 4;</code>
+   * <code>bytes payload = 4;</code>
    * @return The payload.
    */
   com.google.protobuf.ByteString getPayload();

@@ -6,6 +6,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Date;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.processor.Cancellable;
@@ -16,6 +17,7 @@ import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
 
+@Slf4j
 public class TimerProcessor implements Processor<String, LHTimer, String, LHTimer> {
 
     private ProcessorContext<String, LHTimer> context;
@@ -36,11 +38,7 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
 
     public void process(final Record<String, LHTimer> record) {
         LHTimer timer = record.value();
-        if (timer.getPayload() != null && timer.getPayload().length > 0) {
-            timerStore.put(timer.getStoreKey(), timer);
-        } else {
-            timerStore.delete(timer.getStoreKey());
-        }
+        timerStore.put(timer.getStoreKey(), timer);
     }
 
     private void clearTimers(long timestamp) {

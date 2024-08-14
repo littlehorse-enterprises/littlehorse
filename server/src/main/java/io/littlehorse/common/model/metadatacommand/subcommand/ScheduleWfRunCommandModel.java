@@ -8,6 +8,7 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
@@ -90,17 +91,20 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
 
     @Override
     public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        CommandModel commandToExecute = new CommandModel(createRunWfCommand(executionContext), new Date());
-        LHTimer runWfTimer = new LHTimer(commandToExecute);
-        runWfTimer.maturationTime = new Date();
-        executionContext.getTaskManager().scheduleTimer(runWfTimer);
-        Optional<Date> scheduledTime = LHUtil.nextDate(cronExpression, new Date());
+        ScheduledWfRunModel scheduledWfRun = executionContext.getableManager().get(scheduledId);
+        if (scheduledWfRun != null) {
+            CommandModel commandToExecute = new CommandModel(createRunWfCommand(executionContext), new Date());
+            LHTimer runWfTimer = new LHTimer(commandToExecute);
+            runWfTimer.maturationTime = new Date();
+            executionContext.getTaskManager().scheduleTimer(runWfTimer);
+            Optional<Date> scheduledTime = LHUtil.nextDate(cronExpression, new Date());
 
-        if (scheduledTime.isPresent()) {
-            CommandModel nextSchedule = new CommandModel(copy(), scheduledTime.get());
-            LHTimer nextScheduleTimer = new LHTimer(nextSchedule);
-            nextScheduleTimer.maturationTime = scheduledTime.get();
-            executionContext.getTaskManager().scheduleTimer(nextScheduleTimer);
+            if (scheduledTime.isPresent()) {
+                CommandModel nextSchedule = new CommandModel(copy(), scheduledTime.get());
+                LHTimer nextScheduleTimer = new LHTimer(nextSchedule);
+                nextScheduleTimer.maturationTime = scheduledTime.get();
+                executionContext.getTaskManager().scheduleTimer(nextScheduleTimer);
+            }
         }
         return null;
     }
