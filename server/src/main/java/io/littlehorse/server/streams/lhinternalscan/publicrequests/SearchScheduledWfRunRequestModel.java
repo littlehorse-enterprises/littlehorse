@@ -12,11 +12,11 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ScheduledWfRunId;
 import io.littlehorse.sdk.common.proto.ScheduledWfRunIdList;
-import io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest;
+import io.littlehorse.sdk.common.proto.SearchScheduledWfRunRequest;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
-import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchScheduledWfRunsReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchScheduledWfRunReply;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
@@ -27,20 +27,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SearchScheduledWfRunRequestModel
         extends PublicScanRequest<
-                SearchScheduledWfRunsRequest,
+                SearchScheduledWfRunRequest,
                 ScheduledWfRunIdList,
                 ScheduledWfRunId,
                 ScheduledWfRunIdModel,
-                SearchScheduledWfRunsReply> {
+                SearchScheduledWfRunReply> {
 
     private String wfSpecName;
     private Integer majorVersion;
     private Integer revision;
 
     @Override
-    public SearchScheduledWfRunsRequest.Builder toProto() {
-        SearchScheduledWfRunsRequest.Builder out =
-                SearchScheduledWfRunsRequest.newBuilder().setWfSpecName(wfSpecName);
+    public SearchScheduledWfRunRequest.Builder toProto() {
+        SearchScheduledWfRunRequest.Builder out =
+                SearchScheduledWfRunRequest.newBuilder().setWfSpecName(wfSpecName);
         if (majorVersion != null) {
             out.setMajorVersion(majorVersion);
         }
@@ -52,7 +52,7 @@ public class SearchScheduledWfRunRequestModel
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
-        SearchScheduledWfRunsRequest p = (SearchScheduledWfRunsRequest) proto;
+        SearchScheduledWfRunRequest p = (SearchScheduledWfRunRequest) proto;
         wfSpecName = p.getWfSpecName();
         if (p.hasMajorVersion()) {
             majorVersion = p.getMajorVersion();
@@ -63,8 +63,8 @@ public class SearchScheduledWfRunRequestModel
     }
 
     @Override
-    public Class<SearchScheduledWfRunsRequest> getProtoBaseClass() {
-        return SearchScheduledWfRunsRequest.class;
+    public Class<SearchScheduledWfRunRequest> getProtoBaseClass() {
+        return SearchScheduledWfRunRequest.class;
     }
 
     @Override

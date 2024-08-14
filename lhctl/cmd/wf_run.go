@@ -33,7 +33,7 @@ var getScheduledWfRun = &cobra.Command{
 
 		}
 
-		common.PrintResp(getGlobalClient(cmd).GetScheduledWf(
+		common.PrintResp(getGlobalClient(cmd).GetScheduledWfRun(
 			requestContext(cmd),
 			&model.ScheduledWfRunId{
 				Id: args[0],
@@ -309,7 +309,7 @@ var searchScheduledWfsCmd = &cobra.Command{
 			revision = &raw
 		}
 		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
-		req := &model.SearchScheduledWfRunsRequest{
+		req := &model.SearchScheduledWfRunRequest{
 			WfSpecName:   wfSpecName,
 			MajorVersion: majorVersion,
 			Revision:     revision,

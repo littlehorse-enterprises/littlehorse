@@ -36,7 +36,7 @@ const (
 	LittleHorse_RunWf_FullMethodName                   = "/littlehorse.LittleHorse/RunWf"
 	LittleHorse_ScheduleWf_FullMethodName              = "/littlehorse.LittleHorse/ScheduleWf"
 	LittleHorse_SearchScheduledWfRun_FullMethodName    = "/littlehorse.LittleHorse/SearchScheduledWfRun"
-	LittleHorse_GetScheduledWf_FullMethodName          = "/littlehorse.LittleHorse/GetScheduledWf"
+	LittleHorse_GetScheduledWfRun_FullMethodName       = "/littlehorse.LittleHorse/GetScheduledWfRun"
 	LittleHorse_GetWfRun_FullMethodName                = "/littlehorse.LittleHorse/GetWfRun"
 	LittleHorse_GetUserTaskRun_FullMethodName          = "/littlehorse.LittleHorse/GetUserTaskRun"
 	LittleHorse_AssignUserTaskRun_FullMethodName       = "/littlehorse.LittleHorse/AssignUserTaskRun"
@@ -138,7 +138,7 @@ type LittleHorseClient interface {
 	// Search for existing schedules
 	SearchScheduledWfRun(ctx context.Context, in *SearchScheduledWfRunRequest, opts ...grpc.CallOption) (*ScheduledWfRunIdList, error)
 	// Find a specific ScheduledWfRun
-	GetScheduledWf(ctx context.Context, in *ScheduledWfRunId, opts ...grpc.CallOption) (*ScheduledWfRun, error)
+	GetScheduledWfRun(ctx context.Context, in *ScheduledWfRunId, opts ...grpc.CallOption) (*ScheduledWfRun, error)
 	// Gets a WfRun. Although useful for development and debugging, this RPC is not often
 	// used by applications.
 	GetWfRun(ctx context.Context, in *WfRunId, opts ...grpc.CallOption) (*WfRun, error)
@@ -432,9 +432,9 @@ func (c *littleHorseClient) SearchScheduledWfRun(ctx context.Context, in *Search
 	return out, nil
 }
 
-func (c *littleHorseClient) GetScheduledWf(ctx context.Context, in *ScheduledWfRunId, opts ...grpc.CallOption) (*ScheduledWfRun, error) {
+func (c *littleHorseClient) GetScheduledWfRun(ctx context.Context, in *ScheduledWfRunId, opts ...grpc.CallOption) (*ScheduledWfRun, error) {
 	out := new(ScheduledWfRun)
-	err := c.cc.Invoke(ctx, LittleHorse_GetScheduledWf_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, LittleHorse_GetScheduledWfRun_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -962,7 +962,7 @@ type LittleHorseServer interface {
 	// Search for existing schedules
 	SearchScheduledWfRun(context.Context, *SearchScheduledWfRunRequest) (*ScheduledWfRunIdList, error)
 	// Find a specific ScheduledWfRun
-	GetScheduledWf(context.Context, *ScheduledWfRunId) (*ScheduledWfRun, error)
+	GetScheduledWfRun(context.Context, *ScheduledWfRunId) (*ScheduledWfRun, error)
 	// Gets a WfRun. Although useful for development and debugging, this RPC is not often
 	// used by applications.
 	GetWfRun(context.Context, *WfRunId) (*WfRun, error)
@@ -1157,8 +1157,8 @@ func (UnimplementedLittleHorseServer) ScheduleWf(context.Context, *ScheduleWfReq
 func (UnimplementedLittleHorseServer) SearchScheduledWfRun(context.Context, *SearchScheduledWfRunRequest) (*ScheduledWfRunIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchScheduledWfRun not implemented")
 }
-func (UnimplementedLittleHorseServer) GetScheduledWf(context.Context, *ScheduledWfRunId) (*ScheduledWfRun, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetScheduledWf not implemented")
+func (UnimplementedLittleHorseServer) GetScheduledWfRun(context.Context, *ScheduledWfRunId) (*ScheduledWfRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetScheduledWfRun not implemented")
 }
 func (UnimplementedLittleHorseServer) GetWfRun(context.Context, *WfRunId) (*WfRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetWfRun not implemented")
@@ -1611,20 +1611,20 @@ func _LittleHorse_SearchScheduledWfRun_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LittleHorse_GetScheduledWf_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LittleHorse_GetScheduledWfRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ScheduledWfRunId)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LittleHorseServer).GetScheduledWf(ctx, in)
+		return srv.(LittleHorseServer).GetScheduledWfRun(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LittleHorse_GetScheduledWf_FullMethodName,
+		FullMethod: LittleHorse_GetScheduledWfRun_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LittleHorseServer).GetScheduledWf(ctx, req.(*ScheduledWfRunId))
+		return srv.(LittleHorseServer).GetScheduledWfRun(ctx, req.(*ScheduledWfRunId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2609,8 +2609,8 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_SearchScheduledWfRun_Handler,
 		},
 		{
-			MethodName: "GetScheduledWf",
-			Handler:    _LittleHorse_GetScheduledWf_Handler,
+			MethodName: "GetScheduledWfRun",
+			Handler:    _LittleHorse_GetScheduledWfRun_Handler,
 		},
 		{
 			MethodName: "GetWfRun",

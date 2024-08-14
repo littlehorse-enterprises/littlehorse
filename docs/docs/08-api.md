@@ -132,7 +132,7 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 |  [SearchScheduledWfRunRequest](#searchscheduledwfrunrequest)  |  [ScheduledWfRunIdList](#scheduledwfrunidlist)  | Search for existing schedules |
 
-### RPC `GetScheduledWf` {#getscheduledwf}
+### RPC `GetScheduledWfRun` {#getscheduledwfrun}
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|

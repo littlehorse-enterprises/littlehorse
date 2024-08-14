@@ -7361,8 +7361,8 @@ export const LittleHorseDefinition = {
       options: {},
     },
     /** Find a specific ScheduledWfRun */
-    getScheduledWf: {
-      name: "GetScheduledWf",
+    getScheduledWfRun: {
+      name: "GetScheduledWfRun",
       requestType: ScheduledWfRunId,
       requestStream: false,
       responseType: ScheduledWfRun,
@@ -7960,7 +7960,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ScheduledWfRunIdList>>;
   /** Find a specific ScheduledWfRun */
-  getScheduledWf(
+  getScheduledWfRun(
     request: ScheduledWfRunId,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ScheduledWfRun>>;
@@ -8288,7 +8288,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     options?: CallOptions & CallOptionsExt,
   ): Promise<ScheduledWfRunIdList>;
   /** Find a specific ScheduledWfRun */
-  getScheduledWf(
+  getScheduledWfRun(
     request: DeepPartial<ScheduledWfRunId>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ScheduledWfRun>;

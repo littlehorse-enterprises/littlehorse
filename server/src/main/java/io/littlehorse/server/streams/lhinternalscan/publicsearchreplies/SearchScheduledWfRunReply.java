@@ -5,7 +5,7 @@ import io.littlehorse.sdk.common.proto.ScheduledWfRunId;
 import io.littlehorse.sdk.common.proto.ScheduledWfRunIdList;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanReply;
 
-public class SearchScheduledWfRunsReply
+public class SearchScheduledWfRunReply
         extends PublicScanReply<ScheduledWfRunIdList, ScheduledWfRunId, ScheduledWfRunIdModel> {
 
     public Class<ScheduledWfRunIdModel> getResultJavaClass() {

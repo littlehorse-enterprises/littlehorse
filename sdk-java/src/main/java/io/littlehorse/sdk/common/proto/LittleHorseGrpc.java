@@ -512,34 +512,34 @@ public final class LittleHorseGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ScheduledWfRunId,
-      io.littlehorse.sdk.common.proto.ScheduledWfRun> getGetScheduledWfMethod;
+      io.littlehorse.sdk.common.proto.ScheduledWfRun> getGetScheduledWfRunMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "GetScheduledWf",
+      fullMethodName = SERVICE_NAME + '/' + "GetScheduledWfRun",
       requestType = io.littlehorse.sdk.common.proto.ScheduledWfRunId.class,
       responseType = io.littlehorse.sdk.common.proto.ScheduledWfRun.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ScheduledWfRunId,
-      io.littlehorse.sdk.common.proto.ScheduledWfRun> getGetScheduledWfMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ScheduledWfRunId, io.littlehorse.sdk.common.proto.ScheduledWfRun> getGetScheduledWfMethod;
-    if ((getGetScheduledWfMethod = LittleHorseGrpc.getGetScheduledWfMethod) == null) {
+      io.littlehorse.sdk.common.proto.ScheduledWfRun> getGetScheduledWfRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ScheduledWfRunId, io.littlehorse.sdk.common.proto.ScheduledWfRun> getGetScheduledWfRunMethod;
+    if ((getGetScheduledWfRunMethod = LittleHorseGrpc.getGetScheduledWfRunMethod) == null) {
       synchronized (LittleHorseGrpc.class) {
-        if ((getGetScheduledWfMethod = LittleHorseGrpc.getGetScheduledWfMethod) == null) {
-          LittleHorseGrpc.getGetScheduledWfMethod = getGetScheduledWfMethod =
+        if ((getGetScheduledWfRunMethod = LittleHorseGrpc.getGetScheduledWfRunMethod) == null) {
+          LittleHorseGrpc.getGetScheduledWfRunMethod = getGetScheduledWfRunMethod =
               io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ScheduledWfRunId, io.littlehorse.sdk.common.proto.ScheduledWfRun>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetScheduledWf"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetScheduledWfRun"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.ScheduledWfRunId.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.ScheduledWfRun.getDefaultInstance()))
-              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetScheduledWf"))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetScheduledWfRun"))
               .build();
         }
       }
     }
-    return getGetScheduledWfMethod;
+    return getGetScheduledWfRunMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfRunId,
@@ -2314,9 +2314,9 @@ public final class LittleHorseGrpc {
      * Find a specific ScheduledWfRun
      * </pre>
      */
-    default void getScheduledWf(io.littlehorse.sdk.common.proto.ScheduledWfRunId request,
+    default void getScheduledWfRun(io.littlehorse.sdk.common.proto.ScheduledWfRunId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRun> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetScheduledWfMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetScheduledWfRunMethod(), responseObserver);
     }
 
     /**
@@ -3067,10 +3067,10 @@ public final class LittleHorseGrpc {
      * Find a specific ScheduledWfRun
      * </pre>
      */
-    public void getScheduledWf(io.littlehorse.sdk.common.proto.ScheduledWfRunId request,
+    public void getScheduledWfRun(io.littlehorse.sdk.common.proto.ScheduledWfRunId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRun> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getGetScheduledWfMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getGetScheduledWfRunMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -3844,9 +3844,9 @@ public final class LittleHorseGrpc {
      * Find a specific ScheduledWfRun
      * </pre>
      */
-    public io.littlehorse.sdk.common.proto.ScheduledWfRun getScheduledWf(io.littlehorse.sdk.common.proto.ScheduledWfRunId request) {
+    public io.littlehorse.sdk.common.proto.ScheduledWfRun getScheduledWfRun(io.littlehorse.sdk.common.proto.ScheduledWfRunId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getGetScheduledWfMethod(), getCallOptions(), request);
+          getChannel(), getGetScheduledWfRunMethod(), getCallOptions(), request);
     }
 
     /**
@@ -4575,10 +4575,10 @@ public final class LittleHorseGrpc {
      * Find a specific ScheduledWfRun
      * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ScheduledWfRun> getScheduledWf(
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ScheduledWfRun> getScheduledWfRun(
         io.littlehorse.sdk.common.proto.ScheduledWfRunId request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getGetScheduledWfMethod(), getCallOptions()), request);
+          getChannel().newCall(getGetScheduledWfRunMethod(), getCallOptions()), request);
     }
 
     /**
@@ -5166,7 +5166,7 @@ public final class LittleHorseGrpc {
   private static final int METHODID_RUN_WF = 13;
   private static final int METHODID_SCHEDULE_WF = 14;
   private static final int METHODID_SEARCH_SCHEDULED_WF_RUN = 15;
-  private static final int METHODID_GET_SCHEDULED_WF = 16;
+  private static final int METHODID_GET_SCHEDULED_WF_RUN = 16;
   private static final int METHODID_GET_WF_RUN = 17;
   private static final int METHODID_GET_USER_TASK_RUN = 18;
   private static final int METHODID_ASSIGN_USER_TASK_RUN = 19;
@@ -5299,8 +5299,8 @@ public final class LittleHorseGrpc {
           serviceImpl.searchScheduledWfRun((io.littlehorse.sdk.common.proto.SearchScheduledWfRunRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRunIdList>) responseObserver);
           break;
-        case METHODID_GET_SCHEDULED_WF:
-          serviceImpl.getScheduledWf((io.littlehorse.sdk.common.proto.ScheduledWfRunId) request,
+        case METHODID_GET_SCHEDULED_WF_RUN:
+          serviceImpl.getScheduledWfRun((io.littlehorse.sdk.common.proto.ScheduledWfRunId) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRun>) responseObserver);
           break;
         case METHODID_GET_WF_RUN:
@@ -5633,12 +5633,12 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.ScheduledWfRunIdList>(
                 service, METHODID_SEARCH_SCHEDULED_WF_RUN)))
         .addMethod(
-          getGetScheduledWfMethod(),
+          getGetScheduledWfRunMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               io.littlehorse.sdk.common.proto.ScheduledWfRunId,
               io.littlehorse.sdk.common.proto.ScheduledWfRun>(
-                service, METHODID_GET_SCHEDULED_WF)))
+                service, METHODID_GET_SCHEDULED_WF_RUN)))
         .addMethod(
           getGetWfRunMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -6053,7 +6053,7 @@ public final class LittleHorseGrpc {
               .addMethod(getRunWfMethod())
               .addMethod(getScheduleWfMethod())
               .addMethod(getSearchScheduledWfRunMethod())
-              .addMethod(getGetScheduledWfMethod())
+              .addMethod(getGetScheduledWfRunMethod())
               .addMethod(getGetWfRunMethod())
               .addMethod(getGetUserTaskRunMethod())
               .addMethod(getAssignUserTaskRunMethod())
