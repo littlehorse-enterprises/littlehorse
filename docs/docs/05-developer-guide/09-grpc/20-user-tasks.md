@@ -506,6 +506,77 @@ if __name__ == '__main__':
   </TabItem>
 </Tabs>
 
+## Save a `UserTaskRun`
+
+Sometimes, when a user is working on a User Task, they might want to save their progress without completing it. The [`rpc SaveUserTaskRunProgress`](../../08-api.md#saveusertaskrunprogress) allows you to do this.
+
+Saving the progress of a User Task does the following:
+1. Update the `results` field in the [`UserTaskRun`](../../08-api.md#usertaskrun) object.
+2. Add a [`UserTaskEvent`](../../08-api.md#usertaskevent) to the `events` field of the `UserTaskRun` object denoting which `user_id` saved the progress, and what results were saved.
+
+The `policy` field of the [`SaveUserTaskRunProgressRequest`](../../08-api.md#saveusertaskrunprogressrequest) configures how to handle when the `user_id` of the person saving the progress differs from the `user_id` to whom the `UserTaskRun` is assigned.
+
+* `FAIL_IF_CLAIMED_BY_OTHER`: this is the default value for `policy`. If the `user_id` of the request does not match the `user_id` of the `UserTaskRun`, then the request fails with `FAILED_PRECONDITION`.
+* `IGNORE_CLAIM`: this value allows the caller to save the progress of a `UserTaskRun` even when `user_id` of the `SaveUserTaskRunRequest` differs from the `user_id` of the `UserTaskRun`.
+
+:::note
+The `rpc SaveUserTaskRunProgress` does NOT change the ownership of the `UserTaskRun`: the `user_id` field is not changed by this request.
+:::
+
+<Tabs>
+  <TabItem value="java" label="Java" default>
+
+```java
+package io.littlehorse.examples;
+
+import java.io.IOException;
+
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest;
+import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy;
+import io.littlehorse.sdk.common.proto.UserTaskRunId;
+import io.littlehorse.sdk.common.proto.WfRunId;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        LHConfig config = new LHConfig();
+        LittleHorseBlockingStub client = config.getBlockingStub();
+
+        // Get a UserTaskRunId somehow. For example, you could search for one as shown
+        // in the section above.
+        UserTaskRunId id = UserTaskRunId.newBuilder()
+                .setWfRunId(WfRunId.newBuilder().setId("e0e49b53298a4965b059a1a5df095b09"))
+                .setUserTaskGuid("8bb5d43e14894c82bb1deab7a68b32ae")
+                .build();
+
+        // In this example, we use the FAIL_IF_CLAIMED_BY_OTHER policy.
+        client.saveUserTaskRunProgress(SaveUserTaskRunProgressRequest.newBuilder()
+                .setUserTaskRunId(id)
+                // If the UserTaskRun is assigned to someone other than obi-wan this will fail
+                .setUserId("obi-wan")
+                .setPolicy(SaveUserTaskRunAssignmentPolicy.FAIL_IF_CLAIMED_BY_OTHER)
+                .putResults("some-field", LHLibUtil.objToVarVal("lightsaber"))
+                .build());
+    }
+}
+```
+
+  </TabItem>
+  <TabItem value="go" label="Go">
+
+TODO: Write go
+
+  </TabItem>
+  <TabItem value="python" label="Python">
+
+TODO: Write python
+
+  </TabItem>
+</Tabs>
+
 
 ## Re-Assign a `UserTaskRun`
 
