@@ -18,7 +18,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.ScheduleWfRunComma
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ScheduleWfRequest;
-import io.littlehorse.sdk.common.proto.ScheduledWfRunId;
+import io.littlehorse.sdk.common.proto.ScheduledWfRun;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -84,7 +84,7 @@ public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
     }
 
     @Override
-    public ScheduledWfRunId process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public ScheduledWfRun process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         WfSpecModel spec = executionContext.service().getWfSpec(wfSpecName, majorVersion, revision);
         if (spec == null) {
             throw new LHApiException(
@@ -102,7 +102,7 @@ public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
         LHTimer timer = new LHTimer(new CommandModel(scheduledCommand));
         timer.maturationTime = new Date();
         executionContext.getTaskManager().scheduleTimer(timer);
-        return scheduledId.toProto().build();
+        return scheduledWfRun.toProto().build();
     }
 
     @Override

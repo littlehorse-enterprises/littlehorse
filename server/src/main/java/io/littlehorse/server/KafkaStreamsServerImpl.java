@@ -553,9 +553,9 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
-    public void scheduleWf(ScheduleWfRequest req, StreamObserver<ScheduledWfRunId> ctx) {
+    public void scheduleWf(ScheduleWfRequest req, StreamObserver<ScheduledWfRun> ctx) {
         ScheduleWfRequestModel reqModel = LHSerializable.fromProto(req, ScheduleWfRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx, ScheduledWfRunId.class, true);
+        processCommand(new CommandModel(reqModel), ctx, ScheduledWfRun.class, true);
     }
 
     @Override

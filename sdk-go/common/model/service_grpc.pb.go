@@ -134,7 +134,7 @@ type LittleHorseClient interface {
 	// Runs a WfSpec to create a WfRun.
 	RunWf(ctx context.Context, in *RunWfRequest, opts ...grpc.CallOption) (*WfRun, error)
 	// Schedule repeated WfRun based on a cron expression
-	ScheduleWf(ctx context.Context, in *ScheduleWfRequest, opts ...grpc.CallOption) (*ScheduledWfRunId, error)
+	ScheduleWf(ctx context.Context, in *ScheduleWfRequest, opts ...grpc.CallOption) (*ScheduledWfRun, error)
 	// Search for existing schedules
 	SearchScheduledWf(ctx context.Context, in *SearchScheduledWfRunsRequest, opts ...grpc.CallOption) (*ScheduledWfRunIdList, error)
 	// Find a specific ScheduledWfRun
@@ -414,8 +414,8 @@ func (c *littleHorseClient) RunWf(ctx context.Context, in *RunWfRequest, opts ..
 	return out, nil
 }
 
-func (c *littleHorseClient) ScheduleWf(ctx context.Context, in *ScheduleWfRequest, opts ...grpc.CallOption) (*ScheduledWfRunId, error) {
-	out := new(ScheduledWfRunId)
+func (c *littleHorseClient) ScheduleWf(ctx context.Context, in *ScheduleWfRequest, opts ...grpc.CallOption) (*ScheduledWfRun, error) {
+	out := new(ScheduledWfRun)
 	err := c.cc.Invoke(ctx, LittleHorse_ScheduleWf_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -958,7 +958,7 @@ type LittleHorseServer interface {
 	// Runs a WfSpec to create a WfRun.
 	RunWf(context.Context, *RunWfRequest) (*WfRun, error)
 	// Schedule repeated WfRun based on a cron expression
-	ScheduleWf(context.Context, *ScheduleWfRequest) (*ScheduledWfRunId, error)
+	ScheduleWf(context.Context, *ScheduleWfRequest) (*ScheduledWfRun, error)
 	// Search for existing schedules
 	SearchScheduledWf(context.Context, *SearchScheduledWfRunsRequest) (*ScheduledWfRunIdList, error)
 	// Find a specific ScheduledWfRun
@@ -1151,7 +1151,7 @@ func (UnimplementedLittleHorseServer) GetLatestUserTaskDef(context.Context, *Get
 func (UnimplementedLittleHorseServer) RunWf(context.Context, *RunWfRequest) (*WfRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RunWf not implemented")
 }
-func (UnimplementedLittleHorseServer) ScheduleWf(context.Context, *ScheduleWfRequest) (*ScheduledWfRunId, error) {
+func (UnimplementedLittleHorseServer) ScheduleWf(context.Context, *ScheduleWfRequest) (*ScheduledWfRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ScheduleWf not implemented")
 }
 func (UnimplementedLittleHorseServer) SearchScheduledWf(context.Context, *SearchScheduledWfRunsRequest) (*ScheduledWfRunIdList, error) {

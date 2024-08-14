@@ -100,7 +100,7 @@ class LittleHorseStub(object):
         self.ScheduleWf = channel.unary_unary(
                 '/littlehorse.LittleHorse/ScheduleWf',
                 request_serializer=service__pb2.ScheduleWfRequest.SerializeToString,
-                response_deserializer=object__id__pb2.ScheduledWfRunId.FromString,
+                response_deserializer=scheduled__wf__run__pb2.ScheduledWfRun.FromString,
                 )
         self.SearchScheduledWf = channel.unary_unary(
                 '/littlehorse.LittleHorse/SearchScheduledWf',
@@ -963,7 +963,7 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'ScheduleWf': grpc.unary_unary_rpc_method_handler(
                     servicer.ScheduleWf,
                     request_deserializer=service__pb2.ScheduleWfRequest.FromString,
-                    response_serializer=object__id__pb2.ScheduledWfRunId.SerializeToString,
+                    response_serializer=scheduled__wf__run__pb2.ScheduledWfRun.SerializeToString,
             ),
             'SearchScheduledWf': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchScheduledWf,
@@ -1486,7 +1486,7 @@ class LittleHorse(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ScheduleWf',
             service__pb2.ScheduleWfRequest.SerializeToString,
-            object__id__pb2.ScheduledWfRunId.FromString,
+            scheduled__wf__run__pb2.ScheduledWfRun.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

@@ -450,28 +450,28 @@ public final class LittleHorseGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ScheduleWfRequest,
-      io.littlehorse.sdk.common.proto.ScheduledWfRunId> getScheduleWfMethod;
+      io.littlehorse.sdk.common.proto.ScheduledWfRun> getScheduleWfMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "ScheduleWf",
       requestType = io.littlehorse.sdk.common.proto.ScheduleWfRequest.class,
-      responseType = io.littlehorse.sdk.common.proto.ScheduledWfRunId.class,
+      responseType = io.littlehorse.sdk.common.proto.ScheduledWfRun.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ScheduleWfRequest,
-      io.littlehorse.sdk.common.proto.ScheduledWfRunId> getScheduleWfMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ScheduleWfRequest, io.littlehorse.sdk.common.proto.ScheduledWfRunId> getScheduleWfMethod;
+      io.littlehorse.sdk.common.proto.ScheduledWfRun> getScheduleWfMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ScheduleWfRequest, io.littlehorse.sdk.common.proto.ScheduledWfRun> getScheduleWfMethod;
     if ((getScheduleWfMethod = LittleHorseGrpc.getScheduleWfMethod) == null) {
       synchronized (LittleHorseGrpc.class) {
         if ((getScheduleWfMethod = LittleHorseGrpc.getScheduleWfMethod) == null) {
           LittleHorseGrpc.getScheduleWfMethod = getScheduleWfMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ScheduleWfRequest, io.littlehorse.sdk.common.proto.ScheduledWfRunId>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ScheduleWfRequest, io.littlehorse.sdk.common.proto.ScheduledWfRun>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ScheduleWf"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.sdk.common.proto.ScheduleWfRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.ScheduledWfRunId.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.ScheduledWfRun.getDefaultInstance()))
               .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ScheduleWf"))
               .build();
         }
@@ -2295,7 +2295,7 @@ public final class LittleHorseGrpc {
      * </pre>
      */
     default void scheduleWf(io.littlehorse.sdk.common.proto.ScheduleWfRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRunId> responseObserver) {
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRun> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getScheduleWfMethod(), responseObserver);
     }
 
@@ -3046,7 +3046,7 @@ public final class LittleHorseGrpc {
      * </pre>
      */
     public void scheduleWf(io.littlehorse.sdk.common.proto.ScheduleWfRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRunId> responseObserver) {
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRun> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getScheduleWfMethod(), getCallOptions()), request, responseObserver);
     }
@@ -3824,7 +3824,7 @@ public final class LittleHorseGrpc {
      * Schedule repeated WfRun based on a cron expression
      * </pre>
      */
-    public io.littlehorse.sdk.common.proto.ScheduledWfRunId scheduleWf(io.littlehorse.sdk.common.proto.ScheduleWfRequest request) {
+    public io.littlehorse.sdk.common.proto.ScheduledWfRun scheduleWf(io.littlehorse.sdk.common.proto.ScheduleWfRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getScheduleWfMethod(), getCallOptions(), request);
     }
@@ -4553,7 +4553,7 @@ public final class LittleHorseGrpc {
      * Schedule repeated WfRun based on a cron expression
      * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ScheduledWfRunId> scheduleWf(
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ScheduledWfRun> scheduleWf(
         io.littlehorse.sdk.common.proto.ScheduleWfRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getScheduleWfMethod(), getCallOptions()), request);
@@ -5293,7 +5293,7 @@ public final class LittleHorseGrpc {
           break;
         case METHODID_SCHEDULE_WF:
           serviceImpl.scheduleWf((io.littlehorse.sdk.common.proto.ScheduleWfRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRunId>) responseObserver);
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRun>) responseObserver);
           break;
         case METHODID_SEARCH_SCHEDULED_WF:
           serviceImpl.searchScheduledWf((io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest) request,
@@ -5623,7 +5623,7 @@ public final class LittleHorseGrpc {
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               io.littlehorse.sdk.common.proto.ScheduleWfRequest,
-              io.littlehorse.sdk.common.proto.ScheduledWfRunId>(
+              io.littlehorse.sdk.common.proto.ScheduledWfRun>(
                 service, METHODID_SCHEDULE_WF)))
         .addMethod(
           getSearchScheduledWfMethod(),

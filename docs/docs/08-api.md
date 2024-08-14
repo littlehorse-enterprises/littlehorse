@@ -124,7 +124,7 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-|  [ScheduleWfRequest](#schedulewfrequest)  |  [ScheduledWfRunId](#scheduledwfrunid)  | Schedule repeated WfRun based on a cron expression |
+|  [ScheduleWfRequest](#schedulewfrequest)  |  [ScheduledWfRun](#scheduledwfrun)  | Schedule repeated WfRun based on a cron expression |
 
 ### RPC `SearchScheduledWf` {#searchscheduledwf}
 

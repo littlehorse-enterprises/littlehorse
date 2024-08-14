@@ -82,7 +82,7 @@ service LittleHorse {
   rpc RunWf(RunWfRequest) returns (WfRun) {}
 
   // Schedule repeated WfRun based on a cron expression
-  rpc ScheduleWf(ScheduleWfRequest) returns (ScheduledWfRunId) {}
+  rpc ScheduleWf(ScheduleWfRequest) returns (ScheduledWfRun) {}
 
   // Search for existing schedules
   rpc SearchScheduledWf(SearchScheduledWfRunsRequest) returns (ScheduledWfRunIdList) {}
