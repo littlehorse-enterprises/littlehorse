@@ -398,7 +398,7 @@ message DeleteExternalEventRequest {
 
 // Delete an existing ScheduledWfRun, returns INVALID_ARGUMENT if object does not exist
 message DeleteScheduledWfRunRequest {
-  // Id to be deleted
+  // Id of the `ScheduledWfRun` to be deleted
   ScheduledWfRunId id = 1;
 }
 
