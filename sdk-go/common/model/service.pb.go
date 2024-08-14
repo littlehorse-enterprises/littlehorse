@@ -702,11 +702,13 @@ func (x *DeleteExternalEventRequest) GetId() *ExternalEventId {
 	return nil
 }
 
+// Delete an existing ScheduledWfRun, returns INVALID_ARGUMENT if object does not exist
 type DeleteScheduledWfRunRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// Id to be deleted
 	Id *ScheduledWfRunId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
@@ -1094,11 +1096,13 @@ func (x *RunWfRequest) GetParentWfRunId() *WfRunId {
 	return nil
 }
 
+// Schedule WfRuns based on a specific cron UNIX expression
 type ScheduleWfRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// Specific ID
 	Id *string `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
 	// The name of the WfSpec to run.
 	WfSpecName string `protobuf:"bytes,2,opt,name=wf_spec_name,json=wfSpecName,proto3" json:"wf_spec_name,omitempty"`
@@ -1112,9 +1116,11 @@ type ScheduleWfRequest struct {
 	Revision *int32 `protobuf:"varint,4,opt,name=revision,proto3,oneof" json:"revision,omitempty"`
 	// A map from Variable Name to Values for those variables. The provided variables are
 	// passed as input to the Entrypoint ThreadRun.
-	Variables      map[string]*VariableValue `protobuf:"bytes,5,rep,name=variables,proto3" json:"variables,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	ParentWfRunId  *WfRunId                  `protobuf:"bytes,6,opt,name=parent_wf_run_id,json=parentWfRunId,proto3,oneof" json:"parent_wf_run_id,omitempty"`
-	CronExpression string                    `protobuf:"bytes,7,opt,name=cron_expression,json=cronExpression,proto3" json:"cron_expression,omitempty"`
+	Variables map[string]*VariableValue `protobuf:"bytes,5,rep,name=variables,proto3" json:"variables,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// Parent WfRunId associated with all the generated WfRuns
+	ParentWfRunId *WfRunId `protobuf:"bytes,6,opt,name=parent_wf_run_id,json=parentWfRunId,proto3,oneof" json:"parent_wf_run_id,omitempty"`
+	// UNIX expression used to specify the schedule for executing WfRuns
+	CronExpression string `protobuf:"bytes,7,opt,name=cron_expression,json=cronExpression,proto3" json:"cron_expression,omitempty"`
 }
 
 func (x *ScheduleWfRequest) Reset() {

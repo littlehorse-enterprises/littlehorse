@@ -2290,6 +2290,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Schedule repeated WfRun based on a cron expression
+     * </pre>
      */
     default void scheduleWf(io.littlehorse.sdk.common.proto.ScheduleWfRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRunId> responseObserver) {
@@ -2297,6 +2300,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for existing schedules
+     * </pre>
      */
     default void searchScheduledWf(io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRunIdList> responseObserver) {
@@ -2304,6 +2310,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Find a specific ScheduledWfRun
+     * </pre>
      */
     default void getScheduledWf(io.littlehorse.sdk.common.proto.ScheduledWfRunId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRun> responseObserver) {
@@ -2664,7 +2673,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Rescues a failed ThreadRun (in the ERROR state only) by restarting it from 
+     * Rescues a failed ThreadRun (in the ERROR state only) by restarting it from
      * the point of failure. Useful if a bug in Task Worker implementation caused
      * a WfRun to fail and you did not have a FailureHandler for that NodeRun.
      * The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: &lt;br/&gt;
@@ -3032,6 +3041,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Schedule repeated WfRun based on a cron expression
+     * </pre>
      */
     public void scheduleWf(io.littlehorse.sdk.common.proto.ScheduleWfRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRunId> responseObserver) {
@@ -3040,6 +3052,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for existing schedules
+     * </pre>
      */
     public void searchScheduledWf(io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRunIdList> responseObserver) {
@@ -3048,6 +3063,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Find a specific ScheduledWfRun
+     * </pre>
      */
     public void getScheduledWf(io.littlehorse.sdk.common.proto.ScheduledWfRunId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ScheduledWfRun> responseObserver) {
@@ -3442,7 +3460,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Rescues a failed ThreadRun (in the ERROR state only) by restarting it from 
+     * Rescues a failed ThreadRun (in the ERROR state only) by restarting it from
      * the point of failure. Useful if a bug in Task Worker implementation caused
      * a WfRun to fail and you did not have a FailureHandler for that NodeRun.
      * The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: &lt;br/&gt;
@@ -3802,6 +3820,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Schedule repeated WfRun based on a cron expression
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.ScheduledWfRunId scheduleWf(io.littlehorse.sdk.common.proto.ScheduleWfRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -3809,6 +3830,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for existing schedules
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.ScheduledWfRunIdList searchScheduledWf(io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -3816,6 +3840,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Find a specific ScheduledWfRun
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.ScheduledWfRun getScheduledWf(io.littlehorse.sdk.common.proto.ScheduledWfRunId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -4165,7 +4192,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Rescues a failed ThreadRun (in the ERROR state only) by restarting it from 
+     * Rescues a failed ThreadRun (in the ERROR state only) by restarting it from
      * the point of failure. Useful if a bug in Task Worker implementation caused
      * a WfRun to fail and you did not have a FailureHandler for that NodeRun.
      * The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: &lt;br/&gt;
@@ -4522,6 +4549,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Schedule repeated WfRun based on a cron expression
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ScheduledWfRunId> scheduleWf(
         io.littlehorse.sdk.common.proto.ScheduleWfRequest request) {
@@ -4530,6 +4560,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Search for existing schedules
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ScheduledWfRunIdList> searchScheduledWf(
         io.littlehorse.sdk.common.proto.SearchScheduledWfRunsRequest request) {
@@ -4538,6 +4571,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Find a specific ScheduledWfRun
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ScheduledWfRun> getScheduledWf(
         io.littlehorse.sdk.common.proto.ScheduledWfRunId request) {
@@ -4920,7 +4956,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Rescues a failed ThreadRun (in the ERROR state only) by restarting it from 
+     * Rescues a failed ThreadRun (in the ERROR state only) by restarting it from
      * the point of failure. Useful if a bug in Task Worker implementation caused
      * a WfRun to fail and you did not have a FailureHandler for that NodeRun.
      * The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: &lt;br/&gt;

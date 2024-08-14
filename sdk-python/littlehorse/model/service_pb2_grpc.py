@@ -478,19 +478,22 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ScheduleWf(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Schedule repeated WfRun based on a cron expression
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchScheduledWf(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Search for existing schedules
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetScheduledWf(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Find a specific ScheduledWfRun
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -754,7 +757,7 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def RescueThreadRun(self, request, context):
-        """Rescues a failed ThreadRun (in the ERROR state only) by restarting it from 
+        """Rescues a failed ThreadRun (in the ERROR state only) by restarting it from
         the point of failure. Useful if a bug in Task Worker implementation caused
         a WfRun to fail and you did not have a FailureHandler for that NodeRun.
 

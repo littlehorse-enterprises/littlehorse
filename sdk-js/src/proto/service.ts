@@ -260,7 +260,9 @@ export interface DeleteExternalEventRequest {
   id: ExternalEventId | undefined;
 }
 
+/** Delete an existing ScheduledWfRun, returns INVALID_ARGUMENT if object does not exist */
 export interface DeleteScheduledWfRunRequest {
+  /** Id to be deleted */
   id: ScheduledWfRunId | undefined;
 }
 
@@ -333,7 +335,9 @@ export interface RunWfRequest_VariablesEntry {
   value: VariableValue | undefined;
 }
 
+/** Schedule WfRuns based on a specific cron UNIX expression */
 export interface ScheduleWfRequest {
+  /** Specific ID */
   id?:
     | string
     | undefined;
@@ -360,7 +364,11 @@ export interface ScheduleWfRequest {
    * passed as input to the Entrypoint ThreadRun.
    */
   variables: { [key: string]: VariableValue };
-  parentWfRunId?: WfRunId | undefined;
+  /** Parent WfRunId associated with all the generated WfRuns */
+  parentWfRunId?:
+    | WfRunId
+    | undefined;
+  /** UNIX expression used to specify the schedule for executing WfRuns */
   cronExpression: string;
 }
 
@@ -7326,6 +7334,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Schedule repeated WfRun based on a cron expression */
     scheduleWf: {
       name: "ScheduleWf",
       requestType: ScheduleWfRequest,
@@ -7334,6 +7343,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Search for existing schedules */
     searchScheduledWf: {
       name: "SearchScheduledWf",
       requestType: SearchScheduledWfRunsRequest,
@@ -7342,6 +7352,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Find a specific ScheduledWfRun */
     getScheduledWf: {
       name: "GetScheduledWf",
       requestType: ScheduledWfRunId,
@@ -7933,11 +7944,14 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   ): Promise<DeepPartial<UserTaskDef>>;
   /** Runs a WfSpec to create a WfRun. */
   runWf(request: RunWfRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfRun>>;
+  /** Schedule repeated WfRun based on a cron expression */
   scheduleWf(request: ScheduleWfRequest, context: CallContext & CallContextExt): Promise<DeepPartial<ScheduledWfRunId>>;
+  /** Search for existing schedules */
   searchScheduledWf(
     request: SearchScheduledWfRunsRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ScheduledWfRunIdList>>;
+  /** Find a specific ScheduledWfRun */
   getScheduledWf(
     request: ScheduledWfRunId,
     context: CallContext & CallContextExt,
@@ -8258,14 +8272,17 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   ): Promise<UserTaskDef>;
   /** Runs a WfSpec to create a WfRun. */
   runWf(request: DeepPartial<RunWfRequest>, options?: CallOptions & CallOptionsExt): Promise<WfRun>;
+  /** Schedule repeated WfRun based on a cron expression */
   scheduleWf(
     request: DeepPartial<ScheduleWfRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ScheduledWfRunId>;
+  /** Search for existing schedules */
   searchScheduledWf(
     request: DeepPartial<SearchScheduledWfRunsRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ScheduledWfRunIdList>;
+  /** Find a specific ScheduledWfRun */
   getScheduledWf(
     request: DeepPartial<ScheduledWfRunId>,
     options?: CallOptions & CallOptionsExt,

@@ -213,6 +213,7 @@ export interface TenantId {
   id: string;
 }
 
+/** ID for a ScheduledWfRun */
 export interface ScheduledWfRunId {
   id: string;
 }

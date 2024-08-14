@@ -59,16 +59,6 @@ class LHErrorType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     VAR_ERROR: _ClassVar[LHErrorType]
     TASK_ERROR: _ClassVar[LHErrorType]
     INTERNAL_ERROR: _ClassVar[LHErrorType]
-
-class TimeUnit(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
-    MILLISECOND: _ClassVar[TimeUnit]
-    SECOND: _ClassVar[TimeUnit]
-    MINUTE: _ClassVar[TimeUnit]
-    HOUR: _ClassVar[TimeUnit]
-    DAY: _ClassVar[TimeUnit]
-    WEEK: _ClassVar[TimeUnit]
-    MONTH: _ClassVar[TimeUnit]
 STARTING: LHStatus
 RUNNING: LHStatus
 COMPLETED: LHStatus
@@ -107,10 +97,3 @@ TASK_FAILURE: LHErrorType
 VAR_ERROR: LHErrorType
 TASK_ERROR: LHErrorType
 INTERNAL_ERROR: LHErrorType
-MILLISECOND: TimeUnit
-SECOND: TimeUnit
-MINUTE: TimeUnit
-HOUR: TimeUnit
-DAY: TimeUnit
-WEEK: TimeUnit
-MONTH: TimeUnit

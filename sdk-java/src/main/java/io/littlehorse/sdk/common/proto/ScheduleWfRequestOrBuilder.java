@@ -8,16 +8,28 @@ public interface ScheduleWfRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Specific ID
+   * </pre>
+   *
    * <code>optional string id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * Specific ID
+   * </pre>
+   *
    * <code>optional string id = 1;</code>
    * @return The id.
    */
   java.lang.String getId();
   /**
+   * <pre>
+   * Specific ID
+   * </pre>
+   *
    * <code>optional string id = 1;</code>
    * @return The bytes for id.
    */
@@ -150,26 +162,46 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
       java.lang.String key);
 
   /**
+   * <pre>
+   * Parent WfRunId associated with all the generated WfRuns
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
    * @return Whether the parentWfRunId field is set.
    */
   boolean hasParentWfRunId();
   /**
+   * <pre>
+   * Parent WfRunId associated with all the generated WfRuns
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
    * @return The parentWfRunId.
    */
   io.littlehorse.sdk.common.proto.WfRunId getParentWfRunId();
   /**
+   * <pre>
+   * Parent WfRunId associated with all the generated WfRuns
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
    */
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getParentWfRunIdOrBuilder();
 
   /**
+   * <pre>
+   * UNIX expression used to specify the schedule for executing WfRuns
+   * </pre>
+   *
    * <code>string cron_expression = 7;</code>
    * @return The cronExpression.
    */
   java.lang.String getCronExpression();
   /**
+   * <pre>
+   * UNIX expression used to specify the schedule for executing WfRuns
+   * </pre>
+   *
    * <code>string cron_expression = 7;</code>
    * @return The bytes for cronExpression.
    */

@@ -10,41 +10,12 @@ import { Timestamp } from "./google/protobuf/timestamp";
 import { ScheduledWfRunId, WfRunId, WfSpecId } from "./object_id";
 import { VariableValue } from "./variable";
 
-export enum ScheduleStatus {
-  STARTED = "STARTED",
-  SUSPENDED = "SUSPENDED",
-  UNRECOGNIZED = "UNRECOGNIZED",
-}
-
-export function scheduleStatusFromJSON(object: any): ScheduleStatus {
-  switch (object) {
-    case 0:
-    case "STARTED":
-      return ScheduleStatus.STARTED;
-    case 1:
-    case "SUSPENDED":
-      return ScheduleStatus.SUSPENDED;
-    case -1:
-    case "UNRECOGNIZED":
-    default:
-      return ScheduleStatus.UNRECOGNIZED;
-  }
-}
-
-export function scheduleStatusToNumber(object: ScheduleStatus): number {
-  switch (object) {
-    case ScheduleStatus.STARTED:
-      return 0;
-    case ScheduleStatus.SUSPENDED:
-      return 1;
-    case ScheduleStatus.UNRECOGNIZED:
-    default:
-      return -1;
-  }
-}
-
 export interface ScheduledWfRun {
-  id: ScheduledWfRunId | undefined;
+  /** Unique id for this ScheduledWfRun. */
+  id:
+    | ScheduledWfRunId
+    | undefined;
+  /** WfSpec used to run a workflow on a schedule. */
   wfSpecId:
     | WfSpecId
     | undefined;
@@ -53,9 +24,13 @@ export interface ScheduledWfRun {
    * passed as input to the Entrypoint ThreadRun.
    */
   variables: { [key: string]: VariableValue };
-  parentWfRunId?: WfRunId | undefined;
+  /** Parent WfRunId associated with all the generated WfRuns */
+  parentWfRunId?:
+    | WfRunId
+    | undefined;
+  /** UNIX expression used to specify the schedule for executing WfRuns */
   cronExpression: string;
-  status: ScheduleStatus;
+  /** Creation time for this ScheduledWfRun */
   createdAt: string | undefined;
 }
 
@@ -71,7 +46,6 @@ function createBaseScheduledWfRun(): ScheduledWfRun {
     variables: {},
     parentWfRunId: undefined,
     cronExpression: "",
-    status: ScheduleStatus.STARTED,
     createdAt: undefined,
   };
 }
@@ -93,11 +67,8 @@ export const ScheduledWfRun = {
     if (message.cronExpression !== "") {
       writer.uint32(42).string(message.cronExpression);
     }
-    if (message.status !== ScheduleStatus.STARTED) {
-      writer.uint32(48).int32(scheduleStatusToNumber(message.status));
-    }
     if (message.createdAt !== undefined) {
-      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(58).fork()).ldelim();
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(50).fork()).ldelim();
     }
     return writer;
   },
@@ -148,14 +119,7 @@ export const ScheduledWfRun = {
           message.cronExpression = reader.string();
           continue;
         case 6:
-          if (tag !== 48) {
-            break;
-          }
-
-          message.status = scheduleStatusFromJSON(reader.int32());
-          continue;
-        case 7:
-          if (tag !== 58) {
+          if (tag !== 50) {
             break;
           }
 
@@ -192,7 +156,6 @@ export const ScheduledWfRun = {
       ? WfRunId.fromPartial(object.parentWfRunId)
       : undefined;
     message.cronExpression = object.cronExpression ?? "";
-    message.status = object.status ?? ScheduleStatus.STARTED;
     message.createdAt = object.createdAt ?? undefined;
     return message;
   },

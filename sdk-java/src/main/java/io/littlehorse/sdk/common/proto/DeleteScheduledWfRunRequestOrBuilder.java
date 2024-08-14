@@ -8,16 +8,28 @@ public interface DeleteScheduledWfRunRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Id to be deleted
+   * </pre>
+   *
    * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * Id to be deleted
+   * </pre>
+   *
    * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.ScheduledWfRunId getId();
   /**
+   * <pre>
+   * Id to be deleted
+   * </pre>
+   *
    * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.ScheduledWfRunIdOrBuilder getIdOrBuilder();

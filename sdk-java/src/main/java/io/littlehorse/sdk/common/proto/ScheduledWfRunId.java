@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * ID for a ScheduledWfRun
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ScheduledWfRunId}
  */
 public final class ScheduledWfRunId extends
@@ -235,6 +239,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * ID for a ScheduledWfRun
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ScheduledWfRunId}
    */
   public static final class Builder extends

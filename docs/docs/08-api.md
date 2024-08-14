@@ -124,19 +124,19 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-|  [ScheduleWfRequest](#schedulewfrequest)  |  [ScheduledWfRunId](#scheduledwfrunid)  |  |
+|  [ScheduleWfRequest](#schedulewfrequest)  |  [ScheduledWfRunId](#scheduledwfrunid)  | Schedule repeated WfRun based on a cron expression |
 
 ### RPC `SearchScheduledWf` {#searchscheduledwf}
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-|  [SearchScheduledWfRunsRequest](#searchscheduledwfrunsrequest)  |  [ScheduledWfRunIdList](#scheduledwfrunidlist)  |  |
+|  [SearchScheduledWfRunsRequest](#searchscheduledwfrunsrequest)  |  [ScheduledWfRunIdList](#scheduledwfrunidlist)  | Search for existing schedules |
 
 ### RPC `GetScheduledWf` {#getscheduledwf}
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-|  [ScheduledWfRunId](#scheduledwfrunid)  |  [ScheduledWfRun](#scheduledwfrun)  |  |
+|  [ScheduledWfRunId](#scheduledwfrunid)  |  [ScheduledWfRun](#scheduledwfrun)  | Find a specific ScheduledWfRun |
 
 ### RPC `GetWfRun` {#getwfrun}
 
@@ -340,7 +340,7 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-|  [RescueThreadRunRequest](#rescuethreadrunrequest)  |  [WfRun](#wfrun)  | Rescues a failed ThreadRun (in the ERROR state only) by restarting it from  the point of failure. Useful if a bug in Task Worker implementation caused a WfRun to fail and you did not have a FailureHandler for that NodeRun.<br/><br/>The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/> - In the `ERROR` state.<br/> - Has no `FailureHandler` `ThreadRun`s <br/> - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure` yet.<br/><br/>If that is not true, then the `ThreadRun` cannot be rescued and the request will return `FAILED_PRECONDITION`. |
+|  [RescueThreadRunRequest](#rescuethreadrunrequest)  |  [WfRun](#wfrun)  | Rescues a failed ThreadRun (in the ERROR state only) by restarting it from the point of failure. Useful if a bug in Task Worker implementation caused a WfRun to fail and you did not have a FailureHandler for that NodeRun.<br/><br/>The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/> - In the `ERROR` state.<br/> - Has no `FailureHandler` `ThreadRun`s <br/> - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure` yet.<br/><br/>If that is not true, then the `ThreadRun` cannot be rescued and the request will return `FAILED_PRECONDITION`. |
 
 ### RPC `DeleteWfRun` {#deletewfrun}
 
@@ -1119,7 +1119,7 @@ ID for a Principal.
 
 ### Message `ScheduledWfRunId` {#scheduledwfrunid}
 
-
+ID for a ScheduledWfRun
 
 
 | Field | Label | Type | Description |
@@ -1322,13 +1322,12 @@ An ID for a WorkflowEvent.
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `id` | | [ScheduledWfRunId](#scheduledwfrunid) |  |
-| `wf_spec_id` | | [WfSpecId](#wfspecid) |  |
+| `id` | | [ScheduledWfRunId](#scheduledwfrunid) | Unique id for this ScheduledWfRun. |
+| `wf_spec_id` | | [WfSpecId](#wfspecid) | WfSpec used to run a workflow on a schedule. |
 | `variables` | map| [ScheduledWfRun.VariablesEntry](#scheduledwfrunvariablesentry) | A map from Variable Name to Values for those variables. The provided variables are passed as input to the Entrypoint ThreadRun. |
-| `parent_wf_run_id` | optional| [WfRunId](#wfrunid) |  |
-| `cron_expression` | | string |  |
-| `status` | | [ScheduleStatus](#schedulestatus) |  |
-| `created_at` | | google.protobuf.Timestamp |  |
+| `parent_wf_run_id` | optional| [WfRunId](#wfrunid) | Parent WfRunId associated with all the generated WfRuns |
+| `cron_expression` | | string | UNIX expression used to specify the schedule for executing WfRuns |
+| `created_at` | | google.protobuf.Timestamp | Creation time for this ScheduledWfRun |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -1394,12 +1393,12 @@ Deletes an ExternalEvent.
 
 ### Message `DeleteScheduledWfRunRequest` {#deletescheduledwfrunrequest}
 
-
+Delete an existing ScheduledWfRun, returns INVALID_ARGUMENT if object does not exist
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `id` | | [ScheduledWfRunId](#scheduledwfrunid) |  |
+| `id` | | [ScheduledWfRunId](#scheduledwfrunid) | Id to be deleted |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -1977,18 +1976,18 @@ Create a Workflow Run.
 
 ### Message `ScheduleWfRequest` {#schedulewfrequest}
 
-
+Schedule WfRuns based on a specific cron UNIX expression
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `id` | optional| string |  |
+| `id` | optional| string | Specific ID |
 | `wf_spec_name` | | string | The name of the WfSpec to run. |
 | `major_version` | optional| int32 | Optionally specify the major version of the WfSpec to run. This guarantees that the "signature" of the WfSpec (i.e. the required input variables, and searchable variables) will not change for this app. |
 | `revision` | optional| int32 | Optionally specify the specific revision of the WfSpec to run. It is not recommended to use this in practice, as the WfSpec logic should be de-coupled from the applications that run WfRun's. |
 | `variables` | map| [ScheduleWfRequest.VariablesEntry](#schedulewfrequestvariablesentry) | A map from Variable Name to Values for those variables. The provided variables are passed as input to the Entrypoint ThreadRun. |
-| `parent_wf_run_id` | optional| [WfRunId](#wfrunid) |  |
-| `cron_expression` | | string |  |
+| `parent_wf_run_id` | optional| [WfRunId](#wfrunid) | Parent WfRunId associated with all the generated WfRuns |
+| `cron_expression` | | string | UNIX expression used to specify the schedule for executing WfRuns |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3880,22 +3879,6 @@ Status of a TaskRun.
 
 
 
-### Enum TimeUnit {#timeunit}
-
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| MILLISECOND | 0 |  |
-| SECOND | 1 |  |
-| MINUTE | 2 |  |
-| HOUR | 3 |  |
-| DAY | 4 |  |
-| WEEK | 5 |  |
-| MONTH | 6 |  |
-
-
-
-
 ### Enum VariableType {#variabletype}
 Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
 VariableValue.
@@ -3985,17 +3968,6 @@ The status of a single ThreadRun that we are waiting for.
  <!-- end Enums -->
 
  <!-- end Enums -->
-
-
-
-### Enum ScheduleStatus {#schedulestatus}
-
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| STARTED | 0 |  |
-| SUSPENDED | 1 |  |
-
 
  <!-- end Enums -->
 

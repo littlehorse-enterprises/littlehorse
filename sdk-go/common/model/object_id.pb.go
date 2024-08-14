@@ -1040,6 +1040,7 @@ func (x *TenantId) GetId() string {
 	return ""
 }
 
+// ID for a ScheduledWfRun
 type ScheduledWfRunId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

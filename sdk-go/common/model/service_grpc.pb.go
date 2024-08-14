@@ -133,8 +133,11 @@ type LittleHorseClient interface {
 	GetLatestUserTaskDef(ctx context.Context, in *GetLatestUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDef, error)
 	// Runs a WfSpec to create a WfRun.
 	RunWf(ctx context.Context, in *RunWfRequest, opts ...grpc.CallOption) (*WfRun, error)
+	// Schedule repeated WfRun based on a cron expression
 	ScheduleWf(ctx context.Context, in *ScheduleWfRequest, opts ...grpc.CallOption) (*ScheduledWfRunId, error)
+	// Search for existing schedules
 	SearchScheduledWf(ctx context.Context, in *SearchScheduledWfRunsRequest, opts ...grpc.CallOption) (*ScheduledWfRunIdList, error)
+	// Find a specific ScheduledWfRun
 	GetScheduledWf(ctx context.Context, in *ScheduledWfRunId, opts ...grpc.CallOption) (*ScheduledWfRun, error)
 	// Gets a WfRun. Although useful for development and debugging, this RPC is not often
 	// used by applications.
@@ -954,8 +957,11 @@ type LittleHorseServer interface {
 	GetLatestUserTaskDef(context.Context, *GetLatestUserTaskDefRequest) (*UserTaskDef, error)
 	// Runs a WfSpec to create a WfRun.
 	RunWf(context.Context, *RunWfRequest) (*WfRun, error)
+	// Schedule repeated WfRun based on a cron expression
 	ScheduleWf(context.Context, *ScheduleWfRequest) (*ScheduledWfRunId, error)
+	// Search for existing schedules
 	SearchScheduledWf(context.Context, *SearchScheduledWfRunsRequest) (*ScheduledWfRunIdList, error)
+	// Find a specific ScheduledWfRun
 	GetScheduledWf(context.Context, *ScheduledWfRunId) (*ScheduledWfRun, error)
 	// Gets a WfRun. Although useful for development and debugging, this RPC is not often
 	// used by applications.

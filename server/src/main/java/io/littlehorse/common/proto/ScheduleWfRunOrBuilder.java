@@ -109,26 +109,46 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
       java.lang.String key);
 
   /**
+   * <pre>
+   * Parent WfRunId associated with all the generated WfRuns
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
    * @return Whether the parentWfRunId field is set.
    */
   boolean hasParentWfRunId();
   /**
+   * <pre>
+   * Parent WfRunId associated with all the generated WfRuns
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
    * @return The parentWfRunId.
    */
   io.littlehorse.sdk.common.proto.WfRunId getParentWfRunId();
   /**
+   * <pre>
+   * Parent WfRunId associated with all the generated WfRuns
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
    */
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getParentWfRunIdOrBuilder();
 
   /**
+   * <pre>
+   * UNIX expression used to specify the schedule for executing WfRuns
+   * </pre>
+   *
    * <code>string cron_expression = 5;</code>
    * @return The cronExpression.
    */
   java.lang.String getCronExpression();
   /**
+   * <pre>
+   * UNIX expression used to specify the schedule for executing WfRuns
+   * </pre>
+   *
    * <code>string cron_expression = 5;</code>
    * @return The bytes for cronExpression.
    */

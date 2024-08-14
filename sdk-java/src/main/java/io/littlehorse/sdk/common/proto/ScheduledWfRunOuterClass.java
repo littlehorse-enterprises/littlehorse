@@ -35,21 +35,19 @@ public final class ScheduledWfRunOuterClass {
     java.lang.String[] descriptorData = {
       "\n\026scheduled_wf_run.proto\022\013littlehorse\032\037g" +
       "oogle/protobuf/timestamp.proto\032\017object_i" +
-      "d.proto\032\016variable.proto\"\263\003\n\016ScheduledWfR" +
+      "d.proto\032\016variable.proto\"\206\003\n\016ScheduledWfR" +
       "un\022)\n\002id\030\001 \001(\0132\035.littlehorse.ScheduledWf" +
       "RunId\022)\n\nwf_spec_id\030\002 \001(\0132\025.littlehorse." +
       "WfSpecId\022=\n\tvariables\030\003 \003(\0132*.littlehors" +
       "e.ScheduledWfRun.VariablesEntry\0223\n\020paren" +
       "t_wf_run_id\030\004 \001(\0132\024.littlehorse.WfRunIdH" +
-      "\000\210\001\001\022\027\n\017cron_expression\030\005 \001(\t\022+\n\006status\030" +
-      "\006 \001(\0162\033.littlehorse.ScheduleStatus\022.\n\ncr" +
-      "eated_at\030\007 \001(\0132\032.google.protobuf.Timesta" +
-      "mp\032L\n\016VariablesEntry\022\013\n\003key\030\001 \001(\t\022)\n\005val" +
-      "ue\030\002 \001(\0132\032.littlehorse.VariableValue:\0028\001" +
-      "B\023\n\021_parent_wf_run_id*,\n\016ScheduleStatus\022" +
-      "\013\n\007STARTED\020\000\022\r\n\tSUSPENDED\020\001BG\n\037io.little" +
-      "horse.sdk.common.protoP\001Z\007.;model\252\002\030Litt" +
-      "leHorse.Common.Protob\006proto3"
+      "\000\210\001\001\022\027\n\017cron_expression\030\005 \001(\t\022.\n\ncreated" +
+      "_at\030\006 \001(\0132\032.google.protobuf.Timestamp\032L\n" +
+      "\016VariablesEntry\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 " +
+      "\001(\0132\032.littlehorse.VariableValue:\0028\001B\023\n\021_" +
+      "parent_wf_run_idBG\n\037io.littlehorse.sdk.c" +
+      "ommon.protoP\001Z\007.;model\252\002\030LittleHorse.Com" +
+      "mon.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -63,7 +61,7 @@ public final class ScheduledWfRunOuterClass {
     internal_static_littlehorse_ScheduledWfRun_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_ScheduledWfRun_descriptor,
-        new java.lang.String[] { "Id", "WfSpecId", "Variables", "ParentWfRunId", "CronExpression", "Status", "CreatedAt", "ParentWfRunId", });
+        new java.lang.String[] { "Id", "WfSpecId", "Variables", "ParentWfRunId", "CronExpression", "CreatedAt", "ParentWfRunId", });
     internal_static_littlehorse_ScheduledWfRun_VariablesEntry_descriptor =
       internal_static_littlehorse_ScheduledWfRun_descriptor.getNestedTypes().get(0);
     internal_static_littlehorse_ScheduledWfRun_VariablesEntry_fieldAccessorTable = new

@@ -41,12 +41,9 @@ public final class CommonEnums {
       "\000\022\021\n\rVAR_SUB_ERROR\020\001\022\026\n\022VAR_MUTATION_ERR" +
       "OR\020\002\022\027\n\023USER_TASK_CANCELLED\020\003\022\013\n\007TIMEOUT" +
       "\020\004\022\020\n\014TASK_FAILURE\020\005\022\r\n\tVAR_ERROR\020\006\022\016\n\nT" +
-      "ASK_ERROR\020\007\022\022\n\016INTERNAL_ERROR\020\010*[\n\010TimeU" +
-      "nit\022\017\n\013MILLISECOND\020\000\022\n\n\006SECOND\020\001\022\n\n\006MINU" +
-      "TE\020\002\022\010\n\004HOUR\020\003\022\007\n\003DAY\020\004\022\010\n\004WEEK\020\005\022\t\n\005MON" +
-      "TH\020\006BG\n\037io.littlehorse.sdk.common.protoP" +
-      "\001Z\007.;model\252\002\030LittleHorse.Common.Protob\006p" +
-      "roto3"
+      "ASK_ERROR\020\007\022\022\n\016INTERNAL_ERROR\020\010BG\n\037io.li" +
+      "ttlehorse.sdk.common.protoP\001Z\007.;model\252\002\030" +
+      "LittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

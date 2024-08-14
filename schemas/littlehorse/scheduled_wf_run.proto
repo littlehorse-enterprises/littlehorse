@@ -12,21 +12,20 @@ option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
 message ScheduledWfRun {
+  // Unique id for this ScheduledWfRun.
   ScheduledWfRunId id = 1;
+  // WfSpec used to run a workflow on a schedule.
   WfSpecId wf_spec_id = 2;
 
   // A map from Variable Name to Values for those variables. The provided variables are
   // passed as input to the Entrypoint ThreadRun.
   map<string, VariableValue> variables = 3;
 
+  // Parent WfRunId associated with all the generated WfRuns
   optional WfRunId parent_wf_run_id = 4;
-
+  // UNIX expression used to specify the schedule for executing WfRuns
   string cron_expression = 5;
-  ScheduleStatus status = 6;
-  google.protobuf.Timestamp created_at = 7;
+  // Creation time for this ScheduledWfRun
+  google.protobuf.Timestamp created_at = 6;
 }
 
-enum ScheduleStatus {
-  STARTED = 0;
-  SUSPENDED = 1;
-}

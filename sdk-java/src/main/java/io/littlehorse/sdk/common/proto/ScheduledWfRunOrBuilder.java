@@ -8,31 +8,55 @@ public interface ScheduledWfRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Unique id for this ScheduledWfRun.
+   * </pre>
+   *
    * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * Unique id for this ScheduledWfRun.
+   * </pre>
+   *
    * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.ScheduledWfRunId getId();
   /**
+   * <pre>
+   * Unique id for this ScheduledWfRun.
+   * </pre>
+   *
    * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.ScheduledWfRunIdOrBuilder getIdOrBuilder();
 
   /**
+   * <pre>
+   * WfSpec used to run a workflow on a schedule.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    * @return Whether the wfSpecId field is set.
    */
   boolean hasWfSpecId();
   /**
+   * <pre>
+   * WfSpec used to run a workflow on a schedule.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    * @return The wfSpecId.
    */
   io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
+   * <pre>
+   * WfSpec used to run a workflow on a schedule.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
@@ -97,26 +121,46 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
       java.lang.String key);
 
   /**
+   * <pre>
+   * Parent WfRunId associated with all the generated WfRuns
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
    * @return Whether the parentWfRunId field is set.
    */
   boolean hasParentWfRunId();
   /**
+   * <pre>
+   * Parent WfRunId associated with all the generated WfRuns
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
    * @return The parentWfRunId.
    */
   io.littlehorse.sdk.common.proto.WfRunId getParentWfRunId();
   /**
+   * <pre>
+   * Parent WfRunId associated with all the generated WfRuns
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
    */
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getParentWfRunIdOrBuilder();
 
   /**
+   * <pre>
+   * UNIX expression used to specify the schedule for executing WfRuns
+   * </pre>
+   *
    * <code>string cron_expression = 5;</code>
    * @return The cronExpression.
    */
   java.lang.String getCronExpression();
   /**
+   * <pre>
+   * UNIX expression used to specify the schedule for executing WfRuns
+   * </pre>
+   *
    * <code>string cron_expression = 5;</code>
    * @return The bytes for cronExpression.
    */
@@ -124,28 +168,29 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
       getCronExpressionBytes();
 
   /**
-   * <code>.littlehorse.ScheduleStatus status = 6;</code>
-   * @return The enum numeric value on the wire for status.
-   */
-  int getStatusValue();
-  /**
-   * <code>.littlehorse.ScheduleStatus status = 6;</code>
-   * @return The status.
-   */
-  io.littlehorse.sdk.common.proto.ScheduleStatus getStatus();
-
-  /**
-   * <code>.google.protobuf.Timestamp created_at = 7;</code>
+   * <pre>
+   * Creation time for this ScheduledWfRun
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 6;</code>
    * @return Whether the createdAt field is set.
    */
   boolean hasCreatedAt();
   /**
-   * <code>.google.protobuf.Timestamp created_at = 7;</code>
+   * <pre>
+   * Creation time for this ScheduledWfRun
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 6;</code>
    * @return The createdAt.
    */
   com.google.protobuf.Timestamp getCreatedAt();
   /**
-   * <code>.google.protobuf.Timestamp created_at = 7;</code>
+   * <pre>
+   * Creation time for this ScheduledWfRun
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 6;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 }

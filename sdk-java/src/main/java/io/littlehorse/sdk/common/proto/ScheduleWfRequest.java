@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Schedule WfRuns based on a specific cron UNIX expression
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ScheduleWfRequest}
  */
 public final class ScheduleWfRequest extends
@@ -58,6 +62,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object id_ = "";
   /**
+   * <pre>
+   * Specific ID
+   * </pre>
+   *
    * <code>optional string id = 1;</code>
    * @return Whether the id field is set.
    */
@@ -66,6 +74,10 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Specific ID
+   * </pre>
+   *
    * <code>optional string id = 1;</code>
    * @return The id.
    */
@@ -83,6 +95,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Specific ID
+   * </pre>
+   *
    * <code>optional string id = 1;</code>
    * @return The bytes for id.
    */
@@ -312,6 +328,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
   public static final int PARENT_WF_RUN_ID_FIELD_NUMBER = 6;
   private io.littlehorse.sdk.common.proto.WfRunId parentWfRunId_;
   /**
+   * <pre>
+   * Parent WfRunId associated with all the generated WfRuns
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
    * @return Whether the parentWfRunId field is set.
    */
@@ -320,6 +340,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return ((bitField0_ & 0x00000008) != 0);
   }
   /**
+   * <pre>
+   * Parent WfRunId associated with all the generated WfRuns
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
    * @return The parentWfRunId.
    */
@@ -328,6 +352,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return parentWfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : parentWfRunId_;
   }
   /**
+   * <pre>
+   * Parent WfRunId associated with all the generated WfRuns
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
    */
   @java.lang.Override
@@ -339,6 +367,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
   @SuppressWarnings("serial")
   private volatile java.lang.Object cronExpression_ = "";
   /**
+   * <pre>
+   * UNIX expression used to specify the schedule for executing WfRuns
+   * </pre>
+   *
    * <code>string cron_expression = 7;</code>
    * @return The cronExpression.
    */
@@ -356,6 +388,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
   }
   /**
+   * <pre>
+   * UNIX expression used to specify the schedule for executing WfRuns
+   * </pre>
+   *
    * <code>string cron_expression = 7;</code>
    * @return The bytes for cronExpression.
    */
@@ -626,6 +662,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return builder;
   }
   /**
+   * <pre>
+   * Schedule WfRuns based on a specific cron UNIX expression
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ScheduleWfRequest}
    */
   public static final class Builder extends
@@ -920,6 +960,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
     private java.lang.Object id_ = "";
     /**
+     * <pre>
+     * Specific ID
+     * </pre>
+     *
      * <code>optional string id = 1;</code>
      * @return Whether the id field is set.
      */
@@ -927,6 +971,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * Specific ID
+     * </pre>
+     *
      * <code>optional string id = 1;</code>
      * @return The id.
      */
@@ -943,6 +991,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Specific ID
+     * </pre>
+     *
      * <code>optional string id = 1;</code>
      * @return The bytes for id.
      */
@@ -960,6 +1012,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Specific ID
+     * </pre>
+     *
      * <code>optional string id = 1;</code>
      * @param value The id to set.
      * @return This builder for chaining.
@@ -973,6 +1029,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Specific ID
+     * </pre>
+     *
      * <code>optional string id = 1;</code>
      * @return This builder for chaining.
      */
@@ -983,6 +1043,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Specific ID
+     * </pre>
+     *
      * <code>optional string id = 1;</code>
      * @param value The bytes for id to set.
      * @return This builder for chaining.
@@ -1383,6 +1447,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> parentWfRunIdBuilder_;
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
      * @return Whether the parentWfRunId field is set.
      */
@@ -1390,6 +1458,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
      * @return The parentWfRunId.
      */
@@ -1401,6 +1473,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
      */
     public Builder setParentWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -1417,6 +1493,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
      */
     public Builder setParentWfRunId(
@@ -1431,6 +1511,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
      */
     public Builder mergeParentWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -1450,6 +1534,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
      */
     public Builder clearParentWfRunId() {
@@ -1463,6 +1551,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunId.Builder getParentWfRunIdBuilder() {
@@ -1471,6 +1563,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return getParentWfRunIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getParentWfRunIdOrBuilder() {
@@ -1482,6 +1578,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1500,6 +1600,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
     private java.lang.Object cronExpression_ = "";
     /**
+     * <pre>
+     * UNIX expression used to specify the schedule for executing WfRuns
+     * </pre>
+     *
      * <code>string cron_expression = 7;</code>
      * @return The cronExpression.
      */
@@ -1516,6 +1620,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * UNIX expression used to specify the schedule for executing WfRuns
+     * </pre>
+     *
      * <code>string cron_expression = 7;</code>
      * @return The bytes for cronExpression.
      */
@@ -1533,6 +1641,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * UNIX expression used to specify the schedule for executing WfRuns
+     * </pre>
+     *
      * <code>string cron_expression = 7;</code>
      * @param value The cronExpression to set.
      * @return This builder for chaining.
@@ -1546,6 +1658,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * UNIX expression used to specify the schedule for executing WfRuns
+     * </pre>
+     *
      * <code>string cron_expression = 7;</code>
      * @return This builder for chaining.
      */
@@ -1556,6 +1672,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * UNIX expression used to specify the schedule for executing WfRuns
+     * </pre>
+     *
      * <code>string cron_expression = 7;</code>
      * @param value The bytes for cronExpression to set.
      * @return This builder for chaining.

@@ -81,10 +81,13 @@ service LittleHorse {
   // Runs a WfSpec to create a WfRun.
   rpc RunWf(RunWfRequest) returns (WfRun) {}
 
+  // Schedule repeated WfRun based on a cron expression
   rpc ScheduleWf(ScheduleWfRequest) returns (ScheduledWfRunId) {}
 
+  // Search for existing schedules
   rpc SearchScheduledWf(SearchScheduledWfRunsRequest) returns (ScheduledWfRunIdList) {}
 
+  // Find a specific ScheduledWfRun
   rpc GetScheduledWf(ScheduledWfRunId) returns (ScheduledWfRun) {}
 
   // Gets a WfRun. Although useful for development and debugging, this RPC is not often

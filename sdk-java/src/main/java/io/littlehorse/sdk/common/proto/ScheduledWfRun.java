@@ -17,7 +17,6 @@ private static final long serialVersionUID = 0L;
   }
   private ScheduledWfRun() {
     cronExpression_ = "";
-    status_ = 0;
   }
 
   @java.lang.Override
@@ -56,6 +55,10 @@ private static final long serialVersionUID = 0L;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.ScheduledWfRunId id_;
   /**
+   * <pre>
+   * Unique id for this ScheduledWfRun.
+   * </pre>
+   *
    * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
    * @return Whether the id field is set.
    */
@@ -64,6 +67,10 @@ private static final long serialVersionUID = 0L;
     return id_ != null;
   }
   /**
+   * <pre>
+   * Unique id for this ScheduledWfRun.
+   * </pre>
+   *
    * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
    * @return The id.
    */
@@ -72,6 +79,10 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.ScheduledWfRunId.getDefaultInstance() : id_;
   }
   /**
+   * <pre>
+   * Unique id for this ScheduledWfRun.
+   * </pre>
+   *
    * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
    */
   @java.lang.Override
@@ -82,6 +93,10 @@ private static final long serialVersionUID = 0L;
   public static final int WF_SPEC_ID_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
   /**
+   * <pre>
+   * WfSpec used to run a workflow on a schedule.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    * @return Whether the wfSpecId field is set.
    */
@@ -90,6 +105,10 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ != null;
   }
   /**
+   * <pre>
+   * WfSpec used to run a workflow on a schedule.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    * @return The wfSpecId.
    */
@@ -98,6 +117,10 @@ private static final long serialVersionUID = 0L;
     return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
   }
   /**
+   * <pre>
+   * WfSpec used to run a workflow on a schedule.
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    */
   @java.lang.Override
@@ -207,6 +230,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
   public static final int PARENT_WF_RUN_ID_FIELD_NUMBER = 4;
   private io.littlehorse.sdk.common.proto.WfRunId parentWfRunId_;
   /**
+   * <pre>
+   * Parent WfRunId associated with all the generated WfRuns
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
    * @return Whether the parentWfRunId field is set.
    */
@@ -215,6 +242,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Parent WfRunId associated with all the generated WfRuns
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
    * @return The parentWfRunId.
    */
@@ -223,6 +254,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return parentWfRunId_ == null ? io.littlehorse.sdk.common.proto.WfRunId.getDefaultInstance() : parentWfRunId_;
   }
   /**
+   * <pre>
+   * Parent WfRunId associated with all the generated WfRuns
+   * </pre>
+   *
    * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
    */
   @java.lang.Override
@@ -234,6 +269,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
   @SuppressWarnings("serial")
   private volatile java.lang.Object cronExpression_ = "";
   /**
+   * <pre>
+   * UNIX expression used to specify the schedule for executing WfRuns
+   * </pre>
+   *
    * <code>string cron_expression = 5;</code>
    * @return The cronExpression.
    */
@@ -251,6 +290,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
   }
   /**
+   * <pre>
+   * UNIX expression used to specify the schedule for executing WfRuns
+   * </pre>
+   *
    * <code>string cron_expression = 5;</code>
    * @return The bytes for cronExpression.
    */
@@ -269,28 +312,14 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
   }
 
-  public static final int STATUS_FIELD_NUMBER = 6;
-  private int status_ = 0;
-  /**
-   * <code>.littlehorse.ScheduleStatus status = 6;</code>
-   * @return The enum numeric value on the wire for status.
-   */
-  @java.lang.Override public int getStatusValue() {
-    return status_;
-  }
-  /**
-   * <code>.littlehorse.ScheduleStatus status = 6;</code>
-   * @return The status.
-   */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.ScheduleStatus getStatus() {
-    io.littlehorse.sdk.common.proto.ScheduleStatus result = io.littlehorse.sdk.common.proto.ScheduleStatus.forNumber(status_);
-    return result == null ? io.littlehorse.sdk.common.proto.ScheduleStatus.UNRECOGNIZED : result;
-  }
-
-  public static final int CREATED_AT_FIELD_NUMBER = 7;
+  public static final int CREATED_AT_FIELD_NUMBER = 6;
   private com.google.protobuf.Timestamp createdAt_;
   /**
-   * <code>.google.protobuf.Timestamp created_at = 7;</code>
+   * <pre>
+   * Creation time for this ScheduledWfRun
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 6;</code>
    * @return Whether the createdAt field is set.
    */
   @java.lang.Override
@@ -298,7 +327,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return createdAt_ != null;
   }
   /**
-   * <code>.google.protobuf.Timestamp created_at = 7;</code>
+   * <pre>
+   * Creation time for this ScheduledWfRun
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 6;</code>
    * @return The createdAt.
    */
   @java.lang.Override
@@ -306,7 +339,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
   /**
-   * <code>.google.protobuf.Timestamp created_at = 7;</code>
+   * <pre>
+   * Creation time for this ScheduledWfRun
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 6;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
@@ -345,11 +382,8 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(cronExpression_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 5, cronExpression_);
     }
-    if (status_ != io.littlehorse.sdk.common.proto.ScheduleStatus.STARTED.getNumber()) {
-      output.writeEnum(6, status_);
-    }
     if (createdAt_ != null) {
-      output.writeMessage(7, getCreatedAt());
+      output.writeMessage(6, getCreatedAt());
     }
     getUnknownFields().writeTo(output);
   }
@@ -385,13 +419,9 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(cronExpression_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, cronExpression_);
     }
-    if (status_ != io.littlehorse.sdk.common.proto.ScheduleStatus.STARTED.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(6, status_);
-    }
     if (createdAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(7, getCreatedAt());
+        .computeMessageSize(6, getCreatedAt());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -427,7 +457,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     if (!getCronExpression()
         .equals(other.getCronExpression())) return false;
-    if (status_ != other.status_) return false;
     if (hasCreatedAt() != other.hasCreatedAt()) return false;
     if (hasCreatedAt()) {
       if (!getCreatedAt()
@@ -462,8 +491,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     hash = (37 * hash) + CRON_EXPRESSION_FIELD_NUMBER;
     hash = (53 * hash) + getCronExpression().hashCode();
-    hash = (37 * hash) + STATUS_FIELD_NUMBER;
-    hash = (53 * hash) + status_;
     if (hasCreatedAt()) {
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
@@ -647,7 +674,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         parentWfRunIdBuilder_ = null;
       }
       cronExpression_ = "";
-      status_ = 0;
       createdAt_ = null;
       if (createdAtBuilder_ != null) {
         createdAtBuilder_.dispose();
@@ -711,9 +737,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         result.cronExpression_ = cronExpression_;
       }
       if (((from_bitField0_ & 0x00000020) != 0)) {
-        result.status_ = status_;
-      }
-      if (((from_bitField0_ & 0x00000040) != 0)) {
         result.createdAt_ = createdAtBuilder_ == null
             ? createdAt_
             : createdAtBuilder_.build();
@@ -782,9 +805,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         bitField0_ |= 0x00000010;
         onChanged();
       }
-      if (other.status_ != 0) {
-        setStatusValue(other.getStatusValue());
-      }
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
       }
@@ -849,18 +869,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
               bitField0_ |= 0x00000010;
               break;
             } // case 42
-            case 48: {
-              status_ = input.readEnum();
-              bitField0_ |= 0x00000020;
-              break;
-            } // case 48
-            case 58: {
+            case 50: {
               input.readMessage(
                   getCreatedAtFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000040;
+              bitField0_ |= 0x00000020;
               break;
-            } // case 58
+            } // case 50
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -882,6 +897,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ScheduledWfRunId, io.littlehorse.sdk.common.proto.ScheduledWfRunId.Builder, io.littlehorse.sdk.common.proto.ScheduledWfRunIdOrBuilder> idBuilder_;
     /**
+     * <pre>
+     * Unique id for this ScheduledWfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
      * @return Whether the id field is set.
      */
@@ -889,6 +908,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * Unique id for this ScheduledWfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
      * @return The id.
      */
@@ -900,6 +923,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Unique id for this ScheduledWfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
      */
     public Builder setId(io.littlehorse.sdk.common.proto.ScheduledWfRunId value) {
@@ -916,6 +943,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Unique id for this ScheduledWfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
      */
     public Builder setId(
@@ -930,6 +961,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Unique id for this ScheduledWfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
      */
     public Builder mergeId(io.littlehorse.sdk.common.proto.ScheduledWfRunId value) {
@@ -949,6 +984,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Unique id for this ScheduledWfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
      */
     public Builder clearId() {
@@ -962,6 +1001,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Unique id for this ScheduledWfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ScheduledWfRunId.Builder getIdBuilder() {
@@ -970,6 +1013,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return getIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Unique id for this ScheduledWfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ScheduledWfRunIdOrBuilder getIdOrBuilder() {
@@ -981,6 +1028,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Unique id for this ScheduledWfRun.
+     * </pre>
+     *
      * <code>.littlehorse.ScheduledWfRunId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1001,6 +1052,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
     /**
+     * <pre>
+     * WfSpec used to run a workflow on a schedule.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      * @return Whether the wfSpecId field is set.
      */
@@ -1008,6 +1063,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * WfSpec used to run a workflow on a schedule.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      * @return The wfSpecId.
      */
@@ -1019,6 +1078,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * WfSpec used to run a workflow on a schedule.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder setWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -1035,6 +1098,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * WfSpec used to run a workflow on a schedule.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder setWfSpecId(
@@ -1049,6 +1116,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * WfSpec used to run a workflow on a schedule.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder mergeWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
@@ -1068,6 +1139,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * WfSpec used to run a workflow on a schedule.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder clearWfSpecId() {
@@ -1081,6 +1156,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * WfSpec used to run a workflow on a schedule.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecIdBuilder() {
@@ -1089,6 +1168,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return getWfSpecIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * WfSpec used to run a workflow on a schedule.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
@@ -1100,6 +1183,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * WfSpec used to run a workflow on a schedule.
+     * </pre>
+     *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1282,6 +1369,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WfRunId, io.littlehorse.sdk.common.proto.WfRunId.Builder, io.littlehorse.sdk.common.proto.WfRunIdOrBuilder> parentWfRunIdBuilder_;
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      * @return Whether the parentWfRunId field is set.
      */
@@ -1289,6 +1380,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      * @return The parentWfRunId.
      */
@@ -1300,6 +1395,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      */
     public Builder setParentWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -1316,6 +1415,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      */
     public Builder setParentWfRunId(
@@ -1330,6 +1433,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      */
     public Builder mergeParentWfRunId(io.littlehorse.sdk.common.proto.WfRunId value) {
@@ -1349,6 +1456,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      */
     public Builder clearParentWfRunId() {
@@ -1362,6 +1473,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunId.Builder getParentWfRunIdBuilder() {
@@ -1370,6 +1485,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return getParentWfRunIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getParentWfRunIdOrBuilder() {
@@ -1381,6 +1500,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * Parent WfRunId associated with all the generated WfRuns
+     * </pre>
+     *
      * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1399,6 +1522,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
     private java.lang.Object cronExpression_ = "";
     /**
+     * <pre>
+     * UNIX expression used to specify the schedule for executing WfRuns
+     * </pre>
+     *
      * <code>string cron_expression = 5;</code>
      * @return The cronExpression.
      */
@@ -1415,6 +1542,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * UNIX expression used to specify the schedule for executing WfRuns
+     * </pre>
+     *
      * <code>string cron_expression = 5;</code>
      * @return The bytes for cronExpression.
      */
@@ -1432,6 +1563,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
+     * <pre>
+     * UNIX expression used to specify the schedule for executing WfRuns
+     * </pre>
+     *
      * <code>string cron_expression = 5;</code>
      * @param value The cronExpression to set.
      * @return This builder for chaining.
@@ -1445,6 +1580,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * UNIX expression used to specify the schedule for executing WfRuns
+     * </pre>
+     *
      * <code>string cron_expression = 5;</code>
      * @return This builder for chaining.
      */
@@ -1455,6 +1594,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
+     * <pre>
+     * UNIX expression used to specify the schedule for executing WfRuns
+     * </pre>
+     *
      * <code>string cron_expression = 5;</code>
      * @param value The bytes for cronExpression to set.
      * @return This builder for chaining.
@@ -1469,71 +1612,26 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
 
-    private int status_ = 0;
-    /**
-     * <code>.littlehorse.ScheduleStatus status = 6;</code>
-     * @return The enum numeric value on the wire for status.
-     */
-    @java.lang.Override public int getStatusValue() {
-      return status_;
-    }
-    /**
-     * <code>.littlehorse.ScheduleStatus status = 6;</code>
-     * @param value The enum numeric value on the wire for status to set.
-     * @return This builder for chaining.
-     */
-    public Builder setStatusValue(int value) {
-      status_ = value;
-      bitField0_ |= 0x00000020;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.ScheduleStatus status = 6;</code>
-     * @return The status.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ScheduleStatus getStatus() {
-      io.littlehorse.sdk.common.proto.ScheduleStatus result = io.littlehorse.sdk.common.proto.ScheduleStatus.forNumber(status_);
-      return result == null ? io.littlehorse.sdk.common.proto.ScheduleStatus.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.littlehorse.ScheduleStatus status = 6;</code>
-     * @param value The status to set.
-     * @return This builder for chaining.
-     */
-    public Builder setStatus(io.littlehorse.sdk.common.proto.ScheduleStatus value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      bitField0_ |= 0x00000020;
-      status_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.ScheduleStatus status = 6;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearStatus() {
-      bitField0_ = (bitField0_ & ~0x00000020);
-      status_ = 0;
-      onChanged();
-      return this;
-    }
-
     private com.google.protobuf.Timestamp createdAt_;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
     /**
-     * <code>.google.protobuf.Timestamp created_at = 7;</code>
+     * <pre>
+     * Creation time for this ScheduledWfRun
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 6;</code>
      * @return Whether the createdAt field is set.
      */
     public boolean hasCreatedAt() {
-      return ((bitField0_ & 0x00000040) != 0);
+      return ((bitField0_ & 0x00000020) != 0);
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 7;</code>
+     * <pre>
+     * Creation time for this ScheduledWfRun
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 6;</code>
      * @return The createdAt.
      */
     public com.google.protobuf.Timestamp getCreatedAt() {
@@ -1544,7 +1642,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 7;</code>
+     * <pre>
+     * Creation time for this ScheduledWfRun
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 6;</code>
      */
     public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
       if (createdAtBuilder_ == null) {
@@ -1555,12 +1657,16 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       } else {
         createdAtBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 7;</code>
+     * <pre>
+     * Creation time for this ScheduledWfRun
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 6;</code>
      */
     public Builder setCreatedAt(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -1569,16 +1675,20 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       } else {
         createdAtBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 7;</code>
+     * <pre>
+     * Creation time for this ScheduledWfRun
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 6;</code>
      */
     public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
       if (createdAtBuilder_ == null) {
-        if (((bitField0_ & 0x00000040) != 0) &&
+        if (((bitField0_ & 0x00000020) != 0) &&
           createdAt_ != null &&
           createdAt_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getCreatedAtBuilder().mergeFrom(value);
@@ -1588,15 +1698,19 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       } else {
         createdAtBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 7;</code>
+     * <pre>
+     * Creation time for this ScheduledWfRun
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 6;</code>
      */
     public Builder clearCreatedAt() {
-      bitField0_ = (bitField0_ & ~0x00000040);
+      bitField0_ = (bitField0_ & ~0x00000020);
       createdAt_ = null;
       if (createdAtBuilder_ != null) {
         createdAtBuilder_.dispose();
@@ -1606,15 +1720,23 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 7;</code>
+     * <pre>
+     * Creation time for this ScheduledWfRun
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 6;</code>
      */
     public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return getCreatedAtFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 7;</code>
+     * <pre>
+     * Creation time for this ScheduledWfRun
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 6;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
       if (createdAtBuilder_ != null) {
@@ -1625,7 +1747,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 7;</code>
+     * <pre>
+     * Creation time for this ScheduledWfRun
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp created_at = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
