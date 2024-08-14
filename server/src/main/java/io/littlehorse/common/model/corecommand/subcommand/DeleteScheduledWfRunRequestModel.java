@@ -54,6 +54,6 @@ public class DeleteScheduledWfRunRequestModel extends CoreSubCommand<DeleteSched
     @Override
     public String getPartitionKey() {
         // TODO: determine partition key
-        return "";
+        return id.getPartitionKey().get();
     }
 }
