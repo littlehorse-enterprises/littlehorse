@@ -49,7 +49,7 @@ LittleHorse is a partitioned system, meaning that not all data lives on all of t
 
 ### Kafka Streams
 
-LittleHorse is built on Kafka Streams because, quite simply, there was no other way to reach the performance numbers we wanted with any other backing data store (note: benchmarks are coming soon!). 
+LittleHorse is built on Kafka Streams because, quite simply, there was no other way to reach the performance numbers we wanted with any other backing data store (note: benchmarks are coming soon!).
 
 It's safe to say that Kafka Streams is an incredibly powerful and beautiful piece of technology. However, with great power comes great complexity, so it's advisable that you understand Streams at a basic level before running the LittleHorse Server in production.
 

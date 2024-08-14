@@ -310,9 +310,9 @@ var searchScheduledWfsCmd = &cobra.Command{
 		}
 		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
 		req := &model.SearchScheduledWfRunsRequest{
-			WfSpecName: wfSpecName,
+			WfSpecName:   wfSpecName,
 			MajorVersion: majorVersion,
-			Revision: revision,
+			Revision:     revision,
 		}
 
 		common.PrintResp(getGlobalClient(cmd).SearchScheduledWf(
@@ -321,8 +321,6 @@ var searchScheduledWfsCmd = &cobra.Command{
 		))
 	},
 }
-
-
 
 func init() {
 	getCmd.AddCommand(getWfRunCmd)

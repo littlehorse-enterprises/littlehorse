@@ -209,7 +209,7 @@ service LittleHorse {
   rpc StopWfRun(StopWfRunRequest) returns (google.protobuf.Empty) {}
   // Resumes a WfRun or a specific ThreadRun of a WfRun.
   rpc ResumeWfRun(ResumeWfRunRequest) returns (google.protobuf.Empty) {}
-  // Rescues a failed ThreadRun (in the ERROR state only) by restarting it from 
+  // Rescues a failed ThreadRun (in the ERROR state only) by restarting it from
   // the point of failure. Useful if a bug in Task Worker implementation caused
   // a WfRun to fail and you did not have a FailureHandler for that NodeRun.
   //

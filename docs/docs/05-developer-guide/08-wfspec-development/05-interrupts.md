@@ -89,7 +89,7 @@ func threadFunction(thread *wflib.WorkflowThread) {
 
     // The Variable used to keep track of email in the parent thread.
     email := thread.AddVariable("customer-email", model.VariableType_STR)
-  
+
     // Register the Interrupt Handler
     thread.HandleInterrupt(
         "email-update",
@@ -99,12 +99,12 @@ func threadFunction(thread *wflib.WorkflowThread) {
                 "INPUT", // the special name to get interrupt trigger
                 model.VariableType_STR,
             )
-  
+
             // Mutate the variable
             handler.Mutate(email, model.VariableMutationType_ASSIGN, eventContent)
         },
     )
-  
+
     // Omitted: your long-running business logic that uses the `customer-email` variable
 }
 ```
@@ -119,7 +119,7 @@ def my_interrupt_handler(handler: WorkflowThread) -> None:
 
     # Store the content of the event
     event_content = handler.add_variable("INPUT", VariableType.STR)
-    
+
     # Mutate the variable
     handler.mutate(email, VariableMutationType.ASSIGN, event_content)
 

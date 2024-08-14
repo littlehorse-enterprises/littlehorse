@@ -147,7 +147,7 @@ Recall the valid types of Variables:
 
 ### Searchable and Required Variables
 
-It is often desirable to be able to search for a `WfRun` based on the value of the `Variable`s inside it. For example, how can I find the `WfRun` that has `email=foo@bar.com`? You can do that via the `rpc SearchVariable` 
+It is often desirable to be able to search for a `WfRun` based on the value of the `Variable`s inside it. For example, how can I find the `WfRun` that has `email=foo@bar.com`? You can do that via the `rpc SearchVariable`
 
 In order to do that, however, you must first put an index on your `Variable` by using the `.searchable()` method.
 
@@ -390,7 +390,7 @@ client := ...;
 wf := wflib.NewWorkflow(basic.MyWorkflow, "my-workflow")
 putWf, _ := wf.Compile()
 
-hours := int32(23) 
+hours := int32(23)
 putWf.WithRetentionHours(&hours)
 resp, err := client.PutWfSpec(putWf)
 ```
