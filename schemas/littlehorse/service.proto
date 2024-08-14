@@ -240,6 +240,7 @@ service LittleHorse {
   // is the last remaining `Principal` with admin permissions. Admin permissions are defined
   // as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
   rpc DeletePrincipal(DeletePrincipalRequest) returns (google.protobuf.Empty) {}
+  // Deletes a scheduled run and prevents any further associated WfRun from being executed.
   rpc DeleteScheduledWfRun(DeleteScheduledWfRunRequest) returns (google.protobuf.Empty) {}
 
   // Returns TaskDef Metrics for a specific TaskDef and a specific time window.
