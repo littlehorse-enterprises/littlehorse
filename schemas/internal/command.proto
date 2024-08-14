@@ -57,9 +57,9 @@ message ScheduleWfRun {
     // A map from Variable Name to Values for those variables. The provided variables are
     // passed as input to the Entrypoint ThreadRun.
     map<string, VariableValue> variables = 3;
-
+    // Parent WfRunId associated with all the generated WfRuns
     optional WfRunId parent_wf_run_id = 4;
-
+    // UNIX expression used to specify the schedule for executing WfRuns
     string cron_expression = 5;
 }
 
