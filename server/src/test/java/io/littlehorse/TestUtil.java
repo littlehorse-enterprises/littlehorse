@@ -76,7 +76,8 @@ public class TestUtil {
     }
 
     public static VariableModel variable(String wfRunId) {
-        return new VariableModel("test", variableValue(), new WfRunIdModel(wfRunId), 0, wfSpec("testWfSpecName"));
+        return new VariableModel(
+                "test", variableValue(), new WfRunIdModel(wfRunId), 0, wfSpec("testWfSpecName"), false);
     }
 
     public static NodeRunModel nodeRun() {
