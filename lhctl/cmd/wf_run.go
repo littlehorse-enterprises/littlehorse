@@ -315,7 +315,7 @@ var searchScheduledWfsCmd = &cobra.Command{
 			Revision:     revision,
 		}
 
-		common.PrintResp(getGlobalClient(cmd).SearchScheduledWf(
+		common.PrintResp(getGlobalClient(cmd).SearchScheduledWfRun(
 			requestContext(cmd),
 			req,
 		))
