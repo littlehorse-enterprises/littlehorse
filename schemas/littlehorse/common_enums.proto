@@ -140,13 +140,3 @@ enum LHErrorType {
   // An unexpected LittleHorse Internal error occurred. This is not expected to happen.
   INTERNAL_ERROR = 8;
 }
-
-enum TimeUnit {
-  MILLISECOND = 0;
-  SECOND = 1;
-  MINUTE = 2;
-  HOUR = 3;
-  DAY = 4;
-  WEEK = 5;
-  MONTH = 6;
-}

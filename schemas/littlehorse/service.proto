@@ -393,7 +393,9 @@ message DeleteExternalEventRequest {
   ExternalEventId id = 1;
 }
 
+// Delete an existing ScheduledWfRun, returns INVALID_ARGUMENT if object does not exist
 message DeleteScheduledWfRunRequest {
+  // Id to be deleted
   ScheduledWfRunId id = 1;
 }
 
@@ -453,7 +455,9 @@ message RunWfRequest {
   optional WfRunId parent_wf_run_id = 6;
 }
 
+// Schedule WfRuns based on a specific cron UNIX expression
 message ScheduleWfRequest {
+  // Specific ID
   optional string id = 1;
   // The name of the WfSpec to run.
   string wf_spec_name = 2;
@@ -472,8 +476,10 @@ message ScheduleWfRequest {
   // passed as input to the Entrypoint ThreadRun.
   map<string, VariableValue> variables = 5;
 
+  // Parent WfRunId associated with all the generated WfRuns
   optional WfRunId parent_wf_run_id = 6;
 
+  // UNIX expression used to specify the schedule for executing WfRuns
   string cron_expression = 7;
 }
 

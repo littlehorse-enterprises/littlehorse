@@ -49,6 +49,7 @@ message Command {
     }
 }
 
+// Schedule a workflow run in the timer topology.
 message ScheduleWfRun {
     ScheduledWfRunId scheduled_id = 1;
     // The name of the WfSpec to run.

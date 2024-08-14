@@ -25,12 +25,24 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Represents a subcommand for scheduling a workflow run in the timer topology.
+ */
 @Slf4j
 public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
     private ScheduledWfRunIdModel scheduledId;
     private WfSpecIdModel wfSpecId;
     private Map<String, VariableValueModel> variables = new HashMap<>();
+    /**
+     * The cron expression used to specify the schedule for executing a task.
+     * <p>
+     * The cron expression is a string that represents a specific pattern of dates and times. It is commonly used in
+     * scheduling tasks in software applications.
+     * <p>
+     * This variable is a private string that holds the cron expression.
+     */
     private String cronExpression;
+
     private WfRunIdModel parentWfRunId;
 
     public ScheduleWfRunCommandModel() {}

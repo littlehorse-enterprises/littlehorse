@@ -26,6 +26,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Represents a request to schedule workflow runs based on a specific cron expression.
+ */
 public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
     private String id;
     private String wfSpecName;

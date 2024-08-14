@@ -15,6 +15,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 
+// Delete an existing ScheduledWfRun, returns INVALID_ARGUMENT if object does not exist
 @Slf4j
 public class DeleteScheduledWfRunRequestModel extends CoreSubCommand<DeleteScheduledWfRunRequest> {
 
