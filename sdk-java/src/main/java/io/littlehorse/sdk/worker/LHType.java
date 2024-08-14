@@ -14,14 +14,14 @@ import java.lang.annotation.Target;
  * - Method Parameter: When applied to a method parameter, the metadata will be added to a {@code VariableDef}.
  *
  * <p>Usage example in a method:
- * <pre>{@code
+ * {@snippet :
  *     @LHTaskMethod("greet")
  *     @LHType(masked = true)
  *     public String greeting(@LHType(masked = true) String name) {
  *         log.debug("Executing task greet");
  *         return "hello there, " + name;
  *     }
- * }</pre>
+ * }
  * In this example, the parameter {@code name} is marked as {@code @LHType(masked = true)},
  * which means the value of {@code name} will be masked.
  * The return value of the method is also marked as {@code @LHType(masked = true)},
