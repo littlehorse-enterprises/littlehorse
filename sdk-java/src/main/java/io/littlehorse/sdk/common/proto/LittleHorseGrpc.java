@@ -2753,6 +2753,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a scheduled run and prevents any further associated WfRun from being executed.
+     * </pre>
      */
     default void deleteScheduledWfRun(io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -3547,6 +3550,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a scheduled run and prevents any further associated WfRun from being executed.
+     * </pre>
      */
     public void deleteScheduledWfRun(io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -4272,6 +4278,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a scheduled run and prevents any further associated WfRun from being executed.
+     * </pre>
      */
     public com.google.protobuf.Empty deleteScheduledWfRun(io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -5043,6 +5052,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Deletes a scheduled run and prevents any further associated WfRun from being executed.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteScheduledWfRun(
         io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest request) {

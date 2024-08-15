@@ -26,6 +26,7 @@ public class BasicExample {
                 WfRunVariable theName = wf.addVariable("input-name", VariableType.STR).searchable();
                 wf.execute("greet", theName);
                 wf.execute("greet", theName);
+                wf.execute("greet", theName);
             }
         );
     }

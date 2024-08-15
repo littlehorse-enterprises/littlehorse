@@ -11,7 +11,6 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
-import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.ScheduleWfRun;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
@@ -31,16 +30,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
     private ScheduledWfRunIdModel scheduledId;
-    private WfSpecIdModel wfSpecId;
+    private String wfSpecName;
+    private Integer majorVersion;
+    private Integer revision;
     private Map<String, VariableValueModel> variables = new HashMap<>();
-    /**
-     * The cron expression used to specify the schedule for executing a task.
-     * <p>
-     * The cron expression is a string that represents a specific pattern of dates and times. It is commonly used in
-     * scheduling tasks in software applications.
-     * <p>
-     * This variable is a private string that holds the cron expression.
-     */
     private String cronExpression;
 
     private WfRunIdModel parentWfRunId;
@@ -49,12 +42,16 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
 
     public ScheduleWfRunCommandModel(
             ScheduledWfRunIdModel scheduledId,
-            WfSpecIdModel wfSpecId,
+            String wfSpecName,
+            Integer majorVersion,
+            Integer revision,
             WfRunIdModel parentWfRunId,
             Map<String, VariableValueModel> variables,
             String cronExpression) {
         this.scheduledId = scheduledId;
-        this.wfSpecId = wfSpecId;
+        this.wfSpecName = wfSpecName;
+        this.majorVersion = majorVersion;
+        this.revision = revision;
         this.variables = variables;
         this.cronExpression = cronExpression;
         this.parentWfRunId = parentWfRunId;
@@ -64,7 +61,13 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         ScheduleWfRun p = (ScheduleWfRun) proto;
         scheduledId = LHSerializable.fromProto(p.getScheduledId(), ScheduledWfRunIdModel.class, context);
-        wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
+        wfSpecName = p.getWfSpecName();
+        if (p.hasMajorVersion()) {
+            majorVersion = p.getMajorVersion();
+        }
+        if (p.hasRevision()) {
+            revision = p.getRevision();
+        }
         if (p.hasParentWfRunId()) {
             parentWfRunId = LHSerializable.fromProto(p.getParentWfRunId(), WfRunIdModel.class, context);
         }
@@ -78,9 +81,14 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
     public ScheduleWfRun.Builder toProto() {
         ScheduleWfRun.Builder out = ScheduleWfRun.newBuilder()
                 .setScheduledId(scheduledId.toProto())
-                .setWfSpecId(wfSpecId.toProto())
+                .setWfSpecName(wfSpecName)
                 .setCronExpression(cronExpression);
-
+        if (majorVersion != null) {
+            out.setMajorVersion(majorVersion);
+        }
+        if (revision != null) {
+            out.setRevision(revision);
+        }
         if (parentWfRunId != null) {
             out.setParentWfRunId(parentWfRunId.toProto());
         }
@@ -123,9 +131,13 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
 
     private RunWfRequestModel createRunWfCommand(ExecutionContext context) {
         RunWfRequest.Builder protoBuilder = RunWfRequest.newBuilder();
-        protoBuilder.setWfSpecName(wfSpecId.getName());
-        protoBuilder.setMajorVersion(wfSpecId.getMajorVersion());
-        protoBuilder.setRevision(wfSpecId.getRevision());
+        protoBuilder.setWfSpecName(wfSpecName);
+        if (majorVersion != null) {
+            protoBuilder.setMajorVersion(majorVersion);
+        }
+        if (revision != null) {
+            protoBuilder.setRevision(revision);
+        }
         protoBuilder.setId(creatNextWfRunId().getId());
         if (parentWfRunId != null) {
             protoBuilder.setParentWfRunId(parentWfRunId.toProto());
@@ -149,6 +161,7 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
     }
 
     private ScheduleWfRunCommandModel copy() {
-        return new ScheduleWfRunCommandModel(scheduledId, wfSpecId, parentWfRunId, variables, cronExpression);
+        return new ScheduleWfRunCommandModel(
+                scheduledId, wfSpecName, majorVersion, revision, parentWfRunId, variables, cronExpression);
     }
 }

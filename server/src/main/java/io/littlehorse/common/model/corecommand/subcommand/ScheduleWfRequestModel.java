@@ -96,8 +96,8 @@ public class ScheduleWfRequestModel extends CoreSubCommand<ScheduleWfRequest> {
         ScheduledWfRunModel scheduledWfRun =
                 new ScheduledWfRunModel(scheduledId, wfSpecId, variables, parentWfRunId, cronExpression);
         executionContext.getableManager().put(scheduledWfRun);
-        ScheduleWfRunCommandModel scheduledCommand =
-                new ScheduleWfRunCommandModel(scheduledId, wfSpecId, parentWfRunId, variables, cronExpression);
+        ScheduleWfRunCommandModel scheduledCommand = new ScheduleWfRunCommandModel(
+                scheduledId, wfSpecName, majorVersion, revision, parentWfRunId, variables, cronExpression);
         scheduledCommand.getPartitionKey();
         LHTimer timer = new LHTimer(new CommandModel(scheduledCommand));
         timer.maturationTime = new Date();

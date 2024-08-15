@@ -27,27 +27,66 @@ public interface ScheduleWfRunOrBuilder extends
    * The name of the WfSpec to run.
    * </pre>
    *
-   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
-   * @return Whether the wfSpecId field is set.
+   * <code>string wf_spec_name = 2;</code>
+   * @return The wfSpecName.
    */
-  boolean hasWfSpecId();
+  java.lang.String getWfSpecName();
   /**
    * <pre>
    * The name of the WfSpec to run.
    * </pre>
    *
-   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
-   * @return The wfSpecId.
+   * <code>string wf_spec_name = 2;</code>
+   * @return The bytes for wfSpecName.
    */
-  io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
+  com.google.protobuf.ByteString
+      getWfSpecNameBytes();
+
   /**
    * <pre>
-   * The name of the WfSpec to run.
+   * Optionally specify the major version of the WfSpec to run. This guarantees that
+   * the "signature" of the WfSpec (i.e. the required input variables, and searchable
+   * variables) will not change for this app.
    * </pre>
    *
-   * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
+   * <code>optional int32 major_version = 3;</code>
+   * @return Whether the majorVersion field is set.
    */
-  io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
+  boolean hasMajorVersion();
+  /**
+   * <pre>
+   * Optionally specify the major version of the WfSpec to run. This guarantees that
+   * the "signature" of the WfSpec (i.e. the required input variables, and searchable
+   * variables) will not change for this app.
+   * </pre>
+   *
+   * <code>optional int32 major_version = 3;</code>
+   * @return The majorVersion.
+   */
+  int getMajorVersion();
+
+  /**
+   * <pre>
+   * Optionally specify the specific revision of the WfSpec to run. It is not recommended
+   * to use this in practice, as the WfSpec logic should be de-coupled from the applications
+   * that run WfRun's.
+   * </pre>
+   *
+   * <code>optional int32 revision = 4;</code>
+   * @return Whether the revision field is set.
+   */
+  boolean hasRevision();
+  /**
+   * <pre>
+   * Optionally specify the specific revision of the WfSpec to run. It is not recommended
+   * to use this in practice, as the WfSpec logic should be de-coupled from the applications
+   * that run WfRun's.
+   * </pre>
+   *
+   * <code>optional int32 revision = 4;</code>
+   * @return The revision.
+   */
+  int getRevision();
 
   /**
    * <pre>
@@ -55,7 +94,7 @@ public interface ScheduleWfRunOrBuilder extends
    * passed as input to the Entrypoint ThreadRun.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
    */
   int getVariablesCount();
   /**
@@ -64,7 +103,7 @@ public interface ScheduleWfRunOrBuilder extends
    * passed as input to the Entrypoint ThreadRun.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
    */
   boolean containsVariables(
       java.lang.String key);
@@ -80,7 +119,7 @@ public interface ScheduleWfRunOrBuilder extends
    * passed as input to the Entrypoint ThreadRun.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
   getVariablesMap();
@@ -90,7 +129,7 @@ public interface ScheduleWfRunOrBuilder extends
    * passed as input to the Entrypoint ThreadRun.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
    */
   /* nullable */
 io.littlehorse.sdk.common.proto.VariableValue getVariablesOrDefault(
@@ -103,7 +142,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    * passed as input to the Entrypoint ThreadRun.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; variables = 5;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValue getVariablesOrThrow(
       java.lang.String key);
@@ -113,7 +152,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    * Parent WfRunId associated with all the generated WfRuns
    * </pre>
    *
-   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
    * @return Whether the parentWfRunId field is set.
    */
   boolean hasParentWfRunId();
@@ -122,7 +161,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    * Parent WfRunId associated with all the generated WfRuns
    * </pre>
    *
-   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
    * @return The parentWfRunId.
    */
   io.littlehorse.sdk.common.proto.WfRunId getParentWfRunId();
@@ -131,7 +170,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    * Parent WfRunId associated with all the generated WfRuns
    * </pre>
    *
-   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 4;</code>
+   * <code>optional .littlehorse.WfRunId parent_wf_run_id = 6;</code>
    */
   io.littlehorse.sdk.common.proto.WfRunIdOrBuilder getParentWfRunIdOrBuilder();
 
@@ -140,7 +179,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    * UNIX expression used to specify the schedule for executing WfRuns
    * </pre>
    *
-   * <code>string cron_expression = 5;</code>
+   * <code>string cron_expression = 7;</code>
    * @return The cronExpression.
    */
   java.lang.String getCronExpression();
@@ -149,7 +188,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    * UNIX expression used to specify the schedule for executing WfRuns
    * </pre>
    *
-   * <code>string cron_expression = 5;</code>
+   * <code>string cron_expression = 7;</code>
    * @return The bytes for cronExpression.
    */
   com.google.protobuf.ByteString

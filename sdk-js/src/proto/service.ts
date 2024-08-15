@@ -7801,6 +7801,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Deletes a scheduled run and prevents any further associated WfRun from being executed. */
     deleteScheduledWfRun: {
       name: "DeleteScheduledWfRun",
       requestType: DeleteScheduledWfRunRequest,
@@ -8182,6 +8183,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
    */
   deletePrincipal(request: DeletePrincipalRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
+  /** Deletes a scheduled run and prevents any further associated WfRun from being executed. */
   deleteScheduledWfRun(
     request: DeleteScheduledWfRunRequest,
     context: CallContext & CallContextExt,
@@ -8516,6 +8518,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
    */
   deletePrincipal(request: DeepPartial<DeletePrincipalRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
+  /** Deletes a scheduled run and prevents any further associated WfRun from being executed. */
   deleteScheduledWfRun(
     request: DeepPartial<DeleteScheduledWfRunRequest>,
     options?: CallOptions & CallOptionsExt,

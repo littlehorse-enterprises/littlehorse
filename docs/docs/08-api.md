@@ -382,7 +382,7 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-|  [DeleteScheduledWfRunRequest](#deletescheduledwfrunrequest)  |  .google.protobuf.Empty  |  |
+|  [DeleteScheduledWfRunRequest](#deletescheduledwfrunrequest)  |  .google.protobuf.Empty  | Deletes a scheduled run and prevents any further associated WfRun from being executed. |
 
 ### RPC `GetTaskDefMetricsWindow` {#gettaskdefmetricswindow}
 

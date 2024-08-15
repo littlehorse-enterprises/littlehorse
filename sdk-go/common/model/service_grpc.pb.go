@@ -259,6 +259,7 @@ type LittleHorseClient interface {
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
 	// as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
 	DeletePrincipal(ctx context.Context, in *DeletePrincipalRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Deletes a scheduled run and prevents any further associated WfRun from being executed.
 	DeleteScheduledWfRun(ctx context.Context, in *DeleteScheduledWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Returns TaskDef Metrics for a specific TaskDef and a specific time window.
 	GetTaskDefMetricsWindow(ctx context.Context, in *TaskDefMetricsQueryRequest, opts ...grpc.CallOption) (*TaskDefMetrics, error)
@@ -1083,6 +1084,7 @@ type LittleHorseServer interface {
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
 	// as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
 	DeletePrincipal(context.Context, *DeletePrincipalRequest) (*emptypb.Empty, error)
+	// Deletes a scheduled run and prevents any further associated WfRun from being executed.
 	DeleteScheduledWfRun(context.Context, *DeleteScheduledWfRunRequest) (*emptypb.Empty, error)
 	// Returns TaskDef Metrics for a specific TaskDef and a specific time window.
 	GetTaskDefMetricsWindow(context.Context, *TaskDefMetricsQueryRequest) (*TaskDefMetrics, error)
