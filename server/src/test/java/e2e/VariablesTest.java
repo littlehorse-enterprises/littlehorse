@@ -1,6 +1,7 @@
 package e2e;
 
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -39,6 +40,7 @@ public class VariablesTest {
                \s""";
         workflowVerifier
                 .prepareRun(maskedVariablesWf, Arg.of("text", inputText))
+                .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "text", variableValue -> {
                     Assertions.assertThat(variableValue.getStr())
                             .isNotEqualTo(inputText)
