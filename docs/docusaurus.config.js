@@ -138,5 +138,14 @@ module.exports = {
         theme: lightCodeTheme,
         additionalLanguages: ["java", "go", "groovy", "protobuf"],
       },
+      algolia: {
+        appId: 'G6OXK45P4J', // The application ID provided by Algolia
+        apiKey: '038f9d47703c58c2c8abace8998eaed1', // Public API key: it is safe to commit it
+        indexName: 'littlehorse',
+        externalUrlRegex: "littlehorse\\.dev",
+        contextualSearch: true, // Enforces context of language and version on search results
+        searchPagePath: 'search', // path for search page that enabled by default
+        insights: false,
+      },
     }),
 };
