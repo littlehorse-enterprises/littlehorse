@@ -24,9 +24,6 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Represents a subcommand for scheduling a workflow run in the timer topology.
- */
 @Slf4j
 public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
     private ScheduledWfRunIdModel scheduledId;
