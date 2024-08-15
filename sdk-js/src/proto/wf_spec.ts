@@ -483,7 +483,7 @@ export interface Node {
   task?:
     | TaskNode
     | undefined;
-  /** Creates an ExternalEventRun */
+  /** Creates an ExternalEventNodeRun */
   externalEvent?:
     | ExternalEventNode
     | undefined;
