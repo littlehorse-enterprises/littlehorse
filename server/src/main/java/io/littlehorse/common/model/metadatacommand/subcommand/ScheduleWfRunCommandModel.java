@@ -110,11 +110,13 @@ public class ScheduleWfRunCommandModel extends CoreSubCommand<ScheduleWfRun> {
     public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         ScheduledWfRunModel scheduledWfRun = executionContext.getableManager().get(scheduledId);
         if (scheduledWfRun != null) {
-            CommandModel commandToExecute = new CommandModel(createRunWfCommand(executionContext), new Date());
+            Date currentDate = new Date();
+            CommandModel commandToExecute = new CommandModel(createRunWfCommand(executionContext), currentDate);
             LHTimer runWfTimer = new LHTimer(commandToExecute);
-            runWfTimer.maturationTime = new Date();
+            runWfTimer.maturationTime = currentDate;
             executionContext.getTaskManager().scheduleTimer(runWfTimer);
-            Optional<Date> scheduledTime = LHUtil.nextDate(cronExpression, new Date());
+            Optional<Date> scheduledTime = LHUtil.nextDate(
+                    cronExpression, executionContext.currentCommand().getTime());
 
             if (scheduledTime.isPresent()) {
                 CommandModel nextSchedule = new CommandModel(copy(), scheduledTime.get());
