@@ -75,6 +75,7 @@ dependencies {
 
     testImplementation 'org.awaitility:awaitility:4.2.0'
     testImplementation 'org.junit.platform:junit-platform-console-standalone:1.11.0-M2'
+    implementation group: 'com.cronutils', name: 'cron-utils', version: '9.2.1'
 
 }
 

@@ -3,7 +3,7 @@ version: v2
 modules:
   - path: schemas/littlehorse
   - path: schemas/internal
-    
+
 lint:
   use:
     - MINIMAL

@@ -43,7 +43,7 @@ For a `TASK` `NodeRun`, the output of the `NodeRun` (for use with `Variable` mut
 
 A `TaskRun` can be in any of the following statuses:
 
-* `TASK_SCHEDULED`: It has been scheduled but a Task Worker has not yet 
+* `TASK_SCHEDULED`: It has been scheduled but a Task Worker has not yet
 * `TASK_RUNNING`: A Task Worker has received the Task but not yet reported the result.
 * `TASK_SUCCESS`: The `TaskRun` was completed :slightly_smiling_face:
 * `TASK_FAILED`: An unexpected error or exception was encountered.

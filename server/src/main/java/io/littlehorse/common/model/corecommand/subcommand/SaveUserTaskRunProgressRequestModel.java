@@ -81,11 +81,9 @@ public class SaveUserTaskRunProgressRequestModel extends CoreSubCommand<SaveUser
 
         utr.processProgressSavedEvent(this, executionContext);
 
-        // Never hurts to call advance() but it probably will never do anything here
-        executionContext
-                .getableManager()
-                .get(userTaskRunId.getWfRunId())
-                .advance(executionContext.currentCommand().getTime());
+        // No need to call WfRunModel#advance() since saving the progress of a UserTaskRun
+        // will never cause any ThreadRun's to advance.
+
         return utr.toProto().build();
     }
 

@@ -931,13 +931,13 @@ public class BackendInternalComms implements Closeable {
 
             curLimit -= result.getLeft().size();
             out.addAllResults(result.getLeft());
-            PartitionBookmarkPb thisPartionBookmark = result.getRight();
-            if (thisPartionBookmark == null) {
+            PartitionBookmarkPb thisPartitionBookmark = result.getRight();
+            if (thisPartitionBookmark == null) {
                 // then the partition is done
                 outBookmark.addCompletedPartitions(partition);
                 outBookmark.removeInProgressPartitions(partition);
             } else {
-                outBookmark.putInProgressPartitions(partition, thisPartionBookmark);
+                outBookmark.putInProgressPartitions(partition, thisPartitionBookmark);
             }
 
             if (curLimit == 0) {

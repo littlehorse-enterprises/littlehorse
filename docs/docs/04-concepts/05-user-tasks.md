@@ -24,7 +24,7 @@ The addition of the User Tasks feature allows LittleHorse to seamlessly automate
 
 ## Schemas of User Tasks
 
-In the LittleHorse API, User Tasks are represented and controlled by three objects: 
+In the LittleHorse API, User Tasks are represented and controlled by three objects:
 
 1. The [`UserTaskDef`](../08-api.md#usertaskdef) object defines the schema of...
 2. The [`UserTaskRun`](../08-api.md#usertaskrun) object, which is created when a `ThreadRun` arrives at a...
@@ -72,7 +72,7 @@ A `UserTaskRun` can be in any of the following statuses:
 
 * `CANCELLED` denotes that the `UserTaskRun` has been cancelled for some reason, either manually, due to timeout, or due to other conditions in the `WfRun`. `CANCELLED` is currently a terminal state.
 
-* `DONE` Once a user execute a user task, it moves to the terminal `DONE` state. 
+* `DONE` Once a user execute a user task, it moves to the terminal `DONE` state.
 
 ## Lifecycle Hooks
 

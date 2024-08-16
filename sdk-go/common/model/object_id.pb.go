@@ -1040,6 +1040,54 @@ func (x *TenantId) GetId() string {
 	return ""
 }
 
+// ID for a ScheduledWfRun
+type ScheduledWfRunId struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (x *ScheduledWfRunId) Reset() {
+	*x = ScheduledWfRunId{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_object_id_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ScheduledWfRunId) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ScheduledWfRunId) ProtoMessage() {}
+
+func (x *ScheduledWfRunId) ProtoReflect() protoreflect.Message {
+	mi := &file_object_id_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ScheduledWfRunId.ProtoReflect.Descriptor instead.
+func (*ScheduledWfRunId) Descriptor() ([]byte, []int) {
+	return file_object_id_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *ScheduledWfRunId) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
 var File_object_id_proto protoreflect.FileDescriptor
 
 var file_object_id_proto_rawDesc = []byte{
@@ -1157,12 +1205,14 @@ var file_object_id_proto_rawDesc = []byte{
 	0x22, 0x1d, 0x0a, 0x0b, 0x50, 0x72, 0x69, 0x6e, 0x63, 0x69, 0x70, 0x61, 0x6c, 0x49, 0x64, 0x12,
 	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22,
 	0x1a, 0x0a, 0x08, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x49, 0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x42, 0x47, 0x0a, 0x1f, 0x69,
-	0x6f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64,
-	0x6b, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01,
-	0x5a, 0x07, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0xaa, 0x02, 0x18, 0x4c, 0x69, 0x74, 0x74,
-	0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x50,
-	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x22, 0x0a, 0x10, 0x53,
+	0x63, 0x68, 0x65, 0x64, 0x75, 0x6c, 0x65, 0x64, 0x57, 0x66, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x12,
+	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x42,
+	0x47, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73,
+	0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x50, 0x01, 0x5a, 0x07, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0xaa, 0x02, 0x18,
+	0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x43, 0x6f, 0x6d, 0x6d,
+	0x6f, 0x6e, 0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1177,7 +1227,7 @@ func file_object_id_proto_rawDescGZIP() []byte {
 	return file_object_id_proto_rawDescData
 }
 
-var file_object_id_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
+var file_object_id_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_object_id_proto_goTypes = []interface{}{
 	(*WfSpecId)(nil),              // 0: littlehorse.WfSpecId
 	(*TaskDefId)(nil),             // 1: littlehorse.TaskDefId
@@ -1196,8 +1246,9 @@ var file_object_id_proto_goTypes = []interface{}{
 	(*WfSpecMetricsId)(nil),       // 14: littlehorse.WfSpecMetricsId
 	(*PrincipalId)(nil),           // 15: littlehorse.PrincipalId
 	(*TenantId)(nil),              // 16: littlehorse.TenantId
-	(*timestamppb.Timestamp)(nil), // 17: google.protobuf.Timestamp
-	(MetricsWindowLength)(0),      // 18: littlehorse.MetricsWindowLength
+	(*ScheduledWfRunId)(nil),      // 17: littlehorse.ScheduledWfRunId
+	(*timestamppb.Timestamp)(nil), // 18: google.protobuf.Timestamp
+	(MetricsWindowLength)(0),      // 19: littlehorse.MetricsWindowLength
 }
 var file_object_id_proto_depIdxs = []int32{
 	1,  // 0: littlehorse.TaskWorkerGroupId.task_def_id:type_name -> littlehorse.TaskDefId
@@ -1210,11 +1261,11 @@ var file_object_id_proto_depIdxs = []int32{
 	4,  // 7: littlehorse.WorkflowEventId.workflow_event_def_id:type_name -> littlehorse.WorkflowEventDefId
 	8,  // 8: littlehorse.TaskRunId.wf_run_id:type_name -> littlehorse.WfRunId
 	8,  // 9: littlehorse.UserTaskRunId.wf_run_id:type_name -> littlehorse.WfRunId
-	17, // 10: littlehorse.TaskDefMetricsId.window_start:type_name -> google.protobuf.Timestamp
-	18, // 11: littlehorse.TaskDefMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
+	18, // 10: littlehorse.TaskDefMetricsId.window_start:type_name -> google.protobuf.Timestamp
+	19, // 11: littlehorse.TaskDefMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
 	1,  // 12: littlehorse.TaskDefMetricsId.task_def_id:type_name -> littlehorse.TaskDefId
-	17, // 13: littlehorse.WfSpecMetricsId.window_start:type_name -> google.protobuf.Timestamp
-	18, // 14: littlehorse.WfSpecMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
+	18, // 13: littlehorse.WfSpecMetricsId.window_start:type_name -> google.protobuf.Timestamp
+	19, // 14: littlehorse.WfSpecMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
 	0,  // 15: littlehorse.WfSpecMetricsId.wf_spec_id:type_name -> littlehorse.WfSpecId
 	16, // [16:16] is the sub-list for method output_type
 	16, // [16:16] is the sub-list for method input_type
@@ -1434,6 +1485,18 @@ func file_object_id_proto_init() {
 				return nil
 			}
 		}
+		file_object_id_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ScheduledWfRunId); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	file_object_id_proto_msgTypes[8].OneofWrappers = []interface{}{}
 	type x struct{}
@@ -1442,7 +1505,7 @@ func file_object_id_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_object_id_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   17,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -34,6 +34,8 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 
 
+
+
 ### RPC `PutTaskDef` {#puttaskdef}
 
 | Request Type | Response Type | Description |
@@ -117,6 +119,24 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
 |  [RunWfRequest](#runwfrequest)  |  [WfRun](#wfrun)  | Runs a WfSpec to create a WfRun. |
+
+### RPC `ScheduleWf` {#schedulewf}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [ScheduleWfRequest](#schedulewfrequest)  |  [ScheduledWfRun](#scheduledwfrun)  | Schedule repeated WfRun based on a cron expression |
+
+### RPC `SearchScheduledWfRun` {#searchscheduledwfrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [SearchScheduledWfRunRequest](#searchscheduledwfrunrequest)  |  [ScheduledWfRunIdList](#scheduledwfrunidlist)  | Search for existing schedules |
+
+### RPC `GetScheduledWfRun` {#getscheduledwfrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [ScheduledWfRunId](#scheduledwfrunid)  |  [ScheduledWfRun](#scheduledwfrun)  | Find a specific ScheduledWfRun |
 
 ### RPC `GetWfRun` {#getwfrun}
 
@@ -326,7 +346,7 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-|  [RescueThreadRunRequest](#rescuethreadrunrequest)  |  [WfRun](#wfrun)  | Rescues a failed ThreadRun (in the ERROR state only) by restarting it from  the point of failure. Useful if a bug in Task Worker implementation caused a WfRun to fail and you did not have a FailureHandler for that NodeRun.<br/><br/>The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/> - In the `ERROR` state.<br/> - Has no `FailureHandler` `ThreadRun`s <br/> - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure` yet.<br/><br/>If that is not true, then the `ThreadRun` cannot be rescued and the request will return `FAILED_PRECONDITION`. |
+|  [RescueThreadRunRequest](#rescuethreadrunrequest)  |  [WfRun](#wfrun)  | Rescues a failed ThreadRun (in the ERROR state only) by restarting it from the point of failure. Useful if a bug in Task Worker implementation caused a WfRun to fail and you did not have a FailureHandler for that NodeRun.<br/><br/>The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: <br/> - In the `ERROR` state.<br/> - Has no `FailureHandler` `ThreadRun`s <br/> - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure` yet.<br/><br/>If that is not true, then the `ThreadRun` cannot be rescued and the request will return `FAILED_PRECONDITION`. |
 
 ### RPC `DeleteWfRun` {#deletewfrun}
 
@@ -363,6 +383,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
 |  [DeletePrincipalRequest](#deleteprincipalrequest)  |  .google.protobuf.Empty  | Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal` is the last remaining `Principal` with admin permissions. Admin permissions are defined as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope. |
+
+### RPC `DeleteScheduledWfRun` {#deletescheduledwfrun}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [DeleteScheduledWfRunRequest](#deletescheduledwfrunrequest)  |  .google.protobuf.Empty  | Deletes a scheduled run and prevents any further associated WfRun from being executed. |
 
 ### RPC `GetTaskDefMetricsWindow` {#gettaskdefmetricswindow}
 
@@ -1097,6 +1123,19 @@ ID for a Principal.
 
 
 
+### Message `ScheduledWfRunId` {#scheduledwfrunid}
+
+ID for a ScheduledWfRun
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `id` | | string |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `TaskDefId` {#taskdefid}
 
 ID for a TaskDef.
@@ -1282,6 +1321,41 @@ An ID for a WorkflowEvent.
 
 
 
+### Message `ScheduledWfRun` {#scheduledwfrun}
+
+A `ScheduledWfRun` is an object in the LittleHorse API that triggers a `WfRun` to be started
+on a cron schedule.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `id` | | [ScheduledWfRunId](#scheduledwfrunid) | Unique id for this ScheduledWfRun. |
+| `wf_spec_id` | | [WfSpecId](#wfspecid) | WfSpec used to run a workflow on a schedule. |
+| `variables` | map| [ScheduledWfRun.VariablesEntry](#scheduledwfrunvariablesentry) | A map from Variable Name to Values for those variables. The provided variables are passed as input to the Entrypoint ThreadRun. |
+| `parent_wf_run_id` | optional| [WfRunId](#wfrunid) | Parent WfRunId associated with all the generated WfRuns |
+| `cron_expression` | | string | UNIX expression used to specify the schedule for executing WfRuns |
+| `created_at` | | google.protobuf.Timestamp | Creation time for this ScheduledWfRun |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ScheduledWfRun.VariablesEntry` {#scheduledwfrunvariablesentry}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `key` | | string |  |
+| `value` | | [VariableValue](#variablevalue) |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+
+
 ### Message `AwaitWorkflowEventRequest` {#awaitworkfloweventrequest}
 
 Request to await until a WorkflowEvent of a certain WorkflowEventDef on a certain WfRun
@@ -1319,6 +1393,19 @@ Deletes an ExternalEvent.
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
 | `id` | | [ExternalEventId](#externaleventid) | The ID of the ExternalEvent to delete. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `DeleteScheduledWfRunRequest` {#deletescheduledwfrunrequest}
+
+Delete an existing ScheduledWfRun, returns INVALID_ARGUMENT if object does not exist
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `id` | | [ScheduledWfRunId](#scheduledwfrunid) | Id of the `ScheduledWfRun` to be deleted |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -1894,6 +1981,39 @@ Create a Workflow Run.
 
 
 
+### Message `ScheduleWfRequest` {#schedulewfrequest}
+
+Schedule WfRuns based on a specific cron UNIX expression
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `id` | optional| string | Specific ID |
+| `wf_spec_name` | | string | The name of the WfSpec to run. |
+| `major_version` | optional| int32 | Optionally specify the major version of the WfSpec to run. This guarantees that the "signature" of the WfSpec (i.e. the required input variables, and searchable variables) will not change for this app. |
+| `revision` | optional| int32 | Optionally specify the specific revision of the WfSpec to run. It is not recommended to use this in practice, as the WfSpec logic should be de-coupled from the applications that run WfRun's. |
+| `variables` | map| [ScheduleWfRequest.VariablesEntry](#schedulewfrequestvariablesentry) | A map from Variable Name to Values for those variables. The provided variables are passed as input to the Entrypoint ThreadRun. |
+| `parent_wf_run_id` | optional| [WfRunId](#wfrunid) | Parent WfRunId associated with all the generated WfRuns |
+| `cron_expression` | | string | UNIX expression used to specify the schedule for executing WfRuns |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ScheduleWfRequest.VariablesEntry` {#schedulewfrequestvariablesentry}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `key` | | string |  |
+| `value` | | [VariableValue](#variablevalue) |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `ScheduledTask` {#scheduledtask}
 
 Message sent by server to Task Worker SDK specifying a specific TaskRun to be executed.
@@ -1908,6 +2028,19 @@ This is used and handled internally by the Task Worker SDK.
 | `variables` | repeated| [VarNameAndVal](#varnameandval) | Input variables for this TaskRun. |
 | `created_at` | | google.protobuf.Timestamp |  |
 | `source` | | [TaskRunSource](#taskrunsource) | Source of the TaskRun. Currently, there are two options: 1. A TASK node 2. A reminder task scheduled by a trigger on a User Task. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ScheduledWfRunIdList` {#scheduledwfrunidlist}
+
+List of ScheduledWfRun
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `results` | repeated| [ScheduledWfRunId](#scheduledwfrunid) | A list of ScheduledWfRun Objects |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -1982,6 +2115,21 @@ Search for Principals based on certain criteria.
 | `latest_start` | optional| google.protobuf.Timestamp | Specifies to return only Principals's created before this time |
 | `isAdmin` | oneof `principal_criteria`| bool | List only Principals that are admins |
 | `tenantId` | oneof `principal_criteria`| string | List Principals associated with this Tenant ID |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchScheduledWfRunRequest` {#searchscheduledwfrunrequest}
+
+Search filters for ScheduledWfRun's
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `wf_spec_name` | | string | The name of the WfSpec to filter |
+| `major_version` | optional| int32 | The major version of the WfSpec to filter |
+| `revision` | optional| int32 | The revision number of the WfSpec to filter |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3886,6 +4034,8 @@ The status of a single ThreadRun that we are waiting for.
 | THREAD_COMPLETED_OR_FAILURE_HANDLED | 2 | We can mark this ThreadRun as "already waited for", meaning that either: 1. It completed successfully, OR 2. It failed, and the Failure Handler successfully completed |
 | THREAD_UNSUCCESSFUL | 3 | The ThreadRun did not complete successfully, and there wasn't a successful run of a Failure Handler for the Failure that was thrown. |
 
+
+ <!-- end Enums -->
 
  <!-- end Enums -->
 
