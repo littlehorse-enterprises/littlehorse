@@ -3,7 +3,6 @@ package io.littlehorse.server.streams.topology.core;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
@@ -93,15 +92,6 @@ public class MetadataCommandExecution implements ExecutionContext {
                 HeadersUtil.metadataHeadersFor(tenantId, principalId));
 
         this.processorContext.forward(out);
-    }
-
-    public void forward(LHTimer timer) {
-        timer.setTenantId(authContext.tenantId());
-        timer.setPrincipalId(authContext.principalId());
-        timer.topic = lhConfig.getCoreCmdTopicName();
-        CommandProcessorOutput output = new CommandProcessorOutput(lhConfig.getTimerTopic(), timer, timer.key);
-        Headers headers = HeadersUtil.metadataHeadersFor(authContext.tenantId(), authContext.principalId());
-        processorContext.forward(new Record<>(timer.key, output, System.currentTimeMillis(), headers));
     }
 
     private KeyValueStore<String, Bytes> nativeMetadataStore() {
