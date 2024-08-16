@@ -2,12 +2,9 @@ package io.littlehorse.common.model.corecommand.subcommand;
 
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
-import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest;
@@ -15,7 +12,6 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 
-// Delete an existing ScheduledWfRun, returns INVALID_ARGUMENT if object does not exist
 @Slf4j
 public class DeleteScheduledWfRunRequestModel extends CoreSubCommand<DeleteScheduledWfRunRequest> {
 
@@ -44,10 +40,7 @@ public class DeleteScheduledWfRunRequestModel extends CoreSubCommand<DeleteSched
 
     @Override
     public Message process(ProcessorExecutionContext executionContext, LHServerConfig config) {
-        ScheduledWfRunModel deletedWfRun = executionContext.getableManager().delete(id);
-        if (deletedWfRun == null) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Id not found");
-        }
+        executionContext.getableManager().delete(id);
         return Empty.getDefaultInstance();
     }
 
