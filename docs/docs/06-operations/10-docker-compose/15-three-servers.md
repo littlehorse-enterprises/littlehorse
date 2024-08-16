@@ -121,6 +121,12 @@ LHC_API_PORT=2023
 LHW_SERVER_CONNECT_LISTENER=PLAIN
 ```
 
+Even though your worker config only specifies one port to connect to via `LHC_API_PORT`, your workers will actually communicate with the entire cluster. This is because the Task Worker uses a discovery protocol in which it asks the bootstrap host (specified by `LHC_API_HOST` and `LHC_API_PORT`) for which servers to connect to in order to execute tasks.
+
+:::tip
+In production, it's recommended for your `LHC_API_HOST` and `LHC_API_PORT` to point to a load balancer that balances requests across all instances.
+:::
+
 :::tip
 If you walk through our [quickstarts](../../05-developer-guide/00-install.md#get-started), the code in all three assumes that your configuration is set as environment variables.
 :::
