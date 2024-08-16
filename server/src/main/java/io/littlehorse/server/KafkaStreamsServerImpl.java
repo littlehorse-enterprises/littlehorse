@@ -18,12 +18,15 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.DeleteScheduledWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeleteWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.RescueThreadRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.SaveUserTaskRunProgressRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.ScheduleWfRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
@@ -35,6 +38,7 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
@@ -45,6 +49,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskWorkerGroupIdModel;
@@ -80,6 +85,7 @@ import io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.DeletePrincipalRequest;
+import io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
@@ -127,10 +133,16 @@ import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.common.proto.RescueThreadRunRequest;
 import io.littlehorse.sdk.common.proto.ResumeWfRunRequest;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest;
+import io.littlehorse.sdk.common.proto.ScheduleWfRequest;
+import io.littlehorse.sdk.common.proto.ScheduledWfRun;
+import io.littlehorse.sdk.common.proto.ScheduledWfRunId;
+import io.littlehorse.sdk.common.proto.ScheduledWfRunIdList;
 import io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.SearchExternalEventRequest;
 import io.littlehorse.sdk.common.proto.SearchNodeRunRequest;
 import io.littlehorse.sdk.common.proto.SearchPrincipalRequest;
+import io.littlehorse.sdk.common.proto.SearchScheduledWfRunRequest;
 import io.littlehorse.sdk.common.proto.SearchTaskDefRequest;
 import io.littlehorse.sdk.common.proto.SearchTaskRunRequest;
 import io.littlehorse.sdk.common.proto.SearchTenantRequest;
@@ -190,6 +202,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExterna
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchNodeRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchPrincipalRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchScheduledWfRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTaskDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTenantRequestModel;
@@ -209,6 +222,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchEx
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchPrincipalRequestReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchScheduledWfRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTaskRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTenantRequestReply;
@@ -318,6 +332,19 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
             ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
         } else {
             ctx.onNext(wfSpec.toProto().build());
+            ctx.onCompleted();
+        }
+    }
+
+    @Override
+    public void getScheduledWfRun(ScheduledWfRunId req, StreamObserver<ScheduledWfRun> ctx) {
+        ScheduledWfRunIdModel scheduledWfId =
+                LHSerializable.fromProto(req, ScheduledWfRunIdModel.class, requestContext());
+        ScheduledWfRunModel scheduledWfRun = requestContext().getableManager().get(scheduledWfId);
+        if (scheduledWfRun == null) {
+            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified object"));
+        } else {
+            ctx.onNext(scheduledWfRun.toProto().build());
             ctx.onCompleted();
         }
     }
@@ -474,6 +501,14 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
     @Override
     @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
+    public void saveUserTaskRunProgress(SaveUserTaskRunProgressRequest req, StreamObserver<UserTaskRun> ctx) {
+        SaveUserTaskRunProgressRequestModel reqModel =
+                LHSerializable.fromProto(req, SaveUserTaskRunProgressRequestModel.class, requestContext());
+        processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class, true);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
     public void cancelUserTaskRun(CancelUserTaskRunRequest req, StreamObserver<Empty> ctx) {
         CancelUserTaskRunRequestModel reqModel =
                 LHSerializable.fromProto(req, CancelUserTaskRunRequestModel.class, requestContext());
@@ -512,10 +547,25 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void searchScheduledWfRun(SearchScheduledWfRunRequest req, StreamObserver<ScheduledWfRunIdList> ctx) {
+        SearchScheduledWfRunRequestModel requestModel =
+                LHSerializable.fromProto(req, SearchScheduledWfRunRequestModel.class, requestContext());
+        handleScan(requestModel, ctx, SearchScheduledWfRunReply.class);
+    }
+
+    @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
     public void runWf(RunWfRequest req, StreamObserver<WfRun> ctx) {
         RunWfRequestModel reqModel = LHSerializable.fromProto(req, RunWfRequestModel.class, requestContext());
         processCommand(new CommandModel(reqModel), ctx, WfRun.class, true);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
+    public void scheduleWf(ScheduleWfRequest req, StreamObserver<ScheduledWfRun> ctx) {
+        ScheduleWfRequestModel reqModel = LHSerializable.fromProto(req, ScheduleWfRequestModel.class, requestContext());
+        processCommand(new CommandModel(reqModel), ctx, ScheduledWfRun.class, true);
     }
 
     @Override
@@ -890,6 +940,14 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         DeleteTaskDefRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteTaskDefRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class, true);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
+    public void deleteScheduledWfRun(DeleteScheduledWfRunRequest req, StreamObserver<Empty> ctx) {
+        DeleteScheduledWfRunRequestModel reqModel =
+                LHSerializable.fromProto(req, DeleteScheduledWfRunRequestModel.class, requestContext());
+        processCommand(new CommandModel(reqModel), ctx, Empty.class, true);
     }
 
     @Override

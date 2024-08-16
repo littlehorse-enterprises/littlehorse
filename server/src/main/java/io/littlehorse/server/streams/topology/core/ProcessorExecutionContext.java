@@ -139,7 +139,9 @@ public class ProcessorExecutionContext implements ExecutionContext {
      * decide when to call this method
      */
     public void endExecution() {
-        storageManager.commit();
+        if (storageManager != null) {
+            storageManager.commit();
+        }
         if (hasTaskManager()) {
             currentTaskManager.forwardPendingTimers();
             currentTaskManager.forwardPendingTasks();

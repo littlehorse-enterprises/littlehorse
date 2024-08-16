@@ -325,31 +325,79 @@ public interface CommandOrBuilder extends
   io.littlehorse.sdk.common.proto.RescueThreadRunRequestOrBuilder getRescueThreadRunOrBuilder();
 
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
    * @return Whether the deleteTaskWorkerGroup field is set.
    */
   boolean hasDeleteTaskWorkerGroup();
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
    * @return The deleteTaskWorkerGroup.
    */
   io.littlehorse.common.proto.DeleteTaskWorkerGroupRequest getDeleteTaskWorkerGroup();
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;</code>
    */
   io.littlehorse.common.proto.DeleteTaskWorkerGroupRequestOrBuilder getDeleteTaskWorkerGroupOrBuilder();
+
+  /**
+   * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
+   * @return Whether the scheduleWfRun field is set.
+   */
+  boolean hasScheduleWfRun();
+  /**
+   * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
+   * @return The scheduleWfRun.
+   */
+  io.littlehorse.common.proto.ScheduleWfRun getScheduleWfRun();
+  /**
+   * <code>.littlehorse.ScheduleWfRun schedule_wf_run = 24;</code>
+   */
+  io.littlehorse.common.proto.ScheduleWfRunOrBuilder getScheduleWfRunOrBuilder();
+
+  /**
+   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
+   * @return Whether the scheduleWfRunRequest field is set.
+   */
+  boolean hasScheduleWfRunRequest();
+  /**
+   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
+   * @return The scheduleWfRunRequest.
+   */
+  io.littlehorse.sdk.common.proto.ScheduleWfRequest getScheduleWfRunRequest();
+  /**
+   * <code>.littlehorse.ScheduleWfRequest schedule_wf_run_request = 25;</code>
+   */
+  io.littlehorse.sdk.common.proto.ScheduleWfRequestOrBuilder getScheduleWfRunRequestOrBuilder();
+
+  /**
+   * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;</code>
+   * @return Whether the deleteScheduledWfRun field is set.
+   */
+  boolean hasDeleteScheduledWfRun();
+  /**
+   * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;</code>
+   * @return The deleteScheduledWfRun.
+   */
+  io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest getDeleteScheduledWfRun();
+  /**
+   * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;</code>
+   */
+  io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequestOrBuilder getDeleteScheduledWfRunOrBuilder();
+
+  /**
+   * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;</code>
+   * @return Whether the saveUserTaskRunProgress field is set.
+   */
+  boolean hasSaveUserTaskRunProgress();
+  /**
+   * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;</code>
+   * @return The saveUserTaskRunProgress.
+   */
+  io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest getSaveUserTaskRunProgress();
+  /**
+   * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;</code>
+   */
+  io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequestOrBuilder getSaveUserTaskRunProgressOrBuilder();
 
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

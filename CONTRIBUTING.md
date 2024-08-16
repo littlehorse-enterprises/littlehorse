@@ -135,4 +135,4 @@ Certain *types* of commits correlate to semantic versioning updates:
 - feat: MINOR
 - a commit with the footer `BREAKING CHANGE:` or a `!` after the type/scope
 
-You should reference the Conventional Commits v1.0.0 [website](https://www.conventionalcommits.org/en/v1.0.0/) for additional *types*, detailed specification rules, examples, and FAQs about the practice before making a pull request. 
+You should reference the Conventional Commits v1.0.0 [website](https://www.conventionalcommits.org/en/v1.0.0/) for additional *types*, detailed specification rules, examples, and FAQs about the practice before making a pull request.

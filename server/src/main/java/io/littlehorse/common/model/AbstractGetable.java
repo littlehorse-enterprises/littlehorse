@@ -10,6 +10,7 @@ import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
+import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
@@ -22,6 +23,7 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefMetricsIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
@@ -97,6 +99,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.WORKFLOW_EVENT_DEF;
         } else if (cls.equals(WorkflowEventModel.class)) {
             return GetableClassEnum.WORKFLOW_EVENT;
+        } else if (cls.equals(ScheduledWfRunModel.class)) {
+            return GetableClassEnum.SCHEDULED_WF_RUN;
         } else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -138,6 +142,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return WorkflowEventDefModel.class;
             case WORKFLOW_EVENT:
                 return WorkflowEventModel.class;
+            case SCHEDULED_WF_RUN:
+                return ScheduledWfRunModel.class;
             case UNRECOGNIZED:
                 // default:
         }
@@ -180,6 +186,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return WorkflowEventDefIdModel.class;
             case WORKFLOW_EVENT:
                 return WorkflowEventIdModel.class;
+            case SCHEDULED_WF_RUN:
+                return ScheduledWfRunIdModel.class;
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");
