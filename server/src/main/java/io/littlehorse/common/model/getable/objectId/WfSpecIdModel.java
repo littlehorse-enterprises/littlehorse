@@ -28,6 +28,10 @@ public class WfSpecIdModel extends MetadataId<WfSpecId, WfSpec, WfSpecModel> {
         this.revision = revision;
     }
 
+    public WfSpecIdModel(String name) {
+        this.name = name;
+    }
+
     @Override
     public Class<WfSpecId> getProtoBaseClass() {
         return WfSpecId.class;

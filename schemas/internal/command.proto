@@ -10,6 +10,7 @@ import "object_id.proto";
 import "common_wfspec.proto";
 import "user_tasks.proto";
 import "common_enums.proto";
+import "variable.proto";
 import "storage.proto";
 import "acls.proto";
 import "job.proto";
@@ -41,8 +42,35 @@ message Command {
         TaskAttemptRetryReady task_attempt_retry_ready = 21;
         RescueThreadRunRequest rescue_thread_run = 22;
         DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;
+        ScheduleWfRun schedule_wf_run = 24;
+        ScheduleWfRequest schedule_wf_run_request = 25;
+        DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;
         // TODO: Add SaveUserTask
     }
+}
+
+// Schedule a workflow run in the timer topology.
+message ScheduleWfRun {
+    ScheduledWfRunId scheduled_id = 1;
+    // The name of the WfSpec to run.
+    string wf_spec_name = 2;
+
+    // Optionally specify the major version of the WfSpec to run. This guarantees that
+    // the "signature" of the WfSpec (i.e. the required input variables, and searchable
+    // variables) will not change for this app.
+    optional int32 major_version = 3;
+
+    // Optionally specify the specific revision of the WfSpec to run. It is not recommended
+    // to use this in practice, as the WfSpec logic should be de-coupled from the applications
+    // that run WfRun's.
+    optional int32 revision = 4;
+    // A map from Variable Name to Values for those variables. The provided variables are
+    // passed as input to the Entrypoint ThreadRun.
+    map<string, VariableValue> variables = 5;
+    // Parent WfRunId associated with all the generated WfRuns
+    optional WfRunId parent_wf_run_id = 6;
+    // UNIX expression used to specify the schedule for executing WfRuns
+    string cron_expression = 7;
 }
 
 // This flows through the Metadata Command Topic

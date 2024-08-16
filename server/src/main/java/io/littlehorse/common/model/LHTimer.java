@@ -69,7 +69,6 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
                 .setPayload(ByteString.copyFrom(payload))
                 .setPrincipalId(principalId.toProto()) // TODO: allow nulls
                 .setTenantId(tenantId.toProto()); // TODO: Allow nulls
-
         return out;
     }
 

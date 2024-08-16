@@ -13,6 +13,7 @@ import littlehorse.model.wf_spec_pb2 as _wf_spec_pb2
 import littlehorse.model.task_def_pb2 as _task_def_pb2
 import littlehorse.model.acls_pb2 as _acls_pb2
 import littlehorse.model.workflow_event_pb2 as _workflow_event_pb2
+import littlehorse.model.scheduled_wf_run_pb2 as _scheduled_wf_run_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -117,6 +118,12 @@ class DeleteExternalEventRequest(_message.Message):
     id: _object_id_pb2.ExternalEventId
     def __init__(self, id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ...) -> None: ...
 
+class DeleteScheduledWfRunRequest(_message.Message):
+    __slots__ = ["id"]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.ScheduledWfRunId
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.ScheduledWfRunId, _Mapping]] = ...) -> None: ...
+
 class DeleteWfRunRequest(_message.Message):
     __slots__ = ["id"]
     ID_FIELD_NUMBER: _ClassVar[int]
@@ -169,6 +176,31 @@ class RunWfRequest(_message.Message):
     id: str
     parent_wf_run_id: _object_id_pb2.WfRunId
     def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., id: _Optional[str] = ..., parent_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
+
+class ScheduleWfRequest(_message.Message):
+    __slots__ = ["id", "wf_spec_name", "major_version", "revision", "variables", "parent_wf_run_id", "cron_expression"]
+    class VariablesEntry(_message.Message):
+        __slots__ = ["key", "value"]
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: _variable_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    ID_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+    MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    REVISION_FIELD_NUMBER: _ClassVar[int]
+    VARIABLES_FIELD_NUMBER: _ClassVar[int]
+    PARENT_WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    CRON_EXPRESSION_FIELD_NUMBER: _ClassVar[int]
+    id: str
+    wf_spec_name: str
+    major_version: int
+    revision: int
+    variables: _containers.MessageMap[str, _variable_pb2.VariableValue]
+    parent_wf_run_id: _object_id_pb2.WfRunId
+    cron_expression: str
+    def __init__(self, id: _Optional[str] = ..., wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., parent_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., cron_expression: _Optional[str] = ...) -> None: ...
 
 class VariableMatch(_message.Message):
     __slots__ = ["var_name", "value"]
@@ -753,6 +785,22 @@ class UserTaskRunList(_message.Message):
     RESULTS_FIELD_NUMBER: _ClassVar[int]
     results: _containers.RepeatedCompositeFieldContainer[_user_tasks_pb2.UserTaskRun]
     def __init__(self, results: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskRun, _Mapping]]] = ...) -> None: ...
+
+class ScheduledWfRunIdList(_message.Message):
+    __slots__ = ["results"]
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.ScheduledWfRunId]
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.ScheduledWfRunId, _Mapping]]] = ...) -> None: ...
+
+class SearchScheduledWfRunRequest(_message.Message):
+    __slots__ = ["wf_spec_name", "major_version", "revision"]
+    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+    MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    REVISION_FIELD_NUMBER: _ClassVar[int]
+    wf_spec_name: str
+    major_version: int
+    revision: int
+    def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ...) -> None: ...
 
 class TaskWorkerMetadata(_message.Message):
     __slots__ = ["task_worker_id", "latest_heartbeat", "hosts"]

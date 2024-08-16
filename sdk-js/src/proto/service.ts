@@ -33,6 +33,7 @@ import {
   ExternalEventId,
   NodeRunId,
   PrincipalId,
+  ScheduledWfRunId,
   TaskDefId,
   TaskRunId,
   TaskWorkerGroupId,
@@ -45,6 +46,7 @@ import {
   WorkflowEventDefId,
   WorkflowEventId,
 } from "./object_id";
+import { ScheduledWfRun } from "./scheduled_wf_run";
 import { TaskDef, TaskDefOutputSchema } from "./task_def";
 import { LHTaskError, LHTaskException, TaskRun, TaskRunSource, VarNameAndVal } from "./task_run";
 import {
@@ -260,6 +262,12 @@ export interface DeleteExternalEventRequest {
   id: ExternalEventId | undefined;
 }
 
+/** Delete an existing ScheduledWfRun, returns INVALID_ARGUMENT if object does not exist */
+export interface DeleteScheduledWfRunRequest {
+  /** Id of the `ScheduledWfRun` to be deleted */
+  id: ScheduledWfRunId | undefined;
+}
+
 /** Deletes a WfRun. */
 export interface DeleteWfRunRequest {
   /** The ID of the WfRun to delete. */
@@ -325,6 +333,48 @@ export interface RunWfRequest {
 }
 
 export interface RunWfRequest_VariablesEntry {
+  key: string;
+  value: VariableValue | undefined;
+}
+
+/** Schedule WfRuns based on a specific cron UNIX expression */
+export interface ScheduleWfRequest {
+  /** Specific ID */
+  id?:
+    | string
+    | undefined;
+  /** The name of the WfSpec to run. */
+  wfSpecName: string;
+  /**
+   * Optionally specify the major version of the WfSpec to run. This guarantees that
+   * the "signature" of the WfSpec (i.e. the required input variables, and searchable
+   * variables) will not change for this app.
+   */
+  majorVersion?:
+    | number
+    | undefined;
+  /**
+   * Optionally specify the specific revision of the WfSpec to run. It is not recommended
+   * to use this in practice, as the WfSpec logic should be de-coupled from the applications
+   * that run WfRun's.
+   */
+  revision?:
+    | number
+    | undefined;
+  /**
+   * A map from Variable Name to Values for those variables. The provided variables are
+   * passed as input to the Entrypoint ThreadRun.
+   */
+  variables: { [key: string]: VariableValue };
+  /** Parent WfRunId associated with all the generated WfRuns */
+  parentWfRunId?:
+    | WfRunId
+    | undefined;
+  /** UNIX expression used to specify the schedule for executing WfRuns */
+  cronExpression: string;
+}
+
+export interface ScheduleWfRequest_VariablesEntry {
   key: string;
   value: VariableValue | undefined;
 }
@@ -1296,6 +1346,24 @@ export interface UserTaskRunList {
   results: UserTaskRun[];
 }
 
+/** List of ScheduledWfRun */
+export interface ScheduledWfRunIdList {
+  /** A list of ScheduledWfRun Objects */
+  results: ScheduledWfRunId[];
+}
+
+/** Search filters for ScheduledWfRun's */
+export interface SearchScheduledWfRunRequest {
+  /** The name of the WfSpec to filter */
+  wfSpecName: string;
+  /** The major version of the WfSpec to filter */
+  majorVersion?:
+    | number
+    | undefined;
+  /** The revision number of the WfSpec to filter */
+  revision?: number | undefined;
+}
+
 /** Describes a specific task worker */
 export interface TaskWorkerMetadata {
   /** User-defined identifier for the worker. */
@@ -2006,6 +2074,51 @@ export const DeleteExternalEventRequest = {
   },
 };
 
+function createBaseDeleteScheduledWfRunRequest(): DeleteScheduledWfRunRequest {
+  return { id: undefined };
+}
+
+export const DeleteScheduledWfRunRequest = {
+  encode(message: DeleteScheduledWfRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      ScheduledWfRunId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteScheduledWfRunRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteScheduledWfRunRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = ScheduledWfRunId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<DeleteScheduledWfRunRequest>): DeleteScheduledWfRunRequest {
+    return DeleteScheduledWfRunRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DeleteScheduledWfRunRequest>): DeleteScheduledWfRunRequest {
+    const message = createBaseDeleteScheduledWfRunRequest();
+    message.id = (object.id !== undefined && object.id !== null) ? ScheduledWfRunId.fromPartial(object.id) : undefined;
+    return message;
+  },
+};
+
 function createBaseDeleteWfRunRequest(): DeleteWfRunRequest {
   return { id: undefined };
 }
@@ -2403,6 +2516,196 @@ export const RunWfRequest_VariablesEntry = {
   },
   fromPartial(object: DeepPartial<RunWfRequest_VariablesEntry>): RunWfRequest_VariablesEntry {
     const message = createBaseRunWfRequest_VariablesEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? VariableValue.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseScheduleWfRequest(): ScheduleWfRequest {
+  return {
+    id: undefined,
+    wfSpecName: "",
+    majorVersion: undefined,
+    revision: undefined,
+    variables: {},
+    parentWfRunId: undefined,
+    cronExpression: "",
+  };
+}
+
+export const ScheduleWfRequest = {
+  encode(message: ScheduleWfRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.wfSpecName !== "") {
+      writer.uint32(18).string(message.wfSpecName);
+    }
+    if (message.majorVersion !== undefined) {
+      writer.uint32(24).int32(message.majorVersion);
+    }
+    if (message.revision !== undefined) {
+      writer.uint32(32).int32(message.revision);
+    }
+    Object.entries(message.variables).forEach(([key, value]) => {
+      ScheduleWfRequest_VariablesEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).ldelim();
+    });
+    if (message.parentWfRunId !== undefined) {
+      WfRunId.encode(message.parentWfRunId, writer.uint32(50).fork()).ldelim();
+    }
+    if (message.cronExpression !== "") {
+      writer.uint32(58).string(message.cronExpression);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ScheduleWfRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseScheduleWfRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.wfSpecName = reader.string();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.majorVersion = reader.int32();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.revision = reader.int32();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          const entry5 = ScheduleWfRequest_VariablesEntry.decode(reader, reader.uint32());
+          if (entry5.value !== undefined) {
+            message.variables[entry5.key] = entry5.value;
+          }
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.parentWfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.cronExpression = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ScheduleWfRequest>): ScheduleWfRequest {
+    return ScheduleWfRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ScheduleWfRequest>): ScheduleWfRequest {
+    const message = createBaseScheduleWfRequest();
+    message.id = object.id ?? undefined;
+    message.wfSpecName = object.wfSpecName ?? "";
+    message.majorVersion = object.majorVersion ?? undefined;
+    message.revision = object.revision ?? undefined;
+    message.variables = Object.entries(object.variables ?? {}).reduce<{ [key: string]: VariableValue }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = VariableValue.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    message.parentWfRunId = (object.parentWfRunId !== undefined && object.parentWfRunId !== null)
+      ? WfRunId.fromPartial(object.parentWfRunId)
+      : undefined;
+    message.cronExpression = object.cronExpression ?? "";
+    return message;
+  },
+};
+
+function createBaseScheduleWfRequest_VariablesEntry(): ScheduleWfRequest_VariablesEntry {
+  return { key: "", value: undefined };
+}
+
+export const ScheduleWfRequest_VariablesEntry = {
+  encode(message: ScheduleWfRequest_VariablesEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      VariableValue.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ScheduleWfRequest_VariablesEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseScheduleWfRequest_VariablesEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = VariableValue.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ScheduleWfRequest_VariablesEntry>): ScheduleWfRequest_VariablesEntry {
+    return ScheduleWfRequest_VariablesEntry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ScheduleWfRequest_VariablesEntry>): ScheduleWfRequest_VariablesEntry {
+    const message = createBaseScheduleWfRequest_VariablesEntry();
     message.key = object.key ?? "";
     message.value = (object.value !== undefined && object.value !== null)
       ? VariableValue.fromPartial(object.value)
@@ -6307,6 +6610,118 @@ export const UserTaskRunList = {
   },
 };
 
+function createBaseScheduledWfRunIdList(): ScheduledWfRunIdList {
+  return { results: [] };
+}
+
+export const ScheduledWfRunIdList = {
+  encode(message: ScheduledWfRunIdList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.results) {
+      ScheduledWfRunId.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ScheduledWfRunIdList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseScheduledWfRunIdList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.results.push(ScheduledWfRunId.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ScheduledWfRunIdList>): ScheduledWfRunIdList {
+    return ScheduledWfRunIdList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ScheduledWfRunIdList>): ScheduledWfRunIdList {
+    const message = createBaseScheduledWfRunIdList();
+    message.results = object.results?.map((e) => ScheduledWfRunId.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseSearchScheduledWfRunRequest(): SearchScheduledWfRunRequest {
+  return { wfSpecName: "", majorVersion: undefined, revision: undefined };
+}
+
+export const SearchScheduledWfRunRequest = {
+  encode(message: SearchScheduledWfRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpecName !== "") {
+      writer.uint32(10).string(message.wfSpecName);
+    }
+    if (message.majorVersion !== undefined) {
+      writer.uint32(16).int32(message.majorVersion);
+    }
+    if (message.revision !== undefined) {
+      writer.uint32(24).int32(message.revision);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchScheduledWfRunRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchScheduledWfRunRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfSpecName = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.majorVersion = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.revision = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<SearchScheduledWfRunRequest>): SearchScheduledWfRunRequest {
+    return SearchScheduledWfRunRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SearchScheduledWfRunRequest>): SearchScheduledWfRunRequest {
+    const message = createBaseSearchScheduledWfRunRequest();
+    message.wfSpecName = object.wfSpecName ?? "";
+    message.majorVersion = object.majorVersion ?? undefined;
+    message.revision = object.revision ?? undefined;
+    return message;
+  },
+};
+
 function createBaseTaskWorkerMetadata(): TaskWorkerMetadata {
   return { taskWorkerId: "", latestHeartbeat: undefined, hosts: [] };
 }
@@ -6942,6 +7357,33 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Schedule repeated WfRun based on a cron expression */
+    scheduleWf: {
+      name: "ScheduleWf",
+      requestType: ScheduleWfRequest,
+      requestStream: false,
+      responseType: ScheduledWfRun,
+      responseStream: false,
+      options: {},
+    },
+    /** Search for existing schedules */
+    searchScheduledWfRun: {
+      name: "SearchScheduledWfRun",
+      requestType: SearchScheduledWfRunRequest,
+      requestStream: false,
+      responseType: ScheduledWfRunIdList,
+      responseStream: false,
+      options: {},
+    },
+    /** Find a specific ScheduledWfRun */
+    getScheduledWfRun: {
+      name: "GetScheduledWfRun",
+      requestType: ScheduledWfRunId,
+      requestStream: false,
+      responseType: ScheduledWfRun,
+      responseStream: false,
+      options: {},
+    },
     /**
      * Gets a WfRun. Although useful for development and debugging, this RPC is not often
      * used by applications.
@@ -7374,6 +7816,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Deletes a scheduled run and prevents any further associated WfRun from being executed. */
+    deleteScheduledWfRun: {
+      name: "DeleteScheduledWfRun",
+      requestType: DeleteScheduledWfRunRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
     /** Returns TaskDef Metrics for a specific TaskDef and a specific time window. */
     getTaskDefMetricsWindow: {
       name: "GetTaskDefMetricsWindow",
@@ -7517,6 +7968,18 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   ): Promise<DeepPartial<UserTaskDef>>;
   /** Runs a WfSpec to create a WfRun. */
   runWf(request: RunWfRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfRun>>;
+  /** Schedule repeated WfRun based on a cron expression */
+  scheduleWf(request: ScheduleWfRequest, context: CallContext & CallContextExt): Promise<DeepPartial<ScheduledWfRun>>;
+  /** Search for existing schedules */
+  searchScheduledWfRun(
+    request: SearchScheduledWfRunRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ScheduledWfRunIdList>>;
+  /** Find a specific ScheduledWfRun */
+  getScheduledWfRun(
+    request: ScheduledWfRunId,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ScheduledWfRun>>;
   /**
    * Gets a WfRun. Although useful for development and debugging, this RPC is not often
    * used by applications.
@@ -7735,6 +8198,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
    */
   deletePrincipal(request: DeletePrincipalRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
+  /** Deletes a scheduled run and prevents any further associated WfRun from being executed. */
+  deleteScheduledWfRun(
+    request: DeleteScheduledWfRunRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
   /** Returns TaskDef Metrics for a specific TaskDef and a specific time window. */
   getTaskDefMetricsWindow(
     request: TaskDefMetricsQueryRequest,
@@ -7829,6 +8297,18 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   ): Promise<UserTaskDef>;
   /** Runs a WfSpec to create a WfRun. */
   runWf(request: DeepPartial<RunWfRequest>, options?: CallOptions & CallOptionsExt): Promise<WfRun>;
+  /** Schedule repeated WfRun based on a cron expression */
+  scheduleWf(request: DeepPartial<ScheduleWfRequest>, options?: CallOptions & CallOptionsExt): Promise<ScheduledWfRun>;
+  /** Search for existing schedules */
+  searchScheduledWfRun(
+    request: DeepPartial<SearchScheduledWfRunRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ScheduledWfRunIdList>;
+  /** Find a specific ScheduledWfRun */
+  getScheduledWfRun(
+    request: DeepPartial<ScheduledWfRunId>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ScheduledWfRun>;
   /**
    * Gets a WfRun. Although useful for development and debugging, this RPC is not often
    * used by applications.
@@ -8053,6 +8533,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
    */
   deletePrincipal(request: DeepPartial<DeletePrincipalRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
+  /** Deletes a scheduled run and prevents any further associated WfRun from being executed. */
+  deleteScheduledWfRun(
+    request: DeepPartial<DeleteScheduledWfRunRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
   /** Returns TaskDef Metrics for a specific TaskDef and a specific time window. */
   getTaskDefMetricsWindow(
     request: DeepPartial<TaskDefMetricsQueryRequest>,
