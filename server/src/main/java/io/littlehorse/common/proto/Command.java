@@ -73,6 +73,7 @@ private static final long serialVersionUID = 0L;
     SCHEDULE_WF_RUN(24),
     SCHEDULE_WF_RUN_REQUEST(25),
     DELETE_SCHEDULED_WF_RUN(26),
+    SAVE_USER_TASK_RUN_PROGRESS(27),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -113,6 +114,7 @@ private static final long serialVersionUID = 0L;
         case 24: return SCHEDULE_WF_RUN;
         case 25: return SCHEDULE_WF_RUN_REQUEST;
         case 26: return DELETE_SCHEDULED_WF_RUN;
+        case 27: return SAVE_USER_TASK_RUN_PROGRESS;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -885,10 +887,6 @@ private static final long serialVersionUID = 0L;
 
   public static final int DELETE_SCHEDULED_WF_RUN_FIELD_NUMBER = 26;
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;</code>
    * @return Whether the deleteScheduledWfRun field is set.
    */
@@ -897,10 +895,6 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 26;
   }
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;</code>
    * @return The deleteScheduledWfRun.
    */
@@ -912,10 +906,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.getDefaultInstance();
   }
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;</code>
    */
   @java.lang.Override
@@ -924,6 +914,37 @@ private static final long serialVersionUID = 0L;
        return (io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest) command_;
     }
     return io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.getDefaultInstance();
+  }
+
+  public static final int SAVE_USER_TASK_RUN_PROGRESS_FIELD_NUMBER = 27;
+  /**
+   * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;</code>
+   * @return Whether the saveUserTaskRunProgress field is set.
+   */
+  @java.lang.Override
+  public boolean hasSaveUserTaskRunProgress() {
+    return commandCase_ == 27;
+  }
+  /**
+   * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;</code>
+   * @return The saveUserTaskRunProgress.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest getSaveUserTaskRunProgress() {
+    if (commandCase_ == 27) {
+       return (io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequestOrBuilder getSaveUserTaskRunProgressOrBuilder() {
+    if (commandCase_ == 27) {
+       return (io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -1014,6 +1035,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 26) {
       output.writeMessage(26, (io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest) command_);
+    }
+    if (commandCase_ == 27) {
+      output.writeMessage(27, (io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1122,6 +1146,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 26) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(26, (io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest) command_);
+    }
+    if (commandCase_ == 27) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(27, (io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1242,6 +1270,10 @@ private static final long serialVersionUID = 0L;
         if (!getDeleteScheduledWfRun()
             .equals(other.getDeleteScheduledWfRun())) return false;
         break;
+      case 27:
+        if (!getSaveUserTaskRunProgress()
+            .equals(other.getSaveUserTaskRunProgress())) return false;
+        break;
       case 0:
       default:
     }
@@ -1356,6 +1388,10 @@ private static final long serialVersionUID = 0L;
       case 26:
         hash = (37 * hash) + DELETE_SCHEDULED_WF_RUN_FIELD_NUMBER;
         hash = (53 * hash) + getDeleteScheduledWfRun().hashCode();
+        break;
+      case 27:
+        hash = (37 * hash) + SAVE_USER_TASK_RUN_PROGRESS_FIELD_NUMBER;
+        hash = (53 * hash) + getSaveUserTaskRunProgress().hashCode();
         break;
       case 0:
       default:
@@ -1570,6 +1606,9 @@ private static final long serialVersionUID = 0L;
       if (deleteScheduledWfRunBuilder_ != null) {
         deleteScheduledWfRunBuilder_.clear();
       }
+      if (saveUserTaskRunProgressBuilder_ != null) {
+        saveUserTaskRunProgressBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -1713,6 +1752,10 @@ private static final long serialVersionUID = 0L;
       if (commandCase_ == 26 &&
           deleteScheduledWfRunBuilder_ != null) {
         result.command_ = deleteScheduledWfRunBuilder_.build();
+      }
+      if (commandCase_ == 27 &&
+          saveUserTaskRunProgressBuilder_ != null) {
+        result.command_ = saveUserTaskRunProgressBuilder_.build();
       }
     }
 
@@ -1859,6 +1902,10 @@ private static final long serialVersionUID = 0L;
         }
         case DELETE_SCHEDULED_WF_RUN: {
           mergeDeleteScheduledWfRun(other.getDeleteScheduledWfRun());
+          break;
+        }
+        case SAVE_USER_TASK_RUN_PROGRESS: {
+          mergeSaveUserTaskRunProgress(other.getSaveUserTaskRunProgress());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -2064,6 +2111,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 26;
               break;
             } // case 210
+            case 218: {
+              input.readMessage(
+                  getSaveUserTaskRunProgressFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 27;
+              break;
+            } // case 218
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -5421,10 +5475,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest, io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.Builder, io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequestOrBuilder> deleteScheduledWfRunBuilder_;
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;</code>
      * @return Whether the deleteScheduledWfRun field is set.
      */
@@ -5433,10 +5483,6 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 26;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;</code>
      * @return The deleteScheduledWfRun.
      */
@@ -5455,10 +5501,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;</code>
      */
     public Builder setDeleteScheduledWfRun(io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest value) {
@@ -5475,10 +5517,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;</code>
      */
     public Builder setDeleteScheduledWfRun(
@@ -5493,10 +5531,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;</code>
      */
     public Builder mergeDeleteScheduledWfRun(io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest value) {
@@ -5520,10 +5554,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;</code>
      */
     public Builder clearDeleteScheduledWfRun() {
@@ -5543,20 +5573,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;</code>
      */
     public io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest.Builder getDeleteScheduledWfRunBuilder() {
       return getDeleteScheduledWfRunFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;</code>
      */
     @java.lang.Override
@@ -5571,10 +5593,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -5594,6 +5612,148 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 26;
       onChanged();
       return deleteScheduledWfRunBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest, io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.Builder, io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequestOrBuilder> saveUserTaskRunProgressBuilder_;
+    /**
+     * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;</code>
+     * @return Whether the saveUserTaskRunProgress field is set.
+     */
+    @java.lang.Override
+    public boolean hasSaveUserTaskRunProgress() {
+      return commandCase_ == 27;
+    }
+    /**
+     * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;</code>
+     * @return The saveUserTaskRunProgress.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest getSaveUserTaskRunProgress() {
+      if (saveUserTaskRunProgressBuilder_ == null) {
+        if (commandCase_ == 27) {
+          return (io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.getDefaultInstance();
+      } else {
+        if (commandCase_ == 27) {
+          return saveUserTaskRunProgressBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;</code>
+     */
+    public Builder setSaveUserTaskRunProgress(io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest value) {
+      if (saveUserTaskRunProgressBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        saveUserTaskRunProgressBuilder_.setMessage(value);
+      }
+      commandCase_ = 27;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;</code>
+     */
+    public Builder setSaveUserTaskRunProgress(
+        io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.Builder builderForValue) {
+      if (saveUserTaskRunProgressBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        saveUserTaskRunProgressBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 27;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;</code>
+     */
+    public Builder mergeSaveUserTaskRunProgress(io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest value) {
+      if (saveUserTaskRunProgressBuilder_ == null) {
+        if (commandCase_ == 27 &&
+            command_ != io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.newBuilder((io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 27) {
+          saveUserTaskRunProgressBuilder_.mergeFrom(value);
+        } else {
+          saveUserTaskRunProgressBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 27;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;</code>
+     */
+    public Builder clearSaveUserTaskRunProgress() {
+      if (saveUserTaskRunProgressBuilder_ == null) {
+        if (commandCase_ == 27) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 27) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        saveUserTaskRunProgressBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;</code>
+     */
+    public io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.Builder getSaveUserTaskRunProgressBuilder() {
+      return getSaveUserTaskRunProgressFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequestOrBuilder getSaveUserTaskRunProgressOrBuilder() {
+      if ((commandCase_ == 27) && (saveUserTaskRunProgressBuilder_ != null)) {
+        return saveUserTaskRunProgressBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 27) {
+          return (io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest, io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.Builder, io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequestOrBuilder> 
+        getSaveUserTaskRunProgressFieldBuilder() {
+      if (saveUserTaskRunProgressBuilder_ == null) {
+        if (!(commandCase_ == 27)) {
+          command_ = io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.getDefaultInstance();
+        }
+        saveUserTaskRunProgressBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest, io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.Builder, io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 27;
+      onChanged();
+      return saveUserTaskRunProgressBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

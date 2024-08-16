@@ -21,6 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// A `ScheduledWfRun` is an object in the LittleHorse API that triggers a `WfRun` to be started
+// on a cron schedule.
 type ScheduledWfRun struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

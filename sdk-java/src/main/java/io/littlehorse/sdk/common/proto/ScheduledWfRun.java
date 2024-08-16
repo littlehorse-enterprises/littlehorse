@@ -4,6 +4,11 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A `ScheduledWfRun` is an object in the LittleHorse API that triggers a `WfRun` to be started
+ * on a cron schedule.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ScheduledWfRun}
  */
 public final class ScheduledWfRun extends
@@ -593,6 +598,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return builder;
   }
   /**
+   * <pre>
+   * A `ScheduledWfRun` is an object in the LittleHorse API that triggers a `WfRun` to be started
+   * on a cron schedule.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ScheduledWfRun}
    */
   public static final class Builder extends

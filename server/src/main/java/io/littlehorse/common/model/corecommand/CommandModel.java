@@ -18,6 +18,7 @@ import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.RescueThreadRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.SaveUserTaskRunProgressRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ScheduleWfRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
@@ -65,6 +66,7 @@ public class CommandModel extends AbstractCommand<Command> {
     private BulkUpdateJobModel bulkJob;
     private RescueThreadRunRequestModel rescueThreadRun;
     private DeleteTaskWorkerGroupRequestModel deleteTaskWorkerGroup;
+    private SaveUserTaskRunProgressRequestModel saveUserTaskRunProgress;
     private ScheduleWfRunCommandModel scheduleWfRun;
     private ScheduleWfRequestModel scheduleWfRunRequest;
     private DeleteScheduledWfRunRequestModel deleteScheduledWfRun;
@@ -153,6 +155,9 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case DELETE_TASK_WORKER_GROUP:
                 out.setDeleteTaskWorkerGroup(deleteTaskWorkerGroup.toProto());
+                break;
+            case SAVE_USER_TASK_RUN_PROGRESS:
+                out.setSaveUserTaskRunProgress(saveUserTaskRunProgress.toProto());
                 break;
             case SCHEDULE_WF_RUN:
                 out.setScheduleWfRun(scheduleWfRun.toProto());
@@ -247,6 +252,10 @@ public class CommandModel extends AbstractCommand<Command> {
                 deleteTaskWorkerGroup = LHSerializable.fromProto(
                         p.getDeleteTaskWorkerGroup(), DeleteTaskWorkerGroupRequestModel.class, context);
                 break;
+            case SAVE_USER_TASK_RUN_PROGRESS:
+                saveUserTaskRunProgress = LHSerializable.fromProto(
+                        p.getSaveUserTaskRunProgress(), SaveUserTaskRunProgressRequestModel.class, context);
+                break;
             case SCHEDULE_WF_RUN:
                 scheduleWfRun =
                         LHSerializable.fromProto(p.getScheduleWfRun(), ScheduleWfRunCommandModel.class, context);
@@ -307,6 +316,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return rescueThreadRun;
             case DELETE_TASK_WORKER_GROUP:
                 return deleteTaskWorkerGroup;
+            case SAVE_USER_TASK_RUN_PROGRESS:
+                return saveUserTaskRunProgress;
             case SCHEDULE_WF_RUN:
                 return scheduleWfRun;
             case SCHEDULE_WF_RUN_REQUEST:
@@ -380,6 +391,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(DeleteTaskWorkerGroupRequestModel.class)) {
             type = CommandCase.DELETE_TASK_WORKER_GROUP;
             deleteTaskWorkerGroup = (DeleteTaskWorkerGroupRequestModel) cmd;
+        } else if (cls.equals(SaveUserTaskRunProgressRequestModel.class)) {
+            type = CommandCase.SAVE_USER_TASK_RUN_PROGRESS;
+            saveUserTaskRunProgress = (SaveUserTaskRunProgressRequestModel) cmd;
         } else if (cls.equals(ScheduleWfRunCommandModel.class)) {
             type = CommandCase.SCHEDULE_WF_RUN;
             scheduleWfRun = (ScheduleWfRunCommandModel) cmd;

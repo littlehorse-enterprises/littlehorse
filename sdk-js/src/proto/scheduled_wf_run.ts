@@ -10,6 +10,10 @@ import { Timestamp } from "./google/protobuf/timestamp";
 import { ScheduledWfRunId, WfRunId, WfSpecId } from "./object_id";
 import { VariableValue } from "./variable";
 
+/**
+ * A `ScheduledWfRun` is an object in the LittleHorse API that triggers a `WfRun` to be started
+ * on a cron schedule.
+ */
 export interface ScheduledWfRun {
   /** Unique id for this ScheduledWfRun. */
   id:
