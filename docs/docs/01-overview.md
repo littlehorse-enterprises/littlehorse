@@ -16,7 +16,7 @@ The LittleHorse Orchestrator is a high-performance platform for building workflo
 
 Building applications on LittleHorse enables engineering teams to save on infrastructure costs, reduce time to market, and deliver more robust software with less downtime.
 
-The code for the LittleHorse Orchestrator and all clients is available at [our github](https://github.com/littlehorse-enterprises/littlehorse), but if you want to get started we recommend you check out our [Quickstart](./05-developer-guide/00-install.md). All code is free for production use under the Server-Side Public License. 
+The code for the LittleHorse Orchestrator and all clients is available at [our github](https://github.com/littlehorse-enterprises/littlehorse), but if you want to get started we recommend you check out our [Quickstart](./05-developer-guide/00-install.md). All code is free for production use under the Server-Side Public License.
 
 ## How it Works
 

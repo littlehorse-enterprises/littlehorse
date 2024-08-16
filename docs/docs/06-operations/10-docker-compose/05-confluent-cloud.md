@@ -62,7 +62,7 @@ services:
     environment:
       # NOTE: Please replace your bootstrap servers
       LHS_KAFKA_BOOTSTRAP_SERVERS: <your-bootstrap-servers-from-confluent>
-      
+
       # That this comes from where you mount the volume a few lines above
       LHS_KAFKA_SASL_JAAS_CONFIG_FILE: /secrets/sasl-jaas-config.txt
       LHS_KAFKA_SASL_MECHANISM: PLAIN
