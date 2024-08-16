@@ -884,7 +884,7 @@ about ThreadRun Outputs once those are added in the future.
 
 
 
-### Message `ExternalEventRun` {#externaleventrun}
+### Message `ExternalEventNodeRun` {#externaleventnoderun}
 
 The sub-node structure for an EXTERNAL_EVENT NodeRun.
 
@@ -937,7 +937,7 @@ is a Getable object, meaning it can be retried from the LittleHorse grpc API.
 | `error_message` | optional| string | A human-readable error message intended to help developers diagnose WfSpec problems. |
 | `failures` | repeated| [Failure](#failure) | A list of Failures thrown by this NodeRun. |
 | `task` | oneof `node_type`| [TaskNodeRun](#tasknoderun) | Denotes a TASK node, which runs a TaskRun. |
-| `external_event` | oneof `node_type`| [ExternalEventRun](#externaleventrun) | An EXTERNAL_EVENT node blocks until an ExternalEvent arrives. |
+| `external_event` | oneof `node_type`| [ExternalEventNodeRun](#externaleventnoderun) | An EXTERNAL_EVENT node blocks until an ExternalEvent arrives. |
 | `entrypoint` | oneof `node_type`| [EntrypointRun](#entrypointrun) | An ENTRYPOINT node is the first thing that runs in a ThreadRun. |
 | `exit` | oneof `node_type`| [ExitRun](#exitrun) | An EXIT node completes a ThreadRun. |
 | `start_thread` | oneof `node_type`| [StartThreadRun](#startthreadrun) | A START_THREAD node starts a child ThreadRun. |
@@ -3412,7 +3412,7 @@ A Node is a step in a ThreadRun.
 | `entrypoint` | oneof `node`| [EntrypointNode](#entrypointnode) | Creates an EntrypointRun. Every ThreadRun has one Entrypoint node. |
 | `exit` | oneof `node`| [ExitNode](#exitnode) | Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node. |
 | `task` | oneof `node`| [TaskNode](#tasknode) | Creates a TaskNodeRUn |
-| `external_event` | oneof `node`| [ExternalEventNode](#externaleventnode) | Creates an ExternalEventRun |
+| `external_event` | oneof `node`| [ExternalEventNode](#externaleventnode) | Creates an ExternalEventNodeRun |
 | `start_thread` | oneof `node`| [StartThreadNode](#startthreadnode) | Creates a StartThreadNodeRun |
 | `wait_for_threads` | oneof `node`| [WaitForThreadsNode](#waitforthreadsnode) | Creates a WaitForThreadsNodeRun |
 | `nop` | oneof `node`| [NopNode](#nopnode) | Creates a NopNodeRun |

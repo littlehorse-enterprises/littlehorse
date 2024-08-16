@@ -17,7 +17,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.ExternalEv
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.ExternalEventRun;
+import io.littlehorse.sdk.common.proto.ExternalEventNodeRun;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
+public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> {
 
     private ExternalEventDefIdModel externalEventDefId;
     private Date eventTime;
@@ -38,22 +38,22 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
     private ProcessorExecutionContext processorContext;
     private boolean timedOut;
 
-    public ExternalEventRunModel() {}
+    public ExternalEventNodeRunModel() {}
 
-    public ExternalEventRunModel(ExternalEventDefIdModel extEvtId, ProcessorExecutionContext processorContext) {
+    public ExternalEventNodeRunModel(ExternalEventDefIdModel extEvtId, ProcessorExecutionContext processorContext) {
         this.externalEventDefId = extEvtId;
         this.executionContext = processorContext;
         this.processorContext = processorContext;
     }
 
     @Override
-    public Class<ExternalEventRun> getProtoBaseClass() {
-        return ExternalEventRun.class;
+    public Class<ExternalEventNodeRun> getProtoBaseClass() {
+        return ExternalEventNodeRun.class;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
-        ExternalEventRun p = (ExternalEventRun) proto;
+        ExternalEventNodeRun p = (ExternalEventNodeRun) proto;
         if (p.hasEventTime()) {
             eventTime = LHUtil.fromProtoTs(p.getEventTime());
         }
@@ -67,8 +67,8 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
     }
 
     @Override
-    public ExternalEventRun.Builder toProto() {
-        ExternalEventRun.Builder out = ExternalEventRun.newBuilder()
+    public ExternalEventNodeRun.Builder toProto() {
+        ExternalEventNodeRun.Builder out = ExternalEventNodeRun.newBuilder()
                 .setExternalEventDefId(externalEventDefId.toProto())
                 .setTimedOut(timedOut);
 
@@ -169,8 +169,8 @@ public class ExternalEventRunModel extends SubNodeRun<ExternalEventRun> {
         timedOut = true;
     }
 
-    public static ExternalEventRunModel fromProto(ExternalEventRun p, ExecutionContext context) {
-        ExternalEventRunModel out = new ExternalEventRunModel();
+    public static ExternalEventNodeRunModel fromProto(ExternalEventNodeRun p, ExecutionContext context) {
+        ExternalEventNodeRunModel out = new ExternalEventNodeRunModel();
         out.initFrom(p, context);
         return out;
     }

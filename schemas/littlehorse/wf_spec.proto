@@ -329,7 +329,7 @@ message Node {
     // Creates a TaskNodeRUn
     TaskNode task = 7;
 
-    // Creates an ExternalEventRun
+    // Creates an ExternalEventNodeRun
     ExternalEventNode external_event = 8;
 
     // Creates a StartThreadNodeRun

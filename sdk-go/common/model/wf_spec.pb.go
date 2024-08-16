@@ -1429,7 +1429,7 @@ type Node_Task struct {
 }
 
 type Node_ExternalEvent struct {
-	// Creates an ExternalEventRun
+	// Creates an ExternalEventNodeRun
 	ExternalEvent *ExternalEventNode `protobuf:"bytes,8,opt,name=external_event,json=externalEvent,proto3,oneof"`
 }
 
