@@ -346,7 +346,7 @@ func executeUserTask(cmd *cobra.Command, wfRunId string, userTaskGuid string, cl
 		completeUserTask.Results[field.Name] = resultVal
 	}
 
-	fmt.Println("completing userTaskRun!")
+	fmt.Println("Saving userTaskRun progress!")
 	// Post the result
 	common.PrintResp(
 		(*client).CompleteUserTaskRun(requestContext(cmd), completeUserTask),
