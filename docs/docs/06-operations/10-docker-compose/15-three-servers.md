@@ -1,6 +1,9 @@
 # Three LittleHorse Orchestrators
 
-You can configure multiple LittleHorse Orchestrator brokers to communicate with one another. This provides workflow handling replication ensuring fault tolerance and high availability. For example, if one broker goes down, the remaining brokers can  facilitate a rebalance to keep your Workflows running smoothly.
+LittleHorse is a horizontally scalable system. As such, you can configure multiple LittleHorse Orchestrator servers to act as a cluster. This provides the following benefits:
+
+- High availability with hot standby replicas (note that durability is handled by Kafka and does not depend on the number of LittleHorse Servers).
+- Higher throughput as work is distributed across multiple LittleHorse Servers.
 
 This example shows how to run LittleHorse with three servers and a dashboard using Docker Compose without authentication.
 
