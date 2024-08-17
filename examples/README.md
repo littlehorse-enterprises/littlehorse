@@ -1,9 +1,28 @@
-# LittleHorse Java Examples
+# LittleHorse Examples
 
-Here you will find a few examples to demonstrate simple `WfSpec` concepts in LittleHorse.
+Here you will find a collection of self-contained examples which demonstrate various LittleHorse concepts.
+
+## Contents
+
+The examples are organized as follows:
+
+* [java](./java/): a series of simple examples using the Java SDK.
+* [go](./go/): a series of simple examples using the Go SDK.
+* [python](./python/): a series of simple examples using the Python SDK.
+* [docker-compose](./docker-compose/): an example showing how to run LH in docker compose.
 
 ## Prerequisites
 
+The code in most examples makes the following assumptions:
+
+1. You have access to a running LH Server.
+2. You have a file `${HOME}/.config/littlehorse.config` which contains appropriate LH Client Configurations to access that LH Server.
+
+### Running the LH Server
+
+The majority of these examples (excluding the ones which run the server manually) assume that you have the LH Server already running. There are a few ways to do it.
+
+You can use our `lh-standalone` image to run the LH Server and Dashboard in a single 
 First, you need a running LH Server (either locally in your own terminal, or remote).
 
 > The [LittleHorse Website](https://littlehorse.dev) has information about how to run it.

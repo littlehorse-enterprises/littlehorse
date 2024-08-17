@@ -1,11 +1,11 @@
-# Three LittleHorse Orchestrators
+# Scaling Horizontally
 
 LittleHorse is a horizontally scalable system. As such, you can configure multiple LittleHorse Orchestrator servers to act as a cluster. This provides the following benefits:
 
 - High availability with hot standby replicas (note that durability is handled by Kafka and does not depend on the number of LittleHorse Servers).
 - Higher throughput as work is distributed across multiple LittleHorse Servers.
 
-This example shows how to run LittleHorse with three servers and a dashboard using Docker Compose without authentication.
+This example shows how to run LittleHorse with three servers and a dashboard using Docker Compose without authentication. Note that the provided file does not scale Kafka horizontally; for more information on that we refer you to the [Apache Kafka documentation](https://kafka.apache.org).
 
 ## Docker Compose File
 
