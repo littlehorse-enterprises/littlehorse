@@ -258,7 +258,7 @@ import org.apache.kafka.streams.processor.TaskId;
 @Slf4j
 public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
-    private Context.Key<RequestExecutionContext> contextKey = Context.key("executionContextKey");
+    private final Context.Key<RequestExecutionContext> contextKey;
     private final LHServerConfig serverConfig;
     private final TaskQueueManager taskQueueManager;
     private final BackendInternalComms internalComms;
@@ -280,7 +280,8 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             ScheduledExecutorService networkThreadPool,
             CoreStoreProvider coreStoreProvider,
             MetadataCache metadataCache,
-            List<ServerInterceptor> interceptors) {
+            List<ServerInterceptor> interceptors,
+            Context.Key<RequestExecutionContext> contextKey) {
 
         // All dependencies are passed in as arguments; nothing is instantiated here,
         // because all listeners share the same threading infrastructure.
@@ -292,6 +293,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         this.coreStoreProvider = coreStoreProvider;
         this.internalComms = internalComms;
         this.listenerName = listenerConfig.getName();
+        this.contextKey = contextKey;
 
         this.grpcListener = null;
 

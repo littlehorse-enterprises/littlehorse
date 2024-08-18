@@ -125,7 +125,8 @@ public class LHServer {
                         new MetricCollectingServerInterceptor(healthService.getMeterRegistry()),
                         new RequestAuthorizer(contextKey, metadataCache, coreStoreProvider, config),
                         listenerConfig.getServerAuthorizer(),
-                        new RequestSanitizer()));
+                        new RequestSanitizer()),
+                contextKey);
     }
 
     public String getInstanceName() {
