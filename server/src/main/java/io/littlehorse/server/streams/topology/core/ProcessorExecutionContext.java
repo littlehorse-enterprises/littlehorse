@@ -11,7 +11,7 @@ import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
@@ -53,7 +53,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
 
     private List<WorkflowEventModel> eventsToThrow;
 
-    private final KafkaStreamsServerImpl server;
+    private final LHServer server;
     private GetableUpdates getableUpdates;
     private MetricsUpdater metricsAggregator;
 
@@ -64,7 +64,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
             ProcessorContext<String, CommandProcessorOutput> processorContext,
             TaskQueueManager globalTaskQueueManager,
             MetadataCache metadataCache,
-            KafkaStreamsServerImpl server) {
+            LHServer server) {
 
         this.processorContext = processorContext;
         this.metadataCache = metadataCache;

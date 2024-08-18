@@ -5,7 +5,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
-import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import java.io.IOException;
 import java.util.Properties;
@@ -21,8 +21,8 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
     private LittleHorseBlockingStub client;
 
     private KafkaContainer kafka;
-    private KafkaStreamsServerImpl server1;
-    private KafkaStreamsServerImpl server2;
+    private LHServer server1;
+    private LHServer server2;
 
     public StandaloneTestBootstrapper() {
         try {
@@ -57,8 +57,8 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
         TimeUnit.SECONDS.sleep(3);
 
         // run the server in another thread
-        server1 = new KafkaStreamsServerImpl(server1Config);
-        server2 = new KafkaStreamsServerImpl(server2Config);
+        server1 = new LHServer(server1Config);
+        server2 = new LHServer(server2Config);
 
         new Thread(() -> {
                     try {

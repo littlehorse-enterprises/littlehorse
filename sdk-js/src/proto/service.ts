@@ -1014,14 +1014,7 @@ export interface RegisterTaskWorkerRequest {
   /** Is the ID of the Task Worker. */
   taskWorkerId: string;
   /** The TaskDef the worker wants to poll for. */
-  taskDefId:
-    | TaskDefId
-    | undefined;
-  /**
-   * The listener that the worker is polling on. Used by the server to determine which
-   * advertised hosts to return.
-   */
-  listenerName: string;
+  taskDefId: TaskDefId | undefined;
 }
 
 /**
@@ -5002,7 +4995,7 @@ export const ExternalEventList = {
 };
 
 function createBaseRegisterTaskWorkerRequest(): RegisterTaskWorkerRequest {
-  return { taskWorkerId: "", taskDefId: undefined, listenerName: "" };
+  return { taskWorkerId: "", taskDefId: undefined };
 }
 
 export const RegisterTaskWorkerRequest = {
@@ -5012,9 +5005,6 @@ export const RegisterTaskWorkerRequest = {
     }
     if (message.taskDefId !== undefined) {
       TaskDefId.encode(message.taskDefId, writer.uint32(18).fork()).ldelim();
-    }
-    if (message.listenerName !== "") {
-      writer.uint32(26).string(message.listenerName);
     }
     return writer;
   },
@@ -5040,13 +5030,6 @@ export const RegisterTaskWorkerRequest = {
 
           message.taskDefId = TaskDefId.decode(reader, reader.uint32());
           continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.listenerName = reader.string();
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -5065,7 +5048,6 @@ export const RegisterTaskWorkerRequest = {
     message.taskDefId = (object.taskDefId !== undefined && object.taskDefId !== null)
       ? TaskDefId.fromPartial(object.taskDefId)
       : undefined;
-    message.listenerName = object.listenerName ?? "";
     return message;
   },
 };

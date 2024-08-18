@@ -4,11 +4,14 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Context;
+import io.grpc.Grpc;
+import io.grpc.Server;
+import io.grpc.ServerBuilder;
+import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
-import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
@@ -76,7 +79,6 @@ import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest;
@@ -185,10 +187,8 @@ import io.littlehorse.sdk.common.proto.WfSpecIdList;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.sdk.common.proto.WorkflowEventDef;
 import io.littlehorse.server.auth.InternalCallCredentials;
-import io.littlehorse.server.listener.ListenersManager;
-import io.littlehorse.server.monitoring.HealthService;
+import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.streams.BackendInternalComms;
-import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanReply;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListExternalEventsRequestModel;
@@ -240,87 +240,95 @@ import io.littlehorse.server.streams.topology.core.WfService;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import io.littlehorse.server.streams.util.POSTStreamObserver;
-import java.io.FileWriter;
+import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Headers;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.processor.TaskId;
 
 @Slf4j
-public class KafkaStreamsServerImpl extends LittleHorseImplBase {
+public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
-    private LHServerConfig config;
-    private TaskQueueManager taskQueueManager;
-
-    private KafkaStreams coreStreams;
-    private KafkaStreams timerStreams;
-
-    private BackendInternalComms internalComms;
-
-    private ListenersManager listenerManager;
-    private HealthService healthService;
     private Context.Key<RequestExecutionContext> contextKey = Context.key("executionContextKey");
+    private final LHServerConfig serverConfig;
+    private final TaskQueueManager taskQueueManager;
+    private final BackendInternalComms internalComms;
     private final MetadataCache metadataCache;
     private final CoreStoreProvider coreStoreProvider;
     private final ScheduledExecutorService networkThreadpool;
+    private final String listenerName;
+
+    private Server grpcListener;
 
     private RequestExecutionContext requestContext() {
         return contextKey.get();
     }
 
-    public KafkaStreamsServerImpl(LHServerConfig config) {
-        this.metadataCache = new MetadataCache();
-        this.config = config;
-        this.taskQueueManager = new TaskQueueManager(this, LHConstants.MAX_TASKRUNS_IN_ONE_TASKQUEUE);
+    public LHServerListener(
+            ServerListenerConfig listenerConfig,
+            TaskQueueManager taskQueueManager,
+            BackendInternalComms internalComms,
+            ScheduledExecutorService networkThreadPool,
+            CoreStoreProvider coreStoreProvider,
+            MetadataCache metadataCache,
+            List<ServerInterceptor> interceptors) {
 
-        if (config.getLHInstanceId().isPresent()) {
-            overrideStreamsProcessId("core");
-            overrideStreamsProcessId("timer");
+        // All dependencies are passed in as arguments; nothing is instantiated here,
+        // because all listeners share the same threading infrastructure.
+
+        this.metadataCache = metadataCache;
+        this.serverConfig = listenerConfig.getConfig();
+        this.taskQueueManager = taskQueueManager;
+        this.networkThreadpool = networkThreadPool;
+        this.coreStoreProvider = coreStoreProvider;
+        this.internalComms = internalComms;
+        this.listenerName = listenerConfig.getName();
+
+        this.grpcListener = null;
+
+        ServerBuilder<?> builder = Grpc.newServerBuilderForPort(
+                        listenerConfig.getPort(), listenerConfig.getCredentials())
+                .permitKeepAliveTime(15, TimeUnit.SECONDS)
+                .permitKeepAliveWithoutCalls(true)
+                .addService(this)
+                .executor(networkThreadPool);
+
+        for (ServerInterceptor interceptor : interceptors) {
+            builder.intercept(interceptor);
         }
-        this.coreStreams = new KafkaStreams(
-                ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager),
-                config.getCoreStreamsConfig());
-        this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
-        coreStreams.setUncaughtExceptionHandler(throwable -> {
-            log.error("Uncaught exception for " + throwable.getMessage());
-            return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
-        });
-        timerStreams.setUncaughtExceptionHandler(throwable -> {
-            log.error("Uncaught exception for " + throwable.getMessage());
-            return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
-        });
 
-        this.networkThreadpool = Executors.newScheduledThreadPool(config.getNumNetworkThreads());
-        coreStoreProvider = new CoreStoreProvider(this.coreStreams);
-        this.internalComms = new BackendInternalComms(
-                config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey, coreStoreProvider);
-        this.healthService =
-                new HealthService(config, coreStreams, timerStreams, taskQueueManager, metadataCache, internalComms);
-        this.listenerManager = new ListenersManager(
-                config,
-                this,
-                networkThreadpool,
-                healthService.getMeterRegistry(),
-                metadataCache,
-                contextKey,
-                coreStoreProvider);
+        this.grpcListener = builder.build();
+    }
+
+    public void start() throws IOException {
+        log.debug("Starting listener {}", listenerName);
+        grpcListener.start();
+    }
+
+    @Override
+    public void close() {
+        // This forcibly closes all grpc connections rather than waiting for them to
+        // complete. This cuts off all streaming connections too.
+        grpcListener.shutdownNow();
+        try {
+            grpcListener.awaitTermination();
+        } catch (InterruptedException e) {
+            log.warn("InterruptedException Ignored", e);
+        }
+        log.info("GRPC Server for Listener {} was stopped", listenerName);
     }
 
     public String getInstanceName() {
-        return config.getLHInstanceName();
+        return serverConfig.getLHInstanceName();
     }
 
     @Override
@@ -579,7 +587,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 authorization.principalId(),
                 coreStoreProvider,
                 metadataCache,
-                config,
+                serverConfig,
                 requestContext());
     }
 
@@ -591,7 +599,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
         TaskWorkerHeartBeatRequest heartBeatPb = TaskWorkerHeartBeatRequest.newBuilder()
                 .setClientId(req.getTaskWorkerId())
-                .setListenerName(req.getListenerName())
+                .setListenerName(this.listenerName)
                 .setTaskDefId(req.getTaskDefId())
                 .build();
 
@@ -633,7 +641,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         producer.send(
                 command.getPartitionKey(),
                 command,
-                command.getTopic(config),
+                command.getTopic(serverConfig),
                 kafkaProducerCallback,
                 commandMetadata.toArray());
     }
@@ -1098,7 +1106,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 // Streams Session Timeout is how long it takes to notice that the server is down.
                 // Then we need the rebalance to occur, and the new server must process the command.
                 // So we give it a buffer of 10 additional seconds.
-                Duration.ofMillis(10_000 + config.getStreamsSessionTimeout()),
+                Duration.ofMillis(10_000 + serverConfig.getStreamsSessionTimeout()),
                 networkThreadpool);
 
         Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command, context);
@@ -1111,7 +1119,7 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
                 .send(
                         command.getPartitionKey(),
                         command,
-                        command.getTopic(config),
+                        command.getTopic(serverConfig),
                         callback,
                         commandMetadata.toArray());
     }
@@ -1140,102 +1148,6 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
 
     public void drainPartitionTaskQueue(TaskId streamsTaskId) {
         taskQueueManager.drainPartition(streamsTaskId);
-    }
-
-    public void start() throws IOException {
-        coreStreams.start();
-        timerStreams.start();
-        internalComms.start();
-        listenerManager.start();
-        healthService.start();
-    }
-
-    private void overrideStreamsProcessId(String topology) {
-        String fakeUuid = String.format(
-                "%08d-0000-0000-0000-000000000000", config.getLHInstanceId().get());
-        String fileContent = String.format("{\"processId\":\"" + fakeUuid + "\"}");
-
-        try {
-            Path stateDir = Path.of(config.getStateDirectory());
-            Path streamsDir = stateDir.resolve(config.getKafkaGroupId(topology));
-            Path streamsMetadataFile = streamsDir.resolve("kafka-streams-process-metadata");
-            if (!Files.exists(streamsMetadataFile.getParent())) {
-                Files.createDirectories(streamsMetadataFile.getParent());
-            }
-            try (FileWriter writer = new FileWriter(streamsMetadataFile.toFile())) {
-                writer.write(fileContent);
-                log.info("Overwrote kafka-streams-process-metadata with content: {}", fileContent);
-            }
-
-        } catch (IOException exn) {
-            throw new LHMisconfigurationException("Failed overriding Streams Process ID", exn);
-        }
-    }
-
-    public void close() {
-        CountDownLatch latch = new CountDownLatch(4);
-
-        new Thread(() -> {
-                    log.info("Closing timer");
-                    timerStreams.close();
-                    latch.countDown();
-                    log.info("Done closing timer Kafka Streams");
-                })
-                .start();
-
-        new Thread(() -> {
-                    log.info("Closing core");
-                    coreStreams.close();
-                    latch.countDown();
-                    log.info("Done closing core Kafka Streams");
-                })
-                .start();
-
-        new Thread(() -> {
-                    log.info("Closing internalComms");
-                    internalComms.close();
-                    latch.countDown();
-                })
-                .start();
-
-        new Thread(() -> {
-                    log.info("Closing health service");
-                    healthService.close();
-                    latch.countDown();
-                })
-                .start();
-
-        log.info("Shutting down main servers");
-        listenerManager.close();
-
-        try {
-            latch.await();
-            log.info("Done shutting down all internal server processes");
-        } catch (Exception exn) {
-            throw new RuntimeException(exn);
-        }
-    }
-
-    public static void doMain(LHServerConfig config) throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1);
-        KafkaStreamsServerImpl server = new KafkaStreamsServerImpl(config);
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            log.info("Closing now!");
-            server.close();
-            config.cleanup();
-            latch.countDown();
-        }));
-        new Thread(() -> {
-                    try {
-                        server.start();
-                    } catch (IOException exn) {
-                        throw new RuntimeException(exn);
-                    }
-                })
-                .start();
-
-        latch.await();
-        log.info("Done waiting for countdown latch");
     }
 
     public Set<HostModel> getAllInternalHosts() {

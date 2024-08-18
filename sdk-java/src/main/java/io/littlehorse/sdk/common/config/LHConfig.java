@@ -65,9 +65,6 @@ public class LHConfig extends ConfigBase {
     /** The number of worker threads to run. */
     public static final String NUM_WORKER_THREADS_KEY = "LHW_NUM_WORKER_THREADS";
 
-    /** Listener to connect to. */
-    public static final String SERVER_CONNECT_LISTENER_KEY = "LHW_SERVER_CONNECT_LISTENER";
-
     /** GRPC Connection Keepalive Interval */
     public static final String GRPC_KEEPALIVE_TIME_MS_KEY = "LHC_GRPC_KEEPALIVE_TIME_MS";
 
@@ -91,7 +88,6 @@ public class LHConfig extends ConfigBase {
             LHConfig.OAUTH_CLIENT_ID_KEY,
             LHConfig.OAUTH_CLIENT_SECRET_KEY,
             LHConfig.NUM_WORKER_THREADS_KEY,
-            LHConfig.SERVER_CONNECT_LISTENER_KEY,
             LHConfig.TASK_WORKER_VERSION_KEY,
             LHConfig.INFLIGHT_TASKS_KEY);
 
@@ -202,15 +198,6 @@ public class LHConfig extends ConfigBase {
      */
     public String getTaskWorkerVersion() {
         return getOrSetDefault(TASK_WORKER_VERSION_KEY, "");
-    }
-
-    /**
-     * Returns the name of the listener to connect to.
-     *
-     * @return the name of the listener on the LH Server to connect to.
-     */
-    public String getConnectListener() {
-        return getOrSetDefault(SERVER_CONNECT_LISTENER_KEY, LHConfig.DEFAULT_PUBLIC_LISTENER);
     }
 
     /**

@@ -19,7 +19,6 @@ public class LHServerConnectionManager {
             TaskDef taskDef,
             LittleHorseStub bootstrapStub,
             String taskWorkerId,
-            String connectListenerName,
             LHLivenessController livenessController,
             Method taskMethod,
             List<VariableMapping> mappings,
@@ -28,7 +27,6 @@ public class LHServerConnectionManager {
         this.rebalanceThread = new RebalanceThread(
                 bootstrapStub,
                 taskWorkerId,
-                connectListenerName,
                 taskDef,
                 config,
                 livenessController,

@@ -977,10 +977,6 @@ message RegisterTaskWorkerRequest {
 
   // The TaskDef the worker wants to poll for.
   TaskDefId task_def_id = 2;
-
-  // The listener that the worker is polling on. Used by the server to determine which
-  // advertised hosts to return.
-  string listener_name = 3;
 }
 
 // Message used by Task Worker to register itself to the server and ask for assignments of

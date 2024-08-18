@@ -2,7 +2,7 @@ package io.littlehorse.driver;
 
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.LHServer;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
@@ -19,7 +19,7 @@ public class TestDriverStandalone extends TestDriver {
     private static final Logger log = LoggerFactory.getLogger(TestDriverStandalone.class);
 
     private KafkaContainer kafka;
-    private KafkaStreamsServerImpl server;
+    private LHServer server;
 
     public TestDriverStandalone(Set<Class<?>> tests, int threads) {
         super(tests, threads);
@@ -51,7 +51,7 @@ public class TestDriverStandalone extends TestDriver {
         TimeUnit.SECONDS.sleep(3);
 
         // run the server in another thread
-        server = new KafkaStreamsServerImpl(serverConfig);
+        server = new LHServer(serverConfig);
 
         new Thread(() -> {
                     try {

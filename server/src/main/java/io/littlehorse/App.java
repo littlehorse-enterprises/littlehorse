@@ -1,7 +1,9 @@
 package io.littlehorse;
 
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.LHServer;
+import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +33,7 @@ public class App {
         }
     }
 
-    public static void main(String[] args) throws InterruptedException, ExecutionException {
+    public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
         LHServerConfig config;
 
         if (args.length > 0) {
@@ -43,11 +45,25 @@ public class App {
         }
 
         log.info("Settings:\n{}", config);
-
         if (config.shouldCreateTopics()) {
             doIdempotentSetup(config);
         }
 
-        KafkaStreamsServerImpl.doMain(config);
+        CountDownLatch latch = new CountDownLatch(1);
+        LHServer server = new LHServer(config);
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            log.info("Shutting down server");
+            server.close();
+
+            // The Config manages the KafkaAdminClient, so we need to clean it up
+            config.cleanup();
+
+            latch.countDown();
+        }));
+
+        log.info("Starting the LHServer now!");
+        server.start();
+        latch.await();
+        log.info("Done waiting for countdown latch, exiting now.");
     }
 }
