@@ -168,6 +168,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 |  [CancelUserTaskRunRequest](#cancelusertaskrunrequest)  |  .google.protobuf.Empty  | Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun. |
 
+### RPC `SaveUserTaskRunProgress` {#saveusertaskrunprogress}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [SaveUserTaskRunProgressRequest](#saveusertaskrunprogressrequest)  |  [UserTaskRun](#usertaskrun)  | Saves the results of a UserTaskRun and logs who saved the content.<br/><br/><br/><li> Throws FAILED_PRECONDITION if the UserTaskRun is in the `DONE` or `CANCELLED` state.</li> <li> If `policy` is set to `FAIL_IF_CLAIMED_BY_OTHER`, returns `FAILED_PRECONDITION` if the `user_id` field of the `UserTaskRun` does not match the `user_id` of the request.</li> |
+
 ### RPC `ListUserTaskRuns` {#listusertaskruns}
 
 | Request Type | Response Type | Description |
@@ -879,7 +885,7 @@ about ThreadRun Outputs once those are added in the future.
 
 
 
-### Message `ExternalEventRun` {#externaleventrun}
+### Message `ExternalEventNodeRun` {#externaleventnoderun}
 
 The sub-node structure for an EXTERNAL_EVENT NodeRun.
 
@@ -932,7 +938,7 @@ is a Getable object, meaning it can be retried from the LittleHorse grpc API.
 | `error_message` | optional| string | A human-readable error message intended to help developers diagnose WfSpec problems. |
 | `failures` | repeated| [Failure](#failure) | A list of Failures thrown by this NodeRun. |
 | `task` | oneof `node_type`| [TaskNodeRun](#tasknoderun) | Denotes a TASK node, which runs a TaskRun. |
-| `external_event` | oneof `node_type`| [ExternalEventRun](#externaleventrun) | An EXTERNAL_EVENT node blocks until an ExternalEvent arrives. |
+| `external_event` | oneof `node_type`| [ExternalEventNodeRun](#externaleventnoderun) | An EXTERNAL_EVENT node blocks until an ExternalEvent arrives. |
 | `entrypoint` | oneof `node_type`| [EntrypointRun](#entrypointrun) | An ENTRYPOINT node is the first thing that runs in a ThreadRun. |
 | `exit` | oneof `node_type`| [ExitRun](#exitrun) | An EXIT node completes a ThreadRun. |
 | `start_thread` | oneof `node_type`| [StartThreadRun](#startthreadrun) | A START_THREAD node starts a child ThreadRun. |
@@ -2824,6 +2830,40 @@ Completes a UserTaskRun with provided values.
 
 
 
+### Message `SaveUserTaskRunProgressRequest` {#saveusertaskrunprogressrequest}
+
+Saves the results of a UserTaskRun and logs who saved the content.<br/>
+
+<li> Throws FAILED_PRECONDITION if the UserTaskRun is in the `DONE` or `CANCELLED` state.</li>
+<li> If `policy` is set to `FAIL_IF_CLAIMED_BY_OTHER`, returns `FAILED_PRECONDITION` if the
+`user_id` field of the `UserTaskRun` does not match the `user_id` of the request.</li>
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `user_task_run_id` | | [UserTaskRunId](#usertaskrunid) | The id of UserTaskRun to save. |
+| `results` | map| [SaveUserTaskRunProgressRequest.ResultsEntry](#saveusertaskrunprogressrequestresultsentry) | A map from UserTaskField.name to a VariableValue containing the results of the user filling out the form. |
+| `user_id` | | string | The ID of the user who saved the task. |
+| `policy` | | [SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy](#saveusertaskrunprogressrequestsaveusertaskrunassignmentpolicy) | Configures how to handle `UserTaskRun` ownership when saving it. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SaveUserTaskRunProgressRequest.ResultsEntry` {#saveusertaskrunprogressrequestresultsentry}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `key` | | string |  |
+| `value` | | [VariableValue](#variablevalue) |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `UserTaskDef` {#usertaskdef}
 
 UserTaskDef is the metadata blueprint for UserTaskRuns.
@@ -2852,7 +2892,8 @@ purposes.
 | `time` | | google.protobuf.Timestamp | the time the event occurred. |
 | `task_executed` | oneof `event`| [UserTaskEvent.UTETaskExecuted](#usertaskeventutetaskexecuted) | Denotes that a TaskRun was scheduled via a trigger. |
 | `assigned` | oneof `event`| [UserTaskEvent.UTEAssigned](#usertaskeventuteassigned) | Denotes that the UserTaskRun was assigned. |
-| `cancelled` | oneof `event`| [UserTaskEvent.UTECancelled](#usertaskeventutecancelled) | Denotes that the UserTaskRun was cancelled.<br/><br/>TODO: Add "save user task" and "complete user task" to the audit log |
+| `cancelled` | oneof `event`| [UserTaskEvent.UTECancelled](#usertaskeventutecancelled) | Denotes that the UserTaskRun was cancelled. |
+| `saved` | oneof `event`| [UserTaskEvent.UTESaved](#usertaskeventutesaved) | Denotes that the `UserTaskRun` was saved. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2882,6 +2923,34 @@ Empty message used to denote that the `UserTaskRun` was cancelled.
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
 | `message` | | string |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskEvent.UTESaved` {#usertaskeventutesaved}
+
+Message to denote that the `UserTaskRun` was saved.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `user_id` | | string | The user_id of the user who saved the UserTaskRun. |
+| `results` | map| [UserTaskEvent.UTESaved.ResultsEntry](#usertaskeventutesavedresultsentry) | The results that were saved. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `UserTaskEvent.UTESaved.ResultsEntry` {#usertaskeventutesavedresultsentry}
+
+
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `key` | | string |  |
+| `value` | | [VariableValue](#variablevalue) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3362,7 +3431,7 @@ A Node is a step in a ThreadRun.
 | `entrypoint` | oneof `node`| [EntrypointNode](#entrypointnode) | Creates an EntrypointRun. Every ThreadRun has one Entrypoint node. |
 | `exit` | oneof `node`| [ExitNode](#exitnode) | Creates an `ExitRun``. Every ThreadSpec has at least one Exit Node. |
 | `task` | oneof `node`| [TaskNode](#tasknode) | Creates a TaskNodeRUn |
-| `external_event` | oneof `node`| [ExternalEventNode](#externaleventnode) | Creates an ExternalEventRun |
+| `external_event` | oneof `node`| [ExternalEventNode](#externaleventnode) | Creates an ExternalEventNodeRun |
 | `start_thread` | oneof `node`| [StartThreadNode](#startthreadnode) | Creates a StartThreadNodeRun |
 | `wait_for_threads` | oneof `node`| [WaitForThreadsNode](#waitforthreadsnode) | Creates a WaitForThreadsNodeRun |
 | `nop` | oneof `node`| [NopNode](#nopnode) | Creates a NopNodeRun |
@@ -4027,6 +4096,17 @@ This enum denotes the type of a NodeRun.
  <!-- end Enums -->
 
  <!-- end Enums -->
+
+
+
+### Enum SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy {#saveusertaskrunprogressrequestsaveusertaskrunassignmentpolicy}
+Configures how to handle `UserTaskRun` ownership when saving it.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| FAIL_IF_CLAIMED_BY_OTHER | 0 | If the UserTaskRun is already assigned to a user_id, then the request throws a FAILED_PRECONDITION error. |
+| IGNORE_CLAIM | 1 | If the UserTaskRun is already assigned to a user_id, then the request will leave the `UserTaskRun` assigned to the current user but still update the `results` and log in the `events` who updated the results. |
+
 
 
 

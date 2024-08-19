@@ -378,7 +378,7 @@ private static final long serialVersionUID = 0L;
   public static final int EXTERNAL_EVENT_FIELD_NUMBER = 8;
   /**
    * <pre>
-   * Creates an ExternalEventRun
+   * Creates an ExternalEventNodeRun
    * </pre>
    *
    * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
@@ -390,7 +390,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Creates an ExternalEventRun
+   * Creates an ExternalEventNodeRun
    * </pre>
    *
    * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
@@ -405,7 +405,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Creates an ExternalEventRun
+   * Creates an ExternalEventNodeRun
    * </pre>
    *
    * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
@@ -2799,7 +2799,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.ExternalEventNode, io.littlehorse.sdk.common.proto.ExternalEventNode.Builder, io.littlehorse.sdk.common.proto.ExternalEventNodeOrBuilder> externalEventBuilder_;
     /**
      * <pre>
-     * Creates an ExternalEventRun
+     * Creates an ExternalEventNodeRun
      * </pre>
      *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
@@ -2811,7 +2811,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an ExternalEventRun
+     * Creates an ExternalEventNodeRun
      * </pre>
      *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
@@ -2833,7 +2833,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an ExternalEventRun
+     * Creates an ExternalEventNodeRun
      * </pre>
      *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
@@ -2853,7 +2853,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an ExternalEventRun
+     * Creates an ExternalEventNodeRun
      * </pre>
      *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
@@ -2871,7 +2871,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an ExternalEventRun
+     * Creates an ExternalEventNodeRun
      * </pre>
      *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
@@ -2898,7 +2898,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an ExternalEventRun
+     * Creates an ExternalEventNodeRun
      * </pre>
      *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
@@ -2921,7 +2921,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an ExternalEventRun
+     * Creates an ExternalEventNodeRun
      * </pre>
      *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
@@ -2931,7 +2931,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an ExternalEventRun
+     * Creates an ExternalEventNodeRun
      * </pre>
      *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
@@ -2949,7 +2949,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Creates an ExternalEventRun
+     * Creates an ExternalEventNodeRun
      * </pre>
      *
      * <code>.littlehorse.ExternalEventNode external_event = 8;</code>

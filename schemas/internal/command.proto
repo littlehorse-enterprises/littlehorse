@@ -45,7 +45,7 @@ message Command {
         ScheduleWfRun schedule_wf_run = 24;
         ScheduleWfRequest schedule_wf_run_request = 25;
         DeleteScheduledWfRunRequest delete_scheduled_wf_run = 26;
-        // TODO: Add SaveUserTask
+        SaveUserTaskRunProgressRequest save_user_task_run_progress = 27;
     }
 }
 

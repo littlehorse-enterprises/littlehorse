@@ -70,7 +70,7 @@ export interface NodeRun {
     | undefined;
   /** An EXTERNAL_EVENT node blocks until an ExternalEvent arrives. */
   externalEvent?:
-    | ExternalEventRun
+    | ExternalEventNodeRun
     | undefined;
   /** An ENTRYPOINT node is the first thing that runs in a ThreadRun. */
   entrypoint?:
@@ -256,7 +256,7 @@ export interface WaitForThreadsRun_WaitForThread {
 }
 
 /** The sub-node structure for an EXTERNAL_EVENT NodeRun. */
-export interface ExternalEventRun {
+export interface ExternalEventNodeRun {
   /** The ExternalEventDefId that we are waiting for. */
   externalEventDefId:
     | ExternalEventDefId
@@ -384,7 +384,7 @@ export const NodeRun = {
       TaskNodeRun.encode(message.task, writer.uint32(106).fork()).ldelim();
     }
     if (message.externalEvent !== undefined) {
-      ExternalEventRun.encode(message.externalEvent, writer.uint32(114).fork()).ldelim();
+      ExternalEventNodeRun.encode(message.externalEvent, writer.uint32(114).fork()).ldelim();
     }
     if (message.entrypoint !== undefined) {
       EntrypointRun.encode(message.entrypoint, writer.uint32(122).fork()).ldelim();
@@ -512,7 +512,7 @@ export const NodeRun = {
             break;
           }
 
-          message.externalEvent = ExternalEventRun.decode(reader, reader.uint32());
+          message.externalEvent = ExternalEventNodeRun.decode(reader, reader.uint32());
           continue;
         case 15:
           if (tag !== 122) {
@@ -600,7 +600,7 @@ export const NodeRun = {
       ? TaskNodeRun.fromPartial(object.task)
       : undefined;
     message.externalEvent = (object.externalEvent !== undefined && object.externalEvent !== null)
-      ? ExternalEventRun.fromPartial(object.externalEvent)
+      ? ExternalEventNodeRun.fromPartial(object.externalEvent)
       : undefined;
     message.entrypoint = (object.entrypoint !== undefined && object.entrypoint !== null)
       ? EntrypointRun.fromPartial(object.entrypoint)
@@ -1101,12 +1101,12 @@ export const WaitForThreadsRun_WaitForThread = {
   },
 };
 
-function createBaseExternalEventRun(): ExternalEventRun {
+function createBaseExternalEventNodeRun(): ExternalEventNodeRun {
   return { externalEventDefId: undefined, eventTime: undefined, externalEventId: undefined, timedOut: false };
 }
 
-export const ExternalEventRun = {
-  encode(message: ExternalEventRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const ExternalEventNodeRun = {
+  encode(message: ExternalEventNodeRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.externalEventDefId !== undefined) {
       ExternalEventDefId.encode(message.externalEventDefId, writer.uint32(10).fork()).ldelim();
     }
@@ -1122,10 +1122,10 @@ export const ExternalEventRun = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): ExternalEventRun {
+  decode(input: _m0.Reader | Uint8Array, length?: number): ExternalEventNodeRun {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseExternalEventRun();
+    const message = createBaseExternalEventNodeRun();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1166,11 +1166,11 @@ export const ExternalEventRun = {
     return message;
   },
 
-  create(base?: DeepPartial<ExternalEventRun>): ExternalEventRun {
-    return ExternalEventRun.fromPartial(base ?? {});
+  create(base?: DeepPartial<ExternalEventNodeRun>): ExternalEventNodeRun {
+    return ExternalEventNodeRun.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<ExternalEventRun>): ExternalEventRun {
-    const message = createBaseExternalEventRun();
+  fromPartial(object: DeepPartial<ExternalEventNodeRun>): ExternalEventNodeRun {
+    const message = createBaseExternalEventNodeRun();
     message.externalEventDefId = (object.externalEventDefId !== undefined && object.externalEventDefId !== null)
       ? ExternalEventDefId.fromPartial(object.externalEventDefId)
       : undefined;

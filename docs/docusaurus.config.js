@@ -43,6 +43,12 @@ module.exports = {
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
         },
+        googleTagManager: {
+          containerId: "GTM-NCK3N2PC",
+        },
+        gtag: {
+          trackingID: 'G-1DL56CH5SS',
+        },
         blog: {},
         theme: {
           customCss: require.resolve("./src/css/custom.css"),

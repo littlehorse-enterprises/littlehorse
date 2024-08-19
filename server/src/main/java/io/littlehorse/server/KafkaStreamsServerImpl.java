@@ -25,6 +25,7 @@ import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.RescueThreadRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.SaveUserTaskRunProgressRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ScheduleWfRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
@@ -132,6 +133,7 @@ import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.common.proto.RescueThreadRunRequest;
 import io.littlehorse.sdk.common.proto.ResumeWfRunRequest;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest;
 import io.littlehorse.sdk.common.proto.ScheduleWfRequest;
 import io.littlehorse.sdk.common.proto.ScheduledWfRun;
 import io.littlehorse.sdk.common.proto.ScheduledWfRunId;
@@ -495,6 +497,14 @@ public class KafkaStreamsServerImpl extends LittleHorseImplBase {
         CompleteUserTaskRunRequestModel reqModel =
                 LHSerializable.fromProto(req, CompleteUserTaskRunRequestModel.class, requestContext());
         processCommand(new CommandModel(reqModel), ctx, Empty.class, true);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.RUN)
+    public void saveUserTaskRunProgress(SaveUserTaskRunProgressRequest req, StreamObserver<UserTaskRun> ctx) {
+        SaveUserTaskRunProgressRequestModel reqModel =
+                LHSerializable.fromProto(req, SaveUserTaskRunProgressRequestModel.class, requestContext());
+        processCommand(new CommandModel(reqModel), ctx, UserTaskRun.class, true);
     }
 
     @Override

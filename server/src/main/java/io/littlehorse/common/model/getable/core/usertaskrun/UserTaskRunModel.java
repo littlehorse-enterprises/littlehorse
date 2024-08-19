@@ -10,10 +10,12 @@ import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeadlineReassignUserTaskModel;
+import io.littlehorse.common.model.corecommand.subcommand.SaveUserTaskRunProgressRequestModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTEAssignedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECancelledModel;
+import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTESavedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
@@ -295,6 +297,17 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
         ThreadRunModel currentThreadRun = this.getNodeRun().getThreadRun();
         String failureName = this.getUtNode().assignExceptionNameVariable(currentThreadRun);
         failureToThrowKenobi = new FailureModel("User task cancelled", failureName);
+    }
+
+    public void processProgressSavedEvent(SaveUserTaskRunProgressRequestModel req, ProcessorExecutionContext ctx)
+            throws LHApiException {
+        if (isTerminated()) {
+            throw new LHApiException(Status.FAILED_PRECONDITION, "UserTaskRun is in status " + status);
+        }
+
+        this.results = req.getResults();
+        UTESavedModel saved = new UTESavedModel(req.getUserId(), req.getResults());
+        this.events.add(new UserTaskEventModel(saved, ctx.currentCommand().getTime()));
     }
 
     public void processTaskCompletedEvent(CompleteUserTaskRunRequestModel event) throws LHApiException {

@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventNodeRunModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
@@ -69,7 +69,7 @@ public class ExternalEventNodeModel extends SubNode<ExternalEventNode> {
         }
     }
 
-    public ExternalEventRunModel createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
-        return new ExternalEventRunModel(externalEventDefId, processorContext);
+    public ExternalEventNodeRunModel createSubNodeRun(Date time, ProcessorExecutionContext processorContext) {
+        return new ExternalEventNodeRunModel(externalEventDefId, processorContext);
     }
 }

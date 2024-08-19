@@ -19,6 +19,7 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
     private UTETaskExecutedModel executed;
     private UTEAssignedModel assigned;
     private UTECancelledModel cancelled;
+    private UTESavedModel saved;
 
     public UserTaskEventModel() {}
 
@@ -26,6 +27,12 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
         this.executed = executed;
         this.time = time;
         this.type = EventCase.TASK_EXECUTED;
+    }
+
+    public UserTaskEventModel(UTESavedModel saved, Date time) {
+        this.saved = saved;
+        this.time = time;
+        this.type = EventCase.SAVED;
     }
 
     public UserTaskEventModel(UTECancelledModel cancelled, Date time) {
@@ -57,6 +64,9 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
             case CANCELLED:
                 out.setCancelled(cancelled.toProto());
                 break;
+            case SAVED:
+                out.setSaved(saved.toProto());
+                break;
             case EVENT_NOT_SET:
                 throw new RuntimeException("not possible");
         }
@@ -78,6 +88,9 @@ public class UserTaskEventModel extends LHSerializable<UserTaskEvent> {
                 break;
             case CANCELLED:
                 cancelled = LHSerializable.fromProto(p.getCancelled(), UTECancelledModel.class, context);
+                break;
+            case SAVED:
+                saved = LHSerializable.fromProto(p.getSaved(), UTESavedModel.class, context);
                 break;
             case EVENT_NOT_SET:
                 throw new RuntimeException("not possible");

@@ -137,6 +137,11 @@ class LittleHorseStub(object):
                 request_serializer=user__tasks__pb2.CancelUserTaskRunRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
+        self.SaveUserTaskRunProgress = channel.unary_unary(
+                '/littlehorse.LittleHorse/SaveUserTaskRunProgress',
+                request_serializer=user__tasks__pb2.SaveUserTaskRunProgressRequest.SerializeToString,
+                response_deserializer=user__tasks__pb2.UserTaskRun.FromString,
+                )
         self.ListUserTaskRuns = channel.unary_unary(
                 '/littlehorse.LittleHorse/ListUserTaskRuns',
                 request_serializer=service__pb2.ListUserTaskRunRequest.SerializeToString,
@@ -538,6 +543,17 @@ class LittleHorseServicer(object):
 
     def CancelUserTaskRun(self, request, context):
         """Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SaveUserTaskRunProgress(self, request, context):
+        """Saves the results of a UserTaskRun and logs who saved the content.<br/>
+
+        <li> Throws FAILED_PRECONDITION if the UserTaskRun is in the `DONE` or `CANCELLED` state.</li>
+        <li> If `policy` is set to `FAIL_IF_CLAIMED_BY_OTHER`, returns `FAILED_PRECONDITION` if the
+        `user_id` field of the `UserTaskRun` does not match the `user_id` of the request.</li>
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1000,6 +1016,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.CancelUserTaskRun,
                     request_deserializer=user__tasks__pb2.CancelUserTaskRunRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'SaveUserTaskRunProgress': grpc.unary_unary_rpc_method_handler(
+                    servicer.SaveUserTaskRunProgress,
+                    request_deserializer=user__tasks__pb2.SaveUserTaskRunProgressRequest.FromString,
+                    response_serializer=user__tasks__pb2.UserTaskRun.SerializeToString,
             ),
             'ListUserTaskRuns': grpc.unary_unary_rpc_method_handler(
                     servicer.ListUserTaskRuns,
@@ -1607,6 +1628,23 @@ class LittleHorse(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/CancelUserTaskRun',
             user__tasks__pb2.CancelUserTaskRunRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SaveUserTaskRunProgress(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SaveUserTaskRunProgress',
+            user__tasks__pb2.SaveUserTaskRunProgressRequest.SerializeToString,
+            user__tasks__pb2.UserTaskRun.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
