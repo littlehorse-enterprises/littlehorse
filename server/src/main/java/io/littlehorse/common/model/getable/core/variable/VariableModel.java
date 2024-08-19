@@ -16,6 +16,7 @@ import io.littlehorse.sdk.common.proto.Variable;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -39,16 +40,23 @@ public class VariableModel extends CoreGetable<Variable> {
 
     private WfSpecModel wfSpec;
     private ExecutionContext executionContext;
+    private boolean masked;
 
     public VariableModel() {}
 
     public VariableModel(
-            String name, VariableValueModel value, WfRunIdModel wfRunId, int threadRunNumber, WfSpecModel wfSpec) {
+            String name,
+            VariableValueModel value,
+            WfRunIdModel wfRunId,
+            int threadRunNumber,
+            WfSpecModel wfSpec,
+            boolean masked) {
 
         this.id = new VariableIdModel(wfRunId, threadRunNumber, name);
         this.value = value;
         this.wfSpec = wfSpec;
         this.wfSpecId = wfSpec.getObjectId();
+        this.masked = masked;
     }
 
     public Class<Variable> getProtoBaseClass() {
@@ -71,7 +79,12 @@ public class VariableModel extends CoreGetable<Variable> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         Variable p = (Variable) proto;
-        value = VariableValueModel.fromProto(p.getValue(), context);
+        masked = p.getMasked();
+        if (masked && context.support(RequestExecutionContext.class)) {
+            value = new VariableValueModel(LHConstants.STRING_MASK);
+        } else {
+            value = VariableValueModel.fromProto(p.getValue(), context);
+        }
         id = LHSerializable.fromProto(p.getId(), VariableIdModel.class, context);
         createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
@@ -83,7 +96,8 @@ public class VariableModel extends CoreGetable<Variable> {
                 .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
                 .setValue(value.toProto())
-                .setWfSpecId(wfSpecId.toProto());
+                .setWfSpecId(wfSpecId.toProto())
+                .setMasked(masked);
 
         return out;
     }

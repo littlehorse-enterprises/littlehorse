@@ -13,6 +13,7 @@ import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
@@ -292,6 +293,11 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
                     ce.getAttemptNumber(),
                     attempt.getStatus());
             return;
+        }
+        TaskDefModel taskDef = executionContext.metadataManager().get(taskDefId);
+        if (taskDef.getSchemaOutput() != null
+                && taskDef.getSchemaOutput().getValueDef().isMaskedValue()) {
+            attempt.setMaskedValue(true);
         }
 
         attempt.setOutput(ce.getStdout());

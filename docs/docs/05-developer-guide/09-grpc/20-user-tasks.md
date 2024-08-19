@@ -567,12 +567,75 @@ public class Main {
   </TabItem>
   <TabItem value="go" label="Go">
 
-TODO: Write go
+```go
+package main
+
+import (
+	"context"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+)
+
+func main() {
+	// Get a client
+	config := common.NewConfigFromEnv()
+	client, _ := config.GetGrpcClient()
+
+	// Get a UserTaskRunId
+	id := &model.UserTaskRunId{
+		WfRunId: &model.WfRunId{
+			Id: "f2491b41b7354382988215b789187b74",
+		},
+		UserTaskGuid: "aa87109f001b432394cec35713ef3359",
+	}
+
+	completeRequest := &model.SaveUserTaskRunProgressRequest{
+		UserTaskRunId: id,
+		UserId:        "obi-wan",
+		Results:       make(map[string]*model.VariableValue),
+		Policy:        model.SaveUserTaskRunProgressRequest_FAIL_IF_CLAIMED_BY_OTHER,
+	}
+
+	requestedItem, _ := common.InterfaceToVarVal("some-field")
+	justification, _ := common.InterfaceToVarVal("lightsaber")
+
+	completeRequest.Results["requestedItem"] = requestedItem
+	completeRequest.Results["justification"] = justification
+
+	(*client).SaveUserTaskRunProgress(context.Background(), completeRequest)
+}
+```
 
   </TabItem>
   <TabItem value="python" label="Python">
 
-TODO: Write python
+```python
+from littlehorse import to_variable_value
+from littlehorse.config import LHConfig
+from littlehorse.model import *
+
+
+if __name__ == '__main__':
+    config = LHConfig()
+    client = config.stub()
+
+    # Get a UserTaskRunId from somewhere; for example, use the search described above
+    id = UserTaskRunId(
+        wf_run_id=WfRunId(id="ec9d975af1524f4cbcb988512b258623"),
+        user_task_guid="f686ec1384404c27a90f86dcb4fd9edf"
+    )
+
+    client.SaveUserTaskRunProgress(SaveUserTaskRunProgressRequest(
+        user_task_run_id=id,
+        user_id="obi-wan",
+        results={
+            "requestedItem": to_variable_value("some-field"),
+            "justification": to_variable_value("lightsaber")
+        },
+        policy= SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy.FAIL_IF_CLAIMED_BY_OTHER
+    ))
+```
 
   </TabItem>
 </Tabs>

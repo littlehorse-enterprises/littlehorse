@@ -18,5 +18,5 @@ public @interface LHTaskMethod {
      *
      * @return the taskdef name.
      */
-    public String value();
+    String value();
 }

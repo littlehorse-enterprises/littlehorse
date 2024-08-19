@@ -9,6 +9,13 @@ import java.util.Date;
 public class TaskDefUtil {
     private TaskDefUtil() {}
 
+    /**
+     * Checks if two TaskDefModel objects are equal by comparing their underlying proto representations.
+     *
+     * @param left  the left TaskDefModel object
+     * @param right the right TaskDefModel object
+     * @return true if the underlying proto representations of the objects are equal, false otherwise
+     */
     public static boolean equals(TaskDefModel left, TaskDefModel right) {
         TaskDef.Builder copy = left.toProto();
         TaskDef.Builder toCopy = right.toProto();

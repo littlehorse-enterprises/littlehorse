@@ -515,6 +515,21 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.LHTaskException.getDefaultInstance();
   }
 
+  public static final int MASKED_VALUE_FIELD_NUMBER = 12;
+  private boolean maskedValue_ = false;
+  /**
+   * <pre>
+   * Indicates whether the result of the attempt field has been masked
+   * </pre>
+   *
+   * <code>bool masked_value = 12;</code>
+   * @return The maskedValue.
+   */
+  @java.lang.Override
+  public boolean getMaskedValue() {
+    return maskedValue_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -558,6 +573,9 @@ private static final long serialVersionUID = 0L;
     }
     if (resultCase_ == 11) {
       output.writeMessage(11, (io.littlehorse.sdk.common.proto.LHTaskException) result_);
+    }
+    if (maskedValue_ != false) {
+      output.writeBool(12, maskedValue_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -606,6 +624,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(11, (io.littlehorse.sdk.common.proto.LHTaskException) result_);
     }
+    if (maskedValue_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(12, maskedValue_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -649,6 +671,8 @@ private static final long serialVersionUID = 0L;
           .equals(other.getTaskWorkerVersion())) return false;
     }
     if (status_ != other.status_) return false;
+    if (getMaskedValue()
+        != other.getMaskedValue()) return false;
     if (!getResultCase().equals(other.getResultCase())) return false;
     switch (resultCase_) {
       case 1:
@@ -701,6 +725,9 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + STATUS_FIELD_NUMBER;
     hash = (53 * hash) + status_;
+    hash = (37 * hash) + MASKED_VALUE_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getMaskedValue());
     switch (resultCase_) {
       case 1:
         hash = (37 * hash) + OUTPUT_FIELD_NUMBER;
@@ -893,6 +920,7 @@ private static final long serialVersionUID = 0L;
       if (exceptionBuilder_ != null) {
         exceptionBuilder_.clear();
       }
+      maskedValue_ = false;
       resultCase_ = 0;
       result_ = null;
       return this;
@@ -963,6 +991,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000040) != 0)) {
         result.status_ = status_;
+      }
+      if (((from_bitField0_ & 0x00000400) != 0)) {
+        result.maskedValue_ = maskedValue_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -1052,6 +1083,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.status_ != 0) {
         setStatusValue(other.getStatusValue());
+      }
+      if (other.getMaskedValue() != false) {
+        setMaskedValue(other.getMaskedValue());
       }
       switch (other.getResultCase()) {
         case OUTPUT: {
@@ -1160,6 +1194,11 @@ private static final long serialVersionUID = 0L;
               resultCase_ = 11;
               break;
             } // case 90
+            case 96: {
+              maskedValue_ = input.readBool();
+              bitField0_ |= 0x00000400;
+              break;
+            } // case 96
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2648,6 +2687,50 @@ private static final long serialVersionUID = 0L;
       resultCase_ = 11;
       onChanged();
       return exceptionBuilder_;
+    }
+
+    private boolean maskedValue_ ;
+    /**
+     * <pre>
+     * Indicates whether the result of the attempt field has been masked
+     * </pre>
+     *
+     * <code>bool masked_value = 12;</code>
+     * @return The maskedValue.
+     */
+    @java.lang.Override
+    public boolean getMaskedValue() {
+      return maskedValue_;
+    }
+    /**
+     * <pre>
+     * Indicates whether the result of the attempt field has been masked
+     * </pre>
+     *
+     * <code>bool masked_value = 12;</code>
+     * @param value The maskedValue to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMaskedValue(boolean value) {
+
+      maskedValue_ = value;
+      bitField0_ |= 0x00000400;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Indicates whether the result of the attempt field has been masked
+     * </pre>
+     *
+     * <code>bool masked_value = 12;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearMaskedValue() {
+      bitField0_ = (bitField0_ & ~0x00000400);
+      maskedValue_ = false;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

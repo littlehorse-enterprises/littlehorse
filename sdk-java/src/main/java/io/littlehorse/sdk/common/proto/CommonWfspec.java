@@ -98,46 +98,47 @@ public final class CommonWfspec {
       "tlehorse.VariableMutation.NodeOutputSour" +
       "ceH\000\0326\n\020NodeOutputSource\022\025\n\010jsonpath\030\n \001" +
       "(\tH\000\210\001\001B\013\n\t_jsonpathB\013\n\trhs_valueB\020\n\016_lh" +
-      "s_json_path\"\216\001\n\013VariableDef\022\'\n\004type\030\001 \001(" +
+      "s_json_path\"\244\001\n\013VariableDef\022\'\n\004type\030\001 \001(" +
       "\0162\031.littlehorse.VariableType\022\014\n\004name\030\002 \001" +
       "(\t\0226\n\rdefault_value\030\003 \001(\0132\032.littlehorse." +
-      "VariableValueH\000\210\001\001B\020\n\016_default_value\"\357\004\n" +
-      "\017UTActionTrigger\0224\n\004task\030\001 \001(\0132$.littleh" +
-      "orse.UTActionTrigger.UTATaskH\000\0228\n\006cancel" +
-      "\030\002 \001(\0132&.littlehorse.UTActionTrigger.UTA" +
-      "CancelH\000\022<\n\010reassign\030\003 \001(\0132(.littlehorse" +
-      ".UTActionTrigger.UTAReassignH\000\0226\n\rdelay_" +
-      "seconds\030\005 \001(\0132\037.littlehorse.VariableAssi" +
-      "gnment\0221\n\004hook\030\006 \001(\0162#.littlehorse.UTAct" +
-      "ionTrigger.UTHook\032\013\n\tUTACancel\032`\n\007UTATas" +
-      "k\022#\n\004task\030\001 \001(\0132\025.littlehorse.TaskNode\0220" +
-      "\n\tmutations\030\002 \003(\0132\035.littlehorse.Variable" +
-      "Mutation\032\231\001\n\013UTAReassign\0225\n\007user_id\030\001 \001(" +
-      "\0132\037.littlehorse.VariableAssignmentH\000\210\001\001\022" +
-      "8\n\nuser_group\030\002 \001(\0132\037.littlehorse.Variab" +
-      "leAssignmentH\001\210\001\001B\n\n\010_user_idB\r\n\013_user_g" +
-      "roup\".\n\006UTHook\022\016\n\nON_ARRIVAL\020\000\022\024\n\020ON_TAS" +
-      "K_ASSIGNED\020\001B\010\n\006action\"c\n\035ExponentialBac" +
-      "koffRetryPolicy\022\030\n\020base_interval_ms\030\001 \001(" +
-      "\005\022\024\n\014max_delay_ms\030\002 \001(\003\022\022\n\nmultiplier\030\003 " +
-      "\001(\002\"\311\002\n\010TaskNode\022-\n\013task_def_id\030\001 \001(\0132\026." +
-      "littlehorse.TaskDefIdH\000\0227\n\014dynamic_task\030" +
-      "\006 \001(\0132\037.littlehorse.VariableAssignmentH\000" +
-      "\022\027\n\017timeout_seconds\030\002 \001(\005\022\017\n\007retries\030\003 \001" +
-      "(\005\022L\n\023exponential_backoff\030\005 \001(\0132*.little" +
-      "horse.ExponentialBackoffRetryPolicyH\001\210\001\001" +
-      "\0222\n\tvariables\030\004 \003(\0132\037.littlehorse.Variab" +
-      "leAssignmentB\021\n\017task_to_executeB\026\n\024_expo" +
-      "nential_backoff*\230\001\n\024VariableMutationType" +
-      "\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002\022\014\n\010SUB" +
-      "TRACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021REM" +
-      "OVE_IF_PRESENT\020\006\022\020\n\014REMOVE_INDEX\020\007\022\016\n\nRE" +
-      "MOVE_KEY\020\010*\204\001\n\nComparator\022\r\n\tLESS_THAN\020\000" +
-      "\022\020\n\014GREATER_THAN\020\001\022\020\n\014LESS_THAN_EQ\020\002\022\023\n\017" +
-      "GREATER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_EQU" +
-      "ALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007BG\n\037io.littleho" +
-      "rse.sdk.common.protoP\001Z\007.;model\252\002\030Little" +
-      "Horse.Common.Protob\006proto3"
+      "VariableValueH\000\210\001\001\022\024\n\014masked_value\030\004 \001(\010" +
+      "B\020\n\016_default_value\"\357\004\n\017UTActionTrigger\0224" +
+      "\n\004task\030\001 \001(\0132$.littlehorse.UTActionTrigg" +
+      "er.UTATaskH\000\0228\n\006cancel\030\002 \001(\0132&.littlehor" +
+      "se.UTActionTrigger.UTACancelH\000\022<\n\010reassi" +
+      "gn\030\003 \001(\0132(.littlehorse.UTActionTrigger.U" +
+      "TAReassignH\000\0226\n\rdelay_seconds\030\005 \001(\0132\037.li" +
+      "ttlehorse.VariableAssignment\0221\n\004hook\030\006 \001" +
+      "(\0162#.littlehorse.UTActionTrigger.UTHook\032" +
+      "\013\n\tUTACancel\032`\n\007UTATask\022#\n\004task\030\001 \001(\0132\025." +
+      "littlehorse.TaskNode\0220\n\tmutations\030\002 \003(\0132" +
+      "\035.littlehorse.VariableMutation\032\231\001\n\013UTARe" +
+      "assign\0225\n\007user_id\030\001 \001(\0132\037.littlehorse.Va" +
+      "riableAssignmentH\000\210\001\001\0228\n\nuser_group\030\002 \001(" +
+      "\0132\037.littlehorse.VariableAssignmentH\001\210\001\001B" +
+      "\n\n\010_user_idB\r\n\013_user_group\".\n\006UTHook\022\016\n\n" +
+      "ON_ARRIVAL\020\000\022\024\n\020ON_TASK_ASSIGNED\020\001B\010\n\006ac" +
+      "tion\"c\n\035ExponentialBackoffRetryPolicy\022\030\n" +
+      "\020base_interval_ms\030\001 \001(\005\022\024\n\014max_delay_ms\030" +
+      "\002 \001(\003\022\022\n\nmultiplier\030\003 \001(\002\"\311\002\n\010TaskNode\022-" +
+      "\n\013task_def_id\030\001 \001(\0132\026.littlehorse.TaskDe" +
+      "fIdH\000\0227\n\014dynamic_task\030\006 \001(\0132\037.littlehors" +
+      "e.VariableAssignmentH\000\022\027\n\017timeout_second" +
+      "s\030\002 \001(\005\022\017\n\007retries\030\003 \001(\005\022L\n\023exponential_" +
+      "backoff\030\005 \001(\0132*.littlehorse.ExponentialB" +
+      "ackoffRetryPolicyH\001\210\001\001\0222\n\tvariables\030\004 \003(" +
+      "\0132\037.littlehorse.VariableAssignmentB\021\n\017ta" +
+      "sk_to_executeB\026\n\024_exponential_backoff*\230\001" +
+      "\n\024VariableMutationType\022\n\n\006ASSIGN\020\000\022\007\n\003AD" +
+      "D\020\001\022\n\n\006EXTEND\020\002\022\014\n\010SUBTRACT\020\003\022\014\n\010MULTIPL" +
+      "Y\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021REMOVE_IF_PRESENT\020\006\022\020" +
+      "\n\014REMOVE_INDEX\020\007\022\016\n\nREMOVE_KEY\020\010*\204\001\n\nCom" +
+      "parator\022\r\n\tLESS_THAN\020\000\022\020\n\014GREATER_THAN\020\001" +
+      "\022\020\n\014LESS_THAN_EQ\020\002\022\023\n\017GREATER_THAN_EQ\020\003\022" +
+      "\n\n\006EQUALS\020\004\022\016\n\nNOT_EQUALS\020\005\022\006\n\002IN\020\006\022\n\n\006N" +
+      "OT_IN\020\007BG\n\037io.littlehorse.sdk.common.pro" +
+      "toP\001Z\007.;model\252\002\030LittleHorse.Common.Proto" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -175,7 +176,7 @@ public final class CommonWfspec {
     internal_static_littlehorse_VariableDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_VariableDef_descriptor,
-        new java.lang.String[] { "Type", "Name", "DefaultValue", "DefaultValue", });
+        new java.lang.String[] { "Type", "Name", "DefaultValue", "MaskedValue", "DefaultValue", });
     internal_static_littlehorse_UTActionTrigger_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_littlehorse_UTActionTrigger_fieldAccessorTable = new

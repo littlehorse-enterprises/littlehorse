@@ -25,13 +25,15 @@ class VariableValue(_message.Message):
     def __init__(self, json_obj: _Optional[str] = ..., json_arr: _Optional[str] = ..., double: _Optional[float] = ..., bool: bool = ..., str: _Optional[str] = ..., int: _Optional[int] = ..., bytes: _Optional[bytes] = ...) -> None: ...
 
 class Variable(_message.Message):
-    __slots__ = ["id", "value", "created_at", "wf_spec_id"]
+    __slots__ = ["id", "value", "created_at", "wf_spec_id", "masked"]
     ID_FIELD_NUMBER: _ClassVar[int]
     VALUE_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
+    MASKED_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.VariableId
     value: VariableValue
     created_at: _timestamp_pb2.Timestamp
     wf_spec_id: _object_id_pb2.WfSpecId
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.VariableId, _Mapping]] = ..., value: _Optional[_Union[VariableValue, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ...) -> None: ...
+    masked: bool
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.VariableId, _Mapping]] = ..., value: _Optional[_Union[VariableValue, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., masked: bool = ...) -> None: ...

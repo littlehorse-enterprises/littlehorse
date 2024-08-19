@@ -50,4 +50,11 @@ public interface WfRunVariable extends Serializable {
      * @return this WfRunVariable.
      */
     WfRunVariable withAccessLevel(WfRunVariableAccessLevel accessLevel);
+
+    /**
+     * Marks a WfRunVariable to show masked values
+     *
+     * @return this WfRunVariable.
+     */
+    WfRunVariable masked();
 }

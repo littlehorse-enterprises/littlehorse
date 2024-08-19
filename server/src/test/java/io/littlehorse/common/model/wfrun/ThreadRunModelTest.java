@@ -39,7 +39,7 @@ public class ThreadRunModelTest {
     public void shouldResolveLocalVariable() {
         wfRun.setId(new WfRunIdModel("my-wf"));
         VariableModel variableModel =
-                new VariableModel("myVar", new VariableValueModel("hello"), wfRun.getId(), 0, new WfSpecModel());
+                new VariableModel("myVar", new VariableValueModel("hello"), wfRun.getId(), 0, new WfSpecModel(), false);
         testProcessorContext.getableManager().put(variableModel);
         ThreadRunModel threadRun = new ThreadRunModel(testProcessorContext);
         threadRun.setWfRun(wfRun);
@@ -98,7 +98,7 @@ public class ThreadRunModelTest {
                     .add(parentVar);
             testProcessorContext.metadataManager().put(parentWfSpec);
             VariableModel parentVariable = new VariableModel(
-                    "my-inherent-var", new VariableValueModel(2), parentWfRun.getId(), 0, parentWfSpec);
+                    "my-inherent-var", new VariableValueModel(2), parentWfRun.getId(), 0, parentWfSpec, false);
             testProcessorContext.getableManager().put(parentVariable);
             VariableModel result = childThreadRun.getVariable("my-inherent-var");
             if (parentVariableAccessLevel == WfRunVariableAccessLevel.PUBLIC_VAR) {
