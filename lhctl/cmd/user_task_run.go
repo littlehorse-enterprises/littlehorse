@@ -152,7 +152,7 @@ var getUserTaskRunCmd = &cobra.Command{
 }
 
 var saveUserTaskRunProgressCmd = &cobra.Command{
-	Use:   "saveUserTaskRun",
+	Use:   "userTaskRun",
 	Short: "Save progress on UserTaskRuns",
 	Long: `Given a provied WfRunId and UserTaskGuid, this utility allows you
 to save current progress on a UserTask before executing the it.
@@ -405,9 +405,11 @@ func init() {
 	listCmd.AddCommand(listUserTaskRunCmd)
 	cancelUserTaskCmd.AddCommand(cancelUserTaskRunCmd)
 
-	rootCmd.AddCommand(saveUserTaskRunProgressCmd)
+	saveCmd.AddCommand(saveUserTaskRunProgressCmd)
 	saveUserTaskRunProgressCmd.Flags().String("wfRunId", "", "WfRunId of the WfRun the UserTaskRun belongs to.")
+	saveUserTaskRunProgressCmd.MarkFlagRequired("wfRunId")
 	saveUserTaskRunProgressCmd.Flags().String("userTaskGuid", "", "GUID of the User Task you are saving progress on.")
+	saveUserTaskRunProgressCmd.MarkFlagRequired("userTaskGuid")
 
 	assignUserTaskRunCmd.Flags().String("userId", "", "User Id to assign to.")
 	assignUserTaskRunCmd.Flags().String("userGroup", "", "User Group to assign to.")
