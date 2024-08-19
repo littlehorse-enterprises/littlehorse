@@ -67,14 +67,6 @@ However, you can start two Brokers in your terminal as follows:
 ./local-dev/do-server.sh server-2
 ```
 
-## Release a new version
-
-Upgrade to a new version:
-
-```bash
-./local-dev/bump.sh --help
-```
-
 ## Building the Docker Image
 
 To build the `littlehorse-server` image for local development utilizing the local gradle cache, you can run:
