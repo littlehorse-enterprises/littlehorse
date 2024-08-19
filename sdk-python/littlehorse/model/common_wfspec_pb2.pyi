@@ -90,14 +90,16 @@ class VariableMutation(_message.Message):
     def __init__(self, lhs_name: _Optional[str] = ..., lhs_json_path: _Optional[str] = ..., operation: _Optional[_Union[VariableMutationType, str]] = ..., source_variable: _Optional[_Union[VariableAssignment, _Mapping]] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., node_output: _Optional[_Union[VariableMutation.NodeOutputSource, _Mapping]] = ...) -> None: ...
 
 class VariableDef(_message.Message):
-    __slots__ = ["type", "name", "default_value"]
+    __slots__ = ["type", "name", "default_value", "masked_value"]
     TYPE_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
     DEFAULT_VALUE_FIELD_NUMBER: _ClassVar[int]
+    MASKED_VALUE_FIELD_NUMBER: _ClassVar[int]
     type: _common_enums_pb2.VariableType
     name: str
     default_value: _variable_pb2.VariableValue
-    def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    masked_value: bool
+    def __init__(self, type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked_value: bool = ...) -> None: ...
 
 class UTActionTrigger(_message.Message):
     __slots__ = ["task", "cancel", "reassign", "delay_seconds", "hook"]
