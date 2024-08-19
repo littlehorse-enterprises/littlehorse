@@ -5,7 +5,9 @@ import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class TaskDefBuilder {
 
     public Object executable;
@@ -21,11 +23,18 @@ public class TaskDefBuilder {
         PutTaskDefRequest.Builder out = PutTaskDefRequest.newBuilder();
         List<String> varNames = signature.getVarNames();
         List<VariableType> varTypes = signature.getParamTypes();
+        List<Boolean> maskedParams = signature.getMaskedParams();
 
         for (int i = 0; i < varNames.size(); i++) {
-            out.addInputVars(VariableDef.newBuilder().setName(varNames.get(i)).setType(varTypes.get(i)));
+            out.addInputVars(VariableDef.newBuilder()
+                    .setName(varNames.get(i))
+                    .setMaskedValue(maskedParams.get(i))
+                    .setType(varTypes.get(i)));
         }
         out.setName(this.signature.taskDefName);
+        if (signature.getOutputSchema() != null) {
+            out.setOutputSchema(signature.getOutputSchema());
+        }
 
         return out.build();
     }

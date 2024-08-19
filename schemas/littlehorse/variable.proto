@@ -57,4 +57,7 @@ message Variable {
 
   // The ID of the WfSpec that this Variable belongs to.
   WfSpecId wf_spec_id = 4;
+
+  // Marks a variable to show masked values
+  bool masked = 5;
 }

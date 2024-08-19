@@ -3,8 +3,10 @@ package io.littlehorse.common.model.metadatacommand.subcommand;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
+import io.littlehorse.common.model.getable.global.taskdef.TaskDefOutputSchemaModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
@@ -24,6 +26,8 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
 
     public String name;
     public List<VariableDefModel> inputVars;
+
+    public TaskDefOutputSchemaModel outputSchema;
 
     public String getPartitionKey() {
         return LHConstants.META_PARTITION_KEY;
@@ -45,6 +49,10 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
             out.addInputVars(entry.toProto());
         }
 
+        if (outputSchema != null) {
+            out.setOutputSchema(outputSchema.toProto());
+        }
+
         return out;
     }
 
@@ -54,6 +62,9 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         name = p.getName();
         for (VariableDef entry : p.getInputVarsList()) {
             inputVars.add(VariableDefModel.fromProto(entry, context));
+        }
+        if (p.hasOutputSchema()) {
+            outputSchema = LHSerializable.fromProto(p.getOutputSchema(), TaskDefOutputSchemaModel.class, context);
         }
     }
 
@@ -70,6 +81,9 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         TaskDefModel spec = new TaskDefModel();
         spec.setId(new TaskDefIdModel(name));
         spec.inputVars = inputVars;
+        if (outputSchema != null) {
+            spec.setSchemaOutput(outputSchema);
+        }
 
         TaskDefModel oldVersion = metadataManager.get(new TaskDefIdModel(name));
         if (oldVersion != null) {
@@ -81,7 +95,6 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
         }
 
         metadataManager.put(spec);
-
         return spec.toProto().build();
     }
 

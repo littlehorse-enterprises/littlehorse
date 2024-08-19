@@ -2,8 +2,11 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
+import io.littlehorse.sdk.common.proto.TaskDefOutputSchema;
+import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -16,16 +19,19 @@ public class LHTaskSignature {
 
     List<VariableType> paramTypes;
     List<String> varNames;
+    List<Boolean> maskedParams;
     Method taskMethod;
     boolean hasWorkerContextAtEnd;
     String taskDefName;
     String lhTaskMethodAnnotationValue;
     Object executable;
+    TaskDefOutputSchema outputSchema;
 
     public LHTaskSignature(String taskDefName, Object executable, String lhTaskMethodAnnotationValue)
             throws TaskSchemaMismatchError {
         paramTypes = new ArrayList<>();
         varNames = new ArrayList<>();
+        maskedParams = new ArrayList<>();
         hasWorkerContextAtEnd = false;
         this.taskDefName = taskDefName;
         this.executable = executable;
@@ -54,6 +60,23 @@ public class LHTaskSignature {
                     + " on "
                     + executable.getClass());
         }
+        VariableType returnType = LHLibUtil.javaClassToLHVarType(taskMethod.getReturnType());
+        boolean maskedValue = false;
+        String outputSchemaVarName = "output";
+        if (taskMethod.isAnnotationPresent(LHType.class)) {
+            LHType type = taskMethod.getAnnotation(LHType.class);
+            maskedValue = type.masked();
+            if (!type.name().isEmpty() || !type.name().isBlank()) {
+                outputSchemaVarName = type.name();
+            }
+        }
+        outputSchema = TaskDefOutputSchema.newBuilder()
+                .setValueDef(VariableDef.newBuilder()
+                        .setType(returnType)
+                        .setName(outputSchemaVarName)
+                        .setMaskedValue(maskedValue)
+                        .build())
+                .build();
 
         for (int i = 0; i < taskMethod.getParameterCount(); i++) {
             Parameter param = taskMethod.getParameters()[i];
@@ -66,15 +89,30 @@ public class LHTaskSignature {
                 }
             }
             VariableType paramLHType = LHLibUtil.javaClassToLHVarType(param.getType());
-
-            if (!param.isNamePresent()) {
-                log.warn("Was unable to inspect parameter names usingreflection; please compile with"
-                        + " `javac -Parameters` to enable that.Will use param position as its"
-                        + " name, which makes resulting TaskDefharder to understand.");
-            }
             paramTypes.add(paramLHType);
-            varNames.add(param.getName());
+            if (param.isAnnotationPresent(LHType.class)) {
+                LHType type = param.getAnnotation(LHType.class);
+                maskedParams.add(type.masked());
+                if (!type.name().isEmpty() && !type.name().isBlank()) {
+                    varNames.add(type.name());
+                } else {
+                    varNames.add(varNameFromParameterName(param));
+                }
+            } else {
+                maskedParams.add(false);
+                varNames.add(varNameFromParameterName(param));
+            }
         }
+    }
+
+    private String varNameFromParameterName(Parameter param) {
+        if (!param.isNamePresent()) {
+            log.warn(
+                    "Unable to inspect parameter names using reflection; please either compile with"
+                            + " `javac -parameters` to enable this, or specify a name via the LHType annotation. "
+                            + "Using the parameter position as its name, which makes the resulting TaskDef harder to understand.");
+        }
+        return param.getName();
     }
 
     public boolean getHasWorkerContextAtEnd() {
@@ -83,6 +121,10 @@ public class LHTaskSignature {
 
     public List<VariableType> getParamTypes() {
         return paramTypes;
+    }
+
+    public List<Boolean> getMaskedParams() {
+        return maskedParams;
     }
 
     public String getTaskDefName() {
@@ -99,6 +141,10 @@ public class LHTaskSignature {
 
     public List<String> getVarNames() {
         return varNames;
+    }
+
+    public TaskDefOutputSchema getOutputSchema() {
+        return outputSchema;
     }
 
     @Override

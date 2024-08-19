@@ -32,7 +32,7 @@ public class VariablesExample {
         return new WorkflowImpl(
             "example-variables",
             wf -> {
-                WfRunVariable inputText = wf.addVariable("input-text", VariableType.STR).searchable();
+                WfRunVariable inputText = wf.addVariable("input-text", VariableType.STR).searchable().masked();
 
                 WfRunVariable addLength = wf.addVariable(
                     "add-length",
@@ -47,7 +47,8 @@ public class VariablesExample {
 
                 WfRunVariable processedResult = wf
                     .addVariable("processed-result", VariableType.JSON_OBJ)
-                    .searchableOn("$.sentimentScore", VariableType.DOUBLE);
+                    .searchableOn("$.sentimentScore", VariableType.DOUBLE)
+                    .masked();
 
                 NodeOutput sentimentAnalysisOutput = wf.execute(
                     "sentiment-analysis",

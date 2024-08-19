@@ -19,11 +19,21 @@ export interface TaskDef {
   /** The input variables required to execute this TaskDef. */
   inputVars: VariableDef[];
   /** The time at which this TaskDef was created. */
-  createdAt: string | undefined;
+  createdAt:
+    | string
+    | undefined;
+  /** Schema that validates the TaskDef's output */
+  schemaOutput?: TaskDefOutputSchema | undefined;
+}
+
+/** Schema that validates the TaskDef's output */
+export interface TaskDefOutputSchema {
+  /** The definition for the output content */
+  valueDef: VariableDef | undefined;
 }
 
 function createBaseTaskDef(): TaskDef {
-  return { id: undefined, inputVars: [], createdAt: undefined };
+  return { id: undefined, inputVars: [], createdAt: undefined, schemaOutput: undefined };
 }
 
 export const TaskDef = {
@@ -36,6 +46,9 @@ export const TaskDef = {
     }
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(26).fork()).ldelim();
+    }
+    if (message.schemaOutput !== undefined) {
+      TaskDefOutputSchema.encode(message.schemaOutput, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -68,6 +81,13 @@ export const TaskDef = {
 
           message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.schemaOutput = TaskDefOutputSchema.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -85,6 +105,56 @@ export const TaskDef = {
     message.id = (object.id !== undefined && object.id !== null) ? TaskDefId.fromPartial(object.id) : undefined;
     message.inputVars = object.inputVars?.map((e) => VariableDef.fromPartial(e)) || [];
     message.createdAt = object.createdAt ?? undefined;
+    message.schemaOutput = (object.schemaOutput !== undefined && object.schemaOutput !== null)
+      ? TaskDefOutputSchema.fromPartial(object.schemaOutput)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseTaskDefOutputSchema(): TaskDefOutputSchema {
+  return { valueDef: undefined };
+}
+
+export const TaskDefOutputSchema = {
+  encode(message: TaskDefOutputSchema, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.valueDef !== undefined) {
+      VariableDef.encode(message.valueDef, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TaskDefOutputSchema {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTaskDefOutputSchema();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.valueDef = VariableDef.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<TaskDefOutputSchema>): TaskDefOutputSchema {
+    return TaskDefOutputSchema.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<TaskDefOutputSchema>): TaskDefOutputSchema {
+    const message = createBaseTaskDefOutputSchema();
+    message.valueDef = (object.valueDef !== undefined && object.valueDef !== null)
+      ? VariableDef.fromPartial(object.valueDef)
+      : undefined;
     return message;
   },
 };

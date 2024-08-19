@@ -30,6 +30,9 @@ public class TaskDefModel extends MetadataGetable<TaskDef> {
     public Date createdAt;
     public List<VariableDefModel> inputVars;
 
+    @Setter
+    private TaskDefOutputSchemaModel schemaOutput;
+
     public TaskDefModel() {
         inputVars = new ArrayList<>();
     }
@@ -66,6 +69,9 @@ public class TaskDefModel extends MetadataGetable<TaskDef> {
         for (VariableDefModel entry : inputVars) {
             b.addInputVars(entry.toProto());
         }
+        if (schemaOutput != null) {
+            b.setSchemaOutput(schemaOutput.toProto());
+        }
 
         return b;
     }
@@ -78,6 +84,9 @@ public class TaskDefModel extends MetadataGetable<TaskDef> {
 
         for (VariableDef entry : proto.getInputVarsList()) {
             inputVars.add(VariableDefModel.fromProto(entry, context));
+        }
+        if (proto.hasSchemaOutput()) {
+            schemaOutput = LHSerializable.fromProto(proto.getSchemaOutput(), TaskDefOutputSchemaModel.class, context);
         }
     }
 

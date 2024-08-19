@@ -117,6 +117,9 @@ message VariableDef {
   // if you start a ThreadRun or WfRun without passing a variable in, then this is
   // used.
   optional VariableValue default_value = 3;
+
+  // If true, the variable value will show as a masked string.
+  bool masked_value = 4;
 }
 
 // Operator for comparing two values to create a boolean expression.

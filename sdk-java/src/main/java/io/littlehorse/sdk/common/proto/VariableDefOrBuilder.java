@@ -78,4 +78,14 @@ public interface VariableDefOrBuilder extends
    * <code>optional .littlehorse.VariableValue default_value = 3;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getDefaultValueOrBuilder();
+
+  /**
+   * <pre>
+   * If true, the variable value will show as a masked string.
+   * </pre>
+   *
+   * <code>bool masked_value = 4;</code>
+   * @return The maskedValue.
+   */
+  boolean getMaskedValue();
 }
