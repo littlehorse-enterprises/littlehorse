@@ -88,7 +88,6 @@ public class ACSimpleTaskRebalancing extends Test {
         return RegisterTaskWorkerRequest.newBuilder()
                 .setTaskWorkerId(clientId)
                 .setTaskDefId(LHLibUtil.taskDefId(taskDefName))
-                .setListenerName(config.getConnectListener())
                 .build();
     }
 

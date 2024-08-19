@@ -522,7 +522,6 @@ class LHTaskWorker:
 
             request = RegisterTaskWorkerRequest(
                 task_worker_id=self._config.task_worker_id,
-                listener_name=self._config.server_listener,
                 task_def_id=self._task.task_def.id,
             )
             try:
