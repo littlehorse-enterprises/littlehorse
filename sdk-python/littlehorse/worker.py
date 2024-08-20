@@ -1,3 +1,4 @@
+import inspect
 from enum import Enum
 import asyncio
 from datetime import datetime
@@ -7,7 +8,15 @@ import logging
 import signal
 import traceback
 from google.protobuf.json_format import MessageToJson
-from typing import Any, AsyncIterator, Callable, Optional
+from typing import (
+    Any,
+    AsyncIterator,
+    Callable,
+    Optional,
+    Annotated,
+    get_args,
+    get_origin,
+)
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
     TaskSchemaMismatchException,
@@ -180,9 +189,11 @@ class LHTask:
             )
 
         for task_def_var, callable_param in zip(task_def_vars, callable_params):
+            if get_origin(callable_param) is Annotated:
+                callable_param = get_args(callable_param)[0]
             if task_def_var != callable_param:
                 raise TaskSchemaMismatchException(
-                    f"Parameter types do not match, expected: {task_def_vars}"
+                    f"Parameter types do not match, expected: {task_def_vars} got: {callable_params}"
                 )
 
     def _validate_callable(self) -> None:
@@ -620,19 +631,47 @@ class LHTaskWorker:
         _create_task_def(self._callable, self._task_def_name, self._config)
 
 
+class LHType:
+    def __init__(
+        self,
+        name: str,
+        masked: bool = False,
+    ) -> None:
+        self.name = name
+        self.masked = masked
+
+
 def _create_task_def(
     task: Callable[..., Any], name: str, config: LHConfig, timeout: Optional[int] = None
 ) -> None:
     stub = config.stub()
     task_signature = signature(task)
     input_vars = [
-        VariableDef(name=param.name, type=to_variable_type(param.annotation))
+        _to_variable_def(param)
         for param in task_signature.parameters.values()
         if param.annotation is not WorkerContext
     ]
     request = PutTaskDefRequest(name=name, input_vars=input_vars)
     stub.PutTaskDef(request, timeout=timeout)
     logging.info(f"TaskDef {name} was created:\n{MessageToJson(request)}")
+
+
+def _to_variable_def(param: inspect.Parameter) -> VariableDef:
+    lh_type = _to_lh_type(param)
+    return VariableDef(
+        name=lh_type.name,
+        type=to_variable_type(param.annotation),
+        masked_value=lh_type.masked,
+    )
+
+
+def _to_lh_type(param: inspect.Parameter) -> LHType:
+    annotation = param.annotation
+    if get_origin(annotation) is Annotated:
+        args = get_args(annotation)
+        if len(args) > 1 and isinstance(args[1], LHType):
+            return args[1]
+    return LHType(param.name)
 
 
 def shutdown_hook(*workers: LHTaskWorker) -> None:

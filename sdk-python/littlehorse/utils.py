@@ -3,7 +3,9 @@
 import json
 from pathlib import Path
 import sys
-from typing import Any, Union
+from typing import Any, Union, Annotated, get_args
+
+from typing_extensions import get_origin
 
 from littlehorse.exceptions import SerdeException
 from littlehorse.model import VariableType, Comparator, VariableValue
@@ -160,6 +162,8 @@ def to_variable_type(python_type: type) -> VariableType:
         VariableType: LH TYpe.
     """
     type_to_return = TYPE_TO_VARIABLE_TYPE_MAP.get(python_type)
+    if get_origin(python_type) is Annotated:
+        return to_variable_type(get_args(python_type)[0])
 
     if type_to_return is None:
         raise ValueError(f"Type {python_type} not supported")
