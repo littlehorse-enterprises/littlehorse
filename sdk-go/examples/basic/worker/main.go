@@ -12,7 +12,6 @@ func main() {
 	config, _ := examples.LoadConfigAndClient()
 
 	tw, err := taskworker.NewTaskWorker(config, basic.Greet, "greet")
-
 	if err != nil {
 		log.Fatal(err)
 	}

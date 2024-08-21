@@ -3,8 +3,8 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 */
 package main
 
-import "github.com/littlehorse-enterprises/littlehorse/lhctl/cmd"
+import "github.com/littlehorse-enterprises/lhctl/internal"
 
 func main() {
-	cmd.Execute()
+	internal.Execute()
 }
