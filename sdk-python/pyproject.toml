@@ -4,9 +4,9 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "littlehorse-client"
-version = "0.10.1"
+version = "0.0.0"
 description = "LittleHorse is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications"
-authors = [ "LittleHorse Engineering <engineering@littlehorse.io>",]
+authors = [ "LittleHorse Engineering <engineeringg@littlehorse.io>",]
 readme = "README.md"
 license = "SSPL-1.0"
 homepage = "https://littlehorse.dev"
