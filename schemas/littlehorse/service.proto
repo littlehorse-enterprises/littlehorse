@@ -19,7 +19,7 @@ import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
 
-option go_package = ".;model";
+option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
@@ -529,7 +529,7 @@ message SearchWfRunRequest {
     optional bytes bookmark = 1;
 
     // Maximum results to return in one request.
-    optional int32 limitt = 2;
+    optional int32 limit = 2;
 
     // The WfSpec whose WfRun's we are searching for. This is required.
     string wf_spec_name = 3;

@@ -2,12 +2,11 @@ package main
 
 import (
 	"context"
+	lh "github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples/basic"
-	lh "github.com/littlehorse-enterprises/littlehorse/sdk-go/wflib"
 )
 
 func main() {
@@ -22,5 +21,5 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	common.PrintProto(resp)
+	lh.PrintProto(resp)
 }

@@ -31,19 +31,19 @@ public interface SearchWfRunRequestOrBuilder extends
    * Maximum results to return in one request.
    * </pre>
    *
-   * <code>optional int32 limitt = 2;</code>
-   * @return Whether the limitt field is set.
+   * <code>optional int32 limit = 2;</code>
+   * @return Whether the limit field is set.
    */
-  boolean hasLimitt();
+  boolean hasLimit();
   /**
    * <pre>
    * Maximum results to return in one request.
    * </pre>
    *
-   * <code>optional int32 limitt = 2;</code>
-   * @return The limitt.
+   * <code>optional int32 limit = 2;</code>
+   * @return The limit.
    */
-  int getLimitt();
+  int getLimit();
 
   /**
    * <pre>

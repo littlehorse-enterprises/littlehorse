@@ -421,7 +421,7 @@ export interface SearchWfRunRequest {
     | Buffer
     | undefined;
   /** Maximum results to return in one request. */
-  limitt?:
+  limit?:
     | number
     | undefined;
   /** The WfSpec whose WfRun's we are searching for. This is required. */
@@ -2845,7 +2845,7 @@ export const AwaitWorkflowEventRequest = {
 function createBaseSearchWfRunRequest(): SearchWfRunRequest {
   return {
     bookmark: undefined,
-    limitt: undefined,
+    limit: undefined,
     wfSpecName: "",
     wfSpecMajorVersion: undefined,
     wfSpecRevision: undefined,
@@ -2861,8 +2861,8 @@ export const SearchWfRunRequest = {
     if (message.bookmark !== undefined) {
       writer.uint32(10).bytes(message.bookmark);
     }
-    if (message.limitt !== undefined) {
-      writer.uint32(16).int32(message.limitt);
+    if (message.limit !== undefined) {
+      writer.uint32(16).int32(message.limit);
     }
     if (message.wfSpecName !== "") {
       writer.uint32(26).string(message.wfSpecName);
@@ -2907,7 +2907,7 @@ export const SearchWfRunRequest = {
             break;
           }
 
-          message.limitt = reader.int32();
+          message.limit = reader.int32();
           continue;
         case 3:
           if (tag !== 26) {
@@ -2973,7 +2973,7 @@ export const SearchWfRunRequest = {
   fromPartial(object: DeepPartial<SearchWfRunRequest>): SearchWfRunRequest {
     const message = createBaseSearchWfRunRequest();
     message.bookmark = object.bookmark ?? undefined;
-    message.limitt = object.limitt ?? undefined;
+    message.limit = object.limit ?? undefined;
     message.wfSpecName = object.wfSpecName ?? "";
     message.wfSpecMajorVersion = object.wfSpecMajorVersion ?? undefined;
     message.wfSpecRevision = object.wfSpecRevision ?? undefined;

@@ -1,8 +1,8 @@
 package externalevent
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/wflib"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 )
 
 func AskForName() string {
@@ -13,7 +13,7 @@ func SpecificGreeting(name string) string {
 	return "Hello, " + name + "!"
 }
 
-func ExternalEventWorkflow(wf *wflib.WorkflowThread) {
+func ExternalEventWorkflow(wf *littlehorse.WorkflowThread) {
 	nameVar := wf.AddVariable("name", model.VariableType_STR)
 	wf.Execute("ask-for-name")
 

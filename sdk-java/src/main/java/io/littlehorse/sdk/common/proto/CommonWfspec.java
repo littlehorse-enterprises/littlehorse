@@ -136,9 +136,9 @@ public final class CommonWfspec {
       "parator\022\r\n\tLESS_THAN\020\000\022\020\n\014GREATER_THAN\020\001" +
       "\022\020\n\014LESS_THAN_EQ\020\002\022\023\n\017GREATER_THAN_EQ\020\003\022" +
       "\n\n\006EQUALS\020\004\022\016\n\nNOT_EQUALS\020\005\022\006\n\002IN\020\006\022\n\n\006N" +
-      "OT_IN\020\007BG\n\037io.littlehorse.sdk.common.pro" +
-      "toP\001Z\007.;model\252\002\030LittleHorse.Common.Proto" +
-      "b\006proto3"
+      "OT_IN\020\007BI\n\037io.littlehorse.sdk.common.pro" +
+      "toP\001Z\t.;lhproto\252\002\030LittleHorse.Common.Pro" +
+      "tob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
