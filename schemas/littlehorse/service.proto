@@ -529,7 +529,7 @@ message SearchWfRunRequest {
     optional bytes bookmark = 1;
 
     // Maximum results to return in one request.
-    optional int32 limit = 2;
+    optional int32 limitt = 2;
 
     // The WfSpec whose WfRun's we are searching for. This is required.
     string wf_spec_name = 3;

@@ -2258,7 +2258,7 @@ A request used to retrieve a list of WfRunId's by certain criteria.
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
 | `bookmark` | optional| bytes | Bookmark for cursor-based pagination; pass if applicable. |
-| `limit` | optional| int32 | Maximum results to return in one request. |
+| `limitt` | optional| int32 | Maximum results to return in one request. |
 | `wf_spec_name` | | string | The WfSpec whose WfRun's we are searching for. This is required. |
 | `wf_spec_major_version` | optional| int32 | Specifies to return only WfRun's from this WfSpec Major Version. |
 | `wf_spec_revision` | optional| int32 | Specifies to return only WfRun's from this WfSpec Revision. Can only be set if wf_spec_major_version is also set. |

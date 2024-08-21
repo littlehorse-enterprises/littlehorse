@@ -90,7 +90,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 
 		search := &model.SearchWfRunRequest{
 			Bookmark:      bookmark,
-			Limit:         &limit,
+			Limitt:        &limit,
 			EarliestStart: earliest,
 			LatestStart:   latest,
 			WfSpecName:    wfSpecName,
