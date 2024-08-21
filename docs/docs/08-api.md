@@ -1881,7 +1881,6 @@ Used by the Task Worker SDK; generally, you shouldn't have to touch this manuall
 | ----- | ----  | ---- | ----------- |
 | `task_worker_id` | | string | Is the ID of the Task Worker. |
 | `task_def_id` | | [TaskDefId](#taskdefid) | The TaskDef the worker wants to poll for. |
-| `listener_name` | | string | The listener that the worker is polling on. Used by the server to determine which advertised hosts to return. |
  <!-- end Fields -->
  <!-- end HasFields -->
 

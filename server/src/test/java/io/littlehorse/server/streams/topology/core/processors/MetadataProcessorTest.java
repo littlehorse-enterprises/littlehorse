@@ -2,7 +2,7 @@ package io.littlehorse.server.streams.topology.core.processors;
 
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.util.HeadersUtil;
@@ -25,7 +25,7 @@ public class MetadataProcessorTest {
     private LHServerConfig config;
 
     @Mock
-    private KafkaStreamsServerImpl server;
+    private LHServer server;
 
     private final MetadataCache metadataCache = new MetadataCache();
 

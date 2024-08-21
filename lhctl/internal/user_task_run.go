@@ -151,6 +151,83 @@ var getUserTaskRunCmd = &cobra.Command{
 	},
 }
 
+var saveUserTaskRunProgressCmd = &cobra.Command{
+	Use:   "userTaskRun",
+	Short: "Save progress on UserTaskRuns",
+	Long: `Given a provied WfRunId and UserTaskGuid, this utility allows you
+to save current progress on a UserTask before executing the it.
+`,
+	Run: func(cmd *cobra.Command, args []string) {
+
+		wfRunId, _ := cmd.Flags().GetString("wfRunId")
+		userTaskGuid, _ := cmd.Flags().GetString("userTaskGuid")
+
+		saveUserTaskRunProgress := &model.SaveUserTaskRunProgressRequest{
+			Results: make(map[string]*model.VariableValue),
+			UserTaskRunId: &model.UserTaskRunId{
+				WfRunId:      common.StrToWfRunId(wfRunId),
+				UserTaskGuid: userTaskGuid,
+			},
+		}
+
+		// First, get the UserTaskRun.
+		client := getGlobalClient(cmd)
+		userTaskRun, _ := getUserTaskRun(cmd, wfRunId, userTaskGuid, &client)
+
+		if userTaskRun.Notes != nil {
+			fmt.Println("\nNotes: " + *userTaskRun.Notes + "\n")
+		}
+
+		// Next, get the UserTaskDef.
+		userTaskDef, err := getUserTaskDef(cmd, userTaskRun, &client)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Next, prompt for the userId.
+		userIdVarVal, err := promptFor(
+			"Enter the userId of the person completing the task",
+			model.VariableType_STR,
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+		saveUserTaskRunProgress.UserId = userIdVarVal.GetStr()
+
+		for _, field := range userTaskDef.Fields {
+			fmt.Println("\nField: ", field.DisplayName)
+			if field.Description != nil {
+				fmt.Println(*field.Description)
+			}
+			resultVal, err := promptFor("Please enter the response for this field ("+field.Type.String()+")", field.Type)
+			if err != nil {
+				log.Fatal(err)
+			}
+			saveUserTaskRunProgress.Results[field.Name] = resultVal
+		}
+
+		fmt.Println("Select an assignment policy value:")
+		for k, v := range model.SaveUserTaskRunProgressRequest_SaveUserTaskRunAssignmentPolicy_name {
+			fmt.Printf("%d: %s\n", k, v)
+		}
+
+		assignmentPolicy, err := promptFor(
+			"Enter the number corresponding to your choice: ",
+			model.VariableType_INT,
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+		saveUserTaskRunProgress.Policy = model.SaveUserTaskRunProgressRequest_SaveUserTaskRunAssignmentPolicy(assignmentPolicy.GetInt())
+
+		fmt.Println("completing userTaskRun!")
+		// Post the result
+		common.PrintResp(
+			(client).SaveUserTaskRunProgress(requestContext(cmd), saveUserTaskRunProgress),
+		)
+	},
+}
+
 var searchUserTaskRunCmd = &cobra.Command{
 	Use:   "userTaskRun",
 	Short: "Search for UserTaskRun's either by WfRunId or by {takDefId,Status}",
@@ -269,7 +346,7 @@ func executeUserTask(cmd *cobra.Command, wfRunId string, userTaskGuid string, cl
 		completeUserTask.Results[field.Name] = resultVal
 	}
 
-	fmt.Println("completing userTaskRun!")
+	fmt.Println("Saving userTaskRun progress!")
 	// Post the result
 	common.PrintResp(
 		(*client).CompleteUserTaskRun(requestContext(cmd), completeUserTask),
@@ -328,6 +405,12 @@ func init() {
 	listCmd.AddCommand(listUserTaskRunCmd)
 	cancelUserTaskCmd.AddCommand(cancelUserTaskRunCmd)
 
+	saveCmd.AddCommand(saveUserTaskRunProgressCmd)
+	saveUserTaskRunProgressCmd.Flags().String("wfRunId", "", "WfRunId of the WfRun the UserTaskRun belongs to.")
+	saveUserTaskRunProgressCmd.MarkFlagRequired("wfRunId")
+	saveUserTaskRunProgressCmd.Flags().String("userTaskGuid", "", "GUID of the User Task you are saving progress on.")
+	saveUserTaskRunProgressCmd.MarkFlagRequired("userTaskGuid")
+
 	assignUserTaskRunCmd.Flags().String("userId", "", "User Id to assign to.")
 	assignUserTaskRunCmd.Flags().String("userGroup", "", "User Group to assign to.")
 	assignUserTaskRunCmd.Flags().Bool("overrideClaim", false, "Whether to forcefully steal task if it's already assigned.")
@@ -338,5 +421,4 @@ func init() {
 	searchUserTaskRunCmd.Flags().String("userTaskStatus", "", "Status of User Task Runs to search for.")
 	searchUserTaskRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for User Task Runs that started no more than this number of minutes ago")
 	searchUserTaskRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for User Task Runs that started at least this number of minutes ago")
-
 }

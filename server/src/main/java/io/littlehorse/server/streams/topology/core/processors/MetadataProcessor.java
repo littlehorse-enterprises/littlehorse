@@ -7,7 +7,7 @@ import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -26,12 +26,12 @@ import org.apache.kafka.streams.processor.api.Record;
 public class MetadataProcessor implements Processor<String, MetadataCommand, String, CommandProcessorOutput> {
 
     private final LHServerConfig config;
-    private final KafkaStreamsServerImpl server;
+    private final LHServer server;
     private final MetadataCache metadataCache;
 
     private ProcessorContext<String, CommandProcessorOutput> ctx;
 
-    public MetadataProcessor(LHServerConfig config, KafkaStreamsServerImpl server, MetadataCache metadataCache) {
+    public MetadataProcessor(LHServerConfig config, LHServer server, MetadataCache metadataCache) {
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;

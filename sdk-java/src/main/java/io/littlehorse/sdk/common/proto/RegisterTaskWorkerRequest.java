@@ -24,7 +24,6 @@ private static final long serialVersionUID = 0L;
   }
   private RegisterTaskWorkerRequest() {
     taskWorkerId_ = "";
-    listenerName_ = "";
   }
 
   @java.lang.Override
@@ -132,55 +131,6 @@ private static final long serialVersionUID = 0L;
     return taskDefId_ == null ? io.littlehorse.sdk.common.proto.TaskDefId.getDefaultInstance() : taskDefId_;
   }
 
-  public static final int LISTENER_NAME_FIELD_NUMBER = 3;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object listenerName_ = "";
-  /**
-   * <pre>
-   * The listener that the worker is polling on. Used by the server to determine which
-   * advertised hosts to return.
-   * </pre>
-   *
-   * <code>string listener_name = 3;</code>
-   * @return The listenerName.
-   */
-  @java.lang.Override
-  public java.lang.String getListenerName() {
-    java.lang.Object ref = listenerName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      listenerName_ = s;
-      return s;
-    }
-  }
-  /**
-   * <pre>
-   * The listener that the worker is polling on. Used by the server to determine which
-   * advertised hosts to return.
-   * </pre>
-   *
-   * <code>string listener_name = 3;</code>
-   * @return The bytes for listenerName.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getListenerNameBytes() {
-    java.lang.Object ref = listenerName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      listenerName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -201,9 +151,6 @@ private static final long serialVersionUID = 0L;
     if (taskDefId_ != null) {
       output.writeMessage(2, getTaskDefId());
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(listenerName_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, listenerName_);
-    }
     getUnknownFields().writeTo(output);
   }
 
@@ -219,9 +166,6 @@ private static final long serialVersionUID = 0L;
     if (taskDefId_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getTaskDefId());
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(listenerName_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, listenerName_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -245,8 +189,6 @@ private static final long serialVersionUID = 0L;
       if (!getTaskDefId()
           .equals(other.getTaskDefId())) return false;
     }
-    if (!getListenerName()
-        .equals(other.getListenerName())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -264,8 +206,6 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + TASK_DEF_ID_FIELD_NUMBER;
       hash = (53 * hash) + getTaskDefId().hashCode();
     }
-    hash = (37 * hash) + LISTENER_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getListenerName().hashCode();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -410,7 +350,6 @@ private static final long serialVersionUID = 0L;
         taskDefIdBuilder_.dispose();
         taskDefIdBuilder_ = null;
       }
-      listenerName_ = "";
       return this;
     }
 
@@ -451,9 +390,6 @@ private static final long serialVersionUID = 0L;
         result.taskDefId_ = taskDefIdBuilder_ == null
             ? taskDefId_
             : taskDefIdBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.listenerName_ = listenerName_;
       }
     }
 
@@ -509,11 +445,6 @@ private static final long serialVersionUID = 0L;
       if (other.hasTaskDefId()) {
         mergeTaskDefId(other.getTaskDefId());
       }
-      if (!other.getListenerName().isEmpty()) {
-        listenerName_ = other.listenerName_;
-        bitField0_ |= 0x00000004;
-        onChanged();
-      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -552,11 +483,6 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
-            case 26: {
-              listenerName_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -819,103 +745,6 @@ private static final long serialVersionUID = 0L;
         taskDefId_ = null;
       }
       return taskDefIdBuilder_;
-    }
-
-    private java.lang.Object listenerName_ = "";
-    /**
-     * <pre>
-     * The listener that the worker is polling on. Used by the server to determine which
-     * advertised hosts to return.
-     * </pre>
-     *
-     * <code>string listener_name = 3;</code>
-     * @return The listenerName.
-     */
-    public java.lang.String getListenerName() {
-      java.lang.Object ref = listenerName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        listenerName_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <pre>
-     * The listener that the worker is polling on. Used by the server to determine which
-     * advertised hosts to return.
-     * </pre>
-     *
-     * <code>string listener_name = 3;</code>
-     * @return The bytes for listenerName.
-     */
-    public com.google.protobuf.ByteString
-        getListenerNameBytes() {
-      java.lang.Object ref = listenerName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        listenerName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <pre>
-     * The listener that the worker is polling on. Used by the server to determine which
-     * advertised hosts to return.
-     * </pre>
-     *
-     * <code>string listener_name = 3;</code>
-     * @param value The listenerName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setListenerName(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      listenerName_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The listener that the worker is polling on. Used by the server to determine which
-     * advertised hosts to return.
-     * </pre>
-     *
-     * <code>string listener_name = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearListenerName() {
-      listenerName_ = getDefaultInstance().getListenerName();
-      bitField0_ = (bitField0_ & ~0x00000004);
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The listener that the worker is polling on. Used by the server to determine which
-     * advertised hosts to return.
-     * </pre>
-     *
-     * <code>string listener_name = 3;</code>
-     * @param value The bytes for listenerName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setListenerNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      listenerName_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

@@ -32,10 +32,9 @@ const (
 	KEY_FILE_KEY     = "LHC_CLIENT_KEY"
 	CA_CERT_FILE_KEY = "LHC_CA_CERT"
 
-	NUM_WORKER_THREADS_KEY      = "LHW_NUM_WORKER_THREADS"
-	TASK_WORKER_VERSION_KEY     = "LHW_TASK_WORKER_VERSION"
-	SERVER_CONNECT_LISTENER_KEY = "LHW_SERVER_CONNECT_LISTENER"
-	TASK_WORKER_ID_KEY          = "LHW_TASK_WORKER_ID"
+	NUM_WORKER_THREADS_KEY  = "LHW_NUM_WORKER_THREADS"
+	TASK_WORKER_VERSION_KEY = "LHW_TASK_WORKER_VERSION"
+	TASK_WORKER_ID_KEY      = "LHW_TASK_WORKER_ID"
 
 	OAUTH_CLIENT_ID_KEY     = "LHC_OAUTH_CLIENT_ID"
 	OAUTH_CLIENT_SECRET_KEY = "LHC_OAUTH_CLIENT_SECRET"
@@ -48,7 +47,6 @@ const (
 	GRPC_KEEPALIVE_TIME_KEY    = "LHC_GRPC_KEEPALIVE_TIME_MS"
 	GRPC_KEEPALIVE_TIMEOUT_KEY = "LHC_GRPC_KEEPALIVE_TIMEOUT_MS"
 
-	DEFAULT_LISTENER            = "PLAIN"
 	DEFAULT_OAUTH_CALLBACK_PORT = 25242
 	DEFAULT_PROTOCOL            = "PLAINTEXT"
 	TLS_PROTOCOL                = "TLS"
@@ -64,9 +62,8 @@ type LHConfig struct {
 	CaCert       *string
 	TenantId     *string
 
-	NumWorkerThreads      int32
-	TaskWorkerVersion     string
-	ServerConnectListener string
+	NumWorkerThreads  int32
+	TaskWorkerVersion string
 
 	GrpcKeepaliveTimeMs    int64
 	GrpcKeepaliveTimeoutMs int64
@@ -141,10 +138,6 @@ func (l *LHConfig) GetGrpcClientForHost(url string) (*lhproto.LittleHorseClient,
 }
 
 func NewConfigFromEnv() *LHConfig {
-	serverConnectListener := os.Getenv(SERVER_CONNECT_LISTENER_KEY)
-	if serverConnectListener == "" {
-		serverConnectListener = DEFAULT_LISTENER
-	}
 
 	return &LHConfig{
 		ApiHost:      getEnvOrDefault(API_HOST_KEY, "localhost"),
@@ -157,9 +150,8 @@ func NewConfigFromEnv() *LHConfig {
 		CaCert:   stringPtr(os.Getenv(CA_CERT_FILE_KEY)),
 		TenantId: stringPtr(os.Getenv(TENANT_ID_KEY)),
 
-		NumWorkerThreads:      int32FromEnv(NUM_WORKER_THREADS_KEY, 8),
-		TaskWorkerVersion:     os.Getenv(TASK_WORKER_VERSION_KEY),
-		ServerConnectListener: getEnvOrDefault(SERVER_CONNECT_LISTENER_KEY, DEFAULT_LISTENER),
+		NumWorkerThreads:  int32FromEnv(NUM_WORKER_THREADS_KEY, 8),
+		TaskWorkerVersion: os.Getenv(TASK_WORKER_VERSION_KEY),
 
 		GrpcKeepaliveTimeMs:    int64FromEnv(GRPC_KEEPALIVE_TIME_KEY, 45000),
 		GrpcKeepaliveTimeoutMs: int64FromEnv(GRPC_KEEPALIVE_TIMEOUT_KEY, 5000),
@@ -195,9 +187,8 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 		CaCert:   stringPtr(p.GetString(CA_CERT_FILE_KEY, "")),
 		TenantId: stringPtr(p.GetString(TENANT_ID_KEY, "")),
 
-		NumWorkerThreads:      int32FromProp(p, NUM_WORKER_THREADS_KEY, 8),
-		TaskWorkerVersion:     p.GetString(TASK_WORKER_VERSION_KEY, ""),
-		ServerConnectListener: p.GetString(SERVER_CONNECT_LISTENER_KEY, DEFAULT_LISTENER),
+		NumWorkerThreads:  int32FromProp(p, NUM_WORKER_THREADS_KEY, 8),
+		TaskWorkerVersion: p.GetString(TASK_WORKER_VERSION_KEY, ""),
 
 		GrpcKeepaliveTimeMs:    int64FromProp(p, GRPC_KEEPALIVE_TIME_KEY, 45000),
 		GrpcKeepaliveTimeoutMs: int64FromProp(p, GRPC_KEEPALIVE_TIMEOUT_KEY, 5000),
