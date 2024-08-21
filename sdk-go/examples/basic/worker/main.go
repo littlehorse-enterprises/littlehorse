@@ -12,7 +12,7 @@ func main() {
 	config, _ := examples.LoadConfigAndClient()
 
 	tw, err := taskworker.NewTaskWorker(config, basic.Greet, "greet")
-
+	tw.MaskVariable("my-var", "")
 	if err != nil {
 		log.Fatal(err)
 	}
