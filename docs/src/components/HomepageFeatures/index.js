@@ -4,56 +4,32 @@ import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: 'Reliability',
+    title: 'For Mission Critical Apps',
     Svg: require('@site/static/img/reliability.svg').default,
     description: (
       <>
-        Make your apps resilient to infrastructure failures and network outages.
+        Scale to dozens of thousands of <code>TaskRun</code>s per second, with latency as low as 20ms, while
+        making your apps resilient and observable.
       </>
     ),
   },
   {
-    title: 'Observability',
+    title: 'For Engineers, By Engineers',
     Svg: require('@site/static/img/observability.svg').default,
     description: (
       <>
-        No more hours of <code>grep</code>ing through logs to find a bug.
+        Libraries in Java, Go, and Python; source-available and free for production use.
+        Designed with love from first principles.
       </>
     ),
   },
   {
-    title: 'Scalability',
-    Svg: require('@site/static/img/scalability.svg').default,
-    description: (
-      <>
-        Scale to dozens of thousands of <code>TaskRun</code>s per second, with latency as low as 20ms.
-      </>
-    ),
-  },
-  {
-    title: 'Composability',
-    Svg: require('@site/static/img/composability.svg').default,
-    description: (
-      <>
-        Build a library of modular Task Workers which you can re-use across all of your workflows.
-      </>
-    ),
-  },
-  {
-    title: 'Velocity',
-    Svg: require('@site/static/img/velocity.svg').default,
-    description: (
-      <>
-        Develop new features or change existing business workflows with ease.
-      </>
-    ),
-  },
-  {
-    title: 'Reactivity',
+    title: 'For Any Use Case',
     Svg: require('@site/static/img/reactivity.svg').default,
     description: (
       <>
-        Write Workflows which seamlessly integrate with and react to external systems.
+        Fully-featured Workflow DSL that supports all programming primitives while being
+        easy to use and adopt.
       </>
     ),
   },
