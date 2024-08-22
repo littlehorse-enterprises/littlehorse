@@ -28,8 +28,8 @@ const FeatureList = [
     Svg: require('@site/static/img/reactivity.svg').default,
     description: (
       <>
-        Fully-featured Workflow DSL that supports all programming primitives while being
-        easy to use and adopt.
+        Fully-featured Workflow DSL that supports all programming primitives. Easy to
+        learn and adopt without rewriting your existing apps.
       </>
     ),
   },
