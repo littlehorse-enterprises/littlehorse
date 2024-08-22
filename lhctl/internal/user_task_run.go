@@ -4,12 +4,12 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"os"
 	"strings"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
 )
 
@@ -54,11 +54,11 @@ Lists all UserTaskRun's for a given WfRun Id.
 		}
 		wfRunId := args[0]
 
-		req := &model.ListUserTaskRunRequest{
-			WfRunId: common.StrToWfRunId(wfRunId),
+		req := &lhproto.ListUserTaskRunRequest{
+			WfRunId: littlehorse.StrToWfRunId(wfRunId),
 		}
 
-		common.PrintResp(getGlobalClient(cmd).ListUserTaskRuns(
+		littlehorse.PrintResp(getGlobalClient(cmd).ListUserTaskRuns(
 			requestContext(cmd),
 			req,
 		))
@@ -87,9 +87,9 @@ The following option groups are supported:
 		userId, _ := cmd.Flags().GetString("userId")
 		userGroup, _ := cmd.Flags().GetString("userGroup")
 
-		reassign := &model.AssignUserTaskRunRequest{
-			UserTaskRunId: &model.UserTaskRunId{
-				WfRunId:      common.StrToWfRunId(args[0]),
+		reassign := &lhproto.AssignUserTaskRunRequest{
+			UserTaskRunId: &lhproto.UserTaskRunId{
+				WfRunId:      littlehorse.StrToWfRunId(args[0]),
 				UserTaskGuid: args[1],
 			},
 			OverrideClaim: overrideClaim,
@@ -106,7 +106,7 @@ The following option groups are supported:
 			log.Fatal("Must specify either --userId or --userGroup")
 		}
 
-		common.PrintResp(getGlobalClient(cmd).AssignUserTaskRun(
+		littlehorse.PrintResp(getGlobalClient(cmd).AssignUserTaskRun(
 			requestContext(cmd),
 			reassign,
 		))
@@ -141,10 +141,10 @@ var getUserTaskRunCmd = &cobra.Command{
 
 		wfRunId, userTaskGuid := args[0], args[1]
 
-		common.PrintResp(getGlobalClient(cmd).GetUserTaskRun(
+		littlehorse.PrintResp(getGlobalClient(cmd).GetUserTaskRun(
 			requestContext(cmd),
-			&model.UserTaskRunId{
-				WfRunId:      common.StrToWfRunId(wfRunId),
+			&lhproto.UserTaskRunId{
+				WfRunId:      littlehorse.StrToWfRunId(wfRunId),
 				UserTaskGuid: userTaskGuid,
 			},
 		))
@@ -162,10 +162,10 @@ to save current progress on a UserTask before executing the it.
 		wfRunId, _ := cmd.Flags().GetString("wfRunId")
 		userTaskGuid, _ := cmd.Flags().GetString("userTaskGuid")
 
-		saveUserTaskRunProgress := &model.SaveUserTaskRunProgressRequest{
-			Results: make(map[string]*model.VariableValue),
-			UserTaskRunId: &model.UserTaskRunId{
-				WfRunId:      common.StrToWfRunId(wfRunId),
+		saveUserTaskRunProgress := &lhproto.SaveUserTaskRunProgressRequest{
+			Results: make(map[string]*lhproto.VariableValue),
+			UserTaskRunId: &lhproto.UserTaskRunId{
+				WfRunId:      littlehorse.StrToWfRunId(wfRunId),
 				UserTaskGuid: userTaskGuid,
 			},
 		}
@@ -187,7 +187,7 @@ to save current progress on a UserTask before executing the it.
 		// Next, prompt for the userId.
 		userIdVarVal, err := promptFor(
 			"Enter the userId of the person completing the task",
-			model.VariableType_STR,
+			lhproto.VariableType_STR,
 		)
 		if err != nil {
 			log.Fatal(err)
@@ -207,22 +207,22 @@ to save current progress on a UserTask before executing the it.
 		}
 
 		fmt.Println("Select an assignment policy value:")
-		for k, v := range model.SaveUserTaskRunProgressRequest_SaveUserTaskRunAssignmentPolicy_name {
+		for k, v := range lhproto.SaveUserTaskRunProgressRequest_SaveUserTaskRunAssignmentPolicy_name {
 			fmt.Printf("%d: %s\n", k, v)
 		}
 
 		assignmentPolicy, err := promptFor(
 			"Enter the number corresponding to your choice: ",
-			model.VariableType_INT,
+			lhproto.VariableType_INT,
 		)
 		if err != nil {
 			log.Fatal(err)
 		}
-		saveUserTaskRunProgress.Policy = model.SaveUserTaskRunProgressRequest_SaveUserTaskRunAssignmentPolicy(assignmentPolicy.GetInt())
+		saveUserTaskRunProgress.Policy = lhproto.SaveUserTaskRunProgressRequest_SaveUserTaskRunAssignmentPolicy(assignmentPolicy.GetInt())
 
 		fmt.Println("completing userTaskRun!")
 		// Post the result
-		common.PrintResp(
+		littlehorse.PrintResp(
 			(client).SaveUserTaskRunProgress(requestContext(cmd), saveUserTaskRunProgress),
 		)
 	},
@@ -256,7 +256,7 @@ Choose one of the following option groups:
 
 		earliest, latest := loadEarliestAndLatestStart(cmd)
 
-		search := &model.SearchUserTaskRunRequest{
+		search := &lhproto.SearchUserTaskRunRequest{
 			EarliestStart: earliest,
 			LatestStart:   latest,
 			Bookmark:      bookmark,
@@ -265,11 +265,11 @@ Choose one of the following option groups:
 
 		statusStr, _ := cmd.Flags().GetString("userTaskStatus")
 		if statusStr != "" {
-			statusInt, ok := model.UserTaskRunStatus_value[statusStr]
+			statusInt, ok := lhproto.UserTaskRunStatus_value[statusStr]
 			if !ok {
 				log.Fatal("Invalid value provided for userTaskStatus")
 			}
-			statusVal := model.UserTaskRunStatus(statusInt)
+			statusVal := lhproto.UserTaskRunStatus(statusInt)
 			search.Status = &statusVal
 		}
 
@@ -291,18 +291,18 @@ Choose one of the following option groups:
 		search.Bookmark = bookmark
 		search.Limit = &limit
 
-		common.PrintResp(getGlobalClient(cmd).SearchUserTaskRun(requestContext(cmd), search))
+		littlehorse.PrintResp(getGlobalClient(cmd).SearchUserTaskRun(requestContext(cmd), search))
 
 	},
 }
 
-func executeUserTask(cmd *cobra.Command, wfRunId string, userTaskGuid string, client *model.LittleHorseClient) {
+func executeUserTask(cmd *cobra.Command, wfRunId string, userTaskGuid string, client *lhproto.LittleHorseClient) {
 	fmt.Println("Executing UserTaskRun ", wfRunId, " ", userTaskGuid)
 
-	completeUserTask := &model.CompleteUserTaskRunRequest{
-		Results: make(map[string]*model.VariableValue),
-		UserTaskRunId: &model.UserTaskRunId{
-			WfRunId:      common.StrToWfRunId(wfRunId),
+	completeUserTask := &lhproto.CompleteUserTaskRunRequest{
+		Results: make(map[string]*lhproto.VariableValue),
+		UserTaskRunId: &lhproto.UserTaskRunId{
+			WfRunId:      littlehorse.StrToWfRunId(wfRunId),
 			UserTaskGuid: userTaskGuid,
 		},
 	}
@@ -326,7 +326,7 @@ func executeUserTask(cmd *cobra.Command, wfRunId string, userTaskGuid string, cl
 	// Next, prompt for the userId.
 	userIdVarVal, err := promptFor(
 		"Enter the userId of the person completing the task",
-		model.VariableType_STR,
+		lhproto.VariableType_STR,
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -348,22 +348,22 @@ func executeUserTask(cmd *cobra.Command, wfRunId string, userTaskGuid string, cl
 
 	fmt.Println("Saving userTaskRun progress!")
 	// Post the result
-	common.PrintResp(
+	littlehorse.PrintResp(
 		(*client).CompleteUserTaskRun(requestContext(cmd), completeUserTask),
 	)
 }
 
-func cancelUserTask(cmd *cobra.Command, wfRunId string, userTaskGuid string, client *model.LittleHorseClient) {
-	cancelUserTask := &model.CancelUserTaskRunRequest{
-		UserTaskRunId: &model.UserTaskRunId{
-			WfRunId:      common.StrToWfRunId(wfRunId),
+func cancelUserTask(cmd *cobra.Command, wfRunId string, userTaskGuid string, client *lhproto.LittleHorseClient) {
+	cancelUserTask := &lhproto.CancelUserTaskRunRequest{
+		UserTaskRunId: &lhproto.UserTaskRunId{
+			WfRunId:      littlehorse.StrToWfRunId(wfRunId),
 			UserTaskGuid: userTaskGuid,
 		},
 	}
 	(*client).CancelUserTaskRun(requestContext(cmd), cancelUserTask)
 }
 
-func promptFor(prompt string, varType model.VariableType) (*model.VariableValue, error) {
+func promptFor(prompt string, varType lhproto.VariableType) (*lhproto.VariableValue, error) {
 	fmt.Print(prompt + ": ")
 	// Create a new buffered reader to read from standard input
 	reader := bufio.NewReader(os.Stdin)
@@ -371,26 +371,26 @@ func promptFor(prompt string, varType model.VariableType) (*model.VariableValue,
 	// Read the entire line of text entered by the user
 	// The returned line will include the newline character '\n', so we'll trim it.
 	userInput, _ := reader.ReadString('\n')
-	return common.StrToVarVal(userInput[:len(userInput)-1], varType)
+	return littlehorse.StrToVarVal(userInput[:len(userInput)-1], varType)
 }
 
 func getUserTaskDef(
-	cmd *cobra.Command, userTaskRun *model.UserTaskRun, client *model.LittleHorseClient,
-) (*model.UserTaskDef, error) {
+	cmd *cobra.Command, userTaskRun *lhproto.UserTaskRun, client *lhproto.LittleHorseClient,
+) (*lhproto.UserTaskDef, error) {
 	return (*client).GetUserTaskDef(requestContext(cmd), userTaskRun.UserTaskDefId)
 }
 
 func getUserTaskRun(
-	cmd *cobra.Command, wfRunId, userTaskGuid string, client *model.LittleHorseClient,
-) (*model.UserTaskRun, error) {
-	resp, err := (*client).GetUserTaskRun(requestContext(cmd), &model.UserTaskRunId{
-		WfRunId:      common.StrToWfRunId(wfRunId),
+	cmd *cobra.Command, wfRunId, userTaskGuid string, client *lhproto.LittleHorseClient,
+) (*lhproto.UserTaskRun, error) {
+	resp, err := (*client).GetUserTaskRun(requestContext(cmd), &lhproto.UserTaskRunId{
+		WfRunId:      littlehorse.StrToWfRunId(wfRunId),
 		UserTaskGuid: userTaskGuid,
 	})
 	if err != nil {
 		return nil, err
 	}
-	if resp.Status == model.UserTaskRunStatus_DONE || resp.Status == model.UserTaskRunStatus_CANCELLED {
+	if resp.Status == lhproto.UserTaskRunStatus_DONE || resp.Status == lhproto.UserTaskRunStatus_CANCELLED {
 		return nil, errors.New("userTaskRun already in terminated state")
 	}
 

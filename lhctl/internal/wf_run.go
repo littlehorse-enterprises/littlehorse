@@ -1,10 +1,10 @@
 package internal
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
 )
 
@@ -17,9 +17,9 @@ var getWfRunCmd = &cobra.Command{
 
 		}
 
-		common.PrintResp(getGlobalClient(cmd).GetWfRun(
+		littlehorse.PrintResp(getGlobalClient(cmd).GetWfRun(
 			requestContext(cmd),
-			common.StrToWfRunId(args[0]),
+			littlehorse.StrToWfRunId(args[0]),
 		))
 	},
 }
@@ -33,9 +33,9 @@ var getScheduledWfRun = &cobra.Command{
 
 		}
 
-		common.PrintResp(getGlobalClient(cmd).GetScheduledWfRun(
+		littlehorse.PrintResp(getGlobalClient(cmd).GetScheduledWfRun(
 			requestContext(cmd),
-			&model.ScheduledWfRunId{
+			&lhproto.ScheduledWfRunId{
 				Id: args[0],
 			},
 		))
@@ -66,7 +66,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 		revisionRaw, _ := cmd.Flags().GetInt32("revision")
 
 		var majorVersion, revision *int32 = nil, nil
-		var status *model.LHStatus
+		var status *lhproto.LHStatus
 
 		if majorVersionRaw != -1 {
 			majorVersion = &majorVersionRaw
@@ -75,7 +75,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 			revision = &revisionRaw
 		}
 		if statusRaw != "" {
-			statusTmp := model.LHStatus(model.LHStatus_value[statusRaw])
+			statusTmp := lhproto.LHStatus(lhproto.LHStatus_value[statusRaw])
 			status = &statusTmp
 		}
 
@@ -88,9 +88,9 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 			log.Fatal("Must specify wfSpecName!")
 		}
 
-		search := &model.SearchWfRunRequest{
+		search := &lhproto.SearchWfRunRequest{
 			Bookmark:      bookmark,
-			Limitt:        &limit,
+			Limit:         &limit,
 			EarliestStart: earliest,
 			LatestStart:   latest,
 			WfSpecName:    wfSpecName,
@@ -100,7 +100,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 			WfSpecRevision:     revision,
 		}
 
-		common.PrintResp(
+		littlehorse.PrintResp(
 			getGlobalClient(cmd).SearchWfRun(requestContext(cmd), search),
 		)
 	},
@@ -116,10 +116,10 @@ var stopWfRunCmd = &cobra.Command{
 		}
 		trn, _ := cmd.Flags().GetInt32("threadRunNumber")
 
-		common.PrintResp(getGlobalClient(cmd).StopWfRun(
+		littlehorse.PrintResp(getGlobalClient(cmd).StopWfRun(
 			requestContext(cmd),
-			&model.StopWfRunRequest{
-				WfRunId:         common.StrToWfRunId(args[0]),
+			&lhproto.StopWfRunRequest{
+				WfRunId:         littlehorse.StrToWfRunId(args[0]),
 				ThreadRunNumber: trn,
 			},
 		))
@@ -136,10 +136,10 @@ var resumeWfRunCmd = &cobra.Command{
 		}
 		trn, _ := cmd.Flags().GetInt32("threadRunNumber")
 
-		common.PrintResp(getGlobalClient(cmd).ResumeWfRun(
+		littlehorse.PrintResp(getGlobalClient(cmd).ResumeWfRun(
 			requestContext(cmd),
-			&model.ResumeWfRunRequest{
-				WfRunId:         common.StrToWfRunId(args[0]),
+			&lhproto.ResumeWfRunRequest{
+				WfRunId:         littlehorse.StrToWfRunId(args[0]),
 				ThreadRunNumber: trn,
 			},
 		))
@@ -155,10 +155,10 @@ var deleteWfRunCmd = &cobra.Command{
 
 		}
 
-		common.PrintResp(getGlobalClient(cmd).DeleteWfRun(
+		littlehorse.PrintResp(getGlobalClient(cmd).DeleteWfRun(
 			requestContext(cmd),
-			&model.DeleteWfRunRequest{
-				Id: &model.WfRunId{
+			&lhproto.DeleteWfRunRequest{
+				Id: &lhproto.WfRunId{
 					Id: args[0],
 				},
 			},
@@ -174,10 +174,10 @@ var deleteScheduledWfRun = &cobra.Command{
 			log.Fatal("You must provide one argument: the ID of ScheduledWfRun to delete.")
 		}
 
-		common.PrintResp(getGlobalClient(cmd).DeleteScheduledWfRun(
+		littlehorse.PrintResp(getGlobalClient(cmd).DeleteScheduledWfRun(
 			requestContext(cmd),
-			&model.DeleteScheduledWfRunRequest{
-				Id: &model.ScheduledWfRunId{
+			&lhproto.DeleteScheduledWfRunRequest{
+				Id: &lhproto.ScheduledWfRunId{
 					Id: args[0],
 				},
 			},
@@ -193,7 +193,7 @@ var scheduleWfCmd = &cobra.Command{
 			log.Fatal("You must provide at least 2 arg: Cron expression and WfSpec name.")
 		}
 
-		scheduleWfReq := &model.ScheduleWfRequest{}
+		scheduleWfReq := &lhproto.ScheduleWfRequest{}
 
 		cronExpression := args[0]
 		wfSpecName := args[1]
@@ -223,7 +223,7 @@ var scheduleWfCmd = &cobra.Command{
 
 		parentWfRunId, _ := cmd.Flags().GetString("parentWfRunId")
 		if parentWfRunId != "" {
-			parentId := &model.WfRunId{}
+			parentId := &lhproto.WfRunId{}
 			parentId.Id = parentWfRunId
 			scheduleWfReq.ParentWfRunId = parentId
 		}
@@ -238,13 +238,13 @@ odd total number of args. See 'lhctl run --help' for details.`)
 			}
 
 			// Now, we need to look up the wfSpec and serialize the variables.
-			var wfSpec *model.WfSpec
+			var wfSpec *lhproto.WfSpec
 			var err error
 
 			if revision == nil {
 				wfSpec, err = getGlobalClient(cmd).GetLatestWfSpec(
 					requestContext(cmd),
-					&model.GetLatestWfSpecRequest{
+					&lhproto.GetLatestWfSpecRequest{
 						Name:         args[0],
 						MajorVersion: majorVersion,
 					},
@@ -252,7 +252,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 			} else {
 				wfSpec, err = getGlobalClient(cmd).GetWfSpec(
 					requestContext(cmd),
-					&model.WfSpecId{
+					&lhproto.WfSpecId{
 						Name:         args[0],
 						MajorVersion: *majorVersion,
 						Revision:     *revision,
@@ -263,8 +263,8 @@ odd total number of args. See 'lhctl run --help' for details.`)
 				log.Fatal("Unable to find WfSpec: " + err.Error())
 			}
 
-			scheduleWfReq.Variables = make(map[string]*model.VariableValue)
-			varDefs := common.GetInputVarDefs(wfSpec)
+			scheduleWfReq.Variables = make(map[string]*lhproto.VariableValue)
+			varDefs := littlehorse.GetInputVarDefs(wfSpec)
 
 			for i := 1; i+1 < len(args); i += 2 {
 				varName := args[i]
@@ -275,7 +275,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 					log.Fatal("Variable name '" + varName + "' not found in WfSpec.")
 				}
 
-				scheduleWfReq.Variables[varName], err = common.StrToVarVal(
+				scheduleWfReq.Variables[varName], err = littlehorse.StrToVarVal(
 					varValStr, varDef.Type,
 				)
 
@@ -286,7 +286,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 		}
 
 		// At this point, we've loaded everything up, time to fire away.
-		common.PrintResp(getGlobalClient(cmd).ScheduleWf(requestContext(cmd), scheduleWfReq))
+		littlehorse.PrintResp(getGlobalClient(cmd).ScheduleWf(requestContext(cmd), scheduleWfReq))
 	},
 }
 
@@ -309,13 +309,13 @@ var searchScheduledWfsCmd = &cobra.Command{
 			revision = &raw
 		}
 		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
-		req := &model.SearchScheduledWfRunRequest{
+		req := &lhproto.SearchScheduledWfRunRequest{
 			WfSpecName:   wfSpecName,
 			MajorVersion: majorVersion,
 			Revision:     revision,
 		}
 
-		common.PrintResp(getGlobalClient(cmd).SearchScheduledWfRun(
+		littlehorse.PrintResp(getGlobalClient(cmd).SearchScheduledWfRun(
 			requestContext(cmd),
 			req,
 		))

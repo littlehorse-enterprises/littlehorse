@@ -4,11 +4,11 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package internal
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"strconv"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -36,7 +36,7 @@ taskDefName.
 
 		taskDefName := args[0]
 		windowTypeStr := args[1]
-		windowType, isValid := model.MetricsWindowLength_value[windowTypeStr]
+		windowType, isValid := lhproto.MetricsWindowLength_value[windowTypeStr]
 		if !isValid {
 			log.Fatal("Invalid window type! Supports only 'MINUTES_5', 'HOURS_2', 'DAYS_1'")
 		}
@@ -46,12 +46,12 @@ taskDefName.
 		}
 		ts := timestamppb.Now()
 
-		common.PrintResp(getGlobalClient(cmd).ListTaskDefMetrics(
+		littlehorse.PrintResp(getGlobalClient(cmd).ListTaskDefMetrics(
 			requestContext(cmd),
-			&model.ListTaskMetricsRequest{
+			&lhproto.ListTaskMetricsRequest{
 				LastWindowStart: ts,
-				WindowLength:    model.MetricsWindowLength(windowType),
-				TaskDefId:       &model.TaskDefId{Name: taskDefName},
+				WindowLength:    lhproto.MetricsWindowLength(windowType),
+				TaskDefId:       &lhproto.TaskDefId{Name: taskDefName},
 				NumWindows:      int32(numWindows),
 			},
 		))

@@ -10,8 +10,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 )
 
 // getExternalEventCmd represents the externalEvent command
@@ -46,11 +46,11 @@ var getExternalEventCmd = &cobra.Command{
 
 		ctx := requestContext(cmd)
 
-		common.PrintResp(getGlobalClient(cmd).GetExternalEvent(
+		littlehorse.PrintResp(getGlobalClient(cmd).GetExternalEvent(
 			ctx,
-			&model.ExternalEventId{
-				WfRunId:            common.StrToWfRunId(args[0]),
-				ExternalEventDefId: &model.ExternalEventDefId{Name: args[1]},
+			&lhproto.ExternalEventId{
+				WfRunId:            littlehorse.StrToWfRunId(args[0]),
+				ExternalEventDefId: &lhproto.ExternalEventDefId{Name: args[1]},
 				Guid:               args[2],
 			},
 		))
@@ -84,12 +84,12 @@ Returns a list of ObjectId's that can be passed into 'lhctl get externalEvent'.
 
 		earliest, latest := loadEarliestAndLatestStart(cmd)
 
-		search := &model.SearchExternalEventRequest{
+		search := &lhproto.SearchExternalEventRequest{
 			Bookmark:      bookmark,
 			Limit:         &limit,
 			EarliestStart: earliest,
 			LatestStart:   latest,
-			ExternalEventDefId: &model.ExternalEventDefId{
+			ExternalEventDefId: &lhproto.ExternalEventDefId{
 				Name: externalEventDefName,
 			},
 		}
@@ -98,7 +98,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get externalEvent'.
 			search.IsClaimed = &isClaimed
 		}
 
-		common.PrintResp(getGlobalClient(cmd).SearchExternalEvent(requestContext(cmd), search))
+		littlehorse.PrintResp(getGlobalClient(cmd).SearchExternalEvent(requestContext(cmd), search))
 	},
 }
 
@@ -117,11 +117,11 @@ Lists all ExternalEvent's for a given WfRun Id.
 		}
 		wfRunId := args[0]
 
-		req := &model.ListExternalEventsRequest{
-			WfRunId: common.StrToWfRunId(wfRunId),
+		req := &lhproto.ListExternalEventsRequest{
+			WfRunId: littlehorse.StrToWfRunId(wfRunId),
 		}
 
-		common.PrintResp(getGlobalClient(cmd).ListExternalEvents(
+		littlehorse.PrintResp(getGlobalClient(cmd).ListExternalEvents(
 			requestContext(cmd),
 			req,
 		))

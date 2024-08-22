@@ -1,12 +1,12 @@
 package internal
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"os"
 	"strconv"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -37,20 +37,20 @@ var getWfSpecCmd = &cobra.Command{
 		}
 
 		if majorVersion == nil || revision == nil {
-			common.PrintResp(
+			littlehorse.PrintResp(
 				getGlobalClient(cmd).GetLatestWfSpec(
 					requestContext(cmd),
-					&model.GetLatestWfSpecRequest{
+					&lhproto.GetLatestWfSpecRequest{
 						Name:         name,
 						MajorVersion: majorVersion,
 					},
 				),
 			)
 		} else {
-			common.PrintResp(
+			littlehorse.PrintResp(
 				getGlobalClient(cmd).GetWfSpec(
 					requestContext(cmd),
-					&model.WfSpecId{
+					&lhproto.WfSpecId{
 						Name:         name,
 						MajorVersion: *majorVersion,
 						Revision:     *revision,
@@ -68,7 +68,7 @@ var deployWfSpecCmd = &cobra.Command{
 		if len(args) != 1 {
 			log.Fatal("You must provide one argument: the filename to deploy from.")
 		}
-		pws := &model.PutWfSpecRequest{}
+		pws := &lhproto.PutWfSpecRequest{}
 
 		// First, read the file
 		dat, err := os.ReadFile(args[0])
@@ -89,7 +89,7 @@ var deployWfSpecCmd = &cobra.Command{
 			log.Fatal("Failed reading deploy file: " + err.Error())
 		}
 
-		common.PrintResp(getGlobalClient(cmd).PutWfSpec(requestContext(cmd), pws))
+		littlehorse.PrintResp(getGlobalClient(cmd).PutWfSpec(requestContext(cmd), pws))
 	},
 }
 
@@ -112,28 +112,28 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfSpec'.
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 
-		search := &model.SearchWfSpecRequest{
+		search := &lhproto.SearchWfSpecRequest{
 			Bookmark: bookmark,
 			Limit:    &limit,
 		}
 
 		if name != "" {
-			search.WfSpecCriteria = &model.SearchWfSpecRequest_Name{
+			search.WfSpecCriteria = &lhproto.SearchWfSpecRequest_Name{
 				Name: name,
 			}
 		} else if prefix != "" {
-			search.WfSpecCriteria = &model.SearchWfSpecRequest_Prefix{
+			search.WfSpecCriteria = &lhproto.SearchWfSpecRequest_Prefix{
 				Prefix: prefix,
 			}
 		} else if taskDef != "" {
-			search.WfSpecCriteria = &model.SearchWfSpecRequest_TaskDefName{
+			search.WfSpecCriteria = &lhproto.SearchWfSpecRequest_TaskDefName{
 				TaskDefName: taskDef,
 			}
 		}
 		// if none are set, then we don't set the WfSpecCriteria, and the server
 		// interprets that as "just give me all the WfSpec's".
 
-		common.PrintResp(
+		littlehorse.PrintResp(
 			getGlobalClient(cmd).SearchWfSpec(requestContext(cmd), search),
 		)
 	},
@@ -163,11 +163,11 @@ WfSpec to delete.
 			log.Fatal("Couldn't convert revision to int: ", err)
 		}
 
-		common.PrintResp(
+		littlehorse.PrintResp(
 			getGlobalClient(cmd).DeleteWfSpec(
 				requestContext(cmd),
-				&model.DeleteWfSpecRequest{
-					Id: &model.WfSpecId{
+				&lhproto.DeleteWfSpecRequest{
+					Id: &lhproto.WfSpecId{
 						Name:         name,
 						MajorVersion: int32(majorVersion),
 						Revision:     int32(revision),

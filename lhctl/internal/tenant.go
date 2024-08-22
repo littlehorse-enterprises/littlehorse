@@ -1,10 +1,10 @@
 package internal
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
 )
 
@@ -15,9 +15,9 @@ var putTenantCmd = &cobra.Command{
 		if len(args) != 1 {
 			log.Fatal("You must provide one argument")
 		}
-		common.PrintResp(getGlobalClient(cmd).PutTenant(
+		littlehorse.PrintResp(getGlobalClient(cmd).PutTenant(
 			requestContext(cmd),
-			&model.PutTenantRequest{
+			&lhproto.PutTenantRequest{
 				Id: args[0],
 			},
 		))
@@ -30,9 +30,9 @@ var searchTenantCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
-		common.PrintResp(getGlobalClient(cmd).SearchTenant(
+		littlehorse.PrintResp(getGlobalClient(cmd).SearchTenant(
 			requestContext(cmd),
-			&model.SearchTenantRequest{
+			&lhproto.SearchTenantRequest{
 				Bookmark: bookmark,
 				Limit:    &limit,
 			},
@@ -45,9 +45,9 @@ var getTenantCmd = &cobra.Command{
 	Short: "Get a Tenant",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		common.PrintResp(getGlobalClient(cmd).GetTenant(
+		littlehorse.PrintResp(getGlobalClient(cmd).GetTenant(
 			requestContext(cmd),
-			&model.TenantId{
+			&lhproto.TenantId{
 				Id: args[0],
 			},
 		))

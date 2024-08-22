@@ -1,11 +1,11 @@
 package internal
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"strconv"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
 )
 
@@ -24,20 +24,20 @@ the failure (or propagated failure) must not have been handled by a Failure Hand
 			log.Fatal("You must provide at least 2 args: WfRunId and threadRunNumber.")
 		}
 
-		wfRunId := common.StrToWfRunId(args[0])
+		wfRunId := littlehorse.StrToWfRunId(args[0])
 		trn, err := strconv.Atoi(args[1])
 		if err != nil {
 			log.Fatal("Couldn't convert threadRunNumber to int.")
 		}
 
 		skipCurrentNode, _ := cmd.Flags().GetBool("skipCurrentNode")
-		rescueRequest := &model.RescueThreadRunRequest{
+		rescueRequest := &lhproto.RescueThreadRunRequest{
 			WfRunId:         wfRunId,
 			ThreadRunNumber: int32(trn),
 			SkipCurrentNode: skipCurrentNode,
 		}
 
-		common.PrintResp(getGlobalClient(cmd).RescueThreadRun(requestContext(cmd), rescueRequest))
+		littlehorse.PrintResp(getGlobalClient(cmd).RescueThreadRun(requestContext(cmd), rescueRequest))
 	},
 }
 

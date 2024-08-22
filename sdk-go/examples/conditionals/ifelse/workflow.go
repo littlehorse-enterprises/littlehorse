@@ -18,10 +18,10 @@ func Donut() string {
 }
 
 func DonutWorkflow(wf *littlehorse.WorkflowThread) {
-	numDonuts := wf.AddVariable("number-of-donuts", model.VariableType_INT)
+	numDonuts := wf.AddVariable("number-of-donuts", lhproto.VariableType_INT)
 
 	wf.DoIfElse(
-		wf.Condition(numDonuts, model.Comparator_LESS_THAN, 10),
+		wf.Condition(numDonuts, lhproto.Comparator_LESS_THAN, 10),
 		func(t *littlehorse.WorkflowThread) {
 			t.Execute("eat-another-donut")
 		},

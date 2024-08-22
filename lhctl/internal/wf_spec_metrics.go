@@ -4,11 +4,11 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package internal
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"strconv"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -40,7 +40,7 @@ as your wfSpecName, and 0 as your wfSpecVersion.
 			log.Fatal(err)
 		}
 		windowTypeStr := args[2]
-		windowType, isValid := model.MetricsWindowLength_value[windowTypeStr]
+		windowType, isValid := lhproto.MetricsWindowLength_value[windowTypeStr]
 		if !isValid {
 			log.Fatal("Invalid window type! Supports only 'MINUTES_5', 'HOURS_2', 'DAYS_1'")
 		}
@@ -50,12 +50,12 @@ as your wfSpecName, and 0 as your wfSpecVersion.
 		}
 		ts := timestamppb.Now()
 
-		common.PrintResp(getGlobalClient(cmd).ListWfSpecMetrics(
+		littlehorse.PrintResp(getGlobalClient(cmd).ListWfSpecMetrics(
 			requestContext(cmd),
-			&model.ListWfMetricsRequest{
+			&lhproto.ListWfMetricsRequest{
 				LastWindowStart: ts,
-				WindowLength:    model.MetricsWindowLength(windowType),
-				WfSpecId: &model.WfSpecId{
+				WindowLength:    lhproto.MetricsWindowLength(windowType),
+				WfSpecId: &lhproto.WfSpecId{
 					Name:         wfSpecName,
 					MajorVersion: int32(wfSpecVersion),
 				},

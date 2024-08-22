@@ -6,8 +6,8 @@ import (
 
 	"context"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc/metadata"
 )
@@ -22,8 +22,8 @@ a WfRun, to searching for various objects.
 `,
 }
 
-var globalClient *model.LittleHorseClient
-var globalConfig *common.LHConfig
+var globalClient *lhproto.LittleHorseClient
+var globalConfig *littlehorse.LHConfig
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -42,7 +42,7 @@ func init() {
 	)
 }
 
-func getGlobalConfig(cmd *cobra.Command) common.LHConfig {
+func getGlobalConfig(cmd *cobra.Command) littlehorse.LHConfig {
 	if globalConfig != nil {
 		return *globalConfig
 	}
@@ -52,7 +52,7 @@ func getGlobalConfig(cmd *cobra.Command) common.LHConfig {
 		log.Fatal(err)
 	}
 
-	globalConfig, err = common.NewConfigFromProps(configLoc)
+	globalConfig, err = littlehorse.NewConfigFromProps(configLoc)
 
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -62,13 +62,13 @@ func getGlobalConfig(cmd *cobra.Command) common.LHConfig {
 		} else {
 			log.Fatal(err)
 		}
-		globalConfig = common.NewConfigFromEnv()
+		globalConfig = littlehorse.NewConfigFromEnv()
 	}
 
 	return *globalConfig
 }
 
-func getGlobalClient(cmd *cobra.Command) model.LittleHorseClient {
+func getGlobalClient(cmd *cobra.Command) lhproto.LittleHorseClient {
 	if globalClient != nil {
 		return *globalClient
 	}

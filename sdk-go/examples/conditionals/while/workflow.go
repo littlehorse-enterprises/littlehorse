@@ -14,13 +14,13 @@ func Donut(num int) int {
 }
 
 func DonutWorkflow(wf *littlehorse.WorkflowThread) {
-	numDonuts := wf.AddVariable("number-of-donuts", model.VariableType_INT)
+	numDonuts := wf.AddVariable("number-of-donuts", lhproto.VariableType_INT)
 
 	wf.DoWhile(
-		wf.Condition(numDonuts, model.Comparator_GREATER_THAN, 0),
+		wf.Condition(numDonuts, lhproto.Comparator_GREATER_THAN, 0),
 		func(t *littlehorse.WorkflowThread) {
 			taskOutput := t.Execute("eat-another-donut", numDonuts)
-			wf.Mutate(numDonuts, model.VariableMutationType_ASSIGN, taskOutput)
+			wf.Mutate(numDonuts, lhproto.VariableMutationType_ASSIGN, taskOutput)
 		},
 	)
 }

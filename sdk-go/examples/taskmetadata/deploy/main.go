@@ -5,7 +5,6 @@ import (
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples/taskmetadata"
 )
@@ -22,5 +21,5 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	common.PrintProto(resp)
+	littlehorse.PrintProto(resp)
 }

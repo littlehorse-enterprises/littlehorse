@@ -1,6 +1,7 @@
 package littlehorse_test
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"testing"
 
@@ -10,7 +11,7 @@ import (
 func TestCanMakeSearcjableVariable(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		t.AddVariable(
-			"my-var", model.VariableType_BOOL,
+			"my-var", lhproto.VariableType_BOOL,
 		).Searchable()
 	}, "my-workflow")
 
@@ -48,7 +49,7 @@ func TestUserTaskAssignToUser(t *testing.T) {
 
 func TestUserTaskAssignToUserByVar(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
-		userVar := t.AddVariable("user", model.VariableType_STR)
+		userVar := t.AddVariable("user", lhproto.VariableType_STR)
 		t.AssignUserTask("my-task", userVar, nil)
 	}, "my-workflow")
 
@@ -100,7 +101,7 @@ func TestUserTaskWithOnCancellationExceptionName(t *testing.T) {
 
 func TestReminderTask(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
-		userVar := t.AddVariable("user", model.VariableType_STR)
+		userVar := t.AddVariable("user", lhproto.VariableType_STR)
 		uto := t.AssignUserTask("my-task", userVar, nil)
 		t.ScheduleReminderTaskOnAssignment(uto, 20, "my-task", "my-arg")
 	}, "my-workflow")
@@ -117,13 +118,13 @@ func TestReminderTask(t *testing.T) {
 	assert.NotNil(t, utNode)
 	reminderAction := utNode.Actions[0]
 	assert.NotNil(t, reminderAction)
-	assert.Equal(t, model.UTActionTrigger_ON_TASK_ASSIGNED, reminderAction.Hook)
+	assert.Equal(t, lhproto.UTActionTrigger_ON_TASK_ASSIGNED, reminderAction.Hook)
 
 }
 
 func TestCancelUserTaskAfterDeadline(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
-		userVar := t.AddVariable("user", model.VariableType_STR)
+		userVar := t.AddVariable("user", lhproto.VariableType_STR)
 		uto := t.AssignUserTask("my-task", userVar, nil)
 		t.CancelUserTaskAfter(uto, 20)
 	}, "my-workflow")
@@ -140,12 +141,12 @@ func TestCancelUserTaskAfterDeadline(t *testing.T) {
 	assert.NotNil(t, utNode)
 	cancelUserTask := utNode.Actions[0]
 	assert.NotNil(t, cancelUserTask)
-	assert.Equal(t, model.UTActionTrigger_ON_ARRIVAL, cancelUserTask.Hook)
+	assert.Equal(t, lhproto.UTActionTrigger_ON_ARRIVAL, cancelUserTask.Hook)
 }
 
 func TestCancelUserTaskAfterAssignment(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
-		userVar := t.AddVariable("user", model.VariableType_STR)
+		userVar := t.AddVariable("user", lhproto.VariableType_STR)
 		uto := t.AssignUserTask("my-task", userVar, nil)
 		t.CancelUserTaskAfterAssignment(uto, 20)
 	}, "my-workflow")
@@ -162,7 +163,7 @@ func TestCancelUserTaskAfterAssignment(t *testing.T) {
 	assert.NotNil(t, utNode)
 	cancelUserTask := utNode.Actions[0]
 	assert.NotNil(t, cancelUserTask)
-	assert.Equal(t, model.UTActionTrigger_ON_TASK_ASSIGNED, cancelUserTask.Hook)
+	assert.Equal(t, lhproto.UTActionTrigger_ON_TASK_ASSIGNED, cancelUserTask.Hook)
 }
 
 func TestUserTaskAssignToUserWithGroup(t *testing.T) {
@@ -263,7 +264,7 @@ func TestReassignToGroup(t *testing.T) {
 
 func TestParallelSpawnThreads(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
-		myArr := t.AddVariable("my-arr", model.VariableType_JSON_ARR)
+		myArr := t.AddVariable("my-arr", lhproto.VariableType_JSON_ARR)
 
 		spawnedThreads := t.SpawnThreadForEach(
 			myArr,
@@ -298,7 +299,7 @@ func TestParallelSpawnThreads(t *testing.T) {
 
 func TestParallelSpawnThreadsWithInput(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
-		myArr := t.AddVariable("my-arr", model.VariableType_JSON_ARR)
+		myArr := t.AddVariable("my-arr", lhproto.VariableType_JSON_ARR)
 
 		inputs := map[string]interface{}{
 			"asdf": 1234,
@@ -328,7 +329,7 @@ func TestParallelSpawnThreadsWithInput(t *testing.T) {
 
 func TestFormatString(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
-		myArr := t.AddVariable("my-str", model.VariableType_STR)
+		myArr := t.AddVariable("my-str", lhproto.VariableType_STR)
 		t.Execute("some-task", t.Format("input {0}", myArr))
 	}, "my-workflow")
 
@@ -418,7 +419,7 @@ func TestCatchAnyError(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(
 		t,
-		model.FailureHandlerDef_FAILURE_TYPE_ERROR,
+		lhproto.FailureHandlerDef_FAILURE_TYPE_ERROR,
 		handler.GetAnyFailureOfType(),
 	)
 }
@@ -444,7 +445,7 @@ func TestCatchAnyException(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(
 		t,
-		model.FailureHandlerDef_FAILURE_TYPE_EXCEPTION,
+		lhproto.FailureHandlerDef_FAILURE_TYPE_EXCEPTION,
 		handler.GetAnyFailureOfType(),
 	)
 }
@@ -481,20 +482,20 @@ func TestVarValToVarType(t *testing.T) {
 	varVal, err := littlehorse.InterfaceToVarVal(123)
 	assert.Nil(t, err)
 	varType := littlehorse.VarValToVarType(varVal)
-	assert.Equal(t, *varType, model.VariableType_INT)
+	assert.Equal(t, *varType, lhproto.VariableType_INT)
 
 	// Str
 	varVal, err = littlehorse.InterfaceToVarVal("hello there")
 	assert.Nil(t, err)
 	varType = littlehorse.VarValToVarType(varVal)
-	assert.Equal(t, *varType, model.VariableType_STR)
+	assert.Equal(t, *varType, lhproto.VariableType_STR)
 
 	// Str pointer
 	mystr := "hello there"
 	varVal, err = littlehorse.InterfaceToVarVal(&mystr)
 	assert.Nil(t, err)
 	varType = littlehorse.VarValToVarType(varVal)
-	assert.Equal(t, *varType, model.VariableType_STR)
+	assert.Equal(t, *varType, lhproto.VariableType_STR)
 	assert.Equal(t, varVal.GetStr(), mystr)
 
 	// struct/JSON_OBJ
@@ -504,10 +505,10 @@ func TestVarValToVarType(t *testing.T) {
 	})
 	assert.Nil(t, err)
 	varType = littlehorse.VarValToVarType(varVal)
-	assert.Equal(t, *varType, model.VariableType_JSON_OBJ)
+	assert.Equal(t, *varType, lhproto.VariableType_JSON_OBJ)
 
 	// Nil varval
-	varVal = &model.VariableValue{}
+	varVal = &lhproto.VariableValue{}
 	varType = littlehorse.VarValToVarType(varVal)
 	assert.Nil(t, varType)
 }
@@ -516,18 +517,18 @@ func TestUpdateType(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		nodeOutput := t.Execute("some-task")
 		t.HandleAnyFailure(&nodeOutput, someHandler)
-	}, "my-workflow").WithUpdateType(model.AllowedUpdateType_NO_UPDATES)
+	}, "my-workflow").WithUpdateType(lhproto.AllowedUpdateType_NO_UPDATES)
 
 	putWf, _ := wf.Compile()
 
-	assert.Equal(t, putWf.AllowedUpdates, model.AllowedUpdateType_NO_UPDATES)
+	assert.Equal(t, putWf.AllowedUpdates, lhproto.AllowedUpdateType_NO_UPDATES)
 }
 
 func TestJsonPath(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
-		myVar := t.AddVariable("my-var", model.VariableType_JSON_OBJ)
+		myVar := t.AddVariable("my-var", lhproto.VariableType_JSON_OBJ)
 		t.Execute("some-task", myVar.JsonPath("$.foo"))
-	}, "my-workflow").WithUpdateType(model.AllowedUpdateType_NO_UPDATES)
+	}, "my-workflow").WithUpdateType(lhproto.AllowedUpdateType_NO_UPDATES)
 
 	putWf, _ := wf.Compile()
 	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
@@ -537,38 +538,38 @@ func TestJsonPath(t *testing.T) {
 
 func TestVariableAccessLevel(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
-		inheritedVar := t.AddVariable("my-var", model.VariableType_BOOL)
-		inheritedVar.WithAccessLevel(model.WfRunVariableAccessLevel_PRIVATE_VAR)
+		inheritedVar := t.AddVariable("my-var", lhproto.VariableType_BOOL)
+		inheritedVar.WithAccessLevel(lhproto.WfRunVariableAccessLevel_PRIVATE_VAR)
 
 		// Test that default is PUBLIC_VAR
-		t.AddVariable("default-access", model.VariableType_INT)
+		t.AddVariable("default-access", lhproto.VariableType_INT)
 
 		t.Execute("some-task")
-	}, "my-workflow").WithUpdateType(model.AllowedUpdateType_NO_UPDATES)
+	}, "my-workflow").WithUpdateType(lhproto.AllowedUpdateType_NO_UPDATES)
 
 	putWf, _ := wf.Compile()
 	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
 	varDef := entrypoint.VariableDefs[0]
-	assert.Equal(t, varDef.AccessLevel, model.WfRunVariableAccessLevel_PRIVATE_VAR)
+	assert.Equal(t, varDef.AccessLevel, lhproto.WfRunVariableAccessLevel_PRIVATE_VAR)
 	assert.Equal(t, varDef.VarDef.Name, "my-var")
 
 	varDef = entrypoint.VariableDefs[1]
-	assert.Equal(t, varDef.AccessLevel, model.WfRunVariableAccessLevel_PUBLIC_VAR)
+	assert.Equal(t, varDef.AccessLevel, lhproto.WfRunVariableAccessLevel_PUBLIC_VAR)
 	assert.Equal(t, varDef.VarDef.Name, "default-access")
 }
 
 func TestRetentionPolicy(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 
-		t.WithRetentionPolicy(&model.ThreadRetentionPolicy{
-			ThreadGcPolicy: &model.ThreadRetentionPolicy_SecondsAfterThreadTermination{
+		t.WithRetentionPolicy(&lhproto.ThreadRetentionPolicy{
+			ThreadGcPolicy: &lhproto.ThreadRetentionPolicy_SecondsAfterThreadTermination{
 				SecondsAfterThreadTermination: 137,
 			},
 		})
 
 		t.Execute("some-task")
-	}, "my-workflow").WithRetentionPolicy(&model.WorkflowRetentionPolicy{
-		WfGcPolicy: &model.WorkflowRetentionPolicy_SecondsAfterWfTermination{
+	}, "my-workflow").WithRetentionPolicy(&lhproto.WorkflowRetentionPolicy{
+		WfGcPolicy: &lhproto.WorkflowRetentionPolicy_SecondsAfterWfTermination{
 			SecondsAfterWfTermination: 10,
 		},
 	})
@@ -582,7 +583,7 @@ func TestRetentionPolicy(t *testing.T) {
 
 func TestThrowEvent(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(wf *littlehorse.WorkflowThread) {
-		myVar := wf.AddVariable("my-var", model.VariableType_STR)
+		myVar := wf.AddVariable("my-var", lhproto.VariableType_STR)
 		wf.ThrowEvent("my-event", myVar)
 		wf.ThrowEvent("another-event", "my-content")
 	}, "throw-event")
@@ -604,7 +605,7 @@ func TestThrowEvent(t *testing.T) {
 
 func TestDynamicTask(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(wf *littlehorse.WorkflowThread) {
-		myVar := wf.AddVariable("my-var", model.VariableType_STR)
+		myVar := wf.AddVariable("my-var", lhproto.VariableType_STR)
 		wf.Execute("some-static-task")
 
 		formatStr := wf.Format("some-dynamic-task-{0}")
@@ -667,7 +668,7 @@ func TestWaitForThreadsHandleExceptionOnChild(t *testing.T) {
 	assert.Equal(t, "my-exception", specificHandler.GetSpecificFailure())
 	assert.Equal(t, "exn-handler-2-threads-WAIT_FOR_THREADS-my-exception", specificHandler.HandlerSpecName)
 
-	assert.Equal(t, model.FailureHandlerDef_FAILURE_TYPE_EXCEPTION, anyHandler.GetAnyFailureOfType())
+	assert.Equal(t, lhproto.FailureHandlerDef_FAILURE_TYPE_EXCEPTION, anyHandler.GetAnyFailureOfType())
 	assert.Equal(t, "exn-handler-2-threads-WAIT_FOR_THREADS", anyHandler.HandlerSpecName)
 }
 
@@ -740,6 +741,6 @@ func TestWaitForThreadsHandleErrorOnChild(t *testing.T) {
 	assert.Equal(t, "TIMEOUT", timeoutHandler.GetSpecificFailure())
 	assert.Equal(t, "error-handler-2-threads-WAIT_FOR_THREADS-TIMEOUT", timeoutHandler.HandlerSpecName)
 
-	assert.Equal(t, model.FailureHandlerDef_FAILURE_TYPE_ERROR, anyErrorHandler.GetAnyFailureOfType())
+	assert.Equal(t, lhproto.FailureHandlerDef_FAILURE_TYPE_ERROR, anyErrorHandler.GetAnyFailureOfType())
 	assert.Equal(t, "error-handler-2-threads-WAIT_FOR_THREADS", anyErrorHandler.HandlerSpecName)
 }

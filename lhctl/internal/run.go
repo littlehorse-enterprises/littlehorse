@@ -1,10 +1,10 @@
 package internal
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
 )
 
@@ -30,7 +30,7 @@ lhctl run my_workflow_id foo '{"bar":"baz"}'
 			log.Fatal("You must provide at least 1 arg: WfSpec Id.")
 		}
 
-		runReq := &model.RunWfRequest{}
+		runReq := &lhproto.RunWfRequest{}
 
 		wfSpecName := args[0]
 		runReq.WfSpecName = wfSpecName
@@ -58,7 +58,7 @@ lhctl run my_workflow_id foo '{"bar":"baz"}'
 
 		parentWfRunId, _ := cmd.Flags().GetString("parentWfRunId")
 		if parentWfRunId != "" {
-			parentId := &model.WfRunId{}
+			parentId := &lhproto.WfRunId{}
 			parentId.Id = parentWfRunId
 			runReq.ParentWfRunId = parentId
 		}
@@ -73,13 +73,13 @@ odd total number of args. See 'lhctl run --help' for details.`)
 			}
 
 			// Now, we need to look up the wfSpec and serialize the variables.
-			var wfSpec *model.WfSpec
+			var wfSpec *lhproto.WfSpec
 			var err error
 
 			if revision == nil {
 				wfSpec, err = getGlobalClient(cmd).GetLatestWfSpec(
 					requestContext(cmd),
-					&model.GetLatestWfSpecRequest{
+					&lhproto.GetLatestWfSpecRequest{
 						Name:         args[0],
 						MajorVersion: majorVersion,
 					},
@@ -87,7 +87,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 			} else {
 				wfSpec, err = getGlobalClient(cmd).GetWfSpec(
 					requestContext(cmd),
-					&model.WfSpecId{
+					&lhproto.WfSpecId{
 						Name:         args[0],
 						MajorVersion: *majorVersion,
 						Revision:     *revision,
@@ -98,8 +98,8 @@ odd total number of args. See 'lhctl run --help' for details.`)
 				log.Fatal("Unable to find WfSpec: " + err.Error())
 			}
 
-			runReq.Variables = make(map[string]*model.VariableValue)
-			varDefs := common.GetInputVarDefs(wfSpec)
+			runReq.Variables = make(map[string]*lhproto.VariableValue)
+			varDefs := littlehorse.GetInputVarDefs(wfSpec)
 
 			for i := 1; i+1 < len(args); i += 2 {
 				varName := args[i]
@@ -110,7 +110,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 					log.Fatal("Variable name '" + varName + "' not found in WfSpec.")
 				}
 
-				runReq.Variables[varName], err = common.StrToVarVal(
+				runReq.Variables[varName], err = littlehorse.StrToVarVal(
 					varValStr, varDef.Type,
 				)
 
@@ -121,7 +121,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 		}
 
 		// At this point, we've loaded everything up, time to fire away.
-		common.PrintResp(getGlobalClient(cmd).RunWf(requestContext(cmd), runReq))
+		littlehorse.PrintResp(getGlobalClient(cmd).RunWf(requestContext(cmd), runReq))
 	},
 }
 

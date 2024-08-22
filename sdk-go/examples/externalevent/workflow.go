@@ -14,12 +14,12 @@ func SpecificGreeting(name string) string {
 }
 
 func ExternalEventWorkflow(wf *littlehorse.WorkflowThread) {
-	nameVar := wf.AddVariable("name", model.VariableType_STR)
+	nameVar := wf.AddVariable("name", lhproto.VariableType_STR)
 	wf.Execute("ask-for-name")
 
 	eventOutput := wf.WaitForEvent("my-name")
 
-	wf.Mutate(nameVar, model.VariableMutationType_ASSIGN, eventOutput)
+	wf.Mutate(nameVar, lhproto.VariableMutationType_ASSIGN, eventOutput)
 
 	wf.Execute("specific-greeting", nameVar)
 }

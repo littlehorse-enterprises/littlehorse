@@ -1,12 +1,12 @@
 package internal
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"os"
 	"strings"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -20,27 +20,27 @@ var putPrincipalCmd = &cobra.Command{
 		tenantId, _ := cmd.Flags().GetString("tenantId")
 		overwrite, _ := cmd.Flags().GetBool("overwrite")
 		id := args[0]
-		serverAcls := []*model.ServerACL{}
-		per_tenant_acls := make(map[string]*model.ServerACLs)
+		serverAcls := []*lhproto.ServerACL{}
+		per_tenant_acls := make(map[string]*lhproto.ServerACLs)
 		for resource, actions := range parseAcl(acl) {
-			allowedResources := []model.ACLResource{resource}
-			serverAcl := model.ServerACL{
+			allowedResources := []lhproto.ACLResource{resource}
+			serverAcl := lhproto.ServerACL{
 				Resources:      allowedResources,
 				AllowedActions: actions,
 			}
 			serverAcls = append(serverAcls, &serverAcl)
 		}
 
-		per_tenant_acls[tenantId] = &model.ServerACLs{
+		per_tenant_acls[tenantId] = &lhproto.ServerACLs{
 			Acls: serverAcls,
 		}
 
-		putRequest := model.PutPrincipalRequest{
+		putRequest := lhproto.PutPrincipalRequest{
 			Id:            id,
 			PerTenantAcls: per_tenant_acls,
 			Overwrite:     overwrite,
 		}
-		common.PrintResp(getGlobalClient(cmd).PutPrincipal(
+		littlehorse.PrintResp(getGlobalClient(cmd).PutPrincipal(
 			requestContext(cmd),
 			&putRequest,
 		))
@@ -72,7 +72,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get principals'.
 
 		earliest, latest := loadEarliestAndLatestStart(cmd)
 
-		search := &model.SearchPrincipalRequest{
+		search := &lhproto.SearchPrincipalRequest{
 			Bookmark:      bookmark,
 			Limit:         &limit,
 			EarliestStart: earliest,
@@ -80,16 +80,16 @@ Returns a list of ObjectId's that can be passed into 'lhctl get principals'.
 		}
 
 		if cmd.Flags().Lookup("isAdmin").Changed {
-			search.PrincipalCriteria = &model.SearchPrincipalRequest_IsAdmin{
+			search.PrincipalCriteria = &lhproto.SearchPrincipalRequest_IsAdmin{
 				IsAdmin: isAdmin,
 			}
 		} else if tenantId != "" {
-			search.PrincipalCriteria = &model.SearchPrincipalRequest_TenantId{
+			search.PrincipalCriteria = &lhproto.SearchPrincipalRequest_TenantId{
 				TenantId: tenantId,
 			}
 		}
 
-		common.PrintResp(getGlobalClient(cmd).SearchPrincipal(requestContext(cmd), search))
+		littlehorse.PrintResp(getGlobalClient(cmd).SearchPrincipal(requestContext(cmd), search))
 	},
 }
 
@@ -100,7 +100,7 @@ var deployPrincipalCmd = &cobra.Command{
 		if len(args) != 1 {
 			log.Fatal("Must provide one arg: the file of the principal to deploy")
 		}
-		putPrincipalReq := &model.PutPrincipalRequest{}
+		putPrincipalReq := &lhproto.PutPrincipalRequest{}
 
 		// First, read the file
 		dat, err := os.ReadFile(args[0])
@@ -121,15 +121,15 @@ var deployPrincipalCmd = &cobra.Command{
 			log.Fatal("Failed reading deploy file: " + err.Error())
 		}
 
-		common.PrintResp(getGlobalClient(cmd).PutPrincipal(requestContext(cmd), putPrincipalReq))
+		littlehorse.PrintResp(getGlobalClient(cmd).PutPrincipal(requestContext(cmd), putPrincipalReq))
 	},
 }
 
-func parseAcl(input string) map[model.ACLResource][]model.ACLAction {
+func parseAcl(input string) map[lhproto.ACLResource][]lhproto.ACLAction {
 	// Split the input string into individual permissions
 	permissions := strings.Split(input, ",")
 
-	entityMap := make(map[model.ACLResource][]model.ACLAction)
+	entityMap := make(map[lhproto.ACLResource][]lhproto.ACLAction)
 
 	// Iterate through each permission and extract workflow/task and access rights
 	for _, permission := range permissions {
@@ -143,7 +143,7 @@ func parseAcl(input string) map[model.ACLResource][]model.ACLAction {
 				entityMap[entity] = append(entityMap[entity], access)
 			} else {
 				// If it doesn't exist, create a new slice and add the access right to it
-				entityMap[entity] = []model.ACLAction{access}
+				entityMap[entity] = []lhproto.ACLAction{access}
 			}
 		}
 	}
@@ -151,20 +151,20 @@ func parseAcl(input string) map[model.ACLResource][]model.ACLAction {
 }
 
 var (
-	actionsMap = map[string]model.ACLAction{
-		"read":  model.ACLAction_READ,
-		"run":   model.ACLAction_RUN,
-		"write": model.ACLAction_WRITE_METADATA,
-		"all":   model.ACLAction_ALL_ACTIONS,
+	actionsMap = map[string]lhproto.ACLAction{
+		"read":  lhproto.ACLAction_READ,
+		"run":   lhproto.ACLAction_RUN,
+		"write": lhproto.ACLAction_WRITE_METADATA,
+		"all":   lhproto.ACLAction_ALL_ACTIONS,
 	}
-	entitiesMap = map[string]model.ACLResource{
-		"acl_workflow":       model.ACLResource_ACL_WORKFLOW,
-		"acl_task":           model.ACLResource_ACL_TASK,
-		"acl_external_event": model.ACLResource_ACL_EXTERNAL_EVENT,
-		"acl_user_task":      model.ACLResource_ACL_USER_TASK,
-		"acl_principal":      model.ACLResource_ACL_PRINCIPAL,
-		"acl_tenant":         model.ACLResource_ACL_TENANT,
-		"all":                model.ACLResource_ACL_ALL_RESOURCES,
+	entitiesMap = map[string]lhproto.ACLResource{
+		"acl_workflow":       lhproto.ACLResource_ACL_WORKFLOW,
+		"acl_task":           lhproto.ACLResource_ACL_TASK,
+		"acl_external_event": lhproto.ACLResource_ACL_EXTERNAL_EVENT,
+		"acl_user_task":      lhproto.ACLResource_ACL_USER_TASK,
+		"acl_principal":      lhproto.ACLResource_ACL_PRINCIPAL,
+		"acl_tenant":         lhproto.ACLResource_ACL_TENANT,
+		"all":                lhproto.ACLResource_ACL_ALL_RESOURCES,
 	}
 )
 
@@ -177,10 +177,10 @@ var deletePrincipalCmd = &cobra.Command{
 
 		}
 
-		common.PrintResp(getGlobalClient(cmd).DeletePrincipal(
+		littlehorse.PrintResp(getGlobalClient(cmd).DeletePrincipal(
 			requestContext(cmd),
-			&model.DeletePrincipalRequest{
-				Id: &model.PrincipalId{
+			&lhproto.DeletePrincipalRequest{
+				Id: &lhproto.PrincipalId{
 					Id: args[0],
 				},
 			},

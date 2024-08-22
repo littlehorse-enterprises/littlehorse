@@ -1,8 +1,8 @@
 package internal
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"github.com/spf13/cobra"
 	"log"
 )
@@ -16,9 +16,9 @@ var getTaskWorkerGroup = &cobra.Command{
 			log.Fatal("Must provide 1 arguments. See 'lhctl get taskWorkerGroup -h'")
 		}
 
-		common.PrintResp(getGlobalClient(cmd).GetTaskWorkerGroup(
+		littlehorse.PrintResp(getGlobalClient(cmd).GetTaskWorkerGroup(
 			requestContext(cmd),
-			&model.TaskDefId{
+			&lhproto.TaskDefId{
 				Name: args[0],
 			},
 		))

@@ -23,6 +23,6 @@ func GetInfo(input *InputData) string {
 }
 
 func MyWorkflowGet(wf *littlehorse.WorkflowThread) {
-	inputVar := wf.AddVariable("input", model.VariableType_JSON_OBJ)
+	inputVar := wf.AddVariable("input", lhproto.VariableType_JSON_OBJ)
 	wf.Execute("greet", inputVar)
 }

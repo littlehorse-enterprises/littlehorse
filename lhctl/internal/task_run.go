@@ -1,11 +1,11 @@
 package internal
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"strings"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
 )
 
@@ -33,10 +33,10 @@ var getTaskRunCmd = &cobra.Command{
 			log.Fatal("Must provide 1 or 2 arguments. See 'lhctl get taskRun -h'")
 		}
 
-		common.PrintResp(getGlobalClient(cmd).GetTaskRun(
+		littlehorse.PrintResp(getGlobalClient(cmd).GetTaskRun(
 			requestContext(cmd),
-			&model.TaskRunId{
-				WfRunId:  common.StrToWfRunId(args[0]),
+			&lhproto.TaskRunId{
+				WfRunId:  littlehorse.StrToWfRunId(args[0]),
 				TaskGuid: args[1],
 			},
 		))
@@ -77,7 +77,7 @@ Choose one of the following option groups:
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 
-		var status *model.TaskStatus = nil
+		var status *lhproto.TaskStatus = nil
 		earliest, latest := loadEarliestAndLatestStart(cmd)
 
 		if statusStr != "" {
@@ -85,14 +85,14 @@ Choose one of the following option groups:
 				log.Fatal("Must provide taskDefName along with status!")
 			}
 
-			statusInt, ok := model.TaskStatus_value[statusStr]
+			statusInt, ok := lhproto.TaskStatus_value[statusStr]
 			if !ok {
 				log.Fatal("Invalid status provided. See --help.")
 			}
-			status = (*model.TaskStatus)(&statusInt)
+			status = (*lhproto.TaskStatus)(&statusInt)
 		}
 
-		search := &model.SearchTaskRunRequest{
+		search := &lhproto.SearchTaskRunRequest{
 			Status:        status,
 			TaskDefName:   taskDefName,
 			EarliestStart: earliest,
@@ -100,7 +100,7 @@ Choose one of the following option groups:
 			Bookmark:      bookmark,
 			Limit:         &limit,
 		}
-		common.PrintResp(getGlobalClient(cmd).SearchTaskRun(requestContext(cmd), search))
+		littlehorse.PrintResp(getGlobalClient(cmd).SearchTaskRun(requestContext(cmd), search))
 	},
 }
 
@@ -116,11 +116,11 @@ Lists all TaskRun's for a given WfRun Id.
 		}
 		wfRunId := args[0]
 
-		req := &model.ListTaskRunsRequest{
-			WfRunId: common.StrToWfRunId(wfRunId),
+		req := &lhproto.ListTaskRunsRequest{
+			WfRunId: littlehorse.StrToWfRunId(wfRunId),
 		}
 
-		common.PrintResp(getGlobalClient(cmd).ListTaskRuns(
+		littlehorse.PrintResp(getGlobalClient(cmd).ListTaskRuns(
 			requestContext(cmd),
 			req,
 		))

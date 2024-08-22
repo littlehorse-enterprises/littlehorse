@@ -1,13 +1,13 @@
 package internal
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"os"
 	"strconv"
 	"strings"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -46,19 +46,19 @@ var getUserTaskDefCmd = &cobra.Command{
 		}
 
 		if !hasVersion {
-			common.PrintResp(
+			littlehorse.PrintResp(
 				getGlobalClient(cmd).GetLatestUserTaskDef(
 					requestContext(cmd),
-					&model.GetLatestUserTaskDefRequest{
+					&lhproto.GetLatestUserTaskDefRequest{
 						Name: name,
 					},
 				),
 			)
 		} else {
-			common.PrintResp(
+			littlehorse.PrintResp(
 				getGlobalClient(cmd).GetUserTaskDef(
 					requestContext(cmd),
-					&model.UserTaskDefId{
+					&lhproto.UserTaskDefId{
 						Name:    name,
 						Version: version,
 					},
@@ -75,7 +75,7 @@ var deployUserTaskDefCmd = &cobra.Command{
 		if len(args) != 1 {
 			log.Fatal("You must provide one argument: the filename to deploy from.")
 		}
-		pws := &model.PutUserTaskDefRequest{}
+		pws := &lhproto.PutUserTaskDefRequest{}
 
 		// First, read the file
 		dat, err := os.ReadFile(args[0])
@@ -96,7 +96,7 @@ var deployUserTaskDefCmd = &cobra.Command{
 			log.Fatal("Failed reading deploy file: " + err.Error())
 		}
 
-		common.PrintResp(getGlobalClient(cmd).PutUserTaskDef(requestContext(cmd), pws))
+		littlehorse.PrintResp(getGlobalClient(cmd).PutUserTaskDef(requestContext(cmd), pws))
 	},
 }
 
@@ -118,22 +118,22 @@ Returns a list of ObjectId's that can be passed into 'lhctl get userTaskDef'.
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 
-		search := &model.SearchUserTaskDefRequest{
+		search := &lhproto.SearchUserTaskDefRequest{
 			Bookmark: bookmark,
 			Limit:    &limit,
 		}
 
 		if name != "" {
-			search.UserTaskDefCriteria = &model.SearchUserTaskDefRequest_Name{
+			search.UserTaskDefCriteria = &lhproto.SearchUserTaskDefRequest_Name{
 				Name: name,
 			}
 		} else if prefix != "" {
-			search.UserTaskDefCriteria = &model.SearchUserTaskDefRequest_Prefix{
+			search.UserTaskDefCriteria = &lhproto.SearchUserTaskDefRequest_Prefix{
 				Prefix: prefix,
 			}
 		}
 
-		common.PrintResp(
+		littlehorse.PrintResp(
 			getGlobalClient(cmd).SearchUserTaskDef(requestContext(cmd), search),
 		)
 	},
@@ -158,11 +158,11 @@ UserTaskDef to delete.
 			log.Fatal("Couldn't convert version to int:", err)
 		}
 
-		common.PrintResp(
+		littlehorse.PrintResp(
 			getGlobalClient(cmd).DeleteUserTaskDef(
 				requestContext(cmd),
-				&model.DeleteUserTaskDefRequest{
-					Id: &model.UserTaskDefId{
+				&lhproto.DeleteUserTaskDefRequest{
+					Id: &lhproto.UserTaskDefId{
 						Name:    name,
 						Version: int32(version),
 					},

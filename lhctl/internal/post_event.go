@@ -4,10 +4,10 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package internal
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
 )
 
@@ -32,9 +32,9 @@ lhctl postEvent <wfRunId> <externalEventName> NULL
 		}
 
 		wfRunIdStr, eedName, varTypeStr := args[0], args[1], args[2]
-		varType, validVarType := model.VariableType_value[varTypeStr]
+		varType, validVarType := lhproto.VariableType_value[varTypeStr]
 
-		wfRunId := common.StrToWfRunId(wfRunIdStr)
+		wfRunId := littlehorse.StrToWfRunId(wfRunIdStr)
 
 		if !validVarType {
 			log.Fatal(
@@ -42,27 +42,27 @@ lhctl postEvent <wfRunId> <externalEventName> NULL
 			)
 		}
 
-		varTypeEnum := model.VariableType(varType)
+		varTypeEnum := lhproto.VariableType(varType)
 
-		content := &model.VariableValue{}
+		content := &lhproto.VariableValue{}
 
 		if len(args) == 4 {
 			payloadStr := args[3]
 
 			var err error
-			content, err = common.StrToVarVal(payloadStr, varTypeEnum)
+			content, err = littlehorse.StrToVarVal(payloadStr, varTypeEnum)
 			if err != nil {
 				log.Fatal("Failed deserializing payload: " + err.Error())
 			}
 		}
 
-		req := model.PutExternalEventRequest{
+		req := lhproto.PutExternalEventRequest{
 			WfRunId:            wfRunId,
-			ExternalEventDefId: &model.ExternalEventDefId{Name: eedName},
+			ExternalEventDefId: &lhproto.ExternalEventDefId{Name: eedName},
 			Content:            content,
 		}
 
-		common.PrintResp(
+		littlehorse.PrintResp(
 			getGlobalClient(cmd).PutExternalEvent(
 				requestContext(cmd),
 				&req,

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 
@@ -13,7 +14,7 @@ func main() {
 	_, client := examples.LoadConfigAndClient()
 
 	(*client).PutExternalEventDef(context.Background(),
-		&model.PutExternalEventDefRequest{
+		&lhproto.PutExternalEventDefRequest{
 			Name: "my-name",
 		},
 	)

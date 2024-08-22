@@ -14,7 +14,7 @@ func ChildThreadTask(input string) string {
 }
 
 func ChildThreadWorkflow(wf *littlehorse.WorkflowThread) {
-	inputVar := wf.AddVariable("input", model.VariableType_STR)
+	inputVar := wf.AddVariable("input", lhproto.VariableType_STR)
 
 	childThread := wf.SpawnThread(
 		func(child *littlehorse.WorkflowThread) {

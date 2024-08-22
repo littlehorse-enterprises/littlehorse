@@ -1,13 +1,13 @@
 package internal
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -50,10 +50,10 @@ var getNodeRunCmd = &cobra.Command{
 
 		}
 
-		common.PrintResp(getGlobalClient(cmd).GetNodeRun(
+		littlehorse.PrintResp(getGlobalClient(cmd).GetNodeRun(
 			requestContext(cmd),
-			&model.NodeRunId{
-				WfRunId:         common.StrToWfRunId(args[0]),
+			&lhproto.NodeRunId{
+				WfRunId:         littlehorse.StrToWfRunId(args[0]),
 				ThreadRunNumber: int32(trn),
 				Position:        int32(pos),
 			},
@@ -74,8 +74,8 @@ Lists all NodeRun's for a given WfRun Id.
 		limit, _ := cmd.Flags().GetInt32("limit")
 		wfRunIdStr := args[0]
 
-		req := &model.ListNodeRunsRequest{
-			WfRunId:  common.StrToWfRunId(wfRunIdStr),
+		req := &lhproto.ListNodeRunsRequest{
+			WfRunId:  littlehorse.StrToWfRunId(wfRunIdStr),
 			Bookmark: bookmark,
 			Limit:    &limit,
 		}
@@ -84,7 +84,7 @@ Lists all NodeRun's for a given WfRun Id.
 			req.ThreadRunNumber = &threadRunNumber
 		}
 
-		common.PrintResp(getGlobalClient(cmd).ListNodeRuns(
+		littlehorse.PrintResp(getGlobalClient(cmd).ListNodeRuns(
 			requestContext(cmd),
 			req,
 		))
@@ -132,12 +132,12 @@ Valid options for Status:
 
 		nodeTypeStr, statusStr := args[0], args[1]
 
-		nodeTypeInt, ok := model.SearchNodeRunRequest_NodeType_value[nodeTypeStr]
+		nodeTypeInt, ok := lhproto.SearchNodeRunRequest_NodeType_value[nodeTypeStr]
 		if !ok {
 			log.Fatal("Invalid value for nodeType: " + nodeTypeStr + ". See lhctl search nodeRun --help")
 		}
 
-		statusInt, ok := model.TaskStatus_value[statusStr]
+		statusInt, ok := lhproto.TaskStatus_value[statusStr]
 		if !ok {
 			log.Fatal("Invalid value for status: " + statusStr + ". See lhctl search nodeRun --help")
 		}
@@ -147,16 +147,16 @@ Valid options for Status:
 
 		earliest, latest := loadEarliestAndLatestStart(cmd)
 
-		search := &model.SearchNodeRunRequest{
+		search := &lhproto.SearchNodeRunRequest{
 			EarliestStart: earliest,
 			LatestStart:   latest,
 			Bookmark:      bookmark,
 			Limit:         &limit,
-			NodeType:      model.SearchNodeRunRequest_NodeType(nodeTypeInt),
-			Status:        model.LHStatus(statusInt),
+			NodeType:      lhproto.SearchNodeRunRequest_NodeType(nodeTypeInt),
+			Status:        lhproto.LHStatus(statusInt),
 		}
 
-		common.PrintResp(getGlobalClient(cmd).SearchNodeRun(requestContext(cmd), search))
+		littlehorse.PrintResp(getGlobalClient(cmd).SearchNodeRun(requestContext(cmd), search))
 
 	},
 }

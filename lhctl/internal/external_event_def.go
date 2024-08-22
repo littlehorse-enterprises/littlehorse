@@ -5,11 +5,11 @@ package internal
 
 import (
 	"fmt"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"os"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -23,7 +23,7 @@ var deployExternalEventDefCmd = &cobra.Command{
 			log.Fatal("You must provide one argument: the filename to deploy from.")
 
 		}
-		peed := &model.PutExternalEventDefRequest{}
+		peed := &lhproto.PutExternalEventDefRequest{}
 
 		// First, read the file
 		dat, err := os.ReadFile(args[0])
@@ -48,7 +48,7 @@ var deployExternalEventDefCmd = &cobra.Command{
 
 		}
 
-		common.PrintResp(getGlobalClient(cmd).PutExternalEventDef(requestContext(cmd), peed))
+		littlehorse.PrintResp(getGlobalClient(cmd).PutExternalEventDef(requestContext(cmd), peed))
 	},
 }
 
@@ -62,10 +62,10 @@ var getExternalEventDefCmd = &cobra.Command{
 
 		}
 
-		common.PrintResp(
+		littlehorse.PrintResp(
 			getGlobalClient(cmd).GetExternalEventDef(
 				requestContext(cmd),
-				&model.ExternalEventDefId{
+				&lhproto.ExternalEventDefId{
 					Name: args[0],
 				},
 			),
@@ -86,10 +86,10 @@ searches for all ExternalEventDefs.
 		limit, _ := cmd.Flags().GetInt32("limit")
 		prefix, _ := cmd.Flags().GetString("prefix")
 
-		common.PrintResp(
+		littlehorse.PrintResp(
 			getGlobalClient(cmd).SearchExternalEventDef(
 				requestContext(cmd),
-				&model.SearchExternalEventDefRequest{
+				&lhproto.SearchExternalEventDefRequest{
 					Bookmark: bookmark,
 					Limit:    &limit,
 					Prefix:   &prefix,
@@ -112,11 +112,11 @@ ExternalEventDef to delete.
 
 		name := args[0]
 
-		common.PrintResp(
+		littlehorse.PrintResp(
 			getGlobalClient(cmd).DeleteExternalEventDef(
 				requestContext(cmd),
-				&model.DeleteExternalEventDefRequest{
-					Id: &model.ExternalEventDefId{
+				&lhproto.DeleteExternalEventDefRequest{
+					Id: &lhproto.ExternalEventDefId{
 						Name: name,
 					},
 				}),

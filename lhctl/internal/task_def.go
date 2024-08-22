@@ -5,11 +5,11 @@ package internal
 
 import (
 	"fmt"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"os"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -23,7 +23,7 @@ var deployTaskDefCmd = &cobra.Command{
 			log.Fatal("You must provide one argument: the filename to deploy from.")
 
 		}
-		ptd := &model.PutTaskDefRequest{}
+		ptd := &lhproto.PutTaskDefRequest{}
 
 		// First, read the file
 		dat, err := os.ReadFile(args[0])
@@ -48,7 +48,7 @@ var deployTaskDefCmd = &cobra.Command{
 
 		}
 
-		common.PrintResp(getGlobalClient(cmd).PutTaskDef(requestContext(cmd), ptd))
+		littlehorse.PrintResp(getGlobalClient(cmd).PutTaskDef(requestContext(cmd), ptd))
 	},
 }
 
@@ -63,10 +63,10 @@ var getTaskDefCmd = &cobra.Command{
 		}
 
 		name := args[0]
-		common.PrintResp(
+		littlehorse.PrintResp(
 			getGlobalClient(cmd).GetTaskDef(
 				requestContext(cmd),
-				&model.TaskDefId{
+				&lhproto.TaskDefId{
 					Name: name,
 				},
 			),
@@ -87,10 +87,10 @@ for all TaskDefs.
 		limit, _ := cmd.Flags().GetInt32("limit")
 		prefix, _ := cmd.Flags().GetString("prefix")
 
-		common.PrintResp(
+		littlehorse.PrintResp(
 			getGlobalClient(cmd).SearchTaskDef(
 				requestContext(cmd),
-				&model.SearchTaskDefRequest{
+				&lhproto.SearchTaskDefRequest{
 					Bookmark: bookmark,
 					Limit:    &limit,
 					Prefix:   &prefix,
@@ -112,11 +112,11 @@ var deleteTaskDefCmd = &cobra.Command{
 
 		name := args[0]
 
-		common.PrintResp(
+		littlehorse.PrintResp(
 			getGlobalClient(cmd).DeleteTaskDef(
 				requestContext(cmd),
-				&model.DeleteTaskDefRequest{
-					Id: &model.TaskDefId{
+				&lhproto.DeleteTaskDefRequest{
+					Id: &lhproto.TaskDefId{
 						Name: name,
 					},
 				}),

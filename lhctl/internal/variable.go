@@ -4,12 +4,12 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package internal
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"strconv"
 	"strings"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
 )
 
@@ -46,11 +46,11 @@ var getVariableCmd = &cobra.Command{
 
 		}
 
-		common.PrintResp(
+		littlehorse.PrintResp(
 			getGlobalClient(cmd).GetVariable(
 				requestContext(cmd),
-				&model.VariableId{
-					WfRunId:         common.StrToWfRunId(args[0]),
+				&lhproto.VariableId{
+					WfRunId:         littlehorse.StrToWfRunId(args[0]),
 					ThreadRunNumber: int32(threadRunNumber),
 					Name:            args[2],
 				},
@@ -78,7 +78,7 @@ Choose one of the following option groups:
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 
-		var search model.SearchVariableRequest
+		var search lhproto.SearchVariableRequest
 		name, _ := cmd.Flags().GetString("name")
 		varTypeStr, _ := cmd.Flags().GetString("varType")
 		valueStr, _ := cmd.Flags().GetString("value")
@@ -97,21 +97,21 @@ Choose one of the following option groups:
 			wfSpecRevision = &revisionRaw
 		}
 
-		varType, validVarType := model.VariableType_value[varTypeStr]
+		varType, validVarType := lhproto.VariableType_value[varTypeStr]
 		if !validVarType {
 			log.Fatal(
 				"Unrecognized varType. Valid options: INT, STR, BYTES, BOOL, JSON_OBJ, JSON_ARR, DOUBLE.",
 			)
 
 		}
-		varTypeEnum := model.VariableType(varType)
-		content, err := common.StrToVarVal(valueStr, varTypeEnum)
+		varTypeEnum := lhproto.VariableType(varType)
+		content, err := littlehorse.StrToVarVal(valueStr, varTypeEnum)
 		if err != nil {
 			log.Fatal("Failed deserializing payload: " + err.Error())
 
 		}
 
-		search = model.SearchVariableRequest{
+		search = lhproto.SearchVariableRequest{
 			Value:              content,
 			VarName:            name,
 			WfSpecMajorVersion: wfSpecMajorVersion,
@@ -122,7 +122,7 @@ Choose one of the following option groups:
 		search.Bookmark = bookmark
 		search.Limit = &limit
 
-		common.PrintResp(
+		littlehorse.PrintResp(
 			getGlobalClient(cmd).SearchVariable(requestContext(cmd), &search),
 		)
 	},
@@ -143,11 +143,11 @@ Lists all Variable's for a given WfRun Id.
 		}
 		wfRunId := args[0]
 
-		req := &model.ListVariablesRequest{
-			WfRunId: common.StrToWfRunId(wfRunId),
+		req := &lhproto.ListVariablesRequest{
+			WfRunId: littlehorse.StrToWfRunId(wfRunId),
 		}
 
-		common.PrintResp(getGlobalClient(cmd).ListVariables(
+		littlehorse.PrintResp(getGlobalClient(cmd).ListVariables(
 			requestContext(cmd),
 			req,
 		))

@@ -6,13 +6,13 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"io"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/pkg/browser"
 	"github.com/spf13/cobra"
 	"golang.org/x/oauth2"
@@ -120,7 +120,7 @@ func handleHomeRequest(oauth2Config oauth2.Config) func(http.ResponseWriter, *ht
 	}
 }
 
-func handleCallbackRequest(ctx context.Context, localServer *http.Server, lhConfig *common.LHConfig, oauthProvider *oidc.Provider, oauth2Config oauth2.Config) func(http.ResponseWriter, *http.Request) {
+func handleCallbackRequest(ctx context.Context, localServer *http.Server, lhConfig *littlehorse.LHConfig, oauthProvider *oidc.Provider, oauth2Config oauth2.Config) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		state, err := r.Cookie("state")
 		if err != nil {

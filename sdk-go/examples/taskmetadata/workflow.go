@@ -1,11 +1,9 @@
 package taskmetadata
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"strconv"
-
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 )
 
 type InputData struct {
@@ -24,7 +22,7 @@ func GetInfo(input *InputData, context *littlehorse.WorkerContext) string {
 	return "the id for " + input.Art.Title + " is: " + strconv.Itoa(input.Art.Id) + " and WfRunId: " + context.GetWfRunId().GetId()
 }
 
-func MyWorkflowGet(wf *common.WorkflowThread) {
-	inputVar := wf.AddVariable("input", model.VariableType_JSON_OBJ)
+func MyWorkflowGet(wf *littlehorse.WorkflowThread) {
+	inputVar := wf.AddVariable("input", lhproto.VariableType_JSON_OBJ)
 	wf.Execute("greet", inputVar)
 }

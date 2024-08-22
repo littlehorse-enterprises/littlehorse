@@ -25,6 +25,6 @@ func AddUpList(inputs *[]InputData) int {
 }
 
 func MyWorkflowAdd(wf *littlehorse.WorkflowThread) {
-	inputVar := wf.AddVariable("input", model.VariableType_JSON_ARR)
+	inputVar := wf.AddVariable("input", lhproto.VariableType_JSON_ARR)
 	wf.Execute("greet", inputVar)
 }
