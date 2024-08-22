@@ -7,7 +7,7 @@ This is a simple example of a workflow that launches a Child Thread and waits fo
 We have two `TaskDef`'s and thus two Task Functions. Note that `worker/main.go` kicks off two threads, one for each Task Worker.
 
 ```
-go run ./interrupt/worker
+go run ./examples/childthread/worker
 ```
 
 ## Register the `WfSpec`
@@ -15,7 +15,7 @@ go run ./interrupt/worker
 In another terminal, run:
 
 ```
-go run ./interrupt/deploy
+go run ./examples/childthread/deploy
 ```
 
 ## Run a `WfRun`
@@ -23,7 +23,7 @@ go run ./interrupt/deploy
 Let's run the `WfRun`:
 
 ```
-lhctl run child-thread input "this is the input!"
+lhctl run child-thread-workflow input "this is the input!"
 ```
 
 You can see both `ThreadRun`s when you inspect the `WfRun`:
