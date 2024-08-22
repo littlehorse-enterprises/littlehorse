@@ -5,6 +5,9 @@ import (
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 )
 
+const WorkflowName string = "basic-workflow"
+const TaskDefName string = "greet"
+
 func Greet(name string) string {
 	if name == "obi-wan" {
 		return "hello there"
@@ -19,5 +22,5 @@ func MyWorkflow(wf *littlehorse.WorkflowThread) {
 	// Make it searchable
 	nameVar.Searchable()
 
-	wf.Execute("greet", nameVar)
+	wf.Execute(TaskDefName, nameVar)
 }

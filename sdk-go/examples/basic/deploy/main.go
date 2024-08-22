@@ -11,7 +11,7 @@ import (
 
 func main() {
 	_, client := examples.LoadConfigAndClient()
-	wf := lh.NewWorkflow(basic.MyWorkflow, "my-workflow")
+	wf := lh.NewWorkflow(basic.MyWorkflow, basic.WorkflowName)
 	putWf, err := wf.Compile()
 	if err != nil {
 		log.Fatal(err)

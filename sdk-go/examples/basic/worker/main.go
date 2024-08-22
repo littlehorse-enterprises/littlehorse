@@ -11,7 +11,7 @@ import (
 func main() {
 	config, _ := examples.LoadConfigAndClient()
 
-	tw, err := littlehorse.NewTaskWorker(config, basic.Greet, "greet")
+	tw, err := littlehorse.NewTaskWorker(config, basic.Greet, basic.TaskDefName)
 	if err != nil {
 		log.Fatal(err)
 	}
