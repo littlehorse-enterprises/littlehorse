@@ -8,7 +8,7 @@ const lightCodeTheme = themes.github;
 /** @type {import('@docusaurus/types').Config} */
 module.exports = {
   title: "LittleHorse Orchestrator",
-  tagline: "By Engineers, For Engineers",
+  tagline: "The Missing Piece of the Microservice Architecture",
   favicon: "img/logo.jpg",
 
   // Set the production url of your site here
