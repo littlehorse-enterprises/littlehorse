@@ -69,15 +69,15 @@ client.PutExternalEvent(PutExternalEventRequest.newBuilder()
   </TabItem>
   <TabItem value="go" label="Go">
 
-In Go, you can use the `common.InterfaceToVarVal()` method to create the `content` parameter.
+In Go, you can use the `littlehorse.InterfaceToVarVal()` method to create the `content` parameter.
 
 ```go
 idempotencyKey := "asdfo2htoijsvlk" // optional
 
-eventContent, _ := common.InterfaceToVarVal("some-interface")
-result, _ := (*client).PutExternalEvent(context.Background(), &model.PutExternalEventRequest{
-	WfRunId:            &model.WfRunId{Id: "some-wfrun-id"},
-	ExternalEventDefId: &model.ExternalEventDefId{Name: "some-external-event-def"},
+eventContent, _ := littlehorse.InterfaceToVarVal("some-interface")
+result, _ := (*client).PutExternalEvent(context.Background(), &lhproto.PutExternalEventRequest{
+	WfRunId:            &lhproto.WfRunId{Id: "some-wfrun-id"},
+	ExternalEventDefId: &lhproto.ExternalEventDefId{Name: "some-external-event-def"},
 	Content:            eventContent,
 	Guid:               &idempotencyKey, // optional
 })
