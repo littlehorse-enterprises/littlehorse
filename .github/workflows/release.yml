@@ -156,7 +156,7 @@ jobs:
       - name: Build
         uses: goreleaser/goreleaser-action@v6
         with:
-          args: release --snapshot --clean
+          args: release --clean --skip=announce,publish,validate
 
       - name: Upload release archive
         uses: actions/upload-artifact@v4
