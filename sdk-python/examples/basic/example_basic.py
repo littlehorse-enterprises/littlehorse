@@ -29,9 +29,7 @@ def get_workflow() -> Workflow:
     return Workflow("example-basic", my_entrypoint)
 
 
-async def greeting(
-    name: Annotated[str, LHType(name="another-name", masked=True)], ctx: WorkerContext
-) -> str:
+async def greeting(name: str, ctx: WorkerContext) -> str:
     msg = f"Hello {name}!. WfRun {ctx.wf_run_id.id}"
     print(msg)
     await asyncio.sleep(random.uniform(0.5, 1.5))
