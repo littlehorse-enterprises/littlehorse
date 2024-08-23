@@ -66,6 +66,12 @@ header {
   background-color: var(--ifm-navbar-link-hover-color);
 }
 
+.main-wrapper img {
+  outline: #000000 0.2rem solid;
+  outline-offset: -1px;
+  border-radius: 1rem;
+}
+
 
 
 /* 
