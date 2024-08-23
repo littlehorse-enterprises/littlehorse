@@ -1,24 +1,23 @@
 package examples
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"os"
-
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 )
 
-func LoadConfigAndClient() (*common.LHConfig, *model.LittleHorseClient) {
+func LoadConfigAndClient() (*littlehorse.LHConfig, *lhproto.LittleHorseClient) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	configPath := home + "/.config/littlehorse.config"
-	config := common.NewConfigFromEnv()
+	config := littlehorse.NewConfigFromEnv()
 
 	if _, err := os.Stat(configPath); err == nil {
-		config, err = common.NewConfigFromProps(configPath)
+		config, err = littlehorse.NewConfigFromProps(configPath)
 		if err != nil {
 			log.Fatal(err)
 		}

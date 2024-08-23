@@ -1,17 +1,17 @@
 package main
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples/bytes"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/taskworker"
 )
 
 func main() {
 	config, _ := examples.LoadConfigAndClient()
 
-	tw, err := taskworker.NewTaskWorker(config, bytes.Greet, "greet")
+	tw, err := littlehorse.NewTaskWorker(config, bytes.Greet, "greet")
 
 	if err != nil {
 		log.Fatal(err)
