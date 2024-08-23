@@ -66,22 +66,21 @@ import (
 	"context"
 	"log"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/wflib"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
-func wfLogic(wf *wflib.WorkflowThread) {
-	firstName := wf.AddVariable("first-name", model.VariableType_STR).Required()
+func wfLogic(wf *littlehorse.WorkflowThread) {
+	firstName := wf.AddVariable("first-name", lhproto.VariableType_STR).Required()
 	wf.Execute("greet", firstName)
 }
 
 func main() {
 	// Get a client
-	config := common.NewConfigFromEnv()
+	config := littlehorse.NewConfigFromEnv()
 	client, _ := config.GetGrpcClient()
 
-	workflowGenerator := wflib.NewWorkflow(wfLogic, "my-wfspec")
+	workflowGenerator := littlehorse.NewWorkflow(wfLogic, "my-wfspec")
 
 	request, err := workflowGenerator.Compile()
 	if err != nil {
@@ -198,23 +197,23 @@ public void threadFunction(WorkflowThread thread) {
   <TabItem value="go" label="Go">
 
 ```go
-func myThreadFunc(thread *wflib.WorkflowThread) {
-    myVar := thread.AddVariable("my-variable", model.VariableTypePb_STR)
+func myThreadFunc(thread *littlehorse.WorkflowThread) {
+    myVar := thread.AddVariable("my-variable", lhproto.VariableTypePb_STR)
 }
 ```
 
 You can add do the same and set a default value for the `Variable` as follows:
 
 ```go
-func myThreadFunc(thread *wflib.WorkflowThread) {
-    nameVar := thread.AddVariableWithDefault("my-variable", model.VariableType_STR, "Ahsoka Tano")
+func myThreadFunc(thread *littlehorse.WorkflowThread) {
+    nameVar := thread.AddVariableWithDefault("my-variable", lhproto.VariableType_STR, "Ahsoka Tano")
 }
 ```
 
 You can add an index on a `WfRunVariable` to make the variable searchable.
 ```go
-func myThreadFunc(thread *wflib.WorkflowThread) {
-    nameVar := thread.AddVariableWithDefault("my-variable", model.VariableType_STR, "Ahsoka Tano").Searchable()
+func myThreadFunc(thread *littlehorse.WorkflowThread) {
+    nameVar := thread.AddVariableWithDefault("my-variable", lhproto.VariableType_STR, "Ahsoka Tano").Searchable()
 }
 ```
 
@@ -269,7 +268,7 @@ public void myWf(WorkflowThread thread) {
   <TabItem value="go" label="Go">
 
 ```go
-func myThreadFunc(thread *wflib.WorkflowThread) {
+func myThreadFunc(thread *littlehorse.WorkflowThread) {
     taskOutput := thread.Execute("foo")
 }
 ```
@@ -348,9 +347,9 @@ public void threadFunction(WorkflowThread thread) {
   <TabItem value="go" label="Go">
 
 ```go
-func threadFunction(thread *wflib.WorkflowThread) {
-    myStr := thread.AddVariable("my-str", model.VariableType_STR)
-    myInt := thread.AddVariable("my-int", model.VariableType_INT)
+func threadFunction(thread *littlehorse.WorkflowThread) {
+    myStr := thread.AddVariable("my-str", lhproto.VariableType_STR)
+    myInt := thread.AddVariable("my-int", lhproto.VariableType_INT)
 
     thread.Execute("foo", myStr, myInt)
 }
@@ -387,7 +386,7 @@ wf.register(...);
 
 ```go
 client := ...;
-wf := wflib.NewWorkflow(basic.MyWorkflow, "my-workflow")
+wf := littlehorse.NewWorkflow(basic.MyWorkflow, "my-workflow")
 putWf, _ := wf.Compile()
 
 hours := int32(23)
