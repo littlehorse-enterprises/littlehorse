@@ -28,6 +28,8 @@ This is the first part of a 3-part blog series:
 3. **[Coming Soon]** Workflow and Microservices: A Match Made in Heaven
 :::
 
+Microservices have been [deployed widely](https://www.simform.com/blog/microservices-examples/) across many large enterprises, most notably Netflix, Uber, Shopify, PayPal, and others. As we will discover throughout this blog series, a microservice architecture is mandatory once you reach a certain size of company, and it's probably overkill for a 12-person startup. The gray area inbetween is the interesting part!
+
 ## What are Microservices?
 
 The term "microservices" refers to a software architecture wherein an enterprise application comprises a collection of small, loosely coupled, and independently deployable services (these small services are called "microservices" in contrast to larger monoliths). Each microservice focuses on a specific business capability and communicates with other services over a network, typically through API's, streaming platforms, or message queues.
@@ -47,11 +49,13 @@ In contrast to microservices, a _monolithic_ architecture would serve the entire
 
 ![Monolithic Architecture](./2024-08-22-monolith-arch.png)
 
-Simply by looking at the visuals above, microservices add a _ton_ of complexity to your architecture (more on this in next week's post!). Rule #1 of maintaining software systems is to avoid complexity as much as possible. Given that, what benefits would make up for the extra complexity introduced by microservices?
+In Domain Driven Design, accidental complexity refers to the unintentional complexity that you introduced to your architecture (deployments, service interactions, third-party dependencies, etc.). Rule #1 of maintaining software systems is to avoid introducing accidental complexity as much as possible.
+
+Simply by looking at the visuals above, microservices add a significant dose of accidental complexity to your architecture (more on this in next week's post!). Given that, what benefits would make up for the extra complexity introduced by microservices?
 
 ## Why Now?
 
-I would be first to admit that microservices bring with them a series of headaches around cost, observability, maintenance, and ease of evolution (otherwise, I would not have founded LittleHorse Enterprises!). That said, microservice architecture is an effective response to some very real challenges and opportunities arising from two recent trends in software development:
+I would be first to admit that microservices bring with them a series of headaches around cost, observability, maintenance, and ease of evolution (otherwise, I would not have founded LittleHorse Enterprises!). However, microservice architecture plays a vital role in addressing two critical trends reshaping the software development landscape today:
 
 * Increased digitization of companies in all business sectors (accelerated by the rise of AI).
 * Elasticity of cloud computing.
@@ -101,7 +105,7 @@ As an added benefit, properly-designed microservice architectures can follow the
 
 Microservices can allow developers to move faster by enabling continuous delivery and independent deployment of services. In a monolithic architecture, releasing a new feature or fixing a bug typically requires redeploying the entire application. Since microservices allow smaller pieces of your application to be deployed independently, engineering teams can iterate faster and deliver incremental value to business stakeholders.
 
-These positive effects are amplified by the advent of cloud computing. Since deploying a new application no longer requires buying a physical machine and plugging it into your datacenter but rather just applying a new `Deployment` and `Service` on a Kubernets cluster, it is now truly feasible for small teams of software engineers to own their application stack from laptop-to-production (obviously, within the guardrails set by the central platform team). Furthermore, cloud computing is a pay-as-you-go (and often even pay-for-what-you-use) expense rather than an up-front cost. Therefore, the dollar cost of infrastructure required to support microservices is much lower today than it would have been before the advent of cloud computing and kubernetes.
+These positive effects are amplified by the advent of cloud computing. Since deploying a new application no longer requires buying a physical machine and plugging it into your datacenter but rather just applying a new `Deployment` and `Service` on a Kubernetes cluster, it is now truly feasible for small teams of software engineers to own their application stack from laptop-to-production (obviously, within the guardrails set by the central platform team). Furthermore, cloud computing is a pay-as-you-go (and often even pay-for-what-you-use) expense rather than an up-front cost. Therefore, the dollar cost of infrastructure required to support microservices is much lower today than it would have been before the advent of cloud computing and kubernetes.
 
 ## Conclusion
 
