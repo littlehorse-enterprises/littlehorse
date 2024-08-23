@@ -5,7 +5,7 @@ authors:
   name: Colt McNealy
   title: Managing Member of the LLC
   url: https://www.linkedin.com/in/colt-mcnealy-900b7a148/
-  image_url: https://media.licdn.com/dms/image/C5603AQFDvtYZwYd4Ag/profile-displayphoto-shrink_200_200/0/1584897319941?e=1727308800&v=beta&t=RFW-z9mu9ePJesHQTcVRkLncwZq0Mdyy27AOQDx0V04
+  image_url: https://avatars.githubusercontent.com/u/100447728
 tags: [tech-trends,microservices,littlehorse]
 ---
 
