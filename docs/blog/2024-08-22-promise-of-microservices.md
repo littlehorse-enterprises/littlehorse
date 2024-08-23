@@ -16,6 +16,8 @@ Benefits of Microservices
 - Faster deployment and iteration
 - Take advantage of cloud native systems -->
 
+If microservices add so much complexity, why bother with the hassle? <!-- truncate -->
+
 We've all _heard of_ microservices, but unless you've read copious amounts of Sam Newman and Adam Bellemare's writings, you might be wondering whether, when, and why you should adopt them. In this blog post, we will examine the halcyon land promised by microservices.
 
 :::info
