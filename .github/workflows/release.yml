@@ -57,10 +57,9 @@ jobs:
           ls ~/.gnupg/
 
       - name: Publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./gradlew sdk-java:publish -Psigning.secretKeyRingFile=/home/runner/.gnupg/secring.gpg -Psigning.password=${{ secrets.GPG_PASSPHRASE }} -Psigning.keyId=${{ vars.GPG_KEY_ID }} -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
+          echo Login at https://s01.oss.sonatype.org/
 
   sdk-python:
     runs-on: ubuntu-latest
@@ -92,12 +91,6 @@ jobs:
           poetry install
           poetry run python -m unittest -v
           poetry build
-
-      - name: Upload python artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: python
-          path: ./sdk-python/dist/
 
       - name: Publish Package
         uses: pypa/gh-action-pypi-publish@v1.8.10
@@ -146,8 +139,8 @@ jobs:
       - name: Publish
         working-directory: ${{env.working-directory}}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm publish
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+        run: npm publish --access public
 
   lhctl:
     runs-on: ubuntu-latest
@@ -200,4 +193,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run:
-          gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -F CHANGELOG.md dist/*
+          gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -F CHANGELOG.md dist/lhctl_*

@@ -28,15 +28,6 @@ publishing {
                 password = findProperty('ossrhPassword')
             }
         }
-
-        maven {
-            name = "github"
-            url = "https://maven.pkg.github.com/mijailr/littlehorse"
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
     }
 
     publications {

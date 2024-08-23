@@ -175,6 +175,3 @@ sourceSets {
 }
 
 compileJava.dependsOn staticVersion
-compileTestJava.dependsOn staticVersion
-
-
