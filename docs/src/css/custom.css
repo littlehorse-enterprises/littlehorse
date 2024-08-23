@@ -33,7 +33,7 @@ header {
 }
 
 .clean-btn {
-  color: white;
+  color: var(--ifm-navbar-link-color);
 }
 
 .header-slack-link::before {
