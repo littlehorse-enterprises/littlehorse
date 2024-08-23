@@ -2,12 +2,11 @@ import asyncio
 import logging
 from pathlib import Path
 import random
-from typing import Annotated
 
 import littlehorse
 from littlehorse.config import LHConfig
 from littlehorse.model import VariableType
-from littlehorse.worker import LHTaskWorker, WorkerContext, LHType
+from littlehorse.worker import LHTaskWorker, WorkerContext
 from littlehorse.workflow import WorkflowThread, Workflow
 
 logging.basicConfig(level=logging.INFO)
