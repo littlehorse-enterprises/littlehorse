@@ -2,6 +2,8 @@
 
 A `WfSpec` defines a series of steps in a process to be orchestrated by LittleHorse (in technical terms, each step is a `Node`). The most common type of step to execute is a [`TaskNode`](../08-api.md#tasknode).
 
+![Output of a TaskRun](./task-output.png)
+
 ## Task Structure
 
 A unit of work executed by a computer in LittleHorse is represented by the dual objects `TaskDef` and `TaskRun`. A `TaskDef` is a LittleHorse API Object which defines a certain type of task that can be executed by a computer. A `TaskRun` is a LittleHorse API Object representing an instance of such a task being executed by a computer as part of a `WfRun`.

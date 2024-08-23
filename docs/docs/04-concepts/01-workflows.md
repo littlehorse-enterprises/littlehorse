@@ -6,6 +6,8 @@ A simple way of thinking about it is that a `WfSpec` is a directed graph consist
 
 ## Workflow Structure
 
+![Screenshot of a `WfSpec` in the Dashboard](./wfspec.png)
+
 A `WfSpec` (Workflow Specification) is a blueprint that defines the control flow of your `WfRun`s (Workflow Run). Before you can run a `WfRun`, you must first register a `WfSpec` in LittleHorse (for an example of how to do that, see [here](../05-developer-guide/08-wfspec-development/01-basics.md#quickstart)).
 
 A `WfSpec` contains a set of `ThreadSpec`s, with one _special_ `ThreadSpec` that is known as the _entrypoint_. When you run a `WfSpec` to create a `WfRun`, the first `ThreadSpec` that is run is the _entrypoint_.
@@ -26,7 +28,9 @@ A workflow consists of one or more threads. A thread in LittleHorse is analogous
 
 A `ThreadSpec` is a blueprint for a single thread in a `WfSpec`. When a `ThreadSpec` is run, you get a `ThreadRun`. Logically, a `ThreadSpec` is a directed graph of `Node`s and `Edge`s, where a `Node` represents a "step" to execute in the `ThreadRun`, and the `Edge`s tell LittleHorse what `Node` the `ThreadRun` should move to next.
 
-In the LittleHorse Dashboard, when you click on a `WfSpec` you are shown the _entrypoint_ `ThreadSpec`. In the picture you see, the circles and boxes are `Node`s, and the arrows are `Edge`s.
+In the LittleHorse Dashboard, when you click on a `WfSpec` you are shown the _entrypoint_ `ThreadSpec`. In the picture you see, the circles and boxes are `Node`s, and the arrows are `Edge`s. Below is a screenshot of a `ThreadSpec` from the [`quickstart` workflow](../05-developer-guide/00-install.md#get-started).
+
+![Picture of a Thread](./one-thread.png)
 
 A `ThreadRun` can only execute one `Node` at a time. If you want a `WfRun` to execute multiple things at a time (either to parallelize `TaskRun`'s for performance reasons, or to wait for two business events to happen in parallel, or any other reason), then you need your `WfRun` to start multiple `ThreadRun`s at a time. See the section on Child Threads below for how this works.
 
@@ -44,6 +48,10 @@ A `Variable` is an object that you can fetch from the LittleHorse API. A `Variab
 3. The `name`, which is the name of the `Variable`.
 
 A `Variable` is created when a `ThreadRun` is created. Since it's possible to have multiple `ThreadRun`s created with the same `ThreadSpec` (for example, iterating over a list and launching a child thread to process each item), simply identifying a `Variable` by its `name` and `wf_run_id` is insufficient. That is why the `VariableId` also includes the `thread_run_number`: a `Variable` is uniquely identified by its name, workflow run id, and thread run number.
+
+On the dashboard, you can see all of the `Variable`s from a `ThreadRun`, and their current values, in the tray below it.
+
+![Variables on the Dashboard](./dashboard-variables.png)
 
 You can fetch `Variable`s using [`rpc GetVariable`](../08-api.md#getvariable), [`rpc SearchVariable`](../08-api.md#searchvariable), and [`rpc ListVariables`](../08-api.md#listvariables).
 
@@ -86,6 +94,17 @@ When you click on a `NodeRun` in the dashboard, that information is fetched and 
 Just as a `WfSpec` is a blueprint for a `WfRun` (workflow), a `ThreadSpec` is a blueprint for a `ThreadRun` (thread). A `ThreadSpec` is a sub-structure of a `WfSpec`; a `ThreadRun` is a sub-structure of a `WfRun`, and therefore neither are top-level objects in the LittleHorse API.
 
 Every workflow has one special thread called the Entrypoint Thread. If you consider a `WfSpec` as a program, then you could say that the Entrypoint `ThreadSpec` is like the `main()` method of the `WfSpec`/program.
+
+Below is a screenshot of a `WfSpec` which does the following:
+1. Start a child thread.
+2. Execute the `greet` `TaskRun`.
+3. Wait for the child thread to complete.
+
+Note that, above the diagram, you can select the `ThreadSpec` to show. Currently, the `entrypoint` `ThreadSpec` is selected.
+
+![Child Thread WfSpec](./threads-overview.png)
+
+On the bottom of the page, you can click on a `ThreadSpec` to see the variables defined by that `ThreadSpec`.
 
 When a `WfSpec` is run and a `WfRun` is created, the `WfRun` creates an Entrypoint `ThreadRun` which is an instance of the specified Entrypoint `ThreadSpec`.
 
