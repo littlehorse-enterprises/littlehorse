@@ -9,7 +9,7 @@ const lightCodeTheme = themes.github;
 module.exports = {
   title: "LittleHorse Orchestrator",
   tagline: "The Missing Piece of the Microservice Architecture",
-  favicon: "img/logo.jpg",
+  favicon: "img/logo.png",
 
   // Set the production url of your site here
   url: "https://littlehorse.dev",
@@ -69,7 +69,8 @@ module.exports = {
         title: "LittleHorse",
         logo: {
           alt: "LittleHorse Logo",
-          src: "img/logo.jpg",
+          src: "img/logo-brown.png",
+          srcDark: "img/logo.png"
         },
         items: [
           {
@@ -95,12 +96,12 @@ module.exports = {
           },
           {
             href: "https://github.com/littlehorse-enterprises/littlehorse",
-            label: "GitHub",
+            className: 'header-github-link',
             position: "right",
           },
           {
             href: "https://launchpass.com/littlehorsecommunity",
-            label: "Slack",
+            className: 'header-slack-link',
             position: "right",
           },
         ],
