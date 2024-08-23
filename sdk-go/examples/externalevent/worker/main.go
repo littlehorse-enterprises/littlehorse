@@ -1,25 +1,25 @@
 package main
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples/externalevent"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/taskworker"
 )
 
 func main() {
 	config, _ := examples.LoadConfigAndClient()
 
-	var askForNameWorker, greetWorker *taskworker.LHTaskWorker
+	var askForNameWorker, greetWorker *littlehorse.LHTaskWorker
 	var err error
 
-	askForNameWorker, err = taskworker.NewTaskWorker(config, externalevent.AskForName, "ask-for-name")
+	askForNameWorker, err = littlehorse.NewTaskWorker(config, externalevent.AskForName, "ask-for-name")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	greetWorker, err = taskworker.NewTaskWorker(config, externalevent.SpecificGreeting, "specific-greeting")
+	greetWorker, err = littlehorse.NewTaskWorker(config, externalevent.SpecificGreeting, "specific-greeting")
 	if err != nil {
 		log.Fatal(err)
 	}

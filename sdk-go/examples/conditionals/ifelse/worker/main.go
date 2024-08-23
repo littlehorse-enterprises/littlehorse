@@ -1,25 +1,25 @@
 package main
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples/conditionals/ifelse"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/taskworker"
 )
 
 func main() {
 	config, _ := examples.LoadConfigAndClient()
 
-	var saladWorker, donutWorker *taskworker.LHTaskWorker
+	var saladWorker, donutWorker *littlehorse.LHTaskWorker
 	var err error
 
-	saladWorker, err = taskworker.NewTaskWorker(config, ifelse.Salad, "eat-salad")
+	saladWorker, err = littlehorse.NewTaskWorker(config, ifelse.Salad, "eat-salad")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	donutWorker, err = taskworker.NewTaskWorker(config, ifelse.Donut, "eat-another-donut")
+	donutWorker, err = littlehorse.NewTaskWorker(config, ifelse.Donut, "eat-another-donut")
 	if err != nil {
 		log.Fatal(err)
 	}

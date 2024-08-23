@@ -2,25 +2,24 @@ package main
 
 import (
 	"context"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples/externalevent"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/wflib"
 )
 
 func main() {
 	_, client := examples.LoadConfigAndClient()
 
 	(*client).PutExternalEventDef(context.Background(),
-		&model.PutExternalEventDefRequest{
+		&lhproto.PutExternalEventDefRequest{
 			Name: "my-name",
 		},
 	)
 
-	wf := wflib.NewWorkflow(externalevent.ExternalEventWorkflow, "external-event")
+	wf := littlehorse.NewWorkflow(externalevent.ExternalEventWorkflow, "external-event")
 	putWf, err := wf.Compile()
 	if err != nil {
 		log.Fatal(err)
@@ -30,5 +29,5 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	common.PrintProto(resp)
+	littlehorse.PrintProto(resp)
 }

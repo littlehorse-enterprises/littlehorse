@@ -40,3 +40,4 @@ __pycache__
 dist/
 
 .DS_Store
+*.work
