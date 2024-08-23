@@ -1015,11 +1015,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             resources = {},
             actions = {})
     public void getServerVersion(Empty request, StreamObserver<ServerVersionResponse> ctx) {
-        ctx.onNext(ServerVersionResponse.newBuilder()
-                .setMajorVersion(0)
-                .setMinorVersion(10)
-                .setPatchVersion(1)
-                .build());
+        ctx.onNext(Version.getServerVersion());
         ctx.onCompleted();
     }
 
