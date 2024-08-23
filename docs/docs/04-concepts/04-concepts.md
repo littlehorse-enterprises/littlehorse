@@ -11,7 +11,7 @@ At its core, LH is a workflow engine. This means that:
 - You run the workflow
 - The workflow engine makes sure that your process gets executed correctly.
 
-The real magic and of a workflow engine is in the last step. Without a workflow engine like LittleHorse (and especially when building microservices), it's really hard to glue things together. And then you have no idea what's happening between the start and end of the process, and if something goes wrong you can neither recover nor find out why.
+The real magic of a workflow engine is in the last step. Without a workflow engine like LittleHorse (and especially when building microservices), it's really hard to glue things together. And in consequence there's no visibility of what's happening between the start and end of the process, and if something goes wrong you can neither recover nor identify the causes.
 
 Applications using LittleHorse might look like the following:
 
