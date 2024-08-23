@@ -36,6 +36,8 @@ jobs:
           go-version: "stable"
       - name: Validate Formatting
         run: if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then exit 1 ; fi
+      - name: Enable go Workspace
+        run: go work init && go work use ./sdk-go
       - name: Tests
         run: go test ./sdk-go/...
   tests-sdk-python:
