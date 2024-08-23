@@ -19,7 +19,7 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Tenant;
-import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
@@ -48,7 +48,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
     private ProcessorContext<String, CommandProcessorOutput> ctx;
     private LHServerConfig config;
-    private KafkaStreamsServerImpl server;
+    private LHServer server;
     private final MetadataCache metadataCache;
     private final TaskQueueManager globalTaskQueueManager;
 
@@ -58,7 +58,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
     public CommandProcessor(
             LHServerConfig config,
-            KafkaStreamsServerImpl server,
+            LHServer server,
             MetadataCache metadataCache,
             TaskQueueManager globalTaskQueueManager) {
         this.config = config;

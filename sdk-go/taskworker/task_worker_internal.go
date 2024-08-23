@@ -199,7 +199,6 @@ func (m *serverConnectionManager) start() {
 			&model.RegisterTaskWorkerRequest{
 				TaskDefId:    m.tw.taskDefId,
 				TaskWorkerId: m.tw.config.TaskWorkerId,
-				ListenerName: m.tw.config.ServerConnectListener,
 			},
 		)
 		if err != nil {

@@ -33,7 +33,6 @@ OAUTH_CLIENT_ID = "LHC_OAUTH_CLIENT_ID"
 OAUTH_CLIENT_SECRET = "LHC_OAUTH_CLIENT_SECRET"
 OAUTH_TOKEN_ENDPOINT_URL = "LHC_OAUTH_ACCESS_TOKEN_URL"
 NUM_WORKER_THREADS = "LHW_NUM_WORKER_THREADS"
-SERVER_CONNECT_LISTENER = "LHW_SERVER_CONNECT_LISTENER"
 TASK_WORKER_ID = "LHW_TASK_WORKER_ID"
 TASK_WORKER_VERSION = "LHW_TASK_WORKER_VERSION"
 GRPC_KEEPALIVE_TIME_MS = "LHC_GRPC_KEEPALIVE_TIME_MS"
@@ -266,16 +265,6 @@ class LHConfig:
             int: The number of worker threads to run. Default 8.
         """
         return int(self.get_or_set_default(NUM_WORKER_THREADS, "8"))
-
-    @property
-    def server_listener(self) -> str:
-        """Returns the name of the listener to connect to.
-
-        Returns:
-            str: The name of the listener on the LH Server to connect to.
-            Default PLAIN.
-        """
-        return self.get_or_set_default(SERVER_CONNECT_LISTENER, "PLAIN")
 
     @property
     def worker_version(self) -> str:

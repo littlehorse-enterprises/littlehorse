@@ -14,7 +14,7 @@ import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.Aggr
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.WfSpecMetrics;
-import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -49,7 +49,7 @@ public class AggregateWfMetricsRepartitionCommandTest {
     private LHServerConfig config;
 
     @Mock
-    private KafkaStreamsServerImpl server;
+    private LHServer server;
 
     private ExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
 

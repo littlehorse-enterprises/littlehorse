@@ -124,7 +124,6 @@ public class LHTaskWorker implements Closeable {
                     taskDef,
                     config.getAsyncStub(),
                     config.getTaskWorkerId(),
-                    config.getConnectListener(),
                     new LHLivenessController(),
                     taskMethod,
                     mappings,
