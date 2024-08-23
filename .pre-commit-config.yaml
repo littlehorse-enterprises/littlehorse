@@ -112,7 +112,7 @@ repos:
         language: system
         always_run: true
         pass_filenames: false
-        entry: go test ./sdk-go/...
+        entry: cd ./sdk-go && go test ./...
 
       - id: python-tests
         name: Running SDK Python Tests
