@@ -47,6 +47,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=semver,pattern={{version}}
+            type=ref,event=branch
 
   lh-canary:
     runs-on: ubuntu-latest
@@ -76,6 +77,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=semver,pattern={{version}}
+            type=ref,event=branch
 
   lhctl:
     runs-on: ubuntu-latest
@@ -93,6 +95,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=semver,pattern={{version}}
+            type=ref,event=branch
 
   lh-dashboard:
     runs-on: ubuntu-latest
@@ -119,6 +122,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=semver,pattern={{version}}
+            type=ref,event=branch
 
   lh-standalone:
     runs-on: ubuntu-latest
@@ -153,3 +157,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=semver,pattern={{version}}
+            type=ref,event=branch
