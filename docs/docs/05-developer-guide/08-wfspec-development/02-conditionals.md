@@ -87,11 +87,11 @@ WorkflowCondition condition = wf.condition(
   <TabItem value="go" label="Go">
 
 ```go
-foo := wf.AddVariable("foo", model.VariableType_INT)
+foo := wf.AddVariable("foo", lhproto.VariableType_INT)
 
 condition := wf.Condition(
     foo,
-    model.Comparator_LESS_THAN,
+    lhproto.Comparator_LESS_THAN,
     3,
 )
 ```
@@ -132,11 +132,11 @@ WorkflowCondition condition = wf.condition(
   <TabItem value="go" label="Go">
 
 ```go
-foo := wf.AddVariable("foo", model.VariableType_INT)
+foo := wf.AddVariable("foo", lhproto.VariableType_INT)
 
 condition := wf.Condition(
     foo,
-    model.IN,
+    lhproto.IN,
     [3]int{1,2,3},
 )
 ```
@@ -183,11 +183,11 @@ wf.doIf(
   <TabItem value="go" label="Go">
 
 ```go
-foo := wf.AddVariable("foo", model.VariableType_INT)
+foo := wf.AddVariable("foo", lhproto.VariableType_INT)
 
 wf.DoIf(
-    wf.Condition(foo, model.Comparator_LESS_THAN, 3),
-    func (ifBody *wflib.WorkflowThread) {
+    wf.Condition(foo, lhproto.Comparator_LESS_THAN, 3),
+    func (ifBody *littlehorse.WorkflowThread) {
         ifBody.Execute("my-task")
     },
 )
@@ -233,11 +233,11 @@ wf.doIf(wf.condition(foo, Comparator.GREATER_THAN, 1),
 
 ```go
 wf.DoIf(
-		wf.Condition(foo, model.Comparator_LESS_THAN, 3),
-		func (ifBody *wflib.WorkflowThread) {
+		wf.Condition(foo, lhproto.Comparator_LESS_THAN, 3),
+		func (ifBody *littlehorse.WorkflowThread) {
 			wf.DoIf(
-					wf.Condition(foo, model.Comparator.GREATER_THAN, 1),
-					func (ifBody *wflib.WorkflowThread) {
+					wf.Condition(foo, lhproto.Comparator.GREATER_THAN, 1),
+					func (ifBody *littlehorse.WorkflowThread) {
 						ifBody.Execute("my-task")
 					}
 			)
@@ -299,14 +299,14 @@ wf.doIf(
   <TabItem value="go" label="Go">
 
 ```go
-foo := wf.AddVariable("foo", model.VariableType_INT)
+foo := wf.AddVariable("foo", lhproto.VariableType_INT)
 
 wf.DoIfElse(
-    wf.Condition(foo, model.Comparator_LESS_THAN, 3),
-    func (ifBody *wflib.WorkflowThread) {
+    wf.Condition(foo, lhproto.Comparator_LESS_THAN, 3),
+    func (ifBody *littlehorse.WorkflowThread) {
         ifBody.Execute("my-task")
     },
-    func (elseBody *wflib.WorkflowThread) {
+    func (elseBody *littlehorse.WorkflowThread) {
         elseBody.Execute("another-task")
         elseBody.Execute("yet-another-task")
     },
@@ -365,11 +365,11 @@ wf.doWhile(
   <TabItem value="go" label="Go">
 
 ```go
-foo := wf.AddVariable("foo", model.VariableType_INT)
+foo := wf.AddVariable("foo", lhproto.VariableType_INT)
 
 wf.DoWhile(
-    wf.Condition(foo, model.Comparator_LESS_THAN, 3),
-    func (loopBody *wflib.WorkflowThread) {
+    wf.Condition(foo, lhproto.Comparator_LESS_THAN, 3),
+    func (loopBody *littlehorse.WorkflowThread) {
         loopBody.Execute("my-task")
         loopBody.Execute("another-task")
     },

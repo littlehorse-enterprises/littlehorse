@@ -51,10 +51,10 @@ public void threadFunction(WorkflowThread thread) {
   <TabItem value="go" label="Go">
 
 ```go
-func someThreadFunction(thread *wflib.WorkflowThread) {
-    foo := thread.AddVariable("foo", model.VariableType_INT)
+func someThreadFunction(thread *littlehorse.WorkflowThread) {
+    foo := thread.AddVariable("foo", lhproto.VariableType_INT)
     // ... optionally execute some tasks
-    thread.Mutate(foo, model.VariableMutationType_ASSIGN, 3)
+    thread.Mutate(foo, lhproto.VariableMutationType_ASSIGN, 3)
 }
 ```
 
@@ -95,10 +95,10 @@ public void threadFunction(WorkflowThread thread) {
   <TabItem value="go" label="Go">
 
 ```go
-func someThreadFunction(thread *wflib.WorkflowThread) {
-    foo := thread.AddVariableWithDefault("foo", model.VariableType_INT, 1)
+func someThreadFunction(thread *littlehorse.WorkflowThread) {
+    foo := thread.AddVariableWithDefault("foo", lhproto.VariableType_INT, 1)
     taskOutput := thread.Execute("some-task-that-returns-int")
-    thread.Mutate(foo, model.VariableMutationType_ADD, taskOutput)
+    thread.Mutate(foo, lhproto.VariableMutationType_ADD, taskOutput)
 }
 ```
   </TabItem>
@@ -136,13 +136,13 @@ public void threadFunction(WorkflowThread thread) {
   <TabItem value="go" label="Go">
 
 ```go
-func someThreadFunction(thread *wflib.WorkflowThread) {
-    strToAppend := thread.AddVariable("string-to-append", model.VariableType_STR)
-    myList := thread.AddVariable("my-list", model.VariableType_JSON_ARR)
+func someThreadFunction(thread *littlehorse.WorkflowThread) {
+    strToAppend := thread.AddVariable("string-to-append", lhproto.VariableType_STR)
+    myList := thread.AddVariable("my-list", lhproto.VariableType_JSON_ARR)
 
     // ... execute a few tasks
 
-    thread.Mutate(myList, model.VariableMutationType_EXTEND, strToAppend)
+    thread.Mutate(myList, lhproto.VariableMutationType_EXTEND, strToAppend)
 }
 ```
 
@@ -192,11 +192,11 @@ public void threadFunction(WorkflowThread thread) {
   <TabItem value="go" label="Go">
 
 ```go
-func someThread(thread *wflib.WorkflowThread) {
-  myVar := thread.AddVariable("my-var", model.VariableType_JSON_OBJ)
+func someThread(thread *littlehorse.WorkflowThread) {
+  myVar := thread.AddVariable("my-var", lhproto.VariableType_JSON_OBJ)
   fooPath := myVar.JsonPath("$.foo")
   // ... execute some tasks
-  thread.Mutate(&fooPath, model.VariableMutationType_ADD, 1)
+  thread.Mutate(&fooPath, lhproto.VariableMutationType_ADD, 1)
 }
 ```
 
