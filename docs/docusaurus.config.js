@@ -9,7 +9,7 @@ const lightCodeTheme = themes.github;
 module.exports = {
   title: "LittleHorse Orchestrator",
   tagline: "The Missing Piece of the Microservice Architecture",
-  favicon: "img/logo-brown.jpg",
+  favicon: "img/logo.png",
 
   // Set the production url of your site here
   url: "https://littlehorse.dev",
