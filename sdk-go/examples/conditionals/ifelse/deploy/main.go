@@ -11,7 +11,7 @@ import (
 
 func main() {
 	_, client := examples.LoadConfigAndClient()
-	wf := littlehorse.NewWorkflow(ifelse.DonutWorkflow, "donut-workflow")
+	wf := littlehorse.NewWorkflow(ifelse.DonutWorkflow, ifelse.WorkflowName)
 	putWf, err := wf.Compile()
 	if err != nil {
 		log.Fatal(err)

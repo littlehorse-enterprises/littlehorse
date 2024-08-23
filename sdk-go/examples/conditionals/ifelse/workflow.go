@@ -7,6 +7,12 @@ import (
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
+const (
+	EatSaladTaskName        string = "eat-salad"
+	EatAnotherDonutTaskName string = "eat-another-donut"
+	WorkflowName            string = "donut-workflow"
+)
+
 func Salad() string {
 	fmt.Println("Recommending a salad")
 	return "Have a salad!"
@@ -23,10 +29,10 @@ func DonutWorkflow(wf *littlehorse.WorkflowThread) {
 	wf.DoIfElse(
 		wf.Condition(numDonuts, lhproto.Comparator_LESS_THAN, 10),
 		func(t *littlehorse.WorkflowThread) {
-			t.Execute("eat-another-donut")
+			t.Execute(EatAnotherDonutTaskName)
 		},
 		func(t *littlehorse.WorkflowThread) {
-			t.Execute("eat-salad")
+			t.Execute(EatSaladTaskName)
 		},
 	)
 }

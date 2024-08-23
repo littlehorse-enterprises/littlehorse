@@ -14,12 +14,12 @@ func main() {
 	var saladWorker, donutWorker *littlehorse.LHTaskWorker
 	var err error
 
-	saladWorker, err = littlehorse.NewTaskWorker(config, ifelse.Salad, "eat-salad")
+	saladWorker, err = littlehorse.NewTaskWorker(config, ifelse.Salad, ifelse.EatSaladTaskName)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	donutWorker, err = littlehorse.NewTaskWorker(config, ifelse.Donut, "eat-another-donut")
+	donutWorker, err = littlehorse.NewTaskWorker(config, ifelse.Donut, ifelse.EatAnotherDonutTaskName)
 	if err != nil {
 		log.Fatal(err)
 	}
