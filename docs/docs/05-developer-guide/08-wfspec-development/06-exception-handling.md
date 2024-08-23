@@ -60,7 +60,7 @@ wf.fail("payment-failed", "This is a human readable error message for developers
 wf.Fail(nil, "payment-failed", "This is a human readable error message for developers")
 
 // Fail with output.
-var exnContent *model.WfRunVariable
+var exnContent *lhproto.WfRunVariable
 // ...
 wf.Fail(exnContent, "payment-failed", "This is a human readable error message for developers")
 ```
@@ -147,7 +147,7 @@ exnName := "my-exn"
 wf.HandleException(
     &threadsResult,
     &exnName, // handle specific exception
-    func(handler *wflib.WorkflowThread) {
+    func(handler *littlehorse.WorkflowThread) {
         handler.Execute("some-task-in-my-exn-handler")
     },
 )
@@ -155,7 +155,7 @@ wf.HandleException(
 wf.HandleException(
     &taskOutput,
     &nil, // handle any exception
-    func(handler *wflib.WorkflowThread) {
+    func(handler *littlehorse.WorkflowThread) {
         handler.Execute("some-other-task-in-failure-handler")
     },
 )
@@ -222,7 +222,7 @@ errorName := "TIMEOUT"
 wf.HandleError(
     &threadsResult,
     &errorName, // handle only TIMEOUT error. Leave nil to catch all ERROR.
-    func(handler *wflib.WorkflowThread) {
+    func(handler *littlehorse.WorkflowThread) {
         handler.Execute("some-task-in-my-exn-handler")
     },
 )

@@ -26,13 +26,13 @@ import io.littlehorse.sdk.common.config.LHConfig;
 
 You can create a config object in two ways:
 
-1. Using the environment variables as defaults, via `common.NewConfigFromEnv()`.
-2. Passing in a path to a properties file, via `common.NewConfigFromProps("/opt/littlehorse.config")`. This assumes that the file is in the format of a Java `Properties` file.
+1. Using the environment variables as defaults, via `littlehorse.NewConfigFromEnv()`.
+2. Passing in a path to a properties file, via `littlehorse.NewConfigFromProps("/opt/littlehorse.config")`. This assumes that the file is in the format of a Java `Properties` file.
 
 To import it, you can use the following:
 
 ```go
-import "github.com/littlehorse-enterprises/littlehorse/sdk-go/common";
+import "github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse";
 ```
 
   </TabItem>
@@ -144,8 +144,8 @@ LittleHorseBlockingStub client = config.getBlockingStub();
 In Go, you can get a grpc client as follows:
 
 ```
-config := common.NewConfigFromEnv()
-client := config.getGrpcClient()
+config := littlehorse.NewConfigFromEnv()
+client := littlehorse.getGrpcClient()
 ```
 
 Note that in grpc in Go, there is no distinction between async or blocking grpc clients.

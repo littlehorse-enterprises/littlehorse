@@ -130,14 +130,14 @@ import (
 	"context"
 	"time"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func main() {
 	// Get a client
-	config := common.NewConfigFromEnv()
+	config := littlehorse.NewConfigFromEnv()
 	client, _ := config.GetGrpcClient()
 
 	oneWeekAgo := timestamppb.New(time.Now().Add(-7 * 24 * time.Hour))
@@ -146,11 +146,11 @@ func main() {
 	userTaskDefName := "it-request"
 	userGroup := "jedi-temple"
 	userId := "obi-wan"
-	status := model.UserTaskRunStatus_ASSIGNED
+	status := lhproto.UserTaskRunStatus_ASSIGNED
 
 	// You may provide any or all of the following options. The only requirement
 	// is that you must specify at least one criterion.
-	searchReq := &model.SearchUserTaskRunRequest{
+	searchReq := &lhproto.SearchUserTaskRunRequest{
 		UserTaskDefName: &userTaskDefName,
 		UserId:          &userId,
 		UserGroup:       &userGroup,
@@ -160,7 +160,7 @@ func main() {
 	}
 
 	results, _ := (*client).SearchUserTaskRun(context.Background(), searchReq)
-	common.PrintProto(results)
+	littlehorse.PrintProto(results)
 }
 ```
   </TabItem>
@@ -277,18 +277,18 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
 func main() {
 	// Get a client
-	config := common.NewConfigFromEnv()
+	config := littlehorse.NewConfigFromEnv()
 	client, _ := config.GetGrpcClient()
 
 	// Get a UserTaskRunId
-	id := &model.UserTaskRunId{
-		WfRunId: &model.WfRunId{
+	id := &lhproto.UserTaskRunId{
+		WfRunId: &lhproto.WfRunId{
 			Id: "e0e49b53298a4965b059a1a5df095b09",
 		},
 		UserTaskGuid: "8bb5d43e14894c82bb1deab7a68b32ae",
@@ -321,7 +321,7 @@ func main() {
 	}
 
 	// If the UserTaskRun is in the DONE state, it will have results
-	if userTaskRun.Status == model.UserTaskRunStatus_DONE {
+	if userTaskRun.Status == lhproto.UserTaskRunStatus_DONE {
 		fmt.Println(userTaskRun.Results)
 	}
 }
@@ -441,31 +441,31 @@ package main
 import (
 	"context"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
 func main() {
 	// Get a client
-	config := common.NewConfigFromEnv()
+	config := littlehorse.NewConfigFromEnv()
 	client, _ := config.GetGrpcClient()
 
 	// Get a UserTaskRunId
-	id := &model.UserTaskRunId{
-		WfRunId: &model.WfRunId{
+	id := &lhproto.UserTaskRunId{
+		WfRunId: &lhproto.WfRunId{
 			Id: "f2491b41b7354382988215b789187b74",
 		},
 		UserTaskGuid: "aa87109f001b432394cec35713ef3359",
 	}
 
-	completeRequest := &model.CompleteUserTaskRunRequest{
+	completeRequest := &lhproto.CompleteUserTaskRunRequest{
 		UserTaskRunId: id,
 		UserId:        "obi-wan",
-		Results:       make(map[string]*model.VariableValue),
+		Results:       make(map[string]*lhproto.VariableValue),
 	}
 
-	requestedItem, _ := common.InterfaceToVarVal("lightsaber")
-	justification, _ := common.InterfaceToVarVal("Darth Maul took it away!")
+	requestedItem, _ := littlehorse.InterfaceToVarVal("lightsaber")
+	justification, _ := littlehorse.InterfaceToVarVal("Darth Maul took it away!")
 
 	completeRequest.Results["requestedItem"] = requestedItem
 	completeRequest.Results["justification"] = justification
@@ -573,32 +573,32 @@ package main
 import (
 	"context"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
 func main() {
 	// Get a client
-	config := common.NewConfigFromEnv()
+	config := littlehorse.NewConfigFromEnv()
 	client, _ := config.GetGrpcClient()
 
 	// Get a UserTaskRunId
-	id := &model.UserTaskRunId{
-		WfRunId: &model.WfRunId{
+	id := &lhproto.UserTaskRunId{
+		WfRunId: &lhproto.WfRunId{
 			Id: "f2491b41b7354382988215b789187b74",
 		},
 		UserTaskGuid: "aa87109f001b432394cec35713ef3359",
 	}
 
-	completeRequest := &model.SaveUserTaskRunProgressRequest{
+	completeRequest := &lhproto.SaveUserTaskRunProgressRequest{
 		UserTaskRunId: id,
 		UserId:        "obi-wan",
-		Results:       make(map[string]*model.VariableValue),
-		Policy:        model.SaveUserTaskRunProgressRequest_FAIL_IF_CLAIMED_BY_OTHER,
+		Results:       make(map[string]*lhproto.VariableValue),
+		Policy:        lhproto.SaveUserTaskRunProgressRequest_FAIL_IF_CLAIMED_BY_OTHER,
 	}
 
-	requestedItem, _ := common.InterfaceToVarVal("some-field")
-	justification, _ := common.InterfaceToVarVal("lightsaber")
+	requestedItem, _ := littlehorse.InterfaceToVarVal("some-field")
+	justification, _ := littlehorse.InterfaceToVarVal("lightsaber")
 
 	completeRequest.Results["requestedItem"] = requestedItem
 	completeRequest.Results["justification"] = justification
@@ -719,18 +719,18 @@ package main
 import (
 	"context"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
 func main() {
 	// Get a client
-	config := common.NewConfigFromEnv()
+	config := littlehorse.NewConfigFromEnv()
 	client, _ := config.GetGrpcClient()
 
 	// Get a UserTaskRunId
-	id := &model.UserTaskRunId{
-		WfRunId: &model.WfRunId{
+	id := &lhproto.UserTaskRunId{
+		WfRunId: &lhproto.WfRunId{
 			Id: "a7476518fdff4dd49f47dbe40df3c5a6",
 		},
 		UserTaskGuid: "709cac9fcd424d87810a6cabf66d400e",
@@ -739,7 +739,7 @@ func main() {
 	newUserId := "yoda"
 	newUserGroup := "jedi-temple"
 
-	(*client).AssignUserTaskRun(context.Background(), &model.AssignUserTaskRunRequest{
+	(*client).AssignUserTaskRun(context.Background(), &lhproto.AssignUserTaskRunRequest{
 		UserTaskRunId: id,
 		UserGroup:     &newUserGroup,
 		UserId:        &newUserId,
@@ -841,24 +841,24 @@ package main
 import (
 	"context"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
 func main() {
 	// Get a client
-	config := common.NewConfigFromEnv()
+	config := littlehorse.NewConfigFromEnv()
 	client, _ := config.GetGrpcClient()
 
 	// Get a UserTaskRunId
-	id := &model.UserTaskRunId{
-		WfRunId: &model.WfRunId{
+	id := &lhproto.UserTaskRunId{
+		WfRunId: &lhproto.WfRunId{
 			Id: "a7476518fdff4dd49f47dbe40df3c5a6",
 		},
 		UserTaskGuid: "709cac9fcd424d87810a6cabf66d400e",
 	}
 
-	(*client).CancelUserTaskRun(context.Background(), &model.CancelUserTaskRunRequest{
+	(*client).CancelUserTaskRun(context.Background(), &lhproto.CancelUserTaskRunRequest{
 		UserTaskRunId: id,
 	})
 }
