@@ -32,12 +32,14 @@ type LHTaskWorkerHealth struct {
 }
 
 type LHTaskWorker struct {
-	config    *LHConfig
-	grpcStub  *lhproto.LittleHorseClient
-	taskFunc  interface{}
-	taskSig   *TaskFuncSignature
-	manager   *serverConnectionManager
-	taskDefId *lhproto.TaskDefId
+	config               *LHConfig
+	grpcStub             *lhproto.LittleHorseClient
+	taskFunc             interface{}
+	taskSig              *TaskFuncSignature
+	manager              *serverConnectionManager
+	taskDefId            *lhproto.TaskDefId
+	maskedInputVariables []bool
+	maskedOutput         bool
 }
 
 func NewTaskWorker(
@@ -96,5 +98,20 @@ func (tw *LHTaskWorker) Health() LHTaskWorkerHealth {
 	return LHTaskWorkerHealth{
 		Healthy: true,
 		Reason:  Healthy,
+	}
+}
+
+func (tw *LHTaskWorker) MaskedFields(maskedFieldValues []bool) {
+	if tw != nil {
+		tw.maskedInputVariables = maskedFieldValues
+	}
+}
+
+func (tw *LHTaskWorker) MaskedOutput() {
+	if tw != nil {
+		if !tw.taskSig.HasOutput {
+			panic("Task signature doesn't contain an output type")
+		}
+		tw.maskedOutput = true
 	}
 }
