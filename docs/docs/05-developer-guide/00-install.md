@@ -27,14 +27,6 @@ Installation via Homebrew has been tested on Mac and Linux.
 brew install littlehorse-enterprises/lh/lhctl
 ```
   </TabItem>
-  <TabItem value="go" label="Go">
-
-Alternatively, you can install `lhctl` directly from source using GoLang. Please remember to put `~/go/bin/` in your `PATH`.
-
-```
-go install github.com/littlehorse-enterprises/littlehorse/sdk-go@v0.11.0
-```
-  </TabItem>
 </Tabs>
 
 ## LittleHorse Server (Local Dev)
