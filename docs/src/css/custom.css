@@ -21,14 +21,11 @@ code {
   border: 0.15rem solid rgba(0, 0, 0, 0.1);
 }
 
-header {
+.hero {
   background-image: url('/img/logo-opaque.png');
   background-position: center;
   background-size: 50rem;
   background-repeat: no-repeat;
-}
-
-.heroBanner_src-pages-index-module {
   padding: 10rem 0 !important;
 }
 
