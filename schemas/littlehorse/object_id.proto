@@ -5,7 +5,7 @@ package littlehorse;
 import "google/protobuf/timestamp.proto";
 import "common_enums.proto";
 
-option go_package = ".;model";
+option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
@@ -187,5 +187,9 @@ message PrincipalId {
 // ID for a Tenant.
 message TenantId {
   // The Tenant ID.
+  string id = 1;
+}
+// ID for a ScheduledWfRun
+message ScheduledWfRunId {
   string id = 1;
 }

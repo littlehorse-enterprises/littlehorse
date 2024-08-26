@@ -1,3 +1,4 @@
+import inspect
 from enum import Enum
 import asyncio
 from datetime import datetime
@@ -7,7 +8,15 @@ import logging
 import signal
 import traceback
 from google.protobuf.json_format import MessageToJson
-from typing import Any, AsyncIterator, Callable, Optional
+from typing import (
+    Any,
+    AsyncIterator,
+    Callable,
+    Optional,
+    Annotated,
+    get_args,
+    get_origin,
+)
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
     TaskSchemaMismatchException,
@@ -23,6 +32,7 @@ from littlehorse.model import (
     WfRunId,
     PollTaskRequest,
     PutTaskDefRequest,
+    TaskDefOutputSchema,
     RegisterTaskWorkerRequest,
     RegisterTaskWorkerResponse,
     ReportTaskRun,
@@ -180,9 +190,11 @@ class LHTask:
             )
 
         for task_def_var, callable_param in zip(task_def_vars, callable_params):
+            if get_origin(callable_param) is Annotated:
+                callable_param = get_args(callable_param)[0]
             if task_def_var != callable_param:
                 raise TaskSchemaMismatchException(
-                    f"Parameter types do not match, expected: {task_def_vars}"
+                    f"Parameter types do not match, expected: {task_def_vars} got: {callable_params}"
                 )
 
     def _validate_callable(self) -> None:
@@ -522,7 +534,6 @@ class LHTaskWorker:
 
             request = RegisterTaskWorkerRequest(
                 task_worker_id=self._config.task_worker_id,
-                listener_name=self._config.server_listener,
                 task_def_id=self._task.task_def.id,
             )
             try:
@@ -620,19 +631,69 @@ class LHTaskWorker:
         _create_task_def(self._callable, self._task_def_name, self._config)
 
 
+class LHType:
+    def __init__(
+        self,
+        name: str,
+        masked: bool = False,
+    ) -> None:
+        self.name = name
+        self.masked = masked
+
+
 def _create_task_def(
     task: Callable[..., Any], name: str, config: LHConfig, timeout: Optional[int] = None
 ) -> None:
     stub = config.stub()
     task_signature = signature(task)
     input_vars = [
-        VariableDef(name=param.name, type=to_variable_type(param.annotation))
+        _to_variable_def(param)
         for param in task_signature.parameters.values()
         if param.annotation is not WorkerContext
     ]
-    request = PutTaskDefRequest(name=name, input_vars=input_vars)
+    output_schema = _return_to_lh_schema(task_signature.return_annotation)
+    request = PutTaskDefRequest(
+        name=name, input_vars=input_vars, output_schema=output_schema
+    )
     stub.PutTaskDef(request, timeout=timeout)
     logging.info(f"TaskDef {name} was created:\n{MessageToJson(request)}")
+
+
+def _to_variable_def(param: inspect.Parameter) -> VariableDef:
+    lh_type = _param_to_lh_type(param.annotation)
+    if lh_type is None:
+        lh_type = LHType(param.name)
+    return VariableDef(
+        name=lh_type.name,
+        type=to_variable_type(param.annotation),
+        masked_value=lh_type.masked,
+    )
+
+
+def _param_to_lh_type(annotated_type: type) -> Optional[LHType]:
+    if get_origin(annotated_type) is Annotated:
+        args = get_args(annotated_type)
+        if len(args) > 1 and isinstance(args[1], LHType):
+            return args[1]
+    return None
+
+
+def _return_to_lh_schema(return_type: type) -> Optional[TaskDefOutputSchema]:
+    if return_type is None:
+        return None
+    lh_type = _param_to_lh_type(return_type)
+    var = VariableDef(
+        name="output",
+        type=to_variable_type(return_type),
+        masked_value=False,
+    )
+    if lh_type is not None:
+        var = VariableDef(
+            name=lh_type.name,
+            type=to_variable_type(return_type),
+            masked_value=lh_type.masked,
+        )
+    return TaskDefOutputSchema(value_def=var)
 
 
 def shutdown_hook(*workers: LHTaskWorker) -> None:

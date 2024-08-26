@@ -17,6 +17,8 @@
     "@docusaurus/core": "^3.3.2",
     "@docusaurus/plugin-content-blog": "^3.3.2",
     "@docusaurus/plugin-content-docs": "^3.3.2",
+    "@docusaurus/plugin-google-gtag": "^3.5.2",
+    "@docusaurus/plugin-google-tag-manager": "^3.5.2",
     "@docusaurus/preset-classic": "^3.3.2",
     "@docusaurus/theme-classic": "^3.3.2",
     "@mdx-js/react": "^3.0.0",

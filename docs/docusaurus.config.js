@@ -7,9 +7,9 @@ const lightCodeTheme = themes.github;
 
 /** @type {import('@docusaurus/types').Config} */
 module.exports = {
-  title: "LittleHorse",
-  tagline: "Workflow-Driven Microservices",
-  favicon: "img/logo.jpg",
+  title: "LittleHorse Orchestrator",
+  tagline: "The Missing Piece of the Microservice Architecture",
+  favicon: "img/logo.png",
 
   // Set the production url of your site here
   url: "https://littlehorse.dev",
@@ -23,7 +23,10 @@ module.exports = {
   // projectName: 'docusaurus', // Usually your repo name.
 
   onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
+
+  // Colt gets very grumpy when links don't work.
+  onBrokenMarkdownLinks: "throw",
+  onBrokenAnchors: "throw",
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
@@ -39,6 +42,12 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
+        },
+        googleTagManager: {
+          containerId: "GTM-NCK3N2PC",
+        },
+        gtag: {
+          trackingID: 'G-1DL56CH5SS',
         },
         blog: {},
         theme: {
@@ -60,7 +69,8 @@ module.exports = {
         title: "LittleHorse",
         logo: {
           alt: "LittleHorse Logo",
-          src: "img/logo.jpg",
+          src: "img/logo-brown.png",
+          srcDark: "img/logo.png"
         },
         items: [
           {
@@ -86,12 +96,12 @@ module.exports = {
           },
           {
             href: "https://github.com/littlehorse-enterprises/littlehorse",
-            label: "GitHub",
+            className: 'header-github-link',
             position: "right",
           },
           {
             href: "https://launchpass.com/littlehorsecommunity",
-            label: "Slack",
+            className: 'header-slack-link',
             position: "right",
           },
         ],
@@ -134,6 +144,15 @@ module.exports = {
       prism: {
         theme: lightCodeTheme,
         additionalLanguages: ["java", "go", "groovy", "protobuf"],
+      },
+      algolia: {
+        appId: 'G6OXK45P4J', // The application ID provided by Algolia
+        apiKey: '038f9d47703c58c2c8abace8998eaed1', // Public API key: it is safe to commit it
+        indexName: 'littlehorse',
+        externalUrlRegex: "littlehorse\\.dev",
+        contextualSearch: true, // Enforces context of language and version on search results
+        searchPagePath: 'search', // path for search page that enabled by default
+        insights: false,
       },
     }),
 };

@@ -72,7 +72,11 @@ export interface VarNameAndVal {
   /** The variable name. */
   varName: string;
   /** The value of the variable for this TaskRun. */
-  value: VariableValue | undefined;
+  value:
+    | VariableValue
+    | undefined;
+  /** Indicates whether the content of the `value` field has been masked */
+  masked: boolean;
 }
 
 /** A single time that a TaskRun was scheduled for execution on a Task Queue. */
@@ -120,7 +124,11 @@ export interface TaskAttempt {
     | LHTaskError
     | undefined;
   /** The Task Function encountered a business problem and threw a technical exception. */
-  exception?: LHTaskException | undefined;
+  exception?:
+    | LHTaskException
+    | undefined;
+  /** Indicates whether the result of the attempt field has been masked */
+  maskedValue: boolean;
 }
 
 /** The source of a TaskRun; i.e. why it was scheduled. */
@@ -328,7 +336,7 @@ export const TaskRun = {
 };
 
 function createBaseVarNameAndVal(): VarNameAndVal {
-  return { varName: "", value: undefined };
+  return { varName: "", value: undefined, masked: false };
 }
 
 export const VarNameAndVal = {
@@ -338,6 +346,9 @@ export const VarNameAndVal = {
     }
     if (message.value !== undefined) {
       VariableValue.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.masked !== false) {
+      writer.uint32(24).bool(message.masked);
     }
     return writer;
   },
@@ -363,6 +374,13 @@ export const VarNameAndVal = {
 
           message.value = VariableValue.decode(reader, reader.uint32());
           continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.masked = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -381,6 +399,7 @@ export const VarNameAndVal = {
     message.value = (object.value !== undefined && object.value !== null)
       ? VariableValue.fromPartial(object.value)
       : undefined;
+    message.masked = object.masked ?? false;
     return message;
   },
 };
@@ -397,6 +416,7 @@ function createBaseTaskAttempt(): TaskAttempt {
     output: undefined,
     error: undefined,
     exception: undefined,
+    maskedValue: false,
   };
 }
 
@@ -431,6 +451,9 @@ export const TaskAttempt = {
     }
     if (message.exception !== undefined) {
       LHTaskException.encode(message.exception, writer.uint32(90).fork()).ldelim();
+    }
+    if (message.maskedValue !== false) {
+      writer.uint32(96).bool(message.maskedValue);
     }
     return writer;
   },
@@ -512,6 +535,13 @@ export const TaskAttempt = {
 
           message.exception = LHTaskException.decode(reader, reader.uint32());
           continue;
+        case 12:
+          if (tag !== 96) {
+            break;
+          }
+
+          message.maskedValue = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -544,6 +574,7 @@ export const TaskAttempt = {
     message.exception = (object.exception !== undefined && object.exception !== null)
       ? LHTaskException.fromPartial(object.exception)
       : undefined;
+    message.maskedValue = object.maskedValue ?? false;
     return message;
   },
 };

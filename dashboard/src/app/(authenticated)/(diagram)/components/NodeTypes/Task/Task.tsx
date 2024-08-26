@@ -10,9 +10,10 @@ const Node: FC<NodeProps> = ({ selected, data }) => {
   const { fade, nodeNeedsToBeHighlighted } = data
   if (!data.task) return null
   const { task } = data
+
   return (
     <>
-      <TaskDetails task={task} nodeRun={data.nodeRun} />
+      <TaskDetails taskNode={task} nodeRun={data.nodeRun} selected={selected} />
       <Fade fade={fade} status={data.nodeRun?.status}>
         <div
           className={

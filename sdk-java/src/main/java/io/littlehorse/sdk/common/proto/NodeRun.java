@@ -602,7 +602,7 @@ private static final long serialVersionUID = 0L;
    * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
    * </pre>
    *
-   * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
+   * <code>.littlehorse.ExternalEventNodeRun external_event = 14;</code>
    * @return Whether the externalEvent field is set.
    */
   @java.lang.Override
@@ -614,29 +614,29 @@ private static final long serialVersionUID = 0L;
    * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
    * </pre>
    *
-   * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
+   * <code>.littlehorse.ExternalEventNodeRun external_event = 14;</code>
    * @return The externalEvent.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ExternalEventRun getExternalEvent() {
+  public io.littlehorse.sdk.common.proto.ExternalEventNodeRun getExternalEvent() {
     if (nodeTypeCase_ == 14) {
-       return (io.littlehorse.sdk.common.proto.ExternalEventRun) nodeType_;
+       return (io.littlehorse.sdk.common.proto.ExternalEventNodeRun) nodeType_;
     }
-    return io.littlehorse.sdk.common.proto.ExternalEventRun.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.ExternalEventNodeRun.getDefaultInstance();
   }
   /**
    * <pre>
    * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
    * </pre>
    *
-   * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
+   * <code>.littlehorse.ExternalEventNodeRun external_event = 14;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ExternalEventRunOrBuilder getExternalEventOrBuilder() {
+  public io.littlehorse.sdk.common.proto.ExternalEventNodeRunOrBuilder getExternalEventOrBuilder() {
     if (nodeTypeCase_ == 14) {
-       return (io.littlehorse.sdk.common.proto.ExternalEventRun) nodeType_;
+       return (io.littlehorse.sdk.common.proto.ExternalEventNodeRun) nodeType_;
     }
-    return io.littlehorse.sdk.common.proto.ExternalEventRun.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.ExternalEventNodeRun.getDefaultInstance();
   }
 
   public static final int ENTRYPOINT_FIELD_NUMBER = 15;
@@ -1027,7 +1027,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(13, (io.littlehorse.sdk.common.proto.TaskNodeRun) nodeType_);
     }
     if (nodeTypeCase_ == 14) {
-      output.writeMessage(14, (io.littlehorse.sdk.common.proto.ExternalEventRun) nodeType_);
+      output.writeMessage(14, (io.littlehorse.sdk.common.proto.ExternalEventNodeRun) nodeType_);
     }
     if (nodeTypeCase_ == 15) {
       output.writeMessage(15, (io.littlehorse.sdk.common.proto.EntrypointRun) nodeType_);
@@ -1115,7 +1115,7 @@ private static final long serialVersionUID = 0L;
     }
     if (nodeTypeCase_ == 14) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(14, (io.littlehorse.sdk.common.proto.ExternalEventRun) nodeType_);
+        .computeMessageSize(14, (io.littlehorse.sdk.common.proto.ExternalEventNodeRun) nodeType_);
     }
     if (nodeTypeCase_ == 15) {
       size += com.google.protobuf.CodedOutputStream
@@ -3650,13 +3650,13 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ExternalEventRun, io.littlehorse.sdk.common.proto.ExternalEventRun.Builder, io.littlehorse.sdk.common.proto.ExternalEventRunOrBuilder> externalEventBuilder_;
+        io.littlehorse.sdk.common.proto.ExternalEventNodeRun, io.littlehorse.sdk.common.proto.ExternalEventNodeRun.Builder, io.littlehorse.sdk.common.proto.ExternalEventNodeRunOrBuilder> externalEventBuilder_;
     /**
      * <pre>
      * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
      * </pre>
      *
-     * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
+     * <code>.littlehorse.ExternalEventNodeRun external_event = 14;</code>
      * @return Whether the externalEvent field is set.
      */
     @java.lang.Override
@@ -3668,21 +3668,21 @@ private static final long serialVersionUID = 0L;
      * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
      * </pre>
      *
-     * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
+     * <code>.littlehorse.ExternalEventNodeRun external_event = 14;</code>
      * @return The externalEvent.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ExternalEventRun getExternalEvent() {
+    public io.littlehorse.sdk.common.proto.ExternalEventNodeRun getExternalEvent() {
       if (externalEventBuilder_ == null) {
         if (nodeTypeCase_ == 14) {
-          return (io.littlehorse.sdk.common.proto.ExternalEventRun) nodeType_;
+          return (io.littlehorse.sdk.common.proto.ExternalEventNodeRun) nodeType_;
         }
-        return io.littlehorse.sdk.common.proto.ExternalEventRun.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ExternalEventNodeRun.getDefaultInstance();
       } else {
         if (nodeTypeCase_ == 14) {
           return externalEventBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.ExternalEventRun.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ExternalEventNodeRun.getDefaultInstance();
       }
     }
     /**
@@ -3690,9 +3690,9 @@ private static final long serialVersionUID = 0L;
      * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
      * </pre>
      *
-     * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
+     * <code>.littlehorse.ExternalEventNodeRun external_event = 14;</code>
      */
-    public Builder setExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventRun value) {
+    public Builder setExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventNodeRun value) {
       if (externalEventBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3710,10 +3710,10 @@ private static final long serialVersionUID = 0L;
      * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
      * </pre>
      *
-     * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
+     * <code>.littlehorse.ExternalEventNodeRun external_event = 14;</code>
      */
     public Builder setExternalEvent(
-        io.littlehorse.sdk.common.proto.ExternalEventRun.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.ExternalEventNodeRun.Builder builderForValue) {
       if (externalEventBuilder_ == null) {
         nodeType_ = builderForValue.build();
         onChanged();
@@ -3728,13 +3728,13 @@ private static final long serialVersionUID = 0L;
      * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
      * </pre>
      *
-     * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
+     * <code>.littlehorse.ExternalEventNodeRun external_event = 14;</code>
      */
-    public Builder mergeExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventRun value) {
+    public Builder mergeExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventNodeRun value) {
       if (externalEventBuilder_ == null) {
         if (nodeTypeCase_ == 14 &&
-            nodeType_ != io.littlehorse.sdk.common.proto.ExternalEventRun.getDefaultInstance()) {
-          nodeType_ = io.littlehorse.sdk.common.proto.ExternalEventRun.newBuilder((io.littlehorse.sdk.common.proto.ExternalEventRun) nodeType_)
+            nodeType_ != io.littlehorse.sdk.common.proto.ExternalEventNodeRun.getDefaultInstance()) {
+          nodeType_ = io.littlehorse.sdk.common.proto.ExternalEventNodeRun.newBuilder((io.littlehorse.sdk.common.proto.ExternalEventNodeRun) nodeType_)
               .mergeFrom(value).buildPartial();
         } else {
           nodeType_ = value;
@@ -3755,7 +3755,7 @@ private static final long serialVersionUID = 0L;
      * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
      * </pre>
      *
-     * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
+     * <code>.littlehorse.ExternalEventNodeRun external_event = 14;</code>
      */
     public Builder clearExternalEvent() {
       if (externalEventBuilder_ == null) {
@@ -3778,9 +3778,9 @@ private static final long serialVersionUID = 0L;
      * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
      * </pre>
      *
-     * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
+     * <code>.littlehorse.ExternalEventNodeRun external_event = 14;</code>
      */
-    public io.littlehorse.sdk.common.proto.ExternalEventRun.Builder getExternalEventBuilder() {
+    public io.littlehorse.sdk.common.proto.ExternalEventNodeRun.Builder getExternalEventBuilder() {
       return getExternalEventFieldBuilder().getBuilder();
     }
     /**
@@ -3788,17 +3788,17 @@ private static final long serialVersionUID = 0L;
      * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
      * </pre>
      *
-     * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
+     * <code>.littlehorse.ExternalEventNodeRun external_event = 14;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ExternalEventRunOrBuilder getExternalEventOrBuilder() {
+    public io.littlehorse.sdk.common.proto.ExternalEventNodeRunOrBuilder getExternalEventOrBuilder() {
       if ((nodeTypeCase_ == 14) && (externalEventBuilder_ != null)) {
         return externalEventBuilder_.getMessageOrBuilder();
       } else {
         if (nodeTypeCase_ == 14) {
-          return (io.littlehorse.sdk.common.proto.ExternalEventRun) nodeType_;
+          return (io.littlehorse.sdk.common.proto.ExternalEventNodeRun) nodeType_;
         }
-        return io.littlehorse.sdk.common.proto.ExternalEventRun.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.ExternalEventNodeRun.getDefaultInstance();
       }
     }
     /**
@@ -3806,18 +3806,18 @@ private static final long serialVersionUID = 0L;
      * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
      * </pre>
      *
-     * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
+     * <code>.littlehorse.ExternalEventNodeRun external_event = 14;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.ExternalEventRun, io.littlehorse.sdk.common.proto.ExternalEventRun.Builder, io.littlehorse.sdk.common.proto.ExternalEventRunOrBuilder> 
+        io.littlehorse.sdk.common.proto.ExternalEventNodeRun, io.littlehorse.sdk.common.proto.ExternalEventNodeRun.Builder, io.littlehorse.sdk.common.proto.ExternalEventNodeRunOrBuilder> 
         getExternalEventFieldBuilder() {
       if (externalEventBuilder_ == null) {
         if (!(nodeTypeCase_ == 14)) {
-          nodeType_ = io.littlehorse.sdk.common.proto.ExternalEventRun.getDefaultInstance();
+          nodeType_ = io.littlehorse.sdk.common.proto.ExternalEventNodeRun.getDefaultInstance();
         }
         externalEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.ExternalEventRun, io.littlehorse.sdk.common.proto.ExternalEventRun.Builder, io.littlehorse.sdk.common.proto.ExternalEventRunOrBuilder>(
-                (io.littlehorse.sdk.common.proto.ExternalEventRun) nodeType_,
+            io.littlehorse.sdk.common.proto.ExternalEventNodeRun, io.littlehorse.sdk.common.proto.ExternalEventNodeRun.Builder, io.littlehorse.sdk.common.proto.ExternalEventNodeRunOrBuilder>(
+                (io.littlehorse.sdk.common.proto.ExternalEventNodeRun) nodeType_,
                 getParentForChildren(),
                 isClean());
         nodeType_ = null;

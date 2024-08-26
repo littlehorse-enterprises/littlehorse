@@ -245,7 +245,7 @@ public class WfRunSearchTest {
     public Workflow getEqualsWorkflowImpl() {
         return new WorkflowImpl("complex-workflow", thread -> {
             thread.waitForEvent("external-event");
-            thread.execute("my-task");
+            thread.execute("my-task-2");
         });
     }
 
@@ -256,7 +256,7 @@ public class WfRunSearchTest {
         });
     }
 
-    @LHTaskMethod("my-task")
+    @LHTaskMethod("my-task-2")
     public void myTask() {
         System.out.println("Hello from my task");
     }

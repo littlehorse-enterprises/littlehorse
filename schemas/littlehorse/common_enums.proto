@@ -1,19 +1,34 @@
 syntax = "proto3";
 package littlehorse;
 
-option go_package = ".;model";
+option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
 
 // Status used for WfRun, ThreadRun, and NodeRun
 enum LHStatus {
+  // The entity is starting.
   STARTING = 0;
+
+  // The entity is running.
   RUNNING = 1;
+
+  // The entity is completed. This is a terminal state.
   COMPLETED = 2;
+
+  // The entity will move to `HALTED` as soon as all preconditions for halting are
+  // satisfied.
   HALTING = 3;
+
+  // The entity is halted, either by user intervention or by the workflow scheduler.
   HALTED = 4;
+
+  // The entity has failed due to a technical failure, such as a type conversion error,
+  // a task timeout due to network failure, or a task worker crash.
   ERROR = 5;
+
+  // The entity has failed due to a business exception defined by the user.
   EXCEPTION = 6;
 }
 
@@ -64,19 +79,35 @@ enum MetricsWindowLength {
 // Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
 // VariableValue.
 enum VariableType {
-  // An object represented as a json string.
+  // An object represented as a json string. <br/>
+  //
+  // The `JSON_OBJ` variable allows you to store complex objects in the JSON format.
+  // When using the Java and GoLang SDK's, the `JSON_OBJ` variable type is often
+  // used transparently to the user. For example, the Java Task Worker SDK can
+  // inspect your method signature and automatically deserialize an input variable
+  // into a POJO.
   JSON_OBJ = 0;
-  // A list represented as a json array string.
+
+  // The `JSON_ARR` variable allows you to store collections of objects as a JSON
+  // array. The behavior is similar to the `JSON_OBJ` variable type.
   JSON_ARR = 1;
-  // A 64-bit floating point number.
+
+  // The `DOUBLE` variable type is a 64-bit floating point number. It can
+  // be cast to an `INT`.
   DOUBLE = 2;
-  // A boolean
+
+  // Boolean denotes a simple boolean switch.
   BOOL = 3;
-  // A string
+
+  // The `STR` variable type is stored as a String. `INT`, `DOUBLE`,
+  // and `BOOL` variables can be cast to a `STR`.
   STR = 4;
-  // A 64-bit integer
+
+  // The `INT` variable type is stored as a 64-bit integer. The
+  // `INT` can be cast to a `DOUBLE`.
   INT = 5;
-  // A byte array
+
+  // The `BYTES` variable type allows you to store an arbitrary byte string.
   BYTES = 6;
 }
 

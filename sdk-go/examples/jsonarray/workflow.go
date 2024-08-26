@@ -1,8 +1,8 @@
 package jsonarray
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/wflib"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 )
 
 type InputData struct {
@@ -24,7 +24,7 @@ func AddUpList(inputs *[]InputData) int {
 	return result
 }
 
-func MyWorkflowAdd(wf *wflib.WorkflowThread) {
-	inputVar := wf.AddVariable("input", model.VariableType_JSON_ARR)
+func MyWorkflowAdd(wf *littlehorse.WorkflowThread) {
+	inputVar := wf.AddVariable("input", lhproto.VariableType_JSON_ARR)
 	wf.Execute("greet", inputVar)
 }

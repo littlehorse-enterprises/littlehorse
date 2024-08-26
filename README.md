@@ -35,8 +35,6 @@ The LittleHorse repository contains the following components:
 - [`sdk-python`](sdk-python)
     - Library for creating `WfSpec`'s in Python.
     - Library for executing `TaskRun`'s in Python.
-- [`sdk-dotnet`](sdk-dotnet)
-  - Library for creating `TaskRun`'s in .NET.
 - [`dashboard`](dashboard)
   - Web UI for LH.
 - [`canary`](canary)

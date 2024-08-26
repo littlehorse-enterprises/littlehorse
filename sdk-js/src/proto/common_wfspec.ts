@@ -281,7 +281,11 @@ export interface VariableDef {
    * if you start a ThreadRun or WfRun without passing a variable in, then this is
    * used.
    */
-  defaultValue?: VariableValue | undefined;
+  defaultValue?:
+    | VariableValue
+    | undefined;
+  /** If true, the variable value will show as a masked string. */
+  maskedValue: boolean;
 }
 
 /**
@@ -746,7 +750,7 @@ export const VariableMutation_NodeOutputSource = {
 };
 
 function createBaseVariableDef(): VariableDef {
-  return { type: VariableType.JSON_OBJ, name: "", defaultValue: undefined };
+  return { type: VariableType.JSON_OBJ, name: "", defaultValue: undefined, maskedValue: false };
 }
 
 export const VariableDef = {
@@ -759,6 +763,9 @@ export const VariableDef = {
     }
     if (message.defaultValue !== undefined) {
       VariableValue.encode(message.defaultValue, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.maskedValue !== false) {
+      writer.uint32(32).bool(message.maskedValue);
     }
     return writer;
   },
@@ -791,6 +798,13 @@ export const VariableDef = {
 
           message.defaultValue = VariableValue.decode(reader, reader.uint32());
           continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.maskedValue = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -810,6 +824,7 @@ export const VariableDef = {
     message.defaultValue = (object.defaultValue !== undefined && object.defaultValue !== null)
       ? VariableValue.fromPartial(object.defaultValue)
       : undefined;
+    message.maskedValue = object.maskedValue ?? false;
     return message;
   },
 };

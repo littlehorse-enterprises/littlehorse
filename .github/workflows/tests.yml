@@ -2,10 +2,10 @@ name: tests
 run-name: Tests
 on:
   workflow_dispatch:
+  pull_request:
   push:
     branches:
-      - "**"
-
+      - master
 jobs:
   tests-sdk-java:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
@@ -37,8 +37,10 @@ jobs:
           go-version: "stable"
       - name: Validate Formatting
         run: if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then exit 1 ; fi
+      - name: Enable go Workspace
+        run: go work init && go work use ./sdk-go
       - name: Tests
-        run: go test ./...
+        run: go test ./sdk-go/...
   tests-sdk-python:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
     runs-on: ubuntu-latest
@@ -49,7 +51,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Dependencies

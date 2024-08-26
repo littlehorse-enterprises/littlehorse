@@ -13,6 +13,7 @@ import littlehorse.model.wf_spec_pb2 as _wf_spec_pb2
 import littlehorse.model.task_def_pb2 as _task_def_pb2
 import littlehorse.model.acls_pb2 as _acls_pb2
 import littlehorse.model.workflow_event_pb2 as _workflow_event_pb2
+import littlehorse.model.scheduled_wf_run_pb2 as _scheduled_wf_run_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -60,12 +61,14 @@ class PutWfSpecRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., thread_specs: _Optional[_Mapping[str, _wf_spec_pb2.ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[_wf_spec_pb2.WorkflowRetentionPolicy, _Mapping]] = ..., parent_wf_spec: _Optional[_Union[_wf_spec_pb2.WfSpec.ParentWfSpecReference, _Mapping]] = ..., allowed_updates: _Optional[_Union[AllowedUpdateType, str]] = ...) -> None: ...
 
 class PutTaskDefRequest(_message.Message):
-    __slots__ = ["name", "input_vars"]
+    __slots__ = ["name", "input_vars", "output_schema"]
     NAME_FIELD_NUMBER: _ClassVar[int]
     INPUT_VARS_FIELD_NUMBER: _ClassVar[int]
+    OUTPUT_SCHEMA_FIELD_NUMBER: _ClassVar[int]
     name: str
     input_vars: _containers.RepeatedCompositeFieldContainer[_common_wfspec_pb2.VariableDef]
-    def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ...) -> None: ...
+    output_schema: _task_def_pb2.TaskDefOutputSchema
+    def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., output_schema: _Optional[_Union[_task_def_pb2.TaskDefOutputSchema, _Mapping]] = ...) -> None: ...
 
 class PutWorkflowEventDefRequest(_message.Message):
     __slots__ = ["name", "type"]
@@ -114,6 +117,12 @@ class DeleteExternalEventRequest(_message.Message):
     ID_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.ExternalEventId
     def __init__(self, id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ...) -> None: ...
+
+class DeleteScheduledWfRunRequest(_message.Message):
+    __slots__ = ["id"]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.ScheduledWfRunId
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.ScheduledWfRunId, _Mapping]] = ...) -> None: ...
 
 class DeleteWfRunRequest(_message.Message):
     __slots__ = ["id"]
@@ -167,6 +176,31 @@ class RunWfRequest(_message.Message):
     id: str
     parent_wf_run_id: _object_id_pb2.WfRunId
     def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., id: _Optional[str] = ..., parent_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
+
+class ScheduleWfRequest(_message.Message):
+    __slots__ = ["id", "wf_spec_name", "major_version", "revision", "variables", "parent_wf_run_id", "cron_expression"]
+    class VariablesEntry(_message.Message):
+        __slots__ = ["key", "value"]
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: _variable_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    ID_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+    MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    REVISION_FIELD_NUMBER: _ClassVar[int]
+    VARIABLES_FIELD_NUMBER: _ClassVar[int]
+    PARENT_WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    CRON_EXPRESSION_FIELD_NUMBER: _ClassVar[int]
+    id: str
+    wf_spec_name: str
+    major_version: int
+    revision: int
+    variables: _containers.MessageMap[str, _variable_pb2.VariableValue]
+    parent_wf_run_id: _object_id_pb2.WfRunId
+    cron_expression: str
+    def __init__(self, id: _Optional[str] = ..., wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., parent_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., cron_expression: _Optional[str] = ...) -> None: ...
 
 class VariableMatch(_message.Message):
     __slots__ = ["var_name", "value"]
@@ -525,14 +559,12 @@ class ExternalEventList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_external_event_pb2.ExternalEvent, _Mapping]]] = ...) -> None: ...
 
 class RegisterTaskWorkerRequest(_message.Message):
-    __slots__ = ["task_worker_id", "task_def_id", "listener_name"]
+    __slots__ = ["task_worker_id", "task_def_id"]
     TASK_WORKER_ID_FIELD_NUMBER: _ClassVar[int]
     TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
-    LISTENER_NAME_FIELD_NUMBER: _ClassVar[int]
     task_worker_id: str
     task_def_id: _object_id_pb2.TaskDefId
-    listener_name: str
-    def __init__(self, task_worker_id: _Optional[str] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., listener_name: _Optional[str] = ...) -> None: ...
+    def __init__(self, task_worker_id: _Optional[str] = ..., task_def_id: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ...) -> None: ...
 
 class TaskWorkerHeartBeatRequest(_message.Message):
     __slots__ = ["client_id", "task_def_id", "listener_name"]
@@ -751,6 +783,22 @@ class UserTaskRunList(_message.Message):
     RESULTS_FIELD_NUMBER: _ClassVar[int]
     results: _containers.RepeatedCompositeFieldContainer[_user_tasks_pb2.UserTaskRun]
     def __init__(self, results: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskRun, _Mapping]]] = ...) -> None: ...
+
+class ScheduledWfRunIdList(_message.Message):
+    __slots__ = ["results"]
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.ScheduledWfRunId]
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.ScheduledWfRunId, _Mapping]]] = ...) -> None: ...
+
+class SearchScheduledWfRunRequest(_message.Message):
+    __slots__ = ["wf_spec_name", "major_version", "revision"]
+    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+    MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    REVISION_FIELD_NUMBER: _ClassVar[int]
+    wf_spec_name: str
+    major_version: int
+    revision: int
+    def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ...) -> None: ...
 
 class TaskWorkerMetadata(_message.Message):
     __slots__ = ["task_worker_id", "latest_heartbeat", "hosts"]

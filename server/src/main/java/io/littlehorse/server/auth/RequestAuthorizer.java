@@ -18,6 +18,7 @@ import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.server.Authorize;
+import io.littlehorse.server.LHServerListener;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -39,12 +40,11 @@ public class RequestAuthorizer implements ServerAuthorizer {
     private final LHServerConfig lhConfig;
 
     public RequestAuthorizer(
-            BindableService service,
             Context.Key<RequestExecutionContext> executionContextKey,
             MetadataCache metadataCache,
             CoreStoreProvider coreStoreProvider,
             LHServerConfig lhConfig) {
-        this.aclVerifier = new AclVerifier(service);
+        this.aclVerifier = new AclVerifier();
         this.executionContextKey = executionContextKey;
         this.coreStoreProvider = coreStoreProvider;
         this.metadataCache = metadataCache;
@@ -100,8 +100,8 @@ public class RequestAuthorizer implements ServerAuthorizer {
             }
         }
 
-        private AclVerifier(final BindableService service) {
-            this.loadMetadataFromServiceClass(service.getClass());
+        private AclVerifier() {
+            this.loadMetadataFromServiceClass(LHServerListener.class);
         }
 
         private void loadMetadataFromServiceClass(final Class<? extends BindableService> classService) {

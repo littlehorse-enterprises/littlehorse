@@ -7,7 +7,7 @@ import "common_enums.proto";
 import "variable.proto";
 import "object_id.proto";
 
-option go_package = ".;model";
+option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
@@ -56,7 +56,7 @@ message NodeRun {
     TaskNodeRun task = 13;
 
     // An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
-    ExternalEventRun external_event = 14;
+    ExternalEventNodeRun external_event = 14;
 
     // An ENTRYPOINT node is the first thing that runs in a ThreadRun.
     EntrypointRun entrypoint = 15;
@@ -181,7 +181,7 @@ message WaitForThreadsRun {
 }
 
 // The sub-node structure for an EXTERNAL_EVENT NodeRun.
-message ExternalEventRun {
+message ExternalEventNodeRun {
   // The ExternalEventDefId that we are waiting for.
   ExternalEventDefId external_event_def_id = 1;
 

@@ -99,9 +99,9 @@ public final class Acls {
       "\021\n\rACL_PRINCIPAL\020\004\022\016\n\nACL_TENANT\020\005\022\025\n\021AC" +
       "L_ALL_RESOURCES\020\006\022\031\n\025ACL_TASK_WORKER_GRO" +
       "UP\020\007*C\n\tACLAction\022\010\n\004READ\020\000\022\007\n\003RUN\020\001\022\022\n\016" +
-      "WRITE_METADATA\020\002\022\017\n\013ALL_ACTIONS\020\003BG\n\037io." +
-      "littlehorse.sdk.common.protoP\001Z\007.;model\252" +
-      "\002\030LittleHorse.Common.Protob\006proto3"
+      "WRITE_METADATA\020\002\022\017\n\013ALL_ACTIONS\020\003BI\n\037io." +
+      "littlehorse.sdk.common.protoP\001Z\t.;lhprot" +
+      "o\252\002\030LittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

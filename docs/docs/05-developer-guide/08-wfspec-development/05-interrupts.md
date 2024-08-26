@@ -1,11 +1,13 @@
 # Interrupts
 
-As per the [Concepts Docs](/docs/04-concepts/11-interrupts.md), you can set up a `ThreadSpec` such that when an `ExternalEvent` of a certain type comes in, the `ThreadRun` is interrupted and an Interrupt Handler `ThreadRun` is spawned.
+As per the [Concepts Docs](../../04-concepts/04-external-events.md#interrupts), you can set up a `ThreadSpec` such that when an `ExternalEvent` of a certain type comes in, the `ThreadRun` is interrupted and an Interrupt Handler `ThreadRun` is spawned.
 
 To do so, you can use `WorkflowThread#handleInterrupt()`. There are two required arguments:
 
 1. The name of the `ExternalEventDef`.
 2. A lambda function, interface, or `ThreadFunc` defining the handler thread (generally, this is a lambda function).
+
+Note that when a `ThreadRun` is Interrupted, it must first halt. A `ThreadRun` is not considered `HALTED` until all of its Children are `HALTED` as well. Therefore, interrupting a `ThreadRun` causes all of the Children of the Interrupted `ThreadRun` to halt as well.
 
 ## Example
 
@@ -35,7 +37,7 @@ thread.addVariable(WorkflowThread.HANDLER_INPUT, VariableType.JSON_OBJ);
   <TabItem value="go" label="Go">
 
 ```go
-thread.AddVariable("INPUT", model.VariableType_JSON_OBJ)
+thread.AddVariable("INPUT", lhproto.VariableType_JSON_OBJ)
 ```
   </TabItem>
   <TabItem value="python" label="Python">
@@ -83,26 +85,26 @@ public void threadFunction(WorkflowThread thread) {
   <TabItem value="go" label="Go">
 
 ```go
-func threadFunction(thread *wflib.WorkflowThread) {
+func threadFunction(thread *littlehorse.WorkflowThread) {
 
     // The Variable used to keep track of email in the parent thread.
-    email := thread.AddVariable("customer-email", model.VariableType_STR)
-  
+    email := thread.AddVariable("customer-email", lhproto.VariableType_STR)
+
     // Register the Interrupt Handler
     thread.HandleInterrupt(
         "email-update",
-        func (handler *wflib.WorkflowThread) {
+        func (handler *littlehorse.WorkflowThread) {
             // Store the content of the event
             eventContent := handler.AddVariable(
                 "INPUT", // the special name to get interrupt trigger
-                model.VariableType_STR,
+                lhproto.VariableType_STR,
             )
-  
+
             // Mutate the variable
-            handler.Mutate(email, model.VariableMutationType_ASSIGN, eventContent)
+            handler.Mutate(email, lhproto.VariableMutationType_ASSIGN, eventContent)
         },
     )
-  
+
     // Omitted: your long-running business logic that uses the `customer-email` variable
 }
 ```
@@ -117,7 +119,7 @@ def my_interrupt_handler(handler: WorkflowThread) -> None:
 
     # Store the content of the event
     event_content = handler.add_variable("INPUT", VariableType.STR)
-    
+
     # Mutate the variable
     handler.mutate(email, VariableMutationType.ASSIGN, event_content)
 
@@ -133,13 +135,13 @@ def my_entrypoint(wf: WorkflowThread) -> None:
 </Tabs>
 
 ## How to trigger an Interrupt event
-Please refer to: [Posting External Events](../09-grpc/15-posting-external-events.md))
+Please refer to: [Posting External Events](../09-grpc/15-posting-external-events.md).
 
 ## Notes and Best Practices
 
 First, only one `ThreadSpec` may register an Interrupt Handler for a given `ExternalEventDef`.
 
-Additionally, note (as per the [Concept Docs](../../04-concepts/11-interrupts.md#variable-scoping)) that the Interrupt Handler Thread is a Child of the Interrupted `ThreadRun`. This is a very useful feature.
+Additionally, note (as per the [Concept Docs](../../04-concepts/04-external-events.md#interrupts)) that the Interrupt Handler Thread is a Child of the Interrupted `ThreadRun`. This is a very useful feature, as it means that the Interrupt Handler [may modify](../../04-concepts/01-workflows.md#variable-scoping) the variables of the interrupted thread.
 
 :::note
 If you use an `ExternalEventDef` as a trigger for an Interrupt, you cannot reuse that `ExternalEventDef` for a [wait for `ExternalEvent`](./04-external-events.md) node.

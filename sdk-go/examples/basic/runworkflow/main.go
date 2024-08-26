@@ -2,14 +2,13 @@ package main
 
 import (
 	"context"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
-
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 )
 
 func main() {
-	config, err := common.NewConfigFromProps("${HOME}/.config/littlehorse.config")
+	config, err := littlehorse.NewConfigFromProps("${HOME}/.config/littlehorse.config")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -23,11 +22,11 @@ func main() {
 	name := "bill"
 	wfId, err := (*client).RunWf(
 		context.Background(),
-		&model.RunWfRequest{
+		&lhproto.RunWfRequest{
 			WfSpecName: "my-workflow",
-			Variables: map[string]*model.VariableValue{
+			Variables: map[string]*lhproto.VariableValue{
 				"name": {
-					Value: &model.VariableValue_Str{Str: name},
+					Value: &lhproto.VariableValue_Str{Str: name},
 				},
 			},
 		})

@@ -54,7 +54,7 @@ client.deleteTaskDef(DeleteTaskDefRequest.newBuilder().setId(taskId).build());
 You can use the `LHTaskWorker` struct to automatically register a `TaskDef` from your Task Function. First, create your `LHTaskWorker` as follows (assuming that `myTaskFunc` is a function pointer to your Task Function):
 
 ```go
-config := common.NewConfigFromEnv()
+config := littlehorse.NewConfigFromEnv()
 client, err := config.GetGrpcClient()
 
 tw, _ := taskworker.NewTaskWorker(config, myTaskFunc, "my-task")
@@ -68,12 +68,12 @@ You can get and delete `TaskDef`'s as follows:
 
 ```go
 client, _ := config.GetGrpcClient()
-taskDefId := &model.TaskDefId{Name: "my-task"}
+taskDefId := &lhproto.TaskDefId{Name: "my-task"}
 
 taskDef, err := (*client).GetTaskDef(context.Background(), taskDefId)
 
 // delete the TaskDef
-_, err = (*client).DeleteTaskDef(context.Background(), &model.DeleteTaskDefRequest{
+_, err = (*client).DeleteTaskDef(context.Background(), &lhproto.DeleteTaskDefRequest{
     Id: taskDefId,
 })
 ```
@@ -135,7 +135,7 @@ if __name__ == '__main__':
 
 In LittleHorse, the easiest way to deploy a `WfSpec` is using the `Workflow` class or struct provided by our Java, Go, and Python SDK's. The `Workflow` class takes in a `WorkflowThread` function reference that defines your `WfSpec` logic (this is covered in the [Developing Workflows Documentation](/docs/developer-guide/wfspec-development/)), and has a `compile()` method which returns a `PutWfSpecRequest`.
 
-Like other metadata requests, the `rpc PutWfSpec` is idempotent. However, as described in our [`WfSpec` Versioning docs](/docs/concepts/workflows#wfspec-versioning), `WfSpec` objects have compound versioning that enforces certain compatibility rules between versions. In the `PutWfSpecRequest`, you have the option to set the `allowed_updates` field of the `PutWfSpecRequest`. There are three values:
+Like other metadata requests, the `rpc PutWfSpec` is idempotent. However, as described in our [`WfSpec` Versioning docs](../../04-concepts/30-advanced/00-wfspec-versioning.md), `WfSpec` objects have compound versioning that enforces certain compatibility rules between versions. In the `PutWfSpecRequest`, you have the option to set the `allowed_updates` field of the `PutWfSpecRequest`. There are three values:
 
 1. `ALL_UPDATES`: both breaking changes and minor revisions are accepted.
 2. `MINOR_REVISION_UPDATES`: breaking changes are rejected, but minor revisions are accepted.
@@ -224,10 +224,10 @@ public class Main {
 Assuming that you have a function `basic.MyWorkflow` which is a valid Workflow Function in Go, you can create a `WfSpec` as follows:
 
 ```go
-config := common.NewConfigFromEnv()
+config := littlehorse.NewConfigFromEnv()
 client, err := config.GetGrpcClient()
 
-wf := wflib.NewWorkflow(basic.MyWorkflow, "my-workflow").WithUpdateType(model.AllowedUpdateType_MINOR_REVISION_UPDATES)
+wf := littlehorse.NewWorkflow(basic.MyWorkflow, "my-workflow").WithUpdateType(lhproto.AllowedUpdateType_MINOR_REVISION_UPDATES)
 putWf, _ := wf.Compile()
 
 resp, err := (*client).PutWfSpec(context.Background(), putWf)
@@ -236,7 +236,7 @@ resp, err := (*client).PutWfSpec(context.Background(), putWf)
 You can get and delete `WfSpec`s as follows:
 
 ```go
-wfSpecId := &model.WfSpecId{
+wfSpecId := &lhproto.WfSpecId{
     Name:         "my-wf",
     MajorVersion: 2,
     Revision:     1,
@@ -249,14 +249,14 @@ majorVersion := int32(2)
 
 someWf, err := (*client).GetLatestWfSpec(
     context.Background(),
-    &model.GetLatestWfSpecRequest{
+    &lhproto.GetLatestWfSpecRequest{
         Name:         "some-wf",
         MajorVersion: &majorVersion,
     },
 )
 
 // delete the WfSpec
-_, err = (*client).DeleteWfSpec(context.Background(), &model.DeleteWfSpecRequest{
+_, err = (*client).DeleteWfSpec(context.Background(), &lhproto.DeleteWfSpecRequest{
     Id: wfSpecId,
 })
 ```
@@ -390,11 +390,11 @@ public class Main {
 Assuming that you have a function `basic.MyWorkflow` which is a valid Workflow Function in Go, you can create a `WfSpec` as follows:
 
 ```go
-config := common.NewConfigFromEnv()
+config := littlehorse.NewConfigFromEnv()
 client, err := config.GetGrpcClient()
 
 resp, err := (*client).PutExternalEventDef(context.Background(),
-    &model.PutExternalEventDefRequest{
+    &lhproto.PutExternalEventDefRequest{
         Name: "some-event",
     },
 )
@@ -403,13 +403,13 @@ resp, err := (*client).PutExternalEventDef(context.Background(),
 You can get and delete `ExternalEventDef`s as follows:
 
 ```go
-externalEventDefId := &model.ExternalEventDefId{
+externalEventDefId := &lhproto.ExternalEventDefId{
     Name: "some-event",
 }
 eed, err := (*client).GetExternalEventDef(context.Background(), externalEventDefId)
 
 // delete the ExternalEventDef
-_, err = (*client).DeleteExternalEventDef(context.Background(), &model.DeleteExternalEventDefRequest{
+_, err = (*client).DeleteExternalEventDef(context.Background(), &lhproto.DeleteExternalEventDefRequest{
     Id: externalEventDefId,
 })
 ```
@@ -536,21 +536,21 @@ public class Main {
 To create a `UserTaskDef` in Go, you can create the `PutUserTaskDefRequest` object.
 
 ```go
-config := common.NewConfigFromEnv()
+config := littlehorse.NewConfigFromEnv()
 client, err := config.GetGrpcClient()
 
 description := "this is a cool usertaskdef!"
 result, err := (*client).PutUserTaskDef(context.Background(),
-     &model.PutUserTaskDefRequest{
+     &lhproto.PutUserTaskDefRequest{
         Name: "my-user-task",
-		Fields: []*model.UserTaskField{
-			&model.UserTaskField{
+		Fields: []*lhproto.UserTaskField{
+			&lhproto.UserTaskField{
 				Name: "my-first-int-field",
-				Type: model.VariableType_INT,
+				Type: lhproto.VariableType_INT,
 			},
-			&model.UserTaskField{
+			&lhproto.UserTaskField{
 				Name: "my-second-str-field",
-				Type: model.VariableType_STR,
+				Type: lhproto.VariableType_STR,
 			},
 		},
 		Description: &description,

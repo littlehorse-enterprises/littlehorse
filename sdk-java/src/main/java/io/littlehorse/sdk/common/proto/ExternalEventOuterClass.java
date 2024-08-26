@@ -54,9 +54,9 @@ public final class ExternalEventOuterClass {
       ").littlehorse.ExternalEventRetentionPoli" +
       "cy\"P\n\034ExternalEventRetentionPolicy\022\033\n\021se" +
       "conds_after_put\030\001 \001(\003H\000B\023\n\021ext_evt_gc_po" +
-      "licyBG\n\037io.littlehorse.sdk.common.protoP" +
-      "\001Z\007.;model\252\002\030LittleHorse.Common.Protob\006p" +
-      "roto3"
+      "licyBI\n\037io.littlehorse.sdk.common.protoP" +
+      "\001Z\t.;lhproto\252\002\030LittleHorse.Common.Protob" +
+      "\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

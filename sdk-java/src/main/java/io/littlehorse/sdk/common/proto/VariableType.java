@@ -15,7 +15,13 @@ public enum VariableType
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
    * <pre>
-   * An object represented as a json string.
+   * An object represented as a json string. &lt;br/&gt;
+   *
+   * The `JSON_OBJ` variable allows you to store complex objects in the JSON format.
+   * When using the Java and GoLang SDK's, the `JSON_OBJ` variable type is often
+   * used transparently to the user. For example, the Java Task Worker SDK can
+   * inspect your method signature and automatically deserialize an input variable
+   * into a POJO.
    * </pre>
    *
    * <code>JSON_OBJ = 0;</code>
@@ -23,7 +29,8 @@ public enum VariableType
   JSON_OBJ(0),
   /**
    * <pre>
-   * A list represented as a json array string.
+   * The `JSON_ARR` variable allows you to store collections of objects as a JSON
+   * array. The behavior is similar to the `JSON_OBJ` variable type.
    * </pre>
    *
    * <code>JSON_ARR = 1;</code>
@@ -31,7 +38,8 @@ public enum VariableType
   JSON_ARR(1),
   /**
    * <pre>
-   * A 64-bit floating point number.
+   * The `DOUBLE` variable type is a 64-bit floating point number. It can
+   * be cast to an `INT`.
    * </pre>
    *
    * <code>DOUBLE = 2;</code>
@@ -39,7 +47,7 @@ public enum VariableType
   DOUBLE(2),
   /**
    * <pre>
-   * A boolean
+   * Boolean denotes a simple boolean switch.
    * </pre>
    *
    * <code>BOOL = 3;</code>
@@ -47,7 +55,8 @@ public enum VariableType
   BOOL(3),
   /**
    * <pre>
-   * A string
+   * The `STR` variable type is stored as a String. `INT`, `DOUBLE`,
+   * and `BOOL` variables can be cast to a `STR`.
    * </pre>
    *
    * <code>STR = 4;</code>
@@ -55,7 +64,8 @@ public enum VariableType
   STR(4),
   /**
    * <pre>
-   * A 64-bit integer
+   * The `INT` variable type is stored as a 64-bit integer. The
+   * `INT` can be cast to a `DOUBLE`.
    * </pre>
    *
    * <code>INT = 5;</code>
@@ -63,7 +73,7 @@ public enum VariableType
   INT(5),
   /**
    * <pre>
-   * A byte array
+   * The `BYTES` variable type allows you to store an arbitrary byte string.
    * </pre>
    *
    * <code>BYTES = 6;</code>
@@ -74,7 +84,13 @@ public enum VariableType
 
   /**
    * <pre>
-   * An object represented as a json string.
+   * An object represented as a json string. &lt;br/&gt;
+   *
+   * The `JSON_OBJ` variable allows you to store complex objects in the JSON format.
+   * When using the Java and GoLang SDK's, the `JSON_OBJ` variable type is often
+   * used transparently to the user. For example, the Java Task Worker SDK can
+   * inspect your method signature and automatically deserialize an input variable
+   * into a POJO.
    * </pre>
    *
    * <code>JSON_OBJ = 0;</code>
@@ -82,7 +98,8 @@ public enum VariableType
   public static final int JSON_OBJ_VALUE = 0;
   /**
    * <pre>
-   * A list represented as a json array string.
+   * The `JSON_ARR` variable allows you to store collections of objects as a JSON
+   * array. The behavior is similar to the `JSON_OBJ` variable type.
    * </pre>
    *
    * <code>JSON_ARR = 1;</code>
@@ -90,7 +107,8 @@ public enum VariableType
   public static final int JSON_ARR_VALUE = 1;
   /**
    * <pre>
-   * A 64-bit floating point number.
+   * The `DOUBLE` variable type is a 64-bit floating point number. It can
+   * be cast to an `INT`.
    * </pre>
    *
    * <code>DOUBLE = 2;</code>
@@ -98,7 +116,7 @@ public enum VariableType
   public static final int DOUBLE_VALUE = 2;
   /**
    * <pre>
-   * A boolean
+   * Boolean denotes a simple boolean switch.
    * </pre>
    *
    * <code>BOOL = 3;</code>
@@ -106,7 +124,8 @@ public enum VariableType
   public static final int BOOL_VALUE = 3;
   /**
    * <pre>
-   * A string
+   * The `STR` variable type is stored as a String. `INT`, `DOUBLE`,
+   * and `BOOL` variables can be cast to a `STR`.
    * </pre>
    *
    * <code>STR = 4;</code>
@@ -114,7 +133,8 @@ public enum VariableType
   public static final int STR_VALUE = 4;
   /**
    * <pre>
-   * A 64-bit integer
+   * The `INT` variable type is stored as a 64-bit integer. The
+   * `INT` can be cast to a `DOUBLE`.
    * </pre>
    *
    * <code>INT = 5;</code>
@@ -122,7 +142,7 @@ public enum VariableType
   public static final int INT_VALUE = 5;
   /**
    * <pre>
-   * A byte array
+   * The `BYTES` variable type allows you to store an arbitrary byte string.
    * </pre>
    *
    * <code>BYTES = 6;</code>

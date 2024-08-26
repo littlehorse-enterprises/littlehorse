@@ -5,7 +5,7 @@ exclude: |
       ^server/src/main/java/io/littlehorse/common/proto/|
       ^sdk-java/src/main/java/io/littlehorse/sdk/common/proto/|
       ^sdk-java/src/main/java/io/littlehorse/common/proto/|
-      ^sdk-go/common/model/|
+      ^sdk-go/lhproto/|
       ^sdk-python/littlehorse/model/|
       ^dashboard/apps/web/littlehorse-public-api/|
       ^docs/images/
@@ -112,7 +112,7 @@ repos:
         language: system
         always_run: true
         pass_filenames: false
-        entry: go test ./...
+        entry: cd ./sdk-go && go test ./...
 
       - id: python-tests
         name: Running SDK Python Tests

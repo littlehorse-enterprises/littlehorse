@@ -1,25 +1,25 @@
 package main
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples/interrupt"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/taskworker"
 )
 
 func main() {
 	config, _ := examples.LoadConfigAndClient()
 
-	var reportWorker, childWorker *taskworker.LHTaskWorker
+	var reportWorker, childWorker *littlehorse.LHTaskWorker
 	var err error
 
-	reportWorker, err = taskworker.NewTaskWorker(config, interrupt.ReportTheResult, "report-the-result")
+	reportWorker, err = littlehorse.NewTaskWorker(config, interrupt.ReportTheResult, "report-the-result")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	childWorker, err = taskworker.NewTaskWorker(config, interrupt.ChildFooTask, "child-foo-task")
+	childWorker, err = littlehorse.NewTaskWorker(config, interrupt.ChildFooTask, "child-foo-task")
 	if err != nil {
 		log.Fatal(err)
 	}

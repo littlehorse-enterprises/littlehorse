@@ -27,10 +27,10 @@ WfRun result = client.runWf(RunWfRequest.newBuilder().setWfSpecName("some-wf-spe
   <TabItem value="go" label="Go">
 
 ```go
-config := common.NewConfigFromEnv()
+config := littlehorse.NewConfigFromEnv()
 client, _ := config.GetGrpcClient()
 
-result, err := (*client).RunWf(context.Background(), &model.RunWfRequest{
+result, err := (*client).RunWf(context.Background(), &lhproto.RunWfRequest{
     WfSpecName: "some-wf-spec",
 })
 ```
@@ -68,13 +68,13 @@ WfRun result = client.runWf(RunWfRequest.newBuilder()
   <TabItem value="go" label="Go">
 
 ```go
-config := common.NewConfigFromEnv()
+config := littlehorse.NewConfigFromEnv()
 client, _ := config.GetGrpcClient()
 
 var version int32
 version = 2
 
-result, err := (*client).RunWf(context.Background(), &model.RunWfRequest{
+result, err := (*client).RunWf(context.Background(), &lhproto.RunWfRequest{
     WfSpecName:   "some-wf-spec",
     MajorVersion: &version,
 })
@@ -114,7 +114,7 @@ WfRun result = client.runWf(RunWfRequest.newBuilder()
   <TabItem value="go" label="Go">
 
 ```go
-config := common.NewConfigFromEnv()
+config := littlehorse.NewConfigFromEnv()
 client, _ := config.GetGrpcClient()
 
 var version int32
@@ -122,7 +122,7 @@ version = 2
 var revision int32
 revision = 1
 
-result, err := (*client).RunWf(context.Background(), &model.RunWfRequest{
+result, err := (*client).RunWf(context.Background(), &lhproto.RunWfRequest{
     WfSpecName:   "some-wf-spec",
     MajorVersion: &version,
     Revision:     &revision,
@@ -168,13 +168,13 @@ WfRun result = client.runWf(RunWfRequest.newBuilder()
   <TabItem value="go" label="Go">
 
 ```go
-config := common.NewConfigFromEnv()
+config := littlehorse.NewConfigFromEnv()
 client, _ := config.GetGrpcClient()
 
 var wfRunId string
 wfRunId = "my-wfrun-id"
 
-result, err := (*client).RunWf(context.Background(), &model.RunWfRequest{
+result, err := (*client).RunWf(context.Background(), &lhproto.RunWfRequest{
     WfSpecName: "some-wf-spec",
     Id:         &wfRunId,
 })
@@ -215,21 +215,21 @@ WfRun result = client.runWf(RunWfRequest.newBuilder()
   </TabItem>
   <TabItem value="go" label="Go">
 
-The Go SDK has a useful `common.InterfaceToVarVal()` function which converts an arbitrary Go interface into a `VariableValue`.
+The Go SDK has a useful `littlehorse.InterfaceToVarVal()` function which converts an arbitrary Go interface into a `VariableValue`.
 
 ```go
-config := common.NewConfigFromEnv()
+config := littlehorse.NewConfigFromEnv()
 client, _ := config.GetGrpcClient()
 
 var wfRunId string
 wfRunId = "my-wfrun-id"
 
-stringVar, err := common.InterfaceToVarVal("some-string")
-intVar, err := common.InterfaceToVarVal(1234)
+stringVar, err := littlehorse.InterfaceToVarVal("some-string")
+intVar, err := littlehorse.InterfaceToVarVal(1234)
 
-result, err := (*client).RunWf(context.Background(), &model.RunWfRequest{
+result, err := (*client).RunWf(context.Background(), &lhproto.RunWfRequest{
 	WfSpecName: "some-wf-spec",
-	Variables: map[string]*model.VariableValue{
+	Variables: map[string]*lhproto.VariableValue{
 		"my-string-var": stringVar,
 		"my-int-var": intVar,
 	},

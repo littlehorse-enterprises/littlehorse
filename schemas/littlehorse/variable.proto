@@ -5,7 +5,7 @@ package littlehorse;
 import "google/protobuf/timestamp.proto";
 import "object_id.proto";
 
-option go_package = ".;model";
+option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
@@ -34,7 +34,8 @@ message VariableValue {
     // A string.
     string str = 6;
 
-    // A 64-bit integer.
+    // The `INT` variable type is stored as a 64-bit integer. The
+    // `INT` can be cast to a `DOUBLE`.
     int64 int = 7;
 
     // An arbitrary String of bytes.
@@ -56,4 +57,7 @@ message Variable {
 
   // The ID of the WfSpec that this Variable belongs to.
   WfSpecId wf_spec_id = 4;
+
+  // Marks a variable to show masked values
+  bool masked = 5;
 }

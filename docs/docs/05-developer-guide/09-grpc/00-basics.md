@@ -15,7 +15,7 @@ This page describes several patterns in the LittleHorse API. Some of these patte
 
 ## LittleHorse GRPC Quickstart
 
-The entities in our GRPC service are protocol buffers. You can find our up-to-date API contract in our [api documentation](../../08-api.md). Our SDK's in Java, Go, and Python ship with 
+The entities in our GRPC service are protocol buffers. You can find our up-to-date API contract in our [api documentation](../../08-api.md). Our SDK's in Java, Go, and Python ship with
 pre-compiled protobufs for LittleHorse: you don't need to add an extra dependency or compile the protobuf yourself.
 
 The below is an example of how to access a GRPC client, build a protobuf, and make a request in Java, Go, and Python. The request we will make is the [`rpc PutExternalEventDef`](../../08-api.md#putexternaleventdef).
@@ -70,16 +70,16 @@ import (
 	"context"
 	"log"
 
-	// Common utilities are found in this package
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
+	// Littlehorse functions are found in this package
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
-	// All protobuf data models and grpc clients are found in this package
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	// All protobuf data structs and grpc clients are found in this package
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
 func main() {
 	// Create a config using the environment variables.
-	config := common.NewConfigFromEnv()
+	config := littlehorse.NewConfigFromEnv()
 
 	// Load the client
 	client, err := config.GetGrpcClient()
@@ -88,15 +88,15 @@ func main() {
 	}
 
 	// Create the request protobuf structure
-	req := &model.PutExternalEventDefRequest{
+	req := &lhproto.PutExternalEventDefRequest{
 		Name: "my-external-event-def",
 	}
 
 	// Make the request
-	var result *model.ExternalEventDef
+	var result *lhproto.ExternalEventDef
 	result, err = (*client).PutExternalEventDef(context.Background(), req)
 
-	common.PrintProto(result)
+	littlehorse.PrintProto(result)
 }
 ```
 
@@ -198,8 +198,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 
 	// Use the GRPC utilities to inspect GRPC errors
 	"google.golang.org/grpc/codes"
@@ -208,11 +208,11 @@ import (
 
 func main() {
 	// Get a client
-	config := common.NewConfigFromEnv()
+	config := littlehorse.NewConfigFromEnv()
 	client, _ := config.GetGrpcClient()
 
 	wfRunId := "my-wf-run-id"
-	req := &model.RunWfRequest{
+	req := &lhproto.RunWfRequest{
 		Id:         &wfRunId,
 		WfSpecName: "quickstart",
 	}
@@ -235,7 +235,7 @@ func main() {
 			log.Fatal(err)
 		}
 	} else {
-		common.PrintProto(result)
+		littlehorse.PrintProto(result)
 	}
 }
 ```
@@ -408,18 +408,18 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	// Use the GRPC utilities to inspect GRPC errors
 )
 
 func main() {
 	// Get a client
-	config := common.NewConfigFromEnv()
+	config := littlehorse.NewConfigFromEnv()
 	client, _ := config.GetGrpcClient()
 
 	limit := int32(5)
-	req := model.SearchTaskRunRequest{
+	req := lhproto.SearchTaskRunRequest{
 		TaskDefName: "greet",
 		Limit:       &limit,
 	}
@@ -435,11 +435,11 @@ func main() {
 	}
 }
 
-func processTaskRuns(taskRuns *model.TaskRunIdList) {
+func processTaskRuns(taskRuns *lhproto.TaskRunIdList) {
 	fmt.Println("Processing a batch of size " + strconv.Itoa(len(taskRuns.Results)))
 
 	for _, taskRunId := range taskRuns.Results {
-		common.PrintProto(taskRunId)
+		littlehorse.PrintProto(taskRunId)
 	}
 }
 

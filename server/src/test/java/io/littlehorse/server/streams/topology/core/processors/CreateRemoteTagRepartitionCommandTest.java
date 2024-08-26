@@ -7,7 +7,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
-import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -43,7 +43,7 @@ public class CreateRemoteTagRepartitionCommandTest {
     private LHServerConfig config;
 
     @Mock
-    private KafkaStreamsServerImpl server;
+    private LHServer server;
 
     private final ExecutionContext executionContext = Mockito.mock(Answers.RETURNS_DEEP_STUBS);
 

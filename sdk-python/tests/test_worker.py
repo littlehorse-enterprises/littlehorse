@@ -1,6 +1,7 @@
 from typing import Any
 import unittest
 import uuid
+
 from littlehorse.exceptions import TaskSchemaMismatchException
 from littlehorse.model import (
     VariableType,
@@ -238,7 +239,7 @@ class TestLHTask(unittest.TestCase):
             LHTask(my_method, task_def)
 
         self.assertEqual(
-            "Parameter types do not match, expected: [<class 'int'>, <class 'str'>]",
+            "Parameter types do not match, expected: [<class 'int'>, <class 'str'>] got: [<class 'str'>, <class 'int'>]",
             str(exception_context.exception),
         )
 
@@ -257,7 +258,7 @@ class TestLHTask(unittest.TestCase):
             LHTask(my_method, task_def)
 
         self.assertEqual(
-            "Parameter types do not match, expected: [<class 'str'>, <class 'int'>]",
+            "Parameter types do not match, expected: [<class 'str'>, <class 'int'>] got: [<class 'int'>, <class 'str'>]",
             str(exception_context.exception),
         )
 

@@ -309,11 +309,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
                 log.debug("Variable {} not provided, defaulting to null", varName);
                 continue;
             }
-
-            if (val.getType() != varDef.getType() && val.getType() != null) {
-                throw new LHValidationError(
-                        "Var " + varName + " should be " + varDef.getType() + " but is " + val.getType());
-            }
+            varDef.validateValue(val);
 
             if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
                 if (vars.containsKey(varName)) {

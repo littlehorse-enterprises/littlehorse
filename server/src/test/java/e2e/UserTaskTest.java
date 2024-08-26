@@ -2,11 +2,19 @@ package e2e;
 
 import static io.littlehorse.sdk.common.proto.LHStatus.*;
 
+import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.ListUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
+import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest;
+import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
+import io.littlehorse.sdk.common.proto.UserTaskEvent;
+import io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase;
+import io.littlehorse.sdk.common.proto.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -34,6 +42,7 @@ import org.junit.jupiter.api.Test;
 public class UserTaskTest {
 
     public static final String USER_TASK_DEF_NAME = "my-usertask";
+    private static final String TEST_USER_ID = "test-user-id";
 
     @LHWorkflow("deadline-reassignment-workflow")
     private Workflow deadlineReassignmentWorkflow;
@@ -80,6 +89,144 @@ public class UserTaskTest {
                     Assertions.assertThat(taskResult).contains("kenobi");
                     Assertions.assertThat(taskResult).contains("137");
                 })
+                .start();
+    }
+
+    @Test
+    void shouldSaveUserTaskRun() {
+        workflowVerifier
+                .prepareRun(userTaskCancel)
+                .waitForStatus(RUNNING)
+                .thenVerifyWfRun(wfRun -> {
+                    // Complete the UserTaskRun
+                    UserTaskRunId userTaskRunId = client.listUserTaskRuns(ListUserTaskRunRequest.newBuilder()
+                                    .setWfRunId(wfRun.getId())
+                                    .build())
+                            .getResultsList()
+                            .get(0)
+                            .getId();
+
+                    // TODO: make this a Step
+                    client.saveUserTaskRunProgress(SaveUserTaskRunProgressRequest.newBuilder()
+                            .setUserTaskRunId(userTaskRunId)
+                            .setUserId(TEST_USER_ID)
+                            .putResults("myStr", LHLibUtil.objToVarVal("hello there"))
+                            .setPolicy(SaveUserTaskRunAssignmentPolicy.FAIL_IF_CLAIMED_BY_OTHER)
+                            .build());
+                })
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    Assertions.assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.USER_TASK);
+                    UserTaskRun userTask =
+                            client.getUserTaskRun(nodeRun.getUserTask().getUserTaskRunId());
+                    Assertions.assertThat(userTask.getResultsMap().get("myStr").getStr())
+                            .isEqualTo("hello there");
+                    Assertions.assertThat(userTask.getEventsCount()).isEqualTo(2);
+
+                    UserTaskEvent savedEvent = userTask.getEvents(1);
+                    Assertions.assertThat(savedEvent.getEventCase()).isEqualTo(EventCase.SAVED);
+                    Assertions.assertThat(savedEvent.getSaved().getUserId()).isEqualTo(TEST_USER_ID);
+                    Assertions.assertThat(savedEvent
+                                    .getSaved()
+                                    .getResultsMap()
+                                    .get("myStr")
+                                    .getStr())
+                            .isEqualTo("hello there");
+                })
+                // No need to complete the user task run for this test.
+                .start();
+    }
+
+    @Test
+    void shouldNotSaveUserTaskRunIfUserIdNotMatchAndFailIfClaimedByOther() {
+        workflowVerifier
+                .prepareRun(userTaskCancel)
+                .waitForStatus(RUNNING)
+                .thenVerifyWfRun(wfRun -> {
+                    // Complete the UserTaskRun
+                    UserTaskRunId userTaskRunId = client.listUserTaskRuns(ListUserTaskRunRequest.newBuilder()
+                                    .setWfRunId(wfRun.getId())
+                                    .build())
+                            .getResultsList()
+                            .get(0)
+                            .getId();
+
+                    Assertions.assertThatThrownBy(
+                                    () -> client.saveUserTaskRunProgress(SaveUserTaskRunProgressRequest.newBuilder()
+                                            .setUserTaskRunId(userTaskRunId)
+                                            .setUserId("not-the-same-user-id-who-owns-it")
+                                            .putResults("myStr", LHLibUtil.objToVarVal("hello there"))
+                                            .setPolicy(SaveUserTaskRunAssignmentPolicy.FAIL_IF_CLAIMED_BY_OTHER)
+                                            .build()))
+                            .matches(exn -> {
+                                Assertions.assertThat(StatusRuntimeException.class)
+                                        .isAssignableFrom(exn.getClass());
+
+                                StatusRuntimeException sre = (StatusRuntimeException) exn;
+                                Assertions.assertThat(sre.getStatus().getCode()).isEqualTo(Code.FAILED_PRECONDITION);
+                                Assertions.assertThat(
+                                                sre.getStatus().getDescription().toLowerCase())
+                                        .contains("another user");
+                                return true;
+                            });
+                })
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    // Verify that no event was saved
+                    Assertions.assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.USER_TASK);
+                    UserTaskRun userTask =
+                            client.getUserTaskRun(nodeRun.getUserTask().getUserTaskRunId());
+                    Assertions.assertThat(userTask.getResultsMap().get("myStr")).isNull();
+                    ;
+                    Assertions.assertThat(userTask.getEventsCount()).isEqualTo(1);
+                })
+                // No need to complete the user task run for this test.
+                .start();
+    }
+
+    @Test
+    void shouldSaveButNotClaimUserTaskIfSetToIgnoreClaim() {
+        String userId = "mace-windu";
+        workflowVerifier
+                .prepareRun(userTaskCancel)
+                .waitForStatus(RUNNING)
+                .thenVerifyWfRun(wfRun -> {
+                    // Complete the UserTaskRun
+                    UserTaskRunId userTaskRunId = client.listUserTaskRuns(ListUserTaskRunRequest.newBuilder()
+                                    .setWfRunId(wfRun.getId())
+                                    .build())
+                            .getResultsList()
+                            .get(0)
+                            .getId();
+
+                    // TODO: make this a Step
+                    client.saveUserTaskRunProgress(SaveUserTaskRunProgressRequest.newBuilder()
+                            .setUserTaskRunId(userTaskRunId)
+                            .setUserId(userId)
+                            .putResults("myStr", LHLibUtil.objToVarVal("hello there"))
+                            .setPolicy(SaveUserTaskRunAssignmentPolicy.IGNORE_CLAIM)
+                            .build());
+                })
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    Assertions.assertThat(nodeRun.getNodeTypeCase()).isEqualTo(NodeTypeCase.USER_TASK);
+                    UserTaskRun userTask =
+                            client.getUserTaskRun(nodeRun.getUserTask().getUserTaskRunId());
+                    Assertions.assertThat(userTask.getResultsMap().get("myStr").getStr())
+                            .isEqualTo("hello there");
+                    Assertions.assertThat(userTask.getEventsCount()).isEqualTo(2);
+
+                    UserTaskEvent savedEvent = userTask.getEvents(1);
+                    Assertions.assertThat(savedEvent.getEventCase()).isEqualTo(EventCase.SAVED);
+                    Assertions.assertThat(savedEvent.getSaved().getUserId()).isEqualTo(userId);
+                    Assertions.assertThat(savedEvent
+                                    .getSaved()
+                                    .getResultsMap()
+                                    .get("myStr")
+                                    .getStr())
+                            .isEqualTo("hello there");
+
+                    // Ensure that the UserTaskRun is NOT assigned to Mace Windu
+                    Assertions.assertThat(userTask.getUserId()).isEqualTo(TEST_USER_ID);
+                })
+                // No need to complete the user task run for this test.
                 .start();
     }
 
@@ -178,7 +325,7 @@ public class UserTaskTest {
     public Workflow buildCancelUserTaskOnReassignmentWorkflow() {
         return new WorkflowImpl("cancel-user-task-on-deadline", entrypointThread -> {
             UserTaskOutput formOutput = entrypointThread
-                    .assignUserTask(USER_TASK_DEF_NAME, "test-user-id", null)
+                    .assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null)
                     .withOnCancellationException("no-response");
             entrypointThread.cancelUserTaskRunAfter(formOutput, 2);
             entrypointThread.handleException(formOutput, "no-response", userTaskCanceledHandler -> {

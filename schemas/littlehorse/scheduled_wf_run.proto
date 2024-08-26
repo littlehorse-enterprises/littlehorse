@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "object_id.proto";
+import "variable.proto";
+
+option go_package = ".;lhproto";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Common.Proto";
+// A `ScheduledWfRun` is an object in the LittleHorse API that triggers a `WfRun` to be started
+// on a cron schedule.
+message ScheduledWfRun {
+  // Unique id for this ScheduledWfRun.
+  ScheduledWfRunId id = 1;
+  // WfSpec used to run a workflow on a schedule.
+  WfSpecId wf_spec_id = 2;
+
+  // A map from Variable Name to Values for those variables. The provided variables are
+  // passed as input to the Entrypoint ThreadRun.
+  map<string, VariableValue> variables = 3;
+
+  // Parent WfRunId associated with all the generated WfRuns
+  optional WfRunId parent_wf_run_id = 4;
+  // UNIX expression used to specify the schedule for executing WfRuns
+  string cron_expression = 5;
+  // Creation time for this ScheduledWfRun
+  google.protobuf.Timestamp created_at = 6;
+}
+

@@ -22,6 +22,7 @@ class WfRunVariableImpl implements WfRunVariable {
     private VariableValue defaultValue;
     private boolean required;
     private boolean searchable;
+    private boolean masked;
     private Object typeOrDefaultVal;
     private List<JsonIndex> jsonIndexes = new ArrayList<>();
     private WfRunVariableAccessLevel accessLevel;
@@ -77,6 +78,12 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     @Override
+    public WfRunVariable masked() {
+        this.masked = true;
+        return this;
+    }
+
+    @Override
     public WfRunVariable required() {
         this.required = true;
         return this;
@@ -98,8 +105,10 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     public ThreadVarDef getSpec() {
-        VariableDef.Builder varDef =
-                VariableDef.newBuilder().setType(this.getType()).setName(this.getName());
+        VariableDef.Builder varDef = VariableDef.newBuilder()
+                .setType(this.getType())
+                .setName(this.getName())
+                .setMaskedValue(masked);
 
         if (this.defaultValue != null) {
             varDef.setDefaultValue(defaultValue);
