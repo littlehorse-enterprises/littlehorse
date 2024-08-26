@@ -888,9 +888,9 @@ public final class Service {
       "incipal\"\000\022:\n\006Whoami\022\026.google.protobuf.Em" +
       "pty\032\026.littlehorse.Principal\"\000\022P\n\020GetServ" +
       "erVersion\022\026.google.protobuf.Empty\032\".litt" +
-      "lehorse.ServerVersionResponse\"\000BG\n\037io.li" +
-      "ttlehorse.sdk.common.protoP\001Z\007.;model\252\002\030" +
-      "LittleHorse.Common.Protob\006proto3"
+      "lehorse.ServerVersionResponse\"\000BI\n\037io.li" +
+      "ttlehorse.sdk.common.protoP\001Z\t.;lhproto\252" +
+      "\002\030LittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

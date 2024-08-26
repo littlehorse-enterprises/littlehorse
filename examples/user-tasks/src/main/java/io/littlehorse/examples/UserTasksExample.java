@@ -148,7 +148,7 @@ public class UserTasksExample {
     public void doMain() throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
-        LHConfig config = new LHConfig(props);
+        LHConfig config = new LHConfig();
         LittleHorseGrpc.LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow

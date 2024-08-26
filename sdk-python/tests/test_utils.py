@@ -1,7 +1,10 @@
 from datetime import datetime
 import json
+from inspect import signature
 from random import random
 import unittest
+from typing import Annotated
+
 from faker import Faker
 from littlehorse.exceptions import SerdeException
 from littlehorse.model import VariableType, VariableAssignment, VariableValue
@@ -12,6 +15,7 @@ from littlehorse.utils import (
     to_variable_type,
     to_variable_value,
 )
+from littlehorse.worker import LHType
 from littlehorse.workflow import (
     LHFormatString,
     NodeOutput,
@@ -268,6 +272,16 @@ class TestProtoUtils(unittest.TestCase):
         self.assertIn(
             "not supported",
             str(exception_context.exception),
+        )
+
+    def test_annotated_parameter_type(self):
+        def greeting(name: Annotated[str, LHType(name="test")]):
+            print(name)
+
+        param = list(signature(greeting).parameters.values())[0]
+        self.assertEqual(
+            to_variable_type(param.annotation),
+            VariableType.STR,
         )
 
 

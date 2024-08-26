@@ -34,8 +34,8 @@ SpawnedThread spawnedThread = thread.spawnThread(
 
 ```go
 spawnedThread := thread.SpawnThread(
-	func (child *wflib.WorkflowThread) {
-		childVar := child.AddVariable("child-var", model.VariableType_STR);
+	func (child *littlehorse.WorkflowThread) {
+		childVar := child.AddVariable("child-var", lhproto.VariableType_STR);
 		child.Execute("some-task", childVar);
 	},
 	"my-child-thread",
@@ -102,7 +102,7 @@ waitedThreads := thread.WaitForThreads(spawnedThread, anotherThread)
 thread.HandleException(
     waitedThreads,
     nil, // handle any failure
-    func (handler *wflib.WorkflowThread) {
+    func (handler *littlehorse.WorkflowThread) {
         handler.execute("some-error-reporting-task")
     },
 )

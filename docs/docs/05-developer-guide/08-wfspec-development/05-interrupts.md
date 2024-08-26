@@ -37,7 +37,7 @@ thread.addVariable(WorkflowThread.HANDLER_INPUT, VariableType.JSON_OBJ);
   <TabItem value="go" label="Go">
 
 ```go
-thread.AddVariable("INPUT", model.VariableType_JSON_OBJ)
+thread.AddVariable("INPUT", lhproto.VariableType_JSON_OBJ)
 ```
   </TabItem>
   <TabItem value="python" label="Python">
@@ -85,23 +85,23 @@ public void threadFunction(WorkflowThread thread) {
   <TabItem value="go" label="Go">
 
 ```go
-func threadFunction(thread *wflib.WorkflowThread) {
+func threadFunction(thread *littlehorse.WorkflowThread) {
 
     // The Variable used to keep track of email in the parent thread.
-    email := thread.AddVariable("customer-email", model.VariableType_STR)
+    email := thread.AddVariable("customer-email", lhproto.VariableType_STR)
 
     // Register the Interrupt Handler
     thread.HandleInterrupt(
         "email-update",
-        func (handler *wflib.WorkflowThread) {
+        func (handler *littlehorse.WorkflowThread) {
             // Store the content of the event
             eventContent := handler.AddVariable(
                 "INPUT", // the special name to get interrupt trigger
-                model.VariableType_STR,
+                lhproto.VariableType_STR,
             )
 
             // Mutate the variable
-            handler.Mutate(email, model.VariableMutationType_ASSIGN, eventContent)
+            handler.Mutate(email, lhproto.VariableMutationType_ASSIGN, eventContent)
         },
     )
 

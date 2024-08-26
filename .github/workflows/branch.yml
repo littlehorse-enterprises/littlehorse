@@ -41,7 +41,7 @@ jobs:
           path: server/build/libs/server-*-all.jar
 
       - name: Build and Publish
-        uses: ./.github/actions/publish-image
+        uses: littlehorse-enterprises/publish-image@v1
         with:
           image-name: lh-server
           dockerfile: docker/server/Dockerfile
@@ -69,7 +69,7 @@ jobs:
           path: canary/build/libs/canary-*-all.jar
 
       - name: Build and Publish
-        uses: ./.github/actions/publish-image
+        uses: littlehorse-enterprises/publish-image@v1
         with:
           image-name: lh-canary
           dockerfile: docker/canary/Dockerfile
@@ -83,7 +83,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
@@ -94,7 +94,7 @@ jobs:
           npm run build
 
       - name: Build and Publish
-        uses: ./.github/actions/publish-image
+        uses: littlehorse-enterprises/publish-image@v1
         with:
           image-name: lh-dashboard
           dockerfile: docker/dashboard/Dockerfile
@@ -110,7 +110,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
@@ -127,7 +127,7 @@ jobs:
           path: server/build/libs/
 
       - name: Build and Publish
-        uses: ./.github/actions/publish-image
+        uses: littlehorse-enterprises/publish-image@v1
         with:
           image-name: lh-standalone
           dockerfile: docker/standalone/Dockerfile

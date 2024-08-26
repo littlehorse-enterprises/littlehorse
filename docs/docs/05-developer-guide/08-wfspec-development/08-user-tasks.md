@@ -41,7 +41,7 @@ wf.assignUserTask("another-user-task-def", userIdVariable, null);
 
 ```go
 hardCodedUserId := "some-user-id-or-email"
-userIdVariable := wf.AddVariable("user-id", model.VariableType_STR)
+userIdVariable := wf.AddVariable("user-id", lhproto.VariableType_STR)
 
 // Hard-coded using a string
 wf.AssignUserTask("some-user-task-def", &hardCodedUserId, nil)

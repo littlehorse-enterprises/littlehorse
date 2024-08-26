@@ -1,10 +1,10 @@
 package jsonobj
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"strconv"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/wflib"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
 
 type InputData struct {
@@ -22,7 +22,7 @@ func GetInfo(input *InputData) string {
 	return "the id for " + input.Art.Title + " is: " + strconv.Itoa(input.Art.Id)
 }
 
-func MyWorkflowGet(wf *wflib.WorkflowThread) {
-	inputVar := wf.AddVariable("input", model.VariableType_JSON_OBJ)
+func MyWorkflowGet(wf *littlehorse.WorkflowThread) {
+	inputVar := wf.AddVariable("input", lhproto.VariableType_JSON_OBJ)
 	wf.Execute("greet", inputVar)
 }

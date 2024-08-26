@@ -43,9 +43,9 @@ public final class WorkflowEventOuterClass {
       "orkflowEventDef\022+\n\002id\030\001 \001(\0132\037.littlehors" +
       "e.WorkflowEventDefId\022.\n\ncreated_at\030\002 \001(\013" +
       "2\032.google.protobuf.Timestamp\022\'\n\004type\030\003 \001" +
-      "(\0162\031.littlehorse.VariableTypeBG\n\037io.litt" +
-      "lehorse.sdk.common.protoP\001Z\007.;model\252\002\030Li" +
-      "ttleHorse.Common.Protob\006proto3"
+      "(\0162\031.littlehorse.VariableTypeBI\n\037io.litt" +
+      "lehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\030" +
+      "LittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

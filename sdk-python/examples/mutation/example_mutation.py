@@ -25,7 +25,7 @@ def get_config() -> LHConfig:
 def get_workflow() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
         # it receives a name
-        name = wf.add_variable("name", VariableType.STR)
+        name = wf.add_variable("name", VariableType.STR).masked()
 
         # it sends the name to a task worker
         output = wf.execute(SPIDER_BITE, name)

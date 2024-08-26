@@ -2,18 +2,17 @@ package main
 
 import (
 	"context"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples/childthread"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/wflib"
 )
 
 func main() {
 	_, client := examples.LoadConfigAndClient()
 
-	wf := wflib.NewWorkflow(childthread.ChildThreadWorkflow, "child-thread")
+	wf := littlehorse.NewWorkflow(childthread.ChildThreadWorkflow, "child-thread")
 	putWf, err := wf.Compile()
 	if err != nil {
 		log.Fatal(err)
@@ -23,5 +22,5 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	common.PrintProto(resp)
+	littlehorse.PrintProto(resp)
 }
