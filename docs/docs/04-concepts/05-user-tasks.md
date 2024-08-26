@@ -1,7 +1,4 @@
----
-sidebar_label: User Tasks
----
-# `UserTaskDef` and `UserTaskRun`
+# User Tasks
 
 The purpose of a Workflow Engine is to coordinate processes that assign work. A `TaskRun` represents a unit of work assigned to a computer, but what about work assigned to a human? That's where User Tasks come in.
 
@@ -11,14 +8,19 @@ This page covers the concept of User Tasks. For a more practical take, see our [
 
 ## Motivation
 
-User tasks require the input, decision-making, or expertise of an actual person. Some common examples of user tasks include:
+You might ask, why not just use an `ExternalEvent`? Technically, it is possible to implement similar functionality using just `ExternalEvent`s rather than introducing a whole new concept into the API. The reason for this is that so many things about User Tasks are tied deeply into the logic of the `WfRun` itself, including assignment, reassignment, cancelling, lifecycle, and even simply scheduling a User Task.
+
+For example, the Dashboard allows you to see a history of when a `UserTaskRun` was assigned, and to whom it was assigned:
+
+![User Task Assignment History](./user-task-history.png)
+
+In short, User tasks handle workflow use-cases which require the input, decision-making, or expertise of an actual person. Some common examples of user tasks include:
 
 * **Workflow Approvals:** Processes in which a specific person or group of people must review and authorize a business transaction.
 * **KYC:** Know-your-customer workflows in which a sales rep must input information about a customer (eg. billing information) before the business process can continue.
 * **Data Input:** Tasks involving filling out forms or providing specific information before the business process can continue.
 * **Manual Calculations:** Situations that require human intervention to perform calculations, analyses, or assessments that cannot be easily automated and wherein we can't trust Chat GPT :wink:.
 
-You might ask, why not just use an `ExternalEvent`? Technically, it is possible to implement similar functionality using just `ExternalEvent`s rather than introducing a whole new concept into the API. The reason for this is that so many things about User Tasks are tied deeply into the logic of the `WfRun` itself, including assignment, reassignment, cancelling, lifecycle, and even simply scheduling a User Task.
 
 The addition of the User Tasks feature allows LittleHorse to seamlessly automate workflows spanning humans and computers across multiple departments within an organization and beyond.
 

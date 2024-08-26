@@ -27,7 +27,6 @@ final class RebalanceThreadTest {
     private final LittleHorseGrpc.LittleHorseStub bootstrapStub = mock();
     private final LHLivenessController livenessController = mock();
     private final String taskWorkerId = "testId";
-    private final String connectListenerName = "my-connection";
     private final TaskDefId taskDefId =
             TaskDefId.newBuilder().setName("my-task").build();
     private final TaskDef taskDef = TaskDef.newBuilder()
@@ -49,7 +48,6 @@ final class RebalanceThreadTest {
         rebalanceThread = new RebalanceThread(
                 bootstrapStub,
                 taskWorkerId,
-                connectListenerName,
                 taskDef,
                 config,
                 livenessController,

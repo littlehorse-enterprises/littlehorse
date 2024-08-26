@@ -1,25 +1,25 @@
 package main
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples/childthread"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/taskworker"
 )
 
 func main() {
 	config, _ := examples.LoadConfigAndClient()
 
-	var parentWorker, childWorker *taskworker.LHTaskWorker
+	var parentWorker, childWorker *littlehorse.LHTaskWorker
 	var err error
 
-	parentWorker, err = taskworker.NewTaskWorker(config, childthread.ParentThreadTask, "parent-thread-task")
+	parentWorker, err = littlehorse.NewTaskWorker(config, childthread.ParentThreadTask, "parent-thread-task")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	childWorker, err = taskworker.NewTaskWorker(config, childthread.ChildThreadTask, "child-thread-task")
+	childWorker, err = littlehorse.NewTaskWorker(config, childthread.ChildThreadTask, "child-thread-task")
 	if err != nil {
 		log.Fatal(err)
 	}

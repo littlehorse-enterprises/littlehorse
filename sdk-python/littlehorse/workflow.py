@@ -306,6 +306,7 @@ class WfRunVariable:
         self.default_value: Optional[VariableValue] = None
         self._json_path: Optional[str] = None
         self._required = False
+        self._masked = False
         self._searchable = False
         self._json_indexes: List[JsonIndex] = []
         self._access_level = access_level
@@ -414,6 +415,10 @@ class WfRunVariable:
         self._required = True
         return self
 
+    def masked(self) -> "WfRunVariable":
+        self._masked = True
+        return self
+
     def compile(self) -> ThreadVarDef:
         """Compile this into Protobuf Objects.
 
@@ -425,6 +430,7 @@ class WfRunVariable:
                 type=self.type,
                 name=self.name,
                 default_value=self.default_value,
+                masked_value=self._masked,
             ),
             json_indexes=self._json_indexes.copy(),
             searchable=self._searchable,

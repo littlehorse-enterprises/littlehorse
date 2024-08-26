@@ -19,7 +19,7 @@ import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
 
-option go_package = ".;model";
+option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
@@ -979,10 +979,6 @@ message RegisterTaskWorkerRequest {
 
   // The TaskDef the worker wants to poll for.
   TaskDefId task_def_id = 2;
-
-  // The listener that the worker is polling on. Used by the server to determine which
-  // advertised hosts to return.
-  string listener_name = 3;
 }
 
 // Message used by Task Worker to register itself to the server and ask for assignments of

@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.TagStorageManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
@@ -48,7 +48,7 @@ public class TagStorageManagerTest {
     private LHServerConfig lhConfig;
 
     @Mock
-    private KafkaStreamsServerImpl server;
+    private LHServer server;
 
     private String tenantId = "myTenant";
 

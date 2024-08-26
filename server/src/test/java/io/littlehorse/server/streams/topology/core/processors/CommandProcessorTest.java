@@ -12,7 +12,7 @@ import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
-import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.server.TestProcessorExecutionContext;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.StoredGetable;
@@ -45,7 +45,7 @@ public class CommandProcessorTest {
     private LHServerConfig config;
 
     @Mock
-    private KafkaStreamsServerImpl server;
+    private LHServer server;
 
     @Mock
     private TaskQueueManager taskQueueManager;

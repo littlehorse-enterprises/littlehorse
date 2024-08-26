@@ -42,9 +42,9 @@ public final class TaskDefOuterClass {
       "mp\022<\n\rschema_output\030\004 \001(\0132 .littlehorse." +
       "TaskDefOutputSchemaH\000\210\001\001B\020\n\016_schema_outp" +
       "ut\"B\n\023TaskDefOutputSchema\022+\n\tvalue_def\030\001" +
-      " \001(\0132\030.littlehorse.VariableDefBG\n\037io.lit" +
-      "tlehorse.sdk.common.protoP\001Z\007.;model\252\002\030L" +
-      "ittleHorse.Common.Protob\006proto3"
+      " \001(\0132\030.littlehorse.VariableDefBI\n\037io.lit" +
+      "tlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002" +
+      "\030LittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

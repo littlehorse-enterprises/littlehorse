@@ -53,26 +53,4 @@ public interface RegisterTaskWorkerRequestOrBuilder extends
    * <code>.littlehorse.TaskDefId task_def_id = 2;</code>
    */
   io.littlehorse.sdk.common.proto.TaskDefIdOrBuilder getTaskDefIdOrBuilder();
-
-  /**
-   * <pre>
-   * The listener that the worker is polling on. Used by the server to determine which
-   * advertised hosts to return.
-   * </pre>
-   *
-   * <code>string listener_name = 3;</code>
-   * @return The listenerName.
-   */
-  java.lang.String getListenerName();
-  /**
-   * <pre>
-   * The listener that the worker is polling on. Used by the server to determine which
-   * advertised hosts to return.
-   * </pre>
-   *
-   * <code>string listener_name = 3;</code>
-   * @return The bytes for listenerName.
-   */
-  com.google.protobuf.ByteString
-      getListenerNameBytes();
 }
