@@ -49,7 +49,9 @@ module.exports = {
         gtag: {
           trackingID: 'G-1DL56CH5SS',
         },
-        blog: {},
+        blog: {
+            blogSidebarCount: 'ALL',
+        },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
