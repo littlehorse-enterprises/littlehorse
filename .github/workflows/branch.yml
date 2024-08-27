@@ -41,7 +41,7 @@ jobs:
           path: server/build/libs/server-*-all.jar
 
       - name: Build and Publish
-        uses: littlehorse-enterprises/publish-image@v1.1.0
+        uses: littlehorse-enterprises/publish-image@v1.1.2
         with:
           image-name: lh-server
           dockerfile: docker/server/Dockerfile
@@ -69,7 +69,7 @@ jobs:
           path: canary/build/libs/canary-*-all.jar
 
       - name: Build and Publish
-        uses: littlehorse-enterprises/publish-image@v1.1.0
+        uses: littlehorse-enterprises/publish-image@v1.1.2
         with:
           image-name: lh-canary
           dockerfile: docker/canary/Dockerfile
@@ -94,7 +94,7 @@ jobs:
           npm run build
 
       - name: Build and Publish
-        uses: littlehorse-enterprises/publish-image@v1.1.0
+        uses: littlehorse-enterprises/publish-image@v1.1.2
         with:
           image-name: lh-dashboard
           dockerfile: docker/dashboard/Dockerfile
@@ -127,7 +127,7 @@ jobs:
           path: server/build/libs/
 
       - name: Build and Publish
-        uses: littlehorse-enterprises/publish-image@v1.1.0
+        uses: littlehorse-enterprises/publish-image@v1.1.2
         with:
           image-name: lh-standalone
           dockerfile: docker/standalone/Dockerfile
