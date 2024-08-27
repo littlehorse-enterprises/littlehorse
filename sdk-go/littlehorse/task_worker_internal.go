@@ -19,12 +19,28 @@ func (tw *LHTaskWorker) registerTaskDef() error {
 		Name:      tw.taskDefId.Name,
 		InputVars: make([]*lhproto.VariableDef, 0),
 	}
-
+	maskedFields := len(tw.maskedInputVariables) >= len(tw.taskSig.Args)
+	isMaskedField := func(i int) bool {
+		if maskedFields {
+			return tw.maskedInputVariables[i]
+		}
+		return false
+	}
 	for i, arg := range tw.taskSig.Args {
 		ptd.InputVars = append(ptd.InputVars, &lhproto.VariableDef{
-			Name: strconv.Itoa(i) + "-" + arg.Name,
-			Type: ReflectTypeToVarType(arg.Type),
+			Name:        strconv.Itoa(i) + "-" + arg.Name,
+			Type:        ReflectTypeToVarType(arg.Type),
+			MaskedValue: isMaskedField(i),
 		})
+	}
+	if tw.taskSig.HasOutput {
+		ptd.OutputSchema = &lhproto.TaskDefOutputSchema{
+			ValueDef: &lhproto.VariableDef{
+				Name:        "output",
+				Type:        ReflectTypeToVarType(*tw.taskSig.OutputType),
+				MaskedValue: tw.maskedOutput,
+			},
+		}
 	}
 
 	_, err := (*tw.grpcStub).PutTaskDef(context.Background(), ptd)
