@@ -25,7 +25,7 @@ line-length = 88
 exclude = [ "littlehorse/model/",]
 
 [tool.mypy]
-exclude = [ "littlehorse/model/", "tests/", "scripts/",]
+exclude = [ "littlehorse/model/", "tests/",]
 strict = true
 ignore_missing_imports = true
 disallow_untyped_calls = false
