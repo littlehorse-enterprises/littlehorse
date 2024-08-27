@@ -67,13 +67,17 @@ However, you can start two Brokers in your terminal as follows:
 ./local-dev/do-server.sh server-2
 ```
 
-## Release a new version
+## Release a New Version
 
-Upgrade to a new version:
+To release a new version, you should push a properly-formed Git Tag, and our pipeline will take care of it.
 
-```bash
-./local-dev/bump.sh --help
 ```
+git tag -am "Release X.Y.Z" vX.Y.Z
+git push --follow-tag
+```
+Note that we follow [Semantic Versioning](https://semver.org) and that `X` is the major version, `Y` is the minor version, and `Z` is the patch.
+
+While SemVer frowns upon the `v` prefix, we need it because of how Go module releases work. Our pipeline removes the `v` from all generated artifacts (eg. `sdk-java` on maven, `sdk-python` on pypi, our docker images, etc).
 
 ## Building the Docker Image
 
