@@ -6,6 +6,7 @@ import io.littlehorse.TestUtil;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.server.TestCommandExecutionContext;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,8 @@ public class NodeModelTest {
     private final SubNode mockSubnode = mock();
     private final FailureHandlerDefModel exceptionHandlerDef = TestUtil.exceptionHandler("my-handler");
     private final FailureHandlerDefModel invalidExceptionHandlerDef = TestUtil.exceptionHandler("my.handler");
+    private final FailureHandlerDefModel technicalErrorHandlerDef =
+            TestUtil.exceptionHandler(LHErrorType.TIMEOUT.name());
     private final PutTenantRequestModel dummySubcommand = new PutTenantRequestModel("my-tenant");
     private final MetadataCommandModel dummyCommand = new MetadataCommandModel(dummySubcommand);
     private TestCommandExecutionContext commandContext =
@@ -33,5 +36,13 @@ public class NodeModelTest {
                 .isInstanceOf(LHApiException.class)
                 .hasMessage("INVALID_ARGUMENT: Invalid names for exception handlers: my.handler");
         verify(mockSubnode, never()).validate(Mockito.any());
+    }
+
+    @Test
+    public void shouldNotValidatePredefinedTechnicalErrors() {
+        doReturn(mockSubnode).when(node).getSubNode();
+        node.getFailureHandlers().add(technicalErrorHandlerDef);
+        node.validate(commandContext);
+        verify(mockSubnode, times(1)).validate(Mockito.any());
     }
 }
