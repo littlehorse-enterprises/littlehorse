@@ -218,10 +218,10 @@ wf.handleError(
 ```go
 threadsResult := wf.WaitForThreads(...)
 
-errorName := "TIMEOUT"
+exnToHandle := littlehorse.Timeout
 wf.HandleError(
     &threadsResult,
-    &errorName, // handle only TIMEOUT error. Leave nil to catch all ERROR.
+    &exnToHandle, // handle only TIMEOUT error. Leave nil to catch all ERROR.
     func(handler *littlehorse.WorkflowThread) {
         handler.Execute("some-task-in-my-exn-handler")
     },
