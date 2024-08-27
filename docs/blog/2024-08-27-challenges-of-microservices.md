@@ -47,21 +47,97 @@ In the rest of this blog post we will examine microservices through the the lens
 1. When an order is placed, we create a record in a database in the `orders` service.
 2. We then reserve inventory (and ensure that the item is in stock) in the `inventory` service.
 3. We charge the customer using the `payments` service.
-4. Lastly, we ship the item using the `shipping` service.
+4. Next, we ship the item using the `shipping` service.
+5. Finally, the `notifications` service notifies the customer that the parcel is on its way.
 
-
+![Simple e-commerce workflow](./2024-08-27-simple-checkout.png)
 
 ### Microservices are Distributed
 
+Recall that each service (in the workflow diagram above, each box) is its own deployable artifact. That means that the happy-path business process described above will involve five different software systems from start-to-finish.
+
+In the above workflow diagram, each arrow can be accurately interpreted in two ways:
+1. The logical flow of the business process.
+2. The physical flow of information between microservices, either through network RPC calls or through a message broker like Apache Kafka.
+
+Guess what! This means we have a distributed system by definition. As Splunk [writes in a blog post](https://www.splunk.com/en_us/blog/learn/distributed-systems.html):
+> A distributed system is simply any environment where multiple computers or devices are working on a variety of tasks and components, all spread across a network.
+
+You need to look no further than the [Fallacies of Distributed Computing](https://en.wikipedia.org/wiki/Fallacies_of_distributed_computing) (written by Sun Microsystems Fellow L. Peter Deutsch in 1994) to see that this means that microservices are no easy task.
+
 ### Microservices are Leaderless
+
+As we've seen already, any microservice-based application is a distributed system. Some distributed systems have the concept of a _leader_, which is a special node in the system that has special responsibilities.
+
+:::info
+Apache Kafka is my favorite distributed system. In Apache Kafka, the _Controller_ is a special Kafka server that is responsible for deciding which partition replicas are hosted on (and led by) which brokers. If the broker who was in charge of a partition goes down, then the Controller chooses a new broker from the ISR to take its place.
+
+Therefore, the _Controller_ in Apache Kafka can be thought of as a _leader_.
+:::
+
+While systems like Apache Kafka have clear leaders (for example, the _Controller_ may re-assign partition leadership if the cluster becomes too imbalanced), in a microservice-based system there is no central leader to ensure that the chips fall correctly. 
+
+You can think of our e-commerce microservice flow as a line of dominoes falling. Once the process starts, no one entity is responsible for ensuring its completion. The business workflow moves from `orders` to `inventory` to `payments` and so on. If `payments` fails for some reason (perhaps a network partition makes the Stripe API unavailable), then it's quite possible that the `shipping` service never finds out about the workflow.
+
+However, in real life such outcomes are not acceptable. This means that every single player in the system must:
+
+1. Have built-in reliability mechanisms.
+2. Understand the preceding and subsequent steps of the business process to route traffic.
 
 ## The Challenges
 
+So far, we have established that there are many players involved in a business process, yet there's no one player in charge of ensuring that the trains run on time. This yields three problems:
+
+1. **Reliability** in the face of infrastructure failures.
+2. **Observability** to enable system optimization and debugging.
+3. **Coupling** of microservices to each other makes it hard to modify the system in response to new business requirements.
+
 ### Reliability and Correctness
+
+Processing orders is a mission-critical use-case. This means that orders should always complete and never be dropped (for example, we shouldn ever charge the customer's credit card and not ship the product to them).
+
+However, asynchronous processing such as that which I outlined above is prone to failures. For example, if you chain microservices together with direct RPC calls, a single network partition can cause an order to get stuck. Even with a reliable message broker such as Apache Kafka or AWS SQS sitting between your microservices, a write to the message broker could fail _after_ the payment went through, still resulting in a stuck order.
+
+Just as communication _between_ microservices can fail, the actions performed _by_each microservice can also fail. If the Stripe API is down, or if the credit card is invalid, we can't just stop processing the order there! We must notify the customer of what went wrong and also release the inventory that we reserved.
+
+This means that microservice developers spend countless hours building out infrastructure to support:
+* Retries
+* Dead-Letter Queues
+* Rate-limiting
+* Timeouts
+* Transactional Outbox pattern
+* SAGA Pattern
+
+Back to the domino analogy, if one domino misses the next, the entire chain just stops.
 
 ### Observability
 
-### Supporting New Business Workflows
+The second problem with microservices is that once a process instance has started (i.e. the dominoes are falling), it is very difficult to observe what happens between steps 2 through 10. This means that multi-step processes with performance issues are hard to optimize, as there are many microservices which could be the bottleneck and it's hard to know which. Even worse, when a customer complains about a "stuck order," it is difficult to find the point of failure.
+
+As a result, microservice engineers spend time and money:
+* Slogging through logs on DataDog
+* Implementing complex distributed tracing such as Zipkin, Jaeger, or Kiali
+* Saving the state of each process instance (in our case, the `order`) in a DB just for visibility purposes at every step.
+
+### Microservice Coupling
+
+Lastly, because microservices are leaderless, each player in the end-to-end process must have hard-coded integrations with the preceding and subsequent steps. This results in:
+
+* **Process coupling**, wherein changing a business process results in significant code updates to rewire the message queues or RPC calls between two steps.
+* **Schema coupling**, wherein different microservices have strong dependencies on each others' schemas.
+
+Microservices come with the promise of loose coupling; however, the unfortunate reality is that this is often not the case. As a result, teams often do have to coordinate with each other during deployments.
+
+To see an example of the complexity introduced by coupling of microservices, let's consider what happens to our e-commerce checkout workflow when we add a few edge cases to make it more realistic:
+
+1. If the credit card is invalid, we request the customer to provide a new one, wait for two days, and either complete or cancel the order.
+2. If the item is out of stock, we notify the customer who elects either to wait or cancel the order.
+
+![Complex Checkout Architecture](./2024-08-27-complex-checkout.png)
+
+In the above diagram, each arrow represents the flow of the business process _and_ information. Each microservice must have custom logic which sends information to the right place. In essence, while we _intended_ to have modular microservices that understand only their own Bounded Context, what we have is tightly-coupled systems which must understand pretty much the entire business workflow.
+
+Therefore, when business requirements change, unrelated microservices end up having to change their internal implementation as well.
 
 ## Looking Forward
 
