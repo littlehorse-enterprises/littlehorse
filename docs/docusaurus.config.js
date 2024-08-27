@@ -28,6 +28,25 @@ module.exports = {
   onBrokenMarkdownLinks: "throw",
   onBrokenAnchors: "throw",
 
+  headTags: [
+    {
+      tagName: "meta",
+      attributes: {
+        "name": "twitter:title",
+        "content": "LittleHorse Orchestrator",
+        "data-rh": "true"
+      }
+    },
+    {
+      tagName: "meta",
+      attributes: {
+        "name": "twitter:description",
+        "content": "The Missing Piece of the Microservice Architecture",
+        "data-rh": "true"
+      }
+    }
+  ],
+  
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
   // to replace "en" with "zh-Hans".
