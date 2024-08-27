@@ -2,31 +2,22 @@
 slug: promise-of-microservices
 title: The Promise of Microservices
 authors:
-  name: Colt McNealy
-  title: Managing Member of the LLC
-  url: https://www.linkedin.com/in/colt-mcnealy-900b7a148/
-  image_url: https://avatars.githubusercontent.com/u/100447728
-tags: [tech-trends,microservices,littlehorse]
+- coltmcnealy
+tags: [analysis]
 ---
 
-<!-- ---
-Benefits of Microservices
-- Different dev teams can work independently in parallel
-- Bounded Contexts can theoretically ensure that smaller teams
-- Faster deployment and iteration
-- Take advantage of cloud native systems -->
-
 If microservices add so much complexity, why bother with the hassle? <!-- truncate -->
-
-We've all _heard of_ microservices, but unless you've read copious amounts of Sam Newman and Adam Bellemare's writings, you might be wondering whether, when, and why you should adopt them. In this blog post, we will examine the halcyon land promised by microservices.
 
 :::info
 This is the first part of a 3-part blog series:
 
 1. **[This Post]** The Promise of Microservices
-2. **[Coming Soon]** The Challenge with Microservices
+2. [The Challenge with Microservices](./2024-08-27-challenges-of-microservices.md)
 3. **[Coming Soon]** Workflow and Microservices: A Match Made in Heaven
 :::
+
+
+We've all _heard of_ microservices, but unless you've read copious amounts of Sam Newman and Adam Bellemare's writings, you might be wondering whether, when, and why you should adopt them. In this blog post, we will examine the halcyon land promised by microservices.
 
 Microservices have been [deployed widely](https://www.simform.com/blog/microservices-examples/) across many large enterprises, most notably Netflix, Uber, Shopify, PayPal, and others. As we will discover throughout this blog series, a microservice architecture is mandatory once you reach a certain size of company, and it's probably overkill for a 12-person startup. The gray area inbetween is the interesting part!
 
