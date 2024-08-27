@@ -331,9 +331,9 @@ public final class WfSpecOuterClass {
       "ittlehorse.NodeMigration:\0028\001\"&\n\rNodeMigr" +
       "ation\022\025\n\rnew_node_name\030\001 \001(\t*N\n\030WfRunVar" +
       "iableAccessLevel\022\016\n\nPUBLIC_VAR\020\000\022\017\n\013PRIV" +
-      "ATE_VAR\020\001\022\021\n\rINHERITED_VAR\020\002BG\n\037io.littl" +
-      "ehorse.sdk.common.protoP\001Z\007.;model\252\002\030Lit" +
-      "tleHorse.Common.Protob\006proto3"
+      "ATE_VAR\020\001\022\021\n\rINHERITED_VAR\020\002BI\n\037io.littl" +
+      "ehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\030L" +
+      "ittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

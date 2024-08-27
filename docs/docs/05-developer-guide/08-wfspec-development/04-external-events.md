@@ -22,7 +22,7 @@ public void threadFunction(WorkflowThread thread) {
   <TabItem value="go" label="Go">
 
 ```go
-func someThreadFunction(thread *wflib.WorkflowThread) {
+func someThreadFunction(thread *littlehorse.WorkflowThread) {
     eventOutput := thread.WaitForEvent("my-event-name")
 }
 ```
@@ -55,10 +55,10 @@ public void threadFunction(WorkflowThread thread) {
   <TabItem value="go" label="Go">
 
 ```go
-func someThreadFunction(thread *wflib.WorkflowThread) {
-    myVar := thread.AddVariable("my-var", model.VariableType_JSON_OBJ)
+func someThreadFunction(thread *littlehorse.WorkflowThread) {
+    myVar := thread.AddVariable("my-var", lhproto.VariableType_JSON_OBJ)
     eventOutput := thread.WaitForEvent("my-event-name")
-    thread.Mutate(myVar, model.VariableMutationType_ASSIGN, eventOutput);
+    thread.Mutate(myVar, lhproto.VariableMutationType_ASSIGN, eventOutput);
 }
 ```
 

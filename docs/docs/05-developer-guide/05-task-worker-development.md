@@ -76,8 +76,7 @@ At this point, you can use your `LHTaskWorker` to register your `TaskDef` and to
 package main
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/taskworker"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 )
 
 func Greet(firstName string) string {
@@ -85,8 +84,8 @@ func Greet(firstName string) string {
 }
 
 func main() {
-	config := common.NewConfigFromEnv()
-	worker, _ := taskworker.NewTaskWorker(config, Greet, "greet")
+	config := littlehorse.NewConfigFromEnv()
+	worker, _ := littlehorse.NewTaskWorker(config, Greet, "greet")
 
 	worker.RegisterTaskDef()
 	worker.Start()
@@ -173,7 +172,7 @@ class MyWorker {
   </TabItem>
   <TabItem value="go" label="Go">
 
-The Go SDK currently (as of `0.10.0`) does not yet support throwing `LHTaskException`s.
+The Go SDK currently (as of `0.11.0`) does not yet support throwing `LHTaskException`s.
 
   </TabItem>
   <TabItem value="python" label="Python">
@@ -226,7 +225,7 @@ class MyWorker {
   </TabItem>
   <TabItem value="go" label="Go">
 
-The Go SDK currently (as of `0.10.0`) does not yet support throwing `LHTaskException`s.
+The Go SDK currently (as of `0.11.0`) does not yet support throwing `LHTaskException`s.
 
   </TabItem>
   <TabItem value="python" label="Python">
@@ -376,7 +375,7 @@ If you need to access metadata about the Task Run that is being executed, you ca
 Let's say you have a `TaskDef` with one input parameter of type `INT`. You can access the `WorkerContext` by doing the following:
 
 ```go
-func DoTask(long inputLong, context *common.WorkerContext) {
+func DoTask(long inputLong, context *littlehorse.WorkerContext) {
 	wfRunId := context.GetWfRunId();
 	taskRunId := context.GetTaskRunId();
     nodeRunId := context.GetNodeRunId();
