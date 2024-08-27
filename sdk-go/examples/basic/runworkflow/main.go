@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples/basic"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
