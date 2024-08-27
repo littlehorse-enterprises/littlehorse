@@ -27,14 +27,6 @@ Installation via Homebrew has been tested on Mac and Linux.
 brew install littlehorse-enterprises/lh/lhctl
 ```
   </TabItem>
-  <TabItem value="go" label="Go">
-
-Alternatively, you can install `lhctl` directly from source using GoLang. Please remember to put `~/go/bin/` in your `PATH`.
-
-```
-go install github.com/littlehorse-enterprises/littlehorse/lhctl@0.10.0
-```
-  </TabItem>
 </Tabs>
 
 ## LittleHorse Server (Local Dev)
@@ -42,15 +34,15 @@ go install github.com/littlehorse-enterprises/littlehorse/lhctl@0.10.0
 The easiest way to run the LittleHorse Server is using the `lh-standalone` docker image. You can do so as follows:
 
 ```
-docker run --name littlehorse -d -p 2023:2023 -p 8080:8080 ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:0.10.0
+docker run --name littlehorse -d -p 2023:2023 -p 8080:8080 ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:0.11.0
 ```
 
 Note that the `lh-standalone` image is only suitable for local development. Once the container is up and running, you should be able to verify that the server is working as follows:
 
 ```
 -> lhctl version
-lhctl version: 0.10.0
-Server version: 0.10.0
+lhctl version: 0.11.0
+Server version: 0.11.0
 ```
 
 :::info
@@ -69,21 +61,21 @@ All the LittleHorse Client libraries, including grpc clients, can be accessed th
 The Java Client Library is available on Maven Central. To add it as a dependency to your project, simply put the following in your `build.gradle` (or do the equivalent with your `pom.xml`)
 
 ```
-  implementation 'io.littlehorse:littlehorse-client:0.10.0'
+  implementation 'io.littlehorse:littlehorse-client:0.11.0'
 ```
   </TabItem>
   <TabItem value="go" label="Go">
 You add the LittleHorse Go Library as a dependency to your Go project as follows:
 
 ```
-go get github.com/littlehorse-enterprises/littlehorse/sdk-go@0.10.0
+go get github.com/littlehorse-enterprises/littlehorse/sdk-go@v0.11.0
 ```
   </TabItem>
   <TabItem value="python" label="Python">
 You can install the LittleHorse Client Library as follows:
 
 ```
-pip3 install littlehorse-client==0.10.0
+pip3 install littlehorse-client==0.11.0
 ```
   </TabItem>
 </Tabs>
