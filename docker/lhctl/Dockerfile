@@ -1,10 +1,19 @@
-FROM ubuntu:22.04
-COPY . /lh
-RUN apt update && apt install -y --no-install-recommends \
-    jq git ca-certificates wget curl tar unzip golang && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+FROM golang:1.22-alpine AS builder
+
+ARG VERSION=0.0.0-development
+ARG COMMIT=HEAD
+
+WORKDIR /lh
+COPY . .
 WORKDIR /lh/lhctl
-RUN GOBIN=/usr/local/bin go install .
-WORKDIR /
-RUN rm -rf /lh
+
+# remove go.work file to avoid error
+RUN rm -f go.work
+
+RUN go work init && go work use ../sdk-go && go work use .
+RUN go build -ldflags "-X main.version=${VERSION} -X main.commit=${COMMIT}"
+
+FROM scratch
+COPY --from=builder /lh/lhctl/lhctl /usr/local/bin/lhctl
+
+ENTRYPOINT ["/usr/local/bin/lhctl"]

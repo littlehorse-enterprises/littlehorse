@@ -1,0 +1,14 @@
+release:
+  label: 'LittleHorse Releases'
+  description: 'Release blogs for LittleHorse Orchestrator.'
+  permalink: '/release/'
+
+analysis:
+  label: 'Technical Analysis'
+  description: 'Analysis of the current and future state of Technical Architecture.'
+  permalink: '/analysis/'
+
+littlehorse:
+  label: 'LittleHorse Orchestrator'
+  description: 'Information about the LittleHorse Orchestrator.'
+  permalink: '/littlehorse/'

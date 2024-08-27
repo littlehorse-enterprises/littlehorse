@@ -520,6 +520,11 @@ func (w *WfRunVariable) searchableOnImpl(fieldPath string, fieldType lhproto.Var
 	return w
 }
 
+func (w *WfRunVariable) maskedValueImpl() *WfRunVariable {
+	w.threadVarDef.VarDef.MaskedValue = true
+	return w
+}
+
 func (w *WfRunVariable) withAccessLevel(accessLevel lhproto.WfRunVariableAccessLevel) WfRunVariable {
 	w.threadVarDef.AccessLevel = accessLevel
 	return *w

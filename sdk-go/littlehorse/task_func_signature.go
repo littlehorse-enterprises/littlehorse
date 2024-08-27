@@ -21,6 +21,7 @@ type TaskFuncSignature struct {
 	hasWorkerContextAtEnd bool
 	HasOutput             bool
 	HasError              bool
+	OutputType            *reflect.Type
 }
 
 func (ts *TaskFuncSignature) GetHasWorkerContextAtEnd() bool {
@@ -69,7 +70,9 @@ func NewTaskSignature(taskFunc interface{}) (*TaskFuncSignature, error) {
 		if fnType.Out(0) == reflect.TypeOf((*error)(nil)).Elem() {
 			out.HasError = true
 		} else {
+			funcReturn := fnType.Out(0)
 			out.HasOutput = true
+			out.OutputType = &funcReturn
 		}
 	} else {
 		firstReturn := fnType.Out(0)
@@ -84,6 +87,7 @@ func NewTaskSignature(taskFunc interface{}) (*TaskFuncSignature, error) {
 
 		out.HasError = true
 		out.HasOutput = true
+		out.OutputType = &firstReturn
 	}
 	return out, nil
 }

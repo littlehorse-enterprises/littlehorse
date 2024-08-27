@@ -4,6 +4,8 @@ sidebar_label: Overview
 
 # LittleHorse Overview
 
+![LittleHorse Dashboard](./dashboard-front-page.png)
+
 The LittleHorse Orchestrator is a high-performance platform for building workflow-driven applications for a variety of use-cases, including:
 
 - **Microservice Orchestration**: The LittleHorse Orchestrator allows teams to enjoy the benefits of microservices (such as independent deployment and elasticity) while mitigating some of the challenges such as observability, error handling, and schema evolution.
@@ -44,54 +46,47 @@ To build an application with LittleHorse, there are three easy steps:
 2. Develop your Task Workers
 3. Run your `WfRun`!
 
-#### Define Your `WfSpec`
-
-In LittleHorse, a `WfSpec` is a template that defines the logical steps for a certain process or workflow. It contains a set of steps (`Node`s), and flow between those steps (`Edge`s). For example, in an e-commerce application, you might write a `WfSpec` to orchestrate your checkout process:
-
-1. Update the status of the `Order` in your database.
-2. Reserve items in your inventory.
-3. Charge the customer's credit card.
-4. Notify the customer that the order was completed.
-
-If step #2 or #3 fails, then your `WfSpec` would have logic to update the `Order` to failed and notify the customer accordingly.
-
-`WfSpec`s can be developed in code, using our Java, Go, or Python SDK's. We have [extensive documentation](./05-developer-guide/08-wfspec-development/08-wfspec-development.md) for building `WfSpec`s.
-
-#### Write Task Workers
-
-A Task Worker is a computer system which connects to LittleHorse, listens to a task queue, and executes a [`TaskRun`](./04-concepts/03-tasks.md) as necessary. In the above e-commerce example, you would have a Task Worker for each step in the `WfSpec`.
-
-It is simple to develop a Task Worker. Depending on which language you choose, you only need to write a handful of lines of code to integrate existing systems with LittleHorse as a Task Worker. Basically, any normal method or function can be converted to a LittleHorse Task Worker with no modifications. See our [documentation](./05-developer-guide/05-task-worker-development.md) for how to develop Task Workers.
-
-#### Run a `WfRun`
-
-Once your `WfSpec` is defined, and your Task Workers are polling for `TaskRun`s to execute, all you need to do is run your `WfRun`! You can test it out with our CLI, or build a production-ready API that uses our grpc client and executes the `RunWf` grpc call. See [our grpc docs](./05-developer-guide/09-grpc/09-grpc.md) for how to run a workflow.
+:::tip
+The easiest way to get your first workflow up and running is with our [Quickstarts](./05-developer-guide/00-install.md#get-started).
+:::
 
 ## Features
 
 At LittleHorse, we spent almost two years developing a cutting-edge system from the ground up so that we could provide you with a platform to future-proof your applications. Best of all, LittleHorse's source code is available and free for production use under the SSPL.
 
-### Connect to Anything
+### Observable
+
+By virtue of orchestrating your workflows with LittleHorse, every step can be audited. You can:
+
+* Quickly find workflow instances for a certain customer when they complain about a problem.
+* Easily view what step the workflow is on.
+* View the inputs and outputs of every task (and hide sensitive data too!).
+* See stacktraces from failed tasks.
+
+The following screenshot shows a stacktrace from a failed `TaskRun` using our Java SDK. No more hours of searching through DataDog!
+
+![Screenshot of failed TaskRun](./task-failure.png)
+
+### Flexible
 
 LittleHorse has clients in Java, Go, and Python. This allows you to easily integrate existing systems into a LittleHorse Workflow with minimal code change (in Java, for example, all you need to do to turn a Method into a LittleHorse Task Worker is add the `@LHTaskMethod` annotation).
 
 Additionally, LittleHorse supports integration with external systems through the [External Events](./04-concepts/04-external-events.md) feature, which allows LittleHorse Workflows to respond to events originating outside of the LittleHorse ecosystem.
 
-### Support Mission-Critical Workflows
+### Mission-Critical and Secure
 
 All data in LittleHorse Cloud is synchronously replicated into three separate datacenters (for example, AWS Availability Zones). LittleHorse has automated failover such that, if a server or even an entire datacenter fails, your workloads will promptly resume making progress on another data center (failover can be as low as 20 seconds).
 
 Due to the synchronous nature of LittleHorse replication, we support an RPO of zero (no data loss) when failing over due to a server crash.
 
-### Highly Secure
+Because LittleHorse was built for mission-critical workloads, we natively implements OAuth, TLS, and mTLS for authentication and encryption. LittleHorse also supports [fine-grained ACL's](./04-concepts/13-principals-and-tenants.md) to further lock down the system. Additionally, LittleHorse can be deployed into your own infrastructure (on-prem, private, or public cloud) so that no data leaves your four walls.
 
-LittleHorse natively implements OAuth, TLS, and mTLS for authentication and encryption. LittleHorse also supports fine-grained ACL's to further lock down the system. Additionally, LittleHorse can be deployed into your own infrastructure (on-prem, private, or public cloud) so that no data leaves your four walls.
-
-### High Performance
+### Scalable
 
 The LittleHorse Scheduler can scale horizontally to dozens or hundreds of servers. With only a handful of LH Server `Pod`s utlizing a total of just 48 cores on AWS EKS, we were able to schedule over 15,000 tasks per second. We are confident that LittleHorse can scale to meet the demands of any customer's use case.
 
 Additionally, LittleHorse is high-performance system that introduces minimal delay. The latency between a Task being completed and the next Task being scheduled can be as low as 12-20ms; for comparison, a leading competitor's delays can reach 100-300ms.
+
 
 ### User Tasks
 
@@ -162,14 +157,6 @@ To say that LittleHorse is "a system that intelligently routes tasks between you
 Service mesh implementations such as [Istio](https://istio.io) provide many awesome features, but the two most common use-cases are securing traffic at the L4 layer (mTLS) and request routing, for example with a [`VirtualService`](https://istio.io/latest/docs/reference/config/networking/virtual-service/).
 
 LittleHorse sits _above_ the Istio layer. The LittleHorse Server is a server that LittleHorse Clients (eg. Task Workers and your Microservices) connect to. The Task Workers listen to virtual "task queues" within LittleHorse, and the LittleHorse Server dispatches [Tasks](./04-concepts/03-tasks.md) to the Task Workers according to the workflows.
-
-:::note
-When LittleHorse Cloud reaches general availability, we will _internally_ use Istio (as an implementation detail) in order to help secure traffic within our own clusters. We mention this because:
-
-1. It illustrates that LittleHorse and Istio solve very different problems,
-2. LittleHorse is compatible with Istio, and
-3. We take security very seriously; Istio is one of many security layers we leverage in order to protect your data in LittleHorse Cloud.
-:::
 
 ## Get Started
 
