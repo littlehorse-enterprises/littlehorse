@@ -3,11 +3,8 @@ title: Helm and Kubernetes Operators
 description: To Helm or to Operator?
 slug: helm-and-k8s-operators
 authors:
-  - name: Colt McNealy
-    title: LittleHorse Council Member
-    url: https://www.linkedin.com/in/colt-mcnealy-900b7a148/
-    image_url: https://avatars.githubusercontent.com/u/100447728
-tags: [friday-tech-tips, kubernetes]
+- coltmcnealy
+tags: [analysis]
 image: https://avatars.githubusercontent.com/u/140006313?s=400&u=7bf4c91d92dfe590ac71bb6b4821e1a81aa5b712&v=4
 hide_table_of_contents: false
 ---

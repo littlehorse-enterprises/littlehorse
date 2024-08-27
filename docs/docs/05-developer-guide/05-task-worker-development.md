@@ -172,7 +172,7 @@ class MyWorker {
   </TabItem>
   <TabItem value="go" label="Go">
 
-The Go SDK currently (as of `0.10.0`) does not yet support throwing `LHTaskException`s.
+The Go SDK currently (as of `0.11.0`) does not yet support throwing `LHTaskException`s.
 
   </TabItem>
   <TabItem value="python" label="Python">
@@ -225,7 +225,7 @@ class MyWorker {
   </TabItem>
   <TabItem value="go" label="Go">
 
-The Go SDK currently (as of `0.10.0`) does not yet support throwing `LHTaskException`s.
+The Go SDK currently (as of `0.11.0`) does not yet support throwing `LHTaskException`s.
 
   </TabItem>
   <TabItem value="python" label="Python">
