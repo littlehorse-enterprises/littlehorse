@@ -75,18 +75,20 @@ Apache Kafka is my favorite distributed system. In Apache Kafka, the _Controller
 Therefore, the _Controller_ in Apache Kafka can be thought of as a _leader_.
 :::
 
-While systems like Apache Kafka have clear leaders (for example, the _Controller_ may re-assign partition leadership if the cluster becomes too imbalanced), in a microservice-based system there is no central leader to ensure that the chips fall correctly. 
+While systems like Apache Kafka have clear leaders (for example, the _Controller_ may re-assign partition leadership if the cluster becomes too imbalanced), in a microservice-based system there is no central leader to ensure that the chips fall correctly. This is by necessity, because the separation of development concerns and lifecycles across microservices means that microservices cannot and do not have leaders.
 
-You can think of our e-commerce microservice flow as a line of dominoes falling. Once the process starts, no one entity is responsible for ensuring its completion. The business workflow moves from `orders` to `inventory` to `payments` and so on. If `payments` fails for some reason (perhaps a network partition makes the Stripe API unavailable), then it's quite possible that the `shipping` service never finds out about the workflow.
+You can think of our e-commerce microservice flow as a line of dominoes falling. Once the process starts, no one entity is responsible for ensuring its completion. The business workflow moves from `orders` to `inventory` to `payments` and so on. If `payments` fails for some reason (perhaps a network outage makes the Stripe API unavailable), then it's quite possible that the `shipping` service never finds out about the workflow.
 
 However, in real life such outcomes are not acceptable. This means that every single player in the system must:
 
 1. Have built-in reliability mechanisms.
 2. Understand the preceding and subsequent steps of the business process to route traffic.
 
+Implementing the above slows down development, more tightly couples one services to another, increases dependencies, and makes your microservice architecture much more heavyweight.
+
 ## The Challenges
 
-So far, we have established that there are many players involved in a business process, yet there's no one player in charge of ensuring that the trains run on time. This yields three problems:
+So far, we have established that there are many players involved in a business process, yet there's no one orchestrator involved in ensuring that an ordered item is delievered to the the correct address. This yields three problems:
 
 1. **Reliability** in the face of infrastructure failures.
 2. **Observability** to enable system optimization and debugging.
@@ -94,11 +96,11 @@ So far, we have established that there are many players involved in a business p
 
 ### Reliability and Correctness
 
-Processing orders is a mission-critical use-case. This means that orders should always complete and never be dropped (for example, we shouldn ever charge the customer's credit card and not ship the product to them).
+Processing orders is a mission-critical use-case. This means that orders should always complete and never be dropped (for example, we should not charge the customer's credit card and not ship the product to them).
 
 However, asynchronous processing such as that which I outlined above is prone to failures. For example, if you chain microservices together with direct RPC calls, a single network partition can cause an order to get stuck. Even with a reliable message broker such as Apache Kafka or AWS SQS sitting between your microservices, a write to the message broker could fail _after_ the payment went through, still resulting in a stuck order.
 
-Just as communication _between_ microservices can fail, the actions performed _by_each microservice can also fail. If the Stripe API is down, or if the credit card is invalid, we can't just stop processing the order there! We must notify the customer of what went wrong and also release the inventory that we reserved.
+Just as communication _between_ microservices can fail, the actions performed _by_each microservice can also fail. In many cases actions performed by a microservice depend upon failure-prone external systems and API's. If the Stripe API is down, or if the credit card is invalid, we can't just stop processing the order there! We must notify the customer of what went wrong and also release the inventory that we reserved.
 
 This means that microservice developers spend countless hours building out infrastructure to support:
 * Retries
@@ -117,7 +119,8 @@ The second problem with microservices is that once a process instance has starte
 As a result, microservice engineers spend time and money:
 * Slogging through logs on DataDog
 * Implementing complex distributed tracing such as Zipkin, Jaeger, or Kiali
-* Saving the state of each process instance (in our case, the `order`) in a DB just for visibility purposes at every step.
+* Saving the state of each process instance (in our case, the `order`) in a DB just for visibility purposes at every step
+* Coordinating with other teams to manually understand and debug workflows.
 
 ### Microservice Coupling
 
