@@ -24,7 +24,6 @@ def get_parent_wf() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
         the_name = wf.add_variable("input-name", VariableType.STR)
         wf.execute("greet", the_name)
-        wf.wait_for_threads()
 
     return Workflow("parent-wf", my_entrypoint)
 
