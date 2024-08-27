@@ -14,12 +14,12 @@ func main() {
 	var flakyWorker, childWorker *littlehorse.LHTaskWorker
 	var err error
 
-	flakyWorker, err = littlehorse.NewTaskWorker(config, exceptionhandler.FlakyTask, "flaky-task")
+	flakyWorker, err = littlehorse.NewTaskWorker(config, exceptionhandler.FlakyTask, exceptionhandler.FlakyTaskName)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	childWorker, err = littlehorse.NewTaskWorker(config, exceptionhandler.SomeStableTask, "some-stable-task")
+	childWorker, err = littlehorse.NewTaskWorker(config, exceptionhandler.SomeStableTask, exceptionhandler.StableTaskName)
 	if err != nil {
 		log.Fatal(err)
 	}

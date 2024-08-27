@@ -5,6 +5,12 @@ import (
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 )
 
+const (
+	WorkflowName   = "exception-handler"
+	FlakyTaskName  = "flaky-task"
+	StableTaskName = "some-stable-task"
+)
+
 func SomeStableTask() string {
 	return "Hello there"
 }
@@ -14,10 +20,9 @@ func FlakyTask() (*string, error) {
 }
 
 func ExceptionHandlerWorkflow(wf *littlehorse.WorkflowThread) {
-	taskOutput := wf.Execute("flaky-task")
-
-	exnToHandle := "TASK_ERROR"
-	wf.HandleException(&taskOutput, &exnToHandle, func(handler *littlehorse.WorkflowThread) {
-		handler.Execute("some-stable-task")
+	taskOutput := wf.Execute(FlakyTaskName)
+	exnToHandle := littlehorse.TaskError
+	wf.HandleError(&taskOutput, &exnToHandle, func(handler *littlehorse.WorkflowThread) {
+		handler.Execute(StableTaskName)
 	})
 }
