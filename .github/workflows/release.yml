@@ -21,6 +21,10 @@ jobs:
 
   publish-docker:
     uses: ./.github/workflows/publish-docker.yml
+    needs:
+      - prepare
+    with:
+      tag: ${{ needs.prepare.outputs.tag }}
 
   sdk-java:
     runs-on: ubuntu-latest
@@ -73,7 +77,7 @@ jobs:
       - name: Dump version
         env:
           TAG: ${{ needs.prepare.outputs.tag }}
-        run: sed -i "s/version = '.*'/version = '${TAG}'/g" sdk-python/pyproject.toml
+        run: sed -i "s/version = \".*\"/version = \"${TAG}\"/g" sdk-python/pyproject.toml
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -167,6 +171,9 @@ jobs:
   create-release:
     needs:
       - lhctl
+      - sdk-java
+      - sdk-python
+      - sdk-js
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

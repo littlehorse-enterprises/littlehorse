@@ -8,14 +8,20 @@ public class VersionTest {
     @Test
     void testDevelopmentVersion() {
 
-        Assertions.assertThat(ServerVersion.VERSION).isEqualTo("0.0.0-development");
+        Assertions.assertThat(ServerVersion.VERSION).isNotNull();
 
-        Assertions.assertThat(Version.getServerVersion())
-                .isEqualTo(ServerVersionResponse.newBuilder()
-                        .setMajorVersion(0)
-                        .setMinorVersion(0)
-                        .setPatchVersion(0)
-                        .setPreReleaseIdentifier("development")
-                        .build());
+        ServerVersionResponse serverVersionResponse = Version.getServerVersion();
+
+        String version = String.format(
+                "%s.%s.%s",
+                serverVersionResponse.getMajorVersion(),
+                serverVersionResponse.getMinorVersion(),
+                serverVersionResponse.getPatchVersion());
+
+        Assertions.assertThat(
+                        serverVersionResponse.getPreReleaseIdentifier().isEmpty()
+                                ? version
+                                : String.format("%s-%s", version, serverVersionResponse.getPreReleaseIdentifier()))
+                .isEqualTo(ServerVersion.VERSION);
     }
 }
