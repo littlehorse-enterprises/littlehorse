@@ -42,9 +42,13 @@ As I described in [last week's blog](./2024-08-22-promise-of-microservices.md):
 
 Crucially, a single microservice implements technical logic for a specific domain, or bounded context, within the larger company. In contrast, a comprehensive business process requires interacting with technology and people across _many_ business domains. The classic example of microservices architecture, e-commerce checkout, involves at least _shipping_, _billing_, _notifications_, _inventory_, and _orders_.
 
-In the rest of this blog post we will examine microservices through the the lense of e-commerce checkout flow.
+In the rest of this blog post we will examine microservices through the the lense of e-commerce checkout flow. To start with a simple use-case, the logical flow we will consider is:
 
-The "workflow" we will discuss below is 
+1. When an order is placed, we create a record in a database in the `orders` service.
+2. We then reserve inventory (and ensure that the item is in stock) in the `inventory` service.
+3. We charge the customer using the `payments` service.
+4. Lastly, we ship the item using the `shipping` service.
+
 
 
 ### Microservices are Distributed
