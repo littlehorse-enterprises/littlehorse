@@ -11,12 +11,16 @@ public class Version {
 
     public static ServerVersionResponse getServerVersion() {
         if (matcher.matches()) {
-            return ServerVersionResponse.newBuilder()
+            ServerVersionResponse.Builder builder = ServerVersionResponse.newBuilder()
                     .setMajorVersion(Integer.parseInt(matcher.group("major")))
                     .setMinorVersion(Integer.parseInt(matcher.group("minor")))
-                    .setPatchVersion(Integer.parseInt(matcher.group("patch")))
-                    .setPreReleaseIdentifier(matcher.group("prerelease") != null ? matcher.group("prerelease") : "")
-                    .build();
+                    .setPatchVersion(Integer.parseInt(matcher.group("patch")));
+
+            if (matcher.group("prerelease") != null) {
+                builder.setPreReleaseIdentifier(matcher.group("prerelease"));
+            }
+
+            return builder.build();
         }
         return null;
     }

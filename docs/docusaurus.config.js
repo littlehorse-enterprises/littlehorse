@@ -51,6 +51,9 @@ module.exports = {
         },
         blog: {
             blogSidebarCount: 'ALL',
+            blogTitle: 'LittleHorse OSS Blog',
+            blogDescription: 'The latest news and analysis from your favorite workflow engine.',
+            postsPerPage: 20,
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),

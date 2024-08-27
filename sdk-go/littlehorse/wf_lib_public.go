@@ -118,6 +118,10 @@ func (w *WfRunVariable) SearchableOn(fieldPath string, fieldType lhproto.Variabl
 	return w.searchableOnImpl(fieldPath, fieldType)
 }
 
+func (w *WfRunVariable) MaskedValue() *WfRunVariable {
+	return w.maskedValueImpl()
+}
+
 func (w *WfRunVariable) Required() *WfRunVariable {
 	return w.requiredImpl()
 }
