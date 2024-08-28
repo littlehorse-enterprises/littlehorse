@@ -7,7 +7,7 @@ This is a simple example of a workflow that uses an `ExternalEvent` to trigger a
 We have two `TaskDef`'s and thus two Task Functions. Note that `worker/main.go` kicks off two threads, one for each Task Worker.
 
 ```
-go run ./interrupt/worker
+go run ./examples/interrupt/worker
 ```
 
 ## Register the `WfSpec`
@@ -15,7 +15,7 @@ go run ./interrupt/worker
 In another terminal, run:
 
 ```
-go run ./interrupt/deploy
+go run ./examples/interrupt/deploy
 ```
 
 ## Run a `WfRun`
@@ -26,7 +26,7 @@ Let's run the `WfRun`:
 lhctl run interrupt-example
 ```
 
-Note the `wfRunId`. The `WfRun` will be sleeping for 15 seconds, in which time you can add to the tally by sending an interrupt event to it:
+Note the `wfRunId`. The `WfRun` will be sleeping for 120 seconds, in which time you can add to the tally by sending an interrupt event to it:
 
 ```
 lhctl postEvent <wfRunId> update-tally INT 10
