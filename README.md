@@ -12,50 +12,19 @@
 <a href="https://github.com/littlehorse-enterprises/littlehorse/tags"><img alt="go" src="https://img.shields.io/github/v/tag/littlehorse-enterprises/littlehorse?logo=go&logoColor=white&color=00aed8&label=go"></a>
 <a href="https://pypi.org/project/littlehorse-client/"><img alt="python" src="https://img.shields.io/pypi/v/littlehorse-client?logo=python&logoColor=white&color=success&label=python"></a>
 
-[LittleHorse](https://littlehorse.dev) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. The LittleHorse Runtime has uses in fields such as:
+[LittleHorse](https://littlehorse.dev) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. By allowing LittleHorse to manage coordination and sequencing of your applications, you no longer have to worry about:
 
-- Business Process Management
-- Event-Driven Systems
-- Logistics Management Applications
-- Financial Transaction Processing
-- And More.
-
-## LH Repository Inventory
-
-The LittleHorse repository contains the following components:
-
-- [`server`](server)
-    - Code for LittleHorse Server.
-- [`sdk-java`](sdk-java)
-    - Library for creating `WfSpec`'s in Java.
-    - Library for executing `TaskRun`'s in Java.
-- [`sdk-go`](sdk-go)
-    - Library for creating `WfSpec`'s in GoLang.
-    - Library for executing `TaskRun`'s in GoLang.
-- [`sdk-python`](sdk-python)
-    - Library for creating `WfSpec`'s in Python.
-    - Library for executing `TaskRun`'s in Python.
-- [`dashboard`](dashboard)
-  - Web UI for LH.
-- [`canary`](canary)
-  - Synthetic Monitoring Tool for LH Server.
-- [`lhctl`](lhctl)
-    - The `lhctl` command line interface.
-- [`e2e-tests`](e2e-tests)
-    - A series of system integration tests used to verify the cohesive behavior of
-    the LH Server, Java Workflow SDK, and Java Task Library together.
-- [`examples`](examples)
-    - A series of examples with different level of complexity.
-- [`schemas`](schemas)
-    - The LittleHorse Protocol Buffer Specification.
-- [`docker`](docker)
-    - The LittleHorse Docker Image.
+* Wiring microservices together with RPC calls or message queues.
+* Retries, timeouts, dead-letter queues.
+* Distributed tracing and debugging across multiple microservices.
+* Scheduling actions to asychronously happen in the future.
+* Backpressure and scalability.
 
 ## Getting Started
 
 To get started *using* LittleHorse, check out the [Installation Guide](docs/docs/05-developer-guide/00-install.md)
 
-To get started *developing* LittleHorse, check out the [Contributing Guide](CONTRIBUTING.md).
+To get started *developing* LittleHorse, check out the [Contributing Guide](./local-dev/README.md).
 
 - [Server Configurations](docs/docs/06-operations/01-server-configuration.md)
 - [Workers/Clients Configurations](docs/docs/06-operations/03-client-configuration.md)
