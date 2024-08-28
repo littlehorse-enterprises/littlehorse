@@ -1,16 +1,19 @@
-<p align="center">
-<img alt="LH" src="https://raw.githubusercontent.com/littlehorse-enterprises/littlehorse/01ef9618b7b719c3aac1d2e2eb5096f164a659b1/docs/images/black-logo-500px.png" width="50%">
-</p>
-
 # LittleHorse
 
 <a href="https://github.com/littlehorse-enterprises/littlehorse"><img alt="github" src="https://img.shields.io/badge/GitHub-blue?logo=github&logoColor=white"></a>
 <a href="https://littlehorse.io/"><img alt="littlehorse.io" src="https://raw.githubusercontent.com/littlehorse-enterprises/littlehorse/01ef9618b7b719c3aac1d2e2eb5096f164a659b1/docs/images/badge-littlehorse-io.svg"/></a>
 <a href="https://littlehorse.dev/"><img alt="littlehorse.dev" src="https://raw.githubusercontent.com/littlehorse-enterprises/littlehorse/01ef9618b7b719c3aac1d2e2eb5096f164a659b1/docs/images/badge-littlehorse-dev.svg"/></a>
+[![docs](https://img.shields.io/badge/Documentation-5C4033.svg?logo=docusaurus&logoColor=white)](https://kubernetes.slack.com/messages/C87MF1RFD)
+[![slack](https://img.shields.io/badge/Slack-511651.svg?logo=slack)](https://kubernetes.slack.com/messages/C87MF1RFD)
 
 <a href="https://central.sonatype.com/artifact/io.littlehorse/littlehorse-client"><img alt="java" src="https://img.shields.io/maven-central/v/io.littlehorse/littlehorse-client?logo=openjdk&logoColor=white&color=orange&label=java"></a>
 <a href="https://github.com/littlehorse-enterprises/littlehorse/tags"><img alt="go" src="https://img.shields.io/github/v/tag/littlehorse-enterprises/littlehorse?logo=go&logoColor=white&color=00aed8&label=go"></a>
 <a href="https://pypi.org/project/littlehorse-client/"><img alt="python" src="https://img.shields.io/pypi/v/littlehorse-client?logo=python&logoColor=white&color=success&label=python"></a>
+
+
+<p align="center">
+<img alt="LH" src="./docs/static/img/2024-08-28-workflowRun.png" width="80%" style="border-radius: 25px; outline: 5px solid black;">
+</p>
 
 [LittleHorse](https://littlehorse.dev) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. By allowing LittleHorse to manage coordination and sequencing of your applications, you no longer have to worry about:
 
@@ -20,17 +23,61 @@
 * Scheduling actions to asychronously happen in the future.
 * Backpressure and scalability.
 
+
 ## Getting Started
 
-To get started *using* LittleHorse, check out the [Installation Guide](docs/docs/05-developer-guide/00-install.md)
+### Installing LittleHorse
 
-To get started *developing* LittleHorse, check out the [Contributing Guide](./local-dev/README.md).
+1. Install the LittleHorse CLI agent as follows:
 
-- [Server Configurations](docs/docs/06-operations/01-server-configuration.md)
-- [Workers/Clients Configurations](docs/docs/06-operations/03-client-configuration.md)
-- [Dashboard Configurations](docs/docs/06-operations/02-dashboard-configuration.md)
+```sh
+brew install littlehorse-enterprises/lh/lhctl
+```
 
-## License
+Alternatively, you can install it from our [GitHub Releases page](https://github.com/littlehorse-enterprises/littlehorse/releases)
+
+2. Next, run LittleHorse Server and Dashboard using our standalone docker image:
+
+```
+docker run --name littlehorse -d -p 2023:2023 -p 8080:8080 ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:latest
+```
+
+3. Verify the server is installed and running using lhctl
+
+```
+-> lhctl version
+lhctl version: 0.11.0 (Git SHA homebrew)
+Server version: 0.11.1
+```
+
+4. Navigate to the dashboard at `http://localhost:3000`
+
+For more information go to our [Quickstart Installation Docs](https://littlehorse.dev/docs/developer-guide/install).
+
+### Running Your First Workflow
+
+To run a workflow with LittleHorse, you need to:
+
+- Define tasks which are units of work that can be used in a process, and implement programs that execute those tasks.
+- Define your workflows and tell the workflow engine about it
+- Run the workflow
+- The workflow engine ensures that your process gets executed correctly.
+
+<p align="center">
+<img src="./docs/static/img/2024-08-28-lh-application.png" width="75%" style="border-radius: 25px; outline: 5px solid black;">
+</p>
+
+To get started quickly with a basic workflow, try our quickstarts in [Java](https://github.com/littlehorse-enterprises/lh-quickstart-java), [Go](https://github.com/littlehorse-enterprises/lh-quickstart-go), and [Python](https://github.com/littlehorse-enterprises/lh-quickstart-python). For more detailed examples, you can check out:
+- The [examples directory](./examples) in this repo
+- The [lh-examples repository](https://github.com/littlehorse-enterprises/lh-examples), which contains more complex applications.
+
+For documentation, visit [littlehorse.dev](https://www.littlehorse.dev/).
+
+## Developing
+
+For information about developing LittleHorse, see the guide in our [local-dev README](./local-dev/README.md).
+
+### License
 
 <a href="https://spdx.org/licenses/SSPL-1.0.html"><img alt="SSPL LICENSE" src="https://img.shields.io/badge/covered%20by-SSPL%201.0-blue"></a>
 
