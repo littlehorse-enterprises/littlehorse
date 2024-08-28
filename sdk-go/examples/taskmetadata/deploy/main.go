@@ -11,7 +11,7 @@ import (
 
 func main() {
 	_, client := examples.LoadConfigAndClient()
-	wf := littlehorse.NewWorkflow(taskmetadata.MyWorkflowGet, "my-workflow")
+	wf := littlehorse.NewWorkflow(taskmetadata.MyWorkflowGet, taskmetadata.WorkflowName)
 	putWf, err := wf.Compile()
 	if err != nil {
 		log.Fatal(err)
