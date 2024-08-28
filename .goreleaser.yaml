@@ -9,9 +9,6 @@
 version: 2
 project_name: lhctl
 
-release:
-  prerelease: false
-
 checksum:
   name_template: "lhctl_checksums.sha256"
 
