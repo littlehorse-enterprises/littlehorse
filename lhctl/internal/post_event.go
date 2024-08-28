@@ -23,12 +23,12 @@ currently do not carry Schema information (this will change in a future release)
 The payload is deserialized according to the type. JSON objects should be provided as
 a string; BYTES objects should be b64-encoded.
 
-It's also possible to pass a null input:
-lhctl postEvent <wfRunId> <externalEventName> NULL
+It's also possible to pass an empty input:
+lhctl postEvent <wfRunId> <externalEventName>
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 2 {
-			log.Fatal("Required args: <wfRunId> <externalEventName> <varType> <payload> or  <wfRunId> <externalEventName> (to send a null payload)")
+			log.Fatal("Required args: <wfRunId> <externalEventName> <varType> <payload> or  <wfRunId> <externalEventName> (to send an empty payload)")
 		}
 
 		wfRunIdStr, eedName := args[0], args[1]
@@ -44,7 +44,7 @@ lhctl postEvent <wfRunId> <externalEventName> NULL
 			varType, validVarType := lhproto.VariableType_value[varTypeStr]
 			if !validVarType {
 				log.Fatal(
-					"Unrecognized varType. Valid options: INT, STR, BYTES, BOOL, JSON_OBJ, JSON_ARR, DOUBLE or NULL.",
+					"Unrecognized varType. Valid options: INT, STR, BYTES, BOOL, JSON_OBJ, JSON_ARR or DOUBLE.",
 				)
 			}
 			varTypeEnum := lhproto.VariableType(varType)
