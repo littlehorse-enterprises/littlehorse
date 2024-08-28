@@ -31,7 +31,7 @@ export default function Home() {
   return (
     <Layout
       title={`Home`}
-      description="Workflow-Driven Microservices: the Future of Automation.">
+      description="Workflow-Driven Microservices: The Future of Automation.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />
