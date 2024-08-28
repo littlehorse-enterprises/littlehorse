@@ -25,7 +25,7 @@ lhctl run example-interrupt-handler
 lhctl get wfRun <wf run id>
 
 # Note that it is 'RUNNING'. Next, post an external event using the following:
-lhctl postEvent <wf run id> interruption-event NULL
+lhctl postEvent <wf run id> interruption-event
 
 # Then inspect the wfRun:
 # Note that the threadRuns number 1 is 'ERROR' with type 'INTERRUPT'
