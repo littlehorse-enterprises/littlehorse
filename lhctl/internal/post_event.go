@@ -23,32 +23,31 @@ currently do not carry Schema information (this will change in a future release)
 The payload is deserialized according to the type. JSON objects should be provided as
 a string; BYTES objects should be b64-encoded.
 
-It's also possible to pass a null input:
-lhctl postEvent <wfRunId> <externalEventName> NULL
+It's also possible to pass an empty input:
+lhctl postEvent <wfRunId> <externalEventName>
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 2 {
-			log.Fatal("Required args: <wfRunId> <externalEventName> <varType> <payload> or  <wfRunId> <externalEventName> (to send a null payload)")
+			log.Fatal("Required args: <wfRunId> <externalEventName> <varType> <payload> or  <wfRunId> <externalEventName> (to send an empty payload)")
 		}
 
-		wfRunIdStr, eedName, varTypeStr := args[0], args[1], args[2]
-		varType, validVarType := lhproto.VariableType_value[varTypeStr]
+		wfRunIdStr, eedName := args[0], args[1]
 
 		wfRunId := littlehorse.StrToWfRunId(wfRunIdStr)
-
-		if !validVarType {
-			log.Fatal(
-				"Unrecognized varType. Valid options: INT, STR, BYTES, BOOL, JSON_OBJ, JSON_ARR, DOUBLE or NULL.",
-			)
-		}
-
-		varTypeEnum := lhproto.VariableType(varType)
 
 		content := &lhproto.VariableValue{}
 
 		if len(args) == 4 {
+			varTypeStr := args[2]
 			payloadStr := args[3]
 
+			varType, validVarType := lhproto.VariableType_value[varTypeStr]
+			if !validVarType {
+				log.Fatal(
+					"Unrecognized varType. Valid options: INT, STR, BYTES, BOOL, JSON_OBJ, JSON_ARR or DOUBLE.",
+				)
+			}
+			varTypeEnum := lhproto.VariableType(varType)
 			var err error
 			content, err = littlehorse.StrToVarVal(payloadStr, varTypeEnum)
 			if err != nil {
