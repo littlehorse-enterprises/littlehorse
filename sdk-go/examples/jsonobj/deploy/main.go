@@ -11,7 +11,7 @@ import (
 
 func main() {
 	_, client := examples.LoadConfigAndClient()
-	wf := littlehorse.NewWorkflow(jsonobj.MyWorkflowGet, "my-workflow")
+	wf := littlehorse.NewWorkflow(jsonobj.MyWorkflowGet, jsonobj.WorkflowName)
 	putWf, err := wf.Compile()
 	if err != nil {
 		log.Fatal(err)
