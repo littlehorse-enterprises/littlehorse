@@ -28,9 +28,6 @@ builds:
     goarch:
       - amd64
       - arm64
-before:
-  hooks:
-    - ./local-dev/setup-go.sh
 archives:
   - format: tar.gz
     # this name template makes the OS and Arch compatible with the results of `uname`.
@@ -45,3 +42,7 @@ archives:
     format_overrides:
       - goos: windows
         format: zip
+
+git:
+  ignore_tags:
+    - sdk-go/v0.11.0
