@@ -13,13 +13,20 @@ func SpecificGreeting(name string) string {
 	return "Hello, " + name + "!"
 }
 
+const (
+	AskForNameTaskName       = "ask-for-name"
+	SpecificGreetingTaskName = "specific-greeting"
+	EventDefName             = "my-name"
+	WorkflowName             = "external-event"
+)
+
 func ExternalEventWorkflow(wf *littlehorse.WorkflowThread) {
 	nameVar := wf.AddVariable("name", lhproto.VariableType_STR)
-	wf.Execute("ask-for-name")
+	wf.Execute(AskForNameTaskName)
 
-	eventOutput := wf.WaitForEvent("my-name")
+	eventOutput := wf.WaitForEvent(EventDefName)
 
 	wf.Mutate(nameVar, lhproto.VariableMutationType_ASSIGN, eventOutput)
 
-	wf.Execute("specific-greeting", nameVar)
+	wf.Execute(SpecificGreetingTaskName, nameVar)
 }

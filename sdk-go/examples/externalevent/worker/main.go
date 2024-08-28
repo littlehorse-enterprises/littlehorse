@@ -14,12 +14,12 @@ func main() {
 	var askForNameWorker, greetWorker *littlehorse.LHTaskWorker
 	var err error
 
-	askForNameWorker, err = littlehorse.NewTaskWorker(config, externalevent.AskForName, "ask-for-name")
+	askForNameWorker, err = littlehorse.NewTaskWorker(config, externalevent.AskForName, externalevent.AskForNameTaskName)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	greetWorker, err = littlehorse.NewTaskWorker(config, externalevent.SpecificGreeting, "specific-greeting")
+	greetWorker, err = littlehorse.NewTaskWorker(config, externalevent.SpecificGreeting, externalevent.SpecificGreetingTaskName)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -16,6 +16,11 @@ type Article struct {
 	Content string `json:"content,omitempty"`
 }
 
+const (
+	TaskDefName  = "greet"
+	WorkflowName = "json-array-workflow"
+)
+
 func AddUpList(inputs *[]InputData) int {
 	result := 0
 	for _, inputData := range *inputs {
@@ -26,5 +31,5 @@ func AddUpList(inputs *[]InputData) int {
 
 func MyWorkflowAdd(wf *littlehorse.WorkflowThread) {
 	inputVar := wf.AddVariable("input", lhproto.VariableType_JSON_ARR)
-	wf.Execute("greet", inputVar)
+	wf.Execute(TaskDefName, inputVar)
 }

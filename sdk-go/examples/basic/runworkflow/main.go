@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples/basic"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
@@ -23,7 +24,7 @@ func main() {
 	wfId, err := (*client).RunWf(
 		context.Background(),
 		&lhproto.RunWfRequest{
-			WfSpecName: "my-workflow",
+			WfSpecName: basic.WorkflowName,
 			Variables: map[string]*lhproto.VariableValue{
 				"name": {
 					Value: &lhproto.VariableValue_Str{Str: name},

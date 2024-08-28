@@ -14,12 +14,12 @@ func main() {
 	var parentWorker, childWorker *littlehorse.LHTaskWorker
 	var err error
 
-	parentWorker, err = littlehorse.NewTaskWorker(config, childthread.ParentThreadTask, "parent-thread-task")
+	parentWorker, err = littlehorse.NewTaskWorker(config, childthread.ParentThreadTask, childthread.ParentTaskName)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	childWorker, err = littlehorse.NewTaskWorker(config, childthread.ChildThreadTask, "child-thread-task")
+	childWorker, err = littlehorse.NewTaskWorker(config, childthread.ChildThreadTask, childthread.ChildTaskName)
 	if err != nil {
 		log.Fatal(err)
 	}

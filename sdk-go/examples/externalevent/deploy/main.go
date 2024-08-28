@@ -15,11 +15,11 @@ func main() {
 
 	(*client).PutExternalEventDef(context.Background(),
 		&lhproto.PutExternalEventDefRequest{
-			Name: "my-name",
+			Name: externalevent.EventDefName,
 		},
 	)
 
-	wf := littlehorse.NewWorkflow(externalevent.ExternalEventWorkflow, "external-event")
+	wf := littlehorse.NewWorkflow(externalevent.ExternalEventWorkflow, externalevent.WorkflowName)
 	putWf, err := wf.Compile()
 	if err != nil {
 		log.Fatal(err)

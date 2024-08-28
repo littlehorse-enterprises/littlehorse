@@ -14,7 +14,7 @@ func main() {
 	var donutWorker *littlehorse.LHTaskWorker
 	var err error
 
-	donutWorker, err = littlehorse.NewTaskWorker(config, while.Donut, "eat-another-donut")
+	donutWorker, err = littlehorse.NewTaskWorker(config, while.Donut, while.TaskDefName)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -11,7 +11,7 @@ import (
 func main() {
 	config, _ := examples.LoadConfigAndClient()
 
-	tw, err := littlehorse.NewTaskWorker(config, jsonobj.GetInfo, "greet")
+	tw, err := littlehorse.NewTaskWorker(config, jsonobj.GetInfo, jsonobj.TaskDefName)
 
 	if err != nil {
 		log.Fatal(err)

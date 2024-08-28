@@ -12,7 +12,7 @@ import (
 func main() {
 	_, client := examples.LoadConfigAndClient()
 
-	wf := littlehorse.NewWorkflow(exceptionhandler.ExceptionHandlerWorkflow, "exception-handler")
+	wf := littlehorse.NewWorkflow(exceptionhandler.ExceptionHandlerWorkflow, exceptionhandler.WorkflowName)
 	putWf, err := wf.Compile()
 	if err != nil {
 		log.Fatal(err)

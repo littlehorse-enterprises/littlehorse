@@ -16,7 +16,7 @@ else:
 We have two `TaskDef`'s and thus two Task Functions. Note that `worker/main.go` kicks off two threads, one for each Task Worker.
 
 ```
-go run ./conditionals/ifelse/worker
+go run ./examples/conditionals/ifelse/worker
 ```
 
 ## Register the `WfSpec`
@@ -24,7 +24,7 @@ go run ./conditionals/ifelse/worker
 In another terminal, run:
 
 ```
-go run ./conditionals/ifelse/deploy
+go run ./examples/conditionals/ifelse/deploy
 ```
 
 ## Run a `WfRun`
@@ -35,10 +35,15 @@ Let's run the `WfRun` with a small amount of donuts:
 lhctl run donut-workflow number-of-donuts 3
 ```
 
-Let's view the output of the Task
+Let's find and copy the TaskGuid
+```
+lhctl get nodeRun <wfRunId from before> 0 2
+```
+
+Let's view the output of the Task:
 
 ```
-lhctl get nodeRun <wfRunId from before> 0 2 | jq .result.task.output.str
+lhctl get taskRun <wfRunId from before> <taskGuid from before> | jq '.attempts[0].output.str'
 ```
 
 That should print:
@@ -53,10 +58,15 @@ Let's run it after we've had too many donuts:
 lhctl run donut-workflow number-of-donuts 15
 ```
 
-Let's view the output of the Task
+Let's find and copy the TaskGuid
+```
+lhctl get nodeRun <wfRunId from before> 0 2
+```
+
+Let's view the output of the Task:
 
 ```
-lhctl get nodeRun <wfRunId from before> 0 2 | jq .result.task.output.str
+lhctl get taskRun <wfRunId from before> <taskGuid from before> | jq '.attempts[0].output.str'
 ```
 
 That should print:

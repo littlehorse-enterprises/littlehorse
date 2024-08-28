@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	lh "github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples"
@@ -11,7 +11,7 @@ import (
 
 func main() {
 	_, client := examples.LoadConfigAndClient()
-	wf := lh.NewWorkflow(basic.MyWorkflow, "my-workflow")
+	wf := littlehorse.NewWorkflow(basic.MyWorkflow, basic.WorkflowName)
 	putWf, err := wf.Compile()
 	if err != nil {
 		log.Fatal(err)
@@ -21,5 +21,5 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	lh.PrintProto(resp)
+	littlehorse.PrintProto(resp)
 }

@@ -15,11 +15,11 @@ func main() {
 
 	(*client).PutExternalEventDef(context.Background(),
 		&lhproto.PutExternalEventDefRequest{
-			Name: "update-tally",
+			Name: interrupt.UpdateTallyInterruptName,
 		},
 	)
 
-	wf := littlehorse.NewWorkflow(interrupt.InterruptWorkflow, "interrupt-example")
+	wf := littlehorse.NewWorkflow(interrupt.InterruptWorkflow, interrupt.WorkflowName)
 	putWf, err := wf.Compile()
 	if err != nil {
 		log.Fatal(err)
