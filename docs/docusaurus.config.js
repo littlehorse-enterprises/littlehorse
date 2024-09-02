@@ -133,35 +133,53 @@ module.exports = {
       footer: {
         links: [
           {
-            title: "Docs",
+            title: "Learn",
             items: [
               {
-                label: "Concepts",
+                label: "LittleHorse Concepts",
                 to: "/docs/concepts",
               },
-              {
-                label: "Developer Guide",
-                to: "/docs/developer-guide",
-              },
-            ],
-          },
-          {
-            title: "More",
-            items: [
               {
                 label: "Blog",
                 to: "/blog",
               },
               {
-                label: "Slack",
-                href: "https://launchpass.com/littlehorsecommunity",
+                label: "YouTube",
+                to: "https://www.youtube.com/@LittleHorse-ey3vw",
               },
+            ],
+          },
+          {
+            title: "Get Started",
+            items: [
               {
                 label: "GitHub",
                 href: "https://github.com/littlehorse-enterprises/littlehorse",
               },
+              {
+                label: "QuickStarts",
+                to: "/docs/developer-guide/install",
+              }
             ],
           },
+          {
+            title: "Get In Touch",
+            items: [
+              {
+                label: "Community Slack",
+                href: "https://launchpass.com/littlehorsecommunity",
+              },
+              {
+                label: "Contact Us",
+                href: "https://docs.google.com/forms/d/e/1FAIpQLScXVvTYy4LQnYoFoRKRQ7ppuxe0KgncsDukvm96qKN0pU5TnQ/viewform?usp=sf_link",
+              },
+              {
+                label: "LittleHorse Enterprises",
+                href: "https://littlehorse.io",
+              }
+            ],
+          },
+
         ],
         copyright: `Copyright © ${new Date().getFullYear()} LittleHorse Enterprises LLC.`,
       },
