@@ -81,11 +81,11 @@ Once you tell LittleHorse to [run an instance of your `WfSpec`](https://littleho
 
 ## Why Workflow?
 
-Microservice applications are distributed workflows. This presents operational challenges because there is no "leader" providing oversight in microservice processes. Thankfully, a developer-focused and horizontally-scalable workflow engine like LittleHorse can fill the "leader" role, thus providing oversight and reliability, and taming the complexity of your business processes.
+Microservice applications that are designed as distributed workflows without a workflow engine (like a chain of dominoes falling) present operational challenges because there is no "leader" providing oversight over the microservice processes. Thankfully, a developer-focused and horizontally-scalable workflow engine like LittleHorse can fill the "leader" role, thus providing oversight and reliability, and taming the complexity of your business processes.
 
-Additionally, using a workflow engine allows you to develop a set of _resuable_ and _modular_ tasks which can be easily dropped into any business workflow with a common API. Rather than accumulating tech debt, workflow engines allow you to accumulate a set of useful lego bricks.
+Additionally, using a workflow engine allows you to develop a set of _reusable_ and _modular_ tasks which can be easily dropped into any business workflow with a common API. Rather than accumulating tech debt, workflow engines allow you to accumulate a set of useful lego bricks.
 
-In most existing orginizations there's a long list of API calls required to simply _run_ a workflow.  Training engineers to use all of the new APIs while securely distributing access and permissions causes confusion and slow development cycles.  Workflow engines provide a single API and single system that allows anyone to securely manage, run, and operate complex workflows.
+In most existing organizations there's a long list of API calls required to simply _run_ a workflow.  Training engineers to use all of the new APIs while securely distributing access and permissions causes confusion and slow development cycles.  Workflow engines provide a single API and single system that allows anyone to securely manage, run, and operate complex workflows.
 
 ### Mission Critical Oversight
 
