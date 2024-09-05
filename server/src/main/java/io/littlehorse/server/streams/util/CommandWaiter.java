@@ -14,7 +14,7 @@ public class CommandWaiter {
     private String commandId;
 
     private WaitForCommandResponse response;
-    private Exception caughtException;
+    private Throwable caughtException;
     private Lock lock;
 
     @Getter
@@ -58,7 +58,7 @@ public class CommandWaiter {
         }
     }
 
-    public boolean setExceptionAndMaybeComplete(Exception caughtException) {
+    public boolean setExceptionAndMaybeComplete(Throwable caughtException) {
         try {
             lock.lock();
             if (alreadyCompleted) return false;
