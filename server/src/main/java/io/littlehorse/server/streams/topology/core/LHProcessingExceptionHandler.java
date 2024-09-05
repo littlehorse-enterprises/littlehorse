@@ -9,11 +9,11 @@ import org.apache.kafka.common.errors.RecordTooLargeException;
 // This class will implement ProcessingException handler on Kafka Streams 3.9
 // See KIP-1033
 @Slf4j
-public class CoreProcessingExceptionHandler {
+public class LHProcessingExceptionHandler {
 
     private final LHServer server;
 
-    public CoreProcessingExceptionHandler(LHServer server) {
+    public LHProcessingExceptionHandler(LHServer server) {
         this.server = server;
     }
 
@@ -44,6 +44,23 @@ public class CoreProcessingExceptionHandler {
                 } catch (Exception e) {
                     // Nothing to do
                 }
+            }
+        } catch (MetadataCommandException ex) {
+            if (ex.isUserError()) {
+                log.trace(
+                        "Sending exception when processing command {}: {}",
+                        ex.getCommand().getType(),
+                        ex.getCause().getMessage());
+            } else {
+                log.error(
+                        "Caught exception processing {} command: {}",
+                        ex.getCommand().getType(),
+                        ex.getCause());
+            }
+            try {
+                server.sendErrorToClient(ex.getCommand().getCommandId(), ex.getCause());
+            } catch (Exception e) {
+                // Nothing to do
             }
         } catch (RecordTooLargeException rtle) {
             // Log and continue. This will include a record-dropped metric

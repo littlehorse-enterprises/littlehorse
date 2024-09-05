@@ -29,7 +29,7 @@ import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreCommandException;
-import io.littlehorse.server.streams.topology.core.CoreProcessingExceptionHandler;
+import io.littlehorse.server.streams.topology.core.LHProcessingExceptionHandler;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -57,7 +57,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private KeyValueStore<String, Bytes> globalStore;
     private boolean partitionIsClaimed;
 
-    private final CoreProcessingExceptionHandler exceptionHandler;
+    private final LHProcessingExceptionHandler exceptionHandler;
 
     public CommandProcessor(
             LHServerConfig config,
@@ -68,7 +68,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.server = server;
         this.metadataCache = metadataCache;
         this.globalTaskQueueManager = globalTaskQueueManager;
-        this.exceptionHandler = new CoreProcessingExceptionHandler(server);
+        this.exceptionHandler = new LHProcessingExceptionHandler(server);
     }
 
     @Override
