@@ -104,4 +104,6 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
             internalComms.waitForCommand(command, this, requestContext);
         }
     }
+
+    public void setOnCancelHandler(Runnable onCancelHandler) {}
 }
