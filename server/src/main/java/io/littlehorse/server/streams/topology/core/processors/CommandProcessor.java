@@ -36,6 +36,7 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.PunctuationType;
@@ -106,6 +107,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
                 server.onResponseReceived(command.getCommandId(), cmdReply);
             }
+        } catch (KafkaException ke) {
+            throw ke;
         } catch (Exception exn) {
             throw new CoreCommandException(exn, command);
         }
