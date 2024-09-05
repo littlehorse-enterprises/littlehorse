@@ -8,12 +8,12 @@ import lombok.Getter;
 public class CoreCommandException extends RuntimeException {
     private final CommandModel command;
     private final boolean userError;
-    private final boolean sendErrorToClient;
+    private final boolean notifyClientOnError;
 
     public CoreCommandException(Exception cause, CommandModel command) {
         super(cause);
         this.command = command;
         userError = LHUtil.isUserError(cause);
-        this.sendErrorToClient = command.hasResponse() && command.getCommandId() != null;
+        this.notifyClientOnError = command.hasResponse() && command.getCommandId() != null;
     }
 }
