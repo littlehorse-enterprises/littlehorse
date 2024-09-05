@@ -13,7 +13,9 @@ public class ClusterHealthRequestObserver implements StreamObserver<RegisterTask
 
     public ClusterHealthRequestObserver(StreamObserver<RegisterTaskWorkerResponse> responseObserver) {
         this.responseObserver = responseObserver;
-        ((ServerCallStreamObserver<RegisterTaskWorkerResponse>) responseObserver).setOnCancelHandler(() -> {});
+        ((ServerCallStreamObserver<RegisterTaskWorkerResponse>) responseObserver).setOnCancelHandler(() -> {
+            // If this observer event has already closed, Async Waiters might attempt to finish it.
+        });
     }
 
     @Override

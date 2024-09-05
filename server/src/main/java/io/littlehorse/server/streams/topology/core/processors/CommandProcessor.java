@@ -48,8 +48,8 @@ import org.apache.kafka.streams.state.KeyValueStore;
 public class CommandProcessor implements Processor<String, Command, String, CommandProcessorOutput> {
 
     private ProcessorContext<String, CommandProcessorOutput> ctx;
-    private LHServerConfig config;
-    private LHServer server;
+    private final LHServerConfig config;
+    private final LHServer server;
     private final MetadataCache metadataCache;
     private final TaskQueueManager globalTaskQueueManager;
 

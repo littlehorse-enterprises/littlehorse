@@ -1069,7 +1069,9 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             boolean shouldCompleteStream) {
         RequestExecutionContext requestContext = requestContext();
         if (responseObserver instanceof ServerCallStreamObserver<RC> serverCall) {
-            serverCall.setOnCancelHandler(() -> {});
+            serverCall.setOnCancelHandler(() -> {
+                // If this observer event has already closed, Async Waiters might attempt to finish it.
+            });
         }
         processCommand(
                 command,
