@@ -44,8 +44,7 @@ public class CommandProcessorTest {
     @Mock
     private LHServerConfig config;
 
-    @Mock
-    private LHServer server;
+    private LHServer server = mock();
 
     @Mock
     private TaskQueueManager taskQueueManager;
