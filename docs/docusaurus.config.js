@@ -122,11 +122,13 @@ module.exports = {
             href: "https://github.com/littlehorse-enterprises/littlehorse",
             className: 'header-github-link',
             position: "right",
+            'aria-label': 'GitHub Icon',
           },
           {
             href: "https://launchpass.com/littlehorsecommunity",
             className: 'header-slack-link',
             position: "right",
+            'aria-label': 'Slack Icon',
           },
         ],
       },
