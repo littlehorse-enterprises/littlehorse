@@ -10,7 +10,7 @@ namespace LittleHorse.Worker.Internal
         private LHServerConnectionManager<T> _connectionManager;
         private LHHostInfo _hostInfo;
         private bool _running;
-        private LHPublicApi.LHPublicApiClient _client;
+        private LittleHorse.LittleHorseClient _client;
         private AsyncDuplexStreamingCall<PollTaskRequest, PollTaskResponse> _call;
         private ILogger? _logger;
 

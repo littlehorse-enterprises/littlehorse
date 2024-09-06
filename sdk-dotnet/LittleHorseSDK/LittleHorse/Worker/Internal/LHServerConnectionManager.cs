@@ -21,7 +21,7 @@ namespace LittleHorse.Worker.Internal
         private List<VariableMapping> _mappings;
         private T _executable;
         private ILogger? _logger;
-        private LHPublicApi.LHPublicApiClient _bootstrapClient;
+        private LittleHorse.LittleHorseClient _bootstrapClient;
         private bool _running;
         private List<LHServerConnection<T>> _runningConnections;
         private Thread _rebalanceThread;
@@ -148,14 +148,14 @@ namespace LittleHorse.Worker.Internal
             return _runningConnections.Any(conn => conn.IsSame(host));
         }
 
-        public async void SubmitTaskForExecution(ScheduledTask scheduledTask, LHPublicApi.LHPublicApiClient client)
+        public async void SubmitTaskForExecution(ScheduledTask scheduledTask, LittleHorse.LittleHorseClient client)
         {
             await _semaphore.WaitAsync();
 
             DoTask(scheduledTask, client);
         }
 
-        private void DoTask(ScheduledTask scheduledTask, LHPublicApi.LHPublicApiClient client)
+        private void DoTask(ScheduledTask scheduledTask, LittleHorse.LittleHorseClient client)
         {
             ReportTaskRun result = ExecuteTask(scheduledTask, LHMappingHelper.MapDateTimeFromProtoTimeStamp(scheduledTask.CreatedAt));
             _semaphore.Release();

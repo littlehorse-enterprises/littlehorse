@@ -30,7 +30,7 @@ $docker_run protoc \
     --pyi_out=/littlehorse/sdk-python/littlehorse/model \
     --go_out=/littlehorse/sdk-go/lhproto \
     --grpc-java_out=/littlehorse/sdk-java/src/main/java \
-    --csharp_out=/littlehorse/sdk-dotnet/LittleHorseSDK/LittleHorse/Common/Configuration/Models \
+    --csharp_out=/littlehorse/sdk-dotnet/LittleHorseSDK/LittleHorse/Common/Configuration/Models --plugin=protoc-gen-grpc=$(which grpc_csharp_plugin)\
     --go-grpc_out=/littlehorse/sdk-go/lhproto \
     --doc_out=/littlehorse/docs/docs --doc_opt=/littlehorse/docs/protobuf-go-template.tpl,08-api.md \
     -I=/littlehorse/schemas/littlehorse \
@@ -72,4 +72,4 @@ $docker_run protoc \
 	-I /littlehorse/schemas/littlehorse \
     service.proto
 
-echo "The Force will be with you. Always."
+echo "The Horse Force will be with you. Always."

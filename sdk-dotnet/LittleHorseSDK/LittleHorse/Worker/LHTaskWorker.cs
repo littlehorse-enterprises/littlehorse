@@ -27,7 +27,7 @@ namespace LittleHorse.Worker
         private LHTaskSignature<T>? _taskSignature;
         private LHServerConnectionManager<T>? _manager;
         private string _taskDefName;
-        private LHPublicApi.LHPublicApiClient _grpcClient;
+        private LittleHorse.LittleHorseClient _grpcClient;
 
         public string TaskDefName { get => _taskDefName; }
 
