@@ -78,7 +78,6 @@ public class ABSimpleDeleteDeadTaskWorker extends Test {
         return RegisterTaskWorkerRequest.newBuilder()
                 .setTaskWorkerId(clientId)
                 .setTaskDefId(LHLibUtil.taskDefId(taskDefName))
-                .setListenerName(config.getConnectListener())
                 .build();
     }
 

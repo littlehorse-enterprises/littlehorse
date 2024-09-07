@@ -43,7 +43,7 @@ class NodeRun(_message.Message):
     error_message: str
     failures: _containers.RepeatedCompositeFieldContainer[Failure]
     task: TaskNodeRun
-    external_event: ExternalEventRun
+    external_event: ExternalEventNodeRun
     entrypoint: EntrypointRun
     exit: ExitRun
     start_thread: StartThreadRun
@@ -52,7 +52,7 @@ class NodeRun(_message.Message):
     user_task: UserTaskNodeRun
     start_multiple_threads: StartMultipleThreadsRun
     throw_event: ThrowEventNodeRun
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., failure_handler_ids: _Optional[_Iterable[int]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., arrival_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., thread_spec_name: _Optional[str] = ..., node_name: _Optional[str] = ..., error_message: _Optional[str] = ..., failures: _Optional[_Iterable[_Union[Failure, _Mapping]]] = ..., task: _Optional[_Union[TaskNodeRun, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventRun, _Mapping]] = ..., entrypoint: _Optional[_Union[EntrypointRun, _Mapping]] = ..., exit: _Optional[_Union[ExitRun, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadRun, _Mapping]] = ..., wait_threads: _Optional[_Union[WaitForThreadsRun, _Mapping]] = ..., sleep: _Optional[_Union[SleepNodeRun, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNodeRun, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsRun, _Mapping]] = ..., throw_event: _Optional[_Union[ThrowEventNodeRun, _Mapping]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., failure_handler_ids: _Optional[_Iterable[int]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., arrival_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., thread_spec_name: _Optional[str] = ..., node_name: _Optional[str] = ..., error_message: _Optional[str] = ..., failures: _Optional[_Iterable[_Union[Failure, _Mapping]]] = ..., task: _Optional[_Union[TaskNodeRun, _Mapping]] = ..., external_event: _Optional[_Union[ExternalEventNodeRun, _Mapping]] = ..., entrypoint: _Optional[_Union[EntrypointRun, _Mapping]] = ..., exit: _Optional[_Union[ExitRun, _Mapping]] = ..., start_thread: _Optional[_Union[StartThreadRun, _Mapping]] = ..., wait_threads: _Optional[_Union[WaitForThreadsRun, _Mapping]] = ..., sleep: _Optional[_Union[SleepNodeRun, _Mapping]] = ..., user_task: _Optional[_Union[UserTaskNodeRun, _Mapping]] = ..., start_multiple_threads: _Optional[_Union[StartMultipleThreadsRun, _Mapping]] = ..., throw_event: _Optional[_Union[ThrowEventNodeRun, _Mapping]] = ...) -> None: ...
 
 class TaskNodeRun(_message.Message):
     __slots__ = ["task_run_id"]
@@ -125,7 +125,7 @@ class WaitForThreadsRun(_message.Message):
     threads: _containers.RepeatedCompositeFieldContainer[WaitForThreadsRun.WaitForThread]
     def __init__(self, threads: _Optional[_Iterable[_Union[WaitForThreadsRun.WaitForThread, _Mapping]]] = ...) -> None: ...
 
-class ExternalEventRun(_message.Message):
+class ExternalEventNodeRun(_message.Message):
     __slots__ = ["external_event_def_id", "event_time", "external_event_id", "timed_out"]
     EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     EVENT_TIME_FIELD_NUMBER: _ClassVar[int]

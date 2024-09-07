@@ -14,7 +14,7 @@ The file [workflow.go](./workflow.go) has two functions defined:
 Before we can create the `WfSpec`, we need to register the `TaskDef`. The easiest way to do that is to run the task worker:
 
 ```
-go run ./taskmetadata/worker
+go run ./examples/taskmetadata/worker
 ```
 
 Leave that process running.
@@ -24,13 +24,13 @@ Leave that process running.
 Next, in another terminal, run:
 
 ```
-go run ./taskmetadata/deploy
+go run ./examples/taskmetadata/deploy
 ```
 
 That will create the `WfSpec`. You can verify that via:
 
 ```
-lhctl get wfSpec my-workflow
+lhctl get wfSpec task-metadata-workflow
 ```
 
 ## Run a `WfRun`
@@ -38,7 +38,7 @@ lhctl get wfSpec my-workflow
 To run a `WfRun`, you can use `lhctl`.
 
 ```
- lhctl run my-workflow input '{"foo": 1, "art":{"id":1,"title": "bugia", "content": "lol"}}'
+ lhctl run task-metadata-workflow input '{"foo": 1, "art":{"id":1,"title": "bugia", "content": "lol"}}'
 ```
 
 It will print out an ID. You can view the status of that `WfRun` via:

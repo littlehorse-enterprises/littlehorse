@@ -1,8 +1,8 @@
 package jsonarray
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/wflib"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 )
 
 type InputData struct {
@@ -16,6 +16,11 @@ type Article struct {
 	Content string `json:"content,omitempty"`
 }
 
+const (
+	TaskDefName  = "greet"
+	WorkflowName = "json-array-workflow"
+)
+
 func AddUpList(inputs *[]InputData) int {
 	result := 0
 	for _, inputData := range *inputs {
@@ -24,7 +29,7 @@ func AddUpList(inputs *[]InputData) int {
 	return result
 }
 
-func MyWorkflowAdd(wf *wflib.WorkflowThread) {
-	inputVar := wf.AddVariable("input", model.VariableType_JSON_ARR)
-	wf.Execute("greet", inputVar)
+func MyWorkflowAdd(wf *littlehorse.WorkflowThread) {
+	inputVar := wf.AddVariable("input", lhproto.VariableType_JSON_ARR)
+	wf.Execute(TaskDefName, inputVar)
 }

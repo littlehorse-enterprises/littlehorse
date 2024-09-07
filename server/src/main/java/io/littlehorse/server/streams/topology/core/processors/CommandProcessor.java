@@ -1,7 +1,6 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
-import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.PartitionMetricsModel;
@@ -19,7 +18,7 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Tenant;
-import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
@@ -29,12 +28,15 @@ import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.CoreCommandException;
+import io.littlehorse.server.streams.topology.core.LHProcessingExceptionHandler;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.PunctuationType;
@@ -47,8 +49,8 @@ import org.apache.kafka.streams.state.KeyValueStore;
 public class CommandProcessor implements Processor<String, Command, String, CommandProcessorOutput> {
 
     private ProcessorContext<String, CommandProcessorOutput> ctx;
-    private LHServerConfig config;
-    private KafkaStreamsServerImpl server;
+    private final LHServerConfig config;
+    private final LHServer server;
     private final MetadataCache metadataCache;
     private final TaskQueueManager globalTaskQueueManager;
 
@@ -56,15 +58,18 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private KeyValueStore<String, Bytes> globalStore;
     private boolean partitionIsClaimed;
 
+    private final LHProcessingExceptionHandler exceptionHandler;
+
     public CommandProcessor(
             LHServerConfig config,
-            KafkaStreamsServerImpl server,
+            LHServer server,
             MetadataCache metadataCache,
             TaskQueueManager globalTaskQueueManager) {
         this.config = config;
         this.server = server;
         this.metadataCache = metadataCache;
         this.globalTaskQueueManager = globalTaskQueueManager;
+        this.exceptionHandler = new LHProcessingExceptionHandler(server);
     }
 
     @Override
@@ -78,14 +83,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
     @Override
     public void process(final Record<String, Command> commandRecord) {
-        // We have another wrapper here as a guard against a poison pill (even
-        // though we test extensively to prevent poison pills, it's better
-        // to be safe than sorry.)
-        try {
-            processHelper(commandRecord);
-        } catch (Exception exn) {
-            log.error("Unexpected error processing record: ", exn);
-        }
+        exceptionHandler.tryRun(() -> processHelper(commandRecord));
     }
 
     private void processHelper(final Record<String, Command> commandRecord) {
@@ -97,7 +95,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 command.type,
                 command.commandId,
                 command.getPartitionKey());
-
         try {
             Message response = command.process(executionContext, config);
             executionContext.endExecution();
@@ -110,26 +107,10 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
                 server.onResponseReceived(command.getCommandId(), cmdReply);
             }
+        } catch (KafkaException ke) {
+            throw ke;
         } catch (Exception exn) {
-            if (LHUtil.isUserError(exn)) {
-                StatusRuntimeException sre = (StatusRuntimeException) exn;
-                log.debug(
-                        "Caught exception processing {}:\nStatus: {}\nDescription: {}\nCause: {}",
-                        command.getType(),
-                        sre.getStatus().getCode(),
-                        sre.getStatus().getDescription(),
-                        sre.getMessage(),
-                        sre.getCause());
-            } else {
-                log.error("Caught exception processing {} command:", command.getType(), exn);
-            }
-            if (command.hasResponse() && command.getCommandId() != null) {
-                server.sendErrorToClient(command.getCommandId(), exn);
-            }
-
-            // If we get here, then a Really Bad Thing has happened and we should
-            // let the sysadmin of this LH Server know, and provide as much debugging
-            // information as possible.
+            throw new CoreCommandException(exn, command);
         }
     }
 

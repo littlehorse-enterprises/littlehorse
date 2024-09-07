@@ -134,7 +134,8 @@ public interface VariableValueOrBuilder extends
 
   /**
    * <pre>
-   * A 64-bit integer.
+   * The `INT` variable type is stored as a 64-bit integer. The
+   * `INT` can be cast to a `DOUBLE`.
    * </pre>
    *
    * <code>int64 int = 7;</code>
@@ -143,7 +144,8 @@ public interface VariableValueOrBuilder extends
   boolean hasInt();
   /**
    * <pre>
-   * A 64-bit integer.
+   * The `INT` variable type is stored as a 64-bit integer. The
+   * `INT` can be cast to a `DOUBLE`.
    * </pre>
    *
    * <code>int64 int = 7;</code>

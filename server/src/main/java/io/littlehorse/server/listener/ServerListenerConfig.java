@@ -67,7 +67,7 @@ public class ServerListenerConfig {
         }
     }
 
-    public ServerAuthorizer getAuthorizer() {
+    public ServerAuthorizer getServerAuthorizer() {
         return switch (authorizationProtocol) {
             case OAUTH -> new OAuthServerAuthorizer(config.getOAuthConfig());
             case MTLS -> new MTLSServerAuthorizer(config.getMTLSConfiguration(name));

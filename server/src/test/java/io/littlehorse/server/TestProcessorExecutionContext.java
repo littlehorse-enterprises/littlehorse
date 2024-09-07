@@ -33,7 +33,7 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
     private final TenantScopedStore tenantMetadataStore;
     private final ClusterScopedStore clusterMetadataStore;
     private final Headers recordMetadata;
-    private final KafkaStreamsServerImpl server;
+    private final LHServer server;
     private GetableManager getableManager;
 
     public TestProcessorExecutionContext(
@@ -43,7 +43,7 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
             ProcessorContext<String, CommandProcessorOutput> processorContext,
             TaskQueueManager globalTaskQueueManager,
             MetadataCache metadataCache,
-            KafkaStreamsServerImpl server) {
+            LHServer server) {
         super(currentCommand, recordMetadata, config, processorContext, globalTaskQueueManager, metadataCache, server);
         this.metadataCache = metadataCache;
         this.recordMetadata = recordMetadata;
@@ -69,7 +69,7 @@ public class TestProcessorExecutionContext extends ProcessorExecutionContext {
         LHServerConfig lhConfig = Mockito.mock();
         TaskQueueManager globalTaskQueueManager = Mockito.mock();
         MetadataCache metadataCache = new MetadataCache();
-        KafkaStreamsServerImpl server = Mockito.mock();
+        LHServer server = Mockito.mock();
         KeyValueStore<String, Bytes> nativeMetadataStore = Mockito.spy(Stores.keyValueStoreBuilder(
                         Stores.inMemoryKeyValueStore(ServerTopology.METADATA_STORE), Serdes.String(), Serdes.Bytes())
                 .withLoggingDisabled()

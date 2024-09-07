@@ -41,7 +41,7 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
             (nodeNeedsToBeHighlighted ? ' shadow-lg shadow-blue-500' : '')
           }
         >
-          <UserIcon className="h-4 w-4 fill-blue-500" />
+          <UserIcon className="h-4 w-4 text-blue-500" />
           {data.userTask?.userTaskDefName}
           <Handle type="source" position={Position.Right} className="bg-transparent" />
           <Handle type="target" position={Position.Left} className="bg-transparent" />

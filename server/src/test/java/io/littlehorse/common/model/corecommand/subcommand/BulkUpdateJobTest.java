@@ -12,7 +12,7 @@ import io.littlehorse.common.proto.BulkUpdateJob;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.NoOpJob;
-import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.server.TestProcessorExecutionContext;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -32,7 +32,7 @@ public class BulkUpdateJobTest {
     private final LHServerConfig lhConfig = mock();
 
     @Mock
-    private final KafkaStreamsServerImpl server = mock();
+    private final LHServer server = mock();
 
     private final MetadataCache metadataCache = new MetadataCache();
     private final TaskQueueManager queueManager = mock();

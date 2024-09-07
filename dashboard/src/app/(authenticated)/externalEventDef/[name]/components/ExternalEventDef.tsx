@@ -2,7 +2,7 @@
 import { Navigation } from '@/app/(authenticated)/components/Navigation'
 import { SearchFooter } from '@/app/(authenticated)/components/SearchFooter'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
-import { concatWfRunIds, utcToLocalDateTime } from '@/app/utils'
+import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -35,15 +35,14 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
         tenantId,
         bookmarkAsString: pageParam,
         limit,
-        externalEventDefNameAndStatus: {
-          externalEventDefName: spec.id?.name ?? '',
-          isClaimed,
-        },
-        // earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
-        // latestStart: createdBefore ? localDateTimeToUTCIsoString(createdBefore) : undefined,
+        externalEventDefId: { name: spec.id?.name ?? '' },
+        isClaimed,
+        earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
+        latestStart: createdBefore ? localDateTimeToUTCIsoString(createdBefore) : undefined,
       })
     },
   })
+
   return (
     <>
       <Navigation href="/?type=ExternalEventDef" title="Go back to ExternalEventDef" />
@@ -62,7 +61,7 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
           <Label htmlFor="isClaimed">Is Claimed</Label>
         </div>
       </div>
-      {/* <div className="mb-5 flex max-w-fit items-start justify-between">
+      <div className="mb-5 flex max-w-fit items-start justify-between">
         <div className="flex items-center justify-between">
           <Label>Created after:</Label>
           <Input
@@ -82,11 +81,11 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
             className="focus:shadow-outline ml-4 w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
           />
         </div>
-      </div> */}
+      </div>
 
       {isPending ? (
         <div className="flex min-h-[360px] items-center justify-center text-center">
-          <RefreshCwIcon className="h-8 w-8 animate-spin fill-blue-500 stroke-none" />
+          <RefreshCwIcon className="h-8 w-8 animate-spin text-blue-500" />
         </div>
       ) : (
         <div className="flex min-h-[360px] flex-col gap-4">

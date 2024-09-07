@@ -18,7 +18,7 @@ import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
-import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -38,7 +38,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class TaskQueueManagerTest {
 
-    private final KafkaStreamsServerImpl mockServer = Mockito.mock();
+    private final LHServer mockServer = Mockito.mock();
     private final TaskQueueManager queueManager = new TaskQueueManager(mockServer, Integer.MAX_VALUE);
     private final TaskDefModel taskDef = TestUtil.taskDef("my-task");
     private final TaskDefIdModel taskId = taskDef.getId();

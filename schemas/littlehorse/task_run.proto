@@ -9,7 +9,7 @@ import "variable.proto";
 import "object_id.proto";
 import "user_tasks.proto";
 
-option go_package = ".;model";
+option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
@@ -61,6 +61,9 @@ message VarNameAndVal {
 
   // The value of the variable for this TaskRun.
   VariableValue value = 2;
+
+  // Indicates whether the content of the `value` field has been masked
+  bool masked = 3;
 }
 
 // A single time that a TaskRun was scheduled for execution on a Task Queue.
@@ -103,6 +106,9 @@ message TaskAttempt {
     // The Task Function encountered a business problem and threw a technical exception.
     LHTaskException exception = 11;
   }
+
+  // Indicates whether the result of the attempt field has been masked
+  bool masked_value = 12;
 }
 
 // The source of a TaskRun; i.e. why it was scheduled.

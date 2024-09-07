@@ -115,5 +115,32 @@ public interface UserTaskEventOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.UserTaskEvent.UTECancelledOrBuilder getCancelledOrBuilder();
 
+  /**
+   * <pre>
+   * Denotes that the `UserTaskRun` was saved.
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTESaved saved = 5;</code>
+   * @return Whether the saved field is set.
+   */
+  boolean hasSaved();
+  /**
+   * <pre>
+   * Denotes that the `UserTaskRun` was saved.
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTESaved saved = 5;</code>
+   * @return The saved.
+   */
+  io.littlehorse.sdk.common.proto.UserTaskEvent.UTESaved getSaved();
+  /**
+   * <pre>
+   * Denotes that the `UserTaskRun` was saved.
+   * </pre>
+   *
+   * <code>.littlehorse.UserTaskEvent.UTESaved saved = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.UserTaskEvent.UTESavedOrBuilder getSavedOrBuilder();
+
   io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase getEventCase();
 }

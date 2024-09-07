@@ -198,7 +198,7 @@ public interface NodeOrBuilder extends
 
   /**
    * <pre>
-   * Creates an ExternalEventRun
+   * Creates an ExternalEventNodeRun
    * </pre>
    *
    * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
@@ -207,7 +207,7 @@ public interface NodeOrBuilder extends
   boolean hasExternalEvent();
   /**
    * <pre>
-   * Creates an ExternalEventRun
+   * Creates an ExternalEventNodeRun
    * </pre>
    *
    * <code>.littlehorse.ExternalEventNode external_event = 8;</code>
@@ -216,7 +216,7 @@ public interface NodeOrBuilder extends
   io.littlehorse.sdk.common.proto.ExternalEventNode getExternalEvent();
   /**
    * <pre>
-   * Creates an ExternalEventRun
+   * Creates an ExternalEventNodeRun
    * </pre>
    *
    * <code>.littlehorse.ExternalEventNode external_event = 8;</code>

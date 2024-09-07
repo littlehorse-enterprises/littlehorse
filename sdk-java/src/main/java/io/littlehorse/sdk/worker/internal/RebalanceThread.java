@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 final class RebalanceThread extends Thread {
     private final LittleHorseGrpc.LittleHorseStub bootstrapStub;
     private final String taskWorkerId;
-    private final String connectListenerName;
     private final TaskDef taskDef;
     private final HeartBeatCallback heartBeatCallback = new HeartBeatCallback();
     private final LHConfig config;
@@ -30,7 +29,6 @@ final class RebalanceThread extends Thread {
     public RebalanceThread(
             LittleHorseGrpc.LittleHorseStub bootstrapStub,
             String taskWorkerId,
-            String connectListenerName,
             TaskDef taskDef,
             LHConfig config,
             LHLivenessController livenessController,
@@ -38,7 +36,6 @@ final class RebalanceThread extends Thread {
             PollThreadFactory pollThreadFactory) {
         this.bootstrapStub = bootstrapStub;
         this.taskWorkerId = taskWorkerId;
-        this.connectListenerName = connectListenerName;
         this.taskDef = taskDef;
         this.pollThreadFactory = pollThreadFactory;
         this.config = config;
@@ -68,7 +65,6 @@ final class RebalanceThread extends Thread {
                 RegisterTaskWorkerRequest.newBuilder()
                         .setTaskDefId(taskDef.getId())
                         .setTaskWorkerId(taskWorkerId)
-                        .setListenerName(connectListenerName)
                         .build(),
                 heartBeatCallback);
     }

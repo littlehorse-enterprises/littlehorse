@@ -12,7 +12,7 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.EntrypointRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExitRunModel;
-import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.SleepNodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.StartMultipleThreadsRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.StartThreadRunModel;
@@ -64,7 +64,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     private List<Integer> failureHandlerIds = new ArrayList<>();
 
     private NodeTypeCase type;
-    private ExternalEventRunModel externalEventRun;
+    private ExternalEventNodeRunModel externalEventRun;
     private TaskNodeRunModel taskRun;
     private ExitRunModel exitRun;
     private EntrypointRunModel entrypointRun;
@@ -116,7 +116,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 taskRun = LHSerializable.fromProto(proto.getTask(), TaskNodeRunModel.class, context);
                 break;
             case EXTERNAL_EVENT:
-                externalEventRun = ExternalEventRunModel.fromProto(proto.getExternalEvent(), context);
+                externalEventRun = ExternalEventNodeRunModel.fromProto(proto.getExternalEvent(), context);
                 break;
             case EXIT:
                 exitRun = ExitRunModel.fromProto(proto.getExit(), context);
@@ -298,9 +298,9 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         } else if (cls.equals(ExitRunModel.class)) {
             type = NodeTypeCase.EXIT;
             exitRun = (ExitRunModel) subNodeRun;
-        } else if (cls.equals(ExternalEventRunModel.class)) {
+        } else if (cls.equals(ExternalEventNodeRunModel.class)) {
             type = NodeTypeCase.EXTERNAL_EVENT;
-            externalEventRun = (ExternalEventRunModel) subNodeRun;
+            externalEventRun = (ExternalEventNodeRunModel) subNodeRun;
         } else if (cls.equals(StartThreadRunModel.class)) {
             type = NodeTypeCase.START_THREAD;
             startThreadRun = (StartThreadRunModel) subNodeRun;

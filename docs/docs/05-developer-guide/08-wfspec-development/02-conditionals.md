@@ -1,24 +1,37 @@
 # Conditionals and Loops
 
-[Conditional Branching](../../04-concepts/09-conditionals.md) is a control flow mechanismm in LittleHorse that is very similar to `if/else` in programming. It allows you to execute different branches of a `WfSpec` (like a program) depending on the values of your `Variable`s.
+In a LittleHorse `WfSpec`, the [`Edge`](../../08-api.md#edge) structure tells the workflow scheduler what `Node` to advance to next. The `Edge` has a `conditions` field, which allows you to specify different control flow paths based on variables in your `WfRun`. This is analogous to `if/else` in programming.
 
-The `WorkflowThread` structs and objects have a `doIf()` and `doIfElse()` function which enable this feature. These functions take in:
+## Concepts
 
-* A `WorkflowCondition` struct or object, which is similar to the expression that goes inside the `if (/* right here */)`
-* A lambda function or `WorkflowThread` which executes the logic for the `if` branch.
-* Another lambda function for the `else` branch (only for `doIfElse()`)
+:::tip
+This section covers the low-level details of how conditionals work in LittleHorse. If you just want to see some examples, skip ahead to [the next section](#the-workflowcondition).
+:::
 
-## The `WorkflowCondition`
+An [`EdgeCondition`](../../08-api.md#edgecondition) has three parts:
 
-In an `if` statement, the expression is what goes between the `()` parentheses. It is a boolean expression that evaluates to `true` or `false`.
+1. A "LHS" (left-hand side),
+2. A `comparator`, and
+3. A "RHS" (right-hand side).
 
-In LittleHorse, you can create an expression using `WorkflowThread#condition` in any of our SDK's. The method or function takes three parameters:
+The `comparator` is a boolean operator that operates on the LHS and the RHS and returns either `true` or `false`. The `EdgeCondition` evaluates to `
 
-1. The `LHS`
-2. The Comparator
-3. The `RHS`
+Just as `if/else` allows you to implement control flow in your programs, Conditional Branching allows you to add control flow to your LittleHorse Workflows.
 
-Please review the Conditionals Concepts Documentation [here](/docs/concepts/conditionals) for a refresher on the various Comparator types. They are listed below:
+Let's look at how an if statement works in Python:
+
+```python
+if foo < bar:
+    do_something()
+```
+
+Look at the booean expression `foo < bar`. It consists of a left-hand-side (`foo`), comparator (`<`), and right-hand-side (`bar`).
+
+In LittleHorse, we have Edge Conditions, which also have an LHS, Comparator, and RHS. The LHS and RHS are any `VariableAssignment`, meaning they can be a value taken from some `Variable` or a hard-coded literal value.
+
+### Comparator Types
+
+The supported `Comparator`'s are:
 
 - `LESS_THAN`
 - `GREATER_THAN`
@@ -28,6 +41,19 @@ Please review the Conditionals Concepts Documentation [here](/docs/concepts/cond
 - `NOT_EQUALS`
 - `IN`
 - `NOT_IN`
+
+You can find a detailed description of them in the [protobuf documentation](../../08-api.md#comparator).
+
+
+## The `WorkflowCondition`
+
+Our SDK's all have a `WorkflowCondition` struct/object which makes it really easy to work with `EdgeCondition`s in a way that feels just like using if/else. In fact, you may not even need to know that the `EdgeCondition` exists.
+
+In LittleHorse, you can create an expression using `WorkflowThread#condition` in any of our SDK's. The method or function takes three parameters:
+
+1. The `LHS`
+2. The Comparator
+3. The `RHS`
 
 The `LHS` and the `RHS` can be set in two ways:
 
@@ -45,6 +71,7 @@ import TabItem from '@theme/TabItem';
 ```java
 
 import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.VariableType;
 // ...
 
 WfRunVariable foo = wf.addVariable("foo", VariableType.INT);
@@ -60,11 +87,11 @@ WorkflowCondition condition = wf.condition(
   <TabItem value="go" label="Go">
 
 ```go
-foo := wf.AddVariable("foo", model.VariableType_INT)
+foo := wf.AddVariable("foo", lhproto.VariableType_INT)
 
 condition := wf.Condition(
     foo,
-    model.Comparator_LESS_THAN,
+    lhproto.Comparator_LESS_THAN,
     3,
 )
 ```
@@ -105,11 +132,11 @@ WorkflowCondition condition = wf.condition(
   <TabItem value="go" label="Go">
 
 ```go
-foo := wf.AddVariable("foo", model.VariableType_INT)
+foo := wf.AddVariable("foo", lhproto.VariableType_INT)
 
 condition := wf.Condition(
     foo,
-    model.IN,
+    lhproto.IN,
     [3]int{1,2,3},
 )
 ```
@@ -156,11 +183,11 @@ wf.doIf(
   <TabItem value="go" label="Go">
 
 ```go
-foo := wf.AddVariable("foo", model.VariableType_INT)
+foo := wf.AddVariable("foo", lhproto.VariableType_INT)
 
 wf.DoIf(
-    wf.Condition(foo, model.Comparator_LESS_THAN, 3),
-    func (ifBody *wflib.WorkflowThread) {
+    wf.Condition(foo, lhproto.Comparator_LESS_THAN, 3),
+    func (ifBody *littlehorse.WorkflowThread) {
         ifBody.Execute("my-task")
     },
 )
@@ -185,7 +212,7 @@ def entrypoint(wf: WorkflowThread) -> None:
   </TabItem>
 </Tabs>
 
-### More than one condition for the If Statement
+### Nested Conditions
 Here's an example of executing a `my-task` Task if `foo < 3 and foo > 1`:
 
 <Tabs>
@@ -206,11 +233,11 @@ wf.doIf(wf.condition(foo, Comparator.GREATER_THAN, 1),
 
 ```go
 wf.DoIf(
-		wf.Condition(foo, model.Comparator_LESS_THAN, 3),
-		func (ifBody *wflib.WorkflowThread) {
+		wf.Condition(foo, lhproto.Comparator_LESS_THAN, 3),
+		func (ifBody *littlehorse.WorkflowThread) {
 			wf.DoIf(
-					wf.Condition(foo, model.Comparator.GREATER_THAN, 1),
-					func (ifBody *wflib.WorkflowThread) {
+					wf.Condition(foo, lhproto.Comparator.GREATER_THAN, 1),
+					func (ifBody *littlehorse.WorkflowThread) {
 						ifBody.Execute("my-task")
 					}
 			)
@@ -272,14 +299,14 @@ wf.doIf(
   <TabItem value="go" label="Go">
 
 ```go
-foo := wf.AddVariable("foo", model.VariableType_INT)
+foo := wf.AddVariable("foo", lhproto.VariableType_INT)
 
 wf.DoIfElse(
-    wf.Condition(foo, model.Comparator_LESS_THAN, 3),
-    func (ifBody *wflib.WorkflowThread) {
+    wf.Condition(foo, lhproto.Comparator_LESS_THAN, 3),
+    func (ifBody *littlehorse.WorkflowThread) {
         ifBody.Execute("my-task")
     },
-    func (elseBody *wflib.WorkflowThread) {
+    func (elseBody *littlehorse.WorkflowThread) {
         elseBody.Execute("another-task")
         elseBody.Execute("yet-another-task")
     },
@@ -338,11 +365,11 @@ wf.doWhile(
   <TabItem value="go" label="Go">
 
 ```go
-foo := wf.AddVariable("foo", model.VariableType_INT)
+foo := wf.AddVariable("foo", lhproto.VariableType_INT)
 
 wf.DoWhile(
-    wf.Condition(foo, model.Comparator_LESS_THAN, 3),
-    func (loopBody *wflib.WorkflowThread) {
+    wf.Condition(foo, lhproto.Comparator_LESS_THAN, 3),
+    func (loopBody *littlehorse.WorkflowThread) {
         loopBody.Execute("my-task")
         loopBody.Execute("another-task")
     },

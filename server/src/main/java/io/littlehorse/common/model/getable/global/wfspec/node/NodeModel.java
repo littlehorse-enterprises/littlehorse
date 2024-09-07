@@ -20,12 +20,14 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -223,9 +225,12 @@ public class NodeModel extends LHSerializable<Node> {
     }
 
     private void validateFailureHandlers() {
+        List<String> predefinedErrors =
+                Arrays.stream(LHErrorType.values()).map(LHErrorType::toString).toList();
         String invalidNames = failureHandlers.stream()
                 .map(FailureHandlerDefModel::getSpecificFailure)
                 .filter(Objects::nonNull)
+                .filter(failureName -> !predefinedErrors.contains(failureName))
                 .filter(Predicate.not(LHUtil::isValidLHName))
                 .collect(Collectors.joining(", "));
         if (!invalidNames.isEmpty()) {

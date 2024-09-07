@@ -1,20 +1,20 @@
 package main
 
 import (
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples/conditionals/while"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/taskworker"
 )
 
 func main() {
 	config, _ := examples.LoadConfigAndClient()
 
-	var donutWorker *taskworker.LHTaskWorker
+	var donutWorker *littlehorse.LHTaskWorker
 	var err error
 
-	donutWorker, err = taskworker.NewTaskWorker(config, while.Donut, "eat-another-donut")
+	donutWorker, err = littlehorse.NewTaskWorker(config, while.Donut, while.TaskDefName)
 	if err != nil {
 		log.Fatal(err)
 	}

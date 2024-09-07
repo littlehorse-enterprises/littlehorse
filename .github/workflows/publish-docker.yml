@@ -2,20 +2,30 @@ name: publish-docker
 run-name: Publish Docker Images
 on:
   workflow_call:
+    inputs:
+      tag:
+        type: string
+        required: false
+        default: ''
 permissions:
-      packages: write
-      contents: read
+  packages: write
+  contents: read
 jobs:
   build-server:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: "corretto"
           java-version: 17
+
+      - name: Dump version
+        if: inputs.tag != ''
+        run: sed -i "s/version=.*/version=${{ inputs.tag }}/g" gradle.properties
 
       - name: Tests and Build
         run: ./gradlew server:test server:shadowJar
@@ -40,11 +50,14 @@ jobs:
           path: server/build/libs/
 
       - name: Build and Publish
-        uses: ./.github/actions/publish-image
+        uses: littlehorse-enterprises/publish-image@v1
         with:
           image-name: lh-server
           dockerfile: docker/server/Dockerfile
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=ref,event=branch
 
   lh-canary:
     runs-on: ubuntu-latest
@@ -67,26 +80,33 @@ jobs:
           path: canary/build/libs/canary-*-all.jar
 
       - name: Build and Publish
-        uses: ./.github/actions/publish-image
+        uses: littlehorse-enterprises/publish-image@v1
         with:
           image-name: lh-canary
           dockerfile: docker/canary/Dockerfile
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=ref,event=branch
 
   lhctl:
     runs-on: ubuntu-latest
-    needs:
-      - build-server
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Build and Publish
-        uses: ./.github/actions/publish-image
+        uses: littlehorse-enterprises/publish-image@v1
         with:
           image-name: lhctl
           dockerfile: docker/lhctl/Dockerfile
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          build-args: |
+            VERSION=${{ inputs.tag || github.ref_name }}
+            COMMIT=${{ github.sha }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=ref,event=branch
 
   lh-dashboard:
     runs-on: ubuntu-latest
@@ -95,7 +115,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
@@ -106,11 +126,14 @@ jobs:
           npm run build
 
       - name: Build and Publish
-        uses: ./.github/actions/publish-image
+        uses: littlehorse-enterprises/publish-image@v1
         with:
           image-name: lh-dashboard
           dockerfile: docker/dashboard/Dockerfile
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=ref,event=branch
 
   lh-standalone:
     runs-on: ubuntu-latest
@@ -121,7 +144,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
@@ -138,8 +161,11 @@ jobs:
           path: server/build/libs/
 
       - name: Build and Publish
-        uses: ./.github/actions/publish-image
+        uses: littlehorse-enterprises/publish-image@v1
         with:
           image-name: lh-standalone
           dockerfile: docker/standalone/Dockerfile
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=ref,event=branch

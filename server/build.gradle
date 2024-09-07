@@ -75,6 +75,7 @@ dependencies {
 
     testImplementation 'org.awaitility:awaitility:4.2.0'
     testImplementation 'org.junit.platform:junit-platform-console-standalone:1.11.0-M2'
+    implementation group: 'com.cronutils', name: 'cron-utils', version: '9.2.1'
 
 }
 
@@ -151,6 +152,26 @@ task testJar(type: Jar) {
 }
 
 
+task staticVersion {
+    doFirst {
+        def outputDir = file("$buildDir/generated/sources/version");
+        def versionClass = new File(outputDir, "io/littlehorse/server/ServerVersion.java");
+        versionClass.parentFile.mkdirs();
+        versionClass.text = """package io.littlehorse.server;
 
+public class ServerVersion {
+    public static final String VERSION = "${project.version}";
+}
+"""
+    }
+}
 
+sourceSets {
+  main {
+    java {
+        srcDir("$buildDir/generated/sources/version")
+    }
+  }
+}
 
+compileJava.dependsOn staticVersion

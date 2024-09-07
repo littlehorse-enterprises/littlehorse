@@ -10,6 +10,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.Date;
 import java.util.Optional;
 import lombok.Getter;
@@ -32,6 +33,7 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
     private TaskStatus status;
     private LHTaskExceptionModel exception;
     private LHTaskErrorModel error;
+    private boolean maskedValue;
 
     public TaskAttemptModel() {
         this.status = TaskStatus.TASK_PENDING;
@@ -45,8 +47,13 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) {
         TaskAttempt p = (TaskAttempt) proto;
+        maskedValue = p.getMaskedValue();
         if (p.hasOutput()) {
-            output = VariableValueModel.fromProto(p.getOutput(), context);
+            if (maskedValue && context instanceof RequestExecutionContext) {
+                output = new VariableValueModel(LHConstants.STRING_MASK);
+            } else {
+                output = VariableValueModel.fromProto(p.getOutput(), context);
+            }
         }
         if (p.hasScheduleTime()) {
             scheduleTime = LHUtil.fromProtoTs(p.getScheduleTime());
@@ -103,6 +110,7 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
         }
 
         out.setStatus(status);
+        out.setMaskedValue(maskedValue);
 
         return out;
     }

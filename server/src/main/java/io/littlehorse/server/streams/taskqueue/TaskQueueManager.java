@@ -3,7 +3,7 @@ package io.littlehorse.server.streams.taskqueue;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.Collection;
 import java.util.Objects;
@@ -18,11 +18,11 @@ public class TaskQueueManager {
     private final ConcurrentHashMap<TenantTaskName, OneTaskQueue> taskQueues;
 
     @Getter
-    private KafkaStreamsServerImpl backend;
+    private LHServer backend;
 
     private final int individualQueueConfiguredCapacity;
 
-    public TaskQueueManager(KafkaStreamsServerImpl backend, int individualQueueConfiguredCapacity) {
+    public TaskQueueManager(LHServer backend, int individualQueueConfiguredCapacity) {
         this.taskQueues = new ConcurrentHashMap<>();
         this.backend = backend;
         this.individualQueueConfiguredCapacity = individualQueueConfiguredCapacity;

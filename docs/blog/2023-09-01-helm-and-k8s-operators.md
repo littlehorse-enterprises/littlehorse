@@ -3,11 +3,8 @@ title: Helm and Kubernetes Operators
 description: To Helm or to Operator?
 slug: helm-and-k8s-operators
 authors:
-  - name: Colt McNealy
-    title: LittleHorse Council Member
-    url: https://www.linkedin.com/in/colt-mcnealy-900b7a148/
-    image_url: https://media.licdn.com/dms/image/C5603AQFDvtYZwYd4Ag/profile-displayphoto-shrink_200_200/0/1584897319941?e=1698883200&v=beta&t=MicR3Fv32ymM8nbcQwveSRJcVkjOMv28Tkcu3e8VH_c
-tags: [friday-tech-tips, kubernetes]
+- coltmcnealy
+tags: [analysis]
 image: https://avatars.githubusercontent.com/u/140006313?s=400&u=7bf4c91d92dfe590ac71bb6b4821e1a81aa5b712&v=4
 hide_table_of_contents: false
 ---
@@ -30,7 +27,7 @@ In addition to that template-engine functionality, Helm also manages versions of
 
 First, it is quite simple to write a Helm chart. This means that most DevOps teams can quickly write a helm chart that can be used by microservice teams across their organization.
 
-Secondly, Helm is a client library (well, it has been since the removal of Tiller...but that's another blog post). Therefore, you don't need to run any privileged pods inside the K8s cluster; all you need is a CI server with permissiosn to create the necessary K8s resources.
+Secondly, Helm is a client library (well, it has been since the removal of Tiller...but that's another blog post). Therefore, you don't need to run any privileged pods inside the K8s cluster; all you need is a CI server with permission to create the necessary K8s resources.
 
 ### Limitations
 

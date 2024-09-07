@@ -1,23 +1,20 @@
 services:
   kafka:
     container_name: lh-kafka
-    image: bitnami/kafka:3.5
+    image: apache/kafka:3.8.0
     environment:
-      ALLOW_PLAINTEXT_LISTENER: "yes"
-      KAFKA_ENABLE_KRAFT: "yes"
-      KAFKA_CFG_LISTENERS: CONTROLLER://:29092,EXTERNAL://:19092,INTERNAL://:9092
-      KAFKA_CFG_ADVERTISED_LISTENERS: EXTERNAL://localhost:19092,INTERNAL://kafka:9092
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT
-      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: INTERNAL
-      KAFKA_CFG_BROKER_ID: "1"
-      KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
-      KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR: "1"
-      KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@localhost:29092
-      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_CFG_PROCESS_ROLES: broker,controller
-      BITNAMI_DEBUG: "true"
-      KAFKA_CFG_NODE_ID: "1"
+      KAFKA_LISTENERS: CONTROLLER://:29092,EXTERNAL://:19092,INTERNAL://:9092
+      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:19092,INTERNAL://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_BROKER_ID: "1"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:29092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: "1"
       KAFKA_KRAFT_CLUSTER_ID: abcdefghijklmnopqrstuv
     restart: on-failure
     healthcheck:
@@ -25,7 +22,7 @@ services:
       interval: 5s
   littlehorse:
     container_name: lh-server
-    image: ghcr.io/littlehorse-enterprises/littlehorse/lh-server:master
+    image: ghcr.io/littlehorse-enterprises/littlehorse/lh-server:0.10.1
     environment:
       LHS_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       LHS_SHOULD_CREATE_TOPICS: "true"
@@ -41,11 +38,11 @@ services:
       - "2023:2023"
   dashboard:
     container_name: lh-dashboard
-    image: ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
+    image: ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:0.10.1
     environment:
-      LHD_API_HOST: littlehorse
-      LHD_API_PORT: 2023
-      LHD_OAUTH_ENABLED: false
+      LHC_API_HOST: littlehorse
+      LHC_API_PORT: 2023
+      LHC_OAUTH_ENABLED: false
     restart: on-failure
     healthcheck:
       test: curl -f localhost:8080

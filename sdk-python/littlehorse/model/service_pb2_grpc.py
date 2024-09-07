@@ -7,6 +7,7 @@ import littlehorse.model.external_event_pb2 as external__event__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 import littlehorse.model.node_run_pb2 as node__run__pb2
 import littlehorse.model.object_id_pb2 as object__id__pb2
+import littlehorse.model.scheduled_wf_run_pb2 as scheduled__wf__run__pb2
 import littlehorse.model.service_pb2 as service__pb2
 import littlehorse.model.task_def_pb2 as task__def__pb2
 import littlehorse.model.task_run_pb2 as task__run__pb2
@@ -96,6 +97,21 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.RunWfRequest.SerializeToString,
                 response_deserializer=wf__run__pb2.WfRun.FromString,
                 )
+        self.ScheduleWf = channel.unary_unary(
+                '/littlehorse.LittleHorse/ScheduleWf',
+                request_serializer=service__pb2.ScheduleWfRequest.SerializeToString,
+                response_deserializer=scheduled__wf__run__pb2.ScheduledWfRun.FromString,
+                )
+        self.SearchScheduledWfRun = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchScheduledWfRun',
+                request_serializer=service__pb2.SearchScheduledWfRunRequest.SerializeToString,
+                response_deserializer=service__pb2.ScheduledWfRunIdList.FromString,
+                )
+        self.GetScheduledWfRun = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetScheduledWfRun',
+                request_serializer=object__id__pb2.ScheduledWfRunId.SerializeToString,
+                response_deserializer=scheduled__wf__run__pb2.ScheduledWfRun.FromString,
+                )
         self.GetWfRun = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetWfRun',
                 request_serializer=object__id__pb2.WfRunId.SerializeToString,
@@ -120,6 +136,11 @@ class LittleHorseStub(object):
                 '/littlehorse.LittleHorse/CancelUserTaskRun',
                 request_serializer=user__tasks__pb2.CancelUserTaskRunRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                )
+        self.SaveUserTaskRunProgress = channel.unary_unary(
+                '/littlehorse.LittleHorse/SaveUserTaskRunProgress',
+                request_serializer=user__tasks__pb2.SaveUserTaskRunProgressRequest.SerializeToString,
+                response_deserializer=user__tasks__pb2.UserTaskRun.FromString,
                 )
         self.ListUserTaskRuns = channel.unary_unary(
                 '/littlehorse.LittleHorse/ListUserTaskRuns',
@@ -296,6 +317,11 @@ class LittleHorseStub(object):
                 request_serializer=acls__pb2.DeletePrincipalRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
+        self.DeleteScheduledWfRun = channel.unary_unary(
+                '/littlehorse.LittleHorse/DeleteScheduledWfRun',
+                request_serializer=service__pb2.DeleteScheduledWfRunRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                )
         self.GetTaskDefMetricsWindow = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetTaskDefMetricsWindow',
                 request_serializer=service__pb2.TaskDefMetricsQueryRequest.SerializeToString,
@@ -456,6 +482,27 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ScheduleWf(self, request, context):
+        """Schedule repeated WfRun based on a cron expression
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SearchScheduledWfRun(self, request, context):
+        """Search for existing schedules
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetScheduledWfRun(self, request, context):
+        """Find a specific ScheduledWfRun
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GetWfRun(self, request, context):
         """Gets a WfRun. Although useful for development and debugging, this RPC is not often
         used by applications.
@@ -496,6 +543,17 @@ class LittleHorseServicer(object):
 
     def CancelUserTaskRun(self, request, context):
         """Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SaveUserTaskRunProgress(self, request, context):
+        """Saves the results of a UserTaskRun and logs who saved the content.<br/>
+
+        <li> Throws FAILED_PRECONDITION if the UserTaskRun is in the `DONE` or `CANCELLED` state.</li>
+        <li> If `policy` is set to `FAIL_IF_CLAIMED_BY_OTHER`, returns `FAILED_PRECONDITION` if the
+        `user_id` field of the `UserTaskRun` does not match the `user_id` of the request.</li>
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -715,7 +773,7 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def RescueThreadRun(self, request, context):
-        """Rescues a failed ThreadRun (in the ERROR state only) by restarting it from 
+        """Rescues a failed ThreadRun (in the ERROR state only) by restarting it from
         the point of failure. Useful if a bug in Task Worker implementation caused
         a WfRun to fail and you did not have a FailureHandler for that NodeRun.
 
@@ -771,6 +829,13 @@ class LittleHorseServicer(object):
         """Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
         is the last remaining `Principal` with admin permissions. Admin permissions are defined
         as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeleteScheduledWfRun(self, request, context):
+        """Deletes a scheduled run and prevents any further associated WfRun from being executed.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -912,6 +977,21 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.RunWfRequest.FromString,
                     response_serializer=wf__run__pb2.WfRun.SerializeToString,
             ),
+            'ScheduleWf': grpc.unary_unary_rpc_method_handler(
+                    servicer.ScheduleWf,
+                    request_deserializer=service__pb2.ScheduleWfRequest.FromString,
+                    response_serializer=scheduled__wf__run__pb2.ScheduledWfRun.SerializeToString,
+            ),
+            'SearchScheduledWfRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchScheduledWfRun,
+                    request_deserializer=service__pb2.SearchScheduledWfRunRequest.FromString,
+                    response_serializer=service__pb2.ScheduledWfRunIdList.SerializeToString,
+            ),
+            'GetScheduledWfRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetScheduledWfRun,
+                    request_deserializer=object__id__pb2.ScheduledWfRunId.FromString,
+                    response_serializer=scheduled__wf__run__pb2.ScheduledWfRun.SerializeToString,
+            ),
             'GetWfRun': grpc.unary_unary_rpc_method_handler(
                     servicer.GetWfRun,
                     request_deserializer=object__id__pb2.WfRunId.FromString,
@@ -936,6 +1016,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.CancelUserTaskRun,
                     request_deserializer=user__tasks__pb2.CancelUserTaskRunRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'SaveUserTaskRunProgress': grpc.unary_unary_rpc_method_handler(
+                    servicer.SaveUserTaskRunProgress,
+                    request_deserializer=user__tasks__pb2.SaveUserTaskRunProgressRequest.FromString,
+                    response_serializer=user__tasks__pb2.UserTaskRun.SerializeToString,
             ),
             'ListUserTaskRuns': grpc.unary_unary_rpc_method_handler(
                     servicer.ListUserTaskRuns,
@@ -1110,6 +1195,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'DeletePrincipal': grpc.unary_unary_rpc_method_handler(
                     servicer.DeletePrincipal,
                     request_deserializer=acls__pb2.DeletePrincipalRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'DeleteScheduledWfRun': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteScheduledWfRun,
+                    request_deserializer=service__pb2.DeleteScheduledWfRunRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'GetTaskDefMetricsWindow': grpc.unary_unary_rpc_method_handler(
@@ -1406,6 +1496,57 @@ class LittleHorse(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def ScheduleWf(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/ScheduleWf',
+            service__pb2.ScheduleWfRequest.SerializeToString,
+            scheduled__wf__run__pb2.ScheduledWfRun.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SearchScheduledWfRun(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SearchScheduledWfRun',
+            service__pb2.SearchScheduledWfRunRequest.SerializeToString,
+            service__pb2.ScheduledWfRunIdList.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetScheduledWfRun(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetScheduledWfRun',
+            object__id__pb2.ScheduledWfRunId.SerializeToString,
+            scheduled__wf__run__pb2.ScheduledWfRun.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def GetWfRun(request,
             target,
             options=(),
@@ -1487,6 +1628,23 @@ class LittleHorse(object):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/CancelUserTaskRun',
             user__tasks__pb2.CancelUserTaskRunRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SaveUserTaskRunProgress(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/SaveUserTaskRunProgress',
+            user__tasks__pb2.SaveUserTaskRunProgressRequest.SerializeToString,
+            user__tasks__pb2.UserTaskRun.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -2081,6 +2239,23 @@ class LittleHorse(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/DeletePrincipal',
             acls__pb2.DeletePrincipalRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DeleteScheduledWfRun(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/DeleteScheduledWfRun',
+            service__pb2.DeleteScheduledWfRunRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

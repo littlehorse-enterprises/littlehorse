@@ -1,9 +1,18 @@
 # Concepts
 
-A `WfSpec` in LittleHorse is a Protobuf that defines your technical or business process (it can also be representated in JSON). While the LittleHorse Server only understands the protobuf format of the `WfSpec`, the well-defined nature of the data format allowed LittleHorse to create SDK's in Java and GoLang that let you create `WfSpec`s from natural code. Since most of the LittleHorse concepts map nicely to programming concepts, this is a very natural and easy way to define your `WfSpec`s.
+The LittleHorse Server is, at its core, a _Workflow Engine_. What makes LittleHorse unique is that it is built with developers in mind. The way users define workflow specifications in LittleHorse (a `WfSpec`) was designed from the ground up to be developer-friendly and have concepts that are analogous to the primitives used in day-to-day programming languages.
 
-The Developer Guide discusses in detail how to develop `WfSpec`s with your SDK of choice.
+## Running an Application
 
-**This section discusses how the `WfSpecs` and `WfRun`s created by those SDKs behave.**
+At its core, LH is a workflow engine. This means that:
 
-NOTE: If you really want to, you can develop workflows using raw JSON. Tutorials for how to do that are incoming. For now, we refer you to the [protocol buffer definition](https://github.com/littlehorse-enterprises/lh-proto/src/master/).
+- You define [tasks](./03-tasks.md) which are units of work that can be used in a process, and implement programs that execute those tasks.
+- You define your [workflows](./01-workflows.md) and tell the workflow engine about it
+- You run the workflow
+- The workflow engine makes sure that your process gets executed correctly.
+
+The real magic of a workflow engine is in the last step. Without a workflow engine like LittleHorse (and especially when building microservices), it's really hard to glue things together. And in consequence there's no visibility of what's happening between the start and end of the process, and if something goes wrong you can neither recover nor identify the causes.
+
+Applications using LittleHorse might look like the following:
+
+![LittleHorse Architecture](../../static/img/2024-08-28-lh-application.png)

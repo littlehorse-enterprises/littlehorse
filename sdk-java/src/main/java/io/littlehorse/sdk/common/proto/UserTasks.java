@@ -50,6 +50,16 @@ public final class UserTasks {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_CompleteUserTaskRunRequest_ResultsEntry_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_SaveUserTaskRunProgressRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_SaveUserTaskRunProgressRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_SaveUserTaskRunProgressRequest_ResultsEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_SaveUserTaskRunProgressRequest_ResultsEntry_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_CancelUserTaskRunRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -74,6 +84,16 @@ public final class UserTasks {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_UserTaskEvent_UTETaskExecuted_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_UserTaskEvent_UTESaved_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_UserTaskEvent_UTESaved_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_UserTaskEvent_UTESaved_ResultsEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_UserTaskEvent_UTESaved_ResultsEntry_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_UserTaskEvent_UTEAssigned_descriptor;
   static final 
@@ -123,32 +143,48 @@ public final class UserTasks {
       "\030\002 \003(\01324.littlehorse.CompleteUserTaskRun" +
       "Request.ResultsEntry\022\017\n\007user_id\030\003 \001(\t\032J\n" +
       "\014ResultsEntry\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(" +
-      "\0132\032.littlehorse.VariableValue:\0028\001\"P\n\030Can" +
-      "celUserTaskRunRequest\0224\n\020user_task_run_i" +
-      "d\030\001 \001(\0132\032.littlehorse.UserTaskRunId\"\261\001\n\030" +
-      "UserTaskTriggerReference\022+\n\013node_run_id\030" +
-      "\001 \001(\0132\026.littlehorse.NodeRunId\022\036\n\026user_ta" +
-      "sk_event_number\030\002 \001(\005\022\024\n\007user_id\030\003 \001(\tH\000" +
-      "\210\001\001\022\027\n\nuser_group\030\004 \001(\tH\001\210\001\001B\n\n\010_user_id" +
-      "B\r\n\013_user_group\"\243\004\n\rUserTaskEvent\022(\n\004tim" +
-      "e\030\001 \001(\0132\032.google.protobuf.Timestamp\022C\n\rt" +
-      "ask_executed\030\002 \001(\0132*.littlehorse.UserTas" +
-      "kEvent.UTETaskExecutedH\000\022:\n\010assigned\030\003 \001" +
-      "(\0132&.littlehorse.UserTaskEvent.UTEAssign" +
-      "edH\000\022<\n\tcancelled\030\004 \001(\0132\'.littlehorse.Us" +
-      "erTaskEvent.UTECancelledH\000\032\037\n\014UTECancell" +
-      "ed\022\017\n\007message\030\001 \001(\t\032;\n\017UTETaskExecuted\022(" +
-      "\n\010task_run\030\001 \001(\0132\026.littlehorse.TaskRunId" +
-      "\032\301\001\n\013UTEAssigned\022\030\n\013old_user_id\030\001 \001(\tH\000\210" +
-      "\001\001\022\033\n\016old_user_group\030\002 \001(\tH\001\210\001\001\022\030\n\013new_u" +
-      "ser_id\030\003 \001(\tH\002\210\001\001\022\033\n\016new_user_group\030\004 \001(" +
-      "\tH\003\210\001\001B\016\n\014_old_user_idB\021\n\017_old_user_grou" +
-      "pB\016\n\014_new_user_idB\021\n\017_new_user_groupB\007\n\005" +
-      "event*J\n\021UserTaskRunStatus\022\016\n\nUNASSIGNED" +
-      "\020\000\022\014\n\010ASSIGNED\020\001\022\010\n\004DONE\020\003\022\r\n\tCANCELLED\020" +
-      "\004BG\n\037io.littlehorse.sdk.common.protoP\001Z\007" +
-      ".;model\252\002\030LittleHorse.Common.Protob\006prot" +
-      "o3"
+      "\0132\032.littlehorse.VariableValue:\0028\001\"\256\003\n\036Sa" +
+      "veUserTaskRunProgressRequest\0224\n\020user_tas" +
+      "k_run_id\030\001 \001(\0132\032.littlehorse.UserTaskRun" +
+      "Id\022I\n\007results\030\002 \003(\01328.littlehorse.SaveUs" +
+      "erTaskRunProgressRequest.ResultsEntry\022\017\n" +
+      "\007user_id\030\003 \001(\t\022[\n\006policy\030\004 \001(\0162K.littleh" +
+      "orse.SaveUserTaskRunProgressRequest.Save" +
+      "UserTaskRunAssignmentPolicy\032J\n\014ResultsEn" +
+      "try\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.little" +
+      "horse.VariableValue:\0028\001\"Q\n\037SaveUserTaskR" +
+      "unAssignmentPolicy\022\034\n\030FAIL_IF_CLAIMED_BY" +
+      "_OTHER\020\000\022\020\n\014IGNORE_CLAIM\020\001\"P\n\030CancelUser" +
+      "TaskRunRequest\0224\n\020user_task_run_id\030\001 \001(\013" +
+      "2\032.littlehorse.UserTaskRunId\"\261\001\n\030UserTas" +
+      "kTriggerReference\022+\n\013node_run_id\030\001 \001(\0132\026" +
+      ".littlehorse.NodeRunId\022\036\n\026user_task_even" +
+      "t_number\030\002 \001(\005\022\024\n\007user_id\030\003 \001(\tH\000\210\001\001\022\027\n\n" +
+      "user_group\030\004 \001(\tH\001\210\001\001B\n\n\010_user_idB\r\n\013_us" +
+      "er_group\"\206\006\n\rUserTaskEvent\022(\n\004time\030\001 \001(\013" +
+      "2\032.google.protobuf.Timestamp\022C\n\rtask_exe" +
+      "cuted\030\002 \001(\0132*.littlehorse.UserTaskEvent." +
+      "UTETaskExecutedH\000\022:\n\010assigned\030\003 \001(\0132&.li" +
+      "ttlehorse.UserTaskEvent.UTEAssignedH\000\022<\n" +
+      "\tcancelled\030\004 \001(\0132\'.littlehorse.UserTaskE" +
+      "vent.UTECancelledH\000\0224\n\005saved\030\005 \001(\0132#.lit" +
+      "tlehorse.UserTaskEvent.UTESavedH\000\032\037\n\014UTE" +
+      "Cancelled\022\017\n\007message\030\001 \001(\t\032;\n\017UTETaskExe" +
+      "cuted\022(\n\010task_run\030\001 \001(\0132\026.littlehorse.Ta" +
+      "skRunId\032\252\001\n\010UTESaved\022\017\n\007user_id\030\001 \001(\t\022A\n" +
+      "\007results\030\002 \003(\01320.littlehorse.UserTaskEve" +
+      "nt.UTESaved.ResultsEntry\032J\n\014ResultsEntry" +
+      "\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.littlehor" +
+      "se.VariableValue:\0028\001\032\301\001\n\013UTEAssigned\022\030\n\013" +
+      "old_user_id\030\001 \001(\tH\000\210\001\001\022\033\n\016old_user_group" +
+      "\030\002 \001(\tH\001\210\001\001\022\030\n\013new_user_id\030\003 \001(\tH\002\210\001\001\022\033\n" +
+      "\016new_user_group\030\004 \001(\tH\003\210\001\001B\016\n\014_old_user_" +
+      "idB\021\n\017_old_user_groupB\016\n\014_new_user_idB\021\n" +
+      "\017_new_user_groupB\007\n\005event*J\n\021UserTaskRun" +
+      "Status\022\016\n\nUNASSIGNED\020\000\022\014\n\010ASSIGNED\020\001\022\010\n\004" +
+      "DONE\020\003\022\r\n\tCANCELLED\020\004BI\n\037io.littlehorse." +
+      "sdk.common.protoP\001Z\t.;lhproto\252\002\030LittleHo" +
+      "rse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -200,24 +236,36 @@ public final class UserTasks {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_CompleteUserTaskRunRequest_ResultsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
-    internal_static_littlehorse_CancelUserTaskRunRequest_descriptor =
+    internal_static_littlehorse_SaveUserTaskRunProgressRequest_descriptor =
       getDescriptor().getMessageTypes().get(5);
+    internal_static_littlehorse_SaveUserTaskRunProgressRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_SaveUserTaskRunProgressRequest_descriptor,
+        new java.lang.String[] { "UserTaskRunId", "Results", "UserId", "Policy", });
+    internal_static_littlehorse_SaveUserTaskRunProgressRequest_ResultsEntry_descriptor =
+      internal_static_littlehorse_SaveUserTaskRunProgressRequest_descriptor.getNestedTypes().get(0);
+    internal_static_littlehorse_SaveUserTaskRunProgressRequest_ResultsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_SaveUserTaskRunProgressRequest_ResultsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_littlehorse_CancelUserTaskRunRequest_descriptor =
+      getDescriptor().getMessageTypes().get(6);
     internal_static_littlehorse_CancelUserTaskRunRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_CancelUserTaskRunRequest_descriptor,
         new java.lang.String[] { "UserTaskRunId", });
     internal_static_littlehorse_UserTaskTriggerReference_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_littlehorse_UserTaskTriggerReference_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_UserTaskTriggerReference_descriptor,
         new java.lang.String[] { "NodeRunId", "UserTaskEventNumber", "UserId", "UserGroup", "UserId", "UserGroup", });
     internal_static_littlehorse_UserTaskEvent_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_littlehorse_UserTaskEvent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_UserTaskEvent_descriptor,
-        new java.lang.String[] { "Time", "TaskExecuted", "Assigned", "Cancelled", "Event", });
+        new java.lang.String[] { "Time", "TaskExecuted", "Assigned", "Cancelled", "Saved", "Event", });
     internal_static_littlehorse_UserTaskEvent_UTECancelled_descriptor =
       internal_static_littlehorse_UserTaskEvent_descriptor.getNestedTypes().get(0);
     internal_static_littlehorse_UserTaskEvent_UTECancelled_fieldAccessorTable = new
@@ -230,8 +278,20 @@ public final class UserTasks {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_UserTaskEvent_UTETaskExecuted_descriptor,
         new java.lang.String[] { "TaskRun", });
-    internal_static_littlehorse_UserTaskEvent_UTEAssigned_descriptor =
+    internal_static_littlehorse_UserTaskEvent_UTESaved_descriptor =
       internal_static_littlehorse_UserTaskEvent_descriptor.getNestedTypes().get(2);
+    internal_static_littlehorse_UserTaskEvent_UTESaved_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_UserTaskEvent_UTESaved_descriptor,
+        new java.lang.String[] { "UserId", "Results", });
+    internal_static_littlehorse_UserTaskEvent_UTESaved_ResultsEntry_descriptor =
+      internal_static_littlehorse_UserTaskEvent_UTESaved_descriptor.getNestedTypes().get(0);
+    internal_static_littlehorse_UserTaskEvent_UTESaved_ResultsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_UserTaskEvent_UTESaved_ResultsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_littlehorse_UserTaskEvent_UTEAssigned_descriptor =
+      internal_static_littlehorse_UserTaskEvent_descriptor.getNestedTypes().get(3);
     internal_static_littlehorse_UserTaskEvent_UTEAssigned_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_UserTaskEvent_UTEAssigned_descriptor,

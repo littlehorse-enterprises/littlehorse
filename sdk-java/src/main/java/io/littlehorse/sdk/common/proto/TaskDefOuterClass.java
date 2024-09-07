@@ -19,6 +19,11 @@ public final class TaskDefOuterClass {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_TaskDef_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_TaskDefOutputSchema_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_TaskDefOutputSchema_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -30,13 +35,16 @@ public final class TaskDefOuterClass {
     java.lang.String[] descriptorData = {
       "\n\016task_def.proto\022\013littlehorse\032\037google/pr" +
       "otobuf/timestamp.proto\032\023common_wfspec.pr" +
-      "oto\032\017object_id.proto\"\213\001\n\007TaskDef\022\"\n\002id\030\001" +
+      "oto\032\017object_id.proto\"\333\001\n\007TaskDef\022\"\n\002id\030\001" +
       " \001(\0132\026.littlehorse.TaskDefId\022,\n\ninput_va" +
       "rs\030\002 \003(\0132\030.littlehorse.VariableDef\022.\n\ncr" +
       "eated_at\030\003 \001(\0132\032.google.protobuf.Timesta" +
-      "mpBG\n\037io.littlehorse.sdk.common.protoP\001Z" +
-      "\007.;model\252\002\030LittleHorse.Common.Protob\006pro" +
-      "to3"
+      "mp\022<\n\rschema_output\030\004 \001(\0132 .littlehorse." +
+      "TaskDefOutputSchemaH\000\210\001\001B\020\n\016_schema_outp" +
+      "ut\"B\n\023TaskDefOutputSchema\022+\n\tvalue_def\030\001" +
+      " \001(\0132\030.littlehorse.VariableDefBI\n\037io.lit" +
+      "tlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002" +
+      "\030LittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -50,7 +58,13 @@ public final class TaskDefOuterClass {
     internal_static_littlehorse_TaskDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_TaskDef_descriptor,
-        new java.lang.String[] { "Id", "InputVars", "CreatedAt", });
+        new java.lang.String[] { "Id", "InputVars", "CreatedAt", "SchemaOutput", "SchemaOutput", });
+    internal_static_littlehorse_TaskDefOutputSchema_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_littlehorse_TaskDefOutputSchema_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_TaskDefOutputSchema_descriptor,
+        new java.lang.String[] { "ValueDef", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonWfspec.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();

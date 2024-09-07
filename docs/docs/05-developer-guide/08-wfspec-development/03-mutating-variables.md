@@ -1,6 +1,6 @@
 # Mutating Variables
 
-Recall from the [Concepts Documentation](/docs/04-concepts/06-variables.md) that every `Node` can have zero or more `VariableMutation`s on it. A `VariableMutation` changes the value of a `ThreadRun`'s `Variable`s.
+Recall from the [Concepts Documentation](../../04-concepts/01-workflows.md#variables) that every `Node` can have zero or more `VariableMutation`s on it. A `VariableMutation` changes the value of a `ThreadRun`'s `Variable`s.
 
 You can add a `VariableMutation` at any point in your Thread Function by using tghe `WorkflowThread#mutate()` method or function.
 
@@ -24,7 +24,7 @@ The valid Mutation Types come from the `VariableMutationType` enum and are:
 - `REMOVE_KEY`
 - `REMOVE_INDEX`
 
-Refer to the [Concepts Documentation](/docs/04-concepts/06-variables.md) for a description of what each mutation type does.
+A description of each `VariableType` can be found on the [protobuf documentation](../../08-api.md#variabletype).
 
 ## Examples
 
@@ -51,10 +51,10 @@ public void threadFunction(WorkflowThread thread) {
   <TabItem value="go" label="Go">
 
 ```go
-func someThreadFunction(thread *wflib.WorkflowThread) {
-    foo := thread.AddVariable("foo", model.VariableType_INT)
+func someThreadFunction(thread *littlehorse.WorkflowThread) {
+    foo := thread.AddVariable("foo", lhproto.VariableType_INT)
     // ... optionally execute some tasks
-    thread.Mutate(foo, model.VariableMutationType_ASSIGN, 3)
+    thread.Mutate(foo, lhproto.VariableMutationType_ASSIGN, 3)
 }
 ```
 
@@ -95,10 +95,10 @@ public void threadFunction(WorkflowThread thread) {
   <TabItem value="go" label="Go">
 
 ```go
-func someThreadFunction(thread *wflib.WorkflowThread) {
-    foo := thread.AddVariableWithDefault("foo", model.VariableType_INT, 1)
+func someThreadFunction(thread *littlehorse.WorkflowThread) {
+    foo := thread.AddVariableWithDefault("foo", lhproto.VariableType_INT, 1)
     taskOutput := thread.Execute("some-task-that-returns-int")
-    thread.Mutate(foo, model.VariableMutationType_ADD, taskOutput)
+    thread.Mutate(foo, lhproto.VariableMutationType_ADD, taskOutput)
 }
 ```
   </TabItem>
@@ -136,13 +136,13 @@ public void threadFunction(WorkflowThread thread) {
   <TabItem value="go" label="Go">
 
 ```go
-func someThreadFunction(thread *wflib.WorkflowThread) {
-    strToAppend := thread.AddVariable("string-to-append", model.VariableType_STR)
-    myList := thread.AddVariable("my-list", model.VariableType_JSON_ARR)
+func someThreadFunction(thread *littlehorse.WorkflowThread) {
+    strToAppend := thread.AddVariable("string-to-append", lhproto.VariableType_STR)
+    myList := thread.AddVariable("my-list", lhproto.VariableType_JSON_ARR)
 
     // ... execute a few tasks
 
-    thread.Mutate(myList, model.VariableMutationType_EXTEND, strToAppend)
+    thread.Mutate(myList, lhproto.VariableMutationType_EXTEND, strToAppend)
 }
 ```
 
@@ -192,11 +192,11 @@ public void threadFunction(WorkflowThread thread) {
   <TabItem value="go" label="Go">
 
 ```go
-func someThread(thread *wflib.WorkflowThread) {
-  myVar := thread.AddVariable("my-var", model.VariableType_JSON_OBJ)
+func someThread(thread *littlehorse.WorkflowThread) {
+  myVar := thread.AddVariable("my-var", lhproto.VariableType_JSON_OBJ)
   fooPath := myVar.JsonPath("$.foo")
   // ... execute some tasks
-  thread.Mutate(&fooPath, model.VariableMutationType_ADD, 1)
+  thread.Mutate(&fooPath, lhproto.VariableMutationType_ADD, 1)
 }
 ```
 

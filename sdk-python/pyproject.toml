@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "littlehorse-client"
-version = "0.10.1"
+version = "0.0.0"
 description = "LittleHorse is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications"
 authors = [ "LittleHorse Engineering <engineering@littlehorse.io>",]
 readme = "README.md"
@@ -25,7 +25,7 @@ line-length = 88
 exclude = [ "littlehorse/model/",]
 
 [tool.mypy]
-exclude = [ "littlehorse/model/", "tests/", "scripts/",]
+exclude = [ "littlehorse/model/", "tests/",]
 strict = true
 ignore_missing_imports = true
 disallow_untyped_calls = false

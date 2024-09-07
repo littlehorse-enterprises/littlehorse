@@ -7,7 +7,7 @@ import "common_enums.proto";
 import "common_wfspec.proto";
 import "object_id.proto";
 
-option go_package = ".;model";
+option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Common.Proto";
@@ -329,7 +329,7 @@ message Node {
     // Creates a TaskNodeRUn
     TaskNode task = 7;
 
-    // Creates an ExternalEventRun
+    // Creates an ExternalEventNodeRun
     ExternalEventNode external_event = 8;
 
     // Creates a StartThreadNodeRun

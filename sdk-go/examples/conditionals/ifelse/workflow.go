@@ -2,9 +2,15 @@ package ifelse
 
 import (
 	"fmt"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/wflib"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+)
+
+const (
+	EatSaladTaskName        string = "eat-salad"
+	EatAnotherDonutTaskName string = "eat-another-donut"
+	WorkflowName            string = "donut-workflow"
 )
 
 func Salad() string {
@@ -17,16 +23,16 @@ func Donut() string {
 	return "Have another donut!"
 }
 
-func DonutWorkflow(wf *wflib.WorkflowThread) {
-	numDonuts := wf.AddVariable("number-of-donuts", model.VariableType_INT)
+func DonutWorkflow(wf *littlehorse.WorkflowThread) {
+	numDonuts := wf.AddVariable("number-of-donuts", lhproto.VariableType_INT)
 
 	wf.DoIfElse(
-		wf.Condition(numDonuts, model.Comparator_LESS_THAN, 10),
-		func(t *wflib.WorkflowThread) {
-			t.Execute("eat-another-donut")
+		wf.Condition(numDonuts, lhproto.Comparator_LESS_THAN, 10),
+		func(t *littlehorse.WorkflowThread) {
+			t.Execute(EatAnotherDonutTaskName)
 		},
-		func(t *wflib.WorkflowThread) {
-			t.Execute("eat-salad")
+		func(t *littlehorse.WorkflowThread) {
+			t.Execute(EatSaladTaskName)
 		},
 	)
 }

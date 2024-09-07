@@ -25,7 +25,7 @@ The Clients create and manage metadata objects, such as `TaskDef`s and `WfSpec`s
 
 The Task Workers and Clients are owned and deployed by you, the user of LittleHorse. The LittleHorse Server does not initiate any outbound connections to your Task Workers or Clients. Additionally, your Task Workers and Clients can run anywhere so long as they have network access to the LH Server.
 
-The LittleHorse Server can be deployed in one of three ways: LittleHorse OSS, LittleHorse Platform, and LittleHorse Cloud.
+The LittleHorse Server can be deployed in one of three ways: LittleHorse OSS, LittleHorse for Kubernetes, and LittleHorse Cloud.
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -33,7 +33,7 @@ import TabItem from '@theme/TabItem';
 <Tabs>
   <TabItem value="lh-oss" label="LH OSS" default>
 
-In LittleHorse Community, you run the LH Server free of charge in your own environment. You can get the code from our [GitHub Repo](https://github.com/littlehorse-enterprises/littlehorse), and our repo has quickstart tutorials for running LittleHorse using our public docker image.
+As the LH Server is source-available under the SSPL 1.0 license, you can run LittleHorse free of charge in production on your own infrastructure. You can get the code from our [GitHub Repo](https://github.com/littlehorse-enterprises/littlehorse), and our repo has quickstart tutorials for running LittleHorse using our public docker image.
 
 LittleHorse OSS is licensed under the [Server Side Public License](https://www.mongodb.com/licensing/server-side-public-license). Mongo has a fantastic [SSPL FAQ](https://www.mongodb.com/licensing/server-side-public-license/faq). The TLDR of the license is that you can use LittleHorse OSS for free in production without restriction unless you are offering LittleHorse-as-a-Service to external organizations.
 
@@ -41,7 +41,7 @@ For information on how to run LittleHorse OSS in production, check out our [Oper
 
 ![LH OSS logo](/img/logo.jpg)
 
-:::note
+:::info
 If you are building a software application delivered over the internet (SaaS), you may do so without restriction even if your SaaS app is _powered by_ LittleHorse.
 
 A SaaS application qualifies as "powered by LittleHorse" so long as the end product used by customers has a meaningfully differentiated API from the core LH Server Public GRPC API. For example, you can sell an e-commerce application that runs on LittleHorse OSS without restriction.
@@ -50,16 +50,16 @@ However, if a company explicitly exposes the entire LH Server Public GRPC API as
 :::
 
   </TabItem>
-  <TabItem value="lh-platform" label="LH Platform">
+  <TabItem value="lh-for-kubernetes" label="LH for Kubernetes">
 
-LittleHorse Platform is an enterprise-ready managed installation of LittleHorse in your Kubernetes cluster. It is delivered through a subscription to a Kubernetes Operator, which takes LittleHorse from a stick-shift car (LH OSS) and turns it into a Tesla.
+LittleHorse for Kubernetes (LHK) is an enterprise-ready managed installation of LittleHorse in your Kubernetes cluster. It is delivered through a subscription to a Kubernetes Operator, which takes LittleHorse from a stick-shift car (LH OSS) and turns it into a Tesla.
 
-LH Platform is suitable for large enterprises who have strict data privacy and security requirements, and who are uncomfortable with allowing data to leave their four walls. LH Platform is highly configurable, yet it is also simple and comes with sensible defaults, 24/7 support, and hands-off upgrades.
+LHK is suitable for large enterprises who have strict data privacy and security requirements, and who are uncomfortable with allowing data to leave their four walls. LH Platform is highly configurable, yet it is also simple and comes with sensible defaults, 24/7 support, and hands-off upgrades.
 
-![LH Platform Overview](lh-platform.png)
+![LH for Kubernetes Overview](lh-for-kubernetes.png)
 
 :::note
-To inquire about LittleHorse Platform, fill out the [waitlist form](https://docs.google.com/forms/d/e/1FAIpQLScXVvTYy4LQnYoFoRKRQ7ppuxe0KgncsDukvm96qKN0pU5TnQ/viewform?usp=sf_link) or contact `sales@littlehorse.io`.
+To inquire about LittleHorse for Kubernetes, fill out the [waitlist form](https://docs.google.com/forms/d/e/1FAIpQLScXVvTYy4LQnYoFoRKRQ7ppuxe0KgncsDukvm96qKN0pU5TnQ/viewform?usp=sf_link) or contact `sales@littlehorse.io`.
 :::
 
   </TabItem>
@@ -87,9 +87,9 @@ The LittleHorse Server supports various security mechanisms:
 * Federated identity for authentication (either mTLS or OAuth).
 * mTLS to secure inter-server communication.
 
-LittleHorse Platform supports integration with Istio, Cert Manager, and Keycloak. Additionally, since LH Platform runs entirely in your own network, your firewall rules can add an additional layer of security.
+LittleHorse for Kubernetes has integrations with the Gateway API, Cert Manager, and Keycloak. Additionally, since LH Platform runs entirely in your own network, your firewall rules can add an additional layer of security.
 
-LittleHorse Cloud will use TLS and OAuth for client authentication, and SSO for access to the LH Dashboard.
+LittleHorse Cloud uses TLS and OAuth for client authentication, and SSO for access to the LH Dashboard.
 
 ## Architecture Internals
 

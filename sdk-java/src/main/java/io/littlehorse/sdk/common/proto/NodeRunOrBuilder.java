@@ -320,7 +320,7 @@ public interface NodeRunOrBuilder extends
    * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
    * </pre>
    *
-   * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
+   * <code>.littlehorse.ExternalEventNodeRun external_event = 14;</code>
    * @return Whether the externalEvent field is set.
    */
   boolean hasExternalEvent();
@@ -329,18 +329,18 @@ public interface NodeRunOrBuilder extends
    * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
    * </pre>
    *
-   * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
+   * <code>.littlehorse.ExternalEventNodeRun external_event = 14;</code>
    * @return The externalEvent.
    */
-  io.littlehorse.sdk.common.proto.ExternalEventRun getExternalEvent();
+  io.littlehorse.sdk.common.proto.ExternalEventNodeRun getExternalEvent();
   /**
    * <pre>
    * An EXTERNAL_EVENT node blocks until an ExternalEvent arrives.
    * </pre>
    *
-   * <code>.littlehorse.ExternalEventRun external_event = 14;</code>
+   * <code>.littlehorse.ExternalEventNodeRun external_event = 14;</code>
    */
-  io.littlehorse.sdk.common.proto.ExternalEventRunOrBuilder getExternalEventOrBuilder();
+  io.littlehorse.sdk.common.proto.ExternalEventNodeRunOrBuilder getExternalEventOrBuilder();
 
   /**
    * <pre>

@@ -22,7 +22,7 @@ import io.littlehorse.sdk.common.proto.Principal;
 import io.littlehorse.sdk.common.proto.PrincipalId;
 import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
 import io.littlehorse.sdk.common.proto.ServerACLs;
-import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
@@ -57,7 +57,7 @@ public class PrincipalAdministrationTest {
     private LHServerConfig config;
 
     @Mock
-    private KafkaStreamsServerImpl server;
+    private LHServer server;
 
     private final MetadataCache metadataCache = new MetadataCache();
     private final KeyValueStore<String, Bytes> nativeMetadataStore = Stores.keyValueStoreBuilder(

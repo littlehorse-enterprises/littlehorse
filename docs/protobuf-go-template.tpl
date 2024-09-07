@@ -28,7 +28,7 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-| [{{.RequestLongType}}](#{{.RequestLongType | lower | replace "." ""}}) | [{{.ResponseLongType}}](#{{.ResponseLongType | lower | replace "." ""}}) | {{.Description | replace "\n\n" "<br/><br/>" | replace "\n" " "}} |
+| {{if ne .RequestLongType ".google.protobuf.Empty" }} [{{.RequestLongType}}](#{{.RequestLongType | lower | replace "." ""}}) {{ else }} {{.RequestLongType}} {{ end }} | {{if ne .ResponseLongType ".google.protobuf.Empty" }} [{{.ResponseLongType}}](#{{.ResponseLongType | lower | replace "." ""}}) {{ else }} {{.ResponseLongType}} {{ end }} | {{.Description | replace "\n\n" "<br/><br/>" | replace "\n" " "}} |
 
 {{end}}
 {{end}}

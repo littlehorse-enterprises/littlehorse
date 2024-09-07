@@ -2,8 +2,13 @@ package exceptionhandler
 
 import (
 	"errors"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+)
 
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/wflib"
+const (
+	WorkflowName   = "exception-handler"
+	FlakyTaskName  = "flaky-task"
+	StableTaskName = "some-stable-task"
 )
 
 func SomeStableTask() string {
@@ -14,11 +19,10 @@ func FlakyTask() (*string, error) {
 	return nil, errors.New("oh no! the task failed")
 }
 
-func ExceptionHandlerWorkflow(wf *wflib.WorkflowThread) {
-	taskOutput := wf.Execute("flaky-task")
-
-	exnToHandle := "TASK_ERROR"
-	wf.HandleException(&taskOutput, &exnToHandle, func(handler *wflib.WorkflowThread) {
-		handler.Execute("some-stable-task")
+func ExceptionHandlerWorkflow(wf *littlehorse.WorkflowThread) {
+	taskOutput := wf.Execute(FlakyTaskName)
+	exnToHandle := littlehorse.TaskError
+	wf.HandleError(&taskOutput, &exnToHandle, func(handler *littlehorse.WorkflowThread) {
+		handler.Execute(StableTaskName)
 	})
 }

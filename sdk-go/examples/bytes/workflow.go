@@ -1,13 +1,16 @@
 package bytes
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/wflib"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 )
 
-func Greet(byteInput []byte) int {
+const WorkflowName string = "bytes-workflow"
+const TaskDefName string = "to-bytes"
+
+func ToBytesLength(byteInput []byte) int {
 	return len(byteInput)
 }
 
-func MyWorkflow(wf *wflib.WorkflowThread) {
-	wf.Execute("greet", []byte("hello little horse"))
+func MyWorkflow(wf *littlehorse.WorkflowThread) {
+	wf.Execute(TaskDefName, []byte("hello little horse"))
 }

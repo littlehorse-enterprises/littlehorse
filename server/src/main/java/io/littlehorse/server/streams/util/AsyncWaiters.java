@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -32,28 +34,12 @@ public class AsyncWaiters {
     private final HashMap<WfRunIdModel, GroupOfObserversWaitingForEvent> eventWaiters;
     private final Lock eventWaiterLock = new ReentrantLock();
 
-    public AsyncWaiters() {
+    public AsyncWaiters(ScheduledExecutorService executor) {
         commandWaiters = new ConcurrentHashMap<>();
         eventWaiters = new HashMap<>();
 
-        // This came from the BackendInternalComms class. It obviously needs to be optimized/cleaned up
-        // in the future, but it has been "this way" for years. I think this is a responsibility of the
-        // AsyncWaiters class, not the BackendInternalComms class, so I moved it here. But we should
-        // still clean it up later...ideally, the new implementation wouldn't use a Thread.
-        //
-        // There likely is some GRPC construct we can use.
-        new Thread(() -> {
-                    while (true) {
-                        try {
-                            Thread.sleep(10 * 1000);
-                            this.cleanupOldCommandWaiters();
-                            cleanupOldWorkflowEventWaiters();
-                        } catch (InterruptedException exn) {
-                            throw new RuntimeException(exn);
-                        }
-                    }
-                })
-                .start();
+        executor.scheduleAtFixedRate(this::cleanupOldCommandWaiters, 0, 10, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(this::cleanupOldWorkflowEventWaiters, 1, 10, TimeUnit.SECONDS);
     }
 
     public void registerObserverWaitingForCommand(
@@ -66,7 +52,7 @@ public class AsyncWaiters {
         }
     }
 
-    public void markCommandFailed(String commandId, Exception exception) {
+    public void markCommandFailed(String commandId, Throwable exception) {
         CommandWaiter tmp = new CommandWaiter(commandId, -1);
         CommandWaiter waiter = commandWaiters.putIfAbsent(commandId, tmp);
         if (waiter == null) waiter = tmp;

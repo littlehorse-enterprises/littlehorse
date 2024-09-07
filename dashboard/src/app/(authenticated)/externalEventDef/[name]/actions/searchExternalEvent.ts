@@ -11,7 +11,7 @@ import {
 
 export interface runDetails {
   externalEvent: ExternalEvent
-  nodeRun: NodeRun
+  nodeRun: NodeRun | null
 }
 export interface PaginatedExternalEventList extends ExternalEventIdList {
   resultsWithDetails: runDetails[]
@@ -30,14 +30,23 @@ export const searchExternalEvent = async ({
 }: ExternalEventSearchProps): Promise<PaginatedExternalEventList> => {
   const client = await lhClient({ tenantId })
   const requestWithBookmark = bookmarkAsString ? { ...req, bookmark: Buffer.from(bookmarkAsString, 'base64') } : req
-  const externalEvevntIdList: ExternalEventIdList = await client.searchExternalEvent(requestWithBookmark)
+  const externalEventIdList: ExternalEventIdList = await client.searchExternalEvent(requestWithBookmark)
+
   const hydrateWithExternalEventDetails = (): Promise<runDetails>[] => {
-    return externalEvevntIdList.results.map(async (externalEvevntId: ExternalEventId) => {
+    return externalEventIdList.results.map(async (externalEventId: ExternalEventId) => {
+      if (!externalEventId.externalEventDefId) {
+        throw new Error('externalEventDefId is required')
+      }
       const externalEvent = await client.getExternalEvent({
-        wfRunId: externalEvevntId.wfRunId,
-        guid: externalEvevntId.guid,
+        externalEventDefId: externalEventId.externalEventDefId,
+        wfRunId: externalEventId.wfRunId,
+        guid: externalEventId.guid,
       })
-      const nodeRun = await client.getNodeRun(externalEvent.id!)
+
+      let nodeRun = null
+      try {
+        nodeRun = await client.getNodeRun(externalEvent.id!)
+      } catch {}
 
       return {
         externalEvent,
@@ -49,8 +58,8 @@ export const searchExternalEvent = async ({
   const externalEventWithDetails: runDetails[] = await Promise.all(hydrateWithExternalEventDetails())
 
   return {
-    ...externalEvevntIdList,
-    bookmarkAsString: externalEvevntIdList.bookmark?.toString('base64'),
+    ...externalEventIdList,
+    bookmarkAsString: externalEventIdList.bookmark?.toString('base64'),
     resultsWithDetails: externalEventWithDetails,
   }
 }

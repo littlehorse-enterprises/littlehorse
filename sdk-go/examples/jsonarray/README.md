@@ -14,7 +14,7 @@ The file [workflow.go](./workflow.go) has two functions defined:
 Before we can create the `WfSpec`, we need to register the `TaskDef`. The easiest way to do that is to run the task worker:
 
 ```
-go run ./jsonarray/worker
+go run ./examples/jsonarray/worker
 ```
 
 Leave that process running.
@@ -24,13 +24,13 @@ Leave that process running.
 Next, in another terminal, run:
 
 ```
-go run ./jsonarray/deploy
+go run ./examples/jsonarray/deploy
 ```
 
 That will create the `WfSpec`. You can verify that via:
 
 ```
-lhctl get wfSpec my-workflow
+lhctl get wfSpec json-array-workflow
 ```
 
 ## Run a `WfRun`
@@ -38,7 +38,7 @@ lhctl get wfSpec my-workflow
 To run a `WfRun`, you can use `lhctl`.
 
 ```
-lhctl run my-workflow input '[{"foo": 1, "art":{"id":1,"title": "bugia", "content": "lol"}},{"foo":103, "art":{"id":1,"title": null}}]'
+lhctl run json-array-workflow input '[{"foo": 1, "art":{"id":1,"title": "bugia", "content": "lol"}},{"foo":103, "art":{"id":1,"title": null}}]'
 ```
 
 It will print out an ID. You can view the status of that `WfRun` via:

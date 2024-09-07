@@ -8,7 +8,7 @@ import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.common.util.serde.ProtobufDeserializer;
-import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.processors.CommandProcessor;
@@ -87,10 +87,11 @@ public class ServerTopology {
 
     public static Topology initCoreTopology(
             LHServerConfig config,
-            KafkaStreamsServerImpl server,
+            LHServer server,
             MetadataCache metadataCache,
             TaskQueueManager globalTaskQueueManager) {
         Topology topo = new Topology();
+
         Serializer<Object> sinkValueSerializer = (topic, output) -> {
             CommandProcessorOutput cpo = (CommandProcessorOutput) output;
             if (cpo.payload == null) {
