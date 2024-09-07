@@ -10,6 +10,7 @@ import io.grpc.ServerBuilder;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHSerializable;
@@ -608,9 +609,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         TaskWorkerHeartBeatRequestModel heartBeat =
                 LHSerializable.fromProto(heartBeatPb, TaskWorkerHeartBeatRequestModel.class, requestContext());
 
-        // TODO: Refactor this, we should create a class for this
-        StreamObserver<RegisterTaskWorkerResponse> clusterHealthRequestObserver =
-                new ClusterHealthRequestObserver(responseObserver);
+        ClusterHealthRequestObserver clusterHealthRequestObserver = new ClusterHealthRequestObserver(responseObserver);
 
         processCommand(
                 new CommandModel(heartBeat), clusterHealthRequestObserver, RegisterTaskWorkerResponse.class, true);
@@ -1069,6 +1068,11 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             Class<RC> responseCls,
             boolean shouldCompleteStream) {
         RequestExecutionContext requestContext = requestContext();
+        if (responseObserver instanceof ServerCallStreamObserver<RC> serverCall) {
+            serverCall.setOnCancelHandler(() -> {
+                // If this observer event has already closed, Async Waiters might attempt to finish it.
+            });
+        }
         processCommand(
                 command,
                 responseObserver,

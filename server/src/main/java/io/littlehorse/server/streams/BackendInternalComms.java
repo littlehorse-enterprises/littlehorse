@@ -348,7 +348,7 @@ public class BackendInternalComms implements Closeable {
         asyncWaiters.registerCommandProcessed(commandId, response);
     }
 
-    public void sendErrorToClientForCommand(String commandId, Exception caught) {
+    public void sendErrorToClientForCommand(String commandId, Throwable caught) {
         asyncWaiters.markCommandFailed(commandId, caught);
     }
 
