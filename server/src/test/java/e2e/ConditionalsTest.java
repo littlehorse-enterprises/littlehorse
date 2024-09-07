@@ -53,6 +53,9 @@ public class ConditionalsTest {
     @LHWorkflow("test-nested-if")
     private Workflow workflowNestedIf;
 
+    @LHWorkflow("test-nested-if-else")
+    private Workflow workflowNestedIfElse;
+
     private WorkflowVerifier workflowVerifier;
 
     @Nested
@@ -352,10 +355,6 @@ public class ConditionalsTest {
     @LHWorkflow("test-nested-if")
     public Workflow getNestedIfWorkflowImpl() {
         return new WorkflowImpl("test-nested-if", wf -> {
-            // Use an input JSON blob with two fields, LHS and RHS.
-            // This allows us to test with various types on the left and the
-            // right, since right now the JSON_OBJ var type does not have a
-            // schema.
             WfRunVariable input = wf.addVariable("input", VariableType.INT);
 
             /*
@@ -375,6 +374,61 @@ public class ConditionalsTest {
             });
 
             wf.execute("echo", 3);
+        });
+    }
+
+    @Test
+    void ifElseShouldGoDownFirstPathWhenLessThan10() {
+        workflowVerifier.prepareRun(workflowNestedIfElse, Arg.of("input", 1))
+                .waitForStatus(LHStatus.COMPLETED)
+                .verifyAllTaskRunOutputs(List.of(1, 4))
+                .start();
+    }
+
+    @Test
+    void ifElseGoesToElseThenNestedIfGoesToTrue() {
+        workflowVerifier.prepareRun(workflowNestedIfElse, Arg.of("input", 11))
+                .waitForStatus(LHStatus.COMPLETED)
+                .verifyAllTaskRunOutputs(List.of(2, 3, 4))
+                .start();
+    }
+
+    @Test
+    void ifElseGoesToElseThenNestedIfGoesTofalse() {
+        workflowVerifier.prepareRun(workflowNestedIfElse, Arg.of("input", 16))
+                .waitForStatus(LHStatus.COMPLETED)
+                .verifyAllTaskRunOutputs(List.of(3, 4))
+                .start();
+    }
+
+    @LHWorkflow("test-nested-if-else")
+    public Workflow getNestedIfElseWorkflow() {
+        return new WorkflowImpl("test-nested-if-else", wf -> {
+            WfRunVariable input = wf.addVariable("input", VariableType.INT);
+
+            /*
+            if (input < 10) {
+                execute(1);
+            } else {
+                if (input < 15) {
+                    execute(2);
+                }
+                execute(3);
+            }
+             */
+            wf.doIfElse(
+                    wf.condition(input, Comparator.LESS_THAN, 10),
+                    ifBlock -> {
+                        ifBlock.execute("echo", 1);
+                    },
+                    elseBlock -> {
+                        wf.doIf(wf.condition(input, Comparator.LESS_THAN, 15), ifBlock -> {
+                            ifBlock.execute("echo", 2);
+                        });
+                        elseBlock.execute("echo", 3);
+                    });
+
+            wf.execute("echo", 4);
         });
     }
 
