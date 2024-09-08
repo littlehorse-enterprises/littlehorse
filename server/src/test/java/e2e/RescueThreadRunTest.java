@@ -111,7 +111,14 @@ public class RescueThreadRunTest {
                 .waitForNodeRunStatus(0, 1, LHStatus.ERROR)
                 .thenRescueThreadRun(0, true) // skip failed node
                 .waitForStatus(LHStatus.COMPLETED)
-                .thenVerifyAllTaskRuns(taskRuns -> {
+                .thenVerifyAllTaskRuns(unsortedTaskRuns -> {
+                    List<TaskRun> taskRuns = new ArrayList<>(unsortedTaskRuns);
+
+                    taskRuns.sort((task1, task2) -> {
+                        return task1.getSource().getTaskNode().getNodeRunId().getPosition()
+                                - task2.getSource().getTaskNode().getNodeRunId().getPosition();
+                    });
+
                     assertThat(taskRuns.size()).isEqualTo(2);
                     assertThat(taskRuns.get(0).getStatus()).isEqualTo(TaskStatus.TASK_FAILED);
                     assertThat(taskRuns.get(1).getTaskDefId().getName()).isEqualTo("no-rescue-needed");
