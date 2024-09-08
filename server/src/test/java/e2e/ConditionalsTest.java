@@ -379,7 +379,8 @@ public class ConditionalsTest {
 
     @Test
     void ifElseShouldGoDownFirstPathWhenLessThan10() {
-        workflowVerifier.prepareRun(workflowNestedIfElse, Arg.of("input", 1))
+        workflowVerifier
+                .prepareRun(workflowNestedIfElse, Arg.of("input", 1))
                 .waitForStatus(LHStatus.COMPLETED)
                 .verifyAllTaskRunOutputs(List.of(1, 4))
                 .start();
@@ -387,7 +388,8 @@ public class ConditionalsTest {
 
     @Test
     void ifElseGoesToElseThenNestedIfGoesToTrue() {
-        workflowVerifier.prepareRun(workflowNestedIfElse, Arg.of("input", 11))
+        workflowVerifier
+                .prepareRun(workflowNestedIfElse, Arg.of("input", 11))
                 .waitForStatus(LHStatus.COMPLETED)
                 .verifyAllTaskRunOutputs(List.of(2, 3, 4))
                 .start();
@@ -395,7 +397,8 @@ public class ConditionalsTest {
 
     @Test
     void ifElseGoesToElseThenNestedIfGoesTofalse() {
-        workflowVerifier.prepareRun(workflowNestedIfElse, Arg.of("input", 16))
+        workflowVerifier
+                .prepareRun(workflowNestedIfElse, Arg.of("input", 16))
                 .waitForStatus(LHStatus.COMPLETED)
                 .verifyAllTaskRunOutputs(List.of(3, 4))
                 .start();
