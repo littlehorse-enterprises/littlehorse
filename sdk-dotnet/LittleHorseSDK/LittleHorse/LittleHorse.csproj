@@ -48,7 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\..\..\schemas\*.proto" GrpcServices="Both" ProtoRoot="..\..\..\schemas" />
+    <Protobuf Include="..\..\..\schemas\littlehorse\*.proto" GrpcServices="Both" ProtoRoot="..\..\..\schemas\littlehorse" />
   </ItemGroup>
 
   <ItemGroup>

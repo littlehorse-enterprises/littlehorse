@@ -7,7 +7,7 @@ namespace LittleHorse.Common.Configuration
     {
         string BootstrapHost { get; }
         int BootstrapPort { get; }
-        string ClientId { get; }
+        string WorkerId { get; }
         string TaskWorkerVersion { get; }
         string ConnectListener { get; }
         int WorkerThreads { get; }

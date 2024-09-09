@@ -55,7 +55,7 @@ namespace LittleHorse.Common.Configuration.Implementations
                 return $"{BootstrapProtocol}://{BootstrapHost}:{BootstrapPort}";
             }
         }
-        public string ClientId
+        public string WorkerId
         {
             get
             {

@@ -1,7 +1,7 @@
 ﻿using LittleHorse.Common.Exceptions;
 using LittleHorse.Worker.Internal.Helpers;
-using LittleHorse.Common.Proto;
 using Microsoft.Extensions.Logging;
+using LittleHorse.Common.Proto;
 
 namespace LittleHorse.Worker.Internal
 {
@@ -9,10 +9,10 @@ namespace LittleHorse.Worker.Internal
     {
         private ILogger? _logger;
         private string? _name;
-        private Type _type;
+        private System.Type _type;
         private int _position;
 
-        public VariableMapping(TaskDef taskDef, int position, Type type, string? paramName, ILogger? logger = null)
+        public VariableMapping(TaskDef taskDef, int position, System.Type type, string? paramName, ILogger? logger = null)
         {
             _type = type;
             _name = paramName;
@@ -24,7 +24,7 @@ namespace LittleHorse.Worker.Internal
                 return;
             }
 
-            var input = taskDef.InputVars[position];
+            VariableDef input = taskDef.InputVars[position];
 
             ValidateType(input.Type, _type, _name);
         }
@@ -42,9 +42,9 @@ namespace LittleHorse.Worker.Internal
 
             string? jsonStr;
 
-            switch (val.Type)
+            switch (val.ValueCase)
             {
-                case VariableType.Int:
+                case VariableValue.ValueOneofCase.Int:
                     if (_type == typeof(long) || _type == typeof(long?))
                     {
                         return val.Int;
@@ -53,7 +53,7 @@ namespace LittleHorse.Worker.Internal
                     {
                         return (int)val.Int;
                     }
-                case VariableType.Double:
+                case VariableValue.ValueOneofCase.Double:
                     if (_type == typeof(double) || _type == typeof(double?))
                     {
                         return val.Double;
@@ -62,18 +62,16 @@ namespace LittleHorse.Worker.Internal
                     {
                         return (float)val.Double;
                     }
-                case VariableType.Str:
+                case VariableValue.ValueOneofCase.Str:
                     return val.Str;
-                case VariableType.Bytes:
+                case VariableValue.ValueOneofCase.Bytes:
                     return val.Bytes.ToByteArray();
-                case VariableType.Bool:
+                case VariableValue.ValueOneofCase.Bool:
                     return val.Bool;
-                case VariableType.JsonArr:
+                case VariableValue.ValueOneofCase.JsonArr:
                     jsonStr = val.JsonArr;
                     break;
-                case VariableType.Null:
-                    return null;
-                case VariableType.JsonObj:
+                case VariableValue.ValueOneofCase.JsonObj:
                     jsonStr = val.JsonObj;
                     break;
                 default:
@@ -91,7 +89,7 @@ namespace LittleHorse.Worker.Internal
         }
 
 
-        private void ValidateType(VariableType taskDefInputType, Type paramType, string? paramName)
+        private void ValidateType(VariableType taskDefInputType, System.Type paramType, string? paramName)
         {
             string errorMsg = string.Empty;
 
@@ -131,7 +129,6 @@ namespace LittleHorse.Worker.Internal
                 case VariableType.JsonObj:
                     _logger?.LogInformation($"Will use Jackson to deserialize Json into {paramType.Name}");
                     break;
-                case VariableType.Null:
                 default:
                     throw new Exception("Not possible");
             }

@@ -21,7 +21,7 @@ namespace LittleHorse.Worker.Internal
         private List<VariableMapping> _mappings;
         private T _executable;
         private ILogger? _logger;
-        private LittleHorse.LittleHorseClient _bootstrapClient;
+        private LittleHorse.Common.Proto.LittleHorse.LittleHorseClient _bootstrapClient;
         private bool _running;
         private List<LHServerConnection<T>> _runningConnections;
         private Thread _rebalanceThread;
@@ -84,9 +84,8 @@ namespace LittleHorse.Worker.Internal
             {
                 var request = new RegisterTaskWorkerRequest()
                 {
-                    TaskDefName = _taskDef.Name,
-                    ClientId = _config.ClientId,
-                    ListenerName = _config.ConnectListener
+                    TaskDefId = _taskDef.Id,
+                    TaskWorkerId = _config.WorkerId,
                 };
 
                 var response = _bootstrapClient.RegisterTaskWorker(request);
@@ -112,7 +111,7 @@ namespace LittleHorse.Worker.Internal
                         var newConnection = new LHServerConnection<T>(this, host, _logger);
                         newConnection.Connect();
                         _runningConnections.Add(newConnection);
-                        _logger?.LogInformation($"Adding connection to: {host.Host}:{host.Port} for task '{_taskDef.Name}'");
+                        _logger?.LogInformation($"Adding connection to: {host.Host}:{host.Port} for task '{_taskDef.Id}'");
                     }
                     catch (IOException ex)
                     {
@@ -148,14 +147,14 @@ namespace LittleHorse.Worker.Internal
             return _runningConnections.Any(conn => conn.IsSame(host));
         }
 
-        public async void SubmitTaskForExecution(ScheduledTask scheduledTask, LittleHorse.LittleHorseClient client)
+        public async void SubmitTaskForExecution(ScheduledTask scheduledTask, LittleHorse.Common.Proto.LittleHorse.LittleHorseClient client)
         {
             await _semaphore.WaitAsync();
 
             DoTask(scheduledTask, client);
         }
 
-        private void DoTask(ScheduledTask scheduledTask, LittleHorse.LittleHorseClient client)
+        private void DoTask(ScheduledTask scheduledTask, LittleHorse.Common.Proto.LittleHorse.LittleHorseClient client)
         {
             ReportTaskRun result = ExecuteTask(scheduledTask, LHMappingHelper.MapDateTimeFromProtoTimeStamp(scheduledTask.CreatedAt));
             _semaphore.Release();
