@@ -3,6 +3,7 @@ package e2e;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -28,11 +29,29 @@ public class WorkerContextTest {
                 .waitForStatus(LHStatus.COMPLETED)
                 .waitForTaskStatus(0, 1, TaskStatus.TASK_SUCCESS)
                 .waitForTaskStatus(0, 2, TaskStatus.TASK_SUCCESS)
-                .thenVerifyAllTaskRuns(0, taskRuns -> {
-                    assertThat(taskRuns.get(0).getAttempts(0).getOutput().getStr())
-                            .contains(" on nodeRun 1");
-                    assertThat(taskRuns.get(1).getAttempts(0).getOutput().getStr())
-                            .contains(" on nodeRun 2");
+                .thenVerifyAllTaskRuns(taskRuns -> {
+
+                    // TaskRuns are ordered by Guid, not by NodeRun Number.
+
+                    TaskRun firstTask = taskRuns.stream()
+                            .filter(task -> task.getSource()
+                                            .getTaskNode()
+                                            .getNodeRunId()
+                                            .getPosition()
+                                    == 1)
+                            .findAny()
+                            .get();
+
+                    TaskRun secondTask = taskRuns.stream()
+                            .filter(task -> task.getSource()
+                                            .getTaskNode()
+                                            .getNodeRunId()
+                                            .getPosition()
+                                    == 2)
+                            .findAny()
+                            .get();
+                    assertThat(firstTask.getAttempts(0).getOutput().getStr()).contains(" on nodeRun 1");
+                    assertThat(secondTask.getAttempts(0).getOutput().getStr()).contains(" on nodeRun 2");
                 })
                 .start();
     }
