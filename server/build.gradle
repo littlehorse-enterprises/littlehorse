@@ -117,7 +117,7 @@ task e2e(type: Test, dependsOn: compileJava){
         events 'passed', 'skipped', 'failed'
         exceptionFormat = 'full'
     }
-    jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '-Xms8192m', '-Xmx8192m', '-XX:+UseParallelGC', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
+    jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '-Xms10000m', '-Xmx10000m', '-XX:+UseParallelGC', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
 
     // Enables parallelism on the e2e tests
     maxParallelForks = 2
