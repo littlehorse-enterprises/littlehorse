@@ -51,9 +51,10 @@ public class Main {
             new TopicCreator(
                     canaryConfig.toKafkaConfig().toMap(), canaryConfig.getTopicCreationTimeout(), List.of(topic));
         }
+        final boolean metronomeOrWorkerEnabled =
+                canaryConfig.isMetronomeEnabled() || canaryConfig.isMetronomeWorkerEnabled();
 
-        // start metronome client
-        if (canaryConfig.isMetronomeEnabled()) {
+        if (metronomeOrWorkerEnabled) {
             final LHConfig lhConfig =
                     new LHConfig(canaryConfig.toLittleHorseConfig().toMap());
             final LHClient lhClient = new LHClient(
@@ -68,35 +69,36 @@ public class Main {
                     lhClient.getServerVersion(),
                     canaryConfig.getTopicName(),
                     canaryConfig.toKafkaConfig().toMap());
-
-            // start worker
             if (canaryConfig.isMetronomeWorkerEnabled()) {
                 new MetronomeWorker(producer, lhConfig);
+                // register wf
+                if (canaryConfig.isWorkflowCreationEnabled()) {
+                    new MetronomeWorkflow(lhClient, canaryConfig.getWorkflowName());
+                }
             }
 
-            // register wf
-            if (canaryConfig.isWorkflowCreationEnabled()) {
-                new MetronomeWorkflow(lhClient, canaryConfig.getWorkflowName());
+            // start metronome client
+            if (canaryConfig.isMetronomeEnabled()) {
+
+                final LocalRepository repository = new LocalRepository(canaryConfig.getMetronomeDataPath());
+
+                new MetronomeRunWfExecutor(
+                        producer,
+                        lhClient,
+                        canaryConfig.getMetronomeRunFrequency(),
+                        canaryConfig.getMetronomeRunThreads(),
+                        canaryConfig.getMetronomeRunRequests(),
+                        canaryConfig.getMetronomeSampleRate(),
+                        repository);
+
+                new MetronomeGetWfRunExecutor(
+                        producer,
+                        lhClient,
+                        canaryConfig.getMetronomeGetFrequency(),
+                        canaryConfig.getMetronomeGetThreads(),
+                        canaryConfig.getMetronomeGetRetries(),
+                        repository);
             }
-
-            final LocalRepository repository = new LocalRepository(canaryConfig.getMetronomeDataPath());
-
-            new MetronomeRunWfExecutor(
-                    producer,
-                    lhClient,
-                    canaryConfig.getMetronomeRunFrequency(),
-                    canaryConfig.getMetronomeRunThreads(),
-                    canaryConfig.getMetronomeRunRequests(),
-                    canaryConfig.getMetronomeSampleRate(),
-                    repository);
-
-            new MetronomeGetWfRunExecutor(
-                    producer,
-                    lhClient,
-                    canaryConfig.getMetronomeGetFrequency(),
-                    canaryConfig.getMetronomeGetThreads(),
-                    canaryConfig.getMetronomeGetRetries(),
-                    repository);
         }
 
         // start the aggregator
