@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
+using LittleHorse.Common.Exceptions;
 using LittleHorse.Common.Proto;
 using Newtonsoft.Json;
 
@@ -71,41 +72,34 @@ namespace LittleHorse.Worker.Internal.Helpers
             var result = new VariableValue();
             if (o == null)
             {
-                result.Type = VariableType.Null;
+                throw new LHInputVarSubstitutionException();
             }
             else if (o is long longValue)
             {
-                result.Type = VariableType.Int;
                 result.Int = longValue;
             }
             else if (o is int intValue)
             {
-                result.Type = VariableType.Int;
                 result.Int = intValue;
             }
             else if (o is double doubleValue)
             {
-                result.Type = VariableType.Double;
                 result.Double = doubleValue;
             }
             else if (o is float floatValue)
             {
-                result.Type = VariableType.Double;
                 result.Double = floatValue;
             }
             else if (o is string stringValue)
             {
-                result.Type = VariableType.Str;
                 result.Str = stringValue;
             }
             else if (o is bool boolValue)
             {
-                result.Type = VariableType.Bool;
                 result.Bool = boolValue;
             }
             else if (o is byte[] byteArray)
             {
-                result.Type = VariableType.Bytes;
                 result.Bytes = ByteString.CopyFrom(byteArray);
             }
             else
@@ -115,12 +109,10 @@ namespace LittleHorse.Worker.Internal.Helpers
 
                 if (o is IList<object> list)
                 {
-                    result.Type = VariableType.JsonArr;
                     result.JsonArr = jsonStr;
                 }
                 else
                 {
-                    result.Type = VariableType.JsonObj;
                     result.JsonObj = jsonStr;
                 }
             }
@@ -146,7 +138,6 @@ namespace LittleHorse.Worker.Internal.Helpers
                 return new VariableValue()
                 {
                     Str = output,
-                    Type = VariableType.Str
                 };
             }
         }

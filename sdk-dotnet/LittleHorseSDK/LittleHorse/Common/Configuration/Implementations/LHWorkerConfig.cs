@@ -9,7 +9,7 @@ using LittleHorse.Common.Exceptions;
 using LittleHorse.Common.Proto;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using static LittleHorse.Common.Proto.LHPublicApi;
+using static LittleHorse.Common.Proto.LittleHorse;
 
 
 namespace LittleHorse.Common.Configuration.Implementations
@@ -55,7 +55,7 @@ namespace LittleHorse.Common.Configuration.Implementations
                 return $"{BootstrapProtocol}://{BootstrapHost}:{BootstrapPort}";
             }
         }
-        public string ClientId
+        public string WorkerId
         {
             get
             {
@@ -109,7 +109,7 @@ namespace LittleHorse.Common.Configuration.Implementations
         /// generally the loadbalancer url.
         /// </summary>
         /// <returns>Client for the configured host/port.</returns>
-        public LHPublicApiClient GetGrcpClientInstance()
+        public LittleHorseClient GetGrcpClientInstance()
         {
             return GetGrcpClientInstance(BootstrapHost, BootstrapPort);
         }
@@ -122,13 +122,13 @@ namespace LittleHorse.Common.Configuration.Implementations
         /// <param name="host">Host that the LH Server lives on.</param>
         /// <param name="port">Port that the LH Server lives on.</param>
         /// <returns>Client for the host/port combo.</returns>
-        public LHPublicApiClient GetGrcpClientInstance(string host, int port)
+        public LittleHorseClient GetGrcpClientInstance(string host, int port)
         {
             string channelKey = $"{BootstrapProtocol}://{host}:{port}";
 
             if (_createdChannels.ContainsKey(channelKey))
             {
-                return new LHPublicApiClient(_createdChannels[channelKey]);
+                return new LittleHorseClient(_createdChannels[channelKey]);
             }
 
             _logger?.LogInformation("Establishing connection to: " + channelKey);
@@ -137,7 +137,7 @@ namespace LittleHorse.Common.Configuration.Implementations
 
             _createdChannels.Add(channelKey, channel);
 
-            return new LHPublicApiClient(channel);
+            return new LittleHorseClient(channel);
         }
 
         /// <summary>
