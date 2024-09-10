@@ -38,7 +38,7 @@ public class WfSpecModelTest {
 
     @BeforeEach
     public void setup() {
-        childEntrypointThread = spy(wfSpec.getThreadSpecs().get(wfSpec.getEntrypointThreadName()));
+        childEntrypointThread = spy(new ThreadSpecModel());
         VariableDef variableDefProto = VariableDef.newBuilder()
                 .setName("my-var")
                 .setType(VariableType.BOOL)
@@ -99,7 +99,7 @@ public class WfSpecModelTest {
                 new ThreadVarDefModel(variableDef, false, false, WfRunVariableAccessLevel.PUBLIC_VAR);
         ThreadVarDefModel privateVariable =
                 new ThreadVarDefModel(variableDef, false, false, WfRunVariableAccessLevel.PRIVATE_VAR);
-        ThreadSpecModel entrypointThread = spy(wfSpec.getThreadSpecs().get(wfSpec.getEntrypointThreadName()));
+        ThreadSpecModel entrypointThread = spy(new ThreadSpecModel());
         doNothing().when(entrypointThread).validate(Mockito.any());
         oldVersion.getEntrypointThread().setVariableDefs(List.of(publicVariable));
         entrypointThread.setVariableDefs(List.of(privateVariable));
@@ -116,7 +116,9 @@ public class WfSpecModelTest {
                 new ThreadVarDefModel(variableDef, false, false, WfRunVariableAccessLevel.INHERITED_VAR);
         ThreadVarDefModel privateVariable =
                 new ThreadVarDefModel(variableDef, false, false, WfRunVariableAccessLevel.PRIVATE_VAR);
-        ThreadSpecModel entrypointThread = spy(wfSpec.getThreadSpecs().get(wfSpec.getEntrypointThreadName()));
+
+        ThreadSpecModel realThreadSpec = new ThreadSpecModel();
+        ThreadSpecModel entrypointThread = spy(realThreadSpec);
         doNothing().when(entrypointThread).validate(Mockito.any());
         oldVersion.getEntrypointThread().setVariableDefs(List.of(inheritedVar));
         when(mockContext.service().getWfSpec("my-parent-wf", 2, 0)).thenReturn(oldVersion);
@@ -135,7 +137,7 @@ public class WfSpecModelTest {
         WfSpecModel oldVersion = TestUtil.wfSpec("my-parent-wf");
         ThreadVarDefModel fromVar = new ThreadVarDefModel(variableDef, false, false, from);
         ThreadVarDefModel toVar = new ThreadVarDefModel(variableDef, false, false, to);
-        ThreadSpecModel entrypointThread = spy(wfSpec.getThreadSpecs().get(wfSpec.getEntrypointThreadName()));
+        ThreadSpecModel entrypointThread = spy(new ThreadSpecModel());
         doNothing().when(entrypointThread).validate(Mockito.any());
         oldVersion.getEntrypointThread().setVariableDefs(List.of(fromVar));
         if (to == WfRunVariableAccessLevel.INHERITED_VAR) {

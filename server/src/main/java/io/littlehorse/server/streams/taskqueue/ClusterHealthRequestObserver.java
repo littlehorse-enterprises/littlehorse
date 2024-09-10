@@ -2,6 +2,7 @@ package io.littlehorse.server.streams.taskqueue;
 
 import io.grpc.Status;
 import io.grpc.StatusException;
+import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse;
 import java.util.ArrayList;
@@ -12,6 +13,9 @@ public class ClusterHealthRequestObserver implements StreamObserver<RegisterTask
 
     public ClusterHealthRequestObserver(StreamObserver<RegisterTaskWorkerResponse> responseObserver) {
         this.responseObserver = responseObserver;
+        ((ServerCallStreamObserver<RegisterTaskWorkerResponse>) responseObserver).setOnCancelHandler(() -> {
+            // If this observer event has already closed, Async Waiters might attempt to finish it.
+        });
     }
 
     @Override

@@ -26,6 +26,7 @@ import io.littlehorse.test.internal.step.CancelUserTaskRun;
 import io.littlehorse.test.internal.step.RescueThreadRunStep;
 import io.littlehorse.test.internal.step.SearchStep;
 import io.littlehorse.test.internal.step.SendExternalEventStep;
+import io.littlehorse.test.internal.step.VerifyAllTaskRunsStep;
 import io.littlehorse.test.internal.step.VerifyNodeRunStep;
 import io.littlehorse.test.internal.step.VerifyTaskExecution;
 import io.littlehorse.test.internal.step.VerifyTaskRunOutputsStep;
@@ -72,7 +73,8 @@ public class WfRunVerifier extends AbstractVerifier {
         return this;
     }
 
-    public WfRunVerifier thenVerifyAllTaskRuns(int threadRunNumber, Consumer<List<TaskRun>> verifier) {
+    public WfRunVerifier thenVerifyAllTaskRuns(Consumer<List<TaskRun>> verifier) {
+        steps.add(new VerifyAllTaskRunsStep(verifier, steps.size() + 1));
         return this;
     }
 

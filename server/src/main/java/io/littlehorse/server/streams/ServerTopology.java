@@ -91,6 +91,7 @@ public class ServerTopology {
             MetadataCache metadataCache,
             TaskQueueManager globalTaskQueueManager) {
         Topology topo = new Topology();
+
         Serializer<Object> sinkValueSerializer = (topic, output) -> {
             CommandProcessorOutput cpo = (CommandProcessorOutput) output;
             if (cpo.payload == null) {

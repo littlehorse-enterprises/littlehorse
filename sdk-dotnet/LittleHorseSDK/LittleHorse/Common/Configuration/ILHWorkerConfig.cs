@@ -1,5 +1,5 @@
 ﻿using LittleHorse.Common.Proto;
-using static LittleHorse.Common.Proto.LHPublicApi;
+using static LittleHorse.Common.Proto.LittleHorse;
 
 namespace LittleHorse.Common.Configuration
 {
@@ -7,13 +7,13 @@ namespace LittleHorse.Common.Configuration
     {
         string BootstrapHost { get; }
         int BootstrapPort { get; }
-        string ClientId { get; }
+        string WorkerId { get; }
         string TaskWorkerVersion { get; }
         string ConnectListener { get; }
         int WorkerThreads { get; }
         bool IsOAuth { get; }
-        public LHPublicApiClient GetGrcpClientInstance();
-        public LHPublicApiClient GetGrcpClientInstance(string host, int port);
+        public LittleHorseClient GetGrcpClientInstance();
+        public LittleHorseClient GetGrcpClientInstance(string host, int port);
         public TaskDef GetTaskDef(string taskDefName);
     }
 }

@@ -4,13 +4,12 @@ ARG VERSION=0.0.0-development
 ARG COMMIT=HEAD
 
 WORKDIR /lh
-COPY . .
+COPY go.mod go.sum ./
+COPY lhctl/ lhctl/
+COPY sdk-go/ sdk-go/
+
 WORKDIR /lh/lhctl
 
-# remove go.work file to avoid error
-RUN rm -f go.work
-
-RUN go work init && go work use ../sdk-go && go work use .
 RUN go build -ldflags "-X main.version=${VERSION} -X main.commit=${COMMIT}"
 
 FROM scratch
