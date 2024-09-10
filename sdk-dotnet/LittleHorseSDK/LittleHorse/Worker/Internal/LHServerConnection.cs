@@ -10,7 +10,7 @@ namespace LittleHorse.Worker.Internal
         private LHServerConnectionManager<T> _connectionManager;
         private LHHostInfo _hostInfo;
         private bool _running;
-        private LHPublicApi.LHPublicApiClient _client;
+        private LittleHorse.Common.Proto.LittleHorse.LittleHorseClient _client;
         private AsyncDuplexStreamingCall<PollTaskRequest, PollTaskResponse> _call;
         private ILogger? _logger;
 
@@ -37,8 +37,8 @@ namespace LittleHorse.Worker.Internal
 
             var request = new PollTaskRequest()
             {
-                ClientId = _connectionManager.Config.ClientId,
-                TaskDefName = _connectionManager.TaskDef.Name,
+                ClientId = _connectionManager.Config.WorkerId,
+                TaskDefId = _connectionManager.TaskDef.Id,
                 TaskWorkerVersion = _connectionManager.Config.TaskWorkerVersion
             };
 

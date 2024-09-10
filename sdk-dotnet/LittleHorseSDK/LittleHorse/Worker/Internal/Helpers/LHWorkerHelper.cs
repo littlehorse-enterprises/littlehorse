@@ -9,9 +9,9 @@ namespace LittleHorse.Worker.Internal.Helpers
             switch (taskRunSource.TaskRunSourceCase)
             {
                 case TaskRunSource.TaskRunSourceOneofCase.TaskNode:
-                    return taskRunSource.TaskNode.NodeRunId.WfRunId;
+                    return taskRunSource.TaskNode.NodeRunId.WfRunId.ToString();
                 case TaskRunSource.TaskRunSourceOneofCase.UserTaskTrigger:
-                    return taskRunSource.UserTaskTrigger.NodeRunId.WfRunId;
+                    return taskRunSource.UserTaskTrigger.NodeRunId.WfRunId.ToString();
                 default:
                     return null;
             }
