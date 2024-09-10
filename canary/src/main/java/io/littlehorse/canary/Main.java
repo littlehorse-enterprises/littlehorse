@@ -69,16 +69,19 @@ public class Main {
                     lhClient.getServerVersion(),
                     canaryConfig.getTopicName(),
                     canaryConfig.toKafkaConfig().toMap());
+
+            // start worker
             if (canaryConfig.isMetronomeWorkerEnabled()) {
                 new MetronomeWorker(producer, lhConfig);
-                // register wf
-                if (canaryConfig.isWorkflowCreationEnabled()) {
-                    new MetronomeWorkflow(lhClient, canaryConfig.getWorkflowName());
-                }
             }
 
             // start metronome client
             if (canaryConfig.isMetronomeEnabled()) {
+
+                // register wf
+                if (canaryConfig.isWorkflowCreationEnabled()) {
+                    new MetronomeWorkflow(lhClient, canaryConfig.getWorkflowName());
+                }
 
                 final LocalRepository repository = new LocalRepository(canaryConfig.getMetronomeDataPath());
 
