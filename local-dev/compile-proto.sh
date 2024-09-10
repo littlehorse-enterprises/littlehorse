@@ -71,4 +71,4 @@ $docker_run protoc \
 	-I /littlehorse/schemas/littlehorse \
     service.proto
 
-echo "The Horse Force will be with you. Always."
+echo "The Force will be with you. Always."
