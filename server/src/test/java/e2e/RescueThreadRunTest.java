@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.grpc.Status.Code;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
+import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.util.Arg;
@@ -17,6 +18,8 @@ import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.Test;
@@ -83,7 +86,14 @@ public class RescueThreadRunTest {
                 .waitForNodeRunStatus(0, 1, LHStatus.ERROR)
                 .thenRescueThreadRun(0, false) // dont skip failed node: try again
                 .waitForStatus(LHStatus.COMPLETED)
-                .thenVerifyAllTaskRuns(0, taskRuns -> {
+                .thenVerifyAllTaskRuns(unsortedTaskRuns -> {
+                    List<TaskRun> taskRuns = new ArrayList<>(unsortedTaskRuns);
+
+                    taskRuns.sort((task1, task2) -> {
+                        return task1.getSource().getTaskNode().getNodeRunId().getPosition()
+                                - task2.getSource().getTaskNode().getNodeRunId().getPosition();
+                    });
+
                     assertThat(taskRuns.size()).isEqualTo(3);
                     assertThat(taskRuns.get(0).getStatus()).isEqualTo(TaskStatus.TASK_FAILED);
                     assertThat(taskRuns.get(1).getTaskDefId().getName()).isEqualTo("throw-error-x-times");
@@ -101,7 +111,14 @@ public class RescueThreadRunTest {
                 .waitForNodeRunStatus(0, 1, LHStatus.ERROR)
                 .thenRescueThreadRun(0, true) // skip failed node
                 .waitForStatus(LHStatus.COMPLETED)
-                .thenVerifyAllTaskRuns(0, taskRuns -> {
+                .thenVerifyAllTaskRuns(unsortedTaskRuns -> {
+                    List<TaskRun> taskRuns = new ArrayList<>(unsortedTaskRuns);
+
+                    taskRuns.sort((task1, task2) -> {
+                        return task1.getSource().getTaskNode().getNodeRunId().getPosition()
+                                - task2.getSource().getTaskNode().getNodeRunId().getPosition();
+                    });
+
                     assertThat(taskRuns.size()).isEqualTo(2);
                     assertThat(taskRuns.get(0).getStatus()).isEqualTo(TaskStatus.TASK_FAILED);
                     assertThat(taskRuns.get(1).getTaskDefId().getName()).isEqualTo("no-rescue-needed");

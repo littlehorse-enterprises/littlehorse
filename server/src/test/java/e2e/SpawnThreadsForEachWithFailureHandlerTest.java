@@ -54,11 +54,24 @@ public class SpawnThreadsForEachWithFailureHandlerTest {
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getThreadRunsCount()).isEqualTo(3);
                 })
-                .thenVerifyAllTaskRuns(1, taskRuns -> {
-                    Assertions.assertThat(taskRuns).isEmpty();
-                })
-                .thenVerifyAllTaskRuns(2, taskRuns -> {
-                    Assertions.assertThat(taskRuns.size()).isEqualTo(1);
+                .thenVerifyAllTaskRuns(taskRuns -> {
+                    Assertions.assertThat(taskRuns.stream().filter(task -> {
+                                return task.getSource()
+                                                .getTaskNode()
+                                                .getNodeRunId()
+                                                .getThreadRunNumber()
+                                        == 1;
+                            }))
+                            .isEmpty();
+
+                    Assertions.assertThat(taskRuns.stream().filter(task -> {
+                                return task.getSource()
+                                                .getTaskNode()
+                                                .getNodeRunId()
+                                                .getThreadRunNumber()
+                                        == 2;
+                            }))
+                            .hasSize(1);
                 })
                 .start();
     }

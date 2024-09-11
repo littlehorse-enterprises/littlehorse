@@ -33,9 +33,9 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
     }
 
     public void setup() throws Exception {
-        kafka = new KafkaContainer(DockerImageName.parse("apache/kafka:3.7.0"));
+        kafka = new KafkaContainer(DockerImageName.parse("apache/kafka-native:3.8.0"));
         kafka.withCreateContainerCmdModifier(cmd -> {
-            cmd.getHostConfig().withMemory(1024L * 1024L * 1024L * 2); // 2 GB for Kafka
+            cmd.getHostConfig().withMemory(1024L * 1024L * 1024L * 1); // 1 GB for Kafka
         });
         kafka.start();
         workerConfig = new LHConfig(testClientProperties());

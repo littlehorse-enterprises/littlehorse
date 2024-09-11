@@ -52,7 +52,7 @@ public class AsyncWaiters {
         }
     }
 
-    public void markCommandFailed(String commandId, Exception exception) {
+    public void markCommandFailed(String commandId, Throwable exception) {
         CommandWaiter tmp = new CommandWaiter(commandId, -1);
         CommandWaiter waiter = commandWaiters.putIfAbsent(commandId, tmp);
         if (waiter == null) waiter = tmp;

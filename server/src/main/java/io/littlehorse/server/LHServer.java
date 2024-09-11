@@ -159,7 +159,7 @@ public class LHServer {
         internalComms.onResponseReceived(commandId, response);
     }
 
-    public void sendErrorToClient(String commandId, Exception caught) {
+    public void sendErrorToClient(String commandId, Throwable caught) {
         internalComms.sendErrorToClientForCommand(commandId, caught);
     }
 
