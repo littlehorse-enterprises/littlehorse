@@ -52,6 +52,13 @@ public class QuickstartWorkflow {
 
 Check out our [`WfSpec` development docs](./05-developer-guide/08-wfspec-development/08-wfspec-development.md)! In short, you can use our Java, Python, or Go SDK's to define the `WfSpec` logic and then register them to the LH Server.
 
+### Tasks
+Tasks are the unit of work for a work flow engine.  
+It's best to think in examples:
+* Change lower case letters to upper case letters.
+* Call an API with an input variable and pass along the output.
+* Wait for user input or an event to happen.
+
 ### What is a Task Worker?
 
 A [Task Worker](./04-concepts/03-tasks.md) is a program that opens a connection to a LittleHorse Cluster and listens to a task queue for a specific `TaskDef`. When a `WfRun` arrives at a point where it needs to execute that specific type of `TaskRun`, then the scheduled Task will be dispatched to the Task Worker. The Task Worker executes it and reports the result to the LH Server.
