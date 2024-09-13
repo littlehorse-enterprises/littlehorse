@@ -1,20 +1,29 @@
 # LittleHorse Contributing .NET SDK
 
-You need to package the project to generate the nuget file `LittleHorse.{version}.nupkg`
+Create a folder where to place local nuget packages
 
-```dotnet pack```
+```mkdir $HOME/nuget-packages```
 
-How to set a local nuget directory packages to call its dependencies, you should specify where your .nupkg is created
+You need to package the project to generate the nuget file `LittleHorse.Sdk.{{version}}.nupkg` in a common folder
 
-```dotnet nuget add source {{your_local_path}}/littlehorse/sdk-dotnet/LittleHorse.Sdk/bin/Debug --name LocalNugetPackages```
+```
+dotnet build
+dotnet pack --output $HOME/nuget-packages
+```
 
-next: call the dependency client csproj file specifying the local version
+To set a local nuget directory packages to call its dependencies, you should specify where your .nupkg is created
 
-```<PackageReference Include="LittleHorse" Version="0.5.1-alpha1" />```
+```
+dotnet nuget add source $HOME/nuget-packages --name LocalNugetPackages
+```
+
+Call the local dependency in your client csproj
+
+```<PackageReference Include="LittleHorse.Sdk" Version="0.5.4-alpha" />```
 
 To remove local registered nuget packages use hits:
 
-```dotnet nuget remove source {{local_source_name}}```
+```dotnet nuget remove source LocalNugetPackages```
 
 To create the Tests Project use:
 
