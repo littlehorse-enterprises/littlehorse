@@ -254,6 +254,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.streams.errors.InvalidStateStoreException;
 import org.apache.kafka.streams.processor.TaskId;
 
 @Slf4j
@@ -860,6 +861,9 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             ctx.onCompleted();
         } catch (StatusRuntimeException exn) {
             ctx.onError(exn);
+        } catch (InvalidStateStoreException exn) {
+            // TODO: check other partitions
+            ctx.onError(new StatusRuntimeException(Status.UNAVAILABLE));
         } catch (Exception exn) {
             log.error("Failed handling a search", exn);
             ctx.onError(LHUtil.toGrpcError(exn));
