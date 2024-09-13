@@ -11,7 +11,43 @@ Read here for how to get started.
 ### What is a `WfSpec` and `WfRun`?
 
 The core concept of LittleHorse is a [Workflow](./04-concepts/01-workflows.md), which defines a series of tasks to execute and events to wait for. A `WfSpec` defines a workflow specification. A `WfRun` is a running instance of that `WfSpec`.
+workflow specification is the configuration, or metadata object, that tells the engine what Tasks to run,
+what order to run the tasks,
+**how to handle exceptions or failures,**
+what variables are to be passed from task to task,
+and what inputs and outputs are required to run the workflow.
 
+In LittleHorse the Workflow Spec is submitted to and held by the LittleHorse server.
+It is a written in Code, using the LittleHorse SDK.  
+In the background LittleHorse server takes the submitted spec from the SDK, and compiles a protobuf object that is submitted to the LittleHorse server.
+<!-- TODO: simpler example -->
+Example:
+```declarative
+public class QuickstartWorkflow {
+
+    public static final String WF_NAME = "quickstart";
+    public static final String GREET = "greet";
+
+    /*
+     * This method defines the logic of our workflow
+     */
+    public void quickstartWf(WorkflowThread wf) {
+        // Create an input variable, make it searchable
+        WfRunVariable name = wf.addVariable("input-name", VariableType.STR).searchable();
+
+        // Execute a task and pass in the variable.
+        wf.execute(GREET, name);
+    }
+
+    /*
+     * This method returns a LittleHorse `Workflow` wrapper object that can be
+     * used to register the WfSpec to the LH Server.
+     */
+    public Workflow getWorkflow() {
+        return Workflow.newWorkflow(WF_NAME, this::quickstartWf);
+    }
+}
+```
 ### How do I create a `WfSpec`?
 
 Check out our [`WfSpec` development docs](./05-developer-guide/08-wfspec-development/08-wfspec-development.md)! In short, you can use our Java, Python, or Go SDK's to define the `WfSpec` logic and then register them to the LH Server.
@@ -20,6 +56,8 @@ Check out our [`WfSpec` development docs](./05-developer-guide/08-wfspec-develop
 
 A [Task Worker](./04-concepts/03-tasks.md) is a program that opens a connection to a LittleHorse Cluster and listens to a task queue for a specific `TaskDef`. When a `WfRun` arrives at a point where it needs to execute that specific type of `TaskRun`, then the scheduled Task will be dispatched to the Task Worker. The Task Worker executes it and reports the result to the LH Server.
 
+A task worker can be a bare metal machine, Virtual Machine, cloud instance, Kubernetes pod, or anywhere that can execute Java/Python/Golang or C# code.
+
 ### How do I write a Task Worker?
 
 Check out our [Task Worker Development Docs](./05-developer-guide/05-task-worker-development.md)!
@@ -27,10 +65,14 @@ Check out our [Task Worker Development Docs](./05-developer-guide/05-task-worker
 ### How do I run a Workflow?
 
 You can run a workflow in two ways:
-* On the command line by [using `lhctl`](./05-developer-guide/03-lhctl.md#run-a-wfrun)
-* Programmatically by [using one of our SDK's](./05-developer-guide/09-grpc/10-running-workflows.md).
+* On the command line by [using `lhctl`](./05-developer-guide/03-lhctl.md#run-a-wfrun).  This method is best suited for testing, development, or debugging.
+* Programmatically by [using one of our SDK's](./05-developer-guide/09-grpc/10-running-workflows.md).  Under the covers, the SDKs call the GRPC endpoint on the LittleHorse server.  Programmatic execution is ideal for incorporating into your dashboards, and operational tools.
 
 ## Variables and Control Flow
+
+### How do I pass information from one task to another?
+
+Variables are how you pass info from one task to another. Take the output of one task and `ASSIGN` it to a variable, then pass that variable into the next task. Check out our [mutating variables documentation](./05-developer-guide/08-wfspec-development/03-mutating-variables.md).
 
 ### How do I define variables in a Workflow?
 
@@ -39,10 +81,6 @@ Check out the [Variables Section](./05-developer-guide/08-wfspec-development/01-
 ### Can I search for workflows by their variables?
 
 Yes, you can. To do that, [mark the variable as `searchable()`](./05-developer-guide/08-wfspec-development/01-basics.md#searchable-and-required-variables) and then use [`rpc SearchVariable](./08-api.md#rpc-searchvariable) to search for it.
-
-### How do I pass information from one task to another?
-
-Variables are how you pass info from one task to another. Take the output of one task and `ASSIGN` it to a variable, then pass that variable into the next task. Check out our [mutating variables documentation](./05-developer-guide/08-wfspec-development/03-mutating-variables.md).
 
 ### How do I do if/else in a Workflow?
 
@@ -72,6 +110,7 @@ Check out the [Interrupts](./05-developer-guide/08-wfspec-development/05-interru
 
 The interrupted `ThreadRun` is `HALTED`, and a child `ThreadRun` is created to act as the Interrupt Handler. For info, check out our [concept docs](./04-concepts/04-external-events.md#interrupts) and our [`WfSpec` development docs](./05-developer-guide/08-wfspec-development/05-interrupts.md).
 
+You may want to interrupt a WfRun for various reasons including: A user cancels an order in on an e-commerce site,  A business request is Denied or an external API returns a back off or denied status. 
 ### How can I access the content of an `ExternalEvent` inside my workflow?
 
 You can use the output of an `ExternalEventNode` just like any other node in our SDK. Check out [these docs](./05-developer-guide/08-wfspec-development/04-external-events.md#external-events#accessing-event-content)
@@ -106,6 +145,7 @@ See the [Child Thread Docs](./05-developer-guide/08-wfspec-development/07-child-
 
 When a parent `ThreadRun` fails (`ERROR` or `EXCEPTION`) or moves to `HALTED`, the child will move to `HALTED`.
 
+In order to recover from a failed Parent thread you can either catch the exception, and programmatically handle it.  Or require that a human restarts the workflow.
 ## User Tasks
 
 ### What are User Tasks?
@@ -114,11 +154,11 @@ When a parent `ThreadRun` fails (`ERROR` or `EXCEPTION`) or moves to `HALTED`, t
 
 ### How do I add a user task to my workflow?
 
-Check out the [User Tasks](./05-developer-guide/08-wfspec-development/08-user-tasks.md) page of our `WfSpec` docs.
+A `userTask` is to manage tasks involving humans alongside standard computer tasks in your LittleHorse Workflow.  Check out the [User Tasks](./05-developer-guide/08-wfspec-development/08-user-tasks.md) page of our `WfSpec` docs. 
 
 ### Do User Tasks support users and user groups?
 
-Yes, user tasks can be assigned to either a user_id or a user_group. Note that user and group identities are not managed by the LH Server.
+Yes, user tasks can be assigned to either a user_id or a user_group. Note that user and group identities are not managed by the LH Server.  User and group identies are managed by an external identity provider(IDP), for example any oAUTH provider.
 
 ### How do I complete User Tasks?
 
@@ -146,11 +186,11 @@ You can [throw an `EXCEPTION` from a Task Worker](./05-developer-guide/05-task-w
 
 ### Is LittleHorse Fault-Tolerant?
 
-Yes, it was built into the [core DNA of our system](./02-architecture-and-guarantees.md).
+Yes, it was built into the [core DNA of our system](./02-architecture-and-guarantees.md).  Every component of the LittleHorse tech stack is highly available and fault tolerant. At the workflow layer LittleHorse provides the primitives to handle faults in a way to suit the business needs.
 
 ### Does LittleHorse scale?
 
-Yes.
+Yes, in our internal benchmarks a moderately resourced, single instance, of LittleHorse server can execute 30,000 tasks per second in a moderately complex workflow.
 
 ### How do I make Workflows idempotent?
 
