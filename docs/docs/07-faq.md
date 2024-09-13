@@ -14,7 +14,7 @@ The core concept of LittleHorse is a [Workflow](./04-concepts/01-workflows.md), 
 
 ### How do I create a `WfSpec`?
 
-Check out our [`WfSpec` development docs](./05-developer-guide/08-wfspec-development/)! In short, you can use our Java, Python, or Go SDK's to define the `WfSpec` logic and then register them to the LH Server.
+Check out our [`WfSpec` development docs](./05-developer-guide/08-wfspec-development/08-wfspec-development.md)! In short, you can use our Java, Python, or Go SDK's to define the `WfSpec` logic and then register them to the LH Server.
 
 ### What is a Task Worker?
 
