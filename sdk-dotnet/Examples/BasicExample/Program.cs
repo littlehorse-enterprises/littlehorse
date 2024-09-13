@@ -1,58 +1,22 @@
 ﻿using Examples.BasicExample;
-using Common.Configuration.Extension;
-using LittleHorse.Common.Configuration;
-using LittleHorse.Common.Configuration.Implementations;
+using Microsoft.Extensions.Configuration;
+using LittleHorse.Sdk;
 using LittleHorse.Worker;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
-var builder = Host.CreateDefaultBuilder(args);
+var props = new Dictionary<string, string>
+        {
+            { "AppSettings:Setting1", "Value1" }
+        };
 
-var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config", "littlehorse.config");
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddInMemoryCollection(props)
+    .Build();
+var config = new LHConfig(configuration);
 
-if (File.Exists(path))
-{
-    builder.ConfigureLHWorker(path);
-}
-else
-{
-    builder.ConfigureLHWorker();
-}
+MyWorker executable = new MyWorker();
+var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet-dotnet", config);
 
-builder.ConfigureLogging((hostingContext, logging) =>
-{
-    logging.AddConsole();
-    logging.SetMinimumLevel(LogLevel.Debug);
-});
-
-builder.ConfigureServices((hostingContext, services) =>
-{
-    services.AddSingleton<ILHWorkerConfig, LHWorkerConfig>();
-    services.AddSingleton(provider =>
-    {
-        var logger = provider.GetService<ILogger<MyWorker>>();
-        return new MyWorker(logger);
-    }
-    );
-    services.AddSingleton(provider =>
-    {
-        var myWorker = provider.GetRequiredService<MyWorker>();
-        var config = provider.GetRequiredService<ILHWorkerConfig>();
-        var logger = provider.GetService<ILogger<LHTaskWorker<MyWorker>>>();
-
-        return new LHTaskWorker<MyWorker>(myWorker, "greet", config, logger);
-    });
-});
-
-var host = builder.Build();
-
-var taskWorker = host.Services.GetRequiredService<LHTaskWorker<MyWorker>>();
-
-if (!taskWorker.TaskDefExists())
-{
-    taskWorker.RegisterTaskDef();
-}
+taskWorker.RegisterTaskDef();
 
 Thread.Sleep(1000);
 
