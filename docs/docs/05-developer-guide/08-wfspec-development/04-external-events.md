@@ -38,6 +38,8 @@ def thread_function(thread: WorkflowThread) -> None:
   </TabItem>
 </Tabs>
 
+### Accessing Event Content
+
 Lastly, just as with `TASK` nodes you can use the `NodeOutput` from `WorkflowThread::waitForEvent()` to mutate a `WfRunVariable`:
 
 <Tabs>
