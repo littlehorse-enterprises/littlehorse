@@ -87,7 +87,7 @@ Check out the [Variables Section](./05-developer-guide/08-wfspec-development/01-
 
 ### Can I search for workflows by their variables?
 
-Yes, you can. To do that, [mark the variable as `searchable()`](./05-developer-guide/08-wfspec-development/01-basics.md#searchable-and-required-variables) and then use [`rpc SearchVariable](./08-api.md#rpc-searchvariable) to search for it.
+Yes, you can. To do that, [mark the variable as `searchable()`](./05-developer-guide/08-wfspec-development/01-basics.md#searchable-and-required-variables) and then use [`rpc SearchVariable](./08-api.md#searchvariable) to search for it.
 
 ### How do I do if/else in a Workflow?
 
@@ -120,7 +120,7 @@ The interrupted `ThreadRun` is `HALTED`, and a child `ThreadRun` is created to a
 You may want to interrupt a WfRun for various reasons including: A user cancels an order in on an e-commerce site,  A business request is Denied or an external API returns a back off or denied status. 
 ### How can I access the content of an `ExternalEvent` inside my workflow?
 
-You can use the output of an `ExternalEventNode` just like any other node in our SDK. Check out [these docs](./05-developer-guide/08-wfspec-development/04-external-events.md#external-events#accessing-event-content)
+You can use the output of an `ExternalEventNode` just like any other node in our SDK. Check out [these docs](./05-developer-guide/08-wfspec-development/04-external-events.md#accessing-event-content)
 
 ### How do I post an `ExternalEvent`?
 
