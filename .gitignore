@@ -41,3 +41,7 @@ dist/
 
 .DS_Store
 *.work
+
+# dotnet
+*.sln
+global.json

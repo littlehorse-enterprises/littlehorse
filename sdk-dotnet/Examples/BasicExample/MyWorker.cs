@@ -6,16 +6,17 @@ namespace Examples.BasicExample
 {
     public class MyWorker
     {
-        private readonly ILogger? _logger;
-        public MyWorker(ILogger? logger = null)
+        private ILogger<MyWorker>? _logger;
+        public MyWorker(ILogger<MyWorker>? logger = null)
         {
             _logger = logger;
         }
 
-        [LHTaskMethod("greet")]
-        public string Greeting(string name)
+        [LHTaskMethod("greet-dotnet")]
+        public string Greeting()
         {
-            var message = $"Hello, {name}";
+            var message = $"Hello team, This is a Dotnet Worker";
+            Console.WriteLine("Executing task greet: " + message);
             _logger?.LogInformation("Executing task greet: " + message);
             return message;
         }
