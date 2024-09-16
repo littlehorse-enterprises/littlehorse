@@ -78,7 +78,9 @@ class GlobalExceptionHandlerTest {
 
     @Test
     public void shouldHandleStatusRuntimeExceptions() {
-        doThrow(new StatusRuntimeException(Status.NOT_FOUND)).when(listener).onHalfClose();
+        doThrow(new StatusRuntimeException(Status.NOT_FOUND.withDescription("not found")))
+                .when(listener)
+                .onHalfClose();
         globalExceptionHandler.interceptCall(serverCall, metadata, next).onHalfClose();
         ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
         verify(serverCall).close(statusCaptor.capture(), same(metadata));
