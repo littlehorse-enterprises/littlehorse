@@ -257,6 +257,11 @@ import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
 import org.apache.kafka.streams.processor.TaskId;
 
+/**
+ * This class provides the implementation for public RPCs.
+ * Any exception thrown by an RPC method within this class will be intercepted and
+ * handled by the {@code GlobalExceptionHandler} to ensure consistent error management.
+ */
 @Slf4j
 public class LHServerListener extends LittleHorseImplBase implements Closeable {
 

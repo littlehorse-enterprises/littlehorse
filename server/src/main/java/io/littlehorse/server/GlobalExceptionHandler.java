@@ -11,6 +11,10 @@ import io.littlehorse.common.exceptions.LHApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
 
+/**
+ * This class defines a centralized error handler for public RPC methods, translating exceptions into appropriate gRPC {@code Status} codes.
+ * This class is designed to be closer to the network layer which means, that it should be executed before any other interceptor in the call.
+ */
 @Slf4j
 public class GlobalExceptionHandler implements ServerInterceptor {
 
@@ -45,9 +49,10 @@ public class GlobalExceptionHandler implements ServerInterceptor {
             } catch (InvalidStateStoreException ex) {
                 call.close(Status.UNAVAILABLE.withDescription(ex.getMessage()).withCause(ex), metadata);
             } catch (StatusRuntimeException ex) {
+                log.error("Internal exception: {}", ex.getMessage(), ex);
                 call.close(Status.fromThrowable(ex), metadata);
             } catch (Throwable ex) {
-                log.error("BOOM! ", ex);
+                log.error("Unexpected exception: {}", ex.getMessage(), ex);
                 call.close(Status.INTERNAL.withDescription(INTERNAL_ERROR_MESSAGE), metadata);
             }
         }
