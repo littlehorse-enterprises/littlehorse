@@ -20,14 +20,20 @@ All code in this repository is covered by the [Server Side Public License, Versi
 
 ### Dependencies
 
-- Install [.NET Core 7](https://dotnet.microsoft.com/en-us/download)
-- Plugins for [VS Code](https://code.visualstudio.com/): [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
-
-### Run Tests
+- Install [.NET Core 6/7/8](https://dotnet.microsoft.com/en-us/download)
 
 ```
-cd sdk-dotnet/LittleHorseSDK
-dotnet test
+brew install dotnet
+```
+
+- Plugins for [VS Code](https://code.visualstudio.com/): [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
+
+### Build and Run the SDK
+
+```
+cd sdk-dotnet/LittleHorse.Sdk
+dotnet build
+dotnet run
 ```
 
 ### Run Example
