@@ -10,7 +10,7 @@ public class LHVarSubError extends LHException {
      * @param prefix the prefix to prepend to the message of the source error
      */
     public LHVarSubError(LHVarSubError source, String prefix) {
-        super(source, prefix + ": " + source.getMessage());
+        super(source, source != null ? prefix + ": " + source.getMessage() : prefix);
     }
 
     public LHVarSubError(Exception exn, String msg) {
