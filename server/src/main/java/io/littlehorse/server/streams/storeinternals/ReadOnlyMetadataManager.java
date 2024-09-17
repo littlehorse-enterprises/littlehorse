@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -66,6 +67,15 @@ public class ReadOnlyMetadataManager {
         return out;
     }
 
+    public <U extends Message, T extends MetadataGetable<U>, EX extends Throwable> T getOrThrow(
+            MetadataId<?, U, T> id, Supplier<EX> throwable) throws EX {
+        T result = get(id);
+        if (result == null) {
+            throw throwable.get();
+        }
+        return result;
+    }
+
     public <U extends Message, T extends ClusterMetadataGetable<U>> T get(ClusterMetadataId<?, U, T> id) {
         log.trace("Getting {} with key {}", id.getType(), id);
         T out = null;
@@ -91,6 +101,15 @@ public class ReadOnlyMetadataManager {
 
         uncommittedChanges.put(id.getStoreableKey(), new GetableToStore<>(storeResult, id.getObjectClass()));
         return out;
+    }
+
+    public <U extends Message, T extends ClusterMetadataGetable<U>, EX extends Throwable> T getOrThrow(
+            ClusterMetadataId<?, U, T> id, Supplier<EX> throwable) throws EX {
+        T result = get(id);
+        if (result == null) {
+            throw throwable.get();
+        }
+        return result;
     }
 
     public List<Tag> clusterScopedTagScan(GetableClassEnum objectType, List<Attribute> attributes) {

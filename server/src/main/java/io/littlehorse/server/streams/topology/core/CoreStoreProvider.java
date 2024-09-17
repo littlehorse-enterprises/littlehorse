@@ -28,17 +28,22 @@ public class CoreStoreProvider {
     }
 
     private ReadOnlyKeyValueStore<String, Bytes> getStore(final String storeName, Integer specificPartition) {
-        StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
-                StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore());
+        final boolean instanceIsRunning = serverInstance.state() == KafkaStreams.State.RUNNING;
+        if (instanceIsRunning) {
+            StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
+                    StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore());
 
-        if (ENABLE_STALE_STORES) {
-            params = params.enableStaleStores();
+            if (ENABLE_STALE_STORES) {
+                params = params.enableStaleStores();
+            }
+
+            if (specificPartition != null) {
+                params = params.withPartition(specificPartition);
+            }
+
+            return serverInstance.store(params);
+        } else {
+            return null;
         }
-
-        if (specificPartition != null) {
-            params = params.withPartition(specificPartition);
-        }
-
-        return serverInstance.store(params);
     }
 }
