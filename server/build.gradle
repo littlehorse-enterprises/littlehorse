@@ -59,7 +59,7 @@ dependencies {
 
     // Prometheus
     implementation 'io.micrometer:micrometer-registry-prometheus:1.11.2'
-    implementation 'io.javalin:javalin:5.6.0'
+    implementation 'io.javalin:javalin:6.3.0'
 
     // Lombok stuff
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
