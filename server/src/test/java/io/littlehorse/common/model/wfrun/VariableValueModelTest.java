@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.VariableType;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class VariableValueModelTest {
@@ -62,5 +63,13 @@ public class VariableValueModelTest {
         second.getJsonObjVal().put("foo", "bar");
         assertThat(second.getJsonObjVal().get("foo")).isEqualTo("bar");
         assertThat(first.getJsonObjVal().get("foo")).isEqualTo("Hi There");
+    }
+
+    @Test
+    void shouldThrowVarSubError() {
+        VariableValueModel doubleVarval = new VariableValueModel("not a double");
+        LHVarSubError varSubError = (LHVarSubError) Assertions.catchThrowable(doubleVarval::asDouble);
+        Assertions.assertThat(varSubError).isNotNull();
+        Assertions.assertThat(varSubError.getMessage()).isEqualTo("Couldn't convert STR to DOUBLE");
     }
 }

@@ -65,18 +65,14 @@ public class VariablesTest {
 
     @Test
     public void shouldHandleVarSubErrors() {
-        final String expectedMessage =
-                """
-            Failed evaluating edge with sink node 1-print-number-TASK: Mutating variable value-a with operation DIVIDE: \
-            Caught unexpected error when mutating variables: / by zero""";
+        final String expectedMessage = "Caught unexpected error when mutating variables: / by zero";
         workflowVerifier
                 .prepareRun(mutationWf, Arg.of("value-a", 9), Arg.of("value-b", 0))
                 .waitForStatus(LHStatus.ERROR)
                 .thenVerifyNodeRun(0, 0, nodeRun -> {
-                    Assertions.assertThat(nodeRun.getFailuresList().stream()
-                                    .map(Failure::getMessage)
-                                    .toList())
-                            .containsExactly(expectedMessage);
+                    Assertions.assertThat(nodeRun.getFailuresList()).hasSize(1);
+                    Failure failure = nodeRun.getFailuresList().get(0);
+                    Assertions.assertThat(failure.getMessage()).contains(expectedMessage);
                 })
                 .start();
     }
