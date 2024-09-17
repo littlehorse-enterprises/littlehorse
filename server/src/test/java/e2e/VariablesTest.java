@@ -1,6 +1,7 @@
 package e2e;
 
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -26,6 +27,9 @@ public class VariablesTest {
 
     @LHWorkflow("masked-variables-wf")
     private Workflow maskedVariablesWf;
+
+    @LHWorkflow("mutation-wf")
+    private Workflow mutationWf;
 
     private WorkflowVerifier workflowVerifier;
 
@@ -59,6 +63,24 @@ public class VariablesTest {
                 .start();
     }
 
+    @Test
+    public void shouldHandleVarSubErrors() {
+        final String expectedMessage =
+                """
+            Failed evaluating edge with sink node 1-print-number-TASK: Mutating variable value-a with operation DIVIDE: \
+            Caught unexpected error when mutating variables: / by zero""";
+        workflowVerifier
+                .prepareRun(mutationWf, Arg.of("value-a", 9), Arg.of("value-b", 0))
+                .waitForStatus(LHStatus.ERROR)
+                .thenVerifyNodeRun(0, 0, nodeRun -> {
+                    Assertions.assertThat(nodeRun.getFailuresList().stream()
+                                    .map(Failure::getMessage)
+                                    .toList())
+                            .containsExactly(expectedMessage);
+                })
+                .start();
+    }
+
     @LHWorkflow("masked-variables-wf")
     public Workflow buildChildWf() {
         return new WorkflowImpl("masked-variables-wf", thread -> {
@@ -67,7 +89,21 @@ public class VariablesTest {
             TaskNodeOutput lengthNodeOutput = thread.execute("get-text-length", textVariable);
             WfRunVariable length = thread.addVariable("length", VariableType.INT);
             thread.mutate(length, VariableMutationType.ASSIGN, lengthNodeOutput);
-            thread.execute("print-length", length);
+            thread.execute("print-number", length);
+        });
+    }
+
+    @LHWorkflow("mutation-wf")
+    public Workflow buildMutationWf() {
+        return new WorkflowImpl("mutation-wf", thread -> {
+            WfRunVariable valueAVariable =
+                    thread.addVariable("value-a", VariableType.INT).required();
+            WfRunVariable valueBVariable =
+                    thread.addVariable("value-b", VariableType.INT).required();
+            WfRunVariable resultVariable = thread.addVariable("result", VariableType.INT);
+            thread.mutate(valueAVariable, VariableMutationType.DIVIDE, valueBVariable);
+            thread.mutate(resultVariable, VariableMutationType.ASSIGN, valueAVariable);
+            thread.execute("print-number", resultVariable);
         });
     }
 
@@ -78,7 +114,7 @@ public class VariablesTest {
         return variableValue.length();
     }
 
-    @LHTaskMethod("print-length")
+    @LHTaskMethod("print-number")
     public void printLength(Integer length) {
         System.out.println("Text length is " + length);
     }
