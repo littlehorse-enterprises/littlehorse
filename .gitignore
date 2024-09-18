@@ -45,3 +45,4 @@ dist/
 # dotnet
 *.sln
 global.json
+*DotSettings.user

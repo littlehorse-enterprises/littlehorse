@@ -1,23 +1,47 @@
 ﻿using Examples.BasicExample;
+using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Configuration;
 using LittleHorse.Sdk;
 using LittleHorse.Worker;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
-var props = new Dictionary<string, string>
+public class Program
+{
+    private static ServiceProvider? _serviceProvider;
+    private static void SetupApplication()
+    {
+        _serviceProvider = new ServiceCollection()
+            .AddLogging(config =>
+            {
+                config.AddConsole();  // Add logging to the console
+                config.SetMinimumLevel(LogLevel.Debug);  // Set minimum log level
+            })
+            .BuildServiceProvider();
+    }
+    static void Main(string[] args)
+    {
+        SetupApplication();
+        var props = new Dictionary<string, string>
         {
             { "AppSettings:Setting1", "Value1" }
         };
 
-IConfiguration configuration = new ConfigurationBuilder()
-    .AddInMemoryCollection(props)
-    .Build();
-var config = new LHConfig(configuration);
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(props)
+            .Build();
+        //var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
+        //var newLoggerFactory = new LoggerFactory();
+        var config = new LHConfig(configuration);
 
-MyWorker executable = new MyWorker();
-var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet-dotnet", config);
+        MyWorker executable = new MyWorker();
+        var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet-dotnet", config);
 
-taskWorker.RegisterTaskDef();
+        taskWorker.RegisterTaskDef();
 
-Thread.Sleep(1000);
+        Thread.Sleep(1000);
 
-taskWorker.Start();
+        taskWorker.Start();
+    }
+}
