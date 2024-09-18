@@ -31,7 +31,7 @@ namespace LittleHorse.Sdk.Tests.Internal
         }
         
         [Fact]
-        public void GetLogger_WithoutInitialize_ShouldThrowLHLoggerFactoryNullException()
+        public void GetLogger_WithoutInitialize_ShouldThrowInvalidOperationException()
         {
             var exception = Assert.Throws<InvalidOperationException>(() => LHLoggerFactoryProvider.GetLogger<string>());
             
