@@ -15,8 +15,8 @@ public class Program
         _serviceProvider = new ServiceCollection()
             .AddLogging(config =>
             {
-                config.AddConsole();  // Add logging to the console
-                config.SetMinimumLevel(LogLevel.Debug);  // Set minimum log level
+                config.AddConsole();
+                config.SetMinimumLevel(LogLevel.Debug);
             })
             .BuildServiceProvider();
     }
