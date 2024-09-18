@@ -221,7 +221,7 @@ public class LHServer {
                 Duration.ofMillis(10_000 + config.getStreamsSessionTimeout()),
                 networkThreadpool);
 
-        Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command, context);
+        Callback callback = internalComms.createProducerCommandCallback(command, commandObserver, context);
 
         command.setCommandId(LHUtil.generateGuid());
 

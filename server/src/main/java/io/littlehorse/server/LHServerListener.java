@@ -252,7 +252,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
 import org.apache.kafka.streams.processor.TaskId;
@@ -1079,7 +1078,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 Duration.ofMillis(10_000 + serverConfig.getStreamsSessionTimeout()),
                 networkThreadpool);
 
-        Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command, context);
+        Callback callback = this.internalComms.createProducerCommandCallback(command, commandObserver, context);
 
         command.setCommandId(LHUtil.generateGuid());
 
@@ -1096,19 +1095,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
     private WfService getServiceFromContext() {
         return requestContext().service();
-    }
-
-    private void productionCallback(
-            RecordMetadata meta,
-            Exception exn,
-            StreamObserver<WaitForCommandResponse> observer,
-            AbstractCommand<?> command,
-            RequestExecutionContext context) {
-        if (exn != null) {
-            observer.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
-        } else {
-            internalComms.waitForCommand(command, observer, context);
-        }
     }
 
     public void onTaskScheduled(
