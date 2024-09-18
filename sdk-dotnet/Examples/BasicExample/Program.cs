@@ -31,9 +31,9 @@ public class Program
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(props)
             .Build();
-        //var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
-        //var newLoggerFactory = new LoggerFactory();
-        var config = new LHConfig(configuration);
+        var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
+
+        var config = new LHConfig(configuration, loggerFactory);
 
         MyWorker executable = new MyWorker();
         var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet-dotnet", config);
