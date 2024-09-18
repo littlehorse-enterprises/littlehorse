@@ -1,5 +1,7 @@
 package io.littlehorse.server.streams.topology.core;
 
+import io.grpc.Status;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.server.streams.ServerTopology;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -39,6 +41,10 @@ public class CoreStoreProvider {
             params = params.withPartition(specificPartition);
         }
 
-        return serverInstance.store(params);
+        ReadOnlyKeyValueStore<String, Bytes> result = serverInstance.store(params);
+        if (result == null) {
+            throw new LHApiException(Status.UNAVAILABLE, "Kafka Streams is not ready yet");
+        }
+        return result;
     }
 }
