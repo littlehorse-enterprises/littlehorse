@@ -241,8 +241,7 @@ public class BackendInternalComms implements Closeable {
             RequestExecutionContext requestCtx) {
         Function<KeyQueryMetadata, LHInternalsStub> internalStub =
                 (meta) -> getInternalAsyncClient(meta.activeHost(), InternalCallCredentials.forContext(requestCtx));
-        return new ProducerCommandCallback(
-                observer, command, requestCtx, coreStreams, thisHost, internalStub, asyncWaiters);
+        return new ProducerCommandCallback(observer, command, coreStreams, thisHost, internalStub, asyncWaiters);
     }
 
     public void waitForCommand(
