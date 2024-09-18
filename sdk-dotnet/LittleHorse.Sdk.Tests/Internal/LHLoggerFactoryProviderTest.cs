@@ -1,4 +1,4 @@
-using LittleHorse.Sdk.Exceptions;
+using System;
 using LittleHorse.Sdk.Internal;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -33,7 +33,7 @@ namespace LittleHorse.Sdk.Tests.Internal
         [Fact]
         public void GetLogger_WithoutInitialize_ShouldThrowLHLoggerFactoryNullException()
         {
-            var exception = Assert.Throws<LHLoggerFactoryNullException>(() => LHLoggerFactoryProvider.GetLogger<string>());
+            var exception = Assert.Throws<InvalidOperationException>(() => LHLoggerFactoryProvider.GetLogger<string>());
             
             Assert.Equal("_loggerFactory does not have a valid value and it is trying to create a logger instance.", exception.Message);
         }

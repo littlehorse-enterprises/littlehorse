@@ -1,4 +1,3 @@
-using LittleHorse.Sdk.Exceptions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -15,8 +14,12 @@ namespace LittleHorse.Sdk.Internal
 
         public static ILogger<T> GetLogger<T>()
         {
-            if (_loggerFactory != null) return _loggerFactory.CreateLogger<T>();
-            throw new LHLoggerFactoryNullException("_loggerFactory does not have a valid value and it is trying to create a logger instance.");
+            if (_loggerFactory != null)
+            {
+                return _loggerFactory.CreateLogger<T>();
+            }
+
+            throw new InvalidOperationException("_loggerFactory does not have a valid value and it is trying to create a logger instance.");
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using Examples.BasicExample;
-using Google.Protobuf;
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Configuration;
 using LittleHorse.Sdk;
 using LittleHorse.Worker;
@@ -31,17 +29,20 @@ public class Program
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(props)
             .Build();
-        var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
+        if (_serviceProvider != null)
+        {
+            var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
 
-        var config = new LHConfig(configuration, loggerFactory);
+            var config = new LHConfig(configuration, loggerFactory);
 
-        MyWorker executable = new MyWorker();
-        var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet-dotnet", config);
+            MyWorker executable = new MyWorker();
+            var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet-dotnet", config);
 
-        taskWorker.RegisterTaskDef();
+            taskWorker.RegisterTaskDef();
 
-        Thread.Sleep(1000);
+            Thread.Sleep(1000);
 
-        taskWorker.Start();
+            taskWorker.Start();
+        }
     }
 }
