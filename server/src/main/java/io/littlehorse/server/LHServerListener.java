@@ -624,11 +624,15 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         CommandModel command = new CommandModel(reqModel, new Date());
 
         Callback kafkaProducerCallback = (meta, exn) -> {
-            if (exn == null) {
-                ctx.onNext(Empty.getDefaultInstance());
-                ctx.onCompleted();
-            } else {
-                ctx.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
+            try {
+                if (exn == null) {
+                    ctx.onNext(Empty.getDefaultInstance());
+                    ctx.onCompleted();
+                } else {
+                    ctx.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
+                }
+            } catch (IllegalStateException e) {
+                log.debug("Call already closed");
             }
         };
 

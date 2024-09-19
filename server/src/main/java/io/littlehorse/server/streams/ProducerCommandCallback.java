@@ -61,13 +61,9 @@ public class ProducerCommandCallback implements Callback {
                     case UNRECOGNIZED -> throw new LHApiException(Status.INTERNAL);
                 };
         KeyQueryMetadata meta = lookupPartitionKey(storeName, command.getPartitionKey());
-        /*
-         * As a prerequisite to this method being called, the command has already
-         * been recorded into the CoreCommand Kafka Topic (and ack'ed by all
-         * of the in-sync replicas).
-         */
+
         if (meta.activeHost().equals(thisHost)) {
-            localWaitForCommand(command.getCommandId(), meta.partition(), observer);
+            asyncWaiters.registerObserverWaitingForCommand(command.getCommandId(), meta.partition(), observer);
         } else {
             WaitForCommandRequest req = WaitForCommandRequest.newBuilder()
                     .setCommandId(command.getCommandId())
@@ -75,10 +71,6 @@ public class ProducerCommandCallback implements Callback {
                     .build();
             internalStub.apply(meta).waitForCommand(req, observer);
         }
-    }
-
-    private void localWaitForCommand(String commandId, int partition, StreamObserver<WaitForCommandResponse> observer) {
-        asyncWaiters.registerObserverWaitingForCommand(commandId, partition, observer);
     }
 
     private KeyQueryMetadata lookupPartitionKey(String storeName, String partitionKey) {
