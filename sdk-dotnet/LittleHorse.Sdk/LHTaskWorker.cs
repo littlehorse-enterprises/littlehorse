@@ -6,6 +6,7 @@ using LittleHorse.Common.Proto;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using LittleHorse.Sdk;
+using LittleHorse.Sdk.Internal;
 
 namespace LittleHorse.Worker
 {
@@ -31,14 +32,16 @@ namespace LittleHorse.Worker
 
         public string TaskDefName { get => _taskDefName; }
 
-        public LHTaskWorker(T executable, string taskDefName, LHConfig config, ILogger<LHTaskWorker<T>>? logger = null)
+        public LHTaskWorker(T executable, string taskDefName, LHConfig config)
         {
             _config = config;
-            _logger = logger;
+            _logger = LHLoggerFactoryProvider.GetLogger<LHTaskWorker<T>>();
             _executable = executable;
             _mappings = new List<VariableMapping>();
             _taskDefName = taskDefName;
             _grpcClient = _config.GetGrcpClientInstance();
+            
+            _logger.LogInformation("TaskWorker was created successfully");
         }
 
         /// <summary>
