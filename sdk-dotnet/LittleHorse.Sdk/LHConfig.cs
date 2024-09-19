@@ -4,6 +4,7 @@ using Grpc.Core;
 using Grpc.Net.Client;
 using LittleHorse.Common.Configuration.Models;
 using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using static LittleHorse.Common.Proto.LittleHorse;
@@ -19,9 +20,10 @@ namespace LittleHorse.Sdk {
 
         private Dictionary<string, GrpcChannel> _createdChannels;
         
-        public LHConfig(IConfiguration configuration, ILogger<LHConfig>? logger = null)
+        public LHConfig(IConfiguration configuration, ILoggerFactory? loggerFactory = null)
         {
-            _logger = logger;
+            LHLoggerFactoryProvider.Initialize(loggerFactory);
+            _logger = LHLoggerFactoryProvider.GetLogger<LHConfig>();
             _options = new LHWorkerOptions();
             configuration.Bind(_options);
             _createdChannels = new Dictionary<string, GrpcChannel>();

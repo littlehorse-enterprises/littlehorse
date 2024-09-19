@@ -2,22 +2,47 @@
 using Microsoft.Extensions.Configuration;
 using LittleHorse.Sdk;
 using LittleHorse.Worker;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
-var props = new Dictionary<string, string>
+public class Program
+{
+    private static ServiceProvider? _serviceProvider;
+    private static void SetupApplication()
+    {
+        _serviceProvider = new ServiceCollection()
+            .AddLogging(config =>
+            {
+                config.AddConsole();
+                config.SetMinimumLevel(LogLevel.Debug);
+            })
+            .BuildServiceProvider();
+    }
+    static void Main(string[] args)
+    {
+        SetupApplication();
+        var props = new Dictionary<string, string>
         {
             { "AppSettings:Setting1", "Value1" }
         };
 
-IConfiguration configuration = new ConfigurationBuilder()
-    .AddInMemoryCollection(props)
-    .Build();
-var config = new LHConfig(configuration);
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(props)
+            .Build();
+        if (_serviceProvider != null)
+        {
+            var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
 
-MyWorker executable = new MyWorker();
-var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet-dotnet", config);
+            var config = new LHConfig(configuration, loggerFactory);
 
-taskWorker.RegisterTaskDef();
+            MyWorker executable = new MyWorker();
+            var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet-dotnet", config);
 
-Thread.Sleep(1000);
+            taskWorker.RegisterTaskDef();
 
-taskWorker.Start();
+            Thread.Sleep(1000);
+
+            taskWorker.Start();
+        }
+    }
+}
