@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 public class LHTaskWorkerTest {
 
     @Test
-    public void getUnhealthyIfManageIsNull() {
+    public void getUnhealthyIfManagerIsNull() {
         LHTaskWorker task = new LHTaskWorker(new TaskWorker(), "", Map.of(), new LHConfig(), null);
         assertThat(task.healthStatus())
                 .isEqualTo(LHTaskWorkerHealth.builder()
