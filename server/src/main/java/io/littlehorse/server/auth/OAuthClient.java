@@ -12,10 +12,12 @@ import java.io.IOException;
 import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
 
-// https://connect2id.com/products/nimbus-oauth-openid-connect-sdk/examples/oauth/token-introspection
-// https://www.nimbusds.com/products/nimbus-oauth-openid-connect-sdk/guides/java-cookbook-for-openid-connect-public-clients
-// https://www.oauth.com/oauth2-servers/token-introspection-endpoint/
-
+/**
+ * Examples:
+ *      https://connect2id.com/products/nimbus-oauth-openid-connect-sdk/examples/oauth/token-introspection
+ *      https://www.nimbusds.com/products/nimbus-oauth-openid-connect-sdk/guides/java-cookbook-for-openid-connect-public-clients
+ *      https://www.oauth.com/oauth2-servers/token-introspection-endpoint/
+ */
 @Slf4j
 public class OAuthClient {
 

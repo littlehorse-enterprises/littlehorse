@@ -7,6 +7,17 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 public class LHTaskWorkerTest {
+
+    @Test
+    public void getUnhealthyIfManageIsNull() {
+        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), "", Map.of(), new LHConfig(), null);
+        assertThat(task.healthStatus())
+                .isEqualTo(LHTaskWorkerHealth.builder()
+                        .isHealthy(false)
+                        .reason(LHTaskWorkerHealthReason.UNHEALTHY)
+                        .build());
+    }
+
     @Test
     public void shouldResolvePlaceHolder() {
         String taskDefName = "a-task-name-${CLUSTER_NAME}";
