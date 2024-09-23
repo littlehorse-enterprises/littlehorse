@@ -1,6 +1,7 @@
 package io.littlehorse.sdk.worker;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import java.util.Map;
@@ -11,11 +12,8 @@ public class LHTaskWorkerTest {
     @Test
     public void getUnhealthyIfManagerIsNull() {
         LHTaskWorker task = new LHTaskWorker(new TaskWorker(), "", Map.of(), new LHConfig(), null);
-        assertThat(task.healthStatus())
-                .isEqualTo(LHTaskWorkerHealth.builder()
-                        .isHealthy(false)
-                        .reason(LHTaskWorkerHealthReason.UNHEALTHY)
-                        .build());
+        IllegalStateException exception = assertThrows(IllegalStateException.class, task::healthStatus);
+        assertThat(exception.getMessage()).isEqualTo("Worker not started");
     }
 
     @Test

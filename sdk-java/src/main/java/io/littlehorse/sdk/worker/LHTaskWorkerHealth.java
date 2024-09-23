@@ -8,10 +8,6 @@ import lombok.Getter;
 @Getter
 @EqualsAndHashCode
 public class LHTaskWorkerHealth {
-    public static final LHTaskWorkerHealth UNHEALTHY = builder()
-            .isHealthy(false)
-            .reason(LHTaskWorkerHealthReason.UNHEALTHY)
-            .build();
     private boolean isHealthy;
     private LHTaskWorkerHealthReason reason;
 }
