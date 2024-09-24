@@ -39,7 +39,7 @@ repos:
         entry: poetry -C ./sdk-python install
 
       - id: install-sdk-js
-        name: Install sdk-js Dependencies
+        name: Install Javascript Dependencies
         language: system
         always_run: true
         pass_filenames: false
@@ -69,7 +69,7 @@ repos:
         entry: gofmt -s -w ./sdk-go
 
       - id: format-sdk-js
-        name: Format sdk-js
+        name: Format Javascript
         language: system
         always_run: true
         pass_filenames: false
@@ -112,7 +112,7 @@ repos:
         language: system
         always_run: true
         pass_filenames: false
-        entry: cd ./sdk-go && go test ./...
+        entry: bash -c 'cd ./sdk-go && go test ./...'
 
       - id: python-tests
         name: Running SDK Python Tests
@@ -122,7 +122,7 @@ repos:
         entry: poetry -C ./sdk-python run python -m unittest discover -s sdk-python/
 
       - id: sdk-js-tests
-        name: Run sdk-js tests
+        name: Running SDK Javascript tests
         language: system
         always_run: true
         pass_filenames: false

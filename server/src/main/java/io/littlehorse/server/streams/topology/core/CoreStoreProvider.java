@@ -1,5 +1,7 @@
 package io.littlehorse.server.streams.topology.core;
 
+import io.grpc.Status;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.server.streams.ServerTopology;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -28,22 +30,21 @@ public class CoreStoreProvider {
     }
 
     private ReadOnlyKeyValueStore<String, Bytes> getStore(final String storeName, Integer specificPartition) {
-        final boolean instanceIsRunning = serverInstance.state() == KafkaStreams.State.RUNNING;
-        if (instanceIsRunning) {
-            StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
-                    StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore());
+        StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
+                StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore());
 
-            if (ENABLE_STALE_STORES) {
-                params = params.enableStaleStores();
-            }
-
-            if (specificPartition != null) {
-                params = params.withPartition(specificPartition);
-            }
-
-            return serverInstance.store(params);
-        } else {
-            return null;
+        if (ENABLE_STALE_STORES) {
+            params = params.enableStaleStores();
         }
+
+        if (specificPartition != null) {
+            params = params.withPartition(specificPartition);
+        }
+
+        ReadOnlyKeyValueStore<String, Bytes> result = serverInstance.store(params);
+        if (result == null) {
+            throw new LHApiException(Status.UNAVAILABLE, "Kafka Streams is not ready yet");
+        }
+        return result;
     }
 }
