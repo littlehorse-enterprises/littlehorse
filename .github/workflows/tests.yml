@@ -71,7 +71,7 @@ jobs:
 
       - name: Validate Indentations
         working-directory: ./sdk-python
-        run: poetry run ruff .
+        run: poetry run ruff check .
 
       - name: Validate Types
         working-directory: ./sdk-python

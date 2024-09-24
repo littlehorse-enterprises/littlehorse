@@ -77,7 +77,7 @@ public class CommandWaiter {
         if (caughtException != null) {
             log.debug("Waiter for command {} is aborting client request due to command process failure", commandId);
             observer.onError(caughtException);
-        } else if (response != null) {
+        } else {
             observer.onNext(response);
             observer.onCompleted();
             log.debug("Sent response for command {}", commandId);

@@ -75,7 +75,11 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
                     1,
                     TimeUnit.SECONDS);
         } else {
-            ctx.onError(t);
+            try {
+                ctx.onError(t);
+            } catch (IllegalStateException e) {
+                log.debug("Call already closed");
+            }
         }
     }
 
@@ -92,14 +96,22 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
     @Override
     public void onCompleted() {
         if (shouldComplete) {
-            ctx.onCompleted();
+            try {
+                ctx.onCompleted();
+            } catch (IllegalStateException e) {
+                log.debug("Call already closed");
+            }
         }
     }
 
     @Override
     public void onNext(WaitForCommandResponse reply) {
         if (reply.hasResult()) {
-            ctx.onNext(buildRespFromBytes(reply.getResult()));
+            try {
+                ctx.onNext(buildRespFromBytes(reply.getResult()));
+            } catch (IllegalStateException e) {
+                log.debug("Call already closed");
+            }
         } else if (reply.hasPartitionMigratedResponse()) {
             internalComms.waitForCommand(command, this, requestContext);
         }
