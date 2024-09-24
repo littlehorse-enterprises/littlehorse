@@ -78,7 +78,16 @@ code {
   border-radius: 1rem;
 }
 
+.video {
+  width: 80%;
+  height: auto;
+  aspect-ratio: 1.777;
+}
 
+.video-container {
+  display: flex;
+  justify-content: center;
+}
 
 /* 
 [data-theme='dark'] {

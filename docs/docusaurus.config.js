@@ -41,7 +41,7 @@ module.exports = {
       tagName: "meta",
       attributes: {
         "name": "twitter:description",
-        "content": "The Missing Piece of the Microservice Architecture",
+        "content": "Workflow-Driven Applications Made Easy",
         "data-rh": "true"
       }
     }
