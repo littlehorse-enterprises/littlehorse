@@ -5,7 +5,6 @@ using Grpc.Net.Client;
 using LittleHorse.Common.Configuration.Models;
 using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Internal;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using static LittleHorse.Common.Proto.LittleHorse;
 
@@ -16,20 +15,19 @@ namespace LittleHorse.Sdk {
 
         private ILogger<LHConfig>? _logger;
 
-        private LHWorkerOptions _options;
+        private LHOptions _options;
 
         private Dictionary<string, GrpcChannel> _createdChannels;
         
-        public LHConfig(IConfiguration configuration, ILoggerFactory? loggerFactory = null)
+        public LHConfig(ILoggerFactory? loggerFactory = null)
         {
             LHLoggerFactoryProvider.Initialize(loggerFactory);
             _logger = LHLoggerFactoryProvider.GetLogger<LHConfig>();
-            _options = new LHWorkerOptions();
-            configuration.Bind(_options);
+            _options = LHOptionsBinder.GetOptionsFromEnvironmentVariables();
             _createdChannels = new Dictionary<string, GrpcChannel>();
         }
 
-        public string WorkerId
+        public string? WorkerId
         {
             get
             {
@@ -37,7 +35,7 @@ namespace LittleHorse.Sdk {
             }
         }
 
-        public string TaskWorkerVersion
+        public string? TaskWorkerVersion
         {
             get { return _options.LHW_TASK_WORKER_VERSION; }
         }

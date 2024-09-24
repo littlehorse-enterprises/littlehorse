@@ -21,19 +21,10 @@ public class Program
     static void Main(string[] args)
     {
         SetupApplication();
-        var props = new Dictionary<string, string>
-        {
-            { "AppSettings:Setting1", "Value1" }
-        };
-
-        IConfiguration configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(props)
-            .Build();
         if (_serviceProvider != null)
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
-
-            var config = new LHConfig(configuration, loggerFactory);
+            var config = new LHConfig(loggerFactory);
 
             MyWorker executable = new MyWorker();
             var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet-dotnet", config);
