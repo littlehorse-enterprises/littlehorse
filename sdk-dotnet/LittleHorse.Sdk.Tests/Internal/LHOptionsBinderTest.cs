@@ -11,6 +11,7 @@ namespace LittleHorse.Sdk.Tests.Internal
         {
             string host = "host";
             string port = "254";
+            string protocol = "TLS";
             string clientId = "client-id";
             string clientCert = "cert";
             string clientKey = "client-key";
@@ -23,6 +24,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             
             Environment.SetEnvironmentVariable("LHC_API_HOST", host);
             Environment.SetEnvironmentVariable("LHC_API_PORT", port);
+            Environment.SetEnvironmentVariable("LHC_API_PROTOCOL", protocol);
             Environment.SetEnvironmentVariable("LHC_CLIENT_ID", clientId);
             Environment.SetEnvironmentVariable("LHC_CLIENT_CERT", clientCert);
             Environment.SetEnvironmentVariable("LHC_CLIENT_KEY", clientKey);
@@ -37,6 +39,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             
             Assert.Equal(host, options.LHC_API_HOST);
             Assert.Equal(int.Parse(port), options.LHC_API_PORT);
+            Assert.Equal(protocol, options.LHC_API_PROTOCOL);
             Assert.Equal(clientId, options.LHC_CLIENT_ID);
             Assert.Equal(clientCert, options.LHC_CLIENT_CERT);
             Assert.Equal(clientKey, options.LHC_CLIENT_KEY);

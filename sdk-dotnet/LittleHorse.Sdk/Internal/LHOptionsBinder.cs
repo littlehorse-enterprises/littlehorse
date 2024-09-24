@@ -16,6 +16,9 @@ namespace LittleHorse.Sdk.Internal {
             var apiPort = Environment.GetEnvironmentVariable("LHC_API_PORT");
             if (!string.IsNullOrEmpty(apiPort))
                 options.LHC_API_PORT = IntegerConverter.FromString(apiPort);
+            var apiProtocol = Environment.GetEnvironmentVariable("LHC_API_PROTOCOL");
+            if (!string.IsNullOrEmpty(apiProtocol))
+                options.LHC_API_PROTOCOL = apiProtocol;
             var clientId = Environment.GetEnvironmentVariable("LHC_CLIENT_ID");
             if (!string.IsNullOrEmpty(clientId))
                 options.LHC_CLIENT_ID = clientId;
