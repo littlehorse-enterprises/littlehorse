@@ -40,8 +40,6 @@ namespace LittleHorse.Worker
             _mappings = new List<VariableMapping>();
             _taskDefName = taskDefName;
             _grpcClient = _config.GetGrcpClientInstance();
-            
-            _logger.LogInformation("TaskWorker was created successfully");
         }
 
         /// <summary>

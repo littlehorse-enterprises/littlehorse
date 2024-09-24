@@ -1,6 +1,5 @@
 ﻿
 using LittleHorse.Worker.Attributes;
-using Microsoft.Extensions.Logging;
 
 namespace Examples.BasicExample
 {

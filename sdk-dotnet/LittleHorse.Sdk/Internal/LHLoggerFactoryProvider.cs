@@ -1,18 +1,21 @@
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
+[assembly: InternalsVisibleTo("LittleHorse.Sdk.Tests")]
+
 namespace LittleHorse.Sdk.Internal
 {
-    public static class LHLoggerFactoryProvider
+    internal static class LHLoggerFactoryProvider
     {
         private static ILoggerFactory? _loggerFactory;
 
-        public static void Initialize(ILoggerFactory? loggerFactory = null)
+        internal static void Initialize(ILoggerFactory? loggerFactory = null)
         {
             _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
         }
 
-        public static ILogger<T> GetLogger<T>()
+        internal static ILogger<T> GetLogger<T>()
         {
             if (_loggerFactory != null)
             {
