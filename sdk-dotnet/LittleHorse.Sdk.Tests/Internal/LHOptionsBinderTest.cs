@@ -46,9 +46,6 @@ namespace LittleHorse.Sdk.Tests.Internal
             Assert.Equal(serverConnectListener, options.LHW_SERVER_CONNECT_LISTENER);
             Assert.Equal(int.Parse(numberWorkerThreads), options.LHW_NUM_WORKER_THREADS);
             Assert.Equal(taskWorkerVersion, options.LHW_TASK_WORKER_VERSION);
-            
-            Environment.SetEnvironmentVariable("LHC_API_HOST", null);
-            Environment.SetEnvironmentVariable("LHC_API_PORT", null);
         }
         
         [Fact]
