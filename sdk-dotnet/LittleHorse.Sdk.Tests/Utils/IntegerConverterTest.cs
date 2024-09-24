@@ -37,7 +37,7 @@ namespace LittleHorse.Sdk.Tests.Utils
         }
         
         [Fact]
-        public void ValueConverter_WhenStringIsNotANumber_ShouldReturnZero()
+        public void ValueConverter_WhenStringIsNotANumber_ShouldReturnFormatException()
         {
             string value = "test-number";
             
