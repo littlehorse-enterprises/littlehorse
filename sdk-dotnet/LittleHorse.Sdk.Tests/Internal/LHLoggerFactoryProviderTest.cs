@@ -25,7 +25,7 @@ namespace LittleHorse.Sdk.Tests.Internal
         {
             LHLoggerFactoryProvider.Initialize();
             var logger = LHLoggerFactoryProvider.GetLogger<string>();
-            logger.LogInformation("This log should not be logged");
+            logger.LogInformation("This log should not be printed.");
             
             Assert.NotNull(logger);
         }

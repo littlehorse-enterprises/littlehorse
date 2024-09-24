@@ -1,8 +1,8 @@
 ﻿namespace LittleHorse.Common.Configuration.Models
 {
-    public class LHWorkerOptions
+    public class LHOptions
     {
-        public static string GenerateClientID()
+        private static string GenerateClientId()
         {
             return "client-" + Guid.NewGuid().ToString().Replace("-", "");
         }
@@ -10,7 +10,7 @@
         public string LHC_API_HOST { get; set; } = "localhost";
         public int LHC_API_PORT { get; set; } = 2023;
         public string LHC_API_PROTOCOL { get; set; } = "PLAIN";
-        public string LHC_CLIENT_ID { get; set; } = GenerateClientID();
+        public string LHC_CLIENT_ID { get; set; } = GenerateClientId();
         public string? LHC_CLIENT_CERT { get; set; }
         public string? LHC_CLIENT_KEY { get; set; }
         public string? LHC_OAUTH_CLIENT_ID { get; set; }
