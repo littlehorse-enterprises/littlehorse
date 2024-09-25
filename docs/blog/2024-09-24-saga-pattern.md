@@ -23,7 +23,7 @@ This is the first part in a five-part blog series on useful Integration Patterns
 
 ## The SAGA Pattern
 
-At a technical level, the [SAGA Pattern](https://microservices.io/patterns/data/saga.html) allows you to perform distributed transactions across multiple systems (microservices, API's, mainframes, etc) without 2-phase commit.
+At a technical level, the [SAGA Pattern](https://microservices.io/patterns/data/saga.html) allows you to perform distributed transactions across multiple disparate systems without 2-phase commit.
 
 In plain English, it is a tool in the belt of a software engineer to prevent half-fulfilled bank transfers, hanging orders, or other failures which would result in a Grumpy Customer.
 
