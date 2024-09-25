@@ -2,7 +2,7 @@
 
 <a href="https://littlehorse.io/"><img alt="littlehorse.io" src="https://raw.githubusercontent.com/littlehorse-enterprises/littlehorse/01ef9618b7b719c3aac1d2e2eb5096f164a659b1/docs/images/badge-littlehorse-io.svg"/></a>
 <a href="https://littlehorse.dev/"><img alt="littlehorse.dev" src="https://raw.githubusercontent.com/littlehorse-enterprises/littlehorse/01ef9618b7b719c3aac1d2e2eb5096f164a659b1/docs/images/badge-littlehorse-dev.svg"/></a>
-[![slack](https://img.shields.io/badge/Slack-511651.svg?logo=slack)](https://kubernetes.slack.com/messages/C87MF1RFD)
+[![slack](https://img.shields.io/badge/Slack-511651.svg?logo=slack)](https://launchpass.com/littlehorsecommunity)
 
 <a href="https://central.sonatype.com/artifact/io.littlehorse/littlehorse-client"><img alt="java" src="https://img.shields.io/maven-central/v/io.littlehorse/littlehorse-client?logo=openjdk&logoColor=white&color=orange&label=java"></a>
 <a href="https://github.com/littlehorse-enterprises/littlehorse/tags"><img alt="go" src="https://img.shields.io/github/v/tag/littlehorse-enterprises/littlehorse?logo=go&logoColor=white&color=00aed8&label=go"></a>

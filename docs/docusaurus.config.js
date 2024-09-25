@@ -8,19 +8,11 @@ const lightCodeTheme = themes.github;
 /** @type {import('@docusaurus/types').Config} */
 module.exports = {
   title: "LittleHorse Orchestrator",
-  tagline: "The Missing Piece of the Microservice Architecture",
+  tagline: "Workflow-Driven Applications",
   favicon: "img/logo.png",
 
-  // Set the production url of your site here
   url: "https://littlehorse.dev",
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: "/",
-
-  // // GitHub pages deployment config.
-  // // If you aren't using GitHub pages, you don't need these.
-  // organizationName: 'facebook', // Usually your GitHub org/user name.
-  // projectName: 'docusaurus', // Usually your repo name.
 
   onBrokenLinks: "throw",
 
@@ -41,7 +33,7 @@ module.exports = {
       tagName: "meta",
       attributes: {
         "name": "twitter:description",
-        "content": "Workflow-Driven Applications Made Easy",
+        "content": "Workflow-Driven Applications",
         "data-rh": "true"
       }
     }
@@ -111,7 +103,7 @@ module.exports = {
           {
             href: "https://littlehorse.io",
             position: "left",
-            label: "Product Site",
+            label: "LittleHorse Enterprises",
           },
           {
             href: "https://docs.google.com/forms/d/e/1FAIpQLScXVvTYy4LQnYoFoRKRQ7ppuxe0KgncsDukvm96qKN0pU5TnQ/viewform?usp=sf_link",
