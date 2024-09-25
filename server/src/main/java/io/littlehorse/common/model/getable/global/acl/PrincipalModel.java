@@ -43,8 +43,6 @@ public class PrincipalModel extends ClusterMetadataGetable<Principal> {
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
-        log.info(proto.toString());
-
         Principal principal = (Principal) proto;
         this.id = LHSerializable.fromProto(principal.getId(), PrincipalIdModel.class, context);
         this.globalAcls = LHSerializable.fromProto(principal.getGlobalAcls(), ServerACLsModel.class, context);

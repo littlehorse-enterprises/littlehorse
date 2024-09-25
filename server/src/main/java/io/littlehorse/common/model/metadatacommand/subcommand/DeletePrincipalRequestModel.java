@@ -94,7 +94,6 @@ public class DeletePrincipalRequestModel extends MetadataSubCommand<DeletePrinci
     private void ensureThatCallerCanEditPrincipalsInRelevantTenants(
             MetadataCommandExecution ctx, PrincipalModel caller) {
         if (!caller.hasPermissionToEditPrincipals()) {
-            // 
             throw new LHApiException(
                     Status.PERMISSION_DENIED,
                     "You do not have permission to delete Principals.");
