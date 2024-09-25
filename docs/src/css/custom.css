@@ -89,6 +89,12 @@ code {
   justify-content: center;
 }
 
+/* Disable external link indicator for header links with the class no-external-icon */
+.navbar__link svg {
+  display: none;
+}
+
+
 /* 
 [data-theme='dark'] {
   --ifm-color-primary: #d6d6d6;
