@@ -12,17 +12,20 @@ public final class AuthorizationContextImpl implements AuthorizationContext {
     private final TenantIdModel authorizedTenant;
 
     private final PrincipalIdModel authorizedPrincipalId;
-    private final List<ServerACLModel> acls;
+    private final List<ServerACLModel> globalAcls;
+    private final List<ServerACLModel> perTenantAcls;
     private final boolean isAdmin;
 
     public AuthorizationContextImpl(
             final PrincipalIdModel authorizedPrincipalId,
             final TenantIdModel authorizedTenant,
-            final List<ServerACLModel> acls,
+            final List<ServerACLModel> globalAcls,
+            final List<ServerACLModel> perTenantAcls,
             final boolean isAdmin) {
         this.authorizedTenant = Objects.requireNonNull(authorizedTenant);
         this.authorizedPrincipalId = Objects.requireNonNull(authorizedPrincipalId);
-        this.acls = Objects.requireNonNull(acls);
+        this.globalAcls = Objects.requireNonNull(globalAcls);
+        this.perTenantAcls = Objects.requireNonNull(perTenantAcls);
         this.isAdmin = isAdmin;
     }
 
@@ -37,8 +40,13 @@ public final class AuthorizationContextImpl implements AuthorizationContext {
     }
 
     @Override
-    public Collection<ServerACLModel> acls() {
-        return acls;
+    public Collection<ServerACLModel> globalAcls() {
+        return globalAcls;
+    }
+
+    @Override
+    public Collection<ServerACLModel> perTenantAcls() {
+        return perTenantAcls;
     }
 
     @Override

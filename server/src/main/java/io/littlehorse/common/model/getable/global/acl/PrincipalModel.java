@@ -43,6 +43,8 @@ public class PrincipalModel extends ClusterMetadataGetable<Principal> {
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
+        log.info(proto.toString());
+
         Principal principal = (Principal) proto;
         this.id = LHSerializable.fromProto(principal.getId(), PrincipalIdModel.class, context);
         this.globalAcls = LHSerializable.fromProto(principal.getGlobalAcls(), ServerACLsModel.class, context);
@@ -135,20 +137,10 @@ public class PrincipalModel extends ClusterMetadataGetable<Principal> {
      * Returns whether this Principal has permissions to edit (Put or Delete) Principals in the specified
      * tenants.
      * @param tenants are the affected tenants.
-     * @return true if this Principal can modify Principals in the specified tenants.
+     * @return true if this Principal can modify Principals.
      */
-    public boolean hasPermissionToEditPrincipalsIn(List<TenantIdModel> tenants) {
-        if (isAdmin()) return true;
-
-        boolean allowsGlobalPrincipalCreation =
-                this.getGlobalAcls().allows(ACLResource.ACL_PRINCIPAL, ACLAction.WRITE_METADATA);
-
-        Predicate<TenantIdModel> canEditPrincipalsInTenant = (tenantId) -> {
-            ServerACLsModel aclsForTenant = perTenantAcls.get(tenantId.getId());
-            return aclsForTenant != null && aclsForTenant.allows(ACLResource.ACL_PRINCIPAL, ACLAction.WRITE_METADATA);
-        };
-
-        return allowsGlobalPrincipalCreation || tenants.stream().allMatch(canEditPrincipalsInTenant);
+    public boolean hasPermissionToEditPrincipals() {
+        return isAdmin() || this.getGlobalAcls().allows(ACLResource.ACL_PRINCIPAL, ACLAction.WRITE_METADATA);
     }
 
     /**

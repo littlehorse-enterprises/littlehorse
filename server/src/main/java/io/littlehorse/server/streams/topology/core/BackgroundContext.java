@@ -17,6 +17,7 @@ public class BackgroundContext implements ExecutionContext {
                 new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL),
                 new TenantIdModel(LHConstants.DEFAULT_TENANT),
                 List.of(),
+                List.of(),
                 true);
     }
 

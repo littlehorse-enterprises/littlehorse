@@ -87,8 +87,8 @@ public class RequestAuthorizerTest {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn(null);
         startCall();
         assertThat(resolvedAuthContext).isNotNull();
-        assertThat(resolvedAuthContext.acls()).hasSize(1);
-        assertThat(resolvedAuthContext.acls())
+        assertThat(resolvedAuthContext.globalAcls()).hasSize(1);
+        assertThat(resolvedAuthContext.globalAcls())
                 .containsExactly(
                         inMemoryAnonymousPrincipal.getGlobalAcls().getAcls().toArray(new ServerACLModel[0]));
         assertThat(resolvedAuthContext.principalId().getId()).isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
@@ -99,7 +99,7 @@ public class RequestAuthorizerTest {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
         startCall();
         assertThat(resolvedAuthContext.principalId().getId()).isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
-        assertThat(resolvedAuthContext.acls())
+        assertThat(resolvedAuthContext.globalAcls())
                 .containsAll(inMemoryAnonymousPrincipal.getGlobalAcls().getAcls());
     }
 
@@ -117,7 +117,7 @@ public class RequestAuthorizerTest {
         when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
         startCall();
         assertThat(resolvedAuthContext.principalId().getId()).isEqualTo("principal-id");
-        assertThat(resolvedAuthContext.acls()).containsOnly(TestUtil.adminAcl());
+        assertThat(resolvedAuthContext.globalAcls()).containsOnly(TestUtil.adminAcl());
     }
 
     @Test
@@ -140,7 +140,7 @@ public class RequestAuthorizerTest {
         metadataManager.put(new TenantModel("my-tenant"));
         startCall();
         assertThat(resolvedAuthContext.principalId().getId()).isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
-        assertThat(resolvedAuthContext.acls())
+        assertThat(resolvedAuthContext.globalAcls())
                 .containsOnly(
                         inMemoryAnonymousPrincipal.getGlobalAcls().getAcls().toArray(new ServerACLModel[0]));
     }

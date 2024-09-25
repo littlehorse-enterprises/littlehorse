@@ -13,6 +13,7 @@ import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.Principal;
 import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
@@ -107,14 +108,12 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
                     Status.INVALID_ARGUMENT, "Only admin users can create a principal with global privileges");
         }
 
-        List<TenantIdModel> affectedTenants =
-                perTenantAcls.keySet().stream().map(TenantIdModel::new).toList();
-        if (!requester.hasPermissionToEditPrincipalsIn(affectedTenants)) {
+        if (!requester.hasPermissionToEditPrincipals()) {
             throw new LHApiException(
-                    Status.PERMISSION_DENIED, "Unauthorized to edit Principals affecting specified tenants");
+                    Status.PERMISSION_DENIED, String.format("Missing permission %s over resource %s.", ACLAction.WRITE_METADATA, ACLResource.ACL_PRINCIPAL));
         }
 
-        validateIfPerTenantACLsHasAssociatedTenantResource();
+        validateIfPerTenantACLHasClusterScopedResources();
 
         for (Map.Entry<String, ServerACLsModel> perTenantAcl : perTenantAcls.entrySet()) {
             TenantIdModel tenantId = new TenantIdModel(perTenantAcl.getKey());
@@ -135,21 +134,22 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
     }
 
     /**
-     * Validates whether the perTenantACLs contain any resource associated with TENANT.
+     * Validates whether the perTenantACLs contain any cluster-scoped resources like Tenants or Principals.
      */
-    private void validateIfPerTenantACLsHasAssociatedTenantResource() {
-        if (hasTenantResource()) {
+    private void validateIfPerTenantACLHasClusterScopedResources() {
+        if (hasClusterScopedResource()) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT,
-                    "PutPrincipalRequest does not allow non-Admin users to have any permissions on tenants");
+                    "PutPrincipalRequest does not allow Per-Tenant ACLs containing permissions over Tenants or Principals.");
         }
     }
 
-    private boolean hasTenantResource() {
+    private boolean hasClusterScopedResource() {
         return !perTenantAcls.isEmpty()
                 && perTenantAcls.values().stream().anyMatch(mappedACL -> mappedACL.getAcls().stream()
                         .anyMatch(actualACL -> actualACL.getResources().stream()
-                                .anyMatch(aclResource -> aclResource.equals(ACLResource.ACL_TENANT))));
+                                .anyMatch(aclResource -> aclResource.equals(ACLResource.ACL_TENANT)
+                                        || aclResource.equals(ACLResource.ACL_PRINCIPAL))));
     }
 
     private void ensureThatThereIsStillAnAdminPrincipal(PrincipalModel old, MetadataCommandExecution context) {

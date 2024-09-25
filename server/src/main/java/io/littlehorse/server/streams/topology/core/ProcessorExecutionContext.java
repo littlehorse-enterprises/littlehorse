@@ -188,7 +188,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
         PrincipalIdModel principalId = HeadersUtil.principalIdFromMetadata(recordMetadata);
         TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
         // TODO: get current acls for principal and isAdmin boolean. It is required for fine-grained acls verification
-        return new AuthorizationContextImpl(principalId, tenantId, List.of(), false);
+        return new AuthorizationContextImpl(principalId, tenantId, List.of(), List.of(), false);
     }
 
     private KeyValueStore<String, Bytes> nativeCoreStore() {

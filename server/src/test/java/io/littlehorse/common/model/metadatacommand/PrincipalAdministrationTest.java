@@ -21,6 +21,7 @@ import io.littlehorse.sdk.common.proto.DeletePrincipalRequest;
 import io.littlehorse.sdk.common.proto.Principal;
 import io.littlehorse.sdk.common.proto.PrincipalId;
 import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
+import io.littlehorse.sdk.common.proto.ServerACL;
 import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.ServerTopology;
@@ -90,10 +91,23 @@ public class PrincipalAdministrationTest {
         nativeMetadataStore.init(mockProcessorContext.getStateStoreContext(), nativeMetadataStore);
         metadataProcessor = new MetadataProcessor(config, server, metadataCache);
         defaultStore.put(new StoredGetable<>(new TenantModel(tenantId)));
+
         PrincipalModel requester = new PrincipalModel();
-        requester.setId(new PrincipalIdModel("principal-requester"));
-        requester.setPerTenantAcls(putPrincipalRequest.getPerTenantAcls());
+        requester.setId(new PrincipalIdModel(requesterId));
         requester.setCreatedAt(new Date());
+        requester.setGlobalAcls(
+                ServerACLsModel.fromProto(
+                        ServerACLs
+                                .newBuilder()
+                                .addAcls(ServerACL
+                                            .newBuilder()
+                                            .addAllowedActions(ACLAction.WRITE_METADATA)
+                                            .addResources(ACLResource.ACL_PRINCIPAL)
+                                            .build()
+                                )
+                                .build(),
+                        ServerACLsModel.class,
+                        mock()));
         requester.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("name")));
         defaultStore.put(new StoredGetable<>(requester));
     }
@@ -210,21 +224,6 @@ public class PrincipalAdministrationTest {
     }
 
     @Test
-    public void shouldRestrictPrincipalCreationToCurrentTenant() {
-        defaultStore.put(new StoredGetable<>(new TenantModel("other-tenant")));
-        putPrincipalRequest.setPerTenantAcls(
-                Map.of(tenantId, TestUtil.singleAdminAcl("name"), "other-tenant", TestUtil.singleAdminAcl("name2")));
-        MetadataCommandModel invalidCommand = sendCommand(putPrincipalRequest);
-        ArgumentCaptor<Exception> exceptionArgumentCaptor = ArgumentCaptor.forClass(Exception.class);
-        verify(server).sendErrorToClient(eq(invalidCommand.getCommandId()), exceptionArgumentCaptor.capture());
-        Exception thrown = exceptionArgumentCaptor.getValue();
-        assertThat(thrown)
-                .isNotNull()
-                .isInstanceOf(Exception.class)
-                .hasMessage("PERMISSION_DENIED: Unauthorized to edit Principals affecting specified tenants");
-    }
-
-    @Test
     public void shouldAllowPrincipalCreationForAdminPrincipals() {
         defaultStore.put(new StoredGetable<>(new TenantModel("other-tenant")));
         putPrincipalRequest.setPerTenantAcls(
@@ -252,12 +251,15 @@ public class PrincipalAdministrationTest {
         requester.getPerTenantAcls().clear();
         requester.setGlobalAcls(writePrincipalAcl);
         defaultStore.put(new StoredGetable<>(requester));
+
+        putPrincipalRequest.getPerTenantAcls().clear();
         sendCommand(putPrincipalRequest);
         verify(server, never()).sendErrorToClient(any(), any());
     }
 
     @Test
-    void shouldNotAllowPrincipalWithoutGlobalACLsToHaveAnACLThatPointsToTenantResource() {
+    void shouldNotAllowPrincipalToHaveAPerTenantACLThatPointsToTenantResource() {
+        // Principal with global write permissions over principal metadata tries to create principal with perTenantAcl of Tenant
         putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAclWithTenantResource()));
         MetadataCommandModel command = sendCommand(putPrincipalRequest);
 
@@ -270,7 +272,7 @@ public class PrincipalAdministrationTest {
                 .isNotNull()
                 .isInstanceOf(LHApiException.class)
                 .hasMessage(
-                        "INVALID_ARGUMENT: PutPrincipalRequest does not allow non-Admin users to have any permissions on tenants");
+                        "INVALID_ARGUMENT: Permissions over Tenants and Principals are only available as Global ACLs.");
     }
 
     private PutPrincipalRequest principalRequestToProcess() {

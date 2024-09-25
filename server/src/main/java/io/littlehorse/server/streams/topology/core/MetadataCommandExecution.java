@@ -101,6 +101,6 @@ public class MetadataCommandExecution implements ExecutionContext {
     private AuthorizationContext authContextFor(TenantIdModel tenantId, PrincipalIdModel principalId) {
         // We will need to pass list of acls and isAdmin argument in order to implement
         // fine-grained authorization
-        return new AuthorizationContextImpl(principalId, tenantId, List.of(), false);
+        return new AuthorizationContextImpl(principalId, tenantId, List.of(), List.of(), false);
     }
 }

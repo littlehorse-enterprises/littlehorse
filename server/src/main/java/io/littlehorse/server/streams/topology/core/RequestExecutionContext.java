@@ -17,6 +17,7 @@ import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.apache.kafka.common.utils.Bytes;
@@ -121,17 +122,22 @@ public class RequestExecutionContext implements ExecutionContext {
 
     private AuthorizationContext authContextFor(PrincipalIdModel clientId, TenantIdModel tenantId) {
         PrincipalModel resolvedPrincipal = resolvePrincipal(clientId, tenantId);
-        List<ServerACLModel> currentAcls;
+        List<ServerACLModel> currentPerTenantAcls = new ArrayList<>();
+        List<ServerACLModel> currentGlobalAcls = new ArrayList<>();
         if (resolvedPrincipal.getPerTenantAcls().containsKey(tenantId.toString())) {
-            currentAcls = resolvedPrincipal
+            currentPerTenantAcls.addAll(resolvedPrincipal
                     .getPerTenantAcls()
                     .get(tenantId.toString())
-                    .getAcls();
+                    .getAcls());
         } else {
-            currentAcls = resolvedPrincipal.getGlobalAcls().getAcls();
+            currentGlobalAcls.addAll(resolvedPrincipal.getGlobalAcls().getAcls());
         }
         return new AuthorizationContextImpl(
-                resolvedPrincipal.getId(), tenantId, currentAcls, resolvedPrincipal.isAdmin());
+                resolvedPrincipal.getId(),
+                tenantId,
+                currentGlobalAcls,
+                currentPerTenantAcls,
+                resolvedPrincipal.isAdmin());
     }
 
     public Optional<Deadline> getDeadlineFromClient() {

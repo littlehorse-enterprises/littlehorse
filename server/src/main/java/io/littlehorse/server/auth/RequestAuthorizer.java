@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 public class RequestAuthorizer implements ServerAuthorizer {
 
     private final CoreStoreProvider coreStoreProvider;
@@ -77,8 +76,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
 
     private void validateAcl(MethodDescriptor<?, ?> method, AuthorizationContext authContext) {
         if (!authContext.isAdmin()) {
-            Collection<ServerACLModel> perTenantAcls = authContext.acls();
-            aclVerifier.verify(method, perTenantAcls);
+            aclVerifier.verify(method, authContext);
         }
     }
 
@@ -121,9 +119,22 @@ public class RequestAuthorizer implements ServerAuthorizer {
             }
         }
 
-        private void verify(MethodDescriptor<?, ?> serviceMethod, Collection<ServerACLModel> acls) {
+        private void verify(MethodDescriptor<?, ?> serviceMethod, AuthorizationContext authContext) {
             String methodName = serviceMethod.getBareMethodName();
             AuthMetadata authMetadata = methodMetadata.get(methodName);
+
+            Collection<ServerACLModel> acls;
+
+            if (!authContext.perTenantAcls().isEmpty()) {
+                if (requiresClusterScopedResource(authMetadata)) {
+                    throw new PermissionDeniedException(
+                            "Insufficient ACLs. Access to Principals and Tenants can only be granted with Global ACLs");
+                }
+                acls = authContext.perTenantAcls();
+            } else {
+                acls = authContext.globalAcls();
+            }
+
             Set<ACLAction> clientAllowedActions = new HashSet<>();
             Set<ACLResource> clientAllowedResources = new HashSet<>();
             for (ServerACLModel clientAcl : acls) {
@@ -135,6 +146,11 @@ public class RequestAuthorizer implements ServerAuthorizer {
                 throw new PermissionDeniedException("Missing permissions %s over resources %s"
                         .formatted(authMetadata.requiredActions(), authMetadata.requiredResources()));
             }
+        }
+
+        private boolean requiresClusterScopedResource(AuthMetadata authMetadata) {
+            return authMetadata.requiredResources().contains(ACLResource.ACL_TENANT)
+                    || authMetadata.requiredResources().contains(ACLResource.ACL_PRINCIPAL);
         }
 
         private boolean isActionAllowed(AuthMetadata metadata, Set<ACLAction> clientAllowedActions) {
