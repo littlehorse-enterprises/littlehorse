@@ -95,19 +95,15 @@ public class PrincipalAdministrationTest {
         PrincipalModel requester = new PrincipalModel();
         requester.setId(new PrincipalIdModel(requesterId));
         requester.setCreatedAt(new Date());
-        requester.setGlobalAcls(
-                ServerACLsModel.fromProto(
-                        ServerACLs
-                                .newBuilder()
-                                .addAcls(ServerACL
-                                            .newBuilder()
-                                            .addAllowedActions(ACLAction.WRITE_METADATA)
-                                            .addResources(ACLResource.ACL_PRINCIPAL)
-                                            .build()
-                                )
-                                .build(),
-                        ServerACLsModel.class,
-                        mock()));
+        requester.setGlobalAcls(ServerACLsModel.fromProto(
+                ServerACLs.newBuilder()
+                        .addAcls(ServerACL.newBuilder()
+                                .addAllowedActions(ACLAction.WRITE_METADATA)
+                                .addResources(ACLResource.ACL_PRINCIPAL)
+                                .build())
+                        .build(),
+                ServerACLsModel.class,
+                mock()));
         requester.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAdminAcl("name")));
         defaultStore.put(new StoredGetable<>(requester));
     }
@@ -259,7 +255,8 @@ public class PrincipalAdministrationTest {
 
     @Test
     void shouldNotAllowPrincipalToHaveAPerTenantACLThatPointsToTenantResource() {
-        // Principal with global write permissions over principal metadata tries to create principal with perTenantAcl of Tenant
+        // Principal with global write permissions over principal metadata tries to create principal with perTenantAcl
+        // of Tenant
         putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAclWithTenantResource()));
         MetadataCommandModel command = sendCommand(putPrincipalRequest);
 

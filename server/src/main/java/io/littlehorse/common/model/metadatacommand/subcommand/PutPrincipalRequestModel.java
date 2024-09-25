@@ -22,7 +22,6 @@ import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import lombok.Getter;
@@ -110,7 +109,10 @@ public class PutPrincipalRequestModel extends MetadataSubCommand<PutPrincipalReq
 
         if (!requester.hasPermissionToEditPrincipals()) {
             throw new LHApiException(
-                    Status.PERMISSION_DENIED, String.format("Missing permission %s over resource %s.", ACLAction.WRITE_METADATA, ACLResource.ACL_PRINCIPAL));
+                    Status.PERMISSION_DENIED,
+                    String.format(
+                            "Missing permission %s over resource %s.",
+                            ACLAction.WRITE_METADATA, ACLResource.ACL_PRINCIPAL));
         }
 
         validateIfPerTenantACLHasClusterScopedResources();
