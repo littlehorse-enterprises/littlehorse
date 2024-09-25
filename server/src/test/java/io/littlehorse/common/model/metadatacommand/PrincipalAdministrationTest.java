@@ -269,7 +269,7 @@ public class PrincipalAdministrationTest {
                 .isNotNull()
                 .isInstanceOf(LHApiException.class)
                 .hasMessage(
-                        "INVALID_ARGUMENT: Permissions over Tenants and Principals are only available as Global ACLs.");
+                        "PutPrincipalRequest does not allow Per-Tenant ACLs containing permissions over Tenants or Principals.");
     }
 
     private PutPrincipalRequest principalRequestToProcess() {
