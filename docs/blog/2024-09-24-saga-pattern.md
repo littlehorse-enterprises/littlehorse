@@ -69,7 +69,11 @@ Our services need the following functionality. In SOA, these would be endpoints;
 
 Using message queues, the happy path looks like the following:
 
-<!-- TODO: excalidraw image -->
+![Architecture diagram](./2024-09-24-choreography-simple.png)
+
+:::note
+The above image assumes the _choreography_ pattern, in contrast to the _orchestrator_ pattern. The orchestrator pattern is a ton of work and involves writing something that very much resembles LittleHorse!
+:::
 
 1. Orders service calls `createOrder()`.
 2. Orders service publishes to the `reserve-inventory` queue.
@@ -83,7 +87,7 @@ In just the happy path, we have strong coupling already between our services in 
 
 But now we need to release the inventory and cancel the order when the payment doesn't go through. So the flow looks like this:
 
-<!-- TODO: excalidraw image -->
+![Architecture Diagram](./2024-09-24-choreography-saga.png)
 
 1. Orders service calls `createOrder()`.
 2. Orders service publishes to the `reserve-inventory` queue.
@@ -95,7 +99,7 @@ But now we need to release the inventory and cancel the order when the payment d
 8. Inventory service publishes to the `cancel-order` queue.
 9. Orders service consumes the record and calls `cancelOrder()`.
 
-Now, we have _six_ different message queues that we have to wrangle with. We can also see that the overall business flow has started to leak across all of our different services.
+Now, we have _five_ different message queues that we have to wrangle with. We can also see that the overall business flow has started to leak across all of our different services.
 
 :::danger
 One thing we are ignoring in this blog post is _reliability_: to make this setup production-ready, we would also have to ensure that updates to the internal databases of the services are atomic along with pushing messages to the message queue. We will cover that in next week's post (along with how LittleHorse takes care of that for you).
@@ -108,7 +112,7 @@ Using LittleHorse, in java, this whole workflow could look like the following. T
 ```java
 public void sagaExample(WorkflowThread wf) {
     var item = wf.addVariable("item", STR);
-    var customer = wf.addVariale("customer", STR);
+    var customer = wf.addVariable("customer", STR);
     var price = wf.addVariable("price", DOUBLE);
     var orderId = wf.addVariable("order-id", STR);
 
@@ -127,7 +131,7 @@ public void sagaExample(WorkflowThread wf) {
 }
 ```
 
-Instead of managing five message queues and six strongly-coupled integration points between microservices, all we need to do is register the workflow, define _truly_ modular tasks, and let LittleHorse take care of the rest.
+Instead of managing five message queues and five strongly-coupled integration points between microservices, all we need to do is register the workflow, define _truly_ modular tasks, and let LittleHorse take care of the rest.
 
 ## Wrapping Up
 
