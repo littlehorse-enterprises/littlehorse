@@ -269,7 +269,7 @@ public class PrincipalAdministrationTest {
                 .isNotNull()
                 .isInstanceOf(LHApiException.class)
                 .hasMessage(
-                        "PutPrincipalRequest does not allow Per-Tenant ACLs containing permissions over Tenants or Principals.");
+                        "INVALID_ARGUMENT: PutPrincipalRequest does not allow Per-Tenant ACLs containing permissions over Tenants or Principals.");
     }
 
     private PutPrincipalRequest principalRequestToProcess() {
