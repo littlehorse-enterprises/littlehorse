@@ -272,6 +272,25 @@ public class PrincipalAdministrationTest {
                         "INVALID_ARGUMENT: PutPrincipalRequest does not allow Per-Tenant ACLs containing permissions over Tenants or Principals.");
     }
 
+    @Test
+    void shouldNotAllowPrincipalToHaveAPerTenantACLThatPointsToPrincipalResource() {
+        // Principal with global write permissions over principal metadata tries to create principal with perTenantAcl
+        // of Principal
+        putPrincipalRequest.setPerTenantAcls(Map.of(tenantId, TestUtil.singleAclWithPrincipalResource()));
+        MetadataCommandModel command = sendCommand(putPrincipalRequest);
+
+        ArgumentCaptor<Exception> exceptionArgumentCaptor = ArgumentCaptor.forClass(Exception.class);
+
+        verify(server).sendErrorToClient(eq(command.getCommandId()), exceptionArgumentCaptor.capture());
+
+        Exception thrown = exceptionArgumentCaptor.getValue();
+        assertThat(thrown)
+                .isNotNull()
+                .isInstanceOf(LHApiException.class)
+                .hasMessage(
+                        "INVALID_ARGUMENT: PutPrincipalRequest does not allow Per-Tenant ACLs containing permissions over Tenants or Principals.");
+    }
+
     private PutPrincipalRequest principalRequestToProcess() {
         System.out.println("hi there");
         System.out.println(this.principalId);
