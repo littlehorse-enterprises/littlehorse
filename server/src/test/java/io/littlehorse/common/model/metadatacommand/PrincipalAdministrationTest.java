@@ -254,16 +254,6 @@ public class PrincipalAdministrationTest {
     }
 
     @Test
-    public void shouldNotAllowPrincipalWithAllResourcePerTenantACLToAccessTenantResource() {
-        
-    }
-
-    @Test
-    public void shouldNotAllowPrincipalWithAllResourcePerTenantACLToAccessPrincipalResource() {
-
-    }
-
-    @Test
     void shouldNotAllowPrincipalToHaveAPerTenantACLThatPointsToTenantResource() {
         // Principal with global write permissions over principal metadata tries to create principal with perTenantAcl
         // of Tenant
