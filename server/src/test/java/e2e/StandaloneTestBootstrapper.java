@@ -1,12 +1,12 @@
-package io.littlehorse.test.internal;
+package e2e;
 
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.test.exception.LHTestInitializationException;
+import io.littlehorse.test.internal.TestBootstrapper;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.UUID;
@@ -39,10 +39,7 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
         });
         kafka.start();
         workerConfig = new LHConfig(testClientProperties());
-        client = workerConfig
-                .getBlockingStub()
-                .withCallCredentials(new MockCallCredentials(
-                        new TenantIdModel(workerConfig.getTenantId().getId())));
+        client = workerConfig.getBlockingStub();
         startServers();
     }
 

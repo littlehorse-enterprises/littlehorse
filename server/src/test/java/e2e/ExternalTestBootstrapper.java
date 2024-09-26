@@ -1,7 +1,8 @@
-package io.littlehorse.test.internal;
+package e2e;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.test.internal.TestBootstrapper;
 import java.nio.file.Files;
 import java.nio.file.Path;
 

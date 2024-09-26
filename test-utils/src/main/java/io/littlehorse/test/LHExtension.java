@@ -7,12 +7,15 @@ import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
 import io.littlehorse.test.exception.LHTestInitializationException;
-import io.littlehorse.test.internal.StandaloneTestBootstrapper;
+import io.littlehorse.test.internal.TestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -25,14 +28,37 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
     private static final ExtensionContext.Namespace LH_TEST_NAMESPACE =
             ExtensionContext.Namespace.create(LHExtension.class);
     private static final String LH_TEST_CONTEXT = "LH-test-context";
+    private static final Properties testConfig;
+    private static final TestBootstrapper testBootstrapper;
+
+    public static final String BOOTSTRAPPER_CLASS = "bootstrapper.class";
+
+    static {
+        testConfig = new Properties();
+        try {
+            InputStream configStream = LHExtension.class.getClassLoader().getResourceAsStream("test.properties");
+            if (configStream != null) {
+                testConfig.load(configStream);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            testBootstrapper = (TestBootstrapper)
+                    Class.forName(testConfig.get(BOOTSTRAPPER_CLASS).toString())
+                            .getConstructors()[0]
+                            .newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public void beforeAll(ExtensionContext context) {
         Awaitility.setDefaultPollInterval(Duration.of(40, ChronoUnit.MILLIS));
         Awaitility.setDefaultTimeout(Duration.of(3500, ChronoUnit.MILLIS));
         getStore(context)
-                .getOrComputeIfAbsent(
-                        LH_TEST_CONTEXT, s -> new TestContext(new StandaloneTestBootstrapper()), TestContext.class);
+                .getOrComputeIfAbsent(LH_TEST_CONTEXT, s -> new TestContext(testBootstrapper), TestContext.class);
     }
 
     private ExtensionContext.Store getStore(ExtensionContext context) {

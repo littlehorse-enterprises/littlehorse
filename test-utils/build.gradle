@@ -22,11 +22,9 @@ targetCompatibility=21
 dependencies {
     // Use JUnit Jupiter for testing.
     implementation(project(':sdk-java'))
-    implementation(project(':server'))
     implementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
-    implementation "org.apache.kafka:kafka-clients:${kafkaVersion}"
-    implementation 'org.testcontainers:kafka:1.20.1'
     implementation group: 'org.awaitility', name: 'awaitility', version: '4.2.0'
+    implementation 'org.slf4j:slf4j-api:2.0.7'
 
 }
 
