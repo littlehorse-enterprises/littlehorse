@@ -34,7 +34,7 @@ public interface JsonIndexOrBuilder extends
    * Is the type of the field we are indexing.
    * </pre>
    *
-   * <code>.littlehorse.VariableType field_type = 2;</code>
+   * <code>.littlehorse.PrimitiveType field_type = 2;</code>
    * @return The enum numeric value on the wire for fieldType.
    */
   int getFieldTypeValue();
@@ -43,8 +43,8 @@ public interface JsonIndexOrBuilder extends
    * Is the type of the field we are indexing.
    * </pre>
    *
-   * <code>.littlehorse.VariableType field_type = 2;</code>
+   * <code>.littlehorse.PrimitiveType field_type = 2;</code>
    * @return The fieldType.
    */
-  io.littlehorse.sdk.common.proto.VariableType getFieldType();
+  io.littlehorse.sdk.common.proto.PrimitiveType getFieldType();
 }

@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * A `WorkflowEventDef` defines the blueprint for a `WorkflowEvent`.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.WorkflowEventDef}
  */
 public final class WorkflowEventDef extends
@@ -42,6 +46,10 @@ private static final long serialVersionUID = 0L;
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WorkflowEventDefId id_;
   /**
+   * <pre>
+   * The `id` of the `WorkflowEventDef`.
+   * </pre>
+   *
    * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
    * @return Whether the id field is set.
    */
@@ -50,6 +58,10 @@ private static final long serialVersionUID = 0L;
     return id_ != null;
   }
   /**
+   * <pre>
+   * The `id` of the `WorkflowEventDef`.
+   * </pre>
+   *
    * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
    * @return The id.
    */
@@ -58,6 +70,10 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.WorkflowEventDefId.getDefaultInstance() : id_;
   }
   /**
+   * <pre>
+   * The `id` of the `WorkflowEventDef`.
+   * </pre>
+   *
    * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
    */
   @java.lang.Override
@@ -68,6 +84,10 @@ private static final long serialVersionUID = 0L;
   public static final int CREATED_AT_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp createdAt_;
   /**
+   * <pre>
+   * The timestamp at which the `WorkflowEventDef` was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
@@ -76,6 +96,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ != null;
   }
   /**
+   * <pre>
+   * The timestamp at which the `WorkflowEventDef` was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
@@ -84,6 +108,10 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
   /**
+   * <pre>
+   * The timestamp at which the `WorkflowEventDef` was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   @java.lang.Override
@@ -94,19 +122,31 @@ private static final long serialVersionUID = 0L;
   public static final int TYPE_FIELD_NUMBER = 3;
   private int type_ = 0;
   /**
-   * <code>.littlehorse.VariableType type = 3;</code>
+   * <pre>
+   * The type of the content of the `WorkflowEvent`.
+   *
+   * TODO: Support schemas
+   * </pre>
+   *
+   * <code>.littlehorse.PrimitiveType type = 3;</code>
    * @return The enum numeric value on the wire for type.
    */
   @java.lang.Override public int getTypeValue() {
     return type_;
   }
   /**
-   * <code>.littlehorse.VariableType type = 3;</code>
+   * <pre>
+   * The type of the content of the `WorkflowEvent`.
+   *
+   * TODO: Support schemas
+   * </pre>
+   *
+   * <code>.littlehorse.PrimitiveType type = 3;</code>
    * @return The type.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.VariableType getType() {
-    io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(type_);
-    return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.PrimitiveType getType() {
+    io.littlehorse.sdk.common.proto.PrimitiveType result = io.littlehorse.sdk.common.proto.PrimitiveType.forNumber(type_);
+    return result == null ? io.littlehorse.sdk.common.proto.PrimitiveType.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -129,7 +169,7 @@ private static final long serialVersionUID = 0L;
     if (createdAt_ != null) {
       output.writeMessage(2, getCreatedAt());
     }
-    if (type_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
+    if (type_ != io.littlehorse.sdk.common.proto.PrimitiveType.JSON_OBJ.getNumber()) {
       output.writeEnum(3, type_);
     }
     getUnknownFields().writeTo(output);
@@ -149,7 +189,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getCreatedAt());
     }
-    if (type_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
+    if (type_ != io.littlehorse.sdk.common.proto.PrimitiveType.JSON_OBJ.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(3, type_);
     }
@@ -298,6 +338,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * A `WorkflowEventDef` defines the blueprint for a `WorkflowEvent`.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.WorkflowEventDef}
    */
   public static final class Builder extends
@@ -509,6 +553,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WorkflowEventDefId, io.littlehorse.sdk.common.proto.WorkflowEventDefId.Builder, io.littlehorse.sdk.common.proto.WorkflowEventDefIdOrBuilder> idBuilder_;
     /**
+     * <pre>
+     * The `id` of the `WorkflowEventDef`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
      * @return Whether the id field is set.
      */
@@ -516,6 +564,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The `id` of the `WorkflowEventDef`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
      * @return The id.
      */
@@ -527,6 +579,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The `id` of the `WorkflowEventDef`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
      */
     public Builder setId(io.littlehorse.sdk.common.proto.WorkflowEventDefId value) {
@@ -543,6 +599,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The `id` of the `WorkflowEventDef`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
      */
     public Builder setId(
@@ -557,6 +617,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The `id` of the `WorkflowEventDef`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
      */
     public Builder mergeId(io.littlehorse.sdk.common.proto.WorkflowEventDefId value) {
@@ -576,6 +640,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The `id` of the `WorkflowEventDef`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
      */
     public Builder clearId() {
@@ -589,6 +657,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The `id` of the `WorkflowEventDef`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WorkflowEventDefId.Builder getIdBuilder() {
@@ -597,6 +669,10 @@ private static final long serialVersionUID = 0L;
       return getIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The `id` of the `WorkflowEventDef`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WorkflowEventDefIdOrBuilder getIdOrBuilder() {
@@ -608,6 +684,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The `id` of the `WorkflowEventDef`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -628,6 +708,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
     /**
+     * <pre>
+     * The timestamp at which the `WorkflowEventDef` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return Whether the createdAt field is set.
      */
@@ -635,6 +719,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * The timestamp at which the `WorkflowEventDef` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return The createdAt.
      */
@@ -646,6 +734,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The timestamp at which the `WorkflowEventDef` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
@@ -662,6 +754,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The timestamp at which the `WorkflowEventDef` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(
@@ -676,6 +772,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The timestamp at which the `WorkflowEventDef` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
@@ -695,6 +795,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The timestamp at which the `WorkflowEventDef` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder clearCreatedAt() {
@@ -708,6 +812,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The timestamp at which the `WorkflowEventDef` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
@@ -716,6 +824,10 @@ private static final long serialVersionUID = 0L;
       return getCreatedAtFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The timestamp at which the `WorkflowEventDef` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
@@ -727,6 +839,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The timestamp at which the `WorkflowEventDef` was created.
+     * </pre>
+     *
      * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -745,14 +861,26 @@ private static final long serialVersionUID = 0L;
 
     private int type_ = 0;
     /**
-     * <code>.littlehorse.VariableType type = 3;</code>
+     * <pre>
+     * The type of the content of the `WorkflowEvent`.
+     *
+     * TODO: Support schemas
+     * </pre>
+     *
+     * <code>.littlehorse.PrimitiveType type = 3;</code>
      * @return The enum numeric value on the wire for type.
      */
     @java.lang.Override public int getTypeValue() {
       return type_;
     }
     /**
-     * <code>.littlehorse.VariableType type = 3;</code>
+     * <pre>
+     * The type of the content of the `WorkflowEvent`.
+     *
+     * TODO: Support schemas
+     * </pre>
+     *
+     * <code>.littlehorse.PrimitiveType type = 3;</code>
      * @param value The enum numeric value on the wire for type to set.
      * @return This builder for chaining.
      */
@@ -763,20 +891,32 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableType type = 3;</code>
+     * <pre>
+     * The type of the content of the `WorkflowEvent`.
+     *
+     * TODO: Support schemas
+     * </pre>
+     *
+     * <code>.littlehorse.PrimitiveType type = 3;</code>
      * @return The type.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableType getType() {
-      io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(type_);
-      return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.PrimitiveType getType() {
+      io.littlehorse.sdk.common.proto.PrimitiveType result = io.littlehorse.sdk.common.proto.PrimitiveType.forNumber(type_);
+      return result == null ? io.littlehorse.sdk.common.proto.PrimitiveType.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.VariableType type = 3;</code>
+     * <pre>
+     * The type of the content of the `WorkflowEvent`.
+     *
+     * TODO: Support schemas
+     * </pre>
+     *
+     * <code>.littlehorse.PrimitiveType type = 3;</code>
      * @param value The type to set.
      * @return This builder for chaining.
      */
-    public Builder setType(io.littlehorse.sdk.common.proto.VariableType value) {
+    public Builder setType(io.littlehorse.sdk.common.proto.PrimitiveType value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -786,7 +926,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.VariableType type = 3;</code>
+     * <pre>
+     * The type of the content of the `WorkflowEvent`.
+     *
+     * TODO: Support schemas
+     * </pre>
+     *
+     * <code>.littlehorse.PrimitiveType type = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearType() {

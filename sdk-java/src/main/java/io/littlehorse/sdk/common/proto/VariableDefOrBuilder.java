@@ -9,22 +9,58 @@ public interface VariableDefOrBuilder extends
 
   /**
    * <pre>
-   * The Type of the variable.
+   * The primitive type of the variable.
    * </pre>
    *
-   * <code>.littlehorse.VariableType type = 1;</code>
-   * @return The enum numeric value on the wire for type.
+   * <code>.littlehorse.PrimitiveType primitive = 1;</code>
+   * @return Whether the primitive field is set.
    */
-  int getTypeValue();
+  boolean hasPrimitive();
   /**
    * <pre>
-   * The Type of the variable.
+   * The primitive type of the variable.
    * </pre>
    *
-   * <code>.littlehorse.VariableType type = 1;</code>
-   * @return The type.
+   * <code>.littlehorse.PrimitiveType primitive = 1;</code>
+   * @return The enum numeric value on the wire for primitive.
    */
-  io.littlehorse.sdk.common.proto.VariableType getType();
+  int getPrimitiveValue();
+  /**
+   * <pre>
+   * The primitive type of the variable.
+   * </pre>
+   *
+   * <code>.littlehorse.PrimitiveType primitive = 1;</code>
+   * @return The primitive.
+   */
+  io.littlehorse.sdk.common.proto.PrimitiveType getPrimitive();
+
+  /**
+   * <pre>
+   * The ID of the schema that the variable belongs to.
+   * </pre>
+   *
+   * <code>.littlehorse.SchemaId schema = 5;</code>
+   * @return Whether the schema field is set.
+   */
+  boolean hasSchema();
+  /**
+   * <pre>
+   * The ID of the schema that the variable belongs to.
+   * </pre>
+   *
+   * <code>.littlehorse.SchemaId schema = 5;</code>
+   * @return The schema.
+   */
+  io.littlehorse.sdk.common.proto.SchemaId getSchema();
+  /**
+   * <pre>
+   * The ID of the schema that the variable belongs to.
+   * </pre>
+   *
+   * <code>.littlehorse.SchemaId schema = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.SchemaIdOrBuilder getSchemaOrBuilder();
 
   /**
    * <pre>
@@ -84,8 +120,10 @@ public interface VariableDefOrBuilder extends
    * If true, the variable value will show as a masked string.
    * </pre>
    *
-   * <code>bool masked_value = 4;</code>
-   * @return The maskedValue.
+   * <code>bool is_masked = 4;</code>
+   * @return The isMasked.
    */
-  boolean getMaskedValue();
+  boolean getIsMasked();
+
+  io.littlehorse.sdk.common.proto.VariableDef.TypeCase getTypeCase();
 }

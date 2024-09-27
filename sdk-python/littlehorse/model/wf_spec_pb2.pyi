@@ -66,8 +66,8 @@ class JsonIndex(_message.Message):
     FIELD_PATH_FIELD_NUMBER: _ClassVar[int]
     FIELD_TYPE_FIELD_NUMBER: _ClassVar[int]
     field_path: str
-    field_type: _common_enums_pb2.VariableType
-    def __init__(self, field_path: _Optional[str] = ..., field_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ...) -> None: ...
+    field_type: _common_enums_pb2.PrimitiveType
+    def __init__(self, field_path: _Optional[str] = ..., field_type: _Optional[_Union[_common_enums_pb2.PrimitiveType, str]] = ...) -> None: ...
 
 class ThreadVarDef(_message.Message):
     __slots__ = ["var_def", "required", "searchable", "json_indexes", "access_level"]

@@ -215,125 +215,125 @@ public final class WfSpecOuterClass {
       "B\023\n\021_retention_policyB\014\n\n_migrationB\021\n\017_" +
       "parent_wf_spec\"Q\n\027WorkflowRetentionPolic" +
       "y\022&\n\034seconds_after_wf_termination\030\001 \001(\003H" +
-      "\000B\016\n\014wf_gc_policy\"N\n\tJsonIndex\022\022\n\nfield_" +
-      "path\030\001 \001(\t\022-\n\nfield_type\030\002 \001(\0162\031.littleh" +
-      "orse.VariableType\"\312\001\n\014ThreadVarDef\022)\n\007va" +
-      "r_def\030\001 \001(\0132\030.littlehorse.VariableDef\022\020\n" +
-      "\010required\030\002 \001(\010\022\022\n\nsearchable\030\003 \001(\010\022,\n\014j" +
-      "son_indexes\030\004 \003(\0132\026.littlehorse.JsonInde" +
-      "x\022;\n\014access_level\030\005 \001(\0162%.littlehorse.Wf" +
-      "RunVariableAccessLevel\"\275\002\n\nThreadSpec\0221\n" +
-      "\005nodes\030\001 \003(\0132\".littlehorse.ThreadSpec.No" +
-      "desEntry\0220\n\rvariable_defs\030\002 \003(\0132\031.little" +
-      "horse.ThreadVarDef\0221\n\016interrupt_defs\030\003 \003" +
-      "(\0132\031.littlehorse.InterruptDef\022A\n\020retenti" +
-      "on_policy\030\004 \001(\0132\".littlehorse.ThreadRete" +
-      "ntionPolicyH\000\210\001\001\032?\n\nNodesEntry\022\013\n\003key\030\001 " +
-      "\001(\t\022 \n\005value\030\002 \001(\0132\021.littlehorse.Node:\0028" +
-      "\001B\023\n\021_retention_policy\"W\n\025ThreadRetentio" +
-      "nPolicy\022*\n seconds_after_thread_terminat" +
-      "ion\030\001 \001(\003H\000B\022\n\020thread_gc_policy\"i\n\014Inter" +
-      "ruptDef\022>\n\025external_event_def_id\030\001 \001(\0132\037" +
-      ".littlehorse.ExternalEventDefId\022\031\n\021handl" +
-      "er_spec_name\030\002 \001(\t\"\276\001\n\017StartThreadNode\022\030" +
-      "\n\020thread_spec_name\030\001 \001(\t\022>\n\tvariables\030\002 " +
-      "\003(\0132+.littlehorse.StartThreadNode.Variab" +
-      "lesEntry\032Q\n\016VariablesEntry\022\013\n\003key\030\001 \001(\t\022" +
-      ".\n\005value\030\002 \001(\0132\037.littlehorse.VariableAss" +
-      "ignment:\0028\001\"\203\002\n\030StartMultipleThreadsNode" +
-      "\022\030\n\020thread_spec_name\030\001 \001(\t\022G\n\tvariables\030" +
-      "\002 \003(\01324.littlehorse.StartMultipleThreads" +
-      "Node.VariablesEntry\0221\n\010iterable\030\003 \001(\0132\037." +
-      "littlehorse.VariableAssignment\032Q\n\016Variab" +
-      "lesEntry\022\013\n\003key\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037.l" +
-      "ittlehorse.VariableAssignment:\0028\001\"\360\001\n\021Fa" +
-      "ilureHandlerDef\022\031\n\021handler_spec_name\030\002 \001" +
-      "(\t\022\032\n\020specific_failure\030\001 \001(\tH\000\022K\n\023any_fa" +
-      "ilure_of_type\030\003 \001(\0162,.littlehorse.Failur" +
-      "eHandlerDef.LHFailureTypeH\000\"C\n\rLHFailure" +
-      "Type\022\026\n\022FAILURE_TYPE_ERROR\020\000\022\032\n\026FAILURE_" +
-      "TYPE_EXCEPTION\020\001B\022\n\020failure_to_catch\"\222\003\n" +
-      "\022WaitForThreadsNode\022C\n\007threads\030\001 \001(\01320.l" +
-      "ittlehorse.WaitForThreadsNode.ThreadsToW" +
-      "aitForH\000\0226\n\013thread_list\030\002 \001(\0132\037.littleho" +
-      "rse.VariableAssignmentH\000\022C\n\033per_thread_f" +
-      "ailure_handlers\030\003 \003(\0132\036.littlehorse.Fail" +
-      "ureHandlerDef\032M\n\017ThreadToWaitFor\022:\n\021thre" +
-      "ad_run_number\030\001 \001(\0132\037.littlehorse.Variab" +
-      "leAssignment\032T\n\020ThreadsToWaitFor\022@\n\007thre" +
-      "ads\030\001 \003(\0132/.littlehorse.WaitForThreadsNo" +
-      "de.ThreadToWaitForB\025\n\023threads_to_wait_fo" +
-      "r\"\215\001\n\021ExternalEventNode\022>\n\025external_even" +
-      "t_def_id\030\001 \001(\0132\037.littlehorse.ExternalEve" +
-      "ntDefId\0228\n\017timeout_seconds\030\002 \001(\0132\037.littl" +
-      "ehorse.VariableAssignment\"\020\n\016EntrypointN" +
-      "ode\"M\n\010ExitNode\0221\n\013failure_def\030\001 \001(\0132\027.l" +
-      "ittlehorse.FailureDefH\000\210\001\001B\016\n\014_failure_d" +
-      "ef\"v\n\nFailureDef\022\024\n\014failure_name\030\001 \001(\t\022\017" +
-      "\n\007message\030\002 \001(\t\0225\n\007content\030\003 \001(\0132\037.littl" +
-      "ehorse.VariableAssignmentH\000\210\001\001B\n\n\010_conte" +
-      "nt\"\234\005\n\004Node\022)\n\016outgoing_edges\030\001 \003(\0132\021.li" +
-      "ttlehorse.Edge\0228\n\020failure_handlers\030\004 \003(\013" +
-      "2\036.littlehorse.FailureHandlerDef\0221\n\nentr" +
-      "ypoint\030\005 \001(\0132\033.littlehorse.EntrypointNod" +
-      "eH\000\022%\n\004exit\030\006 \001(\0132\025.littlehorse.ExitNode" +
-      "H\000\022%\n\004task\030\007 \001(\0132\025.littlehorse.TaskNodeH" +
-      "\000\0228\n\016external_event\030\010 \001(\0132\036.littlehorse." +
-      "ExternalEventNodeH\000\0224\n\014start_thread\030\t \001(" +
-      "\0132\034.littlehorse.StartThreadNodeH\000\022;\n\020wai" +
-      "t_for_threads\030\n \001(\0132\037.littlehorse.WaitFo" +
-      "rThreadsNodeH\000\022#\n\003nop\030\013 \001(\0132\024.littlehors" +
-      "e.NopNodeH\000\022\'\n\005sleep\030\014 \001(\0132\026.littlehorse" +
-      ".SleepNodeH\000\022.\n\tuser_task\030\r \001(\0132\031.little" +
-      "horse.UserTaskNodeH\000\022G\n\026start_multiple_t" +
-      "hreads\030\017 \001(\0132%.littlehorse.StartMultiple" +
-      "ThreadsNodeH\000\0222\n\013throw_event\030\020 \001(\0132\033.lit" +
-      "tlehorse.ThrowEventNodeH\000B\006\n\004node\"y\n\016Thr" +
-      "owEventNode\0225\n\014event_def_id\030\001 \001(\0132\037.litt" +
-      "lehorse.WorkflowEventDefId\0220\n\007content\030\002 " +
-      "\001(\0132\037.littlehorse.VariableAssignment\"\323\003\n" +
-      "\014UserTaskNode\022\032\n\022user_task_def_name\030\001 \001(" +
-      "\t\0228\n\nuser_group\030\002 \001(\0132\037.littlehorse.Vari" +
-      "ableAssignmentH\000\210\001\001\0225\n\007user_id\030\003 \001(\0132\037.l" +
-      "ittlehorse.VariableAssignmentH\001\210\001\001\022-\n\007ac" +
-      "tions\030\004 \003(\0132\034.littlehorse.UTActionTrigge" +
-      "r\022\"\n\025user_task_def_version\030\005 \001(\005H\002\210\001\001\0223\n" +
-      "\005notes\030\006 \001(\0132\037.littlehorse.VariableAssig" +
-      "nmentH\003\210\001\001\022L\n\036on_cancellation_exception_" +
-      "name\030\007 \001(\0132\037.littlehorse.VariableAssignm" +
-      "entH\004\210\001\001B\r\n\013_user_groupB\n\n\010_user_idB\030\n\026_" +
-      "user_task_def_versionB\010\n\006_notesB!\n\037_on_c" +
-      "ancellation_exception_name\"\233\001\n\rEdgeCondi" +
-      "tion\022+\n\ncomparator\030\001 \001(\0162\027.littlehorse.C" +
-      "omparator\022-\n\004left\030\002 \001(\0132\037.littlehorse.Va" +
-      "riableAssignment\022.\n\005right\030\003 \001(\0132\037.little" +
-      "horse.VariableAssignment\"\233\001\n\004Edge\022\026\n\016sin" +
-      "k_node_name\030\001 \001(\t\0222\n\tcondition\030\002 \001(\0132\032.l" +
-      "ittlehorse.EdgeConditionH\000\210\001\001\0229\n\022variabl" +
-      "e_mutations\030\003 \003(\0132\035.littlehorse.Variable" +
-      "MutationB\014\n\n_condition\"\t\n\007NopNode\"\276\001\n\tSl" +
-      "eepNode\0226\n\013raw_seconds\030\001 \001(\0132\037.littlehor" +
-      "se.VariableAssignmentH\000\0224\n\ttimestamp\030\002 \001" +
-      "(\0132\037.littlehorse.VariableAssignmentH\000\0223\n" +
-      "\010iso_date\030\003 \001(\0132\037.littlehorse.VariableAs" +
-      "signmentH\000B\016\n\014sleep_length\"\207\002\n\026WfSpecVer" +
-      "sionMigration\022\031\n\021new_major_version\030\001 \001(\005" +
-      "\022\024\n\014new_revision\030\002 \001(\005\022]\n\026thread_spec_mi" +
-      "grations\030\003 \003(\0132=.littlehorse.WfSpecVersi" +
-      "onMigration.ThreadSpecMigrationsEntry\032]\n" +
-      "\031ThreadSpecMigrationsEntry\022\013\n\003key\030\001 \001(\t\022" +
-      "/\n\005value\030\002 \001(\0132 .littlehorse.ThreadSpecM" +
-      "igration:\0028\001\"\325\001\n\023ThreadSpecMigration\022\034\n\024" +
-      "new_thread_spec_name\030\001 \001(\t\022M\n\017node_migra" +
-      "tions\030\002 \003(\01324.littlehorse.ThreadSpecMigr" +
-      "ation.NodeMigrationsEntry\032Q\n\023NodeMigrati" +
-      "onsEntry\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.l" +
-      "ittlehorse.NodeMigration:\0028\001\"&\n\rNodeMigr" +
-      "ation\022\025\n\rnew_node_name\030\001 \001(\t*N\n\030WfRunVar" +
-      "iableAccessLevel\022\016\n\nPUBLIC_VAR\020\000\022\017\n\013PRIV" +
-      "ATE_VAR\020\001\022\021\n\rINHERITED_VAR\020\002BI\n\037io.littl" +
-      "ehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\030L" +
-      "ittleHorse.Common.Protob\006proto3"
+      "\000B\016\n\014wf_gc_policy\"O\n\tJsonIndex\022\022\n\nfield_" +
+      "path\030\001 \001(\t\022.\n\nfield_type\030\002 \001(\0162\032.littleh" +
+      "orse.PrimitiveType\"\312\001\n\014ThreadVarDef\022)\n\007v" +
+      "ar_def\030\001 \001(\0132\030.littlehorse.VariableDef\022\020" +
+      "\n\010required\030\002 \001(\010\022\022\n\nsearchable\030\003 \001(\010\022,\n\014" +
+      "json_indexes\030\004 \003(\0132\026.littlehorse.JsonInd" +
+      "ex\022;\n\014access_level\030\005 \001(\0162%.littlehorse.W" +
+      "fRunVariableAccessLevel\"\275\002\n\nThreadSpec\0221" +
+      "\n\005nodes\030\001 \003(\0132\".littlehorse.ThreadSpec.N" +
+      "odesEntry\0220\n\rvariable_defs\030\002 \003(\0132\031.littl" +
+      "ehorse.ThreadVarDef\0221\n\016interrupt_defs\030\003 " +
+      "\003(\0132\031.littlehorse.InterruptDef\022A\n\020retent" +
+      "ion_policy\030\004 \001(\0132\".littlehorse.ThreadRet" +
+      "entionPolicyH\000\210\001\001\032?\n\nNodesEntry\022\013\n\003key\030\001" +
+      " \001(\t\022 \n\005value\030\002 \001(\0132\021.littlehorse.Node:\002" +
+      "8\001B\023\n\021_retention_policy\"W\n\025ThreadRetenti" +
+      "onPolicy\022*\n seconds_after_thread_termina" +
+      "tion\030\001 \001(\003H\000B\022\n\020thread_gc_policy\"i\n\014Inte" +
+      "rruptDef\022>\n\025external_event_def_id\030\001 \001(\0132" +
+      "\037.littlehorse.ExternalEventDefId\022\031\n\021hand" +
+      "ler_spec_name\030\002 \001(\t\"\276\001\n\017StartThreadNode\022" +
+      "\030\n\020thread_spec_name\030\001 \001(\t\022>\n\tvariables\030\002" +
+      " \003(\0132+.littlehorse.StartThreadNode.Varia" +
+      "blesEntry\032Q\n\016VariablesEntry\022\013\n\003key\030\001 \001(\t" +
+      "\022.\n\005value\030\002 \001(\0132\037.littlehorse.VariableAs" +
+      "signment:\0028\001\"\203\002\n\030StartMultipleThreadsNod" +
+      "e\022\030\n\020thread_spec_name\030\001 \001(\t\022G\n\tvariables" +
+      "\030\002 \003(\01324.littlehorse.StartMultipleThread" +
+      "sNode.VariablesEntry\0221\n\010iterable\030\003 \001(\0132\037" +
+      ".littlehorse.VariableAssignment\032Q\n\016Varia" +
+      "blesEntry\022\013\n\003key\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037." +
+      "littlehorse.VariableAssignment:\0028\001\"\360\001\n\021F" +
+      "ailureHandlerDef\022\031\n\021handler_spec_name\030\002 " +
+      "\001(\t\022\032\n\020specific_failure\030\001 \001(\tH\000\022K\n\023any_f" +
+      "ailure_of_type\030\003 \001(\0162,.littlehorse.Failu" +
+      "reHandlerDef.LHFailureTypeH\000\"C\n\rLHFailur" +
+      "eType\022\026\n\022FAILURE_TYPE_ERROR\020\000\022\032\n\026FAILURE" +
+      "_TYPE_EXCEPTION\020\001B\022\n\020failure_to_catch\"\222\003" +
+      "\n\022WaitForThreadsNode\022C\n\007threads\030\001 \001(\01320." +
+      "littlehorse.WaitForThreadsNode.ThreadsTo" +
+      "WaitForH\000\0226\n\013thread_list\030\002 \001(\0132\037.littleh" +
+      "orse.VariableAssignmentH\000\022C\n\033per_thread_" +
+      "failure_handlers\030\003 \003(\0132\036.littlehorse.Fai" +
+      "lureHandlerDef\032M\n\017ThreadToWaitFor\022:\n\021thr" +
+      "ead_run_number\030\001 \001(\0132\037.littlehorse.Varia" +
+      "bleAssignment\032T\n\020ThreadsToWaitFor\022@\n\007thr" +
+      "eads\030\001 \003(\0132/.littlehorse.WaitForThreadsN" +
+      "ode.ThreadToWaitForB\025\n\023threads_to_wait_f" +
+      "or\"\215\001\n\021ExternalEventNode\022>\n\025external_eve" +
+      "nt_def_id\030\001 \001(\0132\037.littlehorse.ExternalEv" +
+      "entDefId\0228\n\017timeout_seconds\030\002 \001(\0132\037.litt" +
+      "lehorse.VariableAssignment\"\020\n\016Entrypoint" +
+      "Node\"M\n\010ExitNode\0221\n\013failure_def\030\001 \001(\0132\027." +
+      "littlehorse.FailureDefH\000\210\001\001B\016\n\014_failure_" +
+      "def\"v\n\nFailureDef\022\024\n\014failure_name\030\001 \001(\t\022" +
+      "\017\n\007message\030\002 \001(\t\0225\n\007content\030\003 \001(\0132\037.litt" +
+      "lehorse.VariableAssignmentH\000\210\001\001B\n\n\010_cont" +
+      "ent\"\234\005\n\004Node\022)\n\016outgoing_edges\030\001 \003(\0132\021.l" +
+      "ittlehorse.Edge\0228\n\020failure_handlers\030\004 \003(" +
+      "\0132\036.littlehorse.FailureHandlerDef\0221\n\nent" +
+      "rypoint\030\005 \001(\0132\033.littlehorse.EntrypointNo" +
+      "deH\000\022%\n\004exit\030\006 \001(\0132\025.littlehorse.ExitNod" +
+      "eH\000\022%\n\004task\030\007 \001(\0132\025.littlehorse.TaskNode" +
+      "H\000\0228\n\016external_event\030\010 \001(\0132\036.littlehorse" +
+      ".ExternalEventNodeH\000\0224\n\014start_thread\030\t \001" +
+      "(\0132\034.littlehorse.StartThreadNodeH\000\022;\n\020wa" +
+      "it_for_threads\030\n \001(\0132\037.littlehorse.WaitF" +
+      "orThreadsNodeH\000\022#\n\003nop\030\013 \001(\0132\024.littlehor" +
+      "se.NopNodeH\000\022\'\n\005sleep\030\014 \001(\0132\026.littlehors" +
+      "e.SleepNodeH\000\022.\n\tuser_task\030\r \001(\0132\031.littl" +
+      "ehorse.UserTaskNodeH\000\022G\n\026start_multiple_" +
+      "threads\030\017 \001(\0132%.littlehorse.StartMultipl" +
+      "eThreadsNodeH\000\0222\n\013throw_event\030\020 \001(\0132\033.li" +
+      "ttlehorse.ThrowEventNodeH\000B\006\n\004node\"y\n\016Th" +
+      "rowEventNode\0225\n\014event_def_id\030\001 \001(\0132\037.lit" +
+      "tlehorse.WorkflowEventDefId\0220\n\007content\030\002" +
+      " \001(\0132\037.littlehorse.VariableAssignment\"\323\003" +
+      "\n\014UserTaskNode\022\032\n\022user_task_def_name\030\001 \001" +
+      "(\t\0228\n\nuser_group\030\002 \001(\0132\037.littlehorse.Var" +
+      "iableAssignmentH\000\210\001\001\0225\n\007user_id\030\003 \001(\0132\037." +
+      "littlehorse.VariableAssignmentH\001\210\001\001\022-\n\007a" +
+      "ctions\030\004 \003(\0132\034.littlehorse.UTActionTrigg" +
+      "er\022\"\n\025user_task_def_version\030\005 \001(\005H\002\210\001\001\0223" +
+      "\n\005notes\030\006 \001(\0132\037.littlehorse.VariableAssi" +
+      "gnmentH\003\210\001\001\022L\n\036on_cancellation_exception" +
+      "_name\030\007 \001(\0132\037.littlehorse.VariableAssign" +
+      "mentH\004\210\001\001B\r\n\013_user_groupB\n\n\010_user_idB\030\n\026" +
+      "_user_task_def_versionB\010\n\006_notesB!\n\037_on_" +
+      "cancellation_exception_name\"\233\001\n\rEdgeCond" +
+      "ition\022+\n\ncomparator\030\001 \001(\0162\027.littlehorse." +
+      "Comparator\022-\n\004left\030\002 \001(\0132\037.littlehorse.V" +
+      "ariableAssignment\022.\n\005right\030\003 \001(\0132\037.littl" +
+      "ehorse.VariableAssignment\"\233\001\n\004Edge\022\026\n\016si" +
+      "nk_node_name\030\001 \001(\t\0222\n\tcondition\030\002 \001(\0132\032." +
+      "littlehorse.EdgeConditionH\000\210\001\001\0229\n\022variab" +
+      "le_mutations\030\003 \003(\0132\035.littlehorse.Variabl" +
+      "eMutationB\014\n\n_condition\"\t\n\007NopNode\"\276\001\n\tS" +
+      "leepNode\0226\n\013raw_seconds\030\001 \001(\0132\037.littleho" +
+      "rse.VariableAssignmentH\000\0224\n\ttimestamp\030\002 " +
+      "\001(\0132\037.littlehorse.VariableAssignmentH\000\0223" +
+      "\n\010iso_date\030\003 \001(\0132\037.littlehorse.VariableA" +
+      "ssignmentH\000B\016\n\014sleep_length\"\207\002\n\026WfSpecVe" +
+      "rsionMigration\022\031\n\021new_major_version\030\001 \001(" +
+      "\005\022\024\n\014new_revision\030\002 \001(\005\022]\n\026thread_spec_m" +
+      "igrations\030\003 \003(\0132=.littlehorse.WfSpecVers" +
+      "ionMigration.ThreadSpecMigrationsEntry\032]" +
+      "\n\031ThreadSpecMigrationsEntry\022\013\n\003key\030\001 \001(\t" +
+      "\022/\n\005value\030\002 \001(\0132 .littlehorse.ThreadSpec" +
+      "Migration:\0028\001\"\325\001\n\023ThreadSpecMigration\022\034\n" +
+      "\024new_thread_spec_name\030\001 \001(\t\022M\n\017node_migr" +
+      "ations\030\002 \003(\01324.littlehorse.ThreadSpecMig" +
+      "ration.NodeMigrationsEntry\032Q\n\023NodeMigrat" +
+      "ionsEntry\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032." +
+      "littlehorse.NodeMigration:\0028\001\"&\n\rNodeMig" +
+      "ration\022\025\n\rnew_node_name\030\001 \001(\t*N\n\030WfRunVa" +
+      "riableAccessLevel\022\016\n\nPUBLIC_VAR\020\000\022\017\n\013PRI" +
+      "VATE_VAR\020\001\022\021\n\rINHERITED_VAR\020\002BI\n\037io.litt" +
+      "lehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\030" +
+      "LittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

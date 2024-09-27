@@ -9,9 +9,9 @@ package io.littlehorse.sdk.common.proto;
  * VariableValue.
  * </pre>
  *
- * Protobuf enum {@code littlehorse.VariableType}
+ * Protobuf enum {@code littlehorse.PrimitiveType}
  */
-public enum VariableType
+public enum PrimitiveType
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
    * <pre>
@@ -164,7 +164,7 @@ public enum VariableType
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static VariableType valueOf(int value) {
+  public static PrimitiveType valueOf(int value) {
     return forNumber(value);
   }
 
@@ -172,7 +172,7 @@ public enum VariableType
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static VariableType forNumber(int value) {
+  public static PrimitiveType forNumber(int value) {
     switch (value) {
       case 0: return JSON_OBJ;
       case 1: return JSON_ARR;
@@ -185,15 +185,15 @@ public enum VariableType
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<VariableType>
+  public static com.google.protobuf.Internal.EnumLiteMap<PrimitiveType>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      VariableType> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<VariableType>() {
-          public VariableType findValueByNumber(int number) {
-            return VariableType.forNumber(number);
+      PrimitiveType> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<PrimitiveType>() {
+          public PrimitiveType findValueByNumber(int number) {
+            return PrimitiveType.forNumber(number);
           }
         };
 
@@ -214,9 +214,9 @@ public enum VariableType
     return io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor().getEnumTypes().get(4);
   }
 
-  private static final VariableType[] VALUES = values();
+  private static final PrimitiveType[] VALUES = values();
 
-  public static VariableType valueOf(
+  public static PrimitiveType valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -230,10 +230,10 @@ public enum VariableType
 
   private final int value;
 
-  private VariableType(int value) {
+  private PrimitiveType(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:littlehorse.VariableType)
+  // @@protoc_insertion_point(enum_scope:littlehorse.PrimitiveType)
 }
 

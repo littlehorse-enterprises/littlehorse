@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
-import { VariableType, variableTypeFromJSON, variableTypeToNumber } from "./common_enums";
+import { PrimitiveType, primitiveTypeFromJSON, primitiveTypeToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { NodeRunId, TaskRunId, UserTaskDefId, UserTaskRunId } from "./object_id";
 import { VariableValue } from "./variable";
@@ -93,7 +93,7 @@ export interface UserTaskField {
    */
   name: string;
   /** The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE). */
-  type: VariableType;
+  type: PrimitiveType;
   /**
    * Optional description which can be displayed by the User Task UI application.
    * Does not affect WfRun execution.
@@ -510,7 +510,7 @@ export const UserTaskDef = {
 };
 
 function createBaseUserTaskField(): UserTaskField {
-  return { name: "", type: VariableType.JSON_OBJ, description: undefined, displayName: "", required: false };
+  return { name: "", type: PrimitiveType.JSON_OBJ, description: undefined, displayName: "", required: false };
 }
 
 export const UserTaskField = {
@@ -518,8 +518,8 @@ export const UserTaskField = {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
-    if (message.type !== VariableType.JSON_OBJ) {
-      writer.uint32(16).int32(variableTypeToNumber(message.type));
+    if (message.type !== PrimitiveType.JSON_OBJ) {
+      writer.uint32(16).int32(primitiveTypeToNumber(message.type));
     }
     if (message.description !== undefined) {
       writer.uint32(26).string(message.description);
@@ -552,7 +552,7 @@ export const UserTaskField = {
             break;
           }
 
-          message.type = variableTypeFromJSON(reader.int32());
+          message.type = primitiveTypeFromJSON(reader.int32());
           continue;
         case 3:
           if (tag !== 26) {
@@ -590,7 +590,7 @@ export const UserTaskField = {
   fromPartial(object: DeepPartial<UserTaskField>): UserTaskField {
     const message = createBaseUserTaskField();
     message.name = object.name ?? "";
-    message.type = object.type ?? VariableType.JSON_OBJ;
+    message.type = object.type ?? PrimitiveType.JSON_OBJ;
     message.description = object.description ?? undefined;
     message.displayName = object.displayName ?? "";
     message.required = object.required ?? false;

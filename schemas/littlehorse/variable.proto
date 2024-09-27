@@ -4,6 +4,7 @@ package littlehorse;
 
 import "google/protobuf/timestamp.proto";
 import "object_id.proto";
+import "common_enums.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -67,4 +68,81 @@ message Variable {
 
   // Marks a variable to show masked values
   bool masked = 5;
+}
+
+// A Struct is a strongly-typed structure containing fields. The Struct is defined
+// according to the `Schema` object.
+message Struct {
+  // The id of the schema.
+  SchemaId schema_id = 1;
+
+  // The content of the Struct
+  InlineStruct struct = 2;
+}
+
+// An `InlineStruct` is a pre-validated set of fields that are part of a `Struct`.
+message InlineStruct {
+  // The fields in the inline struct.
+  repeated StructField fields = 1;
+}
+
+// A StructField represents the value for a single field in a struct.
+message StructField {
+  // The value, which can be primitive or complex.
+  oneof struct_value {
+    // The `value` of the field is an untyped primitive `VariableValue`.
+    VariableValue primitive = 1;
+
+    // The `value` of the field is a complex `Struct`.
+    InlineStruct struct = 2;
+
+    // The `value` of the field is a list of fields.
+    FieldList list = 3;
+  }
+
+  // A FieldList is a sub-structure of a `Struct`
+  message FieldList {
+    repeated StructField fields = 1;
+  }
+}
+
+// A `SchemaField` defines a field inside a `Schema`.
+message SchemaField {
+  // The name of the field.
+  string name = 1;
+
+  // Whether the field is optional.
+  bool optional = 2;
+
+  // The type of the field.
+  oneof field_type {
+    // Specifies that the field is a primitive `VariableValue` of the specified type.
+    PrimitiveType primitive = 3;
+
+    // Specifies that the field is of a specific `Schema`.
+    SchemaId schema_id = 4;
+
+    // Specifies that field must be a `Struct` conforming to the accompanying schema.
+    InlineSchema inline_schema = 5;
+  }
+}
+
+// A `Schema` is a versioned metadata object (tenant-scoped) inside LittleHorse
+// that defines the structure and content of a variable value. It allows strong typing.
+message Schema {
+
+  // The id of the `Schema`. This includes the version.
+  SchemaId id = 1;
+
+  // Optionally description of the schema.
+  optional string description = 2;
+
+  // The `InlineSchema` defines the actual structure of any `Struct` using this `Schema`.
+  InlineSchema schema = 3;
+}
+
+// An `InlineSchema` is the actual representation of the Schema.
+message InlineSchema {
+  // The fields in this schema.
+  repeated SchemaField fields = 1;
 }

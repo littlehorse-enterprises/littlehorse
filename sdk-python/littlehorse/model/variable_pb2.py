@@ -13,9 +13,10 @@ _sym_db = _symbol_database.Default()
 
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 import littlehorse.model.object_id_pb2 as object__id__pb2
+import littlehorse.model.common_enums_pb2 as common__enums__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0evariable.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0fobject_id.proto\"\x97\x01\n\rVariableValue\x12\x12\n\x08json_obj\x18\x02 \x01(\tH\x00\x12\x12\n\x08json_arr\x18\x03 \x01(\tH\x00\x12\x10\n\x06\x64ouble\x18\x04 \x01(\x01H\x00\x12\x0e\n\x04\x62ool\x18\x05 \x01(\x08H\x00\x12\r\n\x03str\x18\x06 \x01(\tH\x00\x12\r\n\x03int\x18\x07 \x01(\x03H\x00\x12\x0f\n\x05\x62ytes\x18\x08 \x01(\x0cH\x00\x42\x07\n\x05valueJ\x04\x08\x01\x10\x02\"\xc5\x01\n\x08Variable\x12#\n\x02id\x18\x01 \x01(\x0b\x32\x17.littlehorse.VariableId\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.littlehorse.VariableValue\x12.\n\ncreated_at\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12)\n\nwf_spec_id\x18\x04 \x01(\x0b\x32\x15.littlehorse.WfSpecId\x12\x0e\n\x06masked\x18\x05 \x01(\x08\x42I\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x18LittleHorse.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0evariable.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0fobject_id.proto\x1a\x12\x63ommon_enums.proto\"\xbe\x01\n\rVariableValue\x12\x12\n\x08json_obj\x18\x02 \x01(\tH\x00\x12\x12\n\x08json_arr\x18\x03 \x01(\tH\x00\x12\x10\n\x06\x64ouble\x18\x04 \x01(\x01H\x00\x12\x0e\n\x04\x62ool\x18\x05 \x01(\x08H\x00\x12\r\n\x03str\x18\x06 \x01(\tH\x00\x12\r\n\x03int\x18\x07 \x01(\x03H\x00\x12\x0f\n\x05\x62ytes\x18\x08 \x01(\x0cH\x00\x12%\n\x06struct\x18\t \x01(\x0b\x32\x13.littlehorse.StructH\x00\x42\x07\n\x05valueJ\x04\x08\x01\x10\x02\"\xc5\x01\n\x08Variable\x12#\n\x02id\x18\x01 \x01(\x0b\x32\x17.littlehorse.VariableId\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.littlehorse.VariableValue\x12.\n\ncreated_at\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12)\n\nwf_spec_id\x18\x04 \x01(\x0b\x32\x15.littlehorse.WfSpecId\x12\x0e\n\x06masked\x18\x05 \x01(\x08\"]\n\x06Struct\x12(\n\tschema_id\x18\x01 \x01(\x0b\x32\x15.littlehorse.SchemaId\x12)\n\x06struct\x18\x02 \x01(\x0b\x32\x19.littlehorse.InlineStruct\"8\n\x0cInlineStruct\x12(\n\x06\x66ields\x18\x01 \x03(\x0b\x32\x18.littlehorse.StructField\"\xe6\x01\n\x0bStructField\x12/\n\tprimitive\x18\x01 \x01(\x0b\x32\x1a.littlehorse.VariableValueH\x00\x12+\n\x06struct\x18\x02 \x01(\x0b\x32\x19.littlehorse.InlineStructH\x00\x12\x32\n\x04list\x18\x03 \x01(\x0b\x32\".littlehorse.StructField.FieldListH\x00\x1a\x35\n\tFieldList\x12(\n\x06\x66ields\x18\x01 \x03(\x0b\x32\x18.littlehorse.StructFieldB\x0e\n\x0cstruct_value\"\xcc\x01\n\x0bSchemaField\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08optional\x18\x02 \x01(\x08\x12/\n\tprimitive\x18\x03 \x01(\x0e\x32\x1a.littlehorse.PrimitiveTypeH\x00\x12*\n\tschema_id\x18\x04 \x01(\x0b\x32\x15.littlehorse.SchemaIdH\x00\x12\x32\n\rinline_schema\x18\x05 \x01(\x0b\x32\x19.littlehorse.InlineSchemaH\x00\x42\x0c\n\nfield_type\"\x80\x01\n\x06Schema\x12!\n\x02id\x18\x01 \x01(\x0b\x32\x15.littlehorse.SchemaId\x12\x18\n\x0b\x64\x65scription\x18\x02 \x01(\tH\x00\x88\x01\x01\x12)\n\x06schema\x18\x03 \x01(\x0b\x32\x19.littlehorse.InlineSchemaB\x0e\n\x0c_description\"8\n\x0cInlineSchema\x12(\n\x06\x66ields\x18\x01 \x03(\x0b\x32\x18.littlehorse.SchemaFieldBI\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x18LittleHorse.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -24,8 +25,22 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'\n\037io.littlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\030LittleHorse.Common.Proto'
-  _globals['_VARIABLEVALUE']._serialized_start=82
-  _globals['_VARIABLEVALUE']._serialized_end=233
-  _globals['_VARIABLE']._serialized_start=236
-  _globals['_VARIABLE']._serialized_end=433
+  _globals['_VARIABLEVALUE']._serialized_start=102
+  _globals['_VARIABLEVALUE']._serialized_end=292
+  _globals['_VARIABLE']._serialized_start=295
+  _globals['_VARIABLE']._serialized_end=492
+  _globals['_STRUCT']._serialized_start=494
+  _globals['_STRUCT']._serialized_end=587
+  _globals['_INLINESTRUCT']._serialized_start=589
+  _globals['_INLINESTRUCT']._serialized_end=645
+  _globals['_STRUCTFIELD']._serialized_start=648
+  _globals['_STRUCTFIELD']._serialized_end=878
+  _globals['_STRUCTFIELD_FIELDLIST']._serialized_start=809
+  _globals['_STRUCTFIELD_FIELDLIST']._serialized_end=862
+  _globals['_SCHEMAFIELD']._serialized_start=881
+  _globals['_SCHEMAFIELD']._serialized_end=1085
+  _globals['_SCHEMA']._serialized_start=1088
+  _globals['_SCHEMA']._serialized_end=1216
+  _globals['_INLINESCHEMA']._serialized_start=1218
+  _globals['_INLINESCHEMA']._serialized_end=1274
 # @@protoc_insertion_point(module_scope)

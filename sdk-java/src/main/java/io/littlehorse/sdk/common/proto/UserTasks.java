@@ -115,76 +115,76 @@ public final class UserTasks {
       " \001(\005\022\030\n\013description\030\003 \001(\tH\000\210\001\001\022*\n\006fields" +
       "\030\004 \003(\0132\032.littlehorse.UserTaskField\022.\n\ncr" +
       "eated_at\030\005 \001(\0132\032.google.protobuf.Timesta" +
-      "mpB\016\n\014_description\"\230\001\n\rUserTaskField\022\014\n\004" +
-      "name\030\001 \001(\t\022\'\n\004type\030\002 \001(\0162\031.littlehorse.V" +
-      "ariableType\022\030\n\013description\030\003 \001(\tH\000\210\001\001\022\024\n" +
-      "\014display_name\030\004 \001(\t\022\020\n\010required\030\005 \001(\010B\016\n" +
-      "\014_description\"\243\004\n\013UserTaskRun\022&\n\002id\030\001 \001(" +
-      "\0132\032.littlehorse.UserTaskRunId\0224\n\020user_ta" +
-      "sk_def_id\030\002 \001(\0132\032.littlehorse.UserTaskDe" +
-      "fId\022\027\n\nuser_group\030\003 \001(\tH\000\210\001\001\022\024\n\007user_id\030" +
-      "\004 \001(\tH\001\210\001\001\0226\n\007results\030\006 \003(\0132%.littlehors" +
-      "e.UserTaskRun.ResultsEntry\022.\n\006status\030\007 \001" +
-      "(\0162\036.littlehorse.UserTaskRunStatus\022*\n\006ev" +
-      "ents\030\010 \003(\0132\032.littlehorse.UserTaskEvent\022\022" +
-      "\n\005notes\030\t \001(\tH\002\210\001\001\0222\n\016scheduled_time\030\n \001" +
-      "(\0132\032.google.protobuf.Timestamp\022+\n\013node_r" +
-      "un_id\030\013 \001(\0132\026.littlehorse.NodeRunId\022\r\n\005e" +
-      "poch\030\014 \001(\005\032J\n\014ResultsEntry\022\013\n\003key\030\001 \001(\t\022" +
-      ")\n\005value\030\002 \001(\0132\032.littlehorse.VariableVal" +
-      "ue:\0028\001B\r\n\013_user_groupB\n\n\010_user_idB\010\n\006_no" +
-      "tes\"\262\001\n\030AssignUserTaskRunRequest\0224\n\020user" +
-      "_task_run_id\030\001 \001(\0132\032.littlehorse.UserTas" +
-      "kRunId\022\026\n\016override_claim\030\002 \001(\010\022\027\n\nuser_g" +
-      "roup\030\003 \001(\tH\000\210\001\001\022\024\n\007user_id\030\004 \001(\tH\001\210\001\001B\r\n" +
-      "\013_user_groupB\n\n\010_user_id\"\366\001\n\032CompleteUse" +
+      "mpB\016\n\014_description\"\231\001\n\rUserTaskField\022\014\n\004" +
+      "name\030\001 \001(\t\022(\n\004type\030\002 \001(\0162\032.littlehorse.P" +
+      "rimitiveType\022\030\n\013description\030\003 \001(\tH\000\210\001\001\022\024" +
+      "\n\014display_name\030\004 \001(\t\022\020\n\010required\030\005 \001(\010B\016" +
+      "\n\014_description\"\243\004\n\013UserTaskRun\022&\n\002id\030\001 \001" +
+      "(\0132\032.littlehorse.UserTaskRunId\0224\n\020user_t" +
+      "ask_def_id\030\002 \001(\0132\032.littlehorse.UserTaskD" +
+      "efId\022\027\n\nuser_group\030\003 \001(\tH\000\210\001\001\022\024\n\007user_id" +
+      "\030\004 \001(\tH\001\210\001\001\0226\n\007results\030\006 \003(\0132%.littlehor" +
+      "se.UserTaskRun.ResultsEntry\022.\n\006status\030\007 " +
+      "\001(\0162\036.littlehorse.UserTaskRunStatus\022*\n\006e" +
+      "vents\030\010 \003(\0132\032.littlehorse.UserTaskEvent\022" +
+      "\022\n\005notes\030\t \001(\tH\002\210\001\001\0222\n\016scheduled_time\030\n " +
+      "\001(\0132\032.google.protobuf.Timestamp\022+\n\013node_" +
+      "run_id\030\013 \001(\0132\026.littlehorse.NodeRunId\022\r\n\005" +
+      "epoch\030\014 \001(\005\032J\n\014ResultsEntry\022\013\n\003key\030\001 \001(\t" +
+      "\022)\n\005value\030\002 \001(\0132\032.littlehorse.VariableVa" +
+      "lue:\0028\001B\r\n\013_user_groupB\n\n\010_user_idB\010\n\006_n" +
+      "otes\"\262\001\n\030AssignUserTaskRunRequest\0224\n\020use" +
+      "r_task_run_id\030\001 \001(\0132\032.littlehorse.UserTa" +
+      "skRunId\022\026\n\016override_claim\030\002 \001(\010\022\027\n\nuser_" +
+      "group\030\003 \001(\tH\000\210\001\001\022\024\n\007user_id\030\004 \001(\tH\001\210\001\001B\r" +
+      "\n\013_user_groupB\n\n\010_user_id\"\366\001\n\032CompleteUs" +
+      "erTaskRunRequest\0224\n\020user_task_run_id\030\001 \001" +
+      "(\0132\032.littlehorse.UserTaskRunId\022E\n\007result" +
+      "s\030\002 \003(\01324.littlehorse.CompleteUserTaskRu" +
+      "nRequest.ResultsEntry\022\017\n\007user_id\030\003 \001(\t\032J" +
+      "\n\014ResultsEntry\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001" +
+      "(\0132\032.littlehorse.VariableValue:\0028\001\"\256\003\n\036S" +
+      "aveUserTaskRunProgressRequest\0224\n\020user_ta" +
+      "sk_run_id\030\001 \001(\0132\032.littlehorse.UserTaskRu" +
+      "nId\022I\n\007results\030\002 \003(\01328.littlehorse.SaveU" +
+      "serTaskRunProgressRequest.ResultsEntry\022\017" +
+      "\n\007user_id\030\003 \001(\t\022[\n\006policy\030\004 \001(\0162K.little" +
+      "horse.SaveUserTaskRunProgressRequest.Sav" +
+      "eUserTaskRunAssignmentPolicy\032J\n\014ResultsE" +
+      "ntry\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.littl" +
+      "ehorse.VariableValue:\0028\001\"Q\n\037SaveUserTask" +
+      "RunAssignmentPolicy\022\034\n\030FAIL_IF_CLAIMED_B" +
+      "Y_OTHER\020\000\022\020\n\014IGNORE_CLAIM\020\001\"P\n\030CancelUse" +
       "rTaskRunRequest\0224\n\020user_task_run_id\030\001 \001(" +
-      "\0132\032.littlehorse.UserTaskRunId\022E\n\007results" +
-      "\030\002 \003(\01324.littlehorse.CompleteUserTaskRun" +
-      "Request.ResultsEntry\022\017\n\007user_id\030\003 \001(\t\032J\n" +
-      "\014ResultsEntry\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(" +
-      "\0132\032.littlehorse.VariableValue:\0028\001\"\256\003\n\036Sa" +
-      "veUserTaskRunProgressRequest\0224\n\020user_tas" +
-      "k_run_id\030\001 \001(\0132\032.littlehorse.UserTaskRun" +
-      "Id\022I\n\007results\030\002 \003(\01328.littlehorse.SaveUs" +
-      "erTaskRunProgressRequest.ResultsEntry\022\017\n" +
-      "\007user_id\030\003 \001(\t\022[\n\006policy\030\004 \001(\0162K.littleh" +
-      "orse.SaveUserTaskRunProgressRequest.Save" +
-      "UserTaskRunAssignmentPolicy\032J\n\014ResultsEn" +
-      "try\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.little" +
-      "horse.VariableValue:\0028\001\"Q\n\037SaveUserTaskR" +
-      "unAssignmentPolicy\022\034\n\030FAIL_IF_CLAIMED_BY" +
-      "_OTHER\020\000\022\020\n\014IGNORE_CLAIM\020\001\"P\n\030CancelUser" +
-      "TaskRunRequest\0224\n\020user_task_run_id\030\001 \001(\013" +
-      "2\032.littlehorse.UserTaskRunId\"\261\001\n\030UserTas" +
-      "kTriggerReference\022+\n\013node_run_id\030\001 \001(\0132\026" +
-      ".littlehorse.NodeRunId\022\036\n\026user_task_even" +
-      "t_number\030\002 \001(\005\022\024\n\007user_id\030\003 \001(\tH\000\210\001\001\022\027\n\n" +
-      "user_group\030\004 \001(\tH\001\210\001\001B\n\n\010_user_idB\r\n\013_us" +
-      "er_group\"\206\006\n\rUserTaskEvent\022(\n\004time\030\001 \001(\013" +
-      "2\032.google.protobuf.Timestamp\022C\n\rtask_exe" +
-      "cuted\030\002 \001(\0132*.littlehorse.UserTaskEvent." +
-      "UTETaskExecutedH\000\022:\n\010assigned\030\003 \001(\0132&.li" +
-      "ttlehorse.UserTaskEvent.UTEAssignedH\000\022<\n" +
-      "\tcancelled\030\004 \001(\0132\'.littlehorse.UserTaskE" +
-      "vent.UTECancelledH\000\0224\n\005saved\030\005 \001(\0132#.lit" +
-      "tlehorse.UserTaskEvent.UTESavedH\000\032\037\n\014UTE" +
-      "Cancelled\022\017\n\007message\030\001 \001(\t\032;\n\017UTETaskExe" +
-      "cuted\022(\n\010task_run\030\001 \001(\0132\026.littlehorse.Ta" +
-      "skRunId\032\252\001\n\010UTESaved\022\017\n\007user_id\030\001 \001(\t\022A\n" +
-      "\007results\030\002 \003(\01320.littlehorse.UserTaskEve" +
-      "nt.UTESaved.ResultsEntry\032J\n\014ResultsEntry" +
-      "\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.littlehor" +
-      "se.VariableValue:\0028\001\032\301\001\n\013UTEAssigned\022\030\n\013" +
-      "old_user_id\030\001 \001(\tH\000\210\001\001\022\033\n\016old_user_group" +
-      "\030\002 \001(\tH\001\210\001\001\022\030\n\013new_user_id\030\003 \001(\tH\002\210\001\001\022\033\n" +
-      "\016new_user_group\030\004 \001(\tH\003\210\001\001B\016\n\014_old_user_" +
-      "idB\021\n\017_old_user_groupB\016\n\014_new_user_idB\021\n" +
-      "\017_new_user_groupB\007\n\005event*J\n\021UserTaskRun" +
-      "Status\022\016\n\nUNASSIGNED\020\000\022\014\n\010ASSIGNED\020\001\022\010\n\004" +
-      "DONE\020\003\022\r\n\tCANCELLED\020\004BI\n\037io.littlehorse." +
-      "sdk.common.protoP\001Z\t.;lhproto\252\002\030LittleHo" +
-      "rse.Common.Protob\006proto3"
+      "\0132\032.littlehorse.UserTaskRunId\"\261\001\n\030UserTa" +
+      "skTriggerReference\022+\n\013node_run_id\030\001 \001(\0132" +
+      "\026.littlehorse.NodeRunId\022\036\n\026user_task_eve" +
+      "nt_number\030\002 \001(\005\022\024\n\007user_id\030\003 \001(\tH\000\210\001\001\022\027\n" +
+      "\nuser_group\030\004 \001(\tH\001\210\001\001B\n\n\010_user_idB\r\n\013_u" +
+      "ser_group\"\206\006\n\rUserTaskEvent\022(\n\004time\030\001 \001(" +
+      "\0132\032.google.protobuf.Timestamp\022C\n\rtask_ex" +
+      "ecuted\030\002 \001(\0132*.littlehorse.UserTaskEvent" +
+      ".UTETaskExecutedH\000\022:\n\010assigned\030\003 \001(\0132&.l" +
+      "ittlehorse.UserTaskEvent.UTEAssignedH\000\022<" +
+      "\n\tcancelled\030\004 \001(\0132\'.littlehorse.UserTask" +
+      "Event.UTECancelledH\000\0224\n\005saved\030\005 \001(\0132#.li" +
+      "ttlehorse.UserTaskEvent.UTESavedH\000\032\037\n\014UT" +
+      "ECancelled\022\017\n\007message\030\001 \001(\t\032;\n\017UTETaskEx" +
+      "ecuted\022(\n\010task_run\030\001 \001(\0132\026.littlehorse.T" +
+      "askRunId\032\252\001\n\010UTESaved\022\017\n\007user_id\030\001 \001(\t\022A" +
+      "\n\007results\030\002 \003(\01320.littlehorse.UserTaskEv" +
+      "ent.UTESaved.ResultsEntry\032J\n\014ResultsEntr" +
+      "y\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.littleho" +
+      "rse.VariableValue:\0028\001\032\301\001\n\013UTEAssigned\022\030\n" +
+      "\013old_user_id\030\001 \001(\tH\000\210\001\001\022\033\n\016old_user_grou" +
+      "p\030\002 \001(\tH\001\210\001\001\022\030\n\013new_user_id\030\003 \001(\tH\002\210\001\001\022\033" +
+      "\n\016new_user_group\030\004 \001(\tH\003\210\001\001B\016\n\014_old_user" +
+      "_idB\021\n\017_old_user_groupB\016\n\014_new_user_idB\021" +
+      "\n\017_new_user_groupB\007\n\005event*J\n\021UserTaskRu" +
+      "nStatus\022\016\n\nUNASSIGNED\020\000\022\014\n\010ASSIGNED\020\001\022\010\n" +
+      "\004DONE\020\003\022\r\n\tCANCELLED\020\004BI\n\037io.littlehorse" +
+      ".sdk.common.protoP\001Z\t.;lhproto\252\002\030LittleH" +
+      "orse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

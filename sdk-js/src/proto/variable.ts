@@ -7,8 +7,9 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { PrimitiveType, primitiveTypeFromJSON, primitiveTypeToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { VariableId, WfSpecId } from "./object_id";
+import { SchemaId, VariableId, WfSpecId } from "./object_id";
 
 /**
  * VariableValue is a structure containing a value in LittleHorse. It can be
@@ -44,7 +45,11 @@ export interface VariableValue {
     | number
     | undefined;
   /** An arbitrary String of bytes. */
-  bytes?: Buffer | undefined;
+  bytes?:
+    | Buffer
+    | undefined;
+  /** A strongly-typed struct */
+  struct?: Struct | undefined;
 }
 
 /** A Variable is an instance of a variable assigned to a WfRun. */
@@ -72,6 +77,85 @@ export interface Variable {
   masked: boolean;
 }
 
+/**
+ * A Struct is a strongly-typed structure containing fields. The Struct is defined
+ * according to the `Schema` object.
+ */
+export interface Struct {
+  /** The id of the schema. */
+  schemaId:
+    | SchemaId
+    | undefined;
+  /** The content of the Struct */
+  struct: InlineStruct | undefined;
+}
+
+/** An `InlineStruct` is a pre-validated set of fields that are part of a `Struct`. */
+export interface InlineStruct {
+  /** The fields in the inline struct. */
+  fields: StructField[];
+}
+
+/** A StructField represents the value for a single field in a struct. */
+export interface StructField {
+  /** The `value` of the field is an untyped primitive `VariableValue`. */
+  primitive?:
+    | VariableValue
+    | undefined;
+  /** The `value` of the field is a complex `Struct`. */
+  struct?:
+    | InlineStruct
+    | undefined;
+  /** The `value` of the field is a list of fields. */
+  list?: StructField_FieldList | undefined;
+}
+
+/** A FieldList is a sub-structure of a `Struct` */
+export interface StructField_FieldList {
+  fields: StructField[];
+}
+
+/** A `SchemaField` defines a field inside a `Schema`. */
+export interface SchemaField {
+  /** The name of the field. */
+  name: string;
+  /** Whether the field is optional. */
+  optional: boolean;
+  /** Specifies that the field is a primitive `VariableValue` of the specified type. */
+  primitive?:
+    | PrimitiveType
+    | undefined;
+  /** Specifies that the field is of a specific `Schema`. */
+  schemaId?:
+    | SchemaId
+    | undefined;
+  /** Specifies that field must be a `Struct` conforming to the accompanying schema. */
+  inlineSchema?: InlineSchema | undefined;
+}
+
+/**
+ * A `Schema` is a versioned metadata object (tenant-scoped) inside LittleHorse
+ * that defines the structure and content of a variable value. It allows strong typing.
+ */
+export interface Schema {
+  /** The id of the `Schema`. This includes the version. */
+  id:
+    | SchemaId
+    | undefined;
+  /** Optionally description of the schema. */
+  description?:
+    | string
+    | undefined;
+  /** The `InlineSchema` defines the actual structure of any `Struct` using this `Schema`. */
+  schema: InlineSchema | undefined;
+}
+
+/** An `InlineSchema` is the actual representation of the Schema. */
+export interface InlineSchema {
+  /** The fields in this schema. */
+  fields: SchemaField[];
+}
+
 function createBaseVariableValue(): VariableValue {
   return {
     jsonObj: undefined,
@@ -81,6 +165,7 @@ function createBaseVariableValue(): VariableValue {
     str: undefined,
     int: undefined,
     bytes: undefined,
+    struct: undefined,
   };
 }
 
@@ -106,6 +191,9 @@ export const VariableValue = {
     }
     if (message.bytes !== undefined) {
       writer.uint32(66).bytes(message.bytes);
+    }
+    if (message.struct !== undefined) {
+      Struct.encode(message.struct, writer.uint32(74).fork()).ldelim();
     }
     return writer;
   },
@@ -166,6 +254,13 @@ export const VariableValue = {
 
           message.bytes = reader.bytes() as Buffer;
           continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.struct = Struct.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -187,6 +282,9 @@ export const VariableValue = {
     message.str = object.str ?? undefined;
     message.int = object.int ?? undefined;
     message.bytes = object.bytes ?? undefined;
+    message.struct = (object.struct !== undefined && object.struct !== null)
+      ? Struct.fromPartial(object.struct)
+      : undefined;
     return message;
   },
 };
@@ -280,6 +378,436 @@ export const Variable = {
       ? WfSpecId.fromPartial(object.wfSpecId)
       : undefined;
     message.masked = object.masked ?? false;
+    return message;
+  },
+};
+
+function createBaseStruct(): Struct {
+  return { schemaId: undefined, struct: undefined };
+}
+
+export const Struct = {
+  encode(message: Struct, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.schemaId !== undefined) {
+      SchemaId.encode(message.schemaId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.struct !== undefined) {
+      InlineStruct.encode(message.struct, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Struct {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStruct();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.schemaId = SchemaId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.struct = InlineStruct.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<Struct>): Struct {
+    return Struct.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<Struct>): Struct {
+    const message = createBaseStruct();
+    message.schemaId = (object.schemaId !== undefined && object.schemaId !== null)
+      ? SchemaId.fromPartial(object.schemaId)
+      : undefined;
+    message.struct = (object.struct !== undefined && object.struct !== null)
+      ? InlineStruct.fromPartial(object.struct)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseInlineStruct(): InlineStruct {
+  return { fields: [] };
+}
+
+export const InlineStruct = {
+  encode(message: InlineStruct, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.fields) {
+      StructField.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): InlineStruct {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInlineStruct();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.fields.push(StructField.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<InlineStruct>): InlineStruct {
+    return InlineStruct.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<InlineStruct>): InlineStruct {
+    const message = createBaseInlineStruct();
+    message.fields = object.fields?.map((e) => StructField.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseStructField(): StructField {
+  return { primitive: undefined, struct: undefined, list: undefined };
+}
+
+export const StructField = {
+  encode(message: StructField, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.primitive !== undefined) {
+      VariableValue.encode(message.primitive, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.struct !== undefined) {
+      InlineStruct.encode(message.struct, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.list !== undefined) {
+      StructField_FieldList.encode(message.list, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): StructField {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStructField();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.primitive = VariableValue.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.struct = InlineStruct.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.list = StructField_FieldList.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<StructField>): StructField {
+    return StructField.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<StructField>): StructField {
+    const message = createBaseStructField();
+    message.primitive = (object.primitive !== undefined && object.primitive !== null)
+      ? VariableValue.fromPartial(object.primitive)
+      : undefined;
+    message.struct = (object.struct !== undefined && object.struct !== null)
+      ? InlineStruct.fromPartial(object.struct)
+      : undefined;
+    message.list = (object.list !== undefined && object.list !== null)
+      ? StructField_FieldList.fromPartial(object.list)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseStructField_FieldList(): StructField_FieldList {
+  return { fields: [] };
+}
+
+export const StructField_FieldList = {
+  encode(message: StructField_FieldList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.fields) {
+      StructField.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): StructField_FieldList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStructField_FieldList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.fields.push(StructField.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<StructField_FieldList>): StructField_FieldList {
+    return StructField_FieldList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<StructField_FieldList>): StructField_FieldList {
+    const message = createBaseStructField_FieldList();
+    message.fields = object.fields?.map((e) => StructField.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseSchemaField(): SchemaField {
+  return { name: "", optional: false, primitive: undefined, schemaId: undefined, inlineSchema: undefined };
+}
+
+export const SchemaField = {
+  encode(message: SchemaField, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.optional !== false) {
+      writer.uint32(16).bool(message.optional);
+    }
+    if (message.primitive !== undefined) {
+      writer.uint32(24).int32(primitiveTypeToNumber(message.primitive));
+    }
+    if (message.schemaId !== undefined) {
+      SchemaId.encode(message.schemaId, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.inlineSchema !== undefined) {
+      InlineSchema.encode(message.inlineSchema, writer.uint32(42).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SchemaField {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSchemaField();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.optional = reader.bool();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.primitive = primitiveTypeFromJSON(reader.int32());
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.schemaId = SchemaId.decode(reader, reader.uint32());
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.inlineSchema = InlineSchema.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<SchemaField>): SchemaField {
+    return SchemaField.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SchemaField>): SchemaField {
+    const message = createBaseSchemaField();
+    message.name = object.name ?? "";
+    message.optional = object.optional ?? false;
+    message.primitive = object.primitive ?? undefined;
+    message.schemaId = (object.schemaId !== undefined && object.schemaId !== null)
+      ? SchemaId.fromPartial(object.schemaId)
+      : undefined;
+    message.inlineSchema = (object.inlineSchema !== undefined && object.inlineSchema !== null)
+      ? InlineSchema.fromPartial(object.inlineSchema)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseSchema(): Schema {
+  return { id: undefined, description: undefined, schema: undefined };
+}
+
+export const Schema = {
+  encode(message: Schema, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      SchemaId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.description !== undefined) {
+      writer.uint32(18).string(message.description);
+    }
+    if (message.schema !== undefined) {
+      InlineSchema.encode(message.schema, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Schema {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSchema();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = SchemaId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.schema = InlineSchema.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<Schema>): Schema {
+    return Schema.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<Schema>): Schema {
+    const message = createBaseSchema();
+    message.id = (object.id !== undefined && object.id !== null) ? SchemaId.fromPartial(object.id) : undefined;
+    message.description = object.description ?? undefined;
+    message.schema = (object.schema !== undefined && object.schema !== null)
+      ? InlineSchema.fromPartial(object.schema)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseInlineSchema(): InlineSchema {
+  return { fields: [] };
+}
+
+export const InlineSchema = {
+  encode(message: InlineSchema, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.fields) {
+      SchemaField.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): InlineSchema {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInlineSchema();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.fields.push(SchemaField.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<InlineSchema>): InlineSchema {
+    return InlineSchema.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<InlineSchema>): InlineSchema {
+    const message = createBaseInlineSchema();
+    message.fields = object.fields?.map((e) => SchemaField.fromPartial(e)) || [];
     return message;
   },
 };

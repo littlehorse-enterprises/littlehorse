@@ -7,8 +7,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { VariableType, variableTypeFromJSON, variableTypeToNumber } from "./common_enums";
-import { TaskDefId } from "./object_id";
+import { PrimitiveType, primitiveTypeFromJSON, primitiveTypeToNumber } from "./common_enums";
+import { SchemaId, TaskDefId } from "./object_id";
 import { VariableValue } from "./variable";
 
 /** Enumerates the available operations to mutate a variable in a WfRun. */
@@ -272,8 +272,14 @@ export interface VariableMutation_NodeOutputSource {
 
 /** Declares a Variable. */
 export interface VariableDef {
-  /** The Type of the variable. */
-  type: VariableType;
+  /** The primitive type of the variable. */
+  primitive?:
+    | PrimitiveType
+    | undefined;
+  /** The ID of the schema that the variable belongs to. */
+  schema?:
+    | SchemaId
+    | undefined;
   /** The name of the variable. */
   name: string;
   /**
@@ -285,7 +291,7 @@ export interface VariableDef {
     | VariableValue
     | undefined;
   /** If true, the variable value will show as a masked string. */
-  maskedValue: boolean;
+  isMasked: boolean;
 }
 
 /**
@@ -750,13 +756,16 @@ export const VariableMutation_NodeOutputSource = {
 };
 
 function createBaseVariableDef(): VariableDef {
-  return { type: VariableType.JSON_OBJ, name: "", defaultValue: undefined, maskedValue: false };
+  return { primitive: undefined, schema: undefined, name: "", defaultValue: undefined, isMasked: false };
 }
 
 export const VariableDef = {
   encode(message: VariableDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.type !== VariableType.JSON_OBJ) {
-      writer.uint32(8).int32(variableTypeToNumber(message.type));
+    if (message.primitive !== undefined) {
+      writer.uint32(8).int32(primitiveTypeToNumber(message.primitive));
+    }
+    if (message.schema !== undefined) {
+      SchemaId.encode(message.schema, writer.uint32(42).fork()).ldelim();
     }
     if (message.name !== "") {
       writer.uint32(18).string(message.name);
@@ -764,8 +773,8 @@ export const VariableDef = {
     if (message.defaultValue !== undefined) {
       VariableValue.encode(message.defaultValue, writer.uint32(26).fork()).ldelim();
     }
-    if (message.maskedValue !== false) {
-      writer.uint32(32).bool(message.maskedValue);
+    if (message.isMasked !== false) {
+      writer.uint32(32).bool(message.isMasked);
     }
     return writer;
   },
@@ -782,7 +791,14 @@ export const VariableDef = {
             break;
           }
 
-          message.type = variableTypeFromJSON(reader.int32());
+          message.primitive = primitiveTypeFromJSON(reader.int32());
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.schema = SchemaId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
@@ -803,7 +819,7 @@ export const VariableDef = {
             break;
           }
 
-          message.maskedValue = reader.bool();
+          message.isMasked = reader.bool();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -819,12 +835,15 @@ export const VariableDef = {
   },
   fromPartial(object: DeepPartial<VariableDef>): VariableDef {
     const message = createBaseVariableDef();
-    message.type = object.type ?? VariableType.JSON_OBJ;
+    message.primitive = object.primitive ?? undefined;
+    message.schema = (object.schema !== undefined && object.schema !== null)
+      ? SchemaId.fromPartial(object.schema)
+      : undefined;
     message.name = object.name ?? "";
     message.defaultValue = (object.defaultValue !== undefined && object.defaultValue !== null)
       ? VariableValue.fromPartial(object.defaultValue)
       : undefined;
-    message.maskedValue = object.maskedValue ?? false;
+    message.isMasked = object.isMasked ?? false;
     return message;
   },
 };

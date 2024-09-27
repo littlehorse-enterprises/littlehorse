@@ -172,5 +172,32 @@ public interface VariableValueOrBuilder extends
    */
   com.google.protobuf.ByteString getBytes();
 
+  /**
+   * <pre>
+   * A strongly-typed struct
+   * </pre>
+   *
+   * <code>.littlehorse.Struct struct = 9;</code>
+   * @return Whether the struct field is set.
+   */
+  boolean hasStruct();
+  /**
+   * <pre>
+   * A strongly-typed struct
+   * </pre>
+   *
+   * <code>.littlehorse.Struct struct = 9;</code>
+   * @return The struct.
+   */
+  io.littlehorse.sdk.common.proto.Struct getStruct();
+  /**
+   * <pre>
+   * A strongly-typed struct
+   * </pre>
+   *
+   * <code>.littlehorse.Struct struct = 9;</code>
+   */
+  io.littlehorse.sdk.common.proto.StructOrBuilder getStructOrBuilder();
+
   io.littlehorse.sdk.common.proto.VariableValue.ValueCase getValueCase();
 }

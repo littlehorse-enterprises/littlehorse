@@ -42,6 +42,14 @@ class WorkflowEventDefId(_message.Message):
     name: str
     def __init__(self, name: _Optional[str] = ...) -> None: ...
 
+class SchemaId(_message.Message):
+    __slots__ = ["name", "version"]
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    VERSION_FIELD_NUMBER: _ClassVar[int]
+    name: str
+    version: int
+    def __init__(self, name: _Optional[str] = ..., version: _Optional[int] = ...) -> None: ...
+
 class TaskWorkerGroupId(_message.Message):
     __slots__ = ["task_def_id"]
     TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
