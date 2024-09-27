@@ -338,7 +338,10 @@ message PutTaskDefRequest {
 // EXPERIMENTAL: Creates a WorkflowEventDef
 message PutWorkflowEventDefRequest {
   string name = 1;
-  VariableType type = 2;
+  oneof type {
+    PrimitiveType primitive_type = 2;
+    SchemaId schema = 3;
+  }
 }
 
 // Creates a UserTaskDef.

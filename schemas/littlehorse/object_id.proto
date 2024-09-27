@@ -63,6 +63,15 @@ message WorkflowEventDefId {
     string name = 1;
 }
 
+// ID for a Schema
+message SchemaId {
+  // The name of the `Schema`.
+  string name = 1;
+
+  // The version of the `Schema`.
+  int32 version = 2;
+}
+
 // ID for a TaskWorkerGroup.
 message TaskWorkerGroupId {
   // TaskWorkerGroups are uniquely identified by their TaskDefId.

@@ -40,6 +40,13 @@ message VariableValue {
 
     // An arbitrary String of bytes.
     bytes bytes = 8;
+
+    // A strongly-typed struct
+    Struct struct = 9;
+
+    // In the future, we can add things like:
+    // RegexString regex_string = 10;
+    // Timestamp timestamp = 11;
   }
 }
 

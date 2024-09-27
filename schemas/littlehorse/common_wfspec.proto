@@ -108,7 +108,13 @@ message VariableMutation {
 // Declares a Variable.
 message VariableDef {
   // The Type of the variable.
-  VariableType type = 1;
+  oneof type {
+    // The primitive type of the variable.
+    PrimitiveType primitive = 1;
+
+    // The ID of the schema that the variable belongs to.
+    SchemaId schema = 5;
+  }
 
   // The name of the variable.
   string name = 2;
@@ -119,7 +125,7 @@ message VariableDef {
   optional VariableValue default_value = 3;
 
   // If true, the variable value will show as a masked string.
-  bool masked_value = 4;
+  bool is_masked = 4;
 }
 
 // Operator for comparing two values to create a boolean expression.
