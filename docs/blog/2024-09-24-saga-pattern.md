@@ -2,7 +2,7 @@
 slug: saga-pattern
 authors:
 - coltmcnealy
-tags: [analysis]
+tags: [analysis,integration-patterns,littlehorse]
 ---
 
 # Integration Patterns: Saga Transactions
@@ -15,10 +15,10 @@ The Saga pattern allows you to defend against data loss, dropped orders, and con
 This is the first part in a five-part blog series on useful Integration Patterns. This blog series will help you build real-time, responsive applications and microservices that produce predictable results and prevent the Grumpy Customer Problem.
 
 1. **[This Post]** Saga Transactions
-2. [Coming soon] The Outbox Pattern
-3. [Coming soon] Retries and Dead-Letter Queues
-4. [Coming soon] Callbacks and External Events
-5. [Coming soon] Queuing and Backpressure
+2. [The Transactional Outbox Pattern](./2024-09-30-transactional-outbox.md)
+3. [Coming soon] Queuing and Backpressure
+4. [Coming soon] Retries and Dead-Letter Queues
+5. [Coming soon] Callbacks and External Events
 :::
 
 ## The Saga Pattern
