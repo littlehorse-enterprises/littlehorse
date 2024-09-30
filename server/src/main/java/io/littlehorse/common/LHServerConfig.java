@@ -90,6 +90,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String NUM_STANDBY_REPLICAS_KEY = "LHS_STREAMS_NUM_STANDBY_REPLICAS";
     public static final String ROCKSDB_COMPACTION_THREADS_KEY = "LHS_ROCKSDB_COMPACTION_THREADS";
     public static final String STREAMS_METRICS_LEVEL_KEY = "LHS_STREAMS_METRICS_LEVEL";
+    public static final String LHS_METRICS_LEVEL_KEY = "LHS_METRICS_LEVEL";
     public static final String LINGER_MS_KEY = "LHS_KAFKA_LINGER_MS";
 
     // General LittleHorse Runtime Behavior Config Env Vars
@@ -359,6 +360,10 @@ public class LHServerConfig extends ConfigBase {
 
     public String getInternalAdvertisedHost() {
         return getOrSetDefault(LHServerConfig.INTERNAL_ADVERTISED_HOST_KEY, "localhost");
+    }
+
+    public String getServerMetricLevel() {
+        return getOrSetDefault(LHS_METRICS_LEVEL_KEY, "INFO").toUpperCase();
     }
 
     // If INTERNAL_ADVERTISED_PORT isn't set, we return INTERNAL_BIND_PORT.
