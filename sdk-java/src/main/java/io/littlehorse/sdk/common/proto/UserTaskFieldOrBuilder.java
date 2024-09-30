@@ -34,7 +34,7 @@ public interface UserTaskFieldOrBuilder extends
    * The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
    * </pre>
    *
-   * <code>.littlehorse.VariableType type = 2;</code>
+   * <code>.littlehorse.PrimitiveType type = 2;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
@@ -43,10 +43,10 @@ public interface UserTaskFieldOrBuilder extends
    * The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
    * </pre>
    *
-   * <code>.littlehorse.VariableType type = 2;</code>
+   * <code>.littlehorse.PrimitiveType type = 2;</code>
    * @return The type.
    */
-  io.littlehorse.sdk.common.proto.VariableType getType();
+  io.littlehorse.sdk.common.proto.PrimitiveType getType();
 
   /**
    * <pre>

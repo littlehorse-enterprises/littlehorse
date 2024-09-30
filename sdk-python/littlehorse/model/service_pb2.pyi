@@ -71,12 +71,14 @@ class PutTaskDefRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., input_vars: _Optional[_Iterable[_Union[_common_wfspec_pb2.VariableDef, _Mapping]]] = ..., output_schema: _Optional[_Union[_task_def_pb2.TaskDefOutputSchema, _Mapping]] = ...) -> None: ...
 
 class PutWorkflowEventDefRequest(_message.Message):
-    __slots__ = ["name", "type"]
+    __slots__ = ["name", "primitive_type", "schema"]
     NAME_FIELD_NUMBER: _ClassVar[int]
-    TYPE_FIELD_NUMBER: _ClassVar[int]
+    PRIMITIVE_TYPE_FIELD_NUMBER: _ClassVar[int]
+    SCHEMA_FIELD_NUMBER: _ClassVar[int]
     name: str
-    type: _common_enums_pb2.VariableType
-    def __init__(self, name: _Optional[str] = ..., type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ...) -> None: ...
+    primitive_type: _common_enums_pb2.PrimitiveType
+    schema: _object_id_pb2.SchemaId
+    def __init__(self, name: _Optional[str] = ..., primitive_type: _Optional[_Union[_common_enums_pb2.PrimitiveType, str]] = ..., schema: _Optional[_Union[_object_id_pb2.SchemaId, _Mapping]] = ...) -> None: ...
 
 class PutUserTaskDefRequest(_message.Message):
     __slots__ = ["name", "fields", "description"]

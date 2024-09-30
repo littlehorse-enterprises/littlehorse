@@ -759,10 +759,11 @@ Declares a Variable.
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `type` | | [VariableType](#variabletype) | The Type of the variable. |
+| `primitive` | oneof `type`| [PrimitiveType](#primitivetype) | The primitive type of the variable. |
+| `schema` | oneof `type`| [SchemaId](#schemaid) | The ID of the schema that the variable belongs to. |
 | `name` | | string | The name of the variable. |
 | `default_value` | optional| [VariableValue](#variablevalue) | Optional default value if the variable isn't set; for example, in a ThreadRun if you start a ThreadRun or WfRun without passing a variable in, then this is used. |
-| `masked_value` | | bool | If true, the variable value will show as a masked string. |
+| `is_masked` | | bool | If true, the variable value will show as a masked string. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -1132,6 +1133,20 @@ ID for a ScheduledWfRun
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
 | `id` | | string |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SchemaId` {#schemaid}
+
+ID for a Schema
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `name` | | string | The name of the `Schema`. |
+| `version` | | int32 | The version of the `Schema`. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -1863,7 +1878,8 @@ EXPERIMENTAL: Creates a WorkflowEventDef
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
 | `name` | | string |  |
-| `type` | | [VariableType](#variabletype) |  |
+| `primitive_type` | oneof `type`| [PrimitiveType](#primitivetype) |  |
+| `schema` | oneof `type`| [SchemaId](#schemaid) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2976,7 +2992,7 @@ A UserTaskField is a specific field of data to be entered into a UserTaskRun.
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
 | `name` | | string | The name of the field. When a UserTaskRun is completed, the NodeOutput is a single-level JSON_OBJ. Each key is the name of the field. Must be unique. |
-| `type` | | [VariableType](#variabletype) | The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE). |
+| `type` | | [PrimitiveType](#primitivetype) | The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE). |
 | `description` | optional| string | Optional description which can be displayed by the User Task UI application. Does not affect WfRun execution. |
 | `display_name` | | string | The name to be displayed by the User Task UI application. Does not affect WfRun execution. |
 | `required` | | bool | Whether this field is required for UserTaskRun completion. |
@@ -3049,6 +3065,108 @@ SDK, which allows the Task Method to determine where the TaskRun comes from.
 
 
 
+### Message `InlineSchema` {#inlineschema}
+
+An `InlineSchema` is the actual representation of the Schema.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `fields` | repeated| [SchemaField](#schemafield) | The fields in this schema. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `InlineStruct` {#inlinestruct}
+
+An `InlineStruct` is a pre-validated set of fields that are part of a `Struct`.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `fields` | repeated| [StructField](#structfield) | The fields in the inline struct. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `Schema` {#schema}
+
+A `Schema` is a versioned metadata object (tenant-scoped) inside LittleHorse
+that defines the structure and content of a variable value. It allows strong typing.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `id` | | [SchemaId](#schemaid) | The id of the `Schema`. This includes the version. |
+| `description` | optional| string | Optionally description of the schema. |
+| `schema` | | [InlineSchema](#inlineschema) | The `InlineSchema` defines the actual structure of any `Struct` using this `Schema`. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SchemaField` {#schemafield}
+
+A `SchemaField` defines a field inside a `Schema`.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `name` | | string | The name of the field. |
+| `optional` | | bool | Whether the field is optional. |
+| `primitive` | oneof `field_type`| [PrimitiveType](#primitivetype) | Specifies that the field is a primitive `VariableValue` of the specified type. |
+| `schema_id` | oneof `field_type`| [SchemaId](#schemaid) | Specifies that the field is of a specific `Schema`. |
+| `inline_schema` | oneof `field_type`| [InlineSchema](#inlineschema) | Specifies that field must be a `Struct` conforming to the accompanying schema. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `Struct` {#struct}
+
+A Struct is a strongly-typed structure containing fields. The Struct is defined
+according to the `Schema` object.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `schema_id` | | [SchemaId](#schemaid) | The id of the schema. |
+| `struct` | | [InlineStruct](#inlinestruct) | The content of the Struct |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `StructField` {#structfield}
+
+A StructField represents the value for a single field in a struct.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `primitive` | oneof `struct_value`| [VariableValue](#variablevalue) | The `value` of the field is an untyped primitive `VariableValue`. |
+| `struct` | oneof `struct_value`| [InlineStruct](#inlinestruct) | The `value` of the field is a complex `Struct`. |
+| `list` | oneof `struct_value`| [StructField.FieldList](#structfieldfieldlist) | The `value` of the field is a list of fields. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `StructField.FieldList` {#structfieldfieldlist}
+
+A FieldList is a sub-structure of a `Struct`
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `fields` | repeated| [StructField](#structfield) |  |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `Variable` {#variable}
 
 A Variable is an instance of a variable assigned to a WfRun.
@@ -3082,6 +3200,7 @@ from a TaskRun, as the value of a WfRun's Variable, etc.
 | `str` | oneof `value`| string | A string. |
 | `int` | oneof `value`| int64 | The `INT` variable type is stored as a 64-bit integer. The `INT` can be cast to a `DOUBLE`. |
 | `bytes` | oneof `value`| bytes | An arbitrary String of bytes. |
+| `struct` | oneof `value`| [Struct](#struct) | A strongly-typed struct |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3412,7 +3531,7 @@ JSON Path.
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
 | `field_path` | | string | Denotes the path in JSONPath format (according to the Java Jayway library) that has a field we should index. |
-| `field_type` | | [VariableType](#variabletype) | Is the type of the field we are indexing. |
+| `field_type` | | [PrimitiveType](#primitivetype) | Is the type of the field we are indexing. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3838,14 +3957,14 @@ world.
 
 ### Message `WorkflowEventDef` {#workfloweventdef}
 
-
+A `WorkflowEventDef` defines the blueprint for a `WorkflowEvent`.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `id` | | [WorkflowEventDefId](#workfloweventdefid) |  |
-| `created_at` | | google.protobuf.Timestamp |  |
-| `type` | | [VariableType](#variabletype) |  |
+| `id` | | [WorkflowEventDefId](#workfloweventdefid) | The `id` of the `WorkflowEventDef`. |
+| `created_at` | | google.protobuf.Timestamp | The timestamp at which the `WorkflowEventDef` was created. |
+| `type` | | [PrimitiveType](#primitivetype) | The type of the content of the `WorkflowEvent`.<br/><br/>TODO: Support schemas |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3949,25 +4068,7 @@ Metrics
 
 
 
-### Enum TaskStatus {#taskstatus}
-Status of a TaskRun.
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| TASK_SCHEDULED | 0 | Scheduled in the Task Queue but not yet picked up by a Task Worker. |
-| TASK_RUNNING | 1 | Picked up by a Task Worker, but not yet reported or timed out. |
-| TASK_SUCCESS | 2 | Successfully completed. |
-| TASK_FAILED | 3 | Task Worker reported a technical failure while attempting to execute the TaskRun |
-| TASK_TIMEOUT | 4 | Task Worker did not report a result in time. |
-| TASK_OUTPUT_SERIALIZING_ERROR | 5 | Task Worker reported that it was unable to serialize the output of the TaskRun. |
-| TASK_INPUT_VAR_SUB_ERROR | 6 | Task Worker was unable to deserialize the input variables into appropriate language-specific objects to pass into the Task Function |
-| TASK_EXCEPTION | 8 | Task Function business logic determined that there was a business exception. |
-| TASK_PENDING | 9 | Refers to a TaskAttempt that is not yet scheduled. This happens when using retries with an ExponentialBackoffRetryPolicy: the TaskAttempt isn't supposed to be scheduled until it "matures", but it does already exist. |
-
-
-
-
-### Enum VariableType {#variabletype}
+### Enum PrimitiveType {#primitivetype}
 Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
 VariableValue.
 
@@ -3982,6 +4083,24 @@ The `JSON_OBJ` variable allows you to store complex objects in the JSON format. 
 | STR | 4 | The `STR` variable type is stored as a String. `INT`, `DOUBLE`, and `BOOL` variables can be cast to a `STR`. |
 | INT | 5 | The `INT` variable type is stored as a 64-bit integer. The `INT` can be cast to a `DOUBLE`. |
 | BYTES | 6 | The `BYTES` variable type allows you to store an arbitrary byte string. |
+
+
+
+
+### Enum TaskStatus {#taskstatus}
+Status of a TaskRun.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| TASK_SCHEDULED | 0 | Scheduled in the Task Queue but not yet picked up by a Task Worker. |
+| TASK_RUNNING | 1 | Picked up by a Task Worker, but not yet reported or timed out. |
+| TASK_SUCCESS | 2 | Successfully completed. |
+| TASK_FAILED | 3 | Task Worker reported a technical failure while attempting to execute the TaskRun |
+| TASK_TIMEOUT | 4 | Task Worker did not report a result in time. |
+| TASK_OUTPUT_SERIALIZING_ERROR | 5 | Task Worker reported that it was unable to serialize the output of the TaskRun. |
+| TASK_INPUT_VAR_SUB_ERROR | 6 | Task Worker was unable to deserialize the input variables into appropriate language-specific objects to pass into the Task Function |
+| TASK_EXCEPTION | 8 | Task Function business logic determined that there was a business exception. |
+| TASK_PENDING | 9 | Refers to a TaskAttempt that is not yet scheduled. This happens when using retries with an ExponentialBackoffRetryPolicy: the TaskAttempt isn't supposed to be scheduled until it "matures", but it does already exist. |
 
 
  <!-- end Enums -->

@@ -268,7 +268,7 @@ export function metricsWindowLengthToNumber(object: MetricsWindowLength): number
  * Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
  * VariableValue.
  */
-export enum VariableType {
+export enum PrimitiveType {
   /**
    * JSON_OBJ - An object represented as a json string. <br/>
    *
@@ -306,53 +306,53 @@ export enum VariableType {
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
-export function variableTypeFromJSON(object: any): VariableType {
+export function primitiveTypeFromJSON(object: any): PrimitiveType {
   switch (object) {
     case 0:
     case "JSON_OBJ":
-      return VariableType.JSON_OBJ;
+      return PrimitiveType.JSON_OBJ;
     case 1:
     case "JSON_ARR":
-      return VariableType.JSON_ARR;
+      return PrimitiveType.JSON_ARR;
     case 2:
     case "DOUBLE":
-      return VariableType.DOUBLE;
+      return PrimitiveType.DOUBLE;
     case 3:
     case "BOOL":
-      return VariableType.BOOL;
+      return PrimitiveType.BOOL;
     case 4:
     case "STR":
-      return VariableType.STR;
+      return PrimitiveType.STR;
     case 5:
     case "INT":
-      return VariableType.INT;
+      return PrimitiveType.INT;
     case 6:
     case "BYTES":
-      return VariableType.BYTES;
+      return PrimitiveType.BYTES;
     case -1:
     case "UNRECOGNIZED":
     default:
-      return VariableType.UNRECOGNIZED;
+      return PrimitiveType.UNRECOGNIZED;
   }
 }
 
-export function variableTypeToNumber(object: VariableType): number {
+export function primitiveTypeToNumber(object: PrimitiveType): number {
   switch (object) {
-    case VariableType.JSON_OBJ:
+    case PrimitiveType.JSON_OBJ:
       return 0;
-    case VariableType.JSON_ARR:
+    case PrimitiveType.JSON_ARR:
       return 1;
-    case VariableType.DOUBLE:
+    case PrimitiveType.DOUBLE:
       return 2;
-    case VariableType.BOOL:
+    case PrimitiveType.BOOL:
       return 3;
-    case VariableType.STR:
+    case PrimitiveType.STR:
       return 4;
-    case VariableType.INT:
+    case PrimitiveType.INT:
       return 5;
-    case VariableType.BYTES:
+    case PrimitiveType.BYTES:
       return 6;
-    case VariableType.UNRECOGNIZED:
+    case PrimitiveType.UNRECOGNIZED:
     default:
       return -1;
   }

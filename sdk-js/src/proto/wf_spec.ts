@@ -11,9 +11,9 @@ import {
   MetadataStatus,
   metadataStatusFromJSON,
   metadataStatusToNumber,
-  VariableType,
-  variableTypeFromJSON,
-  variableTypeToNumber,
+  PrimitiveType,
+  primitiveTypeFromJSON,
+  primitiveTypeToNumber,
 } from "./common_enums";
 import {
   Comparator,
@@ -180,7 +180,7 @@ export interface JsonIndex {
    */
   fieldPath: string;
   /** Is the type of the field we are indexing. */
-  fieldType: VariableType;
+  fieldType: PrimitiveType;
 }
 
 /** Denotes a variable declaration at the ThreadSpec level. */
@@ -990,7 +990,7 @@ export const WorkflowRetentionPolicy = {
 };
 
 function createBaseJsonIndex(): JsonIndex {
-  return { fieldPath: "", fieldType: VariableType.JSON_OBJ };
+  return { fieldPath: "", fieldType: PrimitiveType.JSON_OBJ };
 }
 
 export const JsonIndex = {
@@ -998,8 +998,8 @@ export const JsonIndex = {
     if (message.fieldPath !== "") {
       writer.uint32(10).string(message.fieldPath);
     }
-    if (message.fieldType !== VariableType.JSON_OBJ) {
-      writer.uint32(16).int32(variableTypeToNumber(message.fieldType));
+    if (message.fieldType !== PrimitiveType.JSON_OBJ) {
+      writer.uint32(16).int32(primitiveTypeToNumber(message.fieldType));
     }
     return writer;
   },
@@ -1023,7 +1023,7 @@ export const JsonIndex = {
             break;
           }
 
-          message.fieldType = variableTypeFromJSON(reader.int32());
+          message.fieldType = primitiveTypeFromJSON(reader.int32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1040,7 +1040,7 @@ export const JsonIndex = {
   fromPartial(object: DeepPartial<JsonIndex>): JsonIndex {
     const message = createBaseJsonIndex();
     message.fieldPath = object.fieldPath ?? "";
-    message.fieldType = object.fieldType ?? VariableType.JSON_OBJ;
+    message.fieldType = object.fieldType ?? PrimitiveType.JSON_OBJ;
     return message;
   },
 };

@@ -43,11 +43,11 @@ class UserTaskField(_message.Message):
     DISPLAY_NAME_FIELD_NUMBER: _ClassVar[int]
     REQUIRED_FIELD_NUMBER: _ClassVar[int]
     name: str
-    type: _common_enums_pb2.VariableType
+    type: _common_enums_pb2.PrimitiveType
     description: str
     display_name: str
     required: bool
-    def __init__(self, name: _Optional[str] = ..., type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., description: _Optional[str] = ..., display_name: _Optional[str] = ..., required: bool = ...) -> None: ...
+    def __init__(self, name: _Optional[str] = ..., type: _Optional[_Union[_common_enums_pb2.PrimitiveType, str]] = ..., description: _Optional[str] = ..., display_name: _Optional[str] = ..., required: bool = ...) -> None: ...
 
 class UserTaskRun(_message.Message):
     __slots__ = ["id", "user_task_def_id", "user_group", "user_id", "results", "status", "events", "notes", "scheduled_time", "node_run_id", "epoch"]

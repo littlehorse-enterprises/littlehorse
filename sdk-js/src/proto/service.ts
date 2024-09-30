@@ -16,12 +16,12 @@ import {
   MetricsWindowLength,
   metricsWindowLengthFromJSON,
   metricsWindowLengthToNumber,
+  PrimitiveType,
+  primitiveTypeFromJSON,
+  primitiveTypeToNumber,
   TaskStatus,
   taskStatusFromJSON,
   taskStatusToNumber,
-  VariableType,
-  variableTypeFromJSON,
-  variableTypeToNumber,
 } from "./common_enums";
 import { VariableDef } from "./common_wfspec";
 import { ExternalEvent, ExternalEventDef, ExternalEventRetentionPolicy } from "./external_event";
@@ -34,6 +34,7 @@ import {
   NodeRunId,
   PrincipalId,
   ScheduledWfRunId,
+  SchemaId,
   TaskDefId,
   TaskRunId,
   TaskWorkerGroupId,
@@ -184,7 +185,8 @@ export interface PutTaskDefRequest {
 /** EXPERIMENTAL: Creates a WorkflowEventDef */
 export interface PutWorkflowEventDefRequest {
   name: string;
-  type: VariableType;
+  primitiveType?: PrimitiveType | undefined;
+  schema?: SchemaId | undefined;
 }
 
 /** Creates a UserTaskDef. */
@@ -1730,7 +1732,7 @@ export const PutTaskDefRequest = {
 };
 
 function createBasePutWorkflowEventDefRequest(): PutWorkflowEventDefRequest {
-  return { name: "", type: VariableType.JSON_OBJ };
+  return { name: "", primitiveType: undefined, schema: undefined };
 }
 
 export const PutWorkflowEventDefRequest = {
@@ -1738,8 +1740,11 @@ export const PutWorkflowEventDefRequest = {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
-    if (message.type !== VariableType.JSON_OBJ) {
-      writer.uint32(16).int32(variableTypeToNumber(message.type));
+    if (message.primitiveType !== undefined) {
+      writer.uint32(16).int32(primitiveTypeToNumber(message.primitiveType));
+    }
+    if (message.schema !== undefined) {
+      SchemaId.encode(message.schema, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -1763,7 +1768,14 @@ export const PutWorkflowEventDefRequest = {
             break;
           }
 
-          message.type = variableTypeFromJSON(reader.int32());
+          message.primitiveType = primitiveTypeFromJSON(reader.int32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.schema = SchemaId.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1780,7 +1792,10 @@ export const PutWorkflowEventDefRequest = {
   fromPartial(object: DeepPartial<PutWorkflowEventDefRequest>): PutWorkflowEventDefRequest {
     const message = createBasePutWorkflowEventDefRequest();
     message.name = object.name ?? "";
-    message.type = object.type ?? VariableType.JSON_OBJ;
+    message.primitiveType = object.primitiveType ?? undefined;
+    message.schema = (object.schema !== undefined && object.schema !== null)
+      ? SchemaId.fromPartial(object.schema)
+      : undefined;
     return message;
   },
 };

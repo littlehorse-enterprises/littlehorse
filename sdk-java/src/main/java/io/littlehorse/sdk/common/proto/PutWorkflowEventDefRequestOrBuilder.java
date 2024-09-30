@@ -20,13 +20,35 @@ public interface PutWorkflowEventDefRequestOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>.littlehorse.VariableType type = 2;</code>
-   * @return The enum numeric value on the wire for type.
+   * <code>.littlehorse.PrimitiveType primitive_type = 2;</code>
+   * @return Whether the primitiveType field is set.
    */
-  int getTypeValue();
+  boolean hasPrimitiveType();
   /**
-   * <code>.littlehorse.VariableType type = 2;</code>
-   * @return The type.
+   * <code>.littlehorse.PrimitiveType primitive_type = 2;</code>
+   * @return The enum numeric value on the wire for primitiveType.
    */
-  io.littlehorse.sdk.common.proto.VariableType getType();
+  int getPrimitiveTypeValue();
+  /**
+   * <code>.littlehorse.PrimitiveType primitive_type = 2;</code>
+   * @return The primitiveType.
+   */
+  io.littlehorse.sdk.common.proto.PrimitiveType getPrimitiveType();
+
+  /**
+   * <code>.littlehorse.SchemaId schema = 3;</code>
+   * @return Whether the schema field is set.
+   */
+  boolean hasSchema();
+  /**
+   * <code>.littlehorse.SchemaId schema = 3;</code>
+   * @return The schema.
+   */
+  io.littlehorse.sdk.common.proto.SchemaId getSchema();
+  /**
+   * <code>.littlehorse.SchemaId schema = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.SchemaIdOrBuilder getSchemaOrBuilder();
+
+  io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.TypeCase getTypeCase();
 }

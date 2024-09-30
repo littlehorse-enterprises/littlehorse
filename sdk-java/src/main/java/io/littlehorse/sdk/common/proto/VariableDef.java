@@ -20,7 +20,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private VariableDef() {
-    type_ = 0;
     name_ = "";
   }
 
@@ -45,30 +44,132 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  public static final int TYPE_FIELD_NUMBER = 1;
-  private int type_ = 0;
+  private int typeCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object type_;
+  public enum TypeCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    PRIMITIVE(1),
+    SCHEMA(5),
+    TYPE_NOT_SET(0);
+    private final int value;
+    private TypeCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static TypeCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static TypeCase forNumber(int value) {
+      switch (value) {
+        case 1: return PRIMITIVE;
+        case 5: return SCHEMA;
+        case 0: return TYPE_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public TypeCase
+  getTypeCase() {
+    return TypeCase.forNumber(
+        typeCase_);
+  }
+
+  public static final int PRIMITIVE_FIELD_NUMBER = 1;
   /**
    * <pre>
-   * The Type of the variable.
+   * The primitive type of the variable.
    * </pre>
    *
-   * <code>.littlehorse.VariableType type = 1;</code>
-   * @return The enum numeric value on the wire for type.
+   * <code>.littlehorse.PrimitiveType primitive = 1;</code>
+   * @return Whether the primitive field is set.
    */
-  @java.lang.Override public int getTypeValue() {
-    return type_;
+  public boolean hasPrimitive() {
+    return typeCase_ == 1;
   }
   /**
    * <pre>
-   * The Type of the variable.
+   * The primitive type of the variable.
    * </pre>
    *
-   * <code>.littlehorse.VariableType type = 1;</code>
-   * @return The type.
+   * <code>.littlehorse.PrimitiveType primitive = 1;</code>
+   * @return The enum numeric value on the wire for primitive.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.VariableType getType() {
-    io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(type_);
-    return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
+  public int getPrimitiveValue() {
+    if (typeCase_ == 1) {
+      return (java.lang.Integer) type_;
+    }
+    return 0;
+  }
+  /**
+   * <pre>
+   * The primitive type of the variable.
+   * </pre>
+   *
+   * <code>.littlehorse.PrimitiveType primitive = 1;</code>
+   * @return The primitive.
+   */
+  public io.littlehorse.sdk.common.proto.PrimitiveType getPrimitive() {
+    if (typeCase_ == 1) {
+      io.littlehorse.sdk.common.proto.PrimitiveType result = io.littlehorse.sdk.common.proto.PrimitiveType.forNumber(
+          (java.lang.Integer) type_);
+      return result == null ? io.littlehorse.sdk.common.proto.PrimitiveType.UNRECOGNIZED : result;
+    }
+    return io.littlehorse.sdk.common.proto.PrimitiveType.JSON_OBJ;
+  }
+
+  public static final int SCHEMA_FIELD_NUMBER = 5;
+  /**
+   * <pre>
+   * The ID of the schema that the variable belongs to.
+   * </pre>
+   *
+   * <code>.littlehorse.SchemaId schema = 5;</code>
+   * @return Whether the schema field is set.
+   */
+  @java.lang.Override
+  public boolean hasSchema() {
+    return typeCase_ == 5;
+  }
+  /**
+   * <pre>
+   * The ID of the schema that the variable belongs to.
+   * </pre>
+   *
+   * <code>.littlehorse.SchemaId schema = 5;</code>
+   * @return The schema.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.SchemaId getSchema() {
+    if (typeCase_ == 5) {
+       return (io.littlehorse.sdk.common.proto.SchemaId) type_;
+    }
+    return io.littlehorse.sdk.common.proto.SchemaId.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * The ID of the schema that the variable belongs to.
+   * </pre>
+   *
+   * <code>.littlehorse.SchemaId schema = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.SchemaIdOrBuilder getSchemaOrBuilder() {
+    if (typeCase_ == 5) {
+       return (io.littlehorse.sdk.common.proto.SchemaId) type_;
+    }
+    return io.littlehorse.sdk.common.proto.SchemaId.getDefaultInstance();
   }
 
   public static final int NAME_FIELD_NUMBER = 2;
@@ -162,19 +263,19 @@ private static final long serialVersionUID = 0L;
     return defaultValue_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : defaultValue_;
   }
 
-  public static final int MASKED_VALUE_FIELD_NUMBER = 4;
-  private boolean maskedValue_ = false;
+  public static final int IS_MASKED_FIELD_NUMBER = 4;
+  private boolean isMasked_ = false;
   /**
    * <pre>
    * If true, the variable value will show as a masked string.
    * </pre>
    *
-   * <code>bool masked_value = 4;</code>
-   * @return The maskedValue.
+   * <code>bool is_masked = 4;</code>
+   * @return The isMasked.
    */
   @java.lang.Override
-  public boolean getMaskedValue() {
-    return maskedValue_;
+  public boolean getIsMasked() {
+    return isMasked_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -191,8 +292,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (type_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
-      output.writeEnum(1, type_);
+    if (typeCase_ == 1) {
+      output.writeEnum(1, ((java.lang.Integer) type_));
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
@@ -200,8 +301,11 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(3, getDefaultValue());
     }
-    if (maskedValue_ != false) {
-      output.writeBool(4, maskedValue_);
+    if (isMasked_ != false) {
+      output.writeBool(4, isMasked_);
+    }
+    if (typeCase_ == 5) {
+      output.writeMessage(5, (io.littlehorse.sdk.common.proto.SchemaId) type_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -212,9 +316,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (type_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
+    if (typeCase_ == 1) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(1, type_);
+        .computeEnumSize(1, ((java.lang.Integer) type_));
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
@@ -223,9 +327,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getDefaultValue());
     }
-    if (maskedValue_ != false) {
+    if (isMasked_ != false) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(4, maskedValue_);
+        .computeBoolSize(4, isMasked_);
+    }
+    if (typeCase_ == 5) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, (io.littlehorse.sdk.common.proto.SchemaId) type_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -242,7 +350,6 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.VariableDef other = (io.littlehorse.sdk.common.proto.VariableDef) obj;
 
-    if (type_ != other.type_) return false;
     if (!getName()
         .equals(other.getName())) return false;
     if (hasDefaultValue() != other.hasDefaultValue()) return false;
@@ -250,8 +357,21 @@ private static final long serialVersionUID = 0L;
       if (!getDefaultValue()
           .equals(other.getDefaultValue())) return false;
     }
-    if (getMaskedValue()
-        != other.getMaskedValue()) return false;
+    if (getIsMasked()
+        != other.getIsMasked()) return false;
+    if (!getTypeCase().equals(other.getTypeCase())) return false;
+    switch (typeCase_) {
+      case 1:
+        if (getPrimitiveValue()
+            != other.getPrimitiveValue()) return false;
+        break;
+      case 5:
+        if (!getSchema()
+            .equals(other.getSchema())) return false;
+        break;
+      case 0:
+      default:
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -263,17 +383,27 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + type_;
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
     if (hasDefaultValue()) {
       hash = (37 * hash) + DEFAULT_VALUE_FIELD_NUMBER;
       hash = (53 * hash) + getDefaultValue().hashCode();
     }
-    hash = (37 * hash) + MASKED_VALUE_FIELD_NUMBER;
+    hash = (37 * hash) + IS_MASKED_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-        getMaskedValue());
+        getIsMasked());
+    switch (typeCase_) {
+      case 1:
+        hash = (37 * hash) + PRIMITIVE_FIELD_NUMBER;
+        hash = (53 * hash) + getPrimitiveValue();
+        break;
+      case 5:
+        hash = (37 * hash) + SCHEMA_FIELD_NUMBER;
+        hash = (53 * hash) + getSchema().hashCode();
+        break;
+      case 0:
+      default:
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -415,14 +545,18 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      type_ = 0;
+      if (schemaBuilder_ != null) {
+        schemaBuilder_.clear();
+      }
       name_ = "";
       defaultValue_ = null;
       if (defaultValueBuilder_ != null) {
         defaultValueBuilder_.dispose();
         defaultValueBuilder_ = null;
       }
-      maskedValue_ = false;
+      isMasked_ = false;
+      typeCase_ = 0;
+      type_ = null;
       return this;
     }
 
@@ -450,29 +584,36 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.VariableDef buildPartial() {
       io.littlehorse.sdk.common.proto.VariableDef result = new io.littlehorse.sdk.common.proto.VariableDef(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.VariableDef result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.type_ = type_;
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
+      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.name_ = name_;
       }
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000004) != 0)) {
+      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.defaultValue_ = defaultValueBuilder_ == null
             ? defaultValue_
             : defaultValueBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.maskedValue_ = maskedValue_;
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.isMasked_ = isMasked_;
       }
       result.bitField0_ |= to_bitField0_;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.VariableDef result) {
+      result.typeCase_ = typeCase_;
+      result.type_ = this.type_;
+      if (typeCase_ == 5 &&
+          schemaBuilder_ != null) {
+        result.type_ = schemaBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -519,19 +660,29 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.VariableDef other) {
       if (other == io.littlehorse.sdk.common.proto.VariableDef.getDefaultInstance()) return this;
-      if (other.type_ != 0) {
-        setTypeValue(other.getTypeValue());
-      }
       if (!other.getName().isEmpty()) {
         name_ = other.name_;
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000004;
         onChanged();
       }
       if (other.hasDefaultValue()) {
         mergeDefaultValue(other.getDefaultValue());
       }
-      if (other.getMaskedValue() != false) {
-        setMaskedValue(other.getMaskedValue());
+      if (other.getIsMasked() != false) {
+        setIsMasked(other.getIsMasked());
+      }
+      switch (other.getTypeCase()) {
+        case PRIMITIVE: {
+          setPrimitiveValue(other.getPrimitiveValue());
+          break;
+        }
+        case SCHEMA: {
+          mergeSchema(other.getSchema());
+          break;
+        }
+        case TYPE_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -560,27 +711,35 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 8: {
-              type_ = input.readEnum();
-              bitField0_ |= 0x00000001;
+              int rawValue = input.readEnum();
+              typeCase_ = 1;
+              type_ = rawValue;
               break;
             } // case 8
             case 18: {
               name_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000004;
               break;
             } // case 18
             case 26: {
               input.readMessage(
                   getDefaultValueFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000008;
               break;
             } // case 26
             case 32: {
-              maskedValue_ = input.readBool();
-              bitField0_ |= 0x00000008;
+              isMasked_ = input.readBool();
+              bitField0_ |= 0x00000010;
               break;
             } // case 32
+            case 42: {
+              input.readMessage(
+                  getSchemaFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              typeCase_ = 5;
+              break;
+            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -596,79 +755,293 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int typeCase_ = 0;
+    private java.lang.Object type_;
+    public TypeCase
+        getTypeCase() {
+      return TypeCase.forNumber(
+          typeCase_);
+    }
+
+    public Builder clearType() {
+      typeCase_ = 0;
+      type_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
-    private int type_ = 0;
     /**
      * <pre>
-     * The Type of the variable.
+     * The primitive type of the variable.
      * </pre>
      *
-     * <code>.littlehorse.VariableType type = 1;</code>
-     * @return The enum numeric value on the wire for type.
+     * <code>.littlehorse.PrimitiveType primitive = 1;</code>
+     * @return Whether the primitive field is set.
      */
-    @java.lang.Override public int getTypeValue() {
-      return type_;
+    @java.lang.Override
+    public boolean hasPrimitive() {
+      return typeCase_ == 1;
     }
     /**
      * <pre>
-     * The Type of the variable.
+     * The primitive type of the variable.
      * </pre>
      *
-     * <code>.littlehorse.VariableType type = 1;</code>
-     * @param value The enum numeric value on the wire for type to set.
+     * <code>.littlehorse.PrimitiveType primitive = 1;</code>
+     * @return The enum numeric value on the wire for primitive.
+     */
+    @java.lang.Override
+    public int getPrimitiveValue() {
+      if (typeCase_ == 1) {
+        return ((java.lang.Integer) type_).intValue();
+      }
+      return 0;
+    }
+    /**
+     * <pre>
+     * The primitive type of the variable.
+     * </pre>
+     *
+     * <code>.littlehorse.PrimitiveType primitive = 1;</code>
+     * @param value The enum numeric value on the wire for primitive to set.
      * @return This builder for chaining.
      */
-    public Builder setTypeValue(int value) {
+    public Builder setPrimitiveValue(int value) {
+      typeCase_ = 1;
       type_ = value;
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * The Type of the variable.
+     * The primitive type of the variable.
      * </pre>
      *
-     * <code>.littlehorse.VariableType type = 1;</code>
-     * @return The type.
+     * <code>.littlehorse.PrimitiveType primitive = 1;</code>
+     * @return The primitive.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableType getType() {
-      io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(type_);
-      return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.PrimitiveType getPrimitive() {
+      if (typeCase_ == 1) {
+        io.littlehorse.sdk.common.proto.PrimitiveType result = io.littlehorse.sdk.common.proto.PrimitiveType.forNumber(
+            (java.lang.Integer) type_);
+        return result == null ? io.littlehorse.sdk.common.proto.PrimitiveType.UNRECOGNIZED : result;
+      }
+      return io.littlehorse.sdk.common.proto.PrimitiveType.JSON_OBJ;
     }
     /**
      * <pre>
-     * The Type of the variable.
+     * The primitive type of the variable.
      * </pre>
      *
-     * <code>.littlehorse.VariableType type = 1;</code>
-     * @param value The type to set.
+     * <code>.littlehorse.PrimitiveType primitive = 1;</code>
+     * @param value The primitive to set.
      * @return This builder for chaining.
      */
-    public Builder setType(io.littlehorse.sdk.common.proto.VariableType value) {
+    public Builder setPrimitive(io.littlehorse.sdk.common.proto.PrimitiveType value) {
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00000001;
+      typeCase_ = 1;
       type_ = value.getNumber();
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * The Type of the variable.
+     * The primitive type of the variable.
      * </pre>
      *
-     * <code>.littlehorse.VariableType type = 1;</code>
+     * <code>.littlehorse.PrimitiveType primitive = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearType() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      type_ = 0;
-      onChanged();
+    public Builder clearPrimitive() {
+      if (typeCase_ == 1) {
+        typeCase_ = 0;
+        type_ = null;
+        onChanged();
+      }
       return this;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.SchemaId, io.littlehorse.sdk.common.proto.SchemaId.Builder, io.littlehorse.sdk.common.proto.SchemaIdOrBuilder> schemaBuilder_;
+    /**
+     * <pre>
+     * The ID of the schema that the variable belongs to.
+     * </pre>
+     *
+     * <code>.littlehorse.SchemaId schema = 5;</code>
+     * @return Whether the schema field is set.
+     */
+    @java.lang.Override
+    public boolean hasSchema() {
+      return typeCase_ == 5;
+    }
+    /**
+     * <pre>
+     * The ID of the schema that the variable belongs to.
+     * </pre>
+     *
+     * <code>.littlehorse.SchemaId schema = 5;</code>
+     * @return The schema.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.SchemaId getSchema() {
+      if (schemaBuilder_ == null) {
+        if (typeCase_ == 5) {
+          return (io.littlehorse.sdk.common.proto.SchemaId) type_;
+        }
+        return io.littlehorse.sdk.common.proto.SchemaId.getDefaultInstance();
+      } else {
+        if (typeCase_ == 5) {
+          return schemaBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.SchemaId.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * The ID of the schema that the variable belongs to.
+     * </pre>
+     *
+     * <code>.littlehorse.SchemaId schema = 5;</code>
+     */
+    public Builder setSchema(io.littlehorse.sdk.common.proto.SchemaId value) {
+      if (schemaBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        type_ = value;
+        onChanged();
+      } else {
+        schemaBuilder_.setMessage(value);
+      }
+      typeCase_ = 5;
+      return this;
+    }
+    /**
+     * <pre>
+     * The ID of the schema that the variable belongs to.
+     * </pre>
+     *
+     * <code>.littlehorse.SchemaId schema = 5;</code>
+     */
+    public Builder setSchema(
+        io.littlehorse.sdk.common.proto.SchemaId.Builder builderForValue) {
+      if (schemaBuilder_ == null) {
+        type_ = builderForValue.build();
+        onChanged();
+      } else {
+        schemaBuilder_.setMessage(builderForValue.build());
+      }
+      typeCase_ = 5;
+      return this;
+    }
+    /**
+     * <pre>
+     * The ID of the schema that the variable belongs to.
+     * </pre>
+     *
+     * <code>.littlehorse.SchemaId schema = 5;</code>
+     */
+    public Builder mergeSchema(io.littlehorse.sdk.common.proto.SchemaId value) {
+      if (schemaBuilder_ == null) {
+        if (typeCase_ == 5 &&
+            type_ != io.littlehorse.sdk.common.proto.SchemaId.getDefaultInstance()) {
+          type_ = io.littlehorse.sdk.common.proto.SchemaId.newBuilder((io.littlehorse.sdk.common.proto.SchemaId) type_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          type_ = value;
+        }
+        onChanged();
+      } else {
+        if (typeCase_ == 5) {
+          schemaBuilder_.mergeFrom(value);
+        } else {
+          schemaBuilder_.setMessage(value);
+        }
+      }
+      typeCase_ = 5;
+      return this;
+    }
+    /**
+     * <pre>
+     * The ID of the schema that the variable belongs to.
+     * </pre>
+     *
+     * <code>.littlehorse.SchemaId schema = 5;</code>
+     */
+    public Builder clearSchema() {
+      if (schemaBuilder_ == null) {
+        if (typeCase_ == 5) {
+          typeCase_ = 0;
+          type_ = null;
+          onChanged();
+        }
+      } else {
+        if (typeCase_ == 5) {
+          typeCase_ = 0;
+          type_ = null;
+        }
+        schemaBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * The ID of the schema that the variable belongs to.
+     * </pre>
+     *
+     * <code>.littlehorse.SchemaId schema = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.SchemaId.Builder getSchemaBuilder() {
+      return getSchemaFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * The ID of the schema that the variable belongs to.
+     * </pre>
+     *
+     * <code>.littlehorse.SchemaId schema = 5;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.SchemaIdOrBuilder getSchemaOrBuilder() {
+      if ((typeCase_ == 5) && (schemaBuilder_ != null)) {
+        return schemaBuilder_.getMessageOrBuilder();
+      } else {
+        if (typeCase_ == 5) {
+          return (io.littlehorse.sdk.common.proto.SchemaId) type_;
+        }
+        return io.littlehorse.sdk.common.proto.SchemaId.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * The ID of the schema that the variable belongs to.
+     * </pre>
+     *
+     * <code>.littlehorse.SchemaId schema = 5;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.SchemaId, io.littlehorse.sdk.common.proto.SchemaId.Builder, io.littlehorse.sdk.common.proto.SchemaIdOrBuilder> 
+        getSchemaFieldBuilder() {
+      if (schemaBuilder_ == null) {
+        if (!(typeCase_ == 5)) {
+          type_ = io.littlehorse.sdk.common.proto.SchemaId.getDefaultInstance();
+        }
+        schemaBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.SchemaId, io.littlehorse.sdk.common.proto.SchemaId.Builder, io.littlehorse.sdk.common.proto.SchemaIdOrBuilder>(
+                (io.littlehorse.sdk.common.proto.SchemaId) type_,
+                getParentForChildren(),
+                isClean());
+        type_ = null;
+      }
+      typeCase_ = 5;
+      onChanged();
+      return schemaBuilder_;
     }
 
     private java.lang.Object name_ = "";
@@ -726,7 +1099,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       name_ = value;
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -740,7 +1113,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearName() {
       name_ = getDefaultInstance().getName();
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000004);
       onChanged();
       return this;
     }
@@ -758,7 +1131,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       name_ = value;
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -777,7 +1150,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the defaultValue field is set.
      */
     public boolean hasDefaultValue() {
-      return ((bitField0_ & 0x00000004) != 0);
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <pre>
@@ -814,7 +1187,7 @@ private static final long serialVersionUID = 0L;
       } else {
         defaultValueBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -834,7 +1207,7 @@ private static final long serialVersionUID = 0L;
       } else {
         defaultValueBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -849,7 +1222,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeDefaultValue(io.littlehorse.sdk.common.proto.VariableValue value) {
       if (defaultValueBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0) &&
+        if (((bitField0_ & 0x00000008) != 0) &&
           defaultValue_ != null &&
           defaultValue_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
           getDefaultValueBuilder().mergeFrom(value);
@@ -859,7 +1232,7 @@ private static final long serialVersionUID = 0L;
       } else {
         defaultValueBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -873,7 +1246,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public Builder clearDefaultValue() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000008);
       defaultValue_ = null;
       if (defaultValueBuilder_ != null) {
         defaultValueBuilder_.dispose();
@@ -892,7 +1265,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.VariableValue default_value = 3;</code>
      */
     public io.littlehorse.sdk.common.proto.VariableValue.Builder getDefaultValueBuilder() {
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return getDefaultValueFieldBuilder().getBuilder();
     }
@@ -936,32 +1309,32 @@ private static final long serialVersionUID = 0L;
       return defaultValueBuilder_;
     }
 
-    private boolean maskedValue_ ;
+    private boolean isMasked_ ;
     /**
      * <pre>
      * If true, the variable value will show as a masked string.
      * </pre>
      *
-     * <code>bool masked_value = 4;</code>
-     * @return The maskedValue.
+     * <code>bool is_masked = 4;</code>
+     * @return The isMasked.
      */
     @java.lang.Override
-    public boolean getMaskedValue() {
-      return maskedValue_;
+    public boolean getIsMasked() {
+      return isMasked_;
     }
     /**
      * <pre>
      * If true, the variable value will show as a masked string.
      * </pre>
      *
-     * <code>bool masked_value = 4;</code>
-     * @param value The maskedValue to set.
+     * <code>bool is_masked = 4;</code>
+     * @param value The isMasked to set.
      * @return This builder for chaining.
      */
-    public Builder setMaskedValue(boolean value) {
+    public Builder setIsMasked(boolean value) {
 
-      maskedValue_ = value;
-      bitField0_ |= 0x00000008;
+      isMasked_ = value;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -970,12 +1343,12 @@ private static final long serialVersionUID = 0L;
      * If true, the variable value will show as a masked string.
      * </pre>
      *
-     * <code>bool masked_value = 4;</code>
+     * <code>bool is_masked = 4;</code>
      * @return This builder for chaining.
      */
-    public Builder clearMaskedValue() {
-      bitField0_ = (bitField0_ & ~0x00000008);
-      maskedValue_ = false;
+    public Builder clearIsMasked() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      isMasked_ = false;
       onChanged();
       return this;
     }

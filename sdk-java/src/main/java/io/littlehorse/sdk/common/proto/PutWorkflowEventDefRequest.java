@@ -21,7 +21,6 @@ private static final long serialVersionUID = 0L;
   }
   private PutWorkflowEventDefRequest() {
     name_ = "";
-    type_ = 0;
   }
 
   @java.lang.Override
@@ -42,6 +41,48 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutWorkflowEventDefRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.class, io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.Builder.class);
+  }
+
+  private int typeCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object type_;
+  public enum TypeCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    PRIMITIVE_TYPE(2),
+    SCHEMA(3),
+    TYPE_NOT_SET(0);
+    private final int value;
+    private TypeCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static TypeCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static TypeCase forNumber(int value) {
+      switch (value) {
+        case 2: return PRIMITIVE_TYPE;
+        case 3: return SCHEMA;
+        case 0: return TYPE_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public TypeCase
+  getTypeCase() {
+    return TypeCase.forNumber(
+        typeCase_);
   }
 
   public static final int NAME_FIELD_NUMBER = 1;
@@ -83,22 +124,66 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int TYPE_FIELD_NUMBER = 2;
-  private int type_ = 0;
+  public static final int PRIMITIVE_TYPE_FIELD_NUMBER = 2;
   /**
-   * <code>.littlehorse.VariableType type = 2;</code>
-   * @return The enum numeric value on the wire for type.
+   * <code>.littlehorse.PrimitiveType primitive_type = 2;</code>
+   * @return Whether the primitiveType field is set.
    */
-  @java.lang.Override public int getTypeValue() {
-    return type_;
+  public boolean hasPrimitiveType() {
+    return typeCase_ == 2;
   }
   /**
-   * <code>.littlehorse.VariableType type = 2;</code>
-   * @return The type.
+   * <code>.littlehorse.PrimitiveType primitive_type = 2;</code>
+   * @return The enum numeric value on the wire for primitiveType.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.VariableType getType() {
-    io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(type_);
-    return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
+  public int getPrimitiveTypeValue() {
+    if (typeCase_ == 2) {
+      return (java.lang.Integer) type_;
+    }
+    return 0;
+  }
+  /**
+   * <code>.littlehorse.PrimitiveType primitive_type = 2;</code>
+   * @return The primitiveType.
+   */
+  public io.littlehorse.sdk.common.proto.PrimitiveType getPrimitiveType() {
+    if (typeCase_ == 2) {
+      io.littlehorse.sdk.common.proto.PrimitiveType result = io.littlehorse.sdk.common.proto.PrimitiveType.forNumber(
+          (java.lang.Integer) type_);
+      return result == null ? io.littlehorse.sdk.common.proto.PrimitiveType.UNRECOGNIZED : result;
+    }
+    return io.littlehorse.sdk.common.proto.PrimitiveType.JSON_OBJ;
+  }
+
+  public static final int SCHEMA_FIELD_NUMBER = 3;
+  /**
+   * <code>.littlehorse.SchemaId schema = 3;</code>
+   * @return Whether the schema field is set.
+   */
+  @java.lang.Override
+  public boolean hasSchema() {
+    return typeCase_ == 3;
+  }
+  /**
+   * <code>.littlehorse.SchemaId schema = 3;</code>
+   * @return The schema.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.SchemaId getSchema() {
+    if (typeCase_ == 3) {
+       return (io.littlehorse.sdk.common.proto.SchemaId) type_;
+    }
+    return io.littlehorse.sdk.common.proto.SchemaId.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.SchemaId schema = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.SchemaIdOrBuilder getSchemaOrBuilder() {
+    if (typeCase_ == 3) {
+       return (io.littlehorse.sdk.common.proto.SchemaId) type_;
+    }
+    return io.littlehorse.sdk.common.proto.SchemaId.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -118,8 +203,11 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
-    if (type_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
-      output.writeEnum(2, type_);
+    if (typeCase_ == 2) {
+      output.writeEnum(2, ((java.lang.Integer) type_));
+    }
+    if (typeCase_ == 3) {
+      output.writeMessage(3, (io.littlehorse.sdk.common.proto.SchemaId) type_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -133,9 +221,13 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
     }
-    if (type_ != io.littlehorse.sdk.common.proto.VariableType.JSON_OBJ.getNumber()) {
+    if (typeCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(2, type_);
+        .computeEnumSize(2, ((java.lang.Integer) type_));
+    }
+    if (typeCase_ == 3) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.SchemaId) type_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -154,7 +246,19 @@ private static final long serialVersionUID = 0L;
 
     if (!getName()
         .equals(other.getName())) return false;
-    if (type_ != other.type_) return false;
+    if (!getTypeCase().equals(other.getTypeCase())) return false;
+    switch (typeCase_) {
+      case 2:
+        if (getPrimitiveTypeValue()
+            != other.getPrimitiveTypeValue()) return false;
+        break;
+      case 3:
+        if (!getSchema()
+            .equals(other.getSchema())) return false;
+        break;
+      case 0:
+      default:
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -168,8 +272,18 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
-    hash = (37 * hash) + TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + type_;
+    switch (typeCase_) {
+      case 2:
+        hash = (37 * hash) + PRIMITIVE_TYPE_FIELD_NUMBER;
+        hash = (53 * hash) + getPrimitiveTypeValue();
+        break;
+      case 3:
+        hash = (37 * hash) + SCHEMA_FIELD_NUMBER;
+        hash = (53 * hash) + getSchema().hashCode();
+        break;
+      case 0:
+      default:
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -306,7 +420,11 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       name_ = "";
-      type_ = 0;
+      if (schemaBuilder_ != null) {
+        schemaBuilder_.clear();
+      }
+      typeCase_ = 0;
+      type_ = null;
       return this;
     }
 
@@ -334,6 +452,7 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest buildPartial() {
       io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest result = new io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
@@ -343,8 +462,14 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.name_ = name_;
       }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.type_ = type_;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest result) {
+      result.typeCase_ = typeCase_;
+      result.type_ = this.type_;
+      if (typeCase_ == 3 &&
+          schemaBuilder_ != null) {
+        result.type_ = schemaBuilder_.build();
       }
     }
 
@@ -397,8 +522,18 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (other.type_ != 0) {
-        setTypeValue(other.getTypeValue());
+      switch (other.getTypeCase()) {
+        case PRIMITIVE_TYPE: {
+          setPrimitiveTypeValue(other.getPrimitiveTypeValue());
+          break;
+        }
+        case SCHEMA: {
+          mergeSchema(other.getSchema());
+          break;
+        }
+        case TYPE_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -432,10 +567,18 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 16: {
-              type_ = input.readEnum();
-              bitField0_ |= 0x00000002;
+              int rawValue = input.readEnum();
+              typeCase_ = 2;
+              type_ = rawValue;
               break;
             } // case 16
+            case 26: {
+              input.readMessage(
+                  getSchemaFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              typeCase_ = 3;
+              break;
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -451,6 +594,21 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int typeCase_ = 0;
+    private java.lang.Object type_;
+    public TypeCase
+        getTypeCase() {
+      return TypeCase.forNumber(
+          typeCase_);
+    }
+
+    public Builder clearType() {
+      typeCase_ = 0;
+      type_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
     private java.lang.Object name_ = "";
@@ -525,57 +683,216 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int type_ = 0;
     /**
-     * <code>.littlehorse.VariableType type = 2;</code>
-     * @return The enum numeric value on the wire for type.
+     * <code>.littlehorse.PrimitiveType primitive_type = 2;</code>
+     * @return Whether the primitiveType field is set.
      */
-    @java.lang.Override public int getTypeValue() {
-      return type_;
+    @java.lang.Override
+    public boolean hasPrimitiveType() {
+      return typeCase_ == 2;
     }
     /**
-     * <code>.littlehorse.VariableType type = 2;</code>
-     * @param value The enum numeric value on the wire for type to set.
+     * <code>.littlehorse.PrimitiveType primitive_type = 2;</code>
+     * @return The enum numeric value on the wire for primitiveType.
+     */
+    @java.lang.Override
+    public int getPrimitiveTypeValue() {
+      if (typeCase_ == 2) {
+        return ((java.lang.Integer) type_).intValue();
+      }
+      return 0;
+    }
+    /**
+     * <code>.littlehorse.PrimitiveType primitive_type = 2;</code>
+     * @param value The enum numeric value on the wire for primitiveType to set.
      * @return This builder for chaining.
      */
-    public Builder setTypeValue(int value) {
+    public Builder setPrimitiveTypeValue(int value) {
+      typeCase_ = 2;
       type_ = value;
-      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.VariableType type = 2;</code>
-     * @return The type.
+     * <code>.littlehorse.PrimitiveType primitive_type = 2;</code>
+     * @return The primitiveType.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableType getType() {
-      io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(type_);
-      return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.PrimitiveType getPrimitiveType() {
+      if (typeCase_ == 2) {
+        io.littlehorse.sdk.common.proto.PrimitiveType result = io.littlehorse.sdk.common.proto.PrimitiveType.forNumber(
+            (java.lang.Integer) type_);
+        return result == null ? io.littlehorse.sdk.common.proto.PrimitiveType.UNRECOGNIZED : result;
+      }
+      return io.littlehorse.sdk.common.proto.PrimitiveType.JSON_OBJ;
     }
     /**
-     * <code>.littlehorse.VariableType type = 2;</code>
-     * @param value The type to set.
+     * <code>.littlehorse.PrimitiveType primitive_type = 2;</code>
+     * @param value The primitiveType to set.
      * @return This builder for chaining.
      */
-    public Builder setType(io.littlehorse.sdk.common.proto.VariableType value) {
+    public Builder setPrimitiveType(io.littlehorse.sdk.common.proto.PrimitiveType value) {
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00000002;
+      typeCase_ = 2;
       type_ = value.getNumber();
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.VariableType type = 2;</code>
+     * <code>.littlehorse.PrimitiveType primitive_type = 2;</code>
      * @return This builder for chaining.
      */
-    public Builder clearType() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      type_ = 0;
-      onChanged();
+    public Builder clearPrimitiveType() {
+      if (typeCase_ == 2) {
+        typeCase_ = 0;
+        type_ = null;
+        onChanged();
+      }
       return this;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.SchemaId, io.littlehorse.sdk.common.proto.SchemaId.Builder, io.littlehorse.sdk.common.proto.SchemaIdOrBuilder> schemaBuilder_;
+    /**
+     * <code>.littlehorse.SchemaId schema = 3;</code>
+     * @return Whether the schema field is set.
+     */
+    @java.lang.Override
+    public boolean hasSchema() {
+      return typeCase_ == 3;
+    }
+    /**
+     * <code>.littlehorse.SchemaId schema = 3;</code>
+     * @return The schema.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.SchemaId getSchema() {
+      if (schemaBuilder_ == null) {
+        if (typeCase_ == 3) {
+          return (io.littlehorse.sdk.common.proto.SchemaId) type_;
+        }
+        return io.littlehorse.sdk.common.proto.SchemaId.getDefaultInstance();
+      } else {
+        if (typeCase_ == 3) {
+          return schemaBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.SchemaId.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.SchemaId schema = 3;</code>
+     */
+    public Builder setSchema(io.littlehorse.sdk.common.proto.SchemaId value) {
+      if (schemaBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        type_ = value;
+        onChanged();
+      } else {
+        schemaBuilder_.setMessage(value);
+      }
+      typeCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.SchemaId schema = 3;</code>
+     */
+    public Builder setSchema(
+        io.littlehorse.sdk.common.proto.SchemaId.Builder builderForValue) {
+      if (schemaBuilder_ == null) {
+        type_ = builderForValue.build();
+        onChanged();
+      } else {
+        schemaBuilder_.setMessage(builderForValue.build());
+      }
+      typeCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.SchemaId schema = 3;</code>
+     */
+    public Builder mergeSchema(io.littlehorse.sdk.common.proto.SchemaId value) {
+      if (schemaBuilder_ == null) {
+        if (typeCase_ == 3 &&
+            type_ != io.littlehorse.sdk.common.proto.SchemaId.getDefaultInstance()) {
+          type_ = io.littlehorse.sdk.common.proto.SchemaId.newBuilder((io.littlehorse.sdk.common.proto.SchemaId) type_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          type_ = value;
+        }
+        onChanged();
+      } else {
+        if (typeCase_ == 3) {
+          schemaBuilder_.mergeFrom(value);
+        } else {
+          schemaBuilder_.setMessage(value);
+        }
+      }
+      typeCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.SchemaId schema = 3;</code>
+     */
+    public Builder clearSchema() {
+      if (schemaBuilder_ == null) {
+        if (typeCase_ == 3) {
+          typeCase_ = 0;
+          type_ = null;
+          onChanged();
+        }
+      } else {
+        if (typeCase_ == 3) {
+          typeCase_ = 0;
+          type_ = null;
+        }
+        schemaBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.SchemaId schema = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.SchemaId.Builder getSchemaBuilder() {
+      return getSchemaFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.SchemaId schema = 3;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.SchemaIdOrBuilder getSchemaOrBuilder() {
+      if ((typeCase_ == 3) && (schemaBuilder_ != null)) {
+        return schemaBuilder_.getMessageOrBuilder();
+      } else {
+        if (typeCase_ == 3) {
+          return (io.littlehorse.sdk.common.proto.SchemaId) type_;
+        }
+        return io.littlehorse.sdk.common.proto.SchemaId.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.SchemaId schema = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.SchemaId, io.littlehorse.sdk.common.proto.SchemaId.Builder, io.littlehorse.sdk.common.proto.SchemaIdOrBuilder> 
+        getSchemaFieldBuilder() {
+      if (schemaBuilder_ == null) {
+        if (!(typeCase_ == 3)) {
+          type_ = io.littlehorse.sdk.common.proto.SchemaId.getDefaultInstance();
+        }
+        schemaBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.SchemaId, io.littlehorse.sdk.common.proto.SchemaId.Builder, io.littlehorse.sdk.common.proto.SchemaIdOrBuilder>(
+                (io.littlehorse.sdk.common.proto.SchemaId) type_,
+                getParentForChildren(),
+                isClean());
+        type_ = null;
+      }
+      typeCase_ = 3;
+      onChanged();
+      return schemaBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

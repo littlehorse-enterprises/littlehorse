@@ -78,7 +78,7 @@ enum MetricsWindowLength {
 
 // Type of a Varaible in LittleHorse. Corresponds to the possible value type's of a
 // VariableValue.
-enum VariableType {
+enum PrimitiveType {
   // An object represented as a json string. <br/>
   //
   // The `JSON_OBJ` variable allows you to store complex objects in the JSON format.

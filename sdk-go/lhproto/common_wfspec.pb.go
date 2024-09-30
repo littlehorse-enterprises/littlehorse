@@ -490,7 +490,11 @@ type VariableDef struct {
 	unknownFields protoimpl.UnknownFields
 
 	// The Type of the variable.
-	Type VariableType `protobuf:"varint,1,opt,name=type,proto3,enum=littlehorse.VariableType" json:"type,omitempty"`
+	//
+	// Types that are assignable to Type:
+	//	*VariableDef_Primitive
+	//	*VariableDef_Schema
+	Type isVariableDef_Type `protobuf_oneof:"type"`
 	// The name of the variable.
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	// Optional default value if the variable isn't set; for example, in a ThreadRun
@@ -498,7 +502,7 @@ type VariableDef struct {
 	// used.
 	DefaultValue *VariableValue `protobuf:"bytes,3,opt,name=default_value,json=defaultValue,proto3,oneof" json:"default_value,omitempty"`
 	// If true, the variable value will show as a masked string.
-	MaskedValue bool `protobuf:"varint,4,opt,name=masked_value,json=maskedValue,proto3" json:"masked_value,omitempty"`
+	IsMasked bool `protobuf:"varint,4,opt,name=is_masked,json=isMasked,proto3" json:"is_masked,omitempty"`
 }
 
 func (x *VariableDef) Reset() {
@@ -533,11 +537,25 @@ func (*VariableDef) Descriptor() ([]byte, []int) {
 	return file_common_wfspec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *VariableDef) GetType() VariableType {
-	if x != nil {
-		return x.Type
+func (m *VariableDef) GetType() isVariableDef_Type {
+	if m != nil {
+		return m.Type
 	}
-	return VariableType_JSON_OBJ
+	return nil
+}
+
+func (x *VariableDef) GetPrimitive() PrimitiveType {
+	if x, ok := x.GetType().(*VariableDef_Primitive); ok {
+		return x.Primitive
+	}
+	return PrimitiveType_JSON_OBJ
+}
+
+func (x *VariableDef) GetSchema() *SchemaId {
+	if x, ok := x.GetType().(*VariableDef_Schema); ok {
+		return x.Schema
+	}
+	return nil
 }
 
 func (x *VariableDef) GetName() string {
@@ -554,12 +572,30 @@ func (x *VariableDef) GetDefaultValue() *VariableValue {
 	return nil
 }
 
-func (x *VariableDef) GetMaskedValue() bool {
+func (x *VariableDef) GetIsMasked() bool {
 	if x != nil {
-		return x.MaskedValue
+		return x.IsMasked
 	}
 	return false
 }
+
+type isVariableDef_Type interface {
+	isVariableDef_Type()
+}
+
+type VariableDef_Primitive struct {
+	// The primitive type of the variable.
+	Primitive PrimitiveType `protobuf:"varint,1,opt,name=primitive,proto3,enum=littlehorse.PrimitiveType,oneof"`
+}
+
+type VariableDef_Schema struct {
+	// The ID of the schema that the variable belongs to.
+	Schema *SchemaId `protobuf:"bytes,5,opt,name=schema,proto3,oneof"`
+}
+
+func (*VariableDef_Primitive) isVariableDef_Type() {}
+
+func (*VariableDef_Schema) isVariableDef_Type() {}
 
 // A UTActionTrigger triggers an action upon certain lifecycle hooks
 // in a User Task. Actions include:
@@ -1218,18 +1254,22 @@ var file_common_wfspec_proto_rawDesc = []byte{
 	0x61, 0x74, 0x68, 0x88, 0x01, 0x01, 0x42, 0x0b, 0x0a, 0x09, 0x5f, 0x6a, 0x73, 0x6f, 0x6e, 0x70,
 	0x61, 0x74, 0x68, 0x42, 0x0b, 0x0a, 0x09, 0x72, 0x68, 0x73, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65,
 	0x42, 0x10, 0x0a, 0x0e, 0x5f, 0x6c, 0x68, 0x73, 0x5f, 0x6a, 0x73, 0x6f, 0x6e, 0x5f, 0x70, 0x61,
-	0x74, 0x68, 0x22, 0xcb, 0x01, 0x0a, 0x0b, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x44,
-	0x65, 0x66, 0x12, 0x2d, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e,
-	0x32, 0x19, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x56,
-	0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70,
-	0x65, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x44, 0x0a, 0x0d, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74,
-	0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x6c,
-	0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x56, 0x61, 0x72, 0x69, 0x61,
-	0x62, 0x6c, 0x65, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x48, 0x00, 0x52, 0x0c, 0x64, 0x65, 0x66, 0x61,
-	0x75, 0x6c, 0x74, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x88, 0x01, 0x01, 0x12, 0x21, 0x0a, 0x0c, 0x6d,
-	0x61, 0x73, 0x6b, 0x65, 0x64, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28,
-	0x08, 0x52, 0x0b, 0x6d, 0x61, 0x73, 0x6b, 0x65, 0x64, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x42, 0x10,
+	0x74, 0x68, 0x22, 0x8b, 0x02, 0x0a, 0x0b, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x44,
+	0x65, 0x66, 0x12, 0x3a, 0x0a, 0x09, 0x70, 0x72, 0x69, 0x6d, 0x69, 0x74, 0x69, 0x76, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1a, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f,
+	0x72, 0x73, 0x65, 0x2e, 0x50, 0x72, 0x69, 0x6d, 0x69, 0x74, 0x69, 0x76, 0x65, 0x54, 0x79, 0x70,
+	0x65, 0x48, 0x00, 0x52, 0x09, 0x70, 0x72, 0x69, 0x6d, 0x69, 0x74, 0x69, 0x76, 0x65, 0x12, 0x2f,
+	0x0a, 0x06, 0x73, 0x63, 0x68, 0x65, 0x6d, 0x61, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15,
+	0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x53, 0x63, 0x68,
+	0x65, 0x6d, 0x61, 0x49, 0x64, 0x48, 0x00, 0x52, 0x06, 0x73, 0x63, 0x68, 0x65, 0x6d, 0x61, 0x12,
+	0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e,
+	0x61, 0x6d, 0x65, 0x12, 0x44, 0x0a, 0x0d, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x6c, 0x69, 0x74,
+	0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c,
+	0x65, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x48, 0x01, 0x52, 0x0c, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6c,
+	0x74, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x88, 0x01, 0x01, 0x12, 0x1b, 0x0a, 0x09, 0x69, 0x73, 0x5f,
+	0x6d, 0x61, 0x73, 0x6b, 0x65, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x69, 0x73,
+	0x4d, 0x61, 0x73, 0x6b, 0x65, 0x64, 0x42, 0x06, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x42, 0x10,
 	0x0a, 0x0e, 0x5f, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65,
 	0x22, 0xbf, 0x05, 0x0a, 0x0f, 0x55, 0x54, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x72, 0x69,
 	0x67, 0x67, 0x65, 0x72, 0x12, 0x3a, 0x0a, 0x04, 0x74, 0x61, 0x73, 0x6b, 0x18, 0x01, 0x20, 0x01,
@@ -1366,8 +1406,9 @@ var file_common_wfspec_proto_goTypes = []interface{}{
 	(*UTActionTrigger_UTATask)(nil),           // 12: littlehorse.UTActionTrigger.UTATask
 	(*UTActionTrigger_UTAReassign)(nil),       // 13: littlehorse.UTActionTrigger.UTAReassign
 	(*VariableValue)(nil),                     // 14: littlehorse.VariableValue
-	(VariableType)(0),                         // 15: littlehorse.VariableType
-	(*TaskDefId)(nil),                         // 16: littlehorse.TaskDefId
+	(PrimitiveType)(0),                        // 15: littlehorse.PrimitiveType
+	(*SchemaId)(nil),                          // 16: littlehorse.SchemaId
+	(*TaskDefId)(nil),                         // 17: littlehorse.TaskDefId
 }
 var file_common_wfspec_proto_depIdxs = []int32{
 	14, // 0: littlehorse.VariableAssignment.literal_value:type_name -> littlehorse.VariableValue
@@ -1376,28 +1417,29 @@ var file_common_wfspec_proto_depIdxs = []int32{
 	3,  // 3: littlehorse.VariableMutation.source_variable:type_name -> littlehorse.VariableAssignment
 	14, // 4: littlehorse.VariableMutation.literal_value:type_name -> littlehorse.VariableValue
 	10, // 5: littlehorse.VariableMutation.node_output:type_name -> littlehorse.VariableMutation.NodeOutputSource
-	15, // 6: littlehorse.VariableDef.type:type_name -> littlehorse.VariableType
-	14, // 7: littlehorse.VariableDef.default_value:type_name -> littlehorse.VariableValue
-	12, // 8: littlehorse.UTActionTrigger.task:type_name -> littlehorse.UTActionTrigger.UTATask
-	11, // 9: littlehorse.UTActionTrigger.cancel:type_name -> littlehorse.UTActionTrigger.UTACancel
-	13, // 10: littlehorse.UTActionTrigger.reassign:type_name -> littlehorse.UTActionTrigger.UTAReassign
-	3,  // 11: littlehorse.UTActionTrigger.delay_seconds:type_name -> littlehorse.VariableAssignment
-	2,  // 12: littlehorse.UTActionTrigger.hook:type_name -> littlehorse.UTActionTrigger.UTHook
-	16, // 13: littlehorse.TaskNode.task_def_id:type_name -> littlehorse.TaskDefId
-	3,  // 14: littlehorse.TaskNode.dynamic_task:type_name -> littlehorse.VariableAssignment
-	7,  // 15: littlehorse.TaskNode.exponential_backoff:type_name -> littlehorse.ExponentialBackoffRetryPolicy
-	3,  // 16: littlehorse.TaskNode.variables:type_name -> littlehorse.VariableAssignment
-	3,  // 17: littlehorse.VariableAssignment.FormatString.format:type_name -> littlehorse.VariableAssignment
-	3,  // 18: littlehorse.VariableAssignment.FormatString.args:type_name -> littlehorse.VariableAssignment
-	8,  // 19: littlehorse.UTActionTrigger.UTATask.task:type_name -> littlehorse.TaskNode
-	4,  // 20: littlehorse.UTActionTrigger.UTATask.mutations:type_name -> littlehorse.VariableMutation
-	3,  // 21: littlehorse.UTActionTrigger.UTAReassign.user_id:type_name -> littlehorse.VariableAssignment
-	3,  // 22: littlehorse.UTActionTrigger.UTAReassign.user_group:type_name -> littlehorse.VariableAssignment
-	23, // [23:23] is the sub-list for method output_type
-	23, // [23:23] is the sub-list for method input_type
-	23, // [23:23] is the sub-list for extension type_name
-	23, // [23:23] is the sub-list for extension extendee
-	0,  // [0:23] is the sub-list for field type_name
+	15, // 6: littlehorse.VariableDef.primitive:type_name -> littlehorse.PrimitiveType
+	16, // 7: littlehorse.VariableDef.schema:type_name -> littlehorse.SchemaId
+	14, // 8: littlehorse.VariableDef.default_value:type_name -> littlehorse.VariableValue
+	12, // 9: littlehorse.UTActionTrigger.task:type_name -> littlehorse.UTActionTrigger.UTATask
+	11, // 10: littlehorse.UTActionTrigger.cancel:type_name -> littlehorse.UTActionTrigger.UTACancel
+	13, // 11: littlehorse.UTActionTrigger.reassign:type_name -> littlehorse.UTActionTrigger.UTAReassign
+	3,  // 12: littlehorse.UTActionTrigger.delay_seconds:type_name -> littlehorse.VariableAssignment
+	2,  // 13: littlehorse.UTActionTrigger.hook:type_name -> littlehorse.UTActionTrigger.UTHook
+	17, // 14: littlehorse.TaskNode.task_def_id:type_name -> littlehorse.TaskDefId
+	3,  // 15: littlehorse.TaskNode.dynamic_task:type_name -> littlehorse.VariableAssignment
+	7,  // 16: littlehorse.TaskNode.exponential_backoff:type_name -> littlehorse.ExponentialBackoffRetryPolicy
+	3,  // 17: littlehorse.TaskNode.variables:type_name -> littlehorse.VariableAssignment
+	3,  // 18: littlehorse.VariableAssignment.FormatString.format:type_name -> littlehorse.VariableAssignment
+	3,  // 19: littlehorse.VariableAssignment.FormatString.args:type_name -> littlehorse.VariableAssignment
+	8,  // 20: littlehorse.UTActionTrigger.UTATask.task:type_name -> littlehorse.TaskNode
+	4,  // 21: littlehorse.UTActionTrigger.UTATask.mutations:type_name -> littlehorse.VariableMutation
+	3,  // 22: littlehorse.UTActionTrigger.UTAReassign.user_id:type_name -> littlehorse.VariableAssignment
+	3,  // 23: littlehorse.UTActionTrigger.UTAReassign.user_group:type_name -> littlehorse.VariableAssignment
+	24, // [24:24] is the sub-list for method output_type
+	24, // [24:24] is the sub-list for method input_type
+	24, // [24:24] is the sub-list for extension type_name
+	24, // [24:24] is the sub-list for extension extendee
+	0,  // [0:24] is the sub-list for field type_name
 }
 
 func init() { file_common_wfspec_proto_init() }
@@ -1552,7 +1594,10 @@ func file_common_wfspec_proto_init() {
 		(*VariableMutation_LiteralValue)(nil),
 		(*VariableMutation_NodeOutput)(nil),
 	}
-	file_common_wfspec_proto_msgTypes[2].OneofWrappers = []interface{}{}
+	file_common_wfspec_proto_msgTypes[2].OneofWrappers = []interface{}{
+		(*VariableDef_Primitive)(nil),
+		(*VariableDef_Schema)(nil),
+	}
 	file_common_wfspec_proto_msgTypes[3].OneofWrappers = []interface{}{
 		(*UTActionTrigger_Task)(nil),
 		(*UTActionTrigger_Cancel)(nil),

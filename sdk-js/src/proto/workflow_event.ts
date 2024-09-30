@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
-import { VariableType, variableTypeFromJSON, variableTypeToNumber } from "./common_enums";
+import { PrimitiveType, primitiveTypeFromJSON, primitiveTypeToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { WorkflowEventDefId, WorkflowEventId } from "./object_id";
 import { VariableValue } from "./variable";
@@ -32,10 +32,22 @@ export interface WorkflowEvent {
   createdAt: string | undefined;
 }
 
+/** A `WorkflowEventDef` defines the blueprint for a `WorkflowEvent`. */
 export interface WorkflowEventDef {
-  id: WorkflowEventDefId | undefined;
-  createdAt: string | undefined;
-  type: VariableType;
+  /** The `id` of the `WorkflowEventDef`. */
+  id:
+    | WorkflowEventDefId
+    | undefined;
+  /** The timestamp at which the `WorkflowEventDef` was created. */
+  createdAt:
+    | string
+    | undefined;
+  /**
+   * The type of the content of the `WorkflowEvent`.
+   *
+   * TODO: Support schemas
+   */
+  type: PrimitiveType;
 }
 
 function createBaseWorkflowEvent(): WorkflowEvent {
@@ -108,7 +120,7 @@ export const WorkflowEvent = {
 };
 
 function createBaseWorkflowEventDef(): WorkflowEventDef {
-  return { id: undefined, createdAt: undefined, type: VariableType.JSON_OBJ };
+  return { id: undefined, createdAt: undefined, type: PrimitiveType.JSON_OBJ };
 }
 
 export const WorkflowEventDef = {
@@ -119,8 +131,8 @@ export const WorkflowEventDef = {
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
     }
-    if (message.type !== VariableType.JSON_OBJ) {
-      writer.uint32(24).int32(variableTypeToNumber(message.type));
+    if (message.type !== PrimitiveType.JSON_OBJ) {
+      writer.uint32(24).int32(primitiveTypeToNumber(message.type));
     }
     return writer;
   },
@@ -151,7 +163,7 @@ export const WorkflowEventDef = {
             break;
           }
 
-          message.type = variableTypeFromJSON(reader.int32());
+          message.type = primitiveTypeFromJSON(reader.int32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -171,7 +183,7 @@ export const WorkflowEventDef = {
       ? WorkflowEventDefId.fromPartial(object.id)
       : undefined;
     message.createdAt = object.createdAt ?? undefined;
-    message.type = object.type ?? VariableType.JSON_OBJ;
+    message.type = object.type ?? PrimitiveType.JSON_OBJ;
     return message;
   },
 };

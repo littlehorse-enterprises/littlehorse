@@ -8,43 +8,79 @@ public interface WorkflowEventDefOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The `id` of the `WorkflowEventDef`.
+   * </pre>
+   *
    * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * The `id` of the `WorkflowEventDef`.
+   * </pre>
+   *
    * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.WorkflowEventDefId getId();
   /**
+   * <pre>
+   * The `id` of the `WorkflowEventDef`.
+   * </pre>
+   *
    * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WorkflowEventDefIdOrBuilder getIdOrBuilder();
 
   /**
+   * <pre>
+   * The timestamp at which the `WorkflowEventDef` was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
   boolean hasCreatedAt();
   /**
+   * <pre>
+   * The timestamp at which the `WorkflowEventDef` was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
   com.google.protobuf.Timestamp getCreatedAt();
   /**
+   * <pre>
+   * The timestamp at which the `WorkflowEventDef` was created.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
-   * <code>.littlehorse.VariableType type = 3;</code>
+   * <pre>
+   * The type of the content of the `WorkflowEvent`.
+   *
+   * TODO: Support schemas
+   * </pre>
+   *
+   * <code>.littlehorse.PrimitiveType type = 3;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
-   * <code>.littlehorse.VariableType type = 3;</code>
+   * <pre>
+   * The type of the content of the `WorkflowEvent`.
+   *
+   * TODO: Support schemas
+   * </pre>
+   *
+   * <code>.littlehorse.PrimitiveType type = 3;</code>
    * @return The type.
    */
-  io.littlehorse.sdk.common.proto.VariableType getType();
+  io.littlehorse.sdk.common.proto.PrimitiveType getType();
 }

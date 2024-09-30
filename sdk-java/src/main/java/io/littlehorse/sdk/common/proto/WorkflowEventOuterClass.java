@@ -39,13 +39,13 @@ public final class WorkflowEventOuterClass {
       "o\"\226\001\n\rWorkflowEvent\022(\n\002id\030\001 \001(\0132\034.little" +
       "horse.WorkflowEventId\022+\n\007content\030\002 \001(\0132\032" +
       ".littlehorse.VariableValue\022.\n\ncreated_at" +
-      "\030\003 \001(\0132\032.google.protobuf.Timestamp\"\230\001\n\020W" +
+      "\030\003 \001(\0132\032.google.protobuf.Timestamp\"\231\001\n\020W" +
       "orkflowEventDef\022+\n\002id\030\001 \001(\0132\037.littlehors" +
       "e.WorkflowEventDefId\022.\n\ncreated_at\030\002 \001(\013" +
-      "2\032.google.protobuf.Timestamp\022\'\n\004type\030\003 \001" +
-      "(\0162\031.littlehorse.VariableTypeBI\n\037io.litt" +
-      "lehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\030" +
-      "LittleHorse.Common.Protob\006proto3"
+      "2\032.google.protobuf.Timestamp\022(\n\004type\030\003 \001" +
+      "(\0162\032.littlehorse.PrimitiveTypeBI\n\037io.lit" +
+      "tlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002" +
+      "\030LittleHorse.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

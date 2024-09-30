@@ -63,6 +63,14 @@ export interface WorkflowEventDefId {
   name: string;
 }
 
+/** ID for a Schema */
+export interface SchemaId {
+  /** The name of the `Schema`. */
+  name: string;
+  /** The version of the `Schema`. */
+  version: number;
+}
+
 /** ID for a TaskWorkerGroup. */
 export interface TaskWorkerGroupId {
   /** TaskWorkerGroups are uniquely identified by their TaskDefId. */
@@ -472,6 +480,62 @@ export const WorkflowEventDefId = {
   fromPartial(object: DeepPartial<WorkflowEventDefId>): WorkflowEventDefId {
     const message = createBaseWorkflowEventDefId();
     message.name = object.name ?? "";
+    return message;
+  },
+};
+
+function createBaseSchemaId(): SchemaId {
+  return { name: "", version: 0 };
+}
+
+export const SchemaId = {
+  encode(message: SchemaId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.version !== 0) {
+      writer.uint32(16).int32(message.version);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SchemaId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSchemaId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.version = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<SchemaId>): SchemaId {
+    return SchemaId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SchemaId>): SchemaId {
+    const message = createBaseSchemaId();
+    message.name = object.name ?? "";
+    message.version = object.version ?? 0;
     return message;
   },
 };

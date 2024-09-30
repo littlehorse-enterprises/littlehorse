@@ -38,15 +38,15 @@ class MetricsWindowLength(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     HOURS_2: _ClassVar[MetricsWindowLength]
     DAYS_1: _ClassVar[MetricsWindowLength]
 
-class VariableType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+class PrimitiveType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
-    JSON_OBJ: _ClassVar[VariableType]
-    JSON_ARR: _ClassVar[VariableType]
-    DOUBLE: _ClassVar[VariableType]
-    BOOL: _ClassVar[VariableType]
-    STR: _ClassVar[VariableType]
-    INT: _ClassVar[VariableType]
-    BYTES: _ClassVar[VariableType]
+    JSON_OBJ: _ClassVar[PrimitiveType]
+    JSON_ARR: _ClassVar[PrimitiveType]
+    DOUBLE: _ClassVar[PrimitiveType]
+    BOOL: _ClassVar[PrimitiveType]
+    STR: _ClassVar[PrimitiveType]
+    INT: _ClassVar[PrimitiveType]
+    BYTES: _ClassVar[PrimitiveType]
 
 class LHErrorType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
@@ -81,13 +81,13 @@ TASK_PENDING: TaskStatus
 MINUTES_5: MetricsWindowLength
 HOURS_2: MetricsWindowLength
 DAYS_1: MetricsWindowLength
-JSON_OBJ: VariableType
-JSON_ARR: VariableType
-DOUBLE: VariableType
-BOOL: VariableType
-STR: VariableType
-INT: VariableType
-BYTES: VariableType
+JSON_OBJ: PrimitiveType
+JSON_ARR: PrimitiveType
+DOUBLE: PrimitiveType
+BOOL: PrimitiveType
+STR: PrimitiveType
+INT: PrimitiveType
+BYTES: PrimitiveType
 CHILD_FAILURE: LHErrorType
 VAR_SUB_ERROR: LHErrorType
 VAR_MUTATION_ERROR: LHErrorType
