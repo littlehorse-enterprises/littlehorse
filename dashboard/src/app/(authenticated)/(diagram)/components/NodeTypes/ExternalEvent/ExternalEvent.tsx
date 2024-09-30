@@ -1,6 +1,8 @@
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useQuery } from '@tanstack/react-query'
-import { Node as NodeProto } from 'littlehorse-client/proto'
+
+import { formatTime, getVariableValue } from '@/app/utils'
+import { LHStatus, Node as NodeProto } from 'littlehorse-client/proto'
 import { ExternalLinkIcon, EyeIcon, MailOpenIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, memo, useCallback } from 'react'
@@ -25,37 +27,53 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   const { setModal, setShowModal } = useModal()
 
   const onClick = useCallback(() => {
-    if (externalEvent) {
-      setModal({ type: 'externalEvent', data: externalEvent })
-      setShowModal(true)
-    }
+    if (!externalEvent) return
+
+    setModal({ type: 'externalEvent', data: externalEvent })
+    setShowModal(true)
   }, [externalEvent, setModal, setShowModal])
 
   if (!data.externalEvent) return null
-  const { fade, externalEvent: externalEventNode, nodeNeedsToBeHighlighted, nodeRun } = data
 
+  const { fade, externalEvent: externalEventNode, nodeNeedsToBeHighlighted, nodeRun } = data
   return (
     <>
       <NodeDetails>
-        <div className="">
-          <div className="flex items-center gap-1 text-nowrap">
-            <h3 className="font-bold">ExternalEventDef</h3>
-            <Link
-              className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
-              target="_blank"
-              href={`/externalEventDef/${externalEventNode.externalEventDefId?.name}`}
-            >
-              {externalEventNode.externalEventDefId?.name} <ExternalLinkIcon className="h-4 w-4" />
-            </Link>
-          </div>
-          {nodeRun && (
-            <div className="mt-2 flex justify-center">
-              <button className="flex items-center gap-1 p-1 text-blue-500 hover:bg-gray-200" onClick={onClick}>
-                <EyeIcon className="h-4 w-4" />
-                Inspect TaskRun
-              </button>
+        <div>
+          <div>
+            <div className="flex items-center gap-1 text-nowrap">
+              <h3 className="font-bold">ExternalEventDef</h3>
+              <Link
+                className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
+                target="_blank"
+                href={`/externalEventDef/${externalEventNode.externalEventDefId?.name}`}
+              >
+                {externalEventNode.externalEventDefId?.name} <ExternalLinkIcon className="h-4 w-4" />
+              </Link>
             </div>
-          )}
+            {
+              <div className="flex gap-2 text-nowrap">
+                <div className="flex items-center justify-center">
+                  Timeout:{' '}
+                  {externalEventNode.timeoutSeconds
+                    ? formatTime(getVariableValue(externalEventNode.timeoutSeconds.literalValue) as number)
+                    : 'N/A'}
+                </div>
+              </div>
+            }
+          </div>
+          {nodeRun &&
+            (nodeRun.status == LHStatus.COMPLETED ||
+              nodeRun.status == LHStatus.ERROR ||
+              nodeRun.status == LHStatus.EXCEPTION ||
+              nodeRun.status == LHStatus.HALTED) && (
+              <div className="mt-2 flex justify-center">
+                <button className="flex items-center gap-1 p-1 text-blue-500 hover:bg-gray-200" onClick={onClick}>
+                  <EyeIcon className="h-4 w-4" />
+                  Inspect ExternalEvent
+                </button>
+              </div>
+            )}
         </div>
       </NodeDetails>
       <Fade fade={fade} status={data.nodeRun?.status}>
