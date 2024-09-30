@@ -257,3 +257,66 @@ stub.RunWf(request)
 
   </TabItem>
 </Tabs>
+
+## Scheduling
+
+You can schedule `WfRun`s using Cron expressions.
+
+<Tabs>
+  <TabItem value="java" label="Java" default>
+
+```java
+LittleHorseBlockingStub client = ...;
+
+ScheduledWfRun result = client.scheduleWf(ScheduleWfRequest.newBuilder()
+        .setWfSpecName("some-wf-spec")
+        .setMajorVersion(0)
+        .setRevision(2)
+        .setCronExpression("5 4 * * *")
+        .putVariables("my-int-var", LHLibUtil.objToVarVal(1234))
+        .build());
+```
+
+  </TabItem>
+  <TabItem value="go" label="Go">
+
+```go
+config := littlehorse.NewConfigFromEnv()
+client, _ := config.GetGrpcClient()
+
+var wfRunId string
+wfRunId = "my-wfrun-id"
+
+stringVar, err := littlehorse.InterfaceToVarVal("some-string")
+intVar, err := littlehorse.InterfaceToVarVal(1234)
+
+result, err := (*client).ScheduleWf(context.Background(), &lhproto.ScheduleWfRequest{
+	WfSpecName: "some-wf-spec",
+	CronExpression: "5 4 * * *",
+	Variables: map[string]*lhproto.VariableValue{
+		"my-string-var": stringVar,
+	},
+})
+```
+
+  </TabItem>
+  <TabItem value="python" label="Python">
+
+
+```python
+config = LHConfig()
+stub = config.stub()
+request = ScheduleWfRequest(
+    wf_spec_name="some-wf-spec",
+    cron_expression="5 4 * * *",
+    variables={
+        "name": littlehorse.to_variable_value("bob"),
+    },
+)
+stub.RunWf(request)
+```
+
+  </TabItem>
+</Tabs>
+
+Note that you are not required to pick a `WfSpec` version; if you don't, the most current version will be used for every run.

@@ -245,6 +245,40 @@ def thread_function(thread: WorkflowThread) -> None:
   </TabItem>
 </Tabs>
 
+### Masked Variables
+
+In certain situations, you may need to mask the contents of a particular variable, ensuring that it remains hidden from users.
+You can achieve this by using masked variables, which will only allow access to the variable's content within your `WfRun`.
+
+<Tabs>
+  <TabItem value="java" label="Java" default>
+
+```java
+public void threadFunction(WorkflowThread thread) {
+    WfRunVariable myVar = thread.addVariable("my-masked-variable", VariableTypePb.STR).masked();
+}
+```
+
+  </TabItem>
+  <TabItem value="go" label="Go">
+
+```go
+func myThreadFunc(thread *littlehorse.WorkflowThread) {
+    myVar := thread.AddVariable("my-masked-variable", lhproto.VariableTypePb_STR)
+    myVar.Masked()
+}
+```
+
+  </TabItem>
+  <TabItem value="python" label="Python" default>
+
+```python
+def thread_function(thread: WorkflowThread) -> None:
+    the_name = thread.add_variable("input-name", VariableType.STR).masked()
+```
+  </TabItem>
+</Tabs>
+
 
 ## Executing a `TASK` Node
 
@@ -367,6 +401,18 @@ def thread_function(thread: WorkflowThread) -> None:
 
   </TabItem>
 </Tabs>
+
+You can also define a input masked variables by adding some metadata to the task argument or return values. Using the 
+same Python example:
+
+```python
+async def my_task(some_str: Annotated[str, LHType(name="some_str", masked=True)], some_int: int) -> str:
+    return f"Inputs were {some_str} and {some_int}"
+```
+
+:::note
+    Any type of variable can be masked, not limited to string types.
+:::
 
 ### Setting Retention Hours
 
