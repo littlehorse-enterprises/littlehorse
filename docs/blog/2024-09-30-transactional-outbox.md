@@ -65,6 +65,8 @@ The core idea of a Transactional Outbox is to make use of transactions within a 
 1. Make the database update.
 2. Write the desired queue event to an _Outbox Table._
 
+![Transactional Outbox Architecture](./2024-09-30user-workflow-outbox.png)
+
 Since items `1` and `2` happen within a single database, it's trivial to wrap them in a transaction. After the queue event is written to the Outbox Table, a separate process eventually reads the new records in the Outbox Table and pushes them to a queue.
 
 We would rewrite our Spring Boot endpoint to only write a transaction to the database. The SQL for that transaction would look something like:
@@ -88,8 +90,6 @@ As a hint, you can achieve EOS if you transactionally store the last-written off
 
 The Outbox Pattern is necessary to persist outgoing records in the case that we suffer a crash between writing to the database and writing to the record queue. However, what if we could "delegate" persistence and reliability to some other system?
 
-_Drumroll please..._
-
 Enter LittleHorse! What if we had a `WfSpec` that defined our process, as follows:
 
 ```java
@@ -105,13 +105,15 @@ Now, all our REST endpoint has to do is run the worklfow:
 @PostMapping("/user")
 public ResponseEntity<String> createUser(@RequestBody CreateUserRequest request) {
     // Just run the workflow
-    littlehorsClient.runWf(RunWfRequest.newBuilder()
+    littlehorseClient.runWf(RunWfRequest.newBuilder()
         .setWfSpecName("user-workflow")
         .putVariables("create-user-request", LHLibUtil.objToVarVal(request))
         .build());
     return ResponseEntity.status(HttpStatus.CREATED);
 }
 ```
+
+![Transactional Outbox Architecture with LittleHorse](./2024-09-30-user-workflow-lh.png)
 
 No outbox table needed! If creating the user in the database fails, or if sending the welcome email fails, LittleHorse will patiently retry (according to your retry backoff policy) the `TaskRun`s until they succeed. In the event that you exhaust your retries, you still haven't lost data:
 
