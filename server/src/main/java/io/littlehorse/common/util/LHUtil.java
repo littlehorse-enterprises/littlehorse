@@ -312,7 +312,7 @@ public class LHUtil {
         }
     }
 
-    public static boolean isUserError(Exception exn) {
+    public static boolean isUserError(Throwable exn) {
         if (StatusRuntimeException.class.isAssignableFrom(exn.getClass())) {
             StatusRuntimeException sre = (StatusRuntimeException) exn;
 

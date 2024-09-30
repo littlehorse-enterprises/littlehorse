@@ -149,9 +149,10 @@ public class EdgeModel extends LHSerializable<Edge> {
                 //
                 // The only thing we do here is add more info to the exception so that
                 // it is easier for the user to debug why their WfRun failed.
-                exn.addPrefix("Mutating variable %s with operation %s"
-                        .formatted(mutation.getLhsName(), mutation.getOperation()));
-                throw exn;
+                throw new LHVarSubError(
+                        exn,
+                        "Mutating variable %s with operation %s"
+                                .formatted(mutation.getLhsName(), mutation.getOperation()));
             }
         }
 

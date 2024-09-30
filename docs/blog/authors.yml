@@ -19,3 +19,13 @@ lh_council:
   socials:
     github: littlehorse-enterprises
     linkedin: https://www.linkedin.com/company/littlehorse
+
+mitchellh:
+  name: Mitchell Henderson
+  title: Principal Technical Architect
+  description: "Mitch is a software industry veteran experienced with Apache Kafka, Apache Cassandra, and systems modernization across a diverse set of industries including financial services, healthcare, technology, retail, and manufacturing. He prides himself in ensuring that all users of LittleHorse are successful."
+  image_url: https://avatars.githubusercontent.com/u/6223426
+  page: true
+  socials:
+    github: mitchell-h
+    linkedin: https://www.linkedin.com/in/mitchellghenderson/

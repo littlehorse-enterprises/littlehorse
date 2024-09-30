@@ -35,6 +35,12 @@ cd sdk-dotnet/LittleHorse.Sdk
 dotnet build
 dotnet run
 ```
+### Build and Run the SDK Tests
+
+```
+dotnet build
+dotnet test
+```
 
 ### Run Example
 

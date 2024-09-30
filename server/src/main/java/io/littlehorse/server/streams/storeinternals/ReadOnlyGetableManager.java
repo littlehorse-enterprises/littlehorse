@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.TaskId;
 
@@ -80,6 +81,15 @@ public class ReadOnlyGetableManager {
 
         uncommittedChanges.put(id.getStoreableKey(), new GetableToStore<>(storeResult, id.getObjectClass()));
         return out;
+    }
+
+    public <U extends Message, T extends CoreGetable<U>, EX extends Throwable> T getOrThrow(
+            CoreObjectId<?, U, T> id, Supplier<EX> throwable) throws EX {
+        T result = get(id);
+        if (result == null) {
+            throw throwable.get();
+        }
+        return result;
     }
 
     // Note that this is an expensive operation. It's used when deleting a WfRun.

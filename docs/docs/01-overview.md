@@ -4,7 +4,11 @@ sidebar_label: Overview
 
 # LittleHorse Overview
 
-![LittleHorse Dashboard](./dashboard-front-page.png)
+<div class="video-container">
+<iframe src="https://www.youtube.com/embed/ctZaChM-izY?si=Ic25sGibOjgQxPoA" class="video" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+
+<br/>
 
 The LittleHorse Orchestrator is a high-performance platform for building workflow-driven applications for a variety of use-cases, including:
 
@@ -65,7 +69,9 @@ By virtue of orchestrating your workflows with LittleHorse, every step can be au
 
 The following screenshot shows a stacktrace from a failed `TaskRun` using our Java SDK. No more hours of searching through DataDog!
 
-![Screenshot of failed TaskRun](./task-failure.png)
+<!-- ![Screenshot of failed TaskRun](./task-failure.png) -->
+
+![LittleHorse Dashboard](./dashboard-front-page.png)
 
 ### Flexible
 

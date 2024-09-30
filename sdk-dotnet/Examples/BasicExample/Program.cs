@@ -2,22 +2,38 @@
 using Microsoft.Extensions.Configuration;
 using LittleHorse.Sdk;
 using LittleHorse.Worker;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
-var props = new Dictionary<string, string>
+public class Program
+{
+    private static ServiceProvider? _serviceProvider;
+    private static void SetupApplication()
+    {
+        _serviceProvider = new ServiceCollection()
+            .AddLogging(config =>
+            {
+                config.AddConsole();
+                config.SetMinimumLevel(LogLevel.Debug);
+            })
+            .BuildServiceProvider();
+    }
+    static void Main(string[] args)
+    {
+        SetupApplication();
+        if (_serviceProvider != null)
         {
-            { "AppSettings:Setting1", "Value1" }
-        };
+            var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
+            var config = new LHConfig(loggerFactory);
 
-IConfiguration configuration = new ConfigurationBuilder()
-    .AddInMemoryCollection(props)
-    .Build();
-var config = new LHConfig(configuration);
+            MyWorker executable = new MyWorker();
+            var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet-dotnet", config);
 
-MyWorker executable = new MyWorker();
-var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet-dotnet", config);
+            taskWorker.RegisterTaskDef();
 
-taskWorker.RegisterTaskDef();
+            Thread.Sleep(1000);
 
-Thread.Sleep(1000);
-
-taskWorker.Start();
+            taskWorker.Start();
+        }
+    }
+}
