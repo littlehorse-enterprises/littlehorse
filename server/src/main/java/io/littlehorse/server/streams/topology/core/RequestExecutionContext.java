@@ -11,7 +11,6 @@ import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.auth.PermissionDeniedException;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
@@ -73,7 +72,7 @@ public class RequestExecutionContext implements ExecutionContext {
         this.authorization = authContextFor(clientId, tenantId);
         this.lhConfig = lhConfig;
     }
-    
+
     public ReadOnlyGetableManager getableManager() {
         return readOnlyGetableManager;
     }
@@ -129,8 +128,9 @@ public class RequestExecutionContext implements ExecutionContext {
         List<ServerACLModel> acls = new ArrayList<>();
         if (resolvedPrincipal.getPerTenantAcls().containsKey(tenantId.toString())) {
             if (this.isRequestingClusterScopedResource) {
-                throw new PermissionDeniedException(
-                    String.format("Current Principal %s has per-tenant ACLs for Tenant %s, but is trying to access a cluster-scoped resource. Cluster-scoped resource access requires global ACLs.", clientId.getId(), tenantId.getId()));
+                throw new PermissionDeniedException(String.format(
+                        "Current Principal %s has per-tenant ACLs for Tenant %s, but is trying to access a cluster-scoped resource. Cluster-scoped resource access requires global ACLs.",
+                        clientId.getId(), tenantId.getId()));
             }
 
             acls.addAll(resolvedPrincipal
@@ -140,11 +140,7 @@ public class RequestExecutionContext implements ExecutionContext {
         } else {
             acls.addAll(resolvedPrincipal.getGlobalAcls().getAcls());
         }
-        return new AuthorizationContextImpl(
-                resolvedPrincipal.getId(),
-                tenantId,
-                acls,
-                resolvedPrincipal.isAdmin());
+        return new AuthorizationContextImpl(resolvedPrincipal.getId(), tenantId, acls, resolvedPrincipal.isAdmin());
     }
 
     public Optional<Deadline> getDeadlineFromClient() {

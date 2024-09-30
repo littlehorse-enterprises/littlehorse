@@ -22,8 +22,6 @@ import io.littlehorse.server.LHServerListener;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
-import lombok.extern.slf4j.Slf4j;
-
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RequestAuthorizer implements ServerAuthorizer {
@@ -55,13 +54,14 @@ public class RequestAuthorizer implements ServerAuthorizer {
     }
 
     @Override
-    public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
+    public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(
+            ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
         // GET CLIENT ID AND TENANT ID
         String clientIdStr = headers.get(CLIENT_ID);
         PrincipalIdModel clientId = clientIdStr == null
                 ? null
                 : (PrincipalIdModel) ObjectIdModel.fromString(clientIdStr.trim(), PrincipalIdModel.class);
-        
+
         String tenantIdStr = headers.get(TENANT_ID);
         TenantIdModel tenantId = tenantIdStr == null
                 ? null
@@ -84,8 +84,15 @@ public class RequestAuthorizer implements ServerAuthorizer {
         }
     }
 
-    private RequestExecutionContext contextFor(PrincipalIdModel clientId, TenantIdModel tenantId, MethodDescriptor<?,?> method) {
-        return new RequestExecutionContext(clientId, tenantId, coreStoreProvider, metadataCache, lhConfig, aclVerifier.doesServiceRequireClusterScopedResources(method));
+    private RequestExecutionContext contextFor(
+            PrincipalIdModel clientId, TenantIdModel tenantId, MethodDescriptor<?, ?> method) {
+        return new RequestExecutionContext(
+                clientId,
+                tenantId,
+                coreStoreProvider,
+                metadataCache,
+                lhConfig,
+                aclVerifier.doesServiceRequireClusterScopedResources(method));
     }
 
     private static class AclVerifier {

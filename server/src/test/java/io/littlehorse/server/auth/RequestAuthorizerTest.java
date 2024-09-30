@@ -6,26 +6,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-
-import org.apache.kafka.streams.KafkaStreams;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.mockito.Answers;
-import org.mockito.Mockito;
-
 import com.google.common.collect.Iterables;
-
 import io.grpc.Context;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
@@ -49,6 +30,22 @@ import io.littlehorse.server.TestRequestExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import org.apache.kafka.streams.KafkaStreams;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
+import org.mockito.Mockito;
 
 public class RequestAuthorizerTest {
 
@@ -84,7 +81,7 @@ public class RequestAuthorizerTest {
         ServerServiceDefinition intercept = ServerInterceptors.intercept(testServiceDefinition, requestAuthorizer);
         @SuppressWarnings("unchecked")
         ServerMethodDefinition<Object, Object> def =
-                (ServerMethodDefinition<Object, Object>) Iterables.get(intercept.getMethods(), 0); 
+                (ServerMethodDefinition<Object, Object>) Iterables.get(intercept.getMethods(), 0);
         def.getServerCallHandler().startCall(mockCall, mockMetadata);
     }
 
@@ -225,9 +222,9 @@ public class RequestAuthorizerTest {
                 (ServerMethodDefinition<Object, Object>) Iterables.get(intercept.getMethods(), 0);
         final int numberOfRequests = 10_000;
         Consumer<String> submitCall = principalId -> {
-            ServerCall<Object,Object> stubCall = new NoopServerCall<>() {
+            ServerCall<Object, Object> stubCall = new NoopServerCall<>() {
                 @Override
-                public MethodDescriptor<Object,Object> getMethodDescriptor() {
+                public MethodDescriptor<Object, Object> getMethodDescriptor() {
                     return mockCall.getMethodDescriptor();
                 }
             };
