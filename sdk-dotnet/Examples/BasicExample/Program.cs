@@ -1,59 +1,39 @@
 ﻿using Examples.BasicExample;
-using Common.Configuration.Extension;
-using LittleHorse.Common.Configuration;
-using LittleHorse.Common.Configuration.Implementations;
+using Microsoft.Extensions.Configuration;
+using LittleHorse.Sdk;
 using LittleHorse.Worker;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
-var builder = Host.CreateDefaultBuilder(args);
-
-var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config", "littlehorse.config");
-
-if (File.Exists(path))
+public class Program
 {
-    builder.ConfigureLHWorker(path);
-}
-else
-{
-    builder.ConfigureLHWorker();
-}
-
-builder.ConfigureLogging((hostingContext, logging) =>
-{
-    logging.AddConsole();
-    logging.SetMinimumLevel(LogLevel.Debug);
-});
-
-builder.ConfigureServices((hostingContext, services) =>
-{
-    services.AddSingleton<ILHWorkerConfig, LHWorkerConfig>();
-    services.AddSingleton(provider =>
+    private static ServiceProvider? _serviceProvider;
+    private static void SetupApplication()
     {
-        var logger = provider.GetService<ILogger<MyWorker>>();
-        return new MyWorker(logger);
+        _serviceProvider = new ServiceCollection()
+            .AddLogging(config =>
+            {
+                config.AddConsole();
+                config.SetMinimumLevel(LogLevel.Debug);
+            })
+            .BuildServiceProvider();
     }
-    );
-    services.AddSingleton(provider =>
+    static void Main(string[] args)
     {
-        var myWorker = provider.GetRequiredService<MyWorker>();
-        var config = provider.GetRequiredService<ILHWorkerConfig>();
-        var logger = provider.GetService<ILogger<LHTaskWorker<MyWorker>>>();
+        SetupApplication();
+        if (_serviceProvider != null)
+        {
+            var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
+            var config = new LHConfig(loggerFactory);
 
-        return new LHTaskWorker<MyWorker>(myWorker, "greet", config, logger);
-    });
-});
+            MyWorker executable = new MyWorker();
+            var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet-dotnet", config);
 
-var host = builder.Build();
+            taskWorker.RegisterTaskDef();
 
-var taskWorker = host.Services.GetRequiredService<LHTaskWorker<MyWorker>>();
+            Thread.Sleep(1000);
 
-if (!taskWorker.TaskDefExists())
-{
-    taskWorker.RegisterTaskDef();
+            taskWorker.Start();
+        }
+    }
 }
-
-Thread.Sleep(1000);
-
-taskWorker.Start();

@@ -4,6 +4,7 @@ import static io.littlehorse.sdk.common.proto.LHStatus.*;
 
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.ListUserTaskRunRequest;
@@ -19,6 +20,7 @@ import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.usertask.annotations.UserTaskField;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
@@ -26,6 +28,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.test.CapturedResult;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHUserTaskForm;
@@ -34,6 +37,7 @@ import io.littlehorse.test.SearchResultCaptor;
 import io.littlehorse.test.WorkflowVerifier;
 import io.littlehorse.test.internal.TestExecutionContext;
 import java.time.Duration;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -43,6 +47,8 @@ public class UserTaskTest {
 
     public static final String USER_TASK_DEF_NAME = "my-usertask";
     private static final String TEST_USER_ID = "test-user-id";
+
+    private static final ConcurrentHashMap<String, String> cache = new ConcurrentHashMap<>();
 
     @LHWorkflow("deadline-reassignment-workflow")
     private Workflow deadlineReassignmentWorkflow;
@@ -232,12 +238,24 @@ public class UserTaskTest {
 
     @Test
     void shouldTransferOwnershipFromUserToGroupOnDeadline() {
+        WfRunId id = WfRunId.newBuilder().setId(LHUtil.generateGuid()).build();
+
         workflowVerifier
                 .prepareRun(deadlineReassignmentWorkflow)
                 .waitForStatus(RUNNING)
                 .waitForUserTaskRunStatus(0, 1, UserTaskRunStatus.ASSIGNED)
                 .waitForUserTaskRunStatus(0, 1, UserTaskRunStatus.UNASSIGNED, Duration.ofSeconds(6))
-                .start();
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    UserTaskRun userTask =
+                            client.getUserTaskRun(nodeRun.getUserTask().getUserTaskRunId());
+
+                    // Ensure that the reminder task was executed
+                    Assertions.assertThat(cache).containsKey(id.getId());
+                    Assertions.assertThat(userTask.getEventsCount()).isEqualTo(3);
+                    UserTaskEvent reminderTaskEvent = userTask.getEvents(1);
+                    Assertions.assertThat(reminderTaskEvent.getEventCase()).isEqualTo(EventCase.TASK_EXECUTED);
+                })
+                .start(id);
     }
 
     @Test
@@ -285,6 +303,9 @@ public class UserTaskTest {
 
             UserTaskOutput formOutput =
                     entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "test-group", "test-department");
+
+            // Schedule a reminder immediately
+            entrypointThread.scheduleReminderTask(formOutput, 0, "reminder-task");
 
             entrypointThread.releaseToGroupOnDeadline(formOutput, 1);
 
@@ -342,6 +363,11 @@ public class UserTaskTest {
     @LHTaskMethod("user-task-canceled")
     public String userTaskCanceled() {
         return "User task canceled";
+    }
+
+    @LHTaskMethod("reminder-task")
+    public void doReminder(WorkerContext ctx) {
+        cache.put(ctx.getWfRunId().getId(), "hello there!");
     }
 }
 

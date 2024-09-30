@@ -15,4 +15,4 @@ The real magic of a workflow engine is in the last step. Without a workflow engi
 
 Applications using LittleHorse might look like the following:
 
-![LittleHorse Architecture](./lh-application.png)
+![LittleHorse Architecture](../../static/img/2024-08-28-lh-application.png)

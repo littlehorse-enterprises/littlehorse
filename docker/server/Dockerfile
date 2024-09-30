@@ -1,4 +1,4 @@
-FROM amazoncorretto:17
+FROM amazoncorretto:21
 WORKDIR /lh
 COPY ./docker/server/docker-entrypoint.sh /lh
 COPY ./server/build/libs/server-*-all.jar /lh/server.jar

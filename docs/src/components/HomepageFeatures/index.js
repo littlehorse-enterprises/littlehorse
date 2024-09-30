@@ -19,7 +19,8 @@ const FeatureList = [
     description: (
       <>
         Libraries in Java, Go, and Python; source-available and free for production use.
-        Designed with love from first principles.
+        Designed with love from first principles so that you can use your existing code
+        and integrate with anything.
       </>
     ),
   },
@@ -42,7 +43,7 @@ function Feature({Svg, title, description}) {
         <Svg className={styles.featureSvg} role="img" />
       </div>
       <div className="text--center padding-horiz--md">
-        <h3>{title}</h3>
+        <h2>{title}</h2>
         <p>{description}</p>
       </div>
     </div>

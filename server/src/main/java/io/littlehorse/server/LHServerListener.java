@@ -10,6 +10,7 @@ import io.grpc.ServerBuilder;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHSerializable;
@@ -251,10 +252,15 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.streams.errors.InvalidStateStoreException;
 import org.apache.kafka.streams.processor.TaskId;
 
+/**
+ * This class provides the implementation for public RPCs.
+ * Any exception thrown by an RPC method within this class will be intercepted and
+ * handled by the {@code GlobalExceptionHandler} to ensure consistent error management.
+ */
 @Slf4j
 public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
@@ -307,7 +313,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         for (ServerInterceptor interceptor : interceptors) {
             builder.intercept(interceptor);
         }
-
+        builder.intercept(new GlobalExceptionHandler());
         this.grpcListener = builder.build();
     }
 
@@ -337,26 +343,23 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getWfSpec(WfSpecId req, StreamObserver<WfSpec> ctx) {
         WfSpecIdModel wfSpecId = LHSerializable.fromProto(req, WfSpecIdModel.class, requestContext());
-        WfSpecModel wfSpec = requestContext().metadataManager().get(wfSpecId);
-        if (wfSpec == null) {
-            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
-        } else {
-            ctx.onNext(wfSpec.toProto().build());
-            ctx.onCompleted();
-        }
+        WfSpecModel wfSpec = requestContext()
+                .metadataManager()
+                .getOrThrow(wfSpecId, () -> new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
+        ctx.onNext(wfSpec.toProto().build());
+        ctx.onCompleted();
     }
 
     @Override
     public void getScheduledWfRun(ScheduledWfRunId req, StreamObserver<ScheduledWfRun> ctx) {
         ScheduledWfRunIdModel scheduledWfId =
                 LHSerializable.fromProto(req, ScheduledWfRunIdModel.class, requestContext());
-        ScheduledWfRunModel scheduledWfRun = requestContext().getableManager().get(scheduledWfId);
-        if (scheduledWfRun == null) {
-            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified object"));
-        } else {
-            ctx.onNext(scheduledWfRun.toProto().build());
-            ctx.onCompleted();
-        }
+        ScheduledWfRunModel scheduledWfRun = requestContext()
+                .getableManager()
+                .getOrThrow(
+                        scheduledWfId, () -> new LHApiException(Status.NOT_FOUND, "Couldn't find specified object"));
+        ctx.onNext(scheduledWfRun.toProto().build());
+        ctx.onCompleted();
     }
 
     public void putPrincipal(PutPrincipalRequest req, StreamObserver<Principal> ctx) {
@@ -378,9 +381,8 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void getLatestWfSpec(GetLatestWfSpecRequest req, StreamObserver<WfSpec> ctx) {
         Integer majorVersion = req.hasMajorVersion() ? req.getMajorVersion() : null;
         WfSpecModel wfSpec = requestContext().service().getWfSpec(req.getName(), majorVersion, null);
-
         if (wfSpec == null) {
-            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec"));
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec");
         } else {
             ctx.onNext(wfSpec.toProto().build());
             ctx.onCompleted();
@@ -392,7 +394,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void getLatestUserTaskDef(GetLatestUserTaskDefRequest req, StreamObserver<UserTaskDef> ctx) {
         UserTaskDefModel utd = getServiceFromContext().getUserTaskDef(req.getName(), null);
         if (utd == null) {
-            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find UserTaskDef %s".formatted(req.getName())));
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find UserTaskDef %s".formatted(req.getName()));
         } else {
             ctx.onNext(utd.toProto().build());
             ctx.onCompleted();
@@ -404,9 +406,9 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void getUserTaskDef(UserTaskDefId req, StreamObserver<UserTaskDef> ctx) {
         UserTaskDefModel utd = getServiceFromContext().getUserTaskDef(req.getName(), req.getVersion());
         if (utd == null) {
-            ctx.onError(new LHApiException(
+            throw new LHApiException(
                     Status.NOT_FOUND,
-                    "Couldn't find UserTaskDef %s versoin %d".formatted(req.getName(), req.getVersion())));
+                    "Couldn't find UserTaskDef %s versoin %d".formatted(req.getName(), req.getVersion()));
         } else {
             ctx.onNext(utd.toProto().build());
             ctx.onCompleted();
@@ -418,7 +420,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void getTaskDef(TaskDefId req, StreamObserver<TaskDef> ctx) {
         TaskDefModel td = getServiceFromContext().getTaskDef(req.getName());
         if (td == null) {
-            ctx.onError(new LHApiException(Status.NOT_FOUND, "Couldn't find TaskDef %s".formatted(req.getName())));
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find TaskDef %s".formatted(req.getName()));
         } else {
             ctx.onNext(td.toProto().build());
             ctx.onCompleted();
@@ -430,16 +432,10 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void getTaskWorkerGroup(TaskDefId taskDefIdPb, StreamObserver<TaskWorkerGroup> ctx) {
         TaskDefIdModel taskDefId = TaskDefIdModel.fromProto(taskDefIdPb, TaskDefIdModel.class, requestContext());
         TaskWorkerGroupIdModel twgid = new TaskWorkerGroupIdModel(taskDefId);
-
-        try {
-            TaskWorkerGroupModel taskWorkerGroup =
-                    internalComms.getObject(twgid, TaskWorkerGroupModel.class, requestContext());
-            ctx.onNext(taskWorkerGroup.toProto().build());
-            ctx.onCompleted();
-        } catch (Exception exn) {
-            if (!LHUtil.isUserError(exn)) log.error("Error handling request", exn);
-            ctx.onError(exn);
-        }
+        TaskWorkerGroupModel taskWorkerGroup =
+                internalComms.getObject(twgid, TaskWorkerGroupModel.class, requestContext());
+        ctx.onNext(taskWorkerGroup.toProto().build());
+        ctx.onCompleted();
     }
 
     @Override
@@ -447,8 +443,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void getExternalEventDef(ExternalEventDefId req, StreamObserver<ExternalEventDef> ctx) {
         ExternalEventDefModel eed = getServiceFromContext().getExternalEventDef(req.getName());
         if (eed == null) {
-            ctx.onError(
-                    new LHApiException(Status.NOT_FOUND, "Couldn't find ExternalEventDef %s".formatted(req.getName())));
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find ExternalEventDef %s".formatted(req.getName()));
         } else {
             ctx.onNext(eed.toProto().build());
             ctx.onCompleted();
@@ -608,9 +603,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         TaskWorkerHeartBeatRequestModel heartBeat =
                 LHSerializable.fromProto(heartBeatPb, TaskWorkerHeartBeatRequestModel.class, requestContext());
 
-        // TODO: Refactor this, we should create a class for this
-        StreamObserver<RegisterTaskWorkerResponse> clusterHealthRequestObserver =
-                new ClusterHealthRequestObserver(responseObserver);
+        ClusterHealthRequestObserver clusterHealthRequestObserver = new ClusterHealthRequestObserver(responseObserver);
 
         processCommand(
                 new CommandModel(heartBeat), clusterHealthRequestObserver, RegisterTaskWorkerResponse.class, true);
@@ -631,11 +624,15 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         CommandModel command = new CommandModel(reqModel, new Date());
 
         Callback kafkaProducerCallback = (meta, exn) -> {
-            if (exn == null) {
-                ctx.onNext(Empty.getDefaultInstance());
-                ctx.onCompleted();
-            } else {
-                ctx.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
+            try {
+                if (exn == null) {
+                    ctx.onNext(Empty.getDefaultInstance());
+                    ctx.onCompleted();
+                } else {
+                    ctx.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
+                }
+            } catch (IllegalStateException e) {
+                log.debug("Call already closed");
             }
         };
 
@@ -652,84 +649,54 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getWfRun(WfRunId req, StreamObserver<WfRun> ctx) {
         WfRunIdModel id = LHSerializable.fromProto(req, WfRunIdModel.class, requestContext());
-        try {
-            WfRunModel wfRun = internalComms.getObject(id, WfRunModel.class, requestContext());
-            ctx.onNext(wfRun.toProto().build());
-            ctx.onCompleted();
-        } catch (Exception exn) {
-            if (!LHUtil.isUserError(exn)) log.error("Error handling request: " + exn.getMessage());
-            ctx.onError(exn);
-        }
+        WfRunModel wfRun = internalComms.getObject(id, WfRunModel.class, requestContext());
+        ctx.onNext(wfRun.toProto().build());
+        ctx.onCompleted();
     }
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getNodeRun(NodeRunId req, StreamObserver<NodeRun> ctx) {
         NodeRunIdModel id = LHSerializable.fromProto(req, NodeRunIdModel.class, requestContext());
-        try {
-            NodeRunModel nodeRun = internalComms.getObject(id, NodeRunModel.class, requestContext());
-            ctx.onNext(nodeRun.toProto().build());
-            ctx.onCompleted();
-        } catch (Exception exn) {
-            if (!LHUtil.isUserError(exn)) log.error("Error handling request: " + exn.getMessage());
-            ctx.onError(exn);
-        }
+        NodeRunModel nodeRun = internalComms.getObject(id, NodeRunModel.class, requestContext());
+        ctx.onNext(nodeRun.toProto().build());
+        ctx.onCompleted();
     }
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getTaskRun(TaskRunId req, StreamObserver<TaskRun> ctx) {
         TaskRunIdModel id = LHSerializable.fromProto(req, TaskRunIdModel.class, requestContext());
-        try {
-            TaskRunModel taskRun = internalComms.getObject(id, TaskRunModel.class, requestContext());
-            ctx.onNext(taskRun.toProto().build());
-            ctx.onCompleted();
-        } catch (Exception exn) {
-            if (!LHUtil.isUserError(exn)) log.error("Error handling request: " + exn.getMessage());
-            ctx.onError(exn);
-        }
+        TaskRunModel taskRun = internalComms.getObject(id, TaskRunModel.class, requestContext());
+        ctx.onNext(taskRun.toProto().build());
+        ctx.onCompleted();
     }
 
     @Override
     @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.READ)
     public void getUserTaskRun(UserTaskRunId req, StreamObserver<UserTaskRun> ctx) {
         UserTaskRunIdModel id = LHSerializable.fromProto(req, UserTaskRunIdModel.class, requestContext());
-        try {
-            UserTaskRunModel userTaskRun = internalComms.getObject(id, UserTaskRunModel.class, requestContext());
-            ctx.onNext(userTaskRun.toProto().build());
-            ctx.onCompleted();
-        } catch (Exception exn) {
-            if (!LHUtil.isUserError(exn)) log.error("Error handling request: " + exn.getMessage());
-            ctx.onError(exn);
-        }
+        UserTaskRunModel userTaskRun = internalComms.getObject(id, UserTaskRunModel.class, requestContext());
+        ctx.onNext(userTaskRun.toProto().build());
+        ctx.onCompleted();
     }
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getVariable(VariableId req, StreamObserver<Variable> ctx) {
         VariableIdModel id = LHSerializable.fromProto(req, VariableIdModel.class, requestContext());
-        try {
-            VariableModel variable = internalComms.getObject(id, VariableModel.class, requestContext());
-            ctx.onNext(variable.toProto().build());
-            ctx.onCompleted();
-        } catch (Exception exn) {
-            if (!LHUtil.isUserError(exn)) log.error("Error handling request: " + exn.getMessage());
-            ctx.onError(exn);
-        }
+        VariableModel variable = internalComms.getObject(id, VariableModel.class, requestContext());
+        ctx.onNext(variable.toProto().build());
+        ctx.onCompleted();
     }
 
     @Override
     @Authorize(resources = ACLResource.ACL_EXTERNAL_EVENT, actions = ACLAction.READ)
     public void getExternalEvent(ExternalEventId req, StreamObserver<ExternalEvent> ctx) {
         ExternalEventIdModel id = LHSerializable.fromProto(req, ExternalEventIdModel.class, requestContext());
-        try {
-            ExternalEventModel externalEvent = internalComms.getObject(id, ExternalEventModel.class, requestContext());
-            ctx.onNext(externalEvent.toProto().build());
-            ctx.onCompleted();
-        } catch (Exception exn) {
-            if (!LHUtil.isUserError(exn)) log.error("Error handling request: " + exn.getMessage());
-            ctx.onError(exn);
-        }
+        ExternalEventModel externalEvent = internalComms.getObject(id, ExternalEventModel.class, requestContext());
+        ctx.onNext(externalEvent.toProto().build());
+        ctx.onCompleted();
     }
 
     @Override
@@ -861,6 +828,9 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             ctx.onCompleted();
         } catch (StatusRuntimeException exn) {
             ctx.onError(exn);
+        } catch (InvalidStateStoreException exn) {
+            // TODO: check other partitions
+            ctx.onError(new StatusRuntimeException(Status.UNAVAILABLE));
         } catch (Exception exn) {
             log.error("Failed handling a search", exn);
             ctx.onError(LHUtil.toGrpcError(exn));
@@ -988,13 +958,13 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void getTenant(TenantId req, StreamObserver<Tenant> ctx) {
         RequestExecutionContext reqContext = requestContext();
         TenantIdModel tenantId = TenantIdModel.fromProto(req, TenantIdModel.class, reqContext);
-        TenantModel result = reqContext.metadataManager().get(tenantId);
-        if (result == null) {
-            ctx.onError(new LHApiException(Status.NOT_FOUND, "Could not find tenant %s".formatted(tenantId)));
-        } else {
-            ctx.onNext(result.toProto().build());
-            ctx.onCompleted();
-        }
+        TenantModel result = reqContext
+                .metadataManager()
+                .getOrThrow(
+                        tenantId,
+                        () -> new LHApiException(Status.NOT_FOUND, "Could not find tenant %s".formatted(tenantId)));
+        ctx.onNext(result.toProto().build());
+        ctx.onCompleted();
     }
 
     @Override
@@ -1069,6 +1039,11 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             Class<RC> responseCls,
             boolean shouldCompleteStream) {
         RequestExecutionContext requestContext = requestContext();
+        if (responseObserver instanceof ServerCallStreamObserver<RC> serverCall) {
+            serverCall.setOnCancelHandler(() -> {
+                // If this observer event has already closed, Async Waiters might attempt to finish it.
+            });
+        }
         processCommand(
                 command,
                 responseObserver,
@@ -1107,7 +1082,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 Duration.ofMillis(10_000 + serverConfig.getStreamsSessionTimeout()),
                 networkThreadpool);
 
-        Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command, context);
+        Callback callback = this.internalComms.createProducerCommandCallback(command, commandObserver, context);
 
         command.setCommandId(LHUtil.generateGuid());
 
@@ -1124,19 +1099,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
     private WfService getServiceFromContext() {
         return requestContext().service();
-    }
-
-    private void productionCallback(
-            RecordMetadata meta,
-            Exception exn,
-            StreamObserver<WaitForCommandResponse> observer,
-            AbstractCommand<?> command,
-            RequestExecutionContext context) {
-        if (exn != null) {
-            observer.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
-        } else {
-            internalComms.waitForCommand(command, observer, context);
-        }
     }
 
     public void onTaskScheduled(

@@ -8,19 +8,11 @@ const lightCodeTheme = themes.github;
 /** @type {import('@docusaurus/types').Config} */
 module.exports = {
   title: "LittleHorse Orchestrator",
-  tagline: "The Missing Piece of the Microservice Architecture",
+  tagline: "Workflow-Driven Applications",
   favicon: "img/logo.png",
 
-  // Set the production url of your site here
   url: "https://littlehorse.dev",
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: "/",
-
-  // // GitHub pages deployment config.
-  // // If you aren't using GitHub pages, you don't need these.
-  // organizationName: 'facebook', // Usually your GitHub org/user name.
-  // projectName: 'docusaurus', // Usually your repo name.
 
   onBrokenLinks: "throw",
 
@@ -41,7 +33,7 @@ module.exports = {
       tagName: "meta",
       attributes: {
         "name": "twitter:description",
-        "content": "The Missing Piece of the Microservice Architecture",
+        "content": "Workflow-Driven Applications",
         "data-rh": "true"
       }
     }
@@ -111,7 +103,7 @@ module.exports = {
           {
             href: "https://littlehorse.io",
             position: "left",
-            label: "Product Site",
+            label: "LittleHorse Enterprises",
           },
           {
             href: "https://docs.google.com/forms/d/e/1FAIpQLScXVvTYy4LQnYoFoRKRQ7ppuxe0KgncsDukvm96qKN0pU5TnQ/viewform?usp=sf_link",
@@ -122,46 +114,66 @@ module.exports = {
             href: "https://github.com/littlehorse-enterprises/littlehorse",
             className: 'header-github-link',
             position: "right",
+            'aria-label': 'GitHub Icon',
           },
           {
             href: "https://launchpass.com/littlehorsecommunity",
             className: 'header-slack-link',
             position: "right",
+            'aria-label': 'Slack Icon',
           },
         ],
       },
       footer: {
         links: [
           {
-            title: "Docs",
+            title: "Learn",
             items: [
               {
-                label: "Concepts",
+                label: "LittleHorse Concepts",
                 to: "/docs/concepts",
               },
-              {
-                label: "Developer Guide",
-                to: "/docs/developer-guide",
-              },
-            ],
-          },
-          {
-            title: "More",
-            items: [
               {
                 label: "Blog",
                 to: "/blog",
               },
               {
-                label: "Slack",
-                href: "https://launchpass.com/littlehorsecommunity",
+                label: "YouTube",
+                to: "https://www.youtube.com/@LittleHorse-ey3vw",
               },
+            ],
+          },
+          {
+            title: "Get Started",
+            items: [
               {
                 label: "GitHub",
                 href: "https://github.com/littlehorse-enterprises/littlehorse",
               },
+              {
+                label: "QuickStarts",
+                to: "/docs/developer-guide/install",
+              }
             ],
           },
+          {
+            title: "Get In Touch",
+            items: [
+              {
+                label: "Community Slack",
+                href: "https://launchpass.com/littlehorsecommunity",
+              },
+              {
+                label: "Contact Us",
+                href: "https://docs.google.com/forms/d/e/1FAIpQLScXVvTYy4LQnYoFoRKRQ7ppuxe0KgncsDukvm96qKN0pU5TnQ/viewform?usp=sf_link",
+              },
+              {
+                label: "LittleHorse Enterprises",
+                href: "https://littlehorse.io",
+              }
+            ],
+          },
+
         ],
         copyright: `Copyright © ${new Date().getFullYear()} LittleHorse Enterprises LLC.`,
       },

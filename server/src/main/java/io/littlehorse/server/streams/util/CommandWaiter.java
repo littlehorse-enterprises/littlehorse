@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.util;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.Getter;
@@ -14,7 +15,7 @@ public class CommandWaiter {
     private String commandId;
 
     private WaitForCommandResponse response;
-    private Exception caughtException;
+    private Throwable caughtException;
     private Lock lock;
 
     @Getter
@@ -26,11 +27,11 @@ public class CommandWaiter {
     @Getter
     private final int commandPartition;
 
-    private boolean alreadyCompleted;
+    private AtomicBoolean alreadyCompleted;
 
     public CommandWaiter(String commandId, int commandPartition) {
         this.lock = new ReentrantLock();
-        this.alreadyCompleted = false;
+        this.alreadyCompleted = new AtomicBoolean(false);
         this.commandId = commandId;
         this.arrivalTime = new Date();
         this.commandPartition = commandPartition;
@@ -39,7 +40,7 @@ public class CommandWaiter {
     public boolean setObserverAndMaybeComplete(StreamObserver<WaitForCommandResponse> observer) {
         try {
             lock.lock();
-            if (alreadyCompleted) return false;
+            if (alreadyCompleted.get()) return false;
             this.observer = observer;
             return this.maybeMatch();
         } finally {
@@ -50,7 +51,7 @@ public class CommandWaiter {
     public boolean setResponseAndMaybeComplete(WaitForCommandResponse response) {
         try {
             lock.lock();
-            if (alreadyCompleted) return false;
+            if (alreadyCompleted.get()) return false;
             this.response = response;
             return this.maybeMatch();
         } finally {
@@ -58,10 +59,10 @@ public class CommandWaiter {
         }
     }
 
-    public boolean setExceptionAndMaybeComplete(Exception caughtException) {
+    public boolean setExceptionAndMaybeComplete(Throwable caughtException) {
         try {
             lock.lock();
-            if (alreadyCompleted) return false;
+            if (alreadyCompleted.get()) return false;
             this.caughtException = caughtException;
             return this.maybeMatch();
         } finally {
@@ -76,12 +77,12 @@ public class CommandWaiter {
         if (caughtException != null) {
             log.debug("Waiter for command {} is aborting client request due to command process failure", commandId);
             observer.onError(caughtException);
-        } else if (response != null) {
+        } else {
             observer.onNext(response);
             observer.onCompleted();
             log.debug("Sent response for command {}", commandId);
         }
-        this.alreadyCompleted = true;
+        alreadyCompleted.set(true);
         return true;
     }
 

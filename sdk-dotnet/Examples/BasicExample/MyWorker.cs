@@ -1,22 +1,15 @@
 ﻿
 using LittleHorse.Worker.Attributes;
-using Microsoft.Extensions.Logging;
 
 namespace Examples.BasicExample
 {
     public class MyWorker
     {
-        private readonly ILogger? _logger;
-        public MyWorker(ILogger? logger = null)
+        [LHTaskMethod("greet-dotnet")]
+        public string Greeting()
         {
-            _logger = logger;
-        }
-
-        [LHTaskMethod("greet")]
-        public string Greeting(string name)
-        {
-            var message = $"Hello, {name}";
-            _logger?.LogInformation("Executing task greet: " + message);
+            var message = $"Hello team, This is a Dotnet Worker";
+            Console.WriteLine("Executing task greet: " + message);
             return message;
         }
     }

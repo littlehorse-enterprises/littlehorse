@@ -3,7 +3,7 @@ slug: challenge-of-microservices
 title: The Challenge of Microservices
 authors:
 - coltmcnealy
-tags: [analysis]
+tags: [analysis,microservice-and-workflow]
 ---
 
 Microservices are often necessary, but unfortunately they bring with them some baggage. <!-- truncate -->
@@ -13,7 +13,7 @@ This is the second part of a 3-part blog series:
 
 1. [The Promise of Microservices](./2024-08-22-promise-of-microservices.md)
 2. **[This Post]** The Challenge with Microservices
-3. **[Coming Soon]** Workflow and Microservices: A Match Made in Heaven
+3. [Workflow and Microservices: A Match Made in Heaven](./2024-09-02-microservices-and-workflow.md)
 :::
 
 Last week, I [blogged](./2024-08-22-promise-of-microservices.md) about the problems that microservices solve, and why they are not only beneficial but necessary in some cases (a good bellwether is the size of your engineering team: beyond 1 or 2 dozen engineers, you will probably start to feel some problems that can be solved with microservices).
