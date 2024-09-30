@@ -4,6 +4,7 @@ import { Handle, Position } from 'reactflow'
 import { NodeProps } from '..'
 import { Fade } from '../Fade'
 import { SleepTaskDetails } from './SleepTaskDetails'
+
 const Node: FC<NodeProps> = ({ selected, data }) => {
   const { fade, sleep } = data
 

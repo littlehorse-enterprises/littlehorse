@@ -1,7 +1,7 @@
+import { formatTime } from '@/app/utils'
 import { NodeRun, SleepNode } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { NodeDetails } from '../NodeDetails'
-import { convertSecondsToReadableTime } from '../../../../../utils'
 
 export const SleepTaskDetails: FC<{ sleepNode?: SleepNode; nodeRun?: NodeRun }> = ({ sleepNode, nodeRun }) => {
   if (!sleepNode?.rawSeconds?.literalValue?.int) return
@@ -13,7 +13,7 @@ export const SleepTaskDetails: FC<{ sleepNode?: SleepNode; nodeRun?: NodeRun }> 
           <h3 className="font-bold">SleepTask</h3>
         </div>
         <div className="flex flex-col gap-2 text-nowrap">
-          <div className="flex ">Time: {convertSecondsToReadableTime(sleepNode.rawSeconds.literalValue.int)}</div>
+          <div className="flex ">Time: {formatTime(sleepNode.rawSeconds.literalValue.int)}</div>
           {nodeRun && <div className="flex ">MaturationTime: {nodeRun?.sleep?.maturationTime}</div>}
         </div>
       </div>
