@@ -3,7 +3,7 @@ slug: challenge-of-microservices
 title: The Challenge of Microservices
 authors:
 - coltmcnealy
-tags: [analysis]
+tags: [analysis,microservice-and-workflow]
 ---
 
 Microservices are often necessary, but unfortunately they bring with them some baggage. <!-- truncate -->

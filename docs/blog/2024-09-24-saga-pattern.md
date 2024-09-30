@@ -2,7 +2,7 @@
 slug: saga-pattern
 authors:
 - coltmcnealy
-tags: [analysis]
+tags: [analysis,integration-patterns,littlehorse]
 ---
 
 # Integration Patterns: Saga Transactions
@@ -15,10 +15,10 @@ The Saga pattern allows you to defend against data loss, dropped orders, and con
 This is the first part in a five-part blog series on useful Integration Patterns. This blog series will help you build real-time, responsive applications and microservices that produce predictable results and prevent the Grumpy Customer Problem.
 
 1. **[This Post]** Saga Transactions
-2. [Coming soon] The Outbox Pattern
-3. [Coming soon] Retries and Dead-Letter Queues
-4. [Coming soon] Callbacks and External Events
-5. [Coming soon] Queuing and Backpressure
+2. [The Transactional Outbox Pattern](./2024-09-30-transactional-outbox.md)
+3. [Coming soon] Queuing and Backpressure
+4. [Coming soon] Retries and Dead-Letter Queues
+5. [Coming soon] Callbacks and External Events
 :::
 
 ## The Saga Pattern
@@ -103,6 +103,10 @@ But now we need to release the inventory and cancel the order when the payment d
 8. Inventory service publishes to the `cancel-order` queue.
 9. Orders service consumes the record and calls `cancelOrder()`.
 
+:::note
+We still haven't even considered the case when the `reserve-inventory` step fails and we need to catch that exception and handle the order. For the sake of brevity, we will leave that out.
+:::
+
 Now, we have _five_ different message queues that we have to wrangle with. We can also see that the overall business flow has started to leak across all of our different services.
 
 :::danger
@@ -121,11 +125,18 @@ public void sagaExample(WorkflowThread wf) {
     var orderId = wf.addVariable("order-id", STR);
 
     wf.execute("create-order", orderId);
-    wf.execute("reserve-inventory", item, orderId);
+
+    // Saga Here! (We skipped this part in the previous section due to
+    // complexity, but LH makes it simple enough.
+    NodeOutput inventoryResult = wf.execute("reserve-inventory", item, orderId);
+    wf.handleException(inventoryResult, "out-of-stock", handler -> {
+        handler.execute("cancel-order", orderId);
+        handler.fail("out-of-stock", "Item was out of stock. Order canceled");
+    })
 
     NodeOutput paymentResult = wf.execute("charge-payment", customer, price);
-    // Saga here!!
-    wf.handleException("credit-card-declined", handler -> {
+    // Saga here again!!
+    wf.handleException(paymentResult, "credit-card-declined", handler -> {
         handler.execute("release-inventory", item, orderId);
         handler.execute("cancel-order", orderId);
         handler.fail("credit-card-declined", "Credit card was declined. Order canceled!");
