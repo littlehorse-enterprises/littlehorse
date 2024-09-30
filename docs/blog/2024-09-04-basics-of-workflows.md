@@ -2,7 +2,7 @@
 slug: basics-of-workflow
 authors:
 - mitchellh
-tags: [analysis, littlehorse]
+tags: [analysis,littlehorse]
 ---
 
 # The Basics of Workflow

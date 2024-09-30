@@ -114,7 +114,7 @@ lhctl get wfRun <my-wf-id>
 You can search for `WfRun`s by providing the name and version of the `WfSpec` and the status of the `WfRun`. For example, if you want to find all failed `WfRun`'s from the `foo` WfSpec, version `9`, you would do the following:
 
 ```
-lhctl search wfRun --wfSpecName foo --wfSpecVersion 9 --status ERROR
+lhctl search wfRun --wfSpecName foo --majorVersion 9 --revision 0 --status ERROR
 ```
 
 #### By `wfSpecName` and `status`
@@ -362,7 +362,7 @@ lhctl wfSpecMetrics foo-wf 2 DAYS_1 5
 
 ## Manage `WfRun`s
 
-`lhctl` allows you to perform basic actions around running, stopping, and resuming `WfRun`s and also creating `ExternalEvent`s.
+`lhctl` allows you to perform basic actions around running, stopping, scheduling, and resuming `WfRun`s and also creating `ExternalEvent`s.
 
 ### Run a `WfRun`
 
@@ -389,6 +389,40 @@ lhctl run my-workflow foo '{"bar":"baz"}' my-int 123
 ```
 
 You can also set the ID of the `WfRun` using the `--wfRunId` flag. Note that there can only be one `WfRun` with a given ID. This can be used to guarantee idempotence.
+
+### Schedule a `WfRun`s
+
+You can schedule a `WfSpec` to trigger a new `WfRun` periodically based on a unix cron expression (see https://crontab.guru/)
+
+You can use:
+```
+lhctl schedule run "* * * * *" foo --majorVersion 3 --revision 0
+```
+To run a new `WfRun` every minute
+
+:::tip
+  If you pass a specific version, all subsequent `WfRun`s will automatically be linked to that version.
+  When scheduling `WfRun`s, it is recommended to omit the version parameter if you want to use the latest `WfSpec` version.
+:::
+
+You can search current schedules for a `WfSpec`:
+
+```
+lhctl search schedule --wfSpecName foo --majorVersion 3 --revision 0
+```
+
+You can get a schedule by id:
+
+```
+lhctl get scheduled <scheduleId>
+```
+
+You can delete a schedule:
+
+```
+lhctl delete schedule <scheduleId>
+```
+After calling this command, no further `WfRun`s will be executed for this schedule
 
 ### Stop and Resume a `WfRun`
 
