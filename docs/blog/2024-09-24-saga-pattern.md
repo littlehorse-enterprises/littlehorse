@@ -5,44 +5,48 @@ authors:
 tags: [analysis]
 ---
 
-# Integration Patterns: SAGA Transactions
+# Integration Patterns: Saga Transactions
 
-The SAGA pattern allows you to defend against data loss, dropped orders, and confused (or grumpy) customers. While useful, the SAGA pattern is tricky to get right without an orchestrator.
+The Saga pattern allows you to defend against data loss, dropped orders, and confused (or grumpy) customers. While useful, the Saga pattern is tricky to get right without an orchestrator.
 
 <!-- truncate -->
 
 :::info
 This is the first part in a five-part blog series on useful Integration Patterns. This blog series will help you build real-time, responsive applications and microservices that produce predictable results and prevent the Grumpy Customer Problem.
 
-1. **[This Post]** SAGA Transactions
+1. **[This Post]** Saga Transactions
 2. [Coming soon] The Outbox Pattern
 3. [Coming soon] Retries and Dead-Letter Queues
 4. [Coming soon] Callbacks and External Events
 5. [Coming soon] Queuing and Backpressure
 :::
 
-## The SAGA Pattern
+## The Saga Pattern
 
-At a technical level, the [SAGA Pattern](https://microservices.io/patterns/data/saga.html) allows you to perform distributed transactions across multiple disparate systems without 2-phase commit.
+At a technical level, the [Saga Pattern](https://microservices.io/patterns/data/saga.html) allows you to perform distributed transactions across multiple disparate systems without 2-phase commit.
 
 In plain English, it is a tool in the belt of a software engineer to prevent half-fulfilled bank transfers, hanging orders, or other failures which would result in a Grumpy Customer.
+
+:::info
+The "Saga" pattern gets its name from literature and film, wherein a "saga" is a series of chronologically-ordered related works. For example, the "Star Wars Saga."
+:::
 
 ### Use Cases
 
 Business processes often need to perform actions in two separate systems either all at once or not at all. For example, you may need to charge a customer's credit card, reserve inventory, and ship an item to the customer all at once or not at all. If the payment went through but shipping failed, we would see the Grumpy Customer Problem yet again.
 
-The SAGA pattern is appropriate when:
+The Saga pattern is appropriate when:
 * A business process must take action across multiple separate systems (legacy monoliths, microservices, external API's, etc),
 * Each of those actions can be undone via a "compensation task", and
 * All actions must logically happen together or not at all.
 
 :::tip
-It's also worth noting that a different flavor of the SAGA pattern can also be used in _long-running_ business processes. In a past job, for example, I worked on a project that implemented the SAGA pattern to handle the scheduling of home inspections. In this case, the task of finding an inspector to show up at the home and confirming a time with the homeowner needed to be performed atomically.
+It's also worth noting that a different flavor of the Saga pattern can also be used in _long-running_ business processes. In a past job, for example, I worked on a project that implemented the Saga pattern to handle the scheduling of home inspections. In this case, the task of finding an inspector to show up at the home and confirming a time with the homeowner needed to be performed atomically.
 :::
 
 ### Implementation
 
-While SAGA is very hard to implement, it's simple to describe:
+While Saga is very hard to implement, it's simple to describe:
 
 * Try to perform the actions across the multiple systems.
 * If one of the actions fails, then run a _compensation_ for all previously-executed tasks.
@@ -51,7 +55,7 @@ The _compensation_ is simply an action that "undoes" the previous action. For ex
 
 ## Case Study: Order Processing
 
-Let's take a look at a familiar use-case: an order processing workflow involving the the `inventory` service, and the `payments` service. (The `orders` service is involved implicitly.) As they would in a real world scenario, all of our services live on separate physical systems and have their own databases.
+Let's take a look at a familiar use-case: an order processing workflow involving the `inventory` service, and the `payments` service. (The `orders` service is involved implicitly.) As they would in a real world scenario, all of our services live on separate physical systems and have their own databases.
 
 In this business process, we first reserve inventory for the ordered item. Next, we charge the customer's credit card.
 
@@ -69,7 +73,11 @@ Our services need the following functionality. In SOA, these would be endpoints;
 
 Using message queues, the happy path looks like the following:
 
-<!-- TODO: excalidraw image -->
+![Architecture diagram](./2024-09-24-choreography-simple.png)
+
+:::note
+The above image assumes the _choreography_ pattern, in contrast to the _orchestrator_ pattern. The orchestrator pattern is a ton of work and involves writing something that very much resembles LittleHorse!
+:::
 
 1. Orders service calls `createOrder()`.
 2. Orders service publishes to the `reserve-inventory` queue.
@@ -83,7 +91,7 @@ In just the happy path, we have strong coupling already between our services in 
 
 But now we need to release the inventory and cancel the order when the payment doesn't go through. So the flow looks like this:
 
-<!-- TODO: excalidraw image -->
+![Architecture Diagram](./2024-09-24-choreography-saga.png)
 
 1. Orders service calls `createOrder()`.
 2. Orders service publishes to the `reserve-inventory` queue.
@@ -95,7 +103,7 @@ But now we need to release the inventory and cancel the order when the payment d
 8. Inventory service publishes to the `cancel-order` queue.
 9. Orders service consumes the record and calls `cancelOrder()`.
 
-Now, we have _six_ different message queues that we have to wrangle with. We can also see that the overall business flow has started to leak across all of our different services.
+Now, we have _five_ different message queues that we have to wrangle with. We can also see that the overall business flow has started to leak across all of our different services.
 
 :::danger
 One thing we are ignoring in this blog post is _reliability_: to make this setup production-ready, we would also have to ensure that updates to the internal databases of the services are atomic along with pushing messages to the message queue. We will cover that in next week's post (along with how LittleHorse takes care of that for you).
@@ -108,7 +116,7 @@ Using LittleHorse, in java, this whole workflow could look like the following. T
 ```java
 public void sagaExample(WorkflowThread wf) {
     var item = wf.addVariable("item", STR);
-    var customer = wf.addVariale("customer", STR);
+    var customer = wf.addVariable("customer", STR);
     var price = wf.addVariable("price", DOUBLE);
     var orderId = wf.addVariable("order-id", STR);
 
@@ -116,7 +124,7 @@ public void sagaExample(WorkflowThread wf) {
     wf.execute("reserve-inventory", item, orderId);
 
     NodeOutput paymentResult = wf.execute("charge-payment", customer, price);
-    // SAGA here!!
+    // Saga here!!
     wf.handleException("credit-card-declined", handler -> {
         handler.execute("release-inventory", item, orderId);
         handler.execute("cancel-order", orderId);
@@ -127,11 +135,11 @@ public void sagaExample(WorkflowThread wf) {
 }
 ```
 
-Instead of managing five message queues and six strongly-coupled integration points between microservices, all we need to do is register the workflow, define _truly_ modular tasks, and let LittleHorse take care of the rest.
+Instead of managing five message queues and five strongly-coupled integration points between microservices, all we need to do is register the workflow, define _truly_ modular tasks, and let LittleHorse take care of the rest.
 
 ## Wrapping Up
 
-The SAGA Pattern is one of five tools we will cover in this series on avoiding the Grumpy Customer Problem. It's simple to understand but _painfully complex_ to implement. Fortunately, LittleHorse makes it easier!
+The Saga Pattern is one of five tools we will cover in this series on avoiding the Grumpy Customer Problem. It's simple to understand but _painfully complex_ to implement. Fortunately, LittleHorse makes it easier!
 
 :::note
 A careful reader, or anyone who [reads my rants on LinkedIn](https://www.linkedin.com/feed/update/urn:li:activity:7244572885179121664/), might note that in order to make the order processing workflow truly reliable, we would also need to do something like the Outbox pattern or Event Sourcing.
