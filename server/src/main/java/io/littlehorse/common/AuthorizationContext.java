@@ -29,16 +29,10 @@ public interface AuthorizationContext {
     TenantIdModel tenantId();
 
     /**
-     * Global ACLs for the current principal in the context
-     * @return might be empty
-     */
-    Collection<ServerACLModel> globalAcls();
-
-    /**
      * ACLs for the current principal in the context
      * @return might be empty
      */
-    Collection<ServerACLModel> perTenantAcls();
+    Collection<ServerACLModel> acls();
 
     /**
      * @return True if the principal is admin

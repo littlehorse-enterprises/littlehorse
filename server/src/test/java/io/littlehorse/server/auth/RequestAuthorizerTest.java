@@ -6,7 +6,26 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+
+import org.apache.kafka.streams.KafkaStreams;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
+import org.mockito.Mockito;
+
 import com.google.common.collect.Iterables;
+
 import io.grpc.Context;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
@@ -30,21 +49,6 @@ import io.littlehorse.server.TestRequestExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import io.littlehorse.server.streams.util.MetadataCache;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-import org.apache.kafka.streams.KafkaStreams;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 public class RequestAuthorizerTest {
 
@@ -58,8 +62,9 @@ public class RequestAuthorizerTest {
             TestMetadataManager.create(requestContext.getGlobalMetadataNativeStore(), "my-tenant", requestContext);
     private final RequestAuthorizer requestAuthorizer =
             new RequestAuthorizer(contextKey, metadataCache, new TestCoreStoreProvider(requestContext), lhConfig);
-    private ServerCall<Object, Object> mockCall = mock();
+    private ServerCall<Object, Object> mockCall = mock(Answers.RETURNS_DEEP_STUBS);
     private final Metadata mockMetadata = mock();
+    private final MethodDescriptor methodDescriptor = mock();
 
     private WfService service = requestContext.service();
     private final ServerServiceDefinition testServiceDefinition = buildTestServiceDefinition(
@@ -72,23 +77,25 @@ public class RequestAuthorizerTest {
     public void setup() {
         when(kafkaStreams.store(any())).thenReturn(requestContext.getCoreNativeStore());
         inMemoryAnonymousPrincipal = service.getPrincipal(null);
+        when(mockCall.getMethodDescriptor().getBareMethodName()).thenReturn("PutPrincipal");
     }
 
     private void startCall() {
         ServerServiceDefinition intercept = ServerInterceptors.intercept(testServiceDefinition, requestAuthorizer);
         @SuppressWarnings("unchecked")
         ServerMethodDefinition<Object, Object> def =
-                (ServerMethodDefinition<Object, Object>) Iterables.get(intercept.getMethods(), 0);
+                (ServerMethodDefinition<Object, Object>) Iterables.get(intercept.getMethods(), 0); 
         def.getServerCallHandler().startCall(mockCall, mockMetadata);
     }
 
     @Test
     public void supportAnonymousPrincipalForDefaultTenant() {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn(null);
+
         startCall();
         assertThat(resolvedAuthContext).isNotNull();
-        assertThat(resolvedAuthContext.globalAcls()).hasSize(1);
-        assertThat(resolvedAuthContext.globalAcls())
+        assertThat(resolvedAuthContext.acls()).hasSize(1);
+        assertThat(resolvedAuthContext.acls())
                 .containsExactly(
                         inMemoryAnonymousPrincipal.getGlobalAcls().getAcls().toArray(new ServerACLModel[0]));
         assertThat(resolvedAuthContext.principalId().getId()).isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
@@ -99,7 +106,7 @@ public class RequestAuthorizerTest {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
         startCall();
         assertThat(resolvedAuthContext.principalId().getId()).isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
-        assertThat(resolvedAuthContext.globalAcls())
+        assertThat(resolvedAuthContext.acls())
                 .containsAll(inMemoryAnonymousPrincipal.getGlobalAcls().getAcls());
     }
 
@@ -113,11 +120,9 @@ public class RequestAuthorizerTest {
         TenantModel tenant = new TenantModel("my-tenant");
         metadataManager.put(tenant);
         metadataManager.put(newPrincipal);
-        MethodDescriptor<Object, Object> mockMethod = mock();
-        when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
         startCall();
         assertThat(resolvedAuthContext.principalId().getId()).isEqualTo("principal-id");
-        assertThat(resolvedAuthContext.globalAcls()).containsOnly(TestUtil.adminAcl());
+        assertThat(resolvedAuthContext.acls()).containsOnly(TestUtil.adminAcl());
     }
 
     @Test
@@ -128,8 +133,6 @@ public class RequestAuthorizerTest {
         newPrincipal.setId(new PrincipalIdModel("principal-id"));
         newPrincipal.setGlobalAcls(TestUtil.singleAdminAcl("name"));
         metadataManager.put(newPrincipal);
-        MethodDescriptor<Object, Object> mockMethod = mock();
-        when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
         startCall();
         assertThat(resolvedAuthContext).isNull();
     }
@@ -140,7 +143,7 @@ public class RequestAuthorizerTest {
         metadataManager.put(new TenantModel("my-tenant"));
         startCall();
         assertThat(resolvedAuthContext.principalId().getId()).isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
-        assertThat(resolvedAuthContext.globalAcls())
+        assertThat(resolvedAuthContext.acls())
                 .containsOnly(
                         inMemoryAnonymousPrincipal.getGlobalAcls().getAcls().toArray(new ServerACLModel[0]));
     }
@@ -222,7 +225,12 @@ public class RequestAuthorizerTest {
                 (ServerMethodDefinition<Object, Object>) Iterables.get(intercept.getMethods(), 0);
         final int numberOfRequests = 10_000;
         Consumer<String> submitCall = principalId -> {
-            ServerCall stubCall = new NoopServerCall();
+            ServerCall<Object,Object> stubCall = new NoopServerCall<>() {
+                @Override
+                public MethodDescriptor<Object,Object> getMethodDescriptor() {
+                    return mockCall.getMethodDescriptor();
+                }
+            };
             final Metadata mockMetadata = new Metadata();
             mockMetadata.put(ServerAuthorizer.CLIENT_ID, principalId);
             PrincipalModel newPrincipal = new PrincipalModel();

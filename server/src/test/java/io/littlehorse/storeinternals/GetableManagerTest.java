@@ -77,7 +77,7 @@ public class GetableManagerTest {
     private ProcessorExecutionContext executionContext;
 
     private AuthorizationContext testContext = new AuthorizationContextImpl(
-            new PrincipalIdModel("my-principal-id"), new TenantIdModel(tenantId), List.of(), List.of(), false);
+            new PrincipalIdModel("my-principal-id"), new TenantIdModel(tenantId), List.of(), false);
 
     @BeforeEach
     void setup() {

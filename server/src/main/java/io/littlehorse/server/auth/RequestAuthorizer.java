@@ -22,6 +22,8 @@ import io.littlehorse.server.LHServerListener;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
+import lombok.extern.slf4j.Slf4j;
+
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Slf4j
 public class RequestAuthorizer implements ServerAuthorizer {
 
     private final CoreStoreProvider coreStoreProvider;
@@ -52,21 +55,21 @@ public class RequestAuthorizer implements ServerAuthorizer {
     }
 
     @Override
-    public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(
-            ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
+    public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
+        // GET CLIENT ID AND TENANT ID
         String clientIdStr = headers.get(CLIENT_ID);
         PrincipalIdModel clientId = clientIdStr == null
                 ? null
                 : (PrincipalIdModel) ObjectIdModel.fromString(clientIdStr.trim(), PrincipalIdModel.class);
+        
         String tenantIdStr = headers.get(TENANT_ID);
-
         TenantIdModel tenantId = tenantIdStr == null
                 ? null
                 : (TenantIdModel) ObjectIdModel.fromString(tenantIdStr.trim(), TenantIdModel.class);
 
         Context context = Context.current();
         try {
-            RequestExecutionContext requestContext = contextFor(clientId, tenantId);
+            RequestExecutionContext requestContext = contextFor(clientId, tenantId, call.getMethodDescriptor());
             validateAcl(call.getMethodDescriptor(), requestContext.authorization());
             context = context.withValue(executionContextKey, requestContext);
         } catch (PermissionDeniedException ex) {
@@ -81,8 +84,8 @@ public class RequestAuthorizer implements ServerAuthorizer {
         }
     }
 
-    private RequestExecutionContext contextFor(PrincipalIdModel clientId, TenantIdModel tenantId) {
-        return new RequestExecutionContext(clientId, tenantId, coreStoreProvider, metadataCache, lhConfig);
+    private RequestExecutionContext contextFor(PrincipalIdModel clientId, TenantIdModel tenantId, MethodDescriptor<?,?> method) {
+        return new RequestExecutionContext(clientId, tenantId, coreStoreProvider, metadataCache, lhConfig, aclVerifier.doesServiceRequireClusterScopedResources(method));
     }
 
     private static class AclVerifier {
@@ -124,17 +127,7 @@ public class RequestAuthorizer implements ServerAuthorizer {
             String methodName = serviceMethod.getBareMethodName();
             AuthMetadata authMetadata = methodMetadata.get(methodName);
 
-            Collection<ServerACLModel> acls;
-
-            if (!authContext.perTenantAcls().isEmpty()) {
-                if (requiresClusterScopedResource(authMetadata)) {
-                    throw new PermissionDeniedException(
-                            "Insufficient ACLs. Access to Principals and Tenants can only be granted with Global ACLs");
-                }
-                acls = authContext.perTenantAcls();
-            } else {
-                acls = authContext.globalAcls();
-            }
+            Collection<ServerACLModel> acls = authContext.acls();
 
             Set<ACLAction> clientAllowedActions = new HashSet<>();
             Set<ACLResource> clientAllowedResources = new HashSet<>();
@@ -149,7 +142,11 @@ public class RequestAuthorizer implements ServerAuthorizer {
             }
         }
 
-        private boolean requiresClusterScopedResource(AuthMetadata authMetadata) {
+        public boolean doesServiceRequireClusterScopedResources(MethodDescriptor<?, ?> serviceMethod) {
+            String methodName = serviceMethod.getBareMethodName();
+            AuthMetadata authMetadata = methodMetadata.get(methodName);
+            log.info(methodName);
+
             return authMetadata.requiredResources().contains(ACLResource.ACL_TENANT)
                     || authMetadata.requiredResources().contains(ACLResource.ACL_PRINCIPAL);
         }

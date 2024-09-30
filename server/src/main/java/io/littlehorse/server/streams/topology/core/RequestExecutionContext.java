@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.auth.PermissionDeniedException;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
@@ -26,19 +27,21 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 public class RequestExecutionContext implements ExecutionContext {
 
-    private final AuthorizationContext authorization;
+    private AuthorizationContext authorization;
     private final ReadOnlyGetableManager readOnlyGetableManager;
     private final ReadOnlyMetadataManager metadataManager;
     private final WfService service;
     private final LHServerConfig lhConfig;
     private final CoreStoreProvider coreStoreProvider;
+    private final boolean isRequestingClusterScopedResource;
 
     public RequestExecutionContext(
             PrincipalIdModel clientId,
             TenantIdModel tenantId,
             CoreStoreProvider coreStoreProvider,
             MetadataCache metadataCache,
-            LHServerConfig lhConfig) {
+            LHServerConfig lhConfig,
+            boolean isRequestingClusterScopedResource) {
         if (tenantId == null) {
             tenantId = new TenantIdModel(LHConstants.DEFAULT_TENANT);
         }
@@ -46,6 +49,7 @@ public class RequestExecutionContext implements ExecutionContext {
             clientId = new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL);
         }
         this.coreStoreProvider = coreStoreProvider;
+        this.isRequestingClusterScopedResource = isRequestingClusterScopedResource;
 
         ReadOnlyKeyValueStore<String, Bytes> nativeGlobalStore = coreStoreProvider.getNativeGlobalStore();
         ReadOnlyKeyValueStore<String, Bytes> nativeCoreStore = coreStoreProvider.nativeCoreStore();
@@ -69,7 +73,7 @@ public class RequestExecutionContext implements ExecutionContext {
         this.authorization = authContextFor(clientId, tenantId);
         this.lhConfig = lhConfig;
     }
-
+    
     public ReadOnlyGetableManager getableManager() {
         return readOnlyGetableManager;
     }
@@ -122,21 +126,24 @@ public class RequestExecutionContext implements ExecutionContext {
 
     private AuthorizationContext authContextFor(PrincipalIdModel clientId, TenantIdModel tenantId) {
         PrincipalModel resolvedPrincipal = resolvePrincipal(clientId, tenantId);
-        List<ServerACLModel> currentPerTenantAcls = new ArrayList<>();
-        List<ServerACLModel> currentGlobalAcls = new ArrayList<>();
+        List<ServerACLModel> acls = new ArrayList<>();
         if (resolvedPrincipal.getPerTenantAcls().containsKey(tenantId.toString())) {
-            currentPerTenantAcls.addAll(resolvedPrincipal
+            if (this.isRequestingClusterScopedResource) {
+                throw new PermissionDeniedException(
+                    String.format("Current Principal %s has per-tenant ACLs for Tenant %s, but is trying to access a cluster-scoped resource. Cluster-scoped resource access requires global ACLs.", clientId.getId(), tenantId.getId()));
+            }
+
+            acls.addAll(resolvedPrincipal
                     .getPerTenantAcls()
                     .get(tenantId.toString())
                     .getAcls());
         } else {
-            currentGlobalAcls.addAll(resolvedPrincipal.getGlobalAcls().getAcls());
+            acls.addAll(resolvedPrincipal.getGlobalAcls().getAcls());
         }
         return new AuthorizationContextImpl(
                 resolvedPrincipal.getId(),
                 tenantId,
-                currentGlobalAcls,
-                currentPerTenantAcls,
+                acls,
                 resolvedPrincipal.isAdmin());
     }
 
