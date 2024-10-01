@@ -3,13 +3,13 @@ import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '..'
 import { Fade } from '../Fade'
-import { SleepTaskDetails } from './SleepTaskDetails'
+import { SleepDetails } from './SleepDetails'
 const Node: FC<NodeProps> = ({ selected, data }) => {
   const { fade, sleep } = data
-
+ 
   return (
     <>
-      <SleepTaskDetails sleepNode={sleep} nodeRun={data.nodeRun} />
+      <SleepDetails sleepNode={sleep} nodeRun={data.nodeRun} />
       <Fade fade={fade}>
         <div className="relative cursor-pointer">
           <div className="ml-1 flex h-10 w-10 items-center justify-center rounded-full border-[1px] border-gray-500 bg-gray-200">
