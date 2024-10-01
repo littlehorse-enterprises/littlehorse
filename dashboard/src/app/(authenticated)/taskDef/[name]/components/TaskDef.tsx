@@ -26,7 +26,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ['taskRun', selectedStatus, tenantId, 10, createdAfter, createdBefore],
+    queryKey: ['taskRun', selectedStatus, tenantId, limit, createdAfter, createdBefore],
     initialPageParam: undefined,
     getNextPageParam: (lastPage: PaginatedTaskRunList) => lastPage.bookmarkAsString,
     queryFn: async ({ pageParam }) => {

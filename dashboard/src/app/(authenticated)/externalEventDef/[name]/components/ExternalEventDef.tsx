@@ -19,6 +19,7 @@ import { Details } from './Details'
 type Props = {
   spec: ExternalEventDefProto
 }
+
 export const ExternalEventDef: FC<Props> = ({ spec }) => {
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
@@ -27,7 +28,7 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
   const { tenantId } = useWhoAmI()
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ['taskRun', tenantId, 10, createdAfter, createdBefore, isClaimed],
+    queryKey: ['externalEvent', tenantId, createdAfter, limit, createdBefore, isClaimed],
     initialPageParam: undefined,
     getNextPageParam: (lastPage: PaginatedExternalEventList) => lastPage.bookmarkAsString,
     queryFn: async ({ pageParam }) => {
