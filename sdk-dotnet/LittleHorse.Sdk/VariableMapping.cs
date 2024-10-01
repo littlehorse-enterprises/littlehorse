@@ -2,6 +2,7 @@
 using LittleHorse.Worker.Internal.Helpers;
 using Microsoft.Extensions.Logging;
 using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Internal;
 
 namespace LittleHorse.Worker.Internal
 {
@@ -12,12 +13,12 @@ namespace LittleHorse.Worker.Internal
         private System.Type _type;
         private int _position;
 
-        public VariableMapping(TaskDef taskDef, int position, System.Type type, string? paramName, ILogger? logger = null)
+        public VariableMapping(TaskDef taskDef, int position, System.Type type, string? paramName)
         {
             _type = type;
             _name = paramName;
             _position = position;
-            _logger = logger;
+            _logger = LHLoggerFactoryProvider.GetLogger<VariableMapping>();
 
             if (_type.IsAssignableFrom(typeof(LHWorkerContext)))
             {
