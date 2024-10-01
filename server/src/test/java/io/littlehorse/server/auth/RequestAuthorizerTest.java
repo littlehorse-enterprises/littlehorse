@@ -188,7 +188,10 @@ public class RequestAuthorizerTest {
             startCall();
             ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
             Mockito.verify(mockCall).close(statusCaptor.capture(), eq(mockMetadata));
-            assertThat(statusCaptor.getValue().equals(Status.PERMISSION_DENIED.withDescription("Missing permissions [WRITE_METADATA] over resources [ACL_TENANT]")));
+            assertThat(statusCaptor
+                    .getValue()
+                    .equals(Status.PERMISSION_DENIED.withDescription(
+                            "Missing permissions [WRITE_METADATA] over resources [ACL_TENANT]")));
         }
 
         @Test
@@ -200,7 +203,10 @@ public class RequestAuthorizerTest {
             startCall();
             ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
             Mockito.verify(mockCall).close(statusCaptor.capture(), eq(mockMetadata));
-            assertThat(statusCaptor.getValue().equals(Status.PERMISSION_DENIED.withDescription("Missing permissions [WRITE_METADATA] over resources [ACL_PRINCIPAL]")));
+            assertThat(statusCaptor
+                    .getValue()
+                    .equals(Status.PERMISSION_DENIED.withDescription(
+                            "Missing permissions [WRITE_METADATA] over resources [ACL_PRINCIPAL]")));
         }
 
         @Test
