@@ -22,6 +22,9 @@ namespace LittleHorse.Sdk.Internal {
             var clientId = Environment.GetEnvironmentVariable("LHC_CLIENT_ID");
             if (!string.IsNullOrEmpty(clientId))
                 options.LHC_CLIENT_ID = clientId;
+            var caCert = Environment.GetEnvironmentVariable("LHC_CA_CERT");
+            if (!string.IsNullOrEmpty(caCert))
+                options.LHC_CA_CERT = caCert;
             var clientCert = Environment.GetEnvironmentVariable("LHC_CLIENT_CERT");
             if (!string.IsNullOrEmpty(clientCert))
                 options.LHC_CLIENT_CERT = clientCert;

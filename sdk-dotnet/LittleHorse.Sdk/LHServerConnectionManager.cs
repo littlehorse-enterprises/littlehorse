@@ -7,6 +7,7 @@ using LittleHorse.Common.Proto;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using LittleHorse.Sdk;
+using LittleHorse.Sdk.Internal;
 using Polly;
 
 namespace LittleHorse.Worker.Internal
@@ -35,15 +36,14 @@ namespace LittleHorse.Worker.Internal
                                          MethodInfo taskMethod,
                                          TaskDef taskDef,
                                          List<VariableMapping> mappings,
-                                         T executable,
-                                         ILogger? logger = null)
+                                         T executable)
         {
             _config = config;
             _taskMethod = taskMethod;
             _taskDef = taskDef;
             _mappings = mappings;
             _executable = executable;
-            _logger = logger;
+            _logger = LHLoggerFactoryProvider.GetLogger<LHServerConnectionManager<T>>();
 
             _bootstrapClient = config.GetGrcpClientInstance();
 
@@ -109,7 +109,7 @@ namespace LittleHorse.Worker.Internal
                 {
                     try
                     {
-                        var newConnection = new LHServerConnection<T>(this, host, _logger);
+                        var newConnection = new LHServerConnection<T>(this, host);
                         newConnection.Connect();
                         _runningConnections.Add(newConnection);
                         _logger?.LogInformation($"Adding connection to: {host.Host}:{host.Port} for task '{_taskDef.Id}'");
