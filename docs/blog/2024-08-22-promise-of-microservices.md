@@ -3,7 +3,7 @@ slug: promise-of-microservices
 title: The Promise of Microservices
 authors:
 - coltmcnealy
-tags: [analysis]
+tags: [analysis,microservice-and-workflow]
 ---
 
 If microservices add so much complexity, why bother with the hassle? <!-- truncate -->
