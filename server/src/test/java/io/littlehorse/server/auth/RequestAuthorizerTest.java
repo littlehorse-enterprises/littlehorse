@@ -14,6 +14,7 @@ import io.grpc.ServerCall;
 import io.grpc.ServerInterceptors;
 import io.grpc.ServerMethodDefinition;
 import io.grpc.ServerServiceDefinition;
+import io.grpc.Status;
 import io.grpc.internal.NoopServerCall;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.AuthorizationContext;
@@ -45,6 +46,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 public class RequestAuthorizerTest {
@@ -175,6 +177,30 @@ public class RequestAuthorizerTest {
             when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("limited-principal");
             startCall();
             Mockito.verify(mockCall).close(any(), eq(mockMetadata));
+        }
+
+        @Test
+        public void shouldRejectTenantResourceRequestFromTenantAdminPrincipal() {
+            MethodDescriptor<Object, Object> mockMethod = mock();
+            when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
+            when(mockMethod.getBareMethodName()).thenReturn("PutTenant");
+            when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("tenant-admin-principal");
+            startCall();
+            ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
+            Mockito.verify(mockCall).close(statusCaptor.capture(), eq(mockMetadata));
+            assertThat(statusCaptor.getValue().equals(Status.PERMISSION_DENIED.withDescription("Missing permissions [WRITE_METADATA] over resources [ACL_TENANT]")));
+        }
+
+        @Test
+        public void shouldRejectPrincipalResourceRequestFromTenantAdminPrincipal() {
+            MethodDescriptor<Object, Object> mockMethod = mock();
+            when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
+            when(mockMethod.getBareMethodName()).thenReturn("PutPrincipal");
+            when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("tenant-admin-principal");
+            startCall();
+            ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
+            Mockito.verify(mockCall).close(statusCaptor.capture(), eq(mockMetadata));
+            assertThat(statusCaptor.getValue().equals(Status.PERMISSION_DENIED.withDescription("Missing permissions [WRITE_METADATA] over resources [ACL_PRINCIPAL]")));
         }
 
         @Test
