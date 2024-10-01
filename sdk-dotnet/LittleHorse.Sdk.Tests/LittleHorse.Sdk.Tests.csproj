@@ -26,4 +26,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Resources\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

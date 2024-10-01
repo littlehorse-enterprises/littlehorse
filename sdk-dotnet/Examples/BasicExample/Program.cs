@@ -1,5 +1,4 @@
 ﻿using Examples.BasicExample;
-using Microsoft.Extensions.Configuration;
 using LittleHorse.Sdk;
 using LittleHorse.Worker;
 using Microsoft.Extensions.Logging;
