@@ -15,12 +15,14 @@ import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.DeletePrincipalRequest;
 import io.littlehorse.sdk.common.proto.Principal;
 import io.littlehorse.sdk.common.proto.PrincipalId;
 import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
+import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.sdk.common.proto.ServerACL;
 import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.server.LHServer;
@@ -291,9 +293,54 @@ public class PrincipalAdministrationTest {
                         "INVALID_ARGUMENT: PutPrincipalRequest does not allow Per-Tenant ACLs containing permissions over Tenants or Principals.");
     }
 
+    @Test
+    public void shouldNotAllowPrincipalWithAllResourcePerTenantACLToAccessPrincipalResource() {
+        StoredGetable storedRequester =
+                defaultStore.get(new PrincipalIdModel(requesterId).getStoreableKey(), StoredGetable.class);
+        PrincipalModel requester = (PrincipalModel) storedRequester.getStoredObject();
+        requester.getPerTenantAcls().put(tenantId, TestUtil.singleAdminAcl("test"));
+        requester.setGlobalAcls(null);
+        defaultStore.put(new StoredGetable<>(requester));
+
+        MetadataCommandModel command = sendCommand(putPrincipalRequest);
+
+        ArgumentCaptor<Exception> exceptionArgumentCaptor = ArgumentCaptor.forClass(Exception.class);
+
+        verify(server).sendErrorToClient(eq(command.getCommandId()), exceptionArgumentCaptor.capture());
+
+        Exception thrown = exceptionArgumentCaptor.getValue();
+        assertThat(thrown)
+                .isNotNull()
+                .isInstanceOf(LHApiException.class)
+                .hasMessage("PERMISSION_DENIED: Missing permission WRITE_METADATA over resource ACL_PRINCIPAL.");
+    }
+
+    @Test
+    public void shouldNotAllowPrincipalWithAllResourcePerTenantACLToAccessTenantResource() {
+        StoredGetable storedRequester =
+                defaultStore.get(new PrincipalIdModel(requesterId).getStoreableKey(), StoredGetable.class);
+        PrincipalModel requester = (PrincipalModel) storedRequester.getStoredObject();
+        requester.getPerTenantAcls().put(tenantId, TestUtil.singleAdminAcl("test"));
+        requester.setGlobalAcls(null);
+        defaultStore.put(new StoredGetable<>(requester));
+
+        PutTenantRequestModel putTenantRequest = PutTenantRequestModel.fromProto(
+                PutTenantRequest.newBuilder().setId("test").build(), PutTenantRequestModel.class, mock());
+
+        MetadataCommandModel command = sendCommand(putTenantRequest);
+
+        ArgumentCaptor<Exception> exceptionArgumentCaptor = ArgumentCaptor.forClass(Exception.class);
+
+        verify(server).sendErrorToClient(eq(command.getCommandId()), exceptionArgumentCaptor.capture());
+
+        Exception thrown = exceptionArgumentCaptor.getValue();
+        assertThat(thrown)
+                .isNotNull()
+                .isInstanceOf(LHApiException.class)
+                .hasMessage("PERMISSION_DENIED: Missing permission WRITE_METADATA over resource ACL_TENANT.");
+    }
+
     private PutPrincipalRequest principalRequestToProcess() {
-        System.out.println("hi there");
-        System.out.println(this.principalId);
         return PutPrincipalRequest.newBuilder()
                 .setId(principalId)
                 .setOverwrite(false)

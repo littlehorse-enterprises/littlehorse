@@ -152,7 +152,6 @@ public class RequestAuthorizer implements ServerAuthorizer {
         public boolean doesServiceRequireClusterScopedResources(MethodDescriptor<?, ?> serviceMethod) {
             String methodName = serviceMethod.getBareMethodName();
             AuthMetadata authMetadata = methodMetadata.get(methodName);
-            log.info(methodName);
 
             return authMetadata.requiredResources().contains(ACLResource.ACL_TENANT)
                     || authMetadata.requiredResources().contains(ACLResource.ACL_PRINCIPAL);
