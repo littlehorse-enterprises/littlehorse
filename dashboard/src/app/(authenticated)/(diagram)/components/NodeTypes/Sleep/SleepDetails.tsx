@@ -11,7 +11,7 @@ export const SleepDetails: FC<{ sleepNode?: SleepNode; nodeRun?: NodeRun }> = ({
     <NodeDetails>
       <div className="mb-2">
         <div className="flex items-center gap-1 whitespace-nowrap text-nowrap">
-          <h3 className="font-bold">SleepNode</h3>
+          <h3 className="font-bold">Sleep</h3>
         </div>
         <div className="flex flex-col gap-2 text-nowrap">
           <div className="flex ">
