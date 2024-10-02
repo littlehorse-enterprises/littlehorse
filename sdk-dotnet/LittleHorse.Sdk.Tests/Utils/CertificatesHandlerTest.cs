@@ -5,7 +5,7 @@ using Xunit;
 
 namespace LittleHorse.Sdk.Tests.Utils;
 
-public class HttpClientSecureTest
+public class CertificatesHandlerTest
 {
     [Fact]
     public void CertManager_WithCaCertificateTrusted_ShouldReturnHttpHandler()
