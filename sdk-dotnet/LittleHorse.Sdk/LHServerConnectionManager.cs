@@ -1,12 +1,13 @@
 ﻿using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
-using LittleHorse.Common.Configuration;
 using LittleHorse.Common.Exceptions;
 using LittleHorse.Worker.Internal.Helpers;
 using LittleHorse.Common.Proto;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using LittleHorse.Sdk;
+using LittleHorse.Sdk.Internal;
+using static LittleHorse.Common.Proto.LittleHorse;
 using Polly;
 
 namespace LittleHorse.Worker.Internal
@@ -22,7 +23,7 @@ namespace LittleHorse.Worker.Internal
         private List<VariableMapping> _mappings;
         private T _executable;
         private ILogger? _logger;
-        private LittleHorse.Common.Proto.LittleHorse.LittleHorseClient _bootstrapClient;
+        private LittleHorseClient _bootstrapClient;
         private bool _running;
         private List<LHServerConnection<T>> _runningConnections;
         private Thread _rebalanceThread;
@@ -35,15 +36,14 @@ namespace LittleHorse.Worker.Internal
                                          MethodInfo taskMethod,
                                          TaskDef taskDef,
                                          List<VariableMapping> mappings,
-                                         T executable,
-                                         ILogger? logger = null)
+                                         T executable)
         {
             _config = config;
             _taskMethod = taskMethod;
             _taskDef = taskDef;
             _mappings = mappings;
             _executable = executable;
-            _logger = logger;
+            _logger = LHLoggerFactoryProvider.GetLogger<LHServerConnectionManager<T>>();
 
             _bootstrapClient = config.GetGrcpClientInstance();
 
@@ -109,7 +109,7 @@ namespace LittleHorse.Worker.Internal
                 {
                     try
                     {
-                        var newConnection = new LHServerConnection<T>(this, host, _logger);
+                        var newConnection = new LHServerConnection<T>(this, host);
                         newConnection.Connect();
                         _runningConnections.Add(newConnection);
                         _logger?.LogInformation($"Adding connection to: {host.Host}:{host.Port} for task '{_taskDef.Id}'");
@@ -148,14 +148,14 @@ namespace LittleHorse.Worker.Internal
             return _runningConnections.Any(conn => conn.IsSame(host));
         }
 
-        public async void SubmitTaskForExecution(ScheduledTask scheduledTask, LittleHorse.Common.Proto.LittleHorse.LittleHorseClient client)
+        public async void SubmitTaskForExecution(ScheduledTask scheduledTask, LittleHorseClient client)
         {
             await _semaphore.WaitAsync();
 
             DoTask(scheduledTask, client);
         }
 
-        private void DoTask(ScheduledTask scheduledTask, LittleHorse.Common.Proto.LittleHorse.LittleHorseClient client)
+        private void DoTask(ScheduledTask scheduledTask, LittleHorseClient client)
         {
             ReportTaskRun result = ExecuteTask(scheduledTask, LHMappingHelper.MapDateTimeFromProtoTimeStamp(scheduledTask.CreatedAt));
             _semaphore.Release();

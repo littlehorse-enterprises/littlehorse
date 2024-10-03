@@ -78,6 +78,21 @@ code {
   border-radius: 1rem;
 }
 
+.video {
+  width: 80%;
+  height: auto;
+  aspect-ratio: 1.777;
+}
+
+.video-container {
+  display: flex;
+  justify-content: center;
+}
+
+/* Disable external link indicator for header links with the class no-external-icon */
+.navbar__link svg {
+  display: none;
+}
 
 
 /* 

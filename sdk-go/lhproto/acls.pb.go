@@ -40,7 +40,7 @@ const (
 	ACLResource_ACL_PRINCIPAL ACLResource = 4
 	// Refers to the `Tenant` resource. The `ACL_TENANT` permission is only valid in the
 	// `global_acls` field of the `Principal`. This is because the `Tenant` resource is
-	// cluste-rscoped.
+	// cluster-scoped.
 	ACLResource_ACL_TENANT ACLResource = 5
 	// Refers to all resources. In the `global_acls` field, this includes `Principal` and `Tenant`
 	// resources. In the `per_tenant_acls` field, this does not include `Principal` and `Tenant` since

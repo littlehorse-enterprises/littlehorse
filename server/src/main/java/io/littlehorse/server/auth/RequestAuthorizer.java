@@ -29,7 +29,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class RequestAuthorizer implements ServerAuthorizer {
 
     private final CoreStoreProvider coreStoreProvider;
@@ -54,19 +56,20 @@ public class RequestAuthorizer implements ServerAuthorizer {
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(
             ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
+        // GET CLIENT ID AND TENANT ID
         String clientIdStr = headers.get(CLIENT_ID);
         PrincipalIdModel clientId = clientIdStr == null
                 ? null
                 : (PrincipalIdModel) ObjectIdModel.fromString(clientIdStr.trim(), PrincipalIdModel.class);
-        String tenantIdStr = headers.get(TENANT_ID);
 
+        String tenantIdStr = headers.get(TENANT_ID);
         TenantIdModel tenantId = tenantIdStr == null
                 ? null
                 : (TenantIdModel) ObjectIdModel.fromString(tenantIdStr.trim(), TenantIdModel.class);
 
         Context context = Context.current();
         try {
-            RequestExecutionContext requestContext = contextFor(clientId, tenantId);
+            RequestExecutionContext requestContext = contextFor(clientId, tenantId, call.getMethodDescriptor());
             validateAcl(call.getMethodDescriptor(), requestContext.authorization());
             context = context.withValue(executionContextKey, requestContext);
         } catch (PermissionDeniedException ex) {
@@ -77,13 +80,19 @@ public class RequestAuthorizer implements ServerAuthorizer {
 
     private void validateAcl(MethodDescriptor<?, ?> method, AuthorizationContext authContext) {
         if (!authContext.isAdmin()) {
-            Collection<ServerACLModel> perTenantAcls = authContext.acls();
-            aclVerifier.verify(method, perTenantAcls);
+            aclVerifier.verify(method, authContext);
         }
     }
 
-    private RequestExecutionContext contextFor(PrincipalIdModel clientId, TenantIdModel tenantId) {
-        return new RequestExecutionContext(clientId, tenantId, coreStoreProvider, metadataCache, lhConfig);
+    private RequestExecutionContext contextFor(
+            PrincipalIdModel clientId, TenantIdModel tenantId, MethodDescriptor<?, ?> method) {
+        return new RequestExecutionContext(
+                clientId,
+                tenantId,
+                coreStoreProvider,
+                metadataCache,
+                lhConfig,
+                aclVerifier.doesServiceRequireClusterScopedResources(method));
     }
 
     private static class AclVerifier {
@@ -121,9 +130,12 @@ public class RequestAuthorizer implements ServerAuthorizer {
             }
         }
 
-        private void verify(MethodDescriptor<?, ?> serviceMethod, Collection<ServerACLModel> acls) {
+        private void verify(MethodDescriptor<?, ?> serviceMethod, AuthorizationContext authContext) {
             String methodName = serviceMethod.getBareMethodName();
             AuthMetadata authMetadata = methodMetadata.get(methodName);
+
+            Collection<ServerACLModel> acls = authContext.acls();
+
             Set<ACLAction> clientAllowedActions = new HashSet<>();
             Set<ACLResource> clientAllowedResources = new HashSet<>();
             for (ServerACLModel clientAcl : acls) {
@@ -135,6 +147,14 @@ public class RequestAuthorizer implements ServerAuthorizer {
                 throw new PermissionDeniedException("Missing permissions %s over resources %s"
                         .formatted(authMetadata.requiredActions(), authMetadata.requiredResources()));
             }
+        }
+
+        public boolean doesServiceRequireClusterScopedResources(MethodDescriptor<?, ?> serviceMethod) {
+            String methodName = serviceMethod.getBareMethodName();
+            AuthMetadata authMetadata = methodMetadata.get(methodName);
+
+            return authMetadata.requiredResources().contains(ACLResource.ACL_TENANT)
+                    || authMetadata.requiredResources().contains(ACLResource.ACL_PRINCIPAL);
         }
 
         private boolean isActionAllowed(AuthMetadata metadata, Set<ACLAction> clientAllowedActions) {

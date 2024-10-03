@@ -2,11 +2,9 @@ package io.littlehorse.server;
 
 import com.google.protobuf.Message;
 import io.grpc.Context;
-import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -50,7 +48,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
@@ -221,7 +218,7 @@ public class LHServer {
                 Duration.ofMillis(10_000 + config.getStreamsSessionTimeout()),
                 networkThreadpool);
 
-        Callback callback = (meta, exn) -> this.productionCallback(meta, exn, commandObserver, command, context);
+        Callback callback = internalComms.createProducerCommandCallback(command, commandObserver, context);
 
         command.setCommandId(LHUtil.generateGuid());
 
@@ -238,19 +235,6 @@ public class LHServer {
 
     private WfService getServiceFromContext() {
         return requestContext().service();
-    }
-
-    private void productionCallback(
-            RecordMetadata meta,
-            Exception exn,
-            StreamObserver<WaitForCommandResponse> observer,
-            AbstractCommand<?> command,
-            RequestExecutionContext context) {
-        if (exn != null) {
-            observer.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
-        } else {
-            internalComms.waitForCommand(command, observer, context);
-        }
     }
 
     public void onTaskScheduled(

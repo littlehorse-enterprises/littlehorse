@@ -52,6 +52,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
+import io.littlehorse.server.GlobalExceptionHandler;
 import io.littlehorse.server.auth.InternalAuthorizer;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
@@ -83,6 +84,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -157,6 +159,7 @@ public class BackendInternalComms implements Closeable {
                 .permitKeepAliveWithoutCalls(true)
                 .executor(networkThreadPool)
                 .addService(new InterBrokerCommServer())
+                .intercept(new GlobalExceptionHandler())
                 .intercept(new InternalAuthorizer(contextKey, coreStoreProvider, metadataCache, config))
                 .build();
 
@@ -192,12 +195,17 @@ public class BackendInternalComms implements Closeable {
     }
 
     private KeyQueryMetadata lookupPartitionKey(String storeName, String partitionKey) {
-        KeyQueryMetadata metadata = coreStreams.queryMetadataForKey(
-                storeName, partitionKey, Serdes.String().serializer());
-        if (metadata.activeHost().port() == -1 && metadata.activeHost().host().equals("unavailable")) {
-            throw new LHApiException(Status.UNAVAILABLE, "Kafka Streams not ready yet");
+        try {
+            KeyQueryMetadata metadata = coreStreams.queryMetadataForKey(
+                    storeName, partitionKey, Serdes.String().serializer());
+            if (metadata.activeHost().port() == -1
+                    && metadata.activeHost().host().equals("unavailable")) {
+                throw new LHApiException(Status.UNAVAILABLE, "Kafka Streams not ready yet");
+            }
+            return metadata;
+        } catch (IllegalStateException ex) {
+            throw new LHApiException(Status.UNAVAILABLE, ex.getMessage());
         }
-        return metadata;
     }
 
     public <U extends Message, T extends AbstractGetable<U>> T getObject(
@@ -213,18 +221,29 @@ public class BackendInternalComms implements Closeable {
         if (metadata.activeHost().equals(thisHost)) {
             return getObjectLocal(objectId, clazz, metadata.partition());
         } else {
-            return LHSerializable.fromBytes(
-                    getInternalClient(metadata.activeHost())
-                            .getObject(GetObjectRequest.newBuilder()
-                                    .setObjectType(objectId.getType())
-                                    .setObjectId(objectId.toString())
-                                    .setPartition(metadata.partition())
-                                    .build())
-                            .getResponse()
-                            .toByteArray(),
-                    clazz,
-                    context);
+            try {
+                byte[] resultObject = getInternalClient(metadata.activeHost())
+                        .getObject(GetObjectRequest.newBuilder()
+                                .setObjectType(objectId.getType())
+                                .setObjectId(objectId.toString())
+                                .setPartition(metadata.partition())
+                                .build())
+                        .getResponse()
+                        .toByteArray();
+                return LHSerializable.fromBytes(resultObject, clazz, context);
+            } catch (StatusRuntimeException ex) {
+                throw new LHApiException(ex.getStatus(), ex.getMessage());
+            }
         }
+    }
+
+    public ProducerCommandCallback createProducerCommandCallback(
+            AbstractCommand<?> command,
+            StreamObserver<WaitForCommandResponse> observer,
+            RequestExecutionContext requestCtx) {
+        Function<KeyQueryMetadata, LHInternalsStub> internalStub =
+                (meta) -> getInternalAsyncClient(meta.activeHost(), InternalCallCredentials.forContext(requestCtx));
+        return new ProducerCommandCallback(observer, command, coreStreams, thisHost, internalStub, asyncWaiters);
     }
 
     public void waitForCommand(
@@ -397,7 +416,7 @@ public class BackendInternalComms implements Closeable {
         return getInternalClient(host, InternalCallCredentials.forContext(executionContext()));
     }
 
-    private LHInternalsStub getInternalAsyncClient(HostInfo host, InternalCallCredentials credentials) {
+    public LHInternalsStub getInternalAsyncClient(HostInfo host, InternalCallCredentials credentials) {
         if (host.port() == -1) {
             throw new LHApiException(
                     Status.UNAVAILABLE, "Kafka Streams not ready or invalid server cluster configuration");
@@ -455,43 +474,31 @@ public class BackendInternalComms implements Closeable {
 
         @Override
         public void getObject(GetObjectRequest request, StreamObserver<GetObjectResponse> observer) {
-            try {
-                ObjectIdModel<?, ?, ?> id = ObjectIdModel.fromString(
-                        request.getObjectId(), AbstractGetable.getIdCls(request.getObjectType()));
+            ObjectIdModel<?, ?, ?> id =
+                    ObjectIdModel.fromString(request.getObjectId(), AbstractGetable.getIdCls(request.getObjectType()));
 
-                String storeName = id.getStore().getStoreName();
-                ReadOnlyTenantScopedStore store = getStore(request.getPartition(), storeName);
+            String storeName = id.getStore().getStoreName();
+            ReadOnlyTenantScopedStore store = getStore(request.getPartition(), storeName);
 
-                @SuppressWarnings("unchecked")
-                StoredGetable<?, ?> entity = store.get(id.getStoreableKey(), StoredGetable.class);
+            @SuppressWarnings("unchecked")
+            StoredGetable<?, ?> entity = store.get(id.getStoreableKey(), StoredGetable.class);
 
-                if (entity == null) {
-                    observer.onError(new LHApiException(Status.NOT_FOUND, "Requested object was not found."));
-                } else {
-                    observer.onNext(GetObjectResponse.newBuilder()
-                            .setResponse(
-                                    entity.getStoredObject().toProto().build().toByteString())
-                            .build());
-                    observer.onCompleted();
-                }
-            } catch (InvalidStateStoreException ex) {
-                log.error("Not ready Kafka streams state: %s msg: %s".formatted(coreStreams.state(), ex.toString()));
-                observer.onError(ex);
+            if (entity == null) {
+                observer.onError(new LHApiException(Status.NOT_FOUND, "Requested object was not found."));
+            } else {
+                observer.onNext(GetObjectResponse.newBuilder()
+                        .setResponse(entity.getStoredObject().toProto().build().toByteString())
+                        .build());
+                observer.onCompleted();
             }
         }
 
         @Override
         public void internalScan(InternalScanPb req, StreamObserver<InternalScanResponse> observer) {
             InternalScan lhis = LHSerializable.fromProto(req, InternalScan.class, executionContext());
-            try {
-                InternalScanResponse reply = doScan(lhis);
-                observer.onNext(reply);
-                observer.onCompleted();
-            } catch (LHApiException exn) {
-                observer.onError(exn);
-            } catch (Exception exn) {
-                observer.onError(new LHApiException(Status.UNKNOWN, exn));
-            }
+            InternalScanResponse reply = doScan(lhis);
+            observer.onNext(reply);
+            observer.onCompleted();
         }
 
         @Override
@@ -529,20 +536,24 @@ public class BackendInternalComms implements Closeable {
      * EMPLOYEE_TODO: Failover to Standby replicas if the leader is down.
      */
     public InternalScanResponse doScan(InternalScan search) {
-        if (search.getStoreName().equals(ServerTopology.GLOBAL_METADATA_STORE)) {
-            // This will be cleaned up in a two-part refactor of the stores. The first part is
-            // in #556.
-            return doGlobalStoreScan(search);
-        }
+        try {
+            if (search.getStoreName().equals(ServerTopology.GLOBAL_METADATA_STORE)) {
+                // This will be cleaned up in a two-part refactor of the stores. The first part is
+                // in #556.
+                return doGlobalStoreScan(search);
+            }
 
-        if (search.partitionKey != null && search.type == ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN) {
-            return objectIdPrefixScan(search);
-        } else if (search.partitionKey != null && search.type == ScanBoundaryCase.TAG_SCAN) {
-            return specificPartitionTagScan(search);
-        } else if (search.partitionKey == null && search.type == ScanBoundaryCase.TAG_SCAN) {
-            return allPartitionTagScan(search);
-        } else {
-            throw new RuntimeException("Impossible: Unrecognized search type");
+            if (search.partitionKey != null && search.type == ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN) {
+                return objectIdPrefixScan(search);
+            } else if (search.partitionKey != null && search.type == ScanBoundaryCase.TAG_SCAN) {
+                return specificPartitionTagScan(search);
+            } else if (search.partitionKey == null && search.type == ScanBoundaryCase.TAG_SCAN) {
+                return allPartitionTagScan(search);
+            } else {
+                throw new RuntimeException("Impossible: Unrecognized search type");
+            }
+        } catch (StatusRuntimeException ex) {
+            throw new LHApiException(ex.getStatus(), ex.getMessage());
         }
     }
 
@@ -643,6 +654,7 @@ public class BackendInternalComms implements Closeable {
             case TASK_WORKER_GROUP:
             case WORKFLOW_EVENT:
             case WORKFLOW_EVENT_DEF:
+            case SCHEDULED_WF_RUN:
             case UNRECOGNIZED:
         }
         return false;

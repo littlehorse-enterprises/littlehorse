@@ -14,6 +14,7 @@ import io.grpc.ServerCall;
 import io.grpc.ServerInterceptors;
 import io.grpc.ServerMethodDefinition;
 import io.grpc.ServerServiceDefinition;
+import io.grpc.Status;
 import io.grpc.internal.NoopServerCall;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.AuthorizationContext;
@@ -44,6 +45,8 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 public class RequestAuthorizerTest {
@@ -58,8 +61,9 @@ public class RequestAuthorizerTest {
             TestMetadataManager.create(requestContext.getGlobalMetadataNativeStore(), "my-tenant", requestContext);
     private final RequestAuthorizer requestAuthorizer =
             new RequestAuthorizer(contextKey, metadataCache, new TestCoreStoreProvider(requestContext), lhConfig);
-    private ServerCall<Object, Object> mockCall = mock();
+    private ServerCall<Object, Object> mockCall = mock(Answers.RETURNS_DEEP_STUBS);
     private final Metadata mockMetadata = mock();
+    private final MethodDescriptor methodDescriptor = mock();
 
     private WfService service = requestContext.service();
     private final ServerServiceDefinition testServiceDefinition = buildTestServiceDefinition(
@@ -72,6 +76,7 @@ public class RequestAuthorizerTest {
     public void setup() {
         when(kafkaStreams.store(any())).thenReturn(requestContext.getCoreNativeStore());
         inMemoryAnonymousPrincipal = service.getPrincipal(null);
+        when(mockCall.getMethodDescriptor().getBareMethodName()).thenReturn("PutPrincipal");
     }
 
     private void startCall() {
@@ -85,6 +90,7 @@ public class RequestAuthorizerTest {
     @Test
     public void supportAnonymousPrincipalForDefaultTenant() {
         when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn(null);
+
         startCall();
         assertThat(resolvedAuthContext).isNotNull();
         assertThat(resolvedAuthContext.acls()).hasSize(1);
@@ -113,8 +119,6 @@ public class RequestAuthorizerTest {
         TenantModel tenant = new TenantModel("my-tenant");
         metadataManager.put(tenant);
         metadataManager.put(newPrincipal);
-        MethodDescriptor<Object, Object> mockMethod = mock();
-        when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
         startCall();
         assertThat(resolvedAuthContext.principalId().getId()).isEqualTo("principal-id");
         assertThat(resolvedAuthContext.acls()).containsOnly(TestUtil.adminAcl());
@@ -128,8 +132,6 @@ public class RequestAuthorizerTest {
         newPrincipal.setId(new PrincipalIdModel("principal-id"));
         newPrincipal.setGlobalAcls(TestUtil.singleAdminAcl("name"));
         metadataManager.put(newPrincipal);
-        MethodDescriptor<Object, Object> mockMethod = mock();
-        when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
         startCall();
         assertThat(resolvedAuthContext).isNull();
     }
@@ -178,6 +180,36 @@ public class RequestAuthorizerTest {
         }
 
         @Test
+        public void shouldRejectTenantResourceRequestFromTenantAdminPrincipal() {
+            MethodDescriptor<Object, Object> mockMethod = mock();
+            when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
+            when(mockMethod.getBareMethodName()).thenReturn("PutTenant");
+            when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("tenant-admin-principal");
+            startCall();
+            ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
+            Mockito.verify(mockCall).close(statusCaptor.capture(), eq(mockMetadata));
+            assertThat(statusCaptor
+                    .getValue()
+                    .equals(Status.PERMISSION_DENIED.withDescription(
+                            "Missing permissions [WRITE_METADATA] over resources [ACL_TENANT]")));
+        }
+
+        @Test
+        public void shouldRejectPrincipalResourceRequestFromTenantAdminPrincipal() {
+            MethodDescriptor<Object, Object> mockMethod = mock();
+            when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
+            when(mockMethod.getBareMethodName()).thenReturn("PutPrincipal");
+            when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("tenant-admin-principal");
+            startCall();
+            ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
+            Mockito.verify(mockCall).close(statusCaptor.capture(), eq(mockMetadata));
+            assertThat(statusCaptor
+                    .getValue()
+                    .equals(Status.PERMISSION_DENIED.withDescription(
+                            "Missing permissions [WRITE_METADATA] over resources [ACL_PRINCIPAL]")));
+        }
+
+        @Test
         public void supportTenantAdmins() {
             MethodDescriptor<Object, Object> mockMethod = mock();
             when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
@@ -222,7 +254,12 @@ public class RequestAuthorizerTest {
                 (ServerMethodDefinition<Object, Object>) Iterables.get(intercept.getMethods(), 0);
         final int numberOfRequests = 10_000;
         Consumer<String> submitCall = principalId -> {
-            ServerCall stubCall = new NoopServerCall();
+            ServerCall<Object, Object> stubCall = new NoopServerCall<>() {
+                @Override
+                public MethodDescriptor<Object, Object> getMethodDescriptor() {
+                    return mockCall.getMethodDescriptor();
+                }
+            };
             final Metadata mockMetadata = new Metadata();
             mockMetadata.put(ServerAuthorizer.CLIENT_ID, principalId);
             PrincipalModel newPrincipal = new PrincipalModel();

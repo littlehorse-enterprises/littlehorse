@@ -59,7 +59,7 @@ public enum ACLResource
    * <pre>
    * Refers to the `Tenant` resource. The `ACL_TENANT` permission is only valid in the
    * `global_acls` field of the `Principal`. This is because the `Tenant` resource is
-   * cluste-rscoped.
+   * cluster-scoped.
    * </pre>
    *
    * <code>ACL_TENANT = 5;</code>
@@ -133,7 +133,7 @@ public enum ACLResource
    * <pre>
    * Refers to the `Tenant` resource. The `ACL_TENANT` permission is only valid in the
    * `global_acls` field of the `Principal`. This is because the `Tenant` resource is
-   * cluste-rscoped.
+   * cluster-scoped.
    * </pre>
    *
    * <code>ACL_TENANT = 5;</code>

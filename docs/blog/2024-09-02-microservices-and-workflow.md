@@ -3,7 +3,7 @@ slug: microservices-and-workflow
 title: 'Microservices and Workflow: A Match Made in Heaven'
 authors:
 - coltmcnealy
-tags: [analysis]
+tags: [analysis,microservice-and-workflow]
 ---
 
 While they are often necessary, microservices are a headache. Fortunately, the right workflow engine (such as LittleHorse) can drastically reduce the difficulty of managing microservices.

@@ -1,11 +1,10 @@
-﻿using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
-using Grpc.Core;
+﻿using Grpc.Core;
 using Grpc.Net.Client;
+using LittleHorse.Sdk.Authentication;
 using LittleHorse.Common.Configuration.Models;
 using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Internal;
-using Microsoft.Extensions.Configuration;
+using LittleHorse.Sdk.Utils;
 using Microsoft.Extensions.Logging;
 using static LittleHorse.Common.Proto.LittleHorse;
 
@@ -13,23 +12,24 @@ namespace LittleHorse.Sdk {
 
     public class LHConfig
     {
-
         private ILogger<LHConfig>? _logger;
 
-        private LHWorkerOptions _options;
+        private LHOptions _options;
 
-        private Dictionary<string, GrpcChannel> _createdChannels;
+        private Dictionary<string, LittleHorseClient> _createdChannels;
         
-        public LHConfig(IConfiguration configuration, ILoggerFactory? loggerFactory = null)
+        private OAuthConfig? _oAuthConfig;
+        private OAuthClient? _oAuthClient;
+        
+        public LHConfig(ILoggerFactory? loggerFactory = null)
         {
             LHLoggerFactoryProvider.Initialize(loggerFactory);
             _logger = LHLoggerFactoryProvider.GetLogger<LHConfig>();
-            _options = new LHWorkerOptions();
-            configuration.Bind(_options);
-            _createdChannels = new Dictionary<string, GrpcChannel>();
+            _options = LHOptionsBinder.GetOptionsFromEnvironmentVariables();
+            _createdChannels = new Dictionary<string, LittleHorseClient>();
         }
 
-        public string WorkerId
+        public string? WorkerId
         {
             get
             {
@@ -37,7 +37,7 @@ namespace LittleHorse.Sdk {
             }
         }
 
-        public string TaskWorkerVersion
+        public string? TaskWorkerVersion
         {
             get { return _options.LHW_TASK_WORKER_VERSION; }
         }
@@ -80,6 +80,26 @@ namespace LittleHorse.Sdk {
             }
         }
 
+        private bool IsOAuth
+        {
+            get
+            {
+                var result = !string.IsNullOrEmpty(_options.LHC_OAUTH_ACCESS_TOKEN_URL) 
+                             && !string.IsNullOrEmpty(_options.LHC_OAUTH_CLIENT_ID) 
+                             && !string.IsNullOrEmpty(_options.LHC_OAUTH_CLIENT_SECRET);
+                if (!result)
+                {
+                    _logger?.LogInformation("OAuth is disable");
+                }
+                else
+                {
+                    _logger?.LogInformation("OAuth is enable");
+                }
+
+                return result;
+            }
+        }
+
         public LittleHorseClient GetGrcpClientInstance()
         {
             return GetGrcpClientInstance(BootstrapHost, BootstrapPort);
@@ -91,40 +111,69 @@ namespace LittleHorse.Sdk {
 
             if (_createdChannels.ContainsKey(channelKey))
             {
-                return new LittleHorseClient(_createdChannels[channelKey]);
+                return _createdChannels[channelKey];
             }
 
             _logger?.LogInformation("Establishing connection to: " + channelKey);
 
             GrpcChannel channel = CreateChannel(host, port);
+            
+            var lhClient = new LittleHorseClient(channel);
 
-            _createdChannels.Add(channelKey, channel);
+            _createdChannels.Add(channelKey, lhClient);
 
-            return new LittleHorseClient(channel);
+            return lhClient;
         }
 
         private GrpcChannel CreateChannel(string host, int port)
         {
             var httpHandler = new HttpClientHandler();
             var address = $"{BootstrapProtocol}://{host}:{port}";
+            
+            if (_options.LHC_CA_CERT != null)
+            {
+                httpHandler = CertificatesHandler.GetHttpHandlerFrom(_options.LHC_CA_CERT);
+            }
 
             if (_options.LHC_CLIENT_CERT != null && _options.LHC_CLIENT_KEY != null)
             {
-                string certificatePem = File.ReadAllText(_options.LHC_CLIENT_CERT);
-                string privateKeyPem = File.ReadAllText(_options.LHC_CLIENT_KEY);
-                X509Certificate2 cert = X509Certificate2.CreateFromPem(certificatePem, privateKeyPem);
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    var originalCert = cert;
-                    cert = new X509Certificate2(cert.Export(X509ContentType.Pkcs12));
-                    originalCert.Dispose();
-                }
+                var cert = 
+                    CertificatesHandler.GetX509CertificateFrom(_options.LHC_CLIENT_KEY, 
+                        _options.LHC_CLIENT_CERT);
+                
                 httpHandler.ClientCertificates.Add(cert);
+            }
+            
+            if (IsOAuth)
+            {
+                return CreateGrpcChannelWithOauthCredentials(address, httpHandler);
             }
 
             return GrpcChannel.ForAddress(address, new GrpcChannelOptions
             {
                 HttpHandler = httpHandler
+            });
+        }
+
+        private GrpcChannel CreateGrpcChannelWithOauthCredentials(string address, HttpClientHandler httpHandler)
+        {
+            InitializeOAuth();
+
+            if (_oAuthClient is null)
+            {
+                throw new Exception("OAuth is not initialized.");
+            }
+
+            var credentials = CallCredentials.FromInterceptor(async (context, metadata) =>
+            {
+                var tokenInfo = await _oAuthClient.GetAccessTokenAsync();
+                metadata.Add("Authorization", $"Bearer {tokenInfo.AccessToken}");
+            });
+            
+            return GrpcChannel.ForAddress(address, new GrpcChannelOptions
+            {
+                HttpHandler = httpHandler,
+                Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
             });
         }
 
@@ -143,8 +192,24 @@ namespace LittleHorse.Sdk {
             }
             catch (RpcException ex)
             {
-                _logger?.LogCritical(exception: ex, $"GetTaskDef error, taskDefName: {taskDefName}, Error Code: {ex.StatusCode}");
+                _logger?.LogCritical(exception: ex, $"GetTaskDef error, taskDefName: {taskDefName}, " +
+                                                    $"Error Code: {ex.StatusCode}");
                 throw;
+            }
+        }
+        
+        private void InitializeOAuth()
+        {
+            if (_oAuthConfig is null)
+            {
+                _oAuthConfig = new OAuthConfig(_options.LHC_OAUTH_CLIENT_ID, 
+                    _options.LHC_OAUTH_CLIENT_SECRET, 
+                    _options.LHC_OAUTH_ACCESS_TOKEN_URL);
+
+                if (_oAuthClient is null)
+                {
+                    _oAuthClient = new OAuthClient(_oAuthConfig);
+                }
             }
         }
     }

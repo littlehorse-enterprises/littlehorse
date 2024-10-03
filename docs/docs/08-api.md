@@ -3882,7 +3882,7 @@ Defines a resource type for ACL's.
 | ACL_EXTERNAL_EVENT | 2 | Refers to `ExternalEventDef` and `ExternalEvent` |
 | ACL_USER_TASK | 3 | Refers to `UserTaskDef` and `UserTaskRun` |
 | ACL_PRINCIPAL | 4 | Refers to the `Principal` resource. Currently, the `ACL_PRINCIPAL` permission is only valid in the `global_acls` field of the `Principal`. A `Principal` who only has access to a specific Tenant cannot create othe Principals because a Principal is scoped to the Cluster, and not to a Tenant. |
-| ACL_TENANT | 5 | Refers to the `Tenant` resource. The `ACL_TENANT` permission is only valid in the `global_acls` field of the `Principal`. This is because the `Tenant` resource is cluste-rscoped. |
+| ACL_TENANT | 5 | Refers to the `Tenant` resource. The `ACL_TENANT` permission is only valid in the `global_acls` field of the `Principal`. This is because the `Tenant` resource is cluster-scoped. |
 | ACL_ALL_RESOURCES | 6 | Refers to all resources. In the `global_acls` field, this includes `Principal` and `Tenant` resources. In the `per_tenant_acls` field, this does not include `Principal` and `Tenant` since those are cluster-scoped resources. |
 | ACL_TASK_WORKER_GROUP | 7 | Refers to the `TaskWorkerGroup` associated with a TaskDef |
 
