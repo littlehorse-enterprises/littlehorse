@@ -10,6 +10,7 @@ import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
+import com.nimbusds.openid.connect.sdk.OIDCScopeValue;
 import io.littlehorse.sdk.common.auth.AuthorizationServerException;
 import io.littlehorse.sdk.common.auth.TokenStatus;
 import java.io.IOException;
@@ -68,7 +69,7 @@ public class OAuthClient {
                 throw new UnauthenticatedException("Invalid token, scope was not provided");
             }
 
-            boolean isMachineClient = !scope.contains("openid");
+            boolean isMachineClient = !scope.contains(OIDCScopeValue.OPENID);
 
             return TokenStatus.builder()
                     .clientId(clientId)
