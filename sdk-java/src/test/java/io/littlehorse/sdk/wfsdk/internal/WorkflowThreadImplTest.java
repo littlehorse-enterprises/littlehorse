@@ -37,7 +37,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import net.datafaker.Faker;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -237,9 +236,12 @@ public class WorkflowThreadImplTest {
     void shouldCaptureWorkflowEventDefNames() {
         WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
             thread.throwEvent("event-one", "fdsa");
-            thread.spawnThread(child -> {
-                child.throwEvent("event-from-child", "asdf");
-            }, "child", null);
+            thread.spawnThread(
+                    child -> {
+                        child.throwEvent("event-from-child", "asdf");
+                    },
+                    "child",
+                    null);
         });
 
         Assertions.assertThat(wf.getRequiredWorkflowEventDefNames()).contains("event-one");

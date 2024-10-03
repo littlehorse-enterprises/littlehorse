@@ -187,7 +187,7 @@ public abstract class Workflow {
 
     /**
      * Returns the names of all `WorkflowEventDef`s used by this workflow.
-     * 
+     *
      * @return a Set of Strings containing the names of all `WorkflowEventDef`s thrown by this
      *      workflow.
      */
