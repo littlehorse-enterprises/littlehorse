@@ -16,10 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Example:
- *      https://github.com/grpc/grpc-java/blob/master/examples/example-oauth/src/main/java/io/grpc/examples/oauth/OAuth2ServerInterceptor.java
+ * https://github.com/grpc/grpc-java/blob/master/examples/example-oauth/src/main/java/io/grpc/examples/oauth/OAuth2ServerInterceptor.java
  */
 @Slf4j
-public class OAuthServerAuthorizer implements ServerAuthorizer {
+public class OAuthServerAuthenticator implements ServerAuthorizer {
 
     private static final Metadata.Key<String> AUTHORIZATION_HEADER_KEY =
             Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER);
@@ -31,7 +31,7 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
 
     private final OAuthClient client;
 
-    public OAuthServerAuthorizer(OAuthConfig config) {
+    public OAuthServerAuthenticator(OAuthConfig config) {
         this.client = new OAuthClient(config);
     }
 
@@ -54,7 +54,7 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
     private void updateHeaders(Metadata headers, TokenStatus tokenStatus) {
         // this shouldn't be possible
         if (tokenStatus == null) {
-            throw new PermissionDeniedException("Token not found");
+            throw new UnauthenticatedException("Token not found");
         }
 
         if (tokenStatus.isMachineClient()) {
@@ -65,8 +65,8 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
     }
 
     private Status getStatusByException(Exception e) {
-        if (e instanceof PermissionDeniedException) {
-            return Status.PERMISSION_DENIED.withDescription(e.getMessage());
+        if (e instanceof UnauthenticatedException) {
+            return Status.UNAUTHENTICATED.withDescription(e.getMessage());
         } else {
             return Status.ABORTED.withDescription(e.getMessage());
         }
@@ -81,7 +81,7 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
 
     private TokenStatus validateToken(String token) {
         if (Strings.isNullOrEmpty(token)) {
-            throw new PermissionDeniedException("Token is empty");
+            throw new UnauthenticatedException("Token is empty");
         }
 
         TokenStatus tokenStatus = tokenCache.getIfPresent(token);
@@ -92,7 +92,7 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
         }
 
         if (!tokenStatus.isValid()) {
-            throw new PermissionDeniedException("Token is not active");
+            throw new UnauthenticatedException("Token is not active");
         }
         return tokenStatus;
     }

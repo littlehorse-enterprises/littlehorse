@@ -1,6 +1,10 @@
 package io.littlehorse.server.auth;
 
-import com.nimbusds.oauth2.sdk.*;
+import com.nimbusds.oauth2.sdk.ParseException;
+import com.nimbusds.oauth2.sdk.Scope;
+import com.nimbusds.oauth2.sdk.TokenIntrospectionRequest;
+import com.nimbusds.oauth2.sdk.TokenIntrospectionResponse;
+import com.nimbusds.oauth2.sdk.TokenIntrospectionSuccessResponse;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
@@ -14,9 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Examples:
- *      https://connect2id.com/products/nimbus-oauth-openid-connect-sdk/examples/oauth/token-introspection
- *      https://www.nimbusds.com/products/nimbus-oauth-openid-connect-sdk/guides/java-cookbook-for-openid-connect-public-clients
- *      https://www.oauth.com/oauth2-servers/token-introspection-endpoint/
+ * https://connect2id.com/products/nimbus-oauth-openid-connect-sdk/examples/oauth/token-introspection
+ * https://www.nimbusds.com/products/nimbus-oauth-openid-connect-sdk/guides/java-cookbook-for-openid-connect-public-clients
+ * https://www.oauth.com/oauth2-servers/token-introspection-endpoint/
  */
 @Slf4j
 public class OAuthClient {
@@ -58,7 +62,13 @@ public class OAuthClient {
             // This makes the assumption that our human users are using OIDC. However, that decision
             // appears to have been made and is a design decision rather than an implementation detail,
             // so I think that this is safe.
-            boolean isMachineClient = !successResponse.getScope().contains("openid");
+            Scope scope = successResponse.getScope();
+
+            if (scope == null) {
+                throw new UnauthenticatedException("Invalid token, scope was not provided");
+            }
+
+            boolean isMachineClient = !scope.contains("openid");
 
             return TokenStatus.builder()
                     .clientId(clientId)
