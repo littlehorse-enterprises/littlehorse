@@ -11,8 +11,8 @@ import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.OIDCScopeValue;
-import io.littlehorse.sdk.common.auth.AuthorizationServerException;
 import io.littlehorse.sdk.common.auth.TokenStatus;
+import io.littlehorse.sdk.common.exception.EntityProviderException;
 import java.io.IOException;
 import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
@@ -44,13 +44,13 @@ public class OAuthClient {
                     TokenIntrospectionResponse.parse(request.toHTTPRequest().send());
 
             if (!response.indicatesSuccess()) {
-                throw new AuthorizationServerException("Error getting the token status: "
+                throw new EntityProviderException("Error getting the token status: "
                         + response.toErrorResponse().getErrorObject());
             }
 
             TokenIntrospectionSuccessResponse successResponse = response.toSuccessResponse();
             if (!successResponse.isActive()) {
-                log.warn("Received Access Token is Not Active");
+                throw new UnauthenticatedException("Access token is not active");
             }
 
             String clientId = successResponse.getClientID() == null
@@ -80,7 +80,7 @@ public class OAuthClient {
                     .build();
         } catch (ParseException | IOException e) {
             log.error(e.getMessage(), e);
-            throw new AuthorizationServerException(e);
+            throw new EntityProviderException(e);
         }
     }
 }
