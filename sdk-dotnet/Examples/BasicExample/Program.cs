@@ -23,7 +23,7 @@ public class Program
         if (_serviceProvider != null)
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
-            var config = new LHConfig(loggerFactory);
+            var config = new LHConfig(".config/littlehorse.config", loggerFactory);
 
             MyWorker executable = new MyWorker();
             var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet-dotnet", config);

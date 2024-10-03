@@ -28,6 +28,14 @@ namespace LittleHorse.Sdk {
             _options = LHOptionsBinder.GetOptionsFromEnvironmentVariables();
             _createdChannels = new Dictionary<string, LittleHorseClient>();
         }
+        
+        public LHConfig(string configOptionsFilePath, ILoggerFactory? loggerFactory = null)
+        {
+            LHLoggerFactoryProvider.Initialize(loggerFactory);
+            _logger = LHLoggerFactoryProvider.GetLogger<LHConfig>();
+            _options = LHOptionsBinder.GetOptionsFromFile(configOptionsFilePath);
+            _createdChannels = new Dictionary<string, LittleHorseClient>();
+        }
 
         public string? WorkerId
         {
