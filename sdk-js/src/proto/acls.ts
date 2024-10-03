@@ -29,7 +29,7 @@ export enum ACLResource {
   /**
    * ACL_TENANT - Refers to the `Tenant` resource. The `ACL_TENANT` permission is only valid in the
    * `global_acls` field of the `Principal`. This is because the `Tenant` resource is
-   * cluste-rscoped.
+   * cluster-scoped.
    */
   ACL_TENANT = "ACL_TENANT",
   /**

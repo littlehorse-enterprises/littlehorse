@@ -9,6 +9,8 @@ import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.ACLAction;
+import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
@@ -54,7 +56,11 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
         PrincipalModel caller =
                 context.service().getPrincipal(context.authorization().principalId());
         if (!caller.canCreateTenants()) {
-            throw new LHApiException(Status.PERMISSION_DENIED, "Unauthorized to create tenants");
+            throw new LHApiException(
+                    Status.PERMISSION_DENIED,
+                    String.format(
+                            "Missing permission %s over resource %s.",
+                            ACLAction.WRITE_METADATA, ACLResource.ACL_TENANT));
         }
 
         TenantModel old = metadataManager.get(new TenantIdModel(id));

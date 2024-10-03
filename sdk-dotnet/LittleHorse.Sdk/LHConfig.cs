@@ -12,12 +12,11 @@ namespace LittleHorse.Sdk {
 
     public class LHConfig
     {
-
         private ILogger<LHConfig>? _logger;
 
         private LHOptions _options;
 
-        private Dictionary<string, GrpcChannel> _createdChannels;
+        private Dictionary<string, LittleHorseClient> _createdChannels;
         
         private OAuthConfig? _oAuthConfig;
         private OAuthClient? _oAuthClient;
@@ -27,7 +26,7 @@ namespace LittleHorse.Sdk {
             LHLoggerFactoryProvider.Initialize(loggerFactory);
             _logger = LHLoggerFactoryProvider.GetLogger<LHConfig>();
             _options = LHOptionsBinder.GetOptionsFromEnvironmentVariables();
-            _createdChannels = new Dictionary<string, GrpcChannel>();
+            _createdChannels = new Dictionary<string, LittleHorseClient>();
         }
 
         public string? WorkerId
@@ -112,16 +111,18 @@ namespace LittleHorse.Sdk {
 
             if (_createdChannels.ContainsKey(channelKey))
             {
-                return new LittleHorseClient(_createdChannels[channelKey]);
+                return _createdChannels[channelKey];
             }
 
             _logger?.LogInformation("Establishing connection to: " + channelKey);
 
             GrpcChannel channel = CreateChannel(host, port);
+            
+            var lhClient = new LittleHorseClient(channel);
 
-            _createdChannels.Add(channelKey, channel);
+            _createdChannels.Add(channelKey, lhClient);
 
-            return new LittleHorseClient(channel);
+            return lhClient;
         }
 
         private GrpcChannel CreateChannel(string host, int port)
@@ -168,7 +169,7 @@ namespace LittleHorse.Sdk {
                 var tokenInfo = await _oAuthClient.GetAccessTokenAsync();
                 metadata.Add("Authorization", $"Bearer {tokenInfo.AccessToken}");
             });
-
+            
             return GrpcChannel.ForAddress(address, new GrpcChannelOptions
             {
                 HttpHandler = httpHandler,

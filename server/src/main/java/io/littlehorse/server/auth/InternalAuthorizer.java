@@ -46,7 +46,7 @@ public class InternalAuthorizer implements ServerAuthorizer {
         Objects.requireNonNull(clientId);
         Objects.requireNonNull(tenantId);
         RequestExecutionContext requestContext =
-                new RequestExecutionContext(clientId, tenantId, coreStoreProvider, metadataCache, lhConfig);
+                new RequestExecutionContext(clientId, tenantId, coreStoreProvider, metadataCache, lhConfig, false);
         Context context = Context.current();
         context = context.withValue(executionContextKey, requestContext);
         return Contexts.interceptCall(context, call, headers, next);
