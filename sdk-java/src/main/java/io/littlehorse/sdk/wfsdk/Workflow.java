@@ -186,6 +186,14 @@ public abstract class Workflow {
     public abstract Set<String> getRequiredExternalEventDefNames();
 
     /**
+     * Returns the names of all `WorkflowEventDef`s used by this workflow.
+     *
+     * @return a Set of Strings containing the names of all `WorkflowEventDef`s thrown by this
+     *      workflow.
+     */
+    public abstract Set<String> getRequiredWorkflowEventDefNames();
+
+    /**
      * Returns the associated PutWfSpecRequest in JSON form.
      *
      * @return the associated PutWfSpecRequest in JSON form.
