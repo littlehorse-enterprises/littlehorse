@@ -3,6 +3,8 @@ package io.littlehorse.server.auth;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import io.grpc.Context;
+import io.grpc.Contexts;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
@@ -12,8 +14,12 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Example:
+ * https://github.com/grpc/grpc-java/blob/master/examples/example-oauth/src/main/java/io/grpc/examples/oauth/OAuth2ServerInterceptor.java
+ */
 @Slf4j
-public class OAuthServerAuthorizer implements ServerAuthorizer {
+public class OAuthServerAuthenticator implements ServerAuthorizer {
 
     private static final Metadata.Key<String> AUTHORIZATION_HEADER_KEY =
             Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER);
@@ -25,33 +31,44 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
 
     private final OAuthClient client;
 
-    public OAuthServerAuthorizer(OAuthConfig config) {
+    public OAuthServerAuthenticator(OAuthConfig config) {
         this.client = new OAuthClient(config);
     }
 
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(
             ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
-        String token = extractAccessToken(headers);
+
         try {
-            validateToken(token);
+            TokenStatus tokenStatus = validateToken(extractAccessToken(headers));
+            updateHeaders(headers, tokenStatus);
         } catch (Exception e) {
-            log.error("Error authorizing request", e);
-            call.close(getStatusByException(e), headers);
+            call.close(getStatusByException(e), new Metadata());
+            return new ServerCall.Listener<>() {};
         }
-        TokenStatus tokenModel = tokenCache.getIfPresent(token);
-        if (tokenModel.isMachineClient()) {
-            headers.put(CLIENT_ID, tokenModel.getClientId());
+
+        return Contexts.interceptCall(Context.current(), call, headers, next);
+    }
+
+    private void updateHeaders(Metadata headers, TokenStatus tokenStatus) {
+        // this shouldn't be possible
+        if (tokenStatus == null) {
+            throw new UnauthenticatedException("Token not found");
+        }
+
+        if (tokenStatus.isMachineClient()) {
+            headers.put(CLIENT_ID, tokenStatus.getClientId());
         } else {
-            headers.put(CLIENT_ID, tokenModel.getUserName());
+            headers.put(CLIENT_ID, tokenStatus.getUserName());
         }
-        return next.startCall(call, headers);
     }
 
     private Status getStatusByException(Exception e) {
-        if (e instanceof PermissionDeniedException) {
-            return Status.PERMISSION_DENIED.withDescription(e.getMessage());
+        if (e instanceof UnauthenticatedException) {
+            log.warn("Unauthenticated request: {}", e.getMessage());
+            return Status.UNAUTHENTICATED.withDescription(e.getMessage());
         } else {
+            log.error("Error authenticating request:", e);
             return Status.ABORTED.withDescription(e.getMessage());
         }
     }
@@ -63,9 +80,9 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
                 .trim();
     }
 
-    private void validateToken(String token) {
+    private TokenStatus validateToken(String token) {
         if (Strings.isNullOrEmpty(token)) {
-            throw new PermissionDeniedException("Token is empty");
+            throw new UnauthenticatedException("Token is empty");
         }
 
         TokenStatus tokenStatus = tokenCache.getIfPresent(token);
@@ -76,7 +93,8 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
         }
 
         if (!tokenStatus.isValid()) {
-            throw new PermissionDeniedException("Token is not active");
+            throw new UnauthenticatedException("Token is not active");
         }
+        return tokenStatus;
     }
 }
