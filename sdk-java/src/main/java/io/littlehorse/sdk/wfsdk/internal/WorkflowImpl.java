@@ -49,19 +49,19 @@ public class WorkflowImpl extends Workflow {
         return compiledWorkflow;
     }
 
-    public void addTaskDefName(String taskDefName) {
+    void addTaskDefName(String taskDefName) {
         requiredTaskDefNames.add(taskDefName);
     }
 
-    public void addExternalEventDefName(String eedName) {
+    void addExternalEventDefName(String eedName) {
         requiredEedNames.add(eedName);
     }
 
-    public void addWorkflowEventDefName(String name) {
+    void addWorkflowEventDefName(String name) {
         requiredWorkflowEventDefNames.add(name);
     }
 
-    public void addTaskDefBuilder(TaskDefBuilder tdb) {
+    void addTaskDefBuilder(TaskDefBuilder tdb) {
         TaskDefBuilder previous = taskDefBuilders.get(tdb.getTaskDefName());
         if (previous != null) {
             if (!previous.signature.equals(tdb.signature)) {
