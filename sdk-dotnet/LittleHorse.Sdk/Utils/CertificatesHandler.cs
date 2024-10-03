@@ -1,10 +1,6 @@
-using System.Net.Security;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using LittleHorse.Sdk.Internal;
-using Microsoft.Extensions.Logging;
 
 [assembly: InternalsVisibleTo("LittleHorse.Sdk.Tests")]
 
@@ -13,30 +9,17 @@ namespace LittleHorse.Sdk.Utils {
     {
         internal static HttpClientHandler GetHttpHandlerFrom(string pathCaCert)
         {
-            var _logger = LHLoggerFactoryProvider.GetLogger<CertificatesHandler>();
             try
             {
                 var caCert = new X509Certificate2(File.ReadAllBytes(pathCaCert));
                 var handler = new HttpClientHandler();
 
-                var resultCallback = handler.ServerCertificateCustomValidationCallback =
-                    (_, cert, certChain, _) =>
+                handler.ServerCertificateCustomValidationCallback =
+                    (httpRequestMessage, cert, certChain, sslPolicyErrors) =>
                     {
-                        if (certChain != null)
-                        {
-                            _logger.LogCritical($"Cert chain is different to null. Certificate chain is {certChain}");
-                            certChain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
-                            certChain.ChainPolicy.CustomTrustStore.Add(caCert);
-                            certChain.ChainPolicy.ExtraStore.Add(caCert);
-                        }
-                        _logger.LogCritical($"Cert chain {certChain}");
-                        var certChainBuilder = certChain!.Build(cert);
-                        _logger.LogCritical($"Cert chain builder {certChain}");
-                        
-                        return certChainBuilder;
+                        return certChain!.ChainElements.Any(element =>
+                            element.Certificate.Thumbprint == caCert.Thumbprint);
                     };
-                
-                _logger.LogCritical($"Cert chain {resultCallback}");
 
                 return handler;
             }

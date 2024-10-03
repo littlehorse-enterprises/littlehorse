@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using LittleHorse.Sdk.Internal;
 using Xunit;
 
@@ -19,7 +20,6 @@ namespace LittleHorse.Sdk.Tests.Internal
             string oauthClientId = "oauth-client-id";
             string oauthClientSecret = "oauth-client-secret";
             string oauthAccessTokenUrl = "oauth-access-token-url";
-            string serverConnectListener = "server-connect-listener";
             string numberWorkerThreads = "15";
             string taskWorkerVersion = "task-worker-version";
             
@@ -33,7 +33,6 @@ namespace LittleHorse.Sdk.Tests.Internal
             Environment.SetEnvironmentVariable("LHC_OAUTH_CLIENT_ID", oauthClientId);
             Environment.SetEnvironmentVariable("LHC_OAUTH_CLIENT_SECRET", oauthClientSecret);
             Environment.SetEnvironmentVariable("LHC_OAUTH_ACCESS_TOKEN_URL", oauthAccessTokenUrl);
-            Environment.SetEnvironmentVariable("LHW_SERVER_CONNECT_LISTENER", serverConnectListener);
             Environment.SetEnvironmentVariable("LHW_NUM_WORKER_THREADS", numberWorkerThreads);
             Environment.SetEnvironmentVariable("LHW_TASK_WORKER_VERSION", taskWorkerVersion);
             
@@ -49,7 +48,6 @@ namespace LittleHorse.Sdk.Tests.Internal
             Assert.Equal(oauthClientId, options.LHC_OAUTH_CLIENT_ID);
             Assert.Equal(oauthClientSecret, options.LHC_OAUTH_CLIENT_SECRET);
             Assert.Equal(oauthAccessTokenUrl, options.LHC_OAUTH_ACCESS_TOKEN_URL);
-            Assert.Equal(serverConnectListener, options.LHW_SERVER_CONNECT_LISTENER);
             Assert.Equal(int.Parse(numberWorkerThreads), options.LHW_NUM_WORKER_THREADS);
             Assert.Equal(taskWorkerVersion, options.LHW_TASK_WORKER_VERSION);
         }
@@ -63,9 +61,65 @@ namespace LittleHorse.Sdk.Tests.Internal
             Assert.Equal(2023, options.LHC_API_PORT);
             Assert.Equal("PLAIN", options.LHC_API_PROTOCOL);
             Assert.StartsWith("client-", options.LHC_CLIENT_ID);
-            Assert.Equal("PLAIN", options.LHW_SERVER_CONNECT_LISTENER);
             Assert.Equal(8, options.LHW_NUM_WORKER_THREADS);
             Assert.Equal(string.Empty, options.LHW_TASK_WORKER_VERSION);
+        }
+
+        [Fact]
+        public void OptionsBinder_WithLHOptionsInFile_ShouldReturnSetOptions()
+        {
+            const string optionsFileName = "littlehorse.config";
+            string optionsFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", optionsFileName);
+            
+            var options = LHOptionsBinder.GetOptionsFromFile(optionsFilePath);
+            
+            Assert.Equal("test", options.LHC_API_HOST);
+            Assert.Equal(111, options.LHC_API_PORT);
+            Assert.Equal("TLS", options.LHC_API_PROTOCOL);
+            Assert.Equal("ca_file_path", options.LHC_CA_CERT);
+            Assert.Equal("test", options.LHW_TASK_WORKER_VERSION);
+        }
+        
+        [Fact]
+        public void OptionsBinder_WithNoLHOptionsInFile_ShouldReturnDefaultOptions()
+        {
+            const string optionsFileName = "no_littlehorse.config";
+            string optionsFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", optionsFileName);
+            
+            var options = LHOptionsBinder.GetOptionsFromFile(optionsFilePath);
+            
+            Assert.Equal("localhost", options.LHC_API_HOST);
+            Assert.Equal(2023, options.LHC_API_PORT);
+            Assert.Equal("PLAIN", options.LHC_API_PROTOCOL);
+            Assert.StartsWith("client-", options.LHC_CLIENT_ID);
+            Assert.Equal(8, options.LHW_NUM_WORKER_THREADS);
+            Assert.Equal(string.Empty, options.LHW_TASK_WORKER_VERSION);
+        }
+        
+        [Fact]
+        public void OptionsBinder_WithEmptyLHFile_ShouldReturnDefaultOptions()
+        {
+            const string optionsFileName = "empty_littlehorse.config";
+            string optionsFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", optionsFileName);
+            
+            var options = LHOptionsBinder.GetOptionsFromFile(optionsFilePath);
+            
+            Assert.Equal("localhost", options.LHC_API_HOST);
+            Assert.Equal(2023, options.LHC_API_PORT);
+            Assert.Equal("PLAIN", options.LHC_API_PROTOCOL);
+            Assert.StartsWith("client-", options.LHC_CLIENT_ID);
+            Assert.Equal(8, options.LHW_NUM_WORKER_THREADS);
+            Assert.Equal(string.Empty, options.LHW_TASK_WORKER_VERSION);
+        }
+        
+        [Fact]
+        public void OptionsBinder_WithoutLHFile_ShouldThrowException()
+        {
+            const string optionsFileName = "not_found_littlehorse.config";
+            
+            var exception = Assert.Throws<FileNotFoundException>(() => LHOptionsBinder.GetOptionsFromFile(optionsFileName));
+
+            Assert.Contains($"File {optionsFileName} does not exist.", exception.Message);
         }
     }
 }

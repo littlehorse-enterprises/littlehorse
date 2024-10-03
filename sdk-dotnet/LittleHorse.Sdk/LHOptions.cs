@@ -17,7 +17,6 @@
         public string? LHC_OAUTH_CLIENT_ID { get; set; }
         public string? LHC_OAUTH_CLIENT_SECRET { get; set; }
         public string? LHC_OAUTH_ACCESS_TOKEN_URL { get; set; }
-        public string LHW_SERVER_CONNECT_LISTENER { get; set; } = "PLAIN";
         public int LHW_NUM_WORKER_THREADS { get; set; } = 8;
         public string LHW_TASK_WORKER_VERSION { get; set; } = string.Empty;
     }
