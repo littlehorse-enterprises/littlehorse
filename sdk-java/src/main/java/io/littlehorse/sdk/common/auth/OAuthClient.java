@@ -10,11 +10,13 @@ import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
+import io.littlehorse.sdk.common.exception.EntityProviderException;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import lombok.extern.slf4j.Slf4j;
 
+// Examples:
 // https://connect2id.com/products/nimbus-oauth-openid-connect-sdk/examples/oauth/token-introspection
 // https://www.nimbusds.com/products/nimbus-oauth-openid-connect-sdk/guides/java-cookbook-for-openid-connect-public-clients
 // https://www.oauth.com/oauth2-servers/token-introspection-endpoint/
@@ -39,7 +41,7 @@ public class OAuthClient {
             TokenResponse response = TokenResponse.parse(request.toHTTPRequest().send());
 
             if (!response.indicatesSuccess()) {
-                throw new AuthorizationServerException("Error getting the token status: "
+                throw new EntityProviderException("Error getting the token status: "
                         + response.toErrorResponse().getErrorObject());
             }
 
@@ -54,7 +56,7 @@ public class OAuthClient {
                     .build();
         } catch (ParseException | IOException e) {
             log.error(e.getMessage(), e);
-            throw new AuthorizationServerException(e);
+            throw new EntityProviderException(e);
         }
     }
 }

@@ -8,7 +8,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.auth.AuthorizationProtocol;
 import io.littlehorse.server.auth.InsecureServerAuthorizer;
 import io.littlehorse.server.auth.MTLSServerAuthorizer;
-import io.littlehorse.server.auth.OAuthServerAuthorizer;
+import io.littlehorse.server.auth.OAuthServerAuthenticator;
 import io.littlehorse.server.auth.ServerAuthorizer;
 import java.io.IOException;
 import lombok.Builder;
@@ -69,7 +69,7 @@ public class ServerListenerConfig {
 
     public ServerAuthorizer getServerAuthorizer() {
         return switch (authorizationProtocol) {
-            case OAUTH -> new OAuthServerAuthorizer(config.getOAuthConfig());
+            case OAUTH -> new OAuthServerAuthenticator(config.getOAuthConfig());
             case MTLS -> new MTLSServerAuthorizer(config.getMTLSConfiguration(name));
             default -> InsecureServerAuthorizer.create();
         };
