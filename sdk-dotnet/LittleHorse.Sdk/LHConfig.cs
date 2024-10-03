@@ -6,6 +6,9 @@ using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Internal;
 using LittleHorse.Sdk.Utils;
 using Microsoft.Extensions.Logging;
+using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.Security;
 using static LittleHorse.Common.Proto.LittleHorse;
 
 namespace LittleHorse.Sdk {
@@ -129,11 +132,7 @@ namespace LittleHorse.Sdk {
         {
             var httpHandler = new HttpClientHandler();
             var address = $"{BootstrapProtocol}://{host}:{port}";
-            
-            if (_options.LHC_CA_CERT != null)
-            {
-                httpHandler = CertificatesHandler.GetHttpHandlerFrom(_options.LHC_CA_CERT);
-            }
+            httpHandler.ServerCertificateCustomValidationCallback = ServerCertificateCustomValidation;
 
             if (_options.LHC_CLIENT_CERT != null && _options.LHC_CLIENT_KEY != null)
             {
@@ -143,7 +142,7 @@ namespace LittleHorse.Sdk {
                 
                 httpHandler.ClientCertificates.Add(cert);
             }
-            
+
             if (IsOAuth)
             {
                 return CreateGrpcChannelWithOauthCredentials(address, httpHandler);
@@ -153,6 +152,16 @@ namespace LittleHorse.Sdk {
             {
                 HttpHandler = httpHandler
             });
+        }
+
+        private bool ServerCertificateCustomValidation(HttpRequestMessage requestMessage, X509Certificate2? certificate, X509Chain? certChain, SslPolicyErrors sslErrors)
+        {
+            var pathCaCert = _options.LHC_CA_CERT;
+            var caCert = new X509Certificate2(File.ReadAllBytes(pathCaCert));
+            certChain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
+            certChain.ChainPolicy.CustomTrustStore.Add(caCert);
+            var certChainBuilder = certChain!.Build(certificate);
+            return certChainBuilder;
         }
 
         private GrpcChannel CreateGrpcChannelWithOauthCredentials(string address, HttpClientHandler httpHandler)
