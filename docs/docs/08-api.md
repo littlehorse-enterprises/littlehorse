@@ -234,6 +234,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 |  [AwaitWorkflowEventRequest](#awaitworkfloweventrequest)  |  [WorkflowEvent](#workflowevent)  | Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent is not thrown before the deadline specified by the client.<br/><br/>To specify the deadline, the client should use GRPC deadlines. |
 
+### RPC `GetWorkflowEvent` {#getworkflowevent}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [WorkflowEventId](#workfloweventid)  |  [WorkflowEvent](#workflowevent)  |  |
+
 ### RPC `ListExternalEvents` {#listexternalevents}
 
 | Request Type | Response Type | Description |

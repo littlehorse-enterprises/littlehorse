@@ -192,6 +192,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.AwaitWorkflowEventRequest.SerializeToString,
                 response_deserializer=workflow__event__pb2.WorkflowEvent.FromString,
                 )
+        self.GetWorkflowEvent = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetWorkflowEvent',
+                request_serializer=object__id__pb2.WorkflowEventId.SerializeToString,
+                response_deserializer=workflow__event__pb2.WorkflowEvent.FromString,
+                )
         self.ListExternalEvents = channel.unary_unary(
                 '/littlehorse.LittleHorse/ListExternalEvents',
                 request_serializer=service__pb2.ListExternalEventsRequest.SerializeToString,
@@ -636,6 +641,12 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetWorkflowEvent(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ListExternalEvents(self, request, context):
         """List ExternalEvent's for a specific WfRun.
         """
@@ -1070,6 +1081,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'AwaitWorkflowEvent': grpc.unary_unary_rpc_method_handler(
                     servicer.AwaitWorkflowEvent,
                     request_deserializer=service__pb2.AwaitWorkflowEventRequest.FromString,
+                    response_serializer=workflow__event__pb2.WorkflowEvent.SerializeToString,
+            ),
+            'GetWorkflowEvent': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetWorkflowEvent,
+                    request_deserializer=object__id__pb2.WorkflowEventId.FromString,
                     response_serializer=workflow__event__pb2.WorkflowEvent.SerializeToString,
             ),
             'ListExternalEvents': grpc.unary_unary_rpc_method_handler(
@@ -1814,6 +1830,23 @@ class LittleHorse(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/AwaitWorkflowEvent',
             service__pb2.AwaitWorkflowEventRequest.SerializeToString,
+            workflow__event__pb2.WorkflowEvent.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetWorkflowEvent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetWorkflowEvent',
+            object__id__pb2.WorkflowEventId.SerializeToString,
             workflow__event__pb2.WorkflowEvent.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
