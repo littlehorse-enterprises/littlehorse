@@ -65,10 +65,10 @@ public class OAuthServerAuthenticator implements ServerAuthorizer {
 
     private Status getStatusByException(Exception e) {
         if (e instanceof UnauthenticatedException) {
-            log.warn("Unauthenticated request {}", e.getMessage());
+            log.warn("Unauthenticated request: {}", e.getMessage());
             return Status.UNAUTHENTICATED.withDescription(e.getMessage());
         } else {
-            log.error("Error authenticating request", e);
+            log.error("Error authenticating request:", e);
             return Status.ABORTED.withDescription(e.getMessage());
         }
     }
