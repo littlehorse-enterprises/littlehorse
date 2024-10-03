@@ -22,13 +22,15 @@ public class WorkflowImpl extends Workflow {
     private Map<String, TaskDefBuilder> taskDefBuilders;
     private Set<String> requiredTaskDefNames;
     private Set<String> requiredEedNames;
+    private Set<String> requiredWorkflowEventDefNames;
 
     public WorkflowImpl(String name, ThreadFunc entrypointThreadFunc) {
         super(name, entrypointThreadFunc);
-        compiledWorkflow = null;
-        taskDefBuilders = new HashMap<>();
-        requiredTaskDefNames = new HashSet<>();
-        requiredEedNames = new HashSet<>();
+        this.compiledWorkflow = null;
+        this.taskDefBuilders = new HashMap<>();
+        this.requiredTaskDefNames = new HashSet<>();
+        this.requiredWorkflowEventDefNames = new HashSet<>();
+        this.requiredEedNames = new HashSet<>();
     }
 
     public Set<PutTaskDefRequest> compileTaskDefs() {
@@ -53,6 +55,10 @@ public class WorkflowImpl extends Workflow {
 
     public void addExternalEventDefName(String eedName) {
         requiredEedNames.add(eedName);
+    }
+
+    public void addWorkflowEventDefName(String name) {
+        requiredWorkflowEventDefNames.add(name);
     }
 
     public void addTaskDefBuilder(TaskDefBuilder tdb) {
@@ -80,6 +86,14 @@ public class WorkflowImpl extends Workflow {
             compiledWorkflow = compileWorkflowHelper();
         }
         return requiredEedNames;
+    }
+
+    @Override
+    public Set<String> getRequiredWorkflowEventDefNames() {
+        if (compiledWorkflow == null) {
+            compiledWorkflow = compileWorkflowHelper();
+        }
+        return requiredWorkflowEventDefNames;
     }
 
     private PutWfSpecRequest compileWorkflowHelper() {
