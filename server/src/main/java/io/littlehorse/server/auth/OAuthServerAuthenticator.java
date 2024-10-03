@@ -43,7 +43,6 @@ public class OAuthServerAuthenticator implements ServerAuthorizer {
             TokenStatus tokenStatus = validateToken(extractAccessToken(headers));
             updateHeaders(headers, tokenStatus);
         } catch (Exception e) {
-            log.error("Error authorizing request", e);
             call.close(getStatusByException(e), new Metadata());
             return new ServerCall.Listener<>() {};
         }
@@ -66,8 +65,10 @@ public class OAuthServerAuthenticator implements ServerAuthorizer {
 
     private Status getStatusByException(Exception e) {
         if (e instanceof UnauthenticatedException) {
+            log.warn("Unauthenticated request {}", e.getMessage());
             return Status.UNAUTHENTICATED.withDescription(e.getMessage());
         } else {
+            log.error("Error authenticating request", e);
             return Status.ABORTED.withDescription(e.getMessage());
         }
     }
