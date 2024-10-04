@@ -1,8 +1,5 @@
 package e2e;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -12,10 +9,12 @@ import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 @LHTest(externalEventNames = WaitForConditionTest.EVENT_NAME)
 public class WaitForConditionTest {
-    
+
     public static final String EVENT_NAME = "wait-for-condition-decrement-counter";
     private WorkflowVerifier verifier;
 
