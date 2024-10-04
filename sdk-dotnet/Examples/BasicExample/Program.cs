@@ -16,7 +16,9 @@ public class Program
                 config.SetMinimumLevel(LogLevel.Debug);
             })
             .BuildServiceProvider();
-    } static void Main(string[] args)
+    } 
+    
+    static void Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
