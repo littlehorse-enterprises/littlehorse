@@ -1,5 +1,11 @@
 # Tasks
 
+:::tip
+This section is not a Developer Guide; if you want to learn how to [write a Task Worker](../05-developer-guide/05-task-worker-development.md), how to [register a `TaskDef`](../05-developer-guide/09-grpc/05-managing-metadata.md#taskdef), or how to [call a Task inside a Workflow](../05-developer-guide/08-wfspec-development/01-basics.md#executing-a-task-node), please check the appropriate docs in our developer guide.
+
+This section focuses on concepts.
+:::
+
 A `WfSpec` defines a series of steps in a process to be orchestrated by LittleHorse (in technical terms, each step is a `Node`). The most common type of step to execute is a [`TaskNode`](../08-api.md#tasknode).
 
 ![Output of a TaskRun](./task-output.png)
