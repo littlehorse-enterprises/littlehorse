@@ -194,6 +194,7 @@ type LittleHorseClient interface {
 	//
 	// To specify the deadline, the client should use GRPC deadlines.
 	AwaitWorkflowEvent(ctx context.Context, in *AwaitWorkflowEventRequest, opts ...grpc.CallOption) (*WorkflowEvent, error)
+	// Get a specific WorkflowEvent.
 	GetWorkflowEvent(ctx context.Context, in *WorkflowEventId, opts ...grpc.CallOption) (*WorkflowEvent, error)
 	// List ExternalEvent's for a specific WfRun.
 	ListExternalEvents(ctx context.Context, in *ListExternalEventsRequest, opts ...grpc.CallOption) (*ExternalEventList, error)
@@ -1044,6 +1045,7 @@ type LittleHorseServer interface {
 	//
 	// To specify the deadline, the client should use GRPC deadlines.
 	AwaitWorkflowEvent(context.Context, *AwaitWorkflowEventRequest) (*WorkflowEvent, error)
+	// Get a specific WorkflowEvent.
 	GetWorkflowEvent(context.Context, *WorkflowEventId) (*WorkflowEvent, error)
 	// List ExternalEvent's for a specific WfRun.
 	ListExternalEvents(context.Context, *ListExternalEventsRequest) (*ExternalEventList, error)

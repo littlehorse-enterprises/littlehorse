@@ -7548,6 +7548,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Get a specific WorkflowEvent. */
     getWorkflowEvent: {
       name: "GetWorkflowEvent",
       requestType: WorkflowEventId,
@@ -8082,6 +8083,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: AwaitWorkflowEventRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<WorkflowEvent>>;
+  /** Get a specific WorkflowEvent. */
   getWorkflowEvent(
     request: WorkflowEventId,
     context: CallContext & CallContextExt,
@@ -8426,6 +8428,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<AwaitWorkflowEventRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<WorkflowEvent>;
+  /** Get a specific WorkflowEvent. */
   getWorkflowEvent(
     request: DeepPartial<WorkflowEventId>,
     options?: CallOptions & CallOptionsExt,

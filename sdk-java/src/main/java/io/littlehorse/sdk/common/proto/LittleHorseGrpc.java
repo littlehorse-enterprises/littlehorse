@@ -2560,6 +2560,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Get a specific WorkflowEvent.
+     * </pre>
      */
     default void getWorkflowEvent(io.littlehorse.sdk.common.proto.WorkflowEventId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowEvent> responseObserver) {
@@ -3353,6 +3356,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Get a specific WorkflowEvent.
+     * </pre>
      */
     public void getWorkflowEvent(io.littlehorse.sdk.common.proto.WorkflowEventId request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowEvent> responseObserver) {
@@ -4138,6 +4144,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Get a specific WorkflowEvent.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.WorkflowEvent getWorkflowEvent(io.littlehorse.sdk.common.proto.WorkflowEventId request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -4909,6 +4918,9 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * Get a specific WorkflowEvent.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WorkflowEvent> getWorkflowEvent(
         io.littlehorse.sdk.common.proto.WorkflowEventId request) {

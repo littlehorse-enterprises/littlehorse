@@ -238,7 +238,7 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-|  [WorkflowEventId](#workfloweventid)  |  [WorkflowEvent](#workflowevent)  |  |
+|  [WorkflowEventId](#workfloweventid)  |  [WorkflowEvent](#workflowevent)  | Get a specific WorkflowEvent. |
 
 ### RPC `ListExternalEvents` {#listexternalevents}
 
