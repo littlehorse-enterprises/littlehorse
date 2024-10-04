@@ -1,6 +1,5 @@
 package io.littlehorse.common.util;
 
-import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractCommand;
 import java.io.Closeable;
 import java.util.List;

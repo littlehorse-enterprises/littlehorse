@@ -5,7 +5,6 @@ import io.grpc.Context;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
@@ -14,7 +13,6 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.common.proto.TaskClaimEventPb;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
@@ -161,7 +159,6 @@ public class LHServer {
         internalComms.sendErrorToClientForCommand(commandId, caught);
     }
 
-
     /*
      * This method is called from within the `CommandProcessor#process()` method (specifically, on the
      * TaskClaimEvent#process()) method. Therefore, we cannot infer the RequestExecutionContext like
@@ -195,13 +192,8 @@ public class LHServer {
         command.setCommandId(LHUtil.generateGuid());
 
         Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
-        taskClaimProducer
-                .send(
-                        command.getPartitionKey(),
-                        command,
-                        command.getTopic(config),
-                        callback,
-                        commandMetadata.toArray());
+        taskClaimProducer.send(
+                command.getPartitionKey(), command, command.getTopic(config), callback, commandMetadata.toArray());
     }
 
     private WfService getServiceFromContext() {

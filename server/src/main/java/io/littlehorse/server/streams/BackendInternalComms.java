@@ -45,7 +45,6 @@ import io.littlehorse.common.proto.PartitionBookmarkPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.WaitForCommandRequest;
 import io.littlehorse.common.proto.WaitForCommandResponse;
-import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
@@ -240,7 +239,8 @@ public class BackendInternalComms implements Closeable {
             RequestExecutionContext requestCtx) {
         Function<KeyQueryMetadata, LHInternalsStub> internalStub =
                 (meta) -> getInternalAsyncClient(meta.activeHost(), InternalCallCredentials.forContext(requestCtx));
-        return new ProducerCommandCallback(observer, command, coreStreams, thisHost, internalStub, asyncWaiters);
+        return new ProducerCommandCallback(
+                observer, command, coreStreams, thisHost, internalStub, asyncWaiters, networkThreadPool);
     }
 
     public void waitForCommand(
