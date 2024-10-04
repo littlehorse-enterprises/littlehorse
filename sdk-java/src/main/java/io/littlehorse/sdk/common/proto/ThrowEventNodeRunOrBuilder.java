@@ -8,16 +8,28 @@ public interface ThrowEventNodeRunOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`.
+   * </pre>
+   *
    * <code>.littlehorse.WorkflowEventId workflow_event_id = 1;</code>
    * @return Whether the workflowEventId field is set.
    */
   boolean hasWorkflowEventId();
   /**
+   * <pre>
+   * The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`.
+   * </pre>
+   *
    * <code>.littlehorse.WorkflowEventId workflow_event_id = 1;</code>
    * @return The workflowEventId.
    */
   io.littlehorse.sdk.common.proto.WorkflowEventId getWorkflowEventId();
   /**
+   * <pre>
+   * The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`.
+   * </pre>
+   *
    * <code>.littlehorse.WorkflowEventId workflow_event_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WorkflowEventIdOrBuilder getWorkflowEventIdOrBuilder();

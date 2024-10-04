@@ -100,8 +100,18 @@ export interface NodeRun {
    * A START_MULTIPLE_THREADS node iterates over a JSON_ARR variable and spawns a
    * child ThreadRun for each element in the list.
    */
-  startMultipleThreads?: StartMultipleThreadsRun | undefined;
-  throwEvent?: ThrowEventNodeRun | undefined;
+  startMultipleThreads?:
+    | StartMultipleThreadsRun
+    | undefined;
+  /** A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef. */
+  throwEvent?:
+    | ThrowEventNodeRun
+    | undefined;
+  /**
+   * A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition
+   * evaluates to True.
+   */
+  waitForCondition?: WaitForConditionRun | undefined;
 }
 
 /** The sub-node structure for a TASK NodeRun. */
@@ -113,8 +123,14 @@ export interface TaskNodeRun {
   taskRunId?: TaskRunId | undefined;
 }
 
+/** The sub-node structure for a THROW_EVENT NodeRun. */
 export interface ThrowEventNodeRun {
+  /** The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`. */
   workflowEventId: WorkflowEventId | undefined;
+}
+
+/** The sub-node structure for a WAIT_FOR_CONDITION NodeRun */
+export interface WaitForConditionRun {
 }
 
 /** The sub-node structure for a USER_TASK NodeRun. */
@@ -343,6 +359,7 @@ function createBaseNodeRun(): NodeRun {
     userTask: undefined,
     startMultipleThreads: undefined,
     throwEvent: undefined,
+    waitForCondition: undefined,
   };
 }
 
@@ -409,6 +426,9 @@ export const NodeRun = {
     }
     if (message.throwEvent !== undefined) {
       ThrowEventNodeRun.encode(message.throwEvent, writer.uint32(178).fork()).ldelim();
+    }
+    if (message.waitForCondition !== undefined) {
+      WaitForConditionRun.encode(message.waitForCondition, writer.uint32(186).fork()).ldelim();
     }
     return writer;
   },
@@ -570,6 +590,13 @@ export const NodeRun = {
 
           message.throwEvent = ThrowEventNodeRun.decode(reader, reader.uint32());
           continue;
+        case 23:
+          if (tag !== 186) {
+            break;
+          }
+
+          message.waitForCondition = WaitForConditionRun.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -623,6 +650,9 @@ export const NodeRun = {
       : undefined;
     message.throwEvent = (object.throwEvent !== undefined && object.throwEvent !== null)
       ? ThrowEventNodeRun.fromPartial(object.throwEvent)
+      : undefined;
+    message.waitForCondition = (object.waitForCondition !== undefined && object.waitForCondition !== null)
+      ? WaitForConditionRun.fromPartial(object.waitForCondition)
       : undefined;
     return message;
   },
@@ -718,6 +748,40 @@ export const ThrowEventNodeRun = {
     message.workflowEventId = (object.workflowEventId !== undefined && object.workflowEventId !== null)
       ? WorkflowEventId.fromPartial(object.workflowEventId)
       : undefined;
+    return message;
+  },
+};
+
+function createBaseWaitForConditionRun(): WaitForConditionRun {
+  return {};
+}
+
+export const WaitForConditionRun = {
+  encode(_: WaitForConditionRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WaitForConditionRun {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWaitForConditionRun();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<WaitForConditionRun>): WaitForConditionRun {
+    return WaitForConditionRun.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<WaitForConditionRun>): WaitForConditionRun {
+    const message = createBaseWaitForConditionRun();
     return message;
   },
 };

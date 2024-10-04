@@ -1,10 +1,12 @@
 # User Tasks
 
-The purpose of a Workflow Engine is to coordinate processes that assign work. A `TaskRun` represents a unit of work assigned to a computer, but what about work assigned to a human? That's where User Tasks come in.
-
 :::tip
-This page covers the concept of User Tasks. For a more practical take, see our [`WfSpec` Development Docs](../05-developer-guide/08-wfspec-development/08-user-tasks.md) or our [grpc docs](../05-developer-guide/09-grpc/20-user-tasks.md).
+This section is not a Developer Guide; if you want to learn how to [Create a `UserTaskDef`](../05-developer-guide/09-grpc/05-managing-metadata.md#usertaskdef), how to [add a User Task Node to a Workflow](../05-developer-guide/08-wfspec-development/08-user-tasks.md), or how to [handle User Tasks with GRPC](../05-developer-guide/09-grpc/20-user-tasks.md), please check the appropriate docs in our developer guide.
+
+This section focuses on concepts.
 :::
+
+The purpose of a Workflow Engine is to coordinate processes that assign work. A `TaskRun` represents a unit of work assigned to a computer, but what about work assigned to a human? That's where User Tasks come in.
 
 ## Motivation
 
