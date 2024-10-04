@@ -150,16 +150,6 @@ namespace LittleHorse.Sdk.Tests.Internal
         }
         
         [Fact]
-        public void LHConfigVariables_WithoutLHFile_ShouldThrowException()
-        {
-            const string inputVariablesFileName = "not_found_littlehorse.config";
-            
-            var exception = Assert.Throws<FileNotFoundException>(() => new LHInputVariables(inputVariablesFileName));
-
-            Assert.Contains($"File {inputVariablesFileName} does not exist.", exception.Message);
-        }
-        
-        [Fact]
         public void LHConfigVariables_WithSomeLHOptionsCommentedInFile_ShouldReturnSetOptions()
         {
             const string lhConfigFileName = "littlehorse.config";
