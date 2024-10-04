@@ -70,7 +70,7 @@ namespace LittleHorse.Sdk
         internal LHInputVariables(string filePath)
         {
             IConfigurationBuilder builder = new ConfigurationBuilder()
-                .AddIniFile(filePath, false, true);
+                .AddIniFile(filePath, false, false);
             IConfigurationRoot properties = builder.Build();
 
             var host = properties["LHC_API_HOST"];
