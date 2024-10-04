@@ -236,6 +236,9 @@ public class LHTaskWorker implements Closeable {
     }
 
     public LHTaskWorkerHealth healthStatus() {
+        if (manager == null) {
+            throw new IllegalStateException("Worker not started");
+        }
         return manager.healthStatus();
     }
 

@@ -1,12 +1,21 @@
 package io.littlehorse.sdk.worker;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 public class LHTaskWorkerTest {
+
+    @Test
+    public void getUnhealthyIfManagerIsNull() {
+        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), "", Map.of(), new LHConfig(), null);
+        IllegalStateException exception = assertThrows(IllegalStateException.class, task::healthStatus);
+        assertThat(exception.getMessage()).isEqualTo("Worker not started");
+    }
+
     @Test
     public void shouldResolvePlaceHolder() {
         String taskDefName = "a-task-name-${CLUSTER_NAME}";
