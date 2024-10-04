@@ -72,6 +72,7 @@ A `Node` is a "step" in a `ThreadRun`. LittleHorse allows for many different typ
 * [`TASK`](../08-api.md#tasknode) nodes, which allow for executing a `TaskRun`.
 * [`USER_TASK`](../08-api.md#usertasknode) nodes, which allow for executing [User Tasks](./05-user-tasks.md).
 * [`EXTERNAL_EVENT`](../08-api.md#externaleventnode) nodes, which allow for waiting for an [External Event](./04-external-events.md) to arrive.
+* [`THROW_EVENT`](../08-api.md#throweventnode) nodes, which allow workflows to throw [Workflow Events](./06-workflow-events.md) that external clients can wait for.
 * [`START_THREAD`](../08-api.md#startthreadnode) nodes, which allow for starting child `ThreadRun`s.
 * [`WAIT_FOR_THREADS`](../08-api.md#waitforthreadsnode) nodes, which allow for waiting for child `ThreadRun`s to complete.
 
