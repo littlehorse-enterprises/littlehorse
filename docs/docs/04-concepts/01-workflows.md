@@ -1,5 +1,11 @@
 # Workflows
 
+:::tip
+This section is not a Developer Guide; if you want to learn how to [define a workflow](../05-developer-guide/08-wfspec-development/08-wfspec-development.md) or how to [run a workflow](../05-developer-guide/09-grpc/10-running-workflows.md), please check the appropriate docs in our developer guide.
+
+This section focuses on concepts.
+:::
+
 In LittleHorse, the [`WfSpec`](../08-api.md#wfspec) object is a _Metadata Object_ defining the blueprint for a [`WfRun`](../08-api.md#wfrun), which is a running instance of a workflow.
 
 A simple way of thinking about it is that a `WfSpec` is a directed graph consisting of `Node`s and `Edge`s, where a `Node` defines a "step" of the workflow process, and an `Edge` tells the workflow what `Node` to go to next.
@@ -66,6 +72,7 @@ A `Node` is a "step" in a `ThreadRun`. LittleHorse allows for many different typ
 * [`TASK`](../08-api.md#tasknode) nodes, which allow for executing a `TaskRun`.
 * [`USER_TASK`](../08-api.md#usertasknode) nodes, which allow for executing [User Tasks](./05-user-tasks.md).
 * [`EXTERNAL_EVENT`](../08-api.md#externaleventnode) nodes, which allow for waiting for an [External Event](./04-external-events.md) to arrive.
+* [`THROW_EVENT`](../08-api.md#throweventnode) nodes, which allow workflows to throw [Workflow Events](./06-workflow-events.md) that external clients can wait for.
 * [`START_THREAD`](../08-api.md#startthreadnode) nodes, which allow for starting child `ThreadRun`s.
 * [`WAIT_FOR_THREADS`](../08-api.md#waitforthreadsnode) nodes, which allow for waiting for child `ThreadRun`s to complete.
 

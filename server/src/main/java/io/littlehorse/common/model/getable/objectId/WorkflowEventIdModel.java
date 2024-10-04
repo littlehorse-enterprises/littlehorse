@@ -70,6 +70,6 @@ public class WorkflowEventIdModel extends CoreObjectId<WorkflowEventId, Workflow
 
     @Override
     public Optional<String> getPartitionKey() {
-        return Optional.empty();
+        return wfRunId.getPartitionKey();
     }
 }
