@@ -62,6 +62,7 @@ import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
@@ -187,6 +188,7 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WfSpecIdList;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.sdk.common.proto.WorkflowEventDef;
+import io.littlehorse.sdk.common.proto.WorkflowEventId;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.streams.BackendInternalComms;
@@ -362,6 +364,8 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ctx.onCompleted();
     }
 
+    @Override
+    @Authorize(resources = ACLResource.ACL_PRINCIPAL, actions = ACLAction.WRITE_METADATA)
     public void putPrincipal(PutPrincipalRequest req, StreamObserver<Principal> ctx) {
         PutPrincipalRequestModel reqModel =
                 LHSerializable.fromProto(req, PutPrincipalRequestModel.class, requestContext());
@@ -949,6 +953,18 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     public void awaitWorkflowEvent(AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx) {
         internalComms.doWaitForWorkflowEvent(req, ctx, requestContext());
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void getWorkflowEvent(WorkflowEventId req, StreamObserver<WorkflowEvent> ctx) {
+        WorkflowEventIdModel id = LHSerializable.fromProto(req, WorkflowEventIdModel.class, requestContext());
+        WorkflowEventModel workflowEvent = internalComms.getObject(id, WorkflowEventModel.class, requestContext());
+        if (workflowEvent == null) {
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find WorkflowEvent");
+        }
+        ctx.onNext(workflowEvent.toProto().build());
+        ctx.onCompleted();
     }
 
     @Override

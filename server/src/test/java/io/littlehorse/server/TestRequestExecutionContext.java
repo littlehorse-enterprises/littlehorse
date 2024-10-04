@@ -41,7 +41,7 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
             MetadataCache metadataCache,
             LHServerConfig lhConfig,
             CoreStoreProvider coreStoreProvider) {
-        super(clientId, tenantId, coreStoreProvider, metadataCache, lhConfig);
+        super(clientId, tenantId, coreStoreProvider, metadataCache, lhConfig, false);
         this.clientId = clientId.toString();
         this.tenantId = tenantId.toString();
         this.globalMetadataNativeStore = globalMetadataNativeStore;

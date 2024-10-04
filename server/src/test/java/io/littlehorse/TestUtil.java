@@ -257,8 +257,8 @@ public class TestUtil {
         ServerACLModel acl = new ServerACLModel();
         acl.setName(Optional.of("name"));
         acl.setPrefix(Optional.empty());
-        acl.setResources(List.of(ACLResource.ACL_PRINCIPAL));
-        acl.setAllowedActions(List.of(ACLAction.WRITE_METADATA));
+        acl.setResources(List.of(ACLResource.ACL_ALL_RESOURCES));
+        acl.setAllowedActions(List.of(ACLAction.ALL_ACTIONS));
         return acl;
     }
 
@@ -267,6 +267,15 @@ public class TestUtil {
         acl.setName(Optional.of("name"));
         acl.setPrefix(Optional.empty());
         acl.setResources(List.of(ACLResource.ACL_TENANT));
+        acl.setAllowedActions(List.of(ACLAction.WRITE_METADATA));
+        return acl;
+    }
+
+    public static ServerACLModel aclWithPrincipalResource() {
+        ServerACLModel acl = new ServerACLModel();
+        acl.setName(Optional.of("name"));
+        acl.setPrefix(Optional.empty());
+        acl.setResources(List.of(ACLResource.ACL_PRINCIPAL));
         acl.setAllowedActions(List.of(ACLAction.WRITE_METADATA));
         return acl;
     }
@@ -285,6 +294,15 @@ public class TestUtil {
                 null);
     }
 
+    public static ServerACLsModel singleAclWithPrincipalResource() {
+        return ServerACLsModel.fromProto(
+                ServerACLs.newBuilder()
+                        .addAcls(aclWithPrincipalResource().toProto())
+                        .build(),
+                ServerACLsModel.class,
+                null);
+    }
+
     public static ServerACLModel adminAcl() {
         return adminAcl("name");
     }
@@ -298,9 +316,9 @@ public class TestUtil {
         return acl;
     }
 
-    public static ServerACLsModel singleAdminAcl(String aclNAme) {
+    public static ServerACLsModel singleAdminAcl(String aclName) {
         ServerACLs acls =
-                ServerACLs.newBuilder().addAcls(adminAcl(aclNAme).toProto()).build();
+                ServerACLs.newBuilder().addAcls(adminAcl(aclName).toProto()).build();
         return ServerACLsModel.fromProto(acls, ServerACLsModel.class, null);
     }
 

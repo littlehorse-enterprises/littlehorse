@@ -9,7 +9,7 @@ namespace LittleHorse.Sdk.Tests
         [Fact]
         public void LHConfig_WhenInitializedWithoutParams_ShouldReadFromEnvironmentVariables()
         {
-            Thread.Sleep(3);
+            Thread.Sleep(5);
             string host = "test-host";
             string port = "2523";
             Environment.SetEnvironmentVariable("LHC_API_HOST", host);
