@@ -80,12 +80,12 @@ public final class ServerFilterRules {
             // Filter metrics to reduce
             accept("kafka_stream_state"),
             accept("kafka_stream_task"),
-            accept("kafka_stream_processor"),
-            accept("kafka_producer"),
-            accept("kafka_consumer"),
+            deny("kafka_stream_processor"),
+            deny("kafka_producer"),
+            deny("kafka_consumer"),
             deny("kafka_admin"));
 
-    public static final List<ServerFilterRule> TRACE_RULES = List.of(accept(""));
+    public static final List<ServerFilterRule> TRACE_RULES = List.of();
 
     public static ServerFilterRule accept(String prefix) {
         return new ServerFilterRule(prefix, MeterFilterReply.ACCEPT);
