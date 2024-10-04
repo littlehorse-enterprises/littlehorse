@@ -66,6 +66,7 @@ private static final long serialVersionUID = 0L;
     USER_TASK(20),
     START_MULTIPLE_THREADS(21),
     THROW_EVENT(22),
+    WAIT_FOR_CONDITION(23),
     NODETYPE_NOT_SET(0);
     private final int value;
     private NodeTypeCase(int value) {
@@ -93,6 +94,7 @@ private static final long serialVersionUID = 0L;
         case 20: return USER_TASK;
         case 21: return START_MULTIPLE_THREADS;
         case 22: return THROW_EVENT;
+        case 23: return WAIT_FOR_CONDITION;
         case 0: return NODETYPE_NOT_SET;
         default: return null;
       }
@@ -945,6 +947,10 @@ private static final long serialVersionUID = 0L;
 
   public static final int THROW_EVENT_FIELD_NUMBER = 22;
   /**
+   * <pre>
+   * A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef.
+   * </pre>
+   *
    * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
    * @return Whether the throwEvent field is set.
    */
@@ -953,6 +959,10 @@ private static final long serialVersionUID = 0L;
     return nodeTypeCase_ == 22;
   }
   /**
+   * <pre>
+   * A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef.
+   * </pre>
+   *
    * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
    * @return The throwEvent.
    */
@@ -964,6 +974,10 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.ThrowEventNodeRun.getDefaultInstance();
   }
   /**
+   * <pre>
+   * A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef.
+   * </pre>
+   *
    * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
    */
   @java.lang.Override
@@ -972,6 +986,52 @@ private static final long serialVersionUID = 0L;
        return (io.littlehorse.sdk.common.proto.ThrowEventNodeRun) nodeType_;
     }
     return io.littlehorse.sdk.common.proto.ThrowEventNodeRun.getDefaultInstance();
+  }
+
+  public static final int WAIT_FOR_CONDITION_FIELD_NUMBER = 23;
+  /**
+   * <pre>
+   * A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition
+   * evaluates to True.
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForConditionRun wait_for_condition = 23;</code>
+   * @return Whether the waitForCondition field is set.
+   */
+  @java.lang.Override
+  public boolean hasWaitForCondition() {
+    return nodeTypeCase_ == 23;
+  }
+  /**
+   * <pre>
+   * A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition
+   * evaluates to True.
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForConditionRun wait_for_condition = 23;</code>
+   * @return The waitForCondition.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WaitForConditionRun getWaitForCondition() {
+    if (nodeTypeCase_ == 23) {
+       return (io.littlehorse.sdk.common.proto.WaitForConditionRun) nodeType_;
+    }
+    return io.littlehorse.sdk.common.proto.WaitForConditionRun.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition
+   * evaluates to True.
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForConditionRun wait_for_condition = 23;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WaitForConditionRunOrBuilder getWaitForConditionOrBuilder() {
+    if (nodeTypeCase_ == 23) {
+       return (io.littlehorse.sdk.common.proto.WaitForConditionRun) nodeType_;
+    }
+    return io.littlehorse.sdk.common.proto.WaitForConditionRun.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -1052,6 +1112,9 @@ private static final long serialVersionUID = 0L;
     }
     if (nodeTypeCase_ == 22) {
       output.writeMessage(22, (io.littlehorse.sdk.common.proto.ThrowEventNodeRun) nodeType_);
+    }
+    if (nodeTypeCase_ == 23) {
+      output.writeMessage(23, (io.littlehorse.sdk.common.proto.WaitForConditionRun) nodeType_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1149,6 +1212,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(22, (io.littlehorse.sdk.common.proto.ThrowEventNodeRun) nodeType_);
     }
+    if (nodeTypeCase_ == 23) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(23, (io.littlehorse.sdk.common.proto.WaitForConditionRun) nodeType_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -1240,6 +1307,10 @@ private static final long serialVersionUID = 0L;
         if (!getThrowEvent()
             .equals(other.getThrowEvent())) return false;
         break;
+      case 23:
+        if (!getWaitForCondition()
+            .equals(other.getWaitForCondition())) return false;
+        break;
       case 0:
       default:
     }
@@ -1328,6 +1399,10 @@ private static final long serialVersionUID = 0L;
       case 22:
         hash = (37 * hash) + THROW_EVENT_FIELD_NUMBER;
         hash = (53 * hash) + getThrowEvent().hashCode();
+        break;
+      case 23:
+        hash = (37 * hash) + WAIT_FOR_CONDITION_FIELD_NUMBER;
+        hash = (53 * hash) + getWaitForCondition().hashCode();
         break;
       case 0:
       default:
@@ -1540,6 +1615,9 @@ private static final long serialVersionUID = 0L;
       if (throwEventBuilder_ != null) {
         throwEventBuilder_.clear();
       }
+      if (waitForConditionBuilder_ != null) {
+        waitForConditionBuilder_.clear();
+      }
       nodeTypeCase_ = 0;
       nodeType_ = null;
       return this;
@@ -1674,6 +1752,10 @@ private static final long serialVersionUID = 0L;
       if (nodeTypeCase_ == 22 &&
           throwEventBuilder_ != null) {
         result.nodeType_ = throwEventBuilder_.build();
+      }
+      if (nodeTypeCase_ == 23 &&
+          waitForConditionBuilder_ != null) {
+        result.nodeType_ = waitForConditionBuilder_.build();
       }
     }
 
@@ -1826,6 +1908,10 @@ private static final long serialVersionUID = 0L;
         }
         case THROW_EVENT: {
           mergeThrowEvent(other.getThrowEvent());
+          break;
+        }
+        case WAIT_FOR_CONDITION: {
+          mergeWaitForCondition(other.getWaitForCondition());
           break;
         }
         case NODETYPE_NOT_SET: {
@@ -2005,6 +2091,13 @@ private static final long serialVersionUID = 0L;
               nodeTypeCase_ = 22;
               break;
             } // case 178
+            case 186: {
+              input.readMessage(
+                  getWaitForConditionFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              nodeTypeCase_ = 23;
+              break;
+            } // case 186
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -5085,6 +5178,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ThrowEventNodeRun, io.littlehorse.sdk.common.proto.ThrowEventNodeRun.Builder, io.littlehorse.sdk.common.proto.ThrowEventNodeRunOrBuilder> throwEventBuilder_;
     /**
+     * <pre>
+     * A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef.
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
      * @return Whether the throwEvent field is set.
      */
@@ -5093,6 +5190,10 @@ private static final long serialVersionUID = 0L;
       return nodeTypeCase_ == 22;
     }
     /**
+     * <pre>
+     * A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef.
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
      * @return The throwEvent.
      */
@@ -5111,6 +5212,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef.
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
      */
     public Builder setThrowEvent(io.littlehorse.sdk.common.proto.ThrowEventNodeRun value) {
@@ -5127,6 +5232,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef.
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
      */
     public Builder setThrowEvent(
@@ -5141,6 +5250,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef.
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
      */
     public Builder mergeThrowEvent(io.littlehorse.sdk.common.proto.ThrowEventNodeRun value) {
@@ -5164,6 +5277,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef.
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
      */
     public Builder clearThrowEvent() {
@@ -5183,12 +5300,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef.
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
      */
     public io.littlehorse.sdk.common.proto.ThrowEventNodeRun.Builder getThrowEventBuilder() {
       return getThrowEventFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef.
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
      */
     @java.lang.Override
@@ -5203,6 +5328,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef.
+     * </pre>
+     *
      * <code>.littlehorse.ThrowEventNodeRun throw_event = 22;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -5222,6 +5351,193 @@ private static final long serialVersionUID = 0L;
       nodeTypeCase_ = 22;
       onChanged();
       return throwEventBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WaitForConditionRun, io.littlehorse.sdk.common.proto.WaitForConditionRun.Builder, io.littlehorse.sdk.common.proto.WaitForConditionRunOrBuilder> waitForConditionBuilder_;
+    /**
+     * <pre>
+     * A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition
+     * evaluates to True.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionRun wait_for_condition = 23;</code>
+     * @return Whether the waitForCondition field is set.
+     */
+    @java.lang.Override
+    public boolean hasWaitForCondition() {
+      return nodeTypeCase_ == 23;
+    }
+    /**
+     * <pre>
+     * A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition
+     * evaluates to True.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionRun wait_for_condition = 23;</code>
+     * @return The waitForCondition.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WaitForConditionRun getWaitForCondition() {
+      if (waitForConditionBuilder_ == null) {
+        if (nodeTypeCase_ == 23) {
+          return (io.littlehorse.sdk.common.proto.WaitForConditionRun) nodeType_;
+        }
+        return io.littlehorse.sdk.common.proto.WaitForConditionRun.getDefaultInstance();
+      } else {
+        if (nodeTypeCase_ == 23) {
+          return waitForConditionBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.WaitForConditionRun.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition
+     * evaluates to True.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionRun wait_for_condition = 23;</code>
+     */
+    public Builder setWaitForCondition(io.littlehorse.sdk.common.proto.WaitForConditionRun value) {
+      if (waitForConditionBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        nodeType_ = value;
+        onChanged();
+      } else {
+        waitForConditionBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 23;
+      return this;
+    }
+    /**
+     * <pre>
+     * A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition
+     * evaluates to True.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionRun wait_for_condition = 23;</code>
+     */
+    public Builder setWaitForCondition(
+        io.littlehorse.sdk.common.proto.WaitForConditionRun.Builder builderForValue) {
+      if (waitForConditionBuilder_ == null) {
+        nodeType_ = builderForValue.build();
+        onChanged();
+      } else {
+        waitForConditionBuilder_.setMessage(builderForValue.build());
+      }
+      nodeTypeCase_ = 23;
+      return this;
+    }
+    /**
+     * <pre>
+     * A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition
+     * evaluates to True.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionRun wait_for_condition = 23;</code>
+     */
+    public Builder mergeWaitForCondition(io.littlehorse.sdk.common.proto.WaitForConditionRun value) {
+      if (waitForConditionBuilder_ == null) {
+        if (nodeTypeCase_ == 23 &&
+            nodeType_ != io.littlehorse.sdk.common.proto.WaitForConditionRun.getDefaultInstance()) {
+          nodeType_ = io.littlehorse.sdk.common.proto.WaitForConditionRun.newBuilder((io.littlehorse.sdk.common.proto.WaitForConditionRun) nodeType_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          nodeType_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeTypeCase_ == 23) {
+          waitForConditionBuilder_.mergeFrom(value);
+        } else {
+          waitForConditionBuilder_.setMessage(value);
+        }
+      }
+      nodeTypeCase_ = 23;
+      return this;
+    }
+    /**
+     * <pre>
+     * A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition
+     * evaluates to True.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionRun wait_for_condition = 23;</code>
+     */
+    public Builder clearWaitForCondition() {
+      if (waitForConditionBuilder_ == null) {
+        if (nodeTypeCase_ == 23) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeTypeCase_ == 23) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+        }
+        waitForConditionBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition
+     * evaluates to True.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionRun wait_for_condition = 23;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WaitForConditionRun.Builder getWaitForConditionBuilder() {
+      return getWaitForConditionFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition
+     * evaluates to True.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionRun wait_for_condition = 23;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WaitForConditionRunOrBuilder getWaitForConditionOrBuilder() {
+      if ((nodeTypeCase_ == 23) && (waitForConditionBuilder_ != null)) {
+        return waitForConditionBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeTypeCase_ == 23) {
+          return (io.littlehorse.sdk.common.proto.WaitForConditionRun) nodeType_;
+        }
+        return io.littlehorse.sdk.common.proto.WaitForConditionRun.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition
+     * evaluates to True.
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionRun wait_for_condition = 23;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WaitForConditionRun, io.littlehorse.sdk.common.proto.WaitForConditionRun.Builder, io.littlehorse.sdk.common.proto.WaitForConditionRunOrBuilder> 
+        getWaitForConditionFieldBuilder() {
+      if (waitForConditionBuilder_ == null) {
+        if (!(nodeTypeCase_ == 23)) {
+          nodeType_ = io.littlehorse.sdk.common.proto.WaitForConditionRun.getDefaultInstance();
+        }
+        waitForConditionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.WaitForConditionRun, io.littlehorse.sdk.common.proto.WaitForConditionRun.Builder, io.littlehorse.sdk.common.proto.WaitForConditionRunOrBuilder>(
+                (io.littlehorse.sdk.common.proto.WaitForConditionRun) nodeType_,
+                getParentForChildren(),
+                isClean());
+        nodeType_ = null;
+      }
+      nodeTypeCase_ = 23;
+      onChanged();
+      return waitForConditionBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

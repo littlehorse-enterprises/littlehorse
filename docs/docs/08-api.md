@@ -946,7 +946,8 @@ is a Getable object, meaning it can be retried from the LittleHorse grpc API.
 | `sleep` | oneof `node_type`| [SleepNodeRun](#sleepnoderun) | A SLEEP node makes the ThreadRun block for a certain amount of time. |
 | `user_task` | oneof `node_type`| [UserTaskNodeRun](#usertasknoderun) | A USER_TASK node waits until a human executes some work and reports the result. |
 | `start_multiple_threads` | oneof `node_type`| [StartMultipleThreadsRun](#startmultiplethreadsrun) | A START_MULTIPLE_THREADS node iterates over a JSON_ARR variable and spawns a child ThreadRun for each element in the list. |
-| `throw_event` | oneof `node_type`| [ThrowEventNodeRun](#throweventnoderun) |  |
+| `throw_event` | oneof `node_type`| [ThrowEventNodeRun](#throweventnoderun) | A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef. |
+| `wait_for_condition` | oneof `node_type`| [WaitForConditionRun](#waitforconditionrun) | A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition evaluates to True. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -1012,12 +1013,12 @@ The sub-node structure for a TASK NodeRun.
 
 ### Message `ThrowEventNodeRun` {#throweventnoderun}
 
-
+The sub-node structure for a THROW_EVENT NodeRun.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `workflow_event_id` | | [WorkflowEventId](#workfloweventid) |  |
+| `workflow_event_id` | | [WorkflowEventId](#workfloweventid) | The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -1032,6 +1033,14 @@ The sub-node structure for a USER_TASK NodeRun.
 | ----- | ----  | ---- | ----------- |
 | `user_task_run_id` | optional| [UserTaskRunId](#usertaskrunid) | The ID of the UserTaskRun. Note that if the ThreadRun was halted when it arrived at this USER_TASK node, then the user_task_run_id will be unset. |
  <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WaitForConditionRun` {#waitforconditionrun}
+
+The sub-node structure for a WAIT_FOR_CONDITION NodeRun
+
  <!-- end HasFields -->
 
 
@@ -3438,6 +3447,7 @@ A Node is a step in a ThreadRun.
 | `user_task` | oneof `node`| [UserTaskNode](#usertasknode) | Creates a UserTaskNodeRun |
 | `start_multiple_threads` | oneof `node`| [StartMultipleThreadsNode](#startmultiplethreadsnode) | Creates a StartMultipleThreadsNodeRun |
 | `throw_event` | oneof `node`| [ThrowEventNode](#throweventnode) | Creates a ThrowEventNodeRun |
+| `wait_for_condition` | oneof `node`| [WaitForConditionNode](#waitforconditionnode) | Creates a WaitForConditionRun |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3664,6 +3674,20 @@ The output is a JSON_OBJ variable with one key/value pair for each UserTaskField
 | `user_task_def_version` | optional| int32 | If set, then the UserTaskRun will always have this specific version of the UserTaskDef. Otherwise, the UserTaskRun will have the latest version. |
 | `notes` | optional| [VariableAssignment](#variableassignment) | Specifies the value to be displayed on the `notes` field of the UserTaskRun. |
 | `on_cancellation_exception_name` | optional| [VariableAssignment](#variableassignment) | Specifies the name of the exception thrown when the User Task is canceled. If not set, then the cancellation or timeout of a User Task Run throws an ERROR rather than an EXCEPTION. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WaitForConditionNode` {#waitforconditionnode}
+
+A SubNode that blocks until a condition is satisfied in the WfRun.
+There is no output.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `condition` | | [EdgeCondition](#edgecondition) | The condition that this node will block for. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
