@@ -12,4 +12,10 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     <PackageReference Include="LittleHorse.Sdk" Version="0.5.8-alpha" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include=".config\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
