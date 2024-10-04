@@ -274,6 +274,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     private final CoreStoreProvider coreStoreProvider;
     private final ScheduledExecutorService networkThreadpool;
     private final String listenerName;
+    private final LHProducer commandProducer;
 
     private Server grpcListener;
 
@@ -289,7 +290,8 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             CoreStoreProvider coreStoreProvider,
             MetadataCache metadataCache,
             List<ServerInterceptor> interceptors,
-            Context.Key<RequestExecutionContext> contextKey) {
+            Context.Key<RequestExecutionContext> contextKey,
+            LHProducer commandProducer) {
 
         // All dependencies are passed in as arguments; nothing is instantiated here,
         // because all listeners share the same threading infrastructure.
@@ -302,6 +304,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         this.internalComms = internalComms;
         this.listenerName = listenerConfig.getName();
         this.contextKey = contextKey;
+        this.commandProducer = commandProducer;
 
         this.grpcListener = null;
 
@@ -640,8 +643,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             }
         };
 
-        LHProducer producer = internalComms.getProducer();
-        producer.send(
+        commandProducer.send(
                 command.getPartitionKey(),
                 command,
                 command.getTopic(serverConfig),
@@ -1007,36 +1009,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
     /*
      * Sends a command to Kafka and simultaneously does a waitForProcessing() internal
-     * grpc call that asynchronously waits for the command to be processed. It
-     * infers the request context from the GRPC Context.
-     */
-    public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
-        TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
-
-        processCommand(
-                new CommandModel(claimEvent),
-                client.getResponseObserver(),
-                PollTaskResponse.class,
-                false,
-                client.getPrincipalId(),
-                client.getTenantId(),
-                client.getRequestContext());
-    }
-
-    public LHProducer getProducer() {
-        return internalComms.getProducer();
-    }
-
-    public void onResponseReceived(String commandId, WaitForCommandResponse response) {
-        internalComms.onResponseReceived(commandId, response);
-    }
-
-    public void sendErrorToClient(String commandId, Exception caught) {
-        internalComms.sendErrorToClientForCommand(commandId, caught);
-    }
-
-    /*
-     * Sends a command to Kafka and simultaneously does a waitForProcessing() internal
      * grpc call that asynchronously waits for the command to be processed.
      *
      * Explicit request context. Useful for callers who do not have access to the GRPC
@@ -1103,9 +1075,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         command.setCommandId(LHUtil.generateGuid());
 
         Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
-        internalComms
-                .getProducer()
-                .send(
+        commandProducer.send(
                         command.getPartitionKey(),
                         command,
                         command.getTopic(serverConfig),
@@ -1117,25 +1087,4 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         return requestContext().service();
     }
 
-    public void onTaskScheduled(
-            TaskId streamsTaskId, TaskDefIdModel taskDef, ScheduledTaskModel scheduledTask, TenantIdModel tenantId) {
-        taskQueueManager.onTaskScheduled(streamsTaskId, taskDef, scheduledTask, tenantId);
-    }
-
-    public void drainPartitionTaskQueue(TaskId streamsTaskId) {
-        taskQueueManager.drainPartition(streamsTaskId);
-    }
-
-    public Set<HostModel> getAllInternalHosts() {
-        return internalComms.getAllInternalHosts();
-    }
-
-    public LHHostInfo getAdvertisedHost(
-            HostModel host, String listenerName, InternalCallCredentials internalCredentials) {
-        return internalComms.getAdvertisedHost(host, listenerName, internalCredentials);
-    }
-
-    public void onEventThrown(WorkflowEventModel event) {
-        internalComms.onWorkflowEventThrown(event);
-    }
 }

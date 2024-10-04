@@ -14,6 +14,7 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.proto.TaskClaimEventPb;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
@@ -69,6 +70,8 @@ public class LHServer {
     private final CoreStoreProvider coreStoreProvider;
     private final ScheduledExecutorService networkThreadpool;
     private final List<LHServerListener> listeners;
+    private final LHProducer commandProducer;
+    private final LHProducer taskClaimProducer;
 
     private RequestExecutionContext requestContext() {
         return contextKey.get();
@@ -78,6 +81,8 @@ public class LHServer {
         this.metadataCache = new MetadataCache();
         this.config = config;
         this.taskQueueManager = new TaskQueueManager(this, LHConstants.MAX_TASKRUNS_IN_ONE_TASKQUEUE);
+        this.commandProducer = new LHProducer(config.getKafkaCommandProducerConfig(config.getLHInstanceName()));
+        this.taskClaimProducer = new LHProducer(config.getKafkaTaskClaimProducer());
 
         // Kafka Streams Setup
         if (config.getLHInstanceId().isPresent()) {
@@ -123,7 +128,8 @@ public class LHServer {
                         new RequestAuthorizer(contextKey, metadataCache, coreStoreProvider, config),
                         listenerConfig.getServerAuthorizer(),
                         new RequestSanitizer()),
-                contextKey);
+                contextKey,
+                commandProducer);
     }
 
     public String getInstanceName() {
@@ -139,17 +145,12 @@ public class LHServer {
         TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
 
         processCommand(
-                new CommandModel(claimEvent),
+                claimEvent,
                 client.getResponseObserver(),
                 PollTaskResponse.class,
-                false,
                 client.getPrincipalId(),
                 client.getTenantId(),
                 client.getRequestContext());
-    }
-
-    public LHProducer getProducer() {
-        return internalComms.getProducer();
     }
 
     public void onResponseReceived(String commandId, WaitForCommandResponse response) {
@@ -160,35 +161,6 @@ public class LHServer {
         internalComms.sendErrorToClientForCommand(commandId, caught);
     }
 
-    /*
-     * Sends a command to Kafka and simultaneously does a waitForProcessing() internal
-     * grpc call that asynchronously waits for the command to be processed.
-     *
-     * Explicit request context. Useful for callers who do not have access to the GRPC
-     * context, for example the `returnTaskToClient()` method. That method is called
-     * from within the CommandProcessor#process() method.
-     *
-     * REFACTOR_SUGGESTION: We should create a CommandSender.java class which is responsible
-     * for sending commands to Kafka and waiting for the execution. That class should
-     * not depend on RequestExecutionContext but rather the AuthorizationContext. The
-     * `TaskClaimEvent#reportTaskToClient()` flow should not go through KafkaStreamsServerImpl
-     * anymore.
-     */
-    private <AC extends Message, RC extends Message> void processCommand(
-            AbstractCommand<AC> command,
-            StreamObserver<RC> responseObserver,
-            Class<RC> responseCls,
-            boolean shouldCompleteStream) {
-        RequestExecutionContext requestContext = requestContext();
-        processCommand(
-                command,
-                responseObserver,
-                responseCls,
-                shouldCompleteStream,
-                requestContext.authorization().principalId(),
-                requestContext.authorization().tenantId(),
-                requestContext);
-    }
 
     /*
      * This method is called from within the `CommandProcessor#process()` method (specifically, on the
@@ -197,18 +169,18 @@ public class LHServer {
      * Note that this is not a GRPC method that @Override's a super method and takes in
      * a protobuf + StreamObserver.
      */
-    private <AC extends Message, RC extends Message> void processCommand(
-            AbstractCommand<AC> command,
+    private <RC extends Message> void processCommand(
+            TaskClaimEvent taskClaimEvent,
             StreamObserver<RC> responseObserver,
             Class<RC> responseCls,
-            boolean shouldCompleteStream,
             PrincipalIdModel principalId,
             TenantIdModel tenantId,
             RequestExecutionContext context) {
+        CommandModel command = new CommandModel(taskClaimEvent);
         StreamObserver<WaitForCommandResponse> commandObserver = new POSTStreamObserver<>(
                 responseObserver,
                 responseCls,
-                shouldCompleteStream,
+                false,
                 internalComms,
                 command,
                 context,
@@ -223,8 +195,7 @@ public class LHServer {
         command.setCommandId(LHUtil.generateGuid());
 
         Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
-        internalComms
-                .getProducer()
+        taskClaimProducer
                 .send(
                         command.getPartitionKey(),
                         command,

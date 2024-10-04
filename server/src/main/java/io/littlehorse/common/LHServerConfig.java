@@ -626,13 +626,6 @@ public class LHServerConfig extends ConfigBase {
         if (this.txnProducer != null) this.txnProducer.close();
     }
 
-    public LHProducer getProducer() {
-        if (producer == null) {
-            producer = new LHProducer(this);
-        }
-        return producer;
-    }
-
     public boolean shouldCreateTopics() {
         return Boolean.valueOf(getOrSetDefault(SHOULD_CREATE_TOPICS_KEY, "true"));
     }
@@ -654,9 +647,8 @@ public class LHServerConfig extends ConfigBase {
         return Long.valueOf(getOrSetDefault(TIMER_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 32)));
     }
 
-    public Properties getKafkaProducerConfig(String component) {
+    public Properties getKafkaCommandProducerConfig(String component) {
         Properties conf = new Properties();
-        conf.put("client.id", this.getClientId(component));
         conf.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
         conf.put(
@@ -669,6 +661,14 @@ public class LHServerConfig extends ConfigBase {
         conf.put(ProducerConfig.ACKS_CONFIG, "all");
         conf.put(ProducerConfig.LINGER_MS_CONFIG, getOrSetDefault(LINGER_MS_KEY, "0"));
         addKafkaSecuritySettings(conf);
+        return conf;
+    }
+
+    public Properties getKafkaTaskClaimProducer() {
+        Properties conf = getKafkaCommandProducerConfig("task-claim");
+        conf.put(ProducerConfig.ACKS_CONFIG, "1");
+        conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "false");
+        conf.put(ProducerConfig.LINGER_MS_CONFIG, "0");
         return conf;
     }
 

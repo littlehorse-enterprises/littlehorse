@@ -116,8 +116,6 @@ public class BackendInternalComms implements Closeable {
     @Getter
     private HostInfo thisHost;
 
-    private LHProducer producer;
-
     private ChannelCredentials clientCreds;
 
     private Map<String, ManagedChannel> channels;
@@ -164,7 +162,6 @@ public class BackendInternalComms implements Closeable {
                 .build();
 
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
-        this.producer = config.getProducer();
         this.asyncWaiters = new AsyncWaiters(networkThreadPool);
     }
 
@@ -353,10 +350,6 @@ public class BackendInternalComms implements Closeable {
 
         otherHosts.put(streamsHost, info);
         return info;
-    }
-
-    public LHProducer getProducer() {
-        return producer;
     }
 
     public void onWorkflowEventThrown(WorkflowEventModel event) {
