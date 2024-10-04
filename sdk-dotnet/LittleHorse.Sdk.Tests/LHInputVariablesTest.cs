@@ -24,7 +24,7 @@ namespace LittleHorse.Sdk.Tests.Internal
         }
 
         [Fact]
-        public void LHConfigVaribles_WithLHEnvVariables_ShouldReturnSetOptions()
+        public void LHConfigVariables_WithLHEnvVariables_ShouldReturnSetOptions()
         {
             string host = "host";
             string port = "254";
@@ -71,7 +71,7 @@ namespace LittleHorse.Sdk.Tests.Internal
         }
         
         [Fact]
-        public void OptionsBinder_WithoutLHEnvVariables_ShouldReturnDefaultOptions()
+        public void LHConfigVariables_WithoutLHEnvVariables_ShouldReturnDefaultOptions()
         {
             var inputVariables = new LHInputVariables();
 
@@ -84,7 +84,7 @@ namespace LittleHorse.Sdk.Tests.Internal
         }
 
         [Fact]
-        public void OptionsBinder_WithLHOptionsInFile_ShouldReturnSetOptions()
+        public void LHConfigVariables_WithLHOptionsInFile_ShouldReturnSetOptions()
         {
             const string lhConfigFileName = "littlehorse.config";
             string inputVariablesFilePath = TestUtils.BuildFilePath(lhConfigFileName);
@@ -108,7 +108,7 @@ namespace LittleHorse.Sdk.Tests.Internal
         }
         
         [Fact]
-        public void OptionsBinder_WithNoLHOptionsInFile_ShouldReturnDefaultOptions()
+        public void LHConfigVariables_WithNoLHOptionsInFile_ShouldReturnDefaultOptions()
         {
             const string lhConfigFileName = "littlehorse.config";
             string inputVariablesFilePath = TestUtils.BuildFilePath(lhConfigFileName);
@@ -132,7 +132,7 @@ namespace LittleHorse.Sdk.Tests.Internal
         }
         
         [Fact]
-        public void OptionsBinder_WithEmptyLHFile_ShouldReturnDefaultOptions()
+        public void LHConfigVariables_WithEmptyLHFile_ShouldReturnDefaultOptions()
         {
             const string lhConfigFileName = "littlehorse.config";
             string inputVariablesFilePath = TestUtils.BuildFilePath(lhConfigFileName);
@@ -150,7 +150,7 @@ namespace LittleHorse.Sdk.Tests.Internal
         }
         
         [Fact]
-        public void OptionsBinder_WithoutLHFile_ShouldThrowException()
+        public void LHConfigVariables_WithoutLHFile_ShouldThrowException()
         {
             const string inputVariablesFileName = "not_found_littlehorse.config";
             
@@ -160,7 +160,7 @@ namespace LittleHorse.Sdk.Tests.Internal
         }
         
         [Fact]
-        public void OptionsBinder_WithSomeLHOptionsCommentedInFile_ShouldReturnSetOptions()
+        public void LHConfigVariables_WithSomeLHOptionsCommentedInFile_ShouldReturnSetOptions()
         {
             const string lhConfigFileName = "littlehorse.config";
             string inputVariablesFilePath = TestUtils.BuildFilePath(lhConfigFileName);
@@ -183,7 +183,7 @@ namespace LittleHorse.Sdk.Tests.Internal
         }
         
         [Fact]
-        public void OptionsBinder_WithAllLHOptionsCommentedInFile_ShouldReturnDefaultOptions()
+        public void LHConfigVariables_WithAllLHOptionsCommentedInFile_ShouldReturnDefaultOptions()
         {
             const string lhConfigFileName = "littlehorse.config";
             string inputVariablesFilePath = TestUtils.BuildFilePath(lhConfigFileName);
