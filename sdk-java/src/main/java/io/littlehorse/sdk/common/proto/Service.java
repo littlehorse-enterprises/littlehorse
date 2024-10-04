@@ -749,7 +749,7 @@ public final class Service {
       "(\005\022#\n\026pre_release_identifier\030\004 \001(\tH\000\210\001\001B" +
       "\031\n\027_pre_release_identifier*P\n\021AllowedUpd" +
       "ateType\022\017\n\013ALL_UPDATES\020\000\022\032\n\026MINOR_REVISI" +
-      "ON_UPDATES\020\001\022\016\n\nNO_UPDATES\020\0022\270+\n\013LittleH" +
+      "ON_UPDATES\020\001\022\016\n\nNO_UPDATES\020\0022\210,\n\013LittleH" +
       "orse\022D\n\nPutTaskDef\022\036.littlehorse.PutTask" +
       "DefRequest\032\024.littlehorse.TaskDef\"\000\022<\n\nGe" +
       "tTaskDef\022\026.littlehorse.TaskDefId\032\024.littl" +
@@ -815,6 +815,8 @@ public final class Service {
       "ternalEventId\032\032.littlehorse.ExternalEven" +
       "t\"\000\022Z\n\022AwaitWorkflowEvent\022&.littlehorse." +
       "AwaitWorkflowEventRequest\032\032.littlehorse." +
+      "WorkflowEvent\"\000\022N\n\020GetWorkflowEvent\022\034.li" +
+      "ttlehorse.WorkflowEventId\032\032.littlehorse." +
       "WorkflowEvent\"\000\022^\n\022ListExternalEvents\022&." +
       "littlehorse.ListExternalEventsRequest\032\036." +
       "littlehorse.ExternalEventList\"\000\022J\n\013Searc" +
@@ -830,9 +832,9 @@ public final class Service {
       "archVariableRequest\032\033.littlehorse.Variab" +
       "leIdList\"\000\022b\n\023SearchExternalEvent\022\'.litt" +
       "lehorse.SearchExternalEventRequest\032 .lit" +
-      "tlehorse.ExternalEventIdList\"\000\022P\n\rSearch" +
+      "tlehorse.ExternalEventIdList\"\000\022P\n\rSearch",
       "TaskDef\022!.littlehorse.SearchTaskDefReque" +
-      "st\032\032.littlehorse.TaskDefIdList\"\000\022\\\n\021Sear",
+      "st\032\032.littlehorse.TaskDefIdList\"\000\022\\\n\021Sear" +
       "chUserTaskDef\022%.littlehorse.SearchUserTa" +
       "skDefRequest\032\036.littlehorse.UserTaskDefId" +
       "List\"\000\022M\n\014SearchWfSpec\022 .littlehorse.Sea" +
