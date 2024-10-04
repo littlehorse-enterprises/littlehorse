@@ -75,12 +75,12 @@ namespace LittleHorse.Sdk.Tests.Internal
         {
             var inputVariables = new LHInputVariables();
 
-            Assert.Equal("localhost", inputVariables.LHC_API_HOST);
-            Assert.Equal(2023, inputVariables.LHC_API_PORT);
-            Assert.Equal("PLAIN", inputVariables.LHC_API_PROTOCOL);
-            Assert.StartsWith("client-", inputVariables.LHC_CLIENT_ID);
-            Assert.Equal(8, inputVariables.LHW_NUM_WORKER_THREADS);
-            Assert.Equal(string.Empty, inputVariables.LHW_TASK_WORKER_VERSION);
+            Assert.Equal(DefaultLHConfigVariables.LHC_API_HOST, inputVariables.LHC_API_HOST);
+            Assert.Equal(DefaultLHConfigVariables.LHC_API_PORT, inputVariables.LHC_API_PORT);
+            Assert.Equal(DefaultLHConfigVariables.LHC_API_PROTOCOL, inputVariables.LHC_API_PROTOCOL);
+            Assert.StartsWith(DefaultLHConfigVariables.LHC_CLIENT_ID, inputVariables.LHC_CLIENT_ID);
+            Assert.Equal(DefaultLHConfigVariables.LHW_NUM_WORKER_THREADS, inputVariables.LHW_NUM_WORKER_THREADS);
+            Assert.Equal(DefaultLHConfigVariables.LHW_TASK_WORKER_VERSION, inputVariables.LHW_TASK_WORKER_VERSION);
         }
 
         [Fact]
