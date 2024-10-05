@@ -43,7 +43,7 @@
   --ifm-color-primary-lighter: #f6f6f6;
   --ifm-color-primary-lightest: #ffffff;
   --ifm-background-color: #000000;
-  /* --docsearch-hit-active-color: #000000; */
+  
   --docsearch-highlight-color: #7b7bc4 !important;
 
   --filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(336deg) brightness(110%) contrast(101%);
