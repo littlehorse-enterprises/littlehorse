@@ -79,14 +79,13 @@ module.exports = {
       // Replace with your project's social card
       image: "img/social-card.png",
       colorMode: {
-        disableSwitch: true,
+        disableSwitch: false,
       },
       navbar: {
         title: "LittleHorse",
         logo: {
           alt: "LittleHorse Logo",
-          src: "img/logo-brown.png",
-          srcDark: "img/logo.png"
+          src: "img/logo.svg",
         },
         items: [
           {
