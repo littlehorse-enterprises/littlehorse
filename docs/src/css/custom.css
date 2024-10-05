@@ -70,7 +70,7 @@ code {
   border: 0.15rem solid;
 }
 
-p a {
+.markdown a {
   text-decoration: underline;
   font-weight: 600;
 }
