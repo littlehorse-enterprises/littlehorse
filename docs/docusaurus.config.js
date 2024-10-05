@@ -178,6 +178,7 @@ module.exports = {
       },
       prism: {
         theme: lightCodeTheme,
+        darkTheme: themes.dracula,
         additionalLanguages: ["java", "go", "groovy", "protobuf"],
       },
       algolia: {
