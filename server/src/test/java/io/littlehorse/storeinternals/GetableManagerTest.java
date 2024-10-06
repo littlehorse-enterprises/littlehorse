@@ -530,6 +530,6 @@ public class GetableManagerTest {
                 Arguments.of(wfRunModel, 6),
                 Arguments.of(taskRun, 2),
                 Arguments.of(variable, 3),
-                Arguments.of(externalEvent, 2));
+                Arguments.of(externalEvent, 3));
     }
 }

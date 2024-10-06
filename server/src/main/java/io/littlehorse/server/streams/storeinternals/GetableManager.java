@@ -6,16 +6,12 @@ import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.CoreObjectId;
-import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
-import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
-import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.*;
-import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
@@ -108,7 +104,7 @@ public class GetableManager extends ReadOnlyGetableManager {
         // Note this iterates in a non-paginated way through all NodeRun's in the
         // WfRun. Fine for most use-cases, but if there's a WfRUn that runs for a
         // year and has hundreds of tasks per day, it will be a problem.
-        List<GetableToStore<U, T>> allItems = iterateOverPrefixAndPutInBuffer(prefix, cls);
+        List<GetableToStore<U, T>> allItems = iterateOverPrefixAndPutInUncommittedChanges(prefix, cls);
 
         for (GetableToStore<U, T> itemToDelete : allItems) {
             // Marking the objectToStore as null causes the flush() to delete it.
@@ -177,40 +173,6 @@ public class GetableManager extends ReadOnlyGetableManager {
                 tagStorageManager.store(getable.getIndexEntries(), entity.getTagsPresentBeforeUpdate());
             }
         }
-    }
-
-    public ExternalEventModel getUnclaimedEvent(WfRunIdModel wfRunId, ExternalEventDefIdModel externalEventDefName) {
-
-        String extEvtPrefix = ExternalEventModel.getStorePrefix(wfRunId.toString(), externalEventDefName.toString());
-
-        return this.getFirstByCreatedTimeFromPrefix(
-                extEvtPrefix, ExternalEventModel.class, externalEvent -> !externalEvent.isClaimed());
-    }
-
-    /**
-     * Accepts an ObjectId Prefix and a predicate, and returns the first ObjectId
-     * in the store+buffer, ordered by the Getable's created time, that matches
-     * the predicate.
-     *
-     * @param <U>           Is the Getable proto type
-     * @param <T>           is the Getable java type
-     * @param prefix        is the prefix to search from
-     * @param cls           is the Java class
-     * @param discriminator is a filter to apply to the result
-     * @return the first T by created time that matches discriminator, or else null.
-     */
-    public <U extends Message, T extends CoreGetable<U>> T getFirstByCreatedTimeFromPrefix(
-            String prefix, Class<T> cls, Predicate<T> discriminator) {
-        return iterateOverPrefix(prefix, cls).stream()
-                .filter(discriminator)
-                .min(Comparator.comparing(AbstractGetable::getCreatedAt))
-                .map(entity -> {
-                    // iterateOverPrefix doesn't put in the buffer. We do that here, but only
-                    // for the one we return.
-                    put(entity);
-                    return entity;
-                })
-                .orElse(null);
     }
 
     public void commit() {

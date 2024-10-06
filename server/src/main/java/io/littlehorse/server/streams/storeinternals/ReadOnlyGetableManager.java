@@ -6,14 +6,20 @@ import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.CoreObjectId;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
+import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import java.util.HashMap;
@@ -93,8 +99,8 @@ public class ReadOnlyGetableManager {
     }
 
     // Note that this is an expensive operation. It's used when deleting a WfRun.
-    protected <U extends Message, T extends CoreGetable<U>> List<GetableToStore<U, T>> iterateOverPrefixAndPutInBuffer(
-            String prefix, Class<T> cls) {
+    protected <U extends Message, T extends CoreGetable<U>>
+            List<GetableToStore<U, T>> iterateOverPrefixAndPutInUncommittedChanges(String prefix, Class<T> cls) {
 
         List<GetableToStore<U, T>> out = iterateOverPrefixInternal(prefix, cls);
 
@@ -126,6 +132,67 @@ public class ReadOnlyGetableManager {
      */
     public ScheduledTaskModel getScheduledTask(TaskRunIdModel scheduledTaskId) {
         return store.get(scheduledTaskId.toString(), ScheduledTaskModel.class);
+    }
+
+    public ExternalEventModel getUnclaimedEvent(WfRunIdModel wfRunId, ExternalEventDefIdModel externalEventDefId) {
+        // We want to find the first Event that has the following characteristics:
+        // - matches the wfRunId
+        // - matches the externalEventDefName
+        // - isClaimed == false
+        // - is first by creation timestamp.
+        //
+        // The way to do that is by using a TagScan over: (wfRunId, extEvtDefName, isClaimed)
+        //
+        // However, we also need to take into consideration the fact that there may be
+        // ExternalEvents inside our buffer that fit the representation too. So we need
+        // to:
+        // 1. Get the first (if any) from the Tag Scan
+        // 2. Get the first (if any) from the buffer (getablesToStore())
+        // 3. Return whichever of the first two was created earlier.
+
+        ExternalEventModel earliestFromTags = null;
+        ExternalEventModel earliestFromGetablesToStore = null;
+        // Tag Scan
+        List<Attribute> attributes = List.of(
+                new Attribute("wfRunId", wfRunId.toString()),
+                new Attribute("extEvtDefName", externalEventDefId.toString()),
+                new Attribute("isClaimed", "false"));
+
+        String prefixToScan = Tag.getAttributeString(GetableClassEnum.EXTERNAL_EVENT, attributes);
+
+        try (LHKeyValueIterator<Tag> iterator = store.prefixScan(prefixToScan, Tag.class)) {
+            if (iterator.hasNext()) {
+                LHIterKeyValue<Tag> next = iterator.next();
+                Tag tag = next.getValue();
+                ExternalEventIdModel externalEventId = (ExternalEventIdModel)
+                        ObjectIdModel.fromString(tag.getDescribedObjectId(), ExternalEventIdModel.class);
+                earliestFromTags = get(externalEventId);
+            }
+        }
+
+        // Check the buffer
+        // Overwrite what's in the store with what's in the buffer.
+        for (GetableToStore<?, ?> getableInBuffer : uncommittedChanges.values()) {
+            if (getableInBuffer.getObjectToStore() == null
+                    || getableInBuffer.getObjectType() != GetableClassEnum.EXTERNAL_EVENT) {
+                continue;
+            }
+            ExternalEventModel candidate = (ExternalEventModel) getableInBuffer.getObjectToStore();
+            if (earliestFromGetablesToStore == null
+                    || candidate.getCreatedAt().before(earliestFromGetablesToStore.getCreatedAt())) {
+                earliestFromGetablesToStore = candidate;
+            }
+        }
+
+        if (earliestFromTags != null && earliestFromGetablesToStore != null) {
+            return earliestFromTags.getCreatedAt().compareTo(earliestFromGetablesToStore.getCreatedAt()) < 0
+                    ? earliestFromTags
+                    : earliestFromGetablesToStore;
+        } else if (earliestFromTags != null) {
+            return earliestFromTags;
+        } else {
+            return earliestFromGetablesToStore;
+        }
     }
 
     // Note that this is an expensive operation. It's used by External Event Nodes.
@@ -160,7 +227,7 @@ public class ReadOnlyGetableManager {
                 .toList();
     }
 
-    public <U extends Message, T extends CoreGetable<U>> List<T> iterateOverPrefix(String prefix, Class<T> cls) {
+    private <U extends Message, T extends CoreGetable<U>> List<T> iterateOverPrefix(String prefix, Class<T> cls) {
         return iterateOverPrefixInternal(prefix, cls).stream()
                 .map(getableToStore -> getableToStore.getObjectToStore())
                 .toList();
@@ -169,6 +236,10 @@ public class ReadOnlyGetableManager {
     public List<WorkflowEventModel> getWorkflowEvents(WfRunIdModel wfRunId, WorkflowEventDefIdModel eventDefId) {
         String startKey = LHUtil.getCompositeId(wfRunId.toString(), eventDefId.toString());
         return iterateOverPrefix(startKey, WorkflowEventModel.class);
+    }
+
+    public List<WorkflowEventModel> getWorkflowEvents(WfRunIdModel wfRunId) {
+        return iterateOverPrefix(wfRunId.toString() + "/", WorkflowEventModel.class);
     }
 
     public Optional<TaskId> getSpecificTask() {
