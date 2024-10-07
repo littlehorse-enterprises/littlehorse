@@ -3,6 +3,7 @@ using LittleHorse.Worker.Internal.Helpers;
 using LittleHorse.Common.Proto;
 using Microsoft.Extensions.Logging;
 using LittleHorse.Common.Configuration.Models;
+using LittleHorse.Sdk.Internal;
 
 namespace LittleHorse.Worker.Internal
 {
@@ -17,11 +18,11 @@ namespace LittleHorse.Worker.Internal
 
         public LHHostInfo HostInfo { get { return _hostInfo; } }
 
-        public LHServerConnection(LHServerConnectionManager<T> connectionManager, LHHostInfo hostInfo, ILogger? logger = null)
+        public LHServerConnection(LHServerConnectionManager<T> connectionManager, LHHostInfo hostInfo)
         {
             _connectionManager = connectionManager;
             _hostInfo = hostInfo;
-            _logger = logger;
+            _logger = LHLoggerFactoryProvider.GetLogger<LHServerConnection<T>>();
             _client = _connectionManager.Config.GetGrcpClientInstance();
             _call = _client.PollTask();
         }
@@ -34,8 +35,6 @@ namespace LittleHorse.Worker.Internal
 
         private async Task RequestMoreWorkAsync()
         {
-
-
             var request = new PollTaskRequest()
             {
                 ClientId = _connectionManager.Config.WorkerId,

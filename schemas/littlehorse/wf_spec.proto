@@ -352,7 +352,17 @@ message Node {
 
     // Creates a ThrowEventNodeRun
     ThrowEventNode throw_event = 16;
+
+    // Creates a WaitForConditionRun
+    WaitForConditionNode wait_for_condition = 17;
   }
+}
+
+// A SubNode that blocks until a condition is satisfied in the WfRun.
+// There is no output.
+message WaitForConditionNode {
+  // The condition that this node will block for.
+  EdgeCondition condition = 1;
 }
 
 // A SubNode that throws a WorkflowEvent of a specific type. There is no output.

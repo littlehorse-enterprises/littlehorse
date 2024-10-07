@@ -159,6 +159,9 @@ service LittleHorse {
   // To specify the deadline, the client should use GRPC deadlines.
   rpc AwaitWorkflowEvent(AwaitWorkflowEventRequest) returns (WorkflowEvent) {}
 
+  // Get a specific WorkflowEvent.
+  rpc GetWorkflowEvent(WorkflowEventId) returns (WorkflowEvent) {}
+
   // List ExternalEvent's for a specific WfRun.
   rpc ListExternalEvents(ListExternalEventsRequest) returns (ExternalEventList) {}
 

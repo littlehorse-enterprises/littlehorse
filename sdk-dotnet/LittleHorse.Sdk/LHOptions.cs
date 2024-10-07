@@ -11,6 +11,7 @@
         public int LHC_API_PORT { get; set; } = 2023;
         public string LHC_API_PROTOCOL { get; set; } = "PLAIN";
         public string LHC_CLIENT_ID { get; set; } = GenerateClientId();
+        public string? LHC_CA_CERT { get; set; }
         public string? LHC_CLIENT_CERT { get; set; }
         public string? LHC_CLIENT_KEY { get; set; }
         public string? LHC_OAUTH_CLIENT_ID { get; set; }

@@ -234,6 +234,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 |  [AwaitWorkflowEventRequest](#awaitworkfloweventrequest)  |  [WorkflowEvent](#workflowevent)  | Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent is not thrown before the deadline specified by the client.<br/><br/>To specify the deadline, the client should use GRPC deadlines. |
 
+### RPC `GetWorkflowEvent` {#getworkflowevent}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [WorkflowEventId](#workfloweventid)  |  [WorkflowEvent](#workflowevent)  | Get a specific WorkflowEvent. |
+
 ### RPC `ListExternalEvents` {#listexternalevents}
 
 | Request Type | Response Type | Description |
@@ -946,7 +952,8 @@ is a Getable object, meaning it can be retried from the LittleHorse grpc API.
 | `sleep` | oneof `node_type`| [SleepNodeRun](#sleepnoderun) | A SLEEP node makes the ThreadRun block for a certain amount of time. |
 | `user_task` | oneof `node_type`| [UserTaskNodeRun](#usertasknoderun) | A USER_TASK node waits until a human executes some work and reports the result. |
 | `start_multiple_threads` | oneof `node_type`| [StartMultipleThreadsRun](#startmultiplethreadsrun) | A START_MULTIPLE_THREADS node iterates over a JSON_ARR variable and spawns a child ThreadRun for each element in the list. |
-| `throw_event` | oneof `node_type`| [ThrowEventNodeRun](#throweventnoderun) |  |
+| `throw_event` | oneof `node_type`| [ThrowEventNodeRun](#throweventnoderun) | A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef. |
+| `wait_for_condition` | oneof `node_type`| [WaitForConditionRun](#waitforconditionrun) | A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition evaluates to True. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -1012,12 +1019,12 @@ The sub-node structure for a TASK NodeRun.
 
 ### Message `ThrowEventNodeRun` {#throweventnoderun}
 
-
+The sub-node structure for a THROW_EVENT NodeRun.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `workflow_event_id` | | [WorkflowEventId](#workfloweventid) |  |
+| `workflow_event_id` | | [WorkflowEventId](#workfloweventid) | The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -1032,6 +1039,14 @@ The sub-node structure for a USER_TASK NodeRun.
 | ----- | ----  | ---- | ----------- |
 | `user_task_run_id` | optional| [UserTaskRunId](#usertaskrunid) | The ID of the UserTaskRun. Note that if the ThreadRun was halted when it arrived at this USER_TASK node, then the user_task_run_id will be unset. |
  <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WaitForConditionRun` {#waitforconditionrun}
+
+The sub-node structure for a WAIT_FOR_CONDITION NodeRun
+
  <!-- end HasFields -->
 
 
@@ -3438,6 +3453,7 @@ A Node is a step in a ThreadRun.
 | `user_task` | oneof `node`| [UserTaskNode](#usertasknode) | Creates a UserTaskNodeRun |
 | `start_multiple_threads` | oneof `node`| [StartMultipleThreadsNode](#startmultiplethreadsnode) | Creates a StartMultipleThreadsNodeRun |
 | `throw_event` | oneof `node`| [ThrowEventNode](#throweventnode) | Creates a ThrowEventNodeRun |
+| `wait_for_condition` | oneof `node`| [WaitForConditionNode](#waitforconditionnode) | Creates a WaitForConditionRun |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3669,6 +3685,20 @@ The output is a JSON_OBJ variable with one key/value pair for each UserTaskField
 
 
 
+### Message `WaitForConditionNode` {#waitforconditionnode}
+
+A SubNode that blocks until a condition is satisfied in the WfRun.
+There is no output.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `condition` | | [EdgeCondition](#edgecondition) | The condition that this node will block for. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `WaitForThreadsNode` {#waitforthreadsnode}
 
 Specifies that a ThreadRun will wait for certain specified Child ThreadRun's to
@@ -3882,7 +3912,7 @@ Defines a resource type for ACL's.
 | ACL_EXTERNAL_EVENT | 2 | Refers to `ExternalEventDef` and `ExternalEvent` |
 | ACL_USER_TASK | 3 | Refers to `UserTaskDef` and `UserTaskRun` |
 | ACL_PRINCIPAL | 4 | Refers to the `Principal` resource. Currently, the `ACL_PRINCIPAL` permission is only valid in the `global_acls` field of the `Principal`. A `Principal` who only has access to a specific Tenant cannot create othe Principals because a Principal is scoped to the Cluster, and not to a Tenant. |
-| ACL_TENANT | 5 | Refers to the `Tenant` resource. The `ACL_TENANT` permission is only valid in the `global_acls` field of the `Principal`. This is because the `Tenant` resource is cluste-rscoped. |
+| ACL_TENANT | 5 | Refers to the `Tenant` resource. The `ACL_TENANT` permission is only valid in the `global_acls` field of the `Principal`. This is because the `Tenant` resource is cluster-scoped. |
 | ACL_ALL_RESOURCES | 6 | Refers to all resources. In the `global_acls` field, this includes `Principal` and `Tenant` resources. In the `per_tenant_acls` field, this does not include `Principal` and `Tenant` since those are cluster-scoped resources. |
 | ACL_TASK_WORKER_GROUP | 7 | Refers to the `TaskWorkerGroup` associated with a TaskDef |
 

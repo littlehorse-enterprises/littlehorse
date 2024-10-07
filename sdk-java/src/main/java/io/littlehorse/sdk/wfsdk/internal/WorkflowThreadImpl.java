@@ -37,6 +37,7 @@ import io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WaitForConditionNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
@@ -686,6 +687,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
     @Override
     public void throwEvent(String workflowEventDefName, Serializable content) {
         checkIfIsActive();
+        parent.addWorkflowEventDefName(workflowEventDefName);
         ThrowEventNode node = ThrowEventNode.newBuilder()
                 .setEventDefId(WorkflowEventDefId.newBuilder()
                         .setName(workflowEventDefName)
@@ -705,6 +707,18 @@ final class WorkflowThreadImpl implements WorkflowThread {
         parent.addExternalEventDefName(externalEventDefName);
 
         return new NodeOutputImpl(addNode(externalEventDefName, NodeCase.EXTERNAL_EVENT, waitNode), this);
+    }
+
+    @Override
+    public WaitForConditionNodeOutputImpl waitForCondition(WorkflowCondition condition) {
+        checkIfIsActive();
+        WorkflowConditionImpl condImpl = (WorkflowConditionImpl) condition;
+        WaitForConditionNode waitNode = WaitForConditionNode.newBuilder()
+                .setCondition(condImpl.getSpec())
+                .build();
+
+        String nodeName = addNode("wait-for-condition", NodeCase.WAIT_FOR_CONDITION, waitNode);
+        return new WaitForConditionNodeOutputImpl(nodeName, this);
     }
 
     public void complete() {
@@ -871,6 +885,9 @@ final class WorkflowThreadImpl implements WorkflowThread {
                 break;
             case THROW_EVENT:
                 node.setThrowEvent((ThrowEventNode) subNode);
+                break;
+            case WAIT_FOR_CONDITION:
+                node.setWaitForCondition((WaitForConditionNode) subNode);
                 break;
             case NODE_NOT_SET:
                 // not possible

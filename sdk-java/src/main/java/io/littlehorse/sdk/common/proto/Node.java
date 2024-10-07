@@ -61,6 +61,7 @@ private static final long serialVersionUID = 0L;
     USER_TASK(13),
     START_MULTIPLE_THREADS(15),
     THROW_EVENT(16),
+    WAIT_FOR_CONDITION(17),
     NODE_NOT_SET(0);
     private final int value;
     private NodeCase(int value) {
@@ -89,6 +90,7 @@ private static final long serialVersionUID = 0L;
         case 13: return USER_TASK;
         case 15: return START_MULTIPLE_THREADS;
         case 16: return THROW_EVENT;
+        case 17: return WAIT_FOR_CONDITION;
         case 0: return NODE_NOT_SET;
         default: return null;
       }
@@ -719,6 +721,49 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.ThrowEventNode.getDefaultInstance();
   }
 
+  public static final int WAIT_FOR_CONDITION_FIELD_NUMBER = 17;
+  /**
+   * <pre>
+   * Creates a WaitForConditionRun
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForConditionNode wait_for_condition = 17;</code>
+   * @return Whether the waitForCondition field is set.
+   */
+  @java.lang.Override
+  public boolean hasWaitForCondition() {
+    return nodeCase_ == 17;
+  }
+  /**
+   * <pre>
+   * Creates a WaitForConditionRun
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForConditionNode wait_for_condition = 17;</code>
+   * @return The waitForCondition.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WaitForConditionNode getWaitForCondition() {
+    if (nodeCase_ == 17) {
+       return (io.littlehorse.sdk.common.proto.WaitForConditionNode) node_;
+    }
+    return io.littlehorse.sdk.common.proto.WaitForConditionNode.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Creates a WaitForConditionRun
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForConditionNode wait_for_condition = 17;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WaitForConditionNodeOrBuilder getWaitForConditionOrBuilder() {
+    if (nodeCase_ == 17) {
+       return (io.littlehorse.sdk.common.proto.WaitForConditionNode) node_;
+    }
+    return io.littlehorse.sdk.common.proto.WaitForConditionNode.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -771,6 +816,9 @@ private static final long serialVersionUID = 0L;
     }
     if (nodeCase_ == 16) {
       output.writeMessage(16, (io.littlehorse.sdk.common.proto.ThrowEventNode) node_);
+    }
+    if (nodeCase_ == 17) {
+      output.writeMessage(17, (io.littlehorse.sdk.common.proto.WaitForConditionNode) node_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -832,6 +880,10 @@ private static final long serialVersionUID = 0L;
     if (nodeCase_ == 16) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(16, (io.littlehorse.sdk.common.proto.ThrowEventNode) node_);
+    }
+    if (nodeCase_ == 17) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(17, (io.littlehorse.sdk.common.proto.WaitForConditionNode) node_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -897,6 +949,10 @@ private static final long serialVersionUID = 0L;
       case 16:
         if (!getThrowEvent()
             .equals(other.getThrowEvent())) return false;
+        break;
+      case 17:
+        if (!getWaitForCondition()
+            .equals(other.getWaitForCondition())) return false;
         break;
       case 0:
       default:
@@ -964,6 +1020,10 @@ private static final long serialVersionUID = 0L;
       case 16:
         hash = (37 * hash) + THROW_EVENT_FIELD_NUMBER;
         hash = (53 * hash) + getThrowEvent().hashCode();
+        break;
+      case 17:
+        hash = (37 * hash) + WAIT_FOR_CONDITION_FIELD_NUMBER;
+        hash = (53 * hash) + getWaitForCondition().hashCode();
         break;
       case 0:
       default:
@@ -1150,6 +1210,9 @@ private static final long serialVersionUID = 0L;
       if (throwEventBuilder_ != null) {
         throwEventBuilder_.clear();
       }
+      if (waitForConditionBuilder_ != null) {
+        waitForConditionBuilder_.clear();
+      }
       nodeCase_ = 0;
       node_ = null;
       return this;
@@ -1256,6 +1319,10 @@ private static final long serialVersionUID = 0L;
       if (nodeCase_ == 16 &&
           throwEventBuilder_ != null) {
         result.node_ = throwEventBuilder_.build();
+      }
+      if (nodeCase_ == 17 &&
+          waitForConditionBuilder_ != null) {
+        result.node_ = waitForConditionBuilder_.build();
       }
     }
 
@@ -1400,6 +1467,10 @@ private static final long serialVersionUID = 0L;
           mergeThrowEvent(other.getThrowEvent());
           break;
         }
+        case WAIT_FOR_CONDITION: {
+          mergeWaitForCondition(other.getWaitForCondition());
+          break;
+        }
         case NODE_NOT_SET: {
           break;
         }
@@ -1533,6 +1604,13 @@ private static final long serialVersionUID = 0L;
               nodeCase_ = 16;
               break;
             } // case 130
+            case 138: {
+              input.readMessage(
+                  getWaitForConditionFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              nodeCase_ = 17;
+              break;
+            } // case 138
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -4217,6 +4295,184 @@ private static final long serialVersionUID = 0L;
       nodeCase_ = 16;
       onChanged();
       return throwEventBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WaitForConditionNode, io.littlehorse.sdk.common.proto.WaitForConditionNode.Builder, io.littlehorse.sdk.common.proto.WaitForConditionNodeOrBuilder> waitForConditionBuilder_;
+    /**
+     * <pre>
+     * Creates a WaitForConditionRun
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionNode wait_for_condition = 17;</code>
+     * @return Whether the waitForCondition field is set.
+     */
+    @java.lang.Override
+    public boolean hasWaitForCondition() {
+      return nodeCase_ == 17;
+    }
+    /**
+     * <pre>
+     * Creates a WaitForConditionRun
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionNode wait_for_condition = 17;</code>
+     * @return The waitForCondition.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WaitForConditionNode getWaitForCondition() {
+      if (waitForConditionBuilder_ == null) {
+        if (nodeCase_ == 17) {
+          return (io.littlehorse.sdk.common.proto.WaitForConditionNode) node_;
+        }
+        return io.littlehorse.sdk.common.proto.WaitForConditionNode.getDefaultInstance();
+      } else {
+        if (nodeCase_ == 17) {
+          return waitForConditionBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.WaitForConditionNode.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Creates a WaitForConditionRun
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionNode wait_for_condition = 17;</code>
+     */
+    public Builder setWaitForCondition(io.littlehorse.sdk.common.proto.WaitForConditionNode value) {
+      if (waitForConditionBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        node_ = value;
+        onChanged();
+      } else {
+        waitForConditionBuilder_.setMessage(value);
+      }
+      nodeCase_ = 17;
+      return this;
+    }
+    /**
+     * <pre>
+     * Creates a WaitForConditionRun
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionNode wait_for_condition = 17;</code>
+     */
+    public Builder setWaitForCondition(
+        io.littlehorse.sdk.common.proto.WaitForConditionNode.Builder builderForValue) {
+      if (waitForConditionBuilder_ == null) {
+        node_ = builderForValue.build();
+        onChanged();
+      } else {
+        waitForConditionBuilder_.setMessage(builderForValue.build());
+      }
+      nodeCase_ = 17;
+      return this;
+    }
+    /**
+     * <pre>
+     * Creates a WaitForConditionRun
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionNode wait_for_condition = 17;</code>
+     */
+    public Builder mergeWaitForCondition(io.littlehorse.sdk.common.proto.WaitForConditionNode value) {
+      if (waitForConditionBuilder_ == null) {
+        if (nodeCase_ == 17 &&
+            node_ != io.littlehorse.sdk.common.proto.WaitForConditionNode.getDefaultInstance()) {
+          node_ = io.littlehorse.sdk.common.proto.WaitForConditionNode.newBuilder((io.littlehorse.sdk.common.proto.WaitForConditionNode) node_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          node_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeCase_ == 17) {
+          waitForConditionBuilder_.mergeFrom(value);
+        } else {
+          waitForConditionBuilder_.setMessage(value);
+        }
+      }
+      nodeCase_ = 17;
+      return this;
+    }
+    /**
+     * <pre>
+     * Creates a WaitForConditionRun
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionNode wait_for_condition = 17;</code>
+     */
+    public Builder clearWaitForCondition() {
+      if (waitForConditionBuilder_ == null) {
+        if (nodeCase_ == 17) {
+          nodeCase_ = 0;
+          node_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeCase_ == 17) {
+          nodeCase_ = 0;
+          node_ = null;
+        }
+        waitForConditionBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Creates a WaitForConditionRun
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionNode wait_for_condition = 17;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WaitForConditionNode.Builder getWaitForConditionBuilder() {
+      return getWaitForConditionFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Creates a WaitForConditionRun
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionNode wait_for_condition = 17;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.WaitForConditionNodeOrBuilder getWaitForConditionOrBuilder() {
+      if ((nodeCase_ == 17) && (waitForConditionBuilder_ != null)) {
+        return waitForConditionBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeCase_ == 17) {
+          return (io.littlehorse.sdk.common.proto.WaitForConditionNode) node_;
+        }
+        return io.littlehorse.sdk.common.proto.WaitForConditionNode.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Creates a WaitForConditionRun
+     * </pre>
+     *
+     * <code>.littlehorse.WaitForConditionNode wait_for_condition = 17;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.WaitForConditionNode, io.littlehorse.sdk.common.proto.WaitForConditionNode.Builder, io.littlehorse.sdk.common.proto.WaitForConditionNodeOrBuilder> 
+        getWaitForConditionFieldBuilder() {
+      if (waitForConditionBuilder_ == null) {
+        if (!(nodeCase_ == 17)) {
+          node_ = io.littlehorse.sdk.common.proto.WaitForConditionNode.getDefaultInstance();
+        }
+        waitForConditionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.WaitForConditionNode, io.littlehorse.sdk.common.proto.WaitForConditionNode.Builder, io.littlehorse.sdk.common.proto.WaitForConditionNodeOrBuilder>(
+                (io.littlehorse.sdk.common.proto.WaitForConditionNode) node_,
+                getParentForChildren(),
+                isClean());
+        node_ = null;
+      }
+      nodeCase_ = 17;
+      onChanged();
+      return waitForConditionBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

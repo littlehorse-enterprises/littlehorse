@@ -63,7 +63,7 @@ namespace LittleHorse.Worker
             ValidateTaskMethodParameters(_taskMethod, _taskSignature);
             _mappings = CreateVariableMappings(_taskMethod, _taskSignature);
 
-            _manager = new LHServerConnectionManager<T>(_config, _taskMethod, GetTaskDef(), _mappings, _executable, _logger);
+            _manager = new LHServerConnectionManager<T>(_config, _taskMethod, GetTaskDef(), _mappings, _executable);
 
             _manager.Start();
         }
