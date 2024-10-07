@@ -170,7 +170,6 @@ namespace LittleHorse.Sdk {
 
                 certChain!.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
                 certChain.ChainPolicy.CustomTrustStore.Add(caCert);
-
             }
 
             var certChainBuilder = certificate != null && certChain != null && certChain.Build(certificate);
