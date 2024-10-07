@@ -16,7 +16,8 @@ public class Program
                 config.SetMinimumLevel(LogLevel.Debug);
             })
             .BuildServiceProvider();
-    }
+    } 
+    
     static void Main(string[] args)
     {
         SetupApplication();
@@ -24,6 +25,9 @@ public class Program
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var config = new LHConfig(loggerFactory);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), ".config/littlehorse.config");
+            if (File.Exists(filePath))
+                config = new LHConfig(filePath, loggerFactory);
 
             MyWorker executable = new MyWorker();
             var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet-dotnet", config);

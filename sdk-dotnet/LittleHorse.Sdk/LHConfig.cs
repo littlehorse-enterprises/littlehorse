@@ -1,7 +1,6 @@
 ﻿using Grpc.Core;
 using Grpc.Net.Client;
 using LittleHorse.Sdk.Authentication;
-using LittleHorse.Common.Configuration.Models;
 using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Internal;
 using LittleHorse.Sdk.Utils;
@@ -14,7 +13,7 @@ namespace LittleHorse.Sdk {
     {
         private ILogger<LHConfig>? _logger;
 
-        private LHOptions _options;
+        private LHInputVariables _inputVariables;
 
         private Dictionary<string, LittleHorseClient> _createdChannels;
         
@@ -25,7 +24,15 @@ namespace LittleHorse.Sdk {
         {
             LHLoggerFactoryProvider.Initialize(loggerFactory);
             _logger = LHLoggerFactoryProvider.GetLogger<LHConfig>();
-            _options = LHOptionsBinder.GetOptionsFromEnvironmentVariables();
+            _inputVariables = new LHInputVariables();
+            _createdChannels = new Dictionary<string, LittleHorseClient>();
+        }
+        
+        public LHConfig(string configOptionsFilePath, ILoggerFactory? loggerFactory = null)
+        {
+            LHLoggerFactoryProvider.Initialize(loggerFactory);
+            _logger = LHLoggerFactoryProvider.GetLogger<LHConfig>();
+            _inputVariables = new LHInputVariables(configOptionsFilePath);
             _createdChannels = new Dictionary<string, LittleHorseClient>();
         }
 
@@ -33,42 +40,42 @@ namespace LittleHorse.Sdk {
         {
             get
             {
-                return _options.LHC_CLIENT_ID;
+                return _inputVariables.LHC_CLIENT_ID;
             }
         }
 
         public string? TaskWorkerVersion
         {
-            get { return _options.LHW_TASK_WORKER_VERSION; }
+            get { return _inputVariables.LHW_TASK_WORKER_VERSION; }
         }
 
         public int WorkerThreads
         {
-            get { return _options.LHW_NUM_WORKER_THREADS; }
+            get { return _inputVariables.LHW_NUM_WORKER_THREADS; }
         }
         public string BootstrapHost
         {
             get
             {
-                return _options.LHC_API_HOST;
+                return _inputVariables.LHC_API_HOST;
             }
         }
         public int BootstrapPort
         {
             get
             {
-                return _options.LHC_API_PORT;
+                return _inputVariables.LHC_API_PORT;
             }
         }
         public string BootstrapProtocol
         {
             get
             {
-                if (_options.LHC_API_PROTOCOL != "PLAIN" && _options.LHC_API_PROTOCOL != "TLS")
+                if (_inputVariables.LHC_API_PROTOCOL != "PLAIN" && _inputVariables.LHC_API_PROTOCOL != "TLS")
                 {
-                    throw new ArgumentException("Invalid Protocol: " + _options.LHC_API_PROTOCOL);
+                    throw new ArgumentException("Invalid Protocol: " + _inputVariables.LHC_API_PROTOCOL);
                 }
-                return _options.LHC_API_PROTOCOL == "TLS" ? "https" : "http";
+                return _inputVariables.LHC_API_PROTOCOL == "TLS" ? "https" : "http";
             }
         }
 
@@ -84,9 +91,9 @@ namespace LittleHorse.Sdk {
         {
             get
             {
-                var result = !string.IsNullOrEmpty(_options.LHC_OAUTH_ACCESS_TOKEN_URL) 
-                             && !string.IsNullOrEmpty(_options.LHC_OAUTH_CLIENT_ID) 
-                             && !string.IsNullOrEmpty(_options.LHC_OAUTH_CLIENT_SECRET);
+                var result = !string.IsNullOrEmpty(_inputVariables.LHC_OAUTH_ACCESS_TOKEN_URL) 
+                             && !string.IsNullOrEmpty(_inputVariables.LHC_OAUTH_CLIENT_ID) 
+                             && !string.IsNullOrEmpty(_inputVariables.LHC_OAUTH_CLIENT_SECRET);
                 if (!result)
                 {
                     _logger?.LogInformation("OAuth is disable");
@@ -107,7 +114,7 @@ namespace LittleHorse.Sdk {
 
         public LittleHorseClient GetGrcpClientInstance(string host, int port)
         {
-            string channelKey = $"{BootstrapProtocol}://{host}:{port}";
+            string channelKey = BootstrapServer;
 
             if (_createdChannels.ContainsKey(channelKey))
             {
@@ -130,16 +137,16 @@ namespace LittleHorse.Sdk {
             var httpHandler = new HttpClientHandler();
             var address = $"{BootstrapProtocol}://{host}:{port}";
             
-            if (_options.LHC_CA_CERT != null)
+            if (_inputVariables.LHC_CA_CERT != null)
             {
-                httpHandler = CertificatesHandler.GetHttpHandlerFrom(_options.LHC_CA_CERT);
+                httpHandler = CertificatesHandler.GetHttpHandlerFrom(_inputVariables.LHC_CA_CERT);
             }
 
-            if (_options.LHC_CLIENT_CERT != null && _options.LHC_CLIENT_KEY != null)
+            if (_inputVariables.LHC_CLIENT_CERT != null && _inputVariables.LHC_CLIENT_KEY != null)
             {
                 var cert = 
-                    CertificatesHandler.GetX509CertificateFrom(_options.LHC_CLIENT_KEY, 
-                        _options.LHC_CLIENT_CERT);
+                    CertificatesHandler.GetX509CertificateFrom(_inputVariables.LHC_CLIENT_KEY, 
+                        _inputVariables.LHC_CLIENT_CERT);
                 
                 httpHandler.ClientCertificates.Add(cert);
             }
@@ -202,9 +209,9 @@ namespace LittleHorse.Sdk {
         {
             if (_oAuthConfig is null)
             {
-                _oAuthConfig = new OAuthConfig(_options.LHC_OAUTH_CLIENT_ID, 
-                    _options.LHC_OAUTH_CLIENT_SECRET, 
-                    _options.LHC_OAUTH_ACCESS_TOKEN_URL);
+                _oAuthConfig = new OAuthConfig(_inputVariables.LHC_OAUTH_CLIENT_ID, 
+                    _inputVariables.LHC_OAUTH_CLIENT_SECRET, 
+                    _inputVariables.LHC_OAUTH_ACCESS_TOKEN_URL);
 
                 if (_oAuthClient is null)
                 {
