@@ -9,6 +9,7 @@ import io.littlehorse.test.exception.LHTestExceptionUtil;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import io.littlehorse.test.internal.TestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
@@ -25,30 +26,44 @@ import org.junit.jupiter.api.extension.TestInstancePreDestroyCallback;
 
 public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor, TestInstancePreDestroyCallback {
 
+    public static final String BOOTSTRAPPER_CLASS = "bootstrapper.class";
     private static final ExtensionContext.Namespace LH_TEST_NAMESPACE =
             ExtensionContext.Namespace.create(LHExtension.class);
     private static final String LH_TEST_CONTEXT = "LH-test-context";
     private static final Properties testConfig;
     private static final TestBootstrapper testBootstrapper;
 
-    public static final String BOOTSTRAPPER_CLASS = "bootstrapper.class";
-
     static {
-        testConfig = new Properties();
+        testConfig = loadProperties();
+        testBootstrapper = loadBootstrap();
+    }
+
+    private static TestBootstrapper loadBootstrap() {
         try {
-            InputStream configStream = LHExtension.class.getClassLoader().getResourceAsStream("test.properties");
-            if (configStream != null) {
-                testConfig.load(configStream);
+            Object bootstrapName = testConfig.get(BOOTSTRAPPER_CLASS);
+
+            if (bootstrapName == null) {
+                throw new IllegalStateException("bootstrapper.class property not provided");
             }
-        } catch (IOException e) {
+
+            return (TestBootstrapper) Class.forName(bootstrapName.toString())
+                    .getDeclaredConstructor()
+                    .newInstance();
+        } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static Properties loadProperties() {
         try {
-            testBootstrapper = (TestBootstrapper)
-                    Class.forName(testConfig.get(BOOTSTRAPPER_CLASS).toString())
-                            .getConstructors()[0]
-                            .newInstance();
-        } catch (Exception e) {
+            Properties testConfig = new Properties();
+            InputStream configStream = LHExtension.class.getClassLoader().getResourceAsStream("test.properties");
+            if (configStream == null) {
+                throw new FileNotFoundException("test.properties not found in the classpath");
+            }
+            testConfig.load(configStream);
+            return testConfig;
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
