@@ -140,11 +140,6 @@ namespace LittleHorse.Sdk {
             var httpHandler = new HttpClientHandler();
             var address = $"{BootstrapProtocol}://{host}:{port}";
             httpHandler.ServerCertificateCustomValidationCallback = ServerCertificateCustomValidation;
-            
-            if (_inputVariables.LHC_CA_CERT != null)
-            {
-                httpHandler = CertificatesHandler.GetHttpHandlerFrom(_inputVariables.LHC_CA_CERT);
-            }
 
             if (_inputVariables.LHC_CLIENT_CERT != null && _inputVariables.LHC_CLIENT_KEY != null)
             {
@@ -169,10 +164,16 @@ namespace LittleHorse.Sdk {
         private bool ServerCertificateCustomValidation(HttpRequestMessage requestMessage, X509Certificate2? certificate, X509Chain? certChain, SslPolicyErrors sslErrors)
         {
             var pathCaCert = _inputVariables.LHC_CA_CERT;
-            var caCert = new X509Certificate2(File.ReadAllBytes(pathCaCert));
-            certChain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
-            certChain.ChainPolicy.CustomTrustStore.Add(caCert);
-            var certChainBuilder = certChain!.Build(certificate);
+            if (pathCaCert != null)
+            {
+                var caCert = new X509Certificate2(File.ReadAllBytes(pathCaCert));
+
+                certChain!.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
+                certChain.ChainPolicy.CustomTrustStore.Add(caCert);
+
+            }
+
+            var certChainBuilder = certificate != null && certChain != null && certChain.Build(certificate);
             return certChainBuilder;
         }
 
