@@ -6,6 +6,19 @@
 
 /* You can override the default Infima variables here. */
 :root {
+  --ifm-code-font-size: 95%;
+  --ifm-navbar-link-color: var(--ifm-color-primary);
+  --ifm-link-color: var(--ifm-color-primary-lighter);
+
+  --docsearch-muted-color: var(--ifm-font-color-base) !important;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  --white-filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(336deg) brightness(110%) contrast(101%);
+  --brown-filter: invert(24%) sepia(12%) saturate(1484%) hue-rotate(334deg) brightness(100%) contrast(87%);
+  --black-filter:  brightness(0%);
+}
+
+[data-theme='light'] {
   --ifm-color-primary: #5C4033;
   --ifm-color-primary-dark: #72452d;
   --ifm-color-primary-darker: #6c412a;
@@ -13,21 +26,45 @@
   --ifm-color-primary-light: #8c5537;
   --ifm-color-primary-lighter: #925939;
   --ifm-color-primary-lightest: #a56441;
-  --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
-  --ifm-navbar-link-color: #392215;
-  --ifm-link-color: #a56441;
-  --docsearch-muted-color: #000000 !important;
+
+  code {
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+
+  /* Navbar logo and home page feature graphics */
+  .navbar__logo img {
+    filter: var(--brown-filter);
+  }
+  .feature-img {
+    filter: var(--black-filter);
+  }
 }
 
-p a {
-  text-decoration: underline;
-  font-weight: 600;
-}
+[data-theme='dark'] {
+  --ifm-color-primary: #d6d6d6;
+  --ifm-color-primary-dark: #c1c1c1;
+  --ifm-color-primary-darker: #b6b6b6;
+  --ifm-color-primary-darkest: #969696;
+  --ifm-color-primary-light: #ebebeb;
+  --ifm-color-primary-lighter: #f6f6f6;
+  --ifm-color-primary-lightest: #ffffff;
+  --ifm-background-color: #000000;
+  
+  --docsearch-highlight-color: #7b7bc4 !important;
 
+  code {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
 
-code {
-  border: 0.15rem solid rgba(0, 0, 0, 0.1);
+  .hero {
+    color: white;
+    --ifm-hero-background-color: #5C4033 !important;
+  }
+
+  /* Navbar logo and home page feature graphics */
+  .navbar__logo img, .feature-img {
+    filter: var(--white-filter);
+  }
 }
 
 .hero {
@@ -38,10 +75,27 @@ code {
   padding: 10rem 0 !important;
 }
 
-.clean-btn {
-  color: var(--ifm-navbar-link-color);
+code {
+  border: 0.15rem solid;
 }
 
+.markdown a {
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+/* ------------------- IMAGES ------------------- */
+
+/* All images on docs pages*/
+.main-wrapper img {
+  outline: var(--ifm-font-color-base) 0.2rem solid;
+  outline-offset: -1px;
+  border-radius: 1rem;
+}
+
+/* ------------------- NAVBAR ICONS ------------------- */
+
+/* Slack Navbar Icon */
 .header-slack-link::before {
   content: '';
   width: 24px;
@@ -52,11 +106,11 @@ code {
   transition: background-color var(--ifm-transition-fast)
     var(--ifm-transition-timing-default);
 }
-
 .header-slack-link:hover::before {
   background-color: var(--ifm-navbar-link-hover-color);
 }
 
+/* GitHub Navbar Icon */
 .header-github-link::before {
   content: '';
   width: 24px;
@@ -67,16 +121,11 @@ code {
   transition: background-color var(--ifm-transition-fast)
     var(--ifm-transition-timing-default);
 }
-
 .header-github-link:hover::before {
   background-color: var(--ifm-navbar-link-hover-color);
 }
 
-.main-wrapper img {
-  outline: #000000 0.2rem solid;
-  outline-offset: -1px;
-  border-radius: 1rem;
-}
+/* ------------------- VIDEOS ------------------- */
 
 .video {
   width: 80%;
@@ -89,32 +138,9 @@ code {
   justify-content: center;
 }
 
+/* ------------------- MISCELLANEOUS ------------------- */
+
 /* Disable external link indicator for header links with the class no-external-icon */
 .navbar__link svg {
   display: none;
 }
-
-
-/* 
-[data-theme='dark'] {
-  --ifm-color-primary: #d6d6d6;
-  --ifm-color-primary-dark: #c1c1c1;
-  --ifm-color-primary-darker: #c1c1c1;
-  --ifm-color-primary-darkest: #b6b6b6;
-  --ifm-color-primary-light: #ebebeb;
-  --ifm-color-primary-lighter: #f6f6f6;
-  --ifm-color-primary-lightest: #ffffff;
-} */
-
-a {
-  /* color: rgb(12, 122, 218) */
-}
-
-/* 
-.navbar {
-  background-color: #f4f4fb; */
-/* } */
-/* 
-body {
-  backgroun
-} */
