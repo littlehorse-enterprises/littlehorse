@@ -1,5 +1,11 @@
 # External Events and Interrupts
 
+:::tip
+This section is not a Developer Guide; if you want to learn how to [create an `ExternalEventDef`](../05-developer-guide/09-grpc/05-managing-metadata.md#externaleventdef), [post an `ExternalEvent`](../05-developer-guide/09-grpc/15-posting-external-events.md), [wait for an `ExternalEvent` in a Workflow](../05-developer-guide/08-wfspec-development/04-external-events.md), or [register an Interrupt Handler](../05-developer-guide/08-wfspec-development/05-interrupts.md), please check the appropriate docs in our developer guide.
+
+This section focuses on concepts.
+:::
+
 Workflows must be able to respond to inputs from the outside world in order to be truly useful and dynamic. One of the tools that LittleHorse provides which allows you to do that is _External Events._
 
 In LittleHorse, an `ExternalEventDef` is a Metadata Object that defines some event or activity occuring outside of the LittleHorse `WfRun`. An `ExternalEvent` is an Execution Object that represents the occurrence of such an event. Common use-cases for an External Event would be encapsulating a webhook from github when a new branch is pushed, or representing an event from DocuSign that is fired when a document is completed.

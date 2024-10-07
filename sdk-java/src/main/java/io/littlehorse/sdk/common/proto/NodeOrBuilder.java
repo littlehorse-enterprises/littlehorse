@@ -412,5 +412,32 @@ public interface NodeOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.ThrowEventNodeOrBuilder getThrowEventOrBuilder();
 
+  /**
+   * <pre>
+   * Creates a WaitForConditionRun
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForConditionNode wait_for_condition = 17;</code>
+   * @return Whether the waitForCondition field is set.
+   */
+  boolean hasWaitForCondition();
+  /**
+   * <pre>
+   * Creates a WaitForConditionRun
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForConditionNode wait_for_condition = 17;</code>
+   * @return The waitForCondition.
+   */
+  io.littlehorse.sdk.common.proto.WaitForConditionNode getWaitForCondition();
+  /**
+   * <pre>
+   * Creates a WaitForConditionRun
+   * </pre>
+   *
+   * <code>.littlehorse.WaitForConditionNode wait_for_condition = 17;</code>
+   */
+  io.littlehorse.sdk.common.proto.WaitForConditionNodeOrBuilder getWaitForConditionOrBuilder();
+
   io.littlehorse.sdk.common.proto.Node.NodeCase getNodeCase();
 }

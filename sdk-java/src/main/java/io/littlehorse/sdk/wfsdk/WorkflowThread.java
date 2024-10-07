@@ -253,6 +253,15 @@ public interface WorkflowThread {
     NodeOutput waitForEvent(String externalEventDefName);
 
     /**
+     * Adds a WAIT_FOR_CONDITION node which blocks until the provided boolean condition
+     * evaluates to true.
+     * @param condition is the condition to wait for.
+     * @return a handle to the NodeOutput, which may only be used for error handling since
+     * the output of this node is empty.
+     */
+    WaitForConditionNodeOutput waitForCondition(WorkflowCondition condition);
+
+    /**
      * Adds an EXIT node with a Failure defined. This causes a ThreadRun to fail, and the resulting
      * Failure has the specified value, name, and human-readable message.
      *

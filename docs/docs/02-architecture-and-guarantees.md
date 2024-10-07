@@ -98,7 +98,7 @@ Recall that LittleHorse built its own data store RocksDB/Speedb as the indexing 
 1. The request is recorded to a Kafka topic.
 2. A Kafka Streams Processor on one of the LH Servers processes that request, at which point the response is returned to the client.
 
-![Command Processing Diagram](command-processing.png)
+![Command Processing Diagram](../static/img/2024-10-04-command-processing.png)
 
 1.  Client sends request (eg. Create Workflow Specification)
   to LH Server.
