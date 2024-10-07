@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
@@ -29,6 +30,8 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> {
     private VariableValueModel content;
     private Integer threadRunNumber;
     private Integer nodeRunPosition;
+
+    @Setter
     private boolean claimed;
 
     public ExternalEventModel() {}

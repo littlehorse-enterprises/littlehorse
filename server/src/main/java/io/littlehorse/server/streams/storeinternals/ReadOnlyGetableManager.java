@@ -158,7 +158,7 @@ public class ReadOnlyGetableManager {
                 new Attribute("extEvtDefName", externalEventDefId.toString()),
                 new Attribute("isClaimed", "false"));
 
-        String prefixToScan = Tag.getAttributeString(GetableClassEnum.EXTERNAL_EVENT, attributes);
+        String prefixToScan = Tag.getAttributeString(GetableClassEnum.EXTERNAL_EVENT, attributes) + "/";
 
         try (LHKeyValueIterator<Tag> iterator = store.prefixScan(prefixToScan, Tag.class)) {
             if (iterator.hasNext()) {
@@ -178,6 +178,11 @@ public class ReadOnlyGetableManager {
                 continue;
             }
             ExternalEventModel candidate = (ExternalEventModel) getableInBuffer.getObjectToStore();
+            if (!candidate.getId().getWfRunId().equals(wfRunId)
+                    || !candidate.getId().getExternalEventDefId().equals(externalEventDefId)
+                    || candidate.isClaimed()) {
+                continue;
+            }
             if (earliestFromGetablesToStore == null
                     || candidate.getCreatedAt().before(earliestFromGetablesToStore.getCreatedAt())) {
                 earliestFromGetablesToStore = candidate;
