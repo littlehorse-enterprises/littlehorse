@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.processor.TaskId;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -29,6 +30,7 @@ public class LHTaskManager {
     private final String timerTopicName;
     private final String commandTopicName;
     private final AuthorizationContext authContext;
+    private final ExecutorService networkThreadPool;
 
     private final ProcessorContext<String, CommandProcessorOutput> processorContext;
     private final TaskQueueManager taskQueueManager;
@@ -40,13 +42,15 @@ public class LHTaskManager {
             AuthorizationContext authContext,
             ProcessorContext<String, CommandProcessorOutput> processorContext,
             TaskQueueManager taskQueueManager,
-            TenantScopedStore coreStore) {
+            TenantScopedStore coreStore,
+            ExecutorService networkThreadPool) {
         this.timerTopicName = timerTopicName;
         this.commandTopicName = commandTopicName;
         this.authContext = authContext;
         this.processorContext = processorContext;
         this.taskQueueManager = taskQueueManager;
         this.coreStore = coreStore;
+        this.networkThreadPool = networkThreadPool;
     }
 
     /**
@@ -89,8 +93,8 @@ public class LHTaskManager {
             ScheduledTaskModel scheduledTask = entry.getValue();
             if (scheduledTask != null) {
                 this.coreStore.put(scheduledTask);
-                taskQueueManager.onTaskScheduled(
-                        taskId, scheduledTask.getTaskDefId(), scheduledTask, authContext.tenantId());
+                networkThreadPool.submit(() -> taskQueueManager.onTaskScheduled(
+                        taskId, scheduledTask.getTaskDefId(), scheduledTask, authContext.tenantId()));
             } else {
                 this.coreStore.delete(scheduledTaskId, StoreableType.SCHEDULED_TASK);
             }

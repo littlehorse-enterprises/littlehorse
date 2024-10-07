@@ -21,20 +21,11 @@ public class LHProducer implements Closeable {
     }
 
     public Future<RecordMetadata> send(String key, AbstractCommand<?> t, String topic, Callback cb, Header... headers) {
-        return sendRecord(new ProducerRecord<>(topic, null, key, new Bytes(t.toBytes()), List.of(headers)), cb);
+        return doSend(new ProducerRecord<>(topic, null, key, new Bytes(t.toBytes()), List.of(headers)), cb);
     }
 
-    public Future<RecordMetadata> send(String key, AbstractCommand<?> t, String topic) {
-        return this.send(key, t, topic, null);
-    }
-
-    public Future<RecordMetadata> sendRecord(ProducerRecord<String, Bytes> record, Callback cb) {
+    private Future<RecordMetadata> doSend(ProducerRecord<String, Bytes> record, Callback cb) {
         return (cb != null) ? prod.send(record, cb) : prod.send(record);
-    }
-
-    public Future<RecordMetadata> sendToPartition(String key, AbstractCommand<?> val, String topic, int partition) {
-        Bytes valBytes = val == null ? null : new Bytes(val.toBytes());
-        return sendRecord(new ProducerRecord<>(topic, partition, key, valBytes), null);
     }
 
     public void close() {
