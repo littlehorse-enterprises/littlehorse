@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Xunit;
 
 namespace LittleHorse.Sdk.Tests.Internal
@@ -169,7 +168,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             Assert.Equal(int.Parse(keyValueLHConfigs["LHC_API_PORT"]), inputVariables.LHC_API_PORT);
             Assert.Equal(DefaultLHConfigVariables.LHC_API_PROTOCOL, inputVariables.LHC_API_PROTOCOL);
             Assert.Null(inputVariables.LHC_CA_CERT);
-            Assert.Equal(string.Empty, inputVariables.LHW_TASK_WORKER_VERSION);
+            Assert.Equal(DefaultLHConfigVariables.LHW_TASK_WORKER_VERSION, inputVariables.LHW_TASK_WORKER_VERSION);
         }
         
         [Fact]
