@@ -194,5 +194,67 @@ namespace LittleHorse.Sdk.Tests.Internal
             Assert.Equal(DefaultLHConfigVariables.LHW_NUM_WORKER_THREADS, inputVariables.LHW_NUM_WORKER_THREADS);
             Assert.Equal(DefaultLHConfigVariables.LHW_TASK_WORKER_VERSION, inputVariables.LHW_TASK_WORKER_VERSION);
         }
+
+        [Fact]
+        public void LHConfigVariables_WithInputArguments_ShouldReturnSetValues()
+        {
+            string[] args = new string[4] 
+                { 
+                    "LHC_API_HOST=localhost", 
+                    "LHC_API_PORT=123", 
+                    "LHC_API_PROTOCOL=TLS", 
+                    "LHC_CA_CERT=ca_test.crt"
+                };
+
+            var inputVariables = new LHInputVariables(args);
+            
+            var keyValueLHConfigs = args.Select(a => a.Split('='))
+                .ToDictionary(a => a[0], a => a.Length == 2 ? a[1] : null);
+            
+            Assert.Equal(keyValueLHConfigs["LHC_API_HOST"], inputVariables.LHC_API_HOST);
+            Assert.Equal(int.Parse(keyValueLHConfigs["LHC_API_PORT"]!), inputVariables.LHC_API_PORT);
+            Assert.Equal(keyValueLHConfigs["LHC_API_PROTOCOL"], inputVariables.LHC_API_PROTOCOL);
+            Assert.Equal(keyValueLHConfigs["LHC_CA_CERT"], inputVariables.LHC_CA_CERT);
+        }
+        
+        [Fact]
+        public void LHConfigVariables_WithoutInputArguments_ShouldReturnDefaultOptions()
+        {
+            string[] args = new string[] { };
+
+            var inputVariables = new LHInputVariables(args);
+            
+            var keyValueLHConfigs = args.Select(a => a.Split('='))
+                .ToDictionary(a => a[0], a => a.Length == 2 ? a[1] : null);
+            
+            Assert.Equal(DefaultLHConfigVariables.LHC_API_HOST, inputVariables.LHC_API_HOST);
+            Assert.Equal(DefaultLHConfigVariables.LHC_API_PORT, inputVariables.LHC_API_PORT);
+            Assert.Equal(DefaultLHConfigVariables.LHC_API_PROTOCOL, inputVariables.LHC_API_PROTOCOL);
+            Assert.StartsWith(DefaultLHConfigVariables.LHC_CLIENT_ID, inputVariables.LHC_CLIENT_ID);
+            Assert.Equal(DefaultLHConfigVariables.LHW_NUM_WORKER_THREADS, inputVariables.LHW_NUM_WORKER_THREADS);
+            Assert.Equal(DefaultLHConfigVariables.LHW_TASK_WORKER_VERSION, inputVariables.LHW_TASK_WORKER_VERSION);
+        }
+        
+        [Fact]
+        public void LHConfigVariables_WithSomeInputArguments_ShouldReturnSetOptions()
+        {
+            string[] args = new string[2] 
+            { 
+                "LHC_API_HOST=localhost", 
+                "LHC_API_PORT=123", 
+            };
+
+            var inputVariables = new LHInputVariables(args);
+            
+            var keyValueLHConfigs = args.Select(a => a.Split('='))
+                .ToDictionary(a => a[0], a => a.Length == 2 ? a[1] : null);
+            
+            Assert.Equal(keyValueLHConfigs["LHC_API_HOST"], inputVariables.LHC_API_HOST);
+            Assert.Equal(int.Parse(keyValueLHConfigs["LHC_API_PORT"]!), inputVariables.LHC_API_PORT);
+            Assert.Equal(DefaultLHConfigVariables.LHC_API_PROTOCOL, inputVariables.LHC_API_PROTOCOL);
+            Assert.StartsWith(DefaultLHConfigVariables.LHC_CLIENT_ID, inputVariables.LHC_CLIENT_ID);
+            Assert.Equal(DefaultLHConfigVariables.LHW_NUM_WORKER_THREADS, inputVariables.LHW_NUM_WORKER_THREADS);
+            Assert.Equal(DefaultLHConfigVariables.LHW_TASK_WORKER_VERSION, inputVariables.LHW_TASK_WORKER_VERSION);
+        }
     }
 }
