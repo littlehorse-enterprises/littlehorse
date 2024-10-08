@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace LittleHorse.Common.Exceptions
+namespace LittleHorse.Sdk.Exceptions
 {
     public class LHAuthorizationServerException : Exception
     {

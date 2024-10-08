@@ -1,14 +1,12 @@
-﻿using Grpc.Core;
-using LittleHorse.Common.Exceptions;
-using LittleHorse.Worker.Internal;
-using LittleHorse.Worker.Internal.Helpers;
+﻿using System.Reflection;
+using Grpc.Core;
 using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Exceptions;
+using LittleHorse.Sdk.Helper;
+using LittleHorse.Sdk.Worker.Internal;
 using Microsoft.Extensions.Logging;
-using System.Reflection;
-using LittleHorse.Sdk;
-using LittleHorse.Sdk.Internal;
 
-namespace LittleHorse.Worker
+namespace LittleHorse.Sdk.Worker
 {
     /// <summary>
     /// The LHTaskWorker talks to the LH Servers and executes a specified Task Method every time a Task

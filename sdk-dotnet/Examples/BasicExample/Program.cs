@@ -1,6 +1,6 @@
 ﻿using Examples.BasicExample;
 using LittleHorse.Sdk;
-using LittleHorse.Worker;
+using LittleHorse.Sdk.Worker;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 

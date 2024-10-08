@@ -1,10 +1,6 @@
-using System.Net.Security;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using LittleHorse.Sdk.Internal;
-using Microsoft.Extensions.Logging;
 
 [assembly: InternalsVisibleTo("LittleHorse.Sdk.Tests")]
 

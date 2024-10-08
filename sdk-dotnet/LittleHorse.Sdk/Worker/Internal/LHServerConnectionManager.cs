@@ -1,16 +1,14 @@
-﻿using Google.Protobuf.Collections;
+﻿using System.Reflection;
+using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
-using LittleHorse.Common.Exceptions;
-using LittleHorse.Worker.Internal.Helpers;
 using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Exceptions;
+using LittleHorse.Sdk.Helper;
 using Microsoft.Extensions.Logging;
-using System.Reflection;
-using LittleHorse.Sdk;
-using LittleHorse.Sdk.Internal;
-using static LittleHorse.Common.Proto.LittleHorse;
 using Polly;
+using static LittleHorse.Common.Proto.LittleHorse;
 
-namespace LittleHorse.Worker.Internal
+namespace LittleHorse.Sdk.Worker.Internal
 {
     public class LHServerConnectionManager<T> : IDisposable
     {

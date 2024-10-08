@@ -1,5 +1,4 @@
 using System;
-using LittleHorse.Sdk.Internal;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
