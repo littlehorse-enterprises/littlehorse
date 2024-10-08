@@ -2,7 +2,6 @@
 using Grpc.Net.Client;
 using LittleHorse.Sdk.Authentication;
 using LittleHorse.Common.Proto;
-using LittleHorse.Sdk.Internal;
 using LittleHorse.Sdk.Utils;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography.X509Certificates;
