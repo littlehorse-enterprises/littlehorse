@@ -36,7 +36,11 @@ import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
-import java.util.*;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.serialization.Serdes;
@@ -97,7 +101,7 @@ public class GetableManagerTest {
         getableManager.put(getable);
         getableManager.commit();
 
-        final var keys = getAllKeys(store);
+        final List<String> keys = getAllKeys(store);
         assertThat(localStoreWrapper.get(getable.getObjectId().getStoreableKey(), StoredGetable.class))
                 .isNotNull();
         assertThat(keys).hasSize(1 + expectedTagsCount);
@@ -359,6 +363,30 @@ public class GetableManagerTest {
         }
         ExternalEventModel unclaimedEvent = getableManager.getUnclaimedEvent(wfRunId, externalEventDefId);
         assertThat(unclaimedEvent).isNotNull();
+        assertThat(unclaimedEvent.getId().getExternalEventDefId()).isEqualTo(externalEventDefId);
+        assertThat(unclaimedEvent.getId().getWfRunId()).isEqualTo(wfRunId);
+        assertThat(unclaimedEvent.isClaimed()).isFalse();
+    }
+
+    @Test
+    void findFirstUnclaimedEvents() {
+        WfRunIdModel wfRunId = new WfRunIdModel(UUID.randomUUID().toString());
+        VariableValueModel content = new VariableValueModel();
+        ExternalEventDefIdModel externalEventDefId =
+                new ExternalEventDefIdModel(UUID.randomUUID().toString());
+        int threadRunNumber = 1;
+        int nodeRunPosition = 2;
+        ExternalEventModel expectedEvent = new ExternalEventModel(
+                content, wfRunId, externalEventDefId, "expectedEvent", threadRunNumber, nodeRunPosition, new Date(1));
+        ExternalEventModel olderEvent = new ExternalEventModel(
+                content, wfRunId, externalEventDefId, "olderEvent", threadRunNumber, ++nodeRunPosition, new Date());
+        getableManager.put(expectedEvent);
+        getableManager.put(olderEvent);
+        getableManager.commit();
+        ExternalEventModel firstUnclaimedEvent = getableManager.getUnclaimedEvent(wfRunId, externalEventDefId);
+        assertThat(firstUnclaimedEvent).isNotNull();
+        assertThat(firstUnclaimedEvent.getId().getGuid())
+                .isEqualTo(expectedEvent.getId().getGuid());
     }
 
     private static Stream<Arguments> provideNodeRunObjects() {

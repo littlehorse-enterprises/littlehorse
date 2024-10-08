@@ -82,37 +82,6 @@ public class GetableManager extends ReadOnlyGetableManager {
     }
 
     /**
-     * Marks for deletion all Getable's with the provided type and prefix. They
-     * and their Tags will be deleted from the store upon the call to
-     * {@link CoreProcessorDAO#commit()}.
-     *
-     * This method was made to be called when the LHDAO deletes a WfRun and all of
-     * its children. As such, for example, it will delete all of the NodeRun's of
-     * the WfRun.
-     *
-     * In the future, we will have to implement a "phased delete" so that we can
-     * safely delete WfRun's with 5k+ NodeRun's without stalling progress of the
-     * processor. However, it should be fine for up to 5k, and initial use cases
-     * will not have more than 5k NodeRun's in a WfRun.
-     *
-     * @param prefix is the objectId prefix to delete.
-     * @param cls    is the type of object to delete.
-     */
-    public <U extends Message, T extends CoreGetable<U>> void deleteAllByPrefix(String prefix, Class<T> cls) {
-        log.trace("Deleting all {} with prefix {}", cls.getSimpleName(), prefix);
-
-        // Note this iterates in a non-paginated way through all NodeRun's in the
-        // WfRun. Fine for most use-cases, but if there's a WfRUn that runs for a
-        // year and has hundreds of tasks per day, it will be a problem.
-        List<GetableToStore<U, T>> allItems = iterateOverPrefixAndPutInUncommittedChanges(prefix, cls);
-
-        for (GetableToStore<U, T> itemToDelete : allItems) {
-            // Marking the objectToStore as null causes the flush() to delete it.
-            itemToDelete.setObjectToStore(null);
-        }
-    }
-
-    /**
      * Marks a provided Getable for deletion upon the committing of the
      * "transaction"
      * when we call {@link GetableManager#commit()}.
@@ -144,35 +113,6 @@ public class GetableManager extends ReadOnlyGetableManager {
         bufferEntry.setObjectToStore(null);
 
         return thingToDelete;
-    }
-
-    /**
-     * Flushes all state updates stored in the buffer. This should be called at the
-     * end of CommandProcessor#process(), in other words, for each Command record
-     * in the `core-cmd` Kafka topic.
-     *
-     * This method is responsible for:
-     * - Flushing actual Getable object state into RocksDB
-     * - Flushing local tags into RocksDB
-     * - Flushing remote tags into RocksDB.
-     */
-    public void flush() {
-        log.trace("Flushing for command {}", command.getType());
-
-        for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChanges.entrySet()) {
-            String storeableKey = entry.getKey();
-            GetableToStore<?, ?> entity = entry.getValue();
-
-            if (entity.getObjectToStore() == null) {
-                store.delete(storeableKey, StoreableType.STORED_GETABLE);
-
-                tagStorageManager.store(List.of(), entity.getTagsPresentBeforeUpdate());
-            } else {
-                AbstractGetable<?> getable = entity.getObjectToStore();
-                store.put(new StoredGetable<>(getable));
-                tagStorageManager.store(getable.getIndexEntries(), entity.getTagsPresentBeforeUpdate());
-            }
-        }
     }
 
     public void commit() {
