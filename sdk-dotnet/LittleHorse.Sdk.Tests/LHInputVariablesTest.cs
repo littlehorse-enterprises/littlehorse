@@ -194,5 +194,58 @@ namespace LittleHorse.Sdk.Tests.Internal
             Assert.Equal(DefaultLHConfigVariables.LHW_NUM_WORKER_THREADS, inputVariables.LHW_NUM_WORKER_THREADS);
             Assert.Equal(DefaultLHConfigVariables.LHW_TASK_WORKER_VERSION, inputVariables.LHW_TASK_WORKER_VERSION);
         }
+
+        [Fact]
+        public void LHConfigVariables_WithInputArguments_ShouldReturnSetValues()
+        {
+            var args = new Dictionary<string, string> 
+                { 
+                    { "LHC_API_HOST", "localhost" },
+                    { "LHC_API_PORT", "123" },
+                    { "LHC_API_PROTOCOL", "TLS" },
+                    { "LHC_CA_CERT", "ca_test.crt" }
+                };
+
+            var inputVariables = new LHInputVariables(args);
+            
+            Assert.Equal(args["LHC_API_HOST"], inputVariables.LHC_API_HOST);
+            Assert.Equal(int.Parse(args["LHC_API_PORT"]!), inputVariables.LHC_API_PORT);
+            Assert.Equal(args["LHC_API_PROTOCOL"], inputVariables.LHC_API_PROTOCOL);
+            Assert.Equal(args["LHC_CA_CERT"], inputVariables.LHC_CA_CERT);
+        }
+        
+        [Fact]
+        public void LHConfigVariables_WithoutInputArguments_ShouldReturnDefaultValues()
+        {
+            var args = new Dictionary<string, string>();
+
+            var inputVariables = new LHInputVariables(args);
+            
+            Assert.Equal(DefaultLHConfigVariables.LHC_API_HOST, inputVariables.LHC_API_HOST);
+            Assert.Equal(DefaultLHConfigVariables.LHC_API_PORT, inputVariables.LHC_API_PORT);
+            Assert.Equal(DefaultLHConfigVariables.LHC_API_PROTOCOL, inputVariables.LHC_API_PROTOCOL);
+            Assert.StartsWith(DefaultLHConfigVariables.LHC_CLIENT_ID, inputVariables.LHC_CLIENT_ID);
+            Assert.Equal(DefaultLHConfigVariables.LHW_NUM_WORKER_THREADS, inputVariables.LHW_NUM_WORKER_THREADS);
+            Assert.Equal(DefaultLHConfigVariables.LHW_TASK_WORKER_VERSION, inputVariables.LHW_TASK_WORKER_VERSION);
+        }
+        
+        [Fact]
+        public void LHConfigVariables_WithSomeInputArguments_ShouldReturnSetValues()
+        {
+            Dictionary<string, string> args = new Dictionary<string, string>()
+            { 
+                { "LHC_API_HOST", "localhost" },
+                { "LHC_API_PORT", "123" }
+            };
+
+            var inputVariables = new LHInputVariables(args);
+            
+            Assert.Equal(args["LHC_API_HOST"], inputVariables.LHC_API_HOST);
+            Assert.Equal(int.Parse(args["LHC_API_PORT"]!), inputVariables.LHC_API_PORT);
+            Assert.Equal(DefaultLHConfigVariables.LHC_API_PROTOCOL, inputVariables.LHC_API_PROTOCOL);
+            Assert.StartsWith(DefaultLHConfigVariables.LHC_CLIENT_ID, inputVariables.LHC_CLIENT_ID);
+            Assert.Equal(DefaultLHConfigVariables.LHW_NUM_WORKER_THREADS, inputVariables.LHW_NUM_WORKER_THREADS);
+            Assert.Equal(DefaultLHConfigVariables.LHW_TASK_WORKER_VERSION, inputVariables.LHW_TASK_WORKER_VERSION);
+        }
     }
 }

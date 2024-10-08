@@ -5,7 +5,6 @@ using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Internal;
 using LittleHorse.Sdk.Utils;
 using Microsoft.Extensions.Logging;
-using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using static LittleHorse.Common.Proto.LittleHorse;
@@ -36,6 +35,14 @@ namespace LittleHorse.Sdk {
             LHLoggerFactoryProvider.Initialize(loggerFactory);
             _logger = LHLoggerFactoryProvider.GetLogger<LHConfig>();
             _inputVariables = new LHInputVariables(configOptionsFilePath);
+            _createdChannels = new Dictionary<string, LittleHorseClient>();
+        }
+        
+        public LHConfig(Dictionary<string, string> configArgs, ILoggerFactory? loggerFactory = null)
+        {
+            LHLoggerFactoryProvider.Initialize(loggerFactory);
+            _logger = LHLoggerFactoryProvider.GetLogger<LHConfig>();
+            _inputVariables = new LHInputVariables(configArgs);
             _createdChannels = new Dictionary<string, LittleHorseClient>();
         }
 
