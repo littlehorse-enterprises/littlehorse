@@ -100,8 +100,7 @@ public class AsyncWaiters {
             group.addObserverForWorkflowEvent(req.getRequest(), observer, ctx);
 
             // Now iterate through all WorkflowEvents for that wfRun.
-            for (WorkflowEventModel candidate :
-                    ctx.getableManager().iterateOverPrefix(wfRunId.toString() + "/", WorkflowEventModel.class)) {
+            for (WorkflowEventModel candidate : ctx.getableManager().getWorkflowEvents(wfRunId)) {
                 if (group.completeWithEvent(candidate)) {
                     eventWaiters.remove(wfRunId);
                     break;
