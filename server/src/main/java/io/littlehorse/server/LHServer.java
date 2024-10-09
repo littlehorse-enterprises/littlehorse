@@ -127,7 +127,8 @@ public class LHServer {
                         listenerConfig.getServerAuthorizer(),
                         new RequestSanitizer()),
                 contextKey,
-                commandProducer);
+                commandProducer,
+                taskClaimProducer);
     }
 
     public String getInstanceName() {

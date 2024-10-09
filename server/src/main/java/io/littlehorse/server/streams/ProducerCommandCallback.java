@@ -4,12 +4,14 @@ import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
+import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.WaitForCommandRequest;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.Serdes;
@@ -17,6 +19,7 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.state.HostInfo;
 
+@Slf4j
 public class ProducerCommandCallback implements Callback {
     private final StreamObserver<WaitForCommandResponse> observer;
     private final AbstractCommand<?> command;
@@ -46,6 +49,14 @@ public class ProducerCommandCallback implements Callback {
     @Override
     public void onCompletion(RecordMetadata metadata, Exception exception) {
         completionHandlerPool.execute(() -> {
+            if (command instanceof CommandModel cmd) {
+                long commandTime = cmd.getTime().getTime();
+                long currentTime = System.currentTimeMillis();
+                long latency = currentTime - commandTime;
+                if (latency > 10) {
+                    log.debug("Latency %s ms".formatted(latency));
+                }
+            }
             try {
                 if (exception != null) {
                     observer.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));

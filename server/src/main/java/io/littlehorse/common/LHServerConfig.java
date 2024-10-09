@@ -666,8 +666,8 @@ public class LHServerConfig extends ConfigBase {
 
     public Properties getKafkaTaskClaimProducer() {
         Properties conf = getKafkaCommandProducerConfig("task-claim");
-        conf.put(ProducerConfig.ACKS_CONFIG, "1");
-        conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "false");
+        conf.put(ProducerConfig.ACKS_CONFIG, "all");
+        conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
         conf.put(ProducerConfig.LINGER_MS_CONFIG, "0");
         return conf;
     }

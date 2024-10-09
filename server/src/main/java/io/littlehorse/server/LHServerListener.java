@@ -268,6 +268,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     private final ScheduledExecutorService networkThreadpool;
     private final String listenerName;
     private final LHProducer commandProducer;
+    private final LHProducer taskClaimProducer;
 
     private Server grpcListener;
 
@@ -284,7 +285,8 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             MetadataCache metadataCache,
             List<ServerInterceptor> interceptors,
             Context.Key<RequestExecutionContext> contextKey,
-            LHProducer commandProducer) {
+            LHProducer commandProducer,
+            LHProducer taskClaimProducer) {
 
         // All dependencies are passed in as arguments; nothing is instantiated here,
         // because all listeners share the same threading infrastructure.
@@ -298,6 +300,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         this.listenerName = listenerConfig.getName();
         this.contextKey = contextKey;
         this.commandProducer = commandProducer;
+        this.taskClaimProducer = taskClaimProducer;
 
         this.grpcListener = null;
 
@@ -636,7 +639,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             }
         };
 
-        commandProducer.send(
+        taskClaimProducer.send(
                 command.getPartitionKey(),
                 command,
                 command.getTopic(serverConfig),
