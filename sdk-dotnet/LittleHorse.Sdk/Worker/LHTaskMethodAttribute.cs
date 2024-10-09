@@ -1,4 +1,4 @@
-﻿namespace LittleHorse.Worker.Attributes
+﻿namespace LittleHorse.Sdk.Worker
 {
     /// <summary>
     /// Attribute used to indicate that the annotated method should be used as the method to execute a

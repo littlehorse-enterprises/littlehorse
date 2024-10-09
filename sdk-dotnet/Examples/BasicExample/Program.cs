@@ -1,6 +1,6 @@
 ﻿using Examples.BasicExample;
 using LittleHorse.Sdk;
-using LittleHorse.Worker;
+using LittleHorse.Sdk.Worker;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,14 +17,40 @@ public class Program
             })
             .BuildServiceProvider();
     }
+
+    private static Dictionary<string, string> GetDictionaryFromMainArgs(string[] args)
+    {
+        var keyValueArgs = args.Select(item => item.Split('='))
+            .ToDictionary(item => item[0], item => item[1]);
+
+        return keyValueArgs;
+    }
+
+    private static LHConfig GetLHConfig(string[] args, ILoggerFactory loggerFactory)
+    {
+        var config = new LHConfig(loggerFactory);
+        
+        string filePath = Path.Combine(Directory.GetCurrentDirectory(), ".config/littlehorse.config");
+        if (File.Exists(filePath))
+            config = new LHConfig(filePath, loggerFactory);
+        
+        if (args.Length > 0)
+        {
+            var lhConfigs = GetDictionaryFromMainArgs(args);
+            config = new LHConfig(lhConfigs, loggerFactory);
+        }
+
+        return config;
+    }
+
     static void Main(string[] args)
     {
         SetupApplication();
         if (_serviceProvider != null)
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
-            var config = new LHConfig(loggerFactory);
-
+            var config = GetLHConfig(args, loggerFactory);
+            
             MyWorker executable = new MyWorker();
             var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet-dotnet", config);
 

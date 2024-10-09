@@ -1,10 +1,11 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
-using LittleHorse.Common.Exceptions;
 using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Exceptions;
+using LittleHorse.Sdk.Worker;
 using Newtonsoft.Json;
 
-namespace LittleHorse.Worker.Internal.Helpers
+namespace LittleHorse.Sdk.Helper
 {
     public static class LHMappingHelper
     {

@@ -1,11 +1,9 @@
 ﻿using Grpc.Core;
-using LittleHorse.Worker.Internal.Helpers;
 using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Helper;
 using Microsoft.Extensions.Logging;
-using LittleHorse.Common.Configuration.Models;
-using LittleHorse.Sdk.Internal;
 
-namespace LittleHorse.Worker.Internal
+namespace LittleHorse.Sdk.Worker.Internal
 {
     public class LHServerConnection<T> : IDisposable
     {
