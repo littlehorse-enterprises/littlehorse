@@ -32,8 +32,8 @@ public class PrometheusMetricExporter implements Closeable {
         this.config = config;
         this.prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
         this.prometheusRegistry.config().commonTags("application_id", config.getLHClusterId());
-
-        new ServerMetricFilter(prometheusRegistry, ServerFilterRules.RULES).initialize();
+        new ServerMetricFilter(prometheusRegistry, ServerFilterRules.fromLevel(config.getServerMetricLevel()))
+                .initialize();
     }
 
     public MeterRegistry getMeterRegistry() {
