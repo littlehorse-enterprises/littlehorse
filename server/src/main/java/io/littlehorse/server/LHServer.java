@@ -46,6 +46,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.common.header.Headers;
@@ -67,7 +68,10 @@ public class LHServer {
     private Context.Key<RequestExecutionContext> contextKey = Context.key("executionContextKey");
     private final MetadataCache metadataCache;
     private final CoreStoreProvider coreStoreProvider;
+
+    @Getter
     private final ScheduledExecutorService networkThreadpool;
+
     private final List<LHServerListener> listeners;
 
     private RequestExecutionContext requestContext() {
@@ -338,6 +342,6 @@ public class LHServer {
     }
 
     public void onEventThrown(WorkflowEventModel event) {
-        internalComms.onWorkflowEventThrown(event);
+        networkThreadpool.submit(() -> internalComms.onWorkflowEventThrown(event));
     }
 }
