@@ -22,6 +22,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.Callback;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.streams.processor.TaskId;
 
 // One instance of this class is responsible for coordinating the grpc backend for
@@ -63,7 +65,7 @@ public class OneTaskQueue {
      * a clean
      * shutdown (onCompleted()) or connection error (onError()).
      *
-     * @param observer is the TaskQueueStreamObserver for the client whose
+     * @param disconnectedObserver is the TaskQueueStreamObserver for the client whose
      *                 connection is now gone.
      */
     public void onRequestDisconnected(PollTaskRequestObserver disconnectedObserver) {
@@ -75,7 +77,7 @@ public class OneTaskQueue {
             hungryClients.removeIf(thing -> {
                 log.trace(
                         "Instance {}: Removing task queue observer for taskdef {} with" + " client id {}: {}",
-                        parent.getBackend().getInstanceName(),
+                        instanceName,
                         taskDefName,
                         disconnectedObserver.getClientId(),
                         disconnectedObserver);
@@ -145,7 +147,7 @@ public class OneTaskQueue {
 
         // pull this outside of protected zone for performance.
         if (luckyClient != null) {
-            parent.itsAMatch(scheduledTask, luckyClient);
+            itsAMatch(scheduledTask, luckyClient);
             return true;
         }
         return hungryClients.isEmpty();
@@ -209,8 +211,12 @@ public class OneTaskQueue {
         }
 
         if (nextTask != null) {
-            parent.itsAMatch(nextTask, requestObserver);
+            itsAMatch(nextTask, requestObserver);
         }
+    }
+
+    private void itsAMatch(ScheduledTaskModel scheduledTask, PollTaskRequestObserver luckyClient) {
+        parent.itsAMatch(scheduledTask, luckyClient);
     }
 
     public boolean hasMoreTasksOnDisk(TaskId streamsTaskId) {
@@ -246,7 +252,7 @@ public class OneTaskQueue {
                 ScheduledTaskModel scheduledTask = readOnlyGetableManager.getScheduledTask(taskRunId);
                 if (scheduledTask != null && notRehydratedYet(scheduledTask, lastRehydratedTask, scheduledTaskModel)) {
                     if (!hungryClients.isEmpty()) {
-                        parent.itsAMatch(scheduledTask, hungryClients.remove());
+                        itsAMatch(scheduledTask, hungryClients.remove());
                     } else {
                         queueOutOfCapacity = !pendingTasks.offer(new QueueItem(taskId, scheduledTask));
                         if (!queueOutOfCapacity) {
@@ -283,4 +289,21 @@ public class OneTaskQueue {
     }
 
     private record QueueItem(TaskId streamsTaskId, ScheduledTaskModel scheduledTask) {}
+
+    private final class TaskClaimCallback implements Callback {
+        private final ScheduledTaskModel scheduledTask;
+        private final PollTaskRequestObserver luckyClient;
+
+        public TaskClaimCallback(ScheduledTaskModel scheduledTask, PollTaskRequestObserver luckyClient) {
+            this.scheduledTask = scheduledTask;
+            this.luckyClient = luckyClient;
+        }
+
+        @Override
+        public void onCompletion(RecordMetadata metadata, Exception exception) {
+            if (exception == null) {
+                luckyClient.sendResponse(scheduledTask);
+            }
+        }
+    }
 }

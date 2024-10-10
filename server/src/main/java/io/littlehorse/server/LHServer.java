@@ -1,8 +1,6 @@
 package io.littlehorse.server;
 
-import com.google.protobuf.Message;
 import io.grpc.Context;
-import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.ScheduledTaskModel;
@@ -18,7 +16,6 @@ import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.auth.RequestAuthorizer;
 import io.littlehorse.server.auth.RequestSanitizer;
@@ -26,6 +23,7 @@ import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.TaskClaimEventProducerCallback;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
@@ -33,20 +31,17 @@ import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
-import io.littlehorse.server.streams.util.POSTStreamObserver;
 import io.micrometer.core.instrument.binder.grpc.MetricCollectingServerInterceptor;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
@@ -142,14 +137,8 @@ public class LHServer {
      */
     public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
         TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
-
-        processCommand(
-                claimEvent,
-                client.getResponseObserver(),
-                PollTaskResponse.class,
-                client.getPrincipalId(),
-                client.getTenantId(),
-                client.getRequestContext());
+        TaskClaimEventProducerCallback callback = new TaskClaimEventProducerCallback(scheduledTask, client);
+        processCommand(claimEvent, client.getPrincipalId(), client.getTenantId(), callback);
     }
 
     public void onResponseReceived(String commandId, WaitForCommandResponse response) {
@@ -167,28 +156,12 @@ public class LHServer {
      * Note that this is not a GRPC method that @Override's a super method and takes in
      * a protobuf + StreamObserver.
      */
-    private <RC extends Message> void processCommand(
+    private void processCommand(
             TaskClaimEvent taskClaimEvent,
-            StreamObserver<RC> responseObserver,
-            Class<RC> responseCls,
             PrincipalIdModel principalId,
             TenantIdModel tenantId,
-            RequestExecutionContext context) {
+            TaskClaimEventProducerCallback callback) {
         CommandModel command = new CommandModel(taskClaimEvent);
-        StreamObserver<WaitForCommandResponse> commandObserver = new POSTStreamObserver<>(
-                responseObserver,
-                responseCls,
-                false,
-                internalComms,
-                command,
-                context,
-                // Streams Session Timeout is how long it takes to notice that the server is down.
-                // Then we need the rebalance to occur, and the new server must process the command.
-                // So we give it a buffer of 10 additional seconds.
-                Duration.ofMillis(10_000 + config.getStreamsSessionTimeout()),
-                networkThreadpool);
-
-        Callback callback = internalComms.createProducerCommandCallback(command, commandObserver, context);
 
         command.setCommandId(LHUtil.generateGuid());
 

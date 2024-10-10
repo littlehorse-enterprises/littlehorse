@@ -47,8 +47,7 @@ public class TaskQueueManager {
     }
 
     public void itsAMatch(ScheduledTaskModel scheduledTask, PollTaskRequestObserver luckyClient) {
-        luckyClient.sendResponse(scheduledTask);
-        // backend.returnTaskToClient(scheduledTask, luckyClient);
+        backend.returnTaskToClient(scheduledTask, luckyClient);
     }
 
     private OneTaskQueue getSubQueue(TenantTaskName tenantTask) {

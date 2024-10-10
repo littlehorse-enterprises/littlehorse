@@ -1,5 +1,6 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
@@ -11,7 +12,6 @@ import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.proto.TaskClaimEventPb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -66,36 +66,35 @@ public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
     }
 
     public boolean hasResponse() {
-        // TaskClaimEvents are always due to a Task Worker's poll request.
-        return true;
+        return false;
     }
 
     @Override
-    public PollTaskResponse process(ProcessorExecutionContext executionContext, LHServerConfig config) {
+    public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         TaskRunModel taskRun = executionContext.getableManager().get(taskRunId);
         if (taskRun == null) {
             log.warn("Got claimTask for non-existent taskRun {}", taskRunId);
             throw new LHApiException(Status.INVALID_ARGUMENT, "Got claimTask for nonexistent taskRun {}" + taskRunId);
         }
-
+        executionContext.getTaskManager().markTaskAsScheduled(taskRunId);
+        taskRun.onTaskAttemptStarted(this);
+        return Empty.newBuilder().build();
         // Needs to be done before we process the event, since processing the event
         // will delete the task schedule request.
-        ScheduledTaskModel scheduledTask = executionContext.getTaskManager().markTaskAsScheduled(taskRunId);
-
-        // It's totally fine for the scheduledTask to be null. That happens when someone already
-        // claimed that task. This happens when a server is recovering from a crash. The fact that it
-        // is null prevents it from being scheduled twice.
+        //        ScheduledTaskModel scheduledTask = executionContext.getTaskManager().markTaskAsScheduled(taskRunId);
         //
-        // We shouldn't throw an error on this, we just return an empty optional.
-        if (scheduledTask == null) {
-            return PollTaskResponse.newBuilder().build();
-        } else {
-            taskRun.onTaskAttemptStarted(this);
-            executionContext.getableManager().get(taskRunId.wfRunId).advance(time);
-            return PollTaskResponse.newBuilder()
-                    .setResult(scheduledTask.toProto())
-                    .build();
-        }
+        //        // It's totally fine for the scheduledTask to be null. That happens when someone already
+        //        // claimed that task. This happens when a server is recovering from a crash. The fact that it
+        //        // is null prevents it from being scheduled twice.
+        //        //
+        //        // We shouldn't throw an error on this, we just return an empty optional.
+        //        if (scheduledTask == null) {
+        //            return Empty.newBuilder().build();
+        //        } else {
+        //            taskRun.onTaskAttemptStarted(this);
+        //            executionContext.getableManager().get(taskRunId.wfRunId).advance(time);
+        //            return Empty.newBuilder().build();
+        //        }
     }
 
     public static TaskClaimEvent fromProto(TaskClaimEventPb proto, ExecutionContext context) {

@@ -52,9 +52,6 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
         if (task == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Provided taskRunId was invalid");
         }
-        TaskRunModel taskRun = executionContext.getableManager().get(taskRunId);
-        taskRun.onTaskAttemptStarted();
-        executionContext.getTaskManager().markTaskAsScheduled(taskRunId);
 
         task.onTaskAttemptResultReported(this);
         return Empty.getDefaultInstance();
