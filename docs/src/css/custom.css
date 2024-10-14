@@ -48,7 +48,6 @@
   --ifm-color-primary-light: #ebebeb;
   --ifm-color-primary-lighter: #f6f6f6;
   --ifm-color-primary-lightest: #ffffff;
-  --ifm-background-color: #000000;
   
   --docsearch-highlight-color: #7b7bc4 !important;
 
@@ -109,6 +108,10 @@ code {
 .header-slack-link:hover::before {
   background-color: var(--ifm-navbar-link-hover-color);
 }
+.header-slack-link {
+  padding-right: 16px;
+}
+
 
 /* GitHub Navbar Icon */
 .header-github-link::before {
