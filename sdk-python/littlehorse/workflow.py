@@ -28,6 +28,7 @@ from littlehorse.model import (
     TaskDefId,
     WorkflowEventDefId,
     PutExternalEventDefRequest,
+    PutWorkflowEventDefRequest,
     PutWfSpecRequest,
     AllowedUpdateType,
     VariableValue,
