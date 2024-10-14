@@ -1,13 +1,12 @@
-﻿using Grpc.Core;
-using LittleHorse.Common.Configuration;
-using LittleHorse.Common.Exceptions;
-using LittleHorse.Worker.Internal;
-using LittleHorse.Worker.Internal.Helpers;
+﻿using System.Reflection;
+using Grpc.Core;
 using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Exceptions;
+using LittleHorse.Sdk.Helper;
+using LittleHorse.Sdk.Worker.Internal;
 using Microsoft.Extensions.Logging;
-using System.Reflection;
 
-namespace LittleHorse.Worker
+namespace LittleHorse.Sdk.Worker
 {
     /// <summary>
     /// The LHTaskWorker talks to the LH Servers and executes a specified Task Method every time a Task
@@ -18,7 +17,7 @@ namespace LittleHorse.Worker
     /// </typeparam>
     public class LHTaskWorker<T>
     {
-        private ILHWorkerConfig _config;
+        private LHConfig _config;
         private ILogger<LHTaskWorker<T>>? _logger;
         private T _executable;
         private TaskDef? _taskDef;
@@ -31,10 +30,10 @@ namespace LittleHorse.Worker
 
         public string TaskDefName { get => _taskDefName; }
 
-        public LHTaskWorker(T executable, string taskDefName, ILHWorkerConfig config, ILogger<LHTaskWorker<T>>? logger = null)
+        public LHTaskWorker(T executable, string taskDefName, LHConfig config)
         {
             _config = config;
-            _logger = logger;
+            _logger = LHLoggerFactoryProvider.GetLogger<LHTaskWorker<T>>();
             _executable = executable;
             _mappings = new List<VariableMapping>();
             _taskDefName = taskDefName;
@@ -46,7 +45,7 @@ namespace LittleHorse.Worker
         /// </summary>
         /// <exception cref="LHMisconfigurationException">
         /// if the schema from the TaskDef configured in the configProps is
-        /// incompatible with the method signature from the provided executable Java object, or if
+        /// incompatible with the method signature from the provided executable Dotnet object, or if
         /// the Worker cannot connect to the LH Server.
         /// </exception>
         public void Start()
@@ -62,7 +61,7 @@ namespace LittleHorse.Worker
             ValidateTaskMethodParameters(_taskMethod, _taskSignature);
             _mappings = CreateVariableMappings(_taskMethod, _taskSignature);
 
-            _manager = new LHServerConnectionManager<T>(_config, _taskMethod, GetTaskDef(), _mappings, _executable, _logger);
+            _manager = new LHServerConnectionManager<T>(_config, _taskMethod, GetTaskDef(), _mappings, _executable);
 
             _manager.Start();
         }

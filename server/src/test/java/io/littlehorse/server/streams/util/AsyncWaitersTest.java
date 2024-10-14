@@ -45,8 +45,7 @@ public class AsyncWaitersTest {
 
     @Test
     void shouldDeliverThrownEventToWaitingClient() {
-        when(requestContext.getableManager().iterateOverPrefix(wfRunId.toString() + "/", WorkflowEventModel.class))
-                .thenReturn(List.of(mockEvent));
+        when(requestContext.getableManager().getWorkflowEvents(wfRunId)).thenReturn(List.of(mockEvent));
         TestStreamObserver<WorkflowEvent> clientObserver1 = new TestStreamObserver<>();
         asyncWaiters.registerObserverWaitingForWorkflowEvent(mockRequest, clientObserver1, requestContext);
         asyncWaiters.registerWorkflowEventHappened(mockEvent);
@@ -56,8 +55,7 @@ public class AsyncWaitersTest {
 
     @Test
     void shouldDeliverThrownEventToANewlyRegisteredClient() {
-        when(requestContext.getableManager().iterateOverPrefix(wfRunId.toString() + "/", WorkflowEventModel.class))
-                .thenReturn(List.of(mockEvent));
+        when(requestContext.getableManager().getWorkflowEvents(wfRunId)).thenReturn(List.of(mockEvent));
         TestStreamObserver<WorkflowEvent> clientObserver1 = new TestStreamObserver<>();
 
         asyncWaiters.registerWorkflowEventHappened(mockEvent);
