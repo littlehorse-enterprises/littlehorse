@@ -1,10 +1,9 @@
-﻿using LittleHorse.Common.Exceptions;
-using LittleHorse.Worker.Internal.Helpers;
+﻿using System.Reflection;
 using LittleHorse.Common.Proto;
-using System.Reflection;
-using LittleHorse.Worker.Attributes;
+using LittleHorse.Sdk.Exceptions;
+using LittleHorse.Sdk.Helper;
 
-namespace LittleHorse.Worker.Internal
+namespace LittleHorse.Sdk.Worker
 {
     public class LHTaskSignature<T>
     {

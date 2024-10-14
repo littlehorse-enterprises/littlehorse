@@ -110,5 +110,55 @@ namespace LittleHorse.Sdk
             if (!string.IsNullOrEmpty(taskWorkerVersion))
                 LHW_TASK_WORKER_VERSION = taskWorkerVersion;
         }
+
+        internal LHInputVariables(Dictionary<string, string> configArguments)
+        {
+            var host = GetValueIfKeyIsPresent(configArguments!, "LHC_API_HOST");
+            if (!string.IsNullOrEmpty(host))
+                LHC_API_HOST = host;
+            var port = GetValueIfKeyIsPresent(configArguments!, "LHC_API_PORT");
+            if (!string.IsNullOrEmpty(port))
+                LHC_API_PORT = IntegerConverter.FromString(port);
+            var apiProtocol = GetValueIfKeyIsPresent(configArguments!,  "LHC_API_PROTOCOL");
+            if (!string.IsNullOrEmpty(apiProtocol))
+                LHC_API_PROTOCOL = apiProtocol;
+            var clientId = GetValueIfKeyIsPresent(configArguments!, "LHC_CLIENT_ID");
+            if (!string.IsNullOrEmpty(clientId))
+                LHC_CLIENT_ID = clientId;
+            var caCert = GetValueIfKeyIsPresent(configArguments!, "LHC_CA_CERT");
+            if (!string.IsNullOrEmpty(caCert))
+                LHC_CA_CERT = caCert;
+            var clientCert = GetValueIfKeyIsPresent(configArguments!, "LHC_CLIENT_CERT");
+            if (!string.IsNullOrEmpty(clientCert))
+                LHC_CLIENT_CERT = clientCert;
+            var clientKey = GetValueIfKeyIsPresent(configArguments!, "LHC_CLIENT_KEY");
+            if (!string.IsNullOrEmpty(clientKey))
+                LHC_CLIENT_KEY = clientKey;
+            var oauthClientId = GetValueIfKeyIsPresent(configArguments!, "LHC_OAUTH_CLIENT_ID");
+            if (!string.IsNullOrEmpty(oauthClientId))
+                LHC_OAUTH_CLIENT_ID = oauthClientId;
+            var oauthClientSecret = GetValueIfKeyIsPresent(configArguments!, "LHC_OAUTH_CLIENT_SECRET");
+            if (!string.IsNullOrEmpty(oauthClientSecret))
+                LHC_OAUTH_CLIENT_SECRET = oauthClientSecret;
+            var oauthAccessTokenUrl = GetValueIfKeyIsPresent(
+                configArguments!, "LHC_OAUTH_ACCESS_TOKEN_URL");
+            if (!string.IsNullOrEmpty(oauthAccessTokenUrl))
+                LHC_OAUTH_ACCESS_TOKEN_URL = oauthAccessTokenUrl;
+            var numberWorkerThreads = GetValueIfKeyIsPresent(configArguments!, "LHW_NUM_WORKER_THREADS");
+            if (!string.IsNullOrEmpty(numberWorkerThreads))
+                LHW_NUM_WORKER_THREADS = IntegerConverter.FromString(numberWorkerThreads);
+            var taskWorkerVersion = GetValueIfKeyIsPresent(configArguments!, "LHW_TASK_WORKER_VERSION");
+            if (!string.IsNullOrEmpty(taskWorkerVersion))
+                LHW_TASK_WORKER_VERSION = taskWorkerVersion;
+        }
+
+        private string GetValueIfKeyIsPresent(Dictionary<string, string?> pairInFile, string keyName)
+        {
+            var tryGetValue = pairInFile.TryGetValue(keyName, out var value);
+            if (tryGetValue)
+                return value!;
+
+            return string.Empty;
+        }
     }
 }

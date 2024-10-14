@@ -1,5 +1,4 @@
 using System.Runtime.CompilerServices;
-using LittleHorse.Sdk.Internal;
 
 [assembly: InternalsVisibleTo("LittleHorse.Sdk.Tests")]
 

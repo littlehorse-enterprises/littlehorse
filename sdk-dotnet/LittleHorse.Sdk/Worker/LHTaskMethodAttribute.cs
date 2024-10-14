@@ -1,8 +1,8 @@
-﻿namespace LittleHorse.Worker.Attributes
+﻿namespace LittleHorse.Sdk.Worker
 {
     /// <summary>
     /// Attribute used to indicate that the annotated method should be used as the method to execute a
-    /// Task in the LH Java Task Worker library.
+    /// Task in the LH Dotnet Task Worker library.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class LHTaskMethodAttribute : Attribute

@@ -1,6 +1,6 @@
 ﻿using LittleHorse.Common.Proto;
 
-namespace LittleHorse.Worker
+namespace LittleHorse.Sdk.Worker
 {
     /// <summary>
     /// This class contains runtime information about the specific WfRun and NodeRun that is being

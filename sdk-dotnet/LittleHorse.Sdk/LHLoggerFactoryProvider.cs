@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 [assembly: InternalsVisibleTo("LittleHorse.Sdk.Tests")]
 
-namespace LittleHorse.Sdk.Internal
+namespace LittleHorse.Sdk
 {
     internal static class LHLoggerFactoryProvider
     {
