@@ -14,8 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include=".config\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="..\..\LittleHorse.Sdk\LittleHorse.Sdk.csproj" />
   </ItemGroup>
 </Project>
