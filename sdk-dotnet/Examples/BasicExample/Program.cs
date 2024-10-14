@@ -29,8 +29,9 @@ public class Program
     private static LHConfig GetLHConfig(string[] args, ILoggerFactory loggerFactory)
     {
         var config = new LHConfig(loggerFactory);
+        var userProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        string filePath = Path.Combine(userProfilePath, ".config/littlehorse.config");
         
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), ".config/littlehorse.config");
         if (File.Exists(filePath))
             config = new LHConfig(filePath, loggerFactory);
         
