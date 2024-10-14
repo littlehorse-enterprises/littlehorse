@@ -21,7 +21,6 @@ import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.Date;
