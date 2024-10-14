@@ -16,6 +16,8 @@
   --white-filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(336deg) brightness(110%) contrast(101%);
   --brown-filter: invert(24%) sepia(12%) saturate(1484%) hue-rotate(334deg) brightness(100%) contrast(87%);
   --black-filter:  brightness(0%);
+
+  --docusaurus-highlighted-code-line-bg: rgb(219, 219, 219);
 }
 
 [data-theme='light'] {
@@ -50,6 +52,8 @@
   --ifm-color-primary-lightest: #ffffff;
   
   --docsearch-highlight-color: #7b7bc4 !important;
+
+  --docusaurus-highlighted-code-line-bg: rgb(73, 73, 73);
 
   code {
     border-color: rgba(255, 255, 255, 0.1);

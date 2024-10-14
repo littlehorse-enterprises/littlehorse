@@ -234,6 +234,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 |  [AwaitWorkflowEventRequest](#awaitworkfloweventrequest)  |  [WorkflowEvent](#workflowevent)  | Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent is not thrown before the deadline specified by the client.<br/><br/>To specify the deadline, the client should use GRPC deadlines. |
 
+### RPC `GetWorkflowEventDef` {#getworkfloweventdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [WorkflowEventDefId](#workfloweventdefid)  |  [WorkflowEventDef](#workfloweventdef)  | Get a specific WorkflowEventDef. |
+
 ### RPC `GetWorkflowEvent` {#getworkflowevent}
 
 | Request Type | Response Type | Description |
@@ -282,6 +288,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 |  [SearchExternalEventRequest](#searchexternaleventrequest)  |  [ExternalEventIdList](#externaleventidlist)  | Search for ExternalEvent's. |
 
+### RPC `SearchWorkflowEvent` {#searchworkflowevent}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [SearchWorkflowEventRequest](#searchworkfloweventrequest)  |  [WorkflowEventIdList](#workfloweventidlist)  | Search for WorkflowEvents's. |
+
 ### RPC `SearchTaskDef` {#searchtaskdef}
 
 | Request Type | Response Type | Description |
@@ -305,6 +317,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
 |  [SearchExternalEventDefRequest](#searchexternaleventdefrequest)  |  [ExternalEventDefIdList](#externaleventdefidlist)  | Search for ExternalEventDef's. |
+
+### RPC `SearchWorkflowEventDef` {#searchworkfloweventdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [SearchWorkflowEventDefRequest](#searchworkfloweventdefrequest)  |  [WorkflowEventDefIdList](#workfloweventdefidlist)  | Search for WorkflowEventDef's. |
 
 ### RPC `SearchTenant` {#searchtenant}
 
@@ -383,6 +401,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
 |  [DeleteExternalEventDefRequest](#deleteexternaleventdefrequest)  |  .google.protobuf.Empty  | Deletes an ExternalEventDef. |
+
+### RPC `DeleteWorkflowEventDef` {#deleteworkfloweventdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [DeleteWorkflowEventDefRequest](#deleteworkfloweventdefrequest)  |  .google.protobuf.Empty  |  |
 
 ### RPC `DeletePrincipal` {#deleteprincipal}
 
@@ -1479,6 +1503,19 @@ Deletes a WfSpec
 
 
 
+### Message `DeleteWorkflowEventDefRequest` {#deleteworkfloweventdefrequest}
+
+Deletes an WorkflowEventDef
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `id` | | [WorkflowEventDefId](#workfloweventdefid) | The ID of the WorkflowEventDef to delete. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `ExternalEventDefIdList` {#externaleventdefidlist}
 
 List of ExternalEventDef Id's.
@@ -2302,6 +2339,41 @@ Search for WfSpec's.
 
 
 
+### Message `SearchWorkflowEventDefRequest` {#searchworkfloweventdefrequest}
+
+Search for WorkflowEventDefs based on certain criteria.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `bookmark` | optional| bytes | Bookmark for cursor-based pagination; pass if applicable. |
+| `limit` | optional| int32 | Maximum results to return in one request. |
+| `prefix` | optional| string | Optionally search only for WorkflowEventDef's whose name starts with this prefix. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchWorkflowEventRequest` {#searchworkfloweventrequest}
+
+Search for WorkflowEvents based on certain criteria.
+
+Required field WorkflowEventDefId specifies which WorkflowEventDef
+to search for WorkflowEvents under.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `bookmark` | optional| bytes | Bookmark for cursor-based pagination; pass if applicable. |
+| `limit` | optional| int32 | Maximum results to return in one request. |
+| `earliest_start` | optional| google.protobuf.Timestamp | Specifies to return only WorkflowEvent created after this time |
+| `latest_start` | optional| google.protobuf.Timestamp | Specifies to return only WorkflowEvent created before this time |
+| `workflow_event_def_id` | | [WorkflowEventDefId](#workfloweventdefid) | Search for WorkflowEvents by their WorkflowEventDefId<br/><br/>* Note: If WorkflowEventDefId is not provided or does not exist,         gRPC status code 'INVALID_ARGUMENT' will be returned. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `ServerVersionResponse` {#serverversionresponse}
 
 The version of the LH Server according to Semantic Versioning
@@ -2628,6 +2700,34 @@ Query to retrieve a specific WfSpec Metrics Window.
 | `wf_spec_id` | | [WfSpecId](#wfspecid) | WfSpecId of metrics to get. |
 | `window_start` | | google.protobuf.Timestamp | Return the window *containing* this timestamp. The window start is not guaranteed to align perfectly with the request. |
 | `window_length` | | [MetricsWindowLength](#metricswindowlength) | The window size |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WorkflowEventDefIdList` {#workfloweventdefidlist}
+
+List of WorkflowEventDef Id's.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `results` | repeated| [WorkflowEventDefId](#workfloweventdefid) | The resulting object id's. |
+| `bookmark` | optional| bytes | The bookmark can be used for cursor-based pagination. If it is null, the server has returned all results. If it is set, you can pass it into your next request to resume searching where your previous request left off. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WorkflowEventIdList` {#workfloweventidlist}
+
+List of WorkflowEvent Id's
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `results` | repeated| [WorkflowEventId](#workfloweventid) | The resulting object id's. |
+| `bookmark` | optional| bytes | The bookmark can be used for cursor-based pagination. If it is null, the server has returned all results. If it is set, you can pass it into your next request to resume searching where your previous request left off. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3868,14 +3968,14 @@ world.
 
 ### Message `WorkflowEventDef` {#workfloweventdef}
 
-
+The WorkflowEventDef defines the blueprint for a WorkflowEvent.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `id` | | [WorkflowEventDefId](#workfloweventdefid) |  |
-| `created_at` | | google.protobuf.Timestamp |  |
-| `type` | | [VariableType](#variabletype) |  |
+| `id` | | [WorkflowEventDefId](#workfloweventdefid) | The ID of the WorkflowEventDef. Contains the name of the WorkflowEventDef. |
+| `created_at` | | google.protobuf.Timestamp | The time that the WorkflowEventDef was created at. |
+| `type` | | [VariableType](#variabletype) | The type of the content of a WorkflowEvent based on this WorkflowEventDef. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
