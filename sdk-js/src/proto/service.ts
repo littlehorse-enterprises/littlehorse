@@ -181,9 +181,11 @@ export interface PutTaskDefRequest {
   outputSchema?: TaskDefOutputSchema | undefined;
 }
 
-/** EXPERIMENTAL: Creates a WorkflowEventDef */
+/** Creates a WorkflowEventDef */
 export interface PutWorkflowEventDefRequest {
+  /** The name of the resulting WorkflowEventDef. */
   name: string;
+  /** The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef. */
   type: VariableType;
 }
 
@@ -1080,6 +1082,21 @@ export interface ListExternalEventsRequest {
 export interface ExternalEventList {
   /** A list of ExternalEvent objects. */
   results: ExternalEvent[];
+}
+
+/**
+ * List all WorkflowEvents for a specific WfRunId. Note that List Requests return actual
+ * WorkflowEvent objects, not WorkflowEventId's.
+ */
+export interface ListWorkflowEventsRequest {
+  /** The WfRunId for whom we list WorkflowEvent's. */
+  wfRunId: WfRunId | undefined;
+}
+
+/** A list of WorkflowEvents. */
+export interface WorkflowEventList {
+  /** A list of WorkflowEvent objects. */
+  results: WorkflowEvent[];
 }
 
 /**
@@ -5408,6 +5425,98 @@ export const ExternalEventList = {
   },
 };
 
+function createBaseListWorkflowEventsRequest(): ListWorkflowEventsRequest {
+  return { wfRunId: undefined };
+}
+
+export const ListWorkflowEventsRequest = {
+  encode(message: ListWorkflowEventsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ListWorkflowEventsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListWorkflowEventsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ListWorkflowEventsRequest>): ListWorkflowEventsRequest {
+    return ListWorkflowEventsRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ListWorkflowEventsRequest>): ListWorkflowEventsRequest {
+    const message = createBaseListWorkflowEventsRequest();
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseWorkflowEventList(): WorkflowEventList {
+  return { results: [] };
+}
+
+export const WorkflowEventList = {
+  encode(message: WorkflowEventList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.results) {
+      WorkflowEvent.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WorkflowEventList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWorkflowEventList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.results.push(WorkflowEvent.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<WorkflowEventList>): WorkflowEventList {
+    return WorkflowEventList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<WorkflowEventList>): WorkflowEventList {
+    const message = createBaseWorkflowEventList();
+    message.results = object.results?.map((e) => WorkflowEvent.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 function createBaseRegisterTaskWorkerRequest(): RegisterTaskWorkerRequest {
   return { taskWorkerId: "", taskDefId: undefined };
 }
@@ -7643,7 +7752,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** EXPERIMENTAL: Creates a WorkflowEventDef. */
+    /** Creates a WorkflowEventDef. */
     putWorkflowEventDef: {
       name: "PutWorkflowEventDef",
       requestType: PutWorkflowEventDefRequest,
@@ -7971,6 +8080,15 @@ export const LittleHorseDefinition = {
       requestType: ListExternalEventsRequest,
       requestStream: false,
       responseType: ExternalEventList,
+      responseStream: false,
+      options: {},
+    },
+    /** List WorkflowEvent's for a specific WfRun. */
+    listWorkflowEvents: {
+      name: "ListWorkflowEvents",
+      requestType: ListWorkflowEventsRequest,
+      requestStream: false,
+      responseType: WorkflowEventList,
       responseStream: false,
       options: {},
     },
@@ -8367,7 +8485,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ExternalEventDefId,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ExternalEventDef>>;
-  /** EXPERIMENTAL: Creates a WorkflowEventDef. */
+  /** Creates a WorkflowEventDef. */
   putWorkflowEventDef(
     request: PutWorkflowEventDefRequest,
     context: CallContext & CallContextExt,
@@ -8532,6 +8650,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ListExternalEventsRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ExternalEventList>>;
+  /** List WorkflowEvent's for a specific WfRun. */
+  listWorkflowEvents(
+    request: ListWorkflowEventsRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<WorkflowEventList>>;
   /**
    * Search for WfRun's. This RPC is highly useful for applications that store data
    * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
@@ -8728,7 +8851,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ExternalEventDefId>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ExternalEventDef>;
-  /** EXPERIMENTAL: Creates a WorkflowEventDef. */
+  /** Creates a WorkflowEventDef. */
   putWorkflowEventDef(
     request: DeepPartial<PutWorkflowEventDefRequest>,
     options?: CallOptions & CallOptionsExt,
@@ -8896,6 +9019,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ListExternalEventsRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ExternalEventList>;
+  /** List WorkflowEvent's for a specific WfRun. */
+  listWorkflowEvents(
+    request: DeepPartial<ListWorkflowEventsRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<WorkflowEventList>;
   /**
    * Search for WfRun's. This RPC is highly useful for applications that store data
    * in LittleHorse and need to find a specific WfRun based on certain indexed fields.

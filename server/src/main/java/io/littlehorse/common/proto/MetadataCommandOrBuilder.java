@@ -231,5 +231,20 @@ public interface MetadataCommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequestOrBuilder getWorkflowEventDefOrBuilder();
 
+  /**
+   * <code>.littlehorse.DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;</code>
+   * @return Whether the deleteWorkflowEventDef field is set.
+   */
+  boolean hasDeleteWorkflowEventDef();
+  /**
+   * <code>.littlehorse.DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;</code>
+   * @return The deleteWorkflowEventDef.
+   */
+  io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest getDeleteWorkflowEventDef();
+  /**
+   * <code>.littlehorse.DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;</code>
+   */
+  io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequestOrBuilder getDeleteWorkflowEventDefOrBuilder();
+
   io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
 }

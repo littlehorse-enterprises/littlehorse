@@ -56,6 +56,7 @@ const (
 	LittleHorse_GetWorkflowEventDef_FullMethodName     = "/littlehorse.LittleHorse/GetWorkflowEventDef"
 	LittleHorse_GetWorkflowEvent_FullMethodName        = "/littlehorse.LittleHorse/GetWorkflowEvent"
 	LittleHorse_ListExternalEvents_FullMethodName      = "/littlehorse.LittleHorse/ListExternalEvents"
+	LittleHorse_ListWorkflowEvents_FullMethodName      = "/littlehorse.LittleHorse/ListWorkflowEvents"
 	LittleHorse_SearchWfRun_FullMethodName             = "/littlehorse.LittleHorse/SearchWfRun"
 	LittleHorse_SearchNodeRun_FullMethodName           = "/littlehorse.LittleHorse/SearchNodeRun"
 	LittleHorse_SearchTaskRun_FullMethodName           = "/littlehorse.LittleHorse/SearchTaskRun"
@@ -109,7 +110,7 @@ type LittleHorseClient interface {
 	PutExternalEventDef(ctx context.Context, in *PutExternalEventDefRequest, opts ...grpc.CallOption) (*ExternalEventDef, error)
 	// Gets an ExternalEventDef.
 	GetExternalEventDef(ctx context.Context, in *ExternalEventDefId, opts ...grpc.CallOption) (*ExternalEventDef, error)
-	// EXPERIMENTAL: Creates a WorkflowEventDef.
+	// Creates a WorkflowEventDef.
 	PutWorkflowEventDef(ctx context.Context, in *PutWorkflowEventDefRequest, opts ...grpc.CallOption) (*WorkflowEventDef, error)
 	// Creates a WfSpec.
 	PutWfSpec(ctx context.Context, in *PutWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
@@ -204,6 +205,8 @@ type LittleHorseClient interface {
 	GetWorkflowEvent(ctx context.Context, in *WorkflowEventId, opts ...grpc.CallOption) (*WorkflowEvent, error)
 	// List ExternalEvent's for a specific WfRun.
 	ListExternalEvents(ctx context.Context, in *ListExternalEventsRequest, opts ...grpc.CallOption) (*ExternalEventList, error)
+	// List WorkflowEvent's for a specific WfRun.
+	ListWorkflowEvents(ctx context.Context, in *ListWorkflowEventsRequest, opts ...grpc.CallOption) (*WorkflowEventList, error)
 	// Search for WfRun's. This RPC is highly useful for applications that store data
 	// in LittleHorse and need to find a specific WfRun based on certain indexed fields.
 	SearchWfRun(ctx context.Context, in *SearchWfRunRequest, opts ...grpc.CallOption) (*WfRunIdList, error)
@@ -634,6 +637,15 @@ func (c *littleHorseClient) ListExternalEvents(ctx context.Context, in *ListExte
 	return out, nil
 }
 
+func (c *littleHorseClient) ListWorkflowEvents(ctx context.Context, in *ListWorkflowEventsRequest, opts ...grpc.CallOption) (*WorkflowEventList, error) {
+	out := new(WorkflowEventList)
+	err := c.cc.Invoke(ctx, LittleHorse_ListWorkflowEvents_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) SearchWfRun(ctx context.Context, in *SearchWfRunRequest, opts ...grpc.CallOption) (*WfRunIdList, error) {
 	out := new(WfRunIdList)
 	err := c.cc.Invoke(ctx, LittleHorse_SearchWfRun_FullMethodName, in, out, opts...)
@@ -1003,7 +1015,7 @@ type LittleHorseServer interface {
 	PutExternalEventDef(context.Context, *PutExternalEventDefRequest) (*ExternalEventDef, error)
 	// Gets an ExternalEventDef.
 	GetExternalEventDef(context.Context, *ExternalEventDefId) (*ExternalEventDef, error)
-	// EXPERIMENTAL: Creates a WorkflowEventDef.
+	// Creates a WorkflowEventDef.
 	PutWorkflowEventDef(context.Context, *PutWorkflowEventDefRequest) (*WorkflowEventDef, error)
 	// Creates a WfSpec.
 	PutWfSpec(context.Context, *PutWfSpecRequest) (*WfSpec, error)
@@ -1098,6 +1110,8 @@ type LittleHorseServer interface {
 	GetWorkflowEvent(context.Context, *WorkflowEventId) (*WorkflowEvent, error)
 	// List ExternalEvent's for a specific WfRun.
 	ListExternalEvents(context.Context, *ListExternalEventsRequest) (*ExternalEventList, error)
+	// List WorkflowEvent's for a specific WfRun.
+	ListWorkflowEvents(context.Context, *ListWorkflowEventsRequest) (*WorkflowEventList, error)
 	// Search for WfRun's. This RPC is highly useful for applications that store data
 	// in LittleHorse and need to find a specific WfRun based on certain indexed fields.
 	SearchWfRun(context.Context, *SearchWfRunRequest) (*WfRunIdList, error)
@@ -1308,6 +1322,9 @@ func (UnimplementedLittleHorseServer) GetWorkflowEvent(context.Context, *Workflo
 }
 func (UnimplementedLittleHorseServer) ListExternalEvents(context.Context, *ListExternalEventsRequest) (*ExternalEventList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListExternalEvents not implemented")
+}
+func (UnimplementedLittleHorseServer) ListWorkflowEvents(context.Context, *ListWorkflowEventsRequest) (*WorkflowEventList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListWorkflowEvents not implemented")
 }
 func (UnimplementedLittleHorseServer) SearchWfRun(context.Context, *SearchWfRunRequest) (*WfRunIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchWfRun not implemented")
@@ -2077,6 +2094,24 @@ func _LittleHorse_ListExternalEvents_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).ListExternalEvents(ctx, req.(*ListExternalEventsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_ListWorkflowEvents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListWorkflowEventsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).ListWorkflowEvents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_ListWorkflowEvents_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).ListWorkflowEvents(ctx, req.(*ListWorkflowEventsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2905,6 +2940,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListExternalEvents",
 			Handler:    _LittleHorse_ListExternalEvents_Handler,
+		},
+		{
+			MethodName: "ListWorkflowEvents",
+			Handler:    _LittleHorse_ListWorkflowEvents_Handler,
 		},
 		{
 			MethodName: "SearchWfRun",

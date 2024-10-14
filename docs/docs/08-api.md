@@ -70,7 +70,7 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-|  [PutWorkflowEventDefRequest](#putworkfloweventdefrequest)  |  [WorkflowEventDef](#workfloweventdef)  | EXPERIMENTAL: Creates a WorkflowEventDef. |
+|  [PutWorkflowEventDefRequest](#putworkfloweventdefrequest)  |  [WorkflowEventDef](#workfloweventdef)  | Creates a WorkflowEventDef. |
 
 ### RPC `PutWfSpec` {#putwfspec}
 
@@ -251,6 +251,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
 |  [ListExternalEventsRequest](#listexternaleventsrequest)  |  [ExternalEventList](#externaleventlist)  | List ExternalEvent's for a specific WfRun. |
+
+### RPC `ListWorkflowEvents` {#listworkflowevents}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [ListWorkflowEventsRequest](#listworkfloweventsrequest)  |  [WorkflowEventList](#workfloweventlist)  | List WorkflowEvent's for a specific WfRun. |
 
 ### RPC `SearchWfRun` {#searchwfrun}
 
@@ -1727,6 +1733,20 @@ A list of WfSpec Metrics Windows
 
 
 
+### Message `ListWorkflowEventsRequest` {#listworkfloweventsrequest}
+
+List all WorkflowEvents for a specific WfRunId. Note that List Requests return actual
+WorkflowEvent objects, not WorkflowEventId's.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `wf_run_id` | | [WfRunId](#wfrunid) | The WfRunId for whom we list WorkflowEvent's. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `MigrateWfSpecRequest` {#migratewfspecrequest}
 
 EXPERIMENTAL: migrate live WfRun's from one version of a WfSpec to another.
@@ -1909,13 +1929,13 @@ our various SDK's.
 
 ### Message `PutWorkflowEventDefRequest` {#putworkfloweventdefrequest}
 
-EXPERIMENTAL: Creates a WorkflowEventDef
+Creates a WorkflowEventDef
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `name` | | string |  |
-| `type` | | [VariableType](#variabletype) |  |
+| `name` | | string | The name of the resulting WorkflowEventDef. |
+| `type` | | [VariableType](#variabletype) | The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2728,6 +2748,19 @@ List of WorkflowEvent Id's
 | ----- | ----  | ---- | ----------- |
 | `results` | repeated| [WorkflowEventId](#workfloweventid) | The resulting object id's. |
 | `bookmark` | optional| bytes | The bookmark can be used for cursor-based pagination. If it is null, the server has returned all results. If it is set, you can pass it into your next request to resume searching where your previous request left off. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WorkflowEventList` {#workfloweventlist}
+
+A list of WorkflowEvents.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `results` | repeated| [WorkflowEvent](#workflowevent) | A list of WorkflowEvent objects. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3975,7 +4008,7 @@ The WorkflowEventDef defines the blueprint for a WorkflowEvent.
 | ----- | ----  | ---- | ----------- |
 | `id` | | [WorkflowEventDefId](#workfloweventdefid) | The ID of the WorkflowEventDef. Contains the name of the WorkflowEventDef. |
 | `created_at` | | google.protobuf.Timestamp | The time that the WorkflowEventDef was created at. |
-| `type` | | [VariableType](#variabletype) | The type of the content of a WorkflowEvent based on this WorkflowEventDef. |
+| `type` | | [VariableType](#variabletype) | The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef. |
  <!-- end Fields -->
  <!-- end HasFields -->
 

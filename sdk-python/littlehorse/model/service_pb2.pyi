@@ -604,6 +604,18 @@ class ExternalEventList(_message.Message):
     results: _containers.RepeatedCompositeFieldContainer[_external_event_pb2.ExternalEvent]
     def __init__(self, results: _Optional[_Iterable[_Union[_external_event_pb2.ExternalEvent, _Mapping]]] = ...) -> None: ...
 
+class ListWorkflowEventsRequest(_message.Message):
+    __slots__ = ["wf_run_id"]
+    WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    wf_run_id: _object_id_pb2.WfRunId
+    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
+
+class WorkflowEventList(_message.Message):
+    __slots__ = ["results"]
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_workflow_event_pb2.WorkflowEvent]
+    def __init__(self, results: _Optional[_Iterable[_Union[_workflow_event_pb2.WorkflowEvent, _Mapping]]] = ...) -> None: ...
+
 class RegisterTaskWorkerRequest(_message.Message):
     __slots__ = ["task_worker_id", "task_def_id"]
     TASK_WORKER_ID_FIELD_NUMBER: _ClassVar[int]

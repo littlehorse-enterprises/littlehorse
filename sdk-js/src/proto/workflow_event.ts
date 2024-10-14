@@ -42,7 +42,7 @@ export interface WorkflowEventDef {
   createdAt:
     | string
     | undefined;
-  /** The type of the content of a WorkflowEvent based on this WorkflowEventDef. */
+  /** The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef. */
   type: VariableType;
 }
 

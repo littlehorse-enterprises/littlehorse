@@ -63,7 +63,7 @@ public interface WorkflowEventDefOrBuilder extends
 
   /**
    * <pre>
-   * The type of the content of a WorkflowEvent based on this WorkflowEventDef.
+   * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
    * </pre>
    *
    * <code>.littlehorse.VariableType type = 3;</code>
@@ -72,7 +72,7 @@ public interface WorkflowEventDefOrBuilder extends
   int getTypeValue();
   /**
    * <pre>
-   * The type of the content of a WorkflowEvent based on this WorkflowEventDef.
+   * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
    * </pre>
    *
    * <code>.littlehorse.VariableType type = 3;</code>

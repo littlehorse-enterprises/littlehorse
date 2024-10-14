@@ -123,7 +123,7 @@ private static final long serialVersionUID = 0L;
   private int type_ = 0;
   /**
    * <pre>
-   * The type of the content of a WorkflowEvent based on this WorkflowEventDef.
+   * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
    * </pre>
    *
    * <code>.littlehorse.VariableType type = 3;</code>
@@ -134,7 +134,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The type of the content of a WorkflowEvent based on this WorkflowEventDef.
+   * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
    * </pre>
    *
    * <code>.littlehorse.VariableType type = 3;</code>
@@ -858,7 +858,7 @@ private static final long serialVersionUID = 0L;
     private int type_ = 0;
     /**
      * <pre>
-     * The type of the content of a WorkflowEvent based on this WorkflowEventDef.
+     * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
      * </pre>
      *
      * <code>.littlehorse.VariableType type = 3;</code>
@@ -869,7 +869,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The type of the content of a WorkflowEvent based on this WorkflowEventDef.
+     * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
      * </pre>
      *
      * <code>.littlehorse.VariableType type = 3;</code>
@@ -884,7 +884,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The type of the content of a WorkflowEvent based on this WorkflowEventDef.
+     * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
      * </pre>
      *
      * <code>.littlehorse.VariableType type = 3;</code>
@@ -897,7 +897,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The type of the content of a WorkflowEvent based on this WorkflowEventDef.
+     * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
      * </pre>
      *
      * <code>.littlehorse.VariableType type = 3;</code>
@@ -915,7 +915,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The type of the content of a WorkflowEvent based on this WorkflowEventDef.
+     * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
      * </pre>
      *
      * <code>.littlehorse.VariableType type = 3;</code>

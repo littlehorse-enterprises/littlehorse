@@ -40,7 +40,7 @@ service LittleHorse {
   // Gets an ExternalEventDef.
   rpc GetExternalEventDef(ExternalEventDefId) returns (ExternalEventDef) {}
 
-  // EXPERIMENTAL: Creates a WorkflowEventDef.
+  // Creates a WorkflowEventDef.
   rpc PutWorkflowEventDef(PutWorkflowEventDefRequest) returns (WorkflowEventDef) {}
 
   // Creates a WfSpec.
@@ -167,6 +167,9 @@ service LittleHorse {
 
   // List ExternalEvent's for a specific WfRun.
   rpc ListExternalEvents(ListExternalEventsRequest) returns (ExternalEventList) {}
+
+  // List WorkflowEvent's for a specific WfRun.
+  rpc ListWorkflowEvents(ListWorkflowEventsRequest) returns (WorkflowEventList) {}
 
   // Search for WfRun's. This RPC is highly useful for applications that store data
   // in LittleHorse and need to find a specific WfRun based on certain indexed fields.
@@ -349,9 +352,12 @@ message PutTaskDefRequest {
   optional TaskDefOutputSchema output_schema = 3;
 }
 
-// EXPERIMENTAL: Creates a WorkflowEventDef
+// Creates a WorkflowEventDef
 message PutWorkflowEventDefRequest {
+  // The name of the resulting WorkflowEventDef.
   string name = 1;
+
+  // The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
   VariableType type = 2;
 }
 
@@ -1044,6 +1050,19 @@ message ListExternalEventsRequest {
 message ExternalEventList {
   // A list of ExternalEvent objects.
   repeated ExternalEvent results = 1;
+}
+
+// List all WorkflowEvents for a specific WfRunId. Note that List Requests return actual
+// WorkflowEvent objects, not WorkflowEventId's.
+message ListWorkflowEventsRequest {
+  // The WfRunId for whom we list WorkflowEvent's.
+  WfRunId wf_run_id = 1;
+}
+
+// A list of WorkflowEvents.
+message WorkflowEventList {
+  // A list of WorkflowEvent objects.
+  repeated WorkflowEvent results = 1;
 }
 
 // Message used by Task Worker to register itself to the server and ask for assignments of

@@ -9,6 +9,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalReq
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWorkflowEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
@@ -20,6 +21,7 @@ import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.Date;
@@ -42,6 +44,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private DeleteWfSpecRequestModel deleteWfSpec;
     private DeleteTaskDefRequestModel deleteTaskDef;
     private DeleteExternalEventDefRequestModel deleteExternalEventDef;
+    private DeleteWorkflowEventDefRequestModel deleteWorkflowEventDefRequest;
     private PutUserTaskDefRequestModel putUserTaskDefRequest;
     private DeleteUserTaskDefRequestModel deleteUserTaskDef;
     private PutPrincipalRequestModel putPrincipal;
@@ -86,6 +89,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 break;
             case DELETE_EXTERNAL_EVENT_DEF:
                 out.setDeleteExternalEventDef(deleteExternalEventDef.toProto());
+                break;
+            case DELETE_WORKFLOW_EVENT_DEF:
+                out.setDeleteWorkflowEventDef(deleteWorkflowEventDefRequest.toProto());
                 break;
             case DELETE_TASK_DEF:
                 out.setDeleteTaskDef(deleteTaskDef.toProto());
@@ -142,6 +148,10 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 deleteExternalEventDef =
                         DeleteExternalEventDefRequestModel.fromProto(p.getDeleteExternalEventDef(), context);
                 break;
+            case DELETE_WORKFLOW_EVENT_DEF:
+                deleteWorkflowEventDefRequest =
+                        DeleteWorkflowEventDefRequestModel.fromProto(p.getDeleteWorkflowEventDef(), context);
+                break;
             case DELETE_TASK_DEF:
                 deleteTaskDef = DeleteTaskDefRequestModel.fromProto(p.getDeleteTaskDef(), context);
                 break;
@@ -186,6 +196,8 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 return putExternalEventDefRequest;
             case DELETE_EXTERNAL_EVENT_DEF:
                 return deleteExternalEventDef;
+            case DELETE_WORKFLOW_EVENT_DEF:
+                return deleteWorkflowEventDefRequest;
             case DELETE_TASK_DEF:
                 return deleteTaskDef;
             case DELETE_WF_SPEC:
@@ -224,6 +236,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         } else if (cls.equals(DeleteExternalEventDefRequestModel.class)) {
             type = MetadataCommandCase.DELETE_EXTERNAL_EVENT_DEF;
             deleteExternalEventDef = (DeleteExternalEventDefRequestModel) cmd;
+        } else if (cls.equals(DeleteWorkflowEventDefRequestModel.class)) {
+            type = MetadataCommandCase.DELETE_WORKFLOW_EVENT_DEF;
+            deleteWorkflowEventDefRequest = (DeleteWorkflowEventDefRequestModel) cmd;
         } else if (cls.equals(DeleteTaskDefRequestModel.class)) {
             type = MetadataCommandCase.DELETE_TASK_DEF;
             deleteTaskDef = (DeleteTaskDefRequestModel) cmd;

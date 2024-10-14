@@ -103,7 +103,7 @@ type WorkflowEventDef struct {
 	Id *WorkflowEventDefId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// The time that the WorkflowEventDef was created at.
 	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	// The type of the content of a WorkflowEvent based on this WorkflowEventDef.
+	// The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
 	Type VariableType `protobuf:"varint,3,opt,name=type,proto3,enum=littlehorse.VariableType" json:"type,omitempty"`
 }
 
