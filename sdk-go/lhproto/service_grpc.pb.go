@@ -53,6 +53,7 @@ const (
 	LittleHorse_PutExternalEvent_FullMethodName        = "/littlehorse.LittleHorse/PutExternalEvent"
 	LittleHorse_GetExternalEvent_FullMethodName        = "/littlehorse.LittleHorse/GetExternalEvent"
 	LittleHorse_AwaitWorkflowEvent_FullMethodName      = "/littlehorse.LittleHorse/AwaitWorkflowEvent"
+	LittleHorse_GetWorkflowEventDef_FullMethodName     = "/littlehorse.LittleHorse/GetWorkflowEventDef"
 	LittleHorse_GetWorkflowEvent_FullMethodName        = "/littlehorse.LittleHorse/GetWorkflowEvent"
 	LittleHorse_ListExternalEvents_FullMethodName      = "/littlehorse.LittleHorse/ListExternalEvents"
 	LittleHorse_SearchWfRun_FullMethodName             = "/littlehorse.LittleHorse/SearchWfRun"
@@ -61,10 +62,12 @@ const (
 	LittleHorse_SearchUserTaskRun_FullMethodName       = "/littlehorse.LittleHorse/SearchUserTaskRun"
 	LittleHorse_SearchVariable_FullMethodName          = "/littlehorse.LittleHorse/SearchVariable"
 	LittleHorse_SearchExternalEvent_FullMethodName     = "/littlehorse.LittleHorse/SearchExternalEvent"
+	LittleHorse_SearchWorkflowEvent_FullMethodName     = "/littlehorse.LittleHorse/SearchWorkflowEvent"
 	LittleHorse_SearchTaskDef_FullMethodName           = "/littlehorse.LittleHorse/SearchTaskDef"
 	LittleHorse_SearchUserTaskDef_FullMethodName       = "/littlehorse.LittleHorse/SearchUserTaskDef"
 	LittleHorse_SearchWfSpec_FullMethodName            = "/littlehorse.LittleHorse/SearchWfSpec"
 	LittleHorse_SearchExternalEventDef_FullMethodName  = "/littlehorse.LittleHorse/SearchExternalEventDef"
+	LittleHorse_SearchWorkflowEventDef_FullMethodName  = "/littlehorse.LittleHorse/SearchWorkflowEventDef"
 	LittleHorse_SearchTenant_FullMethodName            = "/littlehorse.LittleHorse/SearchTenant"
 	LittleHorse_SearchPrincipal_FullMethodName         = "/littlehorse.LittleHorse/SearchPrincipal"
 	LittleHorse_RegisterTaskWorker_FullMethodName      = "/littlehorse.LittleHorse/RegisterTaskWorker"
@@ -78,6 +81,7 @@ const (
 	LittleHorse_DeleteWfSpec_FullMethodName            = "/littlehorse.LittleHorse/DeleteWfSpec"
 	LittleHorse_DeleteUserTaskDef_FullMethodName       = "/littlehorse.LittleHorse/DeleteUserTaskDef"
 	LittleHorse_DeleteExternalEventDef_FullMethodName  = "/littlehorse.LittleHorse/DeleteExternalEventDef"
+	LittleHorse_DeleteWorkflowEventDef_FullMethodName  = "/littlehorse.LittleHorse/DeleteWorkflowEventDef"
 	LittleHorse_DeletePrincipal_FullMethodName         = "/littlehorse.LittleHorse/DeletePrincipal"
 	LittleHorse_DeleteScheduledWfRun_FullMethodName    = "/littlehorse.LittleHorse/DeleteScheduledWfRun"
 	LittleHorse_GetTaskDefMetricsWindow_FullMethodName = "/littlehorse.LittleHorse/GetTaskDefMetricsWindow"
@@ -194,6 +198,8 @@ type LittleHorseClient interface {
 	//
 	// To specify the deadline, the client should use GRPC deadlines.
 	AwaitWorkflowEvent(ctx context.Context, in *AwaitWorkflowEventRequest, opts ...grpc.CallOption) (*WorkflowEvent, error)
+	// Get a specific WorkflowEventDef.
+	GetWorkflowEventDef(ctx context.Context, in *WorkflowEventDefId, opts ...grpc.CallOption) (*WorkflowEventDef, error)
 	// Get a specific WorkflowEvent.
 	GetWorkflowEvent(ctx context.Context, in *WorkflowEventId, opts ...grpc.CallOption) (*WorkflowEvent, error)
 	// List ExternalEvent's for a specific WfRun.
@@ -215,6 +221,8 @@ type LittleHorseClient interface {
 	SearchVariable(ctx context.Context, in *SearchVariableRequest, opts ...grpc.CallOption) (*VariableIdList, error)
 	// Search for ExternalEvent's.
 	SearchExternalEvent(ctx context.Context, in *SearchExternalEventRequest, opts ...grpc.CallOption) (*ExternalEventIdList, error)
+	// Search for WorkflowEvents's.
+	SearchWorkflowEvent(ctx context.Context, in *SearchWorkflowEventRequest, opts ...grpc.CallOption) (*WorkflowEventIdList, error)
 	// Search for TaskDef's.
 	SearchTaskDef(ctx context.Context, in *SearchTaskDefRequest, opts ...grpc.CallOption) (*TaskDefIdList, error)
 	// Search for UserTaskDef's.
@@ -223,6 +231,8 @@ type LittleHorseClient interface {
 	SearchWfSpec(ctx context.Context, in *SearchWfSpecRequest, opts ...grpc.CallOption) (*WfSpecIdList, error)
 	// Search for ExternalEventDef's.
 	SearchExternalEventDef(ctx context.Context, in *SearchExternalEventDefRequest, opts ...grpc.CallOption) (*ExternalEventDefIdList, error)
+	// Search for WorkflowEventDef's.
+	SearchWorkflowEventDef(ctx context.Context, in *SearchWorkflowEventDefRequest, opts ...grpc.CallOption) (*WorkflowEventDefIdList, error)
 	// Search for all available TenantIds for current Principal
 	SearchTenant(ctx context.Context, in *SearchTenantRequest, opts ...grpc.CallOption) (*TenantIdList, error)
 	//
@@ -265,6 +275,7 @@ type LittleHorseClient interface {
 	DeleteUserTaskDef(ctx context.Context, in *DeleteUserTaskDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes an ExternalEventDef.
 	DeleteExternalEventDef(ctx context.Context, in *DeleteExternalEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteWorkflowEventDef(ctx context.Context, in *DeleteWorkflowEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
 	// as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
@@ -596,6 +607,15 @@ func (c *littleHorseClient) AwaitWorkflowEvent(ctx context.Context, in *AwaitWor
 	return out, nil
 }
 
+func (c *littleHorseClient) GetWorkflowEventDef(ctx context.Context, in *WorkflowEventDefId, opts ...grpc.CallOption) (*WorkflowEventDef, error) {
+	out := new(WorkflowEventDef)
+	err := c.cc.Invoke(ctx, LittleHorse_GetWorkflowEventDef_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) GetWorkflowEvent(ctx context.Context, in *WorkflowEventId, opts ...grpc.CallOption) (*WorkflowEvent, error) {
 	out := new(WorkflowEvent)
 	err := c.cc.Invoke(ctx, LittleHorse_GetWorkflowEvent_FullMethodName, in, out, opts...)
@@ -668,6 +688,15 @@ func (c *littleHorseClient) SearchExternalEvent(ctx context.Context, in *SearchE
 	return out, nil
 }
 
+func (c *littleHorseClient) SearchWorkflowEvent(ctx context.Context, in *SearchWorkflowEventRequest, opts ...grpc.CallOption) (*WorkflowEventIdList, error) {
+	out := new(WorkflowEventIdList)
+	err := c.cc.Invoke(ctx, LittleHorse_SearchWorkflowEvent_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) SearchTaskDef(ctx context.Context, in *SearchTaskDefRequest, opts ...grpc.CallOption) (*TaskDefIdList, error) {
 	out := new(TaskDefIdList)
 	err := c.cc.Invoke(ctx, LittleHorse_SearchTaskDef_FullMethodName, in, out, opts...)
@@ -698,6 +727,15 @@ func (c *littleHorseClient) SearchWfSpec(ctx context.Context, in *SearchWfSpecRe
 func (c *littleHorseClient) SearchExternalEventDef(ctx context.Context, in *SearchExternalEventDefRequest, opts ...grpc.CallOption) (*ExternalEventDefIdList, error) {
 	out := new(ExternalEventDefIdList)
 	err := c.cc.Invoke(ctx, LittleHorse_SearchExternalEventDef_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) SearchWorkflowEventDef(ctx context.Context, in *SearchWorkflowEventDefRequest, opts ...grpc.CallOption) (*WorkflowEventDefIdList, error) {
+	out := new(WorkflowEventDefIdList)
+	err := c.cc.Invoke(ctx, LittleHorse_SearchWorkflowEventDef_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -837,6 +875,15 @@ func (c *littleHorseClient) DeleteUserTaskDef(ctx context.Context, in *DeleteUse
 func (c *littleHorseClient) DeleteExternalEventDef(ctx context.Context, in *DeleteExternalEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LittleHorse_DeleteExternalEventDef_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) DeleteWorkflowEventDef(ctx context.Context, in *DeleteWorkflowEventDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, LittleHorse_DeleteWorkflowEventDef_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1045,6 +1092,8 @@ type LittleHorseServer interface {
 	//
 	// To specify the deadline, the client should use GRPC deadlines.
 	AwaitWorkflowEvent(context.Context, *AwaitWorkflowEventRequest) (*WorkflowEvent, error)
+	// Get a specific WorkflowEventDef.
+	GetWorkflowEventDef(context.Context, *WorkflowEventDefId) (*WorkflowEventDef, error)
 	// Get a specific WorkflowEvent.
 	GetWorkflowEvent(context.Context, *WorkflowEventId) (*WorkflowEvent, error)
 	// List ExternalEvent's for a specific WfRun.
@@ -1066,6 +1115,8 @@ type LittleHorseServer interface {
 	SearchVariable(context.Context, *SearchVariableRequest) (*VariableIdList, error)
 	// Search for ExternalEvent's.
 	SearchExternalEvent(context.Context, *SearchExternalEventRequest) (*ExternalEventIdList, error)
+	// Search for WorkflowEvents's.
+	SearchWorkflowEvent(context.Context, *SearchWorkflowEventRequest) (*WorkflowEventIdList, error)
 	// Search for TaskDef's.
 	SearchTaskDef(context.Context, *SearchTaskDefRequest) (*TaskDefIdList, error)
 	// Search for UserTaskDef's.
@@ -1074,6 +1125,8 @@ type LittleHorseServer interface {
 	SearchWfSpec(context.Context, *SearchWfSpecRequest) (*WfSpecIdList, error)
 	// Search for ExternalEventDef's.
 	SearchExternalEventDef(context.Context, *SearchExternalEventDefRequest) (*ExternalEventDefIdList, error)
+	// Search for WorkflowEventDef's.
+	SearchWorkflowEventDef(context.Context, *SearchWorkflowEventDefRequest) (*WorkflowEventDefIdList, error)
 	// Search for all available TenantIds for current Principal
 	SearchTenant(context.Context, *SearchTenantRequest) (*TenantIdList, error)
 	//
@@ -1116,6 +1169,7 @@ type LittleHorseServer interface {
 	DeleteUserTaskDef(context.Context, *DeleteUserTaskDefRequest) (*emptypb.Empty, error)
 	// Deletes an ExternalEventDef.
 	DeleteExternalEventDef(context.Context, *DeleteExternalEventDefRequest) (*emptypb.Empty, error)
+	DeleteWorkflowEventDef(context.Context, *DeleteWorkflowEventDefRequest) (*emptypb.Empty, error)
 	// Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
 	// is the last remaining `Principal` with admin permissions. Admin permissions are defined
 	// as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
@@ -1246,6 +1300,9 @@ func (UnimplementedLittleHorseServer) GetExternalEvent(context.Context, *Externa
 func (UnimplementedLittleHorseServer) AwaitWorkflowEvent(context.Context, *AwaitWorkflowEventRequest) (*WorkflowEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AwaitWorkflowEvent not implemented")
 }
+func (UnimplementedLittleHorseServer) GetWorkflowEventDef(context.Context, *WorkflowEventDefId) (*WorkflowEventDef, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetWorkflowEventDef not implemented")
+}
 func (UnimplementedLittleHorseServer) GetWorkflowEvent(context.Context, *WorkflowEventId) (*WorkflowEvent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetWorkflowEvent not implemented")
 }
@@ -1270,6 +1327,9 @@ func (UnimplementedLittleHorseServer) SearchVariable(context.Context, *SearchVar
 func (UnimplementedLittleHorseServer) SearchExternalEvent(context.Context, *SearchExternalEventRequest) (*ExternalEventIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchExternalEvent not implemented")
 }
+func (UnimplementedLittleHorseServer) SearchWorkflowEvent(context.Context, *SearchWorkflowEventRequest) (*WorkflowEventIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchWorkflowEvent not implemented")
+}
 func (UnimplementedLittleHorseServer) SearchTaskDef(context.Context, *SearchTaskDefRequest) (*TaskDefIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchTaskDef not implemented")
 }
@@ -1281,6 +1341,9 @@ func (UnimplementedLittleHorseServer) SearchWfSpec(context.Context, *SearchWfSpe
 }
 func (UnimplementedLittleHorseServer) SearchExternalEventDef(context.Context, *SearchExternalEventDefRequest) (*ExternalEventDefIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchExternalEventDef not implemented")
+}
+func (UnimplementedLittleHorseServer) SearchWorkflowEventDef(context.Context, *SearchWorkflowEventDefRequest) (*WorkflowEventDefIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchWorkflowEventDef not implemented")
 }
 func (UnimplementedLittleHorseServer) SearchTenant(context.Context, *SearchTenantRequest) (*TenantIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchTenant not implemented")
@@ -1320,6 +1383,9 @@ func (UnimplementedLittleHorseServer) DeleteUserTaskDef(context.Context, *Delete
 }
 func (UnimplementedLittleHorseServer) DeleteExternalEventDef(context.Context, *DeleteExternalEventDefRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteExternalEventDef not implemented")
+}
+func (UnimplementedLittleHorseServer) DeleteWorkflowEventDef(context.Context, *DeleteWorkflowEventDefRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteWorkflowEventDef not implemented")
 }
 func (UnimplementedLittleHorseServer) DeletePrincipal(context.Context, *DeletePrincipalRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeletePrincipal not implemented")
@@ -1961,6 +2027,24 @@ func _LittleHorse_AwaitWorkflowEvent_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_GetWorkflowEventDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WorkflowEventDefId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetWorkflowEventDef(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetWorkflowEventDef_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetWorkflowEventDef(ctx, req.(*WorkflowEventDefId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_GetWorkflowEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(WorkflowEventId)
 	if err := dec(in); err != nil {
@@ -2105,6 +2189,24 @@ func _LittleHorse_SearchExternalEvent_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_SearchWorkflowEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchWorkflowEventRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SearchWorkflowEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SearchWorkflowEvent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SearchWorkflowEvent(ctx, req.(*SearchWorkflowEventRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_SearchTaskDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SearchTaskDefRequest)
 	if err := dec(in); err != nil {
@@ -2173,6 +2275,24 @@ func _LittleHorse_SearchExternalEventDef_Handler(srv interface{}, ctx context.Co
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).SearchExternalEventDef(ctx, req.(*SearchExternalEventDefRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_SearchWorkflowEventDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchWorkflowEventDefRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SearchWorkflowEventDef(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SearchWorkflowEventDef_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SearchWorkflowEventDef(ctx, req.(*SearchWorkflowEventDefRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2415,6 +2535,24 @@ func _LittleHorse_DeleteExternalEventDef_Handler(srv interface{}, ctx context.Co
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).DeleteExternalEventDef(ctx, req.(*DeleteExternalEventDefRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_DeleteWorkflowEventDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteWorkflowEventDefRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).DeleteWorkflowEventDef(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_DeleteWorkflowEventDef_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).DeleteWorkflowEventDef(ctx, req.(*DeleteWorkflowEventDefRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2757,6 +2895,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_AwaitWorkflowEvent_Handler,
 		},
 		{
+			MethodName: "GetWorkflowEventDef",
+			Handler:    _LittleHorse_GetWorkflowEventDef_Handler,
+		},
+		{
 			MethodName: "GetWorkflowEvent",
 			Handler:    _LittleHorse_GetWorkflowEvent_Handler,
 		},
@@ -2789,6 +2931,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_SearchExternalEvent_Handler,
 		},
 		{
+			MethodName: "SearchWorkflowEvent",
+			Handler:    _LittleHorse_SearchWorkflowEvent_Handler,
+		},
+		{
 			MethodName: "SearchTaskDef",
 			Handler:    _LittleHorse_SearchTaskDef_Handler,
 		},
@@ -2803,6 +2949,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchExternalEventDef",
 			Handler:    _LittleHorse_SearchExternalEventDef_Handler,
+		},
+		{
+			MethodName: "SearchWorkflowEventDef",
+			Handler:    _LittleHorse_SearchWorkflowEventDef_Handler,
 		},
 		{
 			MethodName: "SearchTenant",
@@ -2851,6 +3001,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteExternalEventDef",
 			Handler:    _LittleHorse_DeleteExternalEventDef_Handler,
+		},
+		{
+			MethodName: "DeleteWorkflowEventDef",
+			Handler:    _LittleHorse_DeleteWorkflowEventDef_Handler,
 		},
 		{
 			MethodName: "DeletePrincipal",

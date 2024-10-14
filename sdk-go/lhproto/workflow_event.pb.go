@@ -93,14 +93,18 @@ func (x *WorkflowEvent) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
+// The WorkflowEventDef defines the blueprint for a WorkflowEvent.
 type WorkflowEventDef struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id        *WorkflowEventDefId    `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The ID of the WorkflowEventDef. Contains the name of the WorkflowEventDef.
+	Id *WorkflowEventDefId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The time that the WorkflowEventDef was created at.
 	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	Type      VariableType           `protobuf:"varint,3,opt,name=type,proto3,enum=littlehorse.VariableType" json:"type,omitempty"`
+	// The type of the content of a WorkflowEvent based on this WorkflowEventDef.
+	Type VariableType `protobuf:"varint,3,opt,name=type,proto3,enum=littlehorse.VariableType" json:"type,omitempty"`
 }
 
 func (x *WorkflowEventDef) Reset() {

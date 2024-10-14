@@ -159,6 +159,9 @@ service LittleHorse {
   // To specify the deadline, the client should use GRPC deadlines.
   rpc AwaitWorkflowEvent(AwaitWorkflowEventRequest) returns (WorkflowEvent) {}
 
+  // Get a specific WorkflowEventDef.
+  rpc GetWorkflowEventDef(WorkflowEventDefId) returns (WorkflowEventDef) {}
+    
   // Get a specific WorkflowEvent.
   rpc GetWorkflowEvent(WorkflowEventId) returns (WorkflowEvent) {}
 
@@ -188,6 +191,9 @@ service LittleHorse {
   // Search for ExternalEvent's.
   rpc SearchExternalEvent(SearchExternalEventRequest) returns (ExternalEventIdList) {}
 
+  // Search for WorkflowEvents's.
+  rpc SearchWorkflowEvent(SearchWorkflowEventRequest) returns (WorkflowEventIdList) {}
+
   // Search for TaskDef's.
   rpc SearchTaskDef(SearchTaskDefRequest) returns (TaskDefIdList) {}
 
@@ -199,6 +205,9 @@ service LittleHorse {
 
   // Search for ExternalEventDef's.
   rpc SearchExternalEventDef(SearchExternalEventDefRequest) returns (ExternalEventDefIdList) {}
+
+  // Search for WorkflowEventDef's.
+  rpc SearchWorkflowEventDef(SearchWorkflowEventDefRequest) returns (WorkflowEventDefIdList) {}
 
   // Search for all available TenantIds for current Principal
   rpc SearchTenant(SearchTenantRequest) returns (TenantIdList) {}
@@ -246,6 +255,8 @@ service LittleHorse {
   rpc DeleteUserTaskDef(DeleteUserTaskDefRequest) returns (google.protobuf.Empty) {}
   // Deletes an ExternalEventDef.
   rpc DeleteExternalEventDef(DeleteExternalEventDefRequest) returns (google.protobuf.Empty) {}
+
+  rpc DeleteWorkflowEventDef(DeleteWorkflowEventDefRequest) returns (google.protobuf.Empty) {}
   // Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
   // is the last remaining `Principal` with admin permissions. Admin permissions are defined
   // as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
@@ -443,6 +454,12 @@ message DeleteWfSpecRequest {
 message DeleteExternalEventDefRequest {
   // The ID of the ExternalEventDef to delete.
   ExternalEventDefId id = 1;
+}
+
+// Deletes an WorkflowEventDef
+message DeleteWorkflowEventDefRequest {
+  // The ID of the WorkflowEventDef to delete.
+  WorkflowEventDefId id = 1;
 }
 
 // Create a Workflow Run.
@@ -837,6 +854,29 @@ message ExternalEventDefIdList {
   optional bytes bookmark = 2;
 }
 
+// Search for WorkflowEventDefs based on certain criteria.
+message SearchWorkflowEventDefRequest {
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 1;
+  
+  // Maximum results to return in one request.
+  optional int32 limit = 2;
+
+  // Optionally search only for WorkflowEventDef's whose name starts with this prefix.
+  optional string prefix = 3;
+}
+
+// List of WorkflowEventDef Id's.
+message WorkflowEventDefIdList {
+  // The resulting object id's.
+  repeated WorkflowEventDefId results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
+}
+
 // Search for all available TenantIds for current Principal
 message SearchTenantRequest {
       // Maximum results to return in one request.
@@ -912,6 +952,40 @@ message SearchExternalEventRequest {
 message ExternalEventIdList {
   // The resulting object id's.
   repeated ExternalEventId results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
+}
+
+// Search for WorkflowEvents based on certain criteria.
+//
+// Required field WorkflowEventDefId specifies which WorkflowEventDef
+// to search for WorkflowEvents under.
+message SearchWorkflowEventRequest {
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 1;
+  // Maximum results to return in one request.
+  optional int32 limit = 2;
+
+  // Specifies to return only WorkflowEvent created after this time
+  optional google.protobuf.Timestamp earliest_start = 3;
+
+  // Specifies to return only WorkflowEvent created before this time
+  optional google.protobuf.Timestamp latest_start = 4;
+
+  // Search for WorkflowEvents by their WorkflowEventDefId
+  //
+  // * Note: If WorkflowEventDefId is not provided or does not exist,
+  //         gRPC status code 'INVALID_ARGUMENT' will be returned.
+  WorkflowEventDefId workflow_event_def_id = 5;
+}
+
+// List of WorkflowEvent Id's
+message WorkflowEventIdList {
+  // The resulting object id's.
+  repeated WorkflowEventId results = 1;
 
   // The bookmark can be used for cursor-based pagination. If it is null, the server
   // has returned all results. If it is set, you can pass it into your next request

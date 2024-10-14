@@ -46,6 +46,7 @@ import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -155,6 +156,8 @@ import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.SearchWfSpecRequest;
+import io.littlehorse.sdk.common.proto.SearchWorkflowEventDefRequest;
+import io.littlehorse.sdk.common.proto.SearchWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.ServerVersionResponse;
 import io.littlehorse.sdk.common.proto.StopWfRunRequest;
 import io.littlehorse.sdk.common.proto.TaskDef;
@@ -188,7 +191,10 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WfSpecIdList;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.sdk.common.proto.WorkflowEventDef;
+import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
+import io.littlehorse.sdk.common.proto.WorkflowEventDefIdList;
 import io.littlehorse.sdk.common.proto.WorkflowEventId;
+import io.littlehorse.sdk.common.proto.WorkflowEventIdList;
 import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.streams.BackendInternalComms;
@@ -214,6 +220,8 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchUserTas
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchVariableRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfSpecRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowEventDefRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListExternalEventsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListNodeRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskMetricsReply;
@@ -234,6 +242,8 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUs
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWorkflowEventDefReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWorkflowEventReply;
 import io.littlehorse.server.streams.taskqueue.ClusterHealthRequestObserver;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -450,6 +460,18 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find ExternalEventDef %s".formatted(req.getName()));
         } else {
             ctx.onNext(eed.toProto().build());
+            ctx.onCompleted();
+        }
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void getWorkflowEventDef(WorkflowEventDefId req, StreamObserver<WorkflowEventDef> ctx) {
+        WorkflowEventDefModel wed = getServiceFromContext().getWorkflowEventDef(req.getName());
+        if (wed == null) {
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find WorkflowEventDef %s".formatted(req.getName()));
+        } else {
+            ctx.onNext(wed.toProto().build());
             ctx.onCompleted();
         }
     }
@@ -726,6 +748,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void searchWorkflowEvent(SearchWorkflowEventRequest req, StreamObserver<WorkflowEventIdList> ctx) {
+        SearchWorkflowEventRequestModel see =
+                LHSerializable.fromProto(req, SearchWorkflowEventRequestModel.class, requestContext());
+        handleScan(see, ctx, SearchWorkflowEventReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void searchNodeRun(SearchNodeRunRequest req, StreamObserver<NodeRunIdList> ctx) {
         handleScan(SearchNodeRunRequestModel.fromProto(req, requestContext()), ctx, SearchNodeRunReply.class);
     }
@@ -773,6 +803,15 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 SearchExternalEventDefRequestModel.fromProto(req, requestContext()),
                 ctx,
                 SearchExternalEventDefReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void searchWorkflowEventDef(SearchWorkflowEventDefRequest req, StreamObserver<WorkflowEventDefIdList> ctx) {
+        handleScan(
+                SearchWorkflowEventDefRequestModel.fromProto(req, requestContext()),
+                ctx,
+                SearchWorkflowEventDefReply.class);
     }
 
     @Override

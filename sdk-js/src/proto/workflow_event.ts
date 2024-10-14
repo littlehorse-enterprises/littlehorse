@@ -32,9 +32,17 @@ export interface WorkflowEvent {
   createdAt: string | undefined;
 }
 
+/** The WorkflowEventDef defines the blueprint for a WorkflowEvent. */
 export interface WorkflowEventDef {
-  id: WorkflowEventDefId | undefined;
-  createdAt: string | undefined;
+  /** The ID of the WorkflowEventDef. Contains the name of the WorkflowEventDef. */
+  id:
+    | WorkflowEventDefId
+    | undefined;
+  /** The time that the WorkflowEventDef was created at. */
+  createdAt:
+    | string
+    | undefined;
+  /** The type of the content of a WorkflowEvent based on this WorkflowEventDef. */
   type: VariableType;
 }
 

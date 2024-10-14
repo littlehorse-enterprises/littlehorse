@@ -8,41 +8,73 @@ public interface WorkflowEventDefOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * The ID of the WorkflowEventDef. Contains the name of the WorkflowEventDef.
+   * </pre>
+   *
    * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * The ID of the WorkflowEventDef. Contains the name of the WorkflowEventDef.
+   * </pre>
+   *
    * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.WorkflowEventDefId getId();
   /**
+   * <pre>
+   * The ID of the WorkflowEventDef. Contains the name of the WorkflowEventDef.
+   * </pre>
+   *
    * <code>.littlehorse.WorkflowEventDefId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WorkflowEventDefIdOrBuilder getIdOrBuilder();
 
   /**
+   * <pre>
+   * The time that the WorkflowEventDef was created at.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
   boolean hasCreatedAt();
   /**
+   * <pre>
+   * The time that the WorkflowEventDef was created at.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
   com.google.protobuf.Timestamp getCreatedAt();
   /**
+   * <pre>
+   * The time that the WorkflowEventDef was created at.
+   * </pre>
+   *
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
+   * <pre>
+   * The type of the content of a WorkflowEvent based on this WorkflowEventDef.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType type = 3;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
+   * <pre>
+   * The type of the content of a WorkflowEvent based on this WorkflowEventDef.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType type = 3;</code>
    * @return The type.
    */

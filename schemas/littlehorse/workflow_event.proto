@@ -29,8 +29,14 @@ message WorkflowEvent {
   google.protobuf.Timestamp created_at = 3;
 }
 
+// The WorkflowEventDef defines the blueprint for a WorkflowEvent.
 message WorkflowEventDef {
+  // The ID of the WorkflowEventDef. Contains the name of the WorkflowEventDef.
   WorkflowEventDefId id = 1;
+
+  // The time that the WorkflowEventDef was created at.
   google.protobuf.Timestamp created_at = 2;
+
+  // The type of the content of a WorkflowEvent based on this WorkflowEventDef.
   VariableType type = 3;
 }
