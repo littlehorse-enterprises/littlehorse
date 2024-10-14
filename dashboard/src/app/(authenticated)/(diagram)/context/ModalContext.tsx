@@ -1,4 +1,12 @@
-import { Edge as EdgeProto, ExternalEvent, NodeRun, TaskRun, UserTaskNode, UserTaskRun, WorkflowEvent } from 'littlehorse-client/proto'
+import {
+  Edge as EdgeProto,
+  ExternalEvent,
+  NodeRun,
+  TaskRun,
+  UserTaskNode,
+  UserTaskRun,
+  WorkflowEvent,
+} from 'littlehorse-client/proto'
 import { Dispatch, FC, ProviderProps, SetStateAction, createContext } from 'react'
 import { ModalType, Modals } from '../components/Modals'
 

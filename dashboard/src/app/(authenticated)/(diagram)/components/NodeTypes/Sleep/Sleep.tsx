@@ -6,7 +6,7 @@ import { Fade } from '../Fade'
 import { SleepDetails } from './SleepDetails'
 const Node: FC<NodeProps> = ({ selected, data }) => {
   const { fade, sleep } = data
- 
+
   return (
     <>
       <SleepDetails sleepNode={sleep} nodeRun={data.nodeRun} />

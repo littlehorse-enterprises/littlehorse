@@ -33,7 +33,7 @@ export const search = async ({ type, tenantId, bookmark, limit, prefix }: Search
       break
     case 'WorkflowEventDef':
       results = await genericSearch(request, client.searchWorkflowEventDef)
-      break;
+      break
     default:
       results = await genericSearch(request, client.searchWfSpec)
       break

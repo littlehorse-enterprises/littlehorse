@@ -2,7 +2,7 @@ import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useQuery } from '@tanstack/react-query'
 
 import { LHStatus, Node as NodeProto, ThrowEventNode } from 'littlehorse-client/proto'
-import { CircleArrowOutUpRightIcon, ExternalLinkIcon, EyeIcon, } from 'lucide-react'
+import { CircleArrowOutUpRightIcon, ExternalLinkIcon, EyeIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, ReactNode, memo, useCallback } from 'react'
 import { Handle, Position } from 'reactflow'
@@ -79,7 +79,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
           </div>
           <Handle type="source" position={Position.Right} className="h-2 w-2 bg-transparent" />
           <Handle type="target" position={Position.Left} className="bg-transparent" />
-          <div className="absolute flex w-full items-center justify-center flex-col whitespace-nowrap text-center">
+          <div className="absolute flex w-full flex-col items-center justify-center whitespace-nowrap text-center">
             <div className="block">Throw Event:</div>
             <div className="block">{data.throwEvent?.eventDefId?.name}</div>
           </div>

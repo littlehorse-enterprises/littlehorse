@@ -40,7 +40,7 @@ export const searchWorkflowEvent = async ({
       const workflowEvent = await client.getWorkflowEvent({
         workflowEventDefId: workflowEventId.workflowEventDefId,
         wfRunId: workflowEventId.wfRunId,
-        number: workflowEventId.number
+        number: workflowEventId.number,
       })
 
       let nodeRun = null

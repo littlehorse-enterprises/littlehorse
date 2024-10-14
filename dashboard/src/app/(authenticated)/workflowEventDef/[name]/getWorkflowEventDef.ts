@@ -8,5 +8,5 @@ export const getWorkflowEventDef = async (request: WorkflowEventDefId): Promise<
   const tenantId = cookies().get('tenantId')?.value
   const client = await lhClient({ tenantId })
 
-  return client.getWorkflowEventDef(request);
+  return client.getWorkflowEventDef(request)
 }

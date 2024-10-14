@@ -15,7 +15,7 @@ export const ModalComponents = {
   userTaskRun: UserTaskRun,
   edge: Edge,
   externalEvent: ExternalEvent,
-  workflowEvent: WorkflowEvent
+  workflowEvent: WorkflowEvent,
 } as const
 
 export type ModalType = keyof typeof ModalComponents
