@@ -79,8 +79,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
           </div>
           <Handle type="source" position={Position.Right} className="h-2 w-2 bg-transparent" />
           <Handle type="target" position={Position.Left} className="bg-transparent" />
-          <div className="absolute flex w-full flex-col items-center justify-center whitespace-nowrap text-center">
-            <div className="block">Throw Event:</div>
+          <div className="absolute flex w-full items-center justify-center whitespace-nowrap text-center">
             <div className="block">{data.throwEvent?.eventDefId?.name}</div>
           </div>
         </div>
