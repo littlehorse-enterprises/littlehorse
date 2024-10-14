@@ -81,7 +81,7 @@ export const WorkflowEventDef: FC<Props> = ({ spec }) => {
             <TableHeader>
               <TableRow>
                 <TableHead scope="col">WfRun Id</TableHead>
-                <TableHead scope="col">GUID</TableHead>
+                <TableHead scope="col">Sequence Number</TableHead>
                 <TableHead scope="col">Triggered Date</TableHead>
               </TableRow>
             </TableHeader>
