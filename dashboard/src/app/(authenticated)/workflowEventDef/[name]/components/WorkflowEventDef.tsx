@@ -96,6 +96,8 @@ export const WorkflowEventDef: FC<Props> = ({ spec }) => {
                             <Link
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
+                              // TODO: Add node highlighting
+                              // href={`/wfRun/${concatWfRunIds(workflowEvent.id?.wfRunId!)}?threadRunNumber=${workflowEvent.threadRunNumber}&nodeRunName=${workflowEvent.nodeRunPosition}-${spec.id?.name}-WORKFLOW_EVENT`}
                               href={`/wfRun/${concatWfRunIds(workflowEvent.id?.wfRunId!)}`}
                             >
                               {concatWfRunIds(workflowEvent.id?.wfRunId!)}
