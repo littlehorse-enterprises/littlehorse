@@ -38,7 +38,6 @@ public class SearchWorkflowEventRequestModel
     private Date earliestStart;
     private Date latestStart;
     private WorkflowEventDefIdModel workflowEventDefId;
-    private Boolean isClaimed = null;
     private ExecutionContext context;
 
     public GetableClassEnum getObjectType() {
