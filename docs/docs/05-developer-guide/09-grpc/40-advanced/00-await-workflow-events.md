@@ -6,7 +6,7 @@ You can await a `WorkflowEvent` using the `AwaitWorkflowEvent` RPC call.
 
 You need to create an `AwaitWorkflowEventRequest` to do so. The protobuf definition is:
 
-```proto
+```protobuf
 message AwaitWorkflowEventRequest {
   WfRunId wf_run_id = 1;
   repeated WorkflowEventDefId event_def_ids = 2;
@@ -24,19 +24,28 @@ The three required values are:
 
 ## Examples
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem'; 
+
 ### Awaiting a `WorkflowEvent`
 
+<Tabs>
+  <TabItem value="java" label="Java" default>
 ```java
 WorkflowEvent event = client.awaitWorkflowEvent(AwaitWorkflowEventRequest.newBuilder()
             .setWfRunId(WfRunId.newBuilder().setId("your-workflow-run-id"))
             .addEventDefIds(WorkflowEventDefId.newBuilder().setName("my-workflow-event-def"))
             .build());
 ```
+  </TabItem>
+</Tabs>
 
-### Awaiting from multiple `WorkflowEventDef`s
+### Awaiting Events from Multiple `WorkflowEventDef`s
 
 In the event your workflow throws multiple types of `WorkflowEvent`s, you can specify multiple `WorkflowEventDef`s in your request. The request will return the first matching `WorkflowEvent` thrown by your workflow.
 
+<Tabs>
+  <TabItem value="java" label="Java" default>
 ```java
 WorkflowEvent event = client.awaitWorkflowEvent(AwaitWorkflowEventRequest.newBuilder()
             .setWfRunId(WfRunId.newBuilder().setId("your-workflow-run-id"))
@@ -44,11 +53,15 @@ WorkflowEvent event = client.awaitWorkflowEvent(AwaitWorkflowEventRequest.newBui
             .addEventDefIds(WorkflowEventDefId.newBuilder().setName("another-workflow-event-def"))
             .build());
 ```
+  </TabItem>
+</Tabs>
 
 ### Using Deadlines
 
 Upon the execution of a `THROW_EVENT` node, LittleHorse will always ensure that your `WorkflowEvent`s are thrown and returned to any clients awaiting them. However, you may still find it useful to set a [gRPC deadline](https://grpc.io/docs/guides/deadlines/) on your `AwaitWorkflowEvent` request in case a `WorkflowEvent` is not thrown within a specified period of time.
 
+<Tabs>
+  <TabItem value="java" label="Java" default>
 ```java
 Properties props = getConfigProps();
 LHConfig config = new LHConfig(props);
@@ -59,6 +72,9 @@ WorkflowEvent event = client.withDeadlineAfter(1000, TimeUnit.MILLISECONDS)
                         .setWfRunId(WfRunId.newBuilder().setId("your-workflow-run-id"))
                         .build());
 ```
+  </TabItem>
+</Tabs>
+
 
 :::info
 You can configure a gRPC deadline for any LittleHorse Client request, not just `AwaitWorkflowEvent`! If the request does not complete within the specified time, it will be automatically canceled and return gRPC Status Code 1 `CANCELLED`. 
@@ -68,6 +84,8 @@ You can configure a gRPC deadline for any LittleHorse Client request, not just `
 
 Since a single `WfRun` may throw multiple `WorkflowEvent`s with the same `WorkflowEventDefId`, clients have the ability to "ignore" `WorkflowEvent`s that have already been awaited. Any `WorkflowEvent` specified within the `workflowEventsToIgnore` field will be ignored.
 
+<Tabs>
+  <TabItem value="java" label="Java" default>
 ```java
 // The first WorkflowEvent awaited by the client
 WorkflowEvent event1 = client.awaitWorkflowEvent(AwaitWorkflowEventRequest.newBuilder()
@@ -84,3 +102,6 @@ WorkflowEvent event2 = client.awaitWorkflowEvent(AwaitWorkflowEventRequest.newBu
     .addWorkflowEventsToIgnore(event1.getId())
     .build());
 ```
+  </TabItem>
+</Tabs>
+
