@@ -539,7 +539,7 @@ message AwaitWorkflowEventRequest {
   WfRunId wf_run_id = 1;
 
   // The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-  // WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+  // WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
   // WorkflowEvent thrown by the WfRun.
   repeated WorkflowEventDefId event_def_ids = 2;
 

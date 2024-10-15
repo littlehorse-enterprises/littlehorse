@@ -1333,7 +1333,7 @@ type AwaitWorkflowEventRequest struct {
 	// The ID of the WfRun which must throw the WorkflowEvent.
 	WfRunId *WfRunId `protobuf:"bytes,1,opt,name=wf_run_id,json=wfRunId,proto3" json:"wf_run_id,omitempty"`
 	// The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-	// WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+	// WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
 	// WorkflowEvent thrown by the WfRun.
 	EventDefIds []*WorkflowEventDefId `protobuf:"bytes,2,rep,name=event_def_ids,json=eventDefIds,proto3" json:"event_def_ids,omitempty"`
 	// Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it

@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
+import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -79,6 +80,11 @@ public class AwaitWorkflowEventExample {
                 .setId(id)
                 .putVariables("sleep-time", LHLibUtil.objToVarVal(sleepSeconds))
                 .build());
+
+        WorkflowEvent event = client.awaitWorkflowEvent(AwaitWorkflowEventRequest.newBuilder()
+            .setWfRunId(WfRunId.newBuilder().setId("your-workflow-run-id"))
+            .addEventDefIds(WorkflowEventDefId.newBuilder().setName("my-workflow-event-def"), WorkflowEventDefId.newBuilder().setName("another-workflow-event-def"))
+            .build());
 
         System.out.println("Sleeping for " + delayMs + " milliseconds");
         Thread.sleep(delayMs);

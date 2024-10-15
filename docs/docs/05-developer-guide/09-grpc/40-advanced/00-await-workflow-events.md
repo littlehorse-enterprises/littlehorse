@@ -24,12 +24,24 @@ The three required values are:
 
 ## Examples
 
-### Awaiting a single `WorkflowEvent`
+### Awaiting a `WorkflowEvent`
 
 ```java
 WorkflowEvent event = client.awaitWorkflowEvent(AwaitWorkflowEventRequest.newBuilder()
             .setWfRunId(WfRunId.newBuilder().setId("your-workflow-run-id"))
             .addEventDefIds(WorkflowEventDefId.newBuilder().setName("my-workflow-event-def"))
+            .build());
+```
+
+### Awaiting from multiple `WorkflowEventDef`s
+
+You can also await events from multiple `WorkflowEventDef`s. The request will return the first matching `WorkflowEvent` thrown.
+
+```java
+WorkflowEvent event = client.awaitWorkflowEvent(AwaitWorkflowEventRequest.newBuilder()
+            .setWfRunId(WfRunId.newBuilder().setId("your-workflow-run-id"))
+            .addEventDefIds(WorkflowEventDefId.newBuilder().setName("my-workflow-event-def"))
+            .addEventDefIds(WorkflowEventDefId.newBuilder().setName("another-workflow-event-def"))
             .build());
 ```
 

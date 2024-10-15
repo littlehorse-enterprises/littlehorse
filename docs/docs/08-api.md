@@ -1411,7 +1411,7 @@ is thrown. Relies upon native GRPC deadlines to configure timeouts.
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
 | `wf_run_id` | | [WfRunId](#wfrunid) | The ID of the WfRun which must throw the WorkflowEvent. |
-| `event_def_ids` | repeated| [WorkflowEventDefId](#workfloweventdefid) | The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first WorkflowEvent thrown by the WfRun. |
+| `event_def_ids` | repeated| [WorkflowEventDefId](#workfloweventdefid) | The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first WorkflowEvent thrown by the WfRun. |
 | `workflow_events_to_ignore` | repeated| [WorkflowEventId](#workfloweventid) | Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc. |
  <!-- end Fields -->
  <!-- end HasFields -->
