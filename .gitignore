@@ -44,6 +44,5 @@ dist/
 *.work
 
 # dotnet
-*.sln
 global.json
 *DotSettings.user
