@@ -6,8 +6,9 @@
  */
 
 plugins {
-    // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
+    id 'maven-publish'
+    // Apply the java-library plugin for API and implementation separation.
     id 'com.diffplug.spotless' version '6.25.0'
 }
 
@@ -44,5 +45,55 @@ spotless {
     java {
         target('**/*.java')
         palantirJavaFormat()
+    }
+}
+
+tasks.register('javadocJar', Jar) {
+    archiveClassifier = 'javadoc'
+    from javadoc
+}
+
+tasks.register('sourcesJar', Jar) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+publishing {
+    repositories {
+        mavenLocal()
+    }
+
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = group
+            artifactId = 'littlehorse-test-utils'
+            version = version
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = 'LittleHorse Test Utils'
+                description = 'LittleHorse test utils is a testing library for Littlehorse runtime'
+                url = 'https://github.com/littlehorse-enterprises/littlehorse'
+                licenses {
+                    license {
+                        name = 'Server Side Public License, Version 1'
+                        url = 'https://spdx.org/licenses/SSPL-1.0.html'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'LittleHorse Engineering'
+                        email = 'engineering@littlehorse.io'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/littlehorse-enterprises/littlehorse'
+                    connection = 'scm:git://github.com/littlehorse-enterprises/littlehorse.git'
+                    developerConnection = 'scm:git:ssh://github.com/littlehorse-enterprises/littlehorse.git'
+                }
+                packaging = 'jar'
+            }
+        }
     }
 }
