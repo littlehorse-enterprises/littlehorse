@@ -17,7 +17,7 @@
   --brown-filter: invert(24%) sepia(12%) saturate(1484%) hue-rotate(334deg) brightness(100%) contrast(87%);
   --black-filter:  brightness(0%);
 
-  --docusaurus-highlighted-code-line-bg: rgb(219, 219, 219);
+  --docusaurus-highlighted-code-line-bg: rgb(230, 230, 230);
 }
 
 [data-theme='light'] {
