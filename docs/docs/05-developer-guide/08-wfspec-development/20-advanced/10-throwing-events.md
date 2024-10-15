@@ -52,17 +52,4 @@ func ThrowWfEvent(wf *littlehorse.WorkflowThread) {
 The two required values are:
 
 1. `workflowEventDefName` is the Name of the `WorkflowEventDef` that you want to throw a `WorkflowEvent` for.
-2. `content` is the content of the `WorkflowEvent` that will be stored alongside the `WorkflowEvent` and sent to listening clients.
-
-## Throwing a `WorkflowEvent` with Variable Content
-
-The `THROW_EVENT` Node supports using `Variable`s in the `content` field, meaning you can assign and mutate data at runtime before throwing a `WorkflowEvent` and sending it to listening clients. 
-
-<Tabs>
-  <TabItem value="java" label="Java" default>
-  
-  </TabItem>
-</Tabs>
-
-
-The following `WfSpec` features a `TASK` Node that returns some data. The `WfSpec` stores the output of that task into a `Variable`. Finally, the workflow passes that variable data into the content of a `THROW_EVENT` Node. This demonstrates how you can configure the content of a thrown `WorkflowEvent` at runtime using variables.
+2. `content` is the content of the `WorkflowEvent` that will be stored in the `content` field of the `WorkflowEvent`. Content type will match the `VariableType` specified in your `WorkflowEventDef`.
