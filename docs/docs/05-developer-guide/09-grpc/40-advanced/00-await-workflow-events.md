@@ -35,7 +35,7 @@ WorkflowEvent event = client.awaitWorkflowEvent(AwaitWorkflowEventRequest.newBui
 
 ### Awaiting from multiple `WorkflowEventDef`s
 
-You can also await events from multiple `WorkflowEventDef`s. The request will return the first matching `WorkflowEvent` thrown.
+In the event your workflow throws multiple types of `WorkflowEvent`s, you can specify multiple `WorkflowEventDef`s in your request. The request will return the first matching `WorkflowEvent` thrown by your workflow.
 
 ```java
 WorkflowEvent event = client.awaitWorkflowEvent(AwaitWorkflowEventRequest.newBuilder()
