@@ -17,8 +17,8 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility=21
-targetCompatibility=21
+sourceCompatibility=11
+targetCompatibility=11
 
 dependencies {
     // Use JUnit Jupiter for testing.
