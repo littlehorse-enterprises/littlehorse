@@ -1,0 +1,40 @@
+syntax = "proto3";
+package littlehorse;
+
+option java_multiple_files = true;
+option java_package = "io.littlehorse.common.proto";
+
+import "google/protobuf/timestamp.proto";
+import "acls.proto";
+
+// An object containing important server configurations that will be stored
+// in RocksDB and referenced after server restarts or rebalances.
+message InitConfig {
+  // The version of the server when it is initialized.
+  ServerVersion init_version = 1;
+  
+  // The time when the server was initialized.
+  google.protobuf.Timestamp init_time = 2;
+  
+  // If the anonymous Principal was created, this field will include
+  // its initial state
+  Principal init_anonymous_principal = 3;
+  
+  // If the default Tenant was created, this field will include
+  // its initial state
+  Tenant init_default_tenant = 4;
+  
+  // Just for fun?
+  string pedro = 5;
+}
+
+message ServerVersion {
+  // Server Major Version
+  int32 major_version = 1;
+
+  // Server Minor Version
+  int32 minor_version = 2;
+
+  // Server Patch Version
+  int32 patch_version = 3;
+}
