@@ -471,7 +471,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    @Authorize(resources = ACLResource.ACL_WORKFLOW_EVENT, actions = ACLAction.READ)
     public void getWorkflowEventDef(WorkflowEventDefId req, StreamObserver<WorkflowEventDef> ctx) {
         WorkflowEventDefModel wed = getServiceFromContext().getWorkflowEventDef(req.getName());
         if (wed == null) {
@@ -490,6 +490,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW_EVENT, actions = ACLAction.WRITE_METADATA)
     public void putWorkflowEventDef(PutWorkflowEventDefRequest req, StreamObserver<WorkflowEventDef> ctx) {
         PutWorkflowEventDefRequestModel reqModel =
                 LHSerializable.fromProto(req, PutWorkflowEventDefRequestModel.class, requestContext());
@@ -753,7 +754,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    @Authorize(resources = ACLResource.ACL_WORKFLOW_EVENT, actions = ACLAction.READ)
     public void searchWorkflowEvent(SearchWorkflowEventRequest req, StreamObserver<WorkflowEventIdList> ctx) {
         SearchWorkflowEventRequestModel see =
                 LHSerializable.fromProto(req, SearchWorkflowEventRequestModel.class, requestContext());
@@ -812,7 +813,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    @Authorize(resources = ACLResource.ACL_WORKFLOW_EVENT, actions = ACLAction.READ)
     public void searchWorkflowEventDef(SearchWorkflowEventDefRequest req, StreamObserver<WorkflowEventDefIdList> ctx) {
         handleScan(
                 SearchWorkflowEventDefRequestModel.fromProto(req, requestContext()),
@@ -909,7 +910,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    @Authorize(resources = ACLResource.ACL_WORKFLOW_EVENT, actions = ACLAction.READ)
     public void listWorkflowEvents(ListWorkflowEventsRequest req, StreamObserver<WorkflowEventList> ctx) {
         ListWorkflowEventsRequestModel lv =
                 LHSerializable.fromProto(req, ListWorkflowEventsRequestModel.class, requestContext());
@@ -1004,7 +1005,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
+    @Authorize(resources = ACLResource.ACL_WORKFLOW_EVENT, actions = ACLAction.WRITE_METADATA)
     public void deleteWorkflowEventDef(DeleteWorkflowEventDefRequest req, StreamObserver<Empty> ctx) {
         DeleteWorkflowEventDefRequestModel dwedr =
                 LHSerializable.fromProto(req, DeleteWorkflowEventDefRequestModel.class, requestContext());
@@ -1017,7 +1018,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    @Authorize(resources = ACLResource.ACL_WORKFLOW_EVENT, actions = ACLAction.READ)
     public void getWorkflowEvent(WorkflowEventId req, StreamObserver<WorkflowEvent> ctx) {
         WorkflowEventIdModel id = LHSerializable.fromProto(req, WorkflowEventIdModel.class, requestContext());
         WorkflowEventModel workflowEvent = internalComms.getObject(id, WorkflowEventModel.class, requestContext());
