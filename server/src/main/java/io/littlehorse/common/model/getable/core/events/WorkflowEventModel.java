@@ -73,7 +73,7 @@ public class WorkflowEventModel extends CoreGetable<WorkflowEvent> {
 
     @Override
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
-        if (key == "wfEvtDefName") {
+        if (key.equals("wfEvtDefName")) {
             return List.of(new IndexedField(key, this.getWorkflowEventDefName(), tagStorageType.get()));
         }
         return List.of();
