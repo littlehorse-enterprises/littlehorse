@@ -14,14 +14,16 @@ var putWorkflowEventDefCmd = &cobra.Command{
 	Short: "Create a WorkflowEventDef.",
 	Long: `Create a WorkflowEventDef.
 	`,
+	Args: cobra.MatchAll(cobra.ExactArgs(2)),
 	Run: func(cmd *cobra.Command, args []string) {
-		name, _ := cmd.Flags().GetString("name")
-		contentTypeStr, _ := cmd.Flags().GetString("type")
+		name := args[0]
+		contentTypeStr := args[1]
 
 		contentType, validContentType := lhproto.VariableType_value[contentTypeStr]
 		if !validContentType {
-			log.Fatal(
-				"Unrecognized varType. Valid options: INT, STR, BYTES, BOOL, JSON_OBJ, JSON_ARR or DOUBLE.",
+			log.Fatalf(
+				"Unrecognized type: '%s'. Valid options: INT, STR, BYTES, BOOL, JSON_OBJ, JSON_ARR or DOUBLE.",
+				args[1],
 			)
 		}
 		contentTypeEnum := lhproto.VariableType(contentType)
@@ -39,10 +41,8 @@ var putWorkflowEventDefCmd = &cobra.Command{
 var getWorkflowEventDefCmd = &cobra.Command{
 	Use:   "workflowEventDef <name>",
 	Short: "Get an WorkflowEventDef by name.",
+	Args:  cobra.MatchAll(cobra.ExactArgs(1)),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the Name of WorkflowEventDef to get.")
-		}
 
 		littlehorse.PrintResp(
 			getGlobalClient(cmd).GetWorkflowEventDef(
@@ -81,16 +81,13 @@ searches for all WorkflowEventDefs.
 }
 
 var deleteWorkflowEventDefCmd = &cobra.Command{
-	Use:   "workflowEventDef <name> <version>",
+	Use:   "workflowEventDef <name>",
 	Short: "Delete a WorkflowEventDef.",
 	Long: `Delete a WorkflowEventDef. You must provide the name of the
 WorkflowEventDef to delete.
 	`,
+	Args: cobra.MatchAll(cobra.ExactArgs(2)),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: Name of WorkflowEventDef to Delete")
-
-		}
 
 		name := args[0]
 
@@ -110,11 +107,6 @@ func init() {
 	getCmd.AddCommand(getWorkflowEventDefCmd)
 
 	putCmd.AddCommand(putWorkflowEventDefCmd)
-	putWorkflowEventDefCmd.Flags().String("name", "", "The name of the WorkflowEventDef")
-	putWorkflowEventDefCmd.MarkFlagRequired("name")
-
-	putWorkflowEventDefCmd.Flags().String("type", "", "The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.")
-	putWorkflowEventDefCmd.MarkFlagRequired("type")
 
 	searchCmd.AddCommand(searchWorkflowEventDefCmd)
 	searchWorkflowEventDefCmd.Flags().String("prefix", "", "Prefix of name of WorkflowEventDefs to search for.")
