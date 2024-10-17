@@ -81,11 +81,6 @@ public class AwaitWorkflowEventExample {
                 .putVariables("sleep-time", LHLibUtil.objToVarVal(sleepSeconds))
                 .build());
 
-        WorkflowEvent event = client.awaitWorkflowEvent(AwaitWorkflowEventRequest.newBuilder()
-            .setWfRunId(WfRunId.newBuilder().setId("your-workflow-run-id"))
-            .addEventDefIds(WorkflowEventDefId.newBuilder().setName("my-workflow-event-def"), WorkflowEventDefId.newBuilder().setName("another-workflow-event-def"))
-            .build());
-
         System.out.println("Sleeping for " + delayMs + " milliseconds");
         Thread.sleep(delayMs);
 
