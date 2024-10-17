@@ -1,6 +1,9 @@
 package internal
 
 import (
+	"log"
+	"strconv"
+
 	"github.com/spf13/cobra"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
@@ -9,7 +12,7 @@ import (
 
 // getWorkflowEventCmd represents the workflowEvent command
 var getWorkflowEventCmd = &cobra.Command{
-	Use:   "workflowEvent [wfRunId] [workflowEventDefName] [number]",
+	Use:   "workflowEvent <wfRunId> <workflowEventDefName> <number>",
 	Short: "Get an WorkflowEvent by identifiers.",
 	Long: `WorkflowEvent's are identified uniquely by the combination of the following:
 	- Associated WfRun Id
@@ -19,11 +22,15 @@ var getWorkflowEventCmd = &cobra.Command{
 	You may provide all three identifiers as three separate arguments or you may provide
 	them delimited by the '/' character, as returned in all 'search' command queries.
 	`,
+	Args: cobra.MatchAll(cobra.ExactArgs(3)),
 	Run: func(cmd *cobra.Command, args []string) {
-		wfRunId, _ := cmd.Flags().GetString("wfRunId")
-		workflowEventDefName, _ := cmd.Flags().GetString("workflowEventDefName")
-		number, _ := cmd.Flags().GetInt32("number")
-
+		wfRunId := args[0]
+		workflowEventDefName := args[1]
+		number, err := strconv.Atoi(args[2])
+		if err != nil {
+			log.Fatalf("Error converting string '%s' to integer:", args[2])
+			return
+		}
 		ctx := requestContext(cmd)
 
 		littlehorse.PrintResp(getGlobalClient(cmd).GetWorkflowEvent(
@@ -31,14 +38,14 @@ var getWorkflowEventCmd = &cobra.Command{
 			&lhproto.WorkflowEventId{
 				WfRunId:            littlehorse.StrToWfRunId(wfRunId),
 				WorkflowEventDefId: &lhproto.WorkflowEventDefId{Name: workflowEventDefName},
-				Number:             number,
+				Number:             int32(number),
 			},
 		))
 	},
 }
 
 var searchWorkflowEventCmd = &cobra.Command{
-	Use:   "workflowEvent [workflowEventDefName] [...options]",
+	Use:   "workflowEvent <workflowEventDefName> [...options]",
 	Short: "Search for WorkflowEvent's by WorkflowEventDef Name",
 	Long: `
 Search for WorkflowEvent's by their WorkflowEventDef Name.
@@ -50,11 +57,12 @@ Returns a list of ObjectId's that can be passed into 'lhctl get workflowEvent'.
 	returned. The time bound applies to the time that the WorkflowEvents
 	were created.
 `,
+	Args: cobra.MatchAll(cobra.ExactArgs(1)),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
-		workflowEventDefName, _ := cmd.Flags().GetString("workflowEventDefName")
+		workflowEventDefName := args[0]
 
 		earliest, latest := loadEarliestAndLatestStart(cmd)
 
@@ -73,13 +81,14 @@ Returns a list of ObjectId's that can be passed into 'lhctl get workflowEvent'.
 }
 
 var listWorkflowEventCmd = &cobra.Command{
-	Use:   "workflowEvent [wfRunId]",
+	Use:   "workflowEvent <wfRunId>",
 	Short: "List all WorkflowEvent's for a given WfRun Id.",
 	Long: `
 Lists all WorkflowEvent's for a given WfRun Id.
 `,
+	Args: cobra.MatchAll(cobra.ExactArgs(1)),
 	Run: func(cmd *cobra.Command, args []string) {
-		wfRunId, _ := cmd.Flags().GetString("wfRunId")
+		wfRunId := args[0]
 
 		req := &lhproto.ListWorkflowEventsRequest{
 			WfRunId: littlehorse.StrToWfRunId(wfRunId),
@@ -94,20 +103,10 @@ Lists all WorkflowEvent's for a given WfRun Id.
 
 func init() {
 	getCmd.AddCommand(getWorkflowEventCmd)
-	getWorkflowEventCmd.Flags().String("wfRunId", "", " The Id of the WfRun that threw the event.")
-	getWorkflowEventCmd.Flags().String("workflowEventDefName", "", "The ID of the WorkflowEventDef that this WorkflowEvent is a member of.")
-	getWorkflowEventCmd.Flags().String("number", "", "A sequence number that makes the WorkflowEventId unique among all WorkflowEvent's of the same type thrown by the WfRun.")
-	getWorkflowEventCmd.MarkFlagRequired("wfRunId")
-	getWorkflowEventCmd.MarkFlagRequired("workflowEventDefName")
-	getWorkflowEventCmd.MarkFlagRequired("number")
 
 	listCmd.AddCommand(listWorkflowEventCmd)
-	listWorkflowEventCmd.Flags().String("wfRunId", "", "The ID of the WfRun that the WorkflowEvents belong to.")
-	listWorkflowEventCmd.MarkFlagRequired("wfRunId")
 
 	searchCmd.AddCommand(searchWorkflowEventCmd)
-	searchWorkflowEventCmd.MarkFlagRequired("workflowEventDefName")
-	searchWorkflowEventCmd.Flags().String("workflowEventDefName", "", "WorkflowEventDef Name of WorkflowEvents to search for")
 	searchWorkflowEventCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for Principals that were created no more than this number of minutes ago")
 	searchWorkflowEventCmd.Flags().Int("latestMinutesAgo", -1, "Search only for Principals that were created at least this number of minutes ago")
 }
