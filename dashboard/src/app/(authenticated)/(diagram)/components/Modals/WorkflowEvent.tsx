@@ -19,7 +19,12 @@ export const WorkflowEvent: FC<Modal> = ({ data }) => {
             <h2 className="text-lg font-bold">WorkflowEvent</h2>
             <div className="item-center flex gap-1 bg-gray-200 px-2 py-1">
               <span className="font-mono text-sm">{lhWorkflowEvent.id?.workflowEventDefId?.name}</span>
-              <ClipboardIcon className="h-4 w-4 fill-transparent stroke-blue-500" />
+              <ClipboardIcon
+                className="h-4 w-4 fill-transparent stroke-blue-500"
+                onClick={() => {
+                  navigator.clipboard.writeText(lhWorkflowEvent.id?.workflowEventDefId?.name ?? '')
+                }}
+              />
             </div>
           </DialogTitle>
         </DialogHeader>
