@@ -15,7 +15,7 @@ export const VARIABLE_TYPES: { [key in VariableType]: string } = {
   UNRECOGNIZED: 'Unrecognized',
 }
 
-export const SEARCH_ENTITIES = ['WfSpec', 'TaskDef', 'UserTaskDef', 'ExternalEventDef'] as const
+export const SEARCH_ENTITIES = ['WfSpec', 'TaskDef', 'UserTaskDef', 'ExternalEventDef', 'WorkflowEventDef'] as const
 export const WF_RUN_STATUSES = Object.values(LHStatus).filter(status => status !== 'UNRECOGNIZED')
 export type SearchType = (typeof SEARCH_ENTITIES)[number]
 

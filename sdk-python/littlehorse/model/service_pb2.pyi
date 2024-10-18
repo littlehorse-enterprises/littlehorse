@@ -154,6 +154,12 @@ class DeleteExternalEventDefRequest(_message.Message):
     id: _object_id_pb2.ExternalEventDefId
     def __init__(self, id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ...) -> None: ...
 
+class DeleteWorkflowEventDefRequest(_message.Message):
+    __slots__ = ["id"]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.WorkflowEventDefId
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]] = ...) -> None: ...
+
 class RunWfRequest(_message.Message):
     __slots__ = ["wf_spec_name", "major_version", "revision", "variables", "id", "parent_wf_run_id"]
     class VariablesEntry(_message.Message):
@@ -450,6 +456,24 @@ class ExternalEventDefIdList(_message.Message):
     bookmark: bytes
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
+class SearchWorkflowEventDefRequest(_message.Message):
+    __slots__ = ["bookmark", "limit", "prefix"]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
+    PREFIX_FIELD_NUMBER: _ClassVar[int]
+    bookmark: bytes
+    limit: int
+    prefix: str
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., prefix: _Optional[str] = ...) -> None: ...
+
+class WorkflowEventDefIdList(_message.Message):
+    __slots__ = ["results", "bookmark"]
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.WorkflowEventDefId]
+    bookmark: bytes
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+
 class SearchTenantRequest(_message.Message):
     __slots__ = ["limit", "bookmark"]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
@@ -514,6 +538,28 @@ class ExternalEventIdList(_message.Message):
     bookmark: bytes
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.ExternalEventId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
+class SearchWorkflowEventRequest(_message.Message):
+    __slots__ = ["bookmark", "limit", "earliest_start", "latest_start", "workflow_event_def_id"]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
+    EARLIEST_START_FIELD_NUMBER: _ClassVar[int]
+    LATEST_START_FIELD_NUMBER: _ClassVar[int]
+    WORKFLOW_EVENT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    bookmark: bytes
+    limit: int
+    earliest_start: _timestamp_pb2.Timestamp
+    latest_start: _timestamp_pb2.Timestamp
+    workflow_event_def_id: _object_id_pb2.WorkflowEventDefId
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., workflow_event_def_id: _Optional[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]] = ...) -> None: ...
+
+class WorkflowEventIdList(_message.Message):
+    __slots__ = ["results", "bookmark"]
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.WorkflowEventId]
+    bookmark: bytes
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.WorkflowEventId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+
 class ListNodeRunsRequest(_message.Message):
     __slots__ = ["wf_run_id", "thread_run_number", "bookmark", "limit"]
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
@@ -557,6 +603,18 @@ class ExternalEventList(_message.Message):
     RESULTS_FIELD_NUMBER: _ClassVar[int]
     results: _containers.RepeatedCompositeFieldContainer[_external_event_pb2.ExternalEvent]
     def __init__(self, results: _Optional[_Iterable[_Union[_external_event_pb2.ExternalEvent, _Mapping]]] = ...) -> None: ...
+
+class ListWorkflowEventsRequest(_message.Message):
+    __slots__ = ["wf_run_id"]
+    WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
+    wf_run_id: _object_id_pb2.WfRunId
+    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
+
+class WorkflowEventList(_message.Message):
+    __slots__ = ["results"]
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_workflow_event_pb2.WorkflowEvent]
+    def __init__(self, results: _Optional[_Iterable[_Union[_workflow_event_pb2.WorkflowEvent, _Mapping]]] = ...) -> None: ...
 
 class RegisterTaskWorkerRequest(_message.Message):
     __slots__ = ["task_worker_id", "task_def_id"]
