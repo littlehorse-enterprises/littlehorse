@@ -4,7 +4,7 @@
     /// Attribute used to indicate that the annotated method should be used as the method to execute a
     /// Task in the LH Dotnet Task Worker library.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Method)]
     public class LHTaskMethodAttribute : Attribute
     {
         /// <summary>
