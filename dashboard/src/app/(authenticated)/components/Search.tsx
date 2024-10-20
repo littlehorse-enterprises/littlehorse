@@ -8,7 +8,7 @@ import { FC, useState } from 'react'
 import { SearchFooter } from './SearchFooter'
 import { SearchHeader } from './SearchHeader'
 import { SearchResponse, search } from './searchAction'
-import { ExternalEventDefTable, TaskDefTable, UserTaskDefTable, WfSpecTable } from './tables'
+import { ExternalEventDefTable, TaskDefTable, UserTaskDefTable, WfSpecTable, WorkflowEventDefTable } from './tables'
 
 export const Search: FC<{}> = () => {
   const [prefix, setPrefix] = useState<string | undefined>()
@@ -40,6 +40,7 @@ export const Search: FC<{}> = () => {
           {type === 'TaskDef' && <TaskDefTable pages={data?.pages} />}
           {type === 'UserTaskDef' && <UserTaskDefTable pages={data?.pages} />}
           {type === 'ExternalEventDef' && <ExternalEventDefTable pages={data?.pages} />}
+          {type === 'WorkflowEventDef' && <WorkflowEventDefTable pages={data?.pages} />}
         </div>
       )}
       <SearchFooter currentLimit={limit} setLimit={setLimit} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} />

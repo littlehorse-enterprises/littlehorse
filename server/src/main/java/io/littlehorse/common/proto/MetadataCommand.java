@@ -62,6 +62,7 @@ private static final long serialVersionUID = 0L;
     DELETE_PRINCIPAL(13),
     PUT_TENANT(14),
     WORKFLOW_EVENT_DEF(15),
+    DELETE_WORKFLOW_EVENT_DEF(16),
     METADATACOMMAND_NOT_SET(0);
     private final int value;
     private MetadataCommandCase(int value) {
@@ -91,6 +92,7 @@ private static final long serialVersionUID = 0L;
         case 13: return DELETE_PRINCIPAL;
         case 14: return PUT_TENANT;
         case 15: return WORKFLOW_EVENT_DEF;
+        case 16: return DELETE_WORKFLOW_EVENT_DEF;
         case 0: return METADATACOMMAND_NOT_SET;
         default: return null;
       }
@@ -563,6 +565,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest.getDefaultInstance();
   }
 
+  public static final int DELETE_WORKFLOW_EVENT_DEF_FIELD_NUMBER = 16;
+  /**
+   * <code>.littlehorse.DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;</code>
+   * @return Whether the deleteWorkflowEventDef field is set.
+   */
+  @java.lang.Override
+  public boolean hasDeleteWorkflowEventDef() {
+    return metadataCommandCase_ == 16;
+  }
+  /**
+   * <code>.littlehorse.DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;</code>
+   * @return The deleteWorkflowEventDef.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest getDeleteWorkflowEventDef() {
+    if (metadataCommandCase_ == 16) {
+       return (io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequestOrBuilder getDeleteWorkflowEventDefOrBuilder() {
+    if (metadataCommandCase_ == 16) {
+       return (io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -618,6 +651,9 @@ private static final long serialVersionUID = 0L;
     }
     if (metadataCommandCase_ == 15) {
       output.writeMessage(15, (io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 16) {
+      output.writeMessage(16, (io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest) metadataCommand_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -682,6 +718,10 @@ private static final long serialVersionUID = 0L;
     if (metadataCommandCase_ == 15) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(15, (io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 16) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(16, (io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest) metadataCommand_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -758,6 +798,10 @@ private static final long serialVersionUID = 0L;
         if (!getWorkflowEventDef()
             .equals(other.getWorkflowEventDef())) return false;
         break;
+      case 16:
+        if (!getDeleteWorkflowEventDef()
+            .equals(other.getDeleteWorkflowEventDef())) return false;
+        break;
       case 0:
       default:
     }
@@ -828,6 +872,10 @@ private static final long serialVersionUID = 0L;
       case 15:
         hash = (37 * hash) + WORKFLOW_EVENT_DEF_FIELD_NUMBER;
         hash = (53 * hash) + getWorkflowEventDef().hashCode();
+        break;
+      case 16:
+        hash = (37 * hash) + DELETE_WORKFLOW_EVENT_DEF_FIELD_NUMBER;
+        hash = (53 * hash) + getDeleteWorkflowEventDef().hashCode();
         break;
       case 0:
       default:
@@ -1009,6 +1057,9 @@ private static final long serialVersionUID = 0L;
       if (workflowEventDefBuilder_ != null) {
         workflowEventDefBuilder_.clear();
       }
+      if (deleteWorkflowEventDefBuilder_ != null) {
+        deleteWorkflowEventDefBuilder_.clear();
+      }
       metadataCommandCase_ = 0;
       metadataCommand_ = null;
       return this;
@@ -1108,6 +1159,10 @@ private static final long serialVersionUID = 0L;
       if (metadataCommandCase_ == 15 &&
           workflowEventDefBuilder_ != null) {
         result.metadataCommand_ = workflowEventDefBuilder_.build();
+      }
+      if (metadataCommandCase_ == 16 &&
+          deleteWorkflowEventDefBuilder_ != null) {
+        result.metadataCommand_ = deleteWorkflowEventDefBuilder_.build();
       }
     }
 
@@ -1210,6 +1265,10 @@ private static final long serialVersionUID = 0L;
         }
         case WORKFLOW_EVENT_DEF: {
           mergeWorkflowEventDef(other.getWorkflowEventDef());
+          break;
+        }
+        case DELETE_WORKFLOW_EVENT_DEF: {
+          mergeDeleteWorkflowEventDef(other.getDeleteWorkflowEventDef());
           break;
         }
         case METADATACOMMAND_NOT_SET: {
@@ -1338,6 +1397,13 @@ private static final long serialVersionUID = 0L;
               metadataCommandCase_ = 15;
               break;
             } // case 122
+            case 130: {
+              input.readMessage(
+                  getDeleteWorkflowEventDefFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataCommandCase_ = 16;
+              break;
+            } // case 130
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3306,6 +3372,148 @@ private static final long serialVersionUID = 0L;
       metadataCommandCase_ = 15;
       onChanged();
       return workflowEventDefBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest, io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequestOrBuilder> deleteWorkflowEventDefBuilder_;
+    /**
+     * <code>.littlehorse.DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;</code>
+     * @return Whether the deleteWorkflowEventDef field is set.
+     */
+    @java.lang.Override
+    public boolean hasDeleteWorkflowEventDef() {
+      return metadataCommandCase_ == 16;
+    }
+    /**
+     * <code>.littlehorse.DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;</code>
+     * @return The deleteWorkflowEventDef.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest getDeleteWorkflowEventDef() {
+      if (deleteWorkflowEventDefBuilder_ == null) {
+        if (metadataCommandCase_ == 16) {
+          return (io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest.getDefaultInstance();
+      } else {
+        if (metadataCommandCase_ == 16) {
+          return deleteWorkflowEventDefBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;</code>
+     */
+    public Builder setDeleteWorkflowEventDef(io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest value) {
+      if (deleteWorkflowEventDefBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataCommand_ = value;
+        onChanged();
+      } else {
+        deleteWorkflowEventDefBuilder_.setMessage(value);
+      }
+      metadataCommandCase_ = 16;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;</code>
+     */
+    public Builder setDeleteWorkflowEventDef(
+        io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest.Builder builderForValue) {
+      if (deleteWorkflowEventDefBuilder_ == null) {
+        metadataCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        deleteWorkflowEventDefBuilder_.setMessage(builderForValue.build());
+      }
+      metadataCommandCase_ = 16;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;</code>
+     */
+    public Builder mergeDeleteWorkflowEventDef(io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest value) {
+      if (deleteWorkflowEventDefBuilder_ == null) {
+        if (metadataCommandCase_ == 16 &&
+            metadataCommand_ != io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest.newBuilder((io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest) metadataCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataCommandCase_ == 16) {
+          deleteWorkflowEventDefBuilder_.mergeFrom(value);
+        } else {
+          deleteWorkflowEventDefBuilder_.setMessage(value);
+        }
+      }
+      metadataCommandCase_ = 16;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;</code>
+     */
+    public Builder clearDeleteWorkflowEventDef() {
+      if (deleteWorkflowEventDefBuilder_ == null) {
+        if (metadataCommandCase_ == 16) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataCommandCase_ == 16) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+        }
+        deleteWorkflowEventDefBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;</code>
+     */
+    public io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest.Builder getDeleteWorkflowEventDefBuilder() {
+      return getDeleteWorkflowEventDefFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequestOrBuilder getDeleteWorkflowEventDefOrBuilder() {
+      if ((metadataCommandCase_ == 16) && (deleteWorkflowEventDefBuilder_ != null)) {
+        return deleteWorkflowEventDefBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataCommandCase_ == 16) {
+          return (io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest, io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequestOrBuilder> 
+        getDeleteWorkflowEventDefFieldBuilder() {
+      if (deleteWorkflowEventDefBuilder_ == null) {
+        if (!(metadataCommandCase_ == 16)) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest.getDefaultInstance();
+        }
+        deleteWorkflowEventDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest, io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest) metadataCommand_,
+                getParentForChildren(),
+                isClean());
+        metadataCommand_ = null;
+      }
+      metadataCommandCase_ = 16;
+      onChanged();
+      return deleteWorkflowEventDefBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

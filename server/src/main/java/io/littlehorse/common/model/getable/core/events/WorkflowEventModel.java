@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 public class WorkflowEventModel extends CoreGetable<WorkflowEvent> {
@@ -60,17 +61,25 @@ public class WorkflowEventModel extends CoreGetable<WorkflowEvent> {
     }
 
     @Override
-    public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        return List.of();
-    }
-
-    @Override
     public WorkflowEventIdModel getObjectId() {
         return id;
     }
 
     @Override
+    public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
+        return List.of(new GetableIndex<>(
+                List.of(Pair.of("wfEvtDefName", GetableIndex.ValueType.SINGLE)), Optional.of(TagStorageType.LOCAL)));
+    }
+
+    @Override
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
-        return null;
+        if (key.equals("wfEvtDefName")) {
+            return List.of(new IndexedField(key, this.getWorkflowEventDefName(), tagStorageType.get()));
+        }
+        return List.of();
+    }
+
+    public String getWorkflowEventDefName() {
+        return id.getWorkflowEventDefId().getName();
     }
 }
