@@ -40,6 +40,10 @@ public enum StoreableType
    * <code>METRIC_WINDOW = 7;</code>
    */
   METRIC_WINDOW(7),
+  /**
+   * <code>INIT_CONFIG = 8;</code>
+   */
+  INIT_CONFIG(8),
   UNRECOGNIZED(-1),
   ;
 
@@ -75,6 +79,10 @@ public enum StoreableType
    * <code>METRIC_WINDOW = 7;</code>
    */
   public static final int METRIC_WINDOW_VALUE = 7;
+  /**
+   * <code>INIT_CONFIG = 8;</code>
+   */
+  public static final int INIT_CONFIG_VALUE = 8;
 
 
   public final int getNumber() {
@@ -109,6 +117,7 @@ public enum StoreableType
       case 5: return TAG;
       case 6: return PARTITION_METRICS;
       case 7: return METRIC_WINDOW;
+      case 8: return INIT_CONFIG;
       default: return null;
     }
   }

@@ -2,11 +2,29 @@ package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.core.init.InitConfigModel;
+import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
+import io.littlehorse.common.proto.InitConfig;
 import io.littlehorse.common.proto.MetadataCommand;
+import io.littlehorse.common.proto.ServerVersion;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.ACLAction;
+import io.littlehorse.sdk.common.proto.ACLResource;
+import io.littlehorse.sdk.common.proto.Principal;
+import io.littlehorse.sdk.common.proto.PrincipalId;
+import io.littlehorse.sdk.common.proto.ServerACL;
+import io.littlehorse.sdk.common.proto.ServerACLs;
+import io.littlehorse.sdk.common.proto.Tenant;
+import io.littlehorse.sdk.common.proto.TenantId;
 import io.littlehorse.server.LHServer;
+import io.littlehorse.server.streams.ServerTopology;
+import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.storeinternals.index.Tag;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
+import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.LHProcessingExceptionHandler;
 import io.littlehorse.server.streams.topology.core.MetadataCommandException;
@@ -42,6 +60,54 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
 
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
         this.ctx = ctx;
+
+        ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(
+                ctx.getStateStore(ServerTopology.METADATA_STORE), new BackgroundContext());
+
+        InitConfigModel oldInitConfigModel = clusterStore.get(InitConfigModel.STORE_KEY, InitConfigModel.class);
+        if (oldInitConfigModel != null) {
+            System.out.println("Exists!");
+            System.out.println(oldInitConfigModel.toJson());
+        } else {
+            InitConfig.Builder initConfigBuilder = InitConfig.newBuilder()
+                    .setInitVersion(ServerVersion.newBuilder()
+                            .setMajorVersion(0)
+                            .setMinorVersion(0)
+                            .setPatchVersion(0))
+                    .setInitTime(LHUtil.fromDate(new Date()))
+                    .setPedro("pedro");
+
+            Tenant defaultTenant = Tenant.newBuilder()
+                    .setId(TenantId.newBuilder().setId("default"))
+                    .build();
+            TenantModel defaultTenantModel = TenantModel.fromProto(defaultTenant, TenantModel.class, null);
+
+            clusterStore.put(new StoredGetable<>(defaultTenantModel));
+            initConfigBuilder.setInitDefaultTenant(defaultTenant);
+            System.out.println("Default Tenant put to store!");
+
+            Principal anonymousPrincipal = Principal.newBuilder()
+                    .setId(PrincipalId.newBuilder().setId("anonymous"))
+                    .setGlobalAcls(ServerACLs.newBuilder()
+                            .addAcls(ServerACL.newBuilder()
+                                    .addResources(ACLResource.ACL_ALL_RESOURCES)
+                                    .addAllowedActions(ACLAction.ALL_ACTIONS)))
+                    .build();
+            PrincipalModel anonymousPrincipalModel =
+                    PrincipalModel.fromProto(anonymousPrincipal, PrincipalModel.class, null);
+            clusterStore.put(new StoredGetable<>(anonymousPrincipalModel));
+            for (Tag tag : anonymousPrincipalModel.getIndexEntries()) {
+                clusterStore.put(tag);
+            }
+            initConfigBuilder.setInitAnonymousPrincipal(anonymousPrincipal);
+            System.out.println("Anonymous Principal put to store!");
+
+            InitConfigModel initConfigModel =
+                    InitConfigModel.fromProto(initConfigBuilder.build(), InitConfigModel.class, null);
+            clusterStore.put(initConfigModel);
+
+            System.out.println("InitConfig put to store!");
+        }
     }
 
     @Override
