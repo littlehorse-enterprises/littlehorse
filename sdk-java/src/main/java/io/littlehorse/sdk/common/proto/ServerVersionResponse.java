@@ -5,7 +5,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * The version of the LH Server according to Semantic Versioning
+ * Get the current Server Version
  * </pre>
  *
  * Protobuf type {@code littlehorse.ServerVersionResponse}
@@ -20,7 +20,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private ServerVersionResponse() {
-    preReleaseIdentifier_ = "";
   }
 
   @java.lang.Override
@@ -43,112 +42,30 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.ServerVersionResponse.class, io.littlehorse.sdk.common.proto.ServerVersionResponse.Builder.class);
   }
 
-  private int bitField0_;
-  public static final int MAJOR_VERSION_FIELD_NUMBER = 1;
-  private int majorVersion_ = 0;
+  public static final int SERVER_VERSION_FIELD_NUMBER = 1;
+  private io.littlehorse.sdk.common.proto.ServerVersion serverVersion_;
   /**
-   * <pre>
-   * Server Major Version
-   * </pre>
-   *
-   * <code>int32 major_version = 1;</code>
-   * @return The majorVersion.
+   * <code>.littlehorse.ServerVersion server_version = 1;</code>
+   * @return Whether the serverVersion field is set.
    */
   @java.lang.Override
-  public int getMajorVersion() {
-    return majorVersion_;
-  }
-
-  public static final int MINOR_VERSION_FIELD_NUMBER = 2;
-  private int minorVersion_ = 0;
-  /**
-   * <pre>
-   * Server Minor Version
-   * </pre>
-   *
-   * <code>int32 minor_version = 2;</code>
-   * @return The minorVersion.
-   */
-  @java.lang.Override
-  public int getMinorVersion() {
-    return minorVersion_;
-  }
-
-  public static final int PATCH_VERSION_FIELD_NUMBER = 3;
-  private int patchVersion_ = 0;
-  /**
-   * <pre>
-   * Server Patch Version
-   * </pre>
-   *
-   * <code>int32 patch_version = 3;</code>
-   * @return The patchVersion.
-   */
-  @java.lang.Override
-  public int getPatchVersion() {
-    return patchVersion_;
-  }
-
-  public static final int PRE_RELEASE_IDENTIFIER_FIELD_NUMBER = 4;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object preReleaseIdentifier_ = "";
-  /**
-   * <pre>
-   * Prerelease Identifier. If this is set, then the server is NOT a production release
-   * but rather a release candidate or experimental pre-release.
-   * </pre>
-   *
-   * <code>optional string pre_release_identifier = 4;</code>
-   * @return Whether the preReleaseIdentifier field is set.
-   */
-  @java.lang.Override
-  public boolean hasPreReleaseIdentifier() {
-    return ((bitField0_ & 0x00000001) != 0);
+  public boolean hasServerVersion() {
+    return serverVersion_ != null;
   }
   /**
-   * <pre>
-   * Prerelease Identifier. If this is set, then the server is NOT a production release
-   * but rather a release candidate or experimental pre-release.
-   * </pre>
-   *
-   * <code>optional string pre_release_identifier = 4;</code>
-   * @return The preReleaseIdentifier.
+   * <code>.littlehorse.ServerVersion server_version = 1;</code>
+   * @return The serverVersion.
    */
   @java.lang.Override
-  public java.lang.String getPreReleaseIdentifier() {
-    java.lang.Object ref = preReleaseIdentifier_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      preReleaseIdentifier_ = s;
-      return s;
-    }
+  public io.littlehorse.sdk.common.proto.ServerVersion getServerVersion() {
+    return serverVersion_ == null ? io.littlehorse.sdk.common.proto.ServerVersion.getDefaultInstance() : serverVersion_;
   }
   /**
-   * <pre>
-   * Prerelease Identifier. If this is set, then the server is NOT a production release
-   * but rather a release candidate or experimental pre-release.
-   * </pre>
-   *
-   * <code>optional string pre_release_identifier = 4;</code>
-   * @return The bytes for preReleaseIdentifier.
+   * <code>.littlehorse.ServerVersion server_version = 1;</code>
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getPreReleaseIdentifierBytes() {
-    java.lang.Object ref = preReleaseIdentifier_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      preReleaseIdentifier_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public io.littlehorse.sdk.common.proto.ServerVersionOrBuilder getServerVersionOrBuilder() {
+    return serverVersion_ == null ? io.littlehorse.sdk.common.proto.ServerVersion.getDefaultInstance() : serverVersion_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -165,17 +82,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (majorVersion_ != 0) {
-      output.writeInt32(1, majorVersion_);
-    }
-    if (minorVersion_ != 0) {
-      output.writeInt32(2, minorVersion_);
-    }
-    if (patchVersion_ != 0) {
-      output.writeInt32(3, patchVersion_);
-    }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, preReleaseIdentifier_);
+    if (serverVersion_ != null) {
+      output.writeMessage(1, getServerVersion());
     }
     getUnknownFields().writeTo(output);
   }
@@ -186,20 +94,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (majorVersion_ != 0) {
+    if (serverVersion_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(1, majorVersion_);
-    }
-    if (minorVersion_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, minorVersion_);
-    }
-    if (patchVersion_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, patchVersion_);
-    }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, preReleaseIdentifier_);
+        .computeMessageSize(1, getServerVersion());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -216,16 +113,10 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.ServerVersionResponse other = (io.littlehorse.sdk.common.proto.ServerVersionResponse) obj;
 
-    if (getMajorVersion()
-        != other.getMajorVersion()) return false;
-    if (getMinorVersion()
-        != other.getMinorVersion()) return false;
-    if (getPatchVersion()
-        != other.getPatchVersion()) return false;
-    if (hasPreReleaseIdentifier() != other.hasPreReleaseIdentifier()) return false;
-    if (hasPreReleaseIdentifier()) {
-      if (!getPreReleaseIdentifier()
-          .equals(other.getPreReleaseIdentifier())) return false;
+    if (hasServerVersion() != other.hasServerVersion()) return false;
+    if (hasServerVersion()) {
+      if (!getServerVersion()
+          .equals(other.getServerVersion())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -238,15 +129,9 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + MAJOR_VERSION_FIELD_NUMBER;
-    hash = (53 * hash) + getMajorVersion();
-    hash = (37 * hash) + MINOR_VERSION_FIELD_NUMBER;
-    hash = (53 * hash) + getMinorVersion();
-    hash = (37 * hash) + PATCH_VERSION_FIELD_NUMBER;
-    hash = (53 * hash) + getPatchVersion();
-    if (hasPreReleaseIdentifier()) {
-      hash = (37 * hash) + PRE_RELEASE_IDENTIFIER_FIELD_NUMBER;
-      hash = (53 * hash) + getPreReleaseIdentifier().hashCode();
+    if (hasServerVersion()) {
+      hash = (37 * hash) + SERVER_VERSION_FIELD_NUMBER;
+      hash = (53 * hash) + getServerVersion().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -347,7 +232,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The version of the LH Server according to Semantic Versioning
+   * Get the current Server Version
    * </pre>
    *
    * Protobuf type {@code littlehorse.ServerVersionResponse}
@@ -383,10 +268,11 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      majorVersion_ = 0;
-      minorVersion_ = 0;
-      patchVersion_ = 0;
-      preReleaseIdentifier_ = "";
+      serverVersion_ = null;
+      if (serverVersionBuilder_ != null) {
+        serverVersionBuilder_.dispose();
+        serverVersionBuilder_ = null;
+      }
       return this;
     }
 
@@ -421,20 +307,10 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.ServerVersionResponse result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.majorVersion_ = majorVersion_;
+        result.serverVersion_ = serverVersionBuilder_ == null
+            ? serverVersion_
+            : serverVersionBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.minorVersion_ = minorVersion_;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.patchVersion_ = patchVersion_;
-      }
-      int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.preReleaseIdentifier_ = preReleaseIdentifier_;
-        to_bitField0_ |= 0x00000001;
-      }
-      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -481,19 +357,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.ServerVersionResponse other) {
       if (other == io.littlehorse.sdk.common.proto.ServerVersionResponse.getDefaultInstance()) return this;
-      if (other.getMajorVersion() != 0) {
-        setMajorVersion(other.getMajorVersion());
-      }
-      if (other.getMinorVersion() != 0) {
-        setMinorVersion(other.getMinorVersion());
-      }
-      if (other.getPatchVersion() != 0) {
-        setPatchVersion(other.getPatchVersion());
-      }
-      if (other.hasPreReleaseIdentifier()) {
-        preReleaseIdentifier_ = other.preReleaseIdentifier_;
-        bitField0_ |= 0x00000008;
-        onChanged();
+      if (other.hasServerVersion()) {
+        mergeServerVersion(other.getServerVersion());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -521,26 +386,13 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
-            case 8: {
-              majorVersion_ = input.readInt32();
+            case 10: {
+              input.readMessage(
+                  getServerVersionFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
-            } // case 8
-            case 16: {
-              minorVersion_ = input.readInt32();
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 16
-            case 24: {
-              patchVersion_ = input.readInt32();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 24
-            case 34: {
-              preReleaseIdentifier_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000008;
-              break;
-            } // case 34
+            } // case 10
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -558,245 +410,123 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private int majorVersion_ ;
+    private io.littlehorse.sdk.common.proto.ServerVersion serverVersion_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ServerVersion, io.littlehorse.sdk.common.proto.ServerVersion.Builder, io.littlehorse.sdk.common.proto.ServerVersionOrBuilder> serverVersionBuilder_;
     /**
-     * <pre>
-     * Server Major Version
-     * </pre>
-     *
-     * <code>int32 major_version = 1;</code>
-     * @return The majorVersion.
+     * <code>.littlehorse.ServerVersion server_version = 1;</code>
+     * @return Whether the serverVersion field is set.
      */
-    @java.lang.Override
-    public int getMajorVersion() {
-      return majorVersion_;
+    public boolean hasServerVersion() {
+      return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <pre>
-     * Server Major Version
-     * </pre>
-     *
-     * <code>int32 major_version = 1;</code>
-     * @param value The majorVersion to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.ServerVersion server_version = 1;</code>
+     * @return The serverVersion.
      */
-    public Builder setMajorVersion(int value) {
-
-      majorVersion_ = value;
+    public io.littlehorse.sdk.common.proto.ServerVersion getServerVersion() {
+      if (serverVersionBuilder_ == null) {
+        return serverVersion_ == null ? io.littlehorse.sdk.common.proto.ServerVersion.getDefaultInstance() : serverVersion_;
+      } else {
+        return serverVersionBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.littlehorse.ServerVersion server_version = 1;</code>
+     */
+    public Builder setServerVersion(io.littlehorse.sdk.common.proto.ServerVersion value) {
+      if (serverVersionBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        serverVersion_ = value;
+      } else {
+        serverVersionBuilder_.setMessage(value);
+      }
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <pre>
-     * Server Major Version
-     * </pre>
-     *
-     * <code>int32 major_version = 1;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.ServerVersion server_version = 1;</code>
      */
-    public Builder clearMajorVersion() {
+    public Builder setServerVersion(
+        io.littlehorse.sdk.common.proto.ServerVersion.Builder builderForValue) {
+      if (serverVersionBuilder_ == null) {
+        serverVersion_ = builderForValue.build();
+      } else {
+        serverVersionBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ServerVersion server_version = 1;</code>
+     */
+    public Builder mergeServerVersion(io.littlehorse.sdk.common.proto.ServerVersion value) {
+      if (serverVersionBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0) &&
+          serverVersion_ != null &&
+          serverVersion_ != io.littlehorse.sdk.common.proto.ServerVersion.getDefaultInstance()) {
+          getServerVersionBuilder().mergeFrom(value);
+        } else {
+          serverVersion_ = value;
+        }
+      } else {
+        serverVersionBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ServerVersion server_version = 1;</code>
+     */
+    public Builder clearServerVersion() {
       bitField0_ = (bitField0_ & ~0x00000001);
-      majorVersion_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private int minorVersion_ ;
-    /**
-     * <pre>
-     * Server Minor Version
-     * </pre>
-     *
-     * <code>int32 minor_version = 2;</code>
-     * @return The minorVersion.
-     */
-    @java.lang.Override
-    public int getMinorVersion() {
-      return minorVersion_;
-    }
-    /**
-     * <pre>
-     * Server Minor Version
-     * </pre>
-     *
-     * <code>int32 minor_version = 2;</code>
-     * @param value The minorVersion to set.
-     * @return This builder for chaining.
-     */
-    public Builder setMinorVersion(int value) {
-
-      minorVersion_ = value;
-      bitField0_ |= 0x00000002;
+      serverVersion_ = null;
+      if (serverVersionBuilder_ != null) {
+        serverVersionBuilder_.dispose();
+        serverVersionBuilder_ = null;
+      }
       onChanged();
       return this;
     }
     /**
-     * <pre>
-     * Server Minor Version
-     * </pre>
-     *
-     * <code>int32 minor_version = 2;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.ServerVersion server_version = 1;</code>
      */
-    public Builder clearMinorVersion() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      minorVersion_ = 0;
+    public io.littlehorse.sdk.common.proto.ServerVersion.Builder getServerVersionBuilder() {
+      bitField0_ |= 0x00000001;
       onChanged();
-      return this;
-    }
-
-    private int patchVersion_ ;
-    /**
-     * <pre>
-     * Server Patch Version
-     * </pre>
-     *
-     * <code>int32 patch_version = 3;</code>
-     * @return The patchVersion.
-     */
-    @java.lang.Override
-    public int getPatchVersion() {
-      return patchVersion_;
+      return getServerVersionFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * Server Patch Version
-     * </pre>
-     *
-     * <code>int32 patch_version = 3;</code>
-     * @param value The patchVersion to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.ServerVersion server_version = 1;</code>
      */
-    public Builder setPatchVersion(int value) {
-
-      patchVersion_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Server Patch Version
-     * </pre>
-     *
-     * <code>int32 patch_version = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearPatchVersion() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      patchVersion_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object preReleaseIdentifier_ = "";
-    /**
-     * <pre>
-     * Prerelease Identifier. If this is set, then the server is NOT a production release
-     * but rather a release candidate or experimental pre-release.
-     * </pre>
-     *
-     * <code>optional string pre_release_identifier = 4;</code>
-     * @return Whether the preReleaseIdentifier field is set.
-     */
-    public boolean hasPreReleaseIdentifier() {
-      return ((bitField0_ & 0x00000008) != 0);
-    }
-    /**
-     * <pre>
-     * Prerelease Identifier. If this is set, then the server is NOT a production release
-     * but rather a release candidate or experimental pre-release.
-     * </pre>
-     *
-     * <code>optional string pre_release_identifier = 4;</code>
-     * @return The preReleaseIdentifier.
-     */
-    public java.lang.String getPreReleaseIdentifier() {
-      java.lang.Object ref = preReleaseIdentifier_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        preReleaseIdentifier_ = s;
-        return s;
+    public io.littlehorse.sdk.common.proto.ServerVersionOrBuilder getServerVersionOrBuilder() {
+      if (serverVersionBuilder_ != null) {
+        return serverVersionBuilder_.getMessageOrBuilder();
       } else {
-        return (java.lang.String) ref;
+        return serverVersion_ == null ?
+            io.littlehorse.sdk.common.proto.ServerVersion.getDefaultInstance() : serverVersion_;
       }
     }
     /**
-     * <pre>
-     * Prerelease Identifier. If this is set, then the server is NOT a production release
-     * but rather a release candidate or experimental pre-release.
-     * </pre>
-     *
-     * <code>optional string pre_release_identifier = 4;</code>
-     * @return The bytes for preReleaseIdentifier.
+     * <code>.littlehorse.ServerVersion server_version = 1;</code>
      */
-    public com.google.protobuf.ByteString
-        getPreReleaseIdentifierBytes() {
-      java.lang.Object ref = preReleaseIdentifier_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        preReleaseIdentifier_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.ServerVersion, io.littlehorse.sdk.common.proto.ServerVersion.Builder, io.littlehorse.sdk.common.proto.ServerVersionOrBuilder> 
+        getServerVersionFieldBuilder() {
+      if (serverVersionBuilder_ == null) {
+        serverVersionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.ServerVersion, io.littlehorse.sdk.common.proto.ServerVersion.Builder, io.littlehorse.sdk.common.proto.ServerVersionOrBuilder>(
+                getServerVersion(),
+                getParentForChildren(),
+                isClean());
+        serverVersion_ = null;
       }
-    }
-    /**
-     * <pre>
-     * Prerelease Identifier. If this is set, then the server is NOT a production release
-     * but rather a release candidate or experimental pre-release.
-     * </pre>
-     *
-     * <code>optional string pre_release_identifier = 4;</code>
-     * @param value The preReleaseIdentifier to set.
-     * @return This builder for chaining.
-     */
-    public Builder setPreReleaseIdentifier(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      preReleaseIdentifier_ = value;
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Prerelease Identifier. If this is set, then the server is NOT a production release
-     * but rather a release candidate or experimental pre-release.
-     * </pre>
-     *
-     * <code>optional string pre_release_identifier = 4;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearPreReleaseIdentifier() {
-      preReleaseIdentifier_ = getDefaultInstance().getPreReleaseIdentifier();
-      bitField0_ = (bitField0_ & ~0x00000008);
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Prerelease Identifier. If this is set, then the server is NOT a production release
-     * but rather a release candidate or experimental pre-release.
-     * </pre>
-     *
-     * <code>optional string pre_release_identifier = 4;</code>
-     * @param value The bytes for preReleaseIdentifier to set.
-     * @return This builder for chaining.
-     */
-    public Builder setPreReleaseIdentifierBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      preReleaseIdentifier_ = value;
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
+      return serverVersionBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

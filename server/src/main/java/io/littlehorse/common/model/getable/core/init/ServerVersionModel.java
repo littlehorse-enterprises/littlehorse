@@ -2,8 +2,8 @@ package io.littlehorse.common.model.getable.core.init;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.proto.ServerVersion;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.ServerVersion;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class ServerVersionModel extends LHSerializable<ServerVersion> {

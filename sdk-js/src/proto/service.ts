@@ -1420,8 +1420,13 @@ export interface GetLatestWfSpecRequest {
   majorVersion?: number | undefined;
 }
 
-/** The version of the LH Server according to Semantic Versioning */
+/** Get the current Server Version */
 export interface ServerVersionResponse {
+  serverVersion: ServerVersion | undefined;
+}
+
+/** The version of the LH Server according to Semantic Versioning */
+export interface ServerVersion {
   /** Server Major Version */
   majorVersion: number;
   /** Server Minor Version */
@@ -7117,11 +7122,58 @@ export const GetLatestWfSpecRequest = {
 };
 
 function createBaseServerVersionResponse(): ServerVersionResponse {
-  return { majorVersion: 0, minorVersion: 0, patchVersion: 0, preReleaseIdentifier: undefined };
+  return { serverVersion: undefined };
 }
 
 export const ServerVersionResponse = {
   encode(message: ServerVersionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.serverVersion !== undefined) {
+      ServerVersion.encode(message.serverVersion, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ServerVersionResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseServerVersionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.serverVersion = ServerVersion.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ServerVersionResponse>): ServerVersionResponse {
+    return ServerVersionResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ServerVersionResponse>): ServerVersionResponse {
+    const message = createBaseServerVersionResponse();
+    message.serverVersion = (object.serverVersion !== undefined && object.serverVersion !== null)
+      ? ServerVersion.fromPartial(object.serverVersion)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseServerVersion(): ServerVersion {
+  return { majorVersion: 0, minorVersion: 0, patchVersion: 0, preReleaseIdentifier: undefined };
+}
+
+export const ServerVersion = {
+  encode(message: ServerVersion, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.majorVersion !== 0) {
       writer.uint32(8).int32(message.majorVersion);
     }
@@ -7137,10 +7189,10 @@ export const ServerVersionResponse = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): ServerVersionResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): ServerVersion {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseServerVersionResponse();
+    const message = createBaseServerVersion();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -7181,11 +7233,11 @@ export const ServerVersionResponse = {
     return message;
   },
 
-  create(base?: DeepPartial<ServerVersionResponse>): ServerVersionResponse {
-    return ServerVersionResponse.fromPartial(base ?? {});
+  create(base?: DeepPartial<ServerVersion>): ServerVersion {
+    return ServerVersion.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<ServerVersionResponse>): ServerVersionResponse {
-    const message = createBaseServerVersionResponse();
+  fromPartial(object: DeepPartial<ServerVersion>): ServerVersion {
+    const message = createBaseServerVersion();
     message.majorVersion = object.majorVersion ?? 0;
     message.minorVersion = object.minorVersion ?? 0;
     message.patchVersion = object.patchVersion ?? 0;

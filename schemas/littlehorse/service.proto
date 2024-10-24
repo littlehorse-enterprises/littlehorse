@@ -1330,8 +1330,13 @@ message GetLatestWfSpecRequest {
   optional int32 major_version = 2;
 }
 
-// The version of the LH Server according to Semantic Versioning
+// Get the current Server Version
 message ServerVersionResponse {
+  ServerVersion server_version = 1;
+}
+
+// The version of the LH Server according to Semantic Versioning
+message ServerVersion {
   // Server Major Version
   int32 major_version = 1;
 

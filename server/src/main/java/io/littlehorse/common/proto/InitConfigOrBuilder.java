@@ -24,7 +24,7 @@ public interface InitConfigOrBuilder extends
    * <code>.littlehorse.ServerVersion init_version = 1;</code>
    * @return The initVersion.
    */
-  io.littlehorse.common.proto.ServerVersion getInitVersion();
+  io.littlehorse.sdk.common.proto.ServerVersion getInitVersion();
   /**
    * <pre>
    * The version of the server when it is initialized.
@@ -32,7 +32,7 @@ public interface InitConfigOrBuilder extends
    *
    * <code>.littlehorse.ServerVersion init_version = 1;</code>
    */
-  io.littlehorse.common.proto.ServerVersionOrBuilder getInitVersionOrBuilder();
+  io.littlehorse.sdk.common.proto.ServerVersionOrBuilder getInitVersionOrBuilder();
 
   /**
    * <pre>

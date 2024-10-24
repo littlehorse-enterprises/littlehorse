@@ -19,11 +19,6 @@ public final class Init {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_InitConfig_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_ServerVersion_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_ServerVersion_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -34,21 +29,21 @@ public final class Init {
   static {
     java.lang.String[] descriptorData = {
       "\n\ninit.proto\022\013littlehorse\032\037google/protob" +
-      "uf/timestamp.proto\032\nacls.proto\"\350\001\n\nInitC" +
-      "onfig\0220\n\014init_version\030\001 \001(\0132\032.littlehors" +
-      "e.ServerVersion\022-\n\tinit_time\030\002 \001(\0132\032.goo" +
-      "gle.protobuf.Timestamp\0228\n\030init_anonymous" +
-      "_principal\030\003 \001(\0132\026.littlehorse.Principal" +
-      "\0220\n\023init_default_tenant\030\004 \001(\0132\023.littleho" +
-      "rse.Tenant\022\r\n\005pedro\030\005 \001(\t\"T\n\rServerVersi" +
-      "on\022\025\n\rmajor_version\030\001 \001(\005\022\025\n\rminor_versi" +
-      "on\030\002 \001(\005\022\025\n\rpatch_version\030\003 \001(\005B\037\n\033io.li" +
-      "ttlehorse.common.protoP\001b\006proto3"
+      "uf/timestamp.proto\032\rservice.proto\032\nacls." +
+      "proto\"\350\001\n\nInitConfig\0220\n\014init_version\030\001 \001" +
+      "(\0132\032.littlehorse.ServerVersion\022-\n\tinit_t" +
+      "ime\030\002 \001(\0132\032.google.protobuf.Timestamp\0228\n" +
+      "\030init_anonymous_principal\030\003 \001(\0132\026.little" +
+      "horse.Principal\0220\n\023init_default_tenant\030\004" +
+      " \001(\0132\023.littlehorse.Tenant\022\r\n\005pedro\030\005 \001(\t" +
+      "B\037\n\033io.littlehorse.common.protoP\001b\006proto" +
+      "3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.TimestampProto.getDescriptor(),
+          io.littlehorse.sdk.common.proto.Service.getDescriptor(),
           io.littlehorse.sdk.common.proto.Acls.getDescriptor(),
         });
     internal_static_littlehorse_InitConfig_descriptor =
@@ -57,13 +52,8 @@ public final class Init {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_InitConfig_descriptor,
         new java.lang.String[] { "InitVersion", "InitTime", "InitAnonymousPrincipal", "InitDefaultTenant", "Pedro", });
-    internal_static_littlehorse_ServerVersion_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_littlehorse_ServerVersion_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_ServerVersion_descriptor,
-        new java.lang.String[] { "MajorVersion", "MinorVersion", "PatchVersion", });
     com.google.protobuf.TimestampProto.getDescriptor();
+    io.littlehorse.sdk.common.proto.Service.getDescriptor();
     io.littlehorse.sdk.common.proto.Acls.getDescriptor();
   }
 

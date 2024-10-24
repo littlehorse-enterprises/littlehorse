@@ -2302,7 +2302,7 @@ Search for WfSpec's.
 
 
 
-### Message `ServerVersionResponse` {#serverversionresponse}
+### Message `ServerVersion` {#serverversion}
 
 The version of the LH Server according to Semantic Versioning
 
@@ -2313,6 +2313,19 @@ The version of the LH Server according to Semantic Versioning
 | `minor_version` | | int32 | Server Minor Version |
 | `patch_version` | | int32 | Server Patch Version |
 | `pre_release_identifier` | optional| string | Prerelease Identifier. If this is set, then the server is NOT a production release but rather a release candidate or experimental pre-release. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ServerVersionResponse` {#serverversionresponse}
+
+Get the current Server Version
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `server_version` | | [ServerVersion](#serverversion) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 

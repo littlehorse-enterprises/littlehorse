@@ -5,6 +5,7 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/timestamp.proto";
+import "service.proto";
 import "acls.proto";
 
 // An object containing important server configurations that will be stored
@@ -26,15 +27,4 @@ message InitConfig {
   
   // Just for fun?
   string pedro = 5;
-}
-
-message ServerVersion {
-  // Server Major Version
-  int32 major_version = 1;
-
-  // Server Minor Version
-  int32 minor_version = 2;
-
-  // Server Patch Version
-  int32 patch_version = 3;
 }
