@@ -2,8 +2,6 @@ package io.littlehorse.server.streams.topology.core;
 
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
-import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
-import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
@@ -16,8 +14,6 @@ import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.sdk.common.proto.ACLAction;
-import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
@@ -111,29 +107,7 @@ public class WfService {
             id = new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL);
         }
 
-        PrincipalModel storedResult = metadataManager.get(id);
-
-        if (storedResult == null && id.getId().equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
-            // This means that all of the following are true:
-            // - The `anonymous` Principal has not yet been modified by the customer.
-            // - We just implicitly create it.
-            return createAnonymousPrincipal();
-        }
-
-        return storedResult;
-    }
-
-    private PrincipalModel createAnonymousPrincipal() {
-        List<ACLAction> allActions = List.of(ACLAction.ALL_ACTIONS);
-        List<ACLResource> allResources = List.of(ACLResource.ACL_ALL_RESOURCES);
-
-        ServerACLsModel acls = new ServerACLsModel();
-        acls.getAcls().add(new ServerACLModel(allResources, allActions));
-
-        PrincipalModel out = new PrincipalModel();
-        out.setId(new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL));
-        out.setGlobalAcls(acls);
-        return out;
+        return metadataManager.get(id);
     }
 
     public List<PrincipalIdModel> adminPrincipalIds() {
