@@ -1,14 +1,19 @@
 ﻿namespace LittleHorse.Sdk.Worker
 {
     /// <summary>
-    /// Attribute used to indicate that the annotated method should be used as the method to execute a
-    /// Task in the LH Dotnet Task Worker library.
+    /// Attribute for adding metadata based on the target type.
+    /// <p>
+    /// This annotation can be applied to either a method or a method parameter:
+    /// </p>
+    /// - Method: When applied to a method, the metadata will be added to a {@code NodeOutput}.
+    /// - Method Parameter: When applied to a method parameter, the metadata will be added to a {@code VariableDef}.
     /// </summary>
+    ///
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Parameter)]
     public class LHTypeAttribute : Attribute
     {
         /// <summary>
-        /// This is the masked flag attribute to secure sensible params in the annotated method
+        /// Indicates whether the value should be masked.
         /// </summary>
         public bool Masked { get; }
 
