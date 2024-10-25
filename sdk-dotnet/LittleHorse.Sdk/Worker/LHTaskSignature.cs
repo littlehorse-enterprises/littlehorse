@@ -20,7 +20,7 @@ namespace LittleHorse.Sdk.Worker
 
         private TaskDefOutputSchema? _taskDefOutputSchema;
 
-        public TaskDefOutputSchema? TaskDefOutputSchema => _taskDefOutputSchema;
+        internal TaskDefOutputSchema? TaskDefOutputSchema => _taskDefOutputSchema;
 
         public LHTaskSignature(string taskDefName, T executable)
         {
