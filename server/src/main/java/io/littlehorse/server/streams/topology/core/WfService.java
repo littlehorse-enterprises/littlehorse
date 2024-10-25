@@ -14,6 +14,8 @@ import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.sdk.common.proto.Principal;
+import io.littlehorse.sdk.common.proto.PrincipalId;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
@@ -26,11 +28,13 @@ public class WfService {
 
     private final ReadOnlyMetadataManager metadataManager;
     private final MetadataCache metadataCache;
+    private final ExecutionContext executionContext;
 
     public WfService(
             ReadOnlyMetadataManager metadataManager, MetadataCache metadataCache, ExecutionContext executionContext) {
         this.metadataCache = metadataCache;
         this.metadataManager = metadataManager;
+        this.executionContext = executionContext;
     }
 
     public WfSpecModel getWfSpec(String name, Integer majorVersion, Integer revision) {
@@ -109,8 +113,19 @@ public class WfService {
 
         PrincipalModel principalModel = metadataManager.get(id);
 
-        if (principalModel == null) {
-            return metadataManager.get(new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL));
+        if (principalModel == null && id.getId().equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
+            principalModel = metadataManager.get(new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL));
+
+            // If Anonymous Principal missing from store (should never happen...)
+            if (principalModel == null) { 
+                // Implicitly create empty Anonymous Principal
+                principalModel = PrincipalModel.fromProto(
+                        Principal.newBuilder()
+                                .setId(PrincipalId.newBuilder().setId(LHConstants.ANONYMOUS_PRINCIPAL))
+                                .build(),
+                        PrincipalModel.class,
+                        executionContext);
+            }
         }
 
         return principalModel;
