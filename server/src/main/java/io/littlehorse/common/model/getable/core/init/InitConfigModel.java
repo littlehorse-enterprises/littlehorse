@@ -28,7 +28,6 @@ public class InitConfigModel extends Storeable<InitConfig> {
     public static final String SERVER_INITIALIZED_KEY = "server_initialized";
 
     public InitConfigModel() {}
-    ;
 
     public InitConfigModel(
             ServerVersionModel initServerVersion,
@@ -71,7 +70,7 @@ public class InitConfigModel extends Storeable<InitConfig> {
 
     @Override
     public String getStoreKey() {
-        return this.STORE_KEY;
+        return SERVER_INITIALIZED_KEY;
     }
 
     @Override
