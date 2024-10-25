@@ -107,7 +107,13 @@ public class WfService {
             id = new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL);
         }
 
-        return metadataManager.get(id);
+        PrincipalModel principalModel = metadataManager.get(id);
+
+        if (principalModel == null) {
+            return metadataManager.get(new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL));
+        }
+
+        return principalModel;
     }
 
     public List<PrincipalIdModel> adminPrincipalIds() {
