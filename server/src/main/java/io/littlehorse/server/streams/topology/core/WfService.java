@@ -114,18 +114,14 @@ public class WfService {
         PrincipalModel principalModel = metadataManager.get(id);
 
         if (principalModel == null && id.getId().equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
-            principalModel = metadataManager.get(new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL));
-
             // If Anonymous Principal missing from store (should never happen...)
-            if (principalModel == null) { 
-                // Implicitly create empty Anonymous Principal
-                principalModel = PrincipalModel.fromProto(
-                        Principal.newBuilder()
-                                .setId(PrincipalId.newBuilder().setId(LHConstants.ANONYMOUS_PRINCIPAL))
-                                .build(),
-                        PrincipalModel.class,
-                        executionContext);
-            }
+            // Implicitly create empty Anonymous Principal
+            return PrincipalModel.fromProto(
+                    Principal.newBuilder()
+                            .setId(PrincipalId.newBuilder().setId(LHConstants.ANONYMOUS_PRINCIPAL))
+                            .build(),
+                    PrincipalModel.class,
+                    executionContext);
         }
 
         return principalModel;
