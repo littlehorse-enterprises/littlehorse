@@ -16,6 +16,8 @@
   --white-filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(336deg) brightness(110%) contrast(101%);
   --brown-filter: invert(24%) sepia(12%) saturate(1484%) hue-rotate(334deg) brightness(100%) contrast(87%);
   --black-filter:  brightness(0%);
+
+  --docusaurus-highlighted-code-line-bg: rgb(230, 230, 230);
 }
 
 [data-theme='light'] {
@@ -48,9 +50,10 @@
   --ifm-color-primary-light: #ebebeb;
   --ifm-color-primary-lighter: #f6f6f6;
   --ifm-color-primary-lightest: #ffffff;
-  --ifm-background-color: #000000;
   
   --docsearch-highlight-color: #7b7bc4 !important;
+
+  --docusaurus-highlighted-code-line-bg: rgb(73, 73, 73);
 
   code {
     border-color: rgba(255, 255, 255, 0.1);
@@ -109,6 +112,10 @@ code {
 .header-slack-link:hover::before {
   background-color: var(--ifm-navbar-link-hover-color);
 }
+.header-slack-link {
+  padding-right: 16px;
+}
+
 
 /* GitHub Navbar Icon */
 .header-github-link::before {
