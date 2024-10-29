@@ -3,7 +3,6 @@ package e2e;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import io.littlehorse.test.internal.TestBootstrapper;
@@ -18,7 +17,6 @@ import org.testcontainers.utility.DockerImageName;
 public class StandaloneTestBootstrapper implements TestBootstrapper {
 
     private LHConfig workerConfig;
-    private LittleHorseBlockingStub client;
 
     private KafkaContainer kafka;
     private LHServer server1;
@@ -39,7 +37,6 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
         });
         kafka.start();
         workerConfig = new LHConfig(testClientProperties());
-        client = workerConfig.getBlockingStub();
         startServers();
     }
 
