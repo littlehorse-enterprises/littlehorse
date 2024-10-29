@@ -94,6 +94,11 @@ Represented as a [Principal protobuf object](../08-api.md#principal), the initia
 }
 ```
 
+:::danger
+The `anonymous` `Principal` should **ALWAYS** be demoted before your LittleHorse Cluster is used in production.
+:::
+
+
 #### Updating the Permissions
 
 Like any other `Principal`, the `anonymous` Principal's permissions can be overwritten via a `PutPrincipal` request from a caller with proper permissions and the `overwrite` parameter set to true.
