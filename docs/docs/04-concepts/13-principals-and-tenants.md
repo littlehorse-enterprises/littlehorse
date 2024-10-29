@@ -48,11 +48,13 @@ There are several motivations for the out-of-the-box design:
 * **Developer Experience**: this design allows LittleHorse to "just work" without understanding `Principal`s or `Tenant`s.
 * **Fine-Grained Permissions**: ACL's on the `Principal` resource allow fine-grained control over who can access what resource.
 
+<hr/>
+
 ### The `default` Tenant
 
 An authenticated request made without a Tenant ID is designated for the `default` `Tenant`. Alternatively, requests made using an unknown Tenant ID will be rejected.
 
-### Initial Configuration
+#### Initial Configuration
 
 The `default` `Tenant` is initialized simply as a `Tenant` with the ID `default`. If `Tenant`s receive more metadata in the future, we will update the configuration here.
 
