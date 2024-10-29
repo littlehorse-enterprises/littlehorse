@@ -9,8 +9,8 @@ import "service.proto";
 import "acls.proto";
 
 // An object containing important server configurations that will be stored
-// in RocksDB and referenced after server restarts or rebalances.
-message InitConfig {
+// in a KeyValueStore and referenced after server restarts or rebalances.
+message InitializationLog {
   // The version of the server when it is initialized.
   ServerVersion init_version = 1;
   
@@ -26,5 +26,5 @@ message InitConfig {
   Tenant init_default_tenant = 4;
   
   // Just for fun?
-  string pedro = 5;
+  string obi_wan = 5;
 }

@@ -6,42 +6,42 @@ package io.littlehorse.common.proto;
 /**
  * <pre>
  * An object containing important server configurations that will be stored
- * in RocksDB and referenced after server restarts or rebalances.
+ * in a KeyValueStore and referenced after server restarts or rebalances.
  * </pre>
  *
- * Protobuf type {@code littlehorse.InitConfig}
+ * Protobuf type {@code littlehorse.InitializationLog}
  */
-public final class InitConfig extends
+public final class InitializationLog extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.InitConfig)
-    InitConfigOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.InitializationLog)
+    InitializationLogOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use InitConfig.newBuilder() to construct.
-  private InitConfig(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use InitializationLog.newBuilder() to construct.
+  private InitializationLog(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private InitConfig() {
-    pedro_ = "";
+  private InitializationLog() {
+    obiWan_ = "";
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new InitConfig();
+    return new InitializationLog();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.Init.internal_static_littlehorse_InitConfig_descriptor;
+    return io.littlehorse.common.proto.Init.internal_static_littlehorse_InitializationLog_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.Init.internal_static_littlehorse_InitConfig_fieldAccessorTable
+    return io.littlehorse.common.proto.Init.internal_static_littlehorse_InitializationLog_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.InitConfig.class, io.littlehorse.common.proto.InitConfig.Builder.class);
+            io.littlehorse.common.proto.InitializationLog.class, io.littlehorse.common.proto.InitializationLog.Builder.class);
   }
 
   public static final int INIT_VERSION_FIELD_NUMBER = 1;
@@ -202,27 +202,27 @@ private static final long serialVersionUID = 0L;
     return initDefaultTenant_ == null ? io.littlehorse.sdk.common.proto.Tenant.getDefaultInstance() : initDefaultTenant_;
   }
 
-  public static final int PEDRO_FIELD_NUMBER = 5;
+  public static final int OBI_WAN_FIELD_NUMBER = 5;
   @SuppressWarnings("serial")
-  private volatile java.lang.Object pedro_ = "";
+  private volatile java.lang.Object obiWan_ = "";
   /**
    * <pre>
    * Just for fun?
    * </pre>
    *
-   * <code>string pedro = 5;</code>
-   * @return The pedro.
+   * <code>string obi_wan = 5;</code>
+   * @return The obiWan.
    */
   @java.lang.Override
-  public java.lang.String getPedro() {
-    java.lang.Object ref = pedro_;
+  public java.lang.String getObiWan() {
+    java.lang.Object ref = obiWan_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      pedro_ = s;
+      obiWan_ = s;
       return s;
     }
   }
@@ -231,18 +231,18 @@ private static final long serialVersionUID = 0L;
    * Just for fun?
    * </pre>
    *
-   * <code>string pedro = 5;</code>
-   * @return The bytes for pedro.
+   * <code>string obi_wan = 5;</code>
+   * @return The bytes for obiWan.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getPedroBytes() {
-    java.lang.Object ref = pedro_;
+      getObiWanBytes() {
+    java.lang.Object ref = obiWan_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      pedro_ = b;
+      obiWan_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -275,8 +275,8 @@ private static final long serialVersionUID = 0L;
     if (initDefaultTenant_ != null) {
       output.writeMessage(4, getInitDefaultTenant());
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(pedro_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, pedro_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(obiWan_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, obiWan_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -303,8 +303,8 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getInitDefaultTenant());
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(pedro_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, pedro_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(obiWan_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, obiWan_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -316,10 +316,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.InitConfig)) {
+    if (!(obj instanceof io.littlehorse.common.proto.InitializationLog)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.InitConfig other = (io.littlehorse.common.proto.InitConfig) obj;
+    io.littlehorse.common.proto.InitializationLog other = (io.littlehorse.common.proto.InitializationLog) obj;
 
     if (hasInitVersion() != other.hasInitVersion()) return false;
     if (hasInitVersion()) {
@@ -341,8 +341,8 @@ private static final long serialVersionUID = 0L;
       if (!getInitDefaultTenant()
           .equals(other.getInitDefaultTenant())) return false;
     }
-    if (!getPedro()
-        .equals(other.getPedro())) return false;
+    if (!getObiWan()
+        .equals(other.getObiWan())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -370,51 +370,51 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + INIT_DEFAULT_TENANT_FIELD_NUMBER;
       hash = (53 * hash) + getInitDefaultTenant().hashCode();
     }
-    hash = (37 * hash) + PEDRO_FIELD_NUMBER;
-    hash = (53 * hash) + getPedro().hashCode();
+    hash = (37 * hash) + OBI_WAN_FIELD_NUMBER;
+    hash = (53 * hash) + getObiWan().hashCode();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.InitConfig parseFrom(
+  public static io.littlehorse.common.proto.InitializationLog parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.InitConfig parseFrom(
+  public static io.littlehorse.common.proto.InitializationLog parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.InitConfig parseFrom(
+  public static io.littlehorse.common.proto.InitializationLog parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.InitConfig parseFrom(
+  public static io.littlehorse.common.proto.InitializationLog parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.InitConfig parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.InitializationLog parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.InitConfig parseFrom(
+  public static io.littlehorse.common.proto.InitializationLog parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.InitConfig parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.InitializationLog parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.InitConfig parseFrom(
+  public static io.littlehorse.common.proto.InitializationLog parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -422,26 +422,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.common.proto.InitConfig parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.InitializationLog parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.common.proto.InitConfig parseDelimitedFrom(
+  public static io.littlehorse.common.proto.InitializationLog parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.InitConfig parseFrom(
+  public static io.littlehorse.common.proto.InitializationLog parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.InitConfig parseFrom(
+  public static io.littlehorse.common.proto.InitializationLog parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -454,7 +454,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.InitConfig prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.InitializationLog prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -472,29 +472,29 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * An object containing important server configurations that will be stored
-   * in RocksDB and referenced after server restarts or rebalances.
+   * in a KeyValueStore and referenced after server restarts or rebalances.
    * </pre>
    *
-   * Protobuf type {@code littlehorse.InitConfig}
+   * Protobuf type {@code littlehorse.InitializationLog}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.InitConfig)
-      io.littlehorse.common.proto.InitConfigOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.InitializationLog)
+      io.littlehorse.common.proto.InitializationLogOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.Init.internal_static_littlehorse_InitConfig_descriptor;
+      return io.littlehorse.common.proto.Init.internal_static_littlehorse_InitializationLog_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.Init.internal_static_littlehorse_InitConfig_fieldAccessorTable
+      return io.littlehorse.common.proto.Init.internal_static_littlehorse_InitializationLog_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.InitConfig.class, io.littlehorse.common.proto.InitConfig.Builder.class);
+              io.littlehorse.common.proto.InitializationLog.class, io.littlehorse.common.proto.InitializationLog.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.InitConfig.newBuilder()
+    // Construct using io.littlehorse.common.proto.InitializationLog.newBuilder()
     private Builder() {
 
     }
@@ -528,24 +528,24 @@ private static final long serialVersionUID = 0L;
         initDefaultTenantBuilder_.dispose();
         initDefaultTenantBuilder_ = null;
       }
-      pedro_ = "";
+      obiWan_ = "";
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.Init.internal_static_littlehorse_InitConfig_descriptor;
+      return io.littlehorse.common.proto.Init.internal_static_littlehorse_InitializationLog_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.InitConfig getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.InitConfig.getDefaultInstance();
+    public io.littlehorse.common.proto.InitializationLog getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.InitializationLog.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.InitConfig build() {
-      io.littlehorse.common.proto.InitConfig result = buildPartial();
+    public io.littlehorse.common.proto.InitializationLog build() {
+      io.littlehorse.common.proto.InitializationLog result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -553,14 +553,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.InitConfig buildPartial() {
-      io.littlehorse.common.proto.InitConfig result = new io.littlehorse.common.proto.InitConfig(this);
+    public io.littlehorse.common.proto.InitializationLog buildPartial() {
+      io.littlehorse.common.proto.InitializationLog result = new io.littlehorse.common.proto.InitializationLog(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.common.proto.InitConfig result) {
+    private void buildPartial0(io.littlehorse.common.proto.InitializationLog result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.initVersion_ = initVersionBuilder_ == null
@@ -583,7 +583,7 @@ private static final long serialVersionUID = 0L;
             : initDefaultTenantBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.pedro_ = pedro_;
+        result.obiWan_ = obiWan_;
       }
     }
 
@@ -621,16 +621,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.InitConfig) {
-        return mergeFrom((io.littlehorse.common.proto.InitConfig)other);
+      if (other instanceof io.littlehorse.common.proto.InitializationLog) {
+        return mergeFrom((io.littlehorse.common.proto.InitializationLog)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.InitConfig other) {
-      if (other == io.littlehorse.common.proto.InitConfig.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.common.proto.InitializationLog other) {
+      if (other == io.littlehorse.common.proto.InitializationLog.getDefaultInstance()) return this;
       if (other.hasInitVersion()) {
         mergeInitVersion(other.getInitVersion());
       }
@@ -643,8 +643,8 @@ private static final long serialVersionUID = 0L;
       if (other.hasInitDefaultTenant()) {
         mergeInitDefaultTenant(other.getInitDefaultTenant());
       }
-      if (!other.getPedro().isEmpty()) {
-        pedro_ = other.pedro_;
+      if (!other.getObiWan().isEmpty()) {
+        obiWan_ = other.obiWan_;
         bitField0_ |= 0x00000010;
         onChanged();
       }
@@ -703,7 +703,7 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 34
             case 42: {
-              pedro_ = input.readStringRequireUtf8();
+              obiWan_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000010;
               break;
             } // case 42
@@ -1362,22 +1362,22 @@ private static final long serialVersionUID = 0L;
       return initDefaultTenantBuilder_;
     }
 
-    private java.lang.Object pedro_ = "";
+    private java.lang.Object obiWan_ = "";
     /**
      * <pre>
      * Just for fun?
      * </pre>
      *
-     * <code>string pedro = 5;</code>
-     * @return The pedro.
+     * <code>string obi_wan = 5;</code>
+     * @return The obiWan.
      */
-    public java.lang.String getPedro() {
-      java.lang.Object ref = pedro_;
+    public java.lang.String getObiWan() {
+      java.lang.Object ref = obiWan_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        pedro_ = s;
+        obiWan_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -1388,17 +1388,17 @@ private static final long serialVersionUID = 0L;
      * Just for fun?
      * </pre>
      *
-     * <code>string pedro = 5;</code>
-     * @return The bytes for pedro.
+     * <code>string obi_wan = 5;</code>
+     * @return The bytes for obiWan.
      */
     public com.google.protobuf.ByteString
-        getPedroBytes() {
-      java.lang.Object ref = pedro_;
+        getObiWanBytes() {
+      java.lang.Object ref = obiWan_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        pedro_ = b;
+        obiWan_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -1409,14 +1409,14 @@ private static final long serialVersionUID = 0L;
      * Just for fun?
      * </pre>
      *
-     * <code>string pedro = 5;</code>
-     * @param value The pedro to set.
+     * <code>string obi_wan = 5;</code>
+     * @param value The obiWan to set.
      * @return This builder for chaining.
      */
-    public Builder setPedro(
+    public Builder setObiWan(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      pedro_ = value;
+      obiWan_ = value;
       bitField0_ |= 0x00000010;
       onChanged();
       return this;
@@ -1426,11 +1426,11 @@ private static final long serialVersionUID = 0L;
      * Just for fun?
      * </pre>
      *
-     * <code>string pedro = 5;</code>
+     * <code>string obi_wan = 5;</code>
      * @return This builder for chaining.
      */
-    public Builder clearPedro() {
-      pedro_ = getDefaultInstance().getPedro();
+    public Builder clearObiWan() {
+      obiWan_ = getDefaultInstance().getObiWan();
       bitField0_ = (bitField0_ & ~0x00000010);
       onChanged();
       return this;
@@ -1440,15 +1440,15 @@ private static final long serialVersionUID = 0L;
      * Just for fun?
      * </pre>
      *
-     * <code>string pedro = 5;</code>
-     * @param value The bytes for pedro to set.
+     * <code>string obi_wan = 5;</code>
+     * @param value The bytes for obiWan to set.
      * @return This builder for chaining.
      */
-    public Builder setPedroBytes(
+    public Builder setObiWanBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      pedro_ = value;
+      obiWan_ = value;
       bitField0_ |= 0x00000010;
       onChanged();
       return this;
@@ -1466,23 +1466,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.InitConfig)
+    // @@protoc_insertion_point(builder_scope:littlehorse.InitializationLog)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.InitConfig)
-  private static final io.littlehorse.common.proto.InitConfig DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.InitializationLog)
+  private static final io.littlehorse.common.proto.InitializationLog DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.InitConfig();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.InitializationLog();
   }
 
-  public static io.littlehorse.common.proto.InitConfig getDefaultInstance() {
+  public static io.littlehorse.common.proto.InitializationLog getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<InitConfig>
-      PARSER = new com.google.protobuf.AbstractParser<InitConfig>() {
+  private static final com.google.protobuf.Parser<InitializationLog>
+      PARSER = new com.google.protobuf.AbstractParser<InitializationLog>() {
     @java.lang.Override
-    public InitConfig parsePartialFrom(
+    public InitializationLog parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1501,17 +1501,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<InitConfig> parser() {
+  public static com.google.protobuf.Parser<InitializationLog> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<InitConfig> getParserForType() {
+  public com.google.protobuf.Parser<InitializationLog> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.InitConfig getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.InitializationLog getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

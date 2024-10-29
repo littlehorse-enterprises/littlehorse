@@ -6,7 +6,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
-import io.littlehorse.common.proto.InitConfig;
+import io.littlehorse.common.proto.InitializationLog;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
@@ -18,54 +18,54 @@ import io.littlehorse.sdk.common.proto.TenantId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 
-public class InitConfigModel extends Storeable<InitConfig> {
+public class InitializationLogModel extends Storeable<InitializationLog> {
 
     private ServerVersionModel initServerVersion;
     private Date initTime;
     private PrincipalModel initAnonymousPrincipal;
     private TenantModel initDefaultTenant;
-    private String pedro;
+    private String obiWan;
     public static final String SERVER_INITIALIZED_KEY = "server_initialized";
 
-    public InitConfigModel() {}
+    public InitializationLogModel() {}
 
-    public InitConfigModel(
+    public InitializationLogModel(
             ServerVersionModel initServerVersion,
             Date initTime,
             PrincipalModel initAnonymousPrincipal,
             TenantModel initDefaultTenant,
-            String pedro) {
+            String obiWan) {
         this.initServerVersion = initServerVersion;
         this.initTime = initTime;
         this.initAnonymousPrincipal = initAnonymousPrincipal;
         this.initDefaultTenant = initDefaultTenant;
-        this.pedro = pedro;
+        this.obiWan = obiWan;
     }
 
     @Override
-    public Builder<InitConfig.Builder> toProto() {
-        return InitConfig.newBuilder()
+    public Builder<InitializationLog.Builder> toProto() {
+        return InitializationLog.newBuilder()
                 .setInitVersion(initServerVersion.toProto())
                 .setInitTime(LHUtil.fromDate(initTime))
                 .setInitAnonymousPrincipal(initAnonymousPrincipal.toProto())
                 .setInitDefaultTenant(initDefaultTenant.toProto())
-                .setPedro(pedro);
+                .setObiWan(obiWan);
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
-        InitConfig ic = (InitConfig) proto;
-        this.initServerVersion = ServerVersionModel.fromProto(ic.getInitVersion(), ServerVersionModel.class, context);
-        this.initTime = LHUtil.fromProtoTs(ic.getInitTime());
+        InitializationLog il = (InitializationLog) proto;
+        this.initServerVersion = ServerVersionModel.fromProto(il.getInitVersion(), ServerVersionModel.class, context);
+        this.initTime = LHUtil.fromProtoTs(il.getInitTime());
         this.initAnonymousPrincipal =
-                PrincipalModel.fromProto(ic.getInitAnonymousPrincipal(), PrincipalModel.class, context);
-        this.initDefaultTenant = TenantModel.fromProto(ic.getInitDefaultTenant(), TenantModel.class, context);
-        this.pedro = ic.getPedro();
+                PrincipalModel.fromProto(il.getInitAnonymousPrincipal(), PrincipalModel.class, context);
+        this.initDefaultTenant = TenantModel.fromProto(il.getInitDefaultTenant(), TenantModel.class, context);
+        this.obiWan = il.getObiWan();
     }
 
     @Override
-    public Class<InitConfig> getProtoBaseClass() {
-        return InitConfig.class;
+    public Class<InitializationLog> getProtoBaseClass() {
+        return InitializationLog.class;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class InitConfigModel extends Storeable<InitConfig> {
 
     @Override
     public StoreableType getType() {
-        return StoreableType.INIT_CONFIG;
+        return StoreableType.INITIALIZATION_LOG;
     }
 
     public static PrincipalModel getAnonymousPrincipalModel(ExecutionContext context) {

@@ -2,11 +2,11 @@ package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.getable.core.init.InitConfigModel;
+import io.littlehorse.common.model.getable.core.init.InitializationLogModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
-import io.littlehorse.common.proto.InitConfig;
+import io.littlehorse.common.proto.InitializationLog;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
@@ -62,37 +62,37 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
         ClusterScopedStore clusterStore =
                 ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.METADATA_STORE), context);
 
-        InitConfigModel oldInitConfigModel =
-                clusterStore.get(InitConfigModel.SERVER_INITIALIZED_KEY, InitConfigModel.class);
+        InitializationLogModel oldInitializationLogModel =
+                clusterStore.get(InitializationLogModel.SERVER_INITIALIZED_KEY, InitializationLogModel.class);
 
         // If server has not been initialized..
-        if (oldInitConfigModel == null) {
-            log.info("Initializing Server...");
-            InitConfig.Builder initConfigBuilder = InitConfig.newBuilder()
+        if (oldInitializationLogModel == null) {
+            log.info("Initializing Cluster...");
+            InitializationLog.Builder initializationLogBuilder = InitializationLog.newBuilder()
                     .setInitVersion(Version.getServerVersion())
                     .setInitTime(LHUtil.fromDate(new Date()))
-                    .setPedro("pedro");
+                    .setObiWan("pedro");
 
             // Put tenant
-            TenantModel defaultTenantModel = InitConfigModel.getDefaultTenantModel(context);
+            TenantModel defaultTenantModel = InitializationLogModel.getDefaultTenantModel(context);
             clusterStore.put(new StoredGetable<>(defaultTenantModel));
-            initConfigBuilder.setInitDefaultTenant(defaultTenantModel.toProto());
+            initializationLogBuilder.setInitDefaultTenant(defaultTenantModel.toProto());
             log.info("Default Tenant put to store!");
 
             // Put anonymous principal
-            PrincipalModel anonymousPrincipalModel = InitConfigModel.getAnonymousPrincipalModel(context);
+            PrincipalModel anonymousPrincipalModel = InitializationLogModel.getAnonymousPrincipalModel(context);
             clusterStore.put(new StoredGetable<>(anonymousPrincipalModel));
             for (Tag tag : anonymousPrincipalModel.getIndexEntries()) {
                 clusterStore.put(tag);
             }
-            initConfigBuilder.setInitAnonymousPrincipal(anonymousPrincipalModel.toProto());
+            initializationLogBuilder.setInitAnonymousPrincipal(anonymousPrincipalModel.toProto());
             log.info("Anonymous Principal put to store!");
 
-            InitConfigModel initConfigModel =
-                    InitConfigModel.fromProto(initConfigBuilder.build(), InitConfigModel.class, context);
-            clusterStore.put(initConfigModel);
+            InitializationLogModel initializationLogModel = InitializationLogModel.fromProto(
+                    initializationLogBuilder.build(), InitializationLogModel.class, context);
+            clusterStore.put(initializationLogModel);
 
-            log.info("InitConfig put to store!");
+            log.info("Initialization Log put to store!");
         }
     }
 

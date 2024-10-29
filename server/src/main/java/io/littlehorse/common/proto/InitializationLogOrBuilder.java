@@ -3,8 +3,8 @@
 
 package io.littlehorse.common.proto;
 
-public interface InitConfigOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.InitConfig)
+public interface InitializationLogOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.InitializationLog)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -126,18 +126,18 @@ public interface InitConfigOrBuilder extends
    * Just for fun?
    * </pre>
    *
-   * <code>string pedro = 5;</code>
-   * @return The pedro.
+   * <code>string obi_wan = 5;</code>
+   * @return The obiWan.
    */
-  java.lang.String getPedro();
+  java.lang.String getObiWan();
   /**
    * <pre>
    * Just for fun?
    * </pre>
    *
-   * <code>string pedro = 5;</code>
-   * @return The bytes for pedro.
+   * <code>string obi_wan = 5;</code>
+   * @return The bytes for obiWan.
    */
   com.google.protobuf.ByteString
-      getPedroBytes();
+      getObiWanBytes();
 }

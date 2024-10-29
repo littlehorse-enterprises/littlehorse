@@ -50,8 +50,8 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.PARTITION_METRICS;
             case "MetricWindowModel":
                 return StoreableType.METRIC_WINDOW;
-            case "InitConfigModel":
-                return StoreableType.INIT_CONFIG;
+            case "InitializationLogModel":
+                return StoreableType.INITIALIZATION_LOG;
         }
         throw new IllegalArgumentException("Unrecognized Storeable class: " + cls);
     }
