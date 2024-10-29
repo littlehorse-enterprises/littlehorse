@@ -112,11 +112,6 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
         return workerConfig;
     }
 
-    @Override
-    public LittleHorseBlockingStub getLhClient() {
-        return client;
-    }
-
     private Properties testClientProperties() {
         Properties configs = new Properties();
         String tenantId = System.getenv().getOrDefault(LHConfig.TENANT_ID_KEY, LHConstants.DEFAULT_TENANT);

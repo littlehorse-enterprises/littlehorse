@@ -25,9 +25,4 @@ public class ExternalTestBootstrapper implements TestBootstrapper {
     public LHConfig getWorkerConfig() {
         return workerConfig;
     }
-
-    @Override
-    public LittleHorseBlockingStub getLhClient() {
-        return lhClient;
-    }
 }
