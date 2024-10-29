@@ -302,7 +302,7 @@ type LittleHorseClient interface {
 	// Returns the Principal of the caller.
 	Whoami(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Principal, error)
 	// Gets the version of the LH Server.
-	GetServerVersion(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ServerVersionResponse, error)
+	GetServerVersion(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ServerVersion, error)
 }
 
 type littleHorseClient struct {
@@ -992,8 +992,8 @@ func (c *littleHorseClient) Whoami(ctx context.Context, in *emptypb.Empty, opts 
 	return out, nil
 }
 
-func (c *littleHorseClient) GetServerVersion(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ServerVersionResponse, error) {
-	out := new(ServerVersionResponse)
+func (c *littleHorseClient) GetServerVersion(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ServerVersion, error) {
+	out := new(ServerVersion)
 	err := c.cc.Invoke(ctx, LittleHorse_GetServerVersion_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1207,7 +1207,7 @@ type LittleHorseServer interface {
 	// Returns the Principal of the caller.
 	Whoami(context.Context, *emptypb.Empty) (*Principal, error)
 	// Gets the version of the LH Server.
-	GetServerVersion(context.Context, *emptypb.Empty) (*ServerVersionResponse, error)
+	GetServerVersion(context.Context, *emptypb.Empty) (*ServerVersion, error)
 	mustEmbedUnimplementedLittleHorseServer()
 }
 
@@ -1434,7 +1434,7 @@ func (UnimplementedLittleHorseServer) PutPrincipal(context.Context, *PutPrincipa
 func (UnimplementedLittleHorseServer) Whoami(context.Context, *emptypb.Empty) (*Principal, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Whoami not implemented")
 }
-func (UnimplementedLittleHorseServer) GetServerVersion(context.Context, *emptypb.Empty) (*ServerVersionResponse, error) {
+func (UnimplementedLittleHorseServer) GetServerVersion(context.Context, *emptypb.Empty) (*ServerVersion, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetServerVersion not implemented")
 }
 func (UnimplementedLittleHorseServer) mustEmbedUnimplementedLittleHorseServer() {}

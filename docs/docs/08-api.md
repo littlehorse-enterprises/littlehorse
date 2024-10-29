@@ -478,7 +478,7 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-|  .google.protobuf.Empty  |  [ServerVersionResponse](#serverversionresponse)  | Gets the version of the LH Server. |
+|  .google.protobuf.Empty  |  [ServerVersion](#serverversion)  | Gets the version of the LH Server. |
 
 
 
@@ -2405,19 +2405,6 @@ The version of the LH Server according to Semantic Versioning
 | `minor_version` | | int32 | Server Minor Version |
 | `patch_version` | | int32 | Server Patch Version |
 | `pre_release_identifier` | optional| string | Prerelease Identifier. If this is set, then the server is NOT a production release but rather a release candidate or experimental pre-release. |
- <!-- end Fields -->
- <!-- end HasFields -->
-
-
-
-### Message `ServerVersionResponse` {#serverversionresponse}
-
-Get the current Server Version
-
-
-| Field | Label | Type | Description |
-| ----- | ----  | ---- | ----------- |
-| `server_version` | | [ServerVersion](#serverversion) |  |
  <!-- end Fields -->
  <!-- end HasFields -->
 

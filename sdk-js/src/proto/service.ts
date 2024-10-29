@@ -1513,11 +1513,6 @@ export interface GetLatestWfSpecRequest {
   majorVersion?: number | undefined;
 }
 
-/** Get the current Server Version */
-export interface ServerVersionResponse {
-  serverVersion: ServerVersion | undefined;
-}
-
 /** The version of the LH Server according to Semantic Versioning */
 export interface ServerVersion {
   /** Server Major Version */
@@ -7629,53 +7624,6 @@ export const GetLatestWfSpecRequest = {
   },
 };
 
-function createBaseServerVersionResponse(): ServerVersionResponse {
-  return { serverVersion: undefined };
-}
-
-export const ServerVersionResponse = {
-  encode(message: ServerVersionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.serverVersion !== undefined) {
-      ServerVersion.encode(message.serverVersion, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ServerVersionResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseServerVersionResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.serverVersion = ServerVersion.decode(reader, reader.uint32());
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  create(base?: DeepPartial<ServerVersionResponse>): ServerVersionResponse {
-    return ServerVersionResponse.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<ServerVersionResponse>): ServerVersionResponse {
-    const message = createBaseServerVersionResponse();
-    message.serverVersion = (object.serverVersion !== undefined && object.serverVersion !== null)
-      ? ServerVersion.fromPartial(object.serverVersion)
-      : undefined;
-    return message;
-  },
-};
-
 function createBaseServerVersion(): ServerVersion {
   return { majorVersion: 0, minorVersion: 0, patchVersion: 0, preReleaseIdentifier: undefined };
 }
@@ -8513,7 +8461,7 @@ export const LittleHorseDefinition = {
       name: "GetServerVersion",
       requestType: Empty,
       requestStream: false,
-      responseType: ServerVersionResponse,
+      responseType: ServerVersion,
       responseStream: false,
       options: {},
     },
@@ -8883,7 +8831,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   /** Returns the Principal of the caller. */
   whoami(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Gets the version of the LH Server. */
-  getServerVersion(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<ServerVersionResponse>>;
+  getServerVersion(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<ServerVersion>>;
 }
 
 export interface LittleHorseClient<CallOptionsExt = {}> {
@@ -9258,7 +9206,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   /** Returns the Principal of the caller. */
   whoami(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Gets the version of the LH Server. */
-  getServerVersion(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<ServerVersionResponse>;
+  getServerVersion(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<ServerVersion>;
 }
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
