@@ -48,11 +48,9 @@ There are several motivations for the out-of-the-box design:
 * **Developer Experience**: this design allows LittleHorse to "just work" without understanding `Principal`s or `Tenant`s.
 * **Fine-Grained Permissions**: ACL's on the `Principal` resource allow fine-grained control over who can access what resource.
 
-<hr/>
-
 ### The `default` Tenant
 
-An authenticated request made without a Tenant ID is designated for the `default` `Tenant`. Alternatively, requests made using an unknown Tenant ID will be rejected.
+An authenticated request made without a `TenantId` is designated for the `default` `Tenant`. Alternatively, requests made using an unknown `TenantId` will be rejected.
 
 #### Initial Configuration
 
@@ -60,17 +58,15 @@ The `default` `Tenant` is initialized simply as a `Tenant` with the ID `default`
 
 Represented as a `Tenant protobuf object`(../08-api.md#tenant), the initial `default` `Tenant` configuration looks like this:
 
-```proto
+```json
 {
   "id": "default"
 }
 ```
 
-<hr/>
-
 ### The `anonymous` Principal
 
-An authenticated request made with an unknown Principal ID is authorized with the `anonymous` `Principal`. 
+An authenticated request made with an unknown `PrincipalId` is authorized with the `anonymous` `Principal`. 
 
 #### Initial Configuration
 
@@ -78,17 +74,13 @@ The `anonymous` `Principal` is initialized with **full admin privileges** over t
 
 Represented as a [Principal protobuf object](../08-api.md#principal), the initial `anonymous` `Principal` configuration looks like this:
 
-```proto
+```json
 {
     "global_acls": {
         "acls": [
             {
-                "resources": [
-                    "ALL_RESOURCES"
-                ],
-                "allowed_actions": [
-                    "ALL_ACTIONS"
-                ]
+                "resources": ["ALL_RESOURCES"],
+                "allowed_actions": ["ALL_ACTIONS"]
             }
         ]
     },
@@ -107,11 +99,11 @@ Like any other `Principal`, the `anonymous` Principal's permissions can be overw
 
 #### Deletion
 
-Unlike other `Principal`s, the `anonymous` `Principal` **cannot** be deleted, as it represents all cases where a client sends an authenticated request with an unknown Principal ID.
+Unlike other `Principal`s, the `anonymous` `Principal` **cannot** be deleted, as it represents all cases where a client sends an authenticated request with an unknown `PrincipalId`.
 
 <hr/>
 
-### Authorizing Requests
+## Authorizing Requests
 
 Once a request has been authenticated and a `Principal` has been determined (either as the `anonymous` `Principal` or a custom user-created `Principal`), the LH Cluster checks the ACL's on the `Principal` against the required permissions for the request.
 
