@@ -38,10 +38,10 @@ public class LHClient implements MeterBinder {
         final ServerVersionResponse response = blockingStub.getServerVersion(Empty.getDefaultInstance());
         return "%s.%s.%s%s"
                 .formatted(
-                        response.getMajorVersion(),
-                        response.getMinorVersion(),
-                        response.getPatchVersion(),
-                        response.hasPreReleaseIdentifier() ? "-" + response.getPreReleaseIdentifier() : "");
+                        response.getServerVersion().getMajorVersion(),
+                        response.getServerVersion().getMinorVersion(),
+                        response.getServerVersion().getPatchVersion(),
+                        response.getServerVersion().hasPreReleaseIdentifier() ? "-" + response.getServerVersion().getPreReleaseIdentifier() : "");
     }
 
     public void registerWorkflow(final Workflow workflow) {
