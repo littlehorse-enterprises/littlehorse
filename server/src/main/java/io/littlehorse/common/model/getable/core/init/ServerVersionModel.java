@@ -37,8 +37,8 @@ public class ServerVersionModel extends LHSerializable<ServerVersion> {
                 .setMinorVersion(minorVersion)
                 .setPatchVersion(patchVersion);
 
-        if (this.preReleaseIdentifier.isPresent()) {
-            severVersionBuilder.setPreReleaseIdentifier(this.preReleaseIdentifier.get());
+        if (preReleaseIdentifier.isPresent()) {
+            severVersionBuilder.setPreReleaseIdentifier(preReleaseIdentifier.get());
         }
 
         return severVersionBuilder;
