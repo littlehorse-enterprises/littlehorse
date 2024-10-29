@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 /** This interface is what is used to define the logic of a ThreaSpec in a ThreadFunc. */
@@ -108,6 +109,30 @@ public interface WorkflowThread {
      * @return an LHFormatString object which can be used as a variable assignment in a WfSpec.
      */
     LHFormatString format(String format, WfRunVariable... args);
+
+    WfRunVariable declareInt(String name);
+
+    WfRunVariable declareInt(String name, int defaultVal);
+
+    WfRunVariable declareStr(String name);
+
+    WfRunVariable declareStr(String name, String defaultVal);
+
+    WfRunVariable declareDouble(String name);
+
+    WfRunVariable declareDouble(String name, double defaultVal);
+
+    WfRunVariable declareBytes(String name);
+
+    WfRunVariable declareBytes(String name, byte[] defaultVal);
+
+    WfRunVariable declareJsonArr(String name);
+
+    WfRunVariable declareJsonArr(String name, List<Object> defaultVal);
+
+    WfRunVariable declareJsonObj(String name);
+
+    WfRunVariable declareJsonObj(String name, Map<String, Object> defaultVal);
 
     /**
      * Defines a Variable in the `ThreadSpec` and returns a handle to it.
@@ -365,8 +390,8 @@ public interface WorkflowThread {
     void handleAnyFailure(NodeOutput node, ThreadFunc handler);
 
     /**
-     * Returns a WorkflowCondition that can be used in `ThreadBuilder::doIf()` or
-     * `ThreadBuilder::doElse()`.
+     * Returns a WorkflowCondition that can be used in `WorkflowThread::doIf()` or
+     * `WorkflowThread::doIfElse()`.
      *
      * @param lhs is either a literal value (which the Library casts to a Variable Value) or a
      *     `WfRunVariable` representing the LHS of the expression.

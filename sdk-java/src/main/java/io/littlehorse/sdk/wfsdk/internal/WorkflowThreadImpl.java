@@ -377,9 +377,57 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     public WfRunVariableImpl addVariable(String name, Object typeOrDefaultVal) {
         checkIfIsActive();
-        WfRunVariableImpl wfRunVariable = new WfRunVariableImpl(name, typeOrDefaultVal);
+        WfRunVariableImpl wfRunVariable = new WfRunVariableImpl(name, typeOrDefaultVal, this);
         wfRunVariables.add(wfRunVariable);
         return wfRunVariable;
+    }
+
+    public WfRunVariable declareInt(String name) {
+        return addVariable(name, VariableType.INT);
+    }
+
+    public WfRunVariable declareInt(String name, int typeOrDefaultVal) {
+        return addVariable(name, typeOrDefaultVal);
+    }
+
+    public WfRunVariable declareStr(String name) {
+        return addVariable(name, VariableType.STR);
+    }
+
+    public WfRunVariable declareStr(String name, String defaultVal) {
+        return addVariable(name, defaultVal);
+    }
+
+    public WfRunVariable declareDouble(String name) {
+        return addVariable(name, VariableType.DOUBLE);
+    }
+
+    public WfRunVariable declareDouble(String name, double defaultVal) {
+        return addVariable(name, defaultVal);
+    }
+
+    public WfRunVariable declareBytes(String name) {
+        return addVariable(name, VariableType.BYTES);
+    }
+
+    public WfRunVariable declareBytes(String name, byte[] defaultVal) {
+        return addVariable(name, defaultVal);
+    }
+
+    public WfRunVariable declareJsonArr(String name) {
+        return addVariable(name, VariableType.JSON_ARR);
+    }
+
+    public WfRunVariable declareJsonArr(String name, List<Object> defaultVal) {
+        return addVariable(name, defaultVal);
+    }
+
+    public WfRunVariable declareJsonObj(String name) {
+        return addVariable(name, VariableType.JSON_OBJ);
+    }
+
+    public WfRunVariable declareJsonObj(String name, Map<String, Object> defaultVal) {
+        return addVariable(name, defaultVal);
     }
 
     public void doIf(WorkflowCondition condition, IfElseBody ifBody) {

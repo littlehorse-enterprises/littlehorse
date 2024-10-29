@@ -79,4 +79,87 @@ public interface WfRunVariable extends Serializable {
      * @return this WfRunVariable.
      */
     WfRunVariable masked();
+
+    /**
+     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * evaluates to true if this WfRunVariable is LESS_THAN the provided rhs.
+     *
+     * Equivalent to WorkflowThread#condition(this, Comparator.LESS_THAN, rhs);
+     *
+     * @param rhs is the RHS to compare this WfRunVariable to.
+     * @return true if this WfRunVariable is LESS_THAN the provided rhs.
+     */
+    WorkflowCondition isLessThan(Serializable rhs);
+
+    /**
+     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * evaluates to true if this WfRunVariable is LESS_THAN_EQU the provided rhs.
+     *
+     * Equivalent to WorkflowThread#condition(this, Comparator.LESS_THAN_EQ, rhs);
+     *
+     * @param rhs is the RHS to compare this WfRunVariable to.
+     * @return true if this WfRunVariable is LESS_THAN_EQ the provided rhs.
+     */
+    WorkflowCondition isLessThanEq(Serializable rhs);
+
+    /**
+     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * evaluates to true if this WfRunVariable is GREATER_THAN_EQ the provided rhs.
+     *
+     * Equivalent to WorkflowThread#condition(this, Comparator.GREATER_THAN_EQ, rhs);
+     *
+     * @param rhs is the RHS to compare this WfRunVariable to.
+     * @return true if this WfRunVariable is GREATER_THAN_EQ the provided rhs.
+     */
+    WorkflowCondition isGreaterThanEq(Serializable rhs);
+
+    /**
+     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * evaluates to true if this WfRunVariable is GREATER_THAN the provided rhs.
+     *
+     * Equivalent to WorkflowThread#condition(this, Comparator.GREATER_THAN, rhs);
+     *
+     * @param rhs is the RHS to compare this WfRunVariable to.
+     * @return true if this WfRunVariable is GREATER_THAN the provided rhs.
+     */
+    WorkflowCondition isGreaterThan(Serializable rhs);
+
+    /**
+     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * evaluates to true if this WfRunVariable is EQUALS to the provided rhs.
+     *
+     * Equivalent to WorkflowThread#condition(this, Comparator.EQUALS, rhs);
+     *
+     * @param rhs is the RHS to compare this WfRunVariable to.
+     * @return true if this WfRunVariable is GREATER_THAN the provided rhs.
+     */
+    WorkflowCondition isEqualTo(Serializable rhs);
+
+    WorkflowCondition isNotEqualTo(Serializable rhs);
+
+    WorkflowCondition doesContain(Serializable rhs);
+
+    WorkflowCondition doesNotContain(Serializable rhs);
+
+    WorkflowCondition isIn(Serializable rhs);
+
+    WorkflowCondition isNotIn(Serializable rhs);
+
+    void assignTo(Serializable rhs);
+
+    void add(Serializable rhs);
+
+    void subtract(Serializable rhs);
+
+    void divide(Serializable rhs);
+
+    void multiply(Serializable rhs);
+
+    void extend(Serializable rhs);
+
+    void removeIndex(Serializable rhs);
+
+    void removeIfPresent(Serializable rhs);
+
+    void removeKey(Serializable rhs);
 }
