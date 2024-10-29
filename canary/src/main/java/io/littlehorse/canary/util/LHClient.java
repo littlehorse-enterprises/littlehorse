@@ -41,7 +41,9 @@ public class LHClient implements MeterBinder {
                         response.getServerVersion().getMajorVersion(),
                         response.getServerVersion().getMinorVersion(),
                         response.getServerVersion().getPatchVersion(),
-                        response.getServerVersion().hasPreReleaseIdentifier() ? "-" + response.getServerVersion().getPreReleaseIdentifier() : "");
+                        response.getServerVersion().hasPreReleaseIdentifier()
+                                ? "-" + response.getServerVersion().getPreReleaseIdentifier()
+                                : "");
     }
 
     public void registerWorkflow(final Workflow workflow) {
