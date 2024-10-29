@@ -34,17 +34,75 @@ The rules for authenticating a call are as follows:
 
 If a `Principal` exists with a matching ID, the request is authorized according to that `Principal`'s ACL's. If no `Principal` exists with the provided ID, then the request is authorized according to the `anonymous` `Prncipal`'s ACL's.
 
-### The `anonymous` Principal
+<hr/>
 
-When a LittleHorse Cluster is first created, there exists one `Principal` out-of-the-box with the name `anonymous`. The `anonymous` `Principal` _initially_ has full admin privileges over the entire LittleHorse cluster.
+## Initial Resource Configurations
 
-This is great for getting started in local development, and also for ease of use on private and trusted networks. However, LittleHorse allows you to fully secure your cluster by disabling the permissions of the `anonymous` `Principal`.
+When a LittleHorse Cluster is created for the first time, there exists one `Tenant` named `default` and one `Principal` named `anonymous`. These resources are provided with initial configurations out-of-the-box to facilitate a quick and easy setup for your new cluster.
 
-There are several motivations for this design:
+This is great for getting started in local development, and also for ease of use on private and trusted networks. However, LittleHorse allows you to fully secure your cluster by changing the initial configurations of the `anonymous` `Principal`.
+
+There are several motivations for the out-of-the-box design:
 
 * **Online Migrations to Secured Clusters**: this design allows users to migrate to a secure cluster without downtime by adding a secured listener, adding `Principal`s for each application, moving applications to the new listener, and disabling `anonymous`'s permissions.
 * **Developer Experience**: this design allows LittleHorse to "just work" without understanding `Principal`s or `Tenant`s.
 * **Fine-Grained Permissions**: ACL's on the `Principal` resource allow fine-grained control over who can access what resource.
+
+### The `default` Tenant
+
+An authenticated request made without a Tenant ID is designated for the `default` `Tenant`. Alternatively, requests made using an unknown Tenant ID will be rejected.
+
+### Initial Configuration
+
+The `default` `Tenant` is initialized simply as a `Tenant` with the ID `default`. If `Tenant`s receive more metadata in the future, we will update the configuration here.
+
+Represented as a `Tenant protobuf object`(../08-api.md#tenant), the initial `default` `Tenant` configuration looks like this:
+
+```proto
+{
+  "id": "default"
+}
+```
+
+<hr/>
+
+### The `anonymous` Principal
+
+An authenticated request made with an unknown Principal ID is authorized with the `anonymous` `Principal`. 
+
+#### Initial Configuration
+
+The `anonymous` `Principal` is initialized with **full admin privileges** over the *entire* LittleHorse cluster.
+
+Represented as a [Principal protobuf object](../08-api.md#principal), the initial `anonymous` `Principal` configuration looks like this:
+
+```proto
+{
+    "global_acls": {
+        "acls": [
+            {
+                "resources": [
+                    "ALL_RESOURCES"
+                ],
+                "allowed_actions": [
+                    "ALL_ACTIONS"
+                ]
+            }
+        ]
+    },
+    "id": "anonymous"
+}
+```
+
+#### Updating the Permissions
+
+Like any other `Principal`, the `anonymous` Principal's permissions can be overwritten via a `PutPrincipal` request from a caller with proper permissions and the `overwrite` parameter set to true.
+
+#### Deletion
+
+Unlike other `Principal`s, the `anonymous` `Principal` **cannot** be deleted, as it represents all cases where a client sends an authenticated request with an unknown Principal ID.
+
+<hr/>
 
 ### Authorizing Requests
 
