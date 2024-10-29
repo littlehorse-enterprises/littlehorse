@@ -5,36 +5,55 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.ServerVersion;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Optional;
 
 public class ServerVersionModel extends LHSerializable<ServerVersion> {
 
-    private int major_version;
-    private int minor_version;
-    private int patch_version;
+    private int majorVersion;
+    private int minorVersion;
+    private int patchVersion;
+    private Optional<String> preReleaseIdentifier;
 
     public ServerVersionModel() {}
-    ;
 
-    public ServerVersionModel(int major_version, int minor_version, int patch_version) {
-        this.major_version = major_version;
-        this.minor_version = minor_version;
-        this.patch_version = patch_version;
+    public ServerVersionModel(int majorVersion, int minorVersion, int patchVersion) {
+        this.majorVersion = majorVersion;
+        this.minorVersion = minorVersion;
+        this.patchVersion = patchVersion;
+        this.preReleaseIdentifier = Optional.empty();
+    }
+
+    public ServerVersionModel(int majorVersion, int minorVersion, int patchVersion, String preReleaseIdentifier) {
+        this.majorVersion = majorVersion;
+        this.minorVersion = minorVersion;
+        this.patchVersion = patchVersion;
+        this.preReleaseIdentifier = Optional.of(preReleaseIdentifier);
     }
 
     @Override
     public ServerVersion.Builder toProto() {
-        return ServerVersion.newBuilder()
-                .setMajorVersion(major_version)
-                .setMinorVersion(minor_version)
-                .setPatchVersion(patch_version);
+        ServerVersion.Builder severVersionBuilder = ServerVersion.newBuilder()
+                .setMajorVersion(majorVersion)
+                .setMinorVersion(minorVersion)
+                .setPatchVersion(patchVersion);
+
+        if (this.preReleaseIdentifier.isPresent()) {
+            severVersionBuilder.setPreReleaseIdentifier(this.preReleaseIdentifier.get());
+        }
+
+        return severVersionBuilder;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         ServerVersion serverVersion = (ServerVersion) proto;
-        this.major_version = serverVersion.getMajorVersion();
-        this.minor_version = serverVersion.getMinorVersion();
-        this.patch_version = serverVersion.getPatchVersion();
+        this.majorVersion = serverVersion.getMajorVersion();
+        this.minorVersion = serverVersion.getMinorVersion();
+        this.patchVersion = serverVersion.getPatchVersion();
+
+        if (serverVersion.hasPreReleaseIdentifier()) {
+            this.preReleaseIdentifier = Optional.of(serverVersion.getPreReleaseIdentifier());
+        }
     }
 
     @Override
