@@ -31,6 +31,9 @@ export const search = async ({ type, tenantId, bookmark, limit, prefix }: Search
     case 'ExternalEventDef':
       results = await genericSearch(request, client.searchExternalEventDef)
       break
+    case 'WorkflowEventDef':
+      results = await genericSearch(request, client.searchWorkflowEventDef)
+      break
     default:
       results = await genericSearch(request, client.searchWfSpec)
       break
@@ -74,4 +77,9 @@ type ExternalEventDefList = SearchResult & {
   results: Pick<WfSpecIdList, 'results'>
 }
 
-export type SearchResponse = WfSpecList | TaskDefList | UserTaskDefList | ExternalEventDefList
+type WorkflowEventDefList = SearchResult & {
+  type: 'WorkflowEventDef'
+  results: Pick<WfSpecIdList, 'results'>
+}
+
+export type SearchResponse = WfSpecList | TaskDefList | UserTaskDefList | ExternalEventDefList | WorkflowEventDefList

@@ -512,7 +512,20 @@ export interface Node {
     | StartMultipleThreadsNode
     | undefined;
   /** Creates a ThrowEventNodeRun */
-  throwEvent?: ThrowEventNode | undefined;
+  throwEvent?:
+    | ThrowEventNode
+    | undefined;
+  /** Creates a WaitForConditionRun */
+  waitForCondition?: WaitForConditionNode | undefined;
+}
+
+/**
+ * A SubNode that blocks until a condition is satisfied in the WfRun.
+ * There is no output.
+ */
+export interface WaitForConditionNode {
+  /** The condition that this node will block for. */
+  condition: EdgeCondition | undefined;
 }
 
 /** A SubNode that throws a WorkflowEvent of a specific type. There is no output. */
@@ -2108,6 +2121,7 @@ function createBaseNode(): Node {
     userTask: undefined,
     startMultipleThreads: undefined,
     throwEvent: undefined,
+    waitForCondition: undefined,
   };
 }
 
@@ -2151,6 +2165,9 @@ export const Node = {
     }
     if (message.throwEvent !== undefined) {
       ThrowEventNode.encode(message.throwEvent, writer.uint32(130).fork()).ldelim();
+    }
+    if (message.waitForCondition !== undefined) {
+      WaitForConditionNode.encode(message.waitForCondition, writer.uint32(138).fork()).ldelim();
     }
     return writer;
   },
@@ -2253,6 +2270,13 @@ export const Node = {
 
           message.throwEvent = ThrowEventNode.decode(reader, reader.uint32());
           continue;
+        case 17:
+          if (tag !== 138) {
+            break;
+          }
+
+          message.waitForCondition = WaitForConditionNode.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2295,6 +2319,56 @@ export const Node = {
       : undefined;
     message.throwEvent = (object.throwEvent !== undefined && object.throwEvent !== null)
       ? ThrowEventNode.fromPartial(object.throwEvent)
+      : undefined;
+    message.waitForCondition = (object.waitForCondition !== undefined && object.waitForCondition !== null)
+      ? WaitForConditionNode.fromPartial(object.waitForCondition)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseWaitForConditionNode(): WaitForConditionNode {
+  return { condition: undefined };
+}
+
+export const WaitForConditionNode = {
+  encode(message: WaitForConditionNode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.condition !== undefined) {
+      EdgeCondition.encode(message.condition, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WaitForConditionNode {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWaitForConditionNode();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.condition = EdgeCondition.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<WaitForConditionNode>): WaitForConditionNode {
+    return WaitForConditionNode.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<WaitForConditionNode>): WaitForConditionNode {
+    const message = createBaseWaitForConditionNode();
+    message.condition = (object.condition !== undefined && object.condition !== null)
+      ? EdgeCondition.fromPartial(object.condition)
       : undefined;
     return message;
   },

@@ -17,7 +17,7 @@ You can assign a User Task in two ways:
 
 ### Assigning to Users
 
-To assign a user task to a specific user who is not a part of a group, you can use `WorkflowThread#assignTaskToUser()`.
+To assign a user task to a specific user who is not a part of a group, you can use `WorkflowThread#assignUserTask()`.
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -29,7 +29,7 @@ import TabItem from '@theme/TabItem';
 String hardCodedUserId = "some-user-id-or-email";
 WfRunVariable userIdVariable = wf.addVariable("user-id", VariableType.STR);
 
-// Hard-coded using a string
+// Hard-coded using a string, notice that the second parameter (group id) is null
 wf.assignUserTask("some-user-task-def", hardCodedUserId, null);
 
 // Using a variable to set User Id
@@ -67,7 +67,7 @@ wf.assign_user_task("some-user-task", user_id=user_id_variable)
 </Tabs>
 
 
-You can also assign a user task to a user as part of a group using `WorkflowThread#assignUserTask`:
+You can also assign a user task to a user as part of a group:
 
 <Tabs>
   <TabItem value="java" label="Java" default>
@@ -88,6 +88,21 @@ wf.assignUserTask("another-user-task-def", userIdVariable, userGroupVariable);
   <TabItem value="go" label="Go">
 
 Golang user task docs coming soon. But if you want, you can try it out anyways :wink:.
+
+  </TabItem>
+  <TabItem value="python" label="Python">
+
+```python
+user_id = wf.add_variable("user-id", VariableType.STR)
+user_group = wf.add_variable("user_group", VariableType.STR)
+hard_coded_user_group = "finance";
+
+# assign using a hard coded string
+wf.assign_user_task("some-user-task", user_id=user_id, user_group=hard_coded_user_group)
+
+# assign using a variable
+wf.assign_user_task("some-user-task", user_id=user_id, user_group=user_group)
+```
 
   </TabItem>
 </Tabs>
@@ -117,11 +132,25 @@ wf.assignUserTask("another-user-task-def", userId, userGroupVariable);
 GoLang docs for user tasks coming soon. But if you want, you can try it out anyways :wink:.
 
   </TabItem>
+  <TabItem value="python" label="Python">
+
+```python
+user_group_str = "sales
+user_group_var = wf.add_variable("user_group", VariableType.STR)
+
+# assign using a hard coded string
+wf.assign_user_task("some-user-task", user_group=user_group_str)
+
+# assign using a variable
+wf.assign_user_task("some-user-task", user_group=user_group_var)
+```
+
+  </TabItem>
 </Tabs>
 
 ## Using User Task Outputs
 
-The `assignTaskToUser` and `assignTaskToUserGroup` methods return a `UserTaskOutput`, which is a special type of `NodeOutput`. It can be used to:
+The `assignUserTask` method return a `UserTaskOutput`, which is a special type of `NodeOutput`. It can be used to:
 
 * Mutate variables
 * Schedule reminder tasks

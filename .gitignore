@@ -32,6 +32,7 @@ lhctl/lhctl
 # Others
 local-dev/certs/
 build/
+.config
 
 # Python
 __pycache__
@@ -43,6 +44,5 @@ dist/
 *.work
 
 # dotnet
-*.sln
 global.json
 *DotSettings.user

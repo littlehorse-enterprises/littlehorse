@@ -22,13 +22,15 @@ public class WorkflowImpl extends Workflow {
     private Map<String, TaskDefBuilder> taskDefBuilders;
     private Set<String> requiredTaskDefNames;
     private Set<String> requiredEedNames;
+    private Set<String> requiredWorkflowEventDefNames;
 
     public WorkflowImpl(String name, ThreadFunc entrypointThreadFunc) {
         super(name, entrypointThreadFunc);
-        compiledWorkflow = null;
-        taskDefBuilders = new HashMap<>();
-        requiredTaskDefNames = new HashSet<>();
-        requiredEedNames = new HashSet<>();
+        this.compiledWorkflow = null;
+        this.taskDefBuilders = new HashMap<>();
+        this.requiredTaskDefNames = new HashSet<>();
+        this.requiredWorkflowEventDefNames = new HashSet<>();
+        this.requiredEedNames = new HashSet<>();
     }
 
     public Set<PutTaskDefRequest> compileTaskDefs() {
@@ -47,15 +49,19 @@ public class WorkflowImpl extends Workflow {
         return compiledWorkflow;
     }
 
-    public void addTaskDefName(String taskDefName) {
+    void addTaskDefName(String taskDefName) {
         requiredTaskDefNames.add(taskDefName);
     }
 
-    public void addExternalEventDefName(String eedName) {
+    void addExternalEventDefName(String eedName) {
         requiredEedNames.add(eedName);
     }
 
-    public void addTaskDefBuilder(TaskDefBuilder tdb) {
+    void addWorkflowEventDefName(String name) {
+        requiredWorkflowEventDefNames.add(name);
+    }
+
+    void addTaskDefBuilder(TaskDefBuilder tdb) {
         TaskDefBuilder previous = taskDefBuilders.get(tdb.getTaskDefName());
         if (previous != null) {
             if (!previous.signature.equals(tdb.signature)) {
@@ -80,6 +86,14 @@ public class WorkflowImpl extends Workflow {
             compiledWorkflow = compileWorkflowHelper();
         }
         return requiredEedNames;
+    }
+
+    @Override
+    public Set<String> getRequiredWorkflowEventDefNames() {
+        if (compiledWorkflow == null) {
+            compiledWorkflow = compileWorkflowHelper();
+        }
+        return requiredWorkflowEventDefNames;
     }
 
     private PutWfSpecRequest compileWorkflowHelper() {

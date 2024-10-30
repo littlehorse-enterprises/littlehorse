@@ -80,7 +80,12 @@ message NodeRun {
     // child ThreadRun for each element in the list.
     StartMultipleThreadsRun start_multiple_threads = 21;
 
+    // A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef.
     ThrowEventNodeRun throw_event = 22;
+
+    // A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition
+    // evaluates to True.
+    WaitForConditionRun wait_for_condition = 23;
   }
 }
 
@@ -91,8 +96,14 @@ message TaskNodeRun {
   optional TaskRunId task_run_id = 1;
 }
 
+// The sub-node structure for a THROW_EVENT NodeRun.
 message ThrowEventNodeRun {
+  // The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`.
   WorkflowEventId workflow_event_id = 1;
+}
+
+// The sub-node structure for a WAIT_FOR_CONDITION NodeRun
+message WaitForConditionRun {
 }
 
 // The sub-node structure for a USER_TASK NodeRun.

@@ -40,7 +40,7 @@ service LittleHorse {
   // Gets an ExternalEventDef.
   rpc GetExternalEventDef(ExternalEventDefId) returns (ExternalEventDef) {}
 
-  // EXPERIMENTAL: Creates a WorkflowEventDef.
+  // Creates a WorkflowEventDef.
   rpc PutWorkflowEventDef(PutWorkflowEventDefRequest) returns (WorkflowEventDef) {}
 
   // Creates a WfSpec.
@@ -159,8 +159,17 @@ service LittleHorse {
   // To specify the deadline, the client should use GRPC deadlines.
   rpc AwaitWorkflowEvent(AwaitWorkflowEventRequest) returns (WorkflowEvent) {}
 
+  // Get a specific WorkflowEventDef.
+  rpc GetWorkflowEventDef(WorkflowEventDefId) returns (WorkflowEventDef) {}
+    
+  // Get a specific WorkflowEvent.
+  rpc GetWorkflowEvent(WorkflowEventId) returns (WorkflowEvent) {}
+
   // List ExternalEvent's for a specific WfRun.
   rpc ListExternalEvents(ListExternalEventsRequest) returns (ExternalEventList) {}
+
+  // List WorkflowEvent's for a specific WfRun.
+  rpc ListWorkflowEvents(ListWorkflowEventsRequest) returns (WorkflowEventList) {}
 
   // Search for WfRun's. This RPC is highly useful for applications that store data
   // in LittleHorse and need to find a specific WfRun based on certain indexed fields.
@@ -185,6 +194,9 @@ service LittleHorse {
   // Search for ExternalEvent's.
   rpc SearchExternalEvent(SearchExternalEventRequest) returns (ExternalEventIdList) {}
 
+  // Search for WorkflowEvents's.
+  rpc SearchWorkflowEvent(SearchWorkflowEventRequest) returns (WorkflowEventIdList) {}
+
   // Search for TaskDef's.
   rpc SearchTaskDef(SearchTaskDefRequest) returns (TaskDefIdList) {}
 
@@ -196,6 +208,9 @@ service LittleHorse {
 
   // Search for ExternalEventDef's.
   rpc SearchExternalEventDef(SearchExternalEventDefRequest) returns (ExternalEventDefIdList) {}
+
+  // Search for WorkflowEventDef's.
+  rpc SearchWorkflowEventDef(SearchWorkflowEventDefRequest) returns (WorkflowEventDefIdList) {}
 
   // Search for all available TenantIds for current Principal
   rpc SearchTenant(SearchTenantRequest) returns (TenantIdList) {}
@@ -243,6 +258,8 @@ service LittleHorse {
   rpc DeleteUserTaskDef(DeleteUserTaskDefRequest) returns (google.protobuf.Empty) {}
   // Deletes an ExternalEventDef.
   rpc DeleteExternalEventDef(DeleteExternalEventDefRequest) returns (google.protobuf.Empty) {}
+
+  rpc DeleteWorkflowEventDef(DeleteWorkflowEventDefRequest) returns (google.protobuf.Empty) {}
   // Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
   // is the last remaining `Principal` with admin permissions. Admin permissions are defined
   // as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
@@ -335,9 +352,12 @@ message PutTaskDefRequest {
   optional TaskDefOutputSchema output_schema = 3;
 }
 
-// EXPERIMENTAL: Creates a WorkflowEventDef
+// Creates a WorkflowEventDef
 message PutWorkflowEventDefRequest {
+  // The name of the resulting WorkflowEventDef.
   string name = 1;
+
+  // The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
   VariableType type = 2;
 }
 
@@ -442,6 +462,12 @@ message DeleteExternalEventDefRequest {
   ExternalEventDefId id = 1;
 }
 
+// Deletes an WorkflowEventDef
+message DeleteWorkflowEventDefRequest {
+  // The ID of the WorkflowEventDef to delete.
+  WorkflowEventDefId id = 1;
+}
+
 // Create a Workflow Run.
 message RunWfRequest {
   // The name of the WfSpec to run.
@@ -513,7 +539,7 @@ message AwaitWorkflowEventRequest {
   WfRunId wf_run_id = 1;
 
   // The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-  // WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+  // WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
   // WorkflowEvent thrown by the WfRun.
   repeated WorkflowEventDefId event_def_ids = 2;
 
@@ -834,6 +860,29 @@ message ExternalEventDefIdList {
   optional bytes bookmark = 2;
 }
 
+// Search for WorkflowEventDefs based on certain criteria.
+message SearchWorkflowEventDefRequest {
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 1;
+  
+  // Maximum results to return in one request.
+  optional int32 limit = 2;
+
+  // Optionally search only for WorkflowEventDef's whose name starts with this prefix.
+  optional string prefix = 3;
+}
+
+// List of WorkflowEventDef Id's.
+message WorkflowEventDefIdList {
+  // The resulting object id's.
+  repeated WorkflowEventDefId results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
+}
+
 // Search for all available TenantIds for current Principal
 message SearchTenantRequest {
       // Maximum results to return in one request.
@@ -916,6 +965,40 @@ message ExternalEventIdList {
   optional bytes bookmark = 2;
 }
 
+// Search for WorkflowEvents based on certain criteria.
+//
+// Required field WorkflowEventDefId specifies which WorkflowEventDef
+// to search for WorkflowEvents under.
+message SearchWorkflowEventRequest {
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 1;
+  // Maximum results to return in one request.
+  optional int32 limit = 2;
+
+  // Specifies to return only WorkflowEvent created after this time
+  optional google.protobuf.Timestamp earliest_start = 3;
+
+  // Specifies to return only WorkflowEvent created before this time
+  optional google.protobuf.Timestamp latest_start = 4;
+
+  // Search for WorkflowEvents by their WorkflowEventDefId
+  //
+  // * Note: If WorkflowEventDefId is not provided or does not exist,
+  //         gRPC status code 'INVALID_ARGUMENT' will be returned.
+  WorkflowEventDefId workflow_event_def_id = 5;
+}
+
+// List of WorkflowEvent Id's
+message WorkflowEventIdList {
+  // The resulting object id's.
+  repeated WorkflowEventId results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
+}
+
 // List all NodeRun's for a given WfRun. Note that List requests return actual NodeRun Objects,
 // not NodeRunId's.
 message ListNodeRunsRequest {
@@ -967,6 +1050,19 @@ message ListExternalEventsRequest {
 message ExternalEventList {
   // A list of ExternalEvent objects.
   repeated ExternalEvent results = 1;
+}
+
+// List all WorkflowEvents for a specific WfRunId. Note that List Requests return actual
+// WorkflowEvent objects, not WorkflowEventId's.
+message ListWorkflowEventsRequest {
+  // The WfRunId for whom we list WorkflowEvent's.
+  WfRunId wf_run_id = 1;
+}
+
+// A list of WorkflowEvents.
+message WorkflowEventList {
+  // A list of WorkflowEvent objects.
+  repeated WorkflowEvent results = 1;
 }
 
 // Message used by Task Worker to register itself to the server and ask for assignments of

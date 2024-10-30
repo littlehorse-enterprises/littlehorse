@@ -89,7 +89,7 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-   * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+   * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
    * WorkflowEvent thrown by the WfRun.
    * </pre>
    *
@@ -102,7 +102,7 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-   * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+   * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
    * WorkflowEvent thrown by the WfRun.
    * </pre>
    *
@@ -116,7 +116,7 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-   * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+   * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
    * WorkflowEvent thrown by the WfRun.
    * </pre>
    *
@@ -129,7 +129,7 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-   * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+   * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
    * WorkflowEvent thrown by the WfRun.
    * </pre>
    *
@@ -142,7 +142,7 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-   * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+   * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
    * WorkflowEvent thrown by the WfRun.
    * </pre>
    *
@@ -878,7 +878,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
@@ -894,7 +894,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
@@ -910,7 +910,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
@@ -926,7 +926,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
@@ -949,7 +949,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
@@ -969,7 +969,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
@@ -991,7 +991,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
@@ -1014,7 +1014,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
@@ -1034,7 +1034,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
@@ -1054,7 +1054,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
@@ -1075,7 +1075,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
@@ -1094,7 +1094,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
@@ -1113,7 +1113,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
@@ -1126,7 +1126,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
@@ -1142,7 +1142,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
@@ -1159,7 +1159,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
@@ -1172,7 +1172,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *
@@ -1186,7 +1186,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-     * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+     * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
      * WorkflowEvent thrown by the WfRun.
      * </pre>
      *

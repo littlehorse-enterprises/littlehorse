@@ -20,10 +20,11 @@ import io.littlehorse.test.WorkflowVerifier;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-@LHTest(externalEventNames = {ExternalEventTest.EVT_NAME})
+@LHTest(externalEventNames = {ExternalEventTest.EVT_NAME, ExternalEventTest.IGNORED_EVT_NAME})
 public class ExternalEventTest {
 
     public static final String EVT_NAME = "basic-test-event";
+    public static final String IGNORED_EVT_NAME = "not-a-real-event-kenobi";
 
     @LHWorkflow("basic-external-event")
     public Workflow basicExternalEvent;
@@ -69,6 +70,28 @@ public class ExternalEventTest {
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyTaskRunResult(0, 2, variableValue -> {
                     Assertions.assertThat(variableValue.getStr()).isEqualTo("hello there");
+                })
+                .start(id);
+    }
+
+    @Test
+    void shouldIgnoreEventsFromWrongExternalEventDef() {
+        WfRunId id = WfRunId.newBuilder().setId(LHUtil.generateGuid()).build();
+
+        client.putExternalEvent(PutExternalEventRequest.newBuilder()
+                .setWfRunId(id)
+                .setExternalEventDefId(ExternalEventDefId.newBuilder().setName(IGNORED_EVT_NAME))
+                .build());
+
+        verifier.prepareRun(basicExternalEvent)
+                .thenSendExternalEventWithContent(IGNORED_EVT_NAME, "hello there")
+                .thenVerifyWfRun(wfRun -> {
+                    Assertions.assertThat(wfRun.getStatus()).isEqualTo(LHStatus.RUNNING);
+                })
+                .thenSendExternalEventWithContent(EVT_NAME, "kenobi")
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyTaskRunResult(0, 2, variableValue -> {
+                    Assertions.assertThat(variableValue.getStr()).isEqualTo("kenobi");
                 })
                 .start(id);
     }
