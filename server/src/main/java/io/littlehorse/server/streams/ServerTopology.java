@@ -149,18 +149,18 @@ public class ServerTopology {
         topo.addStateStore(coreStoreBuilder, CORE_PROCESSOR);
 
         // Repartition sub-topology
-        topo.addSource(
-                CORE_REPARTITION_SOURCE,
-                Serdes.String().deserializer(),
-                new LHDeserializer<>(RepartitionCommand.class),
-                config.getRepartitionTopicName());
-        topo.addProcessor(
-                CORE_REPARTITION_PROCESSOR,
-                () -> new RepartitionCommandProcessor(config, metadataCache),
-                CORE_REPARTITION_SOURCE);
-        StoreBuilder<KeyValueStore<String, Bytes>> repartitionedStoreBuilder = Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(CORE_REPARTITION_STORE), Serdes.String(), Serdes.Bytes());
-        topo.addStateStore(repartitionedStoreBuilder, CORE_REPARTITION_PROCESSOR);
+//        topo.addSource(
+//                CORE_REPARTITION_SOURCE,
+//                Serdes.String().deserializer(),
+//                new LHDeserializer<>(RepartitionCommand.class),
+//                config.getRepartitionTopicName());
+//        topo.addProcessor(
+//                CORE_REPARTITION_PROCESSOR,
+//                () -> new RepartitionCommandProcessor(config, metadataCache),
+//                CORE_REPARTITION_SOURCE);
+//        StoreBuilder<KeyValueStore<String, Bytes>> repartitionedStoreBuilder = Stores.keyValueStoreBuilder(
+//                Stores.persistentKeyValueStore(CORE_REPARTITION_STORE), Serdes.String(), Serdes.Bytes());
+//        topo.addStateStore(repartitionedStoreBuilder, CORE_REPARTITION_PROCESSOR);
 
         // Metadata Global Store
         StoreBuilder<KeyValueStore<String, Bytes>> globalStoreBuilder = Stores.keyValueStoreBuilder(

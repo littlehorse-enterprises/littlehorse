@@ -890,7 +890,7 @@ public class LHServerConfig extends ConfigBase {
 
         // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.
         props.put("default.deserialization.exception.handler", LogAndContinueExceptionHandler.class);
-        props.put("default.production.exception.handler", DefaultProductionExceptionHandler.class);
+        props.put("default.production.exception.handler", LHProductionExceptionHandler.class);
         props.put("default.value.serde", Serdes.StringSerde.class.getName());
         props.put("default.key.serde", Serdes.StringSerde.class.getName());
 
@@ -927,8 +927,17 @@ public class LHServerConfig extends ConfigBase {
         // `Command` should be processed on a new server within a minute. Issue #479
         // should verify this behavior
         props.put(
-                "consumer.session.timeout.ms",
-                Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "40000")));
+                ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, getStreamsSessionTimeout());
+        props.put(
+                ProducerConfig.MAX_BLOCK_MS_CONFIG, getStreamsSessionTimeout());
+//        props.put(
+//                ConsumerConfig.SOCKET_CONNECTION_SETUP_TIMEOUT_MAX_MS_CONFIG,
+//                "120000");
+//        props.put(
+//                ConsumerConfig.SOCKET_CONNECTION_SETUP_TIMEOUT_MS_CONFIG,
+//                "60000");
+//        props.put(ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG,
+//                "240000");
 
         // In case we need to authenticate to Kafka, this sets it.
         addKafkaSecuritySettings(props);
@@ -940,8 +949,8 @@ public class LHServerConfig extends ConfigBase {
         return this.getLHClusterId() + "-" + this.getLHInstanceName() + "-" + component;
     }
 
-    public long getStreamsSessionTimeout() {
-        return Long.parseLong(props.getProperty(SESSION_TIMEOUT_KEY));
+    public int getStreamsSessionTimeout() {
+        return 1000000;
     }
 
     public int getNumNetworkThreads() {
