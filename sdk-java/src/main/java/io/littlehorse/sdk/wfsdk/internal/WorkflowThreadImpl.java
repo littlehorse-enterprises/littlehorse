@@ -309,22 +309,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
-    public TaskNodeOutputImpl execute(Method executable, Serializable... args) {
-        if (!executable.isAnnotationPresent(LHTaskMethod.class)) {
-            throw new IllegalArgumentException("Can only use @LHTaskMethod methods");
-        }
-        String taskName = executable.getAnnotation(LHTaskMethod.class).value();
-        parent.addTaskToIgnite(executable);
-
-        checkIfIsActive();
-        parent.addTaskDefName(taskName);
-        TaskNode taskNode = createTaskNode(
-                TaskNode.newBuilder().setTaskDefId(TaskDefId.newBuilder().setName(taskName)), args);
-        String nodeName = addNode(taskName, NodeCase.TASK, taskNode);
-        return new TaskNodeOutputImpl(nodeName, this);
-    }
-
-    @Override
     public TaskNodeOutputImpl execute(WfRunVariable taskName, Serializable... args) {
         checkIfIsActive();
         TaskNode taskNode = createTaskNode(TaskNode.newBuilder().setDynamicTask(assignVariable(taskName)), args);

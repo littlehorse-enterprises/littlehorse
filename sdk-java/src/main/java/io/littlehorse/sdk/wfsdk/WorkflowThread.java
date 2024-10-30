@@ -50,8 +50,6 @@ public interface WorkflowThread {
      */
     TaskNodeOutput execute(WfRunVariable taskName, Serializable... args);
 
-    TaskNodeOutput execute(Method taskMethod, Serializable... args);
-
     /**
      * Adds a TASK node to the ThreadSpec.
      *
