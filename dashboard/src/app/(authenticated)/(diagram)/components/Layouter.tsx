@@ -19,7 +19,6 @@ export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: s
     (nodes: Node[], edges: Edge[]) => {
       const dagreGraph = new dagre.graphlib.Graph()
       dagreGraph.setDefaultEdgeLabel(() => ({}))
-
       dagreGraph.setGraph({ rankdir: 'LR', align: 'DR', ranksep: 100 })
       nodes.forEach(node => {
         dagreGraph.setNode(node.id, { width: node.width, height: node.height })
