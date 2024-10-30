@@ -115,13 +115,7 @@ public class WfService {
 
         if (principalModel == null && id.getId().equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
             // If Anonymous Principal missing from store (should never happen...)
-            // Implicitly create empty Anonymous Principal
-            return PrincipalModel.fromProto(
-                    Principal.newBuilder()
-                            .setId(PrincipalId.newBuilder().setId(LHConstants.ANONYMOUS_PRINCIPAL))
-                            .build(),
-                    PrincipalModel.class,
-                    executionContext);
+            throw new IllegalStateException("Anonymous Principal missing from store...");
         }
 
         return principalModel;
