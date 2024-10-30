@@ -50,14 +50,20 @@ import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
+import io.littlehorse.sdk.worker.LHTaskMethod;
+
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.Set;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -294,6 +300,22 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     @Override
     public TaskNodeOutputImpl execute(String taskName, Serializable... args) {
+        checkIfIsActive();
+        parent.addTaskDefName(taskName);
+        TaskNode taskNode = createTaskNode(
+                TaskNode.newBuilder().setTaskDefId(TaskDefId.newBuilder().setName(taskName)), args);
+        String nodeName = addNode(taskName, NodeCase.TASK, taskNode);
+        return new TaskNodeOutputImpl(nodeName, this);
+    }
+
+    @Override
+    public TaskNodeOutputImpl execute(Method executable, Serializable... args) {
+        if (!executable.isAnnotationPresent(LHTaskMethod.class)) {
+            throw new IllegalArgumentException("Can only use @LHTaskMethod methods");
+        }
+        String taskName = executable.getAnnotation(LHTaskMethod.class).value();
+        parent.addTaskToIgnite(executable);
+
         checkIfIsActive();
         parent.addTaskDefName(taskName);
         TaskNode taskNode = createTaskNode(

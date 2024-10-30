@@ -9,6 +9,9 @@ import io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
+import lombok.Getter;
+
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,34 +22,40 @@ import org.apache.commons.lang3.tuple.Pair;
 public class WorkflowImpl extends Workflow {
 
     private PutWfSpecRequest compiledWorkflow;
-    private Map<String, TaskDefBuilder> taskDefBuilders;
     private Set<String> requiredTaskDefNames;
     private Set<String> requiredEedNames;
     private Set<String> requiredWorkflowEventDefNames;
 
+    @Getter
+    private Set<Method> taskMethodsToIgnite;
+
     public WorkflowImpl(String name, ThreadFunc entrypointThreadFunc) {
         super(name, entrypointThreadFunc);
         this.compiledWorkflow = null;
-        this.taskDefBuilders = new HashMap<>();
         this.requiredTaskDefNames = new HashSet<>();
         this.requiredWorkflowEventDefNames = new HashSet<>();
         this.requiredEedNames = new HashSet<>();
+        this.taskMethodsToIgnite = new HashSet<>();
     }
 
-    public Set<PutTaskDefRequest> compileTaskDefs() {
-        compileWorkflow();
-        Set<PutTaskDefRequest> out = new HashSet<>();
-        for (TaskDefBuilder tdb : taskDefBuilders.values()) {
-            out.add(tdb.toPutTaskDefRequest());
-        }
-        return out;
-    }
+    // public Set<PutTaskDefRequest> compileTaskDefs() {
+    //     compileWorkflow();
+    //     Set<PutTaskDefRequest> out = new HashSet<>();
+    //     for (TaskDefBuilder tdb : taskDefBuilders.values()) {
+    //         out.add(tdb.toPutTaskDefRequest());
+    //     }
+    //     return out;
+    // }
 
     public PutWfSpecRequest compileWorkflow() {
         if (compiledWorkflow == null) {
             compiledWorkflow = compileWorkflowHelper();
         }
         return compiledWorkflow;
+    }
+
+    void addTaskToIgnite(Method taskMethod) {
+        this.taskMethodsToIgnite.add(taskMethod);
     }
 
     void addTaskDefName(String taskDefName) {
@@ -59,17 +68,6 @@ public class WorkflowImpl extends Workflow {
 
     void addWorkflowEventDefName(String name) {
         requiredWorkflowEventDefNames.add(name);
-    }
-
-    void addTaskDefBuilder(TaskDefBuilder tdb) {
-        TaskDefBuilder previous = taskDefBuilders.get(tdb.getTaskDefName());
-        if (previous != null) {
-            if (!previous.signature.equals(tdb.signature)) {
-                throw new RuntimeException("Tried to register two DIFFERENT tasks named " + tdb.getTaskDefName());
-            }
-        } else {
-            taskDefBuilders.put(tdb.getTaskDefName(), tdb);
-        }
     }
 
     @Override
@@ -120,15 +118,6 @@ public class WorkflowImpl extends Workflow {
 
     ThreadRetentionPolicy getDefaultThreadRetentionPolicy() {
         return defaultThreadRetentionPolicy;
-    }
-
-    public Set<Object> getTaskExecutables() {
-        compileWorkflow();
-        Set<Object> out = new HashSet<>();
-        for (TaskDefBuilder tdb : taskDefBuilders.values()) {
-            out.add(tdb.executable);
-        }
-        return out;
     }
 
     public String addSubThread(String subThreadName, ThreadFunc subThreadFunc) {

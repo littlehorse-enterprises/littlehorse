@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +49,8 @@ public interface WorkflowThread {
      * @return A NodeOutput for that TASK node.
      */
     TaskNodeOutput execute(WfRunVariable taskName, Serializable... args);
+
+    TaskNodeOutput execute(Method taskMethod, Serializable... args);
 
     /**
      * Adds a TASK node to the ThreadSpec.
