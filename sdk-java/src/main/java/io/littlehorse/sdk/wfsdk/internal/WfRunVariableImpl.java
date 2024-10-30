@@ -12,7 +12,6 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
