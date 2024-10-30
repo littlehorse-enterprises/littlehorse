@@ -54,9 +54,9 @@ An authenticated request made without a `TenantId` is designated for the `defaul
 
 #### Initial Configuration
 
-The `default` `Tenant` is initialized simply as a `Tenant` with the ID `default`. If `Tenant`s receive more metadata in the future, we will update the configuration here.
+The `default` `Tenant` is initialized simply a `Tenant` with the ID `default`. If `Tenant`s receive more metadata in the future, we will update the configuration here.
 
-Represented as a `Tenant protobuf object`(../08-api.md#tenant), the initial `default` `Tenant` configuration looks like this:
+Represented as a [Tenant protobuf object](../08-api.md#tenant), the initial `default` `Tenant` configuration looks like this:
 
 ```json
 {
@@ -70,7 +70,11 @@ An authenticated request made with an unknown `PrincipalId` is authorized with t
 
 #### Initial Configuration
 
-The `anonymous` `Principal` is initialized with **full admin privileges** over the *entire* LittleHorse cluster.
+:::danger
+The `anonymous` `Principal` should **ALWAYS** be demoted from this initial configuration before your LittleHorse Cluster is used in production.
+:::
+
+When your LittleHorse Cluster is first created, the `anonymous` `Principal` is initialized with **full admin privileges** over the *entire* LittleHorse cluster. 
 
 Represented as a [Principal protobuf object](../08-api.md#principal), the initial `anonymous` `Principal` configuration looks like this:
 
@@ -87,11 +91,6 @@ Represented as a [Principal protobuf object](../08-api.md#principal), the initia
     "id": "anonymous"
 }
 ```
-
-:::danger
-The `anonymous` `Principal` should **ALWAYS** be demoted before your LittleHorse Cluster is used in production.
-:::
-
 
 #### Updating the Permissions
 
