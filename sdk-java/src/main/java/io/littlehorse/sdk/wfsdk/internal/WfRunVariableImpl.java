@@ -161,47 +161,47 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     @Override
-    public void assignTo(Serializable rhs) {
+    public void assignTo(Object rhs) {
         parent.mutate(this, VariableMutationType.ASSIGN, rhs);
     }
 
     @Override
-    public void divide(Serializable rhs) {
+    public void divide(Object rhs) {
         parent.mutate(this, VariableMutationType.DIVIDE, rhs);
     }
 
     @Override
-    public void add(Serializable rhs) {
+    public void add(Object rhs) {
         parent.mutate(this, VariableMutationType.ADD, rhs);
     }
 
     @Override
-    public void subtract(Serializable rhs) {
+    public void subtract(Object rhs) {
         parent.mutate(this, VariableMutationType.SUBTRACT, rhs);
     }
 
     @Override
-    public void multiply(Serializable rhs) {
+    public void multiply(Object rhs) {
         parent.mutate(this, VariableMutationType.MULTIPLY, rhs);
     }
 
     @Override
-    public void extend(Serializable rhs) {
+    public void extend(Object rhs) {
         parent.mutate(this, VariableMutationType.EXTEND, rhs);
     }
 
     @Override
-    public void removeIndex(Serializable rhs) {
+    public void removeIndex(Object rhs) {
         parent.mutate(this, VariableMutationType.REMOVE_INDEX, rhs);
     }
 
     @Override
-    public void removeKey(Serializable rhs) {
+    public void removeKey(Object rhs) {
         parent.mutate(this, VariableMutationType.REMOVE_KEY, rhs);
     }
 
     @Override
-    public void removeIfPresent(Serializable rhs) {
+    public void removeIfPresent(Object rhs) {
         parent.mutate(this, VariableMutationType.REMOVE_IF_PRESENT, rhs);
     }
 

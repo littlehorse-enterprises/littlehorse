@@ -145,21 +145,21 @@ public interface WfRunVariable extends Serializable {
 
     WorkflowCondition isNotIn(Serializable rhs);
 
-    void assignTo(Serializable rhs);
+    void assignTo(Object rhs);
 
-    void add(Serializable rhs);
+    void add(Object rhs);
 
-    void subtract(Serializable rhs);
+    void subtract(Object rhs);
 
-    void divide(Serializable rhs);
+    void divide(Object rhs);
 
-    void multiply(Serializable rhs);
+    void multiply(Object rhs);
 
-    void extend(Serializable rhs);
+    void extend(Object rhs);
 
-    void removeIndex(Serializable rhs);
+    void removeIndex(Object rhs);
 
-    void removeIfPresent(Serializable rhs);
+    void removeIfPresent(Object rhs);
 
-    void removeKey(Serializable rhs);
+    void removeKey(Object rhs);
 }

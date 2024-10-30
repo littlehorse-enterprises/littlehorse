@@ -382,6 +382,14 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return wfRunVariable;
     }
 
+    public WfRunVariable declareBool(String name) {
+        return addVariable(name, VariableType.BOOL);
+    }
+
+    public WfRunVariable declareBool(String name, boolean defaultVal) {
+        return addVariable(name, defaultVal);
+    }
+
     public WfRunVariable declareInt(String name) {
         return addVariable(name, VariableType.INT);
     }

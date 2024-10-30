@@ -134,6 +134,10 @@ public interface WorkflowThread {
 
     WfRunVariable declareJsonObj(String name, Map<String, Object> defaultVal);
 
+    WfRunVariable declareBool(String name);
+
+    WfRunVariable declareBool(String name, boolean defaultVal);
+
     /**
      * Defines a Variable in the `ThreadSpec` and returns a handle to it.
      *
