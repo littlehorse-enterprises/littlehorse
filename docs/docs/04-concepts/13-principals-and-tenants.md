@@ -83,7 +83,7 @@ Represented as a [Principal protobuf object](../08-api.md#principal), the initia
     "global_acls": {
         "acls": [
             {
-                "resources": ["ALL_RESOURCES"],
+                "resources": ["ACL_ALL_RESOURCES"],
                 "allowed_actions": ["ALL_ACTIONS"]
             }
         ]
