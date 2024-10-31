@@ -1,0 +1,103 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'com.diffplug.spotless' version '6.25.0'
+}
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+task javadocJar(type: Jar) {
+    archiveClassifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+publishing {
+    repositories {
+        mavenLocal()
+    }
+
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = group
+            artifactId = 'littlehorse-container'
+            version = version
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = 'LittleHorse Testcontainers'
+                description = 'LittleHorse Container is a testing library that allows you to run LittleHorse using Testcontainers'
+                url = 'https://github.com/littlehorse-enterprises/littlehorse'
+                licenses {
+                    license {
+                        name = 'Server Side Public License, Version 1'
+                        url = 'https://spdx.org/licenses/SSPL-1.0.html'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'LittleHorse Engineering'
+                        email = 'engineering@littlehorse.io'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/littlehorse-enterprises/littlehorse'
+                    connection = 'scm:git://github.com/littlehorse-enterprises/littlehorse.git'
+                    developerConnection = 'scm:git:ssh://github.com/littlehorse-enterprises/littlehorse.git'
+                }
+                packaging = 'jar'
+            }
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+var testcontainersVersion = "1.20.3"
+var slf4jVersion = "2.0.7"
+
+dependencies {
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    api "org.testcontainers:kafka:${testcontainersVersion}"
+    api "org.testcontainers:testcontainers:${testcontainersVersion}"
+
+    testImplementation project(':sdk-java')
+    testImplementation "org.slf4j:slf4j-simple:${slf4jVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
+    testImplementation "org.testcontainers:junit-jupiter:${testcontainersVersion}"
+}
+
+// This is required so that we can use the Reflection API to determine the names
+// of parameters for Task Functions and match them to the TaskDef param names.
+compileJava {
+    options.compilerArgs << '-parameters'
+}
+
+javadoc {
+    excludes = []
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
+    jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
+}
+
+spotless {
+    java {
+        target('**/*.java')
+        palantirJavaFormat()
+    }
+}

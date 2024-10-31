@@ -60,7 +60,7 @@ publishing {
             artifact javadocJar
             pom {
                 name = 'LittleHorse Test Utils'
-                description = 'LittleHorse test utils is a testing library for Littlehorse runtime'
+                description = 'LittleHorse Test Utils is a testing library for Littlehorse runtime'
                 url = 'https://github.com/littlehorse-enterprises/littlehorse'
                 licenses {
                     license {
