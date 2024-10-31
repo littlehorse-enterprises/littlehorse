@@ -10,6 +10,8 @@ import io.littlehorse.common.proto.InitializationLog;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.Principal;
+import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.Version;
 import io.littlehorse.server.streams.ServerTopology;
@@ -62,38 +64,73 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
         ClusterScopedStore clusterStore =
                 ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.METADATA_STORE), context);
 
-        InitializationLogModel oldInitializationLogModel =
+        InitializationLogModel storedInitializationLogModel =
                 clusterStore.get(InitializationLogModel.SERVER_INITIALIZED_KEY, InitializationLogModel.class);
 
         // If server has not been initialized..
-        if (oldInitializationLogModel == null) {
+        if (storedInitializationLogModel == null) {
             log.info("Initializing Cluster...");
             InitializationLog.Builder initializationLogBuilder = InitializationLog.newBuilder()
                     .setInitVersion(Version.getServerVersion())
-                    .setInitTime(LHUtil.fromDate(new Date()))
-                    .setObiWan("pedro");
+                    .setInitTime(LHUtil.fromDate(new Date()));
 
-            // Put tenant
-            TenantModel defaultTenantModel = InitializationLogModel.getDefaultTenantModel(context);
-            clusterStore.put(new StoredGetable<>(defaultTenantModel));
-            initializationLogBuilder.setInitDefaultTenant(defaultTenantModel.toProto());
-            log.info("Default Tenant put to store!");
+            Tenant initialDefaultTenant = getDefaultTenant(context, clusterStore);
+            initializationLogBuilder.setInitDefaultTenant(initialDefaultTenant);
 
-            // Put anonymous principal
-            PrincipalModel anonymousPrincipalModel = InitializationLogModel.getAnonymousPrincipalModel(context);
-            clusterStore.put(new StoredGetable<>(anonymousPrincipalModel));
-            for (Tag tag : anonymousPrincipalModel.getIndexEntries()) {
-                clusterStore.put(tag);
-            }
-            initializationLogBuilder.setInitAnonymousPrincipal(anonymousPrincipalModel.toProto());
-            log.info("Anonymous Principal put to store!");
+            Principal initialAnonymousPrincipal = getAnonymousPrincipal(context, clusterStore);
+            initializationLogBuilder.setInitAnonymousPrincipal(initialAnonymousPrincipal);
 
             InitializationLogModel initializationLogModel = InitializationLogModel.fromProto(
                     initializationLogBuilder.build(), InitializationLogModel.class, context);
             clusterStore.put(initializationLogModel);
 
             log.info("Initialization Log put to store!");
+            log.info(initializationLogModel.toString());
         }
+    }
+
+    // Gets the anonymous Principal configuration. If one does not exist, create a new one.
+    public Tenant getDefaultTenant(BackgroundContext context, ClusterScopedStore clusterStore) {
+        TenantModel defaultTenantModel = InitializationLogModel.getDefaultTenantModel(context);
+
+        // Check if it exists already
+        @SuppressWarnings("unchecked")
+        StoredGetable<Tenant, TenantModel> storedDefaultTenantModel =
+                clusterStore.get(defaultTenantModel.getObjectId().getStoreableKey(), StoredGetable.class);
+
+        // If so, return the existing default Tenant
+        if (storedDefaultTenantModel != null) {
+            return storedDefaultTenantModel.getStoredObject().toProto().build();
+        }
+
+        clusterStore.put(new StoredGetable<>(defaultTenantModel));
+        log.info("Default Tenant put to store!");
+        return defaultTenantModel.toProto().build();
+    }
+
+    // Gets the anonymous Principal configuration. If one does not exist, create a new one.
+    public Principal getAnonymousPrincipal(BackgroundContext context, ClusterScopedStore clusterStore) {
+        // Get the default implementation of the anonymous Principal
+        PrincipalModel anonymousPrincipalModel = InitializationLogModel.getAnonymousPrincipalModel(context);
+
+        // Check if it exists already
+        @SuppressWarnings("unchecked")
+        StoredGetable<Principal, PrincipalModel> storedAnonymousPrincipalStoreable =
+                clusterStore.get(anonymousPrincipalModel.getObjectId().getStoreableKey(), StoredGetable.class);
+
+        // If so, return the existing anonymous Principal
+        if (storedAnonymousPrincipalStoreable != null) {
+            return storedAnonymousPrincipalStoreable.getStoredObject().toProto().build();
+        }
+
+        // Otherwise, put the default implementation to the store and return it
+        clusterStore.put(new StoredGetable<>(anonymousPrincipalModel));
+        for (Tag tag : anonymousPrincipalModel.getIndexEntries()) {
+            clusterStore.put(tag);
+        }
+        log.info("Anonymous Principal put to store!");
+
+        return anonymousPrincipalModel.toProto().build();
     }
 
     @Override
