@@ -55,14 +55,27 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
                 .withMemory(DEFAULT_MEMORY));
     }
 
+    /**
+     * Get LH host
+     * @return hostname: localhost
+     */
     public String getApiHost() {
         return getHost();
     }
 
+    /**
+     * Get port
+     * @return port: 32023
+     */
     public int getApiPort() {
         return getMappedPort(DEFAULT_INTERNAL_PORT);
     }
 
+    /**
+     * Return a properties object.
+     * Use: new LHConfig(littlehorseContainer.getProperties())
+     * @return Properties with the container configurations
+     */
     public Properties getProperties() {
         Properties properties = new Properties();
         properties.put(LHC_API_HOST, getApiHost());
