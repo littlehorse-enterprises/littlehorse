@@ -24,7 +24,6 @@ public class InitializationLogModel extends Storeable<InitializationLog> {
     private Date initTime;
     private PrincipalModel initAnonymousPrincipal;
     private TenantModel initDefaultTenant;
-    private String obiWan;
     public static final String SERVER_INITIALIZED_KEY = "server_initialized";
 
     public InitializationLogModel() {}
@@ -39,7 +38,6 @@ public class InitializationLogModel extends Storeable<InitializationLog> {
         this.initTime = initTime;
         this.initAnonymousPrincipal = initAnonymousPrincipal;
         this.initDefaultTenant = initDefaultTenant;
-        this.obiWan = obiWan;
     }
 
     @Override
@@ -48,8 +46,7 @@ public class InitializationLogModel extends Storeable<InitializationLog> {
                 .setInitVersion(initServerVersion.toProto())
                 .setInitTime(LHUtil.fromDate(initTime))
                 .setInitAnonymousPrincipal(initAnonymousPrincipal.toProto())
-                .setInitDefaultTenant(initDefaultTenant.toProto())
-                .setObiWan(obiWan);
+                .setInitDefaultTenant(initDefaultTenant.toProto());
     }
 
     @Override
@@ -60,7 +57,6 @@ public class InitializationLogModel extends Storeable<InitializationLog> {
         this.initAnonymousPrincipal =
                 PrincipalModel.fromProto(il.getInitAnonymousPrincipal(), PrincipalModel.class, context);
         this.initDefaultTenant = TenantModel.fromProto(il.getInitDefaultTenant(), TenantModel.class, context);
-        this.obiWan = il.getObiWan();
     }
 
     @Override

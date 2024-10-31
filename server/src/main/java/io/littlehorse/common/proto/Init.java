@@ -30,14 +30,13 @@ public final class Init {
     java.lang.String[] descriptorData = {
       "\n\ninit.proto\022\013littlehorse\032\037google/protob" +
       "uf/timestamp.proto\032\rservice.proto\032\nacls." +
-      "proto\"\361\001\n\021InitializationLog\0220\n\014init_vers" +
+      "proto\"\340\001\n\021InitializationLog\0220\n\014init_vers" +
       "ion\030\001 \001(\0132\032.littlehorse.ServerVersion\022-\n" +
       "\tinit_time\030\002 \001(\0132\032.google.protobuf.Times" +
       "tamp\0228\n\030init_anonymous_principal\030\003 \001(\0132\026" +
       ".littlehorse.Principal\0220\n\023init_default_t" +
-      "enant\030\004 \001(\0132\023.littlehorse.Tenant\022\017\n\007obi_" +
-      "wan\030\005 \001(\tB\037\n\033io.littlehorse.common.proto" +
-      "P\001b\006proto3"
+      "enant\030\004 \001(\0132\023.littlehorse.TenantB\037\n\033io.l" +
+      "ittlehorse.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -51,7 +50,7 @@ public final class Init {
     internal_static_littlehorse_InitializationLog_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_InitializationLog_descriptor,
-        new java.lang.String[] { "InitVersion", "InitTime", "InitAnonymousPrincipal", "InitDefaultTenant", "ObiWan", });
+        new java.lang.String[] { "InitVersion", "InitTime", "InitAnonymousPrincipal", "InitDefaultTenant", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.Service.getDescriptor();
     io.littlehorse.sdk.common.proto.Acls.getDescriptor();

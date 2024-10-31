@@ -120,24 +120,4 @@ public interface InitializationLogOrBuilder extends
    * <code>.littlehorse.Tenant init_default_tenant = 4;</code>
    */
   io.littlehorse.sdk.common.proto.TenantOrBuilder getInitDefaultTenantOrBuilder();
-
-  /**
-   * <pre>
-   * Just for fun?
-   * </pre>
-   *
-   * <code>string obi_wan = 5;</code>
-   * @return The obiWan.
-   */
-  java.lang.String getObiWan();
-  /**
-   * <pre>
-   * Just for fun?
-   * </pre>
-   *
-   * <code>string obi_wan = 5;</code>
-   * @return The bytes for obiWan.
-   */
-  com.google.protobuf.ByteString
-      getObiWanBytes();
 }

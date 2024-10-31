@@ -24,7 +24,4 @@ message InitializationLog {
   // If the default Tenant was created, this field will include
   // its initial state
   Tenant init_default_tenant = 4;
-  
-  // Just for fun?
-  string obi_wan = 5;
 }

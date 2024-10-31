@@ -21,7 +21,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private InitializationLog() {
-    obiWan_ = "";
   }
 
   @java.lang.Override
@@ -202,53 +201,6 @@ private static final long serialVersionUID = 0L;
     return initDefaultTenant_ == null ? io.littlehorse.sdk.common.proto.Tenant.getDefaultInstance() : initDefaultTenant_;
   }
 
-  public static final int OBI_WAN_FIELD_NUMBER = 5;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object obiWan_ = "";
-  /**
-   * <pre>
-   * Just for fun?
-   * </pre>
-   *
-   * <code>string obi_wan = 5;</code>
-   * @return The obiWan.
-   */
-  @java.lang.Override
-  public java.lang.String getObiWan() {
-    java.lang.Object ref = obiWan_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      obiWan_ = s;
-      return s;
-    }
-  }
-  /**
-   * <pre>
-   * Just for fun?
-   * </pre>
-   *
-   * <code>string obi_wan = 5;</code>
-   * @return The bytes for obiWan.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getObiWanBytes() {
-    java.lang.Object ref = obiWan_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      obiWan_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -275,9 +227,6 @@ private static final long serialVersionUID = 0L;
     if (initDefaultTenant_ != null) {
       output.writeMessage(4, getInitDefaultTenant());
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(obiWan_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, obiWan_);
-    }
     getUnknownFields().writeTo(output);
   }
 
@@ -302,9 +251,6 @@ private static final long serialVersionUID = 0L;
     if (initDefaultTenant_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getInitDefaultTenant());
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(obiWan_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, obiWan_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -341,8 +287,6 @@ private static final long serialVersionUID = 0L;
       if (!getInitDefaultTenant()
           .equals(other.getInitDefaultTenant())) return false;
     }
-    if (!getObiWan()
-        .equals(other.getObiWan())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -370,8 +314,6 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + INIT_DEFAULT_TENANT_FIELD_NUMBER;
       hash = (53 * hash) + getInitDefaultTenant().hashCode();
     }
-    hash = (37 * hash) + OBI_WAN_FIELD_NUMBER;
-    hash = (53 * hash) + getObiWan().hashCode();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -528,7 +470,6 @@ private static final long serialVersionUID = 0L;
         initDefaultTenantBuilder_.dispose();
         initDefaultTenantBuilder_ = null;
       }
-      obiWan_ = "";
       return this;
     }
 
@@ -581,9 +522,6 @@ private static final long serialVersionUID = 0L;
         result.initDefaultTenant_ = initDefaultTenantBuilder_ == null
             ? initDefaultTenant_
             : initDefaultTenantBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.obiWan_ = obiWan_;
       }
     }
 
@@ -643,11 +581,6 @@ private static final long serialVersionUID = 0L;
       if (other.hasInitDefaultTenant()) {
         mergeInitDefaultTenant(other.getInitDefaultTenant());
       }
-      if (!other.getObiWan().isEmpty()) {
-        obiWan_ = other.obiWan_;
-        bitField0_ |= 0x00000010;
-        onChanged();
-      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -702,11 +635,6 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 34
-            case 42: {
-              obiWan_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000010;
-              break;
-            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1360,98 +1288,6 @@ private static final long serialVersionUID = 0L;
         initDefaultTenant_ = null;
       }
       return initDefaultTenantBuilder_;
-    }
-
-    private java.lang.Object obiWan_ = "";
-    /**
-     * <pre>
-     * Just for fun?
-     * </pre>
-     *
-     * <code>string obi_wan = 5;</code>
-     * @return The obiWan.
-     */
-    public java.lang.String getObiWan() {
-      java.lang.Object ref = obiWan_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        obiWan_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <pre>
-     * Just for fun?
-     * </pre>
-     *
-     * <code>string obi_wan = 5;</code>
-     * @return The bytes for obiWan.
-     */
-    public com.google.protobuf.ByteString
-        getObiWanBytes() {
-      java.lang.Object ref = obiWan_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        obiWan_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <pre>
-     * Just for fun?
-     * </pre>
-     *
-     * <code>string obi_wan = 5;</code>
-     * @param value The obiWan to set.
-     * @return This builder for chaining.
-     */
-    public Builder setObiWan(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      obiWan_ = value;
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Just for fun?
-     * </pre>
-     *
-     * <code>string obi_wan = 5;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearObiWan() {
-      obiWan_ = getDefaultInstance().getObiWan();
-      bitField0_ = (bitField0_ & ~0x00000010);
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Just for fun?
-     * </pre>
-     *
-     * <code>string obi_wan = 5;</code>
-     * @param value The bytes for obiWan to set.
-     * @return This builder for chaining.
-     */
-    public Builder setObiWanBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      obiWan_ = value;
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
