@@ -1,7 +1,6 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.core.init.InitializationLogModel;
@@ -73,7 +72,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
 
         InitializationLogModel storedInitializationLogModel =
                 clusterStore.get(InitializationLogModel.SERVER_INITIALIZED_KEY, InitializationLogModel.class);
-                
+
         TenantScopedStore tenantScopedStore =
                 TenantScopedStore.newInstance(metadataStore, new TenantIdModel(LHConstants.DEFAULT_TENANT), context);
 
