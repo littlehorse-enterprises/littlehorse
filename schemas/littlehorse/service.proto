@@ -289,7 +289,7 @@ service LittleHorse {
   rpc Whoami(google.protobuf.Empty) returns (Principal) {}
 
   // Gets the version of the LH Server.
-  rpc GetServerVersion(google.protobuf.Empty) returns (ServerVersionResponse) {}
+  rpc GetServerVersion(google.protobuf.Empty) returns (ServerVersion) {}
 }
 
 // Returns the UserTaskDef with a given name and the highest version number.
@@ -1423,8 +1423,9 @@ message GetLatestWfSpecRequest {
   optional int32 major_version = 2;
 }
 
+
 // The version of the LH Server according to Semantic Versioning
-message ServerVersionResponse {
+message ServerVersion {
   // Server Major Version
   int32 major_version = 1;
 

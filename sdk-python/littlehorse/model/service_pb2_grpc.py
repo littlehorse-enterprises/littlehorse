@@ -395,7 +395,7 @@ class LittleHorseStub(object):
         self.GetServerVersion = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetServerVersion',
                 request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
-                response_deserializer=service__pb2.ServerVersionResponse.FromString,
+                response_deserializer=service__pb2.ServerVersion.FromString,
                 )
 
 
@@ -1346,7 +1346,7 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'GetServerVersion': grpc.unary_unary_rpc_method_handler(
                     servicer.GetServerVersion,
                     request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
-                    response_serializer=service__pb2.ServerVersionResponse.SerializeToString,
+                    response_serializer=service__pb2.ServerVersion.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -2612,6 +2612,6 @@ class LittleHorse(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetServerVersion',
             google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
-            service__pb2.ServerVersionResponse.FromString,
+            service__pb2.ServerVersion.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
