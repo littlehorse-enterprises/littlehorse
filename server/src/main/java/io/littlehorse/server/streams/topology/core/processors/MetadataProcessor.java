@@ -112,8 +112,10 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
             return storedDefaultTenantModel.toProto().build();
         }
 
+        // Otherwise, put the default implementation to the store and return it
         metadataManager.put(defaultTenantModel);
         log.info("Default Tenant put to store!");
+
         return defaultTenantModel.toProto().build();
     }
 
