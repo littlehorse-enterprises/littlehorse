@@ -71,7 +71,7 @@ An authenticated request made with an unknown `PrincipalId` is authorized with t
 #### Initial Configuration
 
 :::danger
-The `anonymous` `Principal` should **ALWAYS** be demoted from this initial configuration before your LittleHorse Cluster is used in production.
+On untrusted networks, we ***strongly*** recommend demoting the privileges of the anonymous Principal in order to enforce the principle of least privilege.
 :::
 
 When your LittleHorse Cluster is first created, the `anonymous` `Principal` is initialized with **full admin privileges** over the *entire* LittleHorse cluster. 
@@ -94,7 +94,7 @@ Represented as a [Principal protobuf object](../08-api.md#principal), the initia
 
 #### Updating the Permissions
 
-Like any other `Principal`, the `anonymous` Principal's permissions can be overwritten via a `PutPrincipal` request from a caller with proper permissions and the `overwrite` parameter set to true.
+Like any other `Principal`, the `anonymous` `Principal`'s permissions can be overwritten via a `PutPrincipal` request from a caller with proper permissions and the `overwrite` parameter set to true.
 
 #### Deletion
 
