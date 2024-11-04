@@ -115,6 +115,20 @@ public class GetableManager extends ReadOnlyGetableManager {
         return thingToDelete;
     }
 
+    public <U extends Message, T extends CoreGetable<U>> void deleteAllByPrefix(String prefix, Class<T> cls) {
+        log.trace("Deleting all {} with prefix {}", cls.getSimpleName(), prefix);
+
+        // Note this iterates in a non-paginated way through all NodeRun's in the
+        // WfRun. Fine for most use-cases, but if there's a WfRUn that runs for a
+        // year and has hundreds of tasks per day, it will be a problem.
+        List<GetableToStore<U, T>> allItems = iterateOverPrefixAndPutInUncommittedChanges(prefix, cls);
+
+        for (GetableToStore<U, T> itemToDelete : allItems) {
+            // Marking the objectToStore as null causes the flush() to delete it.
+            itemToDelete.setObjectToStore(null);
+        }
+    }
+
     public void commit() {
         for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChanges.entrySet()) {
             String storeableKey = entry.getKey();
