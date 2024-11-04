@@ -2279,28 +2279,28 @@ public final class LittleHorseGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      io.littlehorse.sdk.common.proto.ServerVersionResponse> getGetServerVersionMethod;
+      io.littlehorse.sdk.common.proto.ServerVersion> getGetServerVersionMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "GetServerVersion",
       requestType = com.google.protobuf.Empty.class,
-      responseType = io.littlehorse.sdk.common.proto.ServerVersionResponse.class,
+      responseType = io.littlehorse.sdk.common.proto.ServerVersion.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      io.littlehorse.sdk.common.proto.ServerVersionResponse> getGetServerVersionMethod() {
-    io.grpc.MethodDescriptor<com.google.protobuf.Empty, io.littlehorse.sdk.common.proto.ServerVersionResponse> getGetServerVersionMethod;
+      io.littlehorse.sdk.common.proto.ServerVersion> getGetServerVersionMethod() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, io.littlehorse.sdk.common.proto.ServerVersion> getGetServerVersionMethod;
     if ((getGetServerVersionMethod = LittleHorseGrpc.getGetServerVersionMethod) == null) {
       synchronized (LittleHorseGrpc.class) {
         if ((getGetServerVersionMethod = LittleHorseGrpc.getGetServerVersionMethod) == null) {
           LittleHorseGrpc.getGetServerVersionMethod = getGetServerVersionMethod =
-              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, io.littlehorse.sdk.common.proto.ServerVersionResponse>newBuilder()
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, io.littlehorse.sdk.common.proto.ServerVersion>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetServerVersion"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.google.protobuf.Empty.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.ServerVersionResponse.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.ServerVersion.getDefaultInstance()))
               .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetServerVersion"))
               .build();
         }
@@ -3135,7 +3135,7 @@ public final class LittleHorseGrpc {
      * </pre>
      */
     default void getServerVersion(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ServerVersionResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ServerVersion> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetServerVersionMethod(), responseObserver);
     }
   }
@@ -4018,7 +4018,7 @@ public final class LittleHorseGrpc {
      * </pre>
      */
     public void getServerVersion(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ServerVersionResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ServerVersion> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetServerVersionMethod(), getCallOptions()), request, responseObserver);
     }
@@ -4806,7 +4806,7 @@ public final class LittleHorseGrpc {
      * Gets the version of the LH Server.
      * </pre>
      */
-    public io.littlehorse.sdk.common.proto.ServerVersionResponse getServerVersion(com.google.protobuf.Empty request) {
+    public io.littlehorse.sdk.common.proto.ServerVersion getServerVersion(com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetServerVersionMethod(), getCallOptions(), request);
     }
@@ -5666,7 +5666,7 @@ public final class LittleHorseGrpc {
      * Gets the version of the LH Server.
      * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ServerVersionResponse> getServerVersion(
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.ServerVersion> getServerVersion(
         com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetServerVersionMethod(), getCallOptions()), request);
@@ -6055,7 +6055,7 @@ public final class LittleHorseGrpc {
           break;
         case METHODID_GET_SERVER_VERSION:
           serviceImpl.getServerVersion((com.google.protobuf.Empty) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ServerVersionResponse>) responseObserver);
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ServerVersion>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -6594,7 +6594,7 @@ public final class LittleHorseGrpc {
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               com.google.protobuf.Empty,
-              io.littlehorse.sdk.common.proto.ServerVersionResponse>(
+              io.littlehorse.sdk.common.proto.ServerVersion>(
                 service, METHODID_GET_SERVER_VERSION)))
         .build();
   }

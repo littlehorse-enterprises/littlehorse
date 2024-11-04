@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface ServerVersionResponseOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.ServerVersionResponse)
+public interface ServerVersionOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.ServerVersion)
     com.google.protobuf.MessageOrBuilder {
 
   /**
