@@ -5,6 +5,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
+import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -40,11 +41,12 @@ public class DeleteWfRunRequestModel extends CoreSubCommand<DeleteWfRunRequest> 
     @Override
     public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         executionContext.getableManager().delete(wfRunId);
-        executionContext.getableManager().deleteAllByPrefix(getPartitionKey(), NodeRunModel.class);
         executionContext.getableManager().deleteAllByPrefix(getPartitionKey(), TaskRunModel.class);
-        executionContext.getableManager().deleteAllByPrefix(getPartitionKey(), ExternalEventModel.class);
         executionContext.getableManager().deleteAllByPrefix(getPartitionKey(), VariableModel.class);
+        executionContext.getableManager().deleteAllByPrefix(getPartitionKey(), ExternalEventModel.class);
         executionContext.getableManager().deleteAllByPrefix(getPartitionKey(), UserTaskRunModel.class);
+        executionContext.getableManager().deleteAllByPrefix(getPartitionKey(), WorkflowEventModel.class);
+        executionContext.getableManager().deleteAllByPrefix(getPartitionKey(), NodeRunModel.class);
 
         return Empty.getDefaultInstance();
     }
