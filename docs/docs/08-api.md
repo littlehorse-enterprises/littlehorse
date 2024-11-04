@@ -478,7 +478,7 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-|  .google.protobuf.Empty  |  [ServerVersionResponse](#serverversionresponse)  | Gets the version of the LH Server. |
+|  .google.protobuf.Empty  |  [ServerVersion](#serverversion)  | Gets the version of the LH Server. |
 
 
 
@@ -2394,7 +2394,7 @@ to search for WorkflowEvents under.
 
 
 
-### Message `ServerVersionResponse` {#serverversionresponse}
+### Message `ServerVersion` {#serverversion}
 
 The version of the LH Server according to Semantic Versioning
 
