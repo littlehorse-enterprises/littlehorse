@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.kafka.KafkaContainer;
 
 public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
@@ -19,6 +20,7 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
     private static final String BOOTSTRAP_SERVERS = KAFKA_HOSTNAME + ":19092";
     private static final long DEFAULT_KAFKA_MEMORY = 1024L * 1024L * 1024L;
     private static final int DEFAULT_ADVERTISED_PORT = 32023;
+    public static final String LOG_REGEX = ".*Server version:.*";
 
     // TODO: DOCUMENTATION
     private LittleHorseCluster(final String kafkaImage, final String littlehorseImage, final int instances) {
@@ -47,6 +49,7 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
                 .withCommand("version")
                 .withEnv(LHC_API_HOST, cluster.get(0).getInternalApiHost())
                 .withEnv(LHC_API_PORT, String.valueOf(cluster.get(0).getInternalApiPort()))
+                .waitingFor(Wait.forLogMessage(LOG_REGEX, 1))
                 .dependsOn(kafka)
                 .dependsOn(cluster);
     }
