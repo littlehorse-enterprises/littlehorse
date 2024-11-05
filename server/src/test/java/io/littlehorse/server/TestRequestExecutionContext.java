@@ -1,10 +1,17 @@
 package io.littlehorse.server;
 
 import io.littlehorse.TestUtil;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.sdk.common.proto.Principal;
+import io.littlehorse.sdk.common.proto.PrincipalId;
+import io.littlehorse.sdk.common.proto.ServerACLs;
+import io.littlehorse.sdk.common.proto.Tenant;
+import io.littlehorse.sdk.common.proto.TenantId;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
@@ -71,6 +78,22 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
                 TenantScopedStore.newInstance(coreNativeStore, new TenantIdModel(tenantId), new BackgroundContext());
         MetadataManager initManager = new MetadataManager(clusterInitStore, coreInitStore, metadataCache);
         initManager.put(new TenantModel(new TenantIdModel(tenantId)));
+
+        initManager.put(TenantModel.fromProto(
+                Tenant.newBuilder()
+                        .setId(TenantId.newBuilder().setId(LHConstants.DEFAULT_TENANT))
+                        .build(),
+                TenantModel.class,
+                null));
+
+        initManager.put(PrincipalModel.fromProto(
+                Principal.newBuilder()
+                        .setId(PrincipalId.newBuilder().setId(LHConstants.ANONYMOUS_PRINCIPAL))
+                        .setGlobalAcls(ServerACLs.newBuilder().addAcls(LHConstants.ADMIN_ACL))
+                        .build(),
+                PrincipalModel.class,
+                null));
+
         return new TestRequestExecutionContext(
                 new PrincipalIdModel(clientId),
                 new TenantIdModel(tenantId),
