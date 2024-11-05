@@ -5,6 +5,7 @@ using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Helper;
 using LittleHorse.Sdk.Worker.Internal;
 using Microsoft.Extensions.Logging;
+using static LittleHorse.Common.Proto.LittleHorse;
 
 namespace LittleHorse.Sdk.Worker
 {
@@ -26,7 +27,7 @@ namespace LittleHorse.Sdk.Worker
         private LHTaskSignature<T>? _taskSignature;
         private LHServerConnectionManager<T>? _manager;
         private string _taskDefName;
-        private LittleHorse.Common.Proto.LittleHorse.LittleHorseClient _grpcClient;
+        private LittleHorseClient _grpcClient;
 
         public string TaskDefName { get => _taskDefName; }
 
@@ -78,7 +79,7 @@ namespace LittleHorse.Sdk.Worker
         {
             try
             {
-                var taskDefId = new TaskDefId()
+                var taskDefId = new TaskDefId
                 {
                     Name = _taskDefName,
                 };
@@ -121,7 +122,7 @@ namespace LittleHorse.Sdk.Worker
         /// <param name="swallowAlreadyExists">
         /// If true, then ignore grpc ALREADY_EXISTS error when registering the TaskDef.
         /// </param>
-        public void RegisterTaskDef(bool swallowAlreadyExists)
+        private void RegisterTaskDef(bool swallowAlreadyExists)
         {
             _logger?.LogInformation($"Creating TaskDef: {_taskDefName}");
 
@@ -129,21 +130,29 @@ namespace LittleHorse.Sdk.Worker
             {
                 var signature = new LHTaskSignature<T>(_taskDefName, _executable);
 
-                var request = new PutTaskDefRequest()
+                var request = new PutTaskDefRequest
                 {
                     Name = _taskDefName
                 };
 
-                for (int i = 0; i < signature.VarNames.Count; i++)
+                foreach (var lhMethodParam in signature.LhMethodParams)
                 {
-                    request.InputVars.Add(new VariableDef()
+                    var variableDef = new VariableDef
                     {
-                        Name = signature.VarNames[i],
-                        Type = signature.ParamTypes[i]
-                    });
+                        Name = lhMethodParam.Name,
+                        Type = lhMethodParam.Type,
+                        MaskedValue = lhMethodParam.IsMasked
+                    };
+                    
+                    request.InputVars.Add(variableDef);
+                }
+                
+                if (signature.TaskDefOutputSchema != null) {
+                    request.OutputSchema = signature.TaskDefOutputSchema;
                 }
 
                 var response = _grpcClient.PutTaskDef(request);
+                
                 _logger?.LogInformation($"Created TaskDef:\n{LHMappingHelper.MapProtoToJson(response)}");
             }
             catch (RpcException ex)
@@ -171,7 +180,6 @@ namespace LittleHorse.Sdk.Worker
 
         private void ValidateTaskMethodParameters(MethodInfo taskMethod, LHTaskSignature<T> taskSignature)
         {
-
             if (taskSignature.HasWorkerContextAtEnd)
             {
                 if (taskSignature.TaskMethod.GetParameters().Length - 1 != GetTaskDef().InputVars.Count)
@@ -218,6 +226,5 @@ namespace LittleHorse.Sdk.Worker
         {
             return new VariableMapping(taskDef, index, type, paramName);
         }
-
     }
 }
