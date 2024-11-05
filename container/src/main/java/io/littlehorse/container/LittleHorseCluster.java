@@ -64,7 +64,7 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
      *
      * @return Properties with the container configurations
      */
-    public Properties getProperties() {
+    public Properties getClientProperties() {
         Properties properties = new Properties();
         properties.put(LHC_API_HOST, getHost());
         properties.put(LHC_API_PORT, DEFAULT_ADVERTISED_PORT);

@@ -17,7 +17,7 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
     private static final String LHS_CORE_STREAM_THREADS = "LHS_CORE_STREAM_THREADS";
     private static final String LHS_KAFKA_BOOTSTRAP_SERVERS = "LHS_KAFKA_BOOTSTRAP_SERVERS";
     private static final String LOG_REGEX = ".*New state for (core|timer) topology: RUNNING.*";
-    private static final long DEFAULT_MEMORY = 1024L * 1024L * 1024L;
+    private static final long DEFAULT_LH_MEMORY = 1024L * 1024L * 1024L;
     private static final String LHS_ADVERTISED_LISTENERS = "LHS_ADVERTISED_LISTENERS";
     private static final DockerImageName DEFAULT_IMAGE_NAME =
             DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lh-server");
@@ -49,7 +49,7 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
                 .withInstanceId(1)
                 .withEnv(LHS_CORE_STREAM_THREADS, "2")
                 .withCreateContainerCmdModifier(
-                        cmd -> Objects.requireNonNull(cmd.getHostConfig()).withMemory(DEFAULT_MEMORY));
+                        cmd -> Objects.requireNonNull(cmd.getHostConfig()).withMemory(DEFAULT_LH_MEMORY));
     }
 
     public LittleHorseContainer withKafkaBootstrapServers(final String bootstrapServers) {
@@ -105,7 +105,7 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
      *
      * @return Properties with the container configurations
      */
-    public Properties getProperties() {
+    public Properties getClientProperties() {
         Properties properties = new Properties();
         properties.put(LHC_API_HOST, getApiHost());
         properties.put(LHC_API_PORT, getApiPort());

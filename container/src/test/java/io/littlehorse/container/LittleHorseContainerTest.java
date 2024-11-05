@@ -22,7 +22,7 @@ public class LittleHorseContainerTest {
 
     @Test
     public void simpleTest() {
-        LHConfig config = new LHConfig(littleHorseCluster.getProperties());
+        LHConfig config = new LHConfig(littleHorseCluster.getClientProperties());
 
         LittleHorseGrpc.LittleHorseBlockingStub client = config.getBlockingStub();
 

@@ -17,6 +17,6 @@ public class LittleHorseContainerBootstrapper implements TestBootstrapper {
 
     @Override
     public LHConfig getWorkerConfig() {
-        return new LHConfig(littleHorseCluster.getProperties());
+        return new LHConfig(littleHorseCluster.getClientProperties());
     }
 }
