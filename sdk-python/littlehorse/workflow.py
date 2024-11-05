@@ -28,6 +28,7 @@ from littlehorse.model import (
     TaskDefId,
     WorkflowEventDefId,
     PutExternalEventDefRequest,
+    PutWorkflowEventDefRequest,
     PutWfSpecRequest,
     AllowedUpdateType,
     VariableValue,
@@ -1948,3 +1949,18 @@ def create_external_event_def(
     request = PutExternalEventDefRequest(name=name)
     stub.PutExternalEventDef(request, timeout=timeout)
     logging.info(f"ExternalEventDef {name} was created:\n{to_json(request)}")
+
+def create_workflow_event_def(
+    name: str, type: VariableType, config: LHConfig, timeout: Optional[int] = None
+) -> None:
+    """Creates a new WorkflowEventDef at the LH Server.
+
+    Args:
+        name (str): Name of the workflow event.
+        config (LHConfig): The configuration to get connected to the LH Server.
+        timeout (Optional[int]): Timeout
+    """
+    stub = config.stub()
+    request = PutWorkflowEventDefRequest(name=name, type=type)
+    stub.PutWorkflowEventDef(request, timeout=timeout)
+    logging.info(f"WorkflowEventDef {name} was created:\n{to_json(request)}")

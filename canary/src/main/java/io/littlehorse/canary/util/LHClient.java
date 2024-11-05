@@ -35,7 +35,7 @@ public class LHClient implements MeterBinder {
     }
 
     public String getServerVersion() {
-        final ServerVersionResponse response = blockingStub.getServerVersion(Empty.getDefaultInstance());
+        final ServerVersion response = blockingStub.getServerVersion(Empty.getDefaultInstance());
         return "%s.%s.%s%s"
                 .formatted(
                         response.getMajorVersion(),

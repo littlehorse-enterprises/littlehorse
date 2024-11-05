@@ -42,8 +42,6 @@ var getExternalEventCmd = &cobra.Command{
 
 		fmt.Println(args)
 
-		// fmt.Println(args)
-
 		ctx := requestContext(cmd)
 
 		littlehorse.PrintResp(getGlobalClient(cmd).GetExternalEvent(

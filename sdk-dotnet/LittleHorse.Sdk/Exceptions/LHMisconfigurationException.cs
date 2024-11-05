@@ -1,4 +1,4 @@
-﻿namespace LittleHorse.Common.Exceptions
+﻿namespace LittleHorse.Sdk.Exceptions
 {
     public class LHMisconfigurationException : Exception
     {
