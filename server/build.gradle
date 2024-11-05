@@ -67,7 +67,6 @@ dependencies {
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testImplementation project(":test-utils")
-    testImplementation project(":container")
 
     // JSON and YAML processing
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
