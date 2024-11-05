@@ -23,7 +23,7 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
     // TODO: DOCUMENTATION
     private LittleHorseCluster(final String kafkaImage, final String littlehorseImage, final int instances) {
         // TODO: use bash?
-        super("bash");
+        super("ghcr.io/littlehorse-enterprises/littlehorse/lhctl:latest");
 
         KafkaContainer kafka = new KafkaContainer(kafkaImage)
                 .withNetwork(NETWORK)
@@ -37,13 +37,16 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
                 .mapToObj(port -> new LittleHorseContainer(littlehorseImage)
                         .withKafkaBootstrapServers(BOOTSTRAP_SERVERS)
                         .withAdvertisedPort(port)
-                        .withInternalAdvertisedName(String.format("%s%d", LH_HOSTNAME, port))
+                        .withInstanceId(port)
+                        .withInternalAdvertisedHost(String.format("%s%d", LH_HOSTNAME, port))
                         .withNetwork(NETWORK)
                         .dependsOn(kafka))
                 .collect(Collectors.toList());
 
         this.withNetwork(NETWORK)
-                .withCommand("-c", "tail -f /dev/null")
+                .withCommand("version")
+                .withEnv(LHC_API_HOST, cluster.get(0).getInternalApiHost())
+                .withEnv(LHC_API_PORT, String.valueOf(cluster.get(0).getInternalApiPort()))
                 .dependsOn(kafka)
                 .dependsOn(cluster);
     }

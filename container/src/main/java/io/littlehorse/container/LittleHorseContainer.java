@@ -12,9 +12,11 @@ import org.testcontainers.utility.DockerImageName;
 
 public class LittleHorseContainer extends GenericContainer<LittleHorseContainer> {
 
+    private static final String LHS_INTERNAL_ADVERTISED_HOST = "LHS_INTERNAL_ADVERTISED_HOST";
+    private static final String LHS_INSTANCE_ID = "LHS_INSTANCE_ID";
+    private static final String LHS_CORE_STREAM_THREADS = "LHS_CORE_STREAM_THREADS";
     private static final String LHS_KAFKA_BOOTSTRAP_SERVERS = "LHS_KAFKA_BOOTSTRAP_SERVERS";
     private static final String LOG_REGEX = ".*New state for (core|timer) topology: RUNNING.*";
-
     private static final long DEFAULT_MEMORY = 1024L * 1024L * 1024L;
     private static final String LHS_ADVERTISED_LISTENERS = "LHS_ADVERTISED_LISTENERS";
     private static final DockerImageName DEFAULT_IMAGE_NAME =
@@ -22,7 +24,6 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
     private static final int DEFAULT_INTERNAL_PORT = 2023;
     private static final int DEFAULT_ADVERTISED_PORT = 32023;
     private static final String DEFAULT_KAFKA_BOOTSTRAP_SERVERS = "kafka:19092";
-    public static final String LHS_INTERNAL_ADVERTISED_HOST = "LHS_INTERNAL_ADVERTISED_HOST";
 
     /**
      * Create LittleHorse Testcontainers Wrapper
@@ -45,6 +46,8 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
                 .withExposedPorts(DEFAULT_INTERNAL_PORT)
                 .withKafkaBootstrapServers(DEFAULT_KAFKA_BOOTSTRAP_SERVERS)
                 .withAdvertisedPort(DEFAULT_ADVERTISED_PORT)
+                .withInstanceId(1)
+                .withEnv(LHS_CORE_STREAM_THREADS, "2")
                 .withCreateContainerCmdModifier(
                         cmd -> Objects.requireNonNull(cmd.getHostConfig()).withMemory(DEFAULT_MEMORY));
     }
@@ -59,7 +62,11 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
                         .withPortBindings(PortBinding.parse(String.format("%d:%d", port, DEFAULT_INTERNAL_PORT))));
     }
 
-    public LittleHorseContainer withInternalAdvertisedName(final String hostname) {
+    public LittleHorseContainer withInstanceId(final int id) {
+        return this.withEnv(LHS_INSTANCE_ID, String.valueOf(id));
+    }
+
+    public LittleHorseContainer withInternalAdvertisedHost(final String hostname) {
         return this.withEnv(LHS_INTERNAL_ADVERTISED_HOST, hostname).withNetworkAliases(hostname);
     }
 
@@ -70,6 +77,17 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
      */
     public String getApiHost() {
         return getHost();
+    }
+
+    public String getInternalApiHost() {
+        if (getNetworkAliases().isEmpty()) {
+            return getApiHost();
+        }
+        return getNetworkAliases().get(0);
+    }
+
+    public int getInternalApiPort() {
+        return DEFAULT_INTERNAL_PORT;
     }
 
     /**
