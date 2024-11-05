@@ -1,22 +1,22 @@
 package e2e;
 
-import io.littlehorse.container.LittleHorseContainer;
+import io.littlehorse.container.LittleHorseCluster;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.test.internal.TestBootstrapper;
-import org.testcontainers.utility.DockerImageName;
 
 public class LittleHorseContainerBootstrapper implements TestBootstrapper {
-
-    private final LittleHorseContainer littlehorse = new LittleHorseContainer(
-            DockerImageName.parse("apache/kafka-native:latest"),
-            DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest"));
+    private final LittleHorseCluster littleHorseCluster = LittleHorseCluster.newBuilder()
+            .withInstances(2)
+            .withKafkaImage("apache/kafka-native:latest")
+            .withLittlehorseImage("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest")
+            .build();
 
     public LittleHorseContainerBootstrapper() {
-        littlehorse.start();
+        littleHorseCluster.start();
     }
 
     @Override
     public LHConfig getWorkerConfig() {
-        return new LHConfig(littlehorse.getProperties());
+        return new LHConfig(littleHorseCluster.getProperties());
     }
 }

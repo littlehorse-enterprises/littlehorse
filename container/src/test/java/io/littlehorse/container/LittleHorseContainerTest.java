@@ -9,19 +9,20 @@ import io.littlehorse.sdk.common.proto.Principal;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers
 public class LittleHorseContainerTest {
 
     @Container
-    public LittleHorseContainer littlehorse = new LittleHorseContainer(
-            DockerImageName.parse("apache/kafka-native:latest"),
-            DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest"));
+    public LittleHorseCluster littleHorseCluster = LittleHorseCluster.newBuilder()
+            .withInstances(2)
+            .withKafkaImage("apache/kafka-native:latest")
+            .withLittlehorseImage("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest")
+            .build();
 
     @Test
     public void simpleTest() {
-        LHConfig config = new LHConfig(littlehorse.getProperties());
+        LHConfig config = new LHConfig(littleHorseCluster.getProperties());
 
         LittleHorseGrpc.LittleHorseBlockingStub client = config.getBlockingStub();
 
