@@ -8,7 +8,7 @@ public class LittleHorseContainerBootstrapper implements TestBootstrapper {
     private final LittleHorseCluster littleHorseCluster = LittleHorseCluster.newBuilder()
             .withInstances(2)
             .withKafkaImage("apache/kafka-native:latest")
-            .withLittlehorseImage("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest")
+            .withLittlehorseImage("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:master")
             .build();
 
     public LittleHorseContainerBootstrapper() {
