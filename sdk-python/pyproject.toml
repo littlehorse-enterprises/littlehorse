@@ -33,7 +33,7 @@ warn_return_any = false
 disallow_subclassing_any = false
 
 [tool.poetry.dependencies]
-python = ">=3.9 <3.13"
+python = ">=3.9 <3.14"
 # The server is using protobuf 3.23 in python you have to add +1, so 4.23
 protobuf = "^4.23"
 # The server is using grpcio 1.56
