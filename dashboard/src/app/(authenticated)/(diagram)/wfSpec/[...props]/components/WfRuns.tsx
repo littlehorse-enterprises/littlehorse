@@ -20,9 +20,10 @@ export const WfRuns: FC<WfSpec> = spec => {
   const { tenantId } = useWhoAmI()
 
   const startTime = useMemo(() => {
+    if (window === -1) return undefined
     const now = new Date()
     const latestStart = now.toISOString()
-    const earliestStart = window === -1 ? undefined : new Date(now.getTime() - window * 6e4).toISOString()
+    const earliestStart = new Date(now.getTime() - window * 6e4).toISOString()
 
     return {
       latestStart,
