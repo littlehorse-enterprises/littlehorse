@@ -42,30 +42,54 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
     public LittleHorseContainer(final DockerImageName littlehorseImage) {
         super(littlehorseImage);
         littlehorseImage.assertCompatibleWith(DEFAULT_IMAGE_NAME);
-        this.waitingFor(Wait.forLogMessage(LOG_REGEX, 2))
-                .withExposedPorts(DEFAULT_INTERNAL_PORT)
+        this.withExposedPorts(DEFAULT_INTERNAL_PORT)
                 .withKafkaBootstrapServers(DEFAULT_KAFKA_BOOTSTRAP_SERVERS)
                 .withAdvertisedPort(DEFAULT_ADVERTISED_PORT)
                 .withInstanceId(1)
                 .withEnv(LHS_CORE_STREAM_THREADS, "2")
                 .withCreateContainerCmdModifier(
-                        cmd -> Objects.requireNonNull(cmd.getHostConfig()).withMemory(DEFAULT_LH_MEMORY));
+                        cmd -> Objects.requireNonNull(cmd.getHostConfig()).withMemory(DEFAULT_LH_MEMORY))
+                .waitingFor(Wait.forLogMessage(LOG_REGEX, 2));
     }
 
+    /**
+     * Kafka bootstrap servers. Configures the LHS_KAFKA_BOOTSTRAP_SERVERS env variable
+     *
+     * @param bootstrapServers Example: "kafka:19092"
+     * @return This testcontainer
+     */
     public LittleHorseContainer withKafkaBootstrapServers(final String bootstrapServers) {
         return this.withEnv(LHS_KAFKA_BOOTSTRAP_SERVERS, bootstrapServers);
     }
 
+    /**
+     * External port for connection. It configures the LHS_ADVERTISED_LISTENERS env variable
+     *
+     * @param port Example: 32023
+     * @return This testcontainer
+     */
     public LittleHorseContainer withAdvertisedPort(final int port) {
         return this.withEnv(LHS_ADVERTISED_LISTENERS, String.format("PLAIN://localhost:%d", port))
                 .withCreateContainerCmdModifier(cmd -> Objects.requireNonNull(cmd.getHostConfig())
                         .withPortBindings(PortBinding.parse(String.format("%d:%d", port, DEFAULT_INTERNAL_PORT))));
     }
 
+    /**
+     * Instance number
+     *
+     * @param id Instance id
+     * @return This testcontainer
+     */
     public LittleHorseContainer withInstanceId(final int id) {
         return this.withEnv(LHS_INSTANCE_ID, String.valueOf(id));
     }
 
+    /**
+     * For docker network. It configures the LHS_INTERNAL_ADVERTISED_HOST env variable
+     *
+     * @param hostname
+     * @return
+     */
     public LittleHorseContainer withInternalAdvertisedHost(final String hostname) {
         return this.withEnv(LHS_INTERNAL_ADVERTISED_HOST, hostname).withNetworkAliases(hostname);
     }
@@ -79,6 +103,11 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
         return getHost();
     }
 
+    /**
+     * Get docker network hostname
+     *
+     * @return Docker hostname
+     */
     public String getInternalApiHost() {
         if (getNetworkAliases().isEmpty()) {
             return getApiHost();
@@ -86,6 +115,11 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
         return getNetworkAliases().get(0);
     }
 
+    /**
+     * Get docker internal network port
+     *
+     * @return Docket network port
+     */
     public int getInternalApiPort() {
         return DEFAULT_INTERNAL_PORT;
     }

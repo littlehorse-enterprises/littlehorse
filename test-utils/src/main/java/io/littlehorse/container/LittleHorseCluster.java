@@ -1,5 +1,6 @@
 package io.littlehorse.container;
 
+import com.github.dockerjava.api.model.RestartPolicy;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -7,8 +8,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
-import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.containers.startupcheck.OneShotStartupCheckStrategy;
 import org.testcontainers.kafka.KafkaContainer;
+import org.testcontainers.utility.DockerImageName;
 
 public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
 
@@ -20,12 +22,18 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
     private static final String BOOTSTRAP_SERVERS = KAFKA_HOSTNAME + ":19092";
     private static final long DEFAULT_KAFKA_MEMORY = 1024L * 1024L * 1024L;
     private static final int DEFAULT_ADVERTISED_PORT = 32023;
-    public static final String LOG_REGEX = ".*Server version:.*";
 
-    // TODO: DOCUMENTATION
-    private LittleHorseCluster(final String kafkaImage, final String littlehorseImage, final int instances) {
-        // TODO: use bash?
-        super("ghcr.io/littlehorse-enterprises/littlehorse/lhctl:latest");
+    /**
+     * It creates a KafkaContainer and a list of LittleHorseContainer
+     *
+     * @param kafkaImage       Example: DockerImageName.parse("apache/kafka-native:latest")
+     * @param littlehorseImage Example: DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest")
+     * @param instances        LH cluster size
+     */
+    private LittleHorseCluster(
+            final DockerImageName kafkaImage, final DockerImageName littlehorseImage, final int instances) {
+        super(DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lhctl")
+                .withTag(littlehorseImage.getVersionPart()));
 
         KafkaContainer kafka = new KafkaContainer(kafkaImage)
                 .withNetwork(NETWORK)
@@ -49,17 +57,24 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
                 .withCommand("version")
                 .withEnv(LHC_API_HOST, cluster.get(0).getInternalApiHost())
                 .withEnv(LHC_API_PORT, String.valueOf(cluster.get(0).getInternalApiPort()))
-                .waitingFor(Wait.forLogMessage(LOG_REGEX, 1))
+                .withCreateContainerCmdModifier(cmd -> Objects.requireNonNull(cmd.getHostConfig())
+                        .withRestartPolicy(RestartPolicy.onFailureRestart(5)))
+                .withStartupCheckStrategy(new OneShotStartupCheckStrategy())
                 .dependsOn(kafka)
                 .dependsOn(cluster);
     }
 
+    /**
+     * New LittleHorseClusterBuilder
+     *
+     * @return LittleHorseClusterBuilder
+     */
     public static LittleHorseClusterBuilder newBuilder() {
         return new LittleHorseClusterBuilder();
     }
 
     /**
-     * Return a properties object.
+     * Return a properties object
      * Use: new LHConfig(littlehorseContainer.getProperties())
      *
      * @return Properties with the container configurations
@@ -76,20 +91,44 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
         private String littlehorseImage = "ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest";
         private int instances = 1;
 
+        /**
+         * Build LH cluster
+         *
+         * @return LittleHorseCluster
+         */
         public LittleHorseCluster build() {
-            return new LittleHorseCluster(kafkaImage, littlehorseImage, instances);
+            return new LittleHorseCluster(
+                    DockerImageName.parse(kafkaImage), DockerImageName.parse(littlehorseImage), instances);
         }
 
+        /**
+         * Kafka image
+         *
+         * @param kafkaImage Example: "apache/kafka-native:latest"
+         * @return This builder
+         */
         public LittleHorseClusterBuilder withKafkaImage(final String kafkaImage) {
             this.kafkaImage = kafkaImage;
             return this;
         }
 
+        /**
+         * LH image
+         *
+         * @param littlehorseImage Example: "ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest"
+         * @return This builder
+         */
         public LittleHorseClusterBuilder withLittlehorseImage(final String littlehorseImage) {
             this.littlehorseImage = littlehorseImage;
             return this;
         }
 
+        /**
+         * CLuster size
+         *
+         * @param instances Size
+         * @return This builder
+         */
         public LittleHorseClusterBuilder withInstances(final int instances) {
             assert instances > 0;
             this.instances = instances;

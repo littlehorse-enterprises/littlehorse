@@ -1950,6 +1950,7 @@ def create_external_event_def(
     stub.PutExternalEventDef(request, timeout=timeout)
     logging.info(f"ExternalEventDef {name} was created:\n{to_json(request)}")
 
+
 def create_workflow_event_def(
     name: str, type: VariableType, config: LHConfig, timeout: Optional[int] = None
 ) -> None:
