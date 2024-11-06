@@ -188,3 +188,19 @@ docker run --rm \
   -v ./ssl:/ssl \
   ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
 ```
+
+## Running local with Oauth
+
+Modify the .env file using the following variables
+
+```
+LHC_API_HOST=localhost
+LHC_API_PORT=2023
+LHC_API_PROTOCOL=TLS
+LHD_OAUTH_ENABLED=true
+LHC_CA_CERT=path-to-ca-cert
+NEXTAUTH_SECRET=any random string
+KEYCLOAK_CLIENT_ID=dashboard
+KEYCLOAK_CLIENT_SECRET=74b897a0b5804ad3879b2117e1d51015
+KEYCLOAK_ISSUER_URI=http://localhost:8888/realms/lh
+```
