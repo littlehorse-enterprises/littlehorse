@@ -36,9 +36,7 @@ import java.util.List;
 import java.util.UUID;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Answers;
 import org.mockito.Mock;
 
 public class DeleteWfRunRequestModelTest {
@@ -64,14 +62,11 @@ public class DeleteWfRunRequestModelTest {
             mockProcessor);
     private final GetableManager getableManager = testProcessorContext.getableManager();
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private VariableModel variableModel = spy();
-
-    @BeforeEach
-    public void setup() {
-        // VariableModel's "index" implementation relies on a litany of other objects
-        // that we do not need to create or store to test this specific feature.
-        // So we mock the VariableModel and hide the "index" functionality with our when() statements.
+    // VariableModel's "index" implementation relies on a litany of other objects
+    // that we do not need to create or store to test this specific feature.
+    // So we mock the VariableModel and hide the "index" functionality with our when() statements.
+    public VariableModel mockVariableModel() {
+        VariableModel variableModel = spy();
         variableModel.setId(new VariableIdModel(wfRun.getId(), 0, "test-name"));
         variableModel.setValue(TestUtil.variableValue());
         variableModel.setMasked(false);
@@ -81,6 +76,8 @@ public class DeleteWfRunRequestModelTest {
 
         when(variableModel.getIndexConfigurations()).thenReturn(List.of());
         when(variableModel.getIndexEntries()).thenReturn(List.of());
+
+        return variableModel;
     }
 
     @Test
@@ -88,6 +85,7 @@ public class DeleteWfRunRequestModelTest {
         TaskRunModel taskRunModel = TestUtil.taskRun(
                 new TaskRunIdModel(wfRun.getId(), UUID.randomUUID().toString()),
                 new TaskDefIdModel(UUID.randomUUID().toString()));
+        VariableModel variableModel = mockVariableModel();
         ExternalEventModel externalEventModel = TestUtil.externalEvent(wfRunId);
         UserTaskRunModel userTaskRunModel = TestUtil.userTaskRun(wfRunId, testProcessorContext);
         WorkflowEventModel workflowEventModel = TestUtil.workflowEvent(wfRunId);
@@ -107,7 +105,7 @@ public class DeleteWfRunRequestModelTest {
 
         WfRunModel storedWfRunModel = getableManager.get(wfRun.getId());
         TaskRunModel storedTaskRunModel = getableManager.get(taskRunModel.getId());
-        // VariableModel storedVariableModel = getableManager.get(variableModel.getId());
+        VariableModel storedVariableModel = getableManager.get(variableModel.getId());
         ExternalEventModel storedExternalEventModel = getableManager.get(externalEventModel.getId());
         UserTaskRunModel storedUserTaskRunModel = getableManager.get(userTaskRunModel.getId());
         WorkflowEventModel storedWorkflowEventModel = getableManager.get(workflowEventModel.getId());
@@ -115,7 +113,7 @@ public class DeleteWfRunRequestModelTest {
 
         assertThat(storedWfRunModel).isNull();
         assertThat(storedTaskRunModel).isNull();
-        // assertThat(storedVariableModel).isNull();
+        assertThat(storedVariableModel).isNull();
         assertThat(storedExternalEventModel).isNull();
         assertThat(storedUserTaskRunModel).isNull();
         assertThat(storedWorkflowEventModel).isNull();
