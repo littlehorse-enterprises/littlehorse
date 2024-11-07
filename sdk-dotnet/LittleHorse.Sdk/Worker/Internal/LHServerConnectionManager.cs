@@ -7,6 +7,7 @@ using LittleHorse.Sdk.Helper;
 using Microsoft.Extensions.Logging;
 using Polly;
 using static LittleHorse.Common.Proto.LittleHorse;
+using TaskStatus = LittleHorse.Common.Proto.TaskStatus;
 
 namespace LittleHorse.Sdk.Worker.Internal
 {
@@ -81,7 +82,7 @@ namespace LittleHorse.Sdk.Worker.Internal
         {
             try
             {
-                var request = new RegisterTaskWorkerRequest()
+                var request = new RegisterTaskWorkerRequest
                 {
                     TaskDefId = _taskDef.Id,
                     TaskWorkerId = _config.WorkerId,
@@ -114,7 +115,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                     }
                     catch (IOException ex)
                     {
-                        _logger?.LogError(ex, $"Exception on HandleRegisterTaskWorkResponse.");
+                        _logger?.LogError(ex, "Exception on HandleRegisterTaskWorkResponse.");
                     }
                 }
 
@@ -187,7 +188,7 @@ namespace LittleHorse.Sdk.Worker.Internal
 
         private ReportTaskRun ExecuteTask(ScheduledTask scheduledTask, DateTime? scheduleTime)
         {
-            var taskResult = new ReportTaskRun()
+            var taskResult = new ReportTaskRun
             {
                 TaskRunId = scheduledTask.TaskRunId,
                 AttemptNumber = scheduledTask.AttemptNumber
@@ -201,7 +202,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                 var serialized = LHMappingHelper.MapObjectToVariableValue(result);
 
                 taskResult.Output = serialized;
-                taskResult.Status = LittleHorse.Common.Proto.TaskStatus.TaskSuccess;
+                taskResult.Status = TaskStatus.TaskSuccess;
 
                 if (!string.IsNullOrEmpty(workerContext.LogOutput))
                 {
@@ -218,19 +219,19 @@ namespace LittleHorse.Sdk.Worker.Internal
             {
                 _logger?.LogError(ex, "Failed calculating task input variables");
                 taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
-                taskResult.Status = LittleHorse.Common.Proto.TaskStatus.TaskInputVarSubError;
+                taskResult.Status = TaskStatus.TaskInputVarSubError;
             }
             catch (LHSerdeException ex)
             {
                 _logger?.LogError(ex, "Failed serializing Task Output");
                 taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
-                taskResult.Status = LittleHorse.Common.Proto.TaskStatus.TaskOutputSerializingError;
+                taskResult.Status = TaskStatus.TaskOutputSerializingError;
             }
             catch (Exception ex)
             {
                 _logger?.LogError(ex, "Unexpected exception during task execution");
                 taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
-                taskResult.Status = LittleHorse.Common.Proto.TaskStatus.TaskFailed;
+                taskResult.Status = TaskStatus.TaskFailed;
             }
 
             taskResult.Time = Timestamp.FromDateTime(DateTime.UtcNow);
