@@ -70,7 +70,7 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-|  [PutWorkflowEventDefRequest](#putworkfloweventdefrequest)  |  [WorkflowEventDef](#workfloweventdef)  | EXPERIMENTAL: Creates a WorkflowEventDef. |
+|  [PutWorkflowEventDefRequest](#putworkfloweventdefrequest)  |  [WorkflowEventDef](#workfloweventdef)  | Creates a WorkflowEventDef. |
 
 ### RPC `PutWfSpec` {#putwfspec}
 
@@ -234,11 +234,29 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 |  [AwaitWorkflowEventRequest](#awaitworkfloweventrequest)  |  [WorkflowEvent](#workflowevent)  | Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent is not thrown before the deadline specified by the client.<br/><br/>To specify the deadline, the client should use GRPC deadlines. |
 
+### RPC `GetWorkflowEventDef` {#getworkfloweventdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [WorkflowEventDefId](#workfloweventdefid)  |  [WorkflowEventDef](#workfloweventdef)  | Get a specific WorkflowEventDef. |
+
+### RPC `GetWorkflowEvent` {#getworkflowevent}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [WorkflowEventId](#workfloweventid)  |  [WorkflowEvent](#workflowevent)  | Get a specific WorkflowEvent. |
+
 ### RPC `ListExternalEvents` {#listexternalevents}
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
 |  [ListExternalEventsRequest](#listexternaleventsrequest)  |  [ExternalEventList](#externaleventlist)  | List ExternalEvent's for a specific WfRun. |
+
+### RPC `ListWorkflowEvents` {#listworkflowevents}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [ListWorkflowEventsRequest](#listworkfloweventsrequest)  |  [WorkflowEventList](#workfloweventlist)  | List WorkflowEvent's for a specific WfRun. |
 
 ### RPC `SearchWfRun` {#searchwfrun}
 
@@ -276,6 +294,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 |  [SearchExternalEventRequest](#searchexternaleventrequest)  |  [ExternalEventIdList](#externaleventidlist)  | Search for ExternalEvent's. |
 
+### RPC `SearchWorkflowEvent` {#searchworkflowevent}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [SearchWorkflowEventRequest](#searchworkfloweventrequest)  |  [WorkflowEventIdList](#workfloweventidlist)  | Search for WorkflowEvents's. |
+
 ### RPC `SearchTaskDef` {#searchtaskdef}
 
 | Request Type | Response Type | Description |
@@ -299,6 +323,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
 |  [SearchExternalEventDefRequest](#searchexternaleventdefrequest)  |  [ExternalEventDefIdList](#externaleventdefidlist)  | Search for ExternalEventDef's. |
+
+### RPC `SearchWorkflowEventDef` {#searchworkfloweventdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [SearchWorkflowEventDefRequest](#searchworkfloweventdefrequest)  |  [WorkflowEventDefIdList](#workfloweventdefidlist)  | Search for WorkflowEventDef's. |
 
 ### RPC `SearchTenant` {#searchtenant}
 
@@ -378,6 +408,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 |  [DeleteExternalEventDefRequest](#deleteexternaleventdefrequest)  |  .google.protobuf.Empty  | Deletes an ExternalEventDef. |
 
+### RPC `DeleteWorkflowEventDef` {#deleteworkfloweventdef}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [DeleteWorkflowEventDefRequest](#deleteworkfloweventdefrequest)  |  .google.protobuf.Empty  |  |
+
 ### RPC `DeletePrincipal` {#deleteprincipal}
 
 | Request Type | Response Type | Description |
@@ -442,7 +478,7 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 
 | Request Type | Response Type | Description |
 | ------------ | ------------- | ------------|
-|  .google.protobuf.Empty  |  [ServerVersionResponse](#serverversionresponse)  | Gets the version of the LH Server. |
+|  .google.protobuf.Empty  |  [ServerVersion](#serverversion)  | Gets the version of the LH Server. |
 
 
 
@@ -946,7 +982,8 @@ is a Getable object, meaning it can be retried from the LittleHorse grpc API.
 | `sleep` | oneof `node_type`| [SleepNodeRun](#sleepnoderun) | A SLEEP node makes the ThreadRun block for a certain amount of time. |
 | `user_task` | oneof `node_type`| [UserTaskNodeRun](#usertasknoderun) | A USER_TASK node waits until a human executes some work and reports the result. |
 | `start_multiple_threads` | oneof `node_type`| [StartMultipleThreadsRun](#startmultiplethreadsrun) | A START_MULTIPLE_THREADS node iterates over a JSON_ARR variable and spawns a child ThreadRun for each element in the list. |
-| `throw_event` | oneof `node_type`| [ThrowEventNodeRun](#throweventnoderun) |  |
+| `throw_event` | oneof `node_type`| [ThrowEventNodeRun](#throweventnoderun) | A THROW_EVENT node throws a WorkflowEvent of a specified WorkflowEventDef. |
+| `wait_for_condition` | oneof `node_type`| [WaitForConditionRun](#waitforconditionrun) | A WAIT_FOR_CONDITION node blocks the ThreadRun until the specified condition evaluates to True. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -1012,12 +1049,12 @@ The sub-node structure for a TASK NodeRun.
 
 ### Message `ThrowEventNodeRun` {#throweventnoderun}
 
-
+The sub-node structure for a THROW_EVENT NodeRun.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `workflow_event_id` | | [WorkflowEventId](#workfloweventid) |  |
+| `workflow_event_id` | | [WorkflowEventId](#workfloweventid) | The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -1032,6 +1069,14 @@ The sub-node structure for a USER_TASK NodeRun.
 | ----- | ----  | ---- | ----------- |
 | `user_task_run_id` | optional| [UserTaskRunId](#usertaskrunid) | The ID of the UserTaskRun. Note that if the ThreadRun was halted when it arrived at this USER_TASK node, then the user_task_run_id will be unset. |
  <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WaitForConditionRun` {#waitforconditionrun}
+
+The sub-node structure for a WAIT_FOR_CONDITION NodeRun
+
  <!-- end HasFields -->
 
 
@@ -1366,7 +1411,7 @@ is thrown. Relies upon native GRPC deadlines to configure timeouts.
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
 | `wf_run_id` | | [WfRunId](#wfrunid) | The ID of the WfRun which must throw the WorkflowEvent. |
-| `event_def_ids` | repeated| [WorkflowEventDefId](#workfloweventdefid) | The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first WorkflowEvent thrown by the WfRun. |
+| `event_def_ids` | repeated| [WorkflowEventDefId](#workfloweventdefid) | The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first WorkflowEvent thrown by the WfRun. |
 | `workflow_events_to_ignore` | repeated| [WorkflowEventId](#workfloweventid) | Since a single WfRun may throw multiple WorkflowEvent's with the same WorkflowEventDefId, it is necessary to provide a client the ability to "ignore" WorkflowEvent's that have already been 'awaited'. Any WorkflowEvent specified by this field is ignored by the rpc. |
  <!-- end Fields -->
  <!-- end HasFields -->
@@ -1459,6 +1504,19 @@ Deletes a WfSpec
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
 | `id` | | [WfSpecId](#wfspecid) | The ID of the WfSpec to delete |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `DeleteWorkflowEventDefRequest` {#deleteworkfloweventdefrequest}
+
+Deletes an WorkflowEventDef
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `id` | | [WorkflowEventDefId](#workfloweventdefid) | The ID of the WorkflowEventDef to delete. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -1675,6 +1733,20 @@ A list of WfSpec Metrics Windows
 
 
 
+### Message `ListWorkflowEventsRequest` {#listworkfloweventsrequest}
+
+List all WorkflowEvents for a specific WfRunId. Note that List Requests return actual
+WorkflowEvent objects, not WorkflowEventId's.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `wf_run_id` | | [WfRunId](#wfrunid) | The WfRunId for whom we list WorkflowEvent's. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `MigrateWfSpecRequest` {#migratewfspecrequest}
 
 EXPERIMENTAL: migrate live WfRun's from one version of a WfSpec to another.
@@ -1857,13 +1929,13 @@ our various SDK's.
 
 ### Message `PutWorkflowEventDefRequest` {#putworkfloweventdefrequest}
 
-EXPERIMENTAL: Creates a WorkflowEventDef
+Creates a WorkflowEventDef
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `name` | | string |  |
-| `type` | | [VariableType](#variabletype) |  |
+| `name` | | string | The name of the resulting WorkflowEventDef. |
+| `type` | | [VariableType](#variabletype) | The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -2287,7 +2359,42 @@ Search for WfSpec's.
 
 
 
-### Message `ServerVersionResponse` {#serverversionresponse}
+### Message `SearchWorkflowEventDefRequest` {#searchworkfloweventdefrequest}
+
+Search for WorkflowEventDefs based on certain criteria.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `bookmark` | optional| bytes | Bookmark for cursor-based pagination; pass if applicable. |
+| `limit` | optional| int32 | Maximum results to return in one request. |
+| `prefix` | optional| string | Optionally search only for WorkflowEventDef's whose name starts with this prefix. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `SearchWorkflowEventRequest` {#searchworkfloweventrequest}
+
+Search for WorkflowEvents based on certain criteria.
+
+Required field WorkflowEventDefId specifies which WorkflowEventDef
+to search for WorkflowEvents under.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `bookmark` | optional| bytes | Bookmark for cursor-based pagination; pass if applicable. |
+| `limit` | optional| int32 | Maximum results to return in one request. |
+| `earliest_start` | optional| google.protobuf.Timestamp | Specifies to return only WorkflowEvent created after this time |
+| `latest_start` | optional| google.protobuf.Timestamp | Specifies to return only WorkflowEvent created before this time |
+| `workflow_event_def_id` | | [WorkflowEventDefId](#workfloweventdefid) | Search for WorkflowEvents by their WorkflowEventDefId<br/><br/>* Note: If WorkflowEventDefId is not provided or does not exist,         gRPC status code 'INVALID_ARGUMENT' will be returned. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `ServerVersion` {#serverversion}
 
 The version of the LH Server according to Semantic Versioning
 
@@ -2613,6 +2720,47 @@ Query to retrieve a specific WfSpec Metrics Window.
 | `wf_spec_id` | | [WfSpecId](#wfspecid) | WfSpecId of metrics to get. |
 | `window_start` | | google.protobuf.Timestamp | Return the window *containing* this timestamp. The window start is not guaranteed to align perfectly with the request. |
 | `window_length` | | [MetricsWindowLength](#metricswindowlength) | The window size |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WorkflowEventDefIdList` {#workfloweventdefidlist}
+
+List of WorkflowEventDef Id's.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `results` | repeated| [WorkflowEventDefId](#workfloweventdefid) | The resulting object id's. |
+| `bookmark` | optional| bytes | The bookmark can be used for cursor-based pagination. If it is null, the server has returned all results. If it is set, you can pass it into your next request to resume searching where your previous request left off. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WorkflowEventIdList` {#workfloweventidlist}
+
+List of WorkflowEvent Id's
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `results` | repeated| [WorkflowEventId](#workfloweventid) | The resulting object id's. |
+| `bookmark` | optional| bytes | The bookmark can be used for cursor-based pagination. If it is null, the server has returned all results. If it is set, you can pass it into your next request to resume searching where your previous request left off. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `WorkflowEventList` {#workfloweventlist}
+
+A list of WorkflowEvents.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `results` | repeated| [WorkflowEvent](#workflowevent) | A list of WorkflowEvent objects. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3438,6 +3586,7 @@ A Node is a step in a ThreadRun.
 | `user_task` | oneof `node`| [UserTaskNode](#usertasknode) | Creates a UserTaskNodeRun |
 | `start_multiple_threads` | oneof `node`| [StartMultipleThreadsNode](#startmultiplethreadsnode) | Creates a StartMultipleThreadsNodeRun |
 | `throw_event` | oneof `node`| [ThrowEventNode](#throweventnode) | Creates a ThrowEventNodeRun |
+| `wait_for_condition` | oneof `node`| [WaitForConditionNode](#waitforconditionnode) | Creates a WaitForConditionRun |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3669,6 +3818,20 @@ The output is a JSON_OBJ variable with one key/value pair for each UserTaskField
 
 
 
+### Message `WaitForConditionNode` {#waitforconditionnode}
+
+A SubNode that blocks until a condition is satisfied in the WfRun.
+There is no output.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `condition` | | [EdgeCondition](#edgecondition) | The condition that this node will block for. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
 ### Message `WaitForThreadsNode` {#waitforthreadsnode}
 
 Specifies that a ThreadRun will wait for certain specified Child ThreadRun's to
@@ -3838,14 +4001,14 @@ world.
 
 ### Message `WorkflowEventDef` {#workfloweventdef}
 
-
+The WorkflowEventDef defines the blueprint for a WorkflowEvent.
 
 
 | Field | Label | Type | Description |
 | ----- | ----  | ---- | ----------- |
-| `id` | | [WorkflowEventDefId](#workfloweventdefid) |  |
-| `created_at` | | google.protobuf.Timestamp |  |
-| `type` | | [VariableType](#variabletype) |  |
+| `id` | | [WorkflowEventDefId](#workfloweventdefid) | The ID of the WorkflowEventDef. Contains the name of the WorkflowEventDef. |
+| `created_at` | | google.protobuf.Timestamp | The time that the WorkflowEventDef was created at. |
+| `type` | | [VariableType](#variabletype) | The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -3885,6 +4048,7 @@ Defines a resource type for ACL's.
 | ACL_TENANT | 5 | Refers to the `Tenant` resource. The `ACL_TENANT` permission is only valid in the `global_acls` field of the `Principal`. This is because the `Tenant` resource is cluster-scoped. |
 | ACL_ALL_RESOURCES | 6 | Refers to all resources. In the `global_acls` field, this includes `Principal` and `Tenant` resources. In the `per_tenant_acls` field, this does not include `Principal` and `Tenant` since those are cluster-scoped resources. |
 | ACL_TASK_WORKER_GROUP | 7 | Refers to the `TaskWorkerGroup` associated with a TaskDef |
+| ACL_WORKFLOW_EVENT | 8 | Refers to `WorkflowEventDef` and `WorkflowEvent` |
 
 
  <!-- end Enums -->

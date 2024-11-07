@@ -40,6 +40,8 @@ export enum ACLResource {
   ACL_ALL_RESOURCES = "ACL_ALL_RESOURCES",
   /** ACL_TASK_WORKER_GROUP - Refers to the `TaskWorkerGroup` associated with a TaskDef */
   ACL_TASK_WORKER_GROUP = "ACL_TASK_WORKER_GROUP",
+  /** ACL_WORKFLOW_EVENT - Refers to `WorkflowEventDef` and `WorkflowEvent` */
+  ACL_WORKFLOW_EVENT = "ACL_WORKFLOW_EVENT",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -69,6 +71,9 @@ export function aCLResourceFromJSON(object: any): ACLResource {
     case 7:
     case "ACL_TASK_WORKER_GROUP":
       return ACLResource.ACL_TASK_WORKER_GROUP;
+    case 8:
+    case "ACL_WORKFLOW_EVENT":
+      return ACLResource.ACL_WORKFLOW_EVENT;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -94,6 +99,8 @@ export function aCLResourceToNumber(object: ACLResource): number {
       return 6;
     case ACLResource.ACL_TASK_WORKER_GROUP:
       return 7;
+    case ACLResource.ACL_WORKFLOW_EVENT:
+      return 8;
     case ACLResource.UNRECOGNIZED:
     default:
       return -1;

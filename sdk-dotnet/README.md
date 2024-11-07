@@ -28,25 +28,23 @@ brew install dotnet
 
 - Plugins for [VS Code](https://code.visualstudio.com/): [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
 
-### Build and Run the SDK
+### Build
 
 ```
 cd sdk-dotnet/LittleHorse.Sdk
-dotnet build
-dotnet run
+dotnet build ./LittleHorse.Sdk
 ```
-### Build and Run the SDK Tests
+### Build and Run tests
 
 ```
-dotnet build
-dotnet test
+dotnet build ./LittleHorse.Sdk
+dotnet test ./LittleHorse.Sdk.Tests
 ```
 
 ### Run Example
 
 ```
-cd sdk-dotnet/Examples/BasicExample
-dotnet run Program.cs
+dotnet run --project ./Examples/BasicExample
 ```
 
 ### Self-signed TLS certificate

@@ -16,7 +16,7 @@ This is the first part in a five-part blog series on useful Integration Patterns
 
 1. **[This Post]** Saga Transactions
 2. [The Transactional Outbox Pattern](./2024-09-30-transactional-outbox.md)
-3. [Coming soon] Queuing and Backpressure
+3. [Queuing](./2024-10-28-queuing.md)
 4. [Coming soon] Retries and Dead-Letter Queues
 5. [Coming soon] Callbacks and External Events
 :::

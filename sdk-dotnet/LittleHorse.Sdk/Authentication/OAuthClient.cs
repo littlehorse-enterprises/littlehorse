@@ -1,6 +1,6 @@
-﻿using LittleHorse.Common.Exceptions;
-using System.Net;
+﻿using System.Net;
 using System.Text.Json;
+using LittleHorse.Sdk.Exceptions;
 
 namespace LittleHorse.Sdk.Authentication
 {

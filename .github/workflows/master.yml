@@ -35,6 +35,8 @@ jobs:
 
       - name: Build website
         working-directory: ./docs
+        env: 
+          USE_SIMPLE_CSS_MINIFIER: true
         run: npm run build
 
       - name: Deploy to GitHub Pages
