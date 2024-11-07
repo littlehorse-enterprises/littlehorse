@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
 
-public class DeleteWfRunRequestTest {
+public class DeleteWfRunRequestModelTest {
 
     @Mock
     private final LHServerConfig lhConfig = mock();
