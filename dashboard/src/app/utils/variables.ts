@@ -16,6 +16,13 @@ export const getVariableValue = (variable?: VariableValue) => {
 
   if (variable.bytes) {
     return '[bytes]'
+  } else if (variable.str) {
+    try {
+      const json = JSON.parse(variable.str)
+      return JSON.stringify(json, null, 4)
+    } catch {
+      return variable[key]
+    }
   } else {
     return variable[key]
   }
