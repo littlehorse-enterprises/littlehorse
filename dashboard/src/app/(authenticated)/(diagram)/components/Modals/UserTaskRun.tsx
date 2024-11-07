@@ -82,7 +82,7 @@ export const UserTaskRun: FC<Modal> = ({ data, nodeRun, userTaskNode }) => {
                       {resultsToRender.map((result, index) => (
                         <tr key={index} className="border-b border-neutral-200">
                           <td className="px-6 py-4">{result.field}</td>
-                          <td className="px-6 py-4">{result.value}</td>
+                          <td className="px-6 py-4">{result.value?.toString()}</td>
                         </tr>
                       ))}
                     </tbody>

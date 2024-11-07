@@ -33,7 +33,7 @@ export const UserTaskRunDetails: FC<{ userTaskNode?: UserTaskNode; nodeRun?: Nod
       <>
         <div className="mb-2 flex gap-2 text-nowrap">
           <div className="flex-col">
-            <div className="mb-2 flex gap-2 ">
+            <div className="mb-2 flex gap-2 flex-wrap ">
               <UserAndGroupAssignmentInfo userGroup={data.userGroup} userId={data.userId} />
             </div>
             <div className="mt-2 flex justify-center">

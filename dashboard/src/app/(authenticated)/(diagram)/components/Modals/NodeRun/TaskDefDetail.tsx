@@ -68,7 +68,7 @@ export const TaskDefDetail: FC<Props> = ({ wfRunId, taskId }) => {
       <div className="flex min-h-[160px] flex-col gap-4">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className='bg-neutral-300 '>
               <TableHead scope="col">
                 <strong>Attempt </strong>
               </TableHead>
