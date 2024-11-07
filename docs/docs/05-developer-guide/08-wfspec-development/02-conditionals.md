@@ -283,7 +283,7 @@ An example:
 ```java
 WfRunVariable foo = wf.addVariable("foo", VariableType.INT);
 
-wf.doIf(
+wf.doIfElse(
     wf.condition(foo, Comparator.LESS_THAN, 3),
     ifBody -> {
         ifBody.execute("my-task");

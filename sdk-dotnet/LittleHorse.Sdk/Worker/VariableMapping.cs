@@ -9,10 +9,10 @@ namespace LittleHorse.Sdk.Worker
     {
         private ILogger? _logger;
         private string? _name;
-        private System.Type _type;
+        private Type _type;
         private int _position;
 
-        public VariableMapping(TaskDef taskDef, int position, System.Type type, string? paramName)
+        public VariableMapping(TaskDef taskDef, int position, Type type, string? paramName)
         {
             _type = type;
             _name = paramName;
@@ -49,19 +49,15 @@ namespace LittleHorse.Sdk.Worker
                     {
                         return val.Int;
                     }
-                    else
-                    {
-                        return (int)val.Int;
-                    }
+
+                    return (int)val.Int;
                 case VariableValue.ValueOneofCase.Double:
                     if (_type == typeof(double) || _type == typeof(double?))
                     {
                         return val.Double;
                     }
-                    else
-                    {
-                        return (float)val.Double;
-                    }
+
+                    return (float)val.Double;
                 case VariableValue.ValueOneofCase.Str:
                     return val.Str;
                 case VariableValue.ValueOneofCase.Bytes:
@@ -89,7 +85,7 @@ namespace LittleHorse.Sdk.Worker
         }
 
 
-        private void ValidateType(VariableType taskDefInputType, System.Type paramType, string? paramName)
+        private void ValidateType(VariableType taskDefInputType, Type paramType, string? paramName)
         {
             string errorMsg = string.Empty;
 

@@ -2,6 +2,7 @@
 using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Helper;
 using Microsoft.Extensions.Logging;
+using static LittleHorse.Common.Proto.LittleHorse;
 
 namespace LittleHorse.Sdk.Worker.Internal
 {
@@ -10,7 +11,7 @@ namespace LittleHorse.Sdk.Worker.Internal
         private LHServerConnectionManager<T> _connectionManager;
         private LHHostInfo _hostInfo;
         private bool _running;
-        private LittleHorse.Common.Proto.LittleHorse.LittleHorseClient _client;
+        private LittleHorseClient _client;
         private AsyncDuplexStreamingCall<PollTaskRequest, PollTaskResponse> _call;
         private ILogger? _logger;
 
@@ -33,7 +34,7 @@ namespace LittleHorse.Sdk.Worker.Internal
 
         private async Task RequestMoreWorkAsync()
         {
-            var request = new PollTaskRequest()
+            var request = new PollTaskRequest
             {
                 ClientId = _connectionManager.Config.WorkerId,
                 TaskDefId = _connectionManager.TaskDef.Id,
@@ -56,7 +57,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                      }
                      else
                      {
-                         _logger?.LogError($"Didn't successfully claim task, likely due to server restart.");
+                         _logger?.LogError("Didn't successfully claim task, likely due to server restart.");
                      }
 
                      if (_running)
