@@ -58,8 +58,7 @@ export const TaskDefDetail: FC<Props> = ({ wfRunId, taskId }) => {
           </div>
         )}
         <div className="mb-2 mt-1 text-sm font-bold">
-          NodeRun Position:{' '}
-          <span className="border-2 border-blue-500 p-1">{data?.source?.taskNode?.nodeRunId?.position}</span>
+          TaskGuid : <span className="border-2 border-blue-500 p-1">{taskId}</span>
         </div>
       </div>
 
@@ -102,11 +101,7 @@ export const TaskDefDetail: FC<Props> = ({ wfRunId, taskId }) => {
                       </div>
                     </TableCell>
                   </TableRow>
-                  <TableRow>
-                    <TableCell colSpan={4} className="p-1">
-                      <strong>Output</strong>
-                    </TableCell>
-                  </TableRow>
+
                   <TableRow>
                     <TableCell colSpan={4} className="px-0">
                       <AttemptErrorExceptionOutput attempt={attempt} />

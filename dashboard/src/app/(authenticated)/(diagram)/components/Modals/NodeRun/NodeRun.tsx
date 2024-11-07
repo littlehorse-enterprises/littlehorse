@@ -20,8 +20,8 @@ export const NodeRun: FC<Modal> = ({ data }) => {
           <div className="flex w-full justify-between">
             <div className="flex flex-col">
               <div className="flex">
-                TaskGuid: &nbsp;
-                <span className="text-blue-400 underline">{node?.task?.taskRunId?.taskGuid}</span>
+                NodeRun Position: &nbsp;
+                <span className="text-blue-500 bold">{node?.id?.position}</span>
               </div>
             </div>
             <div className="flex ">
