@@ -13,11 +13,11 @@ type Props = {
 }
 
 export const TaskDefDetail: FC<Props> = ({ wfRunId, taskId }) => {
-  if (!wfRunId) return
-  if (!taskId) return
   const { data, isLoading } = useQuery({
     queryKey: ['taskRun', wfRunId, taskId],
     queryFn: async () => {
+      if (!wfRunId) return
+      if (!taskId) return
       const taskRun = await getTaskRun({
         wfRunId: {
           id: wfRunId,
@@ -68,7 +68,7 @@ export const TaskDefDetail: FC<Props> = ({ wfRunId, taskId }) => {
       <div className="flex min-h-[160px] flex-col gap-4">
         <Table>
           <TableHeader>
-            <TableRow className='bg-neutral-300 '>
+            <TableRow className="bg-neutral-300 ">
               <TableHead scope="col">
                 <strong>Attempt </strong>
               </TableHead>
@@ -87,11 +87,11 @@ export const TaskDefDetail: FC<Props> = ({ wfRunId, taskId }) => {
             {data?.attempts.map((attempt, index) => {
               return (
                 <Fragment key={attempt.taskWorkerId}>
-                  <TableRow >
+                  <TableRow>
                     <TableCell className="p-1">{index + 1}</TableCell>
                     <TableCell className="p-1">{attempt.startTime && utcToLocalDateTime(attempt.startTime)}</TableCell>
                     <TableCell className="p-1">{attempt.endTime && utcToLocalDateTime(attempt.endTime)}</TableCell>
-                    <TableCell className="p-1" >
+                    <TableCell className="p-1">
                       <div
                         className={cn(
                           'flex items-center justify-between p-2',
