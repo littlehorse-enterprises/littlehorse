@@ -103,12 +103,12 @@ export const TaskDefDetail: FC<Props> = ({ wfRunId, taskId }) => {
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell colSpan={3} className="p-1">
+                    <TableCell colSpan={4} className="p-1">
                       <strong>Output</strong>
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell colSpan={3} className="px-0">
+                    <TableCell colSpan={4} className="px-0">
                       <AttemptErrorExceptionOutput attempt={attempt} />
                     </TableCell>
                   </TableRow>
