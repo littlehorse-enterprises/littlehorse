@@ -7,13 +7,13 @@ import { Fade } from '../Fade'
 import { TaskDetails } from './TaskDetails'
 
 const Node: FC<NodeProps> = ({ selected, data }) => {
-  const { fade, nodeNeedsToBeHighlighted } = data
+  const { fade, nodeNeedsToBeHighlighted, nodeRunsList } = data
   if (!data.task) return null
   const { task } = data
 
   return (
     <>
-      <TaskDetails taskNode={task} nodeRun={data.nodeRun} selected={selected} />
+      <TaskDetails taskNode={task} nodeRun={data.nodeRun} selected={selected} nodeRunsList={nodeRunsList} />
       <Fade fade={fade} status={data.nodeRun?.status}>
         <div
           className={

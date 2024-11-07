@@ -4,7 +4,7 @@ import { Edge } from './Edge'
 import { ExternalEvent } from './ExternalEvent'
 import { TaskRun } from './TaskRun'
 import { UserTaskRun } from './UserTaskRun'
-
+import { NodeRun } from './NodeRun/NodeRun'
 export * from './Modals'
 
 export type ModalComponent = FC<Modal>
@@ -14,6 +14,7 @@ export const ModalComponents = {
   userTaskRun: UserTaskRun,
   edge: Edge,
   externalEvent: ExternalEvent,
+  nodeRunList: NodeRun
 } as const
 
 export type ModalType = keyof typeof ModalComponents

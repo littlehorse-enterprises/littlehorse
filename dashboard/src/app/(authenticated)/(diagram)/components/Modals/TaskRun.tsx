@@ -68,7 +68,7 @@ export const TaskRun: FC<Modal> = ({ data }) => {
   )
 }
 
-function AttemptErrorExceptionOutput({ attempt }: { attempt: TaskAttempt }) {
+export function AttemptErrorExceptionOutput({ attempt }: { attempt: TaskAttempt }) {
   if (!attempt.output && !attempt.error && !attempt.exception) return
 
   return (

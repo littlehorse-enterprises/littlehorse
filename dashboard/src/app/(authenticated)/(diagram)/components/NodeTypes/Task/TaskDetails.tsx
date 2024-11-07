@@ -10,11 +10,12 @@ import { useModal } from '../../../hooks/useModal'
 import { NodeDetails } from '../NodeDetails'
 import { getTaskRun } from './getTaskRun'
 
-export const TaskDetails: FC<{ taskNode?: TaskNode; nodeRun?: NodeRun; selected: boolean }> = ({
-  taskNode,
-  nodeRun,
-  selected,
-}) => {
+export const TaskDetails: FC<{
+  taskNode?: TaskNode
+  nodeRun?: NodeRun
+  selected: boolean
+  nodeRunsList: [NodeRun]
+}> = ({ taskNode, nodeRun, selected, nodeRunsList }) => {
   const { tenantId } = useWhoAmI()
   const { data } = useQuery({
     queryKey: ['taskRun', nodeRun, tenantId],
@@ -33,9 +34,6 @@ export const TaskDetails: FC<{ taskNode?: TaskNode; nodeRun?: NodeRun; selected:
       const taskDef = await getTaskDef({
         name: taskNode?.taskDefId?.name,
       })
-
-      console.log('taskDef', taskDef)
-
       return taskDef
     },
   })
@@ -48,6 +46,13 @@ export const TaskDetails: FC<{ taskNode?: TaskNode; nodeRun?: NodeRun; selected:
     setModal({ type: 'taskRun', data })
     setShowModal(true)
   }, [data, setModal, setShowModal])
+
+  const showNodeRuns = useCallback(() => {
+    if (!taskNode) return
+
+    setModal({ type: 'nodeRunList', data: { nodeRunsList, taskNode } })
+    setShowModal(true)
+  }, [nodeRunsList, setModal, setShowModal, taskNode])
 
   if (!taskNode || (!taskDef && !nodeRun?.task?.taskRunId)) return null
 
@@ -70,7 +75,7 @@ export const TaskDetails: FC<{ taskNode?: TaskNode; nodeRun?: NodeRun; selected:
           <div className="flex items-center justify-center">Retries: {taskNode.retries}</div>
         </div>
       </div>
-      {taskNode.variables && taskNode.variables.length > 0 && (
+      {taskNode.variables && taskNode.variables.length > 0 && !(nodeRunsList?.length > 1) && (
         <div className="whitespace-nowrap">
           <h3 className="font-bold">Inputs</h3>
           <ol className="list-inside list-decimal">
@@ -99,19 +104,26 @@ export const TaskDetails: FC<{ taskNode?: TaskNode; nodeRun?: NodeRun; selected:
           <pre className="overflow-x-auto">{nodeRun.errorMessage}</pre>
         </div>
       )}
-      {nodeRun && (
+      {nodeRunsList?.length === 1 ? (
         <div className="mt-2 flex justify-center">
           <button className="flex items-center gap-1 p-1 text-blue-500 hover:bg-gray-200" onClick={onClick}>
             <EyeIcon className="h-4 w-4" />
             Inspect TaskRun
           </button>
         </div>
-      )}
+      ) : nodeRunsList?.length > 1 ? (
+        <div className="mt-2 flex justify-center">
+          <button className="flex items-center gap-1 p-1 text-blue-500 hover:bg-gray-200" onClick={showNodeRuns}>
+            <EyeIcon className="h-4 w-4" />
+            View NodeRuns
+          </button>
+        </div>
+      ) : null}
     </NodeDetails>
   )
 }
 
-const TaskLink: FC<{ taskName?: string }> = ({ taskName }) => {
+export const TaskLink: FC<{ taskName?: string }> = ({ taskName }) => {
   return (
     <Link
       className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
