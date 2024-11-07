@@ -22,6 +22,7 @@ enum StoreableType {
     TAG = 5;
     PARTITION_METRICS = 6;
     METRIC_WINDOW = 7;
+    INITIALIZATION_LOG = 8;
 }
 
 enum GetableClassEnum {

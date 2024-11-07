@@ -913,7 +913,7 @@ class GetLatestWfSpecRequest(_message.Message):
     major_version: int
     def __init__(self, name: _Optional[str] = ..., major_version: _Optional[int] = ...) -> None: ...
 
-class ServerVersionResponse(_message.Message):
+class ServerVersion(_message.Message):
     __slots__ = ["major_version", "minor_version", "patch_version", "pre_release_identifier"]
     MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
     MINOR_VERSION_FIELD_NUMBER: _ClassVar[int]
