@@ -1,6 +1,7 @@
 package io.littlehorse;
 
 import io.littlehorse.common.model.ScheduledTaskModel;
+import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskAttemptModel;
@@ -32,6 +33,8 @@ import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.*;
@@ -232,6 +235,25 @@ public class TestUtil {
                 null,
                 null);
         return externalEvent;
+    }
+
+    public static ExternalEventModel externalEvent(String wfRunId) {
+        ExternalEventModel externalEvent = new ExternalEventModel(
+                variableValue(),
+                new WfRunIdModel(wfRunId),
+                new ExternalEventDefIdModel("test-name"),
+                "0000001",
+                null,
+                null,
+                null);
+        return externalEvent;
+    }
+
+    public static WorkflowEventModel workflowEvent(String wfRunId) {
+        WorkflowEventModel workflowEvent = new WorkflowEventModel(
+                new WorkflowEventIdModel(new WfRunIdModel(wfRunId), new WorkflowEventDefIdModel("test-name"), 0),
+                variableValue());
+        return workflowEvent;
     }
 
     public static VariableDefModel variableDef(String name, VariableType variableTypePb) {
