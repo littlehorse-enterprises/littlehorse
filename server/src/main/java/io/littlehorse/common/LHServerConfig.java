@@ -809,12 +809,18 @@ public class LHServerConfig extends ConfigBase {
                 "statestore.cache.max.bytes",
                 Long.valueOf(getOrSetDefault(CORE_STATESTORE_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 32))));
 
-        // Kafka Streams calls KafkaProducer#commitTransaction() which flushes messages anyways. Sending earlier does
-        // not help at all in any way (this is because the Core topology is EOS). Therefore, having a big linger.ms
-        // does not have any downsides. We want the Streams producer to send as big of a batch as possible and only
-        // flush upon commit. Making it longer than commitInterval has no difference compared to
-        // setting it to commitInterval--we could also use Integer.MAX_VALUE.
-        result.put(StreamsConfig.producerPrefix("linger.ms"), commitInterval);
+        // Kafka Streams calls KafkaProducer#commitTransaction() which flushes messages upon committing the kafka
+        // transaction. We _could_ linger.ms to the commit interval; however, the problem with this is that the
+        // timer topology needs to be able to read the records. The Timer Topology is set to read_uncommitted and
+        // has a requirement that all Command's in the Timer Topology are idempotent, so this is okay.
+        //
+        // We can make some of our end-to-end tests fail if we set linger.ms to something big (i.e. 3,000ms) because
+        // it delays the sending of timers to the Timer Topology, so certain time-triggered events that are expected
+        // to happen end up not happening (eg. in RetryTest, exponential-backoff retries are not scheduled on time).
+        //
+        // We set linger.ms to the same interval as the Timer Punctuator interval (500ms). This gives us approximately
+        // 1-second precision on timers.
+        result.put(StreamsConfig.producerPrefix("linger.ms"), LHConstants.TIMER_PUNCTUATOR_INTERVAL.toMillis());
 
         for (Object keyObj : props.keySet()) {
             String key = (String) keyObj;
