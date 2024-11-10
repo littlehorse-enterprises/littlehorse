@@ -18,9 +18,10 @@ class BuilderUtil {
                 builder.setJsonPath(wrv.jsonPath);
             }
             builder.setVariableName(wrv.name);
-        } else if (variable.getClass().equals(NodeOutputImpl.class)) {
-            throw new RuntimeException(
-                    "Error: Cannot use NodeOutput directly as input to task. First save to a WfRunVariable.");
+        } else if (NodeOutputImpl.class.isAssignableFrom(variable.getClass())) {
+            // This creates an internal-only `Variable`, assigns the output of the
+            // NodeRun to that
+            return ((NodeOutputImpl) variable).getInternalVariableAssignment();
         } else if (variable.getClass().equals(LHFormatStringImpl.class)) {
             LHFormatStringImpl format = (LHFormatStringImpl) variable;
             builder.setFormatString(VariableAssignment.FormatString.newBuilder()
