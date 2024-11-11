@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
@@ -29,6 +30,8 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> {
     private VariableValueModel content;
     private Integer threadRunNumber;
     private Integer nodeRunPosition;
+
+    @Setter
     private boolean claimed;
 
     public ExternalEventModel() {}
@@ -117,6 +120,18 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> {
         return List.of(
                 new GetableIndex<>(
                         List.of(
+                                // This first one is used to optimize the processing of an
+                                // ExternalEventNodeRun. It saves us from having to iterate
+                                // over every single `ExternalEvent` associated with the
+                                // `WfRun`; we only need to iterate over this tag
+                                // with isClaimed=false and choose the first one according
+                                // to timestamp.
+                                Pair.of("wfRunId", GetableIndex.ValueType.SINGLE),
+                                Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE),
+                                Pair.of("isClaimed", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL)),
+                new GetableIndex<>(
+                        List.of(
                                 Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE),
                                 Pair.of("isClaimed", GetableIndex.ValueType.SINGLE)),
                         Optional.of(TagStorageType.LOCAL)),
@@ -133,6 +148,9 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> {
             }
             case "isClaimed" -> {
                 return List.of(new IndexedField(key, this.isClaimed(), tagStorageType.get()));
+            }
+            case "wfRunId" -> {
+                return List.of(new IndexedField(key, this.getId().getWfRunId().toString(), tagStorageType.get()));
             }
         }
         return List.of();

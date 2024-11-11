@@ -16,7 +16,7 @@ export const utcToLocalDateTime = (utcISODateTime: string): string =>
 export const localDateTimeToUTCIsoString = (localDateTime: string): string => new Date(localDateTime).toISOString()
 
 export const formatTime = (seconds: number | undefined): string => {
-  if (!seconds) return ""
+  if (!seconds) return ''
   const minute = 60
   const hour = 60 * minute
   const day = 24 * hour

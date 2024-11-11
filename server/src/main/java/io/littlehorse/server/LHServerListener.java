@@ -43,6 +43,7 @@ import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -66,6 +67,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalReq
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWorkflowEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.MigrateWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
@@ -91,6 +93,7 @@ import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
+import io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
@@ -109,6 +112,7 @@ import io.littlehorse.sdk.common.proto.ListUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.ListVariablesRequest;
 import io.littlehorse.sdk.common.proto.ListWfMetricsRequest;
 import io.littlehorse.sdk.common.proto.ListWfMetricsResponse;
+import io.littlehorse.sdk.common.proto.ListWorkflowEventsRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseImplBase;
 import io.littlehorse.sdk.common.proto.MigrateWfSpecRequest;
 import io.littlehorse.sdk.common.proto.NodeRun;
@@ -151,7 +155,9 @@ import io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.SearchWfSpecRequest;
-import io.littlehorse.sdk.common.proto.ServerVersionResponse;
+import io.littlehorse.sdk.common.proto.SearchWorkflowEventDefRequest;
+import io.littlehorse.sdk.common.proto.SearchWorkflowEventRequest;
+import io.littlehorse.sdk.common.proto.ServerVersion;
 import io.littlehorse.sdk.common.proto.StopWfRunRequest;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -184,7 +190,12 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WfSpecIdList;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.sdk.common.proto.WorkflowEventDef;
+import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
+import io.littlehorse.sdk.common.proto.WorkflowEventDefIdList;
 import io.littlehorse.sdk.common.proto.WorkflowEventId;
+import io.littlehorse.sdk.common.proto.WorkflowEventIdList;
+import io.littlehorse.sdk.common.proto.WorkflowEventList;
+import io.littlehorse.server.auth.InternalCallCredentials;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanReply;
@@ -196,6 +207,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskRunsR
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListUserTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListVariablesRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListWfMetricsRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListWorkflowEventsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchNodeRunRequestModel;
@@ -209,6 +221,8 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchUserTas
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchVariableRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfSpecRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowEventDefRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListExternalEventsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListNodeRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskMetricsReply;
@@ -216,6 +230,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTask
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListUserTaskRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListVariablesReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWfMetricsReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWorkflowEventsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
@@ -229,6 +244,8 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUs
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWorkflowEventDefReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWorkflowEventReply;
 import io.littlehorse.server.streams.taskqueue.ClusterHealthRequestObserver;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -454,6 +471,18 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW_EVENT, actions = ACLAction.READ)
+    public void getWorkflowEventDef(WorkflowEventDefId req, StreamObserver<WorkflowEventDef> ctx) {
+        WorkflowEventDefModel wed = getServiceFromContext().getWorkflowEventDef(req.getName());
+        if (wed == null) {
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find WorkflowEventDef %s".formatted(req.getName()));
+        } else {
+            ctx.onNext(wed.toProto().build());
+            ctx.onCompleted();
+        }
+    }
+
+    @Override
     @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.WRITE_METADATA)
     public void putTaskDef(PutTaskDefRequest req, StreamObserver<TaskDef> ctx) {
         PutTaskDefRequestModel reqModel = LHSerializable.fromProto(req, PutTaskDefRequestModel.class, requestContext());
@@ -461,6 +490,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW_EVENT, actions = ACLAction.WRITE_METADATA)
     public void putWorkflowEventDef(PutWorkflowEventDefRequest req, StreamObserver<WorkflowEventDef> ctx) {
         PutWorkflowEventDefRequestModel reqModel =
                 LHSerializable.fromProto(req, PutWorkflowEventDefRequestModel.class, requestContext());
@@ -723,6 +753,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW_EVENT, actions = ACLAction.READ)
+    public void searchWorkflowEvent(SearchWorkflowEventRequest req, StreamObserver<WorkflowEventIdList> ctx) {
+        SearchWorkflowEventRequestModel see =
+                LHSerializable.fromProto(req, SearchWorkflowEventRequestModel.class, requestContext());
+        handleScan(see, ctx, SearchWorkflowEventReply.class);
+    }
+
+    @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void searchNodeRun(SearchNodeRunRequest req, StreamObserver<NodeRunIdList> ctx) {
         handleScan(SearchNodeRunRequestModel.fromProto(req, requestContext()), ctx, SearchNodeRunReply.class);
@@ -771,6 +809,15 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 SearchExternalEventDefRequestModel.fromProto(req, requestContext()),
                 ctx,
                 SearchExternalEventDefReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW_EVENT, actions = ACLAction.READ)
+    public void searchWorkflowEventDef(SearchWorkflowEventDefRequest req, StreamObserver<WorkflowEventDefIdList> ctx) {
+        handleScan(
+                SearchWorkflowEventDefRequestModel.fromProto(req, requestContext()),
+                ctx,
+                SearchWorkflowEventDefReply.class);
     }
 
     @Override
@@ -862,6 +909,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW_EVENT, actions = ACLAction.READ)
+    public void listWorkflowEvents(ListWorkflowEventsRequest req, StreamObserver<WorkflowEventList> ctx) {
+        ListWorkflowEventsRequestModel lv =
+                LHSerializable.fromProto(req, ListWorkflowEventsRequestModel.class, requestContext());
+        handleScan(lv, ctx, ListWorkflowEventsReply.class);
+    }
+
+    @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void listTaskDefMetrics(ListTaskMetricsRequest req, StreamObserver<ListTaskMetricsResponse> ctx) {
         ListTaskMetricsRequestModel ltm =
@@ -949,12 +1004,21 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW_EVENT, actions = ACLAction.WRITE_METADATA)
+    public void deleteWorkflowEventDef(DeleteWorkflowEventDefRequest req, StreamObserver<Empty> ctx) {
+        DeleteWorkflowEventDefRequestModel dwedr =
+                LHSerializable.fromProto(req, DeleteWorkflowEventDefRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(dwedr), ctx, Empty.class, true);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void awaitWorkflowEvent(AwaitWorkflowEventRequest req, StreamObserver<WorkflowEvent> ctx) {
         internalComms.doWaitForWorkflowEvent(req, ctx, requestContext());
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    @Authorize(resources = ACLResource.ACL_WORKFLOW_EVENT, actions = ACLAction.READ)
     public void getWorkflowEvent(WorkflowEventId req, StreamObserver<WorkflowEvent> ctx) {
         WorkflowEventIdModel id = LHSerializable.fromProto(req, WorkflowEventIdModel.class, requestContext());
         WorkflowEventModel workflowEvent = internalComms.getObject(id, WorkflowEventModel.class, requestContext());
@@ -998,7 +1062,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(
             resources = {},
             actions = {})
-    public void getServerVersion(Empty request, StreamObserver<ServerVersionResponse> ctx) {
+    public void getServerVersion(Empty request, StreamObserver<ServerVersion> ctx) {
         ctx.onNext(Version.getServerVersion());
         ctx.onCompleted();
     }

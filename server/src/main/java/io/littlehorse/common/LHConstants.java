@@ -1,5 +1,8 @@
 package io.littlehorse.common;
 
+import io.littlehorse.sdk.common.proto.ACLAction;
+import io.littlehorse.sdk.common.proto.ACLResource;
+import io.littlehorse.sdk.common.proto.ServerACL;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -8,7 +11,7 @@ import java.util.Set;
 public class LHConstants {
 
     // Other various constants used by code
-    public static final Duration PUNCTUATOR_INERVAL = Duration.ofMillis(500);
+    public static final Duration TIMER_PUNCTUATOR_INTERVAL = Duration.ofMillis(500);
     public static final String EXT_EVT_HANDLER_VAR = "INPUT";
 
     // Make all global metadata use the same partition key so that they're processed
@@ -51,6 +54,11 @@ public class LHConstants {
 
     public static final String DEFAULT_TENANT = "default";
     public static final String ANONYMOUS_PRINCIPAL = "anonymous";
+
+    public static final ServerACL ADMIN_ACL = ServerACL.newBuilder()
+            .addAllowedActions(ACLAction.ALL_ACTIONS)
+            .addResources(ACLResource.ACL_ALL_RESOURCES)
+            .build();
 
     public static final String TENANT_ID_HEADER_NAME = "tenantid";
 

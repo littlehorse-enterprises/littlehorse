@@ -5,7 +5,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * EXPERIMENTAL: Creates a WorkflowEventDef
+ * Creates a WorkflowEventDef
  * </pre>
  *
  * Protobuf type {@code littlehorse.PutWorkflowEventDefRequest}
@@ -48,6 +48,10 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object name_ = "";
   /**
+   * <pre>
+   * The name of the resulting WorkflowEventDef.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The name.
    */
@@ -65,6 +69,10 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * The name of the resulting WorkflowEventDef.
+   * </pre>
+   *
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
@@ -86,6 +94,10 @@ private static final long serialVersionUID = 0L;
   public static final int TYPE_FIELD_NUMBER = 2;
   private int type_ = 0;
   /**
+   * <pre>
+   * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType type = 2;</code>
    * @return The enum numeric value on the wire for type.
    */
@@ -93,6 +105,10 @@ private static final long serialVersionUID = 0L;
     return type_;
   }
   /**
+   * <pre>
+   * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
+   * </pre>
+   *
    * <code>.littlehorse.VariableType type = 2;</code>
    * @return The type.
    */
@@ -269,7 +285,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * EXPERIMENTAL: Creates a WorkflowEventDef
+   * Creates a WorkflowEventDef
    * </pre>
    *
    * Protobuf type {@code littlehorse.PutWorkflowEventDefRequest}
@@ -455,6 +471,10 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object name_ = "";
     /**
+     * <pre>
+     * The name of the resulting WorkflowEventDef.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return The name.
      */
@@ -471,6 +491,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the resulting WorkflowEventDef.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
@@ -488,6 +512,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The name of the resulting WorkflowEventDef.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @param value The name to set.
      * @return This builder for chaining.
@@ -501,6 +529,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the resulting WorkflowEventDef.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @return This builder for chaining.
      */
@@ -511,6 +543,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The name of the resulting WorkflowEventDef.
+     * </pre>
+     *
      * <code>string name = 1;</code>
      * @param value The bytes for name to set.
      * @return This builder for chaining.
@@ -527,6 +563,10 @@ private static final long serialVersionUID = 0L;
 
     private int type_ = 0;
     /**
+     * <pre>
+     * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType type = 2;</code>
      * @return The enum numeric value on the wire for type.
      */
@@ -534,6 +574,10 @@ private static final long serialVersionUID = 0L;
       return type_;
     }
     /**
+     * <pre>
+     * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType type = 2;</code>
      * @param value The enum numeric value on the wire for type to set.
      * @return This builder for chaining.
@@ -545,6 +589,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType type = 2;</code>
      * @return The type.
      */
@@ -554,6 +602,10 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
     }
     /**
+     * <pre>
+     * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType type = 2;</code>
      * @param value The type to set.
      * @return This builder for chaining.
@@ -568,6 +620,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
+     * </pre>
+     *
      * <code>.littlehorse.VariableType type = 2;</code>
      * @return This builder for chaining.
      */

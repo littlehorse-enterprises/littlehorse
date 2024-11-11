@@ -21,9 +21,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\licenses\SSPLv1.txt" Pack="true" PackagePath="\" />
-    <None Include="..\README.md" Pack="true" PackagePath="\" />
+    <None Include="LICENSE.txt" Pack="true" PackagePath="" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.65.0" />

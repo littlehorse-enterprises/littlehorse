@@ -25,8 +25,8 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
     public void init(final ProcessorContext<String, LHTimer> context) {
         this.context = context;
         timerStore = context.getStateStore(ServerTopology.TIMER_STORE);
-        this.punctuator =
-                context.schedule(LHConstants.PUNCTUATOR_INERVAL, PunctuationType.WALL_CLOCK_TIME, this::clearTimers);
+        this.punctuator = context.schedule(
+                LHConstants.TIMER_PUNCTUATOR_INTERVAL, PunctuationType.WALL_CLOCK_TIME, this::clearTimers);
     }
 
     @Override

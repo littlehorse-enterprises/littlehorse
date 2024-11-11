@@ -338,6 +338,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     private void initializeInterrupt(ExternalEventModel trigger, InterruptDefModel idef) {
+        trigger.setClaimed(true);
         // First, stop all child threads.
         ThreadHaltReasonModel haltReason = new ThreadHaltReasonModel();
         haltReason.type = ReasonCase.PENDING_INTERRUPT;

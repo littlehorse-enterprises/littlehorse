@@ -41,7 +41,7 @@ public class DeleteExternalEventDefRequestModel extends MetadataSubCommand<Delet
     }
 
     public boolean hasResponse() {
-        return true;
+        return false;
     }
 
     public static DeleteExternalEventDefRequestModel fromProto(

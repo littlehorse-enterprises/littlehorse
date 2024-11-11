@@ -20,7 +20,12 @@ export const TaskRun: FC<Modal> = ({ data }) => {
             <h2 className="text-lg font-bold">TaskRun</h2>
             <div className="item-center flex gap-1 bg-gray-200 px-2 py-1">
               <span className="font-mono text-sm">{lhTaskRun.id?.taskGuid}</span>
-              <ClipboardIcon className="h-4 w-4 fill-transparent stroke-blue-500" />
+              <ClipboardIcon
+                className="h-4 w-4 cursor-pointer fill-transparent stroke-blue-500"
+                onClick={() => {
+                  navigator.clipboard.writeText(lhTaskRun.id?.taskGuid ?? '')
+                }}
+              />
             </div>
           </DialogTitle>
         </DialogHeader>

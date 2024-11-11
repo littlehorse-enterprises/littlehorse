@@ -1,5 +1,11 @@
 # Workflows
 
+:::tip
+This section is not a Developer Guide; if you want to learn how to [define a workflow](../05-developer-guide/08-wfspec-development/08-wfspec-development.md) or how to [run a workflow](../05-developer-guide/09-grpc/10-running-workflows.md), please check the appropriate docs in our developer guide.
+
+This section focuses on concepts.
+:::
+
 In LittleHorse, the [`WfSpec`](../08-api.md#wfspec) object is a _Metadata Object_ defining the blueprint for a [`WfRun`](../08-api.md#wfrun), which is a running instance of a workflow.
 
 A simple way of thinking about it is that a `WfSpec` is a directed graph consisting of `Node`s and `Edge`s, where a `Node` defines a "step" of the workflow process, and an `Edge` tells the workflow what `Node` to go to next.

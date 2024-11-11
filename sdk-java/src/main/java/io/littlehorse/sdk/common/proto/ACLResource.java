@@ -83,6 +83,14 @@ public enum ACLResource
    * <code>ACL_TASK_WORKER_GROUP = 7;</code>
    */
   ACL_TASK_WORKER_GROUP(7),
+  /**
+   * <pre>
+   * Refers to `WorkflowEventDef` and `WorkflowEvent`
+   * </pre>
+   *
+   * <code>ACL_WORKFLOW_EVENT = 8;</code>
+   */
+  ACL_WORKFLOW_EVENT(8),
   UNRECOGNIZED(-1),
   ;
 
@@ -157,6 +165,14 @@ public enum ACLResource
    * <code>ACL_TASK_WORKER_GROUP = 7;</code>
    */
   public static final int ACL_TASK_WORKER_GROUP_VALUE = 7;
+  /**
+   * <pre>
+   * Refers to `WorkflowEventDef` and `WorkflowEvent`
+   * </pre>
+   *
+   * <code>ACL_WORKFLOW_EVENT = 8;</code>
+   */
+  public static final int ACL_WORKFLOW_EVENT_VALUE = 8;
 
 
   public final int getNumber() {
@@ -191,6 +207,7 @@ public enum ACLResource
       case 5: return ACL_TENANT;
       case 6: return ACL_ALL_RESOURCES;
       case 7: return ACL_TASK_WORKER_GROUP;
+      case 8: return ACL_WORKFLOW_EVENT;
       default: return null;
     }
   }

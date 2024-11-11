@@ -15,7 +15,9 @@ export const SleepDetails: FC<{ sleepNode?: SleepNode; nodeRun?: NodeRun }> = ({
         </div>
         <div className="flex flex-col gap-2 text-nowrap">
           <div className="flex ">
-            {sleepNode.rawSeconds && <div>Time: {typeof timeValue === 'number' ? formatTime(timeValue) : timeValue}</div>}
+            {sleepNode.rawSeconds && (
+              <div>Time: {typeof timeValue === 'number' ? formatTime(timeValue) : timeValue}</div>
+            )}
             {sleepNode.timestamp && <div>{getVariable(sleepNode.timestamp)}</div>}
             {sleepNode.isoDate && <div>{getVariable(sleepNode.isoDate)}</div>}
           </div>
