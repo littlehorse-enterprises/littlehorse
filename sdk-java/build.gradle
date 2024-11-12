@@ -92,7 +92,7 @@ dependencies {
     implementation 'org.awaitility:awaitility:4.2.0'
 
     // OAuth
-    implementation 'com.nimbusds:oauth2-oidc-sdk:10.9.2'
+    implementation 'com.nimbusds:oauth2-oidc-sdk:11.20.1'
 
     // Lombok stuffs
     compileOnly "org.projectlombok:lombok:${lombokVersion}"

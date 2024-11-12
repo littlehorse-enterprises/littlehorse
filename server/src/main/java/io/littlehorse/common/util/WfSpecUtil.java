@@ -3,15 +3,11 @@ package io.littlehorse.common.util;
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
-import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class WfSpecUtil {
     private WfSpecUtil() {}
@@ -40,43 +36,24 @@ public class WfSpecUtil {
      * Verifies if left WfSpecModel have breaking changes comparing to right
      * when either:
      * - set of left required variables does not match right required variables
-     * - set of left searchable variables does not match right searchable variables
+     * - set of left PUBLIC_VAR variables does not match right PUBLIC_VAR variables
      * @param left WfSpecModel to be compared
      * @param right WfSpecModel compared against
      * @return true when there is a breaking change, false otherwise
      */
     public static boolean hasBreakingChanges(WfSpecModel left, WfSpecModel right) {
-        return !variablesMatch(left.getRequiredVariables(), right.getRequiredVariables())
-                || !variablesMatch(left.getSearchableVariables(), right.getSearchableVariables())
-                || !variableAccessLevelMatch(
-                        left.getEntrypointThread().getVariableDefs(),
-                        right.getEntrypointThread().getVariableDefs());
-    }
+        Collection<ThreadVarDefModel> leftPublicVars = left.getPublicVars();
+        Collection<ThreadVarDefModel> rightPublicVars = right.getPublicVars();
 
-    private static boolean variablesMatch(Map<String, ThreadVarDefModel> left, Map<String, ThreadVarDefModel> right) {
-        Set<String> leftVariables = left.keySet();
-        Set<String> rightVariables = right.keySet();
-        if (leftVariables.size() != rightVariables.size()) return false;
+        if (leftPublicVars.size() != rightPublicVars.size()) return true;
+        if (!leftPublicVars.containsAll(rightPublicVars)) return true;
 
-        return leftVariables.containsAll(rightVariables);
-    }
+        // Check required variables
+        Collection<ThreadVarDefModel> rightRequiredVars =
+                right.getEntrypointThread().getRequiredVarDefs();
+        Collection<ThreadVarDefModel> leftRequiredVars =
+                left.getEntrypointThread().getRequiredVarDefs();
 
-    private static boolean variableAccessLevelMatch(List<ThreadVarDefModel> left, List<ThreadVarDefModel> right) {
-        final Map<String, WfRunVariableAccessLevel> leftVariables = new HashMap<>();
-        for (ThreadVarDefModel leftVarDefinition : left) {
-            leftVariables.put(leftVarDefinition.getVarDef().getName(), leftVarDefinition.getAccessLevel());
-        }
-        for (ThreadVarDefModel rightVarDefinition : right) {
-            WfRunVariableAccessLevel rightAccessLevel = rightVarDefinition.getAccessLevel();
-            if (rightAccessLevel == WfRunVariableAccessLevel.PUBLIC_VAR
-                    || rightAccessLevel == WfRunVariableAccessLevel.INHERITED_VAR) {
-                WfRunVariableAccessLevel leftAccessLevel =
-                        leftVariables.get(rightVarDefinition.getVarDef().getName());
-                if (leftAccessLevel != null && leftAccessLevel.equals(WfRunVariableAccessLevel.PRIVATE_VAR)) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return leftRequiredVars.size() != rightRequiredVars.size() || !leftRequiredVars.containsAll(rightRequiredVars);
     }
 }

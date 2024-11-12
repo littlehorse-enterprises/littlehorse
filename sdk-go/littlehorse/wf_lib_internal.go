@@ -2,11 +2,12 @@ package littlehorse
 
 import (
 	"errors"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"log"
 	"strconv"
 	"strings"
 	"unicode"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 
 	"github.com/ztrue/tracerr"
 )
@@ -745,7 +746,8 @@ func (t *WorkflowThread) addVariable(
 	}
 
 	threadVarDef := &lhproto.ThreadVarDef{
-		VarDef: varDef,
+		VarDef:      varDef,
+		AccessLevel: lhproto.WfRunVariableAccessLevel_PRIVATE_VAR,
 	}
 
 	t.spec.VariableDefs = append(t.spec.VariableDefs, threadVarDef)
