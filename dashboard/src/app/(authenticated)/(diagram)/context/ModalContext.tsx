@@ -21,6 +21,8 @@ export type Modal = {
 export type NodeRuns = {
   nodeRunsList: [NodeRun]
   taskNode?: TaskNode
+  nodeRun?: NodeRun
+  userTaskNode?: UserTaskNode
 }
 
 type ModalContextType = {
