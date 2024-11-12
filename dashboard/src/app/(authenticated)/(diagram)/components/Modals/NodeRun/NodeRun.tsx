@@ -8,24 +8,14 @@ import { statusColors } from '../../../wfRun/[...ids]/components/Details'
 import { TaskLink } from '../../NodeTypes/Task/TaskDetails'
 import { AccordionComponents, AccordionConentType } from './AccordionContent'
 import { NodeRun as Node } from 'littlehorse-client/proto'
-
-export const getNodeType = (node: Node) => {
-  if (node['task'] !== undefined) return 'TASK'
-  if (node['externalEvent'] !== undefined) return 'EXTERNAL_EVENT'
-  if (node['waitThreads'] !== undefined) return 'WAIT_FOR_THREADS'
-  if (node['sleep'] !== undefined) return 'SLEEP'
-  if (node['userTask'] !== undefined) return 'USER_TASK'
-  if (node['startThread'] !== undefined) return 'START_THREAD'
-  if (node['throwEvent'] !== undefined) return 'THROW_EVENT'
-}
+import { getNodeType, NodeRunTypeList } from '../../NodeTypes/extractNodes'
 
 export const NodeRun: FC<Modal> = ({ data }) => {
   const { nodeRunsList, taskNode } = data as NodeRuns
   const node = nodeRunsList?.[0]
   const { showModal, setShowModal } = useModal()
-  const nodeType: AccordionConentType | undefined = getNodeType(node)
-
-  const getNodeDefType = (node: Node) => {
+  const nodeType = getNodeType(node) as NodeRunTypeList
+  const NodeComponent = (node: Node) => {
     if (!nodeType) return
     const Component = AccordionComponents[nodeType]
     return <Component currentNode={node} {...data} />
@@ -48,7 +38,7 @@ export const NodeRun: FC<Modal> = ({ data }) => {
             </div>
           </div>
         ),
-        content: getNodeDefType(node),
+        content: NodeComponent(node),
       }
     })
 
