@@ -1,18 +1,21 @@
 import { FC, Fragment } from 'react'
-import { RefreshCwIcon } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
+import { RefreshCwIcon, ClipboardIcon } from 'lucide-react'
+import { NodeRun, TaskAttempt } from 'littlehorse-client/proto'
 import { cn } from '@/components/utils'
+
 import { utcToLocalDateTime, getVariableValue } from '@/app/utils'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useQuery } from '@tanstack/react-query'
 import { getTaskRun } from '../../NodeTypes/Task/getTaskRun'
-import { AttemptErrorExceptionOutput } from '../TaskRun'
 
 type Props = {
-  wfRunId?: string
-  taskId?: string
+  currentNode: NodeRun
 }
 
-export const TaskDefDetail: FC<Props> = ({ wfRunId, taskId }) => {
+export const TaskDefDetail: FC<Props> = ({ currentNode }) => {
+  const taskId = currentNode?.task?.taskRunId?.taskGuid
+  const wfRunId = currentNode?.task?.taskRunId?.wfRunId?.id
+
   const { data, isLoading } = useQuery({
     queryKey: ['taskRun', wfRunId, taskId],
     queryFn: async () => {
@@ -57,8 +60,17 @@ export const TaskDefDetail: FC<Props> = ({ wfRunId, taskId }) => {
             })}
           </div>
         )}
-        <div className="mb-2 mt-1 text-sm font-bold">
-          TaskGuid : <span className="border-2 border-blue-500 p-1">{taskId}</span>
+        <div className="mb-2 mt-1 flex ">
+          <span className="font-bold">Task GUID :</span>
+          <span> {taskId}</span>
+          <span className="ml-2 mt-1">
+            <ClipboardIcon
+              className="h-4 w-4 cursor-pointer fill-transparent stroke-blue-500"
+              onClick={() => {
+                navigator.clipboard.writeText(taskId ?? '')
+              }}
+            />
+          </span>
         </div>
       </div>
 
@@ -75,10 +87,10 @@ export const TaskDefDetail: FC<Props> = ({ wfRunId, taskId }) => {
                 <strong>Start Time</strong>
               </TableHead>
               <TableHead scope="col">
-                <strong>End Time</strong>{' '}
+                <strong>End Time</strong>
               </TableHead>
               <TableHead scope="col">
-                <strong>Status</strong>{' '}
+                <strong>Status</strong>
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -114,5 +126,29 @@ export const TaskDefDetail: FC<Props> = ({ wfRunId, taskId }) => {
         </Table>
       </div>
     </>
+  )
+}
+
+export function AttemptErrorExceptionOutput({ attempt }: { attempt: TaskAttempt }) {
+  if (!attempt.output && !attempt.error && !attempt.exception) return
+
+  return (
+    <div
+      className={cn(
+        'flex w-full flex-col overflow-auto rounded p-1',
+        attempt.output ? 'bg-zinc-500 text-white' : 'bg-red-200'
+      )}
+    >
+      <h3 className="font-bold">
+        {attempt.error && 'Error'}
+        {attempt.exception && 'Exception'}
+        {attempt.output && 'Output'}
+      </h3>
+      <pre className="overflow-auto">
+        {attempt.error && attempt.error.message}
+        {attempt.exception && attempt.exception.message}
+        {attempt.output && getVariableValue(attempt.output)}
+      </pre>
+    </div>
   )
 }

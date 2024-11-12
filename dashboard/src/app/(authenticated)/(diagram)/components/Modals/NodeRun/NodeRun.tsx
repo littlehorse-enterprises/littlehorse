@@ -5,13 +5,32 @@ import { Accordion } from '@/components/ui/accordion'
 import { Modal, NodeRuns } from '../../../context'
 import { useModal } from '../../../hooks/useModal'
 import { statusColors } from '../../../wfRun/[...ids]/components/Details'
-import { TaskDefDetail } from './TaskDefDetail'
 import { TaskLink } from '../../NodeTypes/Task/TaskDetails'
+import { AccordionComponents, AccordionConentType } from './AccordionContent'
+import { NodeRun as Node } from 'littlehorse-client/proto'
+
+export const getNodeType = (node: Node) => {
+  if (node['task'] !== undefined) return 'TASK'
+  if (node['externalEvent'] !== undefined) return 'EXTERNAL_EVENT'
+  if (node['waitThreads'] !== undefined) return 'WAIT_FOR_THREADS'
+  if (node['sleep'] !== undefined) return 'SLEEP'
+  if (node['userTask'] !== undefined) return 'USER_TASK'
+  if (node['startThread'] !== undefined) return 'START_THREAD'
+  if (node['throwEvent'] !== undefined) return 'THROW_EVENT'
+}
 
 export const NodeRun: FC<Modal> = ({ data }) => {
   const { nodeRunsList, taskNode } = data as NodeRuns
   const node = nodeRunsList?.[0]
   const { showModal, setShowModal } = useModal()
+  const nodeType: AccordionConentType | undefined = getNodeType(node)
+
+  const getNodeDefType = (node: Node) => {
+    if (!nodeType) return
+    const Component = AccordionComponents[nodeType]
+    return <Component currentNode={node} {...data} />
+  }
+
   const accordionNodeRuns: { title: string | ReactNode; content: string | ReactNode }[] = nodeRunsList
     ?.sort((a, b) => (a?.id?.position ?? 0) - (b?.id?.position ?? 0))
     ?.map(node => {
@@ -21,7 +40,7 @@ export const NodeRun: FC<Modal> = ({ data }) => {
             <div className="flex flex-col">
               <div className="flex">
                 NodeRun Position: &nbsp;
-                <span className="text-blue-500 bold">{node?.id?.position}</span>
+                <span className="bold text-blue-500">{node?.id?.position}</span>
               </div>
             </div>
             <div className="flex ">
@@ -29,9 +48,7 @@ export const NodeRun: FC<Modal> = ({ data }) => {
             </div>
           </div>
         ),
-        content: (
-          <TaskDefDetail taskId={node?.task?.taskRunId?.taskGuid} wfRunId={node?.task?.taskRunId?.wfRunId?.id} />
-        ),
+        content: getNodeDefType(node),
       }
     })
 
@@ -47,7 +64,10 @@ export const NodeRun: FC<Modal> = ({ data }) => {
         <hr />
         <div className="flex justify-between">
           <div>
-            <strong>WfRun</strong>: {node?.task?.taskRunId?.wfRunId?.id}
+            <strong>WfRun</strong>: {node?.id?.wfRunId?.id}
+          </div>
+          <div>
+            <strong>Node Type</strong>: {nodeType}
           </div>
         </div>
 

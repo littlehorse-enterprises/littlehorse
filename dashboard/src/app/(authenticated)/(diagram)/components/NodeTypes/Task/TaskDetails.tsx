@@ -9,6 +9,7 @@ import { FC, useCallback } from 'react'
 import { useModal } from '../../../hooks/useModal'
 import { NodeDetails } from '../NodeDetails'
 import { getTaskRun } from './getTaskRun'
+import { NodeRunsList } from '../../NodeRunsList'
 
 export const TaskDetails: FC<{
   taskNode?: TaskNode
@@ -38,21 +39,10 @@ export const TaskDetails: FC<{
     },
   })
 
-  const { setModal, setShowModal } = useModal()
 
-  const onClick = useCallback(() => {
-    if (!data) return
 
-    setModal({ type: 'taskRun', data })
-    setShowModal(true)
-  }, [data, setModal, setShowModal])
 
-  const showNodeRuns = useCallback(() => {
-    if (!taskNode) return
 
-    setModal({ type: 'nodeRunList', data: { nodeRunsList, taskNode } })
-    setShowModal(true)
-  }, [nodeRunsList, setModal, setShowModal, taskNode])
 
   if (!taskNode || (!taskDef && !nodeRun?.task?.taskRunId)) return null
 
@@ -104,21 +94,7 @@ export const TaskDetails: FC<{
           <pre className="overflow-x-auto">{nodeRun.errorMessage}</pre>
         </div>
       )}
-      {nodeRunsList?.length === 1 ? (
-        <div className="mt-2 flex justify-center">
-          <button className="flex items-center gap-1 p-1 text-blue-500 hover:bg-gray-200" onClick={onClick}>
-            <EyeIcon className="h-4 w-4" />
-            Inspect TaskRun
-          </button>
-        </div>
-      ) : nodeRunsList?.length > 1 ? (
-        <div className="mt-2 flex justify-center">
-          <button className="flex items-center gap-1 p-1 text-blue-500 hover:bg-gray-200" onClick={showNodeRuns}>
-            <EyeIcon className="h-4 w-4" />
-            View NodeRuns
-          </button>
-        </div>
-      ) : null}
+      <NodeRunsList nodeRuns={nodeRunsList} />
     </NodeDetails>
   )
 }
