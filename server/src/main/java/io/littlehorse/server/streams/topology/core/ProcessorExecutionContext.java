@@ -102,7 +102,8 @@ public class ProcessorExecutionContext implements ExecutionContext {
                 authContext,
                 processorContext,
                 globalTaskQueueManager,
-                coreStore);
+                coreStore,
+                server.getNetworkThreadpool());
         return currentTaskManager;
     }
 
