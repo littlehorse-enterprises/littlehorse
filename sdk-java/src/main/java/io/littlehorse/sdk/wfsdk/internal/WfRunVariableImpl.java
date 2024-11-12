@@ -33,8 +33,8 @@ class WfRunVariableImpl implements WfRunVariable {
         this.name = name;
         this.typeOrDefaultVal = typeOrDefaultVal;
 
-        // This is the default zero value.
-        this.accessLevel = WfRunVariableAccessLevel.PUBLIC_VAR;
+        // As per GH Issue #582, the default is now PRIVATE_VAR.
+        this.accessLevel = WfRunVariableAccessLevel.PRIVATE_VAR;
         initializeType();
     }
 
@@ -121,5 +121,15 @@ class WfRunVariableImpl implements WfRunVariable {
                 .addAllJsonIndexes(jsonIndexes)
                 .setAccessLevel(accessLevel)
                 .build();
+    }
+
+    @Override
+    public WfRunVariableImpl asPublic() {
+        return this.withAccessLevel(WfRunVariableAccessLevel.PUBLIC_VAR);
+    }
+
+    @Override
+    public WfRunVariable asInherited() {
+        return this.withAccessLevel(WfRunVariableAccessLevel.INHERITED_VAR);
     }
 }
