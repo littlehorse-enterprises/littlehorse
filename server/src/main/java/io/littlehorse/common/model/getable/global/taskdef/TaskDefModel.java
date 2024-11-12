@@ -37,6 +37,11 @@ public class TaskDefModel extends MetadataGetable<TaskDef> {
         inputVars = new ArrayList<>();
     }
 
+    public TaskDefModel(TaskDefIdModel id, List<VariableDefModel> inputVars) {
+        this.id = id;
+        this.inputVars = inputVars;
+    }
+
     @Override
     public Date getCreatedAt() {
         if (createdAt == null) createdAt = new Date();

@@ -6,12 +6,8 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefMode
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 
 public class WfSpecUtil {
     private WfSpecUtil() {}
