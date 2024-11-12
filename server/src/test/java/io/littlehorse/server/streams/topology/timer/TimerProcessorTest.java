@@ -68,7 +68,7 @@ public class TimerProcessorTest {
 
     @Test
     public void supportPunctuatorIntervalConfigConsistency() {
-        Assertions.assertThat(scheduledPunctuator.getInterval()).isEqualTo(LHConstants.PUNCTUATOR_INERVAL);
+        Assertions.assertThat(scheduledPunctuator.getInterval()).isEqualTo(LHConstants.TIMER_PUNCTUATOR_INTERVAL);
     }
 
     @Test
