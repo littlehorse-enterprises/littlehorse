@@ -135,6 +135,25 @@ jobs:
       - name: Tests
         run: ./gradlew test-utils:test
 
+  tests-test-utils-container:
+    if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "corretto"
+          java-version: 21
+
+      - name: Validate Indentations
+        run: ./gradlew test-utils-container:spotlessCheck
+
+      - name: Tests
+        run: ./gradlew test-utils-container:test
+
   tests-dashboard:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
     runs-on: ubuntu-latest
