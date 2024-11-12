@@ -48,7 +48,8 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
                         .withKafkaBootstrapServers(BOOTSTRAP_SERVERS)
                         .withAdvertisedPort(port)
                         .withInstanceId(port)
-                        .withInternalAdvertisedHost(String.format("%s%d", LH_HOSTNAME, port))
+                        .withInternalAdvertisedHost(
+                                String.format("%s%d", LH_HOSTNAME, port)) // unique hostname for each instance
                         .withNetwork(NETWORK)
                         .dependsOn(kafka))
                 .collect(Collectors.toList());
