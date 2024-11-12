@@ -56,6 +56,7 @@ from littlehorse.model import (
     WfRunVariableAccessLevel,
     WorkflowRetentionPolicy,
 )
+from littlehorse.model.wf_spec_pb2 import PRIVATE_VAR
 from littlehorse.utils import negate_comparator, to_variable_value
 from littlehorse.worker import _create_task_def
 
@@ -363,6 +364,28 @@ class WfRunVariable:
         out = WfRunVariable(self.name, self.type, self.default_value)
         out.json_path = json_path
         return out
+
+    def as_public(self) -> "WfRunVariable":
+        """Sets the access level to PUBLIC_VAR, which has three implications:
+        - Future versions of this WfSpec cannot define a variable with the
+          same name and a different type.
+        - Child workflows can access this variable.
+        - This variable is now considered in determining whether a new
+          version of the WfSpec is a majorVersion or revision.
+        """
+        self._access_level = WfRunVariableAccessLevel.PUBLIC_VAR
+        return self
+
+    def as_inherited(self) -> "WfRunVariable":
+        """Sets the access level to INHERITED_VAR, which has three implications:
+        - Future versions of this WfSpec cannot define a variable with the
+          same name and a different type.
+        - Child workflows can access this variable.
+        - This variable is now considered in determining whether a new
+          version of the WfSpec is a majorVersion or revision.
+        """
+        self._access_level = WfRunVariableAccessLevel.INHERITED_VAR
+        return self
 
     def with_access_level(
         self, access_level: WfRunVariableAccessLevel
@@ -1474,7 +1497,7 @@ class WorkflowThread:
         self,
         variable_name: str,
         variable_type: VariableType,
-        access_level: Optional[Union[WfRunVariableAccessLevel, str]] = None,
+        access_level: Optional[Union[WfRunVariableAccessLevel, str]] = PRIVATE_VAR,
         default_value: Any = None,
     ) -> WfRunVariable:
         """Defines a Variable in the ThreadSpec and returns a handle to it.

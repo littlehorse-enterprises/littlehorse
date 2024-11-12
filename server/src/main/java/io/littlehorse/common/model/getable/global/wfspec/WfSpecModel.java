@@ -35,6 +35,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -287,12 +288,6 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         return out;
     }
 
-    public Map<String, ThreadVarDefModel> getRequiredVariables() {
-        return threadSpecs.get(entrypointThreadName).getInputVariableDefs().entrySet().stream()
-                .filter(kv -> kv.getValue().isRequired())
-                .collect(Collectors.toMap(kv -> kv.getKey(), kv -> kv.getValue()));
-    }
-
     /*
      * For now, the only validation we do for variables is to make sure that:
      * 1. No variable name is defined twice (this will be useful for future
@@ -358,15 +353,26 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         }
 
         // Now we curate the list of variables which are "frozen" in time and cannot
-        // change their types.
+        // change their types. This includes two types:
+        // - Required variables in the entrypoint threadRun
+        // - Any variable with the access_level `PUBLIC_VAR`.
+        for (ThreadVarDefModel tvd : getEntrypointThread().getRequiredVarDefs()) {
+            frozenVariables.put(tvd.getVarDef().getName(), tvd);
+        }
         for (ThreadSpecModel thread : threadSpecs.values()) {
-            for (ThreadVarDefModel tvd : thread.getRequiredVarDefs()) {
-                frozenVariables.put(tvd.getVarDef().getName(), tvd);
-            }
-            for (ThreadVarDefModel tvd : thread.getRequiredVarDefs()) {
+            for (ThreadVarDefModel tvd : thread.getPublicVarDefs()) {
                 frozenVariables.put(tvd.getVarDef().getName(), tvd);
             }
         }
+    }
+
+    /**
+     * Returns a ThreadVarDef for every PUBLIC_VAR variable in the WfSpec (all threads).
+     */
+    public Collection<ThreadVarDefModel> getPublicVars() {
+        return threadSpecs.values().stream()
+                .flatMap(tspec -> tspec.getPublicVarDefs().stream())
+                .toList();
     }
 
     private void checkCompatibilityAndSetVersion(WfSpecModel old) {
@@ -385,7 +391,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
                 if (oldDef.getVarDef().getType() != currentVarDef.getVarDef().getType()) {
                     throw new LHApiException(
                             Status.FAILED_PRECONDITION,
-                            "Variable %s must be of type %s not %s"
+                            "Variable %s must be of type %s not %s as it was formerly declared a PUBLIC_VAR"
                                     .formatted(
                                             varName,
                                             oldDef.getVarDef().getType(),
