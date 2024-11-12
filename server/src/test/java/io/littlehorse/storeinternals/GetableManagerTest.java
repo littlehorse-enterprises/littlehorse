@@ -58,7 +58,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -81,7 +80,7 @@ public class GetableManagerTest {
             new MockProcessorContext<>();
     private GetableManager getableManager;
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    @Mock
     private ProcessorExecutionContext executionContext;
 
     private AuthorizationContext testContext = new AuthorizationContextImpl(
@@ -131,6 +130,21 @@ public class GetableManagerTest {
 
         List<String> keysAfterDelete = getAllKeys(store);
         assertThat(keysAfterDelete).isEmpty();
+    }
+
+    @Test
+    void deleteAllByPrefix() {
+        WfRunModel wfRunModel = TestUtil.wfRun("1234");
+        TaskRunModel taskRunModel = TestUtil.taskRun();
+
+        getableManager.put(taskRunModel);
+        getableManager.commit();
+
+        getableManager.deleteAllByPrefix(wfRunModel.getPartitionKey().get(), TaskRunModel.class);
+        getableManager.commit();
+
+        TaskRunModel storedTaskRunModel = getableManager.get(taskRunModel.getObjectId());
+        assertThat(storedTaskRunModel).isNull();
     }
 
     @NotNull

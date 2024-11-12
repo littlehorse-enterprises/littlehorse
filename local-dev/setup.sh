@@ -71,6 +71,10 @@ EOF
     KEYCLOAK_ADMIN_PASSWORD="admin"
     KEYCLOAK_PORT="8888"
 
+    # users
+    USER_NAME="user"
+    USER_PASSWORD="password"
+
     while ! curl --silent --fail --output /dev/null "http://localhost:${KEYCLOAK_PORT}"; do
         echo "Waiting for keycloak"
         sleep 5
@@ -100,7 +104,6 @@ EOF
     create_keycloak_client $SERVER_CLIENT_ID $SERVER_CLIENT_SECRET
     create_keycloak_client $WORKER_CLIENT_ID $WORKER_CLIENT_SECRET
     create_keycloak_client $CANARY_CLIENT_ID $CANARY_CLIENT_SECRET
-    create_keycloak_client $DASHBOARD_CLIENT_ID $DASHBOARD_CLIENT_SECRET
 
     http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
         protocol=openid-connect \
@@ -109,6 +112,31 @@ EOF
         directAccessGrantsEnabled:=false \
         publicClient:=true \
         redirectUris:='["http://127.0.0.1:25242/callback"]'
+
+    http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
+            protocol=openid-connect \
+            clientId="$DASHBOARD_CLIENT_ID" \
+            id="$DASHBOARD_CLIENT_ID" \
+            secret="$DASHBOARD_CLIENT_SECRET" \
+            directAccessGrantsEnabled:=true \
+            standardFlowEnabled:=true \
+            implicitFlowEnabled:=false \
+            publicClient:=false \
+            authorizationServicesEnabled:=false \
+            surrogateAuthRequired:=false \
+            frontchannelLogout:=true \
+            redirectUris:='["http://localhost:3000/*"]'
+
+    http -b -A bearer -a "${KEYCLOAK_ADMIN_ACCESS_TOKEN}" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/users" \
+            emailVerified:=true \
+            username="$USER_NAME" \
+            email="user@littlehorse.io" \
+            firstName="local" \
+            lastName="dev" \
+            enabled:=true \
+            credentials[0][type]="password" \
+            credentials[0][value]="$USER_PASSWORD" \
+            credentials[0][temporary]:=false
 
     echo "Client '${CLI_CLIENT_ID}' created"
 
