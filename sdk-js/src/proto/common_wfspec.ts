@@ -213,7 +213,11 @@ export interface VariableAssignment {
     | VariableValue
     | undefined;
   /** Assign a format string */
-  formatString?: VariableAssignment_FormatString | undefined;
+  formatString?:
+    | VariableAssignment_FormatString
+    | undefined;
+  /** Assign the value of a NodeOutput. */
+  nodeOutput?: VariableAssignment_NodeOutputReference | undefined;
 }
 
 /** A FormatString formats a template String with values from the WfRun. */
@@ -227,6 +231,17 @@ export interface VariableAssignment_FormatString {
     | undefined;
   /** VariableAssignments which fill out the args. */
   args: VariableAssignment[];
+}
+
+/**
+ * A NodeOutputReference allows you to assign a value by getting the output of
+ * a NodeRun from a specified Node. If there are multiple NodeRun's of the specified
+ * Node (for example, if there is a loop in the ThreadSpec), then the most recent
+ * NodeRun is used. Can only specify a Node that is in the same ThreadSpec.
+ */
+export interface VariableAssignment_NodeOutputReference {
+  /** The name of the Node to pull output from. */
+  nodeName: string;
 }
 
 /**
@@ -452,7 +467,13 @@ export interface TaskNode {
 }
 
 function createBaseVariableAssignment(): VariableAssignment {
-  return { jsonPath: undefined, variableName: undefined, literalValue: undefined, formatString: undefined };
+  return {
+    jsonPath: undefined,
+    variableName: undefined,
+    literalValue: undefined,
+    formatString: undefined,
+    nodeOutput: undefined,
+  };
 }
 
 export const VariableAssignment = {
@@ -468,6 +489,9 @@ export const VariableAssignment = {
     }
     if (message.formatString !== undefined) {
       VariableAssignment_FormatString.encode(message.formatString, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.nodeOutput !== undefined) {
+      VariableAssignment_NodeOutputReference.encode(message.nodeOutput, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
@@ -507,6 +531,13 @@ export const VariableAssignment = {
 
           message.formatString = VariableAssignment_FormatString.decode(reader, reader.uint32());
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.nodeOutput = VariableAssignment_NodeOutputReference.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -528,6 +559,9 @@ export const VariableAssignment = {
       : undefined;
     message.formatString = (object.formatString !== undefined && object.formatString !== null)
       ? VariableAssignment_FormatString.fromPartial(object.formatString)
+      : undefined;
+    message.nodeOutput = (object.nodeOutput !== undefined && object.nodeOutput !== null)
+      ? VariableAssignment_NodeOutputReference.fromPartial(object.nodeOutput)
       : undefined;
     return message;
   },
@@ -587,6 +621,51 @@ export const VariableAssignment_FormatString = {
       ? VariableAssignment.fromPartial(object.format)
       : undefined;
     message.args = object.args?.map((e) => VariableAssignment.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseVariableAssignment_NodeOutputReference(): VariableAssignment_NodeOutputReference {
+  return { nodeName: "" };
+}
+
+export const VariableAssignment_NodeOutputReference = {
+  encode(message: VariableAssignment_NodeOutputReference, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.nodeName !== "") {
+      writer.uint32(10).string(message.nodeName);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): VariableAssignment_NodeOutputReference {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseVariableAssignment_NodeOutputReference();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.nodeName = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<VariableAssignment_NodeOutputReference>): VariableAssignment_NodeOutputReference {
+    return VariableAssignment_NodeOutputReference.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<VariableAssignment_NodeOutputReference>): VariableAssignment_NodeOutputReference {
+    const message = createBaseVariableAssignment_NodeOutputReference();
+    message.nodeName = object.nodeName ?? "";
     return message;
   },
 };

@@ -30,6 +30,15 @@ message VariableAssignment {
     repeated VariableAssignment args = 2;
   }
 
+  // A NodeOutputReference allows you to assign a value by getting the output of
+  // a NodeRun from a specified Node. If there are multiple NodeRun's of the specified
+  // Node (for example, if there is a loop in the ThreadSpec), then the most recent
+  // NodeRun is used. Can only specify a Node that is in the same ThreadSpec.
+  message NodeOutputReference {
+    // The name of the Node to pull output from.
+    string node_name = 1;
+  }
+
   // If you provide a `variable_name` and the specified variable is JSON_OBJ or
   // JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
   // resolve to the specified field.
@@ -43,6 +52,8 @@ message VariableAssignment {
     VariableValue literal_value = 3;
     // Assign a format string
     FormatString format_string = 4;
+    // Assign the value of a NodeOutput.
+    NodeOutputReference node_output = 5;
   }
 }
 
