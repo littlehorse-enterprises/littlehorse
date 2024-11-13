@@ -804,12 +804,13 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                     throw new LHVarSubError(e, "Error formatting variable");
                 }
                 break;
+            case NODE_OUTPUT:
+                val = assn.getNodeOutputReference().getValue(this, txnCache, processorContext);
+                break;
             case SOURCE_NOT_SET:
-                // Not possible
+                // This should have been caught by the WfSpecModel#validate()
+                throw new IllegalStateException("Invalid WfSpec with un-set VariableAssignment.");
         }
-
-        // TODO: Refactor this line
-        if (val == null) throw new RuntimeException("Not possible");
 
         if (assn.getJsonPath() != null) {
             val = val.jsonPath(assn.getJsonPath());

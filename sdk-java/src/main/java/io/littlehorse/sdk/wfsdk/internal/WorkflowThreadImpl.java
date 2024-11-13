@@ -53,14 +53,11 @@ import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Queue;
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -80,14 +77,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
     private ThreadRetentionPolicy retentionPolicy;
     private Queue<VariableMutation> variableMutations;
 
-    private Set<NodeOutputImpl> returnedNodeOutputs;
-
     public WorkflowThreadImpl(String name, WorkflowImpl parent, ThreadFunc func) {
         this.parent = parent;
         this.spec = ThreadSpec.newBuilder();
         this.name = name;
         this.variableMutations = new LinkedList<>();
-        this.returnedNodeOutputs = new HashSet<>();
 
         // For now, the creation of the entrypoint node is manual.
         Node entrypointNode =
@@ -109,22 +103,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
         if (getRetentionPolicy() != null) {
             spec.setRetentionPolicy(getRetentionPolicy());
-        }
-
-        // Sometimes (eg. when passing a NodeOutput as input to another task), the SDK
-        // needs to transparently create internal variables that keep track of the
-        // output of a NodeRun. We must mutate that variable with the ASSIGN mutation
-        // on all outgoing edges of those nodes.
-        for (NodeOutputImpl nodeOutput : returnedNodeOutputs) {
-            Optional<VariableMutation> option = nodeOutput.getMutationForInternalVariable();
-            if (option.isEmpty()) continue;
-            VariableMutation mutation = option.get();
-
-            Node.Builder nodeBuilder = spec.getNodesOrThrow(nodeOutput.nodeName).toBuilder();
-            for (Edge.Builder edge : nodeBuilder.getOutgoingEdgesBuilderList()) {
-                edge.addVariableMutations(mutation);
-            }
-            spec.putNodes(nodeOutput.nodeName, nodeBuilder.build());
         }
     }
 
@@ -218,6 +196,9 @@ final class WorkflowThreadImpl implements WorkflowThread {
             VariableAssignment userGroupAssn = assignVariable(userGroup);
             utNode.setUserGroup(userGroupAssn);
         }
+
+        // TODO LH-313: Return a special subclass of NodeOutputImpl that
+        // allows for adding trigger actions
 
         String nodeName = addNode(userTaskDefName, NodeCase.USER_TASK, utNode.build());
         return new UserTaskOutputImpl(nodeName, this);
@@ -467,10 +448,6 @@ final class WorkflowThreadImpl implements WorkflowThread {
         lastNodeFromIfBlock.addOutgoingEdges(ifBlockEdge.build());
 
         spec.putNodes(lastNodeFromIfBlockName, lastNodeFromIfBlock.build());
-    }
-
-    public void registerReturnedNodeOutput(NodeOutputImpl returnedOutput) {
-        this.returnedNodeOutputs.add(returnedOutput);
     }
 
     private List<VariableMutation> collectVariableMutations() {
