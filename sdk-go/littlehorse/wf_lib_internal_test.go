@@ -298,6 +298,21 @@ func TestParallelSpawnThreads(t *testing.T) {
 	assert.Equal(t, waitNode.GetThreadList().GetVariableName(), internalVarName)
 }
 
+func TestAssignNodeOutput(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		t.Execute("task-two", t.Execute("task-one"))
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	taskNode := entrypoint.Nodes["2-task-two-TASK"]
+	assert.Equal(t, taskNode.GetTask().Variables[0].GetNodeOutput().NodeName, "1-task-one-TASK")
+}
+
 func TestParallelSpawnThreadsWithInput(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		myArr := t.AddVariable("my-arr", lhproto.VariableType_JSON_ARR)
