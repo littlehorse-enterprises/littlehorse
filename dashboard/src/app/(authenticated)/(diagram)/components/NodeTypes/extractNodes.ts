@@ -39,7 +39,9 @@ const extractData = (type: NodeType, node: NodeProto) => {
       return node.throwEvent
   }
 }
-
+type NodeObj = {
+  [key in keyof Omit<NodeProto, 'outgoingEdges' | 'failureHandlers'>]: unknown
+}
 export type NodeType =
   | 'ENTRYPOINT'
   | 'EXIT'
@@ -53,7 +55,7 @@ export type NodeType =
   | 'START_MULTIPLE_THREADS'
   | 'THROW_EVENT'
   | 'UNKNOWN_NODE_TYPE'
-const getNodeType = (node: NodeProto): NodeType => {
+export const getNodeType = (node: NodeObj): NodeType => {
   if (node['exit'] !== undefined) return 'EXIT'
   if (node['task'] !== undefined) return 'TASK'
   if (node['externalEvent'] !== undefined) return 'EXTERNAL_EVENT'

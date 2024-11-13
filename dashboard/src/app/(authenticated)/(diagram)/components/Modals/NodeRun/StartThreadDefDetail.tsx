@@ -1,22 +1,18 @@
-import { FC } from 'react'
 import { utcToLocalDateTime } from '@/app/utils'
-import { NodeRun } from 'littlehorse-client/proto'
+import { FC } from 'react'
+import { AccordionNode } from './AccordionContent'
 
-type Props = {
-  currentNode: NodeRun
-}
-
-export const StartThreadDefDetail: FC<Props> = ({ currentNode }) => {
+export const StartThreadDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
   return (
     <div className="mb-2 items-center gap-2">
-      {currentNode?.arrivalTime && (
+      {nodeRun.arrivalTime && (
         <div className="mb-2 mt-1 text-sm font-bold">
-          Arrival Time : <span className=" pb-2">{utcToLocalDateTime(currentNode?.arrivalTime)}</span>
+          Arrival Time : <span className=" pb-2">{utcToLocalDateTime(nodeRun.arrivalTime)}</span>
         </div>
       )}
-      {currentNode?.endTime && (
+      {nodeRun.endTime && (
         <div className="mb-2 mt-1 text-sm font-bold">
-          End Time : <span className="  pb-2">{utcToLocalDateTime(currentNode?.endTime)}</span>
+          End Time : <span className="  pb-2">{utcToLocalDateTime(nodeRun.endTime)}</span>
         </div>
       )}
     </div>
