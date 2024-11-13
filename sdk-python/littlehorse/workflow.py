@@ -99,16 +99,16 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
         VariableAssignment: Protobuf.
     """
     if isinstance(value, NodeOutput):
-        json_path: Optional[str] = None
+        jsonpath: Optional[str] = None
 
         if value.json_path is not None:
-            json_path = value.json_path
+            jsonpath = value.json_path
 
         return VariableAssignment(
             node_output=VariableAssignment.NodeOutputReference(
                 node_name=value.node_name,
             ),
-            json_path=json_path,
+            json_path=jsonpath,
         )
 
     if isinstance(value, LHFormatString):
