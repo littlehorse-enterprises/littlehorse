@@ -1,9 +1,10 @@
 package littlehorse_test
 
 import (
+	"testing"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
-	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -538,10 +539,10 @@ func TestJsonPath(t *testing.T) {
 
 func TestVariableAccessLevel(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
-		inheritedVar := t.AddVariable("my-var", lhproto.VariableType_BOOL)
-		inheritedVar.WithAccessLevel(lhproto.WfRunVariableAccessLevel_PRIVATE_VAR)
+		publicVar := t.AddVariable("my-var", lhproto.VariableType_BOOL)
+		publicVar.AsPublic()
 
-		// Test that default is PUBLIC_VAR
+		// Test that default is PRIVATE_VAR
 		t.AddVariable("default-access", lhproto.VariableType_INT)
 
 		t.Execute("some-task")
@@ -550,11 +551,11 @@ func TestVariableAccessLevel(t *testing.T) {
 	putWf, _ := wf.Compile()
 	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
 	varDef := entrypoint.VariableDefs[0]
-	assert.Equal(t, varDef.AccessLevel, lhproto.WfRunVariableAccessLevel_PRIVATE_VAR)
+	assert.Equal(t, varDef.AccessLevel, lhproto.WfRunVariableAccessLevel_PUBLIC_VAR)
 	assert.Equal(t, varDef.VarDef.Name, "my-var")
 
 	varDef = entrypoint.VariableDefs[1]
-	assert.Equal(t, varDef.AccessLevel, lhproto.WfRunVariableAccessLevel_PUBLIC_VAR)
+	assert.Equal(t, varDef.AccessLevel, lhproto.WfRunVariableAccessLevel_PRIVATE_VAR)
 	assert.Equal(t, varDef.VarDef.Name, "default-access")
 }
 
