@@ -5,6 +5,7 @@ import { ExternalEvent } from './ExternalEvent'
 import { TaskRun } from './TaskRun'
 import { UserTaskRun } from './UserTaskRun'
 import { WorkflowEvent } from './WorkflowEvent'
+import {ExecuteWorkflowRun} from './ExecuteWorkflowRun'
 
 export * from './Modals'
 
@@ -16,6 +17,7 @@ export const ModalComponents = {
   edge: Edge,
   externalEvent: ExternalEvent,
   workflowEvent: WorkflowEvent,
+  workflowRun: ExecuteWorkflowRun,
 } as const
 
 export type ModalType = keyof typeof ModalComponents
