@@ -806,7 +806,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 break;
             case NODE_OUTPUT:
                 String nodeReferenceName = assn.getNodeOutputReference().getNodeName();
-                NodeRunModel referencedNodeRun = getNodeRun(nodeReferenceName);
+                NodeRunModel referencedNodeRun = getMostRecentNodeRun(nodeReferenceName);
                 Optional<VariableValueModel> output = referencedNodeRun.getOutput(processorContext);
                 if (output.isEmpty()) {
                     throw new LHVarSubError(
@@ -840,7 +840,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return out;
     }
 
-    public NodeRunModel getNodeRun(String nodeName) throws LHVarSubError {
+    public NodeRunModel getMostRecentNodeRun(String nodeName) throws LHVarSubError {
         // The only way to find a previous NodeRun is to walk backwards from the current position
         // until we either:
         // 1) Find a NodeRun that matches the nodeName
