@@ -47,7 +47,7 @@ dependencies {
     testImplementation "org.apache.kafka:kafka-streams-test-utils:${kafkaVersion}"
 
     // Auth
-    implementation 'com.nimbusds:oauth2-oidc-sdk:10.9.2'
+    implementation 'com.nimbusds:oauth2-oidc-sdk:11.20.1'
 
     // Utils
     implementation 'org.apache.commons:commons-lang3:3.12.0'
