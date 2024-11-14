@@ -2,11 +2,12 @@ package littlehorse
 
 import (
 	"errors"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"log"
 	"strconv"
 	"strings"
 	"unicode"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 
 	"github.com/ztrue/tracerr"
 )
@@ -438,10 +439,24 @@ func (t *WorkflowThread) assignVariable(
 				},
 			},
 		}
-	case *NodeOutput, NodeOutput:
-		err = errors.New(
-			"cannot use NodeOutput directly as input to task. Save as var first",
-		)
+	case *NodeOutput:
+		out = &lhproto.VariableAssignment{
+			JsonPath: v.jsonPath,
+			Source: &lhproto.VariableAssignment_NodeOutput{
+				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
+					NodeName: v.nodeName,
+				},
+			},
+		}
+	case NodeOutput:
+		out = &lhproto.VariableAssignment{
+			JsonPath: v.jsonPath,
+			Source: &lhproto.VariableAssignment_NodeOutput{
+				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
+					NodeName: v.nodeName,
+				},
+			},
+		}
 	default:
 		var tmp *lhproto.VariableValue
 		tmp, err = InterfaceToVarVal(v)
@@ -745,7 +760,8 @@ func (t *WorkflowThread) addVariable(
 	}
 
 	threadVarDef := &lhproto.ThreadVarDef{
-		VarDef: varDef,
+		VarDef:      varDef,
+		AccessLevel: lhproto.WfRunVariableAccessLevel_PRIVATE_VAR,
 	}
 
 	t.spec.VariableDefs = append(t.spec.VariableDefs, threadVarDef)

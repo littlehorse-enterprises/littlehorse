@@ -43,7 +43,7 @@ export const TaskDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
   return (
     <>
       <div className="flex justify-between align-top">
-        {data.inputVariables?.length && (
+        {!!data.inputVariables?.length && (
           <div>
             <h2 className="mb-2 text-sm font-bold">Input Variables</h2>
             {data.inputVariables?.map(({ varName, value }) => {
