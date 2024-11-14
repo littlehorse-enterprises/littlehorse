@@ -38,12 +38,12 @@ export const FormInput: FC<FormFieldProp> = props => {
       </div>
       <Input
         type={variableToType(type)}
-        className="mb-4 mt-1"
+        className={errors[name] ? "mb-1 mt-1" : "mb-4 mt-1"}
         id={name}
         disabled={isDisabled} 
         {...register(name, { required: required ? `${name} is required` : false })}
       />
-      {errors[name] && <p className="text-sm text-red-700">{errors[name]?.message}</p>}
+      {errors[name] && <p className="text-sm text-red-700 mb-3">{errors[name]?.message}</p>}
     </div>
   )
 }

@@ -34,8 +34,6 @@ export const TaskDetails: FC<{ taskNode?: TaskNode; nodeRun?: NodeRun; selected:
         name: taskNode?.taskDefId?.name,
       })
 
-      console.log('taskDef', taskDef)
-
       return taskDef
     },
   })

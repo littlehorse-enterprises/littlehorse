@@ -11,6 +11,8 @@ export const MarkFieldNull: FC<Prop> = ({ name, setIsDisabled }) => {
     setIsDisabled(checked)
     if (checked) {
       setValue(name, null)
+    } else {
+      setValue(name, '')
     }
   }
 

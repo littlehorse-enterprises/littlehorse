@@ -12,14 +12,12 @@ import { WfRunForm } from '@/app/(authenticated)/(diagram)/components/Forms/WfRu
 export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
   const { showModal, setShowModal } = useModal()
   const lhWorkflowSpec = data as WfSpec
-  console.log(lhWorkflowSpec)
   const { tenantId } = useWhoAmI()
   const router = useRouter()
   const formRef = useRef<any>(null)
   const wfSpecVariables = lhWorkflowSpec.threadSpecs?.entrypoint?.variableDefs
-  const formatVariablesPayload = (values): any => {
-    console.log('values', values)
-    const transformedObj = Object.keys(values).reduce((acc, key) => {
+  const formatVariablesPayload = (values: any) => {
+    const transformedObj = Object.keys(values).reduce((acc: any, key) => {
       acc[key] = { [matchVariableType(key)]: values[key] }
       return acc
     }, {})
@@ -46,7 +44,6 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
       //   lhWorkflowSpec.parentWfSpec?.wfSpecName
       // }
     })
-    console.log(wfRun)
     if (!wfRun.id) return
     setShowModal(false)
     router.push(`/wfRun/${wfRun.id.id}`)
@@ -54,7 +51,7 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
 
   return (
     <Dialog open={showModal} onOpenChange={open => setShowModal(open)}>
-      <DialogContent>
+      <DialogContent className="overflow-y-scroll">
         <DialogHeader>
           <DialogTitle>Execute {lhWorkflowSpec.id?.name}</DialogTitle>
         </DialogHeader>

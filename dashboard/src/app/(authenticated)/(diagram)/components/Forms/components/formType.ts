@@ -1,11 +1,11 @@
-import { FormInput, FormTextarea, FormSwitch } from './'
+import { FormInput, FormTextarea, FormSelect } from './'
 import { VariableType } from 'littlehorse-client/proto'
 
 export const FormComponent = {
   [VariableType.INT]: FormInput,
   [VariableType.STR]: FormInput,
   [VariableType.DOUBLE]: FormInput,
-  [VariableType.BOOL]: FormSwitch,
+  [VariableType.BOOL]: FormSelect,
   [VariableType.JSON_OBJ]: FormTextarea,
   [VariableType.JSON_ARR]: FormTextarea,
   [VariableType.BYTES]: FormInput,
