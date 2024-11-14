@@ -74,19 +74,19 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
     public Empty process(ProcessorExecutionContext executionContext, LHServerConfig config) {
         WfRunIdModel wfRunId = source.getWfRunId();
 
-        log.info("Might schedule a one-off task for wfRun {} due to UserTask", wfRunId);
+        log.trace("Might schedule a one-off task for wfRun {} due to UserTask", wfRunId);
         WfRunModel wfRunModel = executionContext.getableManager().get(wfRunId);
         if (wfRunModel == null) {
-            log.info("WfRun no longer exists! Skipping the scheduled action trigger");
+            log.trace("WfRun no longer exists! Skipping the scheduled action trigger");
             return null;
         }
 
         // Now verify that the thing hasn't yet been completed.
         ThreadRunModel thread = wfRunModel.getThreadRun(source.getThreadRunNumber());
 
-        // Impossible for thread to be null, but check anyways
+        // This can happen in the case of ThreadRetentionPolicy being set.
         if (thread == null) {
-            log.warn("Triggered scheduled task refers to missing thread!");
+            log.trace("Triggered scheduled task refers to missing thread!");
             return null;
         }
 
@@ -96,12 +96,12 @@ public class TriggeredTaskRun extends CoreSubCommand<TriggeredTaskRunPb> {
         UserTaskRunModel userTaskRun = executionContext.getableManager().get(userTaskRunId);
 
         if (userTaskNR.getStatus() != LHStatus.RUNNING) {
-            log.info("NodeRun is not RUNNING anymore, so can't take action!");
+            log.trace("NodeRun is not RUNNING anymore, so can't take action!");
             return null;
         }
 
         // At this point, need to update the events.
-        log.info("Scheduling a one-off task for wfRun {} due to UserTask", wfRunId);
+        log.trace("Scheduling a one-off task for wfRun {} due to UserTask", wfRunId);
 
         try {
             List<VarNameAndValModel> inputVars = taskToSchedule.assignInputVars(thread, executionContext);
