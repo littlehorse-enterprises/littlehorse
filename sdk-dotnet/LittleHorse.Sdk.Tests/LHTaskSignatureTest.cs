@@ -13,6 +13,7 @@ public class LHTaskSignatureTest
     const string TASK_DEF_NAME_GET = "get-task-worker";
     const string TASK_DEF_NAME_VALIDATE = "validate-task-worker";
     const string TASK_DEF_NAME_SHOW = "show-task-worker";
+    const string TASK_DEF_NAME_PROCESS = "process-task-worker";
     const string DEFAULT_OUTPUT_VARIABLE_NAME = "output";
     const bool TRUE_IS_MASKET = true;
     const string VALUE_ATTR_NAME = "value";
@@ -96,11 +97,37 @@ public class LHTaskSignatureTest
     }
     
     [Fact]
-    public void TaskSignature_WithLHContextWorkerFirstInMethodParams_ShouldBuildSignatureSuccessfully()
+    public void TaskSignature_WithLHContextWorkerFirstInMethodParams_ShouldThrowAnException()
     {
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(() => new LHTaskSignature<TestWorker>(TASK_DEF_NAME_VALIDATE, new TestWorker()));
             
         Assert.Equal("Can only have WorkerContext as the last parameter.", exception.Message);
+    }
+    
+    [Fact]
+    public void TaskSignature_WithLHContextWorkerInMiddleOfMethodParams_ShouldThrowAnException()
+    {
+        var exception = Assert.Throws<LHTaskSchemaMismatchException>(() => new LHTaskSignature<TestWorker>(TASK_DEF_NAME_GET, new TestWorker()));
+            
+        Assert.Equal("Can only have WorkerContext as the last parameter.", exception.Message);
+    }
+    
+    [Fact]
+    public void TaskSignature_WithoutLHCustomAttributes_ShouldThrowAnException()
+    {
+        var exception = Assert.Throws<LHTaskSchemaMismatchException>(() => 
+            new LHTaskSignature<TestWorker>("Unknown task def", new TestWorker()));
+            
+        Assert.Contains("Couldn't find [LHTaskMethod] attribute for taskDef", exception.Message);
+    }
+    
+    [Fact]
+    public void TaskSignature_WithMoreThanOneLHTaskMethodAndSameTaskDefName_ShouldThrowAnException()
+    {
+        var exception = Assert.Throws<LHTaskSchemaMismatchException>(() => 
+            new LHTaskSignature<TestWorker>(TASK_DEF_NAME_PROCESS, new TestWorker()));
+            
+        Assert.Equal("Found two annotated task methods!", exception.Message);
     }
     
     [Fact]
@@ -201,6 +228,18 @@ public class LHTaskSignatureTest
         public string Show([LHType(masked: true, name: VALUE_ATTR_NAME)] int value, [LHType(masked: false, name: DETAIL_ATTR_NAME)] string description, [LHType(masked: true, name:TELEPHONE_ATTR_NAME)] string phone)
         {
             return $"Output value: {value}, Description: {description} and Phone: {phone}";
+        }
+        
+        [LHTaskMethod(TASK_DEF_NAME_PROCESS)]
+        public string ProcessPayment(float cost)
+        {
+            return $"Output value: {cost}";
+        }
+        
+        [LHTaskMethod(TASK_DEF_NAME_PROCESS)]
+        public string ProcessOrder(string account_number)
+        {
+            return $"Output value: {account_number}";
         }
     }
 }
