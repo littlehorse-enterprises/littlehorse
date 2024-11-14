@@ -439,10 +439,24 @@ func (t *WorkflowThread) assignVariable(
 				},
 			},
 		}
-	case *NodeOutput, NodeOutput:
-		err = errors.New(
-			"cannot use NodeOutput directly as input to task. Save as var first",
-		)
+	case *NodeOutput:
+		out = &lhproto.VariableAssignment{
+			JsonPath: v.jsonPath,
+			Source: &lhproto.VariableAssignment_NodeOutput{
+				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
+					NodeName: v.nodeName,
+				},
+			},
+		}
+	case NodeOutput:
+		out = &lhproto.VariableAssignment{
+			JsonPath: v.jsonPath,
+			Source: &lhproto.VariableAssignment_NodeOutput{
+				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
+					NodeName: v.nodeName,
+				},
+			},
+		}
 	default:
 		var tmp *lhproto.VariableValue
 		tmp, err = InterfaceToVarVal(v)

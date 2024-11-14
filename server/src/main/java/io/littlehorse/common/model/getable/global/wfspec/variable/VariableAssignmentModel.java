@@ -1,7 +1,9 @@
 package io.littlehorse.common.model.getable.global.wfspec.variable;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
@@ -22,6 +24,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     private String variableName;
     private VariableValueModel rhsLiteralValue;
     private FormatStringModel formatString;
+    private NodeOutputReferenceModel nodeOutputReference;
 
     public Class<VariableAssignment> getProtoBaseClass() {
         return VariableAssignment.class;
@@ -43,6 +46,10 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             case FORMAT_STRING:
                 formatString = LHSerializable.fromProto(p.getFormatString(), FormatStringModel.class, context);
                 break;
+            case NODE_OUTPUT:
+                nodeOutputReference =
+                        LHSerializable.fromProto(p.getNodeOutput(), NodeOutputReferenceModel.class, context);
+                break;
             case SOURCE_NOT_SET:
                 // nothing to do;
         }
@@ -62,6 +69,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 break;
             case FORMAT_STRING:
                 out.setFormatString(formatString.toProto());
+                break;
+            case NODE_OUTPUT:
+                out.setNodeOutput(nodeOutputReference.toProto());
                 break;
             case SOURCE_NOT_SET:
                 // not possible.
@@ -91,19 +101,38 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     }
 
     public boolean canBeType(VariableType type, ThreadSpecModel tspec) {
+        // Eww, gross...I really wish I designed strong typing into the system from day 1.
         if (jsonPath != null) return true;
 
-        VariableType baseType;
+        VariableType baseType = null;
 
-        if (rhsSourceType == SourceCase.VARIABLE_NAME) {
-            VariableDefModel varDef = tspec.getVarDef(variableName).getVarDef();
-            baseType = varDef.getType();
-        } else if (rhsSourceType == SourceCase.LITERAL_VALUE) {
-            baseType = rhsLiteralValue.getType();
-        } else if (rhsSourceType == SourceCase.FORMAT_STRING) {
-            baseType = VariableType.STR;
-        } else {
-            throw new RuntimeException("impossible");
+        switch (rhsSourceType) {
+            case VARIABLE_NAME:
+                VariableDefModel varDef = tspec.getVarDef(variableName).getVarDef();
+                baseType = varDef.getType();
+                break;
+            case LITERAL_VALUE:
+                baseType = rhsLiteralValue.getType();
+                break;
+            case FORMAT_STRING:
+                baseType = VariableType.STR;
+                break;
+            case NODE_OUTPUT:
+                // TODO (#1124): look at the node to determine if the output of the node
+                // can be a given type.
+                return true;
+            case SOURCE_NOT_SET:
+        }
+
+        if (rhsSourceType == null) {
+            // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
+            // protobuf that does not set the source type. Instead of throwing an IllegalStateException
+            // we should throw an error that will get propagated back to the client.
+            //
+            // The problem with this is that in this scope we lack context about which node has the
+            // invalid VariableAssignment, so the client may have trouble determining the source. Still
+            // it is better to return INVALID_ARGUMENT than INTERNAL.
+            throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
         }
 
         return baseType == type;
