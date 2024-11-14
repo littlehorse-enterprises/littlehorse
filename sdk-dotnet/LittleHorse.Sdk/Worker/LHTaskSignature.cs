@@ -29,24 +29,24 @@ namespace LittleHorse.Sdk.Worker
             TaskDefName = taskDefName;
             Executable = executable;
 
-            var methodsWithTaskWorkerAttrAndDefName = typeof(T).GetMethods()
+            var methodsWithTaskWorkerAttrsAndDefName = typeof(T).GetMethods()
                          .Where(method => method.CustomAttributes.Any(ca => 
                              ca.AttributeType == typeof(LHTaskMethodAttribute) 
                              || ca.AttributeType == typeof(LHTypeAttribute)))
                          .Where(method => IsValidLHTaskWorkerValue(
                              method.GetCustomAttribute(typeof(LHTaskMethodAttribute)), taskDefName));
             
-            if (!methodsWithTaskWorkerAttrAndDefName.Any())
+            if (!methodsWithTaskWorkerAttrsAndDefName.Any())
             {
                 throw new LHTaskSchemaMismatchException($"Couldn't find [LHTaskMethod] attribute for taskDef {taskDefName} on {typeof(T).Name}");
             }
 
-            if (methodsWithTaskWorkerAttrAndDefName.Count() > 1)
+            if (methodsWithTaskWorkerAttrsAndDefName.Count() > 1)
             {
                 throw new LHTaskSchemaMismatchException("Found two annotated task methods!");
             }
 
-            TaskMethod = methodsWithTaskWorkerAttrAndDefName.Single();
+            TaskMethod = methodsWithTaskWorkerAttrsAndDefName.Single();
 
             var methodParams = TaskMethod.GetParameters();
 
@@ -57,9 +57,9 @@ namespace LittleHorse.Sdk.Worker
         
         private bool IsValidLHTaskWorkerValue(Attribute? lhtaskWorkerAttribute, string taskDefName)
         {
-            if (lhtaskWorkerAttribute is LHTaskMethodAttribute a)
+            if (lhtaskWorkerAttribute is LHTaskMethodAttribute attr)
             {
-                return a.Value == taskDefName;
+                return attr.Value == taskDefName;
             }
 
             return false;
@@ -70,7 +70,7 @@ namespace LittleHorse.Sdk.Worker
             for (int i = 0; i < methodParams.Length; i++)
             {
                 var paramType = methodParams[i].ParameterType;
-                var paramName = methodParams[i].Name;
+                var defaultParamName = methodParams[i].Name;
                 HasWorkerContextAtEnd = false;
 
                 if (paramType == typeof(LHWorkerContext))
@@ -87,10 +87,13 @@ namespace LittleHorse.Sdk.Worker
                 var paramLHType = LHMappingHelper.MapDotNetTypeToLHVariableType(paramType);
 
                 bool maskedParam = false;
-
+                var paramName = defaultParamName; 
+                
                 if (methodParams[i].GetCustomAttribute(typeof(LHTypeAttribute)) is LHTypeAttribute lhTypeValue)
                 {
                     maskedParam = lhTypeValue.Masked;
+                    if (!lhTypeValue.Name.Trim().Equals(string.Empty))
+                        paramName = lhTypeValue.Name;
                 }
 
                 LHMethodParam lhMethodParam = new LHMethodParam
