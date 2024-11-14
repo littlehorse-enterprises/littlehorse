@@ -1,20 +1,17 @@
-import { FC, Fragment } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { RefreshCwIcon, ClipboardIcon } from 'lucide-react'
-import { NodeRun, TaskAttempt } from 'littlehorse-client/proto'
 import { cn } from '@/components/utils'
+import { useQuery } from '@tanstack/react-query'
+import { TaskAttempt } from 'littlehorse-client/proto'
+import { ClipboardIcon, RefreshCwIcon } from 'lucide-react'
+import { FC, Fragment } from 'react'
 
-import { utcToLocalDateTime, getVariableValue } from '@/app/utils'
+import { getVariableValue, utcToLocalDateTime } from '@/app/utils'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { getTaskRun } from '../../NodeTypes/Task/getTaskRun'
+import { AccordionNode } from './AccordionContent'
 
-type Props = {
-  currentNode: NodeRun
-}
-
-export const TaskDefDetail: FC<Props> = ({ currentNode }) => {
-  const taskId = currentNode?.task?.taskRunId?.taskGuid
-  const wfRunId = currentNode?.task?.taskRunId?.wfRunId?.id
+export const TaskDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
+  const taskId = nodeRun.task?.taskRunId?.taskGuid
+  const wfRunId = nodeRun.task?.taskRunId?.wfRunId?.id
 
   const { data, isLoading } = useQuery({
     queryKey: ['taskRun', wfRunId, taskId],

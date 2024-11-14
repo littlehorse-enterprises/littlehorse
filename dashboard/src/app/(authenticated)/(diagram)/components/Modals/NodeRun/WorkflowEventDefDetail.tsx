@@ -8,13 +8,10 @@ import { cn } from '@/components/utils'
 import { getVariableValue, utcToLocalDateTime } from '@/app/utils'
 import { getWorkflowEvent } from '@/app/(authenticated)/(diagram)/components/NodeTypes/ThrowEvent/getWorkflowEvent'
 
-type Props = {
-  currentNode: NodeRun
-}
-export const WorkflowEventDefDetail: FC<Props> = ({ currentNode }) => {
+export const WorkflowEventDefDetail: FC<{ nodeRun: NodeRun }> = ({ nodeRun }) => {
   const { tenantId } = useWhoAmI()
-  const wfRunId = currentNode?.throwEvent?.workflowEventId?.wfRunId?.id
-  const workflowEventDefId = currentNode?.throwEvent?.workflowEventId
+  const wfRunId = nodeRun?.throwEvent?.workflowEventId?.wfRunId?.id
+  const workflowEventDefId = nodeRun?.throwEvent?.workflowEventId
   const { data, isLoading } = useQuery({
     queryKey: ['taskRun', wfRunId, workflowEventDefId],
     queryFn: async () => {

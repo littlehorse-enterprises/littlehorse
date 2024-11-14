@@ -1,20 +1,16 @@
 import { FC } from 'react'
 import { RefreshCwIcon, ClipboardIcon } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
-import { NodeRun, UserTaskRunStatus, UserTaskNode, UserTaskRun as LHUserTaskRun } from 'littlehorse-client/proto'
-
+import { UserTaskRunStatus, UserTaskRun as LHUserTaskRun } from 'littlehorse-client/proto'
+import { AccordionNode } from './AccordionContent'
 import { getVariableValue, getVariable, utcToLocalDateTime } from '@/app/utils'
 import { getUserTaskRun } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/getUserTaskRun'
 
-type Props = {
-  currentNode: NodeRun
-  nodeRun?: NodeRun
-  userTaskNode?: UserTaskNode
-}
 
-export const UserTaskDefDetail: FC<Props> = ({ nodeRun, userTaskNode, currentNode }) => {
-  const taskId = currentNode?.userTask?.userTaskRunId?.userTaskGuid
-  const wfRunId = currentNode?.userTask?.userTaskRunId?.wfRunId?.id
+
+export const UserTaskDefDetail: FC<AccordionNode> = ({ nodeRun, userTaskNode }) => {
+  const taskId = nodeRun?.userTask?.userTaskRunId?.userTaskGuid
+  const wfRunId = nodeRun?.userTask?.userTaskRunId?.wfRunId?.id
   const { data, isLoading } = useQuery({
     queryKey: ['userTaskRun', wfRunId, taskId],
     queryFn: async () => {

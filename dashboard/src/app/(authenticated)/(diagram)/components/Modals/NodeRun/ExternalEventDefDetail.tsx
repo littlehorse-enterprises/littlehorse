@@ -1,21 +1,17 @@
-import { FC } from 'react'
-import { RefreshCwIcon, ClipboardIcon } from 'lucide-react'
+import { getVariableValue, utcToLocalDateTime } from '@/app/utils'
 import { cn } from '@/components/utils'
-import { utcToLocalDateTime, getVariableValue } from '@/app/utils'
 import { useQuery } from '@tanstack/react-query'
+import { ClipboardIcon, RefreshCwIcon } from 'lucide-react'
 import { getExternalEvent } from '../../NodeTypes/ExternalEvent/getExternalEvent'
-import { NodeRun } from 'littlehorse-client/proto'
+import { AccordionNode } from './AccordionContent'
+import { FC } from 'react'
 
-type Props = {
-  currentNode: NodeRun
-}
-
-export const ExternalEventDefDetail: FC<Props> = ({ currentNode }) => {
-  const externalEventDefId = currentNode?.externalEvent?.externalEventId?.externalEventDefId
-  const guid = currentNode?.externalEvent?.externalEventId?.guid
-  const wfRunId = currentNode?.externalEvent?.externalEventId?.wfRunId?.id
+export const ExternalEventDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
+  const externalEventDefId = nodeRun.externalEvent?.externalEventId?.externalEventDefId
+  const guid = nodeRun.externalEvent?.externalEventId?.guid
+  const wfRunId = nodeRun.externalEvent?.externalEventId?.wfRunId?.id
   const { data, isLoading } = useQuery({
-    queryKey: ['taskRun', wfRunId, externalEventDefId],
+    queryKey: ['externalEvent', wfRunId, externalEventDefId],
     queryFn: async () => {
       if (!wfRunId) return
       if (!externalEventDefId) return
@@ -46,7 +42,7 @@ export const ExternalEventDefDetail: FC<Props> = ({ currentNode }) => {
     <>
       <div className="mb-2 items-center gap-2">
         <div className="mb-2 mt-1  flex ">
-          <span  className="font-bold ">Task Guid :</span> <span >{guid}</span>
+          <span className="font-bold ">Task Guid :</span> <span>{guid}</span>
           <span className="ml-2 mt-1">
             <ClipboardIcon
               className="h-4 w-4 cursor-pointer fill-transparent stroke-blue-500"
