@@ -1,12 +1,8 @@
 'use server'
 import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
-import { WfRun, RunWfRequest, VariableValue } from 'littlehorse-client/proto'
+import { WfRun, RunWfRequest } from 'littlehorse-client/proto'
 
-type RunWf = {
- variables?: { [key: string]: VariableValue };
-} & Omit<RunWfRequest, 'variables'> &
-  WithTenant
 export const runWfSpec = async ({
   wfSpecName,
   tenantId,
@@ -14,7 +10,8 @@ export const runWfSpec = async ({
   revision,
   parentWfRunId,
   id,
-}: RunWf): Promise<WfRun> => {
+  variables
+}: RunWfRequest & WithTenant  ): Promise<WfRun> => {
   const client = await lhClient({ tenantId })
-  return client.runWf({ wfSpecName, majorVersion, revision, parentWfRunId, id })
+  return client.runWf({ wfSpecName, majorVersion, revision, parentWfRunId, id,variables })
 }

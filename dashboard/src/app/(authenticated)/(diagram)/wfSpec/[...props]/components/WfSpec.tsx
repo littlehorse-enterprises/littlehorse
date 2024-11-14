@@ -7,6 +7,8 @@ import { Details } from './Details'
 import { Thread } from './Thread'
 import { WfRuns } from './WfRuns'
 import { useModal } from '../../../hooks/useModal'
+import { LucidePlayCircle } from 'lucide-react'
+
 
 type WfSpecProps = {
   spec: Spec
@@ -26,10 +28,11 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
       <div className='flex justify-between items-center'>
         <Details status={spec.status} id={spec.id} />
         <button
-          className='flex items-center gap-1 p-1 text-white bg-blue-500 rounded-sm'
+          className='flex items-center gap-1 p-2 px-4 text-white bg-blue-500 rounded-sm'
           onClick={onClick}
         >
-          Execute Workflow
+          <LucidePlayCircle size={18}  />
+          Execute 
         </button>
       </div>
       <Diagram spec={spec} />
