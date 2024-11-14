@@ -1,28 +1,32 @@
+using System.Runtime.CompilerServices;
 using LittleHorse.Common.Proto;
 
-namespace LittleHorse.Sdk.Worker.Internal;
+[assembly: InternalsVisibleTo("LittleHorse.Sdk.Tests")]
 
-internal class LHMethodParam
+namespace LittleHorse.Sdk.Worker.Internal
 {
-    private VariableType _type;
-    private string? _name;
-    private bool _isMasked;
-    
-    internal VariableType Type
+    internal class LHMethodParam
     {
-        get => _type;
-        set => _type = value;
-    }
+        private VariableType _type;
+        private string? _name;
+        private bool _isMasked;
     
-    public string? Name
-    {
-        get => _name;
-        set => _name = value;
-    }
+        internal VariableType Type
+        {
+            get => _type;
+            set => _type = value;
+        }
+    
+        internal string? Name
+        {
+            get => _name;
+            set => _name = value;
+        }
 
-    public bool IsMasked
-    {
-        get => _isMasked;
-        set => _isMasked = value;
+        internal bool IsMasked
+        {
+            get => _isMasked;
+            set => _isMasked = value;
+        }
     }
 }
