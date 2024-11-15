@@ -25,6 +25,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     private VariableValueModel rhsLiteralValue;
     private FormatStringModel formatString;
     private NodeOutputReferenceModel nodeOutputReference;
+    private ExpressionModel expression;
 
     public Class<VariableAssignment> getProtoBaseClass() {
         return VariableAssignment.class;
@@ -50,6 +51,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 nodeOutputReference =
                         LHSerializable.fromProto(p.getNodeOutput(), NodeOutputReferenceModel.class, context);
                 break;
+            case EXPRESSION:
+                expression = LHSerializable.fromProto(p.getExpression(), ExpressionModel.class, context);
+                break;
             case SOURCE_NOT_SET:
                 // nothing to do;
         }
@@ -72,6 +76,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 break;
             case NODE_OUTPUT:
                 out.setNodeOutput(nodeOutputReference.toProto());
+                break;
+            case EXPRESSION:
+                out.setExpression(expression.toProto());
                 break;
             case SOURCE_NOT_SET:
                 // not possible.
@@ -118,6 +125,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 baseType = VariableType.STR;
                 break;
             case NODE_OUTPUT:
+            case EXPRESSION:
                 // TODO (#1124): look at the node to determine if the output of the node
                 // can be a given type.
                 return true;

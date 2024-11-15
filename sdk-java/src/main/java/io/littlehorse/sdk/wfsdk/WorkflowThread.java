@@ -5,7 +5,6 @@ import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 
 /** This interface is what is used to define the logic of a ThreaSpec in a ThreadFunc. */
@@ -112,31 +111,17 @@ public interface WorkflowThread {
 
     WfRunVariable declareInt(String name);
 
-    WfRunVariable declareInt(String name, int defaultVal);
-
     WfRunVariable declareStr(String name);
-
-    WfRunVariable declareStr(String name, String defaultVal);
 
     WfRunVariable declareDouble(String name);
 
-    WfRunVariable declareDouble(String name, double defaultVal);
-
     WfRunVariable declareBytes(String name);
-
-    WfRunVariable declareBytes(String name, byte[] defaultVal);
 
     WfRunVariable declareJsonArr(String name);
 
-    WfRunVariable declareJsonArr(String name, List<Object> defaultVal);
-
     WfRunVariable declareJsonObj(String name);
 
-    WfRunVariable declareJsonObj(String name, Map<String, Object> defaultVal);
-
     WfRunVariable declareBool(String name);
-
-    WfRunVariable declareBool(String name, boolean defaultVal);
 
     /**
      * Defines a Variable in the `ThreadSpec` and returns a handle to it.
@@ -450,4 +435,20 @@ public interface WorkflowThread {
      */
     SpawnedThreads spawnThreadForEach(
             WfRunVariable arrVar, String threadName, ThreadFunc threadFunc, Map<String, Object> inputVars);
+
+    LHExpression multiply(Serializable lhs, Serializable rhs);
+
+    LHExpression add(Serializable lhs, Serializable rhs);
+
+    LHExpression divide(Serializable lhs, Serializable rhs);
+
+    LHExpression subtract(Serializable lhs, Serializable rhs);
+
+    LHExpression extend(Serializable lhs, Serializable rhs);
+
+    LHExpression removeIfPresent(Serializable lhs, Serializable rhs);
+
+    LHExpression removeIndex(Serializable lhs, Serializable index);
+
+    LHExpression removeKey(Serializable lhs, Serializable key);
 }

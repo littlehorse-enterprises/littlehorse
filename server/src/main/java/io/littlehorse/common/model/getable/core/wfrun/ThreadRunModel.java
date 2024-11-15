@@ -24,6 +24,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.InterruptDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.ExpressionModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
@@ -815,6 +816,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                                     + ", number " + referencedNodeRun.getId().getPosition() + " has no output.");
                 }
                 val = output.get();
+                break;
+            case EXPRESSION:
+                ExpressionModel expression = assn.getExpression();
+                VariableValueModel lhs = assignVariable(expression.getLhs(), txnCache);
+                VariableValueModel rhs = assignVariable(expression.getRhs(), txnCache);
+                val = lhs.operate(expression.getOperation(), rhs, lhs.getType());
                 break;
             case SOURCE_NOT_SET:
                 // This should have been caught by the WfSpecModel#validate()

@@ -1,9 +1,8 @@
 package io.littlehorse.sdk.wfsdk;
 
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
-import java.io.Serializable;
 
-public interface TaskNodeOutput extends NodeOutput, Serializable {
+public interface TaskNodeOutput extends NodeOutput {
 
     /**
      * Overrides defaults from the Workflow or WorkflowThread and configures an Exponential Backoff Retry

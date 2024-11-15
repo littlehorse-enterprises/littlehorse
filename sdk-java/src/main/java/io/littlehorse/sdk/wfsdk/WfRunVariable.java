@@ -5,7 +5,7 @@ import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import java.io.Serializable;
 
 /** A WfRunVariable is a handle on a Variable in a WfSpec. */
-public interface WfRunVariable extends Serializable {
+public interface WfRunVariable extends LHExpression {
     /**
      * Valid only for output of the JSON_OBJ or JSON_ARR types. Returns a new WfRunVariable handle
      * which points to Json element referred to by the json path.
@@ -81,6 +81,13 @@ public interface WfRunVariable extends Serializable {
     WfRunVariable masked();
 
     /**
+     * Sets the default value for this WfRunVariable.
+     * @param defaultVal is the default value for this variable.
+     * @return this WfRunVariable.
+     */
+    WfRunVariable withDefault(Object defaultVal);
+
+    /**
      * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
      * evaluates to true if this WfRunVariable is LESS_THAN the provided rhs.
      *
@@ -135,6 +142,15 @@ public interface WfRunVariable extends Serializable {
      */
     WorkflowCondition isEqualTo(Serializable rhs);
 
+    /**
+     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * evaluates to true if this WfRunVariable is NOT_EQUALS to the provided rhs.
+     *
+     * Equivalent to WorkflowThread#condition(this, Comparator.EQUALS, rhs);
+     *
+     * @param rhs is the RHS to compare this WfRunVariable to.
+     * @return true if this WfRunVariable is GREATER_THAN the provided rhs.
+     */
     WorkflowCondition isNotEqualTo(Serializable rhs);
 
     WorkflowCondition doesContain(Serializable rhs);
@@ -146,20 +162,4 @@ public interface WfRunVariable extends Serializable {
     WorkflowCondition isNotIn(Serializable rhs);
 
     void assignTo(Object rhs);
-
-    void add(Object rhs);
-
-    void subtract(Object rhs);
-
-    void divide(Object rhs);
-
-    void multiply(Object rhs);
-
-    void extend(Object rhs);
-
-    void removeIndex(Object rhs);
-
-    void removeIfPresent(Object rhs);
-
-    void removeKey(Object rhs);
 }

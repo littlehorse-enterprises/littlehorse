@@ -11,6 +11,7 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
+import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -96,6 +97,19 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     @Override
+    public WfRunVariable withDefault(Object defaultVal) {
+        try {
+            VariableValue attempt = LHLibUtil.objToVarVal(defaultVal);
+            if (!LHLibUtil.fromValueCase(attempt.getValueCase()).equals(type)) {
+                throw new IllegalArgumentException("Default value type does not match variable type");
+            }
+        } catch (LHSerdeError e) {
+            throw new IllegalArgumentException("Was unable to convert provided default value to LH Variable Type", e);
+        }
+        return this;
+    }
+
+    @Override
     public WfRunVariable searchableOn(String fieldPath, VariableType fieldType) {
         if (!fieldPath.startsWith("$.")) {
             throw new LHMisconfigurationException(String.format("Invalid JsonPath: %s", fieldPath));
@@ -166,43 +180,48 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     @Override
-    public void divide(Object rhs) {
-        parent.mutate(this, VariableMutationType.DIVIDE, rhs);
+    public LHExpression add(Serializable other) {
+        return new LHExpressionImpl(this, VariableMutationType.ADD, other);
     }
 
     @Override
-    public void add(Object rhs) {
-        parent.mutate(this, VariableMutationType.ADD, rhs);
+    public LHExpression subtract(Serializable other) {
+        return new LHExpressionImpl(this, VariableMutationType.SUBTRACT, other);
     }
 
     @Override
-    public void subtract(Object rhs) {
-        parent.mutate(this, VariableMutationType.SUBTRACT, rhs);
+    public LHExpression multiply(Serializable other) {
+        return new LHExpressionImpl(this, VariableMutationType.MULTIPLY, other);
     }
 
     @Override
-    public void multiply(Object rhs) {
-        parent.mutate(this, VariableMutationType.MULTIPLY, rhs);
+    public LHExpression divide(Serializable other) {
+        return new LHExpressionImpl(this, VariableMutationType.DIVIDE, other);
     }
 
     @Override
-    public void extend(Object rhs) {
-        parent.mutate(this, VariableMutationType.EXTEND, rhs);
+    public LHExpression extend(Serializable other) {
+        return new LHExpressionImpl(this, VariableMutationType.EXTEND, other);
     }
 
     @Override
-    public void removeIndex(Object rhs) {
-        parent.mutate(this, VariableMutationType.REMOVE_INDEX, rhs);
+    public LHExpression removeIfPresent(Serializable other) {
+        return new LHExpressionImpl(this, VariableMutationType.REMOVE_IF_PRESENT, other);
     }
 
     @Override
-    public void removeKey(Object rhs) {
-        parent.mutate(this, VariableMutationType.REMOVE_KEY, rhs);
+    public LHExpression removeIndex(int index) {
+        return new LHExpressionImpl(this, VariableMutationType.REMOVE_INDEX, index);
     }
 
     @Override
-    public void removeIfPresent(Object rhs) {
-        parent.mutate(this, VariableMutationType.REMOVE_IF_PRESENT, rhs);
+    public LHExpression removeIndex(LHExpression index) {
+        return new LHExpressionImpl(this, VariableMutationType.REMOVE_INDEX, index);
+    }
+
+    @Override
+    public LHExpression removeKey(Serializable key) {
+        return new LHExpressionImpl(this, VariableMutationType.REMOVE_KEY, key);
     }
 
     public ThreadVarDef getSpec() {
