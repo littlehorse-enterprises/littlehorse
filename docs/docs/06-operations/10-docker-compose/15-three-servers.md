@@ -1,6 +1,6 @@
-# Three LittleHorse Orchestrators
+# Three LittleHorse Servers
 
-LittleHorse is a horizontally scalable system. As such, you can configure multiple LittleHorse Orchestrator servers to act as a cluster. This provides the following benefits:
+LittleHorse is a horizontally scalable system. As such, you can configure multiple LittleHorse Server servers to act as a cluster. This provides the following benefits:
 
 - High availability with hot standby replicas (note that durability is handled by Kafka and does not depend on the number of LittleHorse Servers).
 - Higher throughput as work is distributed across multiple LittleHorse Servers.

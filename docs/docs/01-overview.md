@@ -10,9 +10,9 @@ sidebar_label: Overview
 
 <br/>
 
-The LittleHorse Orchestrator is a high-performance platform for building workflow-driven applications for a variety of use-cases, including:
+The LittleHorse Server is a high-performance platform for building workflow-driven applications for a variety of use-cases, including:
 
-- **Microservice Orchestration**: The LittleHorse Orchestrator allows teams to enjoy the benefits of microservices (such as independent deployment and elasticity) while mitigating some of the challenges such as observability, error handling, and schema evolution.
+- **Microservice Orchestration**: The LittleHorse Server allows teams to enjoy the benefits of microservices (such as independent deployment and elasticity) while mitigating some of the challenges such as observability, error handling, and schema evolution.
 - **Business Process Management**: LittleHorse is perfect for orchestrating long-running business workflows. The `WfSpec` pattern makes it much easier for your code to exactly reflect business requirements; reducing friction between Product and Eng teams.
 - **Generative AI Workflows**: LLM's are fantastic, but they are prone to hallucination and sometimes don't have all the answers. When that happens, LittleHorse [User Tasks](./04-concepts/05-user-tasks.md) allow you to seamlessly put a human-in-the-loop to correct the situation.
 - **Compliance**: User Tasks are also perfect for regulation-driven processes in which people from different departments within an organization must "sign off" on certain transactions.
@@ -22,7 +22,7 @@ The LittleHorse Orchestrator is a high-performance platform for building workflo
 
 Building applications on LittleHorse enables engineering teams to save on infrastructure costs, reduce time to market, and deliver more robust software with less downtime.
 
-The code for the LittleHorse Orchestrator and all clients is available at [our github](https://github.com/littlehorse-enterprises/littlehorse), but if you want to get started we recommend you check out our [Quickstart](./05-developer-guide/00-install.md). All code is free for production use under the Server-Side Public License.
+The code for the LittleHorse Server and all clients is available at [our github](https://github.com/littlehorse-enterprises/littlehorse), but if you want to get started we recommend you check out our [Quickstart](./05-developer-guide/00-install.md). All code is free for production use under the Server-Side Public License.
 
 ## How it Works
 
@@ -32,7 +32,7 @@ An application built on LittleHorse has the following three components:
 - A LittleHorse Cluster
 - Task Workers
 
-The `WfSpec`, short for Workflow Specification, is a metadata object that tells the LittleHorse Orchestrator which Tasks to schedule and when they should be scheduled. The Task Workers connect to the LittleHorse Orchestrator and execute Tasks as they are scheduled.
+The `WfSpec`, short for Workflow Specification, is a metadata object that tells the LittleHorse Server which Tasks to schedule and when they should be scheduled. The Task Workers connect to the LittleHorse Server and execute Tasks as they are scheduled.
 
 You as the user of LittleHorse define your own `WfSpec`s, and write your own Task Workers which connect to the LH Orchestrator.
 

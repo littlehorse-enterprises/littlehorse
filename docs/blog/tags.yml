@@ -1,6 +1,6 @@
 release:
   label: 'LittleHorse Releases'
-  description: 'Release blogs for LittleHorse Orchestrator.'
+  description: 'Release blogs for LittleHorse Server.'
   permalink: '/release/'
 
 analysis:
@@ -9,8 +9,8 @@ analysis:
   permalink: '/analysis/'
 
 littlehorse:
-  label: 'LittleHorse Orchestrator'
-  description: 'Information about the LittleHorse Orchestrator.'
+  label: 'LittleHorse Server'
+  description: 'Information about the LittleHorse Server.'
   permalink: '/littlehorse/'
 
 microservice-and-workflow:

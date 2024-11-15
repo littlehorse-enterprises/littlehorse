@@ -7,7 +7,7 @@ const lightCodeTheme = themes.github;
 
 /** @type {import('@docusaurus/types').Config} */
 module.exports = {
-  title: "LittleHorse Orchestrator",
+  title: "LittleHorse Server",
   tagline: "Workflow-Driven Applications",
   favicon: "img/logo.png",
 
@@ -25,7 +25,7 @@ module.exports = {
       tagName: "meta",
       attributes: {
         "name": "twitter:title",
-        "content": "LittleHorse Orchestrator",
+        "content": "LittleHorse Server",
         "data-rh": "true"
       }
     },
