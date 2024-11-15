@@ -17,7 +17,7 @@ export const MarkFieldNull: FC<Prop> = ({ name, setIsDisabled }) => {
   }
 
   return (
-    <Label htmlFor="mark-null" className="flex items-center gap-2">
+    <Label className="flex items-center gap-2 text-gray-500 text-opacity-70">
       mark as null
       <input id="mark-null" type="checkbox" onChange={handleCheckboxChange} />
     </Label>

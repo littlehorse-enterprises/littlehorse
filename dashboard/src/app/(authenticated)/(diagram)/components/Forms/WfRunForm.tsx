@@ -12,11 +12,11 @@ type Prop = {
 ThreadVarDef
 
 // eslint-disable-next-line react/display-name
-export const WfRunForm = forwardRef<HTMLDivElement, Prop>(({ wfSpecVariables, onSubmit }, ref) => {
+export const WfRunForm = forwardRef<any, Prop>(({ wfSpecVariables, onSubmit }, ref) => {
   const methods = useForm()
   const { register, handleSubmit, formState } = methods
 
-  const onSubmitForm = data => {
+  const onSubmitForm = (data: any) => {
     onSubmit(data)
   }
 
@@ -24,8 +24,15 @@ export const WfRunForm = forwardRef<HTMLDivElement, Prop>(({ wfSpecVariables, on
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmitForm)} ref={ref}>
         <div>
-          <Label htmlFor={'custom-id'}>Id (Custom WfRun Id)</Label>
-          <Input type="text" className="mb-4 mt-1" id="custom-id" {...register('custom-id-wfRun-flow')} />
+          <Label htmlFor={'custom-id'} className="text-gray-700">
+            Custom WfRun Id
+          </Label>
+          <Input
+            type="text"
+            className="mb-4 mt-1 border-sky-600"
+            id="custom-id"
+            {...register('custom-id-wfRun-flow')}
+          />
         </div>
         {!!wfSpecVariables?.length &&
           wfSpecVariables.map((variable: ThreadVarDef, index: number) => (

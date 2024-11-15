@@ -1,7 +1,7 @@
 import React from 'react'
 import * as Switch from '@radix-ui/react-switch'
 
-export const SwitchButton = props => {
+export const SwitchButton = ({ props }: any) => {
   const { title } = props
   return (
     <form>
@@ -21,4 +21,3 @@ export const SwitchButton = props => {
     </form>
   )
 }
-
