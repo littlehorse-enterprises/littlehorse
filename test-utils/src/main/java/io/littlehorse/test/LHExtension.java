@@ -9,7 +9,6 @@ import io.littlehorse.test.exception.LHTestExceptionUtil;
 import io.littlehorse.test.exception.LHTestInitializationException;
 import io.littlehorse.test.internal.TestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
@@ -29,6 +28,7 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
     public static final String BOOTSTRAPPER_CLASS_PROPERTY = "bootstrapper.class";
     public static final String BOOTSTRAPPER_CLASS_ENV =
             BOOTSTRAPPER_CLASS_PROPERTY.toUpperCase().replace(".", "_");
+    public static final String TEST_PROPERTIES_FILE = "test.properties";
     private static final ExtensionContext.Namespace LH_TEST_NAMESPACE =
             ExtensionContext.Namespace.create(LHExtension.class);
     private static final String LH_TEST_CONTEXT = "LH-test-context";
@@ -59,26 +59,26 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
     private static Properties loadProperties() {
         Properties testConfig = new Properties();
 
-        if (System.getenv(BOOTSTRAPPER_CLASS_ENV) != null) {
-            testConfig.put(BOOTSTRAPPER_CLASS_PROPERTY, System.getenv(BOOTSTRAPPER_CLASS_ENV));
-            return testConfig;
+        InputStream configStream = LHExtension.class.getClassLoader().getResourceAsStream(TEST_PROPERTIES_FILE);
+        if (configStream != null) {
+            try {
+                testConfig.load(configStream);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
+        // system properties overwrite the file
         if (System.getProperty(BOOTSTRAPPER_CLASS_PROPERTY) != null) {
             testConfig.put(BOOTSTRAPPER_CLASS_PROPERTY, System.getProperty(BOOTSTRAPPER_CLASS_PROPERTY));
-            return testConfig;
         }
 
-        try {
-            InputStream configStream = LHExtension.class.getClassLoader().getResourceAsStream("test.properties");
-            if (configStream == null) {
-                throw new FileNotFoundException("test.properties not found in the classpath");
-            }
-            testConfig.load(configStream);
-            return testConfig;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        // environment variables overwrite system properties
+        if (System.getenv(BOOTSTRAPPER_CLASS_ENV) != null) {
+            testConfig.put(BOOTSTRAPPER_CLASS_PROPERTY, System.getenv(BOOTSTRAPPER_CLASS_ENV));
         }
+
+        return testConfig;
     }
 
     @Override
