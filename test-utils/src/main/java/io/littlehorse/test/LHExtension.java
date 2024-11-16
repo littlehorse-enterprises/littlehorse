@@ -26,7 +26,9 @@ import org.junit.jupiter.api.extension.TestInstancePreDestroyCallback;
 
 public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor, TestInstancePreDestroyCallback {
 
-    public static final String BOOTSTRAPPER_CLASS = "bootstrapper.class";
+    public static final String BOOTSTRAPPER_CLASS_PROPERTY = "bootstrapper.class";
+    public static final String BOOTSTRAPPER_CLASS_ENV =
+            BOOTSTRAPPER_CLASS_PROPERTY.toUpperCase().replace(".", "_");
     private static final ExtensionContext.Namespace LH_TEST_NAMESPACE =
             ExtensionContext.Namespace.create(LHExtension.class);
     private static final String LH_TEST_CONTEXT = "LH-test-context";
@@ -40,7 +42,7 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
 
     private static TestBootstrapper loadBootstrap() {
         try {
-            Object bootstrapName = testConfig.get(BOOTSTRAPPER_CLASS);
+            Object bootstrapName = testConfig.get(BOOTSTRAPPER_CLASS_PROPERTY);
 
             if (bootstrapName == null) {
                 throw new IllegalStateException("bootstrapper.class property not provided");
@@ -55,8 +57,19 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
     }
 
     private static Properties loadProperties() {
+        Properties testConfig = new Properties();
+
+        if (System.getenv(BOOTSTRAPPER_CLASS_ENV) != null) {
+            testConfig.put(BOOTSTRAPPER_CLASS_PROPERTY, System.getenv(BOOTSTRAPPER_CLASS_ENV));
+            return testConfig;
+        }
+
+        if (System.getProperty(BOOTSTRAPPER_CLASS_PROPERTY) != null) {
+            testConfig.put(BOOTSTRAPPER_CLASS_PROPERTY, System.getProperty(BOOTSTRAPPER_CLASS_PROPERTY));
+            return testConfig;
+        }
+
         try {
-            Properties testConfig = new Properties();
             InputStream configStream = LHExtension.class.getClassLoader().getResourceAsStream("test.properties");
             if (configStream == null) {
                 throw new FileNotFoundException("test.properties not found in the classpath");

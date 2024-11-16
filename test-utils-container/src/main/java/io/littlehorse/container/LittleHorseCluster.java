@@ -59,8 +59,8 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
                 .withEnv(LHC_API_HOST, cluster.get(0).getInternalApiHost())
                 .withEnv(LHC_API_PORT, String.valueOf(cluster.get(0).getInternalApiPort()))
                 .withCreateContainerCmdModifier(cmd -> Objects.requireNonNull(cmd.getHostConfig())
-                        .withRestartPolicy(RestartPolicy.onFailureRestart(5)))
-                .withStartupCheckStrategy(new OneShotStartupCheckStrategy())
+                        .withRestartPolicy(RestartPolicy.onFailureRestart(5))) // waiting for LH to run
+                .withStartupCheckStrategy(new OneShotStartupCheckStrategy()) // related to the RestartPolicy
                 .dependsOn(kafka)
                 .dependsOn(cluster);
     }
