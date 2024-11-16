@@ -91,7 +91,7 @@ function AttemptErrorExceptionOutput({ attempt }: { attempt: TaskAttempt }) {
       <pre className="overflow-auto">
         {attempt.error && attempt.error.message}
         {attempt.exception && attempt.exception.message}
-        {attempt.output && getVariableValue(attempt.output)}
+        {attempt.output && String(getVariableValue(attempt.output))}
       </pre>
     </div>
   )
