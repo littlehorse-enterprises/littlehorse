@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
+import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -67,6 +68,86 @@ public class SharedVariablesTest {
                 .isEqualTo(12);
     }
 
+    @Test
+    void shouldNotFreezeSearchableVariables() {
+        // Adding UUID makes it possible to run repeatedly with ExternalBootstrapper
+        String wfSpecName = "dont-freeze-searchable-" + UUID.randomUUID();
+        Workflow workflow = Workflow.newWorkflow(wfSpecName, wf -> {
+            wf.addVariable("some-var", VariableType.STR).searchable();
+        });
+        WfSpec result = client.putWfSpec(workflow.compileWorkflow());
+        assertThat(result.getFrozenVariablesCount()).isEqualTo(0);
+
+        // Additionally, private searchable variables do not increment the major version,
+        // and I can change the type of them if they're not public.
+        Workflow secondWorkflow = Workflow.newWorkflow(wfSpecName, wf -> {
+            wf.addVariable("some-var", VariableType.INT);
+        });
+        WfSpec secondVersion = client.putWfSpec(secondWorkflow.compileWorkflow());
+        assertThat(secondVersion.getId().getMajorVersion()).isEqualTo(0);
+        assertThat(secondVersion.getId().getRevision()).isEqualTo(1);
+    }
+
+    @Test
+    void publicVariablesShouldStayFrozenThroughVersions() {
+        String wfSpecName = "public-var-frozen-" + UUID.randomUUID();
+        Workflow workflow = Workflow.newWorkflow(wfSpecName, wf -> {
+            wf.addVariable("some-var", VariableType.STR).asPublic();
+        });
+        WfSpec firstVersion = client.putWfSpec(workflow.compileWorkflow());
+        assertThat(firstVersion.getFrozenVariablesCount()).isEqualTo(1);
+
+        Workflow secondWorkflow = Workflow.newWorkflow(wfSpecName, wf -> {
+            wf.addVariable("some-other-var", "some string value").searchable();
+        });
+        WfSpec secondVersion = client.putWfSpec(secondWorkflow.compileWorkflow());
+
+        // Breaking change
+        assertThat(secondVersion.getId().getMajorVersion()).isEqualTo(1);
+        assertThat(secondVersion.getId().getRevision()).isEqualTo(0);
+
+        // The first variable should still be frozen
+        assertThat(secondVersion.getFrozenVariablesCount()).isEqualTo(1);
+        assertThat(secondVersion.getFrozenVariables(0).getVarDef().getName()).isEqualTo("some-var");
+    }
+
+    @Test
+    void requiredVariablesIncrementMajorVersion() {
+        String wfSpecName = "required-major-version-" + UUID.randomUUID();
+        Workflow workflow = Workflow.newWorkflow(wfSpecName, wf -> {
+            wf.addVariable("some-var", VariableType.STR).required();
+        });
+        WfSpec firstVersion = client.putWfSpec(workflow.compileWorkflow());
+        assertThat(firstVersion.getFrozenVariablesCount()).isEqualTo(1);
+
+        Workflow secondWorkflow = Workflow.newWorkflow(wfSpecName, wf -> {
+            wf.addVariable("some-other-var", "not required").searchable();
+        });
+        WfSpec secondVersion = client.putWfSpec(secondWorkflow.compileWorkflow());
+
+        assertThat(secondVersion.getId().getMajorVersion()).isEqualTo(1);
+        assertThat(secondVersion.getId().getRevision()).isEqualTo(0);
+    }
+
+    @Test
+    void publicVariablesIncrementMajorVersion() {
+        String wfSpecName = "public-major-version-" + UUID.randomUUID();
+        Workflow workflow = Workflow.newWorkflow(wfSpecName, wf -> {
+            wf.addVariable("some-var", VariableType.STR).asPublic();
+            wf.addVariable("another-var", "will-be-removed").asPublic();
+        });
+        WfSpec firstVersion = client.putWfSpec(workflow.compileWorkflow());
+        assertThat(firstVersion.getFrozenVariablesCount()).isEqualTo(2);
+
+        Workflow secondWorkflow = Workflow.newWorkflow(wfSpecName, wf -> {
+            wf.addVariable("some-var", "not public anymore").searchable();
+        });
+        WfSpec thirdVersion = client.putWfSpec(secondWorkflow.compileWorkflow());
+
+        assertThat(thirdVersion.getId().getMajorVersion()).isEqualTo(1);
+        assertThat(thirdVersion.getId().getRevision()).isEqualTo(0);
+    }
+
     @LHWorkflow("shared-variables-parent-wf")
     public Workflow buildParentWf() {
         return new WorkflowImpl("shared-variables-parent-wf", thread -> {
@@ -82,8 +163,8 @@ public class SharedVariablesTest {
     @LHWorkflow("shared-variables-child-wf")
     public Workflow buildChildWf() {
         Workflow out = new WorkflowImpl("shared-variables-child-wf", thread -> {
-            WfRunVariable publicVariable = thread.addVariable("public-variable", VariableType.INT)
-                    .withAccessLevel(WfRunVariableAccessLevel.INHERITED_VAR);
+            WfRunVariable publicVariable =
+                    thread.addVariable("public-variable", VariableType.INT).asInherited();
 
             WfRunVariable calculatedValue =
                     thread.addVariable("calculated-value", VariableType.INT).searchable();

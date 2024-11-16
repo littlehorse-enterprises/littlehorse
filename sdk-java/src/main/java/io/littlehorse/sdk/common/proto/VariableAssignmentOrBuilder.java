@@ -125,5 +125,32 @@ public interface VariableAssignmentOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableAssignment.FormatStringOrBuilder getFormatStringOrBuilder();
 
+  /**
+   * <pre>
+   * Assign the value of a NodeOutput.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.NodeOutputReference node_output = 5;</code>
+   * @return Whether the nodeOutput field is set.
+   */
+  boolean hasNodeOutput();
+  /**
+   * <pre>
+   * Assign the value of a NodeOutput.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.NodeOutputReference node_output = 5;</code>
+   * @return The nodeOutput.
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference getNodeOutput();
+  /**
+   * <pre>
+   * Assign the value of a NodeOutput.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.NodeOutputReference node_output = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReferenceOrBuilder getNodeOutputOrBuilder();
+
   io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase getSourceCase();
 }
