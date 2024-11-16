@@ -44,3 +44,12 @@ const getValueFromFormatString = ({ formatString }: Pick<VariableAssignment, 'fo
 
   return `${template}`.replace(/{(\d+)}/g, (_, index) => `${args[index]}`)
 }
+
+export const formatJsonOrReturnOriginalValue = (value: string) => {
+  try {
+    const json = JSON.parse(value)
+    return JSON.stringify(json, null, 2)
+  } catch {
+    return value
+  }
+}
