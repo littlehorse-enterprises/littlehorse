@@ -9,26 +9,25 @@ export const FormSwitch: FC<FormFieldProp> = props => {
   if (!props.variables?.varDef?.name) return
   const {
     variables: {
-      varDef: { type, name },
+      varDef: { name },
       required,
     },
-    register,
     formState: { errors },
   } = props
 
   return (
     <div>
       <div className="flex justify-between">
-      <Label htmlFor={name}>
-        {name} {required && <span className="text-red-700">*</span>}
-      </Label>
-      {!required && <MarkFieldNull name={name} setIsDisabled={setIsDisabled}   />}
+        <Label htmlFor={name}>
+          {name} {required && <span className="text-red-700">*</span>}
+        </Label>
+        {!required && <MarkFieldNull name={name} setIsDisabled={setIsDisabled} />}
       </div>
-   
+
       <div className="mb-4 mt-1">
-        <SwitchButton  disabled={isDisabled}  />
+        <SwitchButton disabled={isDisabled} />
       </div>
-      {errors[name] && <p className="text-red-700 text-sm">{errors[name]?.message}</p>}
+      {errors[name] && <p className="text-sm text-red-700">{errors[name]?.message}</p>}
     </div>
   )
 }

@@ -5,18 +5,21 @@ import { ThreadVarDef } from 'littlehorse-client/proto'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
+export type FormValues = {
+  [key: string]: unknown
+}
+
 type Prop = {
   wfSpecVariables: ThreadVarDef[]
-  onSubmit: any
+  onSubmit: (data: FormValues) => void
 }
-ThreadVarDef
 
 // eslint-disable-next-line react/display-name
-export const WfRunForm = forwardRef<any, Prop>(({ wfSpecVariables, onSubmit }, ref) => {
+export const WfRunForm = forwardRef<HTMLFormElement, Prop>(({ wfSpecVariables, onSubmit }, ref) => {
   const methods = useForm()
   const { register, handleSubmit, formState } = methods
 
-  const onSubmitForm = (data: any) => {
+  const onSubmitForm = (data: FormValues) => {
     onSubmit(data)
   }
 

@@ -3,22 +3,24 @@ import { useModal } from '../../hooks/useModal'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Modal } from '../../context'
 import { FC } from 'react'
-import { ThreadVarDef, WfSpec } from 'littlehorse-client/proto'
+import { ThreadVarDef, VariableType, WfSpec } from 'littlehorse-client/proto'
 import { runWfSpec } from '../../wfSpec/[...props]/actions/runWfSpec'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useRouter } from 'next/navigation'
 import { WfRunForm } from '@/app/(authenticated)/(diagram)/components/Forms/WfRunForm'
 import { X } from 'lucide-react'
+import { FormValues } from '@/app/(authenticated)/(diagram)/components/Forms/WfRunForm'
 
 export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
   const { showModal, setShowModal } = useModal()
   const lhWorkflowSpec = data as WfSpec
   const { tenantId } = useWhoAmI()
   const router = useRouter()
-  const formRef = useRef<any>(null)
+  const formRef = useRef<HTMLFormElement | null>(null)
   const wfSpecVariables = lhWorkflowSpec.threadSpecs?.entrypoint?.variableDefs
-  const formatVariablesPayload = (values: any) => {
-    const transformedObj = Object.keys(values).reduce((acc: any, key) => {
+
+  const formatVariablesPayload = (values: FormValues) => {
+    const transformedObj = Object.keys(values).reduce((acc: Record<string, FormValues>, key) => {
       acc[key] = { [matchVariableType(key)]: values[key] }
       return acc
     }, {})
@@ -27,23 +29,32 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
   }
 
   const matchVariableType = (key: string): string => {
-    return wfSpecVariables.filter((variable: ThreadVarDef) => variable.varDef?.name === key)[0]?.varDef?.type as string
+    const variable = wfSpecVariables.find((variable: ThreadVarDef) => variable.varDef?.name === key)
+
+    if (!variable) return ''
+
+    const type = variable.varDef?.type as string
+
+    switch (type) {
+      case VariableType.JSON_ARR:
+        return 'jsonArr'
+      case VariableType.JSON_OBJ:
+        return 'jsonObj'
+      default:
+        return type.toLowerCase()
+    }
   }
 
-  const handleFormSubmit = async (values: any) => {
-    const customWfRunId = values['custom-id-wfRun-flow'] || undefined
+  const handleFormSubmit = async (values: FormValues) => {
+    const customWfRunId = values['custom-id-wfRun-flow'] as string
     delete values['custom-id-wfRun-flow']
     if (!lhWorkflowSpec.id) return
     const wfRun = await runWfSpec({
       ...lhWorkflowSpec.id,
       wfSpecName: lhWorkflowSpec.id.name,
       tenantId,
-      id: customWfRunId,
+      id: customWfRunId || undefined,
       variables: formatVariablesPayload(values),
-      // parentWfRunId:{
-      //   id: ,
-      //   lhWorkflowSpec.parentWfSpec?.wfSpecName
-      // }
     })
     if (!wfRun.id) return
     setShowModal(false)

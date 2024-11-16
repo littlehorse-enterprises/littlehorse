@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { MarkFieldNull } from './MarkFieldNull'
 import { CircleAlert } from 'lucide-react'
+
 export const FormInput: FC<FormFieldProp> = props => {
   const [isDisabled, setIsDisabled] = useState(false)
   if (!props.variables?.varDef?.name) return null

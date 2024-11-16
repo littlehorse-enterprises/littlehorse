@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useState } from 'react'
 import { FormFieldProp } from '@/types'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -19,10 +19,6 @@ export const FormTextarea: FC<FormFieldProp> = props => {
     register,
     formState: { errors },
   } = props
-
-  useEffect(() => {
-    setValue(name, '')
-  }, [name, setValue])
 
   return (
     <div>

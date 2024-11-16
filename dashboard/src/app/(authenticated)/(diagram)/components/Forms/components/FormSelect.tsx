@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from 'react'
+import React, { FC, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { FormFieldProp } from '@/types'
 import { Label } from '@/components/ui/label'
@@ -8,7 +8,6 @@ import { CircleAlert } from 'lucide-react'
 
 export const FormSelect: FC<FormFieldProp> = props => {
   const {
-    control,
     register,
     setValue,
     formState: { errors },
@@ -33,10 +32,6 @@ export const FormSelect: FC<FormFieldProp> = props => {
   }
 
   const value = getValues(name)
-
-  useEffect(() => {
-    setValue(name, '')
-  }, [name, setValue])
 
   return (
     <div>
