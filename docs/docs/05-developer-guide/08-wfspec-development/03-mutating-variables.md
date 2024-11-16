@@ -47,7 +47,6 @@ public void threadFunction(WorkflowThread thread) {
     thread.mutate(foo, VariableMutationType.ASSIGN, 3);
 }
 ```
-
   </TabItem>
   <TabItem value="go" label="Go">
 
@@ -68,7 +67,6 @@ def thread_function(thread: WorkflowThread) -> None:
     # ... optionally execute some tasks
     thread.mutate(foo, VariableMutationType.ASSIGN, 3)
 ```
-
   </TabItem>
 </Tabs>
 
@@ -93,7 +91,6 @@ public void threadFunction(WorkflowThread thread) {
     thread.mutate(foo, VariableMutationType.ADD, intOutput);
 }
 ```
-
   </TabItem>
   <TabItem value="go" label="Go">
 
@@ -104,7 +101,6 @@ func someThreadFunction(thread *littlehorse.WorkflowThread) {
     thread.Mutate(foo, lhproto.VariableMutationType_ADD, taskOutput)
 }
 ```
-
   </TabItem>
     <TabItem value="python" label="Python" default>
 
@@ -114,9 +110,9 @@ def thread_function(thread: WorkflowThread) -> None:
     int_output = thread.execute("some-task-that-returns-int")
     thread.mutate(foo, VariableMutationType.ADD, int_output)
 ```
-
   </TabItem>
 </Tabs>
+
 
 ### Using other `WfRunVariables`
 
