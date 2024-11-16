@@ -2,7 +2,7 @@
 
 Recall from the [Concepts Documentation](../../04-concepts/01-workflows.md#variables) that every `Node` can have zero or more `VariableMutation`s on it. A `VariableMutation` changes the value of a `ThreadRun`'s `Variable`s.
 
-You can add a `VariableMutation` at any point in your Thread Function by using tghe `WorkflowThread#mutate()` method or function.
+You can add a `VariableMutation` at any point in your Thread Function by using the `WorkflowThread#mutate()` method or function.
 
 ## Basic Structure
 
@@ -47,6 +47,7 @@ public void threadFunction(WorkflowThread thread) {
     thread.mutate(foo, VariableMutationType.ASSIGN, 3);
 }
 ```
+
   </TabItem>
   <TabItem value="go" label="Go">
 
@@ -67,6 +68,7 @@ def thread_function(thread: WorkflowThread) -> None:
     # ... optionally execute some tasks
     thread.mutate(foo, VariableMutationType.ASSIGN, 3)
 ```
+
   </TabItem>
 </Tabs>
 
@@ -91,6 +93,7 @@ public void threadFunction(WorkflowThread thread) {
     thread.mutate(foo, VariableMutationType.ADD, intOutput);
 }
 ```
+
   </TabItem>
   <TabItem value="go" label="Go">
 
@@ -101,6 +104,7 @@ func someThreadFunction(thread *littlehorse.WorkflowThread) {
     thread.Mutate(foo, lhproto.VariableMutationType_ADD, taskOutput)
 }
 ```
+
   </TabItem>
     <TabItem value="python" label="Python" default>
 
@@ -110,9 +114,9 @@ def thread_function(thread: WorkflowThread) -> None:
     int_output = thread.execute("some-task-that-returns-int")
     thread.mutate(foo, VariableMutationType.ADD, int_output)
 ```
+
   </TabItem>
 </Tabs>
-
 
 ### Using other `WfRunVariables`
 
