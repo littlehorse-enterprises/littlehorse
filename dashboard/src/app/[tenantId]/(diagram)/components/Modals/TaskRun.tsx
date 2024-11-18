@@ -1,4 +1,4 @@
-import { getVariableValue } from '@/app/utils'
+import { formatJsonOrReturnOriginalValue, getVariableValue } from '@/app/utils'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/components/utils'
 import { TaskRun as LHTaskRun, TaskAttempt } from 'littlehorse-client/proto'
@@ -91,7 +91,7 @@ function AttemptErrorExceptionOutput({ attempt }: { attempt: TaskAttempt }) {
       <pre className="overflow-auto">
         {attempt.error && attempt.error.message}
         {attempt.exception && attempt.exception.message}
-        {attempt.output && getVariableValue(attempt.output)}
+        {attempt.output && formatJsonOrReturnOriginalValue(String(getVariableValue(attempt.output)))}
       </pre>
     </div>
   )
