@@ -20,5 +20,5 @@ const withAuth = nextAuth(async req => {
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|images|favicon.ico).*)'],
 }
-
 export default process.env.LHD_OAUTH_ENABLED === 'true' ? withAuth : withoutAuth
+
