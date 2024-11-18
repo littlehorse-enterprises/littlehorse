@@ -78,10 +78,10 @@ public class LHServer {
         this.taskClaimProducer = new LHProducer(config.getKafkaTaskClaimProducer());
 
         // Kafka Streams Setup
-//        if (config.getLHInstanceId().isPresent()) {
-//            overrideStreamsProcessId("core");
-//            overrideStreamsProcessId("timer");
-//        }
+        //        if (config.getLHInstanceId().isPresent()) {
+        //            overrideStreamsProcessId("core");
+        //            overrideStreamsProcessId("timer");
+        //        }
         this.coreStreams = new KafkaStreams(
                 ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager),
                 config.getCoreStreamsConfig());

@@ -45,7 +45,6 @@ import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.errors.DefaultProductionExceptionHandler;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.jetbrains.annotations.Nullable;
 import org.rocksdb.Cache;
@@ -960,18 +959,16 @@ public class LHServerConfig extends ConfigBase {
         // in the case of a server failure while a request is being processed, the resulting
         // `Command` should be processed on a new server within a minute. Issue #479
         // should verify this behavior
-        props.put(
-                ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, getStreamsSessionTimeout());
-        props.put(
-                ProducerConfig.MAX_BLOCK_MS_CONFIG, getStreamsSessionTimeout());
-//        props.put(
-//                ConsumerConfig.SOCKET_CONNECTION_SETUP_TIMEOUT_MAX_MS_CONFIG,
-//                "120000");
-//        props.put(
-//                ConsumerConfig.SOCKET_CONNECTION_SETUP_TIMEOUT_MS_CONFIG,
-//                "60000");
-//        props.put(ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG,
-//                "240000");
+        props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, getStreamsSessionTimeout());
+        props.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, getStreamsSessionTimeout());
+        //        props.put(
+        //                ConsumerConfig.SOCKET_CONNECTION_SETUP_TIMEOUT_MAX_MS_CONFIG,
+        //                "120000");
+        //        props.put(
+        //                ConsumerConfig.SOCKET_CONNECTION_SETUP_TIMEOUT_MS_CONFIG,
+        //                "60000");
+        //        props.put(ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG,
+        //                "240000");
 
         // In case we need to authenticate to Kafka, this sets it.
         addKafkaSecuritySettings(props);
