@@ -23,7 +23,9 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class WfService {
 
     private final ReadOnlyMetadataManager metadataManager;
@@ -115,9 +117,10 @@ public class WfService {
 
         if (principalModel == null && id.getId().equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
             // If Anonymous Principal missing from store (should never happen...)
-            throw new LHApiException(
-                    Status.UNAVAILABLE,
+            log.warn(
                     "Anonymous Principal not found in store, likely due to initialization of global store. Should resolve within seconds.");
+            throw new LHApiException(
+                    Status.UNAVAILABLE, "Anonymous Principal missing from store, please try again in a few moments.");
         }
 
         return principalModel;
