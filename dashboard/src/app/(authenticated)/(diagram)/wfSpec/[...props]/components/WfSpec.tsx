@@ -1,6 +1,6 @@
 'use client'
 import { Navigation } from '@/app/(authenticated)/components/Navigation'
-import { WfSpec as Spec } from 'littlehorse-client/proto'
+import { ScheduledWfRunIdList, WfSpec as Spec } from 'littlehorse-client/proto'
 import { FC, useCallback } from 'react'
 import { Diagram } from '../../../components/Diagram'
 import { Details } from './Details'
@@ -12,6 +12,7 @@ import { LucidePlayCircle } from 'lucide-react'
 
 type WfSpecProps = {
   spec: Spec
+  ScheduleWfSpec: ScheduledWfRunIdList
 }
 export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
   const { setModal, setShowModal } = useModal()

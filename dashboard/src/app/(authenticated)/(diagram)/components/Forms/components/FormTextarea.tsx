@@ -5,6 +5,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { MarkFieldNull } from './MarkFieldNull'
 import { useFormContext } from 'react-hook-form'
 import { CircleAlert } from 'lucide-react'
+import { VARIABLE_TYPES } from '@/app/constants'
+import { getValidation } from './validation'
+import { accessLevels } from '../../../wfSpec/[...props]/components/Variables'
 
 export const FormTextarea: FC<FormFieldProp> = props => {
   const [isDisabled, setIsDisabled] = useState(false)
@@ -13,7 +16,8 @@ export const FormTextarea: FC<FormFieldProp> = props => {
   if (!props.variables?.varDef?.name) return
   const {
     variables: {
-      varDef: { name },
+      varDef: { type, name },
+      accessLevel,
       required,
     },
     register,
@@ -23,22 +27,27 @@ export const FormTextarea: FC<FormFieldProp> = props => {
   return (
     <div>
       <div className="flex justify-between">
-        <Label htmlFor={name} className="text-gray-700">
-          {name} {required && <span className="text-red-700">*</span>}
+        <Label htmlFor={name} className="text-gray-700 center flex gap-2 items-center">
+          {name}
+          <span className="rounded bg-green-300 p-1 text-xs">{accessLevels[accessLevel]}</span>
+          {required && <span className="rounded bg-blue-300 p-1 text-xs">required</span>}
         </Label>
         {!required && <MarkFieldNull name={name} setIsDisabled={setIsDisabled} />}
       </div>
       <Textarea
-        className={errors[name] ? 'mb-1 mt-1 border-red-700' : 'mb-4 mt-1 rounded-xl border-sky-600'}
+        className={errors[name] ? 'mb-1 mt-1 min-h-[120px] border-red-700' : 'mb-4 mt-1 rounded-xl border-sky-600'}
         id={name}
         disabled={isDisabled}
+        placeholder={`Enter ${VARIABLE_TYPES[type]?.toLowerCase()} value`}
         {...register(name, {
           required: required ? `${name} is required` : false,
+          validate: getValidation(type),
           onChange: e => {
-            setValue(name, e.target.value)
+            setValue(name, e.target.value || undefined)
             trigger(name)
           },
         })}
+        defaultValue=""
       />
       {errors[name] && (
         <p className="mb-3 flex items-center gap-1 text-sm text-red-700">

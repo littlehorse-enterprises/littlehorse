@@ -25,7 +25,7 @@ export const WfRunForm = forwardRef<HTMLFormElement, Prop>(({ wfSpecVariables, o
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmitForm)} ref={ref}>
+      <form onSubmit={handleSubmit(onSubmitForm)} ref={ref} className="pb-8">
         <div>
           <Label htmlFor={'custom-id'} className="text-gray-700">
             Custom WfRun Id
@@ -35,6 +35,7 @@ export const WfRunForm = forwardRef<HTMLFormElement, Prop>(({ wfSpecVariables, o
             className="mb-4 mt-1 border-sky-600"
             id="custom-id"
             {...register('custom-id-wfRun-flow')}
+            placeholder={`Enter string value`}
           />
         </div>
         {!!wfSpecVariables?.length &&

@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label'
 import { MarkFieldNull } from './MarkFieldNull'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { CircleAlert } from 'lucide-react'
+import { accessLevels } from '../../../wfSpec/[...props]/components/Variables'
 
 export const FormSelect: FC<FormFieldProp> = props => {
   const {
@@ -22,6 +23,7 @@ export const FormSelect: FC<FormFieldProp> = props => {
     variables: {
       varDef: { name },
       required,
+      accessLevel,
     },
   } = props
 
@@ -36,8 +38,10 @@ export const FormSelect: FC<FormFieldProp> = props => {
   return (
     <div>
       <div className="mb-2 flex justify-between">
-        <Label htmlFor={name}>
-          {name} {required && <span className="text-red-700">*</span>}
+        <Label htmlFor={name} className="center flex items-center gap-2 text-gray-700">
+          {name}
+          <span className="rounded bg-green-300 p-1 text-xs">{accessLevels[accessLevel]}</span>
+          {required && <span className="rounded bg-blue-300 p-1 text-xs">required</span>}
         </Label>
         {!required && <MarkFieldNull name={name} setIsDisabled={setIsDisabled} />}
       </div>

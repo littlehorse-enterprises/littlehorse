@@ -49,16 +49,21 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
     const customWfRunId = values['custom-id-wfRun-flow'] as string
     delete values['custom-id-wfRun-flow']
     if (!lhWorkflowSpec.id) return
-    const wfRun = await runWfSpec({
-      ...lhWorkflowSpec.id,
-      wfSpecName: lhWorkflowSpec.id.name,
-      tenantId,
-      id: customWfRunId || undefined,
-      variables: formatVariablesPayload(values),
-    })
-    if (!wfRun.id) return
-    setShowModal(false)
-    router.push(`/wfRun/${wfRun.id.id}`)
+    try {
+      const wfRun = await runWfSpec({
+        ...lhWorkflowSpec.id,
+        wfSpecName: lhWorkflowSpec.id.name,
+        tenantId,
+        id: customWfRunId || undefined,
+        variables: formatVariablesPayload(values),
+      })
+      if (!wfRun.id) return
+      setShowModal(false)
+      router.push(`/wfRun/${wfRun.id.id}`)
+    } catch (error) {
+      // console.log(error.message?.split(':')?.[1])
+      // needs to implement error handling
+    }
   }
 
   return (
@@ -67,7 +72,7 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
         <div className="relative flex max-h-[calc(100vh-50px)] flex-col">
           <DialogHeader className="sticky top-0 z-10 bg-background px-4 py-3 shadow-md ">
             <DialogTitle className="text-gray-700">
-              Execute <span className="rounded-sm bg-green-200 px-2 py-1 text-black">{lhWorkflowSpec.id?.name}</span>
+              Execute <span className="text-black">{lhWorkflowSpec.id?.name}</span>
               <button
                 onClick={() => setShowModal(false)}
                 className="float-right text-gray-500 hover:text-gray-700 focus:outline-none"
