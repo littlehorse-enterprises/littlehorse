@@ -2,6 +2,7 @@ import {
   Edge as EdgeProto,
   ExternalEvent,
   NodeRun,
+  TaskNode,
   TaskRun,
   UserTaskNode,
   UserTaskRun,
@@ -12,7 +13,14 @@ import { ModalType, Modals } from '../components/Modals'
 
 export type Modal = {
   type: ModalType
-  data: TaskRun | UserTaskRun | EdgeProto | ExternalEvent | WorkflowEvent
+  data: TaskRun | UserTaskRun | EdgeProto | ExternalEvent | NodeRuns | WorkflowEvent
+  nodeRun?: NodeRun
+  userTaskNode?: UserTaskNode
+}
+
+export type NodeRuns = {
+  nodeRunsList: [NodeRun]
+  taskNode?: TaskNode
   nodeRun?: NodeRun
   userTaskNode?: UserTaskNode
 }
