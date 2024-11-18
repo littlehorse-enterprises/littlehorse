@@ -34,6 +34,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -651,6 +652,8 @@ public class LHServerConfig extends ConfigBase {
 
     public Properties getKafkaCommandProducerConfig(String component) {
         Properties conf = new Properties();
+        conf.put("client.id", this.getClientId(component));
+        conf.put(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG, "rebootstrap");
         conf.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
         conf.put(
@@ -874,6 +877,17 @@ public class LHServerConfig extends ConfigBase {
 
     private Properties getBaseStreamsConfig() {
         Properties props = new Properties();
+
+        props.put(StreamsConfig.producerPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
+        props.put(StreamsConfig.consumerPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
+        props.put(
+                StreamsConfig.restoreConsumerPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG),
+                "rebootstrap");
+        props.put(
+                StreamsConfig.globalConsumerPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG),
+                "rebootstrap");
+        props.put(
+                StreamsConfig.adminClientPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
 
         if (getOrSetDefault(X_LEAVE_GROUP_ON_SHUTDOWN_KEY, "false").equals("true")) {
             log.warn("Using experimental internal config to leave group on shutdonw!");

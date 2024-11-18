@@ -13,6 +13,7 @@ import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.SleepNode.SleepLengthCase;
+import io.littlehorse.sdk.common.proto.TaskNode;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
@@ -526,5 +527,20 @@ public class WorkflowThreadImplTest {
 
         Node varNode = entrypoint.getNodesOrThrow("3-my-var-TASK");
         assertEquals("my-var", varNode.getTask().getDynamicTask().getVariableName());
+    }
+
+    @Test
+    void testPassingNodeOutput() {
+        Workflow workflow = new WorkflowImpl("obiwan", wf -> {
+            wf.execute("some-task", wf.execute("some-other-task"));
+        });
+
+        PutWfSpecRequest wfSpec = workflow.compileWorkflow();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+
+        Node node = entrypoint.getNodesOrThrow("2-some-task-TASK");
+        TaskNode taskNode = node.getTask();
+
+        assertThat(taskNode.getVariables(0).getNodeOutput().getNodeName()).isEqualTo("1-some-other-task-TASK");
     }
 }

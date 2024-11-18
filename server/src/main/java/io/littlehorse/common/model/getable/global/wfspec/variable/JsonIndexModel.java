@@ -5,14 +5,15 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.proto.JsonIndex;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.Objects;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class JsonIndexModel extends LHSerializable<JsonIndex> {
 
     private String fieldPath;
@@ -35,17 +36,5 @@ public class JsonIndexModel extends LHSerializable<JsonIndex> {
         JsonIndex p = (JsonIndex) proto;
         fieldPath = p.getFieldPath();
         fieldType = p.getFieldType();
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other == null) return false;
-
-        if (!(other instanceof JsonIndexModel)) {
-            return false;
-        }
-
-        JsonIndexModel o = (JsonIndexModel) other;
-        return Objects.equals(fieldPath, o.getFieldPath()) && Objects.equals(fieldType, o.getFieldType());
     }
 }

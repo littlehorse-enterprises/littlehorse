@@ -21,6 +21,7 @@ import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -126,6 +127,15 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         }
 
         return out;
+    }
+
+    /**
+     * Returns all ThreadVarDef's that are of type `PUBLIC_VAR`.
+     */
+    public Collection<ThreadVarDefModel> getPublicVarDefs() {
+        return getVariableDefs().stream()
+                .filter(varDef -> varDef.getAccessLevel() == WfRunVariableAccessLevel.PUBLIC_VAR)
+                .toList();
     }
 
     /*
