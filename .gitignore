@@ -33,6 +33,7 @@ lhctl/lhctl
 local-dev/certs/
 build/
 .config
+*.pem
 
 # Python
 __pycache__
