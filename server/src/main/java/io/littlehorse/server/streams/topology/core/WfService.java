@@ -1,6 +1,8 @@
 package io.littlehorse.server.streams.topology.core;
 
+import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
@@ -113,7 +115,9 @@ public class WfService {
 
         if (principalModel == null && id.getId().equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
             // If Anonymous Principal missing from store (should never happen...)
-            throw new IllegalStateException("Anonymous Principal missing from store...");
+            throw new LHApiException(
+                    Status.UNAVAILABLE,
+                    "Anonymous Principal not found in store, likely due to initialization of global store. Should resolve within seconds.");
         }
 
         return principalModel;
