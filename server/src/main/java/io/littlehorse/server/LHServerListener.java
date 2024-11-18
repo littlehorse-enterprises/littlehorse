@@ -247,6 +247,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWo
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWorkflowEventReply;
 import io.littlehorse.server.streams.taskqueue.ClusterHealthRequestObserver;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
+import io.littlehorse.server.streams.taskqueue.TaskQueueCommandProducer;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
@@ -258,7 +259,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -284,7 +284,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     private final ScheduledExecutorService networkThreadpool;
     private final String listenerName;
     private final LHProducer commandProducer;
-    private final LHProducer taskClaimProducer;
+    private final TaskQueueCommandProducer taskQueueProducer;
 
     private Server grpcListener;
 
@@ -302,11 +302,9 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             List<ServerInterceptor> interceptors,
             Context.Key<RequestExecutionContext> contextKey,
             LHProducer commandProducer,
-            LHProducer taskClaimProducer) {
-
+            TaskQueueCommandProducer taskQueueProducer) {
         // All dependencies are passed in as arguments; nothing is instantiated here,
         // because all listeners share the same threading infrastructure.
-
         this.metadataCache = metadataCache;
         this.serverConfig = listenerConfig.getConfig();
         this.taskQueueManager = taskQueueManager;
@@ -316,10 +314,8 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         this.listenerName = listenerConfig.getName();
         this.contextKey = contextKey;
         this.commandProducer = commandProducer;
-        this.taskClaimProducer = taskClaimProducer;
-
         this.grpcListener = null;
-
+        this.taskQueueProducer = taskQueueProducer;
         ServerBuilder<?> builder = Grpc.newServerBuilderForPort(
                         listenerConfig.getPort(), listenerConfig.getCredentials())
                 .permitKeepAliveTime(15, TimeUnit.SECONDS)
@@ -644,36 +640,8 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.WRITE_METADATA)
     public void reportTask(ReportTaskRun req, StreamObserver<Empty> ctx) {
-        // There is no need to wait for the ReportTaskRun to actually be processed, because
-        // we would just return a google.protobuf.Empty anyways. All we need to do is wait for
-        // the Command to be persisted into Kafka.
         ReportTaskRunModel reqModel = LHSerializable.fromProto(req, ReportTaskRunModel.class, requestContext());
-
-        TenantIdModel tenantId = requestContext().authorization().tenantId();
-        PrincipalIdModel principalId = requestContext().authorization().principalId();
-        Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
-
-        CommandModel command = new CommandModel(reqModel, new Date());
-
-        Callback kafkaProducerCallback = (meta, exn) -> {
-            try {
-                if (exn == null) {
-                    ctx.onNext(Empty.getDefaultInstance());
-                    ctx.onCompleted();
-                } else {
-                    ctx.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
-                }
-            } catch (IllegalStateException e) {
-                log.debug("Call already closed");
-            }
-        };
-
-        taskClaimProducer.send(
-                command.getPartitionKey(),
-                command,
-                command.getTopic(serverConfig),
-                kafkaProducerCallback,
-                commandMetadata.toArray());
+        taskQueueProducer.send(reqModel, requestContext().authorization(), ctx);
     }
 
     @Override

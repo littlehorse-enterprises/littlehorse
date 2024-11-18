@@ -21,11 +21,16 @@ public class TaskQueueManager {
     private LHServer backend;
 
     private final int individualQueueConfiguredCapacity;
+    private final TaskQueueCommandProducer taskQueueCommandProducer;
 
-    public TaskQueueManager(LHServer backend, int individualQueueConfiguredCapacity) {
+    public TaskQueueManager(
+            LHServer backend,
+            int individualQueueConfiguredCapacity,
+            TaskQueueCommandProducer taskQueueCommandProducer) {
         this.taskQueues = new ConcurrentHashMap<>();
         this.backend = backend;
         this.individualQueueConfiguredCapacity = individualQueueConfiguredCapacity;
+        this.taskQueueCommandProducer = taskQueueCommandProducer;
     }
 
     public void onPollRequest(
@@ -47,7 +52,7 @@ public class TaskQueueManager {
     }
 
     public void itsAMatch(ScheduledTaskModel scheduledTask, PollTaskRequestObserver luckyClient) {
-        backend.returnTaskToClient(scheduledTask, luckyClient);
+        taskQueueCommandProducer.returnTaskToClient(scheduledTask, luckyClient);
     }
 
     private OneTaskQueue getSubQueue(TenantTaskName tenantTask) {
