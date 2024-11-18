@@ -3,10 +3,10 @@ import { TagIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, Fragment } from 'react'
 import { SearchResultProps } from '.'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
+import { useParams } from 'next/navigation'
 
 export const WfSpecTable: FC<SearchResultProps> = ({ pages = [] }) => {
-  const { tenantId } = useWhoAmI()
+  const { tenantId } = useParams()
 
   if (pages.length === 0) {
     return <div className="flex min-h-[360px] items-center justify-center text-center italic">No WfSpecs</div>
@@ -18,7 +18,7 @@ export const WfSpecTable: FC<SearchResultProps> = ({ pages = [] }) => {
         <Fragment key={i}>
           {page.results.map(({ name, majorVersion, revision }: WfSpecId) => (
             <div key={`${name}.${majorVersion}.${revision}`} className="my-2 flex gap-2">
-              <Link className="underline hover:no-underline" href={`${tenantId}/wfSpec/${name}/${majorVersion}.${revision}`}>
+              <Link className="underline hover:no-underline" href={`/${tenantId}/wfSpec/${name}/${majorVersion}.${revision}`}>
                 {name}
               </Link>
               <div className="flex items-center gap-2 rounded bg-blue-200 px-2 font-mono text-sm text-gray-500">

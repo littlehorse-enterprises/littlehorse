@@ -63,7 +63,7 @@ export const WfRuns: FC<WfSpec> = spec => {
             <Fragment key={i}>
               {page.results.map(wfRunId => (
                 <div key={wfRunId.id}>
-                  <Link className="py-2 text-blue-500 hover:underline" href={`/wfRun/${concatWfRunIds(wfRunId)}`}>
+                  <Link className="py-2 text-blue-500 hover:underline" href={`/${tenantId}/wfRun/${concatWfRunIds(wfRunId)}`}>
                     {wfRunId.id}
                   </Link>
                 </div>
