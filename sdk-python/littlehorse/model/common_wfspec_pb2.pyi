@@ -50,7 +50,7 @@ IN: Comparator
 NOT_IN: Comparator
 
 class VariableAssignment(_message.Message):
-    __slots__ = ["json_path", "variable_name", "literal_value", "format_string"]
+    __slots__ = ["json_path", "variable_name", "literal_value", "format_string", "node_output"]
     class FormatString(_message.Message):
         __slots__ = ["format", "args"]
         FORMAT_FIELD_NUMBER: _ClassVar[int]
@@ -58,15 +58,22 @@ class VariableAssignment(_message.Message):
         format: VariableAssignment
         args: _containers.RepeatedCompositeFieldContainer[VariableAssignment]
         def __init__(self, format: _Optional[_Union[VariableAssignment, _Mapping]] = ..., args: _Optional[_Iterable[_Union[VariableAssignment, _Mapping]]] = ...) -> None: ...
+    class NodeOutputReference(_message.Message):
+        __slots__ = ["node_name"]
+        NODE_NAME_FIELD_NUMBER: _ClassVar[int]
+        node_name: str
+        def __init__(self, node_name: _Optional[str] = ...) -> None: ...
     JSON_PATH_FIELD_NUMBER: _ClassVar[int]
     VARIABLE_NAME_FIELD_NUMBER: _ClassVar[int]
     LITERAL_VALUE_FIELD_NUMBER: _ClassVar[int]
     FORMAT_STRING_FIELD_NUMBER: _ClassVar[int]
+    NODE_OUTPUT_FIELD_NUMBER: _ClassVar[int]
     json_path: str
     variable_name: str
     literal_value: _variable_pb2.VariableValue
     format_string: VariableAssignment.FormatString
-    def __init__(self, json_path: _Optional[str] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ...) -> None: ...
+    node_output: VariableAssignment.NodeOutputReference
+    def __init__(self, json_path: _Optional[str] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ...) -> None: ...
 
 class VariableMutation(_message.Message):
     __slots__ = ["lhs_name", "lhs_json_path", "operation", "source_variable", "literal_value", "node_output"]

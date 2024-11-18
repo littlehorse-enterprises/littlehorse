@@ -199,6 +199,7 @@ class TestThreadBuilder(unittest.TestCase):
                 variable_defs=[
                     ThreadVarDef(
                         var_def=VariableDef(name="input-name", type=VariableType.STR),
+                        access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                     ),
                 ],
                 nodes={
@@ -884,6 +885,7 @@ class TestThreadBuilder(unittest.TestCase):
                 variable_defs=[
                     ThreadVarDef(
                         var_def=VariableDef(name="input-name", type=VariableType.STR),
+                        access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                     )
                 ],
                 nodes={
@@ -1046,6 +1048,7 @@ class TestThreadBuilder(unittest.TestCase):
                 variable_defs=[
                     ThreadVarDef(
                         var_def=VariableDef(name="value", type=VariableType.INT),
+                        access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                     ),
                 ],
                 nodes={
@@ -1609,7 +1612,8 @@ class TestWorkflow(unittest.TestCase):
                             ThreadVarDef(
                                 var_def=VariableDef(
                                     name="input-name", type=VariableType.STR
-                                )
+                                ),
+                                access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                             ),
                         ],
                         nodes={
@@ -1642,7 +1646,8 @@ class TestWorkflow(unittest.TestCase):
                             ThreadVarDef(
                                 var_def=VariableDef(
                                     name="input-name", type=VariableType.STR
-                                )
+                                ),
+                                access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
                             ),
                         ],
                         nodes={
