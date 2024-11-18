@@ -1,18 +1,17 @@
 import { Metadata } from 'next'
-import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { ClientError, Status } from 'nice-grpc-common'
 import { getWfSpec } from './actions/getWfSpec'
 import { WfSpec } from './components/WfSpec'
 
-type Props = { params: { props: string[] } }
+type Props = { params: { props: string[], tenantId: string } }
 
 export const dynamic = 'force-dynamic'
 
-export default async function Page({ params: { props } }: Props) {
+export default async function Page({ params: { props, tenantId } }: Props) {
   const name = props[0]
   const version = props[1]
-  const tenantId = cookies().get('tenantId')?.value
+
   try {
     const wfSpec = await getWfSpec({ tenantId, name, version })
     return <WfSpec spec={wfSpec} />
