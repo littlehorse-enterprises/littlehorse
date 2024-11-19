@@ -22,8 +22,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.streams.processor.TaskId;
 
 // One instance of this class is responsible for coordinating the grpc backend for
@@ -289,21 +287,4 @@ public class OneTaskQueue {
     }
 
     private record QueueItem(TaskId streamsTaskId, ScheduledTaskModel scheduledTask) {}
-
-    private final class TaskClaimCallback implements Callback {
-        private final ScheduledTaskModel scheduledTask;
-        private final PollTaskRequestObserver luckyClient;
-
-        public TaskClaimCallback(ScheduledTaskModel scheduledTask, PollTaskRequestObserver luckyClient) {
-            this.scheduledTask = scheduledTask;
-            this.luckyClient = luckyClient;
-        }
-
-        @Override
-        public void onCompletion(RecordMetadata metadata, Exception exception) {
-            if (exception == null) {
-                luckyClient.sendResponse(scheduledTask);
-            }
-        }
-    }
 }

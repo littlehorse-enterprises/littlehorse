@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.concurrent.Future;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Header;
@@ -14,10 +15,14 @@ import org.apache.kafka.common.utils.Bytes;
 
 public class LHProducer implements Closeable {
 
-    private final KafkaProducer<String, Bytes> prod;
+    private final Producer<String, Bytes> prod;
 
     public LHProducer(Properties configs) {
         prod = new KafkaProducer<>(configs);
+    }
+
+    public LHProducer(Producer<String, Bytes> prod) {
+        this.prod = prod;
     }
 
     public Future<RecordMetadata> send(String key, AbstractCommand<?> t, String topic, Callback cb, Header... headers) {

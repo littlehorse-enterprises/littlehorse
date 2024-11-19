@@ -40,7 +40,8 @@ public class TaskQueueCommandProducer {
      * infers the request context from the GRPC Context.
      */
     public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
-        TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
+        TaskClaimEvent claimEvent =
+                new TaskClaimEvent(scheduledTask, client.getTaskWorkerVersion(), client.getClientId());
         TaskClaimEventProducerCallback callback = new TaskClaimEventProducerCallback(scheduledTask, client);
         processCommand(claimEvent, client.getPrincipalId(), client.getTenantId(), callback);
     }
