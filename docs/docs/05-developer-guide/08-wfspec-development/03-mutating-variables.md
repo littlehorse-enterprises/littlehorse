@@ -2,7 +2,7 @@
 
 Recall from the [Concepts Documentation](../../04-concepts/01-workflows.md#variables) that every `Node` can have zero or more `VariableMutation`s on it. A `VariableMutation` changes the value of a `ThreadRun`'s `Variable`s.
 
-You can add a `VariableMutation` at any point in your Thread Function by using tghe `WorkflowThread#mutate()` method or function.
+You can add a `VariableMutation` at any point in your Thread Function by using the `WorkflowThread#mutate()` method or function.
 
 ## Basic Structure
 
