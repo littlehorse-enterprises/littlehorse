@@ -119,8 +119,7 @@ public class WfService {
             // If Anonymous Principal missing from store (should never happen...)
             log.warn(
                     "Anonymous Principal not found in store, likely due to initialization of global store. Should resolve within seconds.");
-            throw new LHApiException(
-                    Status.UNAVAILABLE, "Anonymous Principal missing from store, please try again in a few moments.");
+            throw new LHApiException(Status.UNAVAILABLE, "Server Initializing");
         }
 
         return principalModel;
