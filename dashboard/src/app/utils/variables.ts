@@ -16,6 +16,13 @@ export const getVariableValue = (variable?: VariableValue) => {
 
   if (variable.bytes) {
     return '[bytes]'
+  } else if (variable.str) {
+    try {
+      const json = JSON.parse(variable.str)
+      return JSON.stringify(json, null, 4)
+    } catch {
+      return variable[key]
+    }
   } else {
     return variable[key]
   }
@@ -36,4 +43,13 @@ const getValueFromFormatString = ({ formatString }: Pick<VariableAssignment, 'fo
   const args = formatString.args.map(getVariable)
 
   return `${template}`.replace(/{(\d+)}/g, (_, index) => `${args[index]}`)
+}
+
+export const formatJsonOrReturnOriginalValue = (value: string) => {
+  try {
+    const json = JSON.parse(value)
+    return JSON.stringify(json, null, 2)
+  } catch {
+    return value
+  }
 }
