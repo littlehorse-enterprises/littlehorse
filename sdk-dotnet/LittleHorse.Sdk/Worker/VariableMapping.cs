@@ -1,6 +1,7 @@
 ﻿using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Helper;
+using LittleHorse.Sdk.Utils;
 using Microsoft.Extensions.Logging;
 
 namespace LittleHorse.Sdk.Worker
@@ -65,10 +66,10 @@ namespace LittleHorse.Sdk.Worker
                     return val.Bool;
                 case VariableValue.ValueOneofCase.JsonArr:
                     jsonStr = val.JsonArr;
-                    return LHMappingHelper.DeserializeFromJson(jsonStr, _type);
+                    return JsonHandler.DeserializeFromJson(jsonStr, _type);
                 case VariableValue.ValueOneofCase.JsonObj:
                     jsonStr = val.JsonObj;
-                    return LHMappingHelper.DeserializeFromJson(jsonStr, _type);
+                    return JsonHandler.DeserializeFromJson(jsonStr, _type);
                 default:
                     throw new InvalidOperationException("Unrecognized variable value type");
             }

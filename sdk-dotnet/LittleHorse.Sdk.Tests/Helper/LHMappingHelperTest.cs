@@ -69,7 +69,7 @@ public class LHMappingHelperTest
     }
     
     [Fact]
-    public void LHHelper_WithSystemArrayObjectVariableType_ShouldReturnLHVariableBytesType()
+    public void LHHelper_WithSystemArrayObjectVariableType_ShouldReturnLHVariableJsonArrType()
     {
         var test_allowed_types = new List<Type>() { typeof(List<object>), typeof(List<string>), typeof(List<int>)};
         
@@ -115,8 +115,8 @@ public class LHMappingHelperTest
         
         DateTime now = DateTime.Now;
         DateTime expectedDatetimeWithoutSeconds = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0);
-        DateTime currentDatetimeWithoutSeconds = new DateTime(result!.Value.Year, result.Value.Month, result.Value.Day, result.Value.Hour, result.Value.Minute, 0);
-        Assert.Equal(expectedDatetimeWithoutSeconds, currentDatetimeWithoutSeconds);
+        DateTime actualDatetimeWithoutSeconds = new DateTime(result!.Value.Year, result.Value.Month, result.Value.Day, result.Value.Hour, result.Value.Minute, 0);
+        Assert.Equal(expectedDatetimeWithoutSeconds, actualDatetimeWithoutSeconds);
     }
     
     [Fact]

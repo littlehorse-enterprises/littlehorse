@@ -3,6 +3,7 @@ using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
+using LittleHorse.Sdk.Utils;
 using LittleHorse.Sdk.Worker;
 using Newtonsoft.Json;
 using Type = System.Type;
@@ -60,25 +61,7 @@ namespace LittleHorse.Sdk.Helper
 
             return outDate;
         }
-        private static string ObjectSerializeToJson(object o)
-        {
-            var jsonSettings = new JsonSerializerSettings();
-
-            return JsonConvert.SerializeObject(o, jsonSettings);
-        }
-        public static object? DeserializeFromJson(string json, Type type)
-        {
-            /*try
-            {
-                return LHMappingHelper.DeserializeFromJson(jsonStr, _type);
-            }
-            catch (Exception ex)
-            {
-                throw new LHInputVarSubstitutionException($"Failed deserializing the C# object for variable {taskDefParamName}", ex);
-            }*/
-            
-            return JsonConvert.DeserializeObject(json, type);
-        }
+        
         public static VariableValue MapObjectToVariableValue(object? o)
         {
             if (o is VariableValue variableValue) return variableValue;
@@ -119,7 +102,7 @@ namespace LittleHorse.Sdk.Helper
             else
             {
                 // At this point, all we can do is try to make it a JSON type.
-                var jsonStr = ObjectSerializeToJson(o);
+                var jsonStr = JsonHandler.ObjectSerializeToJson(o);
 
                 if (o is IList<object> list)
                 {
