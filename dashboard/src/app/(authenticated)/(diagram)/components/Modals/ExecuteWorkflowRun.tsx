@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation'
 import { WfRunForm } from '@/app/(authenticated)/(diagram)/components/Forms/WfRunForm'
 import { X } from 'lucide-react'
 import { FormValues } from '@/app/(authenticated)/(diagram)/components/Forms/WfRunForm'
-
+import { toast } from 'sonner'
 export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
   const { showModal, setShowModal } = useModal()
   const lhWorkflowSpec = data as WfSpec
@@ -58,9 +58,11 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
         variables: formatVariablesPayload(values),
       })
       if (!wfRun.id) return
+      toast.success('wfRun created')
       setShowModal(false)
       router.push(`/wfRun/${wfRun.id.id}`)
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(error.message?.split(':')?.[1])
       // console.log(error.message?.split(':')?.[1])
       // needs to implement error handling
     }
