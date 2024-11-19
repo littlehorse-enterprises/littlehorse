@@ -325,11 +325,11 @@ public class GetableManagerTest {
         assertThat(keys)
                 .hasSize(13)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
-                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.name_test"))
-                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.age_20"))
-                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.car.brand_Ford"))
+                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName\\_$.name_test"))
+                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName\\_$.age_20"))
+                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName\\_$.car.brand_Ford"))
                 .anyMatch(key ->
-                        key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.car.model_Escape"));
+                        key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName\\_$.car.model_Escape"));
     }
 
     @ParameterizedTest

@@ -40,14 +40,14 @@ public class Attribute extends LHSerializable<AttributePb> {
         val = p.getVal();
     }
 
-    // TODO: determine what escaping is necessary
     public String getEscapedKey() {
-        return key;
+        if (key == null) return null;
+        return key.replace("_", "\\_");
     }
 
-    // TODO: determine what escaping is necessary
     public String getEscapedVal() {
-        return val;
+        if (val == null) return null;
+        return val.replace("_", "\\_");
     }
 
     public static Attribute fromProto(AttributePb p, ExecutionContext context) {
