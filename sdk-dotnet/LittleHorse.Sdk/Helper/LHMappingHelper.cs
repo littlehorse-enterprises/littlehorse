@@ -1,21 +1,23 @@
-﻿using Google.Protobuf;
+﻿using System.Collections;
+using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Worker;
 using Newtonsoft.Json;
+using Type = System.Type;
 
 namespace LittleHorse.Sdk.Helper
 {
     public static class LHMappingHelper
     {
-        public static VariableType MapDotNetTypeToLHVariableType(System.Type type)
+        public static VariableType MapDotNetTypeToLHVariableType(Type type)
         {
-            if (type.IsAssignableFrom(typeof(int)))
+            if (isInt(type))
             {
                 return VariableType.Int;
             }
-            else if (type.IsAssignableFrom(typeof(double)))
+            else if (isFloat(type))
             {
                 return VariableType.Double;
             }
@@ -31,39 +33,50 @@ namespace LittleHorse.Sdk.Helper
             {
                 return VariableType.Bytes;
             }
-            else if (type.IsArray)
+            else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
                 return VariableType.JsonArr;
             }
-            else
+            else if (!type.Namespace!.StartsWith("System"))
             {
                 return VariableType.JsonObj;
+            }
+            else
+            {
+                throw new Exception("Unaccepted variable type.");
             }
         }
         public static DateTime? MapDateTimeFromProtoTimeStamp(Timestamp protoTimestamp)
         {
-            DateTime? outDate = null;
-
             if (protoTimestamp == null) return null;
 
-            outDate = DateTimeOffset.FromUnixTimeSeconds(protoTimestamp.Seconds).DateTime;
+            DateTime? outDate = DateTimeOffset.FromUnixTimeSeconds(protoTimestamp.Seconds).DateTime;
             outDate = outDate?.AddMilliseconds(protoTimestamp.Nanos / 1_000_000.0);
 
-            if (outDate?.Ticks == 0)
+            if (protoTimestamp is { Seconds: 0, Nanos: 0 })
             {
-                outDate = DateTime.Now;
+                return DateTime.Now;
             }
 
             return outDate;
         }
-        public static string ObjectSerializeToJson(object o)
+        private static string ObjectSerializeToJson(object o)
         {
             var jsonSettings = new JsonSerializerSettings();
 
             return JsonConvert.SerializeObject(o, jsonSettings);
         }
-        public static object? DeserializeFromJson(string json, System.Type type)
+        public static object? DeserializeFromJson(string json, Type type)
         {
+            /*try
+            {
+                return LHMappingHelper.DeserializeFromJson(jsonStr, _type);
+            }
+            catch (Exception ex)
+            {
+                throw new LHInputVarSubstitutionException($"Failed deserializing the C# object for variable {taskDefParamName}", ex);
+            }*/
+            
             return JsonConvert.DeserializeObject(json, type);
         }
         public static VariableValue MapObjectToVariableValue(object? o)
@@ -154,6 +167,27 @@ namespace LittleHorse.Sdk.Helper
                 Console.WriteLine(ex);
                 return null;
             }
+        }
+
+        internal static bool isFloat(Type type)
+        {
+            return type.IsAssignableFrom(typeof(float))
+                || type.IsAssignableFrom(typeof(double))
+                || type.IsAssignableFrom(typeof(Double));
+        }
+
+        internal static bool isInt(Type type)
+        {
+            return type.IsAssignableFrom(typeof(sbyte))
+                || type.IsAssignableFrom(typeof(byte))
+                || type.IsAssignableFrom(typeof(short))
+                || type.IsAssignableFrom(typeof(ushort))
+                || type.IsAssignableFrom(typeof(int))
+                || type.IsAssignableFrom(typeof(uint))
+                || type.IsAssignableFrom(typeof(long))
+                || type.IsAssignableFrom(typeof(ulong))
+                || type.IsAssignableFrom(typeof(nint))
+                || type.IsAssignableFrom(typeof(nuint));
         }
     }
 }
