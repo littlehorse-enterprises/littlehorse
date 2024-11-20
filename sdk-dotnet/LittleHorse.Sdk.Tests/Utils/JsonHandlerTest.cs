@@ -34,17 +34,4 @@ namespace LittleHorse.Sdk.Tests.Utils
             Assert.Equal(134.45E-2f, actual.Cars[0].Cost);
         }
     }
-    
-    public class Car
-    {
-        public int Id { get; set; }
-        public float Cost { get; set; }
-    }
-
-    public class Person
-    {
-        public string FirstName { get; set; }
-        public int Age { get; set; }
-        public List<Car> Cars { get; set; }
-    }
 }

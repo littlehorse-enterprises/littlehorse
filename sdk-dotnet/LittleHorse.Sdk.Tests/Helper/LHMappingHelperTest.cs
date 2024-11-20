@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Helper;
 using Google.Protobuf.WellKnownTypes;
+using LittleHorse.Sdk.Exceptions;
+using LittleHorse.Sdk.Tests;
 using Xunit;
 using Type = System.Type;
 
@@ -129,5 +131,114 @@ public class LHMappingHelperTest
         var result = LHMappingHelper.MapDateTimeFromProtoTimeStamp(specificTimestamp);
         
         Assert.Equal(specificDateTime, result);
+    }
+
+    [Fact]
+    public void LHHelper_WithVariableValue_ShouldReturnSameValue()
+    {
+        VariableValue value = new VariableValue();
+        value.Str = "test";
+        
+        var result = LHMappingHelper.MapObjectToVariableValue(value);
+        
+        Assert.Equal(value, result);
+    }
+    
+    [Fact]
+    public void LHHelper_WithNullLHVariableValue_ShouldThrowException()
+    {
+        var exception = Assert.Throws<LHInputVarSubstitutionException>
+            (() => LHMappingHelper.MapObjectToVariableValue(null));
+        
+        Assert.Equal($"There is no object to be mapped.", exception.Message);
+    }
+
+    [Fact]
+    public void LHHelper_WithIntegerValue_ShouldReturnLHIntegerValue()
+    {
+        int expectedValue = 23;
+        var test_int_values = new List<object>() { (sbyte)expectedValue, (byte)expectedValue, (short)expectedValue, 
+            (ushort)expectedValue, expectedValue, (uint)expectedValue, (long)expectedValue, (ulong)expectedValue, 
+            (nint)expectedValue, (nuint)expectedValue };
+        
+        foreach (var obj in test_int_values)
+        {
+            var result = LHMappingHelper.MapObjectToVariableValue(obj);
+            
+            Assert.Equal(expectedValue, result.Int);
+        }
+    }
+
+    [Fact]
+    public void LHHelper_WithFloatingsValue_ShouldReturnLHDoubleValue()
+    {
+       var testFloatValues = new List<object>() { 12.3, 3_000.5F, 3D};
+
+       foreach (var value in testFloatValues)
+       {
+           var result = LHMappingHelper.MapObjectToVariableValue(value);
+           
+           if (value is double doubleValue) 
+               Assert.Equal(doubleValue, result.Double);
+           if (value is float floatValue) 
+               Assert.Equal(floatValue, result.Double);
+       }
+    }
+    
+    [Fact]
+    public void LHHelper_WithStringValue_ShouldReturnLHStrValue()
+    {
+        var stringValue = "This is a test";
+        
+        var result = LHMappingHelper.MapObjectToVariableValue(stringValue);
+        
+        Assert.Equal(stringValue, result.Str);
+    }
+    
+    [Fact]
+    public void LHHelper_WithBoolValue_ShouldReturnLHBoolValue()
+    {
+        var boolValue = true;
+        
+        var result = LHMappingHelper.MapObjectToVariableValue(boolValue);
+        
+        Assert.Equal(boolValue, result.Bool);
+    }
+    
+    [Fact]
+    public void LHHelper_WithBytesValue_ShouldReturnLHBytesValue()
+    {
+        var bytes = new byte[] { 0x20, 0x20, 0x20 };
+        
+        var result = LHMappingHelper.MapObjectToVariableValue(bytes);
+        
+        Assert.Equal(bytes, result.Bytes);
+    }
+    
+    [Fact]
+    public void LHHelper_WithListOfObjectsValue_ShouldReturnLHJsonArrValue()
+    {
+        var car = new Car {Id = 1, Cost = 134.45E-2f};
+        var persons = new List<Person>()
+        {
+            new Person(){ Age = 36, Cars = new List<Car>() {car}, FirstName = "Test1"},
+            new Person(){ Age = 32, Cars = new List<Car>() {car}, FirstName = "Test2"}
+        };
+        
+        var result = LHMappingHelper.MapObjectToVariableValue(persons);
+        
+        Assert.Contains("\"Age\":36", result.JsonArr);
+        Assert.Contains("\"FirstName\":\"Test2\"", result.JsonArr);
+    }
+    
+    [Fact]
+    public void LHHelper_WithCustomObjectValue_ShouldReturnLHJsonObjValue()
+    {
+        var car = new Car {Id = 1, Cost = 134.45E-2f};
+        var person = new Person() { Age = 36, Cars = new List<Car>() {car}, FirstName = "Test"};
+        
+        var result = LHMappingHelper.MapObjectToVariableValue(person);
+        
+        Assert.Contains("\"FirstName\":\"Test\"", result.JsonObj);
     }
 }

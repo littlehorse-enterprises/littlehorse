@@ -82,13 +82,13 @@ namespace LittleHorse.Sdk.Worker
             switch (taskDefInputType)
             {
                 case VariableType.Int:
-                    if (!LHMappingHelper.isInt(paramType))
+                    if (!LHMappingHelper.IsInt(paramType))
                     {
                         errorMsg = $"TaskDef provides INT, func accepts {paramType.Name}";
                     }
                     break;
                 case VariableType.Double:
-                    if (!LHMappingHelper.isFloat(paramType))
+                    if (!LHMappingHelper.IsFloat(paramType))
                     {
                         errorMsg = $"TaskDef provides DOUBLE, func accepts {paramType.Name}";
                     }
