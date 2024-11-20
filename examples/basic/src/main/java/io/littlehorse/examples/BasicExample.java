@@ -1,7 +1,6 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -51,7 +50,7 @@ public class BasicExample {
 
     public static LHTaskWorker getTaskWorker(LHConfig config) {
         MyWorker executable = new MyWorker();
-        LHTaskWorker worker = new LHTaskWorker(executable, "greet", config);
+        LHTaskWorker worker = new LHTaskWorker(executable, "charge-credit-card", config);
 
         // Gracefully shutdown
         Runtime.getRuntime().addShutdownHook(new Thread(worker::close));
