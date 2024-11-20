@@ -30,6 +30,6 @@ const nodeTypes: Record<NodeType, ComponentType<NodeProps>> = {
 }
 
 export type NodeProps<T = Node> = NodeFlow<
-  T & { nodeRun?: NodeRun; fade?: boolean; nodeNeedsToBeHighlighted?: boolean }
+  T & { nodeRun?: NodeRun; fade?: boolean; nodeNeedsToBeHighlighted?: boolean; nodeRunsList: [NodeRun] }
 >
 export default nodeTypes
