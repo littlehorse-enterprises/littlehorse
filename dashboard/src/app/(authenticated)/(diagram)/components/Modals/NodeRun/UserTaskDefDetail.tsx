@@ -6,8 +6,6 @@ import { AccordionNode } from './AccordionContent'
 import { getVariableValue, getVariable, utcToLocalDateTime } from '@/app/utils'
 import { getUserTaskRun } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/getUserTaskRun'
 
-
-
 export const UserTaskDefDetail: FC<AccordionNode> = ({ nodeRun, userTaskNode }) => {
   const taskId = nodeRun?.userTask?.userTaskRunId?.userTaskGuid
   const wfRunId = nodeRun?.userTask?.userTaskRunId?.wfRunId?.id
@@ -55,7 +53,7 @@ export const UserTaskDefDetail: FC<AccordionNode> = ({ nodeRun, userTaskNode }) 
           </div>
           <div className="flex ">
             <span className="font-bold">User Task GUID: </span> <span>{lhUserTaskRun.id?.userTaskGuid}</span>
-            <span className="mt-1 ml-2">
+            <span className="ml-2 mt-1">
               <ClipboardIcon
                 className="h-4 w-4 cursor-pointer fill-transparent stroke-blue-500"
                 onClick={() => {

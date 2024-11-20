@@ -17,7 +17,7 @@ export const NodeRunsList: FC<Prop> = ({ nodeRuns, taskNode, userTaskNode, nodeR
   }, [nodeRuns, setModal, setShowModal, taskNode])
 
   if (!nodeRuns?.length) return
-  
+
   return (
     <div className="mt-2 flex justify-center">
       <button className="flex items-center gap-1 p-1 text-blue-500 hover:bg-gray-200" onClick={showNodeRuns}>
