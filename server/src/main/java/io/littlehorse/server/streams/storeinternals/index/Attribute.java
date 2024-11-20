@@ -41,13 +41,16 @@ public class Attribute extends LHSerializable<AttributePb> {
     }
 
     public String getEscapedKey() {
-        if (key == null) return null;
-        return key.replace("_", "\\_");
+        return escapeString(key);
     }
 
     public String getEscapedVal() {
-        if (val == null) return null;
-        return val.replace("_", "\\_");
+        return escapeString(val);
+    }
+
+    public String escapeString(String str) {
+        if (str == null) return null;
+        return str.replace("_", "\\_");
     }
 
     public static Attribute fromProto(AttributePb p, ExecutionContext context) {
