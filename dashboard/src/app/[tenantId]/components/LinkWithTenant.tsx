@@ -1,5 +1,4 @@
 'use client'
-import { LinkProps } from 'next/link'
 import NextLink from 'next/link'
 import { useParams } from 'next/navigation'
 import { ComponentProps } from 'react'

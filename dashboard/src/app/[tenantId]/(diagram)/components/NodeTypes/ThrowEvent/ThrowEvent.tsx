@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query'
 
 import { LHStatus, Node as NodeProto, ThrowEventNode } from 'littlehorse-client/proto'
 import { CircleArrowOutUpRightIcon, ExternalLinkIcon, EyeIcon } from 'lucide-react'
-import Link from 'next/link'
 import { FC, ReactNode, memo, useCallback } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '..'

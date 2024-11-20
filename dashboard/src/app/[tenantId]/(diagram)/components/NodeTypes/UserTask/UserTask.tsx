@@ -1,7 +1,6 @@
 import { UserTaskDefDetails } from '@/app/[tenantId]/(diagram)/components/NodeTypes/UserTask/UserTaskDefDetails'
 import { UserTaskRunDetails } from '@/app/[tenantId]/(diagram)/components/NodeTypes/UserTask/UserTaskRunDetails'
 import { ExternalLinkIcon, UserIcon } from 'lucide-react'
-import Link from 'next/link'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { Fade } from '../Fade'

@@ -23,7 +23,7 @@ export const WhoAmIContext: FC<PropsWithChildren<WhoAmIContextProps>> = ({ child
     if (!tenantId) {
       setTenant(tenants[0])
     }
-  })
+  }, [])
 
   return <Context.Provider value={{ user, tenants, tenantId: tenantId || tenants[0] }}>{children}</Context.Provider>
 }

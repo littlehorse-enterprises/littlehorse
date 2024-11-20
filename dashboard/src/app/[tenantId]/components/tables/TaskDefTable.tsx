@@ -1,5 +1,4 @@
 import { TaskDefId } from 'littlehorse-client/proto'
-import Link from 'next/link'
 import { FC, Fragment } from 'react'
 import { SearchResultProps } from '.'
 import { useParams } from 'next/navigation'
