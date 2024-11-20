@@ -116,8 +116,7 @@ public class WfService {
         PrincipalModel principalModel = metadataManager.get(id);
 
         if (principalModel == null && id.getId().equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
-            // If Anonymous Principal missing from store (should never happen...)
-            log.warn(
+            log.info(
                     "Anonymous Principal not found in store, likely due to initialization of global store. Should resolve within seconds.");
             throw new LHApiException(Status.UNAVAILABLE, "Server Initializing");
         }
