@@ -1,6 +1,7 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -22,16 +23,8 @@ public class BasicExample {
         return new WorkflowImpl(
             "example-basic",
             wf -> {
-                WfRunVariable price = wf.declareDouble("price");
-                WfRunVariable discountPercentage = wf.declareInt("discount");
-                WfRunVariable quantity = wf.declareInt("quantity");
-
-                WfRunVariable user = wf.declareStr("user");
-
-                wf.execute(
-                        "charge-credit-card",
-                        user,
-                        quantity.multiply(price.multiply(wf.subtract(100, discountPercentage).divide(100.0))));
+                WfRunVariable theName = wf.addVariable("input-name", VariableType.STR).searchable();
+                wf.execute("greet", theName);
             }
         );
     }
@@ -50,7 +43,7 @@ public class BasicExample {
 
     public static LHTaskWorker getTaskWorker(LHConfig config) {
         MyWorker executable = new MyWorker();
-        LHTaskWorker worker = new LHTaskWorker(executable, "charge-credit-card", config);
+        LHTaskWorker worker = new LHTaskWorker(executable, "greet", config);
 
         // Gracefully shutdown
         Runtime.getRuntime().addShutdownHook(new Thread(worker::close));

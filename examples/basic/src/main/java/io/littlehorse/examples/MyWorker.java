@@ -6,10 +6,12 @@ import org.slf4j.LoggerFactory;
 
 public class MyWorker {
 
-    @LHTaskMethod("charge-credit-card")
-    public String greeting(String user, int price) {
-        System.out.println("Price: " + price);
-        return "hello there, " + user;
+    private static final Logger log = LoggerFactory.getLogger(MyWorker.class);
+
+    @LHTaskMethod("greet")
+    public String greeting(String name) {
+        log.debug("Executing task greet");
+        return "hello there, " + name;
     }
 
 }
