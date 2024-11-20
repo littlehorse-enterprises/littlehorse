@@ -10,8 +10,8 @@ export const runWfSpec = async ({
   revision,
   parentWfRunId,
   id,
-  variables
-}: RunWfRequest & WithTenant  ): Promise<WfRun> => {
+  variables,
+}: RunWfRequest & WithTenant): Promise<WfRun> => {
   const client = await lhClient({ tenantId })
-  return client.runWf({ wfSpecName, majorVersion, revision, parentWfRunId, id,variables })
+  return client.runWf({ wfSpecName, majorVersion, revision, parentWfRunId, id, variables })
 }

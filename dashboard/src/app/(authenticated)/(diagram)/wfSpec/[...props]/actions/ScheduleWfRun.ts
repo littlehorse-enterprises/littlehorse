@@ -12,8 +12,8 @@ export const ScheduleWfRun = async ({
   parentWfRunId,
   id,
   variables,
-  cronExpression
-}: ScheduleWfRequest & WithTenant  ): Promise<ScheduledWfRun> => {
+  cronExpression,
+}: ScheduleWfRequest & WithTenant): Promise<ScheduledWfRun> => {
   const client = await lhClient({ tenantId })
-  return client.scheduleWf({ wfSpecName, majorVersion, revision, parentWfRunId, id,variables, cronExpression })
+  return client.scheduleWf({ wfSpecName, majorVersion, revision, parentWfRunId, id, variables, cronExpression })
 }

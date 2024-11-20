@@ -5,7 +5,7 @@ import { ExternalEvent } from './ExternalEvent'
 import { TaskRun } from './TaskRun'
 import { UserTaskRun } from './UserTaskRun'
 import { WorkflowEvent } from './WorkflowEvent'
-import {ExecuteWorkflowRun} from './ExecuteWorkflowRun'
+import { ExecuteWorkflowRun } from './ExecuteWorkflowRun'
 
 export * from './Modals'
 

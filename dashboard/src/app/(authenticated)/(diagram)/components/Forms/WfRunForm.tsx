@@ -1,9 +1,9 @@
-import React, { forwardRef } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
-import { FormFields } from './components/FormFields'
-import { ThreadVarDef } from 'littlehorse-client/proto'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { ThreadVarDef } from 'littlehorse-client/proto'
+import { forwardRef } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { FormFields } from './components/FormFields'
 
 export type FormValues = {
   [key: string]: unknown
@@ -25,22 +25,20 @@ export const WfRunForm = forwardRef<HTMLFormElement, Prop>(({ wfSpecVariables, o
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmitForm)} ref={ref} className="pb-8">
+      <form onSubmit={handleSubmit(onSubmitForm)} ref={ref}>
         <div>
-          <Label htmlFor={'custom-id'} className="text-gray-700">
-            Custom WfRun Id
-          </Label>
+          <Label htmlFor="custom-id">Custom WfRun Id</Label>
           <Input
             type="text"
-            className="mb-4 mt-1 border-sky-600"
+            className="mb-4 mt-1"
             id="custom-id"
             {...register('custom-id-wfRun-flow')}
-            placeholder={`Enter string value`}
+            placeholder="Enter string value"
           />
         </div>
         {!!wfSpecVariables?.length &&
-          wfSpecVariables.map((variable: ThreadVarDef, index: number) => (
-            <FormFields key={`form-field-${index}`} variables={variable} register={register} formState={formState} />
+          wfSpecVariables.map((variable: ThreadVarDef) => (
+            <FormFields key={variable.varDef?.name} variables={variable} register={register} formState={formState} />
           ))}
       </form>
     </FormProvider>

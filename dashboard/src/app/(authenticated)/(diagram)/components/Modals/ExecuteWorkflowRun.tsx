@@ -1,16 +1,22 @@
-import React, { useRef } from 'react'
-import { useModal } from '../../hooks/useModal'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { Modal } from '../../context'
-import { FC } from 'react'
-import { ThreadVarDef, VariableType, WfSpec } from 'littlehorse-client/proto'
-import { runWfSpec } from '../../wfSpec/[...props]/actions/runWfSpec'
+import { FormValues, WfRunForm } from '@/app/(authenticated)/(diagram)/components/Forms/WfRunForm'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
+import { ThreadVarDef, VariableType, WfSpec } from 'littlehorse-client/proto'
 import { useRouter } from 'next/navigation'
-import { WfRunForm } from '@/app/(authenticated)/(diagram)/components/Forms/WfRunForm'
-import { X } from 'lucide-react'
-import { FormValues } from '@/app/(authenticated)/(diagram)/components/Forms/WfRunForm'
+import { FC, useRef } from 'react'
 import { toast } from 'sonner'
+import { Modal } from '../../context'
+import { useModal } from '../../hooks/useModal'
+import { runWfSpec } from '../../wfSpec/[...props]/actions/runWfSpec'
 export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
   const { showModal, setShowModal } = useModal()
   const lhWorkflowSpec = data as WfSpec
@@ -58,52 +64,37 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
         variables: formatVariablesPayload(values),
       })
       if (!wfRun.id) return
-      toast.success('wfRun created')
+      toast.success('Workflow has been executed')
       setShowModal(false)
       router.push(`/wfRun/${wfRun.id.id}`)
     } catch (error: any) {
       toast.error(error.message?.split(':')?.[1])
-      // console.log(error.message?.split(':')?.[1])
-      // needs to implement error handling
     }
   }
 
   return (
     <Dialog open={showModal} onOpenChange={open => setShowModal(open)}>
-      <DialogContent className="overflow-hidden p-0">
-        <div className="relative flex max-h-[calc(100vh-50px)] flex-col">
-          <DialogHeader className="sticky top-0 z-10 bg-background px-4 py-3 shadow-md ">
-            <DialogTitle className="text-gray-700">
-              Execute <span className="text-black">{lhWorkflowSpec.id?.name}</span>
-              <button
-                onClick={() => setShowModal(false)}
-                className="float-right text-gray-500 hover:text-gray-700 focus:outline-none"
-                aria-label="Close"
-              >
-                <X size={18} />
-              </button>
-            </DialogTitle>
-          </DialogHeader>
-          <div className="flex-1 overflow-y-auto px-4 py-2 pb-5">
-            <WfRunForm wfSpecVariables={wfSpecVariables} onSubmit={handleFormSubmit} ref={formRef} />
-          </div>
-          <DialogFooter className="sticky bottom-0 z-10 bg-background px-4 py-3 shadow-md">
-            <div className="flex justify-end gap-2">
-              <button className="rounded-sm bg-gray-100 px-4 py-1 text-gray-900" onClick={() => setShowModal(false)}>
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  formRef.current?.requestSubmit()
-                }}
-                type="submit"
-                className="flex items-center gap-1 rounded-sm bg-blue-500 px-4 py-1 text-white"
-              >
-                Run
-              </button>
-            </div>
-          </DialogFooter>
-        </div>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Execute {lhWorkflowSpec.id?.name}</DialogTitle>
+          <DialogDescription className="text-primary/50">
+            You can leave all optional fields blank if desired.
+          </DialogDescription>
+        </DialogHeader>
+
+        <WfRunForm wfSpecVariables={wfSpecVariables} onSubmit={handleFormSubmit} ref={formRef} />
+
+        <DialogFooter>
+          <DialogClose className="mr-4">Cancel</DialogClose>
+          <Button
+            onClick={() => {
+              formRef.current?.requestSubmit()
+            }}
+            type="submit"
+          >
+            Execute Workflow
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

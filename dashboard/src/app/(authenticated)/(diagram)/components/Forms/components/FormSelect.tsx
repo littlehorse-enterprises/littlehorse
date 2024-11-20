@@ -1,10 +1,9 @@
-import React, { FC, useState } from 'react'
-import { useFormContext } from 'react-hook-form'
-import { FormFieldProp } from '@/types'
 import { Label } from '@/components/ui/label'
-import { MarkFieldNull } from './MarkFieldNull'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { FormFieldProp } from '@/types'
 import { CircleAlert } from 'lucide-react'
+import { FC, useState } from 'react'
+import { useFormContext } from 'react-hook-form'
 import { accessLevels } from '../../../wfSpec/[...props]/components/Variables'
 
 export const FormSelect: FC<FormFieldProp> = props => {
@@ -28,8 +27,11 @@ export const FormSelect: FC<FormFieldProp> = props => {
   } = props
 
   const handleChange = (value: string) => {
-    const booleanValue = value === 'true' ? true : value === 'false' ? false : undefined
-    setValue(name, booleanValue)
+    if (value === 'none') setValue(name, undefined)
+    else {
+      const booleanValue = value === 'true'
+      setValue(name, booleanValue)
+    }
     trigger(name)
   }
 
@@ -38,12 +40,15 @@ export const FormSelect: FC<FormFieldProp> = props => {
   return (
     <div>
       <div className="mb-2 flex justify-between">
-        <Label htmlFor={name} className="center flex items-center gap-2 text-gray-700">
+        <Label htmlFor={name} className="center flex items-center gap-2">
           {name}
           <span className="rounded bg-green-300 p-1 text-xs">{accessLevels[accessLevel]}</span>
-          {required && <span className="rounded bg-blue-300 p-1 text-xs">required</span>}
+          {required ? (
+            <span className="rounded bg-red-300 p-1 text-xs">Required</span>
+          ) : (
+            <span className="rounded bg-gray-300 p-1 text-xs">Optional</span>
+          )}
         </Label>
-        {!required && <MarkFieldNull name={name} setIsDisabled={setIsDisabled} />}
       </div>
       <Select
         value={value?.toString() || ''}
@@ -51,12 +56,13 @@ export const FormSelect: FC<FormFieldProp> = props => {
         disabled={isDisabled}
         {...register(name, { required: required ? `${name} is required` : false })}
       >
-        <SelectTrigger id={name} className={errors[name] ? 'mb-1 mt-1 border-red-700' : 'mb-4 mt-1 border-sky-600'}>
-          <SelectValue placeholder="Select true or false" />
+        <SelectTrigger id={name} className={errors[name] ? 'mb-1 mt-1 border-red-700' : 'mb-4 mt-1'}>
+          <SelectValue placeholder="Select True or False" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="true">True</SelectItem>
           <SelectItem value="false">False</SelectItem>
+          <SelectItem value="none">None</SelectItem>
         </SelectContent>
       </Select>
       {errors[name]?.message && (
