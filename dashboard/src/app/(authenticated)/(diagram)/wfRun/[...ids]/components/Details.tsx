@@ -6,7 +6,7 @@ import { FC } from 'react'
 
 type DetailsProps = WfRun
 
-const statusColors: { [key in WfRun['status']]: string } = {
+export const statusColors: { [key in WfRun['status']]: string } = {
   STARTING: 'bg-teal-200',
   RUNNING: 'bg-blue-200',
   COMPLETED: 'bg-green-200',
