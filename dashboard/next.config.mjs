@@ -1,15 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
-  redirects: async () => {
-    return [
-      {
-        source: '/',
-        destination: '/default',
-        permanent: true,
-      },
-    ]
-  },
   webpack: config => {
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find(rule => rule.test?.test?.('.svg'))
