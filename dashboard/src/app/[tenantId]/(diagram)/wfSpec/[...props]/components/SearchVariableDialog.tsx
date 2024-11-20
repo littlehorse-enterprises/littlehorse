@@ -19,6 +19,7 @@ import Link from 'next/link'
 import { FC, Fragment, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { searchVariables } from '../actions/searchVariables'
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 
 type Props = {
   spec: WfSpec
@@ -102,12 +103,12 @@ export const SearchVariableDialog: FC<Props> = ({ spec }) => {
             <Fragment key={i}>
               {page.results.map(variableId => (
                 <div key={variableId.name}>
-                  <Link
+                  <LinkWithTenant
                     className="py-2 text-blue-500 hover:underline"
                     href={`/wfRun/${variableId.wfRunId?.id}?threadRunNumber=${variableId.threadRunNumber}`}
                   >
                     {variableId.wfRunId?.id}
-                  </Link>
+                  </LinkWithTenant>
                 </div>
               ))}
             </Fragment>

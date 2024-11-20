@@ -14,6 +14,7 @@ import { FC, Fragment, useState } from 'react'
 import { PaginatedTaskRunList, searchTaskRun } from '../actions/searchTaskRun'
 import { Details } from './Details'
 import { InputVars } from './InputVars'
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 
 type Props = {
   spec: TaskDefProto
@@ -107,13 +108,13 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                       return (
                         <TableRow key={taskRun.id?.taskGuid}>
                           <TableCell>
-                            <Link
+                            <LinkWithTenant
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
                               href={`/wfRun/${concatWfRunIds(taskRun.id?.wfRunId!)}?threadRunNumber=${taskRun.source?.taskNode?.nodeRunId?.threadRunNumber ?? taskRun.source?.userTaskTrigger?.nodeRunId?.threadRunNumber}&nodeRunName=${taskRun.source?.taskNode?.nodeRunId?.position}-${spec.id?.name}-TASK`}
                             >
                               {concatWfRunIds(taskRun.id?.wfRunId!)}
-                            </Link>
+                            </LinkWithTenant>
                           </TableCell>
                           <TableCell>{taskRun.id?.taskGuid}</TableCell>
 

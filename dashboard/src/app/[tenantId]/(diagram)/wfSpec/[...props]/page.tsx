@@ -4,7 +4,7 @@ import { ClientError, Status } from 'nice-grpc-common'
 import { getWfSpec } from './actions/getWfSpec'
 import { WfSpec } from './components/WfSpec'
 
-type Props = { params: { props: string[], tenantId: string } }
+type Props = { params: { props: string[]; tenantId: string } }
 
 export const dynamic = 'force-dynamic'
 

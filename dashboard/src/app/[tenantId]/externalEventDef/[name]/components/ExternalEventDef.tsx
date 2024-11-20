@@ -15,6 +15,7 @@ import Link from 'next/link'
 import { FC, Fragment, useState } from 'react'
 import { PaginatedExternalEventList, searchExternalEvent } from '../actions/searchExternalEvent'
 import { Details } from './Details'
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 
 type Props = {
   spec: ExternalEventDefProto
@@ -106,13 +107,13 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
                       return (
                         <TableRow key={externalEvent.id?.guid}>
                           <TableCell>
-                            <Link
+                            <LinkWithTenant
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
                               href={`/wfRun/${concatWfRunIds(externalEvent.id?.wfRunId!)}?threadRunNumber=${externalEvent.threadRunNumber}&nodeRunName=${externalEvent.nodeRunPosition}-${spec.id?.name}-EXTERNAL_EVENT`}
                             >
                               {concatWfRunIds(externalEvent.id?.wfRunId!)}
-                            </Link>
+                            </LinkWithTenant>
                           </TableCell>
                           <TableCell>{externalEvent.id?.guid}</TableCell>
 

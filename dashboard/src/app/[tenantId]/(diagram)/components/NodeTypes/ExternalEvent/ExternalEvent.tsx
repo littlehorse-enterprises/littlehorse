@@ -12,9 +12,12 @@ import { useModal } from '../../../hooks/useModal'
 import { Fade } from '../Fade'
 import { NodeDetails } from '../NodeDetails'
 import { getExternalEvent } from './getExternalEvent'
+import { useParams } from 'next/navigation'
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 
 const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
-  const { tenantId } = useWhoAmI()
+  const tenantId = useParams().tenantId as string
+
   const { data: externalEvent } = useQuery({
     queryKey: ['externalEvent', data.nodeRun, tenantId],
     queryFn: async () => {
@@ -43,13 +46,13 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
           <div>
             <div className="flex items-center gap-1 text-nowrap">
               <h3 className="font-bold">ExternalEventDef</h3>
-              <Link
+              <LinkWithTenant
                 className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
                 target="_blank"
-                href={`/externalEventDef/${externalEventNode.externalEventDefId?.name}`}
+                href={`/${tenantId}/externalEventDef/${externalEventNode.externalEventDefId?.name}`}
               >
                 {externalEventNode.externalEventDefId?.name} <ExternalLinkIcon className="h-4 w-4" />
-              </Link>
+              </LinkWithTenant>
             </div>
             {
               <div className="flex gap-2 text-nowrap">

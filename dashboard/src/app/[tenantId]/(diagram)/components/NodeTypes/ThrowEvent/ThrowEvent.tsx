@@ -11,6 +11,7 @@ import { useModal } from '../../../hooks/useModal'
 import { Fade } from '../Fade'
 import { NodeDetails } from '../NodeDetails'
 import { getWorkflowEvent } from './getWorkflowEvent'
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 
 const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   const { tenantId } = useWhoAmI()
@@ -42,13 +43,13 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
           <div>
             <div className="flex items-center gap-1 text-nowrap">
               <h3 className="font-bold">WorkflowEventDef</h3>
-              <Link
+              <LinkWithTenant
                 className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
                 target="_blank"
                 href={`/workflowEventDef/${throwEventNode.eventDefId?.name}`}
               >
                 {throwEventNode.eventDefId?.name} <ExternalLinkIcon className="h-4 w-4" />
-              </Link>
+              </LinkWithTenant>
             </div>
           </div>
           {nodeRun &&

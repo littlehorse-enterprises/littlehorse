@@ -14,6 +14,7 @@ import Link from 'next/link'
 import { FC, Fragment, useState } from 'react'
 import { PaginatedWorkflowEventList, searchWorkflowEvent } from '../actions/searchWorkflowEvent'
 import { Details } from './Details'
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 
 type Props = {
   spec: WorkflowEventDefProto
@@ -93,7 +94,7 @@ export const WorkflowEventDef: FC<Props> = ({ spec }) => {
                       return (
                         <TableRow key={workflowEvent.id?.number}>
                           <TableCell>
-                            <Link
+                            <LinkWithTenant
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
                               // TODO: Add node highlighting
@@ -101,7 +102,7 @@ export const WorkflowEventDef: FC<Props> = ({ spec }) => {
                               href={`/wfRun/${concatWfRunIds(workflowEvent.id?.wfRunId!)}`}
                             >
                               {concatWfRunIds(workflowEvent.id?.wfRunId!)}
-                            </Link>
+                            </LinkWithTenant>
                           </TableCell>
                           <TableCell>{workflowEvent.id?.number}</TableCell>
 

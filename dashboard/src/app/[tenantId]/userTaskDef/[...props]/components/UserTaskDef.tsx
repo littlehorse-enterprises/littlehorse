@@ -20,6 +20,7 @@ import React, { FC, Fragment, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { Details } from './Details'
 import { Fields } from './Fields'
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 
 type Props = {
   spec: UserTaskDefProto
@@ -159,13 +160,13 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
                       return (
                         <TableRow key={userTaskRun.id?.userTaskGuid}>
                           <TableCell>
-                            <Link
+                            <LinkWithTenant
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
                               href={`/wfRun/${concatWfRunIds(userTaskRun.id?.wfRunId!)}?threadRunNumber=${userTaskRun.nodeRunId?.threadRunNumber}&nodeRunName=${nodeRun.nodeName}`}
                             >
                               {concatWfRunIds(userTaskRun.id?.wfRunId!)}
-                            </Link>
+                            </LinkWithTenant>
                           </TableCell>
                           <TableCell>{userTaskRun.id?.userTaskGuid}</TableCell>
                           <TableCell>{userTaskRun.userId ? userTaskRun.userId : NOT_APPLICABLE_LABEL}</TableCell>

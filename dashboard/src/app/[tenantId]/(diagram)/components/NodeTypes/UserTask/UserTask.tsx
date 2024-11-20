@@ -7,6 +7,7 @@ import { Handle, Position } from 'reactflow'
 import { Fade } from '../Fade'
 import { NodeProps } from '../index'
 import { NodeDetails } from '../NodeDetails'
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 
 const Node: FC<NodeProps> = ({ data, selected }) => {
   if (!data.userTask) return null
@@ -18,13 +19,13 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
         <div className="">
           <div className="flex items-center gap-1 text-nowrap">
             <h3 className="font-bold">UserTask</h3>
-            <Link
+            <LinkWithTenant
               className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
               target="_blank"
               href={`/userTaskDef/${userTask.userTaskDefName}`}
             >
               {userTask.userTaskDefName} <ExternalLinkIcon className="h-4 w-4" />
-            </Link>
+            </LinkWithTenant>
           </div>
           {nodeRun ? (
             <UserTaskRunDetails userTaskNode={userTask} nodeRun={nodeRun} />

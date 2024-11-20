@@ -2,6 +2,7 @@ import { Listbox } from '@headlessui/react'
 import { TagIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC } from 'react'
+import LinkWithTenant from './LinkWithTenant'
 
 type Props = {
   path: string
@@ -26,7 +27,7 @@ export const VersionSelector: FC<Props> = ({ path, currentVersion, versions, loa
                 className="relative block cursor-pointer select-none p-2 hover:bg-slate-300"
                 key={version}
                 value={version}
-                as={Link}
+                as={LinkWithTenant}
                 href={`${path}/${version}`}
               >
                 {version}

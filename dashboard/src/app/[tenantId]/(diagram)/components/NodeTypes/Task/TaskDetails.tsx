@@ -9,6 +9,7 @@ import { FC, useCallback } from 'react'
 import { useModal } from '../../../hooks/useModal'
 import { NodeDetails } from '../NodeDetails'
 import { getTaskRun } from './getTaskRun'
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 
 export const TaskDetails: FC<{ taskNode?: TaskNode; nodeRun?: NodeRun; selected: boolean }> = ({
   taskNode,
@@ -113,12 +114,12 @@ export const TaskDetails: FC<{ taskNode?: TaskNode; nodeRun?: NodeRun; selected:
 
 const TaskLink: FC<{ taskName?: string }> = ({ taskName }) => {
   return (
-    <Link
+    <LinkWithTenant
       className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
       target="_blank"
       href={`/taskDef/${taskName}`}
     >
       {taskName} <ExternalLinkIcon className="h-4 w-4" />
-    </Link>
+    </LinkWithTenant>
   )
 }

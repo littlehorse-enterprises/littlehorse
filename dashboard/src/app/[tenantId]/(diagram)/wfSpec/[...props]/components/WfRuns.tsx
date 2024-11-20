@@ -11,6 +11,7 @@ import { useSearchParams } from 'next/navigation'
 import { FC, Fragment, useMemo, useState } from 'react'
 import { PaginatedWfRunIdList, searchWfRun } from '../actions/searchWfRun'
 import { WfRunsHeader } from './WfRunsHeader'
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 
 export const WfRuns: FC<WfSpec> = spec => {
   const searchParams = useSearchParams()
@@ -63,9 +64,12 @@ export const WfRuns: FC<WfSpec> = spec => {
             <Fragment key={i}>
               {page.results.map(wfRunId => (
                 <div key={wfRunId.id}>
-                  <Link className="py-2 text-blue-500 hover:underline" href={`/${tenantId}/wfRun/${concatWfRunIds(wfRunId)}`}>
+                  <LinkWithTenant
+                    className="py-2 text-blue-500 hover:underline"
+                    href={`/wfRun/${concatWfRunIds(wfRunId)}`}
+                  >
                     {wfRunId.id}
-                  </Link>
+                  </LinkWithTenant>
                 </div>
               ))}
             </Fragment>

@@ -1,5 +1,5 @@
 import { ExternalEventDefId } from 'littlehorse-client/proto'
-import Link from 'next/link'
+import LinkWithTenant from '../LinkWithTenant'
 import { FC, Fragment } from 'react'
 import { SearchResultProps } from '.'
 
@@ -14,9 +14,9 @@ export const ExternalEventDefTable: FC<SearchResultProps> = ({ pages = [] }) => 
         <Fragment key={i}>
           {page.results.map(({ name }: ExternalEventDefId) => (
             <div key={name} className="my-2 flex gap-2">
-              <Link className="underline hover:no-underline" href={`/externalEventDef/${name}`}>
+              <LinkWithTenant className="underline hover:no-underline" href={`/externalEventDef/${name}`}>
                 {name}
-              </Link>
+              </LinkWithTenant>
             </div>
           ))}
         </Fragment>

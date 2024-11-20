@@ -3,6 +3,7 @@ import { TagIcon } from 'lucide-react'
 import Link from 'next/link'
 import { FC, Fragment } from 'react'
 import { SearchResultProps } from '.'
+import LinkWithTenant from '../LinkWithTenant'
 
 export const UserTaskDefTable: FC<SearchResultProps> = ({ pages = [] }) => {
   if (pages.length === 0) {
@@ -15,9 +16,9 @@ export const UserTaskDefTable: FC<SearchResultProps> = ({ pages = [] }) => {
         <Fragment key={i}>
           {page.results.map(({ name, version }: UserTaskDefId) => (
             <div key={`${name}.${version}`} className="my-2 flex gap-2">
-              <Link className="underline hover:no-underline" href={`/userTaskDef/${name}/${version}`}>
+              <LinkWithTenant className="underline hover:no-underline" href={`/userTaskDef/${name}/${version}`}>
                 {name}
-              </Link>
+              </LinkWithTenant>
               <div className="flex items-center gap-2 rounded bg-blue-200 px-2 font-mono text-sm text-gray-500">
                 <TagIcon className="h-4 w-4 fill-none stroke-gray-500 stroke-1" />v{version}
               </div>

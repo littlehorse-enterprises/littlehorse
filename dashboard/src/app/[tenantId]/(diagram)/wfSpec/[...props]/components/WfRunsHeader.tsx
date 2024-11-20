@@ -2,7 +2,7 @@ import { TIME_RANGES, TIME_RANGES_NAMES, TimeRange, WF_RUN_STATUSES } from '@/ap
 import { Listbox, ListboxButton, ListboxOptions } from '@headlessui/react'
 import { LHStatus, WfSpec } from 'littlehorse-client/proto'
 import { ClockIcon } from 'lucide-react'
-import Link from 'next/link'
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 import { FC } from 'react'
 import { SearchVariableDialog } from './SearchVariableDialog'
 
@@ -44,7 +44,7 @@ export const WfRunsHeader: FC<Props> = ({ spec, currentStatus, currentWindow, se
         </Listbox>
         <div className="flex">
           {['ALL', ...WF_RUN_STATUSES].map(status => (
-            <Link
+            <LinkWithTenant
               key={status}
               href={status === 'ALL' ? '?' : `?status=${status}`}
               replace
@@ -52,7 +52,7 @@ export const WfRunsHeader: FC<Props> = ({ spec, currentStatus, currentWindow, se
               className={`flex items-center border-y-2 border-l-2 p-2 text-xs first-of-type:rounded-l-lg first-of-type:border-l-2 last-of-type:rounded-r-lg last-of-type:border-r-2 ${status === currentStatus ? 'border-blue-500 bg-blue-500 text-white' : ' text-gray-500'}`}
             >
               {status}
-            </Link>
+            </LinkWithTenant>
           ))}
         </div>
         {Object.keys(spec.threadSpecs).flatMap(threadSpec =>

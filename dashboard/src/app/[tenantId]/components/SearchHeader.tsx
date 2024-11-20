@@ -1,6 +1,8 @@
+'use client'
 import { SEARCH_ENTITIES, SearchType } from '@/app/constants'
 import { SearchIcon } from 'lucide-react'
-import Link from 'next/link'
+import LinkWithTenant from './LinkWithTenant'
+import { useParams } from 'next/navigation'
 import { FC } from 'react'
 
 type Props = {
@@ -14,9 +16,13 @@ export const SearchHeader: FC<Props> = ({ currentType, setPrefix }) => {
       <h2 className="text-2xl font-bold">Metadata Search</h2>
       <div className="flex rounded-lg border-2">
         {SEARCH_ENTITIES.map(type => (
-          <Link key={type} href={`/?type=${type}`} className={`block p-2 ${type === currentType ? 'bg-gray-100' : ''}`}>
+          <LinkWithTenant
+            key={type}
+            href={`?type=${type}`}
+            className={`block p-2 ${type === currentType ? 'bg-gray-100' : ''}`}
+          >
             {type}
-          </Link>
+          </LinkWithTenant>
         ))}
       </div>
       <div className="relative w-80">

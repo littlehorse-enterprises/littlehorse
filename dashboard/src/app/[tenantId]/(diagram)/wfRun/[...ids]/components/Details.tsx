@@ -1,4 +1,5 @@
 'use client'
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 import { concatWfRunIds, formatDate } from '@/app/utils'
 import { WfRun } from 'littlehorse-client/proto'
 import Link from 'next/link'
@@ -25,20 +26,18 @@ export const Details: FC<DetailsProps> = ({ id, status, wfSpecId, startTime }) =
       {id?.parentWfRunId && (
         <div className="flex items-center gap-2">
           Parent WfRun:
-          <Link href={`/wfRun/${concatWfRunIds(id?.parentWfRunId)}`} className="text-blue-500 underline">
-            {id?.parentWfRunId?.id}
-          </Link>
+          <LinkWithTenant href={`/wfRun/${concatWfRunIds(id?.parentWfRunId)}`}>{id?.parentWfRunId?.id}</LinkWithTenant>
         </div>
       )}
       <div className="flex flex-row gap-2 text-sm text-gray-500">
         <div className="flex items-center gap-2">
           WfSpec:
-          <Link
+          <LinkWithTenant
             href={`/wfSpec/${wfSpecId?.name}/${wfSpecId?.majorVersion}/${wfSpecId?.revision}`}
             className="flex items-center gap-2 text-blue-500 underline"
           >
             {`${wfSpecId?.name} ${wfSpecId?.majorVersion}.${wfSpecId?.revision}`}
-          </Link>
+          </LinkWithTenant>
         </div>
         <div className="flex items-center">
           Status: <span className={`ml-2 rounded px-2 ${statusColors[status]}`}>{`${status}`}</span>
