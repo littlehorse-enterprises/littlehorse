@@ -130,17 +130,14 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 // can be a given type.
                 return true;
             case SOURCE_NOT_SET:
-        }
-
-        if (rhsSourceType == null) {
-            // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
-            // protobuf that does not set the source type. Instead of throwing an IllegalStateException
-            // we should throw an error that will get propagated back to the client.
-            //
-            // The problem with this is that in this scope we lack context about which node has the
-            // invalid VariableAssignment, so the client may have trouble determining the source. Still
-            // it is better to return INVALID_ARGUMENT than INTERNAL.
-            throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
+                // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
+                // protobuf that does not set the source type. Instead of throwing an IllegalStateException
+                // we should throw an error that will get propagated back to the client.
+                //
+                // The problem with this is that in this scope we lack context about which node has the
+                // invalid VariableAssignment, so the client may have trouble determining the source. Still
+                // it is better to return INVALID_ARGUMENT than INTERNAL.
+                throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
         }
 
         return baseType == type;
