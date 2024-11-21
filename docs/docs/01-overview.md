@@ -69,7 +69,7 @@ By virtue of orchestrating your workflows with LittleHorse, every step can be au
 
 The following screenshot shows a stacktrace from a failed `TaskRun` using our Java SDK. No more hours of searching through DataDog!
 
-![Screenshot of failed TaskRun](./task-failure.png)
+![Screenshot of failed TaskRun](../static/img/2024-11-21-task-failure.png)
 
 ### Flexible
 
