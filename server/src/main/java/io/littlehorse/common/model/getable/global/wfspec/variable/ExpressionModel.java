@@ -1,7 +1,12 @@
 package io.littlehorse.common.model.getable.global.wfspec.variable;
 
+import java.util.function.Function;
+
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.core.wfrun.VariableAssignerFunc;
 import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -33,5 +38,11 @@ public class ExpressionModel extends LHSerializable<Expression> {
         lhs = LHSerializable.fromProto(p.getLhs(), VariableAssignmentModel.class, ignored);
         rhs = LHSerializable.fromProto(p.getRhs(), VariableAssignmentModel.class, ignored);
         operation = p.getOperation();
+    }
+
+    public VariableValueModel evaluate(VariableAssignerFunc variableFinder) throws LHVarSubError {
+        VariableValueModel lhsVal = variableFinder.assign(lhs);
+        VariableValueModel rhsVal = variableFinder.assign(lhs);
+        return lhsVal.operate(operation, rhsVal, null);
     }
 }
