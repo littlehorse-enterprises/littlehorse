@@ -3,13 +3,12 @@ import { getVariable, getVariableValue } from '@/app/utils'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useQuery } from '@tanstack/react-query'
 import { NodeRun, TaskNode } from 'littlehorse-client/proto'
-import { ExternalLinkIcon, EyeIcon } from 'lucide-react'
+import { ExternalLinkIcon } from 'lucide-react'
 import Link from 'next/link'
-import { FC, useCallback } from 'react'
-import { useModal } from '../../../hooks/useModal'
+import { FC } from 'react'
+import { NodeRunsList } from '../../NodeRunsList'
 import { NodeDetails } from '../NodeDetails'
 import { getTaskRun } from './getTaskRun'
-import { NodeRunsList } from '../../NodeRunsList'
 
 export const TaskDetails: FC<{
   taskNode?: TaskNode

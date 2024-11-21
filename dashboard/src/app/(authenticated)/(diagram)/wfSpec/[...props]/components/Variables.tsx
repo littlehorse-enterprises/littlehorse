@@ -4,7 +4,7 @@ import { FC } from 'react'
 
 type VariablesProps = Pick<ThreadSpec, 'variableDefs'>
 
-const accessLevels: { [key in WfRunVariableAccessLevel]: string } = {
+export const accessLevels: { [key in WfRunVariableAccessLevel]: string } = {
   PUBLIC_VAR: 'Public',
   INHERITED_VAR: 'Inherited',
   PRIVATE_VAR: 'Private',

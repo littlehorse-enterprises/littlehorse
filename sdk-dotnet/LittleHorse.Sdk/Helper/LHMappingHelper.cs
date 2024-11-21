@@ -1,21 +1,23 @@
-﻿using Google.Protobuf;
+﻿using System.Collections;
+using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
+using LittleHorse.Sdk.Utils;
 using LittleHorse.Sdk.Worker;
-using Newtonsoft.Json;
+using Type = System.Type;
 
 namespace LittleHorse.Sdk.Helper
 {
     public static class LHMappingHelper
     {
-        public static VariableType MapDotNetTypeToLHVariableType(System.Type type)
+        public static VariableType MapDotNetTypeToLHVariableType(Type type)
         {
-            if (type.IsAssignableFrom(typeof(int)))
+            if (IsInt(type))
             {
                 return VariableType.Int;
             }
-            else if (type.IsAssignableFrom(typeof(double)))
+            else if (IsFloat(type))
             {
                 return VariableType.Double;
             }
@@ -31,84 +33,69 @@ namespace LittleHorse.Sdk.Helper
             {
                 return VariableType.Bytes;
             }
-            else if (type.IsArray)
+            else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
                 return VariableType.JsonArr;
             }
-            else
+            else if (!type.Namespace!.StartsWith("System"))
             {
                 return VariableType.JsonObj;
             }
+            else
+            {
+                throw new Exception("Unaccepted variable type.");
+            }
         }
+        
         public static DateTime? MapDateTimeFromProtoTimeStamp(Timestamp protoTimestamp)
         {
-            DateTime? outDate = null;
-
             if (protoTimestamp == null) return null;
 
-            outDate = DateTimeOffset.FromUnixTimeSeconds(protoTimestamp.Seconds).DateTime;
+            DateTime? outDate = DateTimeOffset.FromUnixTimeSeconds(protoTimestamp.Seconds).DateTime;
             outDate = outDate?.AddMilliseconds(protoTimestamp.Nanos / 1_000_000.0);
 
-            if (outDate?.Ticks == 0)
+            if (protoTimestamp is { Seconds: 0, Nanos: 0 })
             {
-                outDate = DateTime.Now;
+                return DateTime.Now;
             }
 
             return outDate;
         }
-        public static string ObjectSerializeToJson(object o)
+        
+        public static VariableValue MapObjectToVariableValue(object? obj)
         {
-            var jsonSettings = new JsonSerializerSettings();
-
-            return JsonConvert.SerializeObject(o, jsonSettings);
-        }
-        public static object? DeserializeFromJson(string json, System.Type type)
-        {
-            return JsonConvert.DeserializeObject(json, type);
-        }
-        public static VariableValue MapObjectToVariableValue(object? o)
-        {
-            if (o is VariableValue variableValue) return variableValue;
+            if (obj is VariableValue variableValue) return variableValue;
 
             var result = new VariableValue();
-            if (o == null)
+            if (obj == null)
             {
-                throw new LHInputVarSubstitutionException();
+                throw new LHInputVarSubstitutionException("There is no object to be mapped.");
             }
-            else if (o is long longValue)
+            else if (IsIntObject(obj))
             {
-                result.Int = longValue;
+                result.Int = GetIntegralValue(obj);
             }
-            else if (o is int intValue)
+            else if (IsDoubleObject(obj))
             {
-                result.Int = intValue;
+                result.Double = GetFloatingValue(obj);
             }
-            else if (o is double doubleValue)
-            {
-                result.Double = doubleValue;
-            }
-            else if (o is float floatValue)
-            {
-                result.Double = floatValue;
-            }
-            else if (o is string stringValue)
+            else if (obj is string stringValue)
             {
                 result.Str = stringValue;
             }
-            else if (o is bool boolValue)
+            else if (obj is bool boolValue)
             {
                 result.Bool = boolValue;
             }
-            else if (o is byte[] byteArray)
+            else if (obj is byte[] byteArray)
             {
                 result.Bytes = ByteString.CopyFrom(byteArray);
             }
             else
             {
-                // At this point, all we can do is try to make it a JSON type.
-                var jsonStr = ObjectSerializeToJson(o);
+                var jsonStr = JsonHandler.ObjectSerializeToJson(obj);
 
-                if (o is IList<object> list)
+                if (obj is IEnumerable)
                 {
                     result.JsonArr = jsonStr;
                 }
@@ -120,6 +107,7 @@ namespace LittleHorse.Sdk.Helper
 
             return result;
         }
+        
         public static VariableValue MapExceptionToVariableValue(Exception exception, LHWorkerContext ctx)
         {
             using (StringWriter sw = new StringWriter())
@@ -142,6 +130,7 @@ namespace LittleHorse.Sdk.Helper
                 };
             }
         }
+        
         public static string? MapProtoToJson(IMessage o)
         {
             try
@@ -154,6 +143,65 @@ namespace LittleHorse.Sdk.Helper
                 Console.WriteLine(ex);
                 return null;
             }
+        }
+
+        internal static bool IsFloat(Type type)
+        {
+            return type.IsAssignableFrom(typeof(float))
+                || type.IsAssignableFrom(typeof(double))
+                || type.IsAssignableFrom(typeof(Double));
+        }
+
+        internal static bool IsInt(Type type)
+        {
+            return type.IsAssignableFrom(typeof(sbyte))
+                || type.IsAssignableFrom(typeof(byte))
+                || type.IsAssignableFrom(typeof(short))
+                || type.IsAssignableFrom(typeof(ushort))
+                || type.IsAssignableFrom(typeof(int))
+                || type.IsAssignableFrom(typeof(uint))
+                || type.IsAssignableFrom(typeof(long))
+                || type.IsAssignableFrom(typeof(ulong))
+                || type.IsAssignableFrom(typeof(nint))
+                || type.IsAssignableFrom(typeof(nuint));
+        }
+        
+        private static bool IsIntObject(object obj)
+        {
+            return obj is sbyte or byte or short or ushort or int or uint or long or ulong or nint or nuint;
+        }
+        
+        private static bool IsDoubleObject(object obj)
+        {
+            return obj is double or float or Double;
+        }
+        
+        private static long GetIntegralValue(object obj)
+        {
+            return obj switch
+            {
+                sbyte sb => sb,
+                byte b => b,
+                short s => s,
+                ushort us => us,
+                int i => i,
+                uint ui => ui,
+                long l => l,
+                ulong ul => (long)ul,
+                nint ni => ni,
+                nuint nui => (long)nui,
+                _ => throw new LHInputVarSubstitutionException("Object value can not be converted to a long.")
+            };
+        }
+        
+        private static Double GetFloatingValue(object obj)
+        {
+            return obj switch
+            {
+                double d => d,
+                float f => f,
+                _ => throw new LHInputVarSubstitutionException("Object value can not be converted to a Double.")
+            };
         }
     }
 }

@@ -30,7 +30,7 @@ public class ConditionalsWhileExample {
                 WfRunVariable numDonuts = wf.addVariable(
                     "number-of-donuts",
                     VariableType.INT
-                );
+                ).required();
 
                 wf.doWhile(
                         wf.condition(numDonuts, Comparator.GREATER_THAN, 0),
