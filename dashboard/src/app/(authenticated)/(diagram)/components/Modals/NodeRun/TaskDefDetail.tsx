@@ -4,7 +4,7 @@ import { TaskAttempt } from 'littlehorse-client/proto'
 import { ClipboardIcon, RefreshCwIcon } from 'lucide-react'
 import { FC, Fragment } from 'react'
 
-import { getVariableValue, utcToLocalDateTime } from '@/app/utils'
+import { formatJsonOrReturnOriginalValue, getVariableValue, utcToLocalDateTime } from '@/app/utils'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { getTaskRun } from '../../NodeTypes/Task/getTaskRun'
 import { AccordionNode } from './AccordionContent'
@@ -144,7 +144,9 @@ export function AttemptErrorExceptionOutput({ attempt }: { attempt: TaskAttempt 
       <pre className="overflow-auto">
         {attempt.error && attempt.error.message}
         {attempt.exception && attempt.exception.message}
-        {attempt.output && getVariableValue(attempt.output)}
+        {attempt.output && typeof getVariableValue(attempt.output) === 'string'
+          ? formatJsonOrReturnOriginalValue(getVariableValue(attempt.output) as string)
+          : String(getVariableValue(attempt.output))}
       </pre>
     </div>
   )
