@@ -8,7 +8,6 @@ import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
 import { NodeRunsList } from '@/app/(authenticated)/(diagram)/components/NodeRunsList'
 const Node: FC<NodeProps> = ({ data }) => {
-
   const { fade, nodeRunsList } = data
   const { setThread } = useThread()
   if (data.startThread === undefined) return
@@ -37,9 +36,9 @@ const Node: FC<NodeProps> = ({ data }) => {
             </ul>
           </div>
         )}
-           <NodeRunsList nodeRuns={nodeRunsList} />
+        <NodeRunsList nodeRuns={nodeRunsList} />
       </NodeDetails>
-   
+
       <Fade fade={fade} status={data.nodeRun?.status}>
         <div className="relative cursor-pointer">
           <div className="ml-1 flex h-6 w-6 rotate-45 items-center justify-center border-[2px] border-gray-500 bg-gray-200">
