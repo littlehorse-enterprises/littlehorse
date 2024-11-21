@@ -768,14 +768,6 @@ public class LHServerConfig extends ConfigBase {
         return defaultVal;
     }
 
-    /*
-     * EXPERIMENTAL: Internal config to determine whether the server should leave the
-     * group on shutdown
-     */
-    public boolean leaveGroupOnShutdown() {
-        return getOrSetDefault(X_LEAVE_GROUP_ON_SHUTDOWN_KEY, "false").equals("true");
-    }
-
     public Properties getCoreStreamsConfig() {
         Properties result = getBaseStreamsConfig();
         result.put("application.id", getKafkaGroupId("core"));
@@ -886,8 +878,11 @@ public class LHServerConfig extends ConfigBase {
         props.put(
                 StreamsConfig.adminClientPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
 
-        if (getOrSetDefault(X_LEAVE_GROUP_ON_SHUTDOWN_KEY, "false").equals("true")) {
-            log.warn("Using experimental internal config to leave group on shutdonw!");
+        if (getOrSetDefault(X_LEAVE_GROUP_ON_SHUTDOWN_KEY, "true").equalsIgnoreCase("false")) {
+            log.warn(
+                    "Using experimental internal config LHS_X_LEAVE_GROUP_ON_SHUTDOWN to NOT leave group on shutdown!");
+            props.put(StreamsConfig.consumerPrefix("internal.leave.group.on.close"), false);
+        } else {
             props.put(StreamsConfig.consumerPrefix("internal.leave.group.on.close"), true);
         }
 
