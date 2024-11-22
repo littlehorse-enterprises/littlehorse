@@ -29,7 +29,7 @@ export const Variables: FC<VariablesProps> = ({ variableDefs, variables }) => {
           <span className="rounded bg-green-300 p-1 text-xs">{accessLevels[variable.accessLevel]}</span>
           <span>=</span>
           <span className="truncate">
-            {getVariableValue(variables.find(v => v.id?.name === variable.varDef?.name)?.value)}
+            {getVariableValue(variables.find(v => v.id?.name === variable.varDef?.name)?.value)?.toString()}
           </span>
         </div>
       ))}

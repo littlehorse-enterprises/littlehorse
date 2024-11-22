@@ -1,6 +1,8 @@
 package io.littlehorse.server.streams.topology.core;
 
+import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
@@ -21,7 +23,9 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class WfService {
 
     private final ReadOnlyMetadataManager metadataManager;
@@ -112,8 +116,9 @@ public class WfService {
         PrincipalModel principalModel = metadataManager.get(id);
 
         if (principalModel == null && id.getId().equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
-            // If Anonymous Principal missing from store (should never happen...)
-            throw new IllegalStateException("Anonymous Principal missing from store...");
+            log.info(
+                    "Anonymous Principal not found in store, likely due to initialization of global store. Should resolve within seconds.");
+            throw new LHApiException(Status.UNAVAILABLE, "Server Initializing");
         }
 
         return principalModel;
