@@ -44,7 +44,3 @@ export const WfSpecTable: FC<SearchResultProps> = ({ pages = [] }) => {
     </div>
   )
 }
-type wfSpecData = {
-  name: string
-  latestVersion: string
-}
