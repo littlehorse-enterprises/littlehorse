@@ -8,7 +8,7 @@ namespace LittleHorse.Sdk.Worker
 {
     public class VariableMapping
     {
-        private ILogger? _logger;
+        private ILogger<VariableMapping>? _logger;
         private string? _name;
         private Type _type;
         private int _position;
@@ -45,14 +45,14 @@ namespace LittleHorse.Sdk.Worker
             switch (val.ValueCase)
             {
                 case VariableValue.ValueOneofCase.Int:
-                    if (_type == typeof(long) || _type == typeof(long?))
+                    if (LHMappingHelper.IsInt(_type))
                     {
                         return val.Int;
                     }
 
                     return (int)val.Int;
                 case VariableValue.ValueOneofCase.Double:
-                    if (_type == typeof(double) || _type == typeof(double?))
+                    if (LHMappingHelper.IsFloat(_type))
                     {
                         return val.Double;
                     }
