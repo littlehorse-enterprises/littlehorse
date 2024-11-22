@@ -99,9 +99,16 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
         VariableAssignment: Protobuf.
     """
     if isinstance(value, NodeOutput):
-        raise ValueError(
-            "Cannot use NodeOutput directly as input to task. "
-            "First save to a WfRunVariable."
+        jsonpath: Optional[str] = None
+
+        if value.json_path is not None:
+            jsonpath = value.json_path
+
+        return VariableAssignment(
+            node_output=VariableAssignment.NodeOutputReference(
+                node_name=value.node_name,
+            ),
+            json_path=jsonpath,
         )
 
     if isinstance(value, LHFormatString):

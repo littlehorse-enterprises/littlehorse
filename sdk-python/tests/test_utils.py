@@ -214,14 +214,17 @@ class TestProtoUtils(unittest.TestCase):
         )
 
         # a NodeOutput
-        with self.assertRaises(ValueError) as exception_context:
-            to_variable_assignment(NodeOutput(""))
-
+        node_output = NodeOutput("some-node")
         self.assertEqual(
-            "Cannot use NodeOutput directly as input to task. "
-            "First save to a WfRunVariable.",
-            str(exception_context.exception),
+            to_variable_assignment(node_output).node_output.node_name,
+            "some-node",
         )
+
+        # a NodeOutput with jsonpath
+        node_output = node_output.with_json_path("$.asdf")
+        var_assn = to_variable_assignment(node_output)
+        self.assertEqual(var_assn.node_output.node_name, "some-node")
+        self.assertEqual(var_assn.json_path, "$.asdf")
 
         # a WfRunVariable
         wf_run_variable = WfRunVariable(

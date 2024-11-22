@@ -769,6 +769,7 @@ have to worry about this in daily LittleHorse usage.
 | `variable_name` | oneof `source`| string | Assign the value from a variable. |
 | `literal_value` | oneof `source`| [VariableValue](#variablevalue) | Assign a literal value |
 | `format_string` | oneof `source`| [VariableAssignment.FormatString](#variableassignmentformatstring) | Assign a format string |
+| `node_output` | oneof `source`| [VariableAssignment.NodeOutputReference](#variableassignmentnodeoutputreference) | Assign the value of a NodeOutput. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -783,6 +784,22 @@ A FormatString formats a template String with values from the WfRun.
 | ----- | ----  | ---- | ----------- |
 | `format` | | [VariableAssignment](#variableassignment) | A VariableAssignment which must resolve to a String that has format args. A valid string is "This is a format string with three args: {0}, {1}, {2}" |
 | `args` | repeated| [VariableAssignment](#variableassignment) | VariableAssignments which fill out the args. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `VariableAssignment.NodeOutputReference` {#variableassignmentnodeoutputreference}
+
+A NodeOutputReference allows you to assign a value by getting the output of
+a NodeRun from a specified Node. If there are multiple NodeRun's of the specified
+Node (for example, if there is a loop in the ThreadSpec), then the most recent
+NodeRun is used. Can only specify a Node that is in the same ThreadSpec.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `node_name` | | string | The name of the Node to pull output from. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
