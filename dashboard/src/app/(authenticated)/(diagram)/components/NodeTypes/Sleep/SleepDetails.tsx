@@ -3,10 +3,7 @@ import { FC } from 'react'
 import { NodeDetails } from '../NodeDetails'
 import { getVariable, formatTime } from '@/app/utils'
 import { NodeRunsList } from '../../NodeRunsList'
-export const SleepDetails: FC<{ sleepNode?: SleepNode, nodeRunsList: [NodeRun] }> = ({
-  sleepNode,
-  nodeRunsList,
-}) => {
+export const SleepDetails: FC<{ sleepNode?: SleepNode; nodeRunsList: [NodeRun] }> = ({ sleepNode, nodeRunsList }) => {
   if (!sleepNode) return
 
   const timeValue = getVariable(sleepNode?.rawSeconds)
