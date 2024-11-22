@@ -1,9 +1,11 @@
 package io.littlehorse.test;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.TaskDefId;
+import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
 import io.littlehorse.test.exception.LHTestInitializationException;
@@ -11,8 +13,11 @@ import io.littlehorse.test.internal.TestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -123,10 +128,37 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
 
             List<PutWorkflowEventDefRequest> workflowEvents = testContext.discoverWorkflowEvents(testInstance);
             workflowEvents.forEach(testContext::registerWorkflowEventDef);
+            maybeStartWorkers(testInstance, testContext.getConfig());
         } catch (IllegalAccessException e) {
             throw new LHTestInitializationException("Something went wrong registering task workers", e);
         }
         testContext.instrument(testInstance);
+    }
+
+    private void maybeStartWorkers(Object testInstance, LHConfig config) throws IllegalAccessException {
+        WithWorkers workersMetadata = testInstance.getClass().getAnnotation(WithWorkers.class);
+        if (workersMetadata != null) {
+            String methodSourceName = workersMetadata.value();
+            try {
+                Object executable =
+                        testInstance.getClass().getMethod(methodSourceName).invoke(testInstance);
+                List<LHTaskWorker> workers = new ArrayList<>();
+                for (Method declaredMethod : executable.getClass().getDeclaredMethods()) {
+                    if (declaredMethod.getAnnotation(LHTaskMethod.class) != null) {
+                        String taskDefName =
+                                declaredMethod.getAnnotation(LHTaskMethod.class).value();
+                        LHTaskWorker worker = new LHTaskWorker(executable, taskDefName, config);
+                        workers.add(worker);
+                    }
+                }
+                for (LHTaskWorker worker : workers) {
+                    worker.registerTaskDef();
+                    worker.start();
+                }
+            } catch (NoSuchMethodException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override

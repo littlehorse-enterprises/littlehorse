@@ -1,19 +1,24 @@
 package e2e;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
+import io.littlehorse.test.WithWorkers;
 import io.littlehorse.test.WorkflowVerifier;
 import org.junit.jupiter.api.Test;
 
 @LHTest
+@WithWorkers("basicWorker")
 public class BasicTest {
 
     @LHWorkflow("test-basic")
     private Workflow basicWf;
+
+    private LHConfig config;
 
     private WorkflowVerifier verifier;
 
@@ -29,8 +34,15 @@ public class BasicTest {
         });
     }
 
-    @LHTaskMethod("ag-one")
-    public boolean one() {
-        return true;
+    public Object basicWorker() {
+        return new BasicWorker();
+    }
+
+    public class BasicWorker {
+
+        @LHTaskMethod("ag-one")
+        public boolean one() {
+            return true;
+        }
     }
 }
