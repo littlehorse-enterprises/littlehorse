@@ -1,32 +1,25 @@
-import { FC, Fragment, useMemo } from 'react'
+import { FC, Fragment, useEffect, useMemo, useState } from 'react'
 import { SearchResultProps } from '.'
-import { WfSpecId } from 'littlehorse-client/proto'
-
 import { TagIcon } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { useRouter } from 'next/navigation'
-
+import { getLatestWfSpecs } from '@/app/actions/getLatestWfSpec'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
+import { WfSpecData } from '@/types'
 export const WfSpecTable: FC<SearchResultProps> = ({ pages = [] }) => {
   const router = useRouter()
+  const [wfSpecs, setWfSpecs] = useState<WfSpecData[]>([])
+  const { tenantId } = useWhoAmI()
 
   if (pages.length === 0) {
     return <div className="flex min-h-[360px] items-center justify-center text-center italic">No WfSpecs</div>
   }
 
-  const wfSpecs = useMemo(() => {
-    const specMap = new Map<string, wfSpecData>()
-
-    pages
-      .flatMap(page => page.results)
-      .reverse()
-      .forEach(({ name, majorVersion, revision }: WfSpecId) => {
-        if (!specMap.has(name)) {
-          specMap.set(name, { name, latestVersion: `${majorVersion}.${revision}` })
-        }
-      })
-
-    return Array.from(specMap.values())
-  }, [pages])
+  useEffect(() => {
+    if (!tenantId) return
+    const wfSpecNames = pages.flatMap(page => page.results).map(wfSpec => wfSpec.name)
+    getLatestWfSpecs(tenantId, wfSpecNames).then(setWfSpecs)
+  }, [pages, tenantId])
 
   return (
     <div className="py-4">

@@ -17,3 +17,8 @@ export type VersionList = {
   versions: string[]
   bookmark?: string
 }
+
+export type WfSpecData = {
+  name: string
+  latestVersion: string
+}
