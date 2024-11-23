@@ -11,7 +11,6 @@ import io.littlehorse.test.internal.TestExecutionContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.testcontainers.shaded.org.apache.commons.lang3.NotImplementedException;
 
 public class VerifyTaskRunOutputsStep extends AbstractStep {
 
@@ -66,6 +65,6 @@ public class VerifyTaskRunOutputsStep extends AbstractStep {
                 return first.getInt() == second.getInt();
             default:
         }
-        throw new NotImplementedException("As of now, only INT values are supported");
+        throw new UnsupportedOperationException("As of now, only INT values are supported");
     }
 }

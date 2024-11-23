@@ -1,18 +1,26 @@
 package io.littlehorse.test;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.TaskDefId;
+import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
 import io.littlehorse.test.exception.LHTestInitializationException;
-import io.littlehorse.test.internal.StandaloneTestBootstrapper;
+import io.littlehorse.test.internal.TestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -22,17 +30,68 @@ import org.junit.jupiter.api.extension.TestInstancePreDestroyCallback;
 
 public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor, TestInstancePreDestroyCallback {
 
+    public static final String BOOTSTRAPPER_CLASS_PROPERTY = "bootstrapper.class";
+    public static final String BOOTSTRAPPER_CLASS_ENV =
+            BOOTSTRAPPER_CLASS_PROPERTY.toUpperCase().replace(".", "_");
+    public static final String TEST_PROPERTIES_FILE = "test.properties";
     private static final ExtensionContext.Namespace LH_TEST_NAMESPACE =
             ExtensionContext.Namespace.create(LHExtension.class);
     private static final String LH_TEST_CONTEXT = "LH-test-context";
+    private static final Properties testConfig;
+    private static final TestBootstrapper testBootstrapper;
+
+    static {
+        testConfig = loadProperties();
+        testBootstrapper = loadBootstrap();
+    }
+
+    private static TestBootstrapper loadBootstrap() {
+        try {
+            Object bootstrapName = testConfig.get(BOOTSTRAPPER_CLASS_PROPERTY);
+
+            if (bootstrapName == null) {
+                throw new IllegalStateException("bootstrapper.class property not provided");
+            }
+
+            return (TestBootstrapper) Class.forName(bootstrapName.toString())
+                    .getDeclaredConstructor()
+                    .newInstance();
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static Properties loadProperties() {
+        Properties testConfig = new Properties();
+
+        InputStream configStream = LHExtension.class.getClassLoader().getResourceAsStream(TEST_PROPERTIES_FILE);
+        if (configStream != null) {
+            try {
+                testConfig.load(configStream);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        // system properties overwrite the file
+        if (System.getProperty(BOOTSTRAPPER_CLASS_PROPERTY) != null) {
+            testConfig.put(BOOTSTRAPPER_CLASS_PROPERTY, System.getProperty(BOOTSTRAPPER_CLASS_PROPERTY));
+        }
+
+        // environment variables overwrite system properties
+        if (System.getenv(BOOTSTRAPPER_CLASS_ENV) != null) {
+            testConfig.put(BOOTSTRAPPER_CLASS_PROPERTY, System.getenv(BOOTSTRAPPER_CLASS_ENV));
+        }
+
+        return testConfig;
+    }
 
     @Override
     public void beforeAll(ExtensionContext context) {
         Awaitility.setDefaultPollInterval(Duration.of(40, ChronoUnit.MILLIS));
         Awaitility.setDefaultTimeout(Duration.of(3500, ChronoUnit.MILLIS));
         getStore(context)
-                .getOrComputeIfAbsent(
-                        LH_TEST_CONTEXT, s -> new TestContext(new StandaloneTestBootstrapper()), TestContext.class);
+                .getOrComputeIfAbsent(LH_TEST_CONTEXT, s -> new TestContext(testBootstrapper), TestContext.class);
     }
 
     private ExtensionContext.Store getStore(ExtensionContext context) {
@@ -69,10 +128,37 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
 
             List<PutWorkflowEventDefRequest> workflowEvents = testContext.discoverWorkflowEvents(testInstance);
             workflowEvents.forEach(testContext::registerWorkflowEventDef);
+            maybeStartWorkers(testInstance, testContext.getConfig());
         } catch (IllegalAccessException e) {
             throw new LHTestInitializationException("Something went wrong registering task workers", e);
         }
         testContext.instrument(testInstance);
+    }
+
+    private void maybeStartWorkers(Object testInstance, LHConfig config) throws IllegalAccessException {
+        WithWorkers workersMetadata = testInstance.getClass().getAnnotation(WithWorkers.class);
+        if (workersMetadata != null) {
+            String methodSourceName = workersMetadata.value();
+            try {
+                Object executable =
+                        testInstance.getClass().getMethod(methodSourceName).invoke(testInstance);
+                List<LHTaskWorker> workers = new ArrayList<>();
+                for (Method declaredMethod : executable.getClass().getDeclaredMethods()) {
+                    if (declaredMethod.getAnnotation(LHTaskMethod.class) != null) {
+                        String taskDefName =
+                                declaredMethod.getAnnotation(LHTaskMethod.class).value();
+                        LHTaskWorker worker = new LHTaskWorker(executable, taskDefName, config);
+                        workers.add(worker);
+                    }
+                }
+                for (LHTaskWorker worker : workers) {
+                    worker.registerTaskDef();
+                    worker.start();
+                }
+            } catch (NoSuchMethodException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override
