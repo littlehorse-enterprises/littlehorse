@@ -142,7 +142,7 @@ public class JsonVariableStorageManagerTest {
 
     @Test
     void storeLongAttributeValueText() {
-        String expectedStoreKey = "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.about_"
+        String expectedStoreKey = "5/__wfSpecId_testWfSpecName/00000/00000__testVariable\\_$.about_"
                 + LHUtil.toLHDbSearchFormat("Consequat exercitation"
                         + " officia ut mollit in aute amet. Consequat laborum elit id incididunt quis"
                         + " aliquip pariatur magna eu velit ad dolore. Consectetur excepteur ut sit"
@@ -152,7 +152,7 @@ public class JsonVariableStorageManagerTest {
                         + " qui pariatur. Incididunt fugiat enim duis consequat mollit nisi elit"
                         + " pariatur et excepteur id voluptate dolor.\r\n");
 
-        String prefixToIgnore = "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.about_";
+        String prefixToIgnore = "5/__wfSpecId_testWfSpecName/00000/00000__testVariable\\_$.about_";
         int ignoredLength = prefixToIgnore.length();
 
         Assertions.assertThat(expectedStoreKey.length()).isEqualTo(64 + 16 + ignoredLength);
@@ -164,33 +164,33 @@ public class JsonVariableStorageManagerTest {
     @Test
     void storeEmailAttributeValue() {
         String expectedStoreKey =
-                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.profile.email_forbesbooth@quarex.com";
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable\\_$.profile.email_forbesbooth@quarex.com";
         Assertions.assertThat(storedTagPrefixStoreKeys()).contains(expectedStoreKey);
     }
 
     @Test
     void storeInnerArrayObject() {
         List<String> expectedKeys = List.of(
-                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_ex",
-                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_fugiat",
-                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_id",
-                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_labore",
-                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_dolor",
-                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_consectetur",
-                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.tags_veniam");
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable\\_$.tags_ex",
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable\\_$.tags_fugiat",
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable\\_$.tags_id",
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable\\_$.tags_labore",
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable\\_$.tags_dolor",
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable\\_$.tags_consectetur",
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable\\_$.tags_veniam");
         Assertions.assertThat(storedTagPrefixStoreKeys()).containsAll(expectedKeys);
     }
 
     @Test
     void storeDoubleAttributeValue() {
-        String expectedStoreKey = "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.balance_2759.634399439295";
+        String expectedStoreKey = "5/__wfSpecId_testWfSpecName/00000/00000__testVariable\\_$.balance_2759.634399439295";
         Assertions.assertThat(storedTagPrefixStoreKeys()).contains(expectedStoreKey);
     }
 
     @Test
     void preventStorageForNonIndexedAttributes() {
         String expectedStoreKey =
-                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable_$.registered_2018-09-02T10:37:59" + " +05:00";
+                "5/__wfSpecId_testWfSpecName/00000/00000__testVariable\\_$.registered_2018-09-02T10:37:59" + " +05:00";
         Assertions.assertThat(storedTagPrefixStoreKeys()).doesNotContain(expectedStoreKey);
     }
 
@@ -200,7 +200,7 @@ public class JsonVariableStorageManagerTest {
                 "5/__wfSpecId_testWfSpecName/00000/00000__test_asdf",
                 "5/__wfSpecId_testWfSpecName/00000/00000__test_fdsa",
                 "5/__wfSpecId_testWfSpecName/00000/00000__test_1234",
-                "5/__wfSpecId_testWfSpecName/00000/00000__test_$.foo_bar");
+                "5/__wfSpecId_testWfSpecName/00000/00000__test\\_$.foo_bar");
         Assertions.assertThat(storedTagPrefixStoreKeys()).containsAll(expectedKeys);
     }
 }

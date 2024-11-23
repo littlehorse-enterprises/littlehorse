@@ -101,7 +101,6 @@ namespace LittleHorse.Sdk.Worker.Internal
 
         private void HandleRegisterTaskWorkResponse(RegisterTaskWorkerResponse response)
         {
-
             response.YourHosts.ToList().ForEach(host =>
             {
                 if (!IsAlreadyRunning(host))
@@ -118,7 +117,6 @@ namespace LittleHorse.Sdk.Worker.Internal
                         _logger?.LogError(ex, "Exception on HandleRegisterTaskWorkResponse.");
                     }
                 }
-
             });
 
             var lastIndexOfRunningConnection = _runningConnections.Count() - 1;

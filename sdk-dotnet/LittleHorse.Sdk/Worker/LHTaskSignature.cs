@@ -43,7 +43,7 @@ namespace LittleHorse.Sdk.Worker
 
             if (methodsWithTaskWorkerAttrsAndDefName.Count() > 1)
             {
-                throw new LHTaskSchemaMismatchException("Found two annotated task methods!");
+                throw new LHTaskSchemaMismatchException("Found more than one annotated task methods!");
             }
 
             TaskMethod = methodsWithTaskWorkerAttrsAndDefName.Single();
