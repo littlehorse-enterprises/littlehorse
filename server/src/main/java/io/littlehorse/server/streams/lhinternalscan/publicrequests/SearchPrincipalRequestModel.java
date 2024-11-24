@@ -76,8 +76,6 @@ public class SearchPrincipalRequestModel
             case TENANTID:
                 builder.setTenantId(tenantId);
                 break;
-            case PRINCIPALCRITERIA_NOT_SET:
-                throw new LHApiException(Status.FAILED_PRECONDITION, "Principal query criteria is not valid.");
         }
 
         return builder;
@@ -109,8 +107,6 @@ public class SearchPrincipalRequestModel
             case TENANTID:
                 tenantId = p.getTenantId();
                 break;
-            case PRINCIPALCRITERIA_NOT_SET:
-                throw new LHSerdeError("Principal query criteria is not valid.");
         }
     }
 
