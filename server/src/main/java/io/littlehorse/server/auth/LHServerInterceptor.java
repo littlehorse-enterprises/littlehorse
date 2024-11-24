@@ -4,7 +4,11 @@ import io.grpc.Metadata;
 import io.grpc.ServerInterceptor;
 import io.littlehorse.common.LHConstants;
 
-public interface ServerAuthorizer extends ServerInterceptor {
+/**
+ * Wrapper over io.grpc.ServerInterceptor. I don't think this does anything other than put
+ * a few constants into scope without imports.
+ */
+public interface LHServerInterceptor extends ServerInterceptor {
 
     String INTERNAL_PREFIX = "_";
 
