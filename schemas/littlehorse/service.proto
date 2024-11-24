@@ -285,6 +285,8 @@ service LittleHorse {
   // EXPERIMENTAL: Creates an Principal.
   rpc PutPrincipal(PutPrincipalRequest) returns (Principal) {}
 
+  rpc GetPrincipal(PrincipalId) returns (Principal) {}
+
   // Returns the Principal of the caller.
   rpc Whoami(google.protobuf.Empty) returns (Principal) {}
 

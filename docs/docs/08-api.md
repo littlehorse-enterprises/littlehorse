@@ -468,6 +468,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 |  [PutPrincipalRequest](#putprincipalrequest)  |  [Principal](#principal)  | EXPERIMENTAL: Creates an Principal. |
 
+### RPC `GetPrincipal` {#getprincipal}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [PrincipalId](#principalid)  |  [Principal](#principal)  |  |
+
 ### RPC `Whoami` {#whoami}
 
 | Request Type | Response Type | Description |
