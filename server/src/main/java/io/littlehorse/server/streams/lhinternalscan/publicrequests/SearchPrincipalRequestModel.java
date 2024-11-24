@@ -75,6 +75,8 @@ public class SearchPrincipalRequestModel
             case TENANTID:
                 builder.setTenantId(tenantId);
                 break;
+            default:
+                break;
         }
 
         return builder;
@@ -105,6 +107,8 @@ public class SearchPrincipalRequestModel
                 break;
             case TENANTID:
                 tenantId = p.getTenantId();
+                break;
+            default:
                 break;
         }
     }
