@@ -1058,7 +1058,8 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 .metadataManager()
                 .getOrThrow(
                         principalId,
-                        () -> new LHApiException(Status.NOT_FOUND, "Could not find Principal %s".formatted(principalId)));
+                        () -> new LHApiException(
+                                Status.NOT_FOUND, "Could not find Principal %s".formatted(principalId)));
         ctx.onNext(result.toProto().build());
         ctx.onCompleted();
     }
