@@ -181,9 +181,11 @@ export interface PutTaskDefRequest {
   outputSchema?: TaskDefOutputSchema | undefined;
 }
 
-/** EXPERIMENTAL: Creates a WorkflowEventDef */
+/** Creates a WorkflowEventDef */
 export interface PutWorkflowEventDefRequest {
+  /** The name of the resulting WorkflowEventDef. */
   name: string;
+  /** The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef. */
   type: VariableType;
 }
 
@@ -299,6 +301,12 @@ export interface DeleteExternalEventDefRequest {
   id: ExternalEventDefId | undefined;
 }
 
+/** Deletes an WorkflowEventDef */
+export interface DeleteWorkflowEventDefRequest {
+  /** The ID of the WorkflowEventDef to delete. */
+  id: WorkflowEventDefId | undefined;
+}
+
 /** Create a Workflow Run. */
 export interface RunWfRequest {
   /** The name of the WfSpec to run. */
@@ -402,7 +410,7 @@ export interface AwaitWorkflowEventRequest {
     | undefined;
   /**
    * The IDs of the WorkflowEventDef that must be thrown. The request will return the first matching
-   * WorkflowEvent is thrown. If event_def_ids is empty, then the request will return the first
+   * WorkflowEvent thrown. If event_def_ids is empty, then the request will return the first
    * WorkflowEvent thrown by the WfRun.
    */
   eventDefIds: WorkflowEventDefId[];
@@ -843,6 +851,32 @@ export interface ExternalEventDefIdList {
   bookmark?: Buffer | undefined;
 }
 
+/** Search for WorkflowEventDefs based on certain criteria. */
+export interface SearchWorkflowEventDefRequest {
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?:
+    | number
+    | undefined;
+  /** Optionally search only for WorkflowEventDef's whose name starts with this prefix. */
+  prefix?: string | undefined;
+}
+
+/** List of WorkflowEventDef Id's. */
+export interface WorkflowEventDefIdList {
+  /** The resulting object id's. */
+  results: WorkflowEventDefId[];
+  /**
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   */
+  bookmark?: Buffer | undefined;
+}
+
 /** Search for all available TenantIds for current Principal */
 export interface SearchTenantRequest {
   /** Maximum results to return in one request. */
@@ -944,6 +978,50 @@ export interface ExternalEventIdList {
 }
 
 /**
+ * Search for WorkflowEvents based on certain criteria.
+ *
+ * Required field WorkflowEventDefId specifies which WorkflowEventDef
+ * to search for WorkflowEvents under.
+ */
+export interface SearchWorkflowEventRequest {
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?:
+    | number
+    | undefined;
+  /** Specifies to return only WorkflowEvent created after this time */
+  earliestStart?:
+    | string
+    | undefined;
+  /** Specifies to return only WorkflowEvent created before this time */
+  latestStart?:
+    | string
+    | undefined;
+  /**
+   * Search for WorkflowEvents by their WorkflowEventDefId
+   *
+   * * Note: If WorkflowEventDefId is not provided or does not exist,
+   *         gRPC status code 'INVALID_ARGUMENT' will be returned.
+   */
+  workflowEventDefId: WorkflowEventDefId | undefined;
+}
+
+/** List of WorkflowEvent Id's */
+export interface WorkflowEventIdList {
+  /** The resulting object id's. */
+  results: WorkflowEventId[];
+  /**
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   */
+  bookmark?: Buffer | undefined;
+}
+
+/**
  * List all NodeRun's for a given WfRun. Note that List requests return actual NodeRun Objects,
  * not NodeRunId's.
  */
@@ -1004,6 +1082,21 @@ export interface ListExternalEventsRequest {
 export interface ExternalEventList {
   /** A list of ExternalEvent objects. */
   results: ExternalEvent[];
+}
+
+/**
+ * List all WorkflowEvents for a specific WfRunId. Note that List Requests return actual
+ * WorkflowEvent objects, not WorkflowEventId's.
+ */
+export interface ListWorkflowEventsRequest {
+  /** The WfRunId for whom we list WorkflowEvent's. */
+  wfRunId: WfRunId | undefined;
+}
+
+/** A list of WorkflowEvents. */
+export interface WorkflowEventList {
+  /** A list of WorkflowEvent objects. */
+  results: WorkflowEvent[];
 }
 
 /**
@@ -1421,7 +1514,7 @@ export interface GetLatestWfSpecRequest {
 }
 
 /** The version of the LH Server according to Semantic Versioning */
-export interface ServerVersionResponse {
+export interface ServerVersion {
   /** Server Major Version */
   majorVersion: number;
   /** Server Minor Version */
@@ -2335,6 +2428,53 @@ export const DeleteExternalEventDefRequest = {
     const message = createBaseDeleteExternalEventDefRequest();
     message.id = (object.id !== undefined && object.id !== null)
       ? ExternalEventDefId.fromPartial(object.id)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseDeleteWorkflowEventDefRequest(): DeleteWorkflowEventDefRequest {
+  return { id: undefined };
+}
+
+export const DeleteWorkflowEventDefRequest = {
+  encode(message: DeleteWorkflowEventDefRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      WorkflowEventDefId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteWorkflowEventDefRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteWorkflowEventDefRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = WorkflowEventDefId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<DeleteWorkflowEventDefRequest>): DeleteWorkflowEventDefRequest {
+    return DeleteWorkflowEventDefRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DeleteWorkflowEventDefRequest>): DeleteWorkflowEventDefRequest {
+    const message = createBaseDeleteWorkflowEventDefRequest();
+    message.id = (object.id !== undefined && object.id !== null)
+      ? WorkflowEventDefId.fromPartial(object.id)
       : undefined;
     return message;
   },
@@ -4249,6 +4389,129 @@ export const ExternalEventDefIdList = {
   },
 };
 
+function createBaseSearchWorkflowEventDefRequest(): SearchWorkflowEventDefRequest {
+  return { bookmark: undefined, limit: undefined, prefix: undefined };
+}
+
+export const SearchWorkflowEventDefRequest = {
+  encode(message: SearchWorkflowEventDefRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.bookmark !== undefined) {
+      writer.uint32(10).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(16).int32(message.limit);
+    }
+    if (message.prefix !== undefined) {
+      writer.uint32(26).string(message.prefix);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchWorkflowEventDefRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchWorkflowEventDefRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.prefix = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<SearchWorkflowEventDefRequest>): SearchWorkflowEventDefRequest {
+    return SearchWorkflowEventDefRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SearchWorkflowEventDefRequest>): SearchWorkflowEventDefRequest {
+    const message = createBaseSearchWorkflowEventDefRequest();
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
+    message.prefix = object.prefix ?? undefined;
+    return message;
+  },
+};
+
+function createBaseWorkflowEventDefIdList(): WorkflowEventDefIdList {
+  return { results: [], bookmark: undefined };
+}
+
+export const WorkflowEventDefIdList = {
+  encode(message: WorkflowEventDefIdList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.results) {
+      WorkflowEventDefId.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WorkflowEventDefIdList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWorkflowEventDefIdList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.results.push(WorkflowEventDefId.decode(reader, reader.uint32()));
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<WorkflowEventDefIdList>): WorkflowEventDefIdList {
+    return WorkflowEventDefIdList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<WorkflowEventDefIdList>): WorkflowEventDefIdList {
+    const message = createBaseWorkflowEventDefIdList();
+    message.results = object.results?.map((e) => WorkflowEventDefId.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
+    return message;
+  },
+};
+
 function createBaseSearchTenantRequest(): SearchTenantRequest {
   return { limit: undefined, bookmark: undefined };
 }
@@ -4689,6 +4952,159 @@ export const ExternalEventIdList = {
   },
 };
 
+function createBaseSearchWorkflowEventRequest(): SearchWorkflowEventRequest {
+  return {
+    bookmark: undefined,
+    limit: undefined,
+    earliestStart: undefined,
+    latestStart: undefined,
+    workflowEventDefId: undefined,
+  };
+}
+
+export const SearchWorkflowEventRequest = {
+  encode(message: SearchWorkflowEventRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.bookmark !== undefined) {
+      writer.uint32(10).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(16).int32(message.limit);
+    }
+    if (message.earliestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.earliestStart), writer.uint32(26).fork()).ldelim();
+    }
+    if (message.latestStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.latestStart), writer.uint32(34).fork()).ldelim();
+    }
+    if (message.workflowEventDefId !== undefined) {
+      WorkflowEventDefId.encode(message.workflowEventDefId, writer.uint32(42).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchWorkflowEventRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchWorkflowEventRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.earliestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.latestStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.workflowEventDefId = WorkflowEventDefId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<SearchWorkflowEventRequest>): SearchWorkflowEventRequest {
+    return SearchWorkflowEventRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SearchWorkflowEventRequest>): SearchWorkflowEventRequest {
+    const message = createBaseSearchWorkflowEventRequest();
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
+    message.earliestStart = object.earliestStart ?? undefined;
+    message.latestStart = object.latestStart ?? undefined;
+    message.workflowEventDefId = (object.workflowEventDefId !== undefined && object.workflowEventDefId !== null)
+      ? WorkflowEventDefId.fromPartial(object.workflowEventDefId)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseWorkflowEventIdList(): WorkflowEventIdList {
+  return { results: [], bookmark: undefined };
+}
+
+export const WorkflowEventIdList = {
+  encode(message: WorkflowEventIdList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.results) {
+      WorkflowEventId.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WorkflowEventIdList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWorkflowEventIdList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.results.push(WorkflowEventId.decode(reader, reader.uint32()));
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<WorkflowEventIdList>): WorkflowEventIdList {
+    return WorkflowEventIdList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<WorkflowEventIdList>): WorkflowEventIdList {
+    const message = createBaseWorkflowEventIdList();
+    message.results = object.results?.map((e) => WorkflowEventId.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
+    return message;
+  },
+};
+
 function createBaseListNodeRunsRequest(): ListNodeRunsRequest {
   return { wfRunId: undefined, threadRunNumber: undefined, bookmark: undefined, limit: undefined };
 }
@@ -5005,6 +5421,98 @@ export const ExternalEventList = {
   fromPartial(object: DeepPartial<ExternalEventList>): ExternalEventList {
     const message = createBaseExternalEventList();
     message.results = object.results?.map((e) => ExternalEvent.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseListWorkflowEventsRequest(): ListWorkflowEventsRequest {
+  return { wfRunId: undefined };
+}
+
+export const ListWorkflowEventsRequest = {
+  encode(message: ListWorkflowEventsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfRunId !== undefined) {
+      WfRunId.encode(message.wfRunId, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ListWorkflowEventsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListWorkflowEventsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfRunId = WfRunId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ListWorkflowEventsRequest>): ListWorkflowEventsRequest {
+    return ListWorkflowEventsRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ListWorkflowEventsRequest>): ListWorkflowEventsRequest {
+    const message = createBaseListWorkflowEventsRequest();
+    message.wfRunId = (object.wfRunId !== undefined && object.wfRunId !== null)
+      ? WfRunId.fromPartial(object.wfRunId)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseWorkflowEventList(): WorkflowEventList {
+  return { results: [] };
+}
+
+export const WorkflowEventList = {
+  encode(message: WorkflowEventList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.results) {
+      WorkflowEvent.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WorkflowEventList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWorkflowEventList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.results.push(WorkflowEvent.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<WorkflowEventList>): WorkflowEventList {
+    return WorkflowEventList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<WorkflowEventList>): WorkflowEventList {
+    const message = createBaseWorkflowEventList();
+    message.results = object.results?.map((e) => WorkflowEvent.fromPartial(e)) || [];
     return message;
   },
 };
@@ -7116,12 +7624,12 @@ export const GetLatestWfSpecRequest = {
   },
 };
 
-function createBaseServerVersionResponse(): ServerVersionResponse {
+function createBaseServerVersion(): ServerVersion {
   return { majorVersion: 0, minorVersion: 0, patchVersion: 0, preReleaseIdentifier: undefined };
 }
 
-export const ServerVersionResponse = {
-  encode(message: ServerVersionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const ServerVersion = {
+  encode(message: ServerVersion, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.majorVersion !== 0) {
       writer.uint32(8).int32(message.majorVersion);
     }
@@ -7137,10 +7645,10 @@ export const ServerVersionResponse = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): ServerVersionResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): ServerVersion {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseServerVersionResponse();
+    const message = createBaseServerVersion();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -7181,11 +7689,11 @@ export const ServerVersionResponse = {
     return message;
   },
 
-  create(base?: DeepPartial<ServerVersionResponse>): ServerVersionResponse {
-    return ServerVersionResponse.fromPartial(base ?? {});
+  create(base?: DeepPartial<ServerVersion>): ServerVersion {
+    return ServerVersion.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<ServerVersionResponse>): ServerVersionResponse {
-    const message = createBaseServerVersionResponse();
+  fromPartial(object: DeepPartial<ServerVersion>): ServerVersion {
+    const message = createBaseServerVersion();
     message.majorVersion = object.majorVersion ?? 0;
     message.minorVersion = object.minorVersion ?? 0;
     message.patchVersion = object.patchVersion ?? 0;
@@ -7244,7 +7752,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** EXPERIMENTAL: Creates a WorkflowEventDef. */
+    /** Creates a WorkflowEventDef. */
     putWorkflowEventDef: {
       name: "PutWorkflowEventDef",
       requestType: PutWorkflowEventDefRequest,
@@ -7548,6 +8056,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Get a specific WorkflowEventDef. */
+    getWorkflowEventDef: {
+      name: "GetWorkflowEventDef",
+      requestType: WorkflowEventDefId,
+      requestStream: false,
+      responseType: WorkflowEventDef,
+      responseStream: false,
+      options: {},
+    },
     /** Get a specific WorkflowEvent. */
     getWorkflowEvent: {
       name: "GetWorkflowEvent",
@@ -7563,6 +8080,15 @@ export const LittleHorseDefinition = {
       requestType: ListExternalEventsRequest,
       requestStream: false,
       responseType: ExternalEventList,
+      responseStream: false,
+      options: {},
+    },
+    /** List WorkflowEvent's for a specific WfRun. */
+    listWorkflowEvents: {
+      name: "ListWorkflowEvents",
+      requestType: ListWorkflowEventsRequest,
+      requestStream: false,
+      responseType: WorkflowEventList,
       responseStream: false,
       options: {},
     },
@@ -7633,6 +8159,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Search for WorkflowEvents's. */
+    searchWorkflowEvent: {
+      name: "SearchWorkflowEvent",
+      requestType: SearchWorkflowEventRequest,
+      requestStream: false,
+      responseType: WorkflowEventIdList,
+      responseStream: false,
+      options: {},
+    },
     /** Search for TaskDef's. */
     searchTaskDef: {
       name: "SearchTaskDef",
@@ -7666,6 +8201,15 @@ export const LittleHorseDefinition = {
       requestType: SearchExternalEventDefRequest,
       requestStream: false,
       responseType: ExternalEventDefIdList,
+      responseStream: false,
+      options: {},
+    },
+    /** Search for WorkflowEventDef's. */
+    searchWorkflowEventDef: {
+      name: "SearchWorkflowEventDef",
+      requestType: SearchWorkflowEventDefRequest,
+      requestStream: false,
+      responseType: WorkflowEventDefIdList,
       responseStream: false,
       options: {},
     },
@@ -7810,6 +8354,14 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    deleteWorkflowEventDef: {
+      name: "DeleteWorkflowEventDef",
+      requestType: DeleteWorkflowEventDefRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
     /**
      * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
      * is the last remaining `Principal` with admin permissions. Admin permissions are defined
@@ -7909,7 +8461,7 @@ export const LittleHorseDefinition = {
       name: "GetServerVersion",
       requestType: Empty,
       requestStream: false,
-      responseType: ServerVersionResponse,
+      responseType: ServerVersion,
       responseStream: false,
       options: {},
     },
@@ -7933,7 +8485,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ExternalEventDefId,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ExternalEventDef>>;
-  /** EXPERIMENTAL: Creates a WorkflowEventDef. */
+  /** Creates a WorkflowEventDef. */
   putWorkflowEventDef(
     request: PutWorkflowEventDefRequest,
     context: CallContext & CallContextExt,
@@ -8083,6 +8635,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: AwaitWorkflowEventRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<WorkflowEvent>>;
+  /** Get a specific WorkflowEventDef. */
+  getWorkflowEventDef(
+    request: WorkflowEventDefId,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<WorkflowEventDef>>;
   /** Get a specific WorkflowEvent. */
   getWorkflowEvent(
     request: WorkflowEventId,
@@ -8093,6 +8650,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: ListExternalEventsRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ExternalEventList>>;
+  /** List WorkflowEvent's for a specific WfRun. */
+  listWorkflowEvents(
+    request: ListWorkflowEventsRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<WorkflowEventList>>;
   /**
    * Search for WfRun's. This RPC is highly useful for applications that store data
    * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
@@ -8133,6 +8695,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: SearchExternalEventRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ExternalEventIdList>>;
+  /** Search for WorkflowEvents's. */
+  searchWorkflowEvent(
+    request: SearchWorkflowEventRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<WorkflowEventIdList>>;
   /** Search for TaskDef's. */
   searchTaskDef(
     request: SearchTaskDefRequest,
@@ -8150,6 +8717,11 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: SearchExternalEventDefRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ExternalEventDefIdList>>;
+  /** Search for WorkflowEventDef's. */
+  searchWorkflowEventDef(
+    request: SearchWorkflowEventDefRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<WorkflowEventDefIdList>>;
   /** Search for all available TenantIds for current Principal */
   searchTenant(request: SearchTenantRequest, context: CallContext & CallContextExt): Promise<DeepPartial<TenantIdList>>;
   /**  */
@@ -8215,6 +8787,10 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: DeleteExternalEventDefRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<Empty>>;
+  deleteWorkflowEventDef(
+    request: DeleteWorkflowEventDefRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
   /**
    * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
    * is the last remaining `Principal` with admin permissions. Admin permissions are defined
@@ -8255,7 +8831,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   /** Returns the Principal of the caller. */
   whoami(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Gets the version of the LH Server. */
-  getServerVersion(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<ServerVersionResponse>>;
+  getServerVersion(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<ServerVersion>>;
 }
 
 export interface LittleHorseClient<CallOptionsExt = {}> {
@@ -8275,7 +8851,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ExternalEventDefId>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ExternalEventDef>;
-  /** EXPERIMENTAL: Creates a WorkflowEventDef. */
+  /** Creates a WorkflowEventDef. */
   putWorkflowEventDef(
     request: DeepPartial<PutWorkflowEventDefRequest>,
     options?: CallOptions & CallOptionsExt,
@@ -8428,6 +9004,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<AwaitWorkflowEventRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<WorkflowEvent>;
+  /** Get a specific WorkflowEventDef. */
+  getWorkflowEventDef(
+    request: DeepPartial<WorkflowEventDefId>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<WorkflowEventDef>;
   /** Get a specific WorkflowEvent. */
   getWorkflowEvent(
     request: DeepPartial<WorkflowEventId>,
@@ -8438,6 +9019,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<ListExternalEventsRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ExternalEventList>;
+  /** List WorkflowEvent's for a specific WfRun. */
+  listWorkflowEvents(
+    request: DeepPartial<ListWorkflowEventsRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<WorkflowEventList>;
   /**
    * Search for WfRun's. This RPC is highly useful for applications that store data
    * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
@@ -8478,6 +9064,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<SearchExternalEventRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ExternalEventIdList>;
+  /** Search for WorkflowEvents's. */
+  searchWorkflowEvent(
+    request: DeepPartial<SearchWorkflowEventRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<WorkflowEventIdList>;
   /** Search for TaskDef's. */
   searchTaskDef(
     request: DeepPartial<SearchTaskDefRequest>,
@@ -8498,6 +9089,11 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<SearchExternalEventDefRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ExternalEventDefIdList>;
+  /** Search for WorkflowEventDef's. */
+  searchWorkflowEventDef(
+    request: DeepPartial<SearchWorkflowEventDefRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<WorkflowEventDefIdList>;
   /** Search for all available TenantIds for current Principal */
   searchTenant(
     request: DeepPartial<SearchTenantRequest>,
@@ -8566,6 +9162,10 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<DeleteExternalEventDefRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<Empty>;
+  deleteWorkflowEventDef(
+    request: DeepPartial<DeleteWorkflowEventDefRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
   /**
    * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
    * is the last remaining `Principal` with admin permissions. Admin permissions are defined
@@ -8606,7 +9206,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   /** Returns the Principal of the caller. */
   whoami(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Gets the version of the LH Server. */
-  getServerVersion(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<ServerVersionResponse>;
+  getServerVersion(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<ServerVersion>;
 }
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;

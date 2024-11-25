@@ -338,6 +338,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     private void initializeInterrupt(ExternalEventModel trigger, InterruptDefModel idef) {
+        trigger.setClaimed(true);
         // First, stop all child threads.
         ThreadHaltReasonModel haltReason = new ThreadHaltReasonModel();
         haltReason.type = ReasonCase.PENDING_INTERRUPT;
@@ -803,12 +804,22 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                     throw new LHVarSubError(e, "Error formatting variable");
                 }
                 break;
+            case NODE_OUTPUT:
+                String nodeReferenceName = assn.getNodeOutputReference().getNodeName();
+                NodeRunModel referencedNodeRun = getMostRecentNodeRun(nodeReferenceName);
+                Optional<VariableValueModel> output = referencedNodeRun.getOutput(processorContext);
+                if (output.isEmpty()) {
+                    throw new LHVarSubError(
+                            null,
+                            "Specified node " + nodeReferenceName + " of type " + referencedNodeRun.getType()
+                                    + ", number " + referencedNodeRun.getId().getPosition() + " has no output.");
+                }
+                val = output.get();
+                break;
             case SOURCE_NOT_SET:
-                // Not possible
+                // This should have been caught by the WfSpecModel#validate()
+                throw new IllegalStateException("Invalid WfSpec with un-set VariableAssignment.");
         }
-
-        // TODO: Refactor this line
-        if (val == null) throw new RuntimeException("Not possible");
 
         if (assn.getJsonPath() != null) {
             val = val.jsonPath(assn.getJsonPath());
@@ -827,6 +838,29 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             out.setThreadRun(this);
         }
         return out;
+    }
+
+    public NodeRunModel getMostRecentNodeRun(String nodeName) throws LHVarSubError {
+        // The only way to find a previous NodeRun is to walk backwards from the current position
+        // until we either:
+        // 1) Find a NodeRun that matches the nodeName
+        // 2) Reach the Entrypoint Node
+        //
+        // If we reach the entrypoint node, it means that there is no NodeRun that satisfies
+        // the requirement; therefore we fail the Variable Assignment with LHVarSubError.
+        //
+        // TODO: We can find a way to optimize this. Range scans are expensive, and also
+        // doing it in this way means that the NodeRun's will be re-put into the GetableManager's
+        // buffer, which could get _very_ expensive.
+        for (int backwardPosition = currentNodePosition - 1; backwardPosition > 0; backwardPosition--) {
+            NodeRunModel nodeRun = this.getNodeRun(backwardPosition);
+            if (nodeRun.getNodeName().equals(nodeName)) {
+                return nodeRun;
+            } else {
+                continue;
+            }
+        }
+        throw new LHVarSubError(null, "Specified node " + nodeName + " does not have any previous runs.");
     }
 
     /**

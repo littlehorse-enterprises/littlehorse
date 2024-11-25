@@ -4,8 +4,8 @@ sidebar_label: Overview
 
 # LittleHorse Overview
 
-<div class="video-container">
-<iframe src="https://www.youtube.com/embed/ctZaChM-izY?si=Ic25sGibOjgQxPoA" class="video" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<div className="video-container">
+<iframe src="https://www.youtube.com/embed/ctZaChM-izY?si=Ic25sGibOjgQxPoA" className="video" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
 </div>
 
 <br/>
@@ -69,9 +69,7 @@ By virtue of orchestrating your workflows with LittleHorse, every step can be au
 
 The following screenshot shows a stacktrace from a failed `TaskRun` using our Java SDK. No more hours of searching through DataDog!
 
-<!-- ![Screenshot of failed TaskRun](./task-failure.png) -->
-
-![LittleHorse Dashboard](./dashboard-front-page.png)
+![Screenshot of failed TaskRun](../static/img/2024-11-21-task-failure.png)
 
 ### Flexible
 

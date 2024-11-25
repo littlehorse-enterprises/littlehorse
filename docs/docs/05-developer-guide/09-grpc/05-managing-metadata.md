@@ -387,7 +387,7 @@ public class Main {
   </TabItem>
   <TabItem value="go" label="Go">
 
-Assuming that you have a function `basic.MyWorkflow` which is a valid Workflow Function in Go, you can create a `WfSpec` as follows:
+In Go, you can create a `ExternalEventDef` as follows:
 
 ```go
 config := littlehorse.NewConfigFromEnv()
@@ -395,7 +395,7 @@ client, err := config.GetGrpcClient()
 
 resp, err := (*client).PutExternalEventDef(context.Background(),
     &lhproto.PutExternalEventDefRequest{
-        Name: "some-event",
+        Name: "my-external-event-def",
     },
 )
 ```
@@ -417,7 +417,7 @@ _, err = (*client).DeleteExternalEventDef(context.Background(), &lhproto.DeleteE
   </TabItem>
   <TabItem value="python" label="Python">
 
-In python, you can use the `littlehorse.create_external_event_def` utility to more easily create an `ExternalEventDef` as follows:
+In Python, you can use the `littlehorse.create_external_event_def` utility to more easily create an `ExternalEventDef` as follows:
 
 ```python
 from littlehorse import create_external_event_def
@@ -612,5 +612,121 @@ if __name__ == '__main__':
     client.DeleteUserTaskDef(DeleteUserTaskDefRequest(id=user_task_def_id))
 ```
 
+  </TabItem>
+</Tabs>
+
+## `WorkflowEventDef`
+
+<Tabs>
+  <TabItem value="java" label="Java" default>
+You can create, get, and delete a `WorkflowEventDef` as follows:
+
+```java
+package io.littlehorse.quickstart;
+
+import java.io.IOException;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest;
+import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WorkflowEventDef;
+import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        LHConfig config = new LHConfig();
+        LittleHorseBlockingStub client = config.getBlockingStub();
+
+        PutWorkflowEventDefRequest request = PutWorkflowEventDefRequest.newBuilder()
+                .setName("my-workflow-event-def")
+                .setType(VariableType.STR)
+                .build();
+                
+
+        client.putWorkflowEventDef(request);
+
+        // Metadata requests in LittleHorse take 50-100 ms to propagate to the global
+        // store.
+        Thread.sleep(100);
+
+        // Retrieve the WorkflowEventDef
+        WorkflowEventDefId id = WorkflowEventDefId.newBuilder()
+                .setName("my-workflow-event-def")
+                .build();
+        WorkflowEventDef eventDef = client.getWorkflowEventDef(id);
+        System.out.println(LHLibUtil.protoToJson(eventDef));
+
+        // Delete the WorkflowEventDef
+        DeleteWorkflowEventDefRequest deleteRequest = DeleteWorkflowEventDefRequest.newBuilder()
+                .setId(id)
+                .build();
+        client.deleteWorkflowEventDef(deleteRequest);
+    }
+}
+```
+  </TabItem>
+  <TabItem value="go" label="Go">
+
+In Go, you can create a `WorkflowEventDef` as follows:
+
+```go
+config := littlehorse.NewConfigFromEnv()
+client, err := config.GetGrpcClient()
+
+resp, err := (*client).PutWorkflowEventDef(context.Background(),
+    &lhproto.PutWorkflowEventDef{
+        Name: "my-workflow-event-def",
+    },
+)
+```
+
+You can get and delete `WorkflowEventDef`s as follows:
+
+```go
+workflowEventDefId := &lhproto.WorkflowEventDefId{
+    Name: "my-workflow-event-def",
+}
+eed, err := (*client).GetWorkflowEventDef(context.Background(), workflowEventDefId)
+
+// delete the WorkflowEventDef
+_, err = (*client).DeleteWorkflowEventDef(context.Background(), &lhproto.DeleteWorkflowEventDefRequest{
+    Id: workflowEventId,
+})
+```
+  </TabItem>
+  <TabItem value="python" label="Python">
+In Python, you can use the `littlehorse.create_workflow_event_def` utility to more easily create a `WorkflowEventDef` as follows:
+
+```python
+from littlehorse import create_workflow_event_def
+from littlehorse.config import LHConfig
+from littlehorse.model import *
+from google.protobuf.json_format import MessageToJson
+
+from time import sleep
+
+
+if __name__ == '__main__':
+    # Get the grpc client
+    config = LHConfig()
+    client = config.stub()
+
+    create_workflow_event_def(name="my-workflow-event-def", config=config)
+
+    # In LittleHorse, metadata updates take 50-100ms to propagate to the global
+    # store.
+    sleep(0.2)
+
+    # Fetch the WorkflowEventDef
+    workflow_event_def_id = WorkflowEventDefId(name="my-workflow-event-def")
+    event_def: WorkflowEventDef = client.GetWorkflowEventDef(workflow_event_def_id)
+    print(MessageToJson(event_def))
+
+    # Delete the WorkflowEventDef
+    client.DeleteWorkflowEventDef(DeleteWorkflowEventDefRequest(id=workflow_event_def_id))
+```
   </TabItem>
 </Tabs>

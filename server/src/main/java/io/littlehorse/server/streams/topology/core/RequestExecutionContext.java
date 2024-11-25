@@ -85,14 +85,8 @@ public class RequestExecutionContext implements ExecutionContext {
         return new ReadOnlyGetableManager(tenantCoreStore, streamsTaskId);
     }
 
-    private PrincipalModel resolvePrincipal(PrincipalIdModel clientId, TenantIdModel tenantId) {
-        if (clientId != null && tenantId != null) {
-            PrincipalModel storedPrincipal = metadataManager.get(clientId);
-            if (storedPrincipal == null) {
-                return service.getPrincipal(null);
-            }
-            return storedPrincipal;
-        } else if (clientId != null) {
+    private PrincipalModel resolvePrincipal(PrincipalIdModel clientId) {
+        if (clientId != null) {
             PrincipalModel storedPrincipal = metadataManager.get(clientId);
             if (storedPrincipal == null) {
                 return service.getPrincipal(null);
@@ -124,7 +118,7 @@ public class RequestExecutionContext implements ExecutionContext {
     }
 
     private AuthorizationContext authContextFor(PrincipalIdModel clientId, TenantIdModel tenantId) {
-        PrincipalModel resolvedPrincipal = resolvePrincipal(clientId, tenantId);
+        PrincipalModel resolvedPrincipal = resolvePrincipal(clientId);
         List<ServerACLModel> acls = new ArrayList<>();
         if (resolvedPrincipal.getPerTenantAcls().containsKey(tenantId.toString())) {
             if (this.isRequestingClusterScopedResource) {

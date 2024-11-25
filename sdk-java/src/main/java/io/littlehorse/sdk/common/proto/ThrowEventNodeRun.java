@@ -4,6 +4,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * The sub-node structure for a THROW_EVENT NodeRun.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ThrowEventNodeRun}
  */
 public final class ThrowEventNodeRun extends
@@ -41,6 +45,10 @@ private static final long serialVersionUID = 0L;
   public static final int WORKFLOW_EVENT_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WorkflowEventId workflowEventId_;
   /**
+   * <pre>
+   * The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`.
+   * </pre>
+   *
    * <code>.littlehorse.WorkflowEventId workflow_event_id = 1;</code>
    * @return Whether the workflowEventId field is set.
    */
@@ -49,6 +57,10 @@ private static final long serialVersionUID = 0L;
     return workflowEventId_ != null;
   }
   /**
+   * <pre>
+   * The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`.
+   * </pre>
+   *
    * <code>.littlehorse.WorkflowEventId workflow_event_id = 1;</code>
    * @return The workflowEventId.
    */
@@ -57,6 +69,10 @@ private static final long serialVersionUID = 0L;
     return workflowEventId_ == null ? io.littlehorse.sdk.common.proto.WorkflowEventId.getDefaultInstance() : workflowEventId_;
   }
   /**
+   * <pre>
+   * The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`.
+   * </pre>
+   *
    * <code>.littlehorse.WorkflowEventId workflow_event_id = 1;</code>
    */
   @java.lang.Override
@@ -227,6 +243,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * The sub-node structure for a THROW_EVENT NodeRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ThrowEventNodeRun}
    */
   public static final class Builder extends
@@ -406,6 +426,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.WorkflowEventId, io.littlehorse.sdk.common.proto.WorkflowEventId.Builder, io.littlehorse.sdk.common.proto.WorkflowEventIdOrBuilder> workflowEventIdBuilder_;
     /**
+     * <pre>
+     * The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventId workflow_event_id = 1;</code>
      * @return Whether the workflowEventId field is set.
      */
@@ -413,6 +437,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventId workflow_event_id = 1;</code>
      * @return The workflowEventId.
      */
@@ -424,6 +452,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventId workflow_event_id = 1;</code>
      */
     public Builder setWorkflowEventId(io.littlehorse.sdk.common.proto.WorkflowEventId value) {
@@ -440,6 +472,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventId workflow_event_id = 1;</code>
      */
     public Builder setWorkflowEventId(
@@ -454,6 +490,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventId workflow_event_id = 1;</code>
      */
     public Builder mergeWorkflowEventId(io.littlehorse.sdk.common.proto.WorkflowEventId value) {
@@ -473,6 +513,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventId workflow_event_id = 1;</code>
      */
     public Builder clearWorkflowEventId() {
@@ -486,6 +530,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventId workflow_event_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WorkflowEventId.Builder getWorkflowEventIdBuilder() {
@@ -494,6 +542,10 @@ private static final long serialVersionUID = 0L;
       return getWorkflowEventIdFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventId workflow_event_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.WorkflowEventIdOrBuilder getWorkflowEventIdOrBuilder() {
@@ -505,6 +557,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * The ID of the `WorkflowEvent` that was thrown by this `ThrowEventNodeRun`.
+     * </pre>
+     *
      * <code>.littlehorse.WorkflowEventId workflow_event_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<

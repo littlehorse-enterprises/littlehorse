@@ -110,6 +110,14 @@ func (w *WfRunVariable) WithAccessLevel(accessLevel lhproto.WfRunVariableAccessL
 	return w.withAccessLevel(accessLevel)
 }
 
+func (w *WfRunVariable) AsPublic() WfRunVariable {
+	return w.withAccessLevel(lhproto.WfRunVariableAccessLevel_PUBLIC_VAR)
+}
+
+func (w *WfRunVariable) AsInherited() WfRunVariable {
+	return w.withAccessLevel(lhproto.WfRunVariableAccessLevel_INHERITED_VAR)
+}
+
 func (w *WfRunVariable) Searchable() *WfRunVariable {
 	return w.searchableImpl()
 }

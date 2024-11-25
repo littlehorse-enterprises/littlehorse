@@ -1,6 +1,6 @@
 ﻿using LittleHorse.Common.Proto;
 
-namespace LittleHorse.Worker.Internal.Helpers
+namespace LittleHorse.Sdk.Helper
 {
     public static class LHWorkerHelper
     {

@@ -110,6 +110,9 @@ enum ACLResource {
 
     // Refers to the `TaskWorkerGroup` associated with a TaskDef
     ACL_TASK_WORKER_GROUP = 7;
+
+    // Refers to `WorkflowEventDef` and `WorkflowEvent`
+    ACL_WORKFLOW_EVENT = 8;
 }
 
 // Describes an Action that can be taken over a specific set of resources.

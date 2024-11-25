@@ -27,13 +27,35 @@ public interface WfRunVariable extends Serializable {
     WfRunVariable required();
 
     /**
-     * Marks the Variable as "Searchable", which:
-     * - Creates an Index on the Variable in the LH Data Store
-     * - Due to the fact that the Variable is now Searchable, all future WfSpec
-     *   versions must use the same Type for this Variable.
+     * Marks the Variable as "Searchable", which creates an Index on the Variable
+     * in the LH Data Store.
      * @return same {@link WfRunVariable} instance
      */
     WfRunVariable searchable();
+
+    /**
+     * Marks the Variable as a `PUBLIC_VAR`, which does three things:
+     * 1. Considers this variable in determining whether a new version of this WfSpec
+     *    should be a major version or minor revision.
+     * 2. Freezes the type of this variable so that you cannot create future WfSpec
+     *    versions with a variable of the same name and different type.
+     * 3. Allows defining child WfSpec's that use this variable.
+     *
+     * This is an advanced feature that you should use in any of the following cases:
+     * - You are treating a WfSpec as a data model and a WfRun as an instance of data.
+     * - You need child workflows to access this variable.
+     * @return same {@link WfRunVariable} instance
+     */
+    WfRunVariable asPublic();
+
+    /**
+     * Marks the Variable as a `INHERITED_VAR`, which means that it comes from the
+     * parent `WfRun`. This means that:
+     * - There must be a parent WfSpec reference.
+     * - The parent must have a PUBLIC_VAR variable of the same name and type.
+     * @return same {@link WfRunVariable} instance
+     */
+    WfRunVariable asInherited();
 
     /**
      * Marks the JSON_OBJ or JSON_ARR Variable as "Searchable", and creates an

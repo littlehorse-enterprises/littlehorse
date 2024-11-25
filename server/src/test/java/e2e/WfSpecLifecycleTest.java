@@ -71,7 +71,7 @@ public class WfSpecLifecycleTest {
 
             Workflow updatedWorkflow = Workflow.newWorkflow("sample", wf -> {
                 wf.addVariable("variable", VariableType.BOOL).required();
-                wf.addVariable("searchable", VariableType.BOOL).searchable();
+                wf.addVariable("second-required", VariableType.BOOL).required();
             });
 
             WfSpec updatedSpec = client.putWfSpec(updatedWorkflow.compileWorkflow());
@@ -180,7 +180,7 @@ public class WfSpecLifecycleTest {
 
             Workflow updatedWorkflow = Workflow.newWorkflow("sample", wf -> {
                         wf.addVariable("variable", VariableType.BOOL).required();
-                        wf.addVariable("searchable", VariableType.BOOL).searchable();
+                        wf.addVariable("searchable", VariableType.BOOL).required();
                     })
                     .withUpdateType(AllowedUpdateType.MINOR_REVISION_UPDATES);
 

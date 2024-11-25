@@ -19,7 +19,7 @@ export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: s
     (nodes: Node[], edges: Edge[]) => {
       const dagreGraph = new dagre.graphlib.Graph()
       dagreGraph.setDefaultEdgeLabel(() => ({}))
-      dagreGraph.setGraph({ rankdir: 'LR', align: 'UL', ranksep: 100 })
+      dagreGraph.setGraph({ rankdir: 'LR', align: 'DR', ranksep: 100 })
       nodes.forEach(node => {
         dagreGraph.setNode(node.id, { width: node.width, height: node.height })
       })
@@ -35,12 +35,15 @@ export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: s
         const nodeRun = nodeRuns?.find(nodeRun => {
           return nodeRun.nodeName === node.id
         })
+        const nodeRunsList = nodeRuns?.filter(nodeRun => {
+          return nodeRun.nodeName === node.id
+        })
         const fade = nodeRuns !== undefined && nodeRun === undefined
         const nodeNeedsToBeHighlighted = node.id === nodeRunNameToBeHighlighted
 
         return {
           ...node,
-          data: { ...node.data, nodeRun, fade, nodeNeedsToBeHighlighted },
+          data: { ...node.data, nodeRun, fade, nodeNeedsToBeHighlighted, nodeRunsList },
           position: { x: nodeWithPosition.x - node.width! / 2, y: nodeWithPosition.y - node.height! / 2 },
           layouted: true,
         }

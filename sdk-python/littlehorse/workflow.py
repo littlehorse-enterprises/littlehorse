@@ -28,6 +28,7 @@ from littlehorse.model import (
     TaskDefId,
     WorkflowEventDefId,
     PutExternalEventDefRequest,
+    PutWorkflowEventDefRequest,
     PutWfSpecRequest,
     AllowedUpdateType,
     VariableValue,
@@ -55,6 +56,7 @@ from littlehorse.model import (
     WfRunVariableAccessLevel,
     WorkflowRetentionPolicy,
 )
+from littlehorse.model.wf_spec_pb2 import PRIVATE_VAR
 from littlehorse.utils import negate_comparator, to_variable_value
 from littlehorse.worker import _create_task_def
 
@@ -97,9 +99,16 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
         VariableAssignment: Protobuf.
     """
     if isinstance(value, NodeOutput):
-        raise ValueError(
-            "Cannot use NodeOutput directly as input to task. "
-            "First save to a WfRunVariable."
+        jsonpath: Optional[str] = None
+
+        if value.json_path is not None:
+            jsonpath = value.json_path
+
+        return VariableAssignment(
+            node_output=VariableAssignment.NodeOutputReference(
+                node_name=value.node_name,
+            ),
+            json_path=jsonpath,
         )
 
     if isinstance(value, LHFormatString):
@@ -362,6 +371,28 @@ class WfRunVariable:
         out = WfRunVariable(self.name, self.type, self.default_value)
         out.json_path = json_path
         return out
+
+    def as_public(self) -> "WfRunVariable":
+        """Sets the access level to PUBLIC_VAR, which has three implications:
+        - Future versions of this WfSpec cannot define a variable with the
+          same name and a different type.
+        - Child workflows can access this variable.
+        - This variable is now considered in determining whether a new
+          version of the WfSpec is a majorVersion or revision.
+        """
+        self._access_level = WfRunVariableAccessLevel.PUBLIC_VAR
+        return self
+
+    def as_inherited(self) -> "WfRunVariable":
+        """Sets the access level to INHERITED_VAR, which has three implications:
+        - Future versions of this WfSpec cannot define a variable with the
+          same name and a different type.
+        - Child workflows can access this variable.
+        - This variable is now considered in determining whether a new
+          version of the WfSpec is a majorVersion or revision.
+        """
+        self._access_level = WfRunVariableAccessLevel.INHERITED_VAR
+        return self
 
     def with_access_level(
         self, access_level: WfRunVariableAccessLevel
@@ -1473,7 +1504,7 @@ class WorkflowThread:
         self,
         variable_name: str,
         variable_type: VariableType,
-        access_level: Optional[Union[WfRunVariableAccessLevel, str]] = None,
+        access_level: Optional[Union[WfRunVariableAccessLevel, str]] = PRIVATE_VAR,
         default_value: Any = None,
     ) -> WfRunVariable:
         """Defines a Variable in the ThreadSpec and returns a handle to it.
@@ -1948,3 +1979,19 @@ def create_external_event_def(
     request = PutExternalEventDefRequest(name=name)
     stub.PutExternalEventDef(request, timeout=timeout)
     logging.info(f"ExternalEventDef {name} was created:\n{to_json(request)}")
+
+
+def create_workflow_event_def(
+    name: str, type: VariableType, config: LHConfig, timeout: Optional[int] = None
+) -> None:
+    """Creates a new WorkflowEventDef at the LH Server.
+
+    Args:
+        name (str): Name of the workflow event.
+        config (LHConfig): The configuration to get connected to the LH Server.
+        timeout (Optional[int]): Timeout
+    """
+    stub = config.stub()
+    request = PutWorkflowEventDefRequest(name=name, type=type)
+    stub.PutWorkflowEventDef(request, timeout=timeout)
+    logging.info(f"WorkflowEventDef {name} was created:\n{to_json(request)}")

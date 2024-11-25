@@ -15,7 +15,7 @@ export const VARIABLE_TYPES: { [key in VariableType]: string } = {
   UNRECOGNIZED: 'Unrecognized',
 }
 
-export const SEARCH_ENTITIES = ['WfSpec', 'TaskDef', 'UserTaskDef', 'ExternalEventDef'] as const
+export const SEARCH_ENTITIES = ['WfSpec', 'TaskDef', 'UserTaskDef', 'ExternalEventDef', 'WorkflowEventDef'] as const
 export const WF_RUN_STATUSES = Object.values(LHStatus).filter(status => status !== 'UNRECOGNIZED')
 export type SearchType = (typeof SEARCH_ENTITIES)[number]
 
@@ -23,10 +23,11 @@ const toTime = (minutes: number) => {
   return minutes * 60
 }
 
-export const TIME_RANGES = [5, 15, 30, 60, 180, 360, 720, 1440, 4320] as const
+export const TIME_RANGES = [-1, 5, 15, 30, 60, 180, 360, 720, 1440, 4320] as const
 export type TimeRange = (typeof TIME_RANGES)[number]
 
 export const TIME_RANGES_NAMES: { [key in TimeRange]: string } = {
+  [-1]: '4.543 billion years',
   5: '5 minutes',
   15: '15 minutes',
   30: '30 minutes',

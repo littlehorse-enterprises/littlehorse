@@ -110,7 +110,7 @@ public class WfSpecModelTest {
     }
 
     @Test
-    public void shouldIncreaseTheMajorVersionWhenAInheritedVariableChangesItsAccessLevelToPrivate() {
+    public void shouldNotIncreaseTheMajorVersionWhenAInheritedVariableChangesItsAccessLevelToPrivate() {
         WfSpecModel oldVersion = TestUtil.wfSpec("my-parent-wf");
         ThreadVarDefModel inheritedVar =
                 new ThreadVarDefModel(variableDef, false, false, WfRunVariableAccessLevel.INHERITED_VAR);
@@ -127,11 +127,12 @@ public class WfSpecModelTest {
         wfSpec.setThreadSpecs(Map.of(wfSpec.getEntrypointThreadName(), entrypointThread));
         Assertions.assertThat(wfSpec.getId().getMajorVersion()).isEqualTo(0);
         wfSpec.validateAndMaybeBumpVersion(Optional.of(oldVersion), mockContext);
-        Assertions.assertThat(wfSpec.getId().getMajorVersion()).isEqualTo(1);
+        Assertions.assertThat(wfSpec.getId().getMajorVersion()).isEqualTo(0);
+        Assertions.assertThat(wfSpec.getId().getRevision()).isEqualTo(1);
     }
 
     @ParameterizedTest
-    @MethodSource("provideNonBreakingChangeArguments")
+    @MethodSource("provideBreakingChangeArguments")
     public void shouldNotIncreaseTheMajorVersionWhenVariablesAreStillAccessibleFromChildWorkflows(
             WfRunVariableAccessLevel from, WfRunVariableAccessLevel to) {
         WfSpecModel oldVersion = TestUtil.wfSpec("my-parent-wf");
@@ -148,19 +149,16 @@ public class WfSpecModelTest {
         wfSpec.setThreadSpecs(Map.of(wfSpec.getEntrypointThreadName(), entrypointThread));
         Assertions.assertThat(wfSpec.getId().getMajorVersion()).isEqualTo(0);
         wfSpec.validateAndMaybeBumpVersion(Optional.of(oldVersion), mockContext);
-        Assertions.assertThat(wfSpec.getId().getMajorVersion()).isEqualTo(0);
+        Assertions.assertThat(wfSpec.getId().getMajorVersion()).isEqualTo(1);
     }
 
     /*
     Access level combinations when the major version shouldn't increase
      */
-    private static Stream<Arguments> provideNonBreakingChangeArguments() {
+    private static Stream<Arguments> provideBreakingChangeArguments() {
         return Stream.of(
                 Arguments.of(WfRunVariableAccessLevel.PUBLIC_VAR, WfRunVariableAccessLevel.INHERITED_VAR),
-                Arguments.of(WfRunVariableAccessLevel.PUBLIC_VAR, WfRunVariableAccessLevel.PUBLIC_VAR),
                 Arguments.of(WfRunVariableAccessLevel.PRIVATE_VAR, WfRunVariableAccessLevel.PUBLIC_VAR),
-                Arguments.of(WfRunVariableAccessLevel.PRIVATE_VAR, WfRunVariableAccessLevel.PRIVATE_VAR),
-                Arguments.of(WfRunVariableAccessLevel.INHERITED_VAR, WfRunVariableAccessLevel.PUBLIC_VAR),
-                Arguments.of(WfRunVariableAccessLevel.INHERITED_VAR, WfRunVariableAccessLevel.INHERITED_VAR));
+                Arguments.of(WfRunVariableAccessLevel.INHERITED_VAR, WfRunVariableAccessLevel.PUBLIC_VAR));
     }
 }

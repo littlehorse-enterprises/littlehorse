@@ -1,38 +1,17 @@
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { useQuery } from '@tanstack/react-query'
-
 import { formatTime, getVariableValue } from '@/app/utils'
-import { LHStatus, Node as NodeProto } from 'littlehorse-client/proto'
-import { ExternalLinkIcon, EyeIcon, MailOpenIcon } from 'lucide-react'
+import { Node as NodeProto } from 'littlehorse-client/proto'
+import { ExternalLinkIcon, MailOpenIcon } from 'lucide-react'
 import Link from 'next/link'
-import { FC, memo, useCallback } from 'react'
+import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '..'
-import { useModal } from '../../../hooks/useModal'
+
 import { Fade } from '../Fade'
 import { NodeDetails } from '../NodeDetails'
-import { getExternalEvent } from './getExternalEvent'
+
+import { NodeRunsList } from '../../NodeRunsList'
 
 const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
-  const { tenantId } = useWhoAmI()
-  const { data: externalEvent } = useQuery({
-    queryKey: ['externalEvent', data.nodeRun, tenantId],
-    queryFn: async () => {
-      if (data.nodeRun?.externalEvent?.externalEventId)
-        return await getExternalEvent({ tenantId, ...data.nodeRun.externalEvent.externalEventId })
-      return null
-    },
-  })
-
-  const { setModal, setShowModal } = useModal()
-
-  const onClick = useCallback(() => {
-    if (!externalEvent) return
-
-    setModal({ type: 'externalEvent', data: externalEvent })
-    setShowModal(true)
-  }, [externalEvent, setModal, setShowModal])
-
   if (!data.externalEvent) return null
 
   const { fade, externalEvent: externalEventNode, nodeNeedsToBeHighlighted, nodeRun } = data
@@ -54,7 +33,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
             {
               <div className="flex gap-2 text-nowrap">
                 <div className="flex items-center justify-center">
-                  Timeout:{' '}
+                  Timeout:
                   {externalEventNode.timeoutSeconds
                     ? formatTime(getVariableValue(externalEventNode.timeoutSeconds.literalValue) as number)
                     : 'N/A'}
@@ -62,21 +41,10 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
               </div>
             }
           </div>
-          {nodeRun &&
-            (nodeRun.status == LHStatus.COMPLETED ||
-              nodeRun.status == LHStatus.ERROR ||
-              nodeRun.status == LHStatus.EXCEPTION ||
-              nodeRun.status == LHStatus.HALTED) && (
-              <div className="mt-2 flex justify-center">
-                <button className="flex items-center gap-1 p-1 text-blue-500 hover:bg-gray-200" onClick={onClick}>
-                  <EyeIcon className="h-4 w-4" />
-                  Inspect ExternalEvent
-                </button>
-              </div>
-            )}
+          <NodeRunsList nodeRuns={data?.nodeRunsList} />
         </div>
       </NodeDetails>
-      <Fade fade={fade} status={data.nodeRun?.status}>
+      <Fade fade={fade} status={data?.nodeRunsList?.[data?.nodeRunsList.length - 1]?.status}>
         <div className="relative cursor-pointer items-center justify-center text-xs">
           <div
             className={

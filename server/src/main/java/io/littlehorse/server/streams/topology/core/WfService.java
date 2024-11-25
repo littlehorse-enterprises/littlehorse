@@ -1,9 +1,9 @@
 package io.littlehorse.server.streams.topology.core;
 
+import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
-import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
-import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
@@ -16,8 +16,6 @@ import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.sdk.common.proto.ACLAction;
-import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
@@ -25,16 +23,20 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class WfService {
 
     private final ReadOnlyMetadataManager metadataManager;
     private final MetadataCache metadataCache;
+    private final ExecutionContext executionContext;
 
     public WfService(
             ReadOnlyMetadataManager metadataManager, MetadataCache metadataCache, ExecutionContext executionContext) {
         this.metadataCache = metadataCache;
         this.metadataManager = metadataManager;
+        this.executionContext = executionContext;
     }
 
     public WfSpecModel getWfSpec(String name, Integer majorVersion, Integer revision) {
@@ -111,29 +113,15 @@ public class WfService {
             id = new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL);
         }
 
-        PrincipalModel storedResult = metadataManager.get(id);
+        PrincipalModel principalModel = metadataManager.get(id);
 
-        if (storedResult == null && id.getId().equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
-            // This means that all of the following are true:
-            // - The `anonymous` Principal has not yet been modified by the customer.
-            // - We just implicitly create it.
-            return createAnonymousPrincipal();
+        if (principalModel == null && id.getId().equals(LHConstants.ANONYMOUS_PRINCIPAL)) {
+            log.info(
+                    "Anonymous Principal not found in store, likely due to initialization of global store. Should resolve within seconds.");
+            throw new LHApiException(Status.UNAVAILABLE, "Server Initializing");
         }
 
-        return storedResult;
-    }
-
-    private PrincipalModel createAnonymousPrincipal() {
-        List<ACLAction> allActions = List.of(ACLAction.ALL_ACTIONS);
-        List<ACLResource> allResources = List.of(ACLResource.ACL_ALL_RESOURCES);
-
-        ServerACLsModel acls = new ServerACLsModel();
-        acls.getAcls().add(new ServerACLModel(allResources, allActions));
-
-        PrincipalModel out = new PrincipalModel();
-        out.setId(new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL));
-        out.setGlobalAcls(acls);
-        return out;
+        return principalModel;
     }
 
     public List<PrincipalIdModel> adminPrincipalIds() {

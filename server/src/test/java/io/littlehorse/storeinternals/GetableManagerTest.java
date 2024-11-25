@@ -18,12 +18,15 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -33,7 +36,11 @@ import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
-import java.util.*;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.serialization.Serdes;
@@ -50,7 +57,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Answers;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -73,7 +80,7 @@ public class GetableManagerTest {
             new MockProcessorContext<>();
     private GetableManager getableManager;
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    @Mock
     private ProcessorExecutionContext executionContext;
 
     private AuthorizationContext testContext = new AuthorizationContextImpl(
@@ -93,7 +100,7 @@ public class GetableManagerTest {
         getableManager.put(getable);
         getableManager.commit();
 
-        final var keys = getAllKeys(store);
+        final List<String> keys = getAllKeys(store);
         assertThat(localStoreWrapper.get(getable.getObjectId().getStoreableKey(), StoredGetable.class))
                 .isNotNull();
         assertThat(keys).hasSize(1 + expectedTagsCount);
@@ -123,6 +130,21 @@ public class GetableManagerTest {
 
         List<String> keysAfterDelete = getAllKeys(store);
         assertThat(keysAfterDelete).isEmpty();
+    }
+
+    @Test
+    void deleteAllByPrefix() {
+        WfRunModel wfRunModel = TestUtil.wfRun("1234");
+        TaskRunModel taskRunModel = TestUtil.taskRun();
+
+        getableManager.put(taskRunModel);
+        getableManager.commit();
+
+        getableManager.deleteAllByPrefix(wfRunModel.getPartitionKey().get(), TaskRunModel.class);
+        getableManager.commit();
+
+        TaskRunModel storedTaskRunModel = getableManager.get(taskRunModel.getObjectId());
+        assertThat(storedTaskRunModel).isNull();
     }
 
     @NotNull
@@ -195,41 +217,6 @@ public class GetableManagerTest {
                         key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_ThisShouldBeLocal"));
     }
 
-    //     @Test
-    //     void storeRemoteStringVariableWithUserDefinedStorageType() {
-    //         when(mockCoreDao.context()).thenReturn(testContext);
-    //         VariableModel variable = TestUtil.variable("test-id");
-    //         variable.setName("variableName");
-    //         variable.getValue().setType(VariableType.STR);
-    //         variable.getValue().setStrVal("ThisShouldBeRemote");
-    //         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
-    //             VariableDefModel variableDef1 = new VariableDefModel();
-    //             variableDef1.setName("variableName");
-    //             variableDef1.setType(VariableType.STR);
-    //             variableDef1.setIndexType(IndexType.REMOTE_INDEX);
-    //             VariableDefModel variableDef2 = new VariableDefModel();
-    //             variableDef2.setName("variableName2");
-    //             variableDef2.setType(VariableType.STR);
-    //             threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
-    //         });
-    //         String expectedTagKey =
-    // "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_ThisShouldBeRemote";
-
-    //         getableStorageManager.put(variable);
-    //         getableStorageManager.commit();
-
-    //         List<RepartitionCommand> repartitionCommands = mockProcessorContext.forwarded().stream()
-    //                 .map(MockProcessorContext.CapturedForward::record)
-    //                 .map(Record::value)
-    //                 .map(CommandProcessorOutput::getPayload)
-    //                 .map(lhSerializable -> (RepartitionCommand) lhSerializable)
-    //                 .filter(repartitionCommand -> repartitionCommand.getSubCommand() instanceof CreateRemoteTag)
-    //                 .toList();
-    //         assertThat(repartitionCommands).hasSize(1);
-    //         RepartitionCommand repartitionCommand = repartitionCommands.get(0);
-    //         assertThat(repartitionCommand.getSubCommand().getPartitionKey()).isEqualTo(expectedTagKey);
-    //     }
-
     @Test
     void storeLocalIntVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
@@ -262,40 +249,6 @@ public class GetableManagerTest {
                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__variableName_20"));
     }
 
-    //     @Test
-    //     void storeRemoteIntVariableWithUserDefinedStorageType() {
-    //         when(mockCoreDao.context()).thenReturn(testContext);
-    //         VariableModel variable = TestUtil.variable("test-id");
-    //         variable.setName("variableName");
-    //         variable.getValue().setType(VariableType.INT);
-    //         variable.getValue().setIntVal(20L);
-    //         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
-    //             VariableDefModel variableDef1 = new VariableDefModel();
-    //             variableDef1.setName("variableName");
-    //             variableDef1.setType(VariableType.INT);
-    //             variableDef1.setIndexType(IndexType.REMOTE_INDEX);
-    //             VariableDefModel variableDef2 = new VariableDefModel();
-    //             variableDef2.setName("variableName2");
-    //             variableDef2.setType(VariableType.STR);
-    //             threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
-    //         });
-    //         String expectedTagKey = "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_20";
-
-    //         getableStorageManager.put(variable);
-    //         getableStorageManager.commit();
-
-    //         List<RepartitionCommand> repartitionCommands = mockProcessorContext.forwarded().stream()
-    //                 .map(MockProcessorContext.CapturedForward::record)
-    //                 .map(Record::value)
-    //                 .map(CommandProcessorOutput::getPayload)
-    //                 .map(lhSerializable -> (RepartitionCommand) lhSerializable)
-    //                 .filter(repartitionCommand -> repartitionCommand.getSubCommand() instanceof CreateRemoteTag)
-    //                 .toList();
-    //         assertThat(repartitionCommands).hasSize(1);
-    //         RepartitionCommand repartitionCommand = repartitionCommands.get(0);
-    //         assertThat(repartitionCommand.getSubCommand().getPartitionKey()).isEqualTo(expectedTagKey);
-    //     }
-
     @Test
     void storeLocalDoubleVariableWithUserDefinedStorageType() {
         VariableModel variable = TestUtil.variable("test-id");
@@ -327,40 +280,6 @@ public class GetableManagerTest {
                 .anyMatch(key -> key.contains("5/__majorVersion_testWfSpecName/00000__variableName_21.0"))
                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__variableName_21.0"));
     }
-
-    //     @Test
-    //     void storeRemoteDoubleVariableWithUserDefinedStorageType() {
-    //         when(mockCoreDao.context()).thenReturn(testContext);
-    //         VariableModel variable = TestUtil.variable("test-id");
-    //         variable.setName("variableName");
-    //         variable.getValue().setType(VariableType.DOUBLE);
-    //         variable.getValue().setDoubleVal(21.0);
-    //         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
-    //             VariableDefModel variableDef1 = new VariableDefModel();
-    //             variableDef1.setName("variableName");
-    //             variableDef1.setType(VariableType.DOUBLE);
-    //             variableDef1.setIndexType(IndexType.REMOTE_INDEX);
-    //             VariableDefModel variableDef2 = new VariableDefModel();
-    //             variableDef2.setName("variableName2");
-    //             variableDef2.setType(VariableType.STR);
-    //             threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
-    //         });
-    //         String expectedStoreKey = "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0";
-
-    //         getableStorageManager.put(variable);
-    //         getableStorageManager.commit();
-
-    //         List<RepartitionCommand> repartitionCommands = mockProcessorContext.forwarded().stream()
-    //                 .map(MockProcessorContext.CapturedForward::record)
-    //                 .map(Record::value)
-    //                 .map(CommandProcessorOutput::getPayload)
-    //                 .map(lhSerializable -> (RepartitionCommand) lhSerializable)
-    //                 .filter(repartitionCommand -> repartitionCommand.getSubCommand() instanceof CreateRemoteTag)
-    //                 .toList();
-    //         assertThat(repartitionCommands).hasSize(1);
-    //         RepartitionCommand repartitionCommand = repartitionCommands.get(0);
-    //         assertThat(repartitionCommand.getSubCommand().getPartitionKey()).isEqualTo(expectedStoreKey);
-    //     }
 
     private List<RepartitionCommand> remoteTagsCreated() {
         return mockProcessorContext.forwarded().stream()
@@ -406,63 +325,13 @@ public class GetableManagerTest {
         assertThat(keys)
                 .hasSize(13)
                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
-                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.name_test"))
-                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.age_20"))
-                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.car.brand_Ford"))
+                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName\\_$.name_test"))
+                .anyMatch(key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName\\_$.age_20"))
+                .anyMatch(
+                        key -> key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName\\_$.car.brand_Ford"))
                 .anyMatch(key ->
-                        key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName_$.car.model_Escape"));
+                        key.contains("5/__wfSpecId_testWfSpecName/00000/00000__variableName\\_$.car.model_Escape"));
     }
-
-    //     @Test
-    //     void storeRemoteJsonVariablesWithUserDefinedStorageType() {
-    //         when(mockCoreDao.context()).thenReturn(testContext);
-    //         VariableModel variable = TestUtil.variable("test-id");
-    //         variable.setName("variableName");
-    //         variable.getValue().setType(VariableType.JSON_OBJ);
-    //         variable.getValue()
-    //                 .setJsonObjVal(Map.of("name", "test", "age", 20, "car", Map.of("brand", "Ford", "model",
-    // "Escape")));
-    //         variable.getWfSpec().getThreadSpecs().forEach((s, threadSpec) -> {
-    //             VariableDefModel variableDef1 = new VariableDefModel();
-    //             variableDef1.setName("variableName");
-    //             variableDef1.setType(VariableType.JSON_OBJ);
-    //             List<JsonIndexModel> indices = List.of(
-    //                     new JsonIndexModel("$.name", VariableType.STR),
-    //                     new JsonIndexModel("$.age", VariableType.INT),
-    //                     new JsonIndexModel("$.car.brand", VariableType.STR),
-    //                     new JsonIndexModel("$.car.model", VariableType.STR));
-    //             VariableDefModel variableDef2 = new VariableDefModel();
-    //             variableDef2.setName("variableName2");
-    //             variableDef2.setType(VariableType.STR);
-
-    //             ThreadVarDefModel tvdm1 = new ThreadVarDefModel(variableDef1, indices, false);
-    //             threadSpec.setVariableDefs(List.of(tvdm1, new ThreadVarDefModel(variableDef2, true, false)));
-    //         });
-
-    //         getableStorageManager.put(variable);
-    //         getableStorageManager.commit();
-
-    //         assertThat(localStoreWrapper.get("5/test-id/0/variableName", StoredGetable.class))
-    //                 .isNotNull();
-
-    //         final var storedKeys = getAllKeys(store);
-    //         assertThat(storedKeys)
-    //                 .hasSize(4)
-    //                 .anyMatch(key -> key.contains("5/test-id/0/variableName"))
-    //                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.name_test"))
-    //                 .anyMatch(key -> key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.age_20"))
-    //                 .anyMatch(key ->
-    // key.contains("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.brand_Ford"));
-
-    //         List<String> remoteTagsCreated = remoteTagsCreated().stream()
-    //                 .map(RepartitionCommand::getSubCommand)
-    //                 .map(RepartitionSubCommand::getPartitionKey)
-    //                 .toList();
-
-    //         assertThat(remoteTagsCreated)
-    //
-    // .containsExactlyInAnyOrder("5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.model_Escape");
-    //     }
 
     @ParameterizedTest
     @MethodSource("provideNodeRunObjects")
@@ -474,10 +343,6 @@ public class GetableManagerTest {
                 .map(Pair::getKey)
                 .toList();
 
-        // List<String> expectedRemoteStoreKeys = expectedTagKeys.stream()
-        //         .filter(stringTagStorageTypePbPair -> stringTagStorageTypePbPair.getValue() == TagStorageType.REMOTE)
-        //         .map(Pair::getKey)
-        //         .toList();
         List<String> expectedRemoteStoreKeys = List.of();
 
         getableManager.put(nodeRunModel);
@@ -493,6 +358,50 @@ public class GetableManagerTest {
                 .map(RepartitionSubCommand::getPartitionKey)
                 .toList();
         assertThat(remoteTags).containsExactlyInAnyOrderElementsOf(expectedRemoteStoreKeys);
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void findUnclaimedEvents(boolean useInMemoryBuffer) {
+        WfRunIdModel wfRunId = new WfRunIdModel(UUID.randomUUID().toString());
+        VariableValueModel content = new VariableValueModel();
+        ExternalEventDefIdModel externalEventDefId =
+                new ExternalEventDefIdModel(UUID.randomUUID().toString());
+        String guid = LHUtil.generateGuid();
+        int threadRunNumber = 1;
+        int nodeRunPosition = 2;
+        ExternalEventModel event = new ExternalEventModel(
+                content, wfRunId, externalEventDefId, guid, threadRunNumber, nodeRunPosition, new Date());
+        getableManager.put(event);
+        if (!useInMemoryBuffer) {
+            getableManager.commit();
+        }
+        ExternalEventModel unclaimedEvent = getableManager.getUnclaimedEvent(wfRunId, externalEventDefId);
+        assertThat(unclaimedEvent).isNotNull();
+        assertThat(unclaimedEvent.getId().getExternalEventDefId()).isEqualTo(externalEventDefId);
+        assertThat(unclaimedEvent.getId().getWfRunId()).isEqualTo(wfRunId);
+        assertThat(unclaimedEvent.isClaimed()).isFalse();
+    }
+
+    @Test
+    void findFirstUnclaimedEvents() {
+        WfRunIdModel wfRunId = new WfRunIdModel(UUID.randomUUID().toString());
+        VariableValueModel content = new VariableValueModel();
+        ExternalEventDefIdModel externalEventDefId =
+                new ExternalEventDefIdModel(UUID.randomUUID().toString());
+        int threadRunNumber = 1;
+        int nodeRunPosition = 2;
+        ExternalEventModel expectedEvent = new ExternalEventModel(
+                content, wfRunId, externalEventDefId, "expectedEvent", threadRunNumber, nodeRunPosition, new Date(1));
+        ExternalEventModel olderEvent = new ExternalEventModel(
+                content, wfRunId, externalEventDefId, "olderEvent", threadRunNumber, ++nodeRunPosition, new Date());
+        getableManager.put(expectedEvent);
+        getableManager.put(olderEvent);
+        getableManager.commit();
+        ExternalEventModel firstUnclaimedEvent = getableManager.getUnclaimedEvent(wfRunId, externalEventDefId);
+        assertThat(firstUnclaimedEvent).isNotNull();
+        assertThat(firstUnclaimedEvent.getId().getGuid())
+                .isEqualTo(expectedEvent.getId().getGuid());
     }
 
     private static Stream<Arguments> provideNodeRunObjects() {
@@ -530,6 +439,6 @@ public class GetableManagerTest {
                 Arguments.of(wfRunModel, 6),
                 Arguments.of(taskRun, 2),
                 Arguments.of(variable, 3),
-                Arguments.of(externalEvent, 2));
+                Arguments.of(externalEvent, 3));
     }
 }

@@ -34,6 +34,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -92,6 +93,8 @@ public class LHServerConfig extends ConfigBase {
     public static final String STREAMS_METRICS_LEVEL_KEY = "LHS_STREAMS_METRICS_LEVEL";
     public static final String LHS_METRICS_LEVEL_KEY = "LHS_METRICS_LEVEL";
     public static final String LINGER_MS_KEY = "LHS_KAFKA_LINGER_MS";
+    public static final String TRANSACTION_TIMEOUT_MS_KEY = "LHS_STREAMS_TRANSACTION_TIMEOUT_MS";
+    public static final String CORE_KAFKA_STREAMS_OVERRIDE_PREFIX = "LHS_CORE_KS_CONFIG_";
 
     // General LittleHorse Runtime Behavior Config Env Vars
     public static final String NUM_NETWORK_THREADS_KEY = "LHS_NUM_NETWORK_THREADS";
@@ -662,6 +665,7 @@ public class LHServerConfig extends ConfigBase {
     public Properties getKafkaProducerConfig(String component) {
         Properties conf = new Properties();
         conf.put("client.id", this.getClientId(component));
+        conf.put(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG, "rebootstrap");
         conf.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
         conf.put(
@@ -769,27 +773,19 @@ public class LHServerConfig extends ConfigBase {
         return defaultVal;
     }
 
-    /*
-     * EXPERIMENTAL: Internal config to determine whether the server should leave the
-     * group on shutdown
-     */
-    public boolean leaveGroupOnShutdown() {
-        return getOrSetDefault(X_LEAVE_GROUP_ON_SHUTDOWN_KEY, "false").equals("true");
-    }
-
     public Properties getCoreStreamsConfig() {
-        Properties props = getBaseStreamsConfig();
-        props.put("application.id", getKafkaGroupId("core"));
-        props.put("client.id", this.getClientId("core"));
+        Properties result = getBaseStreamsConfig();
+        result.put("application.id", getKafkaGroupId("core"));
+        result.put("client.id", this.getClientId("core"));
 
         if (getOrSetDefault(X_USE_AT_LEAST_ONCE_KEY, "false").equals("true")) {
             log.warn("Using experimental override config to use at-least-once for Core topology");
-            props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.AT_LEAST_ONCE);
+            result.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.AT_LEAST_ONCE);
         } else {
-            props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_V2);
+            result.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_V2);
         }
 
-        props.put("num.stream.threads", Integer.valueOf(getOrSetDefault(CORE_STREAM_THREADS_KEY, "1")));
+        result.put("num.stream.threads", Integer.valueOf(getOrSetDefault(CORE_STREAM_THREADS_KEY, "1")));
         // The Core Topology is EOS. Note that we have engineered the application to not be sensitive
         // to commit latency (long story). The only thing that is affected by commit latency is the
         // time at which metrics updates are processed by the repartition processor, but those
@@ -807,16 +803,34 @@ public class LHServerConfig extends ConfigBase {
         //
         // That's not to mention that we will be writing fewer times to RocksDB. Huge win.
         int commitInterval = Integer.valueOf(getOrSetDefault(LHServerConfig.CORE_STREAMS_COMMIT_INTERVAL_KEY, "3000"));
-        props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, commitInterval);
-        props.put(
+        result.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, commitInterval);
+        result.put(
                 "statestore.cache.max.bytes",
                 Long.valueOf(getOrSetDefault(CORE_STATESTORE_CACHE_BYTES_KEY, String.valueOf(1024L * 1024L * 32))));
 
-        // Kafka Streams calls KafkaProducer#commitTransaction() which flushes messages anyways. Sending earlier does
-        // not help at all in any way (this is because the Core topology is EOS). Therefore, having a big linger.ms
-        // does not have any downsides in theory.
-        props.put(StreamsConfig.producerPrefix("linger.ms"), 1000);
-        return props;
+        // Kafka Streams calls KafkaProducer#commitTransaction() which flushes messages upon committing the kafka
+        // transaction. We _could_ linger.ms to the commit interval; however, the problem with this is that the
+        // timer topology needs to be able to read the records. The Timer Topology is set to read_uncommitted and
+        // has a requirement that all Command's in the Timer Topology are idempotent, so this is okay.
+        //
+        // We can make some of our end-to-end tests fail if we set linger.ms to something big (i.e. 3,000ms) because
+        // it delays the sending of timers to the Timer Topology, so certain time-triggered events that are expected
+        // to happen end up not happening (eg. in RetryTest, exponential-backoff retries are not scheduled on time).
+        //
+        // We set linger.ms to the same interval as the Timer Punctuator interval (500ms). This gives us approximately
+        // 1-second precision on timers.
+        result.put(StreamsConfig.producerPrefix("linger.ms"), LHConstants.TIMER_PUNCTUATOR_INTERVAL.toMillis());
+
+        for (Object keyObj : props.keySet()) {
+            String key = (String) keyObj;
+            if (key.startsWith(CORE_KAFKA_STREAMS_OVERRIDE_PREFIX)) {
+                String kafkaKey = key.substring(CORE_KAFKA_STREAMS_OVERRIDE_PREFIX.length())
+                        .replace("_", ".")
+                        .toLowerCase();
+                result.put(kafkaKey, props.get(key));
+            }
+        }
+        return result;
     }
 
     public Properties getTimerStreamsConfig() {
@@ -858,8 +872,22 @@ public class LHServerConfig extends ConfigBase {
     private Properties getBaseStreamsConfig() {
         Properties props = new Properties();
 
-        if (getOrSetDefault(X_LEAVE_GROUP_ON_SHUTDOWN_KEY, "false").equals("true")) {
-            log.warn("Using experimental internal config to leave group on shutdonw!");
+        props.put(StreamsConfig.producerPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
+        props.put(StreamsConfig.consumerPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
+        props.put(
+                StreamsConfig.restoreConsumerPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG),
+                "rebootstrap");
+        props.put(
+                StreamsConfig.globalConsumerPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG),
+                "rebootstrap");
+        props.put(
+                StreamsConfig.adminClientPrefix(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG), "rebootstrap");
+
+        if (getOrSetDefault(X_LEAVE_GROUP_ON_SHUTDOWN_KEY, "true").equalsIgnoreCase("false")) {
+            log.warn(
+                    "Using experimental internal config LHS_X_LEAVE_GROUP_ON_SHUTDOWN to NOT leave group on shutdown!");
+            props.put(StreamsConfig.consumerPrefix("internal.leave.group.on.close"), false);
+        } else {
             props.put(StreamsConfig.consumerPrefix("internal.leave.group.on.close"), true);
         }
 
@@ -881,7 +909,6 @@ public class LHServerConfig extends ConfigBase {
         props.put("bootstrap.servers", this.getBootstrapServers());
         props.put("state.dir", getStateDirectory());
         props.put("request.timeout.ms", 1000 * 60);
-        props.put("producer.transaction.timeout.ms", 1000 * 60);
         props.put("producer.acks", "all");
         props.put("replication.factor", (int) getReplicationFactor());
         props.put("num.standby.replicas", Integer.valueOf(getOrSetDefault(NUM_STANDBY_REPLICAS_KEY, "0")));
@@ -890,6 +917,7 @@ public class LHServerConfig extends ConfigBase {
         props.put(
                 "metrics.recording.level",
                 getOrSetDefault(STREAMS_METRICS_LEVEL_KEY, "info").toUpperCase());
+        props.put(StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG), getTransactionTimeoutMs());
 
         // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.
         props.put("default.deserialization.exception.handler", LogAndContinueExceptionHandler.class);
@@ -913,7 +941,7 @@ public class LHServerConfig extends ConfigBase {
             // Those fetch requests can be somewhat costly.
             props.put("global.consumer.client.rack", getRackId());
 
-            // As of Kafka 3.6, there is nothing we can do to optimize the group coordinator traffic.
+            // As of Kafka 3.9, there is nothing we can do to optimize the group coordinator traffic.
         }
 
         // Set the RocksDB Config Setter, and inject this LHServerConfig into the options set
@@ -929,9 +957,7 @@ public class LHServerConfig extends ConfigBase {
         // in the case of a server failure while a request is being processed, the resulting
         // `Command` should be processed on a new server within a minute. Issue #479
         // should verify this behavior
-        props.put(
-                "consumer.session.timeout.ms",
-                Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "40000")));
+        props.put("consumer.session.timeout.ms", getStreamsSessionTimeout());
 
         // In case we need to authenticate to Kafka, this sets it.
         addKafkaSecuritySettings(props);
@@ -939,12 +965,17 @@ public class LHServerConfig extends ConfigBase {
         return props;
     }
 
+    private int getTransactionTimeoutMs() {
+        // Default 60 second transaction timeout.
+        return Integer.valueOf(getOrSetDefault(LHServerConfig.TRANSACTION_TIMEOUT_MS_KEY, "60000"));
+    }
+
     private String getClientId(String component) {
         return this.getLHClusterId() + "-" + this.getLHInstanceName() + "-" + component;
     }
 
-    public long getStreamsSessionTimeout() {
-        return Long.parseLong(props.getProperty(SESSION_TIMEOUT_KEY));
+    public int getStreamsSessionTimeout() {
+        return Integer.valueOf(getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "40000"));
     }
 
     public int getNumNetworkThreads() {

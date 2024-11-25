@@ -478,6 +478,26 @@ The number of threads to execute stream processing in the Core Topology. [Kafka 
 
 ---
 
+### `LHS_KAFKA_TRANSACTION_TIMEOUT_MS`
+
+The transaction timeout configured for the Core Topology producer.
+
+- **Type:** int, >= 1
+- **Default:** 60000
+- **Importance:** medium
+
+---
+
+### `LHS_CORE_KS_CONFIG_`
+
+Any configurations prefixed with this prefix will be appended to the Kafka Streams configuration properties for the Core Topology. For example, setting `LHS_CORE_KS_CONFIG_RESTORE_CONSUMER_CLIENT_RACK` would set the `restore.consumer.client.rack` configuration.
+
+- **Type:** any
+- **Default:** none
+- **Importance:** low
+
+---
+
 ### `LHS_TIMER_STREAM_THREADS`
 
 The number of threads to execute stream processing in the Timer Topology. [Kafka Official](https://kafka.apache.org/documentation/#streamsconfigs_num.stream.threads). For a server with `N` cores, we recommend setting this to `N * 0.4`.

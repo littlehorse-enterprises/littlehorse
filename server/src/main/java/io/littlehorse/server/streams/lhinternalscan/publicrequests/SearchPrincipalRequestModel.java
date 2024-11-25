@@ -2,7 +2,6 @@ package io.littlehorse.server.streams.lhinternalscan.publicrequests;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHStore;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
@@ -76,8 +75,8 @@ public class SearchPrincipalRequestModel
             case TENANTID:
                 builder.setTenantId(tenantId);
                 break;
-            case PRINCIPALCRITERIA_NOT_SET:
-                throw new LHApiException(Status.FAILED_PRECONDITION, "Principal query criteria is not valid.");
+            default:
+                break;
         }
 
         return builder;
@@ -109,8 +108,8 @@ public class SearchPrincipalRequestModel
             case TENANTID:
                 tenantId = p.getTenantId();
                 break;
-            case PRINCIPALCRITERIA_NOT_SET:
-                throw new LHSerdeError("Principal query criteria is not valid.");
+            default:
+                break;
         }
     }
 

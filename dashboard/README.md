@@ -19,6 +19,7 @@ If running the app without Docker, you need to fill in the environment variables
 - `LHD_OAUTH_ENABLED` enable oauth authentication
 - `LHD_OAUTH_ENCRYPT_SECRET` random string that will be used to encrypt the secrets and also the JWT token
 - `LHD_OAUTH_CALLBACK_URL` the url (domain) in which the dashboard will run (required for some authentication methods). For your local you can use: `http:/localhost:3001/`
+- `LHD_OAUTH_CALLBACK_URL_INTERNAL` the internal url (domain) in which the dashboard server will run (required for some authentication methods). Should only be set when the `LHD_OAUTH_CALLBACK_URL` cannot be reached by the dashboard server.
 - `LHD_OAUTH_CLIENT_ID` the client id configured in keycloack
 - `LHD_OAUTH_CLIENT_SECRET` the client secret configured in keycloack
 - `LHD_OAUTH_ISSUER_URI` the keycloack
@@ -187,4 +188,20 @@ docker run --rm \
   --network host \
   -v ./ssl:/ssl \
   ghcr.io/littlehorse-enterprises/littlehorse/lh-dashboard:master
+```
+
+## Running local with Oauth
+
+Modify the .env file using the following variables
+
+```
+LHC_API_HOST=localhost
+LHC_API_PORT=2023
+LHC_API_PROTOCOL=TLS
+LHD_OAUTH_ENABLED=true
+LHC_CA_CERT=path-to-ca-cert
+NEXTAUTH_SECRET=any random string
+KEYCLOAK_CLIENT_ID=dashboard
+KEYCLOAK_CLIENT_SECRET=74b897a0b5804ad3879b2117e1d51015
+KEYCLOAK_ISSUER_URI=http://localhost:8888/realms/lh
 ```
