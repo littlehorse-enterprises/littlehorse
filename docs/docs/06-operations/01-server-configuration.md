@@ -698,3 +698,13 @@ The path upon which application liveness (the ability to ).
 - **Type:** string
 - **Default:** /metrics
 - **Importance:** low
+
+---
+
+### `LHS_METRICS_LEVEL`
+
+The level of granularity to collect application instance metrics.
+
+- **Type:** string
+- **Default:** INFO
+- **Importance:** low
