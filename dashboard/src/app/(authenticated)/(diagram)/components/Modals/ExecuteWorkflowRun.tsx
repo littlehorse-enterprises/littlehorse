@@ -27,6 +27,7 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
 
   const formatVariablesPayload = (values: FormValues) => {
     const transformedObj = Object.keys(values).reduce((acc: Record<string, FormValues>, key) => {
+      if (values[key] === undefined) return acc
       acc[key] = { [matchVariableType(key)]: values[key] }
       return acc
     }, {})
@@ -52,14 +53,16 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
   }
 
   const handleFormSubmit = async (values: FormValues) => {
-    const customWfRunId = values['custom-id-wfRun-flow'] as string
-    delete values['custom-id-wfRun-flow']
+    const customWfRunId = values.customWfRunId as string
+    delete values.customWfRunId
     if (!lhWorkflowSpec.id) return
     try {
       const wfRun = await runWfSpec({
-        ...lhWorkflowSpec.id,
-        wfSpecName: lhWorkflowSpec.id.name,
         tenantId,
+        wfSpecName: lhWorkflowSpec.id.name,
+        majorVersion: lhWorkflowSpec.id.majorVersion,
+        revision: lhWorkflowSpec.id.revision,
+
         id: customWfRunId || undefined,
         variables: formatVariablesPayload(values),
       })
