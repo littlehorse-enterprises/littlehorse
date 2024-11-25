@@ -32,7 +32,7 @@ import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class RequestAuthorizer implements ServerAuthorizer {
+public class RequestAuthorizer implements LHServerInterceptor {
 
     private final CoreStoreProvider coreStoreProvider;
 
