@@ -109,18 +109,53 @@ public interface WorkflowThread {
      */
     LHFormatString format(String format, WfRunVariable... args);
 
+    /**
+     * Creates a variable of type INT in the ThreadSpec.
+     * @param name is the name of the variable.
+     * @return a WfRunVariable.
+     */
     WfRunVariable declareInt(String name);
 
+    /**
+     * Creates a variable of type STR in the ThreadSpec.
+     * @param name is the name of the variable.
+     * @return a WfRunVariable.
+     */
     WfRunVariable declareStr(String name);
 
+    /**
+     * Creates a variable of type DOUBLE in the ThreadSpec.
+     * @param name is the name of the variable.
+     * @return a WfRunVariable.
+     */
     WfRunVariable declareDouble(String name);
 
+    /**
+     * Creates a variable of type BYTES in the ThreadSpec.
+     * @param name is the name of the variable.
+     * @return a WfRunVariable.
+     */
     WfRunVariable declareBytes(String name);
 
+    /**
+     * Creates a variable of type JSON_ARR in the ThreadSpec.
+     * @param name is the name of the variable.
+     * @return a WfRunVariable.
+     */
     WfRunVariable declareJsonArr(String name);
 
+    /**
+     * Creates a variable of type JSON_OBJ in the ThreadSpec.
+     * @param name is the name of the variable.
+     * @return a WfRunVariable.
+     */
     WfRunVariable declareJsonObj(String name);
 
+    /**
+     * Creates a variable of type BOOL in the ThreadSpec.
+     * @param name is the name of the variable.
+     * @return a WfRunVariable.
+     */
     WfRunVariable declareBool(String name);
 
     /**
@@ -504,7 +539,7 @@ public interface WorkflowThread {
      * result is formed by removing all occurrences from RHS from the LHS. Valid only for LHS of type
      * JSON_ARR.
      * @param lhs is the left hand side of the expression.
-     * @param rhs is the right hand side of the expression, which is removed from the lhs.
+     * @param index is the right hand side of the expression, which is removed from the lhs.
      * @return an LHExpression representing the result of the removal.
      */
     LHExpression removeIndex(Serializable lhs, Serializable index);
@@ -513,7 +548,7 @@ public interface WorkflowThread {
      * Returns an expression that can be passed into a variable assignment/mutation or a TaskRun. The
      * result is formed by removing the RHS key from the LHS. Valid only for LHS of type JSON_OBJ.
      * @param lhs is the left hand side of the expression.
-     * @param rhs is the right hand side of the expression, which is removed from the lhs.
+     * @param key is the right hand side of the expression, which is removed from the lhs.
      * @return an LHExpression representing the result of the removal.
      */
     LHExpression removeKey(Serializable lhs, Serializable key);
