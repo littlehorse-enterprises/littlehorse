@@ -296,6 +296,10 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel divide(VariableValueModel rhs) throws LHVarSubError {
+        if (rhs.asDouble().doubleVal == 0) {
+            throw new LHVarSubError(null, "Cannot divide by zero");
+        }
+
         if (getType() == VariableType.INT) {
             if (rhs.getType() == VariableType.DOUBLE) {
                 return new VariableValueModel((long) (asDouble().doubleVal / rhs.asDouble().doubleVal));
@@ -324,6 +328,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 throw new LHVarSubError(exn, "Failed concatenating bytes");
             }
             return new VariableValueModel(baos.toByteArray());
+        } else if (getType() == VariableType.STR) {
+            return new VariableValueModel(this.strVal + rhs.asStr().strVal);
         }
         throw new LHVarSubError(null, "Cannot extend var of type " + type);
     }
@@ -423,8 +429,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 throw new LHVarSubError(exn, "Couldn't convert strVal to INT");
             }
         } else {
-            log.error("Can't convert {} to INT ({})", type, LHUtil.objToString(jsonArrVal));
-            throw new LHVarSubError(null, "Cant convert " + type + " to INT");
+            String typeDescription = type == ValueCase.VALUE_NOT_SET ? "NULL" : type.toString();
+            throw new LHVarSubError(null, "Cant convert " + typeDescription + " to INT");
         }
 
         if (out == null) {

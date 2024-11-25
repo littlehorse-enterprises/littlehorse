@@ -718,6 +718,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
             mutation.setLhsJsonPath(lhs.jsonPath);
         }
 
+        mutation.setSourceVariable(assignVariable(rhs));
+
         if (NodeOutputImpl.class.isAssignableFrom(rhs.getClass())) {
             NodeOutputImpl no = (NodeOutputImpl) rhs;
             if (!no.nodeName.equals(this.lastNodeName)) {
@@ -742,6 +744,12 @@ final class WorkflowThreadImpl implements WorkflowThread {
             varBuilder.setVariableName(var.name);
 
             mutation.setSourceVariable(varBuilder);
+        } else if (LHExpression.class.isAssignableFrom(rhs.getClass())) {
+            // TODO: Long term, we should deprecate all forms of mutation other than
+            // just using the `VariableAssignemnt source_variable` field.
+            //
+            // That would mean we just use `assignVariable()` for all cases.
+            mutation.setSourceVariable(assignVariable(rhs));
         } else {
             // At this point, we're going to treat it as a regular POJO, which means
             // likely a json obj.

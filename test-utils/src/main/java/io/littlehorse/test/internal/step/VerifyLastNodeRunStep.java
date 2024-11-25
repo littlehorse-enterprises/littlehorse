@@ -19,7 +19,9 @@ public class VerifyLastNodeRunStep extends AbstractStep {
 
     @Override
     public void tryExecute(TestExecutionContext context, LittleHorseBlockingStub lhClient) {
-        int nodePosition = lhClient.getWfRun(context.getWfRunId()).getThreadRuns(threadRunNumber).getCurrentNodePosition();
+        int nodePosition = lhClient.getWfRun(context.getWfRunId())
+                .getThreadRuns(threadRunNumber)
+                .getCurrentNodePosition();
         NodeRunId id = NodeRunId.newBuilder()
                 .setWfRunId(context.getWfRunId())
                 .setThreadRunNumber(threadRunNumber)

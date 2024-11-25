@@ -1,7 +1,5 @@
 package io.littlehorse.common.model.getable.global.wfspec.variable;
 
-import java.util.function.Function;
-
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
@@ -42,7 +40,7 @@ public class ExpressionModel extends LHSerializable<Expression> {
 
     public VariableValueModel evaluate(VariableAssignerFunc variableFinder) throws LHVarSubError {
         VariableValueModel lhsVal = variableFinder.assign(lhs);
-        VariableValueModel rhsVal = variableFinder.assign(lhs);
-        return lhsVal.operate(operation, rhsVal, null);
+        VariableValueModel rhsVal = variableFinder.assign(rhs);
+        return lhsVal.operate(operation, rhsVal, lhsVal.getType());
     }
 }
