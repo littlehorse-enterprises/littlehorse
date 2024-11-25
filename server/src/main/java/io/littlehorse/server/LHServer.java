@@ -12,8 +12,6 @@ import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.server.auth.InternalCallCredentials;
-import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.auth.RequestAuthorizer;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.listener.ServerListenerConfig;
