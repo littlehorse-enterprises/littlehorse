@@ -25,7 +25,7 @@ public class VariableMappingTest
         int position = 0;
         string paramName = "param_test";
         
-        var test_allowed_types = new List<Type>() 
+        var testAllowedTypes = new List<Type>() 
         {
             typeof(Int64), typeof(Int32), typeof(Int16) 
             , typeof(UInt16), typeof(UInt32), typeof(UInt64)
@@ -36,7 +36,7 @@ public class VariableMappingTest
             , typeof(List<object>), typeof(List<string>), typeof(List<int>)
         };
 
-        foreach (var type in test_allowed_types)
+        foreach (var type in testAllowedTypes)
         {
             var variableType = LHMappingHelper.MapDotNetTypeToLHVariableType(type);
             TaskDef taskDef = getTaskDefForTest(variableType);
@@ -118,19 +118,41 @@ public class VariableMappingTest
     }
     
     [Fact]
-    public void VariableMapping_WithAssignIntegralValue_ShouldReturnIntObject()
+    public void VariableMapping_WithAssignIntValue_ShouldReturnInt32Object()
     {
         int expectedValue = 29;
-        var test_allowed_types = new List<Type>() { typeof(Int64), typeof(Int32), typeof(Int16) 
-            , typeof(UInt16), typeof(UInt32), typeof(UInt64)
+        var testAllowedTypes = new List<Type>() { typeof(Int32), typeof(Int16) 
+            , typeof(UInt16), typeof(UInt32)
             , typeof(sbyte), typeof(byte), typeof(short), typeof(ushort)
-            , typeof(int), typeof(uint), typeof(long) 
-            , typeof(ulong), typeof(nint), typeof(nuint)};
+            , typeof(int), typeof(uint)
+            , typeof(nint), typeof(nuint)};
         
         int position = 0;
         string paramName = "param_test";
 
-        foreach (var type in test_allowed_types)
+        foreach (var type in testAllowedTypes)
+        {
+            var variableMapping = getVariableMappingForTest(type, paramName, position);
+            VariableValue variableValue = new VariableValue {Int = expectedValue};
+            ScheduledTask taskInstance = getScheduledTaskForTest(variableValue, paramName);
+            var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+        
+            var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
+        
+            Assert.Equal((int) taskInstance.Variables[0].Value.Int, result);
+        }
+    }
+    
+    [Fact]
+    public void VariableMapping_WithAssignLongValue_ShouldReturnInt64Object()
+    {
+        int expectedValue = 29;
+        var testAllowedTypes = new List<Type>() { typeof(Int64), typeof(UInt64), typeof(long), typeof(ulong)};
+        
+        int position = 0;
+        string paramName = "param_test";
+
+        foreach (var type in testAllowedTypes)
         {
             var variableMapping = getVariableMappingForTest(type, paramName, position);
             VariableValue variableValue = new VariableValue {Int = expectedValue};
@@ -144,15 +166,15 @@ public class VariableMappingTest
     }
     
     [Fact]
-    public void VariableMapping_WithAssignFloatingValue_ShouldReturnFloatObject()
+    public void VariableMapping_WithAssignDoubleValue_ShouldReturnDoubleObject()
     {
         float expectedValue = 3_000.5F;
-        var test_allowed_types = new List<Type>() { typeof(float), typeof(double)};
+        var testAllowedTypes = new List<Type>() { typeof(double), typeof(Double)};
         
         int position = 0;
         string paramName = "param_test";
 
-        foreach (var type in test_allowed_types)
+        foreach (var type in testAllowedTypes)
         {
             var variableMapping = getVariableMappingForTest(type, paramName, position);
             VariableValue variableValue = new VariableValue {Double = expectedValue};
@@ -163,6 +185,25 @@ public class VariableMappingTest
         
             Assert.Equal(taskInstance.Variables[0].Value.Double, result);
         }
+    }
+    
+    [Fact]
+    public void VariableMapping_WithAssignDoubleValue_ShouldReturnFloatObject()
+    {
+        float expectedValue = 3_000.5F;
+        var type = typeof(float);
+        
+        int position = 0;
+        string paramName = "param_test";
+        
+        var variableMapping = getVariableMappingForTest(type, paramName, position);
+        VariableValue variableValue = new VariableValue {Double = expectedValue};
+        ScheduledTask taskInstance = getScheduledTaskForTest(variableValue, paramName);
+        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+    
+        var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
+    
+        Assert.Equal((float) taskInstance.Variables[0].Value.Double, result);
     }
     
     [Fact]
@@ -230,13 +271,13 @@ public class VariableMappingTest
         
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
         
-        var expectedList = (List<Person>)JsonConvert.DeserializeObject(value, type);
-        var actualList = (List<Person>)result;
+        var expectedList = (List<Person>)JsonConvert.DeserializeObject(value, type)!;
+        var actualList = (List<Person>)result!;
         
         Assert.Equal(expectedList.Count, actualList.Count);
         Assert.Equal(expectedList[0].FirstName, actualList[0].FirstName);
         Assert.Equal(expectedList[0].Age, actualList[0].Age);
-        Assert.Equal(expectedList[0].Cars.Count, actualList[0].Cars.Count);
+        Assert.Equal(expectedList[0].Cars!.Count, actualList[0].Cars!.Count);
     }
     
     [Fact]
@@ -253,12 +294,12 @@ public class VariableMappingTest
         
         var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
         
-        var expectedObject = (Person)JsonConvert.DeserializeObject(value, type);
-        var actualObject = (Person)result;
+        var expectedObject = (Person)JsonConvert.DeserializeObject(value, type)!;
+        var actualObject = (Person)result!;
         
         Assert.Equal(expectedObject.FirstName, actualObject.FirstName);
         Assert.Equal(expectedObject.Age, actualObject.Age);
-        Assert.Equal(expectedObject.Cars.Count, actualObject.Cars.Count);
+        Assert.Equal(expectedObject.Cars!.Count, actualObject.Cars!.Count);
     }
 
     private TaskDef getTaskDefForTest(VariableType type)

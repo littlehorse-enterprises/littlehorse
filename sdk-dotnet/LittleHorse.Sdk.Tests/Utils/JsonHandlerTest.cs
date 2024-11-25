@@ -26,11 +26,11 @@ namespace LittleHorse.Sdk.Tests.Utils
             
             var result = JsonHandler.DeserializeFromJson(jsonString, typeof(Person));
             
-            var actual = (Person) result;
+            var actual = (Person) result!;
             
             Assert.Equal("Test", actual.FirstName);
             Assert.Equal(35, actual.Age);
-            Assert.Equal(1, actual.Cars[0].Id);
+            Assert.Equal(1, actual.Cars![0].Id);
             Assert.Equal(134.45E-2f, actual.Cars[0].Cost);
         }
     }

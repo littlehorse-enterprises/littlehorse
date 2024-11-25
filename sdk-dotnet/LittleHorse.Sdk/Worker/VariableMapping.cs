@@ -45,19 +45,19 @@ namespace LittleHorse.Sdk.Worker
             switch (val.ValueCase)
             {
                 case VariableValue.ValueOneofCase.Int:
-                    if (LHMappingHelper.IsInt(_type))
+                    if (LHMappingHelper.isInt64Type(_type))
                     {
                         return val.Int;
                     }
 
-                    return (int)val.Int;
+                    return (int) val.Int;
                 case VariableValue.ValueOneofCase.Double:
-                    if (LHMappingHelper.IsFloat(_type))
+                    if (_type == typeof(double) || _type == typeof(Double))
                     {
                         return val.Double;
                     }
 
-                    return (float)val.Double;
+                    return (float) val.Double;
                 case VariableValue.ValueOneofCase.Str:
                     return val.Str;
                 case VariableValue.ValueOneofCase.Bytes:
