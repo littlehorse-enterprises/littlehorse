@@ -39,7 +39,8 @@ public final class ServerFilterRules {
             accept("kafka_producer_record_error"),
 
             // Filter metrics to reduce
-            deny("kafka_stream_state"),
+            deny("kafka_stream_state_"),
+            accept("kafka_stream_state"),
             deny("kafka_stream_task"),
             deny("kafka_stream_processor"),
             deny("kafka_producer"),
@@ -78,7 +79,8 @@ public final class ServerFilterRules {
             accept("kafka_producer_record_error"),
 
             // Filter metrics to reduce
-            accept("kafka_stream_state"),
+            deny("kafka_stream_state"),
+            accept("kafka_stream_state_"),
             accept("kafka_stream_task"),
             deny("kafka_stream_processor"),
             deny("kafka_producer"),
