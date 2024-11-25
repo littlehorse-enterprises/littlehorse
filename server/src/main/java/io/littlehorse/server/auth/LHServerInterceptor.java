@@ -5,8 +5,9 @@ import io.grpc.ServerInterceptor;
 import io.littlehorse.common.LHConstants;
 
 /**
- * Wrapper over io.grpc.ServerInterceptor. I don't think this does anything other than put
- * a few constants into scope without imports.
+ * Wrapper over io.grpc.ServerInterceptor. Doesn't do anything other than put
+ * a few constants into scope without imports in order to reduce the scope of
+ * how we expose the `Metadata.Key` stuff.
  */
 public interface LHServerInterceptor extends ServerInterceptor {
 
