@@ -186,19 +186,14 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return rhs.coerceToType(typeToCoerceTo);
         }
 
-        // if (getType() != typeToCoerceTo) {
-        //     throw new LHVarSubError(
-        //             null, "got unexpected variable type. Thought it was a " + typeToCoerceTo + " but is a " + type);
-        // }
-
         if (operation == VariableMutationType.ADD) {
-            return add(rhs);
+            return typeToCoerceTo == VariableType.DOUBLE ? asDouble().add(rhs) : add(rhs);
         } else if (operation == VariableMutationType.SUBTRACT) {
-            return subtract(rhs);
+            return typeToCoerceTo == VariableType.DOUBLE ? asDouble().subtract(rhs) : subtract(rhs);
         } else if (operation == VariableMutationType.MULTIPLY) {
-            return multiply(rhs);
+            return typeToCoerceTo == VariableType.DOUBLE ? asDouble().multiply(rhs) : multiply(rhs);
         } else if (operation == VariableMutationType.DIVIDE) {
-            return divide(rhs);
+            return typeToCoerceTo == VariableType.DOUBLE ? asDouble().divide(rhs) : divide(rhs);
         } else if (operation == VariableMutationType.EXTEND) {
             return extend(rhs);
         } else if (operation == VariableMutationType.REMOVE_IF_PRESENT) {
@@ -260,6 +255,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel add(VariableValueModel rhs) throws LHVarSubError {
+        if (rhs.getType() == null) {
+            throw new LHVarSubError(null, "Cannot add by null");
+        }
         if (getType() == VariableType.INT) {
             if (rhs.getType() == VariableType.DOUBLE) {
                 return new VariableValueModel(asDouble().doubleVal + rhs.asDouble().doubleVal);
@@ -280,6 +278,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel subtract(VariableValueModel rhs) throws LHVarSubError {
+        if (rhs.getType() == null) {
+            throw new LHVarSubError(null, "Cannot subtract null");
+        }
         if (getType() == VariableType.INT) {
             if (rhs.getType() == VariableType.DOUBLE) {
                 return new VariableValueModel((long) (asDouble().doubleVal - rhs.asDouble().doubleVal));
@@ -292,6 +293,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel multiply(VariableValueModel rhs) throws LHVarSubError {
+        if (rhs.getType() == null) {
+            throw new LHVarSubError(null, "Cannot multiply by null");
+        }
         if (getType() == VariableType.INT) {
             if (rhs.getType() == VariableType.DOUBLE) {
                 return new VariableValueModel((long) (asDouble().doubleVal * rhs.asDouble().doubleVal));
@@ -304,6 +308,10 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel divide(VariableValueModel rhs) throws LHVarSubError {
+        if (rhs.getType() == null) {
+            throw new LHVarSubError(null, "Cannot divide by null");
+        }
+
         if (rhs.asDouble().doubleVal == 0) {
             throw new LHVarSubError(null, "Cannot divide by zero");
         }

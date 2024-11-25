@@ -99,7 +99,7 @@ public class ExpressionTest {
 
     @Test
     void dividingIntByDoubleShouldUseFloatingDivision() {
-        verifier.prepareRun(expressionWf, Arg.of("dividend-tests", Map.of("lhs", 5, "rhs", 2.5)))
+        verifier.prepareRun(expressionWf, Arg.of("dividend-tests", Map.of("lhs", 5, "rhs", 2.0)))
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "division-result", variable -> {
                     Assertions.assertEquals(2.5, variable.getDouble());
@@ -109,7 +109,7 @@ public class ExpressionTest {
 
     @Test
     void dividingTwoDoublesShouldUseFloatingDivision() {
-        verifier.prepareRun(expressionWf, Arg.of("dividend-tests", Map.of("lhs", 5.0, "rhs", 2.5)))
+        verifier.prepareRun(expressionWf, Arg.of("dividend-tests", Map.of("lhs", 5.0, "rhs", 2.0)))
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "division-result", variable -> {
                     Assertions.assertEquals(2.5, variable.getDouble());
@@ -119,7 +119,7 @@ public class ExpressionTest {
 
     @Test
     void shouldCastDoubleToIntWhenAssigningToInt() {
-        verifier.prepareRun(expressionWf, Arg.of("dividend-tests", Map.of("lhs", 5.0, "rhs", 2.5)))
+        verifier.prepareRun(expressionWf, Arg.of("dividend-tests", Map.of("lhs", 5.0, "rhs", 2.0)))
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "division-result-int", variable -> {
                     Assertions.assertEquals(2, variable.getInt());
@@ -137,7 +137,30 @@ public class ExpressionTest {
                     // Assertions.assertEquals(LHStatus.ERROR, nodeRun.getStatus());
                     Failure mathTest = nodeRun.getFailures(0);
                     Assertions.assertEquals(mathTest.getFailureName(), LHErrorType.VAR_SUB_ERROR.toString());
-                    Assertions.assertTrue(mathTest.getMessage().toLowerCase().contains("null"));
+                    Assertions.assertTrue(mathTest.getMessage().toLowerCase().contains("value_not_set")
+                            || mathTest.getMessage().toLowerCase().contains("null"));
+                })
+                .start();
+    }
+
+    @Test
+    void shouldCalculateDiscountProperly() {
+        verifier.prepareRun(
+                        expressionWf, Arg.of("quantity", 10), Arg.of("price", 100.3), Arg.of("discount-percentage", 10))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "total-price-double", variable -> {
+                    Assertions.assertEquals(902.7, variable.getDouble());
+                })
+                .start();
+    }
+
+    @Test
+    void shouldStillUseDoublePrecisionWhenCalculatingBeforeAssigningToAnInt() {
+        verifier.prepareRun(
+                        expressionWf, Arg.of("quantity", 10), Arg.of("price", 100.3), Arg.of("discount-percentage", 10))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "total-price-int", variable -> {
+                    Assertions.assertEquals(902, variable.getInt());
                 })
                 .start();
     }
@@ -197,8 +220,9 @@ public class ExpressionTest {
             var totalPriceInt = wf.declareInt("total-price-int");
             var totalPriceDouble = wf.declareDouble("total-price-double");
             wf.doIf(quantity.isNotEqualTo(null), then -> {
-                LHExpression pedro = quantity.multiply(
-                        price.multiply(wf.subtract(100, discountPercentage).multiply(100)));
+                // TotalPrice = Quantity * Price * (1 - DiscountPercentage / 100)
+                LHExpression pedro =
+                        quantity.multiply(price).multiply(wf.subtract(1.0, discountPercentage.divide(100.0)));
                 totalPriceInt.assignTo(pedro);
                 totalPriceDouble.assignTo(pedro);
             });
