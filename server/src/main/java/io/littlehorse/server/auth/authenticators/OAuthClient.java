@@ -1,4 +1,4 @@
-package io.littlehorse.server.auth;
+package io.littlehorse.server.auth.authenticators;
 
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.Scope;
@@ -13,6 +13,8 @@ import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.OIDCScopeValue;
 import io.littlehorse.sdk.common.auth.TokenStatus;
 import io.littlehorse.sdk.common.exception.EntityProviderException;
+import io.littlehorse.server.auth.OAuthConfig;
+import io.littlehorse.server.auth.UnauthenticatedException;
 import java.io.IOException;
 import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;

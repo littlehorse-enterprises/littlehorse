@@ -200,7 +200,7 @@ import io.littlehorse.sdk.common.proto.WorkflowEventDefIdList;
 import io.littlehorse.sdk.common.proto.WorkflowEventId;
 import io.littlehorse.sdk.common.proto.WorkflowEventIdList;
 import io.littlehorse.sdk.common.proto.WorkflowEventList;
-import io.littlehorse.server.auth.InternalCallCredentials;
+import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanReply;

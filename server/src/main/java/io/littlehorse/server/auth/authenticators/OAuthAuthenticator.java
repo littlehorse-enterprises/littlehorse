@@ -1,4 +1,4 @@
-package io.littlehorse.server.auth;
+package io.littlehorse.server.auth.authenticators;
 
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
@@ -10,16 +10,21 @@ import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.Status;
 import io.littlehorse.sdk.common.auth.TokenStatus;
+import io.littlehorse.server.auth.LHServerInterceptor;
+import io.littlehorse.server.auth.OAuthConfig;
+import io.littlehorse.server.auth.UnauthenticatedException;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * Determines the Principal ID from the OAuth token.
+ *
  * Example:
  * https://github.com/grpc/grpc-java/blob/master/examples/example-oauth/src/main/java/io/grpc/examples/oauth/OAuth2ServerInterceptor.java
  */
 @Slf4j
-public class OAuthServerAuthenticator implements ServerAuthorizer {
+public class OAuthAuthenticator implements LHServerInterceptor {
 
     private static final Metadata.Key<String> AUTHORIZATION_HEADER_KEY =
             Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER);
@@ -31,7 +36,7 @@ public class OAuthServerAuthenticator implements ServerAuthorizer {
 
     private final OAuthClient client;
 
-    public OAuthServerAuthenticator(OAuthConfig config) {
+    public OAuthAuthenticator(OAuthConfig config) {
         this.client = new OAuthClient(config);
     }
 
