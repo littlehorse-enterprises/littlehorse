@@ -1079,7 +1079,28 @@ public class LHServerConfig extends ConfigBase {
         String caCertFile = getOrSetDefault(INTERNAL_CA_CERT_KEY, null);
         String serverCertFile = getOrSetDefault(INTERNAL_SERVER_CERT_KEY, null);
         String serverKeyFile = getOrSetDefault(INTERNAL_SERVER_KEY_KEY, null);
-        return getCreds(caCertFile, serverCertFile, serverKeyFile);
+
+        if (caCertFile == null) {
+            log.info("No ca cert file found, deploying insecure!");
+            return null;
+        }
+
+        if (serverCertFile == null || serverKeyFile == null) {
+            throw new LHMisconfigurationException("CA cert file provided but missing cert or key");
+        }
+        File serverCert = new File(serverCertFile);
+        File serverKey = new File(serverKeyFile);
+        File rootCA = new File(caCertFile);
+
+        try {
+            return TlsServerCredentials.newBuilder()
+                    .keyManager(serverCert, serverKey)
+                    .trustManager(rootCA)
+                    .clientAuth(TlsServerCredentials.ClientAuth.REQUIRE)
+                    .build();
+        } catch (IOException exn) {
+            throw new RuntimeException(exn);
+        }
     }
 
     public ChannelCredentials getInternalClientCreds() {
@@ -1101,30 +1122,6 @@ public class LHServerConfig extends ConfigBase {
             return TlsChannelCredentials.newBuilder()
                     .keyManager(serverCert, serverKey)
                     .trustManager(rootCA)
-                    .build();
-        } catch (IOException exn) {
-            throw new RuntimeException(exn);
-        }
-    }
-
-    private ServerCredentials getCreds(String caCertFile, String serverCertFile, String serverKeyFile) {
-        if (caCertFile == null) {
-            log.info("No ca cert file found, deploying insecure!");
-            return null;
-        }
-
-        if (serverCertFile == null || serverKeyFile == null) {
-            throw new LHMisconfigurationException("CA cert file provided but missing cert or key");
-        }
-        File serverCert = new File(serverCertFile);
-        File serverKey = new File(serverKeyFile);
-        File rootCA = new File(caCertFile);
-
-        try {
-            return TlsServerCredentials.newBuilder()
-                    .keyManager(serverCert, serverKey)
-                    .trustManager(rootCA)
-                    .clientAuth(TlsServerCredentials.ClientAuth.REQUIRE)
                     .build();
         } catch (IOException exn) {
             throw new RuntimeException(exn);

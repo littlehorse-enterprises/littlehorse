@@ -142,7 +142,12 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             if (lhsJsonPath != null) {
                 VariableValueModel lhsJsonPathed = lhsVal.jsonPath(lhsJsonPath);
                 VariableType typeToCoerceTo = lhsJsonPathed.getType();
-                VariableValueModel thingToPut = lhsJsonPathed.operate(operation, rhsVal, typeToCoerceTo);
+
+                // If the key does not exist in the LHS, we just plop the RHS there. Otherwise, we want to coerce the
+                // type to the rhs.
+                VariableValueModel thingToPut = lhsJsonPathed.getType() == null
+                        ? rhsVal
+                        : lhsJsonPathed.operate(operation, rhsVal, typeToCoerceTo);
 
                 VariableValueModel currentLhs = getVarValFromThreadInTxn(lhsName, thread, txnCache);
 

@@ -110,19 +110,6 @@ public class VarSubErrorTest {
     }
 
     @Test
-    void shouldThrowVarSubErrorWhenKeyMissingFromJsonObj() {
-        verifier.prepareRun(varTypeValidationsWf, Arg.of("input-int", 123), Arg.of("input-json", Map.of("str", "yoda")))
-                .waitForStatus(LHStatus.ERROR)
-                .thenVerifyNodeRun(0, 1, nodeRun -> {
-                    assertThat(nodeRun.getFailuresCount()).isEqualTo(1);
-                    Failure failure = nodeRun.getFailures(0);
-                    assertThat(failure.getFailureName()).isEqualTo(LHErrorType.VAR_SUB_ERROR.toString());
-                    assertThat(failure.getMessage()).contains("$.int");
-                })
-                .start();
-    }
-
-    @Test
     void shouldBeAbleToPassNullAsIntIntoTaskRunAndTaskRunShouldFail() {
         Map<String, String> jsonStuff = new HashMap<>();
         jsonStuff.put("str", "my-str");

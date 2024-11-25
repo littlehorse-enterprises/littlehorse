@@ -48,6 +48,20 @@ var putPrincipalCmd = &cobra.Command{
 	},
 }
 
+var getPrincipalCmd = &cobra.Command{
+	Use:   "principal <id>",
+	Short: "Get a Principal",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		littlehorse.PrintResp(getGlobalClient(cmd).GetPrincipal(
+			requestContext(cmd),
+			&lhproto.PrincipalId{
+				Id: args[0],
+			},
+		))
+	},
+}
+
 var searchPrincipalCmd = &cobra.Command{
 	Use:   "principal",
 	Short: "Search for Principals",
@@ -200,6 +214,8 @@ func init() {
 	searchPrincipalCmd.Flags().Bool("isAdmin", false, "List only Principals that are admins")
 	searchPrincipalCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for Principals that were created no more than this number of minutes ago")
 	searchPrincipalCmd.Flags().Int("latestMinutesAgo", -1, "Search only for Principals that were created at least this number of minutes ago")
+
+	getCmd.AddCommand(getPrincipalCmd)
 
 	deployCmd.AddCommand(deployPrincipalCmd)
 	deleteCmd.AddCommand(deletePrincipalCmd)

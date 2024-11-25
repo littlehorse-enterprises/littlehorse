@@ -1,14 +1,20 @@
-package io.littlehorse.server.auth;
+package io.littlehorse.server.auth.internalport;
 
 import io.grpc.CallCredentials;
 import io.grpc.Metadata;
 import io.grpc.Status;
 import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.server.auth.RequestAuthorizer;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.concurrent.Executor;
 
+/**
+ * Call Credentials that allows the LH Server to propagate information about the calling Tenant
+ * and Principal when making an Interactive Query between two different LH Servers on the
+ * internal port.
+ */
 public class InternalCallCredentials extends CallCredentials {
     private final AuthorizationContext currentAuthorization;
 

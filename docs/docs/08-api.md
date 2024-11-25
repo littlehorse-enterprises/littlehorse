@@ -468,6 +468,12 @@ languages [here](/docs/developer-guide/grpc), but we put this here for the true 
 | ------------ | ------------- | ------------|
 |  [PutPrincipalRequest](#putprincipalrequest)  |  [Principal](#principal)  | EXPERIMENTAL: Creates an Principal. |
 
+### RPC `GetPrincipal` {#getprincipal}
+
+| Request Type | Response Type | Description |
+| ------------ | ------------- | ------------|
+|  [PrincipalId](#principalid)  |  [Principal](#principal)  |  |
+
 ### RPC `Whoami` {#whoami}
 
 | Request Type | Response Type | Description |
@@ -770,6 +776,22 @@ have to worry about this in daily LittleHorse usage.
 | `literal_value` | oneof `source`| [VariableValue](#variablevalue) | Assign a literal value |
 | `format_string` | oneof `source`| [VariableAssignment.FormatString](#variableassignmentformatstring) | Assign a format string |
 | `node_output` | oneof `source`| [VariableAssignment.NodeOutputReference](#variableassignmentnodeoutputreference) | Assign the value of a NodeOutput. |
+| `expression` | oneof `source`| [VariableAssignment.Expression](#variableassignmentexpression) | Assign the value of an Expression. |
+ <!-- end Fields -->
+ <!-- end HasFields -->
+
+
+
+### Message `VariableAssignment.Expression` {#variableassignmentexpression}
+
+An Expression allows you to combine multiple values into one.
+
+
+| Field | Label | Type | Description |
+| ----- | ----  | ---- | ----------- |
+| `lhs` | | [VariableAssignment](#variableassignment) | The left-hand-side of the expression. |
+| `operation` | | [VariableMutationType](#variablemutationtype) | The operator in the expression. |
+| `rhs` | | [VariableAssignment](#variableassignment) | The right-hand-side of the expression. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
