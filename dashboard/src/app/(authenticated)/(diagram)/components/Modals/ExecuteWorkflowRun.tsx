@@ -25,6 +25,15 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
   const formRef = useRef<HTMLFormElement | null>(null)
   const wfSpecVariables = lhWorkflowSpec.threadSpecs?.entrypoint?.variableDefs
 
+  const formatVariablesPayload = (values: FormValues) => {
+    const transformedObj = Object.keys(values).reduce((acc: Record<string, FormValues>, key) => {
+      acc[key] = { [matchVariableType(key)]: values[key] }
+      return acc
+    }, {})
+
+    return transformedObj
+  }
+
   const matchVariableType = (key: string): string => {
     const variable = wfSpecVariables.find((variable: ThreadVarDef) => variable.varDef?.name === key)
 
@@ -42,29 +51,21 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
     }
   }
 
-  const formatVariablesPayload = (values: FormValues) => {
-    return Object.keys(values).reduce((acc: Record<string, FormValues>, key) => {
-      acc[key] = { [matchVariableType(key)]: values[key] ?? null }
-      return acc
-    }, {})
-  }
-
   const handleFormSubmit = async (values: FormValues) => {
-    const customWfRunId = values.customWfRunId as string
-    // This is so we don't add it to the variables payload due to loose typings
-    delete values.customWfRunId
+    const customWfRunId = values['custom-id-wfRun-flow'] as string
+    delete values['custom-id-wfRun-flow']
     if (!lhWorkflowSpec.id) return
     try {
       const wfRun = await runWfSpec({
-        tenantId,
+        ...lhWorkflowSpec.id,
         wfSpecName: lhWorkflowSpec.id.name,
-        majorVersion: lhWorkflowSpec.id.majorVersion,
-        revision: lhWorkflowSpec.id.revision,
+        tenantId,
         id: customWfRunId || undefined,
         variables: formatVariablesPayload(values),
       })
       if (!wfRun.id) return
       toast.success('Workflow has been executed')
+      setShowModal(false)
       router.push(`/wfRun/${wfRun.id.id}`)
     } catch (error: any) {
       toast.error(error.message?.split(':')?.[1])

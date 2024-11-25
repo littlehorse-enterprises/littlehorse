@@ -9,7 +9,7 @@ export const getValidation = (type: string) => {
         }
         return 'Input must be a valid JSON object'
       } catch {
-        return 'Input must be a valid JSON object'
+        return 'Input must be valid JSON'
       }
     },
     JSON_ARR: (value: string) => {
@@ -19,9 +19,9 @@ export const getValidation = (type: string) => {
         if (Array.isArray(parsed) && parsed.every(item => typeof item === 'object')) {
           return true
         }
-        return 'Input must be a valid JSON array'
+        return 'Input must be an array of objects'
       } catch {
-        return 'Input must be a valid JSON array'
+        return 'Input must be valid JSON'
       }
     },
   }

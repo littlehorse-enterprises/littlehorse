@@ -14,35 +14,33 @@ type Prop = {
   onSubmit: (data: FormValues) => void
 }
 
+// eslint-disable-next-line react/display-name
 export const WfRunForm = forwardRef<HTMLFormElement, Prop>(({ wfSpecVariables, onSubmit }, ref) => {
   const methods = useForm()
   const { register, handleSubmit, formState } = methods
 
+  const onSubmitForm = (data: FormValues) => {
+    onSubmit(data)
+  }
+
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)} ref={ref} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmitForm)} ref={ref}>
         <div>
-          <div className="mb-2 flex justify-between">
-            <Label htmlFor="customWfRunId" className="center flex items-center gap-2">
-              Custom WfRun Id
-              <span className="rounded bg-gray-300 p-1 text-xs">Optional</span>
-            </Label>
-          </div>
-          <Input {...methods.register('customWfRunId')} type="text" placeholder="Enter custom WfRun Id" />
+          <Label htmlFor="custom-id">Custom WfRun Id</Label>
+          <Input
+            type="text"
+            className="mb-4 mt-1"
+            id="custom-id"
+            {...register('custom-id-wfRun-flow')}
+            placeholder="Enter string value"
+          />
         </div>
-
         {!!wfSpecVariables?.length &&
           wfSpecVariables.map((variable: ThreadVarDef) => (
-            <FormFields
-              key={variable.varDef?.name}
-              variable={variable}
-              register={methods.register}
-              formState={methods.formState}
-            />
+            <FormFields key={variable.varDef?.name} variables={variable} register={register} formState={formState} />
           ))}
       </form>
     </FormProvider>
   )
 })
-
-WfRunForm.displayName = 'WfRunForm'
