@@ -387,6 +387,11 @@ class LittleHorseStub(object):
                 request_serializer=acls__pb2.PutPrincipalRequest.SerializeToString,
                 response_deserializer=acls__pb2.Principal.FromString,
                 )
+        self.GetPrincipal = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetPrincipal',
+                request_serializer=object__id__pb2.PrincipalId.SerializeToString,
+                response_deserializer=acls__pb2.Principal.FromString,
+                )
         self.Whoami = channel.unary_unary(
                 '/littlehorse.LittleHorse/Whoami',
                 request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
@@ -961,6 +966,12 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetPrincipal(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def Whoami(self, request, context):
         """Returns the Principal of the caller.
         """
@@ -1336,6 +1347,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'PutPrincipal': grpc.unary_unary_rpc_method_handler(
                     servicer.PutPrincipal,
                     request_deserializer=acls__pb2.PutPrincipalRequest.FromString,
+                    response_serializer=acls__pb2.Principal.SerializeToString,
+            ),
+            'GetPrincipal': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetPrincipal,
+                    request_deserializer=object__id__pb2.PrincipalId.FromString,
                     response_serializer=acls__pb2.Principal.SerializeToString,
             ),
             'Whoami': grpc.unary_unary_rpc_method_handler(
@@ -2578,6 +2594,23 @@ class LittleHorse(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/PutPrincipal',
             acls__pb2.PutPrincipalRequest.SerializeToString,
+            acls__pb2.Principal.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetPrincipal(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/littlehorse.LittleHorse/GetPrincipal',
+            object__id__pb2.PrincipalId.SerializeToString,
             acls__pb2.Principal.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

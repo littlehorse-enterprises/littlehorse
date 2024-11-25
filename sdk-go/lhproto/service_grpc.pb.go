@@ -92,6 +92,7 @@ const (
 	LittleHorse_PutTenant_FullMethodName               = "/littlehorse.LittleHorse/PutTenant"
 	LittleHorse_GetTenant_FullMethodName               = "/littlehorse.LittleHorse/GetTenant"
 	LittleHorse_PutPrincipal_FullMethodName            = "/littlehorse.LittleHorse/PutPrincipal"
+	LittleHorse_GetPrincipal_FullMethodName            = "/littlehorse.LittleHorse/GetPrincipal"
 	LittleHorse_Whoami_FullMethodName                  = "/littlehorse.LittleHorse/Whoami"
 	LittleHorse_GetServerVersion_FullMethodName        = "/littlehorse.LittleHorse/GetServerVersion"
 )
@@ -299,6 +300,7 @@ type LittleHorseClient interface {
 	GetTenant(ctx context.Context, in *TenantId, opts ...grpc.CallOption) (*Tenant, error)
 	// EXPERIMENTAL: Creates an Principal.
 	PutPrincipal(ctx context.Context, in *PutPrincipalRequest, opts ...grpc.CallOption) (*Principal, error)
+	GetPrincipal(ctx context.Context, in *PrincipalId, opts ...grpc.CallOption) (*Principal, error)
 	// Returns the Principal of the caller.
 	Whoami(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Principal, error)
 	// Gets the version of the LH Server.
@@ -983,6 +985,15 @@ func (c *littleHorseClient) PutPrincipal(ctx context.Context, in *PutPrincipalRe
 	return out, nil
 }
 
+func (c *littleHorseClient) GetPrincipal(ctx context.Context, in *PrincipalId, opts ...grpc.CallOption) (*Principal, error) {
+	out := new(Principal)
+	err := c.cc.Invoke(ctx, LittleHorse_GetPrincipal_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) Whoami(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Principal, error) {
 	out := new(Principal)
 	err := c.cc.Invoke(ctx, LittleHorse_Whoami_FullMethodName, in, out, opts...)
@@ -1204,6 +1215,7 @@ type LittleHorseServer interface {
 	GetTenant(context.Context, *TenantId) (*Tenant, error)
 	// EXPERIMENTAL: Creates an Principal.
 	PutPrincipal(context.Context, *PutPrincipalRequest) (*Principal, error)
+	GetPrincipal(context.Context, *PrincipalId) (*Principal, error)
 	// Returns the Principal of the caller.
 	Whoami(context.Context, *emptypb.Empty) (*Principal, error)
 	// Gets the version of the LH Server.
@@ -1430,6 +1442,9 @@ func (UnimplementedLittleHorseServer) GetTenant(context.Context, *TenantId) (*Te
 }
 func (UnimplementedLittleHorseServer) PutPrincipal(context.Context, *PutPrincipalRequest) (*Principal, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutPrincipal not implemented")
+}
+func (UnimplementedLittleHorseServer) GetPrincipal(context.Context, *PrincipalId) (*Principal, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPrincipal not implemented")
 }
 func (UnimplementedLittleHorseServer) Whoami(context.Context, *emptypb.Empty) (*Principal, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Whoami not implemented")
@@ -2754,6 +2769,24 @@ func _LittleHorse_PutPrincipal_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_GetPrincipal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PrincipalId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetPrincipal(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetPrincipal_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetPrincipal(ctx, req.(*PrincipalId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_Whoami_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
@@ -3080,6 +3113,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PutPrincipal",
 			Handler:    _LittleHorse_PutPrincipal_Handler,
+		},
+		{
+			MethodName: "GetPrincipal",
+			Handler:    _LittleHorse_GetPrincipal_Handler,
 		},
 		{
 			MethodName: "Whoami",
