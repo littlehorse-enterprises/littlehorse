@@ -56,13 +56,6 @@ import org.rocksdb.WriteBufferManager;
 @Slf4j
 public class LHServerConfig extends ConfigBase {
 
-    // Singletons for RocksConfigSetter
-    @Getter
-    private Cache globalRocksdbBlockCache;
-
-    @Getter
-    private WriteBufferManager globalRocksdbWriteBufferManager;
-
     private String instanceName;
 
     // Kafka Global Configs
@@ -91,6 +84,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String NUM_STANDBY_REPLICAS_KEY = "LHS_STREAMS_NUM_STANDBY_REPLICAS";
     public static final String ROCKSDB_COMPACTION_THREADS_KEY = "LHS_ROCKSDB_COMPACTION_THREADS";
     public static final String STREAMS_METRICS_LEVEL_KEY = "LHS_STREAMS_METRICS_LEVEL";
+    public static final String LHS_METRICS_LEVEL_KEY = "LHS_METRICS_LEVEL";
     public static final String LINGER_MS_KEY = "LHS_KAFKA_LINGER_MS";
     public static final String TRANSACTION_TIMEOUT_MS_KEY = "LHS_STREAMS_TRANSACTION_TIMEOUT_MS";
     public static final String CORE_KAFKA_STREAMS_OVERRIDE_PREFIX = "LHS_CORE_KS_CONFIG_";
@@ -150,6 +144,37 @@ public class LHServerConfig extends ConfigBase {
     public static final String X_USE_STATE_UPDATER_KEY = "LHS_X_USE_STATE_UPDATER";
     public static final String X_LEAVE_GROUP_ON_SHUTDOWN_KEY = "LHS_X_LEAVE_GROUP_ON_SHUTDOWN";
     public static final String X_USE_STATIC_MEMBERSHIP_KEY = "LHS_X_USE_STATIC_MEMBERSHIP";
+
+    // Instance configs
+    private final String lhsMetricsLevel;
+
+    // Singletons for RocksConfigSetter
+    @Getter
+    private Cache globalRocksdbBlockCache;
+
+    @Getter
+    private WriteBufferManager globalRocksdbWriteBufferManager;
+
+    public LHServerConfig() {
+        super();
+        initKafkaAdmin();
+        initRocksdbSingletons();
+        lhsMetricsLevel = getServerMetricLevel();
+    }
+
+    public LHServerConfig(String propertiesPath) {
+        super(propertiesPath);
+        initKafkaAdmin();
+        initRocksdbSingletons();
+        lhsMetricsLevel = getServerMetricLevel();
+    }
+
+    public LHServerConfig(Properties props) {
+        super(props);
+        initKafkaAdmin();
+        initRocksdbSingletons();
+        lhsMetricsLevel = getServerMetricLevel();
+    }
 
     protected String[] getEnvKeyPrefixes() {
         return new String[] {"LHS_"};
@@ -362,6 +387,18 @@ public class LHServerConfig extends ConfigBase {
 
     public String getInternalAdvertisedHost() {
         return getOrSetDefault(LHServerConfig.INTERNAL_ADVERTISED_HOST_KEY, "localhost");
+    }
+
+    public String getServerMetricLevel() {
+        if (lhsMetricsLevel != null) {
+            return lhsMetricsLevel;
+        }
+        String metricLevel = getOrSetDefault(LHS_METRICS_LEVEL_KEY, "INFO").toUpperCase();
+        List<String> allowedValues = List.of("INFO", "DEBUG", "TRACE");
+        if (!allowedValues.contains(metricLevel)) {
+            throw new LHMisconfigurationException("Unrecognized metric level: " + metricLevel);
+        }
+        return metricLevel.toUpperCase();
     }
 
     // If INTERNAL_ADVERTISED_PORT isn't set, we return INTERNAL_BIND_PORT.
@@ -1015,24 +1052,6 @@ public class LHServerConfig extends ConfigBase {
                 throw e;
             }
         }
-    }
-
-    public LHServerConfig() {
-        super();
-        initKafkaAdmin();
-        initRocksdbSingletons();
-    }
-
-    public LHServerConfig(String propertiesPath) {
-        super(propertiesPath);
-        initKafkaAdmin();
-        initRocksdbSingletons();
-    }
-
-    public LHServerConfig(Properties props) {
-        super(props);
-        initKafkaAdmin();
-        initRocksdbSingletons();
     }
 
     private void initRocksdbSingletons() {
