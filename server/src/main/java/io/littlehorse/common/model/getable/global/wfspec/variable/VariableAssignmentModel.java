@@ -25,6 +25,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     private VariableValueModel rhsLiteralValue;
     private FormatStringModel formatString;
     private NodeOutputReferenceModel nodeOutputReference;
+    private ExpressionModel expression;
 
     public Class<VariableAssignment> getProtoBaseClass() {
         return VariableAssignment.class;
@@ -50,6 +51,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 nodeOutputReference =
                         LHSerializable.fromProto(p.getNodeOutput(), NodeOutputReferenceModel.class, context);
                 break;
+            case EXPRESSION:
+                expression = LHSerializable.fromProto(p.getExpression(), ExpressionModel.class, context);
+                break;
             case SOURCE_NOT_SET:
                 // nothing to do;
         }
@@ -72,6 +76,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 break;
             case NODE_OUTPUT:
                 out.setNodeOutput(nodeOutputReference.toProto());
+                break;
+            case EXPRESSION:
+                out.setExpression(expression.toProto());
                 break;
             case SOURCE_NOT_SET:
                 // not possible.
@@ -118,21 +125,19 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 baseType = VariableType.STR;
                 break;
             case NODE_OUTPUT:
+            case EXPRESSION:
                 // TODO (#1124): look at the node to determine if the output of the node
                 // can be a given type.
                 return true;
             case SOURCE_NOT_SET:
-        }
-
-        if (rhsSourceType == null) {
-            // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
-            // protobuf that does not set the source type. Instead of throwing an IllegalStateException
-            // we should throw an error that will get propagated back to the client.
-            //
-            // The problem with this is that in this scope we lack context about which node has the
-            // invalid VariableAssignment, so the client may have trouble determining the source. Still
-            // it is better to return INVALID_ARGUMENT than INTERNAL.
-            throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
+                // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
+                // protobuf that does not set the source type. Instead of throwing an IllegalStateException
+                // we should throw an error that will get propagated back to the client.
+                //
+                // The problem with this is that in this scope we lack context about which node has the
+                // invalid VariableAssignment, so the client may have trouble determining the source. Still
+                // it is better to return INVALID_ARGUMENT than INTERNAL.
+                throw new LHApiException(Status.INVALID_ARGUMENT, "VariableAssignment passed with missing source");
         }
 
         return baseType == type;

@@ -2,32 +2,20 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.wfsdk.LHExpression;
-import io.littlehorse.sdk.wfsdk.NodeOutput;
 import java.io.Serializable;
+import lombok.Getter;
 
-class NodeOutputImpl implements NodeOutput {
+@Getter
+public class LHExpressionImpl implements LHExpression {
 
-    public String nodeName;
-    public WorkflowThreadImpl parent;
-    public String jsonPath;
+    private Serializable lhs;
+    private Serializable rhs;
+    private VariableMutationType operation;
 
-    public NodeOutputImpl(String nodeName, WorkflowThreadImpl parent) {
-        this.nodeName = nodeName;
-        this.parent = parent;
-    }
-
-    public NodeOutputImpl jsonPath(String path) {
-        if (jsonPath != null) {
-            throw new RuntimeException("Cannot use jsonpath() twice on same node!");
-        }
-        NodeOutputImpl out = new NodeOutputImpl(nodeName, parent);
-        out.jsonPath = path;
-        return out;
-    }
-
-    public NodeOutputImpl timeout(int timeoutSeconds) {
-        parent.addTimeoutToExtEvt(this, timeoutSeconds);
-        return this;
+    public LHExpressionImpl(Serializable lhs, VariableMutationType operation, Serializable rhs) {
+        this.lhs = lhs;
+        this.rhs = rhs;
+        this.operation = operation;
     }
 
     @Override

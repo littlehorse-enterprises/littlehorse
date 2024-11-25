@@ -39,6 +39,16 @@ message VariableAssignment {
     string node_name = 1;
   }
 
+  // An Expression allows you to combine multiple values into one.
+  message Expression {
+    // The left-hand-side of the expression.
+    VariableAssignment lhs = 1;
+    // The operator in the expression.
+    VariableMutationType operation = 2;
+    // The right-hand-side of the expression.
+    VariableAssignment rhs = 3;
+  }
+
   // If you provide a `variable_name` and the specified variable is JSON_OBJ or
   // JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
   // resolve to the specified field.
@@ -54,6 +64,8 @@ message VariableAssignment {
     FormatString format_string = 4;
     // Assign the value of a NodeOutput.
     NodeOutputReference node_output = 5;
+    // Assign the value of an Expression.
+    Expression expression = 6;
   }
 }
 

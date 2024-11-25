@@ -3,6 +3,7 @@ package io.littlehorse.sdk.wfsdk.internal;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
 import io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference;
 import io.littlehorse.sdk.common.proto.VariableValue;
 
@@ -32,6 +33,12 @@ class BuilderUtil {
                     .setFormat(assignVariable(format.getFormat()))
                     .addAllArgs(format.getArgs()));
 
+        } else if (variable instanceof LHExpressionImpl) {
+            LHExpressionImpl expr = (LHExpressionImpl) variable;
+            builder.setExpression(Expression.newBuilder()
+                    .setLhs(assignVariable(expr.getLhs()))
+                    .setOperation(expr.getOperation())
+                    .setRhs(assignVariable(expr.getRhs())));
         } else {
             try {
                 VariableValue defVal = LHLibUtil.objToVarVal(variable);
