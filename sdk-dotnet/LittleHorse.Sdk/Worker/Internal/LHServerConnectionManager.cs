@@ -7,6 +7,7 @@ using LittleHorse.Sdk.Helper;
 using Microsoft.Extensions.Logging;
 using Polly;
 using static LittleHorse.Common.Proto.LittleHorse;
+using LHTaskException = LittleHorse.Sdk.Exceptions.LHTaskException;
 using TaskStatus = LittleHorse.Common.Proto.TaskStatus;
 
 namespace LittleHorse.Sdk.Worker.Internal
@@ -224,6 +225,15 @@ namespace LittleHorse.Sdk.Worker.Internal
                 _logger?.LogError(ex, "Failed serializing Task Output");
                 taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
                 taskResult.Status = TaskStatus.TaskOutputSerializingError;
+            }
+            catch (TargetInvocationException ex)
+            {
+                if (ex is LHTaskException)
+                {
+                    _logger?.LogError(ex, "Task Method threw a Business Exception");
+                    taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
+                    taskResult.Status = TaskStatus.TaskException;
+                }
             }
             catch (Exception ex)
             {
