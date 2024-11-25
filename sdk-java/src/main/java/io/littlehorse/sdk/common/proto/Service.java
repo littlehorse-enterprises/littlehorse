@@ -806,7 +806,7 @@ public final class Service {
       "se_identifier\030\004 \001(\tH\000\210\001\001B\031\n\027_pre_release" +
       "_identifier*P\n\021AllowedUpdateType\022\017\n\013ALL_" +
       "UPDATES\020\000\022\032\n\026MINOR_REVISION_UPDATES\020\001\022\016\n" +
-      "\nNO_UPDATES\020\0022\352/\n\013LittleHorse\022D\n\nPutTask" +
+      "\nNO_UPDATES\020\0022\2560\n\013LittleHorse\022D\n\nPutTask" +
       "Def\022\036.littlehorse.PutTaskDefRequest\032\024.li" +
       "ttlehorse.TaskDef\"\000\022<\n\nGetTaskDef\022\026.litt" +
       "lehorse.TaskDefId\032\024.littlehorse.TaskDef\"" +
@@ -956,12 +956,14 @@ public final class Service {
       "nt\022\025.littlehorse.TenantId\032\023.littlehorse." +
       "Tenant\"\000\022J\n\014PutPrincipal\022 .littlehorse.P" +
       "utPrincipalRequest\032\026.littlehorse.Princip" +
-      "al\"\000\022:\n\006Whoami\022\026.google.protobuf.Empty\032\026" +
-      ".littlehorse.Principal\"\000\022H\n\020GetServerVer" +
-      "sion\022\026.google.protobuf.Empty\032\032.littlehor" +
-      "se.ServerVersion\"\000BI\n\037io.littlehorse.sdk" +
-      ".common.protoP\001Z\t.;lhproto\252\002\030LittleHorse" +
-      ".Common.Protob\006proto3"
+      "al\"\000\022B\n\014GetPrincipal\022\030.littlehorse.Princ" +
+      "ipalId\032\026.littlehorse.Principal\"\000\022:\n\006Whoa" +
+      "mi\022\026.google.protobuf.Empty\032\026.littlehorse" +
+      ".Principal\"\000\022H\n\020GetServerVersion\022\026.googl" +
+      "e.protobuf.Empty\032\032.littlehorse.ServerVer" +
+      "sion\"\000BI\n\037io.littlehorse.sdk.common.prot" +
+      "oP\001Z\t.;lhproto\252\002\030LittleHorse.Common.Prot" +
+      "ob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

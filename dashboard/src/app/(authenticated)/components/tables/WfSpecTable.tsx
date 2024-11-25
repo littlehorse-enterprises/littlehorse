@@ -11,15 +11,15 @@ export const WfSpecTable: FC<SearchResultProps> = ({ pages = [] }) => {
   const [wfSpecs, setWfSpecs] = useState<WfSpecData[]>([])
   const { tenantId } = useWhoAmI()
 
-  if (pages.length === 0) {
-    return <div className="flex min-h-[360px] items-center justify-center text-center italic">No WfSpecs</div>
-  }
-
   useEffect(() => {
     if (!tenantId) return
     const wfSpecNames = pages.flatMap(page => page.results).map(wfSpec => wfSpec.name)
     getLatestWfSpecs(tenantId, wfSpecNames).then(setWfSpecs)
   }, [pages, tenantId])
+
+  if (pages.length === 0) {
+    return <div className="flex min-h-[360px] items-center justify-center text-center italic">No WfSpecs</div>
+  }
 
   return (
     <div className="py-4">
