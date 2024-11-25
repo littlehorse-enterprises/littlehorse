@@ -436,19 +436,85 @@ public interface WorkflowThread {
     SpawnedThreads spawnThreadForEach(
             WfRunVariable arrVar, String threadName, ThreadFunc threadFunc, Map<String, Object> inputVars);
 
+    /**
+     * Returns an expression that can be passed into a variable assignment/mutation or a TaskRun. The
+     * expression is given by multiplying the left hand with the right hand. This method does not result
+     * in any modifications being made to a variable; it only returns a value calculated inline.
+     * @param lhs is the left hand side of the expression.
+     * @param rhs is the right hand side of the expression, which is multiplied against the lhs.
+     * @return an LHExpression representing the result of the multiplication.
+     */
     LHExpression multiply(Serializable lhs, Serializable rhs);
 
+    /**
+     * Returns an expression that can be passed into a variable assignment/mutation or a TaskRun. The
+     * expression is given by adding the left hand with the right hand. This method does not result
+     * in any modifications being made to a variable; it only returns a value calculated inline.
+     *
+     * If the LHS is a DOUBLE or INT, mathematical addition is used. If the LHS is a JSON_ARR, the
+     * RHS is added as a single element at the end of the array.
+     * @param lhs is the left hand side of the expression.
+     * @param rhs is the right hand side of the expression, which is added to the lhs.
+     * @return an LHExpression representing the result of the addition.
+     */
     LHExpression add(Serializable lhs, Serializable rhs);
 
+    /**
+     * Returns an expression that can be passed into a variable assignment/mutation or a TaskRun. The
+     * expression is given by dividing the left hand by the right hand. This method does not result
+     * in any modifications being made to a variable; it only returns a value calculated inline.
+     * @param lhs is the left hand side of the expression.
+     * @param rhs is the right hand side of the expression, which is divided into the lhs.
+     * @return an LHExpression representing the result of the division.
+     */
     LHExpression divide(Serializable lhs, Serializable rhs);
 
+    /**
+     * Returns an expression that can be passed into a variable assignment/mutation or a TaskRun. The
+     * expression is given by subtracting the right hand from the left hand. This method does not result
+     * in any modifications being made to a variable; it only returns a value calculated inline.
+     * @param lhs is the left hand side of the expression.
+     * @param rhs is the right hand side of the expression, which is divided into the lhs.
+     * @return an LHExpression representing the result of the division.
+     */
     LHExpression subtract(Serializable lhs, Serializable rhs);
 
+    /**
+     * Returns an expression that can be passed into a variable assignment/mutation or a TaskRun. The
+     * expression is given by extending the left-hand-side with the right-hand-side. It is valid for
+     * LHS of type STR or JSON_ARR, and results in concatenating both together.
+     * @param lhs is the left hand side of the expression.
+     * @param rhs is the right hand side of the expression, which is concatenated with the lhs.
+     * @return an LHExpression representing the result of the concatenation.
+     */
     LHExpression extend(Serializable lhs, Serializable rhs);
 
+    /**
+     * Returns an expression that can be passed into a variable assignment/mutation or a TaskRun. The
+     * result is formed by removing all occurrences from RHS from the LHS. Valid only for LHS of type
+     * JSON_ARR.
+     * @param lhs is the left hand side of the expression.
+     * @param rhs is the right hand side of the expression, which is removed from the lhs.
+     * @return an LHExpression representing the result of the removal.
+     */
     LHExpression removeIfPresent(Serializable lhs, Serializable rhs);
 
+    /**
+     * Returns an expression that can be passed into a variable assignment/mutation or a TaskRun. The
+     * result is formed by removing all occurrences from RHS from the LHS. Valid only for LHS of type
+     * JSON_ARR.
+     * @param lhs is the left hand side of the expression.
+     * @param rhs is the right hand side of the expression, which is removed from the lhs.
+     * @return an LHExpression representing the result of the removal.
+     */
     LHExpression removeIndex(Serializable lhs, Serializable index);
 
+    /**
+     * Returns an expression that can be passed into a variable assignment/mutation or a TaskRun. The
+     * result is formed by removing the RHS key from the LHS. Valid only for LHS of type JSON_OBJ.
+     * @param lhs is the left hand side of the expression.
+     * @param rhs is the right hand side of the expression, which is removed from the lhs.
+     * @return an LHExpression representing the result of the removal.
+     */
     LHExpression removeKey(Serializable lhs, Serializable key);
 }

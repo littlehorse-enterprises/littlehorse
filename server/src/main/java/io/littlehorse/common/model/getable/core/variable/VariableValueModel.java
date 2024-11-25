@@ -2,7 +2,12 @@ package io.littlehorse.common.model.getable.core.variable;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Option;
+import com.jayway.jsonpath.ParseContext;
+import com.jayway.jsonpath.PathNotFoundException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.util.LHUtil;
@@ -121,7 +126,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         String jsonString = getJsonString();
         String newJsonString;
         try {
-            newJsonString = JsonPath.parse(jsonString).set(jsonPath, toPut).jsonString();
+            ParseContext parser =
+                    JsonPath.using(Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL));
+            DocumentContext jsonDoc = parser.parse(jsonString);
+
+            newJsonString = jsonDoc.set(jsonPath, toPut).jsonString();
         } catch (Exception jsonExn) {
             throw new LHVarSubError(
                     jsonExn,
@@ -224,13 +233,17 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
         try {
             val = JsonPath.parse(jsonStr).read(path);
+        } catch (PathNotFoundException exn) {
+            return new VariableValueModel();
         } catch (Exception exn) {
+            exn.printStackTrace();
             throw new LHVarSubError(
                     exn, "Failed accessing path " + path + " on data " + jsonStr + "  :\n" + exn.getMessage());
         }
 
         if (val == null) {
-            // TODO: Need to handle this better.
+            // We do not differentiate between the key not being there and the key being explicitly
+            // set to the value of null.
             return new VariableValueModel();
         }
 

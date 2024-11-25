@@ -1,5 +1,7 @@
 package e2e;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -165,6 +167,70 @@ public class ExpressionTest {
                 .start();
     }
 
+    @Test
+    void shouldOverwriteJsonValueWhenMutating() {
+        verifier.prepareRun(expressionWf, Arg.of("json", Map.of("foo", "baz")))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "json", variable -> {
+                    String jsonStr = variable.getJsonObj();
+                    try {
+                        @SuppressWarnings("unchecked")
+                        Map<String, Object> jsonMap = new ObjectMapper().readValue(jsonStr, Map.class);
+                        Assertions.assertEquals("bar", jsonMap.get("foo"));
+                    } catch (JsonProcessingException exn) {
+                        throw new RuntimeException(exn);
+                    }
+                })
+                .start();
+    }
+
+    @Test
+    void shouldAddKeyIfNotExists() {
+        verifier.prepareRun(expressionWf, Arg.of("json", Map.of()))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "json", variable -> {
+                    String jsonStr = variable.getJsonObj();
+                    try {
+                        @SuppressWarnings("unchecked")
+                        Map<String, Object> jsonMap = new ObjectMapper().readValue(jsonStr, Map.class);
+                        Assertions.assertEquals("bar", jsonMap.get("foo"));
+                    } catch (JsonProcessingException exn) {
+                        throw new RuntimeException(exn);
+                    }
+                })
+                .start();
+    }
+
+    @Test
+    void shouldThrowOnSecondLayerNullNestedField() {
+        verifier.prepareRun(expressionWf, Arg.of("nested-json", Map.of()))
+                .waitForStatus(LHStatus.ERROR)
+                .thenVerifyLastNodeRun(0, nodeRun -> {
+                    System.out.println(nodeRun.getFailures(0).getMessage());
+                    Assertions.assertTrue(
+                            nodeRun.getFailures(0).getMessage().toLowerCase().contains("missing property"));
+                })
+                .start();
+    }
+
+    @Test
+    void shouldSetNullNestedFieldWhenFirstLayerProvided() {
+        verifier.prepareRun(expressionWf, Arg.of("nested-json", Map.of("foo", Map.of())))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "nested-json", variable -> {
+                    String jsonStr = variable.getJsonObj();
+                    try {
+                        @SuppressWarnings("unchecked")
+                        Map<String, Object> jsonMap = new ObjectMapper().readValue(jsonStr, Map.class);
+                        Map<String, String> fooMap = (Map<String, String>) jsonMap.get("foo");
+                        Assertions.assertEquals("baz", fooMap.get("bar"));
+                    } catch (JsonProcessingException exn) {
+                        throw new RuntimeException(exn);
+                    }
+                })
+                .start();
+    }
+
     /*
      * Each of the tests in here *could* be their own Workflow; however, registering a
      * workflow takes ~200ms in our testing. Each of these test cases takes about 15ms
@@ -225,6 +291,18 @@ public class ExpressionTest {
                         quantity.multiply(price).multiply(wf.subtract(1.0, discountPercentage.divide(100.0)));
                 totalPriceInt.assignTo(pedro);
                 totalPriceDouble.assignTo(pedro);
+            });
+
+            // Test mutating sub-fields of a json object
+            var json = wf.declareJsonObj("json");
+            wf.doIf(json.isNotEqualTo(null), then -> {
+                json.jsonPath("$.foo").assignTo("bar");
+            });
+
+            // Test mutating doubly-nested fields of a Json Object
+            var nestedJson = wf.declareJsonObj("nested-json");
+            wf.doIf(nestedJson.isNotEqualTo(null), then -> {
+                nestedJson.jsonPath("$.foo.bar").assignTo("baz");
             });
         });
     }
