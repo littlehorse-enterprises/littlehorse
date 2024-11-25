@@ -13,8 +13,9 @@ import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.auth.InternalCallCredentials;
+import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.auth.RequestAuthorizer;
-import io.littlehorse.server.auth.RequestSanitizer;
+import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.streams.BackendInternalComms;
@@ -62,7 +63,7 @@ public class LHServer {
         return contextKey.get();
     }
 
-    public LHServer(LHServerConfig config) {
+    public LHServer(LHServerConfig config) throws LHMisconfigurationException {
         this.metadataCache = new MetadataCache();
         this.config = config;
         LHProducer taskClaimProducer = new LHProducer(config.getKafkaTaskClaimProducer());
@@ -81,6 +82,7 @@ public class LHServer {
                 ServerTopology.initCoreTopology(config, this, metadataCache, taskQueueManager),
                 config.getCoreStreamsConfig());
         this.timerStreams = new KafkaStreams(ServerTopology.initTimerTopology(config), config.getTimerStreamsConfig());
+
         coreStreams.setUncaughtExceptionHandler(throwable -> {
             log.error("Uncaught exception for " + throwable.getMessage());
             return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
@@ -116,8 +118,7 @@ public class LHServer {
                 List.of(
                         new MetricCollectingServerInterceptor(healthService.getMeterRegistry()),
                         new RequestAuthorizer(contextKey, metadataCache, coreStoreProvider, config),
-                        listenerConfig.getServerAuthorizer(),
-                        new RequestSanitizer()),
+                        listenerConfig.getRequestAuthenticator()),
                 contextKey,
                 commandProducer,
                 taskQueueProducer);

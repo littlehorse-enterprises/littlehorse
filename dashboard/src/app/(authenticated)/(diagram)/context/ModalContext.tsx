@@ -7,13 +7,14 @@ import {
   UserTaskNode,
   UserTaskRun,
   WorkflowEvent,
+  WfSpec,
 } from 'littlehorse-client/proto'
 import { Dispatch, FC, ProviderProps, SetStateAction, createContext } from 'react'
 import { ModalType, Modals } from '../components/Modals'
 
 export type Modal = {
   type: ModalType
-  data: TaskRun | UserTaskRun | EdgeProto | ExternalEvent | NodeRuns | WorkflowEvent
+  data: TaskRun | UserTaskRun | EdgeProto | ExternalEvent | NodeRuns | WorkflowEvent | WfSpec
   nodeRun?: NodeRun
   userTaskNode?: UserTaskNode
 }

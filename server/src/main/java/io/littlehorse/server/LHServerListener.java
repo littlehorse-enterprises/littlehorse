@@ -122,6 +122,7 @@ import io.littlehorse.sdk.common.proto.NodeRunList;
 import io.littlehorse.sdk.common.proto.PollTaskRequest;
 import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.sdk.common.proto.Principal;
+import io.littlehorse.sdk.common.proto.PrincipalId;
 import io.littlehorse.sdk.common.proto.PrincipalIdList;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
@@ -195,6 +196,7 @@ import io.littlehorse.sdk.common.proto.WorkflowEventDefIdList;
 import io.littlehorse.sdk.common.proto.WorkflowEventId;
 import io.littlehorse.sdk.common.proto.WorkflowEventIdList;
 import io.littlehorse.sdk.common.proto.WorkflowEventList;
+import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanReply;
@@ -1008,6 +1010,23 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 .getOrThrow(
                         tenantId,
                         () -> new LHApiException(Status.NOT_FOUND, "Could not find tenant %s".formatted(tenantId)));
+        ctx.onNext(result.toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
+    @Authorize(
+            resources = {ACLResource.ACL_PRINCIPAL},
+            actions = ACLAction.READ)
+    public void getPrincipal(PrincipalId req, StreamObserver<Principal> ctx) {
+        RequestExecutionContext reqContext = requestContext();
+        PrincipalIdModel principalId = PrincipalIdModel.fromProto(req, PrincipalIdModel.class, reqContext);
+        PrincipalModel result = reqContext
+                .metadataManager()
+                .getOrThrow(
+                        principalId,
+                        () -> new LHApiException(
+                                Status.NOT_FOUND, "Could not find Principal %s".formatted(principalId)));
         ctx.onNext(result.toProto().build());
         ctx.onCompleted();
     }

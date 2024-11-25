@@ -41,6 +41,7 @@ import io.littlehorse.sdk.common.proto.WaitForConditionNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
+import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.LHFormatString;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
@@ -375,13 +376,89 @@ final class WorkflowThreadImpl implements WorkflowThread {
         }
     }
 
+    @Override
+    public LHExpression multiply(Serializable lhs, Serializable rhs) {
+        return new LHExpressionImpl(lhs, VariableMutationType.MULTIPLY, rhs);
+    }
+
+    @Override
+    public LHExpression add(Serializable lhs, Serializable rhs) {
+        return new LHExpressionImpl(lhs, VariableMutationType.ADD, rhs);
+    }
+
+    @Override
+    public LHExpression divide(Serializable lhs, Serializable rhs) {
+        return new LHExpressionImpl(lhs, VariableMutationType.DIVIDE, rhs);
+    }
+
+    @Override
+    public LHExpression subtract(Serializable lhs, Serializable rhs) {
+        return new LHExpressionImpl(lhs, VariableMutationType.SUBTRACT, rhs);
+    }
+
+    @Override
+    public LHExpression extend(Serializable lhs, Serializable rhs) {
+        return new LHExpressionImpl(lhs, VariableMutationType.EXTEND, rhs);
+    }
+
+    @Override
+    public LHExpression removeIfPresent(Serializable lhs, Serializable rhs) {
+        return new LHExpressionImpl(lhs, VariableMutationType.REMOVE_IF_PRESENT, rhs);
+    }
+
+    @Override
+    public LHExpression removeIndex(Serializable lhs, Serializable index) {
+        return new LHExpressionImpl(lhs, VariableMutationType.REMOVE_INDEX, index);
+    }
+
+    @Override
+    public LHExpression removeKey(Serializable lhs, Serializable key) {
+        return new LHExpressionImpl(lhs, VariableMutationType.REMOVE_KEY, key);
+    }
+
     public WfRunVariableImpl addVariable(String name, Object typeOrDefaultVal) {
         checkIfIsActive();
-        WfRunVariableImpl wfRunVariable = new WfRunVariableImpl(name, typeOrDefaultVal);
+        WfRunVariableImpl wfRunVariable = new WfRunVariableImpl(name, typeOrDefaultVal, this);
         wfRunVariables.add(wfRunVariable);
         return wfRunVariable;
     }
 
+    @Override
+    public WfRunVariable declareBool(String name) {
+        return addVariable(name, VariableType.BOOL);
+    }
+
+    @Override
+    public WfRunVariable declareInt(String name) {
+        return addVariable(name, VariableType.INT);
+    }
+
+    @Override
+    public WfRunVariable declareStr(String name) {
+        return addVariable(name, VariableType.STR);
+    }
+
+    @Override
+    public WfRunVariable declareDouble(String name) {
+        return addVariable(name, VariableType.DOUBLE);
+    }
+
+    @Override
+    public WfRunVariable declareBytes(String name) {
+        return addVariable(name, VariableType.BYTES);
+    }
+
+    @Override
+    public WfRunVariable declareJsonArr(String name) {
+        return addVariable(name, VariableType.JSON_ARR);
+    }
+
+    @Override
+    public WfRunVariable declareJsonObj(String name) {
+        return addVariable(name, VariableType.JSON_OBJ);
+    }
+
+    @Override
     public void doIf(WorkflowCondition condition, IfElseBody ifBody) {
         checkIfIsActive();
         WorkflowConditionImpl cond = (WorkflowConditionImpl) condition;
@@ -411,6 +488,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         addNode("nop", NodeCase.NOP, NopNode.newBuilder().build());
     }
 
+    @Override
     public void doIfElse(WorkflowCondition condition, IfElseBody ifBody, IfElseBody elseBody) {
         checkIfIsActive();
         WorkflowConditionImpl cond = (WorkflowConditionImpl) condition;
@@ -458,6 +536,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return variablesFromIfBlock;
     }
 
+    @Override
     public void doWhile(WorkflowCondition condition, ThreadFunc whileBody) {
         checkIfIsActive();
         WorkflowConditionImpl cond = (WorkflowConditionImpl) condition;
@@ -518,18 +597,21 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new SpawnedThreadsIterator(internalStartedThreadVar);
     }
 
+    @Override
     public void sleepSeconds(Object secondsToSleep) {
         checkIfIsActive();
         SleepNode.Builder n = SleepNode.newBuilder().setRawSeconds(assignVariable(secondsToSleep));
         addNode("sleep", NodeCase.SLEEP, n.build());
     }
 
+    @Override
     public void sleepUntil(WfRunVariable timestamp) {
         checkIfIsActive();
         SleepNode.Builder n = SleepNode.newBuilder().setTimestamp(assignVariable(timestamp));
         addNode("sleep", NodeCase.SLEEP, n.build());
     }
 
+    @Override
     public SpawnedThreadImpl spawnThread(ThreadFunc threadFunc, String threadName, Map<String, Object> inputVars) {
         checkIfIsActive();
         if (inputVars == null) {
@@ -625,6 +707,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
         spec.putNodes(node.nodeName, n.build());
     }
 
+    @Override
     public void mutate(WfRunVariable lhsVar, VariableMutationType type, Object rhs) {
         checkIfIsActive();
         WfRunVariableImpl lhs = (WfRunVariableImpl) lhsVar;
@@ -634,6 +717,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
         if (lhs.jsonPath != null) {
             mutation.setLhsJsonPath(lhs.jsonPath);
         }
+
+        mutation.setSourceVariable(assignVariable(rhs));
 
         if (NodeOutputImpl.class.isAssignableFrom(rhs.getClass())) {
             NodeOutputImpl no = (NodeOutputImpl) rhs;
@@ -659,6 +744,12 @@ final class WorkflowThreadImpl implements WorkflowThread {
             varBuilder.setVariableName(var.name);
 
             mutation.setSourceVariable(varBuilder);
+        } else if (LHExpression.class.isAssignableFrom(rhs.getClass())) {
+            // TODO: Long term, we should deprecate all forms of mutation other than
+            // just using the `VariableAssignemnt source_variable` field.
+            //
+            // That would mean we just use `assignVariable()` for all cases.
+            mutation.setSourceVariable(assignVariable(rhs));
         } else {
             // At this point, we're going to treat it as a regular POJO, which means
             // likely a json obj.

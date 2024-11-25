@@ -152,5 +152,32 @@ public interface VariableAssignmentOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReferenceOrBuilder getNodeOutputOrBuilder();
 
+  /**
+   * <pre>
+   * Assign the value of an Expression.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.Expression expression = 6;</code>
+   * @return Whether the expression field is set.
+   */
+  boolean hasExpression();
+  /**
+   * <pre>
+   * Assign the value of an Expression.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.Expression expression = 6;</code>
+   * @return The expression.
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignment.Expression getExpression();
+  /**
+   * <pre>
+   * Assign the value of an Expression.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.Expression expression = 6;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignment.ExpressionOrBuilder getExpressionOrBuilder();
+
   io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase getSourceCase();
 }
