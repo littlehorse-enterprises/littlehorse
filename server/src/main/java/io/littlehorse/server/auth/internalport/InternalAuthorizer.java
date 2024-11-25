@@ -1,4 +1,4 @@
-package io.littlehorse.server.auth;
+package io.littlehorse.server.auth.internalport;
 
 import io.grpc.Context;
 import io.grpc.Contexts;
@@ -9,12 +9,20 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.server.auth.LHServerInterceptor;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Objects;
 
-public class InternalAuthorizer implements ServerAuthorizer {
+/**
+ * ServerInterceptor to populate the RequestExecutionContext with the TenantId and PrincipalId
+ * for interactive queries between LH Servers.
+ *
+ * While the request is technically made from one LH Server to another, we want the receiving
+ * server to treat it as if it were made by the original client.
+ */
+public class InternalAuthorizer implements LHServerInterceptor {
 
     private final Context.Key<RequestExecutionContext> executionContextKey;
     private final CoreStoreProvider coreStoreProvider;

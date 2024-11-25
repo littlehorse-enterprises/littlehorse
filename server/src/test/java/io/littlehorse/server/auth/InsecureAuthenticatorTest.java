@@ -12,15 +12,17 @@ import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptors;
 import io.grpc.ServerMethodDefinition;
 import io.grpc.ServerServiceDefinition;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
+import io.littlehorse.server.auth.authenticators.InsecureAuthenticator;
 import java.util.Collection;
 import lombok.Getter;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class RequestSanitizerTest {
+class InsecureAuthenticatorTest {
 
-    private RequestSanitizer sanitizer = new RequestSanitizer();
+    private InsecureAuthenticator authenticator = new InsecureAuthenticator();
     private TrackableInterceptor trackableInterceptor = new TrackableInterceptor();
     private final ServerServiceDefinition testServiceDefinition = buildTestServiceDefinition(
             ServerServiceDefinition.builder(LittleHorseGrpc.getServiceDescriptor()),
@@ -30,19 +32,30 @@ class RequestSanitizerTest {
     private final Metadata requestHeaders = new Metadata();
 
     @Test
-    public void shouldRemoveInternalHeader() {
-        requestHeaders.put(ServerAuthorizer.CLIENT_ID, "root");
-        requestHeaders.put(ServerAuthorizer.TENANT_ID, "my-tenant");
+    public void shouldSetPrincipalToAnonymousWhenProvidedByUser() {
+        requestHeaders.put(LHServerInterceptor.CLIENT_ID, "root");
+        requestHeaders.put(LHServerInterceptor.TENANT_ID, "my-tenant");
         startCall();
         Metadata resolvedHeaders = trackableInterceptor.getHeaders();
         Assertions.assertThat(resolvedHeaders).isNotNull();
-        Assertions.assertThat(resolvedHeaders.get(ServerAuthorizer.CLIENT_ID)).isNull();
-        Assertions.assertThat(resolvedHeaders.get(ServerAuthorizer.TENANT_ID)).isEqualTo("my-tenant");
+        Assertions.assertThat(resolvedHeaders.get(LHServerInterceptor.CLIENT_ID))
+                .isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
+        Assertions.assertThat(resolvedHeaders.get(LHServerInterceptor.TENANT_ID))
+                .isEqualTo("my-tenant");
+    }
+
+    @Test
+    public void shouldSetPrincipalToAnonymous() {
+        startCall();
+        Metadata resolvedHeaders = trackableInterceptor.getHeaders();
+        Assertions.assertThat(resolvedHeaders).isNotNull();
+        Assertions.assertThat(resolvedHeaders.get(LHServerInterceptor.CLIENT_ID))
+                .isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
     }
 
     private void startCall() {
         ServerServiceDefinition intercept =
-                ServerInterceptors.intercept(testServiceDefinition, sanitizer, trackableInterceptor);
+                ServerInterceptors.intercept(testServiceDefinition, authenticator, trackableInterceptor);
         @SuppressWarnings("unchecked")
         ServerMethodDefinition<Object, Object> def =
                 (ServerMethodDefinition<Object, Object>) Iterables.get(intercept.getMethods(), 0);
@@ -58,7 +71,7 @@ class RequestSanitizerTest {
     }
 
     @Getter
-    private static class TrackableInterceptor implements ServerAuthorizer {
+    private static class TrackableInterceptor implements LHServerInterceptor {
         private Metadata headers;
 
         @Override

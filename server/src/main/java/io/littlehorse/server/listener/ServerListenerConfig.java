@@ -6,10 +6,10 @@ import io.grpc.ServerCredentials;
 import io.grpc.TlsServerCredentials;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.auth.AuthorizationProtocol;
-import io.littlehorse.server.auth.InsecureServerAuthorizer;
-import io.littlehorse.server.auth.MTLSServerAuthorizer;
-import io.littlehorse.server.auth.OAuthServerAuthenticator;
-import io.littlehorse.server.auth.ServerAuthorizer;
+import io.littlehorse.server.auth.LHServerInterceptor;
+import io.littlehorse.server.auth.authenticators.InsecureAuthenticator;
+import io.littlehorse.server.auth.authenticators.MTLSAuthenticator;
+import io.littlehorse.server.auth.authenticators.OAuthAuthenticator;
 import java.io.IOException;
 import lombok.Builder;
 import lombok.Getter;
@@ -67,11 +67,11 @@ public class ServerListenerConfig {
         }
     }
 
-    public ServerAuthorizer getServerAuthorizer() {
+    public LHServerInterceptor getRequestAuthenticator() {
         return switch (authorizationProtocol) {
-            case OAUTH -> new OAuthServerAuthenticator(config.getOAuthConfig());
-            case MTLS -> new MTLSServerAuthorizer(config.getMTLSConfiguration(name));
-            default -> InsecureServerAuthorizer.create();
+            case OAUTH -> new OAuthAuthenticator(config.getOAuthConfig());
+            case MTLS -> new MTLSAuthenticator();
+            default -> InsecureAuthenticator.create();
         };
     }
 }

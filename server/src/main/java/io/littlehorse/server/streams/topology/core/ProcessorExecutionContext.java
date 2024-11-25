@@ -12,7 +12,7 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.LHServer;
-import io.littlehorse.server.auth.InternalCallCredentials;
+import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
