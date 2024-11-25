@@ -181,11 +181,11 @@ public class ExpressionTest {
             // set input values.
             var divisionTestJson = wf.declareJsonObj("dividend-tests");
             var divisionResult = wf.declareDouble("division-result");
-            var divisionResultInt = wf.declareDouble("division-result-int");
+            var divisionResultInt = wf.declareInt("division-result-int");
             wf.doIf(divisionTestJson.isNotEqualTo(null), then -> {
-                divisionResult.assignTo(divisionTestJson.jsonPath("$.lhs").divide(divisionTestJson.jsonPath("$.rhs")));
-                divisionResultInt.assignTo(
-                        divisionTestJson.jsonPath("$.lhs").divide(divisionTestJson.jsonPath("$.rhs")));
+                LHExpression foobar = divisionTestJson.jsonPath("$.lhs").divide(divisionTestJson.jsonPath("$.rhs"));
+                divisionResult.assignTo(foobar);
+                divisionResultInt.assignTo(foobar);
             });
 
             // This test uses a complex expression where the things we are computing over

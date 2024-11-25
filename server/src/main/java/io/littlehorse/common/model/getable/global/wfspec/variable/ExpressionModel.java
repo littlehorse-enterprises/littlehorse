@@ -7,6 +7,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.VariableAssignerFunc;
 import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 
@@ -41,6 +42,13 @@ public class ExpressionModel extends LHSerializable<Expression> {
     public VariableValueModel evaluate(VariableAssignerFunc variableFinder) throws LHVarSubError {
         VariableValueModel lhsVal = variableFinder.assign(lhs);
         VariableValueModel rhsVal = variableFinder.assign(rhs);
-        return lhsVal.operate(operation, rhsVal, lhsVal.getType());
+
+        VariableType typeToCoerceTo = lhsVal.getType();
+
+        if (lhsVal.getType() == VariableType.INT && rhsVal.getType() == VariableType.DOUBLE) {
+            typeToCoerceTo = VariableType.DOUBLE;
+        }
+
+        return lhsVal.operate(operation, rhsVal, typeToCoerceTo);
     }
 }

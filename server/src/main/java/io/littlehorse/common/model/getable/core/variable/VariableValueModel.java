@@ -181,18 +181,17 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
     public VariableValueModel operate(
             VariableMutationType operation, VariableValueModel rhs, VariableType typeToCoerceTo) throws LHVarSubError {
-        if (getType() != null) {
-            if (getType() != typeToCoerceTo) {
-                throw new LHVarSubError(
-                        null, "got unexpected variable type. Thought it was a " + typeToCoerceTo + " but is a " + type);
-            }
-        }
 
         if (operation == VariableMutationType.ASSIGN) {
-            if (getType() == null) return rhs.coerceToType(typeToCoerceTo);
-            return rhs.coerceToType(getType());
+            return rhs.coerceToType(typeToCoerceTo);
+        }
 
-        } else if (operation == VariableMutationType.ADD) {
+        // if (getType() != typeToCoerceTo) {
+        //     throw new LHVarSubError(
+        //             null, "got unexpected variable type. Thought it was a " + typeToCoerceTo + " but is a " + type);
+        // }
+
+        if (operation == VariableMutationType.ADD) {
             return add(rhs);
         } else if (operation == VariableMutationType.SUBTRACT) {
             return subtract(rhs);
@@ -262,6 +261,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
     public VariableValueModel add(VariableValueModel rhs) throws LHVarSubError {
         if (getType() == VariableType.INT) {
+            if (rhs.getType() == VariableType.DOUBLE) {
+                return new VariableValueModel(asDouble().doubleVal + rhs.asDouble().doubleVal);
+            }
             return new VariableValueModel(asInt().intVal + rhs.asInt().intVal);
         } else if (getType() == VariableType.DOUBLE) {
             return new VariableValueModel(asDouble().doubleVal + rhs.asDouble().doubleVal);
@@ -279,6 +281,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
     public VariableValueModel subtract(VariableValueModel rhs) throws LHVarSubError {
         if (getType() == VariableType.INT) {
+            if (rhs.getType() == VariableType.DOUBLE) {
+                return new VariableValueModel((long) (asDouble().doubleVal - rhs.asDouble().doubleVal));
+            }
             return new VariableValueModel(asInt().intVal - rhs.asInt().intVal);
         } else if (getType() == VariableType.DOUBLE) {
             return new VariableValueModel(asDouble().doubleVal - rhs.asDouble().doubleVal);
@@ -288,11 +293,14 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
     public VariableValueModel multiply(VariableValueModel rhs) throws LHVarSubError {
         if (getType() == VariableType.INT) {
-            return new VariableValueModel((long) (asInt().intVal * rhs.asDouble().doubleVal));
+            if (rhs.getType() == VariableType.DOUBLE) {
+                return new VariableValueModel((long) (asDouble().doubleVal * rhs.asDouble().doubleVal));
+            }
+            return new VariableValueModel((long) (intVal * rhs.asInt().intVal));
         } else if (getType() == VariableType.DOUBLE) {
             return new VariableValueModel((double) (asDouble().doubleVal * rhs.asDouble().doubleVal));
         }
-        throw new LHVarSubError(null, "Cannot multiply var of type " + type);
+        throw new LHVarSubError(null, "Cannot multiply value of type " + type);
     }
 
     public VariableValueModel divide(VariableValueModel rhs) throws LHVarSubError {
