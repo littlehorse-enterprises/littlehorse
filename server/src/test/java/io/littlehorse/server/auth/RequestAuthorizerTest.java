@@ -89,7 +89,7 @@ public class RequestAuthorizerTest {
 
     @Test
     public void supportAnonymousPrincipalForDefaultTenant() {
-        when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn(null);
+        when(mockMetadata.get(LHServerInterceptor.CLIENT_ID)).thenReturn(null);
 
         startCall();
         assertThat(resolvedAuthContext).isNotNull();
@@ -102,7 +102,7 @@ public class RequestAuthorizerTest {
 
     @Test
     public void supportAnonymousPrincipalWhenClientIdIsNotFound() {
-        when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
+        when(mockMetadata.get(LHServerInterceptor.CLIENT_ID)).thenReturn("principal-id");
         startCall();
         assertThat(resolvedAuthContext.principalId().getId()).isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
         assertThat(resolvedAuthContext.acls())
@@ -111,8 +111,8 @@ public class RequestAuthorizerTest {
 
     @Test
     public void supportPrincipalForSpecificTenant() {
-        when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
-        when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-tenant");
+        when(mockMetadata.get(LHServerInterceptor.CLIENT_ID)).thenReturn("principal-id");
+        when(mockMetadata.get(LHServerInterceptor.TENANT_ID)).thenReturn("my-tenant");
         PrincipalModel newPrincipal = new PrincipalModel();
         newPrincipal.setId(new PrincipalIdModel("principal-id"));
         newPrincipal.setGlobalAcls(TestUtil.singleAdminAcl("name"));
@@ -126,8 +126,8 @@ public class RequestAuthorizerTest {
 
     @Test
     public void supportPermissionDeniedForNonExistingTenants() {
-        when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
-        when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-missing-tenant");
+        when(mockMetadata.get(LHServerInterceptor.CLIENT_ID)).thenReturn("principal-id");
+        when(mockMetadata.get(LHServerInterceptor.TENANT_ID)).thenReturn("my-missing-tenant");
         PrincipalModel newPrincipal = new PrincipalModel();
         newPrincipal.setId(new PrincipalIdModel("principal-id"));
         newPrincipal.setGlobalAcls(TestUtil.singleAdminAcl("name"));
@@ -138,7 +138,7 @@ public class RequestAuthorizerTest {
 
     @Test
     public void supportAnonymousPrincipalWhenPrincipalIdIsNotFound() {
-        when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("principal-id");
+        when(mockMetadata.get(LHServerInterceptor.CLIENT_ID)).thenReturn("principal-id");
         metadataManager.put(new TenantModel("my-tenant"));
         startCall();
         assertThat(resolvedAuthContext.principalId().getId()).isEqualTo(LHConstants.ANONYMOUS_PRINCIPAL);
@@ -164,7 +164,7 @@ public class RequestAuthorizerTest {
 
         @Test
         public void supportRequestAuthorizationForAdminPrincipals() {
-            when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("admin-principal");
+            when(mockMetadata.get(LHServerInterceptor.CLIENT_ID)).thenReturn("admin-principal");
             startCall();
             assertThat(resolvedAuthContext).isNotNull();
         }
@@ -174,7 +174,7 @@ public class RequestAuthorizerTest {
             MethodDescriptor<Object, Object> mockMethod = mock();
             when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
             when(mockMethod.getBareMethodName()).thenReturn("PutTaskDef");
-            when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("limited-principal");
+            when(mockMetadata.get(LHServerInterceptor.CLIENT_ID)).thenReturn("limited-principal");
             startCall();
             Mockito.verify(mockCall).close(any(), eq(mockMetadata));
         }
@@ -184,7 +184,7 @@ public class RequestAuthorizerTest {
             MethodDescriptor<Object, Object> mockMethod = mock();
             when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
             when(mockMethod.getBareMethodName()).thenReturn("PutTenant");
-            when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("tenant-admin-principal");
+            when(mockMetadata.get(LHServerInterceptor.CLIENT_ID)).thenReturn("tenant-admin-principal");
             startCall();
             ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
             Mockito.verify(mockCall).close(statusCaptor.capture(), eq(mockMetadata));
@@ -199,7 +199,7 @@ public class RequestAuthorizerTest {
             MethodDescriptor<Object, Object> mockMethod = mock();
             when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
             when(mockMethod.getBareMethodName()).thenReturn("PutPrincipal");
-            when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("tenant-admin-principal");
+            when(mockMetadata.get(LHServerInterceptor.CLIENT_ID)).thenReturn("tenant-admin-principal");
             startCall();
             ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
             Mockito.verify(mockCall).close(statusCaptor.capture(), eq(mockMetadata));
@@ -214,8 +214,8 @@ public class RequestAuthorizerTest {
             MethodDescriptor<Object, Object> mockMethod = mock();
             when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
             when(mockMethod.getBareMethodName()).thenReturn("PutTaskDef");
-            when(mockMetadata.get(ServerAuthorizer.CLIENT_ID)).thenReturn("tenant-admin-principal");
-            when(mockMetadata.get(ServerAuthorizer.TENANT_ID)).thenReturn("my-tenant");
+            when(mockMetadata.get(LHServerInterceptor.CLIENT_ID)).thenReturn("tenant-admin-principal");
+            when(mockMetadata.get(LHServerInterceptor.TENANT_ID)).thenReturn("my-tenant");
             startCall();
             assertThat(resolvedAuthContext).isNotNull();
         }
@@ -261,7 +261,7 @@ public class RequestAuthorizerTest {
                 }
             };
             final Metadata mockMetadata = new Metadata();
-            mockMetadata.put(ServerAuthorizer.CLIENT_ID, principalId);
+            mockMetadata.put(LHServerInterceptor.CLIENT_ID, principalId);
             PrincipalModel newPrincipal = new PrincipalModel();
             newPrincipal.setId(new PrincipalIdModel(principalId));
             newPrincipal.setGlobalAcls(TestUtil.singleAdminAcl("name"));
@@ -313,7 +313,7 @@ public class RequestAuthorizerTest {
             definitionBuilder = definitionBuilder.addMethod(method, (call, headers) -> {
                 String principalId =
                         contextKey.get().authorization().principalId().toString();
-                assertThat(principalId).isEqualTo(headers.get(ServerAuthorizer.CLIENT_ID));
+                assertThat(principalId).isEqualTo(headers.get(LHServerInterceptor.CLIENT_ID));
                 return new NoopServerCall.NoopServerCallListener<>();
             });
         }
