@@ -5,6 +5,7 @@ import { ClockIcon } from 'lucide-react'
 import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 import { FC } from 'react'
 import { SearchVariableDialog } from './SearchVariableDialog'
+import { usePathname } from 'next/navigation'
 
 type Props = {
   spec: WfSpec
@@ -14,6 +15,9 @@ type Props = {
 }
 
 export const WfRunsHeader: FC<Props> = ({ spec, currentStatus, currentWindow, setWindow }) => {
+  const pathname = usePathname()
+  const pathWithoutTenant = pathname.replace(/^\/[^/]+/, '')
+
   return (
     <div className="mb-4 flex items-center justify-between">
       <h2 className="text-2xl font-bold">WfRun Search</h2>
@@ -31,8 +35,7 @@ export const WfRunsHeader: FC<Props> = ({ spec, currentStatus, currentWindow, se
                   key={time}
                   value={time}
                   className={({ active }) =>
-                    `relative cursor-default select-none py-2 pl-2 pr-4 text-xs ${
-                      active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                    `relative cursor-default select-none py-2 pl-2 pr-4 text-xs ${active ? 'bg-blue-500 text-white' : 'text-gray-900'
                     }`
                   }
                 >
@@ -46,7 +49,7 @@ export const WfRunsHeader: FC<Props> = ({ spec, currentStatus, currentWindow, se
           {['ALL', ...WF_RUN_STATUSES].map(status => (
             <LinkWithTenant
               key={status}
-              href={status === 'ALL' ? '?' : `?status=${status}`}
+              href={status === 'ALL' ? pathWithoutTenant : `${pathWithoutTenant}?status=${status}`}
               replace
               scroll={false}
               className={`flex items-center border-y-2 border-l-2 p-2 text-xs first-of-type:rounded-l-lg first-of-type:border-l-2 last-of-type:rounded-r-lg last-of-type:border-r-2 ${status === currentStatus ? 'border-blue-500 bg-blue-500 text-white' : ' text-gray-500'}`}

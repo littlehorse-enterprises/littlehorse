@@ -48,7 +48,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
               <LinkWithTenant
                 className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
                 target="_blank"
-                href={`/${tenantId}/externalEventDef/${externalEventNode.externalEventDefId?.name}`}
+                href={`/externalEventDef/${externalEventNode.externalEventDefId?.name}`}
               >
                 {externalEventNode.externalEventDefId?.name} <ExternalLinkIcon className="h-4 w-4" />
               </LinkWithTenant>
