@@ -139,6 +139,8 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
         WithWorkers workersMetadata = testInstance.getClass().getAnnotation(WithWorkers.class);
         if (workersMetadata != null) {
             String methodSourceName = workersMetadata.value();
+            List<String> allowedMethods = List.of(workersMetadata.lhMethods());
+            boolean startAllWorkers = allowedMethods.isEmpty();
             try {
                 Object executable =
                         testInstance.getClass().getMethod(methodSourceName).invoke(testInstance);
@@ -147,8 +149,10 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
                     if (declaredMethod.getAnnotation(LHTaskMethod.class) != null) {
                         String taskDefName =
                                 declaredMethod.getAnnotation(LHTaskMethod.class).value();
-                        LHTaskWorker worker = new LHTaskWorker(executable, taskDefName, config);
-                        workers.add(worker);
+                        if (startAllWorkers || allowedMethods.contains(taskDefName)) {
+                            LHTaskWorker worker = new LHTaskWorker(executable, taskDefName, config);
+                            workers.add(worker);
+                        }
                     }
                 }
                 for (LHTaskWorker worker : workers) {

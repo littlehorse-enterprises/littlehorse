@@ -12,7 +12,7 @@ import io.littlehorse.test.WorkflowVerifier;
 import org.junit.jupiter.api.Test;
 
 @LHTest
-@WithWorkers("basicWorker")
+@WithWorkers(value = "basicWorker", lhMethods = "ag-one")
 public class BasicTest {
 
     @LHWorkflow("test-basic")
@@ -42,6 +42,11 @@ public class BasicTest {
 
         @LHTaskMethod("ag-one")
         public boolean one() {
+            return true;
+        }
+
+        @LHTaskMethod("ag-two")
+        public boolean two() {
             return true;
         }
     }
