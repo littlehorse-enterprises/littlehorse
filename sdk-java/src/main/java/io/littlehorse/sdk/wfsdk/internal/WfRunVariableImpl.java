@@ -37,8 +37,12 @@ class WfRunVariableImpl implements WfRunVariable {
 
     public WfRunVariableImpl(String name, Object typeOrDefaultVal, WorkflowThreadImpl parent) {
         this.name = name;
-        this.typeOrDefaultVal = typeOrDefaultVal;
         this.parent = parent;
+
+        if (typeOrDefaultVal == null) {
+            throw new IllegalArgumentException("The 'typeOrDefaultVal' argument must be either a VariableType or a default value, but a null value was provided.");
+        }
+        this.typeOrDefaultVal = typeOrDefaultVal;
 
         // As per GH Issue #582, the default is now PRIVATE_VAR.
         this.accessLevel = WfRunVariableAccessLevel.PRIVATE_VAR;
@@ -49,13 +53,8 @@ class WfRunVariableImpl implements WfRunVariable {
         if (typeOrDefaultVal instanceof VariableType) {
             this.type = (VariableType) typeOrDefaultVal;
         } else {
-            try {
-                this.defaultValue = LHLibUtil.objToVarVal(typeOrDefaultVal);
-                this.type = LHLibUtil.fromValueCase(defaultValue.getValueCase());
-            } catch (LHSerdeError e) {
-                throw new IllegalArgumentException(
-                        "Was unable to convert provided default value to LH Variable Type", e);
-            }
+            setDefaultValue(typeOrDefaultVal);
+            this.type = LHLibUtil.fromValueCase(defaultValue.getValueCase());
         }
     }
 
@@ -98,15 +97,21 @@ class WfRunVariableImpl implements WfRunVariable {
 
     @Override
     public WfRunVariable withDefault(Object defaultVal) {
+        setDefaultValue(defaultVal);
+
+        if (!LHLibUtil.fromValueCase(defaultValue.getValueCase()).equals(type)) {
+            throw new IllegalArgumentException("Default value type does not match LH variable type " + type);
+        }
+
+        return this;
+    }
+
+    private void setDefaultValue(Object defaultVal) {
         try {
-            VariableValue attempt = LHLibUtil.objToVarVal(defaultVal);
-            if (!LHLibUtil.fromValueCase(attempt.getValueCase()).equals(type)) {
-                throw new IllegalArgumentException("Default value type does not match variable type");
-            }
+            this.defaultValue = LHLibUtil.objToVarVal(defaultVal);
         } catch (LHSerdeError e) {
             throw new IllegalArgumentException("Was unable to convert provided default value to LH Variable Type", e);
         }
-        return this;
     }
 
     @Override
