@@ -1,10 +1,10 @@
-import React, { FC } from 'react'
-import { AccordionComponents } from './AccordionContent'
-import { NodeRun, UserTaskNode } from 'littlehorse-client/proto'
 import * as AccordionRedux from '@radix-ui/react-accordion'
+import { NodeRun, UserTaskNode } from 'littlehorse-client/proto'
 import { ChevronDownIcon } from 'lucide-react'
+import { FC } from 'react'
 import { statusColors } from '../../../wfRun/[...ids]/components/Details'
 import { getNodeType } from '../../NodeTypes/extractNodes'
+import { AccordionComponents } from './AccordionContent'
 
 export const AccordionItem: FC<{ node: NodeRun; userTaskNode?: UserTaskNode }> = ({ node, userTaskNode }) => {
   const nodeType = getNodeType(node)

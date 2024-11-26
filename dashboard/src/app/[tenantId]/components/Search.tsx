@@ -1,9 +1,8 @@
 'use client'
 import { SEARCH_DEFAULT_LIMIT, SEARCH_ENTITIES, SearchType } from '@/app/constants'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { RefreshCwIcon } from 'lucide-react'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { useSearchParams } from 'next/navigation'
+import { RefreshCwIcon } from 'lucide-react'
+import { useParams, useSearchParams } from 'next/navigation'
 import { FC, useState } from 'react'
 import { SearchFooter } from './SearchFooter'
 import { SearchHeader } from './SearchHeader'
@@ -15,8 +14,7 @@ export const Search: FC<{}> = () => {
   const searchParams = useSearchParams()
   const type = getType(searchParams.get('type'))
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
-  // We use the tenantId from context to trigger render on change
-  const { tenantId } = useWhoAmI()
+  const tenantId = useParams().tenantId as string
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ['search', type, tenantId, limit, prefix],

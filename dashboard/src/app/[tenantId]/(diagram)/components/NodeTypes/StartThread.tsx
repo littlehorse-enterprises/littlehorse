@@ -4,9 +4,10 @@ import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '.'
 import { useThread } from '../../hooks/useThread'
+import { NodeRunsList } from '../NodeRunsList'
 import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
-import { NodeRunsList } from '@/app/(authenticated)/(diagram)/components/NodeRunsList'
+
 const Node: FC<NodeProps> = ({ data }) => {
   const { fade, nodeRunsList } = data
   const { setThread } = useThread()

@@ -1,13 +1,11 @@
 'use client'
 
-import { FC } from 'react'
 import LhLogo from '@/littlehorse.svg'
+import { FC } from 'react'
 
+import LinkWithTenant from './LinkWithTenant'
 import { Principal } from './Principal'
 import { TenantSelector } from './TenantSelector'
-import { useParams } from 'next/navigation'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import LinkWithTenant from './LinkWithTenant'
 
 export const Header: FC = () => {
   return (

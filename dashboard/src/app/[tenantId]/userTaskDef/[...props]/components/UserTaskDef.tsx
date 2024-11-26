@@ -7,10 +7,10 @@ import {
   searchUserTaskRun,
 } from '@/app/[tenantId]/userTaskDef/[...props]/actions/searchUserTaskRun'
 
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Button, Field, Input, Label } from '@headlessui/react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { UserTaskDef as UserTaskDefProto, UserTaskRunStatus } from 'littlehorse-client/proto'
@@ -19,7 +19,7 @@ import React, { FC, Fragment, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { Details } from './Details'
 import { Fields } from './Fields'
-import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
+import { useParams } from 'next/navigation'
 
 type Props = {
   spec: UserTaskDefProto
@@ -37,7 +37,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
   const [userGroup, setUserGroup] = useState('')
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
-  const { tenantId } = useWhoAmI()
+  const tenantId = useParams().tenantId as string
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
   const [userIdToSearchFor] = useDebounce(userId, DEBOUNCE_DELAY)
   const [userGroupToSearchFor] = useDebounce(userGroup, DEBOUNCE_DELAY)

@@ -1,4 +1,5 @@
 'use client'
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 import { Navigation } from '@/app/[tenantId]/components/Navigation'
 import { SearchFooter } from '@/app/[tenantId]/components/SearchFooter'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
@@ -6,14 +7,13 @@ import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { WorkflowEventDef as WorkflowEventDefProto } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
+import { useParams } from 'next/navigation'
 import { FC, Fragment, useState } from 'react'
 import { PaginatedWorkflowEventList, searchWorkflowEvent } from '../actions/searchWorkflowEvent'
 import { Details } from './Details'
-import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 
 type Props = {
   spec: WorkflowEventDefProto
@@ -23,7 +23,7 @@ export const WorkflowEventDef: FC<Props> = ({ spec }) => {
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
-  const { tenantId } = useWhoAmI()
+  const tenantId = useParams().tenantId as string
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ['workflowEvent', tenantId, createdAfter, limit, createdBefore],

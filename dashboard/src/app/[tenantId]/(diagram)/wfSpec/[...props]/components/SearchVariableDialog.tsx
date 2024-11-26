@@ -1,3 +1,4 @@
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 import { SearchFooter } from '@/app/[tenantId]/components/SearchFooter'
 import { Button } from '@/components/ui/button'
 import {
@@ -10,15 +11,14 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { WithBookmark } from '@/types'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { VariableDef, VariableValue, WfSpec } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
+import { useParams } from 'next/navigation'
 import { FC, Fragment, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { searchVariables } from '../actions/searchVariables'
-import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 
 type Props = {
   spec: WfSpec
@@ -38,7 +38,7 @@ export const SearchVariableDialog: FC<Props> = ({ spec }) => {
   const [variableValue, setVariableValue] = useState('')
   const [variableValueDebounced] = useDebounce(variableValue, 250)
   const [limit, setLimit] = useState(LIMIT)
-  const { tenantId } = useWhoAmI()
+  const tenantId = useParams().tenantId as string
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ['searchVariables', tenantId, limit, variable, variableValueDebounced],

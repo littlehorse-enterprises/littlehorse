@@ -1,5 +1,4 @@
 import { VersionSelector } from '@/app/[tenantId]/components/VersionSelector'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { WfSpecId } from 'littlehorse-client/proto'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useState } from 'react'
@@ -7,9 +6,9 @@ import { getWfSpecVersions } from '../actions/getVersions'
 
 export const Versions: FC<{ wfSpecId?: WfSpecId }> = ({ wfSpecId }) => {
   const [versions, setVersions] = useState<string[]>([])
-  const { tenantId } = useWhoAmI()
   const { name, majorVersion, revision } = wfSpecId!
   const { props } = useParams()
+  const tenantId = useParams().tenantId as string
 
   const loadVersions = useCallback(async () => {
     const { versions } = await getWfSpecVersions({ name, tenantId })

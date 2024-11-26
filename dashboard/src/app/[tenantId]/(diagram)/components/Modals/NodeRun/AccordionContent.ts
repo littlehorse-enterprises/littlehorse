@@ -1,4 +1,5 @@
 import { NodeRun, UserTaskNode } from 'littlehorse-client/proto'
+import { FC } from 'react'
 import { NodeType } from '../../NodeTypes/extractNodes'
 import {
   ExternalEventDefDetail,
@@ -9,7 +10,6 @@ import {
   WaitForThreadDefDetail,
   WorkflowEventDefDetail,
 } from './'
-import { FC } from 'react'
 
 export type AccordionNode = { nodeRun: NodeRun; userTaskNode?: UserTaskNode }
 type AccordionNodes = {

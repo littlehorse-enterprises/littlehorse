@@ -2,10 +2,8 @@
 
 import { lhClient } from '@/app/lhClient'
 import { ExternalEventDef, ExternalEventDefId } from 'littlehorse-client/proto'
-import { cookies } from 'next/headers'
 
-export const getExternalEventDef = async (request: ExternalEventDefId): Promise<ExternalEventDef> => {
-  const tenantId = cookies().get('tenantId')?.value
+export const getExternalEventDef = async (tenantId: string, request: ExternalEventDefId): Promise<ExternalEventDef> => {
   const client = await lhClient({ tenantId })
 
   return client.getExternalEventDef(request)

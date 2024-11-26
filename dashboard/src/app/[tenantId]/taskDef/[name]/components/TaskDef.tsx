@@ -1,19 +1,19 @@
 'use client'
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 import { Navigation } from '@/app/[tenantId]/components/Navigation'
 import { SearchFooter } from '@/app/[tenantId]/components/SearchFooter'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Field, Input, Label } from '@headlessui/react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { TaskDef as TaskDefProto, TaskStatus } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
+import { useParams } from 'next/navigation'
 import { FC, Fragment, useState } from 'react'
 import { PaginatedTaskRunList, searchTaskRun } from '../actions/searchTaskRun'
 import { Details } from './Details'
 import { InputVars } from './InputVars'
-import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 
 type Props = {
   spec: TaskDefProto
@@ -22,7 +22,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
   const [selectedStatus, setSelectedStatus] = useState<TaskStatus | 'ALL'>('ALL')
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
-  const { tenantId } = useWhoAmI()
+  const tenantId = useParams().tenantId as string
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({

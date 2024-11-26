@@ -4,11 +4,11 @@ import { ClientError, Status } from 'nice-grpc-common'
 import { WorkflowEventDef } from './components/WorkflowEventDef'
 import { getWorkflowEventDef } from './getWorkflowEventDef'
 
-type Props = { params: { name: string } }
+type Props = { params: { name: string; tenantId: string } }
 
-export default async function Page({ params: { name } }: Props) {
+export default async function Page({ params: { name, tenantId } }: Props) {
   try {
-    const spec = await getWorkflowEventDef({ name })
+    const spec = await getWorkflowEventDef(tenantId, { name })
     return <WorkflowEventDef spec={spec} />
   } catch (error) {
     if (error instanceof ClientError && error.code === Status.NOT_FOUND) return notFound()

@@ -1,10 +1,10 @@
-import { FC } from 'react'
-import { RefreshCwIcon, ClipboardIcon } from 'lucide-react'
+import { getVariable, getVariableValue, utcToLocalDateTime } from '@/app/utils'
 import { useQuery } from '@tanstack/react-query'
-import { UserTaskRunStatus, UserTaskRun as LHUserTaskRun } from 'littlehorse-client/proto'
+import { UserTaskRun as LHUserTaskRun, UserTaskRunStatus } from 'littlehorse-client/proto'
+import { ClipboardIcon, RefreshCwIcon } from 'lucide-react'
+import { FC } from 'react'
+import { getUserTaskRun } from '../../NodeTypes/UserTask/getUserTaskRun'
 import { AccordionNode } from './AccordionContent'
-import { getVariableValue, getVariable, utcToLocalDateTime } from '@/app/utils'
-import { getUserTaskRun } from '@/app/(authenticated)/(diagram)/components/NodeTypes/UserTask/getUserTaskRun'
 
 export const UserTaskDefDetail: FC<AccordionNode> = ({ nodeRun, userTaskNode }) => {
   const taskId = nodeRun?.userTask?.userTaskRunId?.userTaskGuid

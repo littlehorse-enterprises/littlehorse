@@ -4,11 +4,11 @@ import { ClientError, Status } from 'nice-grpc-common'
 import { ExternalEventDef } from './components/ExternalEventDef'
 import { getExternalEventDef } from './getExternalEventDef'
 
-type Props = { params: { name: string } }
+type Props = { params: { name: string; tenantId: string } }
 
-export default async function Page({ params: { name } }: Props) {
+export default async function Page({ params: { name, tenantId } }: Props) {
   try {
-    const spec = await getExternalEventDef({ name })
+    const spec = await getExternalEventDef(tenantId, { name })
     return <ExternalEventDef spec={spec} />
   } catch (error) {
     if (error instanceof ClientError && error.code === Status.NOT_FOUND) return notFound()

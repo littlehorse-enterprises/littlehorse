@@ -2,10 +2,10 @@
 
 import { lhClient } from '@/app/lhClient'
 import { NodeRun, ThreadRun, Variable, WfRun, WfRunId, WfSpec } from 'littlehorse-client/proto'
-import { cookies } from 'next/headers'
 
 type Props = {
   ids: string[]
+  tenantId: string
 }
 
 export type ThreadRunWithNodeRuns = ThreadRun & { nodeRuns: NodeRun[] }
@@ -16,8 +16,7 @@ export type WfRunResponse = {
   nodeRuns: NodeRun[]
   variables: Variable[]
 }
-export const getWfRun = async ({ ids }: Props): Promise<WfRunResponse> => {
-  const tenantId = cookies().get('tenantId')?.value
+export const getWfRun = async ({ ids, tenantId }: Props): Promise<WfRunResponse> => {
   const client = await lhClient({ tenantId })
   const wfRunId = ids
     .reverse()

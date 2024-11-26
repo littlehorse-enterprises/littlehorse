@@ -52,7 +52,7 @@ export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: s
       setNodes(layoutedNodes)
       fitView()
     },
-    [fitView, nodeRuns, setNodes]
+    [fitView, nodeRuns, setNodes, nodeRunNameToBeHighlighted]
   )
 
   useEffect(() => {

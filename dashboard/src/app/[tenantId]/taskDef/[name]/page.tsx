@@ -4,11 +4,11 @@ import { ClientError, Status } from 'nice-grpc-common'
 import { TaskDef } from './components/TaskDef'
 import { getTaskDef } from './getTaskDef'
 
-type Props = { params: { name: string } }
+type Props = { params: { name: string; tenantId: string } }
 
-export default async function Page({ params: { name } }: Props) {
+export default async function Page({ params: { name, tenantId } }: Props) {
   try {
-    const spec = await getTaskDef({ name })
+    const spec = await getTaskDef(tenantId, { name })
     return <TaskDef spec={spec} />
   } catch (error) {
     if (error instanceof ClientError && error.code === Status.NOT_FOUND) return notFound()

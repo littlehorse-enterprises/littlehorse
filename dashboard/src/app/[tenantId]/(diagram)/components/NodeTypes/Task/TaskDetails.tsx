@@ -1,10 +1,10 @@
 import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 import { getTaskDef } from '@/app/[tenantId]/taskDef/[name]/getTaskDef'
 import { getVariable, getVariableValue } from '@/app/utils'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useQuery } from '@tanstack/react-query'
 import { NodeRun, TaskNode } from 'littlehorse-client/proto'
 import { ExternalLinkIcon } from 'lucide-react'
+import { useParams } from 'next/navigation'
 import { FC } from 'react'
 import { NodeRunsList } from '../../NodeRunsList'
 import { NodeDetails } from '../NodeDetails'
@@ -16,7 +16,7 @@ export const TaskDetails: FC<{
   selected: boolean
   nodeRunsList: [NodeRun]
 }> = ({ taskNode, nodeRun, selected, nodeRunsList }) => {
-  const { tenantId } = useWhoAmI()
+  const tenantId = useParams().tenantId as string
   const { data } = useQuery({
     queryKey: ['taskRun', nodeRun, tenantId],
     queryFn: async () => {
@@ -31,7 +31,7 @@ export const TaskDetails: FC<{
       if (!taskNode?.taskDefId?.name) return null
       if (nodeRun?.task?.taskRunId) return null
       if (!selected) return null
-      const taskDef = await getTaskDef({
+      const taskDef = await getTaskDef(tenantId, {
         name: taskNode?.taskDefId?.name,
       })
       return taskDef

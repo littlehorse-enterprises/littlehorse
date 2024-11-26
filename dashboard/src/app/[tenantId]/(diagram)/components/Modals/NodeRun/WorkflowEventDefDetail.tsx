@@ -1,19 +1,18 @@
-import { FC } from 'react'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { RefreshCwIcon, ClipboardIcon } from 'lucide-react'
-import { NodeRun } from 'littlehorse-client/proto'
-import { useQuery } from '@tanstack/react-query'
-
-import { cn } from '@/components/utils'
 import { getVariableValue, utcToLocalDateTime } from '@/app/utils'
-import { getWorkflowEvent } from '@/app/(authenticated)/(diagram)/components/NodeTypes/ThrowEvent/getWorkflowEvent'
+import { cn } from '@/components/utils'
+import { useQuery } from '@tanstack/react-query'
+import { NodeRun } from 'littlehorse-client/proto'
+import { ClipboardIcon, RefreshCwIcon } from 'lucide-react'
+import { useParams } from 'next/navigation'
+import { FC } from 'react'
+import { getWorkflowEvent } from '../../NodeTypes/ThrowEvent/getWorkflowEvent'
 
 export const WorkflowEventDefDetail: FC<{ nodeRun: NodeRun }> = ({ nodeRun }) => {
-  const { tenantId } = useWhoAmI()
+  const tenantId = useParams().tenantId as string
   const wfRunId = nodeRun?.throwEvent?.workflowEventId?.wfRunId?.id
   const workflowEventDefId = nodeRun?.throwEvent?.workflowEventId
   const { data, isLoading } = useQuery({
-    queryKey: ['taskRun', wfRunId, workflowEventDefId],
+    queryKey: ['taskRun', wfRunId, workflowEventDefId, tenantId],
     queryFn: async () => {
       if (!wfRunId) return
       if (!workflowEventDefId) return

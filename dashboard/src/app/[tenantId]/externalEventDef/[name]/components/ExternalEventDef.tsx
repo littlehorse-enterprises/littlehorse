@@ -1,4 +1,5 @@
 'use client'
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 import { Navigation } from '@/app/[tenantId]/components/Navigation'
 import { SearchFooter } from '@/app/[tenantId]/components/SearchFooter'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
@@ -7,14 +8,13 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { ExternalEventDef as ExternalEventDefProto } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
+import { useParams } from 'next/navigation'
 import { FC, Fragment, useState } from 'react'
 import { PaginatedExternalEventList, searchExternalEvent } from '../actions/searchExternalEvent'
 import { Details } from './Details'
-import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 
 type Props = {
   spec: ExternalEventDefProto
@@ -25,7 +25,7 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
   const [createdBefore, setCreatedBefore] = useState('')
   const [isClaimed, setIsClaimed] = useState<boolean>(true)
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
-  const { tenantId } = useWhoAmI()
+  const tenantId = useParams().tenantId as string
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ['externalEvent', tenantId, createdAfter, limit, createdBefore, isClaimed],

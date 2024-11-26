@@ -1,23 +1,22 @@
 'use client'
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 import { SearchFooter } from '@/app/[tenantId]/components/SearchFooter'
 import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
 import { concatWfRunIds } from '@/app/utils'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { WfSpec, lHStatusFromJSON } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
-import { useSearchParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { FC, Fragment, useMemo, useState } from 'react'
 import { PaginatedWfRunIdList, searchWfRun } from '../actions/searchWfRun'
 import { WfRunsHeader } from './WfRunsHeader'
-import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 
 export const WfRuns: FC<WfSpec> = spec => {
   const searchParams = useSearchParams()
   const status = searchParams.get('status') ? getStatus(searchParams.get('status')) || 'ALL' : 'ALL'
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
   const [window, setWindow] = useState<TimeRange>(TIME_RANGES[0])
-  const { tenantId } = useWhoAmI()
+  const tenantId = useParams().tenantId as string
 
   const startTime = useMemo(() => {
     if (window === -1) return undefined
