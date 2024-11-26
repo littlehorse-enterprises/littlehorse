@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 @LHTest
 @WithWorkers(value = "basicWorker")
-@WithWorkers(value = "basicWorker2")
+@WithWorkers(value = "basicWorker2", lhMethods = "five")
 public class BasicTest {
 
     @LHWorkflow("test-basic")
@@ -24,6 +24,7 @@ public class BasicTest {
     private WorkflowVerifier verifier;
 
     @Test
+    @WithWorkers(value = "basicWorker3")
     public void shouldDoBasic() {
         verifier.prepareRun(basicWf).waitForStatus(LHStatus.COMPLETED).start();
     }
@@ -31,10 +32,11 @@ public class BasicTest {
     @LHWorkflow("test-basic")
     public Workflow getBasic() {
         return new WorkflowImpl("test-basic", thread -> {
-            thread.execute("ag-one");
-            thread.execute("ag-two");
-            thread.execute("ag-three");
-            thread.execute("ag-five");
+            thread.execute("one");
+            thread.execute("two");
+            thread.execute("three");
+            thread.execute("five");
+            thread.execute("seven");
         });
     }
 
@@ -46,19 +48,23 @@ public class BasicTest {
         return new BasicWorker2();
     }
 
+    public Object basicWorker3() {
+        return new BasicWorker3();
+    }
+
     public class BasicWorker {
 
-        @LHTaskMethod("ag-one")
+        @LHTaskMethod("one")
         public boolean one() {
             return true;
         }
 
-        @LHTaskMethod("ag-two")
+        @LHTaskMethod("two")
         public boolean two() {
             return true;
         }
 
-        @LHTaskMethod("ag-three")
+        @LHTaskMethod("three")
         public boolean three() {
             return true;
         }
@@ -66,18 +72,26 @@ public class BasicTest {
 
     public class BasicWorker2 {
 
-        @LHTaskMethod("ag-four")
+        @LHTaskMethod("four")
         public boolean one() {
             return true;
         }
 
-        @LHTaskMethod("ag-five")
+        @LHTaskMethod("five")
         public boolean two() {
             return true;
         }
 
-        @LHTaskMethod("ag-six")
+        @LHTaskMethod("six")
         public boolean three() {
+            return true;
+        }
+    }
+
+    public class BasicWorker3 {
+
+        @LHTaskMethod("seven")
+        public boolean one() {
             return true;
         }
     }

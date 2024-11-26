@@ -13,6 +13,7 @@ import io.littlehorse.test.internal.TestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Duration;
@@ -23,12 +24,16 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import org.junit.jupiter.api.extension.TestInstancePreDestroyCallback;
 
-public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor, TestInstancePreDestroyCallback {
+public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor, TestInstancePreDestroyCallback, BeforeEachCallback, AfterEachCallback {
 
     public static final String BOOTSTRAPPER_CLASS_PROPERTY = "bootstrapper.class";
     public static final String BOOTSTRAPPER_CLASS_ENV =
@@ -206,5 +211,15 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
                                     .build());
                     return true;
                 });
+    }
+
+    @Override
+    public void afterEach(ExtensionContext context) {
+
+    }
+
+    @Override
+    public void beforeEach(ExtensionContext context) {
+
     }
 }
