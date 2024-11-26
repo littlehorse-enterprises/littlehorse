@@ -280,18 +280,21 @@ export interface VariableMutation {
     | undefined;
   /** Defines the operation that we are executing. */
   operation: VariableMutationType;
-  /**
-   * Set the source_variable as the RHS to use another variable from the workflow to
-   * as the RHS/
-   */
-  sourceVariable?:
+  /** Assigns the value to be used as the RHS of the mutation. */
+  rhsAssignment?:
     | VariableAssignment
     | undefined;
-  /** Use a literal value as the RHS. */
+  /**
+   * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+   * instead.
+   */
   literalValue?:
     | VariableValue
     | undefined;
-  /** Use the output of the current node as the RHS. */
+  /**
+   * Use the output of the current node as the RHS. DEPRECATED: use
+   * rhs_assignment.node_output instead.
+   */
   nodeOutput?: VariableMutation_NodeOutputSource | undefined;
 }
 
@@ -776,7 +779,7 @@ function createBaseVariableMutation(): VariableMutation {
     lhsName: "",
     lhsJsonPath: undefined,
     operation: VariableMutationType.ASSIGN,
-    sourceVariable: undefined,
+    rhsAssignment: undefined,
     literalValue: undefined,
     nodeOutput: undefined,
   };
@@ -793,8 +796,8 @@ export const VariableMutation = {
     if (message.operation !== VariableMutationType.ASSIGN) {
       writer.uint32(24).int32(variableMutationTypeToNumber(message.operation));
     }
-    if (message.sourceVariable !== undefined) {
-      VariableAssignment.encode(message.sourceVariable, writer.uint32(34).fork()).ldelim();
+    if (message.rhsAssignment !== undefined) {
+      VariableAssignment.encode(message.rhsAssignment, writer.uint32(34).fork()).ldelim();
     }
     if (message.literalValue !== undefined) {
       VariableValue.encode(message.literalValue, writer.uint32(42).fork()).ldelim();
@@ -838,7 +841,7 @@ export const VariableMutation = {
             break;
           }
 
-          message.sourceVariable = VariableAssignment.decode(reader, reader.uint32());
+          message.rhsAssignment = VariableAssignment.decode(reader, reader.uint32());
           continue;
         case 5:
           if (tag !== 42) {
@@ -871,8 +874,8 @@ export const VariableMutation = {
     message.lhsName = object.lhsName ?? "";
     message.lhsJsonPath = object.lhsJsonPath ?? undefined;
     message.operation = object.operation ?? VariableMutationType.ASSIGN;
-    message.sourceVariable = (object.sourceVariable !== undefined && object.sourceVariable !== null)
-      ? VariableAssignment.fromPartial(object.sourceVariable)
+    message.rhsAssignment = (object.rhsAssignment !== undefined && object.rhsAssignment !== null)
+      ? VariableAssignment.fromPartial(object.rhsAssignment)
       : undefined;
     message.literalValue = (object.literalValue !== undefined && object.literalValue !== null)
       ? VariableValue.fromPartial(object.literalValue)
