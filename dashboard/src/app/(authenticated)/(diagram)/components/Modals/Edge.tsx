@@ -21,7 +21,7 @@ export const Edge: FC<Modal> = ({ data }) => {
             <span className="rounded bg-green-300 p-1 text-xs">{mutation.operation}</span>
             <NodeOutput nodeOutput={mutation.nodeOutput} />
             <LiteralValue literalValue={mutation.literalValue} />
-            <RhsAssignment RhsAssignment={mutation.RhsAssignment} />
+            <RhsAssignment rhsAssignment={mutation.rhsAssignment} />
           </div>
         ))}
       </DialogContent>
@@ -41,12 +41,12 @@ const NodeOutput: FC<Pick<VariableMutation, 'nodeOutput'>> = ({ nodeOutput }) =>
   )
 }
 
-const RhsAssignment: FC<Pick<VariableMutation, 'RhsAssignment'>> = ({ RhsAssignment }) => {
-  if (!RhsAssignment) return <></>
+const RhsAssignment: FC<Pick<VariableMutation, 'rhsAssignment'>> = ({ rhsAssignment }) => {
+  if (!rhsAssignment) return <></>
   return (
     <>
-      <span className="rounded bg-gray-200 p-1 text-xs">Source Variable</span>
-      <span className="rounded bg-gray-100 p-1 font-mono text-xs text-orange-500">{getVariable(RhsAssignment)}</span>
+      <span className="rounded bg-gray-200 p-1 text-xs">RHS Assignment</span>
+      <span className="rounded bg-gray-100 p-1 font-mono text-xs text-orange-500">{getVariable(rhsAssignment)}</span>
     </>
   )
 }
