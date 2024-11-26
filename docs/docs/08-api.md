@@ -858,9 +858,9 @@ they are writing their own WfSpec SDK.
 | `lhs_name` | | string | The name of the variable to mutate |
 | `lhs_json_path` | optional| string | For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate a specific sub-field of the variable. |
 | `operation` | | [VariableMutationType](#variablemutationtype) | Defines the operation that we are executing. |
-| `source_variable` | oneof `rhs_value`| [VariableAssignment](#variableassignment) | Set the source_variable as the RHS to use another variable from the workflow to as the RHS/ |
-| `literal_value` | oneof `rhs_value`| [VariableValue](#variablevalue) | Use a literal value as the RHS. |
-| `node_output` | oneof `rhs_value`| [VariableMutation.NodeOutputSource](#variablemutationnodeoutputsource) | Use the output of the current node as the RHS. |
+| `rhs_assignment` | oneof `rhs_value`| [VariableAssignment](#variableassignment) | Assigns the value to be used as the RHS of the mutation. |
+| `literal_value` | oneof `rhs_value`| [VariableValue](#variablevalue) | Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value instead. |
+| `node_output` | oneof `rhs_value`| [VariableMutation.NodeOutputSource](#variablemutationnodeoutputsource) | Use the output of the current node as the RHS. DEPRECATED: use rhs_assignment.node_output instead. |
  <!-- end Fields -->
  <!-- end HasFields -->
 

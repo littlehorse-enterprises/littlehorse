@@ -857,7 +857,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         // TODO: We can find a way to optimize this. Range scans are expensive, and also
         // doing it in this way means that the NodeRun's will be re-put into the GetableManager's
         // buffer, which could get _very_ expensive.
-        for (int backwardPosition = currentNodePosition - 1; backwardPosition > 0; backwardPosition--) {
+        for (int backwardPosition = currentNodePosition; backwardPosition > 0; backwardPosition--) {
             NodeRunModel nodeRun = this.getNodeRun(backwardPosition);
             if (nodeRun.getNodeName().equals(nodeName)) {
                 return nodeRun;
