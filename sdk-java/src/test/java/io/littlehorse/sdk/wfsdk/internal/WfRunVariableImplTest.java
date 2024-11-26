@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 public class WfRunVariableImplTest {
     @Test
     void validateVariableAllowJsonPah() {
-        WfRunVariableImpl variable = new WfRunVariableImpl("my-var", VariableType.STR);
+        WfRunVariableImpl variable = new WfRunVariableImpl("my-var", VariableType.STR, null);
 
         LHMisconfigurationException e =
                 assertThrows(LHMisconfigurationException.class, () -> variable.jsonPath("&.myPath"));

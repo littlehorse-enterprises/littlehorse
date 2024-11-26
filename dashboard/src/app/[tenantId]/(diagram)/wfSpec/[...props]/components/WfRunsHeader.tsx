@@ -35,7 +35,8 @@ export const WfRunsHeader: FC<Props> = ({ spec, currentStatus, currentWindow, se
                   key={time}
                   value={time}
                   className={({ active }) =>
-                    `relative cursor-default select-none py-2 pl-2 pr-4 text-xs ${active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                    `relative cursor-default select-none py-2 pl-2 pr-4 text-xs ${
+                      active ? 'bg-blue-500 text-white' : 'text-gray-900'
                     }`
                   }
                 >

@@ -3,11 +3,13 @@ import { PlusIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '.'
+import { NodeRunsList } from '../NodeRunsList'
 import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
 
 const Node: FC<NodeProps> = ({ data }) => {
-  const { fade } = data
+  const { fade, nodeRunsList } = data
+
   return (
     <>
       <NodeDetails>
@@ -31,6 +33,7 @@ const Node: FC<NodeProps> = ({ data }) => {
             <pre className="overflow-x-auto">{data.nodeRun.errorMessage}</pre>
           </div>
         )}
+        <NodeRunsList nodeRuns={nodeRunsList} />
       </NodeDetails>
       <Fade fade={fade} status={data.nodeRun?.status}>
         <div className="relative cursor-pointer">

@@ -39,6 +39,16 @@ message VariableAssignment {
     string node_name = 1;
   }
 
+  // An Expression allows you to combine multiple values into one.
+  message Expression {
+    // The left-hand-side of the expression.
+    VariableAssignment lhs = 1;
+    // The operator in the expression.
+    VariableMutationType operation = 2;
+    // The right-hand-side of the expression.
+    VariableAssignment rhs = 3;
+  }
+
   // If you provide a `variable_name` and the specified variable is JSON_OBJ or
   // JSON_ARR type, then you may also provide a json_path which makes the VariableAssignment
   // resolve to the specified field.
@@ -54,6 +64,8 @@ message VariableAssignment {
     FormatString format_string = 4;
     // Assign the value of a NodeOutput.
     NodeOutputReference node_output = 5;
+    // Assign the value of an Expression.
+    Expression expression = 6;
   }
 }
 
@@ -102,16 +114,20 @@ message VariableMutation {
   // Defines the operation that we are executing.
   VariableMutationType operation = 3;
 
-  // The RHS of the mutation; i.e. what is operated _with_.
+  // The RHS of the mutation; i.e. what is operated _with_. Note the values other
+  // than `rhs_assignment` are deprecated and will be removed in 2.0.
+  //
+  // As of 0.12.0, the SDK's only use rhs_assignment.
   oneof rhs_value {
-    // Set the source_variable as the RHS to use another variable from the workflow to
-    // as the RHS/
-    VariableAssignment source_variable = 4;
+    // Assigns the value to be used as the RHS of the mutation.
+    VariableAssignment rhs_assignment = 4;
 
-    // Use a literal value as the RHS.
+    // Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+    // instead.
     VariableValue literal_value = 5;
 
-    // Use the output of the current node as the RHS.
+    // Use the output of the current node as the RHS. DEPRECATED: use
+    // rhs_assignment.node_output instead.
     NodeOutputSource node_output = 6;
   }
 }

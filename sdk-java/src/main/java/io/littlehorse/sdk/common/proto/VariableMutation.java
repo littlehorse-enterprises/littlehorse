@@ -694,7 +694,7 @@ private static final long serialVersionUID = 0L;
   public enum RhsValueCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    SOURCE_VARIABLE(4),
+    RHS_ASSIGNMENT(4),
     LITERAL_VALUE(5),
     NODE_OUTPUT(6),
     RHSVALUE_NOT_SET(0);
@@ -714,7 +714,7 @@ private static final long serialVersionUID = 0L;
 
     public static RhsValueCase forNumber(int value) {
       switch (value) {
-        case 4: return SOURCE_VARIABLE;
+        case 4: return RHS_ASSIGNMENT;
         case 5: return LITERAL_VALUE;
         case 6: return NODE_OUTPUT;
         case 0: return RHSVALUE_NOT_SET;
@@ -867,31 +867,29 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.sdk.common.proto.VariableMutationType.UNRECOGNIZED : result;
   }
 
-  public static final int SOURCE_VARIABLE_FIELD_NUMBER = 4;
+  public static final int RHS_ASSIGNMENT_FIELD_NUMBER = 4;
   /**
    * <pre>
-   * Set the source_variable as the RHS to use another variable from the workflow to
-   * as the RHS/
+   * Assigns the value to be used as the RHS of the mutation.
    * </pre>
    *
-   * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
-   * @return Whether the sourceVariable field is set.
+   * <code>.littlehorse.VariableAssignment rhs_assignment = 4;</code>
+   * @return Whether the rhsAssignment field is set.
    */
   @java.lang.Override
-  public boolean hasSourceVariable() {
+  public boolean hasRhsAssignment() {
     return rhsValueCase_ == 4;
   }
   /**
    * <pre>
-   * Set the source_variable as the RHS to use another variable from the workflow to
-   * as the RHS/
+   * Assigns the value to be used as the RHS of the mutation.
    * </pre>
    *
-   * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
-   * @return The sourceVariable.
+   * <code>.littlehorse.VariableAssignment rhs_assignment = 4;</code>
+   * @return The rhsAssignment.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignment getSourceVariable() {
+  public io.littlehorse.sdk.common.proto.VariableAssignment getRhsAssignment() {
     if (rhsValueCase_ == 4) {
        return (io.littlehorse.sdk.common.proto.VariableAssignment) rhsValue_;
     }
@@ -899,14 +897,13 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Set the source_variable as the RHS to use another variable from the workflow to
-   * as the RHS/
+   * Assigns the value to be used as the RHS of the mutation.
    * </pre>
    *
-   * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
+   * <code>.littlehorse.VariableAssignment rhs_assignment = 4;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getSourceVariableOrBuilder() {
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getRhsAssignmentOrBuilder() {
     if (rhsValueCase_ == 4) {
        return (io.littlehorse.sdk.common.proto.VariableAssignment) rhsValue_;
     }
@@ -916,7 +913,8 @@ private static final long serialVersionUID = 0L;
   public static final int LITERAL_VALUE_FIELD_NUMBER = 5;
   /**
    * <pre>
-   * Use a literal value as the RHS.
+   * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+   * instead.
    * </pre>
    *
    * <code>.littlehorse.VariableValue literal_value = 5;</code>
@@ -928,7 +926,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Use a literal value as the RHS.
+   * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+   * instead.
    * </pre>
    *
    * <code>.littlehorse.VariableValue literal_value = 5;</code>
@@ -943,7 +942,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Use a literal value as the RHS.
+   * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+   * instead.
    * </pre>
    *
    * <code>.littlehorse.VariableValue literal_value = 5;</code>
@@ -959,7 +959,8 @@ private static final long serialVersionUID = 0L;
   public static final int NODE_OUTPUT_FIELD_NUMBER = 6;
   /**
    * <pre>
-   * Use the output of the current node as the RHS.
+   * Use the output of the current node as the RHS. DEPRECATED: use
+   * rhs_assignment.node_output instead.
    * </pre>
    *
    * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
@@ -971,7 +972,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Use the output of the current node as the RHS.
+   * Use the output of the current node as the RHS. DEPRECATED: use
+   * rhs_assignment.node_output instead.
    * </pre>
    *
    * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
@@ -986,7 +988,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Use the output of the current node as the RHS.
+   * Use the output of the current node as the RHS. DEPRECATED: use
+   * rhs_assignment.node_output instead.
    * </pre>
    *
    * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
@@ -1088,8 +1091,8 @@ private static final long serialVersionUID = 0L;
     if (!getRhsValueCase().equals(other.getRhsValueCase())) return false;
     switch (rhsValueCase_) {
       case 4:
-        if (!getSourceVariable()
-            .equals(other.getSourceVariable())) return false;
+        if (!getRhsAssignment()
+            .equals(other.getRhsAssignment())) return false;
         break;
       case 5:
         if (!getLiteralValue()
@@ -1123,8 +1126,8 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + operation_;
     switch (rhsValueCase_) {
       case 4:
-        hash = (37 * hash) + SOURCE_VARIABLE_FIELD_NUMBER;
-        hash = (53 * hash) + getSourceVariable().hashCode();
+        hash = (37 * hash) + RHS_ASSIGNMENT_FIELD_NUMBER;
+        hash = (53 * hash) + getRhsAssignment().hashCode();
         break;
       case 5:
         hash = (37 * hash) + LITERAL_VALUE_FIELD_NUMBER;
@@ -1280,8 +1283,8 @@ private static final long serialVersionUID = 0L;
       lhsName_ = "";
       lhsJsonPath_ = "";
       operation_ = 0;
-      if (sourceVariableBuilder_ != null) {
-        sourceVariableBuilder_.clear();
+      if (rhsAssignmentBuilder_ != null) {
+        rhsAssignmentBuilder_.clear();
       }
       if (literalValueBuilder_ != null) {
         literalValueBuilder_.clear();
@@ -1343,8 +1346,8 @@ private static final long serialVersionUID = 0L;
       result.rhsValueCase_ = rhsValueCase_;
       result.rhsValue_ = this.rhsValue_;
       if (rhsValueCase_ == 4 &&
-          sourceVariableBuilder_ != null) {
-        result.rhsValue_ = sourceVariableBuilder_.build();
+          rhsAssignmentBuilder_ != null) {
+        result.rhsValue_ = rhsAssignmentBuilder_.build();
       }
       if (rhsValueCase_ == 5 &&
           literalValueBuilder_ != null) {
@@ -1414,8 +1417,8 @@ private static final long serialVersionUID = 0L;
         setOperationValue(other.getOperationValue());
       }
       switch (other.getRhsValueCase()) {
-        case SOURCE_VARIABLE: {
-          mergeSourceVariable(other.getSourceVariable());
+        case RHS_ASSIGNMENT: {
+          mergeRhsAssignment(other.getRhsAssignment());
           break;
         }
         case LITERAL_VALUE: {
@@ -1473,7 +1476,7 @@ private static final long serialVersionUID = 0L;
             } // case 24
             case 34: {
               input.readMessage(
-                  getSourceVariableFieldBuilder().getBuilder(),
+                  getRhsAssignmentFieldBuilder().getBuilder(),
                   extensionRegistry);
               rhsValueCase_ = 4;
               break;
@@ -1799,93 +1802,88 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> sourceVariableBuilder_;
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> rhsAssignmentBuilder_;
     /**
      * <pre>
-     * Set the source_variable as the RHS to use another variable from the workflow to
-     * as the RHS/
+     * Assigns the value to be used as the RHS of the mutation.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
-     * @return Whether the sourceVariable field is set.
+     * <code>.littlehorse.VariableAssignment rhs_assignment = 4;</code>
+     * @return Whether the rhsAssignment field is set.
      */
     @java.lang.Override
-    public boolean hasSourceVariable() {
+    public boolean hasRhsAssignment() {
       return rhsValueCase_ == 4;
     }
     /**
      * <pre>
-     * Set the source_variable as the RHS to use another variable from the workflow to
-     * as the RHS/
+     * Assigns the value to be used as the RHS of the mutation.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
-     * @return The sourceVariable.
+     * <code>.littlehorse.VariableAssignment rhs_assignment = 4;</code>
+     * @return The rhsAssignment.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignment getSourceVariable() {
-      if (sourceVariableBuilder_ == null) {
+    public io.littlehorse.sdk.common.proto.VariableAssignment getRhsAssignment() {
+      if (rhsAssignmentBuilder_ == null) {
         if (rhsValueCase_ == 4) {
           return (io.littlehorse.sdk.common.proto.VariableAssignment) rhsValue_;
         }
         return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       } else {
         if (rhsValueCase_ == 4) {
-          return sourceVariableBuilder_.getMessage();
+          return rhsAssignmentBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
       }
     }
     /**
      * <pre>
-     * Set the source_variable as the RHS to use another variable from the workflow to
-     * as the RHS/
+     * Assigns the value to be used as the RHS of the mutation.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
+     * <code>.littlehorse.VariableAssignment rhs_assignment = 4;</code>
      */
-    public Builder setSourceVariable(io.littlehorse.sdk.common.proto.VariableAssignment value) {
-      if (sourceVariableBuilder_ == null) {
+    public Builder setRhsAssignment(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+      if (rhsAssignmentBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
         rhsValue_ = value;
         onChanged();
       } else {
-        sourceVariableBuilder_.setMessage(value);
+        rhsAssignmentBuilder_.setMessage(value);
       }
       rhsValueCase_ = 4;
       return this;
     }
     /**
      * <pre>
-     * Set the source_variable as the RHS to use another variable from the workflow to
-     * as the RHS/
+     * Assigns the value to be used as the RHS of the mutation.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
+     * <code>.littlehorse.VariableAssignment rhs_assignment = 4;</code>
      */
-    public Builder setSourceVariable(
+    public Builder setRhsAssignment(
         io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
-      if (sourceVariableBuilder_ == null) {
+      if (rhsAssignmentBuilder_ == null) {
         rhsValue_ = builderForValue.build();
         onChanged();
       } else {
-        sourceVariableBuilder_.setMessage(builderForValue.build());
+        rhsAssignmentBuilder_.setMessage(builderForValue.build());
       }
       rhsValueCase_ = 4;
       return this;
     }
     /**
      * <pre>
-     * Set the source_variable as the RHS to use another variable from the workflow to
-     * as the RHS/
+     * Assigns the value to be used as the RHS of the mutation.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
+     * <code>.littlehorse.VariableAssignment rhs_assignment = 4;</code>
      */
-    public Builder mergeSourceVariable(io.littlehorse.sdk.common.proto.VariableAssignment value) {
-      if (sourceVariableBuilder_ == null) {
+    public Builder mergeRhsAssignment(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+      if (rhsAssignmentBuilder_ == null) {
         if (rhsValueCase_ == 4 &&
             rhsValue_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
           rhsValue_ = io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment) rhsValue_)
@@ -1896,9 +1894,9 @@ private static final long serialVersionUID = 0L;
         onChanged();
       } else {
         if (rhsValueCase_ == 4) {
-          sourceVariableBuilder_.mergeFrom(value);
+          rhsAssignmentBuilder_.mergeFrom(value);
         } else {
-          sourceVariableBuilder_.setMessage(value);
+          rhsAssignmentBuilder_.setMessage(value);
         }
       }
       rhsValueCase_ = 4;
@@ -1906,14 +1904,13 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Set the source_variable as the RHS to use another variable from the workflow to
-     * as the RHS/
+     * Assigns the value to be used as the RHS of the mutation.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
+     * <code>.littlehorse.VariableAssignment rhs_assignment = 4;</code>
      */
-    public Builder clearSourceVariable() {
-      if (sourceVariableBuilder_ == null) {
+    public Builder clearRhsAssignment() {
+      if (rhsAssignmentBuilder_ == null) {
         if (rhsValueCase_ == 4) {
           rhsValueCase_ = 0;
           rhsValue_ = null;
@@ -1924,33 +1921,31 @@ private static final long serialVersionUID = 0L;
           rhsValueCase_ = 0;
           rhsValue_ = null;
         }
-        sourceVariableBuilder_.clear();
+        rhsAssignmentBuilder_.clear();
       }
       return this;
     }
     /**
      * <pre>
-     * Set the source_variable as the RHS to use another variable from the workflow to
-     * as the RHS/
+     * Assigns the value to be used as the RHS of the mutation.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
+     * <code>.littlehorse.VariableAssignment rhs_assignment = 4;</code>
      */
-    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getSourceVariableBuilder() {
-      return getSourceVariableFieldBuilder().getBuilder();
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getRhsAssignmentBuilder() {
+      return getRhsAssignmentFieldBuilder().getBuilder();
     }
     /**
      * <pre>
-     * Set the source_variable as the RHS to use another variable from the workflow to
-     * as the RHS/
+     * Assigns the value to be used as the RHS of the mutation.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
+     * <code>.littlehorse.VariableAssignment rhs_assignment = 4;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getSourceVariableOrBuilder() {
-      if ((rhsValueCase_ == 4) && (sourceVariableBuilder_ != null)) {
-        return sourceVariableBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getRhsAssignmentOrBuilder() {
+      if ((rhsValueCase_ == 4) && (rhsAssignmentBuilder_ != null)) {
+        return rhsAssignmentBuilder_.getMessageOrBuilder();
       } else {
         if (rhsValueCase_ == 4) {
           return (io.littlehorse.sdk.common.proto.VariableAssignment) rhsValue_;
@@ -1960,20 +1955,19 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Set the source_variable as the RHS to use another variable from the workflow to
-     * as the RHS/
+     * Assigns the value to be used as the RHS of the mutation.
      * </pre>
      *
-     * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
+     * <code>.littlehorse.VariableAssignment rhs_assignment = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
-        getSourceVariableFieldBuilder() {
-      if (sourceVariableBuilder_ == null) {
+        getRhsAssignmentFieldBuilder() {
+      if (rhsAssignmentBuilder_ == null) {
         if (!(rhsValueCase_ == 4)) {
           rhsValue_ = io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
         }
-        sourceVariableBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+        rhsAssignmentBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
                 (io.littlehorse.sdk.common.proto.VariableAssignment) rhsValue_,
                 getParentForChildren(),
@@ -1982,14 +1976,15 @@ private static final long serialVersionUID = 0L;
       }
       rhsValueCase_ = 4;
       onChanged();
-      return sourceVariableBuilder_;
+      return rhsAssignmentBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> literalValueBuilder_;
     /**
      * <pre>
-     * Use a literal value as the RHS.
+     * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+     * instead.
      * </pre>
      *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
@@ -2001,7 +1996,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Use a literal value as the RHS.
+     * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+     * instead.
      * </pre>
      *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
@@ -2023,7 +2019,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Use a literal value as the RHS.
+     * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+     * instead.
      * </pre>
      *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
@@ -2043,7 +2040,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Use a literal value as the RHS.
+     * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+     * instead.
      * </pre>
      *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
@@ -2061,7 +2059,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Use a literal value as the RHS.
+     * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+     * instead.
      * </pre>
      *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
@@ -2088,7 +2087,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Use a literal value as the RHS.
+     * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+     * instead.
      * </pre>
      *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
@@ -2111,7 +2111,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Use a literal value as the RHS.
+     * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+     * instead.
      * </pre>
      *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
@@ -2121,7 +2122,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Use a literal value as the RHS.
+     * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+     * instead.
      * </pre>
      *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
@@ -2139,7 +2141,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Use a literal value as the RHS.
+     * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+     * instead.
      * </pre>
      *
      * <code>.littlehorse.VariableValue literal_value = 5;</code>
@@ -2167,7 +2170,8 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource, io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource.Builder, io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSourceOrBuilder> nodeOutputBuilder_;
     /**
      * <pre>
-     * Use the output of the current node as the RHS.
+     * Use the output of the current node as the RHS. DEPRECATED: use
+     * rhs_assignment.node_output instead.
      * </pre>
      *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
@@ -2179,7 +2183,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Use the output of the current node as the RHS.
+     * Use the output of the current node as the RHS. DEPRECATED: use
+     * rhs_assignment.node_output instead.
      * </pre>
      *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
@@ -2201,7 +2206,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Use the output of the current node as the RHS.
+     * Use the output of the current node as the RHS. DEPRECATED: use
+     * rhs_assignment.node_output instead.
      * </pre>
      *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
@@ -2221,7 +2227,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Use the output of the current node as the RHS.
+     * Use the output of the current node as the RHS. DEPRECATED: use
+     * rhs_assignment.node_output instead.
      * </pre>
      *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
@@ -2239,7 +2246,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Use the output of the current node as the RHS.
+     * Use the output of the current node as the RHS. DEPRECATED: use
+     * rhs_assignment.node_output instead.
      * </pre>
      *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
@@ -2266,7 +2274,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Use the output of the current node as the RHS.
+     * Use the output of the current node as the RHS. DEPRECATED: use
+     * rhs_assignment.node_output instead.
      * </pre>
      *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
@@ -2289,7 +2298,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Use the output of the current node as the RHS.
+     * Use the output of the current node as the RHS. DEPRECATED: use
+     * rhs_assignment.node_output instead.
      * </pre>
      *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
@@ -2299,7 +2309,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Use the output of the current node as the RHS.
+     * Use the output of the current node as the RHS. DEPRECATED: use
+     * rhs_assignment.node_output instead.
      * </pre>
      *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
@@ -2317,7 +2328,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Use the output of the current node as the RHS.
+     * Use the output of the current node as the RHS. DEPRECATED: use
+     * rhs_assignment.node_output instead.
      * </pre>
      *
      * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>

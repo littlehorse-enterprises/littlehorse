@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using LittleHorse.Common.Proto;
+using LittleHorse.Sdk;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Worker;
 using LittleHorse.Sdk.Worker.Internal;
@@ -19,6 +20,11 @@ public class LHTaskSignatureTest
     const string VALUE_ATTR_NAME = "value";
     const string DETAIL_ATTR_NAME = "detail";
     const string TELEPHONE_ATTR_NAME = "telephone";
+    
+    public LHTaskSignatureTest()
+    {
+        LHLoggerFactoryProvider.Initialize(null);
+    }
     
     [Fact]
     public void TaskSignature_WithLHTaskMethodAndLHTypeAttributes_ShouldBuildLHSignatureWithInputAndOutput()
@@ -51,7 +57,7 @@ public class LHTaskSignatureTest
             Assert.Equal(expectedLHMethodParam.IsMasked, actualLHMethodParam.IsMasked);
         }
         
-        Assert.Equal(expectedOutput.ValueDef.Name, taskSignature.TaskDefOutputSchema.ValueDef.Name);
+        Assert.Equal(expectedOutput.ValueDef.Name, taskSignature.TaskDefOutputSchema!.ValueDef.Name);
         Assert.Equal(expectedOutput.ValueDef.Type, taskSignature.TaskDefOutputSchema.ValueDef.Type);
         Assert.Equal(expectedOutput.ValueDef.MaskedValue, taskSignature.TaskDefOutputSchema.ValueDef.MaskedValue);
         Assert.False(taskSignature.HasWorkerContextAtEnd);
@@ -80,7 +86,7 @@ public class LHTaskSignatureTest
             Assert.False(actualLHMethodParam.IsMasked);
         }
         
-        Assert.Equal(expectedOutput.ValueDef.Name, taskSignature.TaskDefOutputSchema.ValueDef.Name);
+        Assert.Equal(expectedOutput.ValueDef.Name, taskSignature.TaskDefOutputSchema!.ValueDef.Name);
         Assert.Equal(expectedOutput.ValueDef.Type, taskSignature.TaskDefOutputSchema.ValueDef.Type);
         Assert.Equal(expectedOutput.ValueDef.MaskedValue, taskSignature.TaskDefOutputSchema.ValueDef.MaskedValue);
         Assert.False(taskSignature.HasWorkerContextAtEnd);
@@ -127,7 +133,7 @@ public class LHTaskSignatureTest
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(() => 
             new LHTaskSignature<TestWorker>(TASK_DEF_NAME_PROCESS, new TestWorker()));
             
-        Assert.Equal("Found two annotated task methods!", exception.Message);
+        Assert.Equal("Found more than one annotated task methods!", exception.Message);
     }
     
     [Fact]
@@ -181,7 +187,7 @@ public class LHTaskSignatureTest
             }
         }
 
-        Assert.Equal(expectedOutput.ValueDef.Name, taskSignature.TaskDefOutputSchema.ValueDef.Name);
+        Assert.Equal(expectedOutput.ValueDef.Name, taskSignature.TaskDefOutputSchema!.ValueDef.Name);
         Assert.Equal(expectedOutput.ValueDef.Type, taskSignature.TaskDefOutputSchema.ValueDef.Type);
         Assert.Equal(expectedOutput.ValueDef.MaskedValue, taskSignature.TaskDefOutputSchema.ValueDef.MaskedValue);
         Assert.False(taskSignature.HasWorkerContextAtEnd);

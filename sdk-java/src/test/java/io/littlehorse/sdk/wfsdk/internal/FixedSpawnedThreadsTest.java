@@ -17,8 +17,8 @@ public class FixedSpawnedThreadsTest {
 
     @BeforeEach
     void setup() {
-        when(spawnedThread1.getThreadNumberVariable()).thenReturn(new WfRunVariableImpl("thread-1", 1));
-        when(spawnedThread2.getThreadNumberVariable()).thenReturn(new WfRunVariableImpl("thread-2", 2));
+        when(spawnedThread1.getThreadNumberVariable()).thenReturn(new WfRunVariableImpl("thread-1", 1, null));
+        when(spawnedThread2.getThreadNumberVariable()).thenReturn(new WfRunVariableImpl("thread-2", 2, null));
     }
 
     @Test
@@ -29,7 +29,9 @@ public class FixedSpawnedThreadsTest {
 
     @Test
     void shouldThrowIllegalArgumentExceptionIfThereIsANonIntegerVar() {
-        doReturn(new WfRunVariableImpl("thread-2", "2")).when(spawnedThread2).getThreadNumberVariable();
+        doReturn(new WfRunVariableImpl("thread-2", "2", null))
+                .when(spawnedThread2)
+                .getThreadNumberVariable();
         Throwable exception = catchThrowable(fixedSpawnedThreads::buildNode);
         assertThat(exception).isInstanceOfAny(IllegalArgumentException.class);
     }

@@ -1,10 +1,11 @@
+import { Toaster } from '@/components/ui/sonner'
+import { WhoAmIContext } from '@/contexts/WhoAmIContext'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import './globals.css'
-import { WhoAmIContext } from '@/contexts/WhoAmIContext'
 import { Header } from './[tenantId]/components/Header'
 import { QueryProvider } from './[tenantId]/components/QueryProvider'
 import getWhoAmI from './getWhoami'
+import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -28,6 +29,7 @@ export default async function RootLayout({
           <Header />
           <QueryProvider>
             <div className="mx-auto max-w-screen-xl px-8">{children}</div>
+            <Toaster position="top-center" richColors />
           </QueryProvider>
         </WhoAmIContext>
       </body>

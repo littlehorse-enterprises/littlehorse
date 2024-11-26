@@ -1,37 +1,16 @@
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { useQuery } from '@tanstack/react-query'
-
-import { LHStatus, Node as NodeProto, ThrowEventNode } from 'littlehorse-client/proto'
-import { CircleArrowOutUpRightIcon, ExternalLinkIcon, EyeIcon } from 'lucide-react'
-import { FC, ReactNode, memo, useCallback } from 'react'
+import { Node as NodeProto } from 'littlehorse-client/proto'
+import { CircleArrowOutUpRightIcon, ExternalLinkIcon } from 'lucide-react'
+import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '..'
-import { useModal } from '../../../hooks/useModal'
+
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 import { Fade } from '../Fade'
 import { NodeDetails } from '../NodeDetails'
-import { getWorkflowEvent } from './getWorkflowEvent'
-import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
+
+import { NodeRunsList } from '../../NodeRunsList'
 
 const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
-  const { tenantId } = useWhoAmI()
-  const { data: workflowEvent } = useQuery({
-    queryKey: ['workflowEvent', data.nodeRun, tenantId],
-    queryFn: async () => {
-      if (data.nodeRun?.throwEvent?.workflowEventId)
-        return await getWorkflowEvent({ tenantId, ...data.nodeRun.throwEvent.workflowEventId })
-      return null
-    },
-  })
-
-  const { setModal, setShowModal } = useModal()
-
-  const onClick = useCallback(() => {
-    if (!workflowEvent) return
-
-    setModal({ type: 'workflowEvent', data: workflowEvent })
-    setShowModal(true)
-  }, [workflowEvent, setModal, setShowModal])
-
   if (!data.throwEvent) return null
 
   const { fade, throwEvent: throwEventNode, nodeNeedsToBeHighlighted, nodeRun } = data
@@ -51,18 +30,8 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
               </LinkWithTenant>
             </div>
           </div>
-          {nodeRun &&
-            (nodeRun.status == LHStatus.COMPLETED ||
-              nodeRun.status == LHStatus.ERROR ||
-              nodeRun.status == LHStatus.EXCEPTION ||
-              nodeRun.status == LHStatus.HALTED) && (
-              <div className="mt-2 flex justify-center">
-                <button className="flex items-center gap-1 p-1 text-blue-500 hover:bg-gray-200" onClick={onClick}>
-                  <EyeIcon className="h-4 w-4" />
-                  Inspect WorkflowEvent
-                </button>
-              </div>
-            )}
+
+          <NodeRunsList nodeRuns={data.nodeRunsList} />
         </div>
       </NodeDetails>
       <Fade fade={fade} status={data.nodeRun?.status}>

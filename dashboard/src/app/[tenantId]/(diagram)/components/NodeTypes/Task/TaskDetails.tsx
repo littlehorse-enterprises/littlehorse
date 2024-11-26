@@ -1,20 +1,21 @@
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 import { getTaskDef } from '@/app/[tenantId]/taskDef/[name]/getTaskDef'
 import { getVariable, getVariableValue } from '@/app/utils'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useQuery } from '@tanstack/react-query'
 import { NodeRun, TaskNode } from 'littlehorse-client/proto'
-import { ExternalLinkIcon, EyeIcon } from 'lucide-react'
-import { FC, useCallback } from 'react'
-import { useModal } from '../../../hooks/useModal'
+import { ExternalLinkIcon } from 'lucide-react'
+import { FC } from 'react'
+import { NodeRunsList } from '../../NodeRunsList'
 import { NodeDetails } from '../NodeDetails'
 import { getTaskRun } from './getTaskRun'
-import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 
-export const TaskDetails: FC<{ taskNode?: TaskNode; nodeRun?: NodeRun; selected: boolean }> = ({
-  taskNode,
-  nodeRun,
-  selected,
-}) => {
+export const TaskDetails: FC<{
+  taskNode?: TaskNode
+  nodeRun?: NodeRun
+  selected: boolean
+  nodeRunsList: [NodeRun]
+}> = ({ taskNode, nodeRun, selected, nodeRunsList }) => {
   const { tenantId } = useWhoAmI()
   const { data } = useQuery({
     queryKey: ['taskRun', nodeRun, tenantId],
@@ -33,21 +34,9 @@ export const TaskDetails: FC<{ taskNode?: TaskNode; nodeRun?: NodeRun; selected:
       const taskDef = await getTaskDef({
         name: taskNode?.taskDefId?.name,
       })
-
-      console.log('taskDef', taskDef)
-
       return taskDef
     },
   })
-
-  const { setModal, setShowModal } = useModal()
-
-  const onClick = useCallback(() => {
-    if (!data) return
-
-    setModal({ type: 'taskRun', data })
-    setShowModal(true)
-  }, [data, setModal, setShowModal])
 
   if (!taskNode || (!taskDef && !nodeRun?.task?.taskRunId)) return null
 
@@ -70,7 +59,7 @@ export const TaskDetails: FC<{ taskNode?: TaskNode; nodeRun?: NodeRun; selected:
           <div className="flex items-center justify-center">Retries: {taskNode.retries}</div>
         </div>
       </div>
-      {taskNode.variables && taskNode.variables.length > 0 && (
+      {taskNode.variables && taskNode.variables.length > 0 && !(nodeRunsList?.length > 1) && (
         <div className="whitespace-nowrap">
           <h3 className="font-bold">Inputs</h3>
           <ol className="list-inside list-decimal">
@@ -99,19 +88,12 @@ export const TaskDetails: FC<{ taskNode?: TaskNode; nodeRun?: NodeRun; selected:
           <pre className="overflow-x-auto">{nodeRun.errorMessage}</pre>
         </div>
       )}
-      {nodeRun && (
-        <div className="mt-2 flex justify-center">
-          <button className="flex items-center gap-1 p-1 text-blue-500 hover:bg-gray-200" onClick={onClick}>
-            <EyeIcon className="h-4 w-4" />
-            Inspect TaskRun
-          </button>
-        </div>
-      )}
+      <NodeRunsList nodeRuns={nodeRunsList} />
     </NodeDetails>
   )
 }
 
-const TaskLink: FC<{ taskName?: string }> = ({ taskName }) => {
+export const TaskLink: FC<{ taskName?: string }> = ({ taskName }) => {
   return (
     <LinkWithTenant
       className="flex items-center justify-center gap-1 text-blue-500 hover:underline"

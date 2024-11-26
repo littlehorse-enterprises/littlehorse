@@ -21,17 +21,19 @@ export const VersionSelector: FC<Props> = ({ path, currentVersion, versions, loa
             {currentVersion}
           </Listbox.Button>
           <Listbox.Options className="absolute right-0 z-10 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
-            {versions.map(version => (
-              <Listbox.Option
-                className="relative block cursor-pointer select-none p-2 hover:bg-slate-300"
-                key={version}
-                value={version}
-                as={LinkWithTenant}
-                href={`${path}/${version}`}
-              >
-                {version}
-              </Listbox.Option>
-            ))}
+            {[...versions].reverse().map(version => {
+              return (
+                <Listbox.Option
+                  className="relative block cursor-pointer select-none p-2 hover:bg-slate-300"
+                  key={version}
+                  value={version}
+                  as={LinkWithTenant}
+                  href={`${path}/${version}`}
+                >
+                  {version}
+                </Listbox.Option>
+              )
+            })}
           </Listbox.Options>
         </div>
       </div>

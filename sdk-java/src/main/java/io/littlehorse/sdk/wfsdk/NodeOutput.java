@@ -1,12 +1,10 @@
 package io.littlehorse.sdk.wfsdk;
 
-import java.io.Serializable;
-
 /**
  * `NodeOutput` represents the output of a Node execution. It can be used to set a timeout on a
  * node, or as input for a Variable Mutation.
  */
-public interface NodeOutput extends Serializable {
+public interface NodeOutput extends LHExpression {
     /**
      * Valid only for output of the JSON_OBJ or JSON_ARR types. Returns a new NodeOutput handle
      * which points to Json element referred to by the json path.

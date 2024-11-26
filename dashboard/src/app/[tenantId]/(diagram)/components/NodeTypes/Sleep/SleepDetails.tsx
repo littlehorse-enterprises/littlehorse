@@ -1,11 +1,11 @@
+import { formatTime, getVariable } from '@/app/utils'
 import { NodeRun, SleepNode } from 'littlehorse-client/proto'
 import { FC } from 'react'
+import { NodeRunsList } from '../../NodeRunsList'
 import { NodeDetails } from '../NodeDetails'
-import { formatDate } from '@/app/utils'
-import { getVariable, formatTime } from '@/app/utils'
-
-export const SleepDetails: FC<{ sleepNode?: SleepNode; nodeRun?: NodeRun }> = ({ sleepNode, nodeRun }) => {
+export const SleepDetails: FC<{ sleepNode?: SleepNode; nodeRunsList: [NodeRun] }> = ({ sleepNode, nodeRunsList }) => {
   if (!sleepNode) return
+
   const timeValue = getVariable(sleepNode?.rawSeconds)
   return (
     <NodeDetails>
@@ -13,7 +13,7 @@ export const SleepDetails: FC<{ sleepNode?: SleepNode; nodeRun?: NodeRun }> = ({
         <div className="flex items-center gap-1 whitespace-nowrap text-nowrap">
           <h3 className="font-bold">Sleep</h3>
         </div>
-        <div className="flex flex-col gap-2 text-nowrap">
+        <div className="flex flex-col gap-1 text-nowrap">
           <div className="flex ">
             {sleepNode.rawSeconds && (
               <div>Time: {typeof timeValue === 'number' ? formatTime(timeValue) : timeValue}</div>
@@ -21,9 +21,8 @@ export const SleepDetails: FC<{ sleepNode?: SleepNode; nodeRun?: NodeRun }> = ({
             {sleepNode.timestamp && <div>{getVariable(sleepNode.timestamp)}</div>}
             {sleepNode.isoDate && <div>{getVariable(sleepNode.isoDate)}</div>}
           </div>
-          {!!nodeRun?.sleep?.maturationTime && (
-            <div className="flex ">Maturation Time: {formatDate(new Date(nodeRun.sleep.maturationTime))}</div>
-          )}
+
+          <NodeRunsList nodeRuns={nodeRunsList} />
         </div>
       </div>
     </NodeDetails>

@@ -26,7 +26,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
     private VariableMutationType operation;
 
     private RhsValueCase rhsValueType;
-    private VariableAssignmentModel rhsSourceVariable;
+    private VariableAssignmentModel rhsRhsAssignment;
     private VariableValueModel rhsLiteralValue;
     private NodeOutputSourceModel nodeOutputSource;
 
@@ -46,8 +46,8 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             case LITERAL_VALUE:
                 out.setLiteralValue(rhsLiteralValue.toProto());
                 break;
-            case SOURCE_VARIABLE:
-                out.setSourceVariable(rhsSourceVariable.toProto());
+            case RHS_ASSIGNMENT:
+                out.setRhsAssignment(rhsRhsAssignment.toProto());
                 break;
             case NODE_OUTPUT:
                 out.setNodeOutput(nodeOutputSource.toProto()); // just set the flag
@@ -71,8 +71,8 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             case LITERAL_VALUE:
                 rhsLiteralValue = VariableValueModel.fromProto(p.getLiteralValue(), context);
                 break;
-            case SOURCE_VARIABLE:
-                rhsSourceVariable = VariableAssignmentModel.fromProto(p.getSourceVariable(), context);
+            case RHS_ASSIGNMENT:
+                rhsRhsAssignment = VariableAssignmentModel.fromProto(p.getRhsAssignment(), context);
                 break;
             case NODE_OUTPUT:
                 nodeOutputSource = NodeOutputSourceModel.fromProto(p.getNodeOutput(), context);
@@ -117,8 +117,8 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
 
         if (rhsValueType == RhsValueCase.LITERAL_VALUE) {
             out = rhsLiteralValue;
-        } else if (rhsValueType == RhsValueCase.SOURCE_VARIABLE) {
-            out = thread.assignVariable(rhsSourceVariable, txnCache);
+        } else if (rhsValueType == RhsValueCase.RHS_ASSIGNMENT) {
+            out = thread.assignVariable(rhsRhsAssignment, txnCache);
         } else if (rhsValueType == RhsValueCase.NODE_OUTPUT) {
             out = nodeOutput;
             if (nodeOutputSource.jsonPath != null) {
@@ -142,7 +142,12 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             if (lhsJsonPath != null) {
                 VariableValueModel lhsJsonPathed = lhsVal.jsonPath(lhsJsonPath);
                 VariableType typeToCoerceTo = lhsJsonPathed.getType();
-                VariableValueModel thingToPut = lhsJsonPathed.operate(operation, rhsVal, typeToCoerceTo);
+
+                // If the key does not exist in the LHS, we just plop the RHS there. Otherwise, we want to coerce the
+                // type to the rhs.
+                VariableValueModel thingToPut = lhsJsonPathed.getType() == null
+                        ? rhsVal
+                        : lhsJsonPathed.operate(operation, rhsVal, typeToCoerceTo);
 
                 VariableValueModel currentLhs = getVarValFromThreadInTxn(lhsName, thread, txnCache);
 
@@ -163,8 +168,8 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
     public Set<String> getRequiredVariableNames() {
         Set<String> out = new HashSet<>();
         out.add(lhsName);
-        if (rhsValueType == RhsValueCase.SOURCE_VARIABLE) {
-            out.addAll(rhsSourceVariable.getRequiredWfRunVarNames());
+        if (rhsValueType == RhsValueCase.RHS_ASSIGNMENT) {
+            out.addAll(rhsRhsAssignment.getRequiredWfRunVarNames());
         }
         return out;
     }

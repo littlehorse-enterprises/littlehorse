@@ -1,13 +1,14 @@
 ﻿using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Helper;
+using LittleHorse.Sdk.Utils;
 using Microsoft.Extensions.Logging;
 
 namespace LittleHorse.Sdk.Worker
 {
     public class VariableMapping
     {
-        private ILogger? _logger;
+        private ILogger<VariableMapping>? _logger;
         private string? _name;
         private Type _type;
         private int _position;
@@ -37,7 +38,6 @@ namespace LittleHorse.Sdk.Worker
             }
 
             VarNameAndVal assignment = taskInstance.Variables[_position];
-            string taskDefParamName = assignment.VarName;
             VariableValue val = assignment.Value;
 
             string? jsonStr;
@@ -45,19 +45,19 @@ namespace LittleHorse.Sdk.Worker
             switch (val.ValueCase)
             {
                 case VariableValue.ValueOneofCase.Int:
-                    if (_type == typeof(long) || _type == typeof(long?))
+                    if (LHMappingHelper.isInt64Type(_type))
                     {
                         return val.Int;
                     }
 
-                    return (int)val.Int;
+                    return (int) val.Int;
                 case VariableValue.ValueOneofCase.Double:
-                    if (_type == typeof(double) || _type == typeof(double?))
+                    if (_type == typeof(double) || _type == typeof(Double))
                     {
                         return val.Double;
                     }
 
-                    return (float)val.Double;
+                    return (float) val.Double;
                 case VariableValue.ValueOneofCase.Str:
                     return val.Str;
                 case VariableValue.ValueOneofCase.Bytes:
@@ -66,25 +66,15 @@ namespace LittleHorse.Sdk.Worker
                     return val.Bool;
                 case VariableValue.ValueOneofCase.JsonArr:
                     jsonStr = val.JsonArr;
-                    break;
+                    return JsonHandler.DeserializeFromJson(jsonStr, _type);
                 case VariableValue.ValueOneofCase.JsonObj:
                     jsonStr = val.JsonObj;
-                    break;
+                    return JsonHandler.DeserializeFromJson(jsonStr, _type);
                 default:
                     throw new InvalidOperationException("Unrecognized variable value type");
             }
-
-            try
-            {
-                return LHMappingHelper.DeserializeFromJson(jsonStr, _type);
-            }
-            catch (Exception ex)
-            {
-                throw new LHInputVarSubstitutionException($"Failed deserializing the C# object for variable {taskDefParamName}", ex);
-            }
         }
-
-
+        
         private void ValidateType(VariableType taskDefInputType, Type paramType, string? paramName)
         {
             string errorMsg = string.Empty;
@@ -92,13 +82,13 @@ namespace LittleHorse.Sdk.Worker
             switch (taskDefInputType)
             {
                 case VariableType.Int:
-                    if (!paramType.IsAssignableFrom(typeof(int)))
+                    if (!LHMappingHelper.IsInt(paramType))
                     {
                         errorMsg = $"TaskDef provides INT, func accepts {paramType.Name}";
                     }
                     break;
                 case VariableType.Double:
-                    if (!paramType.IsAssignableFrom(typeof(double)))
+                    if (!LHMappingHelper.IsFloat(paramType))
                     {
                         errorMsg = $"TaskDef provides DOUBLE, func accepts {paramType.Name}";
                     }
@@ -123,7 +113,7 @@ namespace LittleHorse.Sdk.Worker
                     break;
                 case VariableType.JsonArr:
                 case VariableType.JsonObj:
-                    _logger?.LogInformation($"Will use Jackson to deserialize Json into {paramType.Name}");
+                    _logger?.LogInformation($"It will use Newtonsoft to deserialize Json string into {paramType.Name}");
                     break;
                 default:
                     throw new Exception("Not possible");

@@ -2,7 +2,12 @@ package io.littlehorse.common.model.getable.core.variable;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Option;
+import com.jayway.jsonpath.ParseContext;
+import com.jayway.jsonpath.PathNotFoundException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.util.LHUtil;
@@ -121,7 +126,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         String jsonString = getJsonString();
         String newJsonString;
         try {
-            newJsonString = JsonPath.parse(jsonString).set(jsonPath, toPut).jsonString();
+            ParseContext parser =
+                    JsonPath.using(Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL));
+            DocumentContext jsonDoc = parser.parse(jsonString);
+
+            newJsonString = jsonDoc.set(jsonPath, toPut).jsonString();
         } catch (Exception jsonExn) {
             throw new LHVarSubError(
                     jsonExn,
@@ -181,25 +190,19 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
     public VariableValueModel operate(
             VariableMutationType operation, VariableValueModel rhs, VariableType typeToCoerceTo) throws LHVarSubError {
-        if (getType() != null) {
-            if (getType() != typeToCoerceTo) {
-                throw new LHVarSubError(
-                        null, "got unexpected variable type. Thought it was a " + typeToCoerceTo + " but is a " + type);
-            }
-        }
 
         if (operation == VariableMutationType.ASSIGN) {
-            if (getType() == null) return rhs.coerceToType(typeToCoerceTo);
-            return rhs.coerceToType(getType());
+            return rhs.coerceToType(typeToCoerceTo);
+        }
 
-        } else if (operation == VariableMutationType.ADD) {
-            return add(rhs);
+        if (operation == VariableMutationType.ADD) {
+            return typeToCoerceTo == VariableType.DOUBLE ? asDouble().add(rhs) : add(rhs);
         } else if (operation == VariableMutationType.SUBTRACT) {
-            return subtract(rhs);
+            return typeToCoerceTo == VariableType.DOUBLE ? asDouble().subtract(rhs) : subtract(rhs);
         } else if (operation == VariableMutationType.MULTIPLY) {
-            return multiply(rhs);
+            return typeToCoerceTo == VariableType.DOUBLE ? asDouble().multiply(rhs) : multiply(rhs);
         } else if (operation == VariableMutationType.DIVIDE) {
-            return divide(rhs);
+            return typeToCoerceTo == VariableType.DOUBLE ? asDouble().divide(rhs) : divide(rhs);
         } else if (operation == VariableMutationType.EXTEND) {
             return extend(rhs);
         } else if (operation == VariableMutationType.REMOVE_IF_PRESENT) {
@@ -230,13 +233,17 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
         try {
             val = JsonPath.parse(jsonStr).read(path);
+        } catch (PathNotFoundException exn) {
+            return new VariableValueModel();
         } catch (Exception exn) {
+            exn.printStackTrace();
             throw new LHVarSubError(
                     exn, "Failed accessing path " + path + " on data " + jsonStr + "  :\n" + exn.getMessage());
         }
 
         if (val == null) {
-            // TODO: Need to handle this better.
+            // We do not differentiate between the key not being there and the key being explicitly
+            // set to the value of null.
             return new VariableValueModel();
         }
 
@@ -261,7 +268,13 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel add(VariableValueModel rhs) throws LHVarSubError {
+        if (rhs.getType() == null) {
+            throw new LHVarSubError(null, "Cannot add by null");
+        }
         if (getType() == VariableType.INT) {
+            if (rhs.getType() == VariableType.DOUBLE) {
+                return new VariableValueModel(asDouble().doubleVal + rhs.asDouble().doubleVal);
+            }
             return new VariableValueModel(asInt().intVal + rhs.asInt().intVal);
         } else if (getType() == VariableType.DOUBLE) {
             return new VariableValueModel(asDouble().doubleVal + rhs.asDouble().doubleVal);
@@ -278,7 +291,13 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel subtract(VariableValueModel rhs) throws LHVarSubError {
+        if (rhs.getType() == null) {
+            throw new LHVarSubError(null, "Cannot subtract null");
+        }
         if (getType() == VariableType.INT) {
+            if (rhs.getType() == VariableType.DOUBLE) {
+                return new VariableValueModel((long) (asDouble().doubleVal - rhs.asDouble().doubleVal));
+            }
             return new VariableValueModel(asInt().intVal - rhs.asInt().intVal);
         } else if (getType() == VariableType.DOUBLE) {
             return new VariableValueModel(asDouble().doubleVal - rhs.asDouble().doubleVal);
@@ -287,15 +306,29 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel multiply(VariableValueModel rhs) throws LHVarSubError {
+        if (rhs.getType() == null) {
+            throw new LHVarSubError(null, "Cannot multiply by null");
+        }
         if (getType() == VariableType.INT) {
-            return new VariableValueModel((long) (asInt().intVal * rhs.asDouble().doubleVal));
+            if (rhs.getType() == VariableType.DOUBLE) {
+                return new VariableValueModel((long) (asDouble().doubleVal * rhs.asDouble().doubleVal));
+            }
+            return new VariableValueModel((long) (intVal * rhs.asInt().intVal));
         } else if (getType() == VariableType.DOUBLE) {
             return new VariableValueModel((double) (asDouble().doubleVal * rhs.asDouble().doubleVal));
         }
-        throw new LHVarSubError(null, "Cannot multiply var of type " + type);
+        throw new LHVarSubError(null, "Cannot multiply value of type " + type);
     }
 
     public VariableValueModel divide(VariableValueModel rhs) throws LHVarSubError {
+        if (rhs.getType() == null) {
+            throw new LHVarSubError(null, "Cannot divide by null");
+        }
+
+        if (rhs.asDouble().doubleVal == 0) {
+            throw new LHVarSubError(null, "Cannot divide by zero");
+        }
+
         if (getType() == VariableType.INT) {
             if (rhs.getType() == VariableType.DOUBLE) {
                 return new VariableValueModel((long) (asDouble().doubleVal / rhs.asDouble().doubleVal));
@@ -324,6 +357,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 throw new LHVarSubError(exn, "Failed concatenating bytes");
             }
             return new VariableValueModel(baos.toByteArray());
+        } else if (getType() == VariableType.STR) {
+            return new VariableValueModel(this.strVal + rhs.asStr().strVal);
         }
         throw new LHVarSubError(null, "Cannot extend var of type " + type);
     }
@@ -423,8 +458,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 throw new LHVarSubError(exn, "Couldn't convert strVal to INT");
             }
         } else {
-            log.error("Can't convert {} to INT ({})", type, LHUtil.objToString(jsonArrVal));
-            throw new LHVarSubError(null, "Cant convert " + type + " to INT");
+            String typeDescription = type == ValueCase.VALUE_NOT_SET ? "NULL" : type.toString();
+            throw new LHVarSubError(null, "Cant convert " + typeDescription + " to INT");
         }
 
         if (out == null) {

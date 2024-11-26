@@ -6,7 +6,7 @@ import io.grpc.Status;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
-import io.littlehorse.server.auth.ServerAuthorizer;
+import io.littlehorse.server.auth.LHServerInterceptor;
 import java.util.concurrent.Executor;
 
 public interface TestBootstrapper {
@@ -28,7 +28,7 @@ public interface TestBootstrapper {
                 try {
                     Metadata headers = new Metadata();
                     if (tenantId != null && tenantId.getId() != null) {
-                        headers.put(ServerAuthorizer.TENANT_ID, tenantId.getId());
+                        headers.put(LHServerInterceptor.TENANT_ID, tenantId.getId());
                         metadataApplier.apply(headers);
                     }
                 } catch (Exception e) {

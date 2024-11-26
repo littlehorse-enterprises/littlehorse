@@ -1,16 +1,16 @@
 import { UserTaskDefDetails } from '@/app/[tenantId]/(diagram)/components/NodeTypes/UserTask/UserTaskDefDetails'
-import { UserTaskRunDetails } from '@/app/[tenantId]/(diagram)/components/NodeTypes/UserTask/UserTaskRunDetails'
+import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 import { ExternalLinkIcon, UserIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
+import { NodeRunsList } from '../../NodeRunsList'
 import { Fade } from '../Fade'
 import { NodeProps } from '../index'
 import { NodeDetails } from '../NodeDetails'
-import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 
 const Node: FC<NodeProps> = ({ data, selected }) => {
   if (!data.userTask) return null
-  const { fade, userTask, nodeRun, nodeNeedsToBeHighlighted } = data
+  const { fade, userTask, nodeRun, nodeNeedsToBeHighlighted, nodeRunsList } = data
 
   return (
     <>
@@ -27,13 +27,13 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
             </LinkWithTenant>
           </div>
           {nodeRun ? (
-            <UserTaskRunDetails userTaskNode={userTask} nodeRun={nodeRun} />
+            <NodeRunsList nodeRuns={nodeRunsList} userTaskNode={userTask} nodeRun={nodeRun} />
           ) : (
             <UserTaskDefDetails userTask={userTask} />
           )}
         </div>
       </NodeDetails>
-      <Fade fade={fade} status={data.nodeRun?.status}>
+      <Fade fade={fade} status={nodeRunsList?.[nodeRunsList.length - 1]?.status}>
         <div
           className={
             'flex cursor-pointer flex-col items-center rounded-md border-[1px] border-blue-500 bg-blue-200 px-2 pt-1 text-xs ' +
