@@ -135,11 +135,21 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
         testContext.instrument(testInstance);
     }
 
+    private WithWorkers[] scanWorkersSetup(Class<?> instanceClass) {
+        if (instanceClass.isAnnotationPresent(WithWorkers.class)) {
+            return new WithWorkers[] {instanceClass.getAnnotation(WithWorkers.class)};
+        } else if (instanceClass.isAnnotationPresent(RepeatableWithWorkers.class)) {
+            return instanceClass.getAnnotation(RepeatableWithWorkers.class).value();
+        } else {
+            return new WithWorkers[] {};
+        }
+    }
+
     private void maybeStartWorkers(Object testInstance, LHConfig config) throws IllegalAccessException {
-        WithWorkers workersMetadata = testInstance.getClass().getAnnotation(WithWorkers.class);
-        if (workersMetadata != null) {
-            String methodSourceName = workersMetadata.value();
-            List<String> allowedMethods = List.of(workersMetadata.lhMethods());
+        WithWorkers[] workersSetup = scanWorkersSetup(testInstance.getClass());
+        for (WithWorkers workerMetadata : workersSetup) {
+            String methodSourceName = workerMetadata.value();
+            List<String> allowedMethods = List.of(workerMetadata.lhMethods());
             boolean startAllWorkers = allowedMethods.isEmpty();
             try {
                 Object executable =

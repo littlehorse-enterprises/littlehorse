@@ -12,7 +12,8 @@ import io.littlehorse.test.WorkflowVerifier;
 import org.junit.jupiter.api.Test;
 
 @LHTest
-@WithWorkers(value = "basicWorker", lhMethods = "ag-one")
+@WithWorkers(value = "basicWorker")
+@WithWorkers(value = "basicWorker2")
 public class BasicTest {
 
     @LHWorkflow("test-basic")
@@ -31,11 +32,18 @@ public class BasicTest {
     public Workflow getBasic() {
         return new WorkflowImpl("test-basic", thread -> {
             thread.execute("ag-one");
+            thread.execute("ag-two");
+            thread.execute("ag-three");
+            thread.execute("ag-five");
         });
     }
 
     public Object basicWorker() {
         return new BasicWorker();
+    }
+
+    public Object basicWorker2() {
+        return new BasicWorker2();
     }
 
     public class BasicWorker {
@@ -47,6 +55,29 @@ public class BasicTest {
 
         @LHTaskMethod("ag-two")
         public boolean two() {
+            return true;
+        }
+
+        @LHTaskMethod("ag-three")
+        public boolean three() {
+            return true;
+        }
+    }
+
+    public class BasicWorker2 {
+
+        @LHTaskMethod("ag-four")
+        public boolean one() {
+            return true;
+        }
+
+        @LHTaskMethod("ag-five")
+        public boolean two() {
+            return true;
+        }
+
+        @LHTaskMethod("ag-six")
+        public boolean three() {
             return true;
         }
     }
