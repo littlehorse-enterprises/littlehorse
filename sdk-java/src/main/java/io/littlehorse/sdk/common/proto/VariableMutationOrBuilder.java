@@ -80,37 +80,35 @@ public interface VariableMutationOrBuilder extends
 
   /**
    * <pre>
-   * Set the source_variable as the RHS to use another variable from the workflow to
-   * as the RHS/
+   * Assigns the value to be used as the RHS of the mutation.
    * </pre>
    *
-   * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
-   * @return Whether the sourceVariable field is set.
+   * <code>.littlehorse.VariableAssignment rhs_assignment = 4;</code>
+   * @return Whether the rhsAssignment field is set.
    */
-  boolean hasSourceVariable();
+  boolean hasRhsAssignment();
   /**
    * <pre>
-   * Set the source_variable as the RHS to use another variable from the workflow to
-   * as the RHS/
+   * Assigns the value to be used as the RHS of the mutation.
    * </pre>
    *
-   * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
-   * @return The sourceVariable.
+   * <code>.littlehorse.VariableAssignment rhs_assignment = 4;</code>
+   * @return The rhsAssignment.
    */
-  io.littlehorse.sdk.common.proto.VariableAssignment getSourceVariable();
+  io.littlehorse.sdk.common.proto.VariableAssignment getRhsAssignment();
   /**
    * <pre>
-   * Set the source_variable as the RHS to use another variable from the workflow to
-   * as the RHS/
+   * Assigns the value to be used as the RHS of the mutation.
    * </pre>
    *
-   * <code>.littlehorse.VariableAssignment source_variable = 4;</code>
+   * <code>.littlehorse.VariableAssignment rhs_assignment = 4;</code>
    */
-  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getSourceVariableOrBuilder();
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getRhsAssignmentOrBuilder();
 
   /**
    * <pre>
-   * Use a literal value as the RHS.
+   * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+   * instead.
    * </pre>
    *
    * <code>.littlehorse.VariableValue literal_value = 5;</code>
@@ -119,7 +117,8 @@ public interface VariableMutationOrBuilder extends
   boolean hasLiteralValue();
   /**
    * <pre>
-   * Use a literal value as the RHS.
+   * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+   * instead.
    * </pre>
    *
    * <code>.littlehorse.VariableValue literal_value = 5;</code>
@@ -128,7 +127,8 @@ public interface VariableMutationOrBuilder extends
   io.littlehorse.sdk.common.proto.VariableValue getLiteralValue();
   /**
    * <pre>
-   * Use a literal value as the RHS.
+   * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+   * instead.
    * </pre>
    *
    * <code>.littlehorse.VariableValue literal_value = 5;</code>
@@ -137,7 +137,8 @@ public interface VariableMutationOrBuilder extends
 
   /**
    * <pre>
-   * Use the output of the current node as the RHS.
+   * Use the output of the current node as the RHS. DEPRECATED: use
+   * rhs_assignment.node_output instead.
    * </pre>
    *
    * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
@@ -146,7 +147,8 @@ public interface VariableMutationOrBuilder extends
   boolean hasNodeOutput();
   /**
    * <pre>
-   * Use the output of the current node as the RHS.
+   * Use the output of the current node as the RHS. DEPRECATED: use
+   * rhs_assignment.node_output instead.
    * </pre>
    *
    * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>
@@ -155,7 +157,8 @@ public interface VariableMutationOrBuilder extends
   io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource getNodeOutput();
   /**
    * <pre>
-   * Use the output of the current node as the RHS.
+   * Use the output of the current node as the RHS. DEPRECATED: use
+   * rhs_assignment.node_output instead.
    * </pre>
    *
    * <code>.littlehorse.VariableMutation.NodeOutputSource node_output = 6;</code>

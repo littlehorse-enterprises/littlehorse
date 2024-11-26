@@ -203,5 +203,13 @@ namespace LittleHorse.Sdk.Helper
                 _ => throw new LHInputVarSubstitutionException("Object value can not be converted to a Double.")
             };
         }
+
+        public static bool isInt64Type(Type type)
+        {
+            return type.IsAssignableFrom(typeof(Int64))
+                   || type.IsAssignableFrom(typeof(UInt64))
+                   || type.IsAssignableFrom(typeof(long))
+                   || type.IsAssignableFrom(typeof(ulong));
+        }
     }
 }

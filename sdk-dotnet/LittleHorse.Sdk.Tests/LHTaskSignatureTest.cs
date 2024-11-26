@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using LittleHorse.Common.Proto;
+using LittleHorse.Sdk;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Worker;
 using LittleHorse.Sdk.Worker.Internal;
@@ -19,6 +20,11 @@ public class LHTaskSignatureTest
     const string VALUE_ATTR_NAME = "value";
     const string DETAIL_ATTR_NAME = "detail";
     const string TELEPHONE_ATTR_NAME = "telephone";
+    
+    public LHTaskSignatureTest()
+    {
+        LHLoggerFactoryProvider.Initialize(null);
+    }
     
     [Fact]
     public void TaskSignature_WithLHTaskMethodAndLHTypeAttributes_ShouldBuildLHSignatureWithInputAndOutput()

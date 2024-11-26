@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef.FailureToCatchCase;
@@ -542,5 +543,107 @@ public class WorkflowThreadImplTest {
         TaskNode taskNode = node.getTask();
 
         assertThat(taskNode.getVariables(0).getNodeOutput().getNodeName()).isEqualTo("1-some-other-task-TASK");
+    }
+
+    @Test
+    void mutationsShouldUseVariableAssignment() {
+        // Deprecated the literal_value and node_output approach
+        Workflow workflow = new WorkflowImpl("obiwan", wf -> {
+            WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
+            myVar.assignTo("some-value");
+        });
+
+        PutWfSpecRequest wfSpec = workflow.compileWorkflow();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("0-entrypoint-ENTRYPOINT");
+
+        Edge edge = node.getOutgoingEdges(0);
+        assertThat(edge.getVariableMutations(0)
+                        .getRhsAssignment()
+                        .getLiteralValue()
+                        .getStr())
+                .isEqualTo("some-value");
+    }
+
+    @Test
+    void nodeOutputMutationsShouldAlsoUseVariableAssignments() {
+        // Deprecated the literal_value and node_output approach
+        Workflow workflow = new WorkflowImpl("obiwan", wf -> {
+            WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
+            myVar.assignTo(wf.execute("use-the-force"));
+        });
+
+        PutWfSpecRequest wfSpec = workflow.compileWorkflow();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("1-use-the-force-TASK");
+
+        Edge edge = node.getOutgoingEdges(0);
+        assertThat(edge.getVariableMutations(0)
+                        .getRhsAssignment()
+                        .getNodeOutput()
+                        .getNodeName())
+                .isEqualTo("1-use-the-force-TASK");
+    }
+
+    @Test
+    void nodeOutputMutationsShouldCarryJsonPath() {
+        // Deprecated the literal_value and node_output approach
+        Workflow workflow = new WorkflowImpl("obiwan", wf -> {
+            WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
+            myVar.assignTo(wf.execute("use-the-force").jsonPath("$.hello.there"));
+        });
+
+        PutWfSpecRequest wfSpec = workflow.compileWorkflow();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("1-use-the-force-TASK");
+
+        Edge edge = node.getOutgoingEdges(0);
+        assertThat(edge.getVariableMutations(0)
+                        .getRhsAssignment()
+                        .getNodeOutput()
+                        .getNodeName())
+                .isEqualTo("1-use-the-force-TASK");
+
+        assertThat(edge.getVariableMutations(0).getRhsAssignment().getJsonPath())
+                .isEqualTo("$.hello.there");
+    }
+
+    @Test
+    void assigningVariablesToOtherVariablesShouldUseVariableAssignment() {
+        // Deprecated the literal_value and node_output approach
+        Workflow workflow = new WorkflowImpl("obiwan", wf -> {
+            WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
+            WfRunVariable otherVar = wf.addVariable("other-var", VariableType.STR);
+            myVar.assignTo(otherVar);
+        });
+
+        PutWfSpecRequest wfSpec = workflow.compileWorkflow();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("0-entrypoint-ENTRYPOINT");
+
+        Edge edge = node.getOutgoingEdges(0);
+        assertThat(edge.getVariableMutations(0).getRhsAssignment().getVariableName())
+                .isEqualTo("other-var");
+    }
+
+    @Test
+    void assigningVariablesToOtherVariablesShouldCarryJsonPath() {
+        // Deprecated the literal_value and node_output approach
+        Workflow workflow = new WorkflowImpl("obiwan", wf -> {
+            WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
+            WfRunVariable otherVar = wf.addVariable("other-var", VariableType.JSON_OBJ);
+            myVar.assignTo(otherVar.jsonPath("$.hello.there"));
+        });
+
+        PutWfSpecRequest wfSpec = workflow.compileWorkflow();
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node node = entrypoint.getNodesOrThrow("0-entrypoint-ENTRYPOINT");
+
+        Edge edge = node.getOutgoingEdges(0);
+        assertThat(edge.getVariableMutations(0).getRhsAssignment().getVariableName())
+                .isEqualTo("other-var");
+
+        assertThat(edge.getVariableMutations(0).getRhsAssignment().getJsonPath())
+                .isEqualTo("$.hello.there");
     }
 }

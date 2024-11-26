@@ -20,6 +20,11 @@ export type VersionList = {
   bookmark?: string
 }
 
+export type WfSpecData = {
+  name: string
+  latestVersion: string
+}
+
 export type FormFieldProp = {
   variables?: ThreadVarDef
   custom?: boolean

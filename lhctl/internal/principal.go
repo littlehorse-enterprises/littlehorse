@@ -1,11 +1,12 @@
 package internal
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -43,6 +44,20 @@ var putPrincipalCmd = &cobra.Command{
 		littlehorse.PrintResp(getGlobalClient(cmd).PutPrincipal(
 			requestContext(cmd),
 			&putRequest,
+		))
+	},
+}
+
+var getPrincipalCmd = &cobra.Command{
+	Use:   "principal <id>",
+	Short: "Get a Principal",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		littlehorse.PrintResp(getGlobalClient(cmd).GetPrincipal(
+			requestContext(cmd),
+			&lhproto.PrincipalId{
+				Id: args[0],
+			},
 		))
 	},
 }
@@ -199,7 +214,8 @@ func init() {
 	searchPrincipalCmd.Flags().Bool("isAdmin", false, "List only Principals that are admins")
 	searchPrincipalCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for Principals that were created no more than this number of minutes ago")
 	searchPrincipalCmd.Flags().Int("latestMinutesAgo", -1, "Search only for Principals that were created at least this number of minutes ago")
-	searchPrincipalCmd.MarkFlagsOneRequired("tenantId", "isAdmin")
+
+	getCmd.AddCommand(getPrincipalCmd)
 
 	deployCmd.AddCommand(deployPrincipalCmd)
 	deleteCmd.AddCommand(deletePrincipalCmd)

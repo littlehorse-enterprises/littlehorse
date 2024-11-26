@@ -23,21 +23,24 @@ export const WfRunForm = forwardRef<HTMLFormElement, Prop>(({ wfSpecVariables, o
     onSubmit(data)
   }
 
+  // Sort variables so required fields come first
+  const sortedVariables = wfSpecVariables.sort((a, b) => {
+    if (a.required === b.required) return 0
+    return a.required ? -1 : 1
+  })
+
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmitForm)} ref={ref}>
+      <form onSubmit={handleSubmit(onSubmitForm)} ref={ref} className="space-y-4">
         <div>
-          <Label htmlFor="custom-id">Custom WfRun Id</Label>
-          <Input
-            type="text"
-            className="mb-4 mt-1"
-            id="custom-id"
-            {...register('custom-id-wfRun-flow')}
-            placeholder="Enter string value"
-          />
+          <Label htmlFor="customWfRunId" className="mb-2 flex items-center gap-2">
+            Custom WfRun Id
+            <span className="rounded bg-gray-300 p-1 text-xs">Optional</span>
+          </Label>
+          <Input type="text" id="customWfRunId" {...register('customWfRunId')} placeholder="Enter string value" />
         </div>
-        {!!wfSpecVariables?.length &&
-          wfSpecVariables.map((variable: ThreadVarDef) => (
+        {!!sortedVariables.length &&
+          sortedVariables.map((variable: ThreadVarDef) => (
             <FormFields key={variable.varDef?.name} variables={variable} register={register} formState={formState} />
           ))}
       </form>

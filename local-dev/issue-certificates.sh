@@ -51,7 +51,7 @@ echo "Creating Client Certificates"
 openssl req -newkey rsa:2048 -nodes \
     -out "$CLIENT_PATH/client.csr" \
     -keyout "$CLIENT_PATH/client.key" \
-    -subj "/CN=localhost/O=client organization" \
+    -subj "/CN=obiwan/O=client organization" \
     -addext "subjectAltName = DNS:localhost" > /dev/null 2>&1
 openssl x509 -req -sha256 -days 3650 \
     -CA "$CA_PATH/ca.crt" \

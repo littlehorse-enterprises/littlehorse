@@ -24,7 +24,7 @@ namespace LittleHorse.Sdk.Worker
 
         public LHTaskSignature(string taskDefName, T executable)
         {
-            _logger = new LoggerFactory().CreateLogger<LHTaskSignature<T>>();
+            _logger = LHLoggerFactoryProvider.GetLogger<LHTaskSignature<T>>();
             _lhMethodParams = new List<LHMethodParam>();
             TaskDefName = taskDefName;
             Executable = executable;

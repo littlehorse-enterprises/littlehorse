@@ -8447,6 +8447,14 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    getPrincipal: {
+      name: "GetPrincipal",
+      requestType: PrincipalId,
+      requestStream: false,
+      responseType: Principal,
+      responseStream: false,
+      options: {},
+    },
     /** Returns the Principal of the caller. */
     whoami: {
       name: "Whoami",
@@ -8828,6 +8836,7 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   getTenant(request: TenantId, context: CallContext & CallContextExt): Promise<DeepPartial<Tenant>>;
   /** EXPERIMENTAL: Creates an Principal. */
   putPrincipal(request: PutPrincipalRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
+  getPrincipal(request: PrincipalId, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Returns the Principal of the caller. */
   whoami(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Gets the version of the LH Server. */
@@ -9203,6 +9212,7 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   getTenant(request: DeepPartial<TenantId>, options?: CallOptions & CallOptionsExt): Promise<Tenant>;
   /** EXPERIMENTAL: Creates an Principal. */
   putPrincipal(request: DeepPartial<PutPrincipalRequest>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
+  getPrincipal(request: DeepPartial<PrincipalId>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Returns the Principal of the caller. */
   whoami(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Gets the version of the LH Server. */

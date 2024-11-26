@@ -35,7 +35,7 @@ export const Search: FC<{}> = () => {
           <RefreshCwIcon className="h-8 w-8 animate-spin text-blue-500" />
         </div>
       ) : (
-        <div className="min-h-[360px]">
+        <div>
           {type === 'WfSpec' && <WfSpecTable pages={data?.pages} />}
           {type === 'TaskDef' && <TaskDefTable pages={data?.pages} />}
           {type === 'UserTaskDef' && <UserTaskDefTable pages={data?.pages} />}

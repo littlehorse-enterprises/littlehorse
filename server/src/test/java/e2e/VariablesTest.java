@@ -65,7 +65,7 @@ public class VariablesTest {
 
     @Test
     public void shouldHandleVarSubErrors() {
-        final String expectedMessage = "Caught unexpected error when mutating variables: / by zero";
+        final String expectedMessage = "Cannot divide by zero";
         workflowVerifier
                 .prepareRun(mutationWf, Arg.of("value-a", 9), Arg.of("value-b", 0))
                 .waitForStatus(LHStatus.ERROR)
