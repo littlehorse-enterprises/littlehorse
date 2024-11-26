@@ -1,4 +1,3 @@
-import { FormValues, WfRunForm } from '@/app/(authenticated)/(diagram)/components/Forms/WfRunForm'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -9,18 +8,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { ThreadVarDef, VariableType, WfSpec } from 'littlehorse-client/proto'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { FC, useRef } from 'react'
 import { toast } from 'sonner'
 import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
 import { runWfSpec } from '../../wfSpec/[...props]/actions/runWfSpec'
+import { FormValues, WfRunForm } from '../Forms/WfRunForm'
+
 export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
   const { showModal, setShowModal } = useModal()
   const lhWorkflowSpec = data as WfSpec
-  const { tenantId } = useWhoAmI()
+  const tenantId = useParams().tenantId as string
   const router = useRouter()
   const formRef = useRef<HTMLFormElement | null>(null)
   const wfSpecVariables = lhWorkflowSpec.threadSpecs?.entrypoint?.variableDefs
@@ -62,7 +62,6 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
         wfSpecName: lhWorkflowSpec.id.name,
         majorVersion: lhWorkflowSpec.id.majorVersion,
         revision: lhWorkflowSpec.id.revision,
-
         id: customWfRunId || undefined,
         variables: formatVariablesPayload(values),
       })

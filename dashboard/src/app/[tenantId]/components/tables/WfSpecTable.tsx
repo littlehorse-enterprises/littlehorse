@@ -1,19 +1,17 @@
 import { getLatestWfSpecs } from '@/app/actions/getLatestWfSpec'
 import { Separator } from '@/components/ui/separator'
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { WfSpecData } from '@/types'
 import { TagIcon } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { FC, Fragment, useEffect, useState } from 'react'
 import { SearchResultProps } from '.'
 
 export const WfSpecTable: FC<SearchResultProps> = ({ pages = [] }) => {
   const router = useRouter()
+  const tenantId = useParams().tenantId as string
   const [wfSpecs, setWfSpecs] = useState<WfSpecData[]>([])
-  const { tenantId } = useWhoAmI()
 
   useEffect(() => {
-    if (!tenantId) return
     const wfSpecNames = pages.flatMap(page => page.results).map(wfSpec => wfSpec.name)
     getLatestWfSpecs(tenantId, wfSpecNames).then(setWfSpecs)
   }, [pages, tenantId])
