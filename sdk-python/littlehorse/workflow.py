@@ -367,6 +367,7 @@ class WfRunVariable:
         self,
         variable_name: str,
         variable_type: VariableType,
+        parent: WorkflowThread,
         default_value: Any = None,
         access_level: Optional[
             Union[WfRunVariableAccessLevel, str]
@@ -377,6 +378,7 @@ class WfRunVariable:
         Args:
             variable_name (str): The name of the variable.
             variable_type (VariableType): The variable type.
+            parent (WorkflowThread): The parent WorkflowThread of this WfRunVariable.
             default_value (Any, optional): A default value. Defaults to None.
             access_level (WfRunVariableAccessLevel): Sets the access level of a WfRunVariable. Defaults to PRIVATE_VAR.
 
@@ -388,6 +390,7 @@ class WfRunVariable:
         """
         self.name = variable_name
         self.type = variable_type 
+        self.parent = parent
         self.default_value: Optional[VariableValue] = None
         self._json_path: Optional[str] = None
         self._required = False
@@ -554,34 +557,34 @@ class WfRunVariable:
         )
 
     def is_equal_to(self, rhs: Any) -> WorkflowCondition:
-        return WorkflowCondition(self, Comparator.EQUALS, rhs)
+        return self.parent.condition(self, Comparator.EQUALS, rhs)
     
     def is_not_equal_to(self, rhs: Any) -> WorkflowCondition:
-        return WorkflowCondition(self, Comparator.NOT_EQUALS, rhs)
+        return self.parent.condition(self, Comparator.NOT_EQUALS, rhs)
     
     def is_greater_than(self, rhs: Any) -> WorkflowCondition:
-        return WorkflowCondition(self, Comparator.GREATER_THAN, rhs)
+        return self.parent.condition(self, Comparator.GREATER_THAN, rhs)
     
     def is_greater_than_eq(self, rhs: Any) -> WorkflowCondition:
-        return WorkflowCondition(self, Comparator.GREATER_THAN_EQ, rhs)
+        return self.parent.condition(self, Comparator.GREATER_THAN_EQ, rhs)
     
     def is_less_than_eq(self, rhs: Any) -> WorkflowCondition:
-        return WorkflowCondition(self, Comparator.LESS_THAN_EQ, rhs)
+        return self.parent.condition(self, Comparator.LESS_THAN_EQ, rhs)
 
     def is_less_than(self, rhs: Any) -> WorkflowCondition:
-        return WorkflowCondition(self, Comparator.LESS_THAN, rhs)
+        return self.parent.condition(self, Comparator.LESS_THAN, rhs)
     
     def does_contain(self, rhs: Any) -> WorkflowCondition:
-        return WorkflowCondition(self, Comparator.IN, rhs)
+        return self.parent.condition(self, Comparator.IN, rhs)
 
     def does_not_contain(self, rhs: Any) -> WorkflowCondition:
-        return WorkflowCondition(self, Comparator.NOT_IN, rhs)
+        return self.parent.condition(self, Comparator.NOT_IN, rhs)
     
     def is_in(self, rhs: Any) -> WorkflowCondition:
-        return WorkflowCondition(self, Comparator.IN, rhs)
+        return self.parent.condition(self, Comparator.IN, rhs)
 
     def is_not_in(self, rhs: Any) -> WorkflowCondition:
-        return WorkflowCondition(self, Comparator.NOT_IN, rhs)
+        return self.parent.condition(self, Comparator.NOT_IN, rhs)
     
     def assign_to(self, rhs: Any) -> None:
         self.parent.mutate(self, VariableMutationType.ASSIGN, rhs)
