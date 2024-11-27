@@ -286,7 +286,7 @@ class TestThreadBuilder(unittest.TestCase):
             def if_condition(self, thread: WorkflowThread) -> None:
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-1", variable_type=VariableType.INT, parent=None
+                        variable_name="variable-1", variable_type=VariableType.INT, parent=thread
                     ),
                     VariableMutationType.ASSIGN,
                     1,
@@ -294,7 +294,7 @@ class TestThreadBuilder(unittest.TestCase):
                 thread.execute("task-a")
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-3", variable_type=VariableType.INT, parent=None
+                        variable_name="variable-3", variable_type=VariableType.INT, parent=thread
                     ),
                     VariableMutationType.ASSIGN,
                     3,
@@ -304,7 +304,7 @@ class TestThreadBuilder(unittest.TestCase):
             def else_condition(self, thread: WorkflowThread) -> None:
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-2", variable_type=VariableType.INT, parent=None
+                        variable_name="variable-2", variable_type=VariableType.INT, parent=thread
                     ),
                     VariableMutationType.ASSIGN,
                     2,
@@ -313,7 +313,7 @@ class TestThreadBuilder(unittest.TestCase):
                 thread.execute("task-d")
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-4", variable_type=VariableType.INT, parent=None
+                        variable_name="variable-4", variable_type=VariableType.INT, parent=thread
                     ),
                     VariableMutationType.ASSIGN,
                     4,
@@ -436,7 +436,7 @@ class TestThreadBuilder(unittest.TestCase):
             def if_condition(self, thread: WorkflowThread) -> None:
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-1", variable_type=VariableType.INT, parent=None
+                        variable_name="variable-1", variable_type=VariableType.INT, parent=thread
                     ),
                     VariableMutationType.ASSIGN,
                     1,
@@ -445,7 +445,7 @@ class TestThreadBuilder(unittest.TestCase):
             def else_condition(self, thread: WorkflowThread) -> None:
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-2", variable_type=VariableType.INT, parent=None
+                        variable_name="variable-2", variable_type=VariableType.INT, parent=thread
                     ),
                     VariableMutationType.ASSIGN,
                     2,
@@ -530,7 +530,7 @@ class TestThreadBuilder(unittest.TestCase):
             def if_condition(self, thread: WorkflowThread) -> None:
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-2", variable_type=VariableType.INT, parent=None
+                        variable_name="variable-2", variable_type=VariableType.INT, parent=thread
                     ),
                     VariableMutationType.ASSIGN,
                     2,
@@ -539,7 +539,7 @@ class TestThreadBuilder(unittest.TestCase):
             def my_entrypoint(self, thread: WorkflowThread) -> None:
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-1", variable_type=VariableType.INT, parent=None
+                        variable_name="variable-1", variable_type=VariableType.INT, parent=thread
                     ),
                     VariableMutationType.ASSIGN,
                     1,
@@ -549,7 +549,7 @@ class TestThreadBuilder(unittest.TestCase):
                 )
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-3", variable_type=VariableType.INT, parent=None
+                        variable_name="variable-3", variable_type=VariableType.INT, parent=thread
                     ),
                     VariableMutationType.ASSIGN,
                     3,
@@ -741,7 +741,7 @@ class TestThreadBuilder(unittest.TestCase):
             def my_condition(self, thread: WorkflowThread) -> None:
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-1", variable_type=VariableType.INT, parent=None
+                        variable_name="variable-1", variable_type=VariableType.INT, parent=thread
                     ),
                     VariableMutationType.ASSIGN,
                     1,
@@ -749,7 +749,7 @@ class TestThreadBuilder(unittest.TestCase):
                 thread.execute("my-task")
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-2", variable_type=VariableType.INT, parent=None
+                        variable_name="variable-2", variable_type=VariableType.INT, parent=thread
                     ),
                     VariableMutationType.ASSIGN,
                     2,
