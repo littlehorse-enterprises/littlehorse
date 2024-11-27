@@ -2171,7 +2171,7 @@ class TestUserTasks(unittest.TestCase):
 
     def test_reassign_to_user_var(self):
         def wf_func(thread: WorkflowThread) -> None:
-            user_var = WfRunVariable("my-var", VariableType.STR, None)
+            user_var = WfRunVariable("my-var", VariableType.STR, thread)
             uto = thread.assign_user_task(
                 "my-user-task",
                 user_id="asdf",
@@ -2197,7 +2197,7 @@ class TestUserTasks(unittest.TestCase):
 
     def test_reassign_to_group(self):
         def wf_func(thread: WorkflowThread) -> None:
-            user_var = WfRunVariable("my-var", VariableType.STR, None)
+            user_var = WfRunVariable("my-var", VariableType.STR, thread)
             uto = thread.assign_user_task(
                 "my-user-task",
                 user_id="asdf",
