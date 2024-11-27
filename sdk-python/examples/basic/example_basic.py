@@ -1,11 +1,10 @@
 import asyncio
 import logging
 from pathlib import Path
-import random
 
 import littlehorse
 from littlehorse.config import LHConfig
-from littlehorse.model import VariableType
+from littlehorse.model import VariableType, VariableMutationType
 from littlehorse.worker import LHTaskWorker, WorkerContext
 from littlehorse.workflow import WorkflowThread, Workflow
 
@@ -19,30 +18,31 @@ def get_config() -> LHConfig:
         config.load(config_path)
     return config
 
-
-def get_workflow() -> Workflow:
+def test_workflow() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
-        the_name = wf.add_variable("input-name", VariableType.STR)
-        wf.execute("greet", the_name)
+        user_id = wf.add_variable("user-id", VariableType.STR).required() 
+        item = wf.add_variable("item", VariableType.STR).required() 
+        quantity = wf.add_variable("quantity", VariableType.INT).required()
+
+        wf.execute("charge-credit-card", user_id, quantity.multiply(wf.execute("fetch-price"), item))
 
     return Workflow("example-basic", my_entrypoint)
 
+async def fetch_price(item: str, ctx: WorkerContext) -> str:
+    return 5
 
-async def greeting(name: str, ctx: WorkerContext) -> str:
-    msg = f"Hello {name}!. WfRun {ctx.wf_run_id.id}"
-    print(msg)
-    await asyncio.sleep(random.uniform(0.5, 1.5))
-    return msg
-
+async def charge_credit_card(user_id: str, total_price: float, ctx: WorkerContext) -> str:
+    print(f"Charging {user_id} ${total_price}")
 
 async def main() -> None:
     config = get_config()
-    wf = get_workflow()
+    wf = test_workflow()
 
-    littlehorse.create_task_def(greeting, "greet", config)
+    littlehorse.create_task_def(fetch_price, "fetch-price", config)
+    littlehorse.create_task_def(charge_credit_card, "charge-credit-card", config)
     littlehorse.create_workflow_spec(wf, config)
 
-    await littlehorse.start(LHTaskWorker(greeting, "greet", config))
+    await littlehorse.start(LHTaskWorker(fetch_price, "fetch-price", config), LHTaskWorker(charge_credit_card, "charge-credit-card", config))
 
 
 if __name__ == "__main__":
