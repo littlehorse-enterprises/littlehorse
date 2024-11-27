@@ -362,8 +362,9 @@ class WfRunVariable:
         Args:
             variable_name (str): The name of the variable.
             variable_type (VariableType): The variable type.
-            access_level (WfRunVariableAccessLevel): Sets the access level of a WfRunVariable.
+            parent (WorkflowThread): The parent WorkflowThread of this variable
             default_value (Any, optional): A default value. Defaults to None.
+            access_level (WfRunVariableAccessLevel): Sets the access level of a WfRunVariable. Defaults to PRIVATE_VAR.
 
         Returns:
             WfRunVariable: A handle to the created WfRunVariable.
