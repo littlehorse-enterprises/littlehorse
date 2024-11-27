@@ -1,8 +1,7 @@
 'use client'
 
-import { setTenant } from '@/setTenant'
 import { DefaultSession } from 'next-auth'
-import { FC, PropsWithChildren, createContext, useContext, useEffect } from 'react'
+import { FC, PropsWithChildren, createContext, useContext } from 'react'
 
 type ContextProps = {
   user: DefaultSession['user']
@@ -19,12 +18,6 @@ const Context = createContext<ContextProps>({
 type WhoAmIContextProps = ContextProps
 
 export const WhoAmIContext: FC<PropsWithChildren<WhoAmIContextProps>> = ({ children, user, tenants, tenantId }) => {
-  useEffect(() => {
-    if (!tenantId) {
-      setTenant(tenants[0])
-    }
-  })
-
   return <Context.Provider value={{ user, tenants, tenantId: tenantId || tenants[0] }}>{children}</Context.Provider>
 }
 
