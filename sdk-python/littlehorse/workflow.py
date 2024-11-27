@@ -384,7 +384,7 @@ class WfRunVariable:
         self._access_level = access_level
 
         if default_value is not None:
-            self.__set_default(default_value)
+            self._set_default(default_value)
 
     @property
     def json_path(self) -> Optional[str]:
@@ -503,11 +503,11 @@ class WfRunVariable:
         return self
     
     def with_default(self, default_value: Any) -> WfRunVariable:
-        self.__set_default(default_value)
+        self._set_default(default_value)
 
         return self
 
-    def __set_default(self, default_value: Any) -> None:
+    def _set_default(self, default_value: Any) -> None:
         self.default_value = to_variable_value(default_value)
         if (
             self.default_value.WhichOneof("value")
