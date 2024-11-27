@@ -40,7 +40,8 @@ class WfRunVariableImpl implements WfRunVariable {
         this.parent = parent;
 
         if (typeOrDefaultVal == null) {
-            throw new IllegalArgumentException("The 'typeOrDefaultVal' argument must be either a VariableType or a default value, but a null value was provided.");
+            throw new IllegalArgumentException(
+                    "The 'typeOrDefaultVal' argument must be either a VariableType or a default value, but a null value was provided.");
         }
         this.typeOrDefaultVal = typeOrDefaultVal;
 
