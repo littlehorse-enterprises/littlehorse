@@ -5,6 +5,7 @@ import { TagIcon } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import { FC, Fragment, useEffect, useState } from 'react'
 import { SearchResultProps } from '.'
+import LinkWithTenant from '../LinkWithTenant'
 
 export const WfSpecTable: FC<SearchResultProps> = ({ pages = [] }) => {
   const router = useRouter()
@@ -25,17 +26,16 @@ export const WfSpecTable: FC<SearchResultProps> = ({ pages = [] }) => {
       <div className="flex max-h-[600px] flex-col overflow-auto">
         {wfSpecs.map(wfSpec => (
           <Fragment key={wfSpec.name}>
-            <button
+            <LinkWithTenant
               className="flex items-center gap-3 rounded-md px-2 py-2 hover:bg-gray-100"
-              key={wfSpec.name}
-              onClick={() => router.push(`/wfSpec/${wfSpec.name}/${wfSpec.latestVersion}`)}
+              href={`/wfSpec/${wfSpec.name}/${wfSpec.latestVersion}`}
             >
               <p>{wfSpec.name}</p>
               <div className="flex items-center gap-2 rounded bg-blue-200 px-2 font-mono text-sm text-gray-500">
                 <TagIcon className="h-4 w-4 fill-none stroke-gray-500 stroke-1" />
                 Latest: v{wfSpec.latestVersion}
               </div>
-            </button>
+            </LinkWithTenant>
             <Separator />
           </Fragment>
         ))}
