@@ -2,7 +2,6 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import com.google.protobuf.Message;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Edge;
@@ -33,7 +32,6 @@ import io.littlehorse.sdk.common.proto.UserTaskNode;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableMutation;
-import io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
@@ -718,51 +716,7 @@ final class WorkflowThreadImpl implements WorkflowThread {
             mutation.setLhsJsonPath(lhs.jsonPath);
         }
 
-        mutation.setSourceVariable(assignVariable(rhs));
-
-        if (NodeOutputImpl.class.isAssignableFrom(rhs.getClass())) {
-            NodeOutputImpl no = (NodeOutputImpl) rhs;
-            if (!no.nodeName.equals(this.lastNodeName)) {
-                log.debug("Mutating {} {} {}", no.nodeName, this.lastNodeName, name);
-
-                throw new RuntimeException("Cannot use an old NodeOutput from node " + no.nodeName);
-            }
-
-            NodeOutputSource.Builder nodeOutputSource = NodeOutputSource.newBuilder();
-            if (no.jsonPath != null) {
-                nodeOutputSource.setJsonpath(no.jsonPath);
-            }
-
-            mutation.setNodeOutput(nodeOutputSource);
-        } else if (WfRunVariableImpl.class.isAssignableFrom(rhs.getClass())) {
-            WfRunVariableImpl var = (WfRunVariableImpl) rhs;
-            VariableAssignment.Builder varBuilder = VariableAssignment.newBuilder();
-
-            if (var.jsonPath != null) {
-                varBuilder.setJsonPath(var.jsonPath);
-            }
-            varBuilder.setVariableName(var.name);
-
-            mutation.setSourceVariable(varBuilder);
-        } else if (LHExpression.class.isAssignableFrom(rhs.getClass())) {
-            // TODO: Long term, we should deprecate all forms of mutation other than
-            // just using the `VariableAssignemnt source_variable` field.
-            //
-            // That would mean we just use `assignVariable()` for all cases.
-            mutation.setSourceVariable(assignVariable(rhs));
-        } else {
-            // At this point, we're going to treat it as a regular POJO, which means
-            // likely a json obj.
-
-            VariableValue rhsVal;
-            try {
-                rhsVal = LHLibUtil.objToVarVal(rhs);
-            } catch (LHSerdeError exn) {
-                throw new RuntimeException(exn);
-            }
-
-            mutation.setLiteralValue(rhsVal);
-        }
+        mutation.setRhsAssignment(assignVariable(rhs));
 
         this.variableMutations.add(mutation.build());
     }
