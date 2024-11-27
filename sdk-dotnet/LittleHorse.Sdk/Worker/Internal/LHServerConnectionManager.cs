@@ -219,20 +219,45 @@ namespace LittleHorse.Sdk.Worker.Internal
                 _logger?.LogError(ex, "Failed calculating task input variables");
                 taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
                 taskResult.Status = TaskStatus.TaskInputVarSubError;
+                taskResult.Error = new LHTaskError
+                {
+                    Message = ex.ToString(), Type = LHMappingHelper.GetFailureCodeFor(taskResult.Status)
+                };
             }
             catch (LHSerdeException ex)
             {
                 _logger?.LogError(ex, "Failed serializing Task Output");
                 taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
                 taskResult.Status = TaskStatus.TaskOutputSerializingError;
+                taskResult.Error = new LHTaskError
+                {
+                    Message = ex.ToString(), Type = LHMappingHelper.GetFailureCodeFor(taskResult.Status)
+                };
             }
             catch (TargetInvocationException ex)
             {
-                if (ex is LHTaskException)
+                if (ex.GetBaseException() is LHTaskException taskException)
                 {
                     _logger?.LogError(ex, "Task Method threw a Business Exception");
                     taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
                     taskResult.Status = TaskStatus.TaskException;
+                    taskResult.Exception = new Common.Proto.LHTaskException
+                    {
+                        Name = taskException.Name, 
+                        Message = taskException.Message, 
+                        Content = taskException.Content
+                    };
+                }
+                else
+                {
+                    _logger?.LogError(ex, "Task Method threw an exception");
+                    taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
+                    taskResult.Status = TaskStatus.TaskFailed;
+                    taskResult.Error = new LHTaskError
+                    {
+                        Message = ex.InnerException!.ToString(), 
+                        Type = LHMappingHelper.GetFailureCodeFor(taskResult.Status)
+                    };
                 }
             }
             catch (Exception ex)
@@ -240,6 +265,10 @@ namespace LittleHorse.Sdk.Worker.Internal
                 _logger?.LogError(ex, "Unexpected exception during task execution");
                 taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
                 taskResult.Status = TaskStatus.TaskFailed;
+                taskResult.Error = new LHTaskError
+                {
+                    Message = ex.ToString(), Type = LHMappingHelper.GetFailureCodeFor(taskResult.Status)
+                };
             }
 
             taskResult.Time = Timestamp.FromDateTime(DateTime.UtcNow);

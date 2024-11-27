@@ -4,18 +4,19 @@ namespace LittleHorse.Sdk.Exceptions;
 
 public class LHTaskException: Exception
 {
-    private String name;
-    private VariableValue content;
+    public string Name { get; }
 
+    public VariableValue Content { get; }
+    
     public LHTaskException(String name, String message): base(message) 
     {
-        this.name = name;
-        this.content = null;
+        Name = name;
+        Content = new VariableValue();
     }
 
     public LHTaskException(String name, String message, VariableValue content): base(message)
     {
-        this.name = name;
-        this.content = content;
+        Name = name;
+        Content = content;
     }
 }

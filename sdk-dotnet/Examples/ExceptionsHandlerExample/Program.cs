@@ -1,10 +1,15 @@
+﻿using ExceptionsHandler;
 using LittleHorse.Sdk;
 using LittleHorse.Sdk.Worker;
-using MaskedFieldsExample;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
-public class Program
+namespace ExceptionsHandlerExample;
+
+public abstract class Program
 {
     private static ServiceProvider? _serviceProvider;
+
     private static void SetupApplication()
     {
         _serviceProvider = new ServiceCollection()
@@ -19,7 +24,7 @@ public class Program
     private static LHConfig GetLHConfig(string[] args, ILoggerFactory loggerFactory)
     {
         var config = new LHConfig(loggerFactory);
-        
+
         string filePath = Path.Combine(Directory.GetCurrentDirectory(), ".config/littlehorse.config");
         if (File.Exists(filePath))
             config = new LHConfig(filePath, loggerFactory);
@@ -27,6 +32,20 @@ public class Program
         return config;
     }
 
+    private static List<LHTaskWorker<MyWorker>> GetTaskWorkers(LHConfig config)
+    {
+        MyWorker executableExceptionHandling = new MyWorker();
+        var workers = new List<LHTaskWorker<MyWorker>>
+        {
+            new(executableExceptionHandling, "fail", config),
+            new(executableExceptionHandling, "fail-new-process", config),
+            new(executableExceptionHandling, "technical-failure", config),
+            new(executableExceptionHandling, "my-task", config)
+        };
+        
+        return workers;
+    }
+    
     static void Main(string[] args)
     {
         SetupApplication();
@@ -34,23 +53,18 @@ public class Program
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var config = GetLHConfig(args, loggerFactory);
+            var workers = GetTaskWorkers(config);
+            foreach (var worker in workers)
+            {
+                worker.RegisterTaskDef();
+            }
             
-            MyWorker executableCreateGreet = new MyWorker();
-            var taskWorkerCreate = new LHTaskWorker<MyWorker>(executableCreateGreet, "create-greet", config);
-            MyWorker executableUpdateGreet = new MyWorker();
-            var taskWorkerUpdate = new LHTaskWorker<MyWorker>(executableUpdateGreet, "update-greet", config);
-            MyWorker executableDeleteGreet = new MyWorker();
-            var taskWorkerDelete = new LHTaskWorker<MyWorker>(executableDeleteGreet, "delete-greet", config);
+            Thread.Sleep(300);
 
-            taskWorkerCreate.RegisterTaskDef();
-            taskWorkerUpdate.RegisterTaskDef();
-            taskWorkerDelete.RegisterTaskDef();
-
-            Thread.Sleep(1000);
-
-            taskWorkerCreate.Start();
-            taskWorkerUpdate.Start();
-            taskWorkerDelete.Start();
+            foreach (var worker in workers)
+            {
+                worker.Start();
+            }
         }
     }
 }
