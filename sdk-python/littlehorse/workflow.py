@@ -506,7 +506,7 @@ class WfRunVariable:
 
         return self
 
-    def __set_default(self, default_value: Any):
+    def __set_default(self, default_value: Any) -> None:
         self.default_value = to_variable_value(default_value)
         if (
             self.default_value.WhichOneof("value")
@@ -569,7 +569,7 @@ class WfRunVariable:
     def is_not_in(self, rhs: Any) -> WorkflowCondition:
         return self.parent.condition(self, Comparator.NOT_IN, rhs)
     
-    def assign_to(self, rhs: Any):
+    def assign_to(self, rhs: Any) -> None:
         self.parent.mutate(self, VariableMutationType.ASSIGN, rhs)
 
     def add(self, other: Any) -> LHExpression:
@@ -1258,22 +1258,22 @@ class WorkflowThread:
         node_name = self.add_node(readable_name, task_node)
         return NodeOutput(node_name)
 
-    def multiply(lhs: any, rhs: any) -> LHExpression:
+    def multiply(lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.MULTIPLY, rhs)
 
-    def add(lhs: any, rhs: any) -> LHExpression:
+    def add(lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.ADD, rhs)
     
-    def divide(lhs: any, rhs: any) -> LHExpression:
+    def divide(lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.DIVIDE, rhs)
     
-    def subtract(lhs: any, rhs: any) -> LHExpression:
+    def subtract(lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.SUBTRACT, rhs)
     
-    def extend(lhs: any, rhs: any) -> LHExpression:
+    def extend(lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.EXTEND, rhs)
     
-    def remove_if_present(lhs: any, rhs: any) -> LHExpression:
+    def remove_if_present(lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.REMOVE_IF_PRESENT, rhs)
     
     def remove_index(self, index: Optional[Union[int, Any]] = None) -> LHExpression:
@@ -1281,7 +1281,7 @@ class WorkflowThread:
             raise ValueError("Expected 'index' to be set, but it was None.")
         return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
     
-    def remove_key(lhs: any, rhs: any) -> LHExpression:
+    def remove_key(lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.REMOVE_KEY, rhs)
     
     def declare_bool(self, name: str) -> WfRunVariable:
