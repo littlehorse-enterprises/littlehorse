@@ -134,9 +134,10 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
     if isinstance(value, LHExpression):
         expression: LHExpression = value
         return VariableAssignment(
-            expression=VariableAssignment.Expression(lhs=to_variable_assignment(expression.getLhs()),
-                     operation=expression.getOperation(),
-                     rhs=to_variable_assignment(expression.getRhs()))   
+            expression=VariableAssignment.Expression(
+                lhs=to_variable_assignment(expression.lhs()),
+                operation=expression.operation(),
+                rhs=to_variable_assignment(expression.rhs()))   
         )
 
     return VariableAssignment(
@@ -176,13 +177,13 @@ class LHExpression:
     def remove_key(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.REMOVE_KEY, other)
     
-    def getLhs(self) -> Any:
+    def lhs(self) -> Any:
         return self._lhs
     
-    def getRhs(self) -> Any:
+    def rhs(self) -> Any:
         return self._rhs
     
-    def getOperation(self) -> Any:
+    def operation(self) -> Any:
         return self._operation
 
 class WorkflowCondition:
@@ -1274,22 +1275,22 @@ class WorkflowThread:
         node_name = self.add_node(readable_name, task_node)
         return NodeOutput(node_name)
 
-    def multiply(lhs: Any, rhs: Any) -> LHExpression:
+    def multiply(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.MULTIPLY, rhs)
 
-    def add(lhs: Any, rhs: Any) -> LHExpression:
+    def add(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.ADD, rhs)
     
-    def divide(lhs: Any, rhs: Any) -> LHExpression:
+    def divide(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.DIVIDE, rhs)
     
-    def subtract(lhs: Any, rhs: Any) -> LHExpression:
+    def subtract(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.SUBTRACT, rhs)
     
-    def extend(lhs: Any, rhs: Any) -> LHExpression:
+    def extend(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.EXTEND, rhs)
     
-    def remove_if_present(lhs: Any, rhs: Any) -> LHExpression:
+    def remove_if_present(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.REMOVE_IF_PRESENT, rhs)
     
     def remove_index(self, index: Optional[Union[int, Any]] = None) -> LHExpression:
@@ -1297,7 +1298,7 @@ class WorkflowThread:
             raise ValueError("Expected 'index' to be set, but it was None.")
         return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
     
-    def remove_key(lhs: Any, rhs: Any) -> LHExpression:
+    def remove_key(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.REMOVE_KEY, rhs)
     
     def declare_bool(self, name: str) -> WfRunVariable:
