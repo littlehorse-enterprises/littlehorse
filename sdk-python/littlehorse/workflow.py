@@ -149,7 +149,6 @@ class LHExpression:
         self._lhs = lhs
         self._operation = operation
         self._rhs = rhs
-        pass
 
     def add(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.ADD, other)
