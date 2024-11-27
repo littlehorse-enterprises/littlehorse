@@ -134,7 +134,7 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
     if isinstance(value, LHExpression):
         expression: LHExpression = value
         return VariableAssignment(
-            expression=LHExpression(lhs=to_variable_assignment(expression.getLhs()),
+            expression=VariableAssignment.Expression(lhs=to_variable_assignment(expression.getLhs()),
                      operation=expression.getOperation(),
                      rhs=to_variable_assignment(expression.getRhs()))   
         )
