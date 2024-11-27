@@ -515,7 +515,7 @@ class WfRunVariable:
             != str(VariableType.Name(self.type)).lower()
         ):
             raise TypeError(
-                f"Default value type does not match LH variable type {VariableType.Name(self.default_value.variable_type)}"
+                f"Default value type does not match LH variable type {VariableType.Name(self.type)}"
             )
 
     def masked(self) -> "WfRunVariable":
@@ -1632,22 +1632,9 @@ class WorkflowThread:
             use the output of a Node Run to mutate variables).
         """
         self._check_if_active()
-        last_node = self._last_node()
-
         node_output: Optional[VariableMutation.NodeOutputSource] = None
-        rhs_assignment: Optional[VariableAssignment] = None
         literal_value: Optional[VariableValue] = None
-
-        if isinstance(right_hand, NodeOutput):
-            if last_node.name != right_hand.node_name:
-                raise ReferenceError("NodeOutput does not match with last node")
-            node_output = VariableMutation.NodeOutputSource(
-                jsonpath=right_hand.json_path
-            )
-        elif isinstance(right_hand, WfRunVariable):
-            rhs_assignment = to_variable_assignment(right_hand)
-        else:
-            literal_value = to_variable_value(right_hand)
+        rhs_assignment = to_variable_assignment(right_hand)
 
         mutation = VariableMutation(
             lhs_name=left_hand.name,
