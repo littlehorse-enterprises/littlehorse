@@ -1,6 +1,7 @@
 package e2e;
 
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -25,7 +26,8 @@ public class BasicTest {
     @LHWorkflow("test-basic")
     public Workflow getBasic() {
         return new WorkflowImpl("test-basic", thread -> {
-            thread.execute("ag-one");
+            WfRunVariable asdf = thread.declareBool("asdf");
+            asdf.assignTo(thread.execute("ag-one"));
         });
     }
 

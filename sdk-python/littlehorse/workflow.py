@@ -1461,7 +1461,7 @@ class WorkflowThread:
         last_node = self._last_node()
 
         node_output: Optional[VariableMutation.NodeOutputSource] = None
-        source_variable: Optional[VariableAssignment] = None
+        rhs_assignment: Optional[VariableAssignment] = None
         literal_value: Optional[VariableValue] = None
 
         if isinstance(right_hand, NodeOutput):
@@ -1471,7 +1471,7 @@ class WorkflowThread:
                 jsonpath=right_hand.json_path
             )
         elif isinstance(right_hand, WfRunVariable):
-            source_variable = to_variable_assignment(right_hand)
+            rhs_assignment = to_variable_assignment(right_hand)
         else:
             literal_value = to_variable_value(right_hand)
 
@@ -1480,7 +1480,7 @@ class WorkflowThread:
             lhs_json_path=left_hand.json_path,
             operation=operation,
             node_output=node_output,
-            source_variable=source_variable,
+            rhs_assignment=rhs_assignment,
             literal_value=literal_value,
         )
 

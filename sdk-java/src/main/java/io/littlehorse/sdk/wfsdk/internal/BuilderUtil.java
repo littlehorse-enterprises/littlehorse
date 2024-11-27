@@ -27,6 +27,10 @@ class BuilderUtil {
             builder.setNodeOutput(NodeOutputReference.newBuilder()
                     .setNodeName(nodeReference.nodeName)
                     .build());
+
+            if (nodeReference.jsonPath != null) {
+                builder.setJsonPath(nodeReference.jsonPath);
+            }
         } else if (variable.getClass().equals(LHFormatStringImpl.class)) {
             LHFormatStringImpl format = (LHFormatStringImpl) variable;
             builder.setFormatString(VariableAssignment.FormatString.newBuilder()
