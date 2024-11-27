@@ -71,7 +71,7 @@ public class LHMappingHelperTest
     }
     
     [Fact]
-    public void LHHelper_WithSystemArrayObjectVariableType_ShouldReturnLHVariableJsonArrType()
+    public void LHHelper_WithSystemVoidVariableType_ShouldReturnLHVariableJsonObjType()
     {
         var type = typeof(void);
         
@@ -81,7 +81,7 @@ public class LHMappingHelperTest
     }
     
     [Fact]
-    public void LHHelper_WithSystemVoidVariableType_ShouldReturnLHVariableJsonObjType()
+    public void LHHelper_WithSystemArrayObjectVariableType_ShouldReturnLHVariableJsonArrType()
     {
         var test_allowed_types = new List<Type>() { typeof(List<object>), typeof(List<string>), typeof(List<int>)};
         

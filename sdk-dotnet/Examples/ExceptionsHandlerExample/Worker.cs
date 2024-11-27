@@ -42,7 +42,7 @@ namespace ExceptionsHandler
         public void FailForTechnicalReason()
         {
             String message = null!;
-            int result = message!.Length;
+            int result = message.Length;
             Console.WriteLine(result);
         }
         
