@@ -130,6 +130,14 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
             json_path=json_path,
             variable_name=variable_name,
         )
+    
+    if isinstance(value, LHExpression):
+        expression: LHExpression = value
+        return VariableAssignment(
+            expression=LHExpression(lhs=to_variable_assignment(expression.getLhs()),
+                     operation=expression.getOperation(),
+                     rhs=to_variable_assignment(expression.getRhs()))   
+        )
 
     return VariableAssignment(
         literal_value=to_variable_value(value),
@@ -169,6 +177,14 @@ class LHExpression:
     def remove_key(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.REMOVE_KEY, other)
     
+    def getLhs(self) -> Any:
+        return self._lhs
+    
+    def getRhs(self) -> Any:
+        return self._rhs
+    
+    def getOperation(self) -> Any:
+        return self._operation
 
 class WorkflowCondition:
     def __init__(self, left_hand: Any, comparator: Comparator, right_hand: Any) -> None:
@@ -351,7 +367,6 @@ class WfRunVariable:
         self,
         variable_name: str,
         variable_type: VariableType,
-        parent: WorkflowThread,
         default_value: Any = None,
         access_level: Optional[
             Union[WfRunVariableAccessLevel, str]
@@ -362,7 +377,6 @@ class WfRunVariable:
         Args:
             variable_name (str): The name of the variable.
             variable_type (VariableType): The variable type.
-            parent (WorkflowThread): The parent WorkflowThread of this variable
             default_value (Any, optional): A default value. Defaults to None.
             access_level (WfRunVariableAccessLevel): Sets the access level of a WfRunVariable. Defaults to PRIVATE_VAR.
 
@@ -373,8 +387,7 @@ class WfRunVariable:
             TypeError: If variable_type and type(default_value) are not compatible.
         """
         self.name = variable_name
-        self.type = variable_type
-        self.parent = parent
+        self.type = variable_type 
         self.default_value: Optional[VariableValue] = None
         self._json_path: Optional[str] = None
         self._required = False
@@ -541,34 +554,34 @@ class WfRunVariable:
         )
 
     def is_equal_to(self, rhs: Any) -> WorkflowCondition:
-        return self.parent.condition(self, Comparator.EQUALS, rhs)
+        return WorkflowCondition(self, Comparator.EQUALS, rhs)
     
     def is_not_equal_to(self, rhs: Any) -> WorkflowCondition:
-        return self.parent.condition(self, Comparator.NOT_EQUALS, rhs)
+        return WorkflowCondition(self, Comparator.NOT_EQUALS, rhs)
     
     def is_greater_than(self, rhs: Any) -> WorkflowCondition:
-        return self.parent.condition(self, Comparator.GREATER_THAN, rhs)
+        return WorkflowCondition(self, Comparator.GREATER_THAN, rhs)
     
     def is_greater_than_eq(self, rhs: Any) -> WorkflowCondition:
-        return self.parent.condition(self, Comparator.GREATER_THAN_EQ, rhs)
+        return WorkflowCondition(self, Comparator.GREATER_THAN_EQ, rhs)
     
     def is_less_than_eq(self, rhs: Any) -> WorkflowCondition:
-        return self.parent.condition(self, Comparator.LESS_THAN_EQ, rhs)
+        return WorkflowCondition(self, Comparator.LESS_THAN_EQ, rhs)
 
     def is_less_than(self, rhs: Any) -> WorkflowCondition:
-        return self.parent.condition(self, Comparator.LESS_THAN, rhs)
+        return WorkflowCondition(self, Comparator.LESS_THAN, rhs)
     
     def does_contain(self, rhs: Any) -> WorkflowCondition:
-        return self.parent.condition(self, Comparator.IN, rhs)
+        return WorkflowCondition(self, Comparator.IN, rhs)
 
     def does_not_contain(self, rhs: Any) -> WorkflowCondition:
-        return self.parent.condition(self, Comparator.NOT_IN, rhs)
+        return WorkflowCondition(self, Comparator.NOT_IN, rhs)
     
     def is_in(self, rhs: Any) -> WorkflowCondition:
-        return self.parent.condition(self, Comparator.IN, rhs)
+        return WorkflowCondition(self, Comparator.IN, rhs)
 
     def is_not_in(self, rhs: Any) -> WorkflowCondition:
-        return self.parent.condition(self, Comparator.NOT_IN, rhs)
+        return WorkflowCondition(self, Comparator.NOT_IN, rhs)
     
     def assign_to(self, rhs: Any) -> None:
         self.parent.mutate(self, VariableMutationType.ASSIGN, rhs)
