@@ -161,11 +161,10 @@ class LHExpression:
     def remove_if_present(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.REMOVE_IF_PRESENT, other)
     
-    def remove_index(self, other: int) -> LHExpression:
-        return LHExpression(self, VariableMutationType.REMOVE_INDEX, other)
-
-    def remove_index(self, other: Any) -> LHExpression:
-        return LHExpression(self, VariableMutationType.REMOVE_INDEX, other)
+    def remove_index(self, index: Optional[Union[int, Any]] = None) -> LHExpression:
+        if index is None:
+            raise ValueError("Expected 'index' to be set, but it was None.")
+        return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
     
     def remove_key(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.REMOVE_KEY, other)
@@ -338,11 +337,10 @@ class NodeOutput(LHExpression):
     def remove_if_present(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.REMOVE_IF_PRESENT, other)
     
-    def remove_index(self, other: int) -> LHExpression:
-        return LHExpression(self, VariableMutationType.REMOVE_INDEX, other)
-
-    def remove_index(self, other: Any) -> LHExpression:
-        return LHExpression(self, VariableMutationType.REMOVE_INDEX, other)
+    def remove_index(self, index: Optional[Union[int, Any]] = None) -> LHExpression:
+        if index is None:
+            raise ValueError("Expected 'index' to be set, but it was None.")
+        return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
     
     def remove_key(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.REMOVE_KEY, other)
@@ -592,10 +590,9 @@ class WfRunVariable:
     def remove_if_present(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.REMOVE_IF_PRESENT, other)
     
-    def remove_index(self, index: int) -> LHExpression:
-        return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
-    
-    def remove_index(self, index: LHExpression) -> LHExpression:
+    def remove_index(self, index: Optional[Union[int, Any]] = None) -> LHExpression:
+        if index is None:
+            raise ValueError("Expected 'index' to be set, but it was None.")
         return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
     
     def remove_key(self, key: Any) -> LHExpression:
@@ -1279,8 +1276,10 @@ class WorkflowThread:
     def remove_if_present(lhs: any, rhs: any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.REMOVE_IF_PRESENT, rhs)
     
-    def remove_index(lhs: any, rhs: any) -> LHExpression:
-        return LHExpression(lhs, VariableMutationType.REMOVE_INDEX, rhs)
+    def remove_index(self, index: Optional[Union[int, Any]] = None) -> LHExpression:
+        if index is None:
+            raise ValueError("Expected 'index' to be set, but it was None.")
+        return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
     
     def remove_key(lhs: any, rhs: any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.REMOVE_KEY, rhs)
