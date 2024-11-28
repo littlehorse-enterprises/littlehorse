@@ -71,6 +71,16 @@ public class LHMappingHelperTest
     }
     
     [Fact]
+    public void LHHelper_WithSystemVoidVariableType_ShouldReturnLHVariableJsonObjType()
+    {
+        var type = typeof(void);
+        
+        var result = LHMappingHelper.MapDotNetTypeToLHVariableType(type);
+        
+        Assert.True(result == VariableType.JsonObj);
+    }
+    
+    [Fact]
     public void LHHelper_WithSystemArrayObjectVariableType_ShouldReturnLHVariableJsonArrType()
     {
         var test_allowed_types = new List<Type>() { typeof(List<object>), typeof(List<string>), typeof(List<int>)};
@@ -145,12 +155,11 @@ public class LHMappingHelperTest
     }
     
     [Fact]
-    public void LHHelper_WithNullLHVariableValue_ShouldThrowException()
+    public void LHHelper_WithNullLHVariableValue_ShouldReturnNewLHVariableValue()
     {
-        var exception = Assert.Throws<LHInputVarSubstitutionException>
-            (() => LHMappingHelper.MapObjectToVariableValue(null));
+        var result = LHMappingHelper.MapObjectToVariableValue(null);
         
-        Assert.Equal($"There is no object to be mapped.", exception.Message);
+        Assert.NotNull(result);
     }
 
     [Fact]

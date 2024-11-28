@@ -1,6 +1,6 @@
 using LittleHorse.Sdk.Worker;
 
-namespace Examples.BasicExample
+namespace MaskedFieldsExample
 {
     public class MyWorker
     {
