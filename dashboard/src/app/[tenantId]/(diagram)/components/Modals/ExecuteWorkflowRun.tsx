@@ -68,7 +68,7 @@ export const ExecuteWorkflowRun: FC<Modal> = ({ data }) => {
       if (!wfRun.id) return
       toast.success('Workflow has been executed')
       setShowModal(false)
-      router.push(`/wfRun/${wfRun.id.id}`)
+      router.push(`/${tenantId}/wfRun/${wfRun.id.id}`)
     } catch (error: any) {
       toast.error(error.message?.split(':')?.[1])
     }
