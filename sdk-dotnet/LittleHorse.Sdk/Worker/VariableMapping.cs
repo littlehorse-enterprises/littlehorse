@@ -32,7 +32,7 @@ namespace LittleHorse.Sdk.Worker
 
         public object? Assign(ScheduledTask taskInstance, LHWorkerContext workerContext)
         {
-            if (_type.GetType() == typeof(LHWorkerContext))
+            if (_type == typeof(LHWorkerContext))
             {
                 return workerContext;
             }
@@ -45,7 +45,7 @@ namespace LittleHorse.Sdk.Worker
             switch (val.ValueCase)
             {
                 case VariableValue.ValueOneofCase.Int:
-                    if (LHMappingHelper.isInt64Type(_type))
+                    if (LHMappingHelper.IsInt64Type(_type))
                     {
                         return val.Int;
                     }
