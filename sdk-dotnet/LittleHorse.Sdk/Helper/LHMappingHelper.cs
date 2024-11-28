@@ -6,7 +6,6 @@ using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Utils;
 using LittleHorse.Sdk.Worker;
-using Microsoft.AspNetCore.Identity;
 using TaskStatus = LittleHorse.Common.Proto.TaskStatus;
 using Type = System.Type;
 

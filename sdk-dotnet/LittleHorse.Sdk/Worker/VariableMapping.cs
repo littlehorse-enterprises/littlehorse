@@ -32,7 +32,7 @@ namespace LittleHorse.Sdk.Worker
 
         public object? Assign(ScheduledTask taskInstance, LHWorkerContext workerContext)
         {
-            if (_type.GetType() == typeof(LHWorkerContext))
+            if (_type == typeof(LHWorkerContext))
             {
                 return workerContext;
             }
