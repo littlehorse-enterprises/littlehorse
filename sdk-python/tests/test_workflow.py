@@ -1079,6 +1079,76 @@ class TestThreadBuilder(unittest.TestCase):
             ),
         )
 
+    def test_mutations_should_use_variable_assignments(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            my_var = thread.add_variable("my-var", VariableType.STR)
+            my_var.assign_to("some-value")
+
+        wf_spec = Workflow("obiwan", my_entrypoint).compile()
+        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        node = entrypoint.nodes["0-entrypoint-ENTRYPOINT"]
+
+        edge = node.outgoing_edges[0]
+
+        self.assertEqual(edge.variable_mutations[0].rhs_assignment.literal_value.str, "some-value")
+
+    def test_node_output_mutations_should_also_use_variable_assignments(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            my_var = thread.add_variable("my-var", VariableType.STR)
+            my_var.assign_to(thread.execute("use-the-force"))
+
+        wf_spec = Workflow("obiwan", my_entrypoint).compile()
+        entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
+        node = entrypoint.nodes["1-use-the-force-TASK"]
+
+        edge = node.outgoing_edges[0]
+
+        self.assertEqual(edge.variable_mutations[0].rhs_assignment.node_output.node_name, "1-use-the-force-TASK")
+
+    def test_node_output_mutations_should_carry_json_path(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            my_var = thread.add_variable("my-var", VariableType.STR)
+            my_var.assign_to(thread.execute("use-the-force").with_json_path("$.hello.there"))
+
+        wfSpec = Workflow("obiwan", my_entrypoint).compile()
+        entrypoint = wfSpec.thread_specs[wfSpec.entrypoint_thread_name]
+        node = entrypoint.nodes["1-use-the-force-TASK"]
+
+        edge = node.outgoing_edges[0]
+
+        self.assertEqual(edge.variable_mutations[0].rhs_assignment.node_output.node_name, "1-use-the-force-TASK")
+
+        self.assertEqual(edge.variable_mutations[0].rhs_assignment.json_path, "$.hello.there")
+
+    def test_assigning_variables_to_other_variables_should_use_variable_assignment(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            my_var = thread.add_variable("my-var", VariableType.STR)
+            other_var = thread.add_variable("other-var", VariableType.STR)
+            my_var.assign_to(other_var)
+
+        wfSpec = Workflow("obiwan", my_entrypoint).compile()
+        entrypoint = wfSpec.thread_specs[wfSpec.entrypoint_thread_name]
+        node = entrypoint.nodes["0-entrypoint-ENTRYPOINT"]
+
+        edge = node.outgoing_edges[0]
+        self.assertEqual(edge.variable_mutations[0].rhs_assignment.variable_name, "other-var")
+
+    def test_assigning_variables_to_other_variables_should_carry_json_path(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            my_var = thread.add_variable("my-var", VariableType.STR)
+            other_var = thread.add_variable("other-var", VariableType.JSON_OBJ)
+            my_var.assign_to(other_var.with_json_path("$.hello.there"))
+
+        wfSpec = Workflow("obiwan", my_entrypoint).compile()
+        entrypoint = wfSpec.thread_specs[wfSpec.entrypoint_thread_name]
+        node = entrypoint.nodes["0-entrypoint-ENTRYPOINT"]
+
+        edge = node.outgoing_edges[0]
+        self.assertEqual(edge.variable_mutations[0].rhs_assignment.variable_name, "other-var")
+
+        self.assertEqual(edge.variable_mutations[0].rhs_assignment.json_path, "$.hello.there")
+        
+
 
 class TestWorkflow(unittest.TestCase):
     def test_entrypoint_is_a_function(self):
