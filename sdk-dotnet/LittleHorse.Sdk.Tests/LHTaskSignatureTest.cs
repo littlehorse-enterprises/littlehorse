@@ -9,6 +9,7 @@ using Xunit;
 public class LHTaskSignatureTest
 {
     const string TASK_DEF_NAME_ADD = "add-task-worker";
+    const string TASK_DEF_NAME_INFORM = "inform-task-worker";
     const string TASK_DEF_NAME_UPDATE = "update-task-worker";
     const string TASK_DEF_NAME_DELETE = "delete-task-worker";
     const string TASK_DEF_NAME_GET = "get-task-worker";
@@ -60,6 +61,32 @@ public class LHTaskSignatureTest
         Assert.Equal(expectedOutput.ValueDef.Name, taskSignature.TaskDefOutputSchema!.ValueDef.Name);
         Assert.Equal(expectedOutput.ValueDef.Type, taskSignature.TaskDefOutputSchema.ValueDef.Type);
         Assert.Equal(expectedOutput.ValueDef.MaskedValue, taskSignature.TaskDefOutputSchema.ValueDef.MaskedValue);
+        Assert.False(taskSignature.HasWorkerContextAtEnd);
+    }
+    
+    [Fact]
+    public void TaskSignature_WithoutReturnTypeInLHTaskMethod_ShouldBuildLHSignatureWithoutSchemaOutput()
+    {
+        int number_of_method_params = 1;
+        
+        var taskSignature = new LHTaskSignature<TestWorker>(TASK_DEF_NAME_INFORM, new TestWorker());
+        
+        var expectedLHMethodParam = new LHMethodParam
+        {
+            Type = VariableType.Str,
+            Name = "name",
+            IsMasked = TRUE_IS_MASKET
+        };
+
+        Assert.True(taskSignature.LhMethodParams.Count == number_of_method_params);
+        foreach (var actualLHMethodParam in taskSignature.LhMethodParams)
+        {
+            Assert.Equal(expectedLHMethodParam.Name, actualLHMethodParam.Name);
+            Assert.Equal(expectedLHMethodParam.Type, actualLHMethodParam.Type);
+            Assert.Equal(expectedLHMethodParam.IsMasked, actualLHMethodParam.IsMasked);
+        }
+        
+        Assert.Null(taskSignature.TaskDefOutputSchema);
         Assert.False(taskSignature.HasWorkerContextAtEnd);
     }
     
@@ -200,6 +227,12 @@ public class LHTaskSignatureTest
         public string Add([LHType(masked: TRUE_IS_MASKET)] string name)
         {
             return $"Output value: {name}";
+        }
+        
+        [LHTaskMethod(TASK_DEF_NAME_INFORM)]
+        public void Inform([LHType(masked: TRUE_IS_MASKET)] string name)
+        {
+            var test_variable = "test_variable" + name;
         }
         
         [LHTaskMethod(TASK_DEF_NAME_UPDATE)]
