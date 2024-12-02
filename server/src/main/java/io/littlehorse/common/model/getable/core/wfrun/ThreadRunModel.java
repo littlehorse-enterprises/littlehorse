@@ -761,6 +761,23 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return assignVariable(assn, new HashMap<>());
     }
 
+    private VariableFetcher inThreadVariableFetcher() {
+        return new VariableFetcher() {
+
+            @Override
+            public VariableValueModel fetchVariable(String variableName) throws LHVarSubError {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'fetchVariable'");
+            }
+
+            @Override
+            public VariableValueModel fetchNodeOutput(String nodeName) throws LHVarSubError {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'fetchNodeOutput'");
+            }
+        };
+    }
+
     // private VariableValueModel assignVariable(VariableAssignmentModel assn, Map<String, VariableValueModel> txnCache)
     //         throws LHVarSubError {
     //     VariableValueModel val = null;
