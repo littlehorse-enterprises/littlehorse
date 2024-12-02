@@ -208,11 +208,11 @@ public interface WfRunVariable extends LHExpression {
     WorkflowCondition isNotIn(Serializable rhs);
 
     /**
-     * Mutates the value of this WfRunVariable and sets it to the the value provided on the RHS.
+     * Mutates the value of this WfRunVariable and sets it to the value provided on the RHS.
      *
      * If the LHS of this WfRunVariable is set, then the sub-element of this WfRunVariable
      * provided by the Json Path is mutated.
      * @param rhs is the value to set this WfRunVariable to.
      */
-    void assignTo(Serializable rhs);
+    void assign(Serializable rhs);
 }

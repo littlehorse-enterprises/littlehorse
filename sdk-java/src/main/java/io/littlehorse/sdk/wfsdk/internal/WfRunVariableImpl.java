@@ -175,7 +175,7 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     @Override
-    public void assignTo(Serializable rhs) {
+    public void assign(Serializable rhs) {
         parent.mutate(this, VariableMutationType.ASSIGN, rhs);
     }
 
