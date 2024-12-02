@@ -1082,7 +1082,7 @@ class TestThreadBuilder(unittest.TestCase):
     def test_mutations_should_use_variable_assignments(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
             my_var = thread.add_variable("my-var", VariableType.STR)
-            my_var.assign_to("some-value")
+            my_var.assign("some-value")
 
         wf_spec = Workflow("obiwan", my_entrypoint).compile()
         entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
@@ -1095,7 +1095,7 @@ class TestThreadBuilder(unittest.TestCase):
     def test_node_output_mutations_should_also_use_variable_assignments(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
             my_var = thread.add_variable("my-var", VariableType.STR)
-            my_var.assign_to(thread.execute("use-the-force"))
+            my_var.assign(thread.execute("use-the-force"))
 
         wf_spec = Workflow("obiwan", my_entrypoint).compile()
         entrypoint = wf_spec.thread_specs[wf_spec.entrypoint_thread_name]
@@ -1108,7 +1108,7 @@ class TestThreadBuilder(unittest.TestCase):
     def test_node_output_mutations_should_carry_json_path(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
             my_var = thread.add_variable("my-var", VariableType.STR)
-            my_var.assign_to(thread.execute("use-the-force").with_json_path("$.hello.there"))
+            my_var.assign(thread.execute("use-the-force").with_json_path("$.hello.there"))
 
         wfSpec = Workflow("obiwan", my_entrypoint).compile()
         entrypoint = wfSpec.thread_specs[wfSpec.entrypoint_thread_name]
@@ -1124,7 +1124,7 @@ class TestThreadBuilder(unittest.TestCase):
         def my_entrypoint(thread: WorkflowThread) -> None:
             my_var = thread.add_variable("my-var", VariableType.STR)
             other_var = thread.add_variable("other-var", VariableType.STR)
-            my_var.assign_to(other_var)
+            my_var.assign(other_var)
 
         wfSpec = Workflow("obiwan", my_entrypoint).compile()
         entrypoint = wfSpec.thread_specs[wfSpec.entrypoint_thread_name]
@@ -1137,7 +1137,7 @@ class TestThreadBuilder(unittest.TestCase):
         def my_entrypoint(thread: WorkflowThread) -> None:
             my_var = thread.add_variable("my-var", VariableType.STR)
             other_var = thread.add_variable("other-var", VariableType.JSON_OBJ)
-            my_var.assign_to(other_var.with_json_path("$.hello.there"))
+            my_var.assign(other_var.with_json_path("$.hello.there"))
 
         wfSpec = Workflow("obiwan", my_entrypoint).compile()
         entrypoint = wfSpec.thread_specs[wfSpec.entrypoint_thread_name]

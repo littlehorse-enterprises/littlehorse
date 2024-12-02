@@ -586,7 +586,7 @@ class WfRunVariable:
     def is_not_in(self, rhs: Any) -> WorkflowCondition:
         return self.parent.condition(self, Comparator.NOT_IN, rhs)
     
-    def assign_to(self, rhs: Any) -> None:
+    def assign(self, rhs: Any) -> None:
         self.parent.mutate(self, VariableMutationType.ASSIGN, rhs)
 
     def add(self, other: Any) -> LHExpression:
