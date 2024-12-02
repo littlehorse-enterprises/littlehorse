@@ -201,7 +201,7 @@ namespace LittleHorse.Sdk.Helper
             };
         }
 
-        public static bool IsInt64Type(Type type)
+        internal static bool IsInt64Type(Type type)
         {
             return type.IsAssignableFrom(typeof(Int64))
                    || type.IsAssignableFrom(typeof(UInt64))
@@ -209,7 +209,7 @@ namespace LittleHorse.Sdk.Helper
                    || type.IsAssignableFrom(typeof(ulong));
         }
         
-        public static LHErrorType GetFailureCodeFor(TaskStatus status)
+        internal static LHErrorType GetFailureCodeFor(TaskStatus status)
         {
             switch (status) {
                 case TaskStatus.TaskFailed:
