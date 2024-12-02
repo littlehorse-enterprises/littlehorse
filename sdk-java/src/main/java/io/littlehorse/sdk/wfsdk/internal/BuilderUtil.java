@@ -20,6 +20,9 @@ class BuilderUtil {
                 builder.setJsonPath(wrv.jsonPath);
             }
             builder.setVariableName(wrv.name);
+            if (wrv.getTypeToCastTo() != null) {
+                builder.setTypeToCastTo(wrv.getTypeToCastTo());
+            }
         } else if (NodeOutputImpl.class.isAssignableFrom(variable.getClass())) {
             // We can use the new `VariableAssignment` feature: NodeOutputReference
             NodeOutputImpl nodeReference = (NodeOutputImpl) variable;
@@ -43,6 +46,10 @@ class BuilderUtil {
                     .setLhs(assignVariable(expr.getLhs()))
                     .setOperation(expr.getOperation())
                     .setRhs(assignVariable(expr.getRhs())));
+
+            if (expr.getTypeToCastTo() != null) {
+                builder.getExpressionBuilder().setTypeToCastTo(expr.getTypeToCastTo());
+            }
         } else {
             try {
                 VariableValue defVal = LHLibUtil.objToVarVal(variable);

@@ -231,6 +231,20 @@ public class ExpressionTest {
                 .start();
     }
 
+    @Test
+    void testDoubleAndIntMultiplicationAsInputToTask() {
+        verifier.prepareRun(expressionWf, Arg.of("should-test-double-multiplication", true))
+                .waitForStatus(LHStatus.COMPLETED)
+                .start();
+    }
+
+    @Test
+    void expressionThatEvaluatesToDoubleShouldNotBeCastToINt() {
+        verifier.prepareRun(expressionWf, Arg.of("should-test-int-and-double-multiplication", true))
+                .waitForStatus(LHStatus.ERROR)
+                .start();
+    }
+
     /*
      * Each of the tests in here *could* be their own Workflow; however, registering a
      * workflow takes ~200ms in our testing. Each of these test cases takes about 15ms
@@ -304,11 +318,48 @@ public class ExpressionTest {
             wf.doIf(nestedJson.isNotEqualTo(null), then -> {
                 nestedJson.jsonPath("$.foo.bar").assignTo("baz");
             });
+
+            // Test that multiplying double and int with int first can be passed into a task
+            // that expects a double.
+            var shouldTestDoubleMultiplication = wf.declareBool("should-test-double-multiplication");
+            wf.doIf(shouldTestDoubleMultiplication.isEqualTo(true), handler -> {
+                wf.execute("task-that-expects-double", wf.multiply(2, wf.execute("task-that-returns-double")));
+            });
+
+            var shouldTestIntAndDoubleMultiplication = wf.declareBool("should-test-int-and-double-multiplication");
+            wf.doIf(shouldTestIntAndDoubleMultiplication.isEqualTo(true), handler -> {
+                wf.execute("task-that-expects-int", wf.execute("task-that-returns-int").add(0.1));
+            });
         });
     }
 
     @LHTaskMethod("expr-add-one")
     public int addOne(int input) {
         return input + 1;
+    }
+
+    @LHTaskMethod("task-that-returns-double")
+    public double returnDouble() {
+        return 2.2;
+    }
+
+    @LHTaskMethod("task-that-expects-double")
+    public void expectDouble(double input) {
+        // if (((Double)4.4) != input) {
+        if (!Double.valueOf(4.4).equals(Double.valueOf(input))) {
+            throw new RuntimeException("Expected 4.4, got " + input);
+        }
+    }
+
+    @LHTaskMethod("task-that-expects-int")
+    public void expectInt(int input) {
+        if (4 != input) {
+            throw new RuntimeException("Expected 4, got " + input);
+        }
+    }
+
+    @LHTaskMethod("task-that-returns-int")
+    public int returnInt() {
+        return 4;
     }
 }

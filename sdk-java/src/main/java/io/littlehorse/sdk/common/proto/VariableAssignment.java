@@ -27,6 +27,7 @@ private static final long serialVersionUID = 0L;
   }
   private VariableAssignment() {
     jsonPath_ = "";
+    typeToCastTo_ = 0;
   }
 
   @java.lang.Override
@@ -1900,6 +1901,34 @@ private static final long serialVersionUID = 0L;
      * <code>.littlehorse.VariableAssignment rhs = 3;</code>
      */
     io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getRhsOrBuilder();
+
+    /**
+     * <pre>
+     * Allows casting this expression to a specific type
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableType type_to_cast_to = 4;</code>
+     * @return Whether the typeToCastTo field is set.
+     */
+    boolean hasTypeToCastTo();
+    /**
+     * <pre>
+     * Allows casting this expression to a specific type
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableType type_to_cast_to = 4;</code>
+     * @return The enum numeric value on the wire for typeToCastTo.
+     */
+    int getTypeToCastToValue();
+    /**
+     * <pre>
+     * Allows casting this expression to a specific type
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableType type_to_cast_to = 4;</code>
+     * @return The typeToCastTo.
+     */
+    io.littlehorse.sdk.common.proto.VariableType getTypeToCastTo();
   }
   /**
    * <pre>
@@ -1919,6 +1948,7 @@ private static final long serialVersionUID = 0L;
     }
     private Expression() {
       operation_ = 0;
+      typeToCastTo_ = 0;
     }
 
     @java.lang.Override
@@ -1941,6 +1971,7 @@ private static final long serialVersionUID = 0L;
               io.littlehorse.sdk.common.proto.VariableAssignment.Expression.class, io.littlehorse.sdk.common.proto.VariableAssignment.Expression.Builder.class);
     }
 
+    private int bitField0_;
     public static final int LHS_FIELD_NUMBER = 1;
     private io.littlehorse.sdk.common.proto.VariableAssignment lhs_;
     /**
@@ -2043,6 +2074,43 @@ private static final long serialVersionUID = 0L;
       return rhs_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : rhs_;
     }
 
+    public static final int TYPE_TO_CAST_TO_FIELD_NUMBER = 4;
+    private int typeToCastTo_ = 0;
+    /**
+     * <pre>
+     * Allows casting this expression to a specific type
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableType type_to_cast_to = 4;</code>
+     * @return Whether the typeToCastTo field is set.
+     */
+    @java.lang.Override public boolean hasTypeToCastTo() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <pre>
+     * Allows casting this expression to a specific type
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableType type_to_cast_to = 4;</code>
+     * @return The enum numeric value on the wire for typeToCastTo.
+     */
+    @java.lang.Override public int getTypeToCastToValue() {
+      return typeToCastTo_;
+    }
+    /**
+     * <pre>
+     * Allows casting this expression to a specific type
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableType type_to_cast_to = 4;</code>
+     * @return The typeToCastTo.
+     */
+    @java.lang.Override public io.littlehorse.sdk.common.proto.VariableType getTypeToCastTo() {
+      io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(typeToCastTo_);
+      return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -2066,6 +2134,9 @@ private static final long serialVersionUID = 0L;
       if (rhs_ != null) {
         output.writeMessage(3, getRhs());
       }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeEnum(4, typeToCastTo_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -2086,6 +2157,10 @@ private static final long serialVersionUID = 0L;
       if (rhs_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, getRhs());
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(4, typeToCastTo_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -2113,6 +2188,10 @@ private static final long serialVersionUID = 0L;
         if (!getRhs()
             .equals(other.getRhs())) return false;
       }
+      if (hasTypeToCastTo() != other.hasTypeToCastTo()) return false;
+      if (hasTypeToCastTo()) {
+        if (typeToCastTo_ != other.typeToCastTo_) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -2133,6 +2212,10 @@ private static final long serialVersionUID = 0L;
       if (hasRhs()) {
         hash = (37 * hash) + RHS_FIELD_NUMBER;
         hash = (53 * hash) + getRhs().hashCode();
+      }
+      if (hasTypeToCastTo()) {
+        hash = (37 * hash) + TYPE_TO_CAST_TO_FIELD_NUMBER;
+        hash = (53 * hash) + typeToCastTo_;
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -2280,6 +2363,7 @@ private static final long serialVersionUID = 0L;
           rhsBuilder_.dispose();
           rhsBuilder_ = null;
         }
+        typeToCastTo_ = 0;
         return this;
       }
 
@@ -2326,6 +2410,12 @@ private static final long serialVersionUID = 0L;
               ? rhs_
               : rhsBuilder_.build();
         }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.typeToCastTo_ = typeToCastTo_;
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -2381,6 +2471,9 @@ private static final long serialVersionUID = 0L;
         if (other.hasRhs()) {
           mergeRhs(other.getRhs());
         }
+        if (other.hasTypeToCastTo()) {
+          setTypeToCastTo(other.getTypeToCastTo());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -2426,6 +2519,11 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000004;
                 break;
               } // case 26
+              case 32: {
+                typeToCastTo_ = input.readEnum();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2824,6 +2922,90 @@ private static final long serialVersionUID = 0L;
           rhs_ = null;
         }
         return rhsBuilder_;
+      }
+
+      private int typeToCastTo_ = 0;
+      /**
+       * <pre>
+       * Allows casting this expression to a specific type
+       * </pre>
+       *
+       * <code>optional .littlehorse.VariableType type_to_cast_to = 4;</code>
+       * @return Whether the typeToCastTo field is set.
+       */
+      @java.lang.Override public boolean hasTypeToCastTo() {
+        return ((bitField0_ & 0x00000008) != 0);
+      }
+      /**
+       * <pre>
+       * Allows casting this expression to a specific type
+       * </pre>
+       *
+       * <code>optional .littlehorse.VariableType type_to_cast_to = 4;</code>
+       * @return The enum numeric value on the wire for typeToCastTo.
+       */
+      @java.lang.Override public int getTypeToCastToValue() {
+        return typeToCastTo_;
+      }
+      /**
+       * <pre>
+       * Allows casting this expression to a specific type
+       * </pre>
+       *
+       * <code>optional .littlehorse.VariableType type_to_cast_to = 4;</code>
+       * @param value The enum numeric value on the wire for typeToCastTo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTypeToCastToValue(int value) {
+        typeToCastTo_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Allows casting this expression to a specific type
+       * </pre>
+       *
+       * <code>optional .littlehorse.VariableType type_to_cast_to = 4;</code>
+       * @return The typeToCastTo.
+       */
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.VariableType getTypeToCastTo() {
+        io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(typeToCastTo_);
+        return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
+      }
+      /**
+       * <pre>
+       * Allows casting this expression to a specific type
+       * </pre>
+       *
+       * <code>optional .littlehorse.VariableType type_to_cast_to = 4;</code>
+       * @param value The typeToCastTo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTypeToCastTo(io.littlehorse.sdk.common.proto.VariableType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000008;
+        typeToCastTo_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Allows casting this expression to a specific type
+       * </pre>
+       *
+       * <code>optional .littlehorse.VariableType type_to_cast_to = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTypeToCastTo() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        typeToCastTo_ = 0;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -3239,6 +3421,43 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableAssignment.Expression.getDefaultInstance();
   }
 
+  public static final int TYPE_TO_CAST_TO_FIELD_NUMBER = 7;
+  private int typeToCastTo_ = 0;
+  /**
+   * <pre>
+   * Allows casting this Variable Assignment to a specific type
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableType type_to_cast_to = 7;</code>
+   * @return Whether the typeToCastTo field is set.
+   */
+  @java.lang.Override public boolean hasTypeToCastTo() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <pre>
+   * Allows casting this Variable Assignment to a specific type
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableType type_to_cast_to = 7;</code>
+   * @return The enum numeric value on the wire for typeToCastTo.
+   */
+  @java.lang.Override public int getTypeToCastToValue() {
+    return typeToCastTo_;
+  }
+  /**
+   * <pre>
+   * Allows casting this Variable Assignment to a specific type
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableType type_to_cast_to = 7;</code>
+   * @return The typeToCastTo.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.VariableType getTypeToCastTo() {
+    io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(typeToCastTo_);
+    return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -3271,6 +3490,9 @@ private static final long serialVersionUID = 0L;
     if (sourceCase_ == 6) {
       output.writeMessage(6, (io.littlehorse.sdk.common.proto.VariableAssignment.Expression) source_);
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeEnum(7, typeToCastTo_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -3302,6 +3524,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, (io.littlehorse.sdk.common.proto.VariableAssignment.Expression) source_);
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(7, typeToCastTo_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -3321,6 +3547,10 @@ private static final long serialVersionUID = 0L;
     if (hasJsonPath()) {
       if (!getJsonPath()
           .equals(other.getJsonPath())) return false;
+    }
+    if (hasTypeToCastTo() != other.hasTypeToCastTo()) return false;
+    if (hasTypeToCastTo()) {
+      if (typeToCastTo_ != other.typeToCastTo_) return false;
     }
     if (!getSourceCase().equals(other.getSourceCase())) return false;
     switch (sourceCase_) {
@@ -3361,6 +3591,10 @@ private static final long serialVersionUID = 0L;
     if (hasJsonPath()) {
       hash = (37 * hash) + JSON_PATH_FIELD_NUMBER;
       hash = (53 * hash) + getJsonPath().hashCode();
+    }
+    if (hasTypeToCastTo()) {
+      hash = (37 * hash) + TYPE_TO_CAST_TO_FIELD_NUMBER;
+      hash = (53 * hash) + typeToCastTo_;
     }
     switch (sourceCase_) {
       case 2:
@@ -3540,6 +3774,7 @@ private static final long serialVersionUID = 0L;
       if (expressionBuilder_ != null) {
         expressionBuilder_.clear();
       }
+      typeToCastTo_ = 0;
       sourceCase_ = 0;
       source_ = null;
       return this;
@@ -3580,6 +3815,10 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.jsonPath_ = jsonPath_;
         to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000040) != 0)) {
+        result.typeToCastTo_ = typeToCastTo_;
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -3653,6 +3892,9 @@ private static final long serialVersionUID = 0L;
         jsonPath_ = other.jsonPath_;
         bitField0_ |= 0x00000001;
         onChanged();
+      }
+      if (other.hasTypeToCastTo()) {
+        setTypeToCastTo(other.getTypeToCastTo());
       }
       switch (other.getSourceCase()) {
         case VARIABLE_NAME: {
@@ -3746,6 +3988,11 @@ private static final long serialVersionUID = 0L;
               sourceCase_ = 6;
               break;
             } // case 50
+            case 56: {
+              typeToCastTo_ = input.readEnum();
+              bitField0_ |= 0x00000040;
+              break;
+            } // case 56
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -4720,6 +4967,90 @@ private static final long serialVersionUID = 0L;
       sourceCase_ = 6;
       onChanged();
       return expressionBuilder_;
+    }
+
+    private int typeToCastTo_ = 0;
+    /**
+     * <pre>
+     * Allows casting this Variable Assignment to a specific type
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableType type_to_cast_to = 7;</code>
+     * @return Whether the typeToCastTo field is set.
+     */
+    @java.lang.Override public boolean hasTypeToCastTo() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <pre>
+     * Allows casting this Variable Assignment to a specific type
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableType type_to_cast_to = 7;</code>
+     * @return The enum numeric value on the wire for typeToCastTo.
+     */
+    @java.lang.Override public int getTypeToCastToValue() {
+      return typeToCastTo_;
+    }
+    /**
+     * <pre>
+     * Allows casting this Variable Assignment to a specific type
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableType type_to_cast_to = 7;</code>
+     * @param value The enum numeric value on the wire for typeToCastTo to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTypeToCastToValue(int value) {
+      typeToCastTo_ = value;
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Allows casting this Variable Assignment to a specific type
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableType type_to_cast_to = 7;</code>
+     * @return The typeToCastTo.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableType getTypeToCastTo() {
+      io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(typeToCastTo_);
+      return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
+    }
+    /**
+     * <pre>
+     * Allows casting this Variable Assignment to a specific type
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableType type_to_cast_to = 7;</code>
+     * @param value The typeToCastTo to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTypeToCastTo(io.littlehorse.sdk.common.proto.VariableType value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000040;
+      typeToCastTo_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Allows casting this Variable Assignment to a specific type
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableType type_to_cast_to = 7;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTypeToCastTo() {
+      bitField0_ = (bitField0_ & ~0x00000040);
+      typeToCastTo_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

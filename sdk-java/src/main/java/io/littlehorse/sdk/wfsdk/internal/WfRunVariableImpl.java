@@ -31,6 +31,9 @@ class WfRunVariableImpl implements WfRunVariable {
     private List<JsonIndex> jsonIndexes = new ArrayList<>();
     private WfRunVariableAccessLevel accessLevel;
 
+    @Getter
+    private VariableType typeToCastTo;
+
     public String jsonPath;
 
     private final WorkflowThreadImpl parent;
@@ -222,6 +225,27 @@ class WfRunVariableImpl implements WfRunVariable {
     @Override
     public LHExpression removeKey(Serializable key) {
         return new LHExpressionImpl(this, VariableMutationType.REMOVE_KEY, key);
+    }
+
+    @Override
+    public LHExpression asInt() {
+        WfRunVariableImpl result = new WfRunVariableImpl(name, typeOrDefaultVal, parent);
+        result.typeToCastTo = VariableType.INT;
+        return result;
+    }
+
+    @Override
+    public LHExpression asStr() {
+        WfRunVariableImpl result = new WfRunVariableImpl(name, typeOrDefaultVal, parent);
+        result.typeToCastTo = VariableType.STR;
+        return result;
+    }
+
+    @Override
+    public LHExpression asDouble() {
+        WfRunVariableImpl result = new WfRunVariableImpl(name, typeOrDefaultVal, parent);
+        result.typeToCastTo = VariableType.DOUBLE;
+        return result;
     }
 
     public ThreadVarDef getSpec() {

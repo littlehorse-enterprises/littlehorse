@@ -47,6 +47,8 @@ message VariableAssignment {
     VariableMutationType operation = 2;
     // The right-hand-side of the expression.
     VariableAssignment rhs = 3;
+    // Allows casting this expression to a specific type
+    optional VariableType type_to_cast_to = 4;
   }
 
   // If you provide a `variable_name` and the specified variable is JSON_OBJ or
@@ -67,6 +69,8 @@ message VariableAssignment {
     // Assign the value of an Expression.
     Expression expression = 6;
   }
+  // Allows casting this Variable Assignment to a specific type
+  optional VariableType type_to_cast_to = 7;
 }
 
 // Enumerates the available operations to mutate a variable in a WfRun.
