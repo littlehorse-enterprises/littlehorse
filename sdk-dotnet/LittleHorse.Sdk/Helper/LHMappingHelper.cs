@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Net;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using LittleHorse.Common.Proto;
@@ -45,17 +44,7 @@ namespace LittleHorse.Sdk.Helper
                 return VariableType.JsonArr;
             }
 
-            if (!type.Namespace!.StartsWith("System"))
-            {
-                return VariableType.JsonObj;
-            }
-            
-            if (type.IsAssignableFrom(typeof(void)))
-            {
-                return VariableType.JsonObj;
-            }
-
-            throw new Exception("Unaccepted variable type.");
+            return VariableType.JsonObj;
         }
         
         public static DateTime? MapDateTimeFromProtoTimeStamp(Timestamp protoTimestamp)
