@@ -4,8 +4,8 @@ namespace WorkerContextExample;
 
 public class MyWorker
 {
-    [LHTaskMethod("process-payment")]
-    public void ProcessPayment(LHWorkerContext context)
+    [LHTaskMethod("task")]
+    public void ProcessTask(LHWorkerContext context)
     {
         context.Log("ProcessPayment");
         Console.WriteLine($"The Workflow Run Id is: {context.GetWfRunId()}");

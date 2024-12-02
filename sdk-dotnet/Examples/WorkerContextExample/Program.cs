@@ -35,7 +35,7 @@ public abstract class Program
         MyWorker executableExceptionHandling = new MyWorker();
         var workers = new List<LHTaskWorker<MyWorker>>
         {
-            new(executableExceptionHandling, "process-payment", config)
+            new(executableExceptionHandling, "task", config)
         };
         
         return workers;
