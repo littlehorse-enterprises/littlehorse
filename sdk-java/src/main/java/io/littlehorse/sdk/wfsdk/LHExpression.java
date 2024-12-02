@@ -80,4 +80,25 @@ public interface LHExpression extends Serializable {
      * by `key` removed.
      */
     LHExpression removeKey(Serializable key);
+
+    /**
+     * Casts the expression to a string. Returns this LHExpression.
+     * 
+     * @return this LHExpression.
+     */
+    LHExpression asStr();
+
+    /**
+     * Casts the expression to an INT. Returns this LHExpression.
+     * 
+     * @return this LHExpression.
+     */
+    LHExpression asInt();
+
+    /**
+     * Casts the expression to a double. Returns this LHExpression.
+     * 
+     * @return this LHExpression.
+     */
+    LHExpression asDouble();
 }

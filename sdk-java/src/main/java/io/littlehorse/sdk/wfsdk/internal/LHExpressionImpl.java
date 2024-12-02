@@ -1,9 +1,11 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import java.io.Serializable;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class LHExpressionImpl implements LHExpression {
@@ -11,6 +13,9 @@ public class LHExpressionImpl implements LHExpression {
     private Serializable lhs;
     private Serializable rhs;
     private VariableMutationType operation;
+
+    @Setter
+    private VariableType typeToCastTo;
 
     public LHExpressionImpl(Serializable lhs, VariableMutationType operation, Serializable rhs) {
         this.lhs = lhs;
@@ -61,5 +66,23 @@ public class LHExpressionImpl implements LHExpression {
     @Override
     public LHExpression removeKey(Serializable key) {
         return new LHExpressionImpl(this, VariableMutationType.REMOVE_KEY, key);
+    }
+
+    @Override
+    public LHExpression asStr() {
+        this.typeToCastTo = VariableType.STR;
+        return this;
+    }
+
+    @Override
+    public LHExpression asInt() {
+        this.typeToCastTo = VariableType.INT;
+        return this;
+    }
+
+    @Override
+    public LHExpression asDouble() {
+        this.typeToCastTo = VariableType.DOUBLE;
+        return this;
     }
 }

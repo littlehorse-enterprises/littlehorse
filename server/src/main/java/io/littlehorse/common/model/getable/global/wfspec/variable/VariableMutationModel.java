@@ -6,6 +6,8 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.VariableFetcher;
+import io.littlehorse.common.model.getable.core.wfrun.VariableSetter;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutation.RhsValueCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -110,32 +112,27 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
         return result.getCopy();
     }
 
-    public VariableValueModel getRhsValue(
-            ThreadRunModel thread, Map<String, VariableValueModel> txnCache, VariableValueModel nodeOutput)
-            throws LHVarSubError {
-        VariableValueModel out = null;
-
-        if (rhsValueType == RhsValueCase.LITERAL_VALUE) {
-            out = rhsLiteralValue;
-        } else if (rhsValueType == RhsValueCase.RHS_ASSIGNMENT) {
-            out = thread.assignVariable(rhsRhsAssignment, txnCache);
-        } else if (rhsValueType == RhsValueCase.NODE_OUTPUT) {
-            out = nodeOutput;
-            if (nodeOutputSource.jsonPath != null) {
-                out = out.jsonPath(nodeOutputSource.jsonPath);
-            }
-        } else {
-            throw new RuntimeException("Unsupported RHS Value type: " + rhsValueType);
+    /*
+     * Refactored this to be separate in order to "hide" the complexity from supporting the LITERAL_VALUE
+     * and NODE_OUTPUT cases for backwards compatibility, which are now handled in the rhsAssignment.
+     */
+    private VariableValueModel getRhsVal(VariableFetcher fetcher, String nodeName) throws LHVarSubError {
+        switch (rhsValueType) {
+            case LITERAL_VALUE:
+                return rhsLiteralValue;
+            case RHS_ASSIGNMENT:
+                return rhsRhsAssignment.assignVariable(fetcher);
+            case NODE_OUTPUT:
+                return fetcher.fetchNodeOutput(nodeName);
+            case RHSVALUE_NOT_SET:
         }
-        return out;
+        throw new IllegalStateException();
     }
 
-    public void execute(ThreadRunModel thread, Map<String, VariableValueModel> txnCache, VariableValueModel nodeOutput)
-            throws LHVarSubError {
-        VariableValueModel lhsVal = getLhsValue(thread, txnCache);
-        VariableValueModel rhsVal = getRhsValue(thread, txnCache, nodeOutput);
-        VariableType lhsRealType =
-                thread.getThreadSpec().getVarDef(lhsName).getVarDef().getType();
+    public void execute(VariableFetcher variableFetcher, VariableSetter setter, String nodeName) throws LHVarSubError {
+        VariableValueModel lhsVal = variableFetcher.fetchVariable(lhsName);
+        VariableValueModel rhsVal = getRhsVal(variableFetcher, nodeName);
+        VariableType lhsType = lhsVal.getType();
 
         try {
             // NOTE Part 2: see below
@@ -149,13 +146,13 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                         ? rhsVal
                         : lhsJsonPathed.operate(operation, rhsVal, typeToCoerceTo);
 
-                VariableValueModel currentLhs = getVarValFromThreadInTxn(lhsName, thread, txnCache);
+                VariableValueModel currentLhs = variableFetcher.fetchVariable(lhsName);
 
                 currentLhs.updateJsonViaJsonPath(lhsJsonPath, thingToPut.getVal());
-                txnCache.put(lhsName, currentLhs);
+                setter.setVariable(lhsName, currentLhs);
             } else {
-                VariableType typeToCoerceTo = lhsRealType;
-                txnCache.put(lhsName, lhsVal.operate(operation, rhsVal, typeToCoerceTo));
+                VariableType typeToCoerceTo = lhsType;
+                setter.setVariable(lhsName, lhsVal.operate(operation, rhsVal, typeToCoerceTo));
             }
         } catch (LHVarSubError exn) {
             throw exn;

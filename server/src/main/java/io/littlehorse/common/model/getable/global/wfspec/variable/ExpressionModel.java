@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
-import io.littlehorse.common.model.getable.core.wfrun.VariableAssignerFunc;
+import io.littlehorse.common.model.getable.core.wfrun.VariableFetcher;
 import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -39,9 +39,9 @@ public class ExpressionModel extends LHSerializable<Expression> {
         operation = p.getOperation();
     }
 
-    public VariableValueModel evaluate(VariableAssignerFunc variableFinder) throws LHVarSubError {
-        VariableValueModel lhsVal = variableFinder.assign(lhs);
-        VariableValueModel rhsVal = variableFinder.assign(rhs);
+    public VariableValueModel evaluate(VariableFetcher variableFinder) throws LHVarSubError {
+        VariableValueModel lhsVal = lhs.assignVariable(variableFinder);
+        VariableValueModel rhsVal = rhs.assignVariable(variableFinder);
 
         VariableType typeToCoerceTo = lhsVal.getType();
 

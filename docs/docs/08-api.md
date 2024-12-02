@@ -777,6 +777,7 @@ have to worry about this in daily LittleHorse usage.
 | `format_string` | oneof `source`| [VariableAssignment.FormatString](#variableassignmentformatstring) | Assign a format string |
 | `node_output` | oneof `source`| [VariableAssignment.NodeOutputReference](#variableassignmentnodeoutputreference) | Assign the value of a NodeOutput. |
 | `expression` | oneof `source`| [VariableAssignment.Expression](#variableassignmentexpression) | Assign the value of an Expression. |
+| `type_to_cast_to` | optional| [VariableType](#variabletype) | Allows casting this Variable Assignment to a specific type |
  <!-- end Fields -->
  <!-- end HasFields -->
 
@@ -792,6 +793,7 @@ An Expression allows you to combine multiple values into one.
 | `lhs` | | [VariableAssignment](#variableassignment) | The left-hand-side of the expression. |
 | `operation` | | [VariableMutationType](#variablemutationtype) | The operator in the expression. |
 | `rhs` | | [VariableAssignment](#variableassignment) | The right-hand-side of the expression. |
+| `type_to_cast_to` | optional| [VariableType](#variabletype) | Allows casting this expression to a specific type |
  <!-- end Fields -->
  <!-- end HasFields -->
 

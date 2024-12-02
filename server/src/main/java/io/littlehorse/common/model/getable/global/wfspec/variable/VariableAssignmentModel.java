@@ -4,13 +4,21 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.core.wfrun.VariableFetcher;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -141,5 +149,43 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         }
 
         return baseType == type;
+    }
+
+    public VariableValueModel assignVariable(VariableFetcher fetcher) throws LHVarSubError{
+        VariableValueModel val = null;
+        switch (this.getRhsSourceType()) {
+            case LITERAL_VALUE:
+                val = this.getRhsLiteralValue();
+                break;
+
+                case VARIABLE_NAME:
+                val = fetcher.fetchVariable(variableName);
+                if (val == null) {
+                    throw new LHVarSubError(null, "Variable " + this.getVariableName() + " not in scope!");
+                }
+                break;
+
+            case FORMAT_STRING:
+                // first, assign the format string
+                val = this.getFormatString().evaluate(fetcher);
+                break;
+            case NODE_OUTPUT:
+                String nodeReferenceName = this.getNodeOutputReference().getNodeName();
+                val = fetcher.fetchNodeOutput(nodeReferenceName);
+                break;
+            case EXPRESSION:
+                ExpressionModel expression = this.getExpression();
+                val = expression.evaluate(fetcher);
+                break;
+            case SOURCE_NOT_SET:
+                // This should have been caught by the WfSpecModel#validate()
+                throw new IllegalStateException("Invalid WfSpec with un-set VariableAssignment.");
+        }
+
+        if (this.getJsonPath() != null) {
+            val = val.jsonPath(this.getJsonPath());
+        }
+
+        return val;
     }
 }
