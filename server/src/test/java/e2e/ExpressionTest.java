@@ -247,7 +247,7 @@ public class ExpressionTest {
             // EXTEND a String test
             var myStr = wf.declareStr("my-str");
             wf.doIf(myStr.isNotEqualTo(null), then -> {
-                myStr.assignTo(myStr.extend("-suffix"));
+                myStr.assign(myStr.extend("-suffix"));
             });
 
             // Add an int and composite expressions
@@ -255,14 +255,14 @@ public class ExpressionTest {
             var intToAddResult = wf.declareInt("int-to-add-result");
             wf.doIf(intToAdd.isNotEqualTo(null), then -> {
                 // Tests compound expressions
-                intToAddResult.assignTo(wf.execute("expr-add-one", intToAdd.add(1)));
+                intToAddResult.assign(wf.execute("expr-add-one", intToAdd.add(1)));
             });
 
             // Division By Zero test
             var thingToDivideByZero = wf.declareInt("thing-to-divide-by-zero");
             var divideByZeroResult = wf.declareInt("divide-by-zero-result");
             wf.doIf(thingToDivideByZero.isNotEqualTo(null), then -> {
-                divideByZeroResult.assignTo(thingToDivideByZero.divide(0));
+                divideByZeroResult.assign(thingToDivideByZero.divide(0));
             });
 
             // Test precision of arithmetic. Make use of the fact that we don't have
@@ -273,8 +273,8 @@ public class ExpressionTest {
             var divisionResultInt = wf.declareInt("division-result-int");
             wf.doIf(divisionTestJson.isNotEqualTo(null), then -> {
                 LHExpression foobar = divisionTestJson.jsonPath("$.lhs").divide(divisionTestJson.jsonPath("$.rhs"));
-                divisionResult.assignTo(foobar);
-                divisionResultInt.assignTo(foobar);
+                divisionResult.assign(foobar);
+                divisionResultInt.assign(foobar);
             });
 
             // This test uses a complex expression where the things we are computing over
@@ -289,20 +289,20 @@ public class ExpressionTest {
                 // TotalPrice = Quantity * Price * (1 - DiscountPercentage / 100)
                 LHExpression pedro =
                         quantity.multiply(price).multiply(wf.subtract(1.0, discountPercentage.divide(100.0)));
-                totalPriceInt.assignTo(pedro);
-                totalPriceDouble.assignTo(pedro);
+                totalPriceInt.assign(pedro);
+                totalPriceDouble.assign(pedro);
             });
 
             // Test mutating sub-fields of a json object
             var json = wf.declareJsonObj("json");
             wf.doIf(json.isNotEqualTo(null), then -> {
-                json.jsonPath("$.foo").assignTo("bar");
+                json.jsonPath("$.foo").assign("bar");
             });
 
             // Test mutating doubly-nested fields of a Json Object
             var nestedJson = wf.declareJsonObj("nested-json");
             wf.doIf(nestedJson.isNotEqualTo(null), then -> {
-                nestedJson.jsonPath("$.foo.bar").assignTo("baz");
+                nestedJson.jsonPath("$.foo.bar").assign("baz");
             });
         });
     }

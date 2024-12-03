@@ -228,7 +228,7 @@ class TestProtoUtils(unittest.TestCase):
 
         # a WfRunVariable
         wf_run_variable = WfRunVariable(
-            variable_name="my-var-name", variable_type=VariableType.STR
+            variable_name="my-var-name", variable_type=VariableType.STR, parent=None
         )
         wf_run_variable.json_path = "$.myPath"
         variable = to_variable_assignment(wf_run_variable)

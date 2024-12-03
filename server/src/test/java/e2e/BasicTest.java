@@ -27,7 +27,7 @@ public class BasicTest {
     public Workflow getBasic() {
         return new WorkflowImpl("test-basic", thread -> {
             WfRunVariable asdf = thread.declareBool("asdf");
-            asdf.assignTo(thread.execute("ag-one"));
+            asdf.assign(thread.execute("ag-one"));
         });
     }
 

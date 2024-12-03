@@ -214,5 +214,5 @@ public interface WfRunVariable extends LHExpression {
      * provided by the Json Path is mutated.
      * @param rhs is the value to set this WfRunVariable to.
      */
-    void assignTo(Serializable rhs);
+    void assign(Serializable rhs);
 }
