@@ -1,6 +1,12 @@
 'use client'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { DropdownMenu, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu'
 import { useParams, useRouter } from 'next/navigation'
 import { FC } from 'react'
 
@@ -32,7 +38,11 @@ export const TenantSelector: FC = () => {
         <div className="px-2 py-2 text-sm font-bold uppercase">Tenants</div>
         <DropdownMenuSeparator />
         {tenants.map(tenant => (
-          <DropdownMenuItem key={tenant} className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100" onClick={() => router.push(`/${tenant}`)}>
+          <DropdownMenuItem
+            key={tenant}
+            className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
+            onClick={() => router.push(`/${tenant}`)}
+          >
             {tenant}
           </DropdownMenuItem>
         ))}

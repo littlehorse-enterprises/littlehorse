@@ -1,5 +1,12 @@
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { DropdownMenu, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+} from '@/components/ui/dropdown-menu'
 import { signOut } from 'next-auth/react'
 import { FC, Fragment } from 'react'
 function classNames(...classes: Array<string | boolean>) {

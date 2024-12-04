@@ -1,12 +1,7 @@
 import { TagIcon } from 'lucide-react'
 import { FC } from 'react'
 import LinkWithTenant from './LinkWithTenant'
-import {
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 type Props = {
   path: string

@@ -11,9 +11,9 @@ import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { UserTaskDef as UserTaskDefProto, UserTaskRunStatus } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
@@ -87,7 +87,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
             <Button
               onClick={() => setSelectedStatus(status)}
               key={status}
-              variant={status === selectedStatus ? "default" : "outline"}
+              variant={status === selectedStatus ? 'default' : 'outline'}
               className="rounded-none first:rounded-l-lg last:rounded-r-lg"
             >
               {status}

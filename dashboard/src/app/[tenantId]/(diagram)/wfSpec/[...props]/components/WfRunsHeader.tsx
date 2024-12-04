@@ -1,11 +1,5 @@
 import { TIME_RANGES, TIME_RANGES_NAMES, TimeRange, WF_RUN_STATUSES } from '@/app/constants'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { LHStatus, WfSpec } from 'littlehorse-client/proto'
 import { ClockIcon } from 'lucide-react'
 import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
