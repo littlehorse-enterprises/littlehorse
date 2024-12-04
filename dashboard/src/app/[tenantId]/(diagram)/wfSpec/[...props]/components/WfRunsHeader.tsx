@@ -27,7 +27,7 @@ export const WfRunsHeader: FC<Props> = ({ spec, currentStatus, currentWindow, se
           <div className="relative">
             <ListboxButton className="flex items-center gap-2 rounded-lg border-2 px-2 py-1 text-xs">
               <ClockIcon className="h-5 w-5 fill-none stroke-black" />
-              Last {TIME_RANGES_NAMES[currentWindow]}
+              {currentWindow !== -1 ? `Last ${TIME_RANGES_NAMES[currentWindow]}` : TIME_RANGES_NAMES[currentWindow]}
             </ListboxButton>
             <ListboxOptions className="absolute mt-1 w-[120px] rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
               {TIME_RANGES.map(time => (
@@ -40,7 +40,7 @@ export const WfRunsHeader: FC<Props> = ({ spec, currentStatus, currentWindow, se
                     }`
                   }
                 >
-                  Last {TIME_RANGES_NAMES[time]}
+                  {time !== -1 ? `Last ${TIME_RANGES_NAMES[time]}` : TIME_RANGES_NAMES[time]}
                 </Listbox.Option>
               ))}
             </ListboxOptions>
