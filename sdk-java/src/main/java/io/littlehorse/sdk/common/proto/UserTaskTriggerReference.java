@@ -174,8 +174,8 @@ private static final long serialVersionUID = 0L;
   private volatile java.lang.Object userGroup_ = "";
   /**
    * <pre>
-   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
-   * asigned to a specific user_id.
+   * Is the user_group that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_group.
    * </pre>
    *
    * <code>optional string user_group = 4;</code>
@@ -187,8 +187,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
-   * asigned to a specific user_id.
+   * Is the user_group that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_group.
    * </pre>
    *
    * <code>optional string user_group = 4;</code>
@@ -209,8 +209,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
-   * asigned to a specific user_id.
+   * Is the user_group that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_group.
    * </pre>
    *
    * <code>optional string user_group = 4;</code>
@@ -980,8 +980,8 @@ private static final long serialVersionUID = 0L;
     private java.lang.Object userGroup_ = "";
     /**
      * <pre>
-     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
-     * asigned to a specific user_id.
+     * Is the user_group that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_group.
      * </pre>
      *
      * <code>optional string user_group = 4;</code>
@@ -992,8 +992,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
-     * asigned to a specific user_id.
+     * Is the user_group that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_group.
      * </pre>
      *
      * <code>optional string user_group = 4;</code>
@@ -1013,8 +1013,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
-     * asigned to a specific user_id.
+     * Is the user_group that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_group.
      * </pre>
      *
      * <code>optional string user_group = 4;</code>
@@ -1035,8 +1035,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
-     * asigned to a specific user_id.
+     * Is the user_group that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_group.
      * </pre>
      *
      * <code>optional string user_group = 4;</code>
@@ -1053,8 +1053,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
-     * asigned to a specific user_id.
+     * Is the user_group that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_group.
      * </pre>
      *
      * <code>optional string user_group = 4;</code>
@@ -1068,8 +1068,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
-     * asigned to a specific user_id.
+     * Is the user_group that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+     * asigned to a specific user_group.
      * </pre>
      *
      * <code>optional string user_group = 4;</code>
