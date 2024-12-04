@@ -11,7 +11,9 @@ import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Button, Field, Input, Label } from '@headlessui/react'
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { UserTaskDef as UserTaskDefProto, UserTaskRunStatus } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
@@ -85,7 +87,8 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
             <Button
               onClick={() => setSelectedStatus(status)}
               key={status}
-              className={`flex items-center border-y-2 border-l-2 p-2 text-xs first-of-type:rounded-l-lg first-of-type:border-l-2 last-of-type:rounded-r-lg last-of-type:border-r-2 ${status === selectedStatus ? 'border-blue-500 bg-blue-500 text-white' : ' text-gray-500'}`}
+              variant={status === selectedStatus ? "default" : "outline"}
+              className="rounded-none first:rounded-l-lg last:rounded-r-lg"
             >
               {status}
             </Button>
@@ -93,46 +96,46 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
         </div>
       </div>
       <div className="mb-5 flex max-w-fit items-start justify-between">
-        <Field className="flex items-center justify-between">
-          <Label className="block w-1/2 font-bold">User Id:</Label>
+        <div className="flex items-center justify-between">
+          <Label className="mr-3 font-bold">User Id:</Label>
           <Input
             type="text"
             value={userId}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserId(e.target.value)}
-            className="focus:shadow-outline ml-6 w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
+            className="w-full"
           />
-        </Field>
+        </div>
 
-        <Field className="ml-16 flex items-center justify-between">
-          <Label className="block w-1/2 font-bold">User Group:</Label>
+        <div className="ml-16 flex items-center justify-between">
+          <Label className="mr-4 font-bold">User Group:</Label>
           <Input
             type="text"
             value={userGroup}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserGroup(e.target.value)}
-            className="focus:shadow-outline ml-4 w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
+            className="w-full"
           />
-        </Field>
+        </div>
       </div>
       <div className="mb-5 flex max-w-fit items-start justify-between">
-        <Field className="flex items-center justify-between">
-          <Label className="block w-1/2 font-bold">Created after:</Label>
+        <div className="flex items-center justify-between">
+          <Label className="mr-3 font-bold">Created after:</Label>
           <Input
             type="datetime-local"
             value={createdAfter}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCreatedAfter(e.target.value)}
-            className="focus:shadow-outline ml-3 w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
+            className="w-full"
           />
-        </Field>
+        </div>
 
-        <Field className="ml-10 flex items-center justify-between">
-          <Label className="block w-1/2 font-bold">Created before:</Label>
+        <div className="ml-10 flex items-center justify-between">
+          <Label className="mr-4 font-bold">Created before:</Label>
           <Input
             type="datetime-local"
             value={createdBefore}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCreatedBefore(e.target.value)}
-            className="focus:shadow-outline ml-4 w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
+            className="w-full"
           />
-        </Field>
+        </div>
       </div>
 
       {isPending ? (
