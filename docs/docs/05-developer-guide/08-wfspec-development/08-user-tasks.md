@@ -202,7 +202,7 @@ String taskArg1 = "reply to my email, you must!";
 String taskArg2 = "for my ally is the Force, and a powerful ally it is";
 
 String taskDefName = "send-reminder";
-wf.scheduleTaskAfter(userTask, delaySeconds, taskDefName, taskArg1, taskArg2);
+wf.scheduleReminderTask(userTask, delaySeconds, taskDefName, taskArg1, taskArg2);
 ```
 
   </TabItem>
