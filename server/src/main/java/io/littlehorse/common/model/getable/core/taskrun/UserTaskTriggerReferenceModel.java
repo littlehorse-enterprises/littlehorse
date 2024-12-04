@@ -21,8 +21,8 @@ public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTrigge
     private NodeRunIdModel nodeRunId;
     private int userTaskEventNumber;
 
-    private Optional<String> userId;
-    private Optional<String> userGroup;
+    private String userId;
+    private String userGroup;
 
     public UserTaskTriggerReferenceModel() {}
 
@@ -31,8 +31,8 @@ public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTrigge
         // Trust in the Force
         userTaskEventNumber = utr.getEvents().size();
 
-        this.userId = Optional.of(utr.getUserId());
-        this.userGroup = Optional.of(utr.getUserGroup());
+        this.userId = utr.getUserId();
+        this.userGroup = utr.getUserGroup();
     }
 
     @Override
@@ -46,12 +46,12 @@ public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTrigge
                 .setNodeRunId(nodeRunId.toProto())
                 .setUserTaskEventNumber(userTaskEventNumber);
 
-        if (userId.isPresent()) {
-            out.setUserId(this.userId.get());
+        if (userId != null) {
+            out.setUserId(this.userId);
         }
-        
-        if (userGroup.isPresent()) {
-            out.setUserGroup(this.userGroup.get());
+
+        if (userGroup != null) {
+            out.setUserGroup(this.userGroup);
         }
 
         return out;
@@ -62,8 +62,8 @@ public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTrigge
         UserTaskTriggerReference p = (UserTaskTriggerReference) proto;
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
         userTaskEventNumber = p.getUserTaskEventNumber();
-        userId = Optional.ofNullable(p.getUserId());
-        userGroup = Optional.ofNullable(p.getUserGroup());
+        userId = p.getUserId();
+        userGroup = p.getUserGroup();
     }
 
     @Override
