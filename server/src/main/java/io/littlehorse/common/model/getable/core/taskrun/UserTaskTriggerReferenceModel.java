@@ -1,7 +1,5 @@
 package io.littlehorse.common.model.getable.core.taskrun;
 
-import java.util.Optional;
-
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
