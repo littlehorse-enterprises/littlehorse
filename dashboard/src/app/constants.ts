@@ -27,7 +27,7 @@ export const TIME_RANGES = [-1, 5, 15, 30, 60, 180, 360, 720, 1440, 4320] as con
 export type TimeRange = (typeof TIME_RANGES)[number]
 
 export const TIME_RANGES_NAMES: { [key in TimeRange]: string } = {
-  [-1]: '4.543 billion years',
+  [-1]: 'All time',
   5: '5 minutes',
   15: '15 minutes',
   30: '30 minutes',
