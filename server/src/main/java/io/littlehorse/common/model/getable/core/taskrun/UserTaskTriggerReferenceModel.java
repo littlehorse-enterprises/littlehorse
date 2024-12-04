@@ -1,5 +1,7 @@
 package io.littlehorse.common.model.getable.core.taskrun;
 
+import java.util.Optional;
+
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
@@ -19,8 +21,8 @@ public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTrigge
     private NodeRunIdModel nodeRunId;
     private int userTaskEventNumber;
 
-    private String userId;
-    private String userGroup;
+    private Optional<String> userId;
+    private Optional<String> userGroup;
 
     public UserTaskTriggerReferenceModel() {}
 
@@ -29,8 +31,8 @@ public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTrigge
         // Trust in the Force
         userTaskEventNumber = utr.getEvents().size();
 
-        this.userId = utr.getUserId();
-        this.userGroup = utr.getUserGroup();
+        this.userId = Optional.of(utr.getUserId());
+        this.userGroup = Optional.of(utr.getUserGroup());
     }
 
     @Override
@@ -42,9 +44,15 @@ public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTrigge
     public UserTaskTriggerReference.Builder toProto() {
         UserTaskTriggerReference.Builder out = UserTaskTriggerReference.newBuilder()
                 .setNodeRunId(nodeRunId.toProto())
-                .setUserTaskEventNumber(userTaskEventNumber)
-                .setUserId(this.userId)
-                .setUserGroup(this.userGroup);
+                .setUserTaskEventNumber(userTaskEventNumber);
+
+        if (userId.isPresent()) {
+            out.setUserId(this.userId.get());
+        }
+        
+        if (userGroup.isPresent()) {
+            out.setUserGroup(this.userGroup.get());
+        }
 
         return out;
     }
@@ -54,8 +62,8 @@ public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTrigge
         UserTaskTriggerReference p = (UserTaskTriggerReference) proto;
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
         userTaskEventNumber = p.getUserTaskEventNumber();
-        userId = p.getUserId();
-        userGroup = p.getUserGroup();
+        userId = Optional.ofNullable(p.getUserId());
+        userGroup = Optional.ofNullable(p.getUserGroup());
     }
 
     @Override
