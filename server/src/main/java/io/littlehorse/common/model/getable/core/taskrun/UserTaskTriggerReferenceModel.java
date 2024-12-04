@@ -60,8 +60,14 @@ public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTrigge
         UserTaskTriggerReference p = (UserTaskTriggerReference) proto;
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
         userTaskEventNumber = p.getUserTaskEventNumber();
-        userId = p.getUserId();
-        userGroup = p.getUserGroup();
+
+        if (p.hasUserId()) {
+            userId = p.getUserId();
+        }
+
+        if (p.hasUserGroup()) {
+            userGroup = p.getUserGroup();
+        }
     }
 
     @Override
