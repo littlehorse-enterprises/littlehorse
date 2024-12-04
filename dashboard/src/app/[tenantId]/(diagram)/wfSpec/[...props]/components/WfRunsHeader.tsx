@@ -1,5 +1,11 @@
 import { TIME_RANGES, TIME_RANGES_NAMES, TimeRange, WF_RUN_STATUSES } from '@/app/constants'
-import { Listbox, ListboxButton, ListboxOptions } from '@headlessui/react'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { LHStatus, WfSpec } from 'littlehorse-client/proto'
 import { ClockIcon } from 'lucide-react'
 import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
@@ -23,29 +29,21 @@ export const WfRunsHeader: FC<Props> = ({ spec, currentStatus, currentWindow, se
       <h2 className="text-2xl font-bold">WfRun Search</h2>
 
       <div className="flex items-center justify-between gap-4">
-        <Listbox value={currentWindow} onChange={setWindow}>
-          <div className="relative">
-            <ListboxButton className="flex items-center gap-2 rounded-lg border-2 px-2 py-1 text-xs">
+        <Select value={currentWindow.toString()} onValueChange={value => setWindow(parseInt(value) as TimeRange)}>
+          <SelectTrigger className="w-[150px] min-w-fit">
+            <div className="flex items-center gap-2">
               <ClockIcon className="h-5 w-5 fill-none stroke-black" />
-              Last {TIME_RANGES_NAMES[currentWindow]}
-            </ListboxButton>
-            <ListboxOptions className="absolute mt-1 w-[120px] rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
-              {TIME_RANGES.map(time => (
-                <Listbox.Option
-                  key={time}
-                  value={time}
-                  className={({ active }) =>
-                    `relative cursor-default select-none py-2 pl-2 pr-4 text-xs ${
-                      active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                    }`
-                  }
-                >
-                  Last {TIME_RANGES_NAMES[time]}
-                </Listbox.Option>
-              ))}
-            </ListboxOptions>
-          </div>
-        </Listbox>
+              <SelectValue>Last {TIME_RANGES_NAMES[currentWindow]}</SelectValue>
+            </div>
+          </SelectTrigger>
+          <SelectContent>
+            {TIME_RANGES.map(time => (
+              <SelectItem key={time} value={time.toString()}>
+                Last {TIME_RANGES_NAMES[time]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <div className="flex">
           {['ALL', ...WF_RUN_STATUSES].map(status => (
             <LinkWithTenant
