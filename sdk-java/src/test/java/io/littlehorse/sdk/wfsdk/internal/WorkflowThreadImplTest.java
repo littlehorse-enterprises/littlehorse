@@ -550,7 +550,7 @@ public class WorkflowThreadImplTest {
         // Deprecated the literal_value and node_output approach
         Workflow workflow = new WorkflowImpl("obiwan", wf -> {
             WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
-            myVar.assignTo("some-value");
+            myVar.assign("some-value");
         });
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
@@ -570,7 +570,7 @@ public class WorkflowThreadImplTest {
         // Deprecated the literal_value and node_output approach
         Workflow workflow = new WorkflowImpl("obiwan", wf -> {
             WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
-            myVar.assignTo(wf.execute("use-the-force"));
+            myVar.assign(wf.execute("use-the-force"));
         });
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
@@ -590,7 +590,7 @@ public class WorkflowThreadImplTest {
         // Deprecated the literal_value and node_output approach
         Workflow workflow = new WorkflowImpl("obiwan", wf -> {
             WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
-            myVar.assignTo(wf.execute("use-the-force").jsonPath("$.hello.there"));
+            myVar.assign(wf.execute("use-the-force").jsonPath("$.hello.there"));
         });
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
@@ -614,7 +614,7 @@ public class WorkflowThreadImplTest {
         Workflow workflow = new WorkflowImpl("obiwan", wf -> {
             WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
             WfRunVariable otherVar = wf.addVariable("other-var", VariableType.STR);
-            myVar.assignTo(otherVar);
+            myVar.assign(otherVar);
         });
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
@@ -632,7 +632,7 @@ public class WorkflowThreadImplTest {
         Workflow workflow = new WorkflowImpl("obiwan", wf -> {
             WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
             WfRunVariable otherVar = wf.addVariable("other-var", VariableType.JSON_OBJ);
-            myVar.assignTo(otherVar.jsonPath("$.hello.there"));
+            myVar.assign(otherVar.jsonPath("$.hello.there"));
         });
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();

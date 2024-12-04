@@ -53,6 +53,8 @@ public class ServerVersionModel extends LHSerializable<ServerVersion> {
 
         if (serverVersion.hasPreReleaseIdentifier()) {
             this.preReleaseIdentifier = Optional.of(serverVersion.getPreReleaseIdentifier());
+        } else {
+            this.preReleaseIdentifier = Optional.empty();
         }
     }
 
