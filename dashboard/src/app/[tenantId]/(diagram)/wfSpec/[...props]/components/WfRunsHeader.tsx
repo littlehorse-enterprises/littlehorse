@@ -27,13 +27,13 @@ export const WfRunsHeader: FC<Props> = ({ spec, currentStatus, currentWindow, se
           <SelectTrigger className="w-[150px] min-w-fit">
             <div className="flex items-center gap-2">
               <ClockIcon className="h-5 w-5 fill-none stroke-black" />
-              <SelectValue>Last {TIME_RANGES_NAMES[currentWindow]}</SelectValue>
+              <SelectValue>{currentWindow !== -1 ? `Last ${TIME_RANGES_NAMES[currentWindow]}` : TIME_RANGES_NAMES[currentWindow]}</SelectValue>
             </div>
           </SelectTrigger>
           <SelectContent>
             {TIME_RANGES.map(time => (
               <SelectItem key={time} value={time.toString()}>
-                Last {TIME_RANGES_NAMES[time]}
+                {time !== -1 ? `Last ${TIME_RANGES_NAMES[time]}` : TIME_RANGES_NAMES[time]}
               </SelectItem>
             ))}
           </SelectContent>
