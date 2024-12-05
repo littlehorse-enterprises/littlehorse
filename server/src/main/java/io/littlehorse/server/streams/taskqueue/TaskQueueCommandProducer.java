@@ -15,6 +15,9 @@ import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.TaskClaimEventProducerCallback;
 import io.littlehorse.server.streams.util.HeadersUtil;
+
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
@@ -24,7 +27,7 @@ import org.apache.kafka.common.header.Headers;
  * Everything related to the task protocol
  */
 @Slf4j
-public class TaskQueueCommandProducer {
+public class TaskQueueCommandProducer implements Closeable {
 
     private final LHProducer producer;
     private final String commandTopic;
@@ -89,5 +92,10 @@ public class TaskQueueCommandProducer {
 
         producer.send(
                 command.getPartitionKey(), command, commandTopic, kafkaProducerCallback, commandMetadata.toArray());
+    }
+
+    @Override
+    public void close() {
+        producer.close();
     }
 }

@@ -19,5 +19,7 @@ fi
 
 cd "$WORK_DIR"
 
+export LD_PRELOAD="/tmp/jemalloc/libjemalloc.so"
+
 ./gradlew server:installDist -x shadowJar -x test
 ./server/build/install/server/server/server "$CONFIG_PATH"

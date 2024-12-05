@@ -16,6 +16,7 @@ import io.littlehorse.server.auth.RequestAuthorizer;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.monitoring.HealthService;
+import io.littlehorse.server.monitoring.metrics.MetricsCollectorRestoreListener;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.taskqueue.TaskQueueCommandProducer;
@@ -29,6 +30,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -181,6 +183,13 @@ public class LHServer {
 
     public void close() {
         CountDownLatch latch = new CountDownLatch(4 + listeners.size());
+        for (LHServerListener listener : listeners) {
+            log.info("Closing listener {}", listener);
+            listener.close();
+            latch.countDown();
+        }
+        commandProducer.close();
+        taskQueueManager.close();
 
         new Thread(() -> {
                     log.info("Closing timer Kafka Streams");
@@ -211,15 +220,6 @@ public class LHServer {
                     latch.countDown();
                 })
                 .start();
-
-        for (LHServerListener listener : listeners) {
-            new Thread(() -> {
-                        log.info("Closing listener {}", listener);
-                        listener.close();
-                        latch.countDown();
-                    })
-                    .start();
-        }
 
         try {
             latch.await();

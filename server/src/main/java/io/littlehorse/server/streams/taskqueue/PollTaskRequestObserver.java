@@ -1,5 +1,6 @@
 package io.littlehorse.server.streams.taskqueue;
 
+import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
@@ -48,6 +49,9 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
             LHServerConfig config,
             RequestExecutionContext requestContext) {
         this.responseObserver = responseObserver;
+        if(responseObserver instanceof ServerCallStreamObserver<PollTaskResponse> serverCall) {
+            serverCall.setOnCancelHandler(() -> {});
+        }
         this.taskQueueManager = manager;
         this.principalId = principalId;
         this.tenantId = tenantId;

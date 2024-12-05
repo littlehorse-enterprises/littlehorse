@@ -8,6 +8,11 @@ import org.apache.kafka.streams.state.internals.BlockBasedTableConfigWithAccessi
 import org.rocksdb.Cache;
 import org.rocksdb.CompactionStyle;
 import org.rocksdb.Options;
+import org.rocksdb.RateLimiter;
+
+import static org.rocksdb.RateLimiter.DEFAULT_FAIRNESS;
+import static org.rocksdb.RateLimiter.DEFAULT_MODE;
+import static org.rocksdb.RateLimiter.DEFAULT_REFILL_PERIOD_MICROS;
 
 @Slf4j
 public class RocksConfigSetter implements RocksDBConfigSetter {
@@ -43,38 +48,42 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
     @Override
     public void setConfig(final String storeName, final Options options, final Map<String, Object> configs) {
-        log.trace("Overriding rocksdb settings for store {}", storeName);
-
-        LHServerConfig serverConfig = (LHServerConfig) configs.get(LH_SERVER_CONFIG_KEY);
-
-        BlockBasedTableConfigWithAccessibleCache tableConfig =
-                (BlockBasedTableConfigWithAccessibleCache) options.tableFormatConfig();
-        if (serverConfig.getGlobalRocksdbBlockCache() != null) {
-            // Streams provisions a *NON-shared* 50MB cache for every RocksDB instance. Need
-            // to .close() it to avoid leaks so that we can provide a global one.
-            Cache oldCache = tableConfig.blockCache();
-            tableConfig.setBlockCache(serverConfig.getGlobalRocksdbBlockCache());
-            oldCache.close();
-        }
-
-        tableConfig.setOptimizeFiltersForMemory(OPTIMIZE_FILTERS_FOR_MEMORY);
-        tableConfig.setBlockSize(BLOCK_SIZE);
-        options.setTableFormatConfig(tableConfig);
-
-        options.setOptimizeFiltersForHits(OPTIMIZE_FILTERS_FOR_HITS);
-        options.setCompactionStyle(CompactionStyle.LEVEL);
-
-        options.setIncreaseParallelism(serverConfig.getRocksDBCompactionThreads());
-
-        // Memtable size
-        options.setWriteBufferSize(
-                isCoreStore(storeName) ? serverConfig.getCoreMemtableSize() : serverConfig.getTimerMemtableSize());
-
-        if (serverConfig.getGlobalRocksdbWriteBufferManager() != null) {
-            options.setWriteBufferManager(serverConfig.getGlobalRocksdbWriteBufferManager());
-        }
+//        log.trace("Overriding rocksdb settings for store {}", storeName);
+//
+//        LHServerConfig serverConfig = (LHServerConfig) configs.get(LH_SERVER_CONFIG_KEY);
+//
+//        BlockBasedTableConfigWithAccessibleCache tableConfig =
+//                (BlockBasedTableConfigWithAccessibleCache) options.tableFormatConfig();
+//        if (serverConfig.getGlobalRocksdbBlockCache() != null) {
+//            // Streams provisions a *NON-shared* 50MB cache for every RocksDB instance. Need
+//            // to .close() it to avoid leaks so that we can provide a global one.
+//            Cache oldCache = tableConfig.blockCache();
+//            tableConfig.setBlockCache(serverConfig.getGlobalRocksdbBlockCache());
+//            oldCache.close();
+//        }
+//
+//        tableConfig.setOptimizeFiltersForMemory(OPTIMIZE_FILTERS_FOR_MEMORY);
+//        tableConfig.setBlockSize(BLOCK_SIZE);
+//        options.setTableFormatConfig(tableConfig);
+//
+//        options.setOptimizeFiltersForHits(OPTIMIZE_FILTERS_FOR_HITS);
+//        options.setCompactionStyle(CompactionStyle.LEVEL);
+//
+//        options.setIncreaseParallelism(serverConfig.getRocksDBCompactionThreads());
+//
+//        // Memtable size
+//        options.setWriteBufferSize(
+//                isCoreStore(storeName) ? serverConfig.getCoreMemtableSize() : serverConfig.getTimerMemtableSize());
+//
+//        if (serverConfig.getGlobalRocksdbWriteBufferManager() != null) {
+//            options.setWriteBufferManager(serverConfig.getGlobalRocksdbWriteBufferManager());
+//        }
         // Streams default is 3
-        options.setMaxWriteBufferNumber(5);
+//        options.setMaxWriteBufferNumber(5);
+        long rateBytesPerSecond = mbToBytes(120);
+        log.info("Rate bytes per second = {}", rateBytesPerSecond);
+        options.setRateLimiter(new RateLimiter(rateBytesPerSecond, DEFAULT_REFILL_PERIOD_MICROS, DEFAULT_FAIRNESS,
+                DEFAULT_MODE, true));
 
         // Future Work: Enable larger scaling by using Partitioned Index Filters
         // https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters
@@ -85,6 +94,10 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
     @Override
     public void close(final String storeName, final Options options) {}
+
+    private long mbToBytes(long mb){
+        return mb * 1024 * 1024;
+    }
 
     private boolean isCoreStore(String storeName) {
         return !storeName.contains("timer");

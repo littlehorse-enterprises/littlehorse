@@ -24,6 +24,7 @@ import org.apache.kafka.streams.KafkaStreams.State;
 import org.apache.kafka.streams.processor.StandbyUpdateListener;
 import org.apache.kafka.streams.processor.StateRestoreListener;
 import org.apache.kafka.streams.processor.TaskId;
+import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 
 @Slf4j
 public class HealthService implements Closeable, StateRestoreListener, StandbyUpdateListener {
@@ -40,6 +41,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
 
     private KafkaStreams coreStreams;
     private KafkaStreams timerStreams;
+    private final ExecutorThreadPool jettyThreadPool = new ExecutorThreadPool();
 
     public HealthService(
             LHServerConfig config,
@@ -50,7 +52,8 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             BackendInternalComms internalComms) {
         this.prom = new PrometheusMetricExporter(config);
         this.numberOfPartitionPerTopic = config.partitionsByTopic();
-
+        this.jettyThreadPool.setName("javalin-service");
+        this.jettyThreadPool.setMaxThreads(10);
         this.coreState = new InstanceState(coreStreams, internalComms);
         this.prom.bind(
                 coreStreams,
@@ -59,7 +62,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
                 metadataCache,
                 new StandbyMetrics(standbyStores, config.getLHInstanceName()),
                 coreState);
-        this.server = Javalin.create();
+        this.server = Javalin.create(javalinConfig -> javalinConfig.jetty.threadPool = jettyThreadPool);
 
         this.coreStreams = coreStreams;
         this.timerStreams = timerStreams;

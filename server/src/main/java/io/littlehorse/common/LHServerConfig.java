@@ -181,7 +181,6 @@ public class LHServerConfig extends ConfigBase {
 
     private Admin kafkaAdmin;
     private LHProducer producer;
-    private LHProducer txnProducer;
 
     public int getHotMetadataPartition() {
         return (Utils.toPositive(Utils.murmur2(LHConstants.META_PARTITION_KEY.getBytes())) % getClusterPartitions());
@@ -662,7 +661,6 @@ public class LHServerConfig extends ConfigBase {
     public void cleanup() {
         if (this.kafkaAdmin != null) this.kafkaAdmin.close();
         if (this.producer != null) this.producer.close();
-        if (this.txnProducer != null) this.txnProducer.close();
     }
 
     public boolean shouldCreateTopics() {
@@ -873,6 +871,7 @@ public class LHServerConfig extends ConfigBase {
         props.put("client.id", this.getClientId("timer"));
         props.put("processing.guarantee", "at_least_once");
         props.put("consumer.isolation.level", "read_uncommitted");
+        props.put("state.dir", props.get("state.dir") + File.separator + "timer");
         props.put("num.stream.threads", Integer.valueOf(getOrSetDefault(TIMER_STREAM_THREADS_KEY, "1")));
 
         // The timer topology is ALOS, so we can have a larger commit interval with less of a problem. Looking at the
