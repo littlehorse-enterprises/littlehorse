@@ -13,6 +13,9 @@ import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest;
 import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
+import io.littlehorse.sdk.common.proto.TaskRun;
+import io.littlehorse.sdk.common.proto.TaskRunId;
+import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.UserTaskEvent;
 import io.littlehorse.sdk.common.proto.UserTaskEvent.EventCase;
 import io.littlehorse.sdk.common.proto.UserTaskRun;
@@ -61,6 +64,12 @@ public class UserTaskTest {
 
     @LHWorkflow("cancel-user-task-on-deadline")
     private Workflow userTaskCancelOnDeadline;
+
+    @LHWorkflow("schedule-reminder-task-without-user-fields-workflow")
+    private Workflow scheduleReminderTaskWithoutUserFields;
+
+    @LHWorkflow("worker-context-receives-user-details")
+    private Workflow workerContextReceivesUserDetails;
 
     @LHUserTaskForm(USER_TASK_DEF_NAME)
     private MyForm myForm = new MyForm();
@@ -296,6 +305,42 @@ public class UserTaskTest {
                 .start();
     }
 
+    @Test
+    void shouldScheduleAndExecuteReminderTask() {
+        workflowVerifier
+                .prepareRun(scheduleReminderTaskWithoutUserFields)
+                .waitForStatus(ERROR, Duration.ofSeconds(6))
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
+                    UserTaskRun userTaskRun = client.getUserTaskRun(userTaskId);
+                    UserTaskEvent userTaskEvent = userTaskRun.getEvents(1);
+                    TaskRunId taskRunId = userTaskEvent.getTaskExecuted().getTaskRun();
+                    TaskRun taskRun = client.getTaskRun(taskRunId);
+                    TaskStatus taskRunStatus = taskRun.getStatus();
+
+                    Assertions.assertThat(taskRunStatus).isEqualTo(TaskStatus.TASK_SUCCESS);
+                })
+                .start();
+    }
+
+    @Test
+    void verifyWorkerContextHasUserIdOrUserGroup() {
+        workflowVerifier
+                .prepareRun(workerContextReceivesUserDetails)
+                .waitForStatus(ERROR, Duration.ofSeconds(6))
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    UserTaskRunId userTaskId = nodeRun.getUserTask().getUserTaskRunId();
+                    UserTaskRun userTaskRun = client.getUserTaskRun(userTaskId);
+                    UserTaskEvent userTaskEvent = userTaskRun.getEvents(1);
+                    TaskRunId taskRunId = userTaskEvent.getTaskExecuted().getTaskRun();
+                    TaskRun taskRun = client.getTaskRun(taskRunId);
+                    TaskStatus taskRunStatus = taskRun.getStatus();
+
+                    Assertions.assertThat(taskRunStatus).isEqualTo(TaskStatus.TASK_SUCCESS);
+                })
+                .start();
+    }
+
     @LHWorkflow("deadline-reassignment-workflow")
     public Workflow buildDeadlineReassignmentWorkflow() {
         return new WorkflowImpl("deadline-reassignment-workflow", entrypointThread -> {
@@ -312,6 +357,30 @@ public class UserTaskTest {
             entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
 
             entrypointThread.execute("my-custom-task", formVar);
+        });
+    }
+
+    @LHWorkflow("schedule-reminder-task-without-user-fields-workflow")
+    public Workflow buildReminderTaskWorkflowWithUserGroupField() {
+        return new WorkflowImpl("reminder-task-without-user-fields-workflow", entrypointThread -> {
+            UserTaskOutput formOutput = entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "jacob", null);
+
+            // Schedule a reminder immediately
+            entrypointThread.scheduleReminderTask(formOutput, 0, "reminder-task");
+
+            entrypointThread.cancelUserTaskRunAfter(formOutput, 5);
+        });
+    }
+
+    @LHWorkflow("worker-context-receives-user-details")
+    public Workflow workerContextReceivesUserDetails() {
+        return new WorkflowImpl("worker-context-receives-user-details", entrypointThread -> {
+            UserTaskOutput formOutput = entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "jacob", null);
+
+            // Schedule a reminder immediately
+            entrypointThread.scheduleReminderTask(formOutput, 0, "verify-worker-context", "jacob", null);
+
+            entrypointThread.cancelUserTaskRunAfter(formOutput, 5);
         });
     }
 
@@ -368,6 +437,24 @@ public class UserTaskTest {
     @LHTaskMethod("reminder-task")
     public void doReminder(WorkerContext ctx) {
         cache.put(ctx.getWfRunId().getId(), "hello there!");
+    }
+
+    @LHTaskMethod("verify-worker-context")
+    public void verifyWorkerContext(String userId, String userGroup, WorkerContext ctx) {
+        if (userId == null && userGroup == null) {
+            throw new IllegalStateException("At least one of userId or userGroup must be specified");
+        }
+
+        if (userId != null) {
+            if (!userId.equals(ctx.getUserId())) {
+                throw new IllegalStateException("WorkerContext UserId does not match expected value.");
+            }
+        }
+        if (userGroup != null) {
+            if (!userGroup.equals(ctx.getUserGroup())) {
+                throw new IllegalStateException("WorkerContext UserGroup does not match expected value.");
+            }
+        }
     }
 }
 
