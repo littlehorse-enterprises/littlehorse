@@ -42,9 +42,15 @@ public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTrigge
     public UserTaskTriggerReference.Builder toProto() {
         UserTaskTriggerReference.Builder out = UserTaskTriggerReference.newBuilder()
                 .setNodeRunId(nodeRunId.toProto())
-                .setUserTaskEventNumber(userTaskEventNumber)
-                .setUserId(this.userId)
-                .setUserGroup(this.userGroup);
+                .setUserTaskEventNumber(userTaskEventNumber);
+
+        if (userId != null) {
+            out.setUserId(this.userId);
+        }
+
+        if (userGroup != null) {
+            out.setUserGroup(this.userGroup);
+        }
 
         return out;
     }
@@ -54,8 +60,14 @@ public class UserTaskTriggerReferenceModel extends LHSerializable<UserTaskTrigge
         UserTaskTriggerReference p = (UserTaskTriggerReference) proto;
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
         userTaskEventNumber = p.getUserTaskEventNumber();
-        userId = p.getUserId();
-        userGroup = p.getUserGroup();
+
+        if (p.hasUserId()) {
+            userId = p.getUserId();
+        }
+
+        if (p.hasUserGroup()) {
+            userGroup = p.getUserGroup();
+        }
     }
 
     @Override

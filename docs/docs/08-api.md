@@ -3228,7 +3228,7 @@ SDK, which allows the Task Method to determine where the TaskRun comes from.
 | `node_run_id` | | [NodeRunId](#noderunid) | Is the NodeRun that the UserTaskRun belongs to. |
 | `user_task_event_number` | | int32 | Is the index in the `events` field of the UserTaskRun that the TaskRun corresponds to. |
 | `user_id` | optional| string | Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not asigned to a specific user_id. |
-| `user_group` | optional| string | Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not asigned to a specific user_id. |
+| `user_group` | optional| string | Is the user_group that the UserTaskRun is assigned to. Unset if UserTaskRun is not asigned to a specific user_group. |
  <!-- end Fields -->
  <!-- end HasFields -->
 
