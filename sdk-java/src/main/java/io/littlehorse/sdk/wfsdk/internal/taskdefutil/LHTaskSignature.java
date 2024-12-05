@@ -60,24 +60,17 @@ public class LHTaskSignature {
                     + " on "
                     + executable.getClass());
         }
-        VariableType returnType = LHLibUtil.javaClassToLHVarType(taskMethod.getReturnType());
-        boolean maskedValue = false;
-        String outputSchemaVarName = "output";
-        if (taskMethod.isAnnotationPresent(LHType.class)) {
-            LHType type = taskMethod.getAnnotation(LHType.class);
-            maskedValue = type.masked();
-            if (!type.name().isEmpty() || !type.name().isBlank()) {
-                outputSchemaVarName = type.name();
-            }
-        }
-        outputSchema = TaskDefOutputSchema.newBuilder()
-                .setValueDef(VariableDef.newBuilder()
-                        .setType(returnType)
-                        .setName(outputSchemaVarName)
-                        .setMaskedValue(maskedValue)
-                        .build())
-                .build();
 
+        Class<?> returnType = taskMethod.getReturnType();
+
+        buildInputVarsSignature();
+
+        if (!void.class.isAssignableFrom(returnType)) {
+            buildOutputSchemaSignature(returnType);
+        }
+    }
+
+    private void buildInputVarsSignature() {
         for (int i = 0; i < taskMethod.getParameterCount(); i++) {
             Parameter param = taskMethod.getParameters()[i];
             if (param.getType().equals(WorkerContext.class)) {
@@ -103,6 +96,26 @@ public class LHTaskSignature {
                 varNames.add(varNameFromParameterName(param));
             }
         }
+    }
+
+    private void buildOutputSchemaSignature(Class<?> classReturnType) {
+        VariableType returnType = LHLibUtil.javaClassToLHVarType(classReturnType);
+        boolean maskedValue = false;
+        String outputSchemaVarName = "output";
+        if (taskMethod.isAnnotationPresent(LHType.class)) {
+            LHType type = taskMethod.getAnnotation(LHType.class);
+            maskedValue = type.masked();
+            if (!type.name().isEmpty() || !type.name().isBlank()) {
+                outputSchemaVarName = type.name();
+            }
+        }
+        outputSchema = TaskDefOutputSchema.newBuilder()
+                .setValueDef(VariableDef.newBuilder()
+                        .setType(returnType)
+                        .setName(outputSchemaVarName)
+                        .setMaskedValue(maskedValue)
+                        .build())
+                .build();
     }
 
     private String varNameFromParameterName(Parameter param) {

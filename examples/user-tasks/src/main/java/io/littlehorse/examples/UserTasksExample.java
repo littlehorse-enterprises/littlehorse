@@ -40,17 +40,6 @@ public class UserTasksExample {
             VariableType.BOOL
         );
 
-        WfRunVariable temperature = wf.addVariable("temperature", VariableType.INT);
-        WfRunVariable isActive = wf.addVariable("is_active", VariableType.BOOL); 
-        WfRunVariable price = wf.addVariable("price", VariableType.DOUBLE);
-        WfRunVariable metadata = wf.addVariable("metadata", VariableType.JSON_OBJ);
-        WfRunVariable tags = wf.addVariable("tags", VariableType.JSON_ARR);
-        WfRunVariable timestamp = wf.addVariable("timestamp", VariableType.INT);
-        WfRunVariable description = wf.addVariable("description", VariableType.STR);
-        WfRunVariable bytes = wf.addVariable("bytes", VariableType.BYTES);
-        WfRunVariable count = wf.addVariable("count", VariableType.INT);
-        WfRunVariable enabled = wf.addVariable("enabled", VariableType.BOOL);
-
         // Get the IT Request
         UserTaskOutput formOutput = wf.assignUserTask(
             IT_REQUEST_FORM,

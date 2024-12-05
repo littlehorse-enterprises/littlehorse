@@ -347,8 +347,8 @@ export interface UserTaskTriggerReference {
     | string
     | undefined;
   /**
-   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
-   * asigned to a specific user_id.
+   * Is the user_group that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_group.
    */
   userGroup?: string | undefined;
 }

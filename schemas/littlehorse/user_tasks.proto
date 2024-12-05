@@ -214,8 +214,8 @@ message UserTaskTriggerReference {
   // asigned to a specific user_id.
   optional string user_id = 3;
 
-  // Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
-  // asigned to a specific user_id.
+  // Is the user_group that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+  // asigned to a specific user_group.
   optional string user_group = 4;
 }
 
