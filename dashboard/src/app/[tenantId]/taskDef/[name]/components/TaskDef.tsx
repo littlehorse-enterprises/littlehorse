@@ -5,7 +5,8 @@ import { SearchFooter } from '@/app/[tenantId]/components/SearchFooter'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Field, Input, Label } from '@headlessui/react'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { TaskDef as TaskDefProto, TaskStatus } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
@@ -64,25 +65,25 @@ export const TaskDef: FC<Props> = ({ spec }) => {
         </select>
       </div>
       <div className="mb-5 flex max-w-fit items-start justify-between">
-        <Field className="flex items-center justify-between">
-          <Label className="block w-1/2 font-bold">Created after:</Label>
+        <div className="flex items-center justify-between">
+          <Label className="mr-3 font-bold">Created after:</Label>
           <Input
             type="datetime-local"
             value={createdAfter}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCreatedAfter(e.target.value)}
-            className="focus:shadow-outline ml-3 w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
+            className="w-full"
           />
-        </Field>
+        </div>
 
-        <Field className="ml-10 flex items-center justify-between">
-          <Label className="block w-1/2 font-bold">Created before:</Label>
+        <div className="ml-10 flex items-center justify-between">
+          <Label className="mr-4 font-bold">Created before:</Label>
           <Input
             type="datetime-local"
             value={createdBefore}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCreatedBefore(e.target.value)}
-            className="focus:shadow-outline ml-4 w-full appearance-none rounded border px-3 py-2 leading-tight shadow focus:outline-none"
+            className="w-full"
           />
-        </Field>
+        </div>
       </div>
 
       {isPending ? (
