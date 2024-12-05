@@ -158,20 +158,20 @@ namespace LittleHorse.Sdk.Worker.Internal
             ReportTaskRun result = ExecuteTask(scheduledTask, LHMappingHelper.MapDateTimeFromProtoTimeStamp(scheduledTask.CreatedAt));
             _semaphore.Release();
 
-            var wfRunId = LHWorkerHelper.GetWFRunId(scheduledTask.Source);
+            var wfRunId = LHHelper.GetWFRunId(scheduledTask.Source);
 
             try
             {
                 var retriesLeft = MAX_REPORT_RETRIES;
 
-                _logger?.LogDebug($"Going to report task for wfRun {wfRunId}");
+                _logger?.LogDebug($"Going to report task for wfRun {wfRunId.Id}");
                 Policy.Handle<Exception>().WaitAndRetry(MAX_REPORT_RETRIES,
                     retryAttempt => TimeSpan.FromSeconds(5),
                     onRetry: (exception, timeSpan, retryCount, context) =>
                 {
                     --retriesLeft;
                     _logger?.LogDebug($"Failed to report task for wfRun {wfRunId}: {exception.Message}. Retries left: {retriesLeft}");
-                    _logger?.LogDebug($"Retrying reportTask rpc on taskRun {LHWorkerHelper.TaskRunIdToString(result.TaskRunId)}");
+                    _logger?.LogDebug($"Retrying reportTask rpc on taskRun {LHHelper.TaskRunIdToString(result.TaskRunId)}");
                 }).Execute(() => RunReportTask(result));
             }
             catch (Exception ex)
