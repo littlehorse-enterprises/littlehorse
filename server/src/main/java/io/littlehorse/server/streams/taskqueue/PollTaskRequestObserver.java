@@ -1,8 +1,10 @@
 package io.littlehorse.server.streams.taskqueue;
 
+import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
@@ -47,6 +49,9 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
             LHServerConfig config,
             RequestExecutionContext requestContext) {
         this.responseObserver = responseObserver;
+        if(responseObserver instanceof ServerCallStreamObserver<PollTaskResponse> serverCall) {
+            serverCall.setOnCancelHandler(() -> {});
+        }
         this.taskQueueManager = manager;
         this.principalId = principalId;
         this.tenantId = tenantId;
@@ -100,6 +105,12 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         taskWorkerVersion = req.getTaskWorkerVersion();
 
         taskQueueManager.onPollRequest(this, tenantId, requestContext);
+    }
+
+    public void sendResponse(ScheduledTaskModel toExecute) {
+        PollTaskResponse response =
+                PollTaskResponse.newBuilder().setResult(toExecute.toProto()).build();
+        responseObserver.onNext(response);
     }
 
     @Override

@@ -5,6 +5,9 @@ import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
+
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.TaskId;
 
 @Slf4j
-public class TaskQueueManager {
+public class TaskQueueManager implements Closeable {
 
     private final ConcurrentHashMap<TenantTaskName, OneTaskQueue> taskQueues;
 
@@ -21,11 +24,16 @@ public class TaskQueueManager {
     private LHServer backend;
 
     private final int individualQueueConfiguredCapacity;
+    private final TaskQueueCommandProducer taskQueueCommandProducer;
 
-    public TaskQueueManager(LHServer backend, int individualQueueConfiguredCapacity) {
+    public TaskQueueManager(
+            LHServer backend,
+            int individualQueueConfiguredCapacity,
+            TaskQueueCommandProducer taskQueueCommandProducer) {
         this.taskQueues = new ConcurrentHashMap<>();
         this.backend = backend;
         this.individualQueueConfiguredCapacity = individualQueueConfiguredCapacity;
+        this.taskQueueCommandProducer = taskQueueCommandProducer;
     }
 
     public void onPollRequest(
@@ -47,7 +55,7 @@ public class TaskQueueManager {
     }
 
     public void itsAMatch(ScheduledTaskModel scheduledTask, PollTaskRequestObserver luckyClient) {
-        backend.returnTaskToClient(scheduledTask, luckyClient);
+        taskQueueCommandProducer.returnTaskToClient(scheduledTask, luckyClient);
     }
 
     private OneTaskQueue getSubQueue(TenantTaskName tenantTask) {
@@ -59,6 +67,11 @@ public class TaskQueueManager {
 
     public Collection<OneTaskQueue> all() {
         return taskQueues.values();
+    }
+
+    @Override
+    public void close() {
+        taskQueueCommandProducer.close();
     }
 
     private record TenantTaskName(TenantIdModel tenantId, String taskDefName) {

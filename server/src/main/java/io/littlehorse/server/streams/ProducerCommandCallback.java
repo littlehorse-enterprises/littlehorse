@@ -4,11 +4,14 @@ import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
+import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.WaitForCommandRequest;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.server.streams.util.AsyncWaiters;
+import java.util.concurrent.Executor;
 import java.util.function.Function;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.Serdes;
@@ -16,6 +19,7 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.state.HostInfo;
 
+@Slf4j
 public class ProducerCommandCallback implements Callback {
     private final StreamObserver<WaitForCommandResponse> observer;
     private final AbstractCommand<?> command;
@@ -23,6 +27,7 @@ public class ProducerCommandCallback implements Callback {
     private final HostInfo thisHost;
     private final Function<KeyQueryMetadata, LHInternalsGrpc.LHInternalsStub> internalStub;
     private final AsyncWaiters asyncWaiters;
+    private final Executor completionHandlerPool;
 
     public ProducerCommandCallback(
             StreamObserver<WaitForCommandResponse> observer,
@@ -30,26 +35,38 @@ public class ProducerCommandCallback implements Callback {
             KafkaStreams coreStreams,
             HostInfo thisHost,
             Function<KeyQueryMetadata, LHInternalsGrpc.LHInternalsStub> internalStub,
-            AsyncWaiters asyncWaiters) {
+            AsyncWaiters asyncWaiters,
+            Executor completionHandlerPool) {
         this.observer = observer;
         this.command = command;
         this.coreStreams = coreStreams;
         this.thisHost = thisHost;
         this.internalStub = internalStub;
         this.asyncWaiters = asyncWaiters;
+        this.completionHandlerPool = completionHandlerPool;
     }
 
     @Override
     public void onCompletion(RecordMetadata metadata, Exception exception) {
-        try {
-            if (exception != null) {
-                observer.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
-            } else {
-                waitForCommand(command, observer);
+        completionHandlerPool.execute(() -> {
+            if (command instanceof CommandModel cmd) {
+                long commandTime = cmd.getTime().getTime();
+                long currentTime = System.currentTimeMillis();
+                long latency = currentTime - commandTime;
+                if (latency > 10) {
+                    log.debug("Latency %s ms".formatted(latency));
+                }
             }
-        } catch (LHApiException ex) {
-            observer.onError(ex);
-        }
+            try {
+                if (exception != null) {
+                    observer.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
+                } else {
+                    waitForCommand(command, observer);
+                }
+            } catch (LHApiException ex) {
+                observer.onError(ex);
+            }
+        });
     }
 
     private void waitForCommand(AbstractCommand<?> command, StreamObserver<WaitForCommandResponse> observer) {

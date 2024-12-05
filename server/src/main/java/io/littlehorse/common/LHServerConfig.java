@@ -45,7 +45,6 @@ import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.errors.DefaultProductionExceptionHandler;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.jetbrains.annotations.Nullable;
 import org.rocksdb.Cache;
@@ -182,7 +181,6 @@ public class LHServerConfig extends ConfigBase {
 
     private Admin kafkaAdmin;
     private LHProducer producer;
-    private LHProducer txnProducer;
 
     public int getHotMetadataPartition() {
         return (Utils.toPositive(Utils.murmur2(LHConstants.META_PARTITION_KEY.getBytes())) % getClusterPartitions());
@@ -663,14 +661,6 @@ public class LHServerConfig extends ConfigBase {
     public void cleanup() {
         if (this.kafkaAdmin != null) this.kafkaAdmin.close();
         if (this.producer != null) this.producer.close();
-        if (this.txnProducer != null) this.txnProducer.close();
-    }
-
-    public LHProducer getProducer() {
-        if (producer == null) {
-            producer = new LHProducer(this);
-        }
-        return producer;
     }
 
     public boolean shouldCreateTopics() {
@@ -694,7 +684,7 @@ public class LHServerConfig extends ConfigBase {
         return Long.valueOf(getOrSetDefault(TIMER_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 32)));
     }
 
-    public Properties getKafkaProducerConfig(String component) {
+    public Properties getKafkaCommandProducerConfig(String component) {
         Properties conf = new Properties();
         conf.put("client.id", this.getClientId(component));
         conf.put(CommonClientConfigs.METADATA_RECOVERY_STRATEGY_CONFIG, "rebootstrap");
@@ -710,6 +700,16 @@ public class LHServerConfig extends ConfigBase {
         conf.put(ProducerConfig.ACKS_CONFIG, "all");
         conf.put(ProducerConfig.LINGER_MS_CONFIG, getOrSetDefault(LINGER_MS_KEY, "0"));
         addKafkaSecuritySettings(conf);
+        return conf;
+    }
+
+    public Properties getKafkaTaskClaimProducer() {
+        Properties conf = getKafkaCommandProducerConfig("task-claim");
+        //        conf.put(ProducerConfig.ACKS_CONFIG, "0");
+        //        conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "false");
+        //        conf.put(ProducerConfig.LINGER_MS_CONFIG, "0");
+        //        conf.put(ProducerConfig.BATCH_SIZE_CONFIG, "49152");
+        //        conf.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "1000");
         return conf;
     }
 
@@ -871,6 +871,7 @@ public class LHServerConfig extends ConfigBase {
         props.put("client.id", this.getClientId("timer"));
         props.put("processing.guarantee", "at_least_once");
         props.put("consumer.isolation.level", "read_uncommitted");
+        props.put("state.dir", props.get("state.dir") + File.separator + "timer");
         props.put("num.stream.threads", Integer.valueOf(getOrSetDefault(TIMER_STREAM_THREADS_KEY, "1")));
 
         // The timer topology is ALOS, so we can have a larger commit interval with less of a problem. Looking at the
@@ -953,7 +954,7 @@ public class LHServerConfig extends ConfigBase {
 
         // Configs required by KafkaStreams. Some of these are overriden by the application logic itself.
         props.put("default.deserialization.exception.handler", LogAndContinueExceptionHandler.class);
-        props.put("default.production.exception.handler", DefaultProductionExceptionHandler.class);
+        props.put("default.production.exception.handler", LHProductionExceptionHandler.class);
         props.put("default.value.serde", Serdes.StringSerde.class.getName());
         props.put("default.key.serde", Serdes.StringSerde.class.getName());
 
@@ -989,7 +990,16 @@ public class LHServerConfig extends ConfigBase {
         // in the case of a server failure while a request is being processed, the resulting
         // `Command` should be processed on a new server within a minute. Issue #479
         // should verify this behavior
-        props.put("consumer.session.timeout.ms", getStreamsSessionTimeout());
+        props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, getStreamsSessionTimeout());
+        props.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, getStreamsSessionTimeout());
+        //        props.put(
+        //                ConsumerConfig.SOCKET_CONNECTION_SETUP_TIMEOUT_MAX_MS_CONFIG,
+        //                "120000");
+        //        props.put(
+        //                ConsumerConfig.SOCKET_CONNECTION_SETUP_TIMEOUT_MS_CONFIG,
+        //                "60000");
+        //        props.put(ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG,
+        //                "240000");
 
         // In case we need to authenticate to Kafka, this sets it.
         addKafkaSecuritySettings(props);

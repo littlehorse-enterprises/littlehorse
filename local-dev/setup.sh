@@ -12,6 +12,11 @@ services:
       - "9092:9092"
     container_name: lh-server-kafka
     image: apache/kafka:3.8.0
+    deploy:
+      resources:
+        limits:
+          cpus: '3.5'
+          memory: '12G'
 EOF
 )
 

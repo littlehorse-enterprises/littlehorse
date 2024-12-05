@@ -270,6 +270,27 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         attempt.setStatus(TaskStatus.TASK_RUNNING);
     }
 
+    public void onTaskAttemptStarted() {
+        transitionTo(TaskStatus.TASK_RUNNING);
+
+        // create a timer to mark the task is timeout if it does not finish
+        //        ReportTaskRunModel taskResult = new ReportTaskRunModel();
+        //        taskResult.setTaskRunId(id);
+        //        taskResult.setTime(new Date(System.currentTimeMillis() + (1000 * timeoutSeconds)));
+        //        taskResult.setStatus(TaskStatus.TASK_TIMEOUT);
+        // CommandModel timerCommand = new CommandModel(taskResult, taskResult.getTime());
+        // LHTimer timer = new LHTimer(timerCommand);
+        // processorContext.getTaskManager().scheduleTimer(timer);
+
+        // Now that that's out of the way, we can mark the TaskRun as running.
+        // Also we need to save the task worker version and client id.
+        TaskAttemptModel attempt = getLatestAttempt();
+        attempt.setTaskWorkerId("eduwer");
+        attempt.setTaskWorkerVersion("camacaro");
+        attempt.setStartTime(new Date());
+        attempt.setStatus(TaskStatus.TASK_RUNNING);
+    }
+
     public void onTaskAttemptResultReported(ReportTaskRunModel ce) {
         if (ce.getAttemptNumber() >= attempts.size()) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Specified Task Attempt does not exist!");
