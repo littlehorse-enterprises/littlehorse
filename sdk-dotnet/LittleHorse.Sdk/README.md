@@ -41,7 +41,7 @@ dotnet build ./LittleHorse.Sdk
 dotnet test ./LittleHorse.Sdk.Tests
 ```
 
-### Run Example
+### Run Examples
 
 ```
 dotnet run --project ./Examples/BasicExample

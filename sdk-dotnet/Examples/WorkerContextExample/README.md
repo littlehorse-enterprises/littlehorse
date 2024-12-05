@@ -36,7 +36,7 @@ parameter to the signature of your task:
 
 ```
     [LHTaskMethod("task")]
-    public void ProcessTask(LHWorkerContext context)
+    public void ProcessTask(long requestTime, LHWorkerContext context)
     {
         ...
     }
