@@ -5,9 +5,10 @@ namespace WorkerContextExample;
 public class MyWorker
 {
     [LHTaskMethod("task")]
-    public void ProcessTask(LHWorkerContext context)
+    public void ProcessTask(long requestTime, LHWorkerContext context)
     {
         context.Log("ProcessPayment");
+        Console.WriteLine($"Processing request time: {requestTime}");
         Console.WriteLine($"The Workflow Run Id is: {context.GetWfRunId()}");
         Console.WriteLine($"The Node Run Id is: {context.GetNodeRunId()}");
         Console.WriteLine($"The Task Run Id is: {context.GetTaskRunId()}");

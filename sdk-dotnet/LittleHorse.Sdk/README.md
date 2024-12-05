@@ -31,7 +31,7 @@ brew install dotnet
 ### Build
 
 ```
-cd sdk-dotnet/LittleHorse.Sdk
+cd sdk-dotnet
 dotnet build ./LittleHorse.Sdk
 ```
 ### Build and Run tests
@@ -45,6 +45,9 @@ dotnet test ./LittleHorse.Sdk.Tests
 
 ```
 dotnet run --project ./Examples/BasicExample
+dotnet run --project ./Examples/ExceptionsHandlerExample
+dotnet run --project ./Examples/MaskedFieldsExample
+dotnet run --project ./Examples/WorkerContextExample
 ```
 
 ### Self-signed TLS certificate
