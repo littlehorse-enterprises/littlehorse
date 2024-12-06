@@ -13,7 +13,7 @@ import io.littlehorse.test.internal.TestBootstrapper;
 import io.littlehorse.test.internal.TestContext;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Duration;
@@ -24,8 +24,6 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -33,7 +31,12 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import org.junit.jupiter.api.extension.TestInstancePreDestroyCallback;
 
-public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor, TestInstancePreDestroyCallback, BeforeEachCallback, AfterEachCallback {
+public class LHExtension
+        implements BeforeAllCallback,
+                TestInstancePostProcessor,
+                TestInstancePreDestroyCallback,
+                BeforeEachCallback,
+                AfterEachCallback {
 
     public static final String BOOTSTRAPPER_CLASS_PROPERTY = "bootstrapper.class";
     public static final String BOOTSTRAPPER_CLASS_ENV =
@@ -133,14 +136,14 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
 
             List<PutWorkflowEventDefRequest> workflowEvents = testContext.discoverWorkflowEvents(testInstance);
             workflowEvents.forEach(testContext::registerWorkflowEventDef);
-            maybeStartWorkers(testInstance, testContext.getConfig());
+            startTestInstanceWorkers(testInstance, testContext.getConfig(), scanWorkersSetup(testInstance.getClass()));
         } catch (IllegalAccessException e) {
             throw new LHTestInitializationException("Something went wrong registering task workers", e);
         }
         testContext.instrument(testInstance);
     }
 
-    private WithWorkers[] scanWorkersSetup(Class<?> instanceClass) {
+    private WithWorkers[] scanWorkersSetup(AnnotatedElement instanceClass) {
         if (instanceClass.isAnnotationPresent(WithWorkers.class)) {
             return new WithWorkers[] {instanceClass.getAnnotation(WithWorkers.class)};
         } else if (instanceClass.isAnnotationPresent(RepeatableWithWorkers.class)) {
@@ -150,8 +153,8 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
         }
     }
 
-    private void maybeStartWorkers(Object testInstance, LHConfig config) throws IllegalAccessException {
-        WithWorkers[] workersSetup = scanWorkersSetup(testInstance.getClass());
+    private void startTestInstanceWorkers(Object testInstance, LHConfig config, WithWorkers[] workersSetup)
+            throws IllegalAccessException {
         for (WithWorkers workerMetadata : workersSetup) {
             String methodSourceName = workerMetadata.value();
             List<String> allowedMethods = List.of(workerMetadata.lhMethods());
@@ -214,12 +217,17 @@ public class LHExtension implements BeforeAllCallback, TestInstancePostProcessor
     }
 
     @Override
-    public void afterEach(ExtensionContext context) {
-
+    public void beforeEach(ExtensionContext context) throws IllegalAccessException {
+        ExtensionContext.Store store = getStore(context);
+        TestContext testContext = store.get(LH_TEST_CONTEXT, TestContext.class);
+        WithWorkers[] withWorkers = scanWorkersSetup(context.getRequiredTestMethod());
+        startTestInstanceWorkers(context.getRequiredTestInstance(), testContext.getConfig(), withWorkers);
     }
 
     @Override
-    public void beforeEach(ExtensionContext context) {
-
+    public void afterEach(ExtensionContext context) {
+        ExtensionContext.Store store = getStore(context);
+        TestContext testContext = store.get(LH_TEST_CONTEXT, TestContext.class);
+        WithWorkers[] withWorkers = scanWorkersSetup(context.getRequiredTestMethod());
     }
 }
