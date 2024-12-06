@@ -2,6 +2,7 @@ package io.littlehorse.test;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -109,38 +111,58 @@ public class LHExtension
     @Override
     public void postProcessTestInstance(Object testInstance, ExtensionContext context) {
         ExtensionContext.Store store = getStore(context);
-        TestContext testContext = store.get(LH_TEST_CONTEXT, TestContext.class);
+        TestContext testContext = getTestContext(context);
         maybeCreateTenantAndPrincipal(testContext);
         try {
-            List<LHTaskWorker> workers = testContext.discoverTaskWorkers(testInstance);
-            for (LHTaskWorker worker : workers) {
-                if (store.get(worker.getTaskDefName()) != null) {
-                    continue;
-                }
-                store.put(worker.getTaskDefName(), worker);
-                worker.registerTaskDef();
-                TaskDefId taskDefId =
-                        TaskDefId.newBuilder().setName(worker.getTaskDefName()).build();
-                Awaitility.await()
-                        .ignoreExceptionsMatching(LHTestExceptionUtil::isNotFoundException)
-                        .until(() -> testContext.getLhClient().getTaskDef(taskDefId), Objects::nonNull);
-                Awaitility.await().until(() -> {
-                    worker.start();
-                    return true;
-                });
-            }
+            startWorkersFromDeclaredTaskMethods(testInstance, testContext, store);
             testContext.registerUserTaskSchemas(testInstance);
-            List<ExternalEventDef> externalEventDefinitions =
-                    testContext.discoverExternalEventDefinitions(testInstance);
-            externalEventDefinitions.forEach(testContext::registerExternalEventDef);
-
-            List<PutWorkflowEventDefRequest> workflowEvents = testContext.discoverWorkflowEvents(testInstance);
-            workflowEvents.forEach(testContext::registerWorkflowEventDef);
-            startTestInstanceWorkers(testInstance, testContext.getConfig(), scanWorkersSetup(testInstance.getClass()));
+            registerExternalEventDefinitions(testInstance, testContext);
+            registerWorkflowEventDefinitions(testInstance, testContext);
+            startTestInstanceWorkers(
+                    testInstance, testContext.getConfig(), store, scanWorkersSetup(testInstance.getClass()));
         } catch (IllegalAccessException e) {
             throw new LHTestInitializationException("Something went wrong registering task workers", e);
         }
         testContext.instrument(testInstance);
+    }
+
+    private static void registerWorkflowEventDefinitions(Object testInstance, TestContext testContext)
+            throws IllegalAccessException {
+        List<PutWorkflowEventDefRequest> workflowEvents = testContext.discoverWorkflowEvents(testInstance);
+        workflowEvents.forEach(testContext::registerWorkflowEventDef);
+    }
+
+    private static void registerExternalEventDefinitions(Object testInstance, TestContext testContext) {
+        List<ExternalEventDef> externalEventDefinitions = testContext.discoverExternalEventDefinitions(testInstance);
+        externalEventDefinitions.forEach(testContext::registerExternalEventDef);
+    }
+
+    private static void startWorkersFromDeclaredTaskMethods(
+            Object testInstance, TestContext testContext, ExtensionContext.Store store) {
+        List<LHTaskWorker> workers = testContext.discoverTaskWorkers(testInstance);
+        startWorkers(workers, store, testContext.getLhClient());
+    }
+
+    private static void startWorkers(
+            List<LHTaskWorker> workers,
+            ExtensionContext.Store store,
+            LittleHorseGrpc.LittleHorseBlockingStub lhClient) {
+        for (LHTaskWorker worker : workers) {
+            if (store.get(worker.getTaskDefName()) != null) {
+                continue;
+            }
+            store.put(worker.getTaskDefName(), worker);
+            worker.registerTaskDef();
+            TaskDefId taskDefId =
+                    TaskDefId.newBuilder().setName(worker.getTaskDefName()).build();
+            Awaitility.await()
+                    .ignoreExceptionsMatching(LHTestExceptionUtil::isNotFoundException)
+                    .until(() -> lhClient.getTaskDef(taskDefId), Objects::nonNull);
+            Awaitility.await().until(() -> {
+                worker.start();
+                return true;
+            });
+        }
     }
 
     private WithWorkers[] scanWorkersSetup(AnnotatedElement instanceClass) {
@@ -153,34 +175,11 @@ public class LHExtension
         }
     }
 
-    private void startTestInstanceWorkers(Object testInstance, LHConfig config, WithWorkers[] workersSetup)
+    private void startTestInstanceWorkers(
+            Object testInstance, LHConfig config, ExtensionContext.Store store, WithWorkers[] workersSetup)
             throws IllegalAccessException {
-        for (WithWorkers workerMetadata : workersSetup) {
-            String methodSourceName = workerMetadata.value();
-            List<String> allowedMethods = List.of(workerMetadata.lhMethods());
-            boolean startAllWorkers = allowedMethods.isEmpty();
-            try {
-                Object executable =
-                        testInstance.getClass().getMethod(methodSourceName).invoke(testInstance);
-                List<LHTaskWorker> workers = new ArrayList<>();
-                for (Method declaredMethod : executable.getClass().getDeclaredMethods()) {
-                    if (declaredMethod.getAnnotation(LHTaskMethod.class) != null) {
-                        String taskDefName =
-                                declaredMethod.getAnnotation(LHTaskMethod.class).value();
-                        if (startAllWorkers || allowedMethods.contains(taskDefName)) {
-                            LHTaskWorker worker = new LHTaskWorker(executable, taskDefName, config);
-                            workers.add(worker);
-                        }
-                    }
-                }
-                for (LHTaskWorker worker : workers) {
-                    worker.registerTaskDef();
-                    worker.start();
-                }
-            } catch (NoSuchMethodException | InvocationTargetException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        List<LHTaskWorker> workers = discoverTaskWorkers(workersSetup, testInstance, config);
+        startWorkers(workers, store, config.getBlockingStub());
     }
 
     @Override
@@ -196,6 +195,31 @@ public class LHExtension
                 store.remove(taskDef);
             }
         }
+    }
+
+    private List<LHTaskWorker> discoverTaskWorkers(WithWorkers[] workersSetup, Object testInstance, LHConfig config) {
+        List<LHTaskWorker> taskWorkers = new ArrayList<>();
+        for (WithWorkers workerMetadata : workersSetup) {
+            String methodSourceName = workerMetadata.value();
+            List<String> allowedMethods = List.of(workerMetadata.lhMethods());
+            boolean startAllWorkers = allowedMethods.isEmpty();
+            try {
+                Object executable =
+                        testInstance.getClass().getMethod(methodSourceName).invoke(testInstance);
+                for (Method declaredMethod : executable.getClass().getDeclaredMethods()) {
+                    if (declaredMethod.getAnnotation(LHTaskMethod.class) != null) {
+                        String taskDefName =
+                                declaredMethod.getAnnotation(LHTaskMethod.class).value();
+                        if (startAllWorkers || allowedMethods.contains(taskDefName)) {
+                            taskWorkers.add(new LHTaskWorker(executable, taskDefName, config));
+                        }
+                    }
+                }
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return taskWorkers;
     }
 
     private void maybeCreateTenantAndPrincipal(TestContext testContext) {
@@ -216,12 +240,17 @@ public class LHExtension
                 });
     }
 
+    private TestContext getTestContext(ExtensionContext context) {
+        ExtensionContext.Store store = getStore(context);
+        return store.get(LH_TEST_CONTEXT, TestContext.class);
+    }
+
     @Override
     public void beforeEach(ExtensionContext context) throws IllegalAccessException {
         ExtensionContext.Store store = getStore(context);
         TestContext testContext = store.get(LH_TEST_CONTEXT, TestContext.class);
         WithWorkers[] withWorkers = scanWorkersSetup(context.getRequiredTestMethod());
-        startTestInstanceWorkers(context.getRequiredTestInstance(), testContext.getConfig(), withWorkers);
+        startTestInstanceWorkers(context.getRequiredTestInstance(), testContext.getConfig(), store, withWorkers);
     }
 
     @Override
@@ -229,5 +258,13 @@ public class LHExtension
         ExtensionContext.Store store = getStore(context);
         TestContext testContext = store.get(LH_TEST_CONTEXT, TestContext.class);
         WithWorkers[] withWorkers = scanWorkersSetup(context.getRequiredTestMethod());
+        List<String> taskDefNames =
+                discoverTaskWorkers(withWorkers, context.getRequiredTestInstance(), testContext.getConfig()).stream()
+                        .map(LHTaskWorker::getTaskDefName)
+                        .collect(Collectors.toList());
+        for (String taskDefName : taskDefNames) {
+            LHTaskWorker taskWorker = (LHTaskWorker) store.get(taskDefName);
+            taskWorker.close();
+        }
     }
 }
