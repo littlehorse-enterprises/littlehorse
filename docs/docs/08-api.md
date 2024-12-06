@@ -4033,6 +4033,7 @@ world.
 | `id` | | [WorkflowEventId](#workfloweventid) | The ID of the WorkflowEvent. Contains WfRunId and WorkflowEventDefId. |
 | `content` | | [VariableValue](#variablevalue) | The content of the WorkflowEvent. |
 | `created_at` | | google.protobuf.Timestamp | The time that the WorkflowEvent was created. |
+| `node_run_id` | | [NodeRunId](#noderunid) | The NodeRun with which the WorkflowEvent is associated. |
  <!-- end Fields -->
  <!-- end HasFields -->
 

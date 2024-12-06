@@ -87,4 +87,31 @@ public interface WorkflowEventOrBuilder extends
    * <code>.google.protobuf.Timestamp created_at = 3;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
+
+  /**
+   * <pre>
+   * The NodeRun with which the WorkflowEvent is associated.
+   * </pre>
+   *
+   * <code>.littlehorse.NodeRunId node_run_id = 4;</code>
+   * @return Whether the nodeRunId field is set.
+   */
+  boolean hasNodeRunId();
+  /**
+   * <pre>
+   * The NodeRun with which the WorkflowEvent is associated.
+   * </pre>
+   *
+   * <code>.littlehorse.NodeRunId node_run_id = 4;</code>
+   * @return The nodeRunId.
+   */
+  io.littlehorse.sdk.common.proto.NodeRunId getNodeRunId();
+  /**
+   * <pre>
+   * The NodeRun with which the WorkflowEvent is associated.
+   * </pre>
+   *
+   * <code>.littlehorse.NodeRunId node_run_id = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getNodeRunIdOrBuilder();
 }

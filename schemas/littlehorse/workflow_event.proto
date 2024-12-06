@@ -27,6 +27,9 @@ message WorkflowEvent {
 
   // The time that the WorkflowEvent was created.
   google.protobuf.Timestamp created_at = 3;
+
+  // The NodeRun with which the WorkflowEvent is associated.
+  NodeRunId node_run_id = 4;
 }
 
 // The WorkflowEventDef defines the blueprint for a WorkflowEvent.

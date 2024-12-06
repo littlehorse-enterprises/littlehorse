@@ -252,7 +252,8 @@ public class TestUtil {
     public static WorkflowEventModel workflowEvent(String wfRunId) {
         WorkflowEventModel workflowEvent = new WorkflowEventModel(
                 new WorkflowEventIdModel(new WfRunIdModel(wfRunId), new WorkflowEventDefIdModel("test-name"), 0),
-                variableValue());
+                variableValue(),
+                nodeRun(wfRunId));
         return workflowEvent;
     }
 

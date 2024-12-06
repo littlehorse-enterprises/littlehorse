@@ -161,6 +161,44 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
 
+  public static final int NODE_RUN_ID_FIELD_NUMBER = 4;
+  private io.littlehorse.sdk.common.proto.NodeRunId nodeRunId_;
+  /**
+   * <pre>
+   * The NodeRun with which the WorkflowEvent is associated.
+   * </pre>
+   *
+   * <code>.littlehorse.NodeRunId node_run_id = 4;</code>
+   * @return Whether the nodeRunId field is set.
+   */
+  @java.lang.Override
+  public boolean hasNodeRunId() {
+    return nodeRunId_ != null;
+  }
+  /**
+   * <pre>
+   * The NodeRun with which the WorkflowEvent is associated.
+   * </pre>
+   *
+   * <code>.littlehorse.NodeRunId node_run_id = 4;</code>
+   * @return The nodeRunId.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.NodeRunId getNodeRunId() {
+    return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : nodeRunId_;
+  }
+  /**
+   * <pre>
+   * The NodeRun with which the WorkflowEvent is associated.
+   * </pre>
+   *
+   * <code>.littlehorse.NodeRunId node_run_id = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getNodeRunIdOrBuilder() {
+    return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : nodeRunId_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -184,6 +222,9 @@ private static final long serialVersionUID = 0L;
     if (createdAt_ != null) {
       output.writeMessage(3, getCreatedAt());
     }
+    if (nodeRunId_ != null) {
+      output.writeMessage(4, getNodeRunId());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -204,6 +245,10 @@ private static final long serialVersionUID = 0L;
     if (createdAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getCreatedAt());
+    }
+    if (nodeRunId_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, getNodeRunId());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -235,6 +280,11 @@ private static final long serialVersionUID = 0L;
       if (!getCreatedAt()
           .equals(other.getCreatedAt())) return false;
     }
+    if (hasNodeRunId() != other.hasNodeRunId()) return false;
+    if (hasNodeRunId()) {
+      if (!getNodeRunId()
+          .equals(other.getNodeRunId())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -257,6 +307,10 @@ private static final long serialVersionUID = 0L;
     if (hasCreatedAt()) {
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
+    }
+    if (hasNodeRunId()) {
+      hash = (37 * hash) + NODE_RUN_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getNodeRunId().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -413,6 +467,11 @@ private static final long serialVersionUID = 0L;
         createdAtBuilder_.dispose();
         createdAtBuilder_ = null;
       }
+      nodeRunId_ = null;
+      if (nodeRunIdBuilder_ != null) {
+        nodeRunIdBuilder_.dispose();
+        nodeRunIdBuilder_ = null;
+      }
       return this;
     }
 
@@ -460,6 +519,11 @@ private static final long serialVersionUID = 0L;
         result.createdAt_ = createdAtBuilder_ == null
             ? createdAt_
             : createdAtBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.nodeRunId_ = nodeRunIdBuilder_ == null
+            ? nodeRunId_
+            : nodeRunIdBuilder_.build();
       }
     }
 
@@ -516,6 +580,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
       }
+      if (other.hasNodeRunId()) {
+        mergeNodeRunId(other.getNodeRunId());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -563,6 +630,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 34: {
+              input.readMessage(
+                  getNodeRunIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1043,6 +1117,161 @@ private static final long serialVersionUID = 0L;
         createdAt_ = null;
       }
       return createdAtBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.NodeRunId nodeRunId_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder> nodeRunIdBuilder_;
+    /**
+     * <pre>
+     * The NodeRun with which the WorkflowEvent is associated.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunId node_run_id = 4;</code>
+     * @return Whether the nodeRunId field is set.
+     */
+    public boolean hasNodeRunId() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <pre>
+     * The NodeRun with which the WorkflowEvent is associated.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunId node_run_id = 4;</code>
+     * @return The nodeRunId.
+     */
+    public io.littlehorse.sdk.common.proto.NodeRunId getNodeRunId() {
+      if (nodeRunIdBuilder_ == null) {
+        return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : nodeRunId_;
+      } else {
+        return nodeRunIdBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * The NodeRun with which the WorkflowEvent is associated.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunId node_run_id = 4;</code>
+     */
+    public Builder setNodeRunId(io.littlehorse.sdk.common.proto.NodeRunId value) {
+      if (nodeRunIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        nodeRunId_ = value;
+      } else {
+        nodeRunIdBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The NodeRun with which the WorkflowEvent is associated.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunId node_run_id = 4;</code>
+     */
+    public Builder setNodeRunId(
+        io.littlehorse.sdk.common.proto.NodeRunId.Builder builderForValue) {
+      if (nodeRunIdBuilder_ == null) {
+        nodeRunId_ = builderForValue.build();
+      } else {
+        nodeRunIdBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The NodeRun with which the WorkflowEvent is associated.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunId node_run_id = 4;</code>
+     */
+    public Builder mergeNodeRunId(io.littlehorse.sdk.common.proto.NodeRunId value) {
+      if (nodeRunIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) != 0) &&
+          nodeRunId_ != null &&
+          nodeRunId_ != io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance()) {
+          getNodeRunIdBuilder().mergeFrom(value);
+        } else {
+          nodeRunId_ = value;
+        }
+      } else {
+        nodeRunIdBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The NodeRun with which the WorkflowEvent is associated.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunId node_run_id = 4;</code>
+     */
+    public Builder clearNodeRunId() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      nodeRunId_ = null;
+      if (nodeRunIdBuilder_ != null) {
+        nodeRunIdBuilder_.dispose();
+        nodeRunIdBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The NodeRun with which the WorkflowEvent is associated.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunId node_run_id = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.NodeRunId.Builder getNodeRunIdBuilder() {
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return getNodeRunIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * The NodeRun with which the WorkflowEvent is associated.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunId node_run_id = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder getNodeRunIdOrBuilder() {
+      if (nodeRunIdBuilder_ != null) {
+        return nodeRunIdBuilder_.getMessageOrBuilder();
+      } else {
+        return nodeRunId_ == null ?
+            io.littlehorse.sdk.common.proto.NodeRunId.getDefaultInstance() : nodeRunId_;
+      }
+    }
+    /**
+     * <pre>
+     * The NodeRun with which the WorkflowEvent is associated.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunId node_run_id = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder> 
+        getNodeRunIdFieldBuilder() {
+      if (nodeRunIdBuilder_ == null) {
+        nodeRunIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder>(
+                getNodeRunId(),
+                getParentForChildren(),
+                isClean());
+        nodeRunId_ = null;
+      }
+      return nodeRunIdBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
