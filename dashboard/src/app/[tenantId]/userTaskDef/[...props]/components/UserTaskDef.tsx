@@ -21,7 +21,7 @@ import React, { FC, Fragment, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { Details } from './Details'
 import { Fields } from './Fields'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
 type Props = {
   spec: UserTaskDefProto
@@ -43,6 +43,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
   const [userIdToSearchFor] = useDebounce(userId, DEBOUNCE_DELAY)
   const [userGroupToSearchFor] = useDebounce(userGroup, DEBOUNCE_DELAY)
+  const router = useRouter()
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: [
@@ -177,6 +178,17 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
                             {userTaskRun.scheduledTime
                               ? utcToLocalDateTime(userTaskRun.scheduledTime)
                               : NOT_APPLICABLE_LABEL}
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              onClick={() =>
+                                router.push(
+                                  `/${tenantId}/userTaskDef/audit/${userTaskRun.id?.wfRunId?.id}/${userTaskRun.id?.userTaskGuid}`
+                                )
+                              }
+                            >
+                              View Audit
+                            </Button>
                           </TableCell>
                         </TableRow>
                       )
