@@ -187,7 +187,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
                                 )
                               }
                             >
-                              View Audit
+                              View Audit Log
                             </Button>
                           </TableCell>
                         </TableRow>
