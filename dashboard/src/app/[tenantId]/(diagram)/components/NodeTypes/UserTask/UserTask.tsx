@@ -11,10 +11,11 @@ import { NodeViewButton } from '../../NodeViewButton'
 import { useParams, useRouter } from 'next/navigation'
 
 const Node: FC<NodeProps> = ({ data, selected }) => {
-  if (!data.userTask) return null
-  const { fade, userTask, nodeRun, nodeNeedsToBeHighlighted, nodeRunsList } = data
   const router = useRouter()
   const tenantId = useParams().tenantId as string
+
+  if (!data.userTask) return null
+  const { fade, userTask, nodeRun, nodeNeedsToBeHighlighted, nodeRunsList } = data
 
   return (
     <>
