@@ -208,7 +208,27 @@ wf.scheduleReminderTask(userTask, delaySeconds, taskDefName, taskArg1, taskArg2)
   </TabItem>
   <TabItem value="go" label="Go">
 
-GoLang support for user tasks coming soon.
+```go
+func QuickstartWorkflow(wf *littlehorse.WorkflowThread) {
+	// Declare an input variable and make it searchable
+	nameVar := wf.AddVariable("input-name", lhproto.VariableType_STR).Searchable()
+
+	// Execute a task and pass in the variable.
+	wf.Execute("greet", nameVar)
+
+	arg1 := "This is the first argument passed to the reminder task"
+	arg2 := "This is the second argument passed to the reminder task"
+	delaySeconds := 10 // wait 10 seconds after the task is assigned to schedule the reminder
+    reminderTaskDefName := "email-group"
+
+	userTaskOutput := wf.AssignUserTask("my-user-task", nil, "some-group")
+	wf.ScheduleReminderTask(userTaskOutput, delaySeconds, reminderTaskDefName, arg1, arg2)
+}
+```
+  </TabItem>
+  <TabItem value="python" label="Python">
+
+Python docs for user tasks coming soon.
 
   </TabItem>
 </Tabs>
