@@ -20,7 +20,7 @@ def get_config() -> LHConfig:
         config.load(config_path)
     return config
 
-async def get_user_task_def():
+async def get_user_task_def() -> PutUserTaskDefRequest:
     return PutUserTaskDefRequest(
     name="person-details",
     fields=[
@@ -38,7 +38,7 @@ def get_workflow() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
         task_def_name = "greet"
         user_task_output = wf.assign_user_task("person-details", None, "writer-group")
-        delay_in_seconds = 3
+        delay_in_seconds = 10
         arg1 = "Sam"
         arg2 = {"identification": "1258796641-4", "Address": "NA-Street", "Age": 28}
 
