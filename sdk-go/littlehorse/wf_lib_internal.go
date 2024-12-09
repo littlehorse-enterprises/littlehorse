@@ -244,7 +244,7 @@ func (t *WorkflowThread) reassignUserTaskOnDeadline(
 
 func (t *WorkflowThread) scheduleReminderTask(
 	userTask *UserTaskOutput, delaySeconds interface{},
-	taskDefName string, args ...interface{},
+	taskDefName string, args []interface{},
 ) {
 	t.checkIfIsActive()
 

@@ -79,8 +79,8 @@ public interface UserTaskTriggerReferenceOrBuilder extends
 
   /**
    * <pre>
-   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
-   * asigned to a specific user_id.
+   * Is the user_group that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_group.
    * </pre>
    *
    * <code>optional string user_group = 4;</code>
@@ -89,8 +89,8 @@ public interface UserTaskTriggerReferenceOrBuilder extends
   boolean hasUserGroup();
   /**
    * <pre>
-   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
-   * asigned to a specific user_id.
+   * Is the user_group that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_group.
    * </pre>
    *
    * <code>optional string user_group = 4;</code>
@@ -99,8 +99,8 @@ public interface UserTaskTriggerReferenceOrBuilder extends
   java.lang.String getUserGroup();
   /**
    * <pre>
-   * Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
-   * asigned to a specific user_id.
+   * Is the user_group that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+   * asigned to a specific user_group.
    * </pre>
    *
    * <code>optional string user_group = 4;</code>

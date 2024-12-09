@@ -48,12 +48,12 @@ namespace LittleHorse.Sdk.Worker.Internal
                      if (taskToDo.Result != null)
                      {
                          var scheduledTask = taskToDo.Result;
-                         var wFRunId = LHWorkerHelper.GetWFRunId(scheduledTask.Source);
-                         _logger?.LogDebug($"Received task schedule request for wfRun {wFRunId}");
+                         var wFRunId = LHHelper.GetWFRunId(scheduledTask.Source);
+                         _logger?.LogDebug($"Received task schedule request for wfRun {wFRunId.Id}");
 
                          _connectionManager.SubmitTaskForExecution(scheduledTask, _client);
 
-                         _logger?.LogDebug($"Scheduled task on threadpool for wfRun {wFRunId}");
+                         _logger?.LogDebug($"Scheduled task on threadpool for wfRun {wFRunId.Id}");
                      }
                      else
                      {
