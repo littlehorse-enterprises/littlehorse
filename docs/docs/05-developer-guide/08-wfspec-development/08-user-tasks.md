@@ -110,7 +110,6 @@ wf.assign_user_task("some-user-task", user_id=user_id, user_group=user_group)
 ### Assigning to Groups
 
 You can assign a task to a user group using `WorkflowThread#assignUserTask()`.
-You can assign a task to a user group using `WorkflowThread#assignUserTask()`.
 
 <Tabs>
   <TabItem value="java" label="Java" default>
