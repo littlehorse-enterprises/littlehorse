@@ -34,14 +34,6 @@ async def get_user_task_def():
     ]
 )
 
-class Car:
-    name:str
-    year:int
-
-    def __init__(self, name, year):
-        self.name = name
-        self.year = year
-
 def get_workflow() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
         task_def_name = "greet"
