@@ -1,4 +1,4 @@
-## Running a Basic Example
+## Running a User Tasks Example
 
 This is a simple example of user tasks usage scheduling a reminder task before the user task is completed:
 
