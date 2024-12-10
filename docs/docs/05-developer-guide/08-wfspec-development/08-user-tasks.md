@@ -123,8 +123,7 @@ String userId = null;
 wf.assignUserTask("some-user-task-def", userId, hardCodedUserGroup);
 
 // Using a variable to set User Group
-wf.assignUserTask("another-user-task-def", userId, userGrou.q
-        :qpVariable);
+wf.assignUserTask("another-user-task-def", userId, userGroupVariable);
 ```
 
   </TabItem>
