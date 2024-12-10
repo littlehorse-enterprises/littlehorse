@@ -1575,7 +1575,7 @@ class WorkflowThread:
             delay_in_seconds_var,
             task_def_name,
             UTActionTrigger.ON_ARRIVAL,
-            args,
+            *args,
         )
 
     def schedule_reminder_task_on_assignment(
