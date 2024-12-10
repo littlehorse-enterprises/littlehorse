@@ -123,7 +123,8 @@ String userId = null;
 wf.assignUserTask("some-user-task-def", userId, hardCodedUserGroup);
 
 // Using a variable to set User Group
-wf.assignUserTask("another-user-task-def", userId, userGroupVariable);
+wf.assignUserTask("another-user-task-def", userId, userGrou.q
+        :qpVariable);
 ```
 
   </TabItem>
@@ -233,7 +234,7 @@ func QuickstartWorkflow(wf *littlehorse.WorkflowThread) {
             def my_entrypoint(wf: WorkflowThread) -> None:
                 task_def_name = "greet"
                 user_task_output = wf.assign_user_task("person-details", None, "writer-group")
-                delay_in_seconds = 10 // wait 10 seconds after the task is assigned to schedule the reminder
+                delay_in_seconds = 10 # wait 10 seconds after the task is assigned to schedule the reminder
                 arg1 = "Sam"
                 arg2 = {"identification": "1258796641-4", "Address": "NA-Street", "Age": 28}
         
