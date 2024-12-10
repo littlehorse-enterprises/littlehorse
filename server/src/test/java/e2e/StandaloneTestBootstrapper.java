@@ -1,12 +1,11 @@
-package io.littlehorse.test.internal;
+package e2e;
 
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.test.exception.LHTestInitializationException;
+import io.littlehorse.test.internal.TestBootstrapper;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.UUID;
@@ -18,7 +17,6 @@ import org.testcontainers.utility.DockerImageName;
 public class StandaloneTestBootstrapper implements TestBootstrapper {
 
     private LHConfig workerConfig;
-    private LittleHorseBlockingStub client;
 
     private KafkaContainer kafka;
     private LHServer server1;
@@ -39,10 +37,6 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
         });
         kafka.start();
         workerConfig = new LHConfig(testClientProperties());
-        client = workerConfig
-                .getBlockingStub()
-                .withCallCredentials(new MockCallCredentials(
-                        new TenantIdModel(workerConfig.getTenantId().getId())));
         startServers();
     }
 
@@ -113,11 +107,6 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
     @Override
     public LHConfig getWorkerConfig() {
         return workerConfig;
-    }
-
-    @Override
-    public LittleHorseBlockingStub getLhClient() {
-        return client;
     }
 
     private Properties testClientProperties() {

@@ -67,16 +67,18 @@ dependencies {
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testImplementation project(":test-utils")
+    testImplementation project(":test-utils-container")
 
     // JSON and YAML processing
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2'
     implementation 'com.jayway.jsonpath:json-path:2.9.0'
 
+    // To run scheduled wfs
+    implementation 'com.cronutils:cron-utils:9.2.1'
+
     testImplementation 'org.awaitility:awaitility:4.2.0'
     testImplementation 'org.junit.platform:junit-platform-console-standalone:1.11.0-M2'
-    implementation group: 'com.cronutils', name: 'cron-utils', version: '9.2.1'
-
 }
 
 

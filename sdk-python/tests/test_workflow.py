@@ -74,7 +74,9 @@ class TestNodeOutput(unittest.TestCase):
 
 class TestWfRunVariable(unittest.TestCase):
     def test_value_is_not_none(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None, default_value="my-str")
+        variable = WfRunVariable(
+            "my-var", VariableType.STR, None, default_value="my-str"
+        )
         self.assertEqual(variable.default_value.WhichOneof("value"), "str")
         self.assertEqual(variable.default_value.str, "my-str")
 
@@ -155,7 +157,10 @@ class TestWfRunVariable(unittest.TestCase):
         variable = WfRunVariable("my-var", VariableType.STR, None)
         self.assertEqual(
             variable.compile(),
-            ThreadVarDef(var_def=VariableDef(name="my-var", type=VariableType.STR), access_level=WfRunVariableAccessLevel.PRIVATE_VAR),
+            ThreadVarDef(
+                var_def=VariableDef(name="my-var", type=VariableType.STR),
+                access_level=WfRunVariableAccessLevel.PRIVATE_VAR,
+            ),
         )
 
         variable = WfRunVariable("my-var", VariableType.JSON_OBJ, None)
@@ -170,7 +175,9 @@ class TestWfRunVariable(unittest.TestCase):
         self.assertEqual(variable.compile(), expected_output)
 
     def test_compile_private_variable(self):
-        variable = WfRunVariable("my-var", VariableType.STR, None, access_level="PRIVATE_VAR")
+        variable = WfRunVariable(
+            "my-var", VariableType.STR, None, access_level="PRIVATE_VAR"
+        )
         expected_output = ThreadVarDef(
             var_def=VariableDef(name="my-var", type=VariableType.STR),
             access_level="PRIVATE_VAR",
@@ -286,7 +293,9 @@ class TestThreadBuilder(unittest.TestCase):
             def if_condition(self, thread: WorkflowThread) -> None:
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-1", variable_type=VariableType.INT, parent=thread
+                        variable_name="variable-1",
+                        variable_type=VariableType.INT,
+                        parent=thread,
                     ),
                     VariableMutationType.ASSIGN,
                     1,
@@ -294,7 +303,9 @@ class TestThreadBuilder(unittest.TestCase):
                 thread.execute("task-a")
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-3", variable_type=VariableType.INT, parent=thread
+                        variable_name="variable-3",
+                        variable_type=VariableType.INT,
+                        parent=thread,
                     ),
                     VariableMutationType.ASSIGN,
                     3,
@@ -304,7 +315,9 @@ class TestThreadBuilder(unittest.TestCase):
             def else_condition(self, thread: WorkflowThread) -> None:
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-2", variable_type=VariableType.INT, parent=thread
+                        variable_name="variable-2",
+                        variable_type=VariableType.INT,
+                        parent=thread,
                     ),
                     VariableMutationType.ASSIGN,
                     2,
@@ -313,7 +326,9 @@ class TestThreadBuilder(unittest.TestCase):
                 thread.execute("task-d")
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-4", variable_type=VariableType.INT, parent=thread
+                        variable_name="variable-4",
+                        variable_type=VariableType.INT,
+                        parent=thread,
                     ),
                     VariableMutationType.ASSIGN,
                     4,
@@ -359,7 +374,9 @@ class TestThreadBuilder(unittest.TestCase):
                                     VariableMutation(
                                         lhs_name="variable-1",
                                         operation=VariableMutationType.ASSIGN,
-                                        rhs_assignment=VariableAssignment(literal_value=VariableValue(int=1)),
+                                        rhs_assignment=VariableAssignment(
+                                            literal_value=VariableValue(int=1)
+                                        ),
                                     )
                                 ],
                             ),
@@ -378,7 +395,9 @@ class TestThreadBuilder(unittest.TestCase):
                                     VariableMutation(
                                         lhs_name="variable-2",
                                         operation=VariableMutationType.ASSIGN,
-                                        rhs_assignment=VariableAssignment(literal_value=VariableValue(int=2)),
+                                        rhs_assignment=VariableAssignment(
+                                            literal_value=VariableValue(int=2)
+                                        ),
                                     )
                                 ],
                             ),
@@ -393,7 +412,9 @@ class TestThreadBuilder(unittest.TestCase):
                                     VariableMutation(
                                         lhs_name="variable-3",
                                         operation=VariableMutationType.ASSIGN,
-                                        rhs_assignment=VariableAssignment(literal_value=VariableValue(int=3)),
+                                        rhs_assignment=VariableAssignment(
+                                            literal_value=VariableValue(int=3)
+                                        ),
                                     )
                                 ],
                             )
@@ -416,7 +437,9 @@ class TestThreadBuilder(unittest.TestCase):
                                     VariableMutation(
                                         lhs_name="variable-4",
                                         operation=VariableMutationType.ASSIGN,
-                                        rhs_assignment=VariableAssignment(literal_value=VariableValue(int=4)),
+                                        rhs_assignment=VariableAssignment(
+                                            literal_value=VariableValue(int=4)
+                                        ),
                                     )
                                 ],
                             )
@@ -436,7 +459,9 @@ class TestThreadBuilder(unittest.TestCase):
             def if_condition(self, thread: WorkflowThread) -> None:
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-1", variable_type=VariableType.INT, parent=thread
+                        variable_name="variable-1",
+                        variable_type=VariableType.INT,
+                        parent=thread,
                     ),
                     VariableMutationType.ASSIGN,
                     1,
@@ -445,7 +470,9 @@ class TestThreadBuilder(unittest.TestCase):
             def else_condition(self, thread: WorkflowThread) -> None:
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-2", variable_type=VariableType.INT, parent=thread
+                        variable_name="variable-2",
+                        variable_type=VariableType.INT,
+                        parent=thread,
                     ),
                     VariableMutationType.ASSIGN,
                     2,
@@ -491,7 +518,9 @@ class TestThreadBuilder(unittest.TestCase):
                                     VariableMutation(
                                         lhs_name="variable-2",
                                         operation=VariableMutationType.ASSIGN,
-                                        rhs_assignment=VariableAssignment(literal_value=VariableValue(int=2)),
+                                        rhs_assignment=VariableAssignment(
+                                            literal_value=VariableValue(int=2)
+                                        ),
                                     )
                                 ],
                             ),
@@ -510,7 +539,9 @@ class TestThreadBuilder(unittest.TestCase):
                                     VariableMutation(
                                         lhs_name="variable-1",
                                         operation=VariableMutationType.ASSIGN,
-                                        rhs_assignment=VariableAssignment(literal_value=VariableValue(int=1)),
+                                        rhs_assignment=VariableAssignment(
+                                            literal_value=VariableValue(int=1)
+                                        ),
                                     )
                                 ],
                             ),
@@ -530,7 +561,9 @@ class TestThreadBuilder(unittest.TestCase):
             def if_condition(self, thread: WorkflowThread) -> None:
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-2", variable_type=VariableType.INT, parent=thread
+                        variable_name="variable-2",
+                        variable_type=VariableType.INT,
+                        parent=thread,
                     ),
                     VariableMutationType.ASSIGN,
                     2,
@@ -539,7 +572,9 @@ class TestThreadBuilder(unittest.TestCase):
             def my_entrypoint(self, thread: WorkflowThread) -> None:
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-1", variable_type=VariableType.INT, parent=thread
+                        variable_name="variable-1",
+                        variable_type=VariableType.INT,
+                        parent=thread,
                     ),
                     VariableMutationType.ASSIGN,
                     1,
@@ -549,7 +584,9 @@ class TestThreadBuilder(unittest.TestCase):
                 )
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-3", variable_type=VariableType.INT, parent=thread
+                        variable_name="variable-3",
+                        variable_type=VariableType.INT,
+                        parent=thread,
                     ),
                     VariableMutationType.ASSIGN,
                     3,
@@ -575,7 +612,9 @@ class TestThreadBuilder(unittest.TestCase):
                                     VariableMutation(
                                         lhs_name="variable-1",
                                         operation=VariableMutationType.ASSIGN,
-                                        rhs_assignment=VariableAssignment(literal_value=VariableValue(int=1)),
+                                        rhs_assignment=VariableAssignment(
+                                            literal_value=VariableValue(int=1)
+                                        ),
                                     )
                                 ],
                             )
@@ -599,7 +638,9 @@ class TestThreadBuilder(unittest.TestCase):
                                     VariableMutation(
                                         lhs_name="variable-2",
                                         operation=VariableMutationType.ASSIGN,
-                                        rhs_assignment=VariableAssignment(literal_value=VariableValue(int=2)),
+                                        rhs_assignment=VariableAssignment(
+                                            literal_value=VariableValue(int=2)
+                                        ),
                                     )
                                 ],
                             ),
@@ -626,7 +667,9 @@ class TestThreadBuilder(unittest.TestCase):
                                     VariableMutation(
                                         lhs_name="variable-3",
                                         operation=VariableMutationType.ASSIGN,
-                                        rhs_assignment=VariableAssignment(literal_value=VariableValue(int=3)),
+                                        rhs_assignment=VariableAssignment(
+                                            literal_value=VariableValue(int=3)
+                                        ),
                                     )
                                 ],
                             )
@@ -642,7 +685,9 @@ class TestThreadBuilder(unittest.TestCase):
             def my_condition(self, thread: WorkflowThread) -> None:
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-1", variable_type=VariableType.INT, parent=thread
+                        variable_name="variable-1",
+                        variable_type=VariableType.INT,
+                        parent=thread,
                     ),
                     VariableMutationType.ASSIGN,
                     1,
@@ -650,7 +695,9 @@ class TestThreadBuilder(unittest.TestCase):
                 thread.execute("my-task")
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-2", variable_type=VariableType.INT, parent=thread
+                        variable_name="variable-2",
+                        variable_type=VariableType.INT,
+                        parent=thread,
                     ),
                     VariableMutationType.ASSIGN,
                     2,
@@ -694,7 +741,9 @@ class TestThreadBuilder(unittest.TestCase):
                                     VariableMutation(
                                         lhs_name="variable-1",
                                         operation=VariableMutationType.ASSIGN,
-                                        rhs_assignment=VariableAssignment(literal_value=VariableValue(int=1)),
+                                        rhs_assignment=VariableAssignment(
+                                            literal_value=VariableValue(int=1)
+                                        ),
                                     )
                                 ],
                             ),
@@ -721,7 +770,9 @@ class TestThreadBuilder(unittest.TestCase):
                                     VariableMutation(
                                         lhs_name="variable-2",
                                         operation=VariableMutationType.ASSIGN,
-                                        rhs_assignment=VariableAssignment(literal_value=VariableValue(int=2)),
+                                        rhs_assignment=VariableAssignment(
+                                            literal_value=VariableValue(int=2)
+                                        ),
                                     )
                                 ],
                             )
@@ -741,7 +792,9 @@ class TestThreadBuilder(unittest.TestCase):
             def my_condition(self, thread: WorkflowThread) -> None:
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-1", variable_type=VariableType.INT, parent=thread
+                        variable_name="variable-1",
+                        variable_type=VariableType.INT,
+                        parent=thread,
                     ),
                     VariableMutationType.ASSIGN,
                     1,
@@ -749,7 +802,9 @@ class TestThreadBuilder(unittest.TestCase):
                 thread.execute("my-task")
                 thread.mutate(
                     WfRunVariable(
-                        variable_name="variable-2", variable_type=VariableType.INT, parent=thread
+                        variable_name="variable-2",
+                        variable_type=VariableType.INT,
+                        parent=thread,
                     ),
                     VariableMutationType.ASSIGN,
                     2,
@@ -793,7 +848,9 @@ class TestThreadBuilder(unittest.TestCase):
                                     VariableMutation(
                                         lhs_name="variable-1",
                                         operation=VariableMutationType.ASSIGN,
-                                        rhs_assignment=VariableAssignment(literal_value=VariableValue(int=1)),
+                                        rhs_assignment=VariableAssignment(
+                                            literal_value=VariableValue(int=1)
+                                        ),
                                     )
                                 ],
                             ),
@@ -820,7 +877,9 @@ class TestThreadBuilder(unittest.TestCase):
                                     VariableMutation(
                                         lhs_name="variable-2",
                                         operation=VariableMutationType.ASSIGN,
-                                        rhs_assignment=VariableAssignment(literal_value=VariableValue(int=2)),
+                                        rhs_assignment=VariableAssignment(
+                                            literal_value=VariableValue(int=2)
+                                        ),
                                     )
                                 ],
                             )
@@ -1061,7 +1120,9 @@ class TestThreadBuilder(unittest.TestCase):
                                     VariableMutation(
                                         lhs_name="value",
                                         operation=VariableMutationType.MULTIPLY,
-                                        rhs_assignment=VariableAssignment(literal_value=VariableValue(int=2)),
+                                        rhs_assignment=VariableAssignment(
+                                            literal_value=VariableValue(int=2)
+                                        ),
                                     )
                                 ],
                             )
@@ -1090,7 +1151,9 @@ class TestThreadBuilder(unittest.TestCase):
 
         edge = node.outgoing_edges[0]
 
-        self.assertEqual(edge.variable_mutations[0].rhs_assignment.literal_value.str, "some-value")
+        self.assertEqual(
+            edge.variable_mutations[0].rhs_assignment.literal_value.str, "some-value"
+        )
 
     def test_node_output_mutations_should_also_use_variable_assignments(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
@@ -1103,12 +1166,17 @@ class TestThreadBuilder(unittest.TestCase):
 
         edge = node.outgoing_edges[0]
 
-        self.assertEqual(edge.variable_mutations[0].rhs_assignment.node_output.node_name, "1-use-the-force-TASK")
+        self.assertEqual(
+            edge.variable_mutations[0].rhs_assignment.node_output.node_name,
+            "1-use-the-force-TASK",
+        )
 
     def test_node_output_mutations_should_carry_json_path(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
             my_var = thread.add_variable("my-var", VariableType.STR)
-            my_var.assign(thread.execute("use-the-force").with_json_path("$.hello.there"))
+            my_var.assign(
+                thread.execute("use-the-force").with_json_path("$.hello.there")
+            )
 
         wfSpec = Workflow("obiwan", my_entrypoint).compile()
         entrypoint = wfSpec.thread_specs[wfSpec.entrypoint_thread_name]
@@ -1116,11 +1184,18 @@ class TestThreadBuilder(unittest.TestCase):
 
         edge = node.outgoing_edges[0]
 
-        self.assertEqual(edge.variable_mutations[0].rhs_assignment.node_output.node_name, "1-use-the-force-TASK")
+        self.assertEqual(
+            edge.variable_mutations[0].rhs_assignment.node_output.node_name,
+            "1-use-the-force-TASK",
+        )
 
-        self.assertEqual(edge.variable_mutations[0].rhs_assignment.json_path, "$.hello.there")
+        self.assertEqual(
+            edge.variable_mutations[0].rhs_assignment.json_path, "$.hello.there"
+        )
 
-    def test_assigning_variables_to_other_variables_should_use_variable_assignment(self):
+    def test_assigning_variables_to_other_variables_should_use_variable_assignment(
+        self,
+    ):
         def my_entrypoint(thread: WorkflowThread) -> None:
             my_var = thread.add_variable("my-var", VariableType.STR)
             other_var = thread.add_variable("other-var", VariableType.STR)
@@ -1131,7 +1206,9 @@ class TestThreadBuilder(unittest.TestCase):
         node = entrypoint.nodes["0-entrypoint-ENTRYPOINT"]
 
         edge = node.outgoing_edges[0]
-        self.assertEqual(edge.variable_mutations[0].rhs_assignment.variable_name, "other-var")
+        self.assertEqual(
+            edge.variable_mutations[0].rhs_assignment.variable_name, "other-var"
+        )
 
     def test_assigning_variables_to_other_variables_should_carry_json_path(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
@@ -1144,10 +1221,13 @@ class TestThreadBuilder(unittest.TestCase):
         node = entrypoint.nodes["0-entrypoint-ENTRYPOINT"]
 
         edge = node.outgoing_edges[0]
-        self.assertEqual(edge.variable_mutations[0].rhs_assignment.variable_name, "other-var")
+        self.assertEqual(
+            edge.variable_mutations[0].rhs_assignment.variable_name, "other-var"
+        )
 
-        self.assertEqual(edge.variable_mutations[0].rhs_assignment.json_path, "$.hello.there")
-        
+        self.assertEqual(
+            edge.variable_mutations[0].rhs_assignment.json_path, "$.hello.there"
+        )
 
 
 class TestWorkflow(unittest.TestCase):

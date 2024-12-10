@@ -48,7 +48,7 @@ public class TestContext {
 
     public TestContext(TestBootstrapper bootstrapper) {
         this.config = bootstrapper.getWorkerConfig();
-        this.lhClient = bootstrapper.getLhClient();
+        this.lhClient = this.config.getBlockingStub();
         this.wfSpecStoreLock = new ReentrantLock();
     }
 

@@ -20,19 +20,21 @@ def get_config() -> LHConfig:
         config.load(config_path)
     return config
 
+
 async def get_user_task_def() -> PutUserTaskDefRequest:
     return PutUserTaskDefRequest(
-    name="person-details",
-    fields=[
-        UserTaskField(
-            name="PersonDetails",
-            description="Person complementary information",
-            display_name="Other Details",
-            required=True,
-            type=VariableType.STR
-        )
-    ]
-)
+        name="person-details",
+        fields=[
+            UserTaskField(
+                name="PersonDetails",
+                description="Person complementary information",
+                display_name="Other Details",
+                required=True,
+                type=VariableType.STR,
+            )
+        ],
+    )
+
 
 def get_workflow() -> Workflow:
     def my_entrypoint(wf: WorkflowThread) -> None:
@@ -42,15 +44,21 @@ def get_workflow() -> Workflow:
         arg1 = "Sam"
         arg2 = {"identification": "1258796641-4", "Address": "NA-Street", "Age": 28}
 
-        wf.schedule_reminder_task(user_task_output, delay_in_seconds, task_def_name, arg1, arg2)
+        wf.schedule_reminder_task(
+            user_task_output, delay_in_seconds, task_def_name, arg1, arg2
+        )
 
     return Workflow("example-user-tasks", my_entrypoint)
 
-async def greeting(name: str, person_details: dict[str, Any], ctx: WorkerContext) -> str:
+
+async def greeting(
+    name: str, person_details: dict[str, Any], ctx: WorkerContext
+) -> str:
     msg = f"Hello {name}!. WfRun {ctx.wf_run_id.id} Person: {person_details}"
     print(msg)
     await asyncio.sleep(random.uniform(0.5, 1.5))
     return msg
+
 
 async def main() -> None:
     config = get_config()
