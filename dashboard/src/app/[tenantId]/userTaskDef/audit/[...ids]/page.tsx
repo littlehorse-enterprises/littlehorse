@@ -1,10 +1,10 @@
 import { getUserTaskRun } from '@/app/actions/getUserTaskRun'
 import { Metadata } from 'next'
-import { notFound, useParams } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { ClientError, Status } from 'nice-grpc-common'
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Details } from '@/app/[tenantId]/components/Details'
 import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
+import { AuditTable } from './AuditTable'
 
 type Props = { params: { ids: string[]; tenantId: string } }
 
@@ -13,6 +13,7 @@ export default async function Page({ params: { ids, tenantId } }: Props) {
 
   try {
     const userTaskRun = await getUserTaskRun(tenantId, wfRunId, userTaskGuid)
+
     return (
       <div>
         <Details
@@ -28,22 +29,14 @@ export default async function Page({ params: { ids, tenantId } }: Props) {
             userTaskRunId: userTaskGuid,
           }}
         />
-        <Table>
-          <TableCaption>Audit Log</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Timestamp</TableHead>
-              {/* <TableHead>User</TableHead> */}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {userTaskRun.events.map(event => (
-              <TableRow key={event.time}>
-                <TableCell className="font-medium">{new Date(event.time as string).toLocaleString()}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        {userTaskRun.events.some(event => event.saved !== undefined) ? (
+          <AuditTable events={userTaskRun.events} />
+        ) : (
+          <div className="mt-20 w-full text-center">
+            <p className="text-center text-xl font-bold">No save history found.</p>
+            <p className="text-center text-primary/50">This user task has not been saved since it was created.</p>
+          </div>
+        )}
       </div>
     )
   } catch (error) {
