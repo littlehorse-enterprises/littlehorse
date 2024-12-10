@@ -9,14 +9,16 @@ from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Opti
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class WorkflowEvent(_message.Message):
-    __slots__ = ["id", "content", "created_at"]
+    __slots__ = ["id", "content", "created_at", "node_run_id"]
     ID_FIELD_NUMBER: _ClassVar[int]
     CONTENT_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
+    NODE_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.WorkflowEventId
     content: _variable_pb2.VariableValue
     created_at: _timestamp_pb2.Timestamp
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.WorkflowEventId, _Mapping]] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    node_run_id: _object_id_pb2.NodeRunId
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.WorkflowEventId, _Mapping]] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., node_run_id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ...) -> None: ...
 
 class WorkflowEventDef(_message.Message):
     __slots__ = ["id", "created_at", "type"]

@@ -8,7 +8,7 @@
 import _m0 from "protobufjs/minimal";
 import { VariableType, variableTypeFromJSON, variableTypeToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { WorkflowEventDefId, WorkflowEventId } from "./object_id";
+import { NodeRunId, WorkflowEventDefId, WorkflowEventId } from "./object_id";
 import { VariableValue } from "./variable";
 
 /**
@@ -29,7 +29,11 @@ export interface WorkflowEvent {
     | VariableValue
     | undefined;
   /** The time that the WorkflowEvent was created. */
-  createdAt: string | undefined;
+  createdAt:
+    | string
+    | undefined;
+  /** The NodeRun with which the WorkflowEvent is associated. */
+  nodeRunId: NodeRunId | undefined;
 }
 
 /** The WorkflowEventDef defines the blueprint for a WorkflowEvent. */
@@ -47,7 +51,7 @@ export interface WorkflowEventDef {
 }
 
 function createBaseWorkflowEvent(): WorkflowEvent {
-  return { id: undefined, content: undefined, createdAt: undefined };
+  return { id: undefined, content: undefined, createdAt: undefined, nodeRunId: undefined };
 }
 
 export const WorkflowEvent = {
@@ -60,6 +64,9 @@ export const WorkflowEvent = {
     }
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(26).fork()).ldelim();
+    }
+    if (message.nodeRunId !== undefined) {
+      NodeRunId.encode(message.nodeRunId, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -92,6 +99,13 @@ export const WorkflowEvent = {
 
           message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.nodeRunId = NodeRunId.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -111,6 +125,9 @@ export const WorkflowEvent = {
       ? VariableValue.fromPartial(object.content)
       : undefined;
     message.createdAt = object.createdAt ?? undefined;
+    message.nodeRunId = (object.nodeRunId !== undefined && object.nodeRunId !== null)
+      ? NodeRunId.fromPartial(object.nodeRunId)
+      : undefined;
     return message;
   },
 };
