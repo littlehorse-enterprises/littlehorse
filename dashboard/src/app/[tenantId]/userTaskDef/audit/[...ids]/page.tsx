@@ -34,7 +34,7 @@ export default async function Page({ params: { ids, tenantId } }: Props) {
         ) : (
           <div className="mt-20 w-full text-center">
             <p className="text-center text-xl font-bold">No save history found.</p>
-            <p className="text-center text-primary/50">This user task has not been saved since it was created.</p>
+            <p className="text-center text-primary/50">This UserTaskRun has not been saved since it was created.</p>
           </div>
         )}
       </div>
