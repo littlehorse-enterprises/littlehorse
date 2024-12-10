@@ -233,7 +233,7 @@ func QuickstartWorkflow(wf *littlehorse.WorkflowThread) {
             def my_entrypoint(wf: WorkflowThread) -> None:
                 task_def_name = "greet"
                 user_task_output = wf.assign_user_task("person-details", None, "writer-group")
-                delay_in_seconds = 10 // wait 10 seconds after the task is assigned to schedule the reminder
+                delay_in_seconds = 10 # wait 10 seconds after the task is assigned to schedule the reminder
                 arg1 = "Sam"
                 arg2 = {"identification": "1258796641-4", "Address": "NA-Street", "Age": 28}
         
