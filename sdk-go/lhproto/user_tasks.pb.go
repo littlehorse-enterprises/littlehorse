@@ -770,8 +770,8 @@ type UserTaskTriggerReference struct {
 	// Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
 	// asigned to a specific user_id.
 	UserId *string `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`
-	// Is the user_id that the UserTaskRun is assigned to. Unset if UserTaskRun is not
-	// asigned to a specific user_id.
+	// Is the user_group that the UserTaskRun is assigned to. Unset if UserTaskRun is not
+	// asigned to a specific user_group.
 	UserGroup *string `protobuf:"bytes,4,opt,name=user_group,json=userGroup,proto3,oneof" json:"user_group,omitempty"`
 }
 

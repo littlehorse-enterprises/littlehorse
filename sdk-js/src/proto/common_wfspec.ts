@@ -217,7 +217,11 @@ export interface VariableAssignment {
     | VariableAssignment_FormatString
     | undefined;
   /** Assign the value of a NodeOutput. */
-  nodeOutput?: VariableAssignment_NodeOutputReference | undefined;
+  nodeOutput?:
+    | VariableAssignment_NodeOutputReference
+    | undefined;
+  /** Assign the value of an Expression. */
+  expression?: VariableAssignment_Expression | undefined;
 }
 
 /** A FormatString formats a template String with values from the WfRun. */
@@ -244,6 +248,18 @@ export interface VariableAssignment_NodeOutputReference {
   nodeName: string;
 }
 
+/** An Expression allows you to combine multiple values into one. */
+export interface VariableAssignment_Expression {
+  /** The left-hand-side of the expression. */
+  lhs:
+    | VariableAssignment
+    | undefined;
+  /** The operator in the expression. */
+  operation: VariableMutationType;
+  /** The right-hand-side of the expression. */
+  rhs: VariableAssignment | undefined;
+}
+
 /**
  * A VariableMutation defines a modification made to one of a ThreadRun's variables.
  * The LHS determines the variable that is modified; the operation determines how
@@ -264,18 +280,21 @@ export interface VariableMutation {
     | undefined;
   /** Defines the operation that we are executing. */
   operation: VariableMutationType;
-  /**
-   * Set the source_variable as the RHS to use another variable from the workflow to
-   * as the RHS/
-   */
-  sourceVariable?:
+  /** Assigns the value to be used as the RHS of the mutation. */
+  rhsAssignment?:
     | VariableAssignment
     | undefined;
-  /** Use a literal value as the RHS. */
+  /**
+   * Use a literal value as the RHS. DEPRECATED: use rhs_assignment.literal_value
+   * instead.
+   */
   literalValue?:
     | VariableValue
     | undefined;
-  /** Use the output of the current node as the RHS. */
+  /**
+   * Use the output of the current node as the RHS. DEPRECATED: use
+   * rhs_assignment.node_output instead.
+   */
   nodeOutput?: VariableMutation_NodeOutputSource | undefined;
 }
 
@@ -473,6 +492,7 @@ function createBaseVariableAssignment(): VariableAssignment {
     literalValue: undefined,
     formatString: undefined,
     nodeOutput: undefined,
+    expression: undefined,
   };
 }
 
@@ -492,6 +512,9 @@ export const VariableAssignment = {
     }
     if (message.nodeOutput !== undefined) {
       VariableAssignment_NodeOutputReference.encode(message.nodeOutput, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.expression !== undefined) {
+      VariableAssignment_Expression.encode(message.expression, writer.uint32(50).fork()).ldelim();
     }
     return writer;
   },
@@ -538,6 +561,13 @@ export const VariableAssignment = {
 
           message.nodeOutput = VariableAssignment_NodeOutputReference.decode(reader, reader.uint32());
           continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.expression = VariableAssignment_Expression.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -562,6 +592,9 @@ export const VariableAssignment = {
       : undefined;
     message.nodeOutput = (object.nodeOutput !== undefined && object.nodeOutput !== null)
       ? VariableAssignment_NodeOutputReference.fromPartial(object.nodeOutput)
+      : undefined;
+    message.expression = (object.expression !== undefined && object.expression !== null)
+      ? VariableAssignment_Expression.fromPartial(object.expression)
       : undefined;
     return message;
   },
@@ -670,12 +703,83 @@ export const VariableAssignment_NodeOutputReference = {
   },
 };
 
+function createBaseVariableAssignment_Expression(): VariableAssignment_Expression {
+  return { lhs: undefined, operation: VariableMutationType.ASSIGN, rhs: undefined };
+}
+
+export const VariableAssignment_Expression = {
+  encode(message: VariableAssignment_Expression, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.lhs !== undefined) {
+      VariableAssignment.encode(message.lhs, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.operation !== VariableMutationType.ASSIGN) {
+      writer.uint32(16).int32(variableMutationTypeToNumber(message.operation));
+    }
+    if (message.rhs !== undefined) {
+      VariableAssignment.encode(message.rhs, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): VariableAssignment_Expression {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseVariableAssignment_Expression();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.lhs = VariableAssignment.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.operation = variableMutationTypeFromJSON(reader.int32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.rhs = VariableAssignment.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<VariableAssignment_Expression>): VariableAssignment_Expression {
+    return VariableAssignment_Expression.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<VariableAssignment_Expression>): VariableAssignment_Expression {
+    const message = createBaseVariableAssignment_Expression();
+    message.lhs = (object.lhs !== undefined && object.lhs !== null)
+      ? VariableAssignment.fromPartial(object.lhs)
+      : undefined;
+    message.operation = object.operation ?? VariableMutationType.ASSIGN;
+    message.rhs = (object.rhs !== undefined && object.rhs !== null)
+      ? VariableAssignment.fromPartial(object.rhs)
+      : undefined;
+    return message;
+  },
+};
+
 function createBaseVariableMutation(): VariableMutation {
   return {
     lhsName: "",
     lhsJsonPath: undefined,
     operation: VariableMutationType.ASSIGN,
-    sourceVariable: undefined,
+    rhsAssignment: undefined,
     literalValue: undefined,
     nodeOutput: undefined,
   };
@@ -692,8 +796,8 @@ export const VariableMutation = {
     if (message.operation !== VariableMutationType.ASSIGN) {
       writer.uint32(24).int32(variableMutationTypeToNumber(message.operation));
     }
-    if (message.sourceVariable !== undefined) {
-      VariableAssignment.encode(message.sourceVariable, writer.uint32(34).fork()).ldelim();
+    if (message.rhsAssignment !== undefined) {
+      VariableAssignment.encode(message.rhsAssignment, writer.uint32(34).fork()).ldelim();
     }
     if (message.literalValue !== undefined) {
       VariableValue.encode(message.literalValue, writer.uint32(42).fork()).ldelim();
@@ -737,7 +841,7 @@ export const VariableMutation = {
             break;
           }
 
-          message.sourceVariable = VariableAssignment.decode(reader, reader.uint32());
+          message.rhsAssignment = VariableAssignment.decode(reader, reader.uint32());
           continue;
         case 5:
           if (tag !== 42) {
@@ -770,8 +874,8 @@ export const VariableMutation = {
     message.lhsName = object.lhsName ?? "";
     message.lhsJsonPath = object.lhsJsonPath ?? undefined;
     message.operation = object.operation ?? VariableMutationType.ASSIGN;
-    message.sourceVariable = (object.sourceVariable !== undefined && object.sourceVariable !== null)
-      ? VariableAssignment.fromPartial(object.sourceVariable)
+    message.rhsAssignment = (object.rhsAssignment !== undefined && object.rhsAssignment !== null)
+      ? VariableAssignment.fromPartial(object.rhsAssignment)
       : undefined;
     message.literalValue = (object.literalValue !== undefined && object.literalValue !== null)
       ? VariableValue.fromPartial(object.literalValue)

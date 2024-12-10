@@ -1824,6 +1824,1071 @@ private static final long serialVersionUID = 0L;
 
   }
 
+  public interface ExpressionOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.VariableAssignment.Expression)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * The left-hand-side of the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment lhs = 1;</code>
+     * @return Whether the lhs field is set.
+     */
+    boolean hasLhs();
+    /**
+     * <pre>
+     * The left-hand-side of the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment lhs = 1;</code>
+     * @return The lhs.
+     */
+    io.littlehorse.sdk.common.proto.VariableAssignment getLhs();
+    /**
+     * <pre>
+     * The left-hand-side of the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment lhs = 1;</code>
+     */
+    io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getLhsOrBuilder();
+
+    /**
+     * <pre>
+     * The operator in the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableMutationType operation = 2;</code>
+     * @return The enum numeric value on the wire for operation.
+     */
+    int getOperationValue();
+    /**
+     * <pre>
+     * The operator in the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableMutationType operation = 2;</code>
+     * @return The operation.
+     */
+    io.littlehorse.sdk.common.proto.VariableMutationType getOperation();
+
+    /**
+     * <pre>
+     * The right-hand-side of the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment rhs = 3;</code>
+     * @return Whether the rhs field is set.
+     */
+    boolean hasRhs();
+    /**
+     * <pre>
+     * The right-hand-side of the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment rhs = 3;</code>
+     * @return The rhs.
+     */
+    io.littlehorse.sdk.common.proto.VariableAssignment getRhs();
+    /**
+     * <pre>
+     * The right-hand-side of the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment rhs = 3;</code>
+     */
+    io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getRhsOrBuilder();
+  }
+  /**
+   * <pre>
+   * An Expression allows you to combine multiple values into one.
+   * </pre>
+   *
+   * Protobuf type {@code littlehorse.VariableAssignment.Expression}
+   */
+  public static final class Expression extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:littlehorse.VariableAssignment.Expression)
+      ExpressionOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use Expression.newBuilder() to construct.
+    private Expression(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Expression() {
+      operation_ = 0;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new Expression();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.CommonWfspec.internal_static_littlehorse_VariableAssignment_Expression_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.sdk.common.proto.CommonWfspec.internal_static_littlehorse_VariableAssignment_Expression_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.sdk.common.proto.VariableAssignment.Expression.class, io.littlehorse.sdk.common.proto.VariableAssignment.Expression.Builder.class);
+    }
+
+    public static final int LHS_FIELD_NUMBER = 1;
+    private io.littlehorse.sdk.common.proto.VariableAssignment lhs_;
+    /**
+     * <pre>
+     * The left-hand-side of the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment lhs = 1;</code>
+     * @return Whether the lhs field is set.
+     */
+    @java.lang.Override
+    public boolean hasLhs() {
+      return lhs_ != null;
+    }
+    /**
+     * <pre>
+     * The left-hand-side of the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment lhs = 1;</code>
+     * @return The lhs.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment getLhs() {
+      return lhs_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : lhs_;
+    }
+    /**
+     * <pre>
+     * The left-hand-side of the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment lhs = 1;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getLhsOrBuilder() {
+      return lhs_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : lhs_;
+    }
+
+    public static final int OPERATION_FIELD_NUMBER = 2;
+    private int operation_ = 0;
+    /**
+     * <pre>
+     * The operator in the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableMutationType operation = 2;</code>
+     * @return The enum numeric value on the wire for operation.
+     */
+    @java.lang.Override public int getOperationValue() {
+      return operation_;
+    }
+    /**
+     * <pre>
+     * The operator in the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableMutationType operation = 2;</code>
+     * @return The operation.
+     */
+    @java.lang.Override public io.littlehorse.sdk.common.proto.VariableMutationType getOperation() {
+      io.littlehorse.sdk.common.proto.VariableMutationType result = io.littlehorse.sdk.common.proto.VariableMutationType.forNumber(operation_);
+      return result == null ? io.littlehorse.sdk.common.proto.VariableMutationType.UNRECOGNIZED : result;
+    }
+
+    public static final int RHS_FIELD_NUMBER = 3;
+    private io.littlehorse.sdk.common.proto.VariableAssignment rhs_;
+    /**
+     * <pre>
+     * The right-hand-side of the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment rhs = 3;</code>
+     * @return Whether the rhs field is set.
+     */
+    @java.lang.Override
+    public boolean hasRhs() {
+      return rhs_ != null;
+    }
+    /**
+     * <pre>
+     * The right-hand-side of the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment rhs = 3;</code>
+     * @return The rhs.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment getRhs() {
+      return rhs_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : rhs_;
+    }
+    /**
+     * <pre>
+     * The right-hand-side of the expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment rhs = 3;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getRhsOrBuilder() {
+      return rhs_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : rhs_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (lhs_ != null) {
+        output.writeMessage(1, getLhs());
+      }
+      if (operation_ != io.littlehorse.sdk.common.proto.VariableMutationType.ASSIGN.getNumber()) {
+        output.writeEnum(2, operation_);
+      }
+      if (rhs_ != null) {
+        output.writeMessage(3, getRhs());
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (lhs_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getLhs());
+      }
+      if (operation_ != io.littlehorse.sdk.common.proto.VariableMutationType.ASSIGN.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(2, operation_);
+      }
+      if (rhs_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getRhs());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.VariableAssignment.Expression)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.sdk.common.proto.VariableAssignment.Expression other = (io.littlehorse.sdk.common.proto.VariableAssignment.Expression) obj;
+
+      if (hasLhs() != other.hasLhs()) return false;
+      if (hasLhs()) {
+        if (!getLhs()
+            .equals(other.getLhs())) return false;
+      }
+      if (operation_ != other.operation_) return false;
+      if (hasRhs() != other.hasRhs()) return false;
+      if (hasRhs()) {
+        if (!getRhs()
+            .equals(other.getRhs())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasLhs()) {
+        hash = (37 * hash) + LHS_FIELD_NUMBER;
+        hash = (53 * hash) + getLhs().hashCode();
+      }
+      hash = (37 * hash) + OPERATION_FIELD_NUMBER;
+      hash = (53 * hash) + operation_;
+      if (hasRhs()) {
+        hash = (37 * hash) + RHS_FIELD_NUMBER;
+        hash = (53 * hash) + getRhs().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.Expression parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.Expression parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.Expression parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.Expression parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.Expression parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.Expression parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.Expression parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.Expression parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.Expression parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.Expression parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.Expression parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.Expression parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.VariableAssignment.Expression prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * An Expression allows you to combine multiple values into one.
+     * </pre>
+     *
+     * Protobuf type {@code littlehorse.VariableAssignment.Expression}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.VariableAssignment.Expression)
+        io.littlehorse.sdk.common.proto.VariableAssignment.ExpressionOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.sdk.common.proto.CommonWfspec.internal_static_littlehorse_VariableAssignment_Expression_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.sdk.common.proto.CommonWfspec.internal_static_littlehorse_VariableAssignment_Expression_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.sdk.common.proto.VariableAssignment.Expression.class, io.littlehorse.sdk.common.proto.VariableAssignment.Expression.Builder.class);
+      }
+
+      // Construct using io.littlehorse.sdk.common.proto.VariableAssignment.Expression.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        lhs_ = null;
+        if (lhsBuilder_ != null) {
+          lhsBuilder_.dispose();
+          lhsBuilder_ = null;
+        }
+        operation_ = 0;
+        rhs_ = null;
+        if (rhsBuilder_ != null) {
+          rhsBuilder_.dispose();
+          rhsBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.sdk.common.proto.CommonWfspec.internal_static_littlehorse_VariableAssignment_Expression_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.VariableAssignment.Expression getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.VariableAssignment.Expression.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.VariableAssignment.Expression build() {
+        io.littlehorse.sdk.common.proto.VariableAssignment.Expression result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.VariableAssignment.Expression buildPartial() {
+        io.littlehorse.sdk.common.proto.VariableAssignment.Expression result = new io.littlehorse.sdk.common.proto.VariableAssignment.Expression(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.littlehorse.sdk.common.proto.VariableAssignment.Expression result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.lhs_ = lhsBuilder_ == null
+              ? lhs_
+              : lhsBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.operation_ = operation_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.rhs_ = rhsBuilder_ == null
+              ? rhs_
+              : rhsBuilder_.build();
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.sdk.common.proto.VariableAssignment.Expression) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.VariableAssignment.Expression)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.VariableAssignment.Expression other) {
+        if (other == io.littlehorse.sdk.common.proto.VariableAssignment.Expression.getDefaultInstance()) return this;
+        if (other.hasLhs()) {
+          mergeLhs(other.getLhs());
+        }
+        if (other.operation_ != 0) {
+          setOperationValue(other.getOperationValue());
+        }
+        if (other.hasRhs()) {
+          mergeRhs(other.getRhs());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                input.readMessage(
+                    getLhsFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                operation_ = input.readEnum();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 26: {
+                input.readMessage(
+                    getRhsFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private io.littlehorse.sdk.common.proto.VariableAssignment lhs_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> lhsBuilder_;
+      /**
+       * <pre>
+       * The left-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment lhs = 1;</code>
+       * @return Whether the lhs field is set.
+       */
+      public boolean hasLhs() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <pre>
+       * The left-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment lhs = 1;</code>
+       * @return The lhs.
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignment getLhs() {
+        if (lhsBuilder_ == null) {
+          return lhs_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : lhs_;
+        } else {
+          return lhsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * The left-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment lhs = 1;</code>
+       */
+      public Builder setLhs(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+        if (lhsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          lhs_ = value;
+        } else {
+          lhsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The left-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment lhs = 1;</code>
+       */
+      public Builder setLhs(
+          io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
+        if (lhsBuilder_ == null) {
+          lhs_ = builderForValue.build();
+        } else {
+          lhsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The left-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment lhs = 1;</code>
+       */
+      public Builder mergeLhs(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+        if (lhsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0) &&
+            lhs_ != null &&
+            lhs_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+            getLhsBuilder().mergeFrom(value);
+          } else {
+            lhs_ = value;
+          }
+        } else {
+          lhsBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The left-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment lhs = 1;</code>
+       */
+      public Builder clearLhs() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        lhs_ = null;
+        if (lhsBuilder_ != null) {
+          lhsBuilder_.dispose();
+          lhsBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The left-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment lhs = 1;</code>
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getLhsBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getLhsFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * The left-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment lhs = 1;</code>
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getLhsOrBuilder() {
+        if (lhsBuilder_ != null) {
+          return lhsBuilder_.getMessageOrBuilder();
+        } else {
+          return lhs_ == null ?
+              io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : lhs_;
+        }
+      }
+      /**
+       * <pre>
+       * The left-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment lhs = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
+          getLhsFieldBuilder() {
+        if (lhsBuilder_ == null) {
+          lhsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                  getLhs(),
+                  getParentForChildren(),
+                  isClean());
+          lhs_ = null;
+        }
+        return lhsBuilder_;
+      }
+
+      private int operation_ = 0;
+      /**
+       * <pre>
+       * The operator in the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableMutationType operation = 2;</code>
+       * @return The enum numeric value on the wire for operation.
+       */
+      @java.lang.Override public int getOperationValue() {
+        return operation_;
+      }
+      /**
+       * <pre>
+       * The operator in the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableMutationType operation = 2;</code>
+       * @param value The enum numeric value on the wire for operation to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOperationValue(int value) {
+        operation_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The operator in the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableMutationType operation = 2;</code>
+       * @return The operation.
+       */
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.VariableMutationType getOperation() {
+        io.littlehorse.sdk.common.proto.VariableMutationType result = io.littlehorse.sdk.common.proto.VariableMutationType.forNumber(operation_);
+        return result == null ? io.littlehorse.sdk.common.proto.VariableMutationType.UNRECOGNIZED : result;
+      }
+      /**
+       * <pre>
+       * The operator in the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableMutationType operation = 2;</code>
+       * @param value The operation to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOperation(io.littlehorse.sdk.common.proto.VariableMutationType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000002;
+        operation_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The operator in the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableMutationType operation = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOperation() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        operation_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private io.littlehorse.sdk.common.proto.VariableAssignment rhs_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> rhsBuilder_;
+      /**
+       * <pre>
+       * The right-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment rhs = 3;</code>
+       * @return Whether the rhs field is set.
+       */
+      public boolean hasRhs() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <pre>
+       * The right-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment rhs = 3;</code>
+       * @return The rhs.
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignment getRhs() {
+        if (rhsBuilder_ == null) {
+          return rhs_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : rhs_;
+        } else {
+          return rhsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * The right-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment rhs = 3;</code>
+       */
+      public Builder setRhs(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+        if (rhsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          rhs_ = value;
+        } else {
+          rhsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The right-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment rhs = 3;</code>
+       */
+      public Builder setRhs(
+          io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
+        if (rhsBuilder_ == null) {
+          rhs_ = builderForValue.build();
+        } else {
+          rhsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The right-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment rhs = 3;</code>
+       */
+      public Builder mergeRhs(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+        if (rhsBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) != 0) &&
+            rhs_ != null &&
+            rhs_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+            getRhsBuilder().mergeFrom(value);
+          } else {
+            rhs_ = value;
+          }
+        } else {
+          rhsBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The right-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment rhs = 3;</code>
+       */
+      public Builder clearRhs() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        rhs_ = null;
+        if (rhsBuilder_ != null) {
+          rhsBuilder_.dispose();
+          rhsBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The right-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment rhs = 3;</code>
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getRhsBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getRhsFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * The right-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment rhs = 3;</code>
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getRhsOrBuilder() {
+        if (rhsBuilder_ != null) {
+          return rhsBuilder_.getMessageOrBuilder();
+        } else {
+          return rhs_ == null ?
+              io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : rhs_;
+        }
+      }
+      /**
+       * <pre>
+       * The right-hand-side of the expression.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment rhs = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
+          getRhsFieldBuilder() {
+        if (rhsBuilder_ == null) {
+          rhsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                  getRhs(),
+                  getParentForChildren(),
+                  isClean());
+          rhs_ = null;
+        }
+        return rhsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.VariableAssignment.Expression)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.VariableAssignment.Expression)
+    private static final io.littlehorse.sdk.common.proto.VariableAssignment.Expression DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.VariableAssignment.Expression();
+    }
+
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.Expression getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Expression>
+        PARSER = new com.google.protobuf.AbstractParser<Expression>() {
+      @java.lang.Override
+      public Expression parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<Expression> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Expression> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Expression getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private int bitField0_;
   private int sourceCase_ = 0;
   @SuppressWarnings("serial")
@@ -1835,6 +2900,7 @@ private static final long serialVersionUID = 0L;
     LITERAL_VALUE(3),
     FORMAT_STRING(4),
     NODE_OUTPUT(5),
+    EXPRESSION(6),
     SOURCE_NOT_SET(0);
     private final int value;
     private SourceCase(int value) {
@@ -1856,6 +2922,7 @@ private static final long serialVersionUID = 0L;
         case 3: return LITERAL_VALUE;
         case 4: return FORMAT_STRING;
         case 5: return NODE_OUTPUT;
+        case 6: return EXPRESSION;
         case 0: return SOURCE_NOT_SET;
         default: return null;
       }
@@ -2129,6 +3196,49 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference.getDefaultInstance();
   }
 
+  public static final int EXPRESSION_FIELD_NUMBER = 6;
+  /**
+   * <pre>
+   * Assign the value of an Expression.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.Expression expression = 6;</code>
+   * @return Whether the expression field is set.
+   */
+  @java.lang.Override
+  public boolean hasExpression() {
+    return sourceCase_ == 6;
+  }
+  /**
+   * <pre>
+   * Assign the value of an Expression.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.Expression expression = 6;</code>
+   * @return The expression.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignment.Expression getExpression() {
+    if (sourceCase_ == 6) {
+       return (io.littlehorse.sdk.common.proto.VariableAssignment.Expression) source_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableAssignment.Expression.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Assign the value of an Expression.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.Expression expression = 6;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignment.ExpressionOrBuilder getExpressionOrBuilder() {
+    if (sourceCase_ == 6) {
+       return (io.littlehorse.sdk.common.proto.VariableAssignment.Expression) source_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableAssignment.Expression.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -2158,6 +3268,9 @@ private static final long serialVersionUID = 0L;
     if (sourceCase_ == 5) {
       output.writeMessage(5, (io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference) source_);
     }
+    if (sourceCase_ == 6) {
+      output.writeMessage(6, (io.littlehorse.sdk.common.proto.VariableAssignment.Expression) source_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -2184,6 +3297,10 @@ private static final long serialVersionUID = 0L;
     if (sourceCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, (io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference) source_);
+    }
+    if (sourceCase_ == 6) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, (io.littlehorse.sdk.common.proto.VariableAssignment.Expression) source_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -2223,6 +3340,10 @@ private static final long serialVersionUID = 0L;
         if (!getNodeOutput()
             .equals(other.getNodeOutput())) return false;
         break;
+      case 6:
+        if (!getExpression()
+            .equals(other.getExpression())) return false;
+        break;
       case 0:
       default:
     }
@@ -2257,6 +3378,10 @@ private static final long serialVersionUID = 0L;
       case 5:
         hash = (37 * hash) + NODE_OUTPUT_FIELD_NUMBER;
         hash = (53 * hash) + getNodeOutput().hashCode();
+        break;
+      case 6:
+        hash = (37 * hash) + EXPRESSION_FIELD_NUMBER;
+        hash = (53 * hash) + getExpression().hashCode();
         break;
       case 0:
       default:
@@ -2412,6 +3537,9 @@ private static final long serialVersionUID = 0L;
       if (nodeOutputBuilder_ != null) {
         nodeOutputBuilder_.clear();
       }
+      if (expressionBuilder_ != null) {
+        expressionBuilder_.clear();
+      }
       sourceCase_ = 0;
       source_ = null;
       return this;
@@ -2470,6 +3598,10 @@ private static final long serialVersionUID = 0L;
       if (sourceCase_ == 5 &&
           nodeOutputBuilder_ != null) {
         result.source_ = nodeOutputBuilder_.build();
+      }
+      if (sourceCase_ == 6 &&
+          expressionBuilder_ != null) {
+        result.source_ = expressionBuilder_.build();
       }
     }
 
@@ -2541,6 +3673,10 @@ private static final long serialVersionUID = 0L;
           mergeNodeOutput(other.getNodeOutput());
           break;
         }
+        case EXPRESSION: {
+          mergeExpression(other.getExpression());
+          break;
+        }
         case SOURCE_NOT_SET: {
           break;
         }
@@ -2603,6 +3739,13 @@ private static final long serialVersionUID = 0L;
               sourceCase_ = 5;
               break;
             } // case 42
+            case 50: {
+              input.readMessage(
+                  getExpressionFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              sourceCase_ = 6;
+              break;
+            } // case 50
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3399,6 +4542,184 @@ private static final long serialVersionUID = 0L;
       sourceCase_ = 5;
       onChanged();
       return nodeOutputBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableAssignment.Expression, io.littlehorse.sdk.common.proto.VariableAssignment.Expression.Builder, io.littlehorse.sdk.common.proto.VariableAssignment.ExpressionOrBuilder> expressionBuilder_;
+    /**
+     * <pre>
+     * Assign the value of an Expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.Expression expression = 6;</code>
+     * @return Whether the expression field is set.
+     */
+    @java.lang.Override
+    public boolean hasExpression() {
+      return sourceCase_ == 6;
+    }
+    /**
+     * <pre>
+     * Assign the value of an Expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.Expression expression = 6;</code>
+     * @return The expression.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Expression getExpression() {
+      if (expressionBuilder_ == null) {
+        if (sourceCase_ == 6) {
+          return (io.littlehorse.sdk.common.proto.VariableAssignment.Expression) source_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.Expression.getDefaultInstance();
+      } else {
+        if (sourceCase_ == 6) {
+          return expressionBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.Expression.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Assign the value of an Expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.Expression expression = 6;</code>
+     */
+    public Builder setExpression(io.littlehorse.sdk.common.proto.VariableAssignment.Expression value) {
+      if (expressionBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        source_ = value;
+        onChanged();
+      } else {
+        expressionBuilder_.setMessage(value);
+      }
+      sourceCase_ = 6;
+      return this;
+    }
+    /**
+     * <pre>
+     * Assign the value of an Expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.Expression expression = 6;</code>
+     */
+    public Builder setExpression(
+        io.littlehorse.sdk.common.proto.VariableAssignment.Expression.Builder builderForValue) {
+      if (expressionBuilder_ == null) {
+        source_ = builderForValue.build();
+        onChanged();
+      } else {
+        expressionBuilder_.setMessage(builderForValue.build());
+      }
+      sourceCase_ = 6;
+      return this;
+    }
+    /**
+     * <pre>
+     * Assign the value of an Expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.Expression expression = 6;</code>
+     */
+    public Builder mergeExpression(io.littlehorse.sdk.common.proto.VariableAssignment.Expression value) {
+      if (expressionBuilder_ == null) {
+        if (sourceCase_ == 6 &&
+            source_ != io.littlehorse.sdk.common.proto.VariableAssignment.Expression.getDefaultInstance()) {
+          source_ = io.littlehorse.sdk.common.proto.VariableAssignment.Expression.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment.Expression) source_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          source_ = value;
+        }
+        onChanged();
+      } else {
+        if (sourceCase_ == 6) {
+          expressionBuilder_.mergeFrom(value);
+        } else {
+          expressionBuilder_.setMessage(value);
+        }
+      }
+      sourceCase_ = 6;
+      return this;
+    }
+    /**
+     * <pre>
+     * Assign the value of an Expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.Expression expression = 6;</code>
+     */
+    public Builder clearExpression() {
+      if (expressionBuilder_ == null) {
+        if (sourceCase_ == 6) {
+          sourceCase_ = 0;
+          source_ = null;
+          onChanged();
+        }
+      } else {
+        if (sourceCase_ == 6) {
+          sourceCase_ = 0;
+          source_ = null;
+        }
+        expressionBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Assign the value of an Expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.Expression expression = 6;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Expression.Builder getExpressionBuilder() {
+      return getExpressionFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Assign the value of an Expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.Expression expression = 6;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment.ExpressionOrBuilder getExpressionOrBuilder() {
+      if ((sourceCase_ == 6) && (expressionBuilder_ != null)) {
+        return expressionBuilder_.getMessageOrBuilder();
+      } else {
+        if (sourceCase_ == 6) {
+          return (io.littlehorse.sdk.common.proto.VariableAssignment.Expression) source_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.Expression.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Assign the value of an Expression.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.Expression expression = 6;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.VariableAssignment.Expression, io.littlehorse.sdk.common.proto.VariableAssignment.Expression.Builder, io.littlehorse.sdk.common.proto.VariableAssignment.ExpressionOrBuilder> 
+        getExpressionFieldBuilder() {
+      if (expressionBuilder_ == null) {
+        if (!(sourceCase_ == 6)) {
+          source_ = io.littlehorse.sdk.common.proto.VariableAssignment.Expression.getDefaultInstance();
+        }
+        expressionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.VariableAssignment.Expression, io.littlehorse.sdk.common.proto.VariableAssignment.Expression.Builder, io.littlehorse.sdk.common.proto.VariableAssignment.ExpressionOrBuilder>(
+                (io.littlehorse.sdk.common.proto.VariableAssignment.Expression) source_,
+                getParentForChildren(),
+                isClean());
+        source_ = null;
+      }
+      sourceCase_ = 6;
+      onChanged();
+      return expressionBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

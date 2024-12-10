@@ -202,14 +202,45 @@ String taskArg1 = "reply to my email, you must!";
 String taskArg2 = "for my ally is the Force, and a powerful ally it is";
 
 String taskDefName = "send-reminder";
-wf.scheduleTaskAfter(userTask, delaySeconds, taskDefName, taskArg1, taskArg2);
+wf.scheduleReminderTask(userTask, delaySeconds, taskDefName, taskArg1, taskArg2);
 ```
 
   </TabItem>
   <TabItem value="go" label="Go">
 
-GoLang support for user tasks coming soon.
+```go
+func QuickstartWorkflow(wf *littlehorse.WorkflowThread) {
+	// Declare an input variable and make it searchable
+	nameVar := wf.AddVariable("input-name", lhproto.VariableType_STR).Searchable()
 
+	// Execute a task and pass in the variable.
+	wf.Execute("greet", nameVar)
+
+	arg1 := "This is the first argument passed to the reminder task"
+	arg2 := "This is the second argument passed to the reminder task"
+	delaySeconds := 10 // wait 10 seconds after the task is assigned to schedule the reminder
+    reminderTaskDefName := "email-group"
+
+	userTaskOutput := wf.AssignUserTask("my-user-task", nil, "some-group")
+	wf.ScheduleReminderTask(userTaskOutput, delaySeconds, reminderTaskDefName, arg1, arg2)
+}
+```
+  </TabItem>
+  <TabItem value="python" label="Python">
+
+    ```python
+        def get_workflow() -> Workflow:
+            def my_entrypoint(wf: WorkflowThread) -> None:
+                task_def_name = "greet"
+                user_task_output = wf.assign_user_task("person-details", None, "writer-group")
+                delay_in_seconds = 10 // wait 10 seconds after the task is assigned to schedule the reminder
+                arg1 = "Sam"
+                arg2 = {"identification": "1258796641-4", "Address": "NA-Street", "Age": 28}
+        
+                wf.schedule_reminder_task(user_task_output, delay_in_seconds, task_def_name, arg1, arg2)
+    
+        return Workflow("example-user-tasks", my_entrypoint)
+    ```
   </TabItem>
 </Tabs>
 

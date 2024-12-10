@@ -244,7 +244,7 @@ func (t *WorkflowThread) reassignUserTaskOnDeadline(
 
 func (t *WorkflowThread) scheduleReminderTask(
 	userTask *UserTaskOutput, delaySeconds interface{},
-	taskDefName string, args ...interface{},
+	taskDefName string, args []interface{},
 ) {
 	t.checkIfIsActive()
 
@@ -709,8 +709,8 @@ func (t *WorkflowThread) mutate(
 			},
 		}
 	case WfRunVariable:
-		mutation.RhsValue = &lhproto.VariableMutation_SourceVariable{
-			SourceVariable: &lhproto.VariableAssignment{
+		mutation.RhsValue = &lhproto.VariableMutation_RhsAssignment{
+			RhsAssignment: &lhproto.VariableAssignment{
 				JsonPath: r.jsonPath,
 				Source: &lhproto.VariableAssignment_VariableName{
 					VariableName: r.Name,
@@ -718,8 +718,8 @@ func (t *WorkflowThread) mutate(
 			},
 		}
 	case *WfRunVariable:
-		mutation.RhsValue = &lhproto.VariableMutation_SourceVariable{
-			SourceVariable: &lhproto.VariableAssignment{
+		mutation.RhsValue = &lhproto.VariableMutation_RhsAssignment{
+			RhsAssignment: &lhproto.VariableAssignment{
 				JsonPath: r.jsonPath,
 				Source: &lhproto.VariableAssignment_VariableName{
 					VariableName: r.Name,

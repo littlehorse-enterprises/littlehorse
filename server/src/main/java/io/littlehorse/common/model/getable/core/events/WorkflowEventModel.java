@@ -4,7 +4,9 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
+import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
@@ -25,13 +27,15 @@ public class WorkflowEventModel extends CoreGetable<WorkflowEvent> {
     private WorkflowEventIdModel id;
     private VariableValueModel content;
     private Date createdAt;
+    private NodeRunIdModel nodeRunId;
 
     public WorkflowEventModel() {}
 
-    public WorkflowEventModel(WorkflowEventIdModel id, VariableValueModel content) {
+    public WorkflowEventModel(WorkflowEventIdModel id, VariableValueModel content, NodeRunModel nodeRunModel) {
         this.id = id;
         this.content = content;
         this.createdAt = new Date();
+        this.nodeRunId = nodeRunModel.getObjectId();
     }
 
     @Override
@@ -40,6 +44,7 @@ public class WorkflowEventModel extends CoreGetable<WorkflowEvent> {
         this.id = LHSerializable.fromProto(p.getId(), WorkflowEventIdModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         this.content = LHSerializable.fromProto(p.getContent(), VariableValueModel.class, context);
+        this.nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
     }
 
     @Override
@@ -47,7 +52,8 @@ public class WorkflowEventModel extends CoreGetable<WorkflowEvent> {
         return WorkflowEvent.newBuilder()
                 .setId(id.toProto())
                 .setContent(content.toProto())
-                .setCreatedAt(LHUtil.fromDate(createdAt));
+                .setCreatedAt(LHUtil.fromDate(createdAt))
+                .setNodeRunId(nodeRunId.toProto());
     }
 
     @Override

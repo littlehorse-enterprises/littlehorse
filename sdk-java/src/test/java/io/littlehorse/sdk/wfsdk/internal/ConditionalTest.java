@@ -39,6 +39,7 @@ public class ConditionalTest {
                                     .getLiteralValue()
                                     .getInt(),
                             (edge) -> edge.getVariableMutations(0)
+                                    .getRhsAssignment()
                                     .getLiteralValue()
                                     .getStr())
                     .containsExactlyInAnyOrder(

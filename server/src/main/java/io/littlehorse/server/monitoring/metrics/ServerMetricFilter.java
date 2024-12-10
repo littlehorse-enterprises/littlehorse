@@ -5,8 +5,8 @@ import java.util.List;
 
 public class ServerMetricFilter {
 
-    private MeterRegistry meterRegistry;
-    private List<ServerFilterRule> rules;
+    private final MeterRegistry meterRegistry;
+    private final List<ServerFilterRule> rules;
 
     public ServerMetricFilter(MeterRegistry meterRegistry, List<ServerFilterRule> rules) {
         this.meterRegistry = meterRegistry;

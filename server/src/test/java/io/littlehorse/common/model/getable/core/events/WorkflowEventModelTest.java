@@ -32,7 +32,7 @@ public class WorkflowEventModelTest {
         WfRunIdModel wfRunId = TestUtil.wfRun(UUID.randomUUID().toString()).getId();
         VariableValueModel content = TestUtil.variableValue();
         WorkflowEventIdModel eventId = new WorkflowEventIdModel(wfRunId, workflowEventDefId, 1);
-        WorkflowEventModel eventToStore = new WorkflowEventModel(eventId, content);
+        WorkflowEventModel eventToStore = new WorkflowEventModel(eventId, content, TestUtil.nodeRun());
         testProcessorContext.getableManager().put(eventToStore);
         testProcessorContext.endExecution();
         WorkflowEventModel storedEvent = testProcessorContext.getableManager().get(eventId);
@@ -40,6 +40,7 @@ public class WorkflowEventModelTest {
         Assertions.assertThat(storedEvent.getObjectId().getWfRunId()).isNotNull();
         Assertions.assertThat(storedEvent.getObjectId().getWorkflowEventDefId().getName())
                 .isEqualTo("user-updated");
+        Assertions.assertThat(storedEvent.getNodeRunId()).isNotNull();
         Assertions.assertThat(storedEvent.getContent()).isEqualTo(content);
         Assertions.assertThat(storedEvent.getCreatedAt()).isNotNull();
     }

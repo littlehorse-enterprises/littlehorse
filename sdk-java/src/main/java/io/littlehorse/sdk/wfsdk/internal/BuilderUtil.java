@@ -3,6 +3,7 @@ package io.littlehorse.sdk.wfsdk.internal;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
+import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
 import io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference;
 import io.littlehorse.sdk.common.proto.VariableValue;
 
@@ -26,12 +27,22 @@ class BuilderUtil {
             builder.setNodeOutput(NodeOutputReference.newBuilder()
                     .setNodeName(nodeReference.nodeName)
                     .build());
+
+            if (nodeReference.jsonPath != null) {
+                builder.setJsonPath(nodeReference.jsonPath);
+            }
         } else if (variable.getClass().equals(LHFormatStringImpl.class)) {
             LHFormatStringImpl format = (LHFormatStringImpl) variable;
             builder.setFormatString(VariableAssignment.FormatString.newBuilder()
                     .setFormat(assignVariable(format.getFormat()))
                     .addAllArgs(format.getArgs()));
 
+        } else if (variable instanceof LHExpressionImpl) {
+            LHExpressionImpl expr = (LHExpressionImpl) variable;
+            builder.setExpression(Expression.newBuilder()
+                    .setLhs(assignVariable(expr.getLhs()))
+                    .setOperation(expr.getOperation())
+                    .setRhs(assignVariable(expr.getRhs())));
         } else {
             try {
                 VariableValue defVal = LHLibUtil.objToVarVal(variable);

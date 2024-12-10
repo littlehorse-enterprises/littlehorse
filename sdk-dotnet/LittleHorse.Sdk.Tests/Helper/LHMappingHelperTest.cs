@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Helper;
 using Google.Protobuf.WellKnownTypes;
-using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Tests;
 using Xunit;
 using Type = System.Type;
@@ -84,15 +83,15 @@ public class LHMappingHelperTest
     }
     
     [Fact]
-    public void LHHelper_WithoutSystemVariableType_ShouldThrowException()
+    public void LHHelper_WithNotAllowedSystemVariableTypes_ShouldReturnLHJsonObj()
     {
-        var test_not_allowed_types = new List<Type>() { typeof(decimal), typeof(char) };
+        var test_not_allowed_types = new List<Type>() { typeof(decimal), typeof(char), typeof(void) };
         
         foreach (var type in test_not_allowed_types)
         {
-            var exception = Assert.Throws<Exception>(() => LHMappingHelper.MapDotNetTypeToLHVariableType(type));
+            var result = LHMappingHelper.MapDotNetTypeToLHVariableType(type);
             
-            Assert.Equal($"Unaccepted variable type.", exception.Message);
+            Assert.Equal(VariableType.JsonObj, result);
         }
     }
 
@@ -145,12 +144,11 @@ public class LHMappingHelperTest
     }
     
     [Fact]
-    public void LHHelper_WithNullLHVariableValue_ShouldThrowException()
+    public void LHHelper_WithNullLHVariableValue_ShouldReturnNewLHVariableValue()
     {
-        var exception = Assert.Throws<LHInputVarSubstitutionException>
-            (() => LHMappingHelper.MapObjectToVariableValue(null));
+        var result = LHMappingHelper.MapObjectToVariableValue(null);
         
-        Assert.Equal($"There is no object to be mapped.", exception.Message);
+        Assert.NotNull(result);
     }
 
     [Fact]

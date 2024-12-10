@@ -5,6 +5,7 @@ using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Utils;
 using LittleHorse.Sdk.Worker;
+using TaskStatus = LittleHorse.Common.Proto.TaskStatus;
 using Type = System.Type;
 
 namespace LittleHorse.Sdk.Helper
@@ -17,34 +18,33 @@ namespace LittleHorse.Sdk.Helper
             {
                 return VariableType.Int;
             }
-            else if (IsFloat(type))
+
+            if (IsFloat(type))
             {
                 return VariableType.Double;
             }
-            else if (type.IsAssignableFrom(typeof(string)))
+
+            if (type.IsAssignableFrom(typeof(string)))
             {
                 return VariableType.Str;
             }
-            else if (type.IsAssignableFrom(typeof(bool)))
+
+            if (type.IsAssignableFrom(typeof(bool)))
             {
                 return VariableType.Bool;
             }
-            else if (type.IsAssignableFrom(typeof(byte[])))
+
+            if (type.IsAssignableFrom(typeof(byte[])))
             {
                 return VariableType.Bytes;
             }
-            else if (typeof(IEnumerable).IsAssignableFrom(type))
+
+            if (typeof(IEnumerable).IsAssignableFrom(type))
             {
                 return VariableType.JsonArr;
             }
-            else if (!type.Namespace!.StartsWith("System"))
-            {
-                return VariableType.JsonObj;
-            }
-            else
-            {
-                throw new Exception("Unaccepted variable type.");
-            }
+
+            return VariableType.JsonObj;
         }
         
         public static DateTime? MapDateTimeFromProtoTimeStamp(Timestamp protoTimestamp)
@@ -67,10 +67,7 @@ namespace LittleHorse.Sdk.Helper
             if (obj is VariableValue variableValue) return variableValue;
 
             var result = new VariableValue();
-            if (obj == null)
-            {
-                throw new LHInputVarSubstitutionException("There is no object to be mapped.");
-            }
+            if (obj == null) {}
             else if (IsIntObject(obj))
             {
                 result.Int = GetIntegralValue(obj);
@@ -202,6 +199,36 @@ namespace LittleHorse.Sdk.Helper
                 float f => f,
                 _ => throw new LHInputVarSubstitutionException("Object value can not be converted to a Double.")
             };
+        }
+
+        internal static bool IsInt64Type(Type type)
+        {
+            return type.IsAssignableFrom(typeof(Int64))
+                   || type.IsAssignableFrom(typeof(UInt64))
+                   || type.IsAssignableFrom(typeof(long))
+                   || type.IsAssignableFrom(typeof(ulong));
+        }
+        
+        internal static LHErrorType GetFailureCodeFor(TaskStatus status)
+        {
+            switch (status) {
+                case TaskStatus.TaskFailed:
+                    return LHErrorType.TaskFailure;
+                case TaskStatus.TaskTimeout:
+                    return LHErrorType.Timeout;
+                case TaskStatus.TaskOutputSerializingError:
+                    return LHErrorType.VarMutationError;
+                case TaskStatus.TaskInputVarSubError:
+                    return LHErrorType.VarSubError;
+                case TaskStatus.TaskRunning:
+                case TaskStatus.TaskScheduled:
+                case TaskStatus.TaskSuccess:
+                case TaskStatus.TaskPending:
+                case TaskStatus.TaskException: // TASK_EXCEPTION is NOT a technical ERROR, so this fails.
+                    break;
+            }
+
+            throw new ArgumentException($"Unexpected task status: {status}");;
         }
     }
 }

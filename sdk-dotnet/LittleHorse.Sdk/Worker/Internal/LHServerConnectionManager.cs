@@ -7,6 +7,7 @@ using LittleHorse.Sdk.Helper;
 using Microsoft.Extensions.Logging;
 using Polly;
 using static LittleHorse.Common.Proto.LittleHorse;
+using LHTaskException = LittleHorse.Sdk.Exceptions.LHTaskException;
 using TaskStatus = LittleHorse.Common.Proto.TaskStatus;
 
 namespace LittleHorse.Sdk.Worker.Internal
@@ -157,20 +158,20 @@ namespace LittleHorse.Sdk.Worker.Internal
             ReportTaskRun result = ExecuteTask(scheduledTask, LHMappingHelper.MapDateTimeFromProtoTimeStamp(scheduledTask.CreatedAt));
             _semaphore.Release();
 
-            var wfRunId = LHWorkerHelper.GetWFRunId(scheduledTask.Source);
+            var wfRunId = LHHelper.GetWFRunId(scheduledTask.Source);
 
             try
             {
                 var retriesLeft = MAX_REPORT_RETRIES;
 
-                _logger?.LogDebug($"Going to report task for wfRun {wfRunId}");
+                _logger?.LogDebug($"Going to report task for wfRun {wfRunId.Id}");
                 Policy.Handle<Exception>().WaitAndRetry(MAX_REPORT_RETRIES,
                     retryAttempt => TimeSpan.FromSeconds(5),
                     onRetry: (exception, timeSpan, retryCount, context) =>
                 {
                     --retriesLeft;
                     _logger?.LogDebug($"Failed to report task for wfRun {wfRunId}: {exception.Message}. Retries left: {retriesLeft}");
-                    _logger?.LogDebug($"Retrying reportTask rpc on taskRun {LHWorkerHelper.TaskRunIdToString(result.TaskRunId)}");
+                    _logger?.LogDebug($"Retrying reportTask rpc on taskRun {LHHelper.TaskRunIdToString(result.TaskRunId)}");
                 }).Execute(() => RunReportTask(result));
             }
             catch (Exception ex)
@@ -218,18 +219,56 @@ namespace LittleHorse.Sdk.Worker.Internal
                 _logger?.LogError(ex, "Failed calculating task input variables");
                 taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
                 taskResult.Status = TaskStatus.TaskInputVarSubError;
+                taskResult.Error = new LHTaskError
+                {
+                    Message = ex.ToString(), Type = LHMappingHelper.GetFailureCodeFor(taskResult.Status)
+                };
             }
             catch (LHSerdeException ex)
             {
                 _logger?.LogError(ex, "Failed serializing Task Output");
                 taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
                 taskResult.Status = TaskStatus.TaskOutputSerializingError;
+                taskResult.Error = new LHTaskError
+                {
+                    Message = ex.ToString(), Type = LHMappingHelper.GetFailureCodeFor(taskResult.Status)
+                };
+            }
+            catch (TargetInvocationException ex)
+            {
+                if (ex.GetBaseException() is LHTaskException taskException)
+                {
+                    _logger?.LogError(ex, "Task Method threw a Business Exception");
+                    taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
+                    taskResult.Status = TaskStatus.TaskException;
+                    taskResult.Exception = new Common.Proto.LHTaskException
+                    {
+                        Name = taskException.Name, 
+                        Message = taskException.Message, 
+                        Content = taskException.Content
+                    };
+                }
+                else
+                {
+                    _logger?.LogError(ex, "Task Method threw an exception");
+                    taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
+                    taskResult.Status = TaskStatus.TaskFailed;
+                    taskResult.Error = new LHTaskError
+                    {
+                        Message = ex.InnerException!.ToString(), 
+                        Type = LHMappingHelper.GetFailureCodeFor(taskResult.Status)
+                    };
+                }
             }
             catch (Exception ex)
             {
                 _logger?.LogError(ex, "Unexpected exception during task execution");
                 taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
                 taskResult.Status = TaskStatus.TaskFailed;
+                taskResult.Error = new LHTaskError
+                {
+                    Message = ex.ToString(), Type = LHMappingHelper.GetFailureCodeFor(taskResult.Status)
+                };
             }
 
             taskResult.Time = Timestamp.FromDateTime(DateTime.UtcNow);

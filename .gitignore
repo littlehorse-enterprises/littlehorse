@@ -47,3 +47,5 @@ dist/
 # dotnet
 global.json
 *DotSettings.user
+!sdk-dotnet/Littlehorse.sln
+*.sln

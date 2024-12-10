@@ -24,6 +24,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.InterruptDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.ExpressionModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
@@ -816,6 +817,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 }
                 val = output.get();
                 break;
+            case EXPRESSION:
+                ExpressionModel expression = assn.getExpression();
+                val = expression.evaluate(varAssn -> assignVariable(varAssn, txnCache));
+                break;
             case SOURCE_NOT_SET:
                 // This should have been caught by the WfSpecModel#validate()
                 throw new IllegalStateException("Invalid WfSpec with un-set VariableAssignment.");
@@ -852,7 +857,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         // TODO: We can find a way to optimize this. Range scans are expensive, and also
         // doing it in this way means that the NodeRun's will be re-put into the GetableManager's
         // buffer, which could get _very_ expensive.
-        for (int backwardPosition = currentNodePosition - 1; backwardPosition > 0; backwardPosition--) {
+        for (int backwardPosition = currentNodePosition; backwardPosition > 0; backwardPosition--) {
             NodeRunModel nodeRun = this.getNodeRun(backwardPosition);
             if (nodeRun.getNodeName().equals(nodeName)) {
                 return nodeRun;

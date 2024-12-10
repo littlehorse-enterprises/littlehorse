@@ -24,7 +24,7 @@ namespace LittleHorse.Sdk.Worker
 
         public LHTaskSignature(string taskDefName, T executable)
         {
-            _logger = new LoggerFactory().CreateLogger<LHTaskSignature<T>>();
+            _logger = LHLoggerFactoryProvider.GetLogger<LHTaskSignature<T>>();
             _lhMethodParams = new List<LHMethodParam>();
             TaskDefName = taskDefName;
             Executable = executable;
@@ -50,9 +50,10 @@ namespace LittleHorse.Sdk.Worker
 
             var methodParams = TaskMethod.GetParameters();
 
-            CreateInputVarsSignature(methodParams);
+            BuildInputVarsSignature(methodParams);
 
-            CreateOutputSchemaSignature();
+            if (!TaskMethod.ReturnType.IsAssignableFrom(typeof(void)))
+                BuildOutputSchemaSignature();
         }
         
         private bool IsValidLHTaskWorkerValue(Attribute? lhtaskWorkerAttribute, string taskDefName)
@@ -65,7 +66,7 @@ namespace LittleHorse.Sdk.Worker
             return false;
         }
 
-        private void CreateInputVarsSignature(ParameterInfo[] methodParams)
+        private void BuildInputVarsSignature(ParameterInfo[] methodParams)
         {
             for (int i = 0; i < methodParams.Length; i++)
             {
@@ -107,7 +108,7 @@ namespace LittleHorse.Sdk.Worker
             }
         }
         
-        private void CreateOutputSchemaSignature()
+        private void BuildOutputSchemaSignature()
         {
             var returnType = LHMappingHelper.MapDotNetTypeToLHVariableType(TaskMethod.ReturnType);
             var maskedValue = false;

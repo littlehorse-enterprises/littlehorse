@@ -5,7 +5,7 @@ import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import java.io.Serializable;
 
 /** A WfRunVariable is a handle on a Variable in a WfSpec. */
-public interface WfRunVariable extends Serializable {
+public interface WfRunVariable extends LHExpression {
     /**
      * Valid only for output of the JSON_OBJ or JSON_ARR types. Returns a new WfRunVariable handle
      * which points to Json element referred to by the json path.
@@ -79,4 +79,140 @@ public interface WfRunVariable extends Serializable {
      * @return this WfRunVariable.
      */
     WfRunVariable masked();
+
+    /**
+     * Sets the default value for this WfRunVariable.
+     * @param defaultVal is the default value for this variable.
+     * @return this WfRunVariable.
+     */
+    WfRunVariable withDefault(Object defaultVal);
+
+    /**
+     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * evaluates to true if this WfRunVariable is LESS_THAN the provided rhs.
+     *
+     * Equivalent to WorkflowThread#condition(this, Comparator.LESS_THAN, rhs);
+     *
+     * @param rhs is the RHS to compare this WfRunVariable to.
+     * @return true if this WfRunVariable is LESS_THAN the provided rhs.
+     */
+    WorkflowCondition isLessThan(Serializable rhs);
+
+    /**
+     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * evaluates to true if this WfRunVariable is LESS_THAN_EQU the provided rhs.
+     *
+     * Equivalent to WorkflowThread#condition(this, Comparator.LESS_THAN_EQ, rhs);
+     *
+     * @param rhs is the RHS to compare this WfRunVariable to.
+     * @return true if this WfRunVariable is LESS_THAN_EQ the provided rhs.
+     */
+    WorkflowCondition isLessThanEq(Serializable rhs);
+
+    /**
+     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * evaluates to true if this WfRunVariable is GREATER_THAN_EQ the provided rhs.
+     *
+     * Equivalent to WorkflowThread#condition(this, Comparator.GREATER_THAN_EQ, rhs);
+     *
+     * @param rhs is the RHS to compare this WfRunVariable to.
+     * @return true if this WfRunVariable is GREATER_THAN_EQ the provided rhs.
+     */
+    WorkflowCondition isGreaterThanEq(Serializable rhs);
+
+    /**
+     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * evaluates to true if this WfRunVariable is GREATER_THAN the provided rhs.
+     *
+     * Equivalent to WorkflowThread#condition(this, Comparator.GREATER_THAN, rhs);
+     *
+     * @param rhs is the RHS to compare this WfRunVariable to.
+     * @return true if this WfRunVariable is GREATER_THAN the provided rhs.
+     */
+    WorkflowCondition isGreaterThan(Serializable rhs);
+
+    /**
+     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * evaluates to true if this WfRunVariable is EQUALS to the provided rhs.
+     *
+     * Equivalent to WorkflowThread#condition(this, Comparator.EQUALS, rhs);
+     *
+     * @param rhs is the RHS to compare this WfRunVariable to.
+     * @return true if this WfRunVariable is GREATER_THAN the provided rhs.
+     */
+    WorkflowCondition isEqualTo(Serializable rhs);
+
+    /**
+     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * evaluates to true if this WfRunVariable is NOT_EQUALS to the provided rhs.
+     *
+     * Equivalent to WorkflowThread#condition(this, Comparator.EQUALS, rhs);
+     *
+     * @param rhs is the RHS to compare this WfRunVariable to.
+     * @return true if this WfRunVariable is GREATER_THAN the provided rhs.
+     */
+    WorkflowCondition isNotEqualTo(Serializable rhs);
+
+    /**
+     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * evaluates to true if the RHS is contained inside this variable. For JSON_OBJ, returns
+     * true if the RHS is a key. For JSON_ARR, returns true if the RHS is equal to one of the
+     * elements in the array.
+     *
+     * Equivalent to WorkflowThread#condition(this, Comparator.BETWEEN, rhs);
+     *
+     * @param rhs is the RHS to compare this WfRunVariable to.
+     * @return true if this WfRunVariable is BETWEEN the provided rhs.
+     */
+    WorkflowCondition doesContain(Serializable rhs);
+
+    /**
+     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * evaluates to true if the RHS is not contained inside this variable. For JSON_OBJ, returns
+     * true if the RHS is not a key. For JSON_ARR, returns true if the RHS is not equal to any of
+     * the elements in the array.
+     *
+     * Equivalent to WorkflowThread#condition(this, Comparator.NOT_BETWEEN, rhs);
+     *
+     * @param rhs is the RHS to compare this WfRunVariable to.
+     * @return true if this WfRunVariable is NOT_BETWEEN the provided rhs.
+     */
+    WorkflowCondition doesNotContain(Serializable rhs);
+
+    /**
+     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * evaluates to true if the value of this WfRunVariable is contained in the provided RHS.
+     * For an RHS of type JSON_OBJ, returns true if the RHS contains a key that is equal to the
+     * value of this WfRunVariable. For an RHS of type JSON_ARR, returns true if the RHS contains
+     * an element that is equal to the value of this WfRunVariable.
+     *
+     * Equivalent to WorkflowThread#condition(this, Comparator.BETWEEN, rhs);
+     *
+     * @param rhs is the RHS to compare this WfRunVariable to.
+     * @return true if this WfRunVariable is BETWEEN the provided rhs.
+     */
+    WorkflowCondition isIn(Serializable rhs);
+
+    /**
+     * Returns a WorkflowCondition (treated like a boolean in the WfSpec control flow logic) that
+     * evaluates to true if the value of this WfRunVariable is not contained in the provided RHS.
+     * For an RHS of type JSON_OBJ, returns true if the RHS does not contain a key that is equal
+     * to the value of this WfRunVariable. For an RHS of type JSON_ARR, returns true if the RHS does
+     * not contain an element that is equal to the value of this WfRunVariable.
+     *
+     * Equivalent to WorkflowThread#condition(this, Comparator.NOT_BETWEEN, rhs);
+     *
+     * @param rhs is the RHS to compare this WfRunVariable to.
+     * @return true if this WfRunVariable is NOT_BETWEEN the provided rhs.
+     */
+    WorkflowCondition isNotIn(Serializable rhs);
+
+    /**
+     * Mutates the value of this WfRunVariable and sets it to the the value provided on the RHS.
+     *
+     * If the LHS of this WfRunVariable is set, then the sub-element of this WfRunVariable
+     * provided by the Json Path is mutated.
+     * @param rhs is the value to set this WfRunVariable to.
+     */
+    void assign(Serializable rhs);
 }

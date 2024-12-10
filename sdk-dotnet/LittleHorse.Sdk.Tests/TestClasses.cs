@@ -10,7 +10,7 @@ public class Car
 
 public class Person
 {
-    public string FirstName { get; set; }
+    public string? FirstName { get; set; }
     public int Age { get; set; }
-    public List<Car> Cars { get; set; }
+    public List<Car>? Cars { get; set; }
 }
