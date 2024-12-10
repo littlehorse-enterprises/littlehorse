@@ -180,14 +180,12 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
                               : NOT_APPLICABLE_LABEL}
                           </TableCell>
                           <TableCell>
-                            <Button
-                              onClick={() =>
-                                router.push(
-                                  `/${tenantId}/userTaskDef/audit/${userTaskRun.id?.wfRunId?.id}/${userTaskRun.id?.userTaskGuid}`
-                                )
-                              }
-                            >
-                              View Audit Log
+                            <Button asChild>
+                              <LinkWithTenant
+                                href={`/userTaskDef/audit/${userTaskRun.id?.wfRunId?.id}/${userTaskRun.id?.userTaskGuid}`}
+                              >
+                                View Audit Log
+                              </LinkWithTenant>
                             </Button>
                           </TableCell>
                         </TableRow>

@@ -5,6 +5,8 @@ import { ClientError, Status } from 'nice-grpc-common'
 import { Details } from '@/app/[tenantId]/components/Details'
 import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
 import { AuditTable } from './AuditTable'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 
 type Props = { params: { ids: string[]; tenantId: string } }
 
@@ -22,9 +24,9 @@ export default async function Page({ params: { ids, tenantId } }: Props) {
           version={[userTaskRun.userTaskDefId?.version ?? -1]}
           description={{
             wfRunId: (
-              <LinkWithTenant href={`/wfRun/${wfRunId}`} linkStyle>
-                {wfRunId}
-              </LinkWithTenant>
+              <Button variant="link" className="p-0" asChild>
+                <LinkWithTenant href={`/wfRun/${wfRunId}`}>{wfRunId}</LinkWithTenant>
+              </Button>
             ),
             userTaskRunId: userTaskGuid,
           }}
