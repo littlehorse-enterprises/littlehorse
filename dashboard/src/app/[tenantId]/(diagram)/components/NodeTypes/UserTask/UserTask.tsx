@@ -7,8 +7,9 @@ import { NodeRunsList } from '../../NodeRunsList'
 import { Fade } from '../Fade'
 import { NodeProps } from '../index'
 import { NodeDetails } from '../NodeDetails'
-import { NodeViewButton } from '../../NodeViewButton'
 import { useParams, useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { ExternalLinkButton } from '../../ExternalLinkButton'
 
 const Node: FC<NodeProps> = ({ data, selected }) => {
   const router = useRouter()
@@ -20,27 +21,16 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
   return (
     <>
       <NodeDetails>
-        <div className="flex flex-col items-center justify-center">
-          <div className="flex items-center gap-1 text-nowrap">
-            <h3 className="font-bold">UserTask</h3>
-            <LinkWithTenant
-              className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
-              target="_blank"
-              href={`/userTaskDef/${userTask.userTaskDefName}`}
-            >
-              {userTask.userTaskDefName} <ExternalLinkIcon className="h-4 w-4" />
-            </LinkWithTenant>
-          </div>
+        <div className="flex flex-col">
+          <h3 className="font-bold">UserTask</h3>
+          <ExternalLinkButton href={`/userTaskDef/${userTask.userTaskDefName}`} label={userTask.userTaskDefName} />
           {nodeRun && (
-            <NodeViewButton
-              text="View Audit Log"
-              callback={() => {
-                router.push(
-                  `/${tenantId}/userTaskDef/audit/${nodeRun.id?.wfRunId?.id}/${nodeRun.userTask?.userTaskRunId?.userTaskGuid}`
-                )
-              }}
+            <ExternalLinkButton
+              href={`/userTaskDef/audit/${nodeRun.id?.wfRunId?.id}/${nodeRun.userTask?.userTaskRunId?.userTaskGuid}`}
+              label="Audit Log"
             />
           )}
+
           {nodeRun ? (
             <NodeRunsList nodeRuns={nodeRunsList} userTaskNode={userTask} nodeRun={nodeRun} />
           ) : (
