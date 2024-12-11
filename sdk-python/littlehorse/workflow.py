@@ -1307,6 +1307,9 @@ class WorkflowThread:
     def declare_int(self, name: str) -> WfRunVariable:
         return self.add_variable(name, VariableType.INT)
     
+    def declare_str(self, name: str) -> WfRunVariable:
+        return self.add_variable(name, VariableType.STR)
+    
     def declare_double(self, name: str) -> WfRunVariable:
         return self.add_variable(name, VariableType.DOUBLE)
     
