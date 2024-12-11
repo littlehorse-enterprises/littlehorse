@@ -1,31 +1,36 @@
 import { UserTaskDefDetails } from '@/app/[tenantId]/(diagram)/components/NodeTypes/UserTask/UserTaskDefDetails'
 import LinkWithTenant from '@/app/[tenantId]/components/LinkWithTenant'
-import { ExternalLinkIcon, UserIcon } from 'lucide-react'
+import { ExternalLinkIcon, EyeIcon, UserIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeRunsList } from '../../NodeRunsList'
 import { Fade } from '../Fade'
 import { NodeProps } from '../index'
 import { NodeDetails } from '../NodeDetails'
+import { useParams, useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { ExternalLinkButton } from '../../ExternalLinkButton'
 
 const Node: FC<NodeProps> = ({ data, selected }) => {
+  const router = useRouter()
+  const tenantId = useParams().tenantId as string
+
   if (!data.userTask) return null
   const { fade, userTask, nodeRun, nodeNeedsToBeHighlighted, nodeRunsList } = data
 
   return (
     <>
       <NodeDetails>
-        <div className="">
-          <div className="flex items-center gap-1 text-nowrap">
-            <h3 className="font-bold">UserTask</h3>
-            <LinkWithTenant
-              className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
-              target="_blank"
-              href={`/userTaskDef/${userTask.userTaskDefName}`}
-            >
-              {userTask.userTaskDefName} <ExternalLinkIcon className="h-4 w-4" />
-            </LinkWithTenant>
-          </div>
+        <div className="flex flex-col">
+          <h3 className="font-bold">UserTask</h3>
+          <ExternalLinkButton href={`/userTaskDef/${userTask.userTaskDefName}`} label={userTask.userTaskDefName} />
+          {nodeRun && (
+            <ExternalLinkButton
+              href={`/userTaskDef/audit/${nodeRun.id?.wfRunId?.id}/${nodeRun.userTask?.userTaskRunId?.userTaskGuid}`}
+              label="Audit Log"
+            />
+          )}
+
           {nodeRun ? (
             <NodeRunsList nodeRuns={nodeRunsList} userTaskNode={userTask} nodeRun={nodeRun} />
           ) : (

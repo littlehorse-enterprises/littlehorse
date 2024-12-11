@@ -1,3 +1,4 @@
+'use client'
 import { VersionSelector } from '@/app/[tenantId]/components/VersionSelector'
 import { UserTaskDefId } from 'littlehorse-client/proto'
 import { useParams } from 'next/navigation'
