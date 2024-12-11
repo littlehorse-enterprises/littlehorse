@@ -1,5 +1,4 @@
-﻿using System.Text;
-using LittleHorse.Common.Proto;
+﻿using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Helper;
 
 namespace LittleHorse.Sdk.Worker
@@ -35,7 +34,7 @@ namespace LittleHorse.Sdk.Worker
         /// </returns>
         public WfRunId GetWfRunId() 
         {
-            return LHHelper.GetWFRunId(_scheduleTask.Source);
+            return LHHelper.GetWfRunId(_scheduleTask.Source)!;
         }
         
         /// <summary>
@@ -44,7 +43,7 @@ namespace LittleHorse.Sdk.Worker
         /// <returns>
         /// @return a `NodeRunIdPb` protobuf class with the ID from the executed NodeRun.
         /// </returns>
-        public NodeRunId GetNodeRunId() 
+        public NodeRunId? GetNodeRunId() 
         {
             TaskRunSource source = _scheduleTask.Source;
             switch (source.TaskRunSourceCase) {

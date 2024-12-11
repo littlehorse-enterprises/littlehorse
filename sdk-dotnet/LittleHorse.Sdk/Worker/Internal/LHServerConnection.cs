@@ -8,12 +8,12 @@ namespace LittleHorse.Sdk.Worker.Internal
 {
     public class LHServerConnection<T> : IDisposable
     {
-        private LHServerConnectionManager<T> _connectionManager;
-        private LHHostInfo _hostInfo;
+        private readonly LHServerConnectionManager<T> _connectionManager;
+        private readonly LHHostInfo _hostInfo;
         private bool _running;
-        private LittleHorseClient _client;
+        private readonly LittleHorseClient _client;
         private AsyncDuplexStreamingCall<PollTaskRequest, PollTaskResponse> _call;
-        private ILogger? _logger;
+        private readonly ILogger? _logger;
 
         public LHHostInfo HostInfo { get { return _hostInfo; } }
 
@@ -22,7 +22,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             _connectionManager = connectionManager;
             _hostInfo = hostInfo;
             _logger = LHLoggerFactoryProvider.GetLogger<LHServerConnection<T>>();
-            _client = _connectionManager.Config.GetGrcpClientInstance();
+            _client = _connectionManager.Config.GetGrpcClientInstance(hostInfo.Host, hostInfo.Port);
             _call = _client.PollTask();
         }
 
@@ -34,6 +34,7 @@ namespace LittleHorse.Sdk.Worker.Internal
 
         private async Task RequestMoreWorkAsync()
         {
+            _logger?.LogWarning($"Task worker in polling {_connectionManager.Config.WorkerId}");
             var request = new PollTaskRequest
             {
                 ClientId = _connectionManager.Config.WorkerId,
@@ -48,12 +49,12 @@ namespace LittleHorse.Sdk.Worker.Internal
                      if (taskToDo.Result != null)
                      {
                          var scheduledTask = taskToDo.Result;
-                         var wFRunId = LHHelper.GetWFRunId(scheduledTask.Source);
-                         _logger?.LogDebug($"Received task schedule request for wfRun {wFRunId.Id}");
+                         var wFRunId = LHHelper.GetWfRunId(scheduledTask.Source);
+                         _logger?.LogDebug($"Received task schedule request for wfRun {wFRunId?.Id}");
 
                          _connectionManager.SubmitTaskForExecution(scheduledTask, _client);
 
-                         _logger?.LogDebug($"Scheduled task on threadpool for wfRun {wFRunId.Id}");
+                         _logger?.LogDebug($"Scheduled task on threadpool for wfRun {wFRunId?.Id}");
                      }
                      else
                      {
