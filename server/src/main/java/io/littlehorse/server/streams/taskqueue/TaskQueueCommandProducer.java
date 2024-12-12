@@ -15,9 +15,7 @@ import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streams.TaskClaimEventProducerCallback;
 import io.littlehorse.server.streams.util.HeadersUtil;
-
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;

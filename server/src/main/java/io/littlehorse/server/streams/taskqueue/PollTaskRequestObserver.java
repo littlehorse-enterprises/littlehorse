@@ -49,7 +49,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
             LHServerConfig config,
             RequestExecutionContext requestContext) {
         this.responseObserver = responseObserver;
-        if(responseObserver instanceof ServerCallStreamObserver<PollTaskResponse> serverCall) {
+        if (responseObserver instanceof ServerCallStreamObserver<PollTaskResponse> serverCall) {
             serverCall.setOnCancelHandler(() -> {});
         }
         this.taskQueueManager = manager;

@@ -5,9 +5,7 @@ import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
-
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;

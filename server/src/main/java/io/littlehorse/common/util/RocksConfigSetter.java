@@ -1,15 +1,15 @@
 package io.littlehorse.common.util;
 
+import static org.rocksdb.RateLimiter.DEFAULT_FAIRNESS;
+import static org.rocksdb.RateLimiter.DEFAULT_MODE;
+import static org.rocksdb.RateLimiter.DEFAULT_REFILL_PERIOD_MICROS;
+
 import io.littlehorse.common.LHServerConfig;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.state.RocksDBConfigSetter;
 import org.apache.kafka.streams.state.internals.BlockBasedTableConfigWithAccessibleCache;
 import org.rocksdb.*;
-
-import static org.rocksdb.RateLimiter.DEFAULT_FAIRNESS;
-import static org.rocksdb.RateLimiter.DEFAULT_MODE;
-import static org.rocksdb.RateLimiter.DEFAULT_REFILL_PERIOD_MICROS;
 
 @Slf4j
 public class RocksConfigSetter implements RocksDBConfigSetter {
@@ -75,12 +75,12 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         if (serverConfig.getGlobalRocksdbWriteBufferManager() != null) {
             options.setWriteBufferManager(serverConfig.getGlobalRocksdbWriteBufferManager());
         }
-//         Streams default is 3
+        //         Streams default is 3
         options.setMaxWriteBufferNumber(5);
         long rateBytesPerSecond = mbToBytes(10);
         log.info("Rate bytes per second = {}", rateBytesPerSecond);
-        options.setRateLimiter(new RateLimiter(rateBytesPerSecond, DEFAULT_REFILL_PERIOD_MICROS, DEFAULT_FAIRNESS,
-                DEFAULT_MODE, false));
+        options.setRateLimiter(new RateLimiter(
+                rateBytesPerSecond, DEFAULT_REFILL_PERIOD_MICROS, DEFAULT_FAIRNESS, DEFAULT_MODE, false));
 
         // Future Work: Enable larger scaling by using Partitioned Index Filters
         // https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters
@@ -92,7 +92,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
     @Override
     public void close(final String storeName, final Options options) {}
 
-    private long mbToBytes(long mb){
+    private long mbToBytes(long mb) {
         return mb * 1024 * 1024;
     }
 
