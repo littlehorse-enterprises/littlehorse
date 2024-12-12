@@ -77,7 +77,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         }
         //         Streams default is 3
         options.setMaxWriteBufferNumber(5);
-        long rateBytesPerSecond = mbToBytes(10);
+        long rateBytesPerSecond = mbToBytes(124);
         log.info("Rate bytes per second = {}", rateBytesPerSecond);
         options.setRateLimiter(new RateLimiter(
                 rateBytesPerSecond, DEFAULT_REFILL_PERIOD_MICROS, DEFAULT_FAIRNESS, DEFAULT_MODE, false));
