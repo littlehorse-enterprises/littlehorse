@@ -73,7 +73,6 @@ namespace LittleHorse.Sdk.Worker.Internal
         {
             try
             {
-                _logger!.LogWarning($"Doing heartbeat... Task Worker ID: {_config.WorkerId}");
                 var request = new RegisterTaskWorkerRequest
                 {
                     TaskDefId = _task.TaskDef!.Id,

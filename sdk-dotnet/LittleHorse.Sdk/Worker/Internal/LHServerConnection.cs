@@ -34,7 +34,6 @@ namespace LittleHorse.Sdk.Worker.Internal
 
         private async Task RequestMoreWorkAsync()
         {
-            _logger?.LogWarning($"Task worker in polling {_connectionManager.Config.WorkerId}");
             var request = new PollTaskRequest
             {
                 ClientId = _connectionManager.Config.WorkerId,
