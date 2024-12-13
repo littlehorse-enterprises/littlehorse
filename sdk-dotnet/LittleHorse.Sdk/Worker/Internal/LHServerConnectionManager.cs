@@ -86,6 +86,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             catch (Exception ex)
             {
                 _logger?.LogError(ex, $"Failed contacting bootstrap host {_config.BootstrapHost}:{_config.BootstrapPort}");
+                _runningConnections = new List<LHServerConnection<T>>();
             }
         }
 
@@ -115,7 +116,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             for (int i = lastIndexOfRunningConnection; i >= 0; i--)
             {
                 var runningThread = _runningConnections[i];
-
+                
                 if (!ShouldBeRunning(runningThread, response.YourHosts))
                 {
                     _logger?.LogInformation($"Stopping worker thread for host {runningThread.HostInfo.Host} : {runningThread.HostInfo.Port}");
