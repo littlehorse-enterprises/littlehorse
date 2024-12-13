@@ -177,11 +177,12 @@ class MetricsTopologyTest {
     void includeBeatTagsIntoMetrics() {
         BeatType expectedType = BeatType.WF_RUN_REQUEST;
         String expectedTypeName = expectedType.name().toLowerCase();
+        Map<String, String> expectedTags = Map.of("my_tag", "value");
 
-        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "ok", Map.of("my_tag", "value")));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "ok", expectedTags));
 
         assertThat(getCount()).isEqualTo(3);
-        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg", "ok", Map.of("my_tag", "value"))))
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg", "ok", expectedTags)))
                 .isEqualTo(newMetricValue(20.));
     }
 
