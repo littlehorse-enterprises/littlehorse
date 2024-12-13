@@ -10,7 +10,7 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 
-public class LittleHorseContainer extends GenericContainer<LittleHorseContainer> {
+class LittleHorseContainer extends GenericContainer<LittleHorseContainer> {
 
     private static final String LHS_INTERNAL_ADVERTISED_HOST = "LHS_INTERNAL_ADVERTISED_HOST";
     private static final String LHS_INSTANCE_ID = "LHS_INSTANCE_ID";
@@ -30,7 +30,7 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
      *
      * @param littlehorseImage Example: "ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest"
      */
-    public LittleHorseContainer(final String littlehorseImage) {
+    LittleHorseContainer(final String littlehorseImage) {
         this(DockerImageName.parse(littlehorseImage));
     }
 
@@ -39,7 +39,7 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
      *
      * @param littlehorseImage Example: DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest")
      */
-    public LittleHorseContainer(final DockerImageName littlehorseImage) {
+    LittleHorseContainer(final DockerImageName littlehorseImage) {
         super(littlehorseImage);
         littlehorseImage.assertCompatibleWith(DEFAULT_IMAGE_NAME);
         this.withExposedPorts(DEFAULT_INTERNAL_PORT)
@@ -135,8 +135,9 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
 
     /**
      * Return a properties object.
-     * Use: new LHConfig(littlehorseContainer.getProperties())
-     *
+     * <p>
+     * Use: {@code new LHConfig(littlehorseContainer.getClientProperties())}
+     * </p>
      * @return Properties with the container configurations
      */
     public Properties getClientProperties() {

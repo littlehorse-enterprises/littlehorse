@@ -12,6 +12,17 @@ import org.testcontainers.containers.startupcheck.OneShotStartupCheckStrategy;
 import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
+/**
+ * Example of using:
+ * <blockquote><pre>
+ *     {@code @Container}
+ *     public LittleHorseCluster littleHorseCluster = LittleHorseCluster.newBuilder()
+ *             .withInstances(2)
+ *             .withKafkaImage("apache/kafka-native:latest")
+ *             .withLittlehorseImage("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:master")
+ *             .build();
+ * </pre></blockquote>
+ */
 public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
 
     public static final String LHC_API_HOST = "LHC_API_HOST";
@@ -76,8 +87,9 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
 
     /**
      * Return a properties object
-     * Use: new LHConfig(littlehorseContainer.getProperties())
-     *
+     * <p>
+     * Use: {@code new LHConfig(littleHorseCluster.getClientProperties())}
+     * </p>
      * @return Properties with the container configurations
      */
     public Properties getClientProperties() {
