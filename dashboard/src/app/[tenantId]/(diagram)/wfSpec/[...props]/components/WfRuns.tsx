@@ -10,6 +10,8 @@ import { useParams, useSearchParams } from 'next/navigation'
 import { FC, Fragment, useMemo, useState } from 'react'
 import { PaginatedWfRunIdList, searchWfRun } from '../actions/searchWfRun'
 import { WfRunsHeader } from './WfRunsHeader'
+import { SelectionLink } from '@/app/[tenantId]/components/SelectionLink'
+import { parseExpression } from 'cron-parser'
 
 export const WfRuns: FC<WfSpec> = spec => {
   const searchParams = useSearchParams()
@@ -57,18 +59,13 @@ export const WfRuns: FC<WfSpec> = spec => {
           <RefreshCwIcon className="h-8 w-8 animate-spin text-blue-500" />
         </div>
       ) : (
-        <div className="flex min-h-[360px] flex-col gap-4">
+        <div className="flex min-h-[360px] flex-col">
           {data?.pages.map((page, i) => (
             <Fragment key={i}>
               {page.results.map(wfRunId => (
-                <div key={wfRunId.id}>
-                  <LinkWithTenant
-                    className="py-2 text-blue-500 hover:underline"
-                    href={`/wfRun/${concatWfRunIds(wfRunId)}`}
-                  >
-                    {wfRunId.id}
-                  </LinkWithTenant>
-                </div>
+                <SelectionLink key={wfRunId.id} href={`/wfRun/${concatWfRunIds(wfRunId)}`}>
+                  <p>{wfRunId.id}</p>
+                </SelectionLink>
               ))}
             </Fragment>
           ))}
