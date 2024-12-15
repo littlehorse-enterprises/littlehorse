@@ -130,14 +130,15 @@ def to_variable_assignment(value: Any) -> VariableAssignment:
             json_path=json_path,
             variable_name=variable_name,
         )
-    
+
     if isinstance(value, LHExpression):
         expression: LHExpression = value
         return VariableAssignment(
             expression=VariableAssignment.Expression(
                 lhs=to_variable_assignment(expression.lhs()),
                 operation=expression.operation(),
-                rhs=to_variable_assignment(expression.rhs()))   
+                rhs=to_variable_assignment(expression.rhs()),
+            )
         )
 
     return VariableAssignment(
@@ -153,38 +154,39 @@ class LHExpression:
 
     def add(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.ADD, other)
-    
+
     def subtract(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.SUBTRACT, other)
-    
+
     def multiply(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.MULTIPLY, other)
-    
+
     def divide(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.DIVIDE, other)
-    
+
     def extend(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.EXTEND, other)
-    
+
     def remove_if_present(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.REMOVE_IF_PRESENT, other)
-    
+
     def remove_index(self, index: Optional[Union[int, Any]] = None) -> LHExpression:
         if index is None:
             raise ValueError("Expected 'index' to be set, but it was None.")
         return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
-    
+
     def remove_key(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.REMOVE_KEY, other)
-    
+
     def lhs(self) -> Any:
         return self._lhs
-    
+
     def rhs(self) -> Any:
         return self._rhs
-    
+
     def operation(self) -> Any:
         return self._operation
+
 
 class WorkflowCondition:
     def __init__(self, left_hand: Any, comparator: Comparator, right_hand: Any) -> None:
@@ -334,30 +336,30 @@ class NodeOutput(LHExpression):
         out = NodeOutput(self.node_name)
         out.json_path = json_path
         return out
-    
+
     def add(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.ADD, other)
-    
+
     def subtract(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.SUBTRACT, other)
-    
+
     def multiply(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.MULTIPLY, other)
-    
+
     def divide(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.DIVIDE, other)
-    
+
     def extend(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.EXTEND, other)
-    
+
     def remove_if_present(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.REMOVE_IF_PRESENT, other)
-    
+
     def remove_index(self, index: Optional[Union[int, Any]] = None) -> LHExpression:
         if index is None:
             raise ValueError("Expected 'index' to be set, but it was None.")
         return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
-    
+
     def remove_key(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.REMOVE_KEY, other)
 
@@ -389,7 +391,7 @@ class WfRunVariable:
             TypeError: If variable_type and type(default_value) are not compatible.
         """
         self.name = variable_name
-        self.type = variable_type 
+        self.type = variable_type
         self.parent = parent
         self.default_value: Optional[VariableValue] = None
         self._json_path: Optional[str] = None
@@ -517,7 +519,7 @@ class WfRunVariable:
     def required(self) -> "WfRunVariable":
         self._required = True
         return self
-    
+
     def with_default(self, default_value: Any) -> WfRunVariable:
         self._set_default(default_value)
 
@@ -558,43 +560,43 @@ class WfRunVariable:
 
     def is_equal_to(self, rhs: Any) -> WorkflowCondition:
         return self.parent.condition(self, Comparator.EQUALS, rhs)
-    
+
     def is_not_equal_to(self, rhs: Any) -> WorkflowCondition:
         return self.parent.condition(self, Comparator.NOT_EQUALS, rhs)
-    
+
     def is_greater_than(self, rhs: Any) -> WorkflowCondition:
         return self.parent.condition(self, Comparator.GREATER_THAN, rhs)
-    
+
     def is_greater_than_eq(self, rhs: Any) -> WorkflowCondition:
         return self.parent.condition(self, Comparator.GREATER_THAN_EQ, rhs)
-    
+
     def is_less_than_eq(self, rhs: Any) -> WorkflowCondition:
         return self.parent.condition(self, Comparator.LESS_THAN_EQ, rhs)
 
     def is_less_than(self, rhs: Any) -> WorkflowCondition:
         return self.parent.condition(self, Comparator.LESS_THAN, rhs)
-    
+
     def does_contain(self, rhs: Any) -> WorkflowCondition:
         return self.parent.condition(self, Comparator.IN, rhs)
 
     def does_not_contain(self, rhs: Any) -> WorkflowCondition:
         return self.parent.condition(self, Comparator.NOT_IN, rhs)
-    
+
     def is_in(self, rhs: Any) -> WorkflowCondition:
         return self.parent.condition(self, Comparator.IN, rhs)
 
     def is_not_in(self, rhs: Any) -> WorkflowCondition:
         return self.parent.condition(self, Comparator.NOT_IN, rhs)
-    
+
     def assign(self, rhs: Any) -> None:
         self.parent.mutate(self, VariableMutationType.ASSIGN, rhs)
 
     def add(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.ADD, other)
-    
+
     def subtract(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.SUBTRACT, other)
-    
+
     def multiply(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.MULTIPLY, other)
 
@@ -603,15 +605,15 @@ class WfRunVariable:
 
     def extend(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.EXTEND, other)
-    
+
     def remove_if_present(self, other: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.REMOVE_IF_PRESENT, other)
-    
+
     def remove_index(self, index: Optional[Union[int, Any]] = None) -> LHExpression:
         if index is None:
             raise ValueError("Expected 'index' to be set, but it was None.")
         return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
-    
+
     def remove_key(self, key: Any) -> LHExpression:
         return LHExpression(self, VariableMutationType.REMOVE_KEY, key)
 
@@ -1280,45 +1282,45 @@ class WorkflowThread:
 
     def add(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.ADD, rhs)
-    
+
     def divide(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.DIVIDE, rhs)
-    
+
     def subtract(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.SUBTRACT, rhs)
-    
+
     def extend(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.EXTEND, rhs)
-    
+
     def remove_if_present(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.REMOVE_IF_PRESENT, rhs)
-    
+
     def remove_index(self, index: Optional[Union[int, Any]] = None) -> LHExpression:
         if index is None:
             raise ValueError("Expected 'index' to be set, but it was None.")
         return LHExpression(self, VariableMutationType.REMOVE_INDEX, index)
-    
+
     def remove_key(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.REMOVE_KEY, rhs)
-    
+
     def declare_bool(self, name: str) -> WfRunVariable:
         return self.add_variable(name, VariableType.BOOL)
-    
+
     def declare_int(self, name: str) -> WfRunVariable:
         return self.add_variable(name, VariableType.INT)
-    
+
     def declare_str(self, name: str) -> WfRunVariable:
         return self.add_variable(name, VariableType.STR)
-    
+
     def declare_double(self, name: str) -> WfRunVariable:
         return self.add_variable(name, VariableType.DOUBLE)
-    
+
     def declare_bytes(self, name: str) -> WfRunVariable:
         return self.add_variable(name, VariableType.BYTES)
-    
+
     def declare_json_arr(self, name: str) -> WfRunVariable:
         return self.add_variable(name, VariableType.JSON_ARR)
-    
+
     def declare_json_obj(self, name: str) -> WfRunVariable:
         return self.add_variable(name, VariableType.JSON_OBJ)
 
@@ -2113,6 +2115,7 @@ class Workflow:
         """
         self._default_timeout_seconds = timeout_seconds
         return self
+
 
 def create_workflow_spec(
     workflow: Workflow, config: LHConfig, timeout: Optional[int] = None
