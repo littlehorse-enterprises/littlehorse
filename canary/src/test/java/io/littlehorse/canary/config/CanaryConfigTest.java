@@ -44,4 +44,25 @@ class CanaryConfigTest {
 
         assertThat(output).contains(entry("application_id", "my_id"), entry("extra", "extra_tag"));
     }
+
+    @Test
+    void getMetronomeExtraTags() {
+        Map<String, Object> input = Map.of("lh.canary.metronome.beat.extra.tags.my_tag", "extra_tag");
+
+        CanaryConfig canaryConfig = new CanaryConfig(input);
+
+        Map<String, String> output = canaryConfig.getMetronomeBeatExtraTags();
+
+        assertThat(output).contains(entry("my_tag", "extra_tag"));
+    }
+
+    @Test
+    void getEmptyMetronomeExtraTags() {
+        CanaryConfig canaryConfig = new CanaryConfig(Map.of());
+
+        Map<String, String> output = canaryConfig.getMetronomeBeatExtraTags();
+
+        assertThat(output).isEmpty();
+        assertThat(output).isNotNull();
+    }
 }
