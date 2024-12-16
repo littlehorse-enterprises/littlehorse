@@ -12,6 +12,7 @@ message MetricKey {
   string server_version = 3;
   string id = 4;
   repeated Tag tags = 5;
+  string server_id = 6;
 }
 
 message MetricValue {
