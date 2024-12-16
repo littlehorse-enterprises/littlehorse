@@ -8,25 +8,25 @@ namespace LittleHorse.Sdk.Worker.Internal
 {
     public class LHServerConnection<T> : IDisposable
     {
-        private LHServerConnectionManager<T> _connectionManager;
-        private LHHostInfo _hostInfo;
+        private readonly LHServerConnectionManager<T> _connectionManager;
+        private readonly LHHostInfo _hostInfo;
         private bool _running;
-        private LittleHorseClient _client;
-        private AsyncDuplexStreamingCall<PollTaskRequest, PollTaskResponse> _call;
-        private ILogger? _logger;
+        private readonly LittleHorseClient _client;
+        private readonly AsyncDuplexStreamingCall<PollTaskRequest, PollTaskResponse> _call;
+        private readonly ILogger? _logger;
 
-        public LHHostInfo HostInfo { get { return _hostInfo; } }
+        public LHHostInfo HostInfo => _hostInfo;
 
         public LHServerConnection(LHServerConnectionManager<T> connectionManager, LHHostInfo hostInfo)
         {
             _connectionManager = connectionManager;
             _hostInfo = hostInfo;
             _logger = LHLoggerFactoryProvider.GetLogger<LHServerConnection<T>>();
-            _client = _connectionManager.Config.GetGrcpClientInstance();
+            _client = _connectionManager.Config.GetGrpcClientInstance(hostInfo.Host, hostInfo.Port);
             _call = _client.PollTask();
         }
 
-        public void Connect()
+        public void Open()
         {
             _running = true;
             Task.Run(RequestMoreWorkAsync);
@@ -48,12 +48,12 @@ namespace LittleHorse.Sdk.Worker.Internal
                      if (taskToDo.Result != null)
                      {
                          var scheduledTask = taskToDo.Result;
-                         var wFRunId = LHHelper.GetWFRunId(scheduledTask.Source);
-                         _logger?.LogDebug($"Received task schedule request for wfRun {wFRunId.Id}");
+                         var wFRunId = LHHelper.GetWfRunId(scheduledTask.Source);
+                         _logger?.LogDebug($"Received task schedule request for wfRun {wFRunId?.Id}");
 
-                         _connectionManager.SubmitTaskForExecution(scheduledTask, _client);
+                         _connectionManager.SubmitTaskForExecution(scheduledTask);
 
-                         _logger?.LogDebug($"Scheduled task on threadpool for wfRun {wFRunId.Id}");
+                         _logger?.LogDebug($"Scheduled task on threadpool for wfRun {wFRunId?.Id}");
                      }
                      else
                      {
@@ -82,9 +82,9 @@ namespace LittleHorse.Sdk.Worker.Internal
             _running = false;
         }
 
-        public bool IsSame(LHHostInfo hostInfoToCompare)
+        public bool IsSame(string host, int port)
         {
-            return _hostInfo.Host.Equals(hostInfoToCompare.Host) && _hostInfo.Port == hostInfoToCompare.Port;
+            return _hostInfo.Host.Equals(host) && _hostInfo.Port == port;
         }
     }
 }

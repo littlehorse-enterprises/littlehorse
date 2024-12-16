@@ -116,14 +116,14 @@ namespace LittleHorse.Sdk {
             }
         }
 
-        public LittleHorseClient GetGrcpClientInstance()
+        public LittleHorseClient GetGrpcClientInstance()
         {
-            return GetGrcpClientInstance(BootstrapHost, BootstrapPort);
+            return GetGrpcClientInstance(BootstrapHost, BootstrapPort);
         }
 
-        public LittleHorseClient GetGrcpClientInstance(string host, int port)
+        public LittleHorseClient GetGrpcClientInstance(string host, int port)
         {
-            string channelKey = BootstrapServer;
+            string channelKey = $"{BootstrapProtocol}://{host}:{port}";
 
             if (_createdChannels.ContainsKey(channelKey))
             {
@@ -208,7 +208,7 @@ namespace LittleHorse.Sdk {
         {
             try
             {
-                var client = GetGrcpClientInstance();
+                var client = GetGrpcClientInstance();
                 var taskDefId = new TaskDefId()
                 {
                     Name = taskDefName
