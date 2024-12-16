@@ -314,6 +314,7 @@ func (m *serverConnectionManager) doTask(taskToExec *taskExecutionInfo) {
 	taskResult := m.doTaskHelper(taskToExec.task)
 	_, err := (*taskToExec.specificStub).ReportTask(context.Background(), taskResult)
 	if err != nil {
+		log.Default().Print(err)
 		m.retryReportTask(context.Background(), taskResult, TOTAL_RETRIES)
 	}
 }
@@ -370,6 +371,7 @@ func (m *serverConnectionManager) doTaskHelper(task *lhproto.ScheduledTask) *lhp
 
 	if m.tw.taskSig.HasOutput {
 		taskOutputReflect := invocationResults[0]
+		taskErrorReflect := invocationResults[1]
 		if taskOutputReflect.Interface() != nil {
 			taskOutputVarVal, err := InterfaceToVarVal(taskOutputReflect.Interface())
 
@@ -392,6 +394,17 @@ func (m *serverConnectionManager) doTaskHelper(task *lhproto.ScheduledTask) *lhp
 				}
 			}
 			taskResult.Status = lhproto.TaskStatus_TASK_SUCCESS
+		}
+		if taskErrorReflect.Interface() != nil {
+			if lhtErr, ok := taskErrorReflect.Interface().(*LHTaskException); ok {
+				taskResult.Result = &lhproto.ReportTaskRun_Exception{
+					Exception: &lhproto.LHTaskException{
+						Name:    lhtErr.Name,
+						Message: lhtErr.Message,
+						Content: lhtErr.Content,
+					},
+				}
+			}
 		}
 	}
 
