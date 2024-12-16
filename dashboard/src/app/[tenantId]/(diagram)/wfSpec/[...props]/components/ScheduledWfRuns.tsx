@@ -10,10 +10,16 @@ import { getCronTimeWindow } from '@/app/utils/getCronTimeWindow'
 import { parseExpression } from 'cron-parser'
 import { utcToLocalDateTime } from '@/app/utils'
 import { SearchVariableDialog } from './SearchVariableDialog'
+import { SearchFooter } from '@/app/[tenantId]/components/SearchFooter'
 
-export const ScheduledWfRuns = ({ scheduledWfRuns, spec }: { scheduledWfRuns: ScheduledWfRun[]; spec: WfSpec }) => {
+export const ScheduledWfRuns = (spec: WfSpec) => {
   const [currentWindow, setWindow] = useState<TimeRange>(-1)
-  const [filteredScheduledWfRuns, setFilteredScheduledWfRuns] = useState<ScheduledWfRun[]>(scheduledWfRuns)
+  const [filteredScheduledWfRuns, setFilteredScheduledWfRuns] = useState<ScheduledWfRun[]>([])
+
+  const searchParams = useSearchParams()
+  const status = searchParams.get('status') ? getStatus(searchParams.get('status')) || 'ALL' : 'ALL'
+  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+
 
   useEffect(() => {
     setFilteredScheduledWfRuns(
@@ -56,6 +62,7 @@ export const ScheduledWfRuns = ({ scheduledWfRuns, spec }: { scheduledWfRuns: Sc
           </SelectionLink>
         ))}
       </div>
+      <SearchFooter currentLimit={limit} setLimit={setLimit} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} />
     </div>
   )
 }

@@ -51,7 +51,7 @@ export const WfSpec: FC<WfSpecProps> = ({ spec, ScheduleWfSpec }) => {
           <WfRuns {...spec} />
         </TabsContent>
         <TabsContent value="schedule">
-          <ScheduledWfRuns spec={spec} scheduledWfRuns={ScheduleWfSpec} />
+          <ScheduledWfRuns {...spec} />
         </TabsContent>
       </Tabs>
     </>
