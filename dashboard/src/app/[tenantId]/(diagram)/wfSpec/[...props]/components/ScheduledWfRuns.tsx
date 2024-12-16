@@ -1,36 +1,87 @@
+'use client'
+
 import { ScheduledWfRunIdList, WfSpec } from 'littlehorse-client/proto'
 import { getScheduleWfSpec } from '../actions/getScheduleWfSpec'
 import { SelectionLink } from '@/app/[tenantId]/components/SelectionLink'
-import { ScheduledWfRun } from '../../../../../../../../sdk-js/dist/proto/scheduled_wf_run'
-import { FUTURE_TIME_RANGES, TimeRange } from '@/app/constants'
+import { ScheduledWfRun } from 'littlehorse-client/proto'
+import { FUTURE_TIME_RANGES, SEARCH_DEFAULT_LIMIT, TimeRange } from '@/app/constants'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ClockIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { getCronTimeWindow } from '@/app/utils/getCronTimeWindow'
 import { parseExpression } from 'cron-parser'
 import { utcToLocalDateTime } from '@/app/utils'
 import { SearchVariableDialog } from './SearchVariableDialog'
 import { SearchFooter } from '@/app/[tenantId]/components/SearchFooter'
+import { useParams, useSearchParams } from 'next/navigation'
+import { RefreshCwIcon } from 'lucide-react'
 
 export const ScheduledWfRuns = (spec: WfSpec) => {
   const [currentWindow, setWindow] = useState<TimeRange>(-1)
-  const [filteredScheduledWfRuns, setFilteredScheduledWfRuns] = useState<ScheduledWfRun[]>([])
-
-  const searchParams = useSearchParams()
-  const status = searchParams.get('status') ? getStatus(searchParams.get('status')) || 'ALL' : 'ALL'
-  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
-
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+  const [scheduledWfRuns, setScheduledWfRuns] = useState<ScheduledWfRun[]>([])
+  const tenantId = useParams().tenantId as string
 
   useEffect(() => {
-    setFilteredScheduledWfRuns(
+    let isMounted = true
+
+    const fetchScheduledWfRuns = async () => {
+      try {
+        setIsLoading(true)
+        setError(null)
+        const runs = await getScheduleWfSpec({
+          name: spec.id!.name,
+          version: spec.id!.majorVersion + '.' + spec.id!.revision,
+          tenantId: tenantId,
+        })
+        if (isMounted) {
+          setScheduledWfRuns(runs)
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err instanceof Error ? err : new Error('Failed to fetch scheduled runs'))
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    fetchScheduledWfRuns()
+
+    return () => {
+      isMounted = false
+    }
+  }, [spec.id, tenantId])
+
+  const filteredScheduledWfRuns = useMemo(
+    () =>
       scheduledWfRuns.filter(scheduledWfRun => {
         if (currentWindow === -1) return true
-
         const timeWindow = getCronTimeWindow(scheduledWfRun.cronExpression)
         return timeWindow && timeWindow <= currentWindow
-      })
+      }),
+    [currentWindow, scheduledWfRuns]
+  )
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[500px] items-center justify-center">
+        <RefreshCwIcon className="h-8 w-8 animate-spin text-blue-500" />
+      </div>
     )
-  }, [currentWindow, scheduledWfRuns])
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-[500px] flex-col items-center justify-center text-red-500">
+        <p>Error loading scheduled runs</p>
+        <p className="text-sm">{error.message}</p>
+      </div>
+    )
+  }
 
   return (
     <div className="flex min-h-[500px] flex-col">
@@ -62,7 +113,6 @@ export const ScheduledWfRuns = (spec: WfSpec) => {
           </SelectionLink>
         ))}
       </div>
-      <SearchFooter currentLimit={limit} setLimit={setLimit} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} />
     </div>
   )
 }

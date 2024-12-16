@@ -10,15 +10,13 @@ import { Thread } from './Thread'
 import { WfRuns } from './WfRuns'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScheduledWfRuns } from './ScheduledWfRuns'
-import { ScheduledWfRun } from '../../../../../../../../sdk-js/dist/proto/scheduled_wf_run'
+import { ScheduledWfRun } from 'littlehorse-client/proto'
 
 type WfSpecProps = {
   spec: Spec
-  ScheduleWfSpec: ScheduledWfRun[]
 }
-export const WfSpec: FC<WfSpecProps> = ({ spec, ScheduleWfSpec }) => {
+export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
   const { setModal, setShowModal } = useModal()
-  console.log(ScheduleWfSpec)
 
   const onClick = useCallback(() => {
     if (!spec) return

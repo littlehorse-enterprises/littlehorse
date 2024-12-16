@@ -2,7 +2,7 @@
 
 import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
-import { ScheduledWfRun } from '../../../../../../../../sdk-js/dist/proto/scheduled_wf_run'
+import { ScheduledWfRun } from 'littlehorse-client/proto'
 
 type GetWfSpecProps = {
   name: string
