@@ -17,17 +17,17 @@ namespace LittleHorse.Sdk.Worker.Internal
         private const int BALANCER_SLEEP_TIME = 5000;
         private const int MAX_REPORT_RETRIES = 5;
 
-        private LHConfig _config;
-        private ILogger? _logger;
-        private LittleHorseClient _bootstrapClient;
+        private readonly LHConfig _config;
+        private readonly ILogger? _logger;
+        private readonly LittleHorseClient _bootstrapClient;
         private bool _running;
         private List<LHServerConnection<T>> _runningConnections;
-        private Thread _rebalanceThread;
+        private readonly Thread _rebalanceThread;
         private readonly SemaphoreSlim _semaphore;
-        private LHTask<T> _task;
+        private readonly LHTask<T> _task;
 
-        public LHConfig Config { get { return _config; } }
-        public TaskDef TaskDef { get { return _task.TaskDef!; } }
+        public LHConfig Config => _config;
+        public TaskDef TaskDef => _task.TaskDef!;
 
         public LHServerConnectionManager(LHConfig config,
                                          LHTask<T> task)
@@ -92,7 +92,6 @@ namespace LittleHorse.Sdk.Worker.Internal
 
         private void HandleRegisterTaskWorkerResponse(RegisterTaskWorkerResponse response)
         {
-            
             response.YourHosts.ToList().ForEach(host =>
             {
                 if (!IsAlreadyRunning(host))
@@ -100,7 +99,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                     try
                     {
                         var newConnection = new LHServerConnection<T>(this, host);
-                        newConnection.Connect();
+                        newConnection.Open();
                         _runningConnections.Add(newConnection);
                         _logger?.LogInformation($"Adding connection to: {host.Host}:{host.Port} for task '{_task.TaskDef!.Id}'");
                     }
@@ -129,22 +128,22 @@ namespace LittleHorse.Sdk.Worker.Internal
 
         private bool ShouldBeRunning(LHServerConnection<T> runningThread, RepeatedField<LHHostInfo> hosts)
         {
-            return hosts.ToList().Any(host => runningThread.IsSame(host));
+            return hosts.ToList().Any(host => runningThread.IsSame(host.Host, host.Port));
         }
 
         private bool IsAlreadyRunning(LHHostInfo host)
         {
-            return _runningConnections.Any(conn => conn.IsSame(host));
+            return _runningConnections.Any(conn => conn.IsSame(host.Host, host.Port));
         }
 
-        public async void SubmitTaskForExecution(ScheduledTask scheduledTask, LittleHorseClient client)
+        public async void SubmitTaskForExecution(ScheduledTask scheduledTask)
         {
             await _semaphore.WaitAsync();
 
-            DoTask(scheduledTask, client);
+            DoTask(scheduledTask);
         }
 
-        private void DoTask(ScheduledTask scheduledTask, LittleHorseClient client)
+        private void DoTask(ScheduledTask scheduledTask)
         {
             ReportTaskRun result = ExecuteTask(scheduledTask, LHMappingHelper.MapDateTimeFromProtoTimeStamp(scheduledTask.CreatedAt));
 
@@ -178,7 +177,7 @@ namespace LittleHorse.Sdk.Worker.Internal
 
         private void RunReportTask(ReportTaskRun reportedTask)
         {
-            var response = _bootstrapClient.ReportTask(reportedTask);
+            _bootstrapClient.ReportTask(reportedTask);
         }
 
         private ReportTaskRun ExecuteTask(ScheduledTask scheduledTask, DateTime? scheduleTime)
@@ -279,9 +278,10 @@ namespace LittleHorse.Sdk.Worker.Internal
             return _task.TaskMethod!.Invoke(_task.Executable, inputs);
         }
 
-        public void CloseConnection(LHServerConnection<T> connection)
+        public void CloseConnection(string host, int port)
         {
-            var currConn = _runningConnections.Where(c => c.IsSame(connection.HostInfo)).FirstOrDefault();
+            var currConn = _runningConnections.FirstOrDefault(c => 
+                c.IsSame(host, port));
 
             if (currConn != null)
             {

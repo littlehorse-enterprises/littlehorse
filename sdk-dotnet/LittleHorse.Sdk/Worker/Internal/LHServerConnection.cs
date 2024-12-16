@@ -12,10 +12,10 @@ namespace LittleHorse.Sdk.Worker.Internal
         private readonly LHHostInfo _hostInfo;
         private bool _running;
         private readonly LittleHorseClient _client;
-        private AsyncDuplexStreamingCall<PollTaskRequest, PollTaskResponse> _call;
+        private readonly AsyncDuplexStreamingCall<PollTaskRequest, PollTaskResponse> _call;
         private readonly ILogger? _logger;
 
-        public LHHostInfo HostInfo { get { return _hostInfo; } }
+        public LHHostInfo HostInfo => _hostInfo;
 
         public LHServerConnection(LHServerConnectionManager<T> connectionManager, LHHostInfo hostInfo)
         {
@@ -26,7 +26,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             _call = _client.PollTask();
         }
 
-        public void Connect()
+        public void Open()
         {
             _running = true;
             Task.Run(RequestMoreWorkAsync);
@@ -51,7 +51,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                          var wFRunId = LHHelper.GetWfRunId(scheduledTask.Source);
                          _logger?.LogDebug($"Received task schedule request for wfRun {wFRunId?.Id}");
 
-                         _connectionManager.SubmitTaskForExecution(scheduledTask, _client);
+                         _connectionManager.SubmitTaskForExecution(scheduledTask);
 
                          _logger?.LogDebug($"Scheduled task on threadpool for wfRun {wFRunId?.Id}");
                      }
@@ -82,9 +82,9 @@ namespace LittleHorse.Sdk.Worker.Internal
             _running = false;
         }
 
-        public bool IsSame(LHHostInfo hostInfoToCompare)
+        public bool IsSame(string host, int port)
         {
-            return _hostInfo.Host.Equals(hostInfoToCompare.Host) && _hostInfo.Port == hostInfoToCompare.Port;
+            return _hostInfo.Host.Equals(host) && _hostInfo.Port == port;
         }
     }
 }
