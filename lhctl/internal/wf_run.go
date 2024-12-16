@@ -230,7 +230,7 @@ var scheduleWfCmd = &cobra.Command{
 
 		// Now parse variables
 		if len(args) > 2 {
-			if len(args)%2 != 1 {
+			if len(args)%2 == 1 {
 				log.Fatal(`
 If you provide variables, you must provide pairs of <name, val>.
 Therefore, you must have an even number of args after the WfSpec Id, for an
@@ -245,7 +245,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 				wfSpec, err = getGlobalClient(cmd).GetLatestWfSpec(
 					requestContext(cmd),
 					&lhproto.GetLatestWfSpecRequest{
-						Name:         args[0],
+						Name:         wfSpecName,
 						MajorVersion: majorVersion,
 					},
 				)
@@ -253,7 +253,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 				wfSpec, err = getGlobalClient(cmd).GetWfSpec(
 					requestContext(cmd),
 					&lhproto.WfSpecId{
-						Name:         args[0],
+						Name:         wfSpecName,
 						MajorVersion: *majorVersion,
 						Revision:     *revision,
 					})
@@ -266,7 +266,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 			scheduleWfReq.Variables = make(map[string]*lhproto.VariableValue)
 			varDefs := littlehorse.GetInputVarDefs(wfSpec)
 
-			for i := 1; i+1 < len(args); i += 2 {
+			for i := 2; i+1 < len(args); i += 2 {
 				varName := args[i]
 				varValStr := args[i+1]
 
