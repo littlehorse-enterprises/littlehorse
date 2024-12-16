@@ -42,6 +42,7 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
         final List<Tag> tags = new ArrayList<>();
         tags.add(Tag.of("server", "%s:%s".formatted(key.getServerHost(), key.getServerPort())));
         tags.add(Tag.of("server_version", key.getServerVersion()));
+        tags.add(Tag.of("server_id", key.getServerId()));
         tags.addAll(key.getTagsList().stream()
                 .map(tag -> Tag.of(tag.getKey(), tag.getValue()))
                 .toList());
@@ -78,7 +79,6 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
             while (records.hasNext()) {
                 final KeyValue<MetricKey, MetricValue> record = records.next();
                 foundMetrics.add(record.key);
-
                 final PrometheusMetric current = currentMeters.get(record.key);
                 if (current == null) {
                     final AtomicDouble newMeter = new AtomicDouble(record.value.getValue());

@@ -30,6 +30,7 @@ class MetricsTopologyTest {
 
     public static final String HOST_2 = "localhost2";
     public static final int PORT_2 = 2024;
+    public static final String SERVER_ID = "LH";
 
     private TopologyTestDriver testDriver;
     private TestInputTopic<BeatKey, BeatValue> inputTopic;
@@ -60,8 +61,11 @@ class MetricsTopologyTest {
     }
 
     private static MetricKey newMetricKey(String host, int port, String id, String status, Map<String, String> tags) {
-        MetricKey.Builder builder =
-                MetricKey.newBuilder().setServerHost(host).setServerPort(port).setId(id);
+        MetricKey.Builder builder = MetricKey.newBuilder()
+                .setServerHost(host)
+                .setServerPort(port)
+                .setId(id)
+                .setServerId(SERVER_ID);
 
         if (status != null) {
             builder.addTags(Tag.newBuilder().setKey("status").setValue(status).build());
@@ -105,6 +109,7 @@ class MetricsTopologyTest {
                 .setServerHost(host)
                 .setServerPort(port)
                 .setType(type)
+                .setServerId(SERVER_ID)
                 .setId(id);
         BeatValue.Builder valueBuilder = BeatValue.newBuilder().setTime(Timestamps.now());
 

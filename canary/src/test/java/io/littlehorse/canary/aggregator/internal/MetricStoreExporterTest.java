@@ -8,8 +8,8 @@ import static org.mockito.Mockito.when;
 import io.littlehorse.canary.proto.MetricKey;
 import io.littlehorse.canary.proto.MetricValue;
 import io.littlehorse.canary.proto.Tag;
-import io.micrometer.prometheus.PrometheusConfig;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
+import io.micrometer.prometheusmetrics.PrometheusConfig;
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 import java.time.Duration;
 import java.util.List;
 import org.apache.kafka.streams.KafkaStreams;
@@ -56,15 +56,9 @@ class MetricStoreExporterTest {
     @Test
     public void shouldScrapeSimpleMetric() throws InterruptedException {
         // metrics
-        List<Tag> tags = List.of(
-                Tag.newBuilder().setKey("custom_tag").setValue("custom_value").build());
-        MetricKey key = MetricKey.newBuilder()
-                .setServerHost(HOST)
-                .setServerPort(2023)
-                .setServerVersion("test")
-                .setId("my_metric")
-                .addAllTags(tags)
-                .build();
+        MetricKey key = createMetricsKey(List.of(
+                Tag.newBuilder().setKey("custom_tag").setValue("custom_value").build()));
+        MetricKey key2 = createMetricsKey(List.of());
         MetricValue value = MetricValue.newBuilder().setValue(1.0).build();
 
         // records
@@ -85,6 +79,53 @@ class MetricStoreExporterTest {
 
         assertThat(prometheusRegistry.scrape())
                 .contains(
-                        "my_metric{custom_tag=\"custom_value\",server=\"localhost:2023\",server_version=\"test\",} 1.0");
+                        "my_metric{custom_tag=\"custom_value\",server=\"localhost:2023\",server_id=\"my_server\",server_version=\"test\"} 1.0");
+    }
+
+    private static MetricKey createMetricsKey(List<Tag> tags) {
+        return createMetricsKey(HOST, tags);
+    }
+
+    private static MetricKey createMetricsKey(String host, List<Tag> tags) {
+        return MetricKey.newBuilder()
+                .setServerHost(host)
+                .setServerPort(2023)
+                .setServerVersion("test")
+                .setId("my_metric")
+                .setServerId("my_server")
+                .addAllTags(tags)
+                .build();
+    }
+
+    @Test
+    void printMetricsWithTwoDifferentServers() throws InterruptedException {
+        // metrics
+        List<Tag> tags = List.of(
+                Tag.newBuilder().setKey("custom_tag").setValue("custom_value").build());
+        MetricKey key1 = createMetricsKey(tags);
+        MetricKey key2 = createMetricsKey("localhost2", tags);
+        MetricValue value = MetricValue.newBuilder().setValue(1.0).build();
+
+        // records
+        when(records.hasNext()).thenReturn(true, true, false);
+        when(records.next()).thenReturn(KeyValue.pair(key1, value), KeyValue.pair(key2, value));
+        doNothing().when(records).close();
+
+        // store
+        when(store.all()).thenReturn(records);
+
+        // kafka streams
+        when(kafkaStreams.state()).thenReturn(KafkaStreams.State.RUNNING);
+        when(kafkaStreams.store(any())).thenReturn(store);
+
+        metricExporter.bindTo(prometheusRegistry);
+
+        Thread.sleep(500);
+        System.out.printf(prometheusRegistry.scrape());
+        assertThat(prometheusRegistry.scrape())
+                .isEqualTo(
+                        "# HELP my_metric  \n" + "# TYPE my_metric gauge\n"
+                                + "my_metric{custom_tag=\"custom_value\",server=\"localhost2:2023\",server_id=\"my_server\",server_version=\"test\"} 1.0\n"
+                                + "my_metric{custom_tag=\"custom_value\",server=\"localhost:2023\",server_id=\"my_server\",server_version=\"test\"} 1.0\n");
     }
 }
