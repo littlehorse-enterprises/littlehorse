@@ -180,10 +180,22 @@ class MetricsTopologyTest {
         Map<String, String> expectedTags = Map.of("my_tag", "value");
 
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "ok", expectedTags));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "ok"));
 
-        assertThat(getCount()).isEqualTo(3);
+        assertThat(getCount()).isEqualTo(6);
         assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg", "ok", expectedTags)))
                 .isEqualTo(newMetricValue(20.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max", "ok", expectedTags)))
+                .isEqualTo(newMetricValue(20.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count", "ok", expectedTags)))
+                .isEqualTo(newMetricValue(1.));
+
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg", "ok")))
+                .isEqualTo(newMetricValue(20.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max", "ok")))
+                .isEqualTo(newMetricValue(20.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count", "ok")))
+                .isEqualTo(newMetricValue(1.));
     }
 
     @Test
