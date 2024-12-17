@@ -67,8 +67,8 @@ public class Main {
                     lhConfig.getApiBootstrapHost(),
                     lhConfig.getApiBootstrapPort(),
                     lhClient.getServerVersion(),
-                    canaryConfig.getMetronomeServerDataplaneId(),
                     canaryConfig.getMetronomeServerId(),
+                    canaryConfig.getMetronomeServerDataplaneId(),
                     canaryConfig.getTopicName(),
                     canaryConfig.toKafkaConfig().toMap(),
                     canaryConfig.getMetronomeBeatExtraTags());
