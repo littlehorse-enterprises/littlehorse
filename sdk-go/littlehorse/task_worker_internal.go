@@ -430,7 +430,7 @@ func (m *serverConnectionManager) doTaskHelper(task *lhproto.ScheduledTask) *lhp
 
 		if errorReflect.Interface() != nil {
 			// Check if the error is an LHTaskException
-			if lhtErr, ok := errorReflect.Interface().(*lhproto.LHTaskException); ok {
+			if lhtErr, ok := errorReflect.Interface().(*LHTaskException); ok {
 				taskResult.Result = &lhproto.ReportTaskRun_Exception{
 					Exception: &lhproto.LHTaskException{
 						Name:    lhtErr.Name,
