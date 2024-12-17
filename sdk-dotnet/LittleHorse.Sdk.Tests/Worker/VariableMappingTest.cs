@@ -281,6 +281,29 @@ public class VariableMappingTest
     }
     
     [Fact]
+    public void VariableMapping_WithAssignJsonObjectValue_ShouldReturnDictionaryObject()
+    {
+        string value = "{\"FirstName\":\"Test\",\"Age\":\"35\",\"Address\":\"NA-Street\"}";
+        Type type = typeof(Dictionary<string, string>);
+        int position = 0;
+        string paramName = "param_test";
+        var variableMapping = getVariableMappingForTest(type, paramName, position);
+        VariableValue variableValue = new VariableValue { JsonObj = value};
+        ScheduledTask taskInstance = getScheduledTaskForTest(variableValue, paramName);
+        var mockWorkerContext = new Mock<LHWorkerContext>(taskInstance, new DateTime());
+        
+        var result = variableMapping.Assign(taskInstance, mockWorkerContext.Object);
+        
+        var expectedList = (Dictionary<string, string>)JsonConvert.DeserializeObject(value, type)!;
+        var actualList = (Dictionary<string, string>)result!;
+        
+        Assert.Equal(expectedList.Count, actualList.Count);
+        Assert.Equal(expectedList["FirstName"], actualList["FirstName"]);
+        Assert.Equal(expectedList["Age"], actualList["Age"]);
+        Assert.Equal(expectedList["Address"], actualList["Address"]);
+    }
+    
+    [Fact]
     public void VariableMapping_WithAssignJsonStringValue_ShouldReturnCustomObject()
     {
         string value = "{\"FirstName\":\"Test\",\"Age\":35,\"Cars\":[{\"Id\":1,\"Cost\":1.3445}]}";
