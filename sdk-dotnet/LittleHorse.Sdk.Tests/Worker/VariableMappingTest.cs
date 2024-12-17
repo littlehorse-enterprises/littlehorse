@@ -41,7 +41,7 @@ public class VariableMappingTest
             var variableType = LHMappingHelper.MapDotNetTypeToLHVariableType(type);
             TaskDef? taskDef = getTaskDefForTest(variableType);
         
-            var result = new VariableMapping(taskDef, position, type, paramName);
+            var result = new VariableMapping(taskDef!, position, type, paramName);
         
             Assert.True(result is not null);   
         }
@@ -56,7 +56,7 @@ public class VariableMappingTest
         TaskDef? taskDef = getTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
-            () => new VariableMapping(taskDef, 0, type2, "any param name"));
+            () => new VariableMapping(taskDef!, 0, type2, "any param name"));
             
         Assert.Contains($"TaskDef provides INT, func accepts", exception.Message);
     }
@@ -70,7 +70,7 @@ public class VariableMappingTest
         TaskDef? taskDef = getTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
-            () => new VariableMapping(taskDef, 0, type2, "any param name"));
+            () => new VariableMapping(taskDef!, 0, type2, "any param name"));
             
         Assert.Contains($"TaskDef provides DOUBLE, func accepts", exception.Message);
     }
@@ -84,7 +84,7 @@ public class VariableMappingTest
         TaskDef? taskDef = getTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
-            () => new VariableMapping(taskDef, 0, type2, "any param name"));
+            () => new VariableMapping(taskDef!, 0, type2, "any param name"));
             
         Assert.Contains($"TaskDef provides STRING, func accepts", exception.Message);
     }
@@ -98,7 +98,7 @@ public class VariableMappingTest
         TaskDef? taskDef = getTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
-            () => new VariableMapping(taskDef, 0, type2, "any param name"));
+            () => new VariableMapping(taskDef!, 0, type2, "any param name"));
             
         Assert.Contains($"TaskDef provides BOOL, func accepts", exception.Message);
     }
@@ -112,7 +112,7 @@ public class VariableMappingTest
         TaskDef? taskDef = getTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
-            () => new VariableMapping(taskDef, 0, type2, "any param name"));
+            () => new VariableMapping(taskDef!, 0, type2, "any param name"));
             
         Assert.Contains($"TaskDef provides BYTES, func accepts", exception.Message);
     }
@@ -342,7 +342,7 @@ public class VariableMappingTest
         var variableType = LHMappingHelper.MapDotNetTypeToLHVariableType(type);
         TaskDef? taskDef = getTaskDefForTest(variableType);
         
-        var variableMapping = new VariableMapping(taskDef, position, type, paramName);
+        var variableMapping = new VariableMapping(taskDef!, position, type, paramName);
         
         return variableMapping;
     }
