@@ -10,6 +10,8 @@ import io.littlehorse.canary.proto.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import org.apache.kafka.streams.StreamsConfig;
@@ -28,6 +30,8 @@ class MetricsTopologyTest {
 
     public static final String HOST_2 = "localhost2";
     public static final int PORT_2 = 2024;
+    public static final String SERVER_ID = "LH";
+    public static final String DATAPLANE_ID = "DP";
 
     private TopologyTestDriver testDriver;
     private TestInputTopic<BeatKey, BeatValue> inputTopic;
@@ -46,43 +50,84 @@ class MetricsTopologyTest {
     }
 
     private static MetricKey newMetricKey(String id, String status) {
-        return newMetricKey(HOST_1, PORT_1, id, status);
+        return newMetricKey(HOST_1, PORT_1, id, status, null);
     }
 
     private static MetricKey newMetricKey(String host, int port, String id) {
-        return newMetricKey(host, port, id, null);
+        return newMetricKey(host, port, id, null, null);
     }
 
-    private static MetricKey newMetricKey(String host, int port, String id, String status) {
-        MetricKey.Builder builder =
-                MetricKey.newBuilder().setServerHost(host).setServerPort(port).setId(id);
+    private static MetricKey newMetricKey(String id, String status, Map<String, String> tags) {
+        return newMetricKey(HOST_1, PORT_1, id, status, tags);
+    }
+
+    private static MetricKey newMetricKey(String host, int port, String id, String status, Map<String, String> tags) {
+        MetricKey.Builder builder = MetricKey.newBuilder()
+                .setServerHost(host)
+                .setServerPort(port)
+                .setId(id)
+                .setServerId(SERVER_ID)
+                .setDataplaneId(DATAPLANE_ID);
 
         if (status != null) {
             builder.addTags(Tag.newBuilder().setKey("status").setValue(status).build());
+        }
+
+        if (tags != null) {
+            List<Tag> tagList = tags.entrySet().stream()
+                    .map(entry -> Tag.newBuilder()
+                            .setKey(entry.getKey())
+                            .setValue(entry.getValue())
+                            .build())
+                    .toList();
+            builder.addAllTags(tagList);
         }
 
         return builder.build();
     }
 
     private static TestRecord<BeatKey, BeatValue> newBeat(BeatType type, String id, Long latency) {
-        return newBeat(HOST_1, PORT_1, type, id, latency, null);
+        return newBeat(HOST_1, PORT_1, type, id, latency, null, null);
     }
 
     private static TestRecord<BeatKey, BeatValue> newBeat(BeatType type, String id, Long latency, String beatStatus) {
-        return newBeat(HOST_1, PORT_1, type, id, latency, beatStatus);
+        return newBeat(HOST_1, PORT_1, type, id, latency, beatStatus, null);
     }
 
     private static TestRecord<BeatKey, BeatValue> newBeat(
-            String host, int port, BeatType type, String id, Long latency, String beatStatus) {
+            BeatType type, String id, Long latency, String beatStatus, Map<String, String> tags) {
+        return newBeat(HOST_1, PORT_1, type, id, latency, beatStatus, tags);
+    }
+
+    private static TestRecord<BeatKey, BeatValue> newBeat(
+            String host,
+            int port,
+            BeatType type,
+            String id,
+            Long latency,
+            String beatStatus,
+            Map<String, String> tags) {
         BeatKey.Builder keyBuilder = BeatKey.newBuilder()
                 .setServerHost(host)
                 .setServerPort(port)
                 .setType(type)
+                .setServerId(SERVER_ID)
+                .setDataplaneId(DATAPLANE_ID)
                 .setId(id);
         BeatValue.Builder valueBuilder = BeatValue.newBuilder().setTime(Timestamps.now());
 
         if (beatStatus != null) {
             keyBuilder.setStatus(beatStatus);
+        }
+
+        if (tags != null) {
+            List<Tag> tagList = tags.entrySet().stream()
+                    .map(entry -> Tag.newBuilder()
+                            .setKey(entry.getKey())
+                            .setValue(entry.getValue())
+                            .build())
+                    .toList();
+            keyBuilder.addAllTags(tagList);
         }
 
         if (latency != null) {
@@ -134,6 +179,31 @@ class MetricsTopologyTest {
                 .isEqualTo(newMetricValue(30.));
         assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count", "ok")))
                 .isEqualTo(newMetricValue(3.));
+    }
+
+    @Test
+    void includeBeatTagsIntoMetrics() {
+        BeatType expectedType = BeatType.WF_RUN_REQUEST;
+        String expectedTypeName = expectedType.name().toLowerCase();
+        Map<String, String> expectedTags = Map.of("my_tag", "value");
+
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "ok", expectedTags));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 20L, "ok"));
+
+        assertThat(getCount()).isEqualTo(6);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg", "ok", expectedTags)))
+                .isEqualTo(newMetricValue(20.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max", "ok", expectedTags)))
+                .isEqualTo(newMetricValue(20.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count", "ok", expectedTags)))
+                .isEqualTo(newMetricValue(1.));
+
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg", "ok")))
+                .isEqualTo(newMetricValue(20.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max", "ok")))
+                .isEqualTo(newMetricValue(20.));
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count", "ok")))
+                .isEqualTo(newMetricValue(1.));
     }
 
     @Test
@@ -270,9 +340,9 @@ class MetricsTopologyTest {
         inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 10L));
         inputTopic.pipeInput(newBeat(expectedType, expectedUniqueId, 30L));
 
-        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 20L, null));
-        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 10L, null));
-        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 30L, null));
+        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 20L, null, null));
+        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 10L, null, null));
+        inputTopic.pipeInput(newBeat(HOST_2, PORT_2, expectedType, expectedUniqueId, 30L, null, null));
 
         assertThat(getCount()).isEqualTo(8);
 

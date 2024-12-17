@@ -100,6 +100,27 @@ func TestUserTaskWithOnCancellationExceptionName(t *testing.T) {
 	assert.Equal(t, "no-response", utNode.GetOnCancellationExceptionName().GetLiteralValue().GetStr())
 }
 
+func TestReminderTaskArgs(t *testing.T) {
+	argForReminderTask := "some-arg-that-is-string"
+	wfObj := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		uto := t.AssignUserTask("some-user-task", "some-user", "some-group")
+
+		t.ScheduleReminderTask(uto, 20, "some-task", argForReminderTask)
+	}, "somem-workflow")
+
+	putWf, err := wfObj.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	node := entrypoint.Nodes["1-some-user-task-USER_TASK"]
+	utNode := node.GetUserTask()
+	assert.NotNil(t, utNode)
+	reminderAction := utNode.Actions[0]
+	assert.Equal(t, argForReminderTask, reminderAction.GetTask().Task.Variables[0].GetLiteralValue().GetStr())
+}
+
 func TestReminderTask(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		userVar := t.AddVariable("user", lhproto.VariableType_STR)

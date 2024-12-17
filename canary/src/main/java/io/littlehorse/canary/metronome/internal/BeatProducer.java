@@ -5,8 +5,10 @@ import io.littlehorse.canary.CanaryException;
 import io.littlehorse.canary.proto.BeatKey;
 import io.littlehorse.canary.proto.BeatType;
 import io.littlehorse.canary.proto.BeatValue;
+import io.littlehorse.canary.proto.Tag;
 import io.littlehorse.canary.util.ShutdownHook;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -18,23 +20,32 @@ import org.apache.kafka.common.utils.Bytes;
 public class BeatProducer {
 
     private final Producer<Bytes, Bytes> producer;
+    private final Map<String, String> extraTags;
     private final String lhServerHost;
     private final int lhServerPort;
     private final String lhServerVersion;
     private final String topicName;
+    private final String lhServerId;
+    private final String dataplaneId;
 
     public BeatProducer(
             final String lhServerHost,
             final int lhServerPort,
             final String lhServerVersion,
+            final String lhServerId,
+            final String dataplaneId,
             final String topicName,
-            final Map<String, Object> kafkaProducerConfigMap) {
+            final Map<String, Object> producerConfig,
+            final Map<String, String> extraTags) {
         this.lhServerHost = lhServerHost;
         this.lhServerPort = lhServerPort;
         this.lhServerVersion = lhServerVersion;
+        this.lhServerId = lhServerId;
+        this.dataplaneId = dataplaneId;
         this.topicName = topicName;
+        this.extraTags = extraTags;
 
-        producer = new KafkaProducer<>(kafkaProducerConfigMap);
+        producer = new KafkaProducer<>(producerConfig);
         ShutdownHook.add("Beat Producer", producer);
     }
 
@@ -84,12 +95,23 @@ public class BeatProducer {
                 .setServerHost(lhServerHost)
                 .setServerPort(lhServerPort)
                 .setServerVersion(lhServerVersion)
+                .setServerId(lhServerId)
+                .setDataplaneId(dataplaneId)
                 .setId(id)
                 .setType(type);
 
         if (status != null) {
             builder.setStatus(status);
         }
+
+        final List<Tag> tags = extraTags.entrySet().stream()
+                .map(entry -> Tag.newBuilder()
+                        .setKey(entry.getKey())
+                        .setValue(entry.getValue())
+                        .build())
+                .toList();
+
+        builder.addAllTags(tags);
 
         return builder.build();
     }

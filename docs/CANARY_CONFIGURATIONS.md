@@ -14,6 +14,9 @@
       * [`lh.canary.metronome.get.threads`](#lhcanarymetronomegetthreads)
       * [`lh.canary.metronome.get.retries`](#lhcanarymetronomegetretries)
       * [`lh.canary.metronome.data.path`](#lhcanarymetronomedatapath)
+      * [`lh.canary.metronome.beat.extra.tags.<additional tag>`](#lhcanarymetronomebeatextratagsadditional-tag)
+      * [`lh.canary.metronome.server.id`](#lhcanarymetronomeserverid)
+      * [`lh.canary.metronome.server.dataplane.id`](#lhcanarymetronomeserverdataplaneid)
     * [Kafka Configurations](#kafka-configurations)
     * [LH Client Configurations](#lh-client-configurations)
   * [Task Worker](#task-worker)
@@ -155,6 +158,33 @@ Local DB path.
 - **Type:** string
 - **Default:** /tmp/canaryMetronome
 - **Importance:** medium
+
+#### `lh.canary.metronome.beat.extra.tags.<additional tag>`
+
+This config is useful to add more tags to prometheus metrics.
+For example: `lh.canary.metronome.beat.extra.tags.my_tag=my-value`.
+
+- **Type:** string
+- **Default:** null
+- **Importance:** low
+
+#### `lh.canary.metronome.server.id`
+
+Add the tag server id the prometheus metrics (**mandatory**).
+For example: `lh.canary.metronome.server.id=lh`.
+
+- **Type:** string
+- **Default:** null
+- **Importance:** high
+
+#### `lh.canary.metronome.server.dataplane.id`
+
+Add the tag dataplane id the prometheus metrics (**mandatory**).
+For example: `lh.canary.metronome.server.dataplane.id=my-cluster-aws`.
+
+- **Type:** string
+- **Default:** null
+- **Importance:** high
 
 ### Kafka Configurations
 

@@ -17,35 +17,25 @@ namespace LittleHorse.Sdk.Worker.Internal
         private const int BALANCER_SLEEP_TIME = 5000;
         private const int MAX_REPORT_RETRIES = 5;
 
-        private LHConfig _config;
-        private MethodInfo _taskMethod;
-        private TaskDef _taskDef;
-        private List<VariableMapping> _mappings;
-        private T _executable;
-        private ILogger? _logger;
-        private LittleHorseClient _bootstrapClient;
+        private readonly LHConfig _config;
+        private readonly ILogger? _logger;
+        private readonly LittleHorseClient _bootstrapClient;
         private bool _running;
         private List<LHServerConnection<T>> _runningConnections;
-        private Thread _rebalanceThread;
-        private SemaphoreSlim _semaphore;
+        private readonly Thread _rebalanceThread;
+        private readonly SemaphoreSlim _semaphore;
+        private readonly LHTask<T> _task;
 
-        public LHConfig Config { get { return _config; } }
-        public TaskDef TaskDef { get { return _taskDef; } }
+        public LHConfig Config => _config;
+        public TaskDef TaskDef => _task.TaskDef!;
 
         public LHServerConnectionManager(LHConfig config,
-                                         MethodInfo taskMethod,
-                                         TaskDef taskDef,
-                                         List<VariableMapping> mappings,
-                                         T executable)
+                                         LHTask<T> task)
         {
             _config = config;
-            _taskMethod = taskMethod;
-            _taskDef = taskDef;
-            _mappings = mappings;
-            _executable = executable;
             _logger = LHLoggerFactoryProvider.GetLogger<LHServerConnectionManager<T>>();
-
-            _bootstrapClient = config.GetGrcpClientInstance();
+            _task = task;
+            _bootstrapClient = config.GetGrpcClientInstance();
 
             _running = false;
             _runningConnections = new List<LHServerConnection<T>>();
@@ -85,22 +75,22 @@ namespace LittleHorse.Sdk.Worker.Internal
             {
                 var request = new RegisterTaskWorkerRequest
                 {
-                    TaskDefId = _taskDef.Id,
+                    TaskDefId = _task.TaskDef!.Id,
                     TaskWorkerId = _config.WorkerId,
                 };
 
                 var response = _bootstrapClient.RegisterTaskWorker(request);
 
-                HandleRegisterTaskWorkResponse(response);
-
+                HandleRegisterTaskWorkerResponse(response);
             }
             catch (Exception ex)
             {
                 _logger?.LogError(ex, $"Failed contacting bootstrap host {_config.BootstrapHost}:{_config.BootstrapPort}");
+                _runningConnections = new List<LHServerConnection<T>>();
             }
         }
 
-        private void HandleRegisterTaskWorkResponse(RegisterTaskWorkerResponse response)
+        private void HandleRegisterTaskWorkerResponse(RegisterTaskWorkerResponse response)
         {
             response.YourHosts.ToList().ForEach(host =>
             {
@@ -109,9 +99,9 @@ namespace LittleHorse.Sdk.Worker.Internal
                     try
                     {
                         var newConnection = new LHServerConnection<T>(this, host);
-                        newConnection.Connect();
+                        newConnection.Open();
                         _runningConnections.Add(newConnection);
-                        _logger?.LogInformation($"Adding connection to: {host.Host}:{host.Port} for task '{_taskDef.Id}'");
+                        _logger?.LogInformation($"Adding connection to: {host.Host}:{host.Port} for task '{_task.TaskDef!.Id}'");
                     }
                     catch (IOException ex)
                     {
@@ -125,7 +115,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             for (int i = lastIndexOfRunningConnection; i >= 0; i--)
             {
                 var runningThread = _runningConnections[i];
-
+                
                 if (!ShouldBeRunning(runningThread, response.YourHosts))
                 {
                     _logger?.LogInformation($"Stopping worker thread for host {runningThread.HostInfo.Host} : {runningThread.HostInfo.Port}");
@@ -138,51 +128,56 @@ namespace LittleHorse.Sdk.Worker.Internal
 
         private bool ShouldBeRunning(LHServerConnection<T> runningThread, RepeatedField<LHHostInfo> hosts)
         {
-            return hosts.ToList().Any(host => runningThread.IsSame(host));
+            return hosts.ToList().Any(host => runningThread.IsSame(host.Host, host.Port));
         }
 
         private bool IsAlreadyRunning(LHHostInfo host)
         {
-            return _runningConnections.Any(conn => conn.IsSame(host));
+            return _runningConnections.Any(conn => conn.IsSame(host.Host, host.Port));
         }
 
-        public async void SubmitTaskForExecution(ScheduledTask scheduledTask, LittleHorseClient client)
+        public async void SubmitTaskForExecution(ScheduledTask scheduledTask)
         {
             await _semaphore.WaitAsync();
 
-            DoTask(scheduledTask, client);
+            DoTask(scheduledTask);
         }
 
-        private void DoTask(ScheduledTask scheduledTask, LittleHorseClient client)
+        private void DoTask(ScheduledTask scheduledTask)
         {
             ReportTaskRun result = ExecuteTask(scheduledTask, LHMappingHelper.MapDateTimeFromProtoTimeStamp(scheduledTask.CreatedAt));
-            _semaphore.Release();
 
-            var wfRunId = LHWorkerHelper.GetWFRunId(scheduledTask.Source);
+            var wfRunId = LHHelper.GetWfRunId(scheduledTask.Source);
 
             try
             {
                 var retriesLeft = MAX_REPORT_RETRIES;
 
-                _logger?.LogDebug($"Going to report task for wfRun {wfRunId}");
+                _logger?.LogDebug($"Going to report task for wfRun {wfRunId?.Id}");
                 Policy.Handle<Exception>().WaitAndRetry(MAX_REPORT_RETRIES,
                     retryAttempt => TimeSpan.FromSeconds(5),
                     onRetry: (exception, timeSpan, retryCount, context) =>
-                {
-                    --retriesLeft;
-                    _logger?.LogDebug($"Failed to report task for wfRun {wfRunId}: {exception.Message}. Retries left: {retriesLeft}");
-                    _logger?.LogDebug($"Retrying reportTask rpc on taskRun {LHWorkerHelper.TaskRunIdToString(result.TaskRunId)}");
-                }).Execute(() => RunReportTask(result));
+                    {
+                        --retriesLeft;
+                        _logger?.LogDebug(
+                            $"Failed to report task for wfRun {wfRunId}: {exception.Message}. Retries left: {retriesLeft}");
+                        _logger?.LogDebug(
+                            $"Retrying reportTask rpc on taskRun {LHHelper.TaskRunIdToString(result.TaskRunId)}");
+                    }).Execute(() => RunReportTask(result));
             }
             catch (Exception ex)
             {
                 _logger?.LogDebug($"Failed to report task for wfRun {wfRunId}: {ex.Message}. No retries left.");
             }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
 
         private void RunReportTask(ReportTaskRun reportedTask)
         {
-            var response = _bootstrapClient.ReportTask(reportedTask);
+            _bootstrapClient.ReportTask(reportedTask);
         }
 
         private ReportTaskRun ExecuteTask(ScheduledTask scheduledTask, DateTime? scheduleTime)
@@ -278,14 +273,15 @@ namespace LittleHorse.Sdk.Worker.Internal
 
         private object? Invoke(ScheduledTask scheduledTask, LHWorkerContext workerContext)
         {
-            var inputs = _mappings.Select(mapping => mapping.Assign(scheduledTask, workerContext)).ToArray();
+            var inputs = _task.TaskMethodMappings.Select(mapping => mapping.Assign(scheduledTask, workerContext)).ToArray();
 
-            return _taskMethod.Invoke(_executable, inputs);
+            return _task.TaskMethod!.Invoke(_task.Executable, inputs);
         }
 
-        public void CloseConnection(LHServerConnection<T> connection)
+        public void CloseConnection(string host, int port)
         {
-            var currConn = _runningConnections.Where(c => c.IsSame(connection.HostInfo)).FirstOrDefault();
+            var currConn = _runningConnections.FirstOrDefault(c => 
+                c.IsSame(host, port));
 
             if (currConn != null)
             {

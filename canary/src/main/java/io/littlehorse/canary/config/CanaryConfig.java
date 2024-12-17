@@ -32,11 +32,16 @@ public class CanaryConfig implements Config {
     public static final String METRONOME_GET_RETRIES = "metronome.get.retries";
     public static final String METRONOME_WORKER_ENABLE = "metronome.worker.enable";
     public static final String METRONOME_DATA_PATH = "metronome.data.path";
+    public static final String METRONOME_SERVER_ID = "metronome.server.id";
+    public static final String METRONOME_SERVER_DATAPLANE_ID = "metronome.server.dataplane.id";
+    public static final String METRONOME_BEAT_EXTRA_TAGS = "metronome.beat.extra.tags";
+    public static final String METRONOME_BEAT_EXTRA_TAGS_PREFIX = "%s.".formatted(METRONOME_BEAT_EXTRA_TAGS);
 
     public static final String AGGREGATOR_ENABLE = "aggregator.enable";
+    public static final String AGGREGATOR_STORE_RETENTION_MS = "aggregator.store.retention.ms";
+
     public static final String METRICS_PORT = "metrics.port";
     public static final String METRICS_PATH = "metrics.path";
-    public static final String AGGREGATOR_STORE_RETENTION_MS = "aggregator.store.retention.ms";
     public static final String METRICS_COMMON_TAGS = "metrics.common.tags";
     public static final String METRICS_COMMON_TAGS_PREFIX = "%s.".formatted(METRICS_COMMON_TAGS);
 
@@ -68,7 +73,11 @@ public class CanaryConfig implements Config {
     }
 
     private String getConfig(final String configName) {
-        return configs.get(configName).toString();
+        final Object value = configs.get(configName);
+        if (value == null) {
+            throw new IllegalArgumentException("Configuration 'lh.canary." + configName + "' not found");
+        }
+        return value.toString();
     }
 
     public String getTopicName() {
@@ -147,6 +156,14 @@ public class CanaryConfig implements Config {
                         entry -> entry.getValue().toString()));
     }
 
+    public Map<String, String> getMetronomeBeatExtraTags() {
+        return configs.entrySet().stream()
+                .filter(entry -> entry.getKey().startsWith(METRONOME_BEAT_EXTRA_TAGS_PREFIX))
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey().substring(METRONOME_BEAT_EXTRA_TAGS_PREFIX.length()),
+                        entry -> entry.getValue().toString()));
+    }
+
     public boolean isTopicCreationEnabled() {
         return Boolean.parseBoolean(getConfig(TOPIC_CREATION_ENABLE));
     }
@@ -169,5 +186,13 @@ public class CanaryConfig implements Config {
 
     public String getMetronomeDataPath() {
         return getConfig(METRONOME_DATA_PATH);
+    }
+
+    public String getMetronomeServerId() {
+        return getConfig(METRONOME_SERVER_ID);
+    }
+
+    public String getMetronomeServerDataplaneId() {
+        return getConfig(METRONOME_SERVER_DATAPLANE_ID);
     }
 }
