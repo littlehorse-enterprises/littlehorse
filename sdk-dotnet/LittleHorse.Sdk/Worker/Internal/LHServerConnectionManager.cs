@@ -279,7 +279,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             return _task.TaskMethod!.Invoke(_task.Executable, inputs);
         }
 
-        public void CloseConnection(string host, int port)
+        private void CloseConnection(string host, int port)
         {
             var serverConnection = _runningConnections.FirstOrDefault(c => 
                 c.IsSame(host, port));
