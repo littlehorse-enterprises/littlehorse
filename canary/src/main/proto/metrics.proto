@@ -13,6 +13,7 @@ message MetricKey {
   string id = 4;
   repeated Tag tags = 5;
   string server_id = 6;
+  string dataplane_id = 7;
 }
 
 message MetricValue {

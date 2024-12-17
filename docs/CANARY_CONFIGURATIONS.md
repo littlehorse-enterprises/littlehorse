@@ -16,6 +16,7 @@
       * [`lh.canary.metronome.data.path`](#lhcanarymetronomedatapath)
       * [`lh.canary.metronome.beat.extra.tags.<additional tag>`](#lhcanarymetronomebeatextratagsadditional-tag)
       * [`lh.canary.metronome.server.id`](#lhcanarymetronomeserverid)
+      * [`lh.canary.metronome.server.dataplane.id`](#lhcanarymetronomeserverdataplaneid)
     * [Kafka Configurations](#kafka-configurations)
     * [LH Client Configurations](#lh-client-configurations)
   * [Task Worker](#task-worker)
@@ -171,6 +172,15 @@ For example: `lh.canary.metronome.beat.extra.tags.my_tag=my-value`.
 
 Add the tag server id the prometheus metrics (**mandatory**).
 For example: `lh.canary.metronome.server.id=lh`.
+
+- **Type:** string
+- **Default:** null
+- **Importance:** high
+
+#### `lh.canary.metronome.server.dataplane.id`
+
+Add the tag dataplane id the prometheus metrics (**mandatory**).
+For example: `lh.canary.metronome.server.dataplane.id=my-cluster-aws`.
 
 - **Type:** string
 - **Default:** null
