@@ -31,6 +31,7 @@ class MetricsTopologyTest {
     public static final String HOST_2 = "localhost2";
     public static final int PORT_2 = 2024;
     public static final String SERVER_ID = "LH";
+    public static final String DATAPLANE_ID = "DP";
 
     private TopologyTestDriver testDriver;
     private TestInputTopic<BeatKey, BeatValue> inputTopic;
@@ -65,7 +66,8 @@ class MetricsTopologyTest {
                 .setServerHost(host)
                 .setServerPort(port)
                 .setId(id)
-                .setServerId(SERVER_ID);
+                .setServerId(SERVER_ID)
+                .setDataplaneId(DATAPLANE_ID);
 
         if (status != null) {
             builder.addTags(Tag.newBuilder().setKey("status").setValue(status).build());
@@ -110,6 +112,7 @@ class MetricsTopologyTest {
                 .setServerPort(port)
                 .setType(type)
                 .setServerId(SERVER_ID)
+                .setDataplaneId(DATAPLANE_ID)
                 .setId(id);
         BeatValue.Builder valueBuilder = BeatValue.newBuilder().setTime(Timestamps.now());
 
