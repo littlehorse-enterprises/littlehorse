@@ -58,11 +58,17 @@ export const ScheduledWfRuns = (spec: WfSpec) => {
 
   const filteredScheduledWfRuns = useMemo(
     () =>
-      scheduledWfRuns.filter(scheduledWfRun => {
-        if (currentWindow === -1) return true
-        const timeWindow = getCronTimeWindow(scheduledWfRun.cronExpression)
-        return timeWindow && timeWindow <= currentWindow
-      }),
+      scheduledWfRuns
+        .filter(scheduledWfRun => {
+          if (currentWindow === -1) return true
+          const timeWindow = getCronTimeWindow(scheduledWfRun.cronExpression)
+          return timeWindow && timeWindow <= currentWindow
+        })
+        .sort((a, b) => {
+          const timeA = parseExpression(a.cronExpression).next().toDate().getTime()
+          const timeB = parseExpression(b.cronExpression).next().toDate().getTime()
+          return timeA - timeB
+        }),
     [currentWindow, scheduledWfRuns]
   )
 
