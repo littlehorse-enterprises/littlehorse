@@ -25,23 +25,17 @@ public class BeatProducer {
     private final int lhServerPort;
     private final String lhServerVersion;
     private final String topicName;
-    private final String lhServerId;
-    private final String dataplaneId;
 
     public BeatProducer(
             final String lhServerHost,
             final int lhServerPort,
             final String lhServerVersion,
-            final String lhServerId,
-            final String dataplaneId,
             final String topicName,
             final Map<String, Object> producerConfig,
             final Map<String, String> extraTags) {
         this.lhServerHost = lhServerHost;
         this.lhServerPort = lhServerPort;
         this.lhServerVersion = lhServerVersion;
-        this.lhServerId = lhServerId;
-        this.dataplaneId = dataplaneId;
         this.topicName = topicName;
         this.extraTags = extraTags;
 
@@ -95,8 +89,6 @@ public class BeatProducer {
                 .setServerHost(lhServerHost)
                 .setServerPort(lhServerPort)
                 .setServerVersion(lhServerVersion)
-                .setServerId(lhServerId)
-                .setDataplaneId(dataplaneId)
                 .setId(id)
                 .setType(type);
 

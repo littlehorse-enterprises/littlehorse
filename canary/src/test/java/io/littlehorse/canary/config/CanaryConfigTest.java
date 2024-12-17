@@ -72,8 +72,8 @@ class CanaryConfigTest {
         CanaryConfig canaryConfig = new CanaryConfig(Map.of());
 
         IllegalArgumentException result =
-                assertThrows(IllegalArgumentException.class, canaryConfig::getMetronomeServerId);
+                assertThrows(IllegalArgumentException.class, () -> canaryConfig.getConfig("my.config"));
 
-        assertThat(result.getMessage()).isEqualTo("Configuration 'lh.canary.metronome.server.id' not found");
+        assertThat(result.getMessage()).isEqualTo("Configuration 'lh.canary.my.config' not found");
     }
 }
