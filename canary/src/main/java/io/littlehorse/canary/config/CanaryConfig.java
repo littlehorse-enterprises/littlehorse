@@ -33,6 +33,7 @@ public class CanaryConfig implements Config {
     public static final String METRONOME_WORKER_ENABLE = "metronome.worker.enable";
     public static final String METRONOME_DATA_PATH = "metronome.data.path";
     public static final String METRONOME_SERVER_ID = "metronome.server.id";
+    public static final String METRONOME_SERVER_DATAPLANE_ID = "metronome.server.dataplane.id";
     public static final String METRONOME_BEAT_EXTRA_TAGS = "metronome.beat.extra.tags";
     public static final String METRONOME_BEAT_EXTRA_TAGS_PREFIX = "%s.".formatted(METRONOME_BEAT_EXTRA_TAGS);
 
@@ -189,5 +190,9 @@ public class CanaryConfig implements Config {
 
     public String getMetronomeServerId() {
         return getConfig(METRONOME_SERVER_ID);
+    }
+
+    public String getMetronomeServerDataplaneId() {
+        return getConfig(METRONOME_SERVER_DATAPLANE_ID);
     }
 }

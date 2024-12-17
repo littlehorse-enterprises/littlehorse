@@ -140,7 +140,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfSpec'.
 }
 
 var deleteWfSpecCmd = &cobra.Command{
-	Use:   "wfSpec <name> <version>",
+	Use:   "wfSpec <name> <majorVersionNumber> <revisionNumber>",
 	Short: "Delete a WfSpec.",
 	Long: `Delete a WfSpec. You must provide the name and exact version of the
 WfSpec to delete.
