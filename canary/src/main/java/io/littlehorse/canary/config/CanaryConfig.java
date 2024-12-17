@@ -70,8 +70,12 @@ public class CanaryConfig implements Config {
         return new KafkaConfig(configs);
     }
 
-    private String getConfig(final String configName) {
-        return configs.get(configName).toString();
+    public String getConfig(final String configName) {
+        final Object value = configs.get(configName);
+        if (value == null) {
+            throw new IllegalArgumentException("Configuration 'lh.canary." + configName + "' not found");
+        }
+        return value.toString();
     }
 
     public String getTopicName() {

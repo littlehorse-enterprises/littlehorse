@@ -2,6 +2,7 @@ package io.littlehorse.canary.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -64,5 +65,15 @@ class CanaryConfigTest {
 
         assertThat(output).isEmpty();
         assertThat(output).isNotNull();
+    }
+
+    @Test
+    void throwsExceptionIfConfigurationIsNotFound() {
+        CanaryConfig canaryConfig = new CanaryConfig(Map.of());
+
+        IllegalArgumentException result =
+                assertThrows(IllegalArgumentException.class, () -> canaryConfig.getConfig("my.config"));
+
+        assertThat(result.getMessage()).isEqualTo("Configuration 'lh.canary.my.config' not found");
     }
 }

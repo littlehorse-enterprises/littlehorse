@@ -166,10 +166,13 @@ For example: `lh.canary.metronome.beat.extra.tags.my_tag=my-value`.
 - **Default:** null
 - **Importance:** low
 
+Limitations: Please note that it is not recommended to change the tag set once the canary has been started.
+For more information check https://github.com/prometheus/client_java/issues/696.
+
 ### Kafka Configurations
 
 LH Canary supports all kafka configurations. Use the prefix `lh.canary.kafka` and append the kafka config.
-Examples
+Examples:
 
 - For `security.protocol`, use `lh.canary.kafka.security.protocol`.
 - For `bootstrap.servers`, use `lh.canary.kafka.bootstrap.servers`.

@@ -9,6 +9,7 @@ import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.binder.MeterBinder;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -23,16 +24,18 @@ import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 @Slf4j
-public class MetricStoreExporter implements MeterBinder {
+public class MetricStoreExporter implements MeterBinder, AutoCloseable {
 
     private final KafkaStreams kafkaStreams;
     private final String storeName;
-    private final Map<MetricKey, PrometheusMetric> currentMeters;
+    private final Map<MetricKey, PrometheusMetric> currentMeters = new HashMap<>();
+    private final Duration refreshPeriod;
+    private ScheduledExecutorService mainExecutor;
 
-    public MetricStoreExporter(final KafkaStreams kafkaStreams, final String storeName) {
+    public MetricStoreExporter(final KafkaStreams kafkaStreams, final String storeName, final Duration refreshPeriod) {
         this.kafkaStreams = kafkaStreams;
         this.storeName = storeName;
-        currentMeters = new HashMap<>();
+        this.refreshPeriod = refreshPeriod;
     }
 
     private static List<Tag> toTags(final MetricKey key) {
@@ -47,12 +50,15 @@ public class MetricStoreExporter implements MeterBinder {
 
     @Override
     public void bindTo(final MeterRegistry registry) {
-        final ScheduledExecutorService mainExecutor = Executors.newSingleThreadScheduledExecutor();
-        ShutdownHook.add("Latency Metrics Exporter", () -> {
-            mainExecutor.shutdownNow();
-            mainExecutor.awaitTermination(1, TimeUnit.SECONDS);
-        });
-        mainExecutor.scheduleAtFixedRate(() -> updateMetrics(registry), 30, 30, TimeUnit.SECONDS);
+        mainExecutor = Executors.newSingleThreadScheduledExecutor();
+        ShutdownHook.add("Latency Metrics Exporter", this);
+        mainExecutor.scheduleAtFixedRate(
+                () -> updateMetrics(registry), 0, refreshPeriod.toMillis(), TimeUnit.MILLISECONDS);
+    }
+
+    public void close() throws InterruptedException {
+        mainExecutor.shutdownNow();
+        mainExecutor.awaitTermination(1, TimeUnit.SECONDS);
     }
 
     private void updateMetrics(final MeterRegistry registry) {
@@ -72,7 +78,6 @@ public class MetricStoreExporter implements MeterBinder {
             while (records.hasNext()) {
                 final KeyValue<MetricKey, MetricValue> record = records.next();
                 foundMetrics.add(record.key);
-
                 final PrometheusMetric current = currentMeters.get(record.key);
                 if (current == null) {
                     final AtomicDouble newMeter = new AtomicDouble(record.value.getValue());
