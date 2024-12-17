@@ -70,7 +70,7 @@ public class LHMappingHelperTest
     }
     
     [Fact]
-    public void LHHelper_WithSystemArrayObjectVariableType_ShouldReturnLHVariableJsonArrType()
+    public void LHHelper_WithIlistObjectType_ShouldReturnLHVariableJsonArrType()
     {
         var test_allowed_types = new List<Type>() { typeof(List<object>), typeof(List<string>), typeof(List<int>)};
         
@@ -85,7 +85,8 @@ public class LHMappingHelperTest
     [Fact]
     public void LHHelper_WithNotAllowedSystemVariableTypes_ShouldReturnLHJsonObj()
     {
-        var test_not_allowed_types = new List<Type>() { typeof(decimal), typeof(char), typeof(void) };
+        var test_not_allowed_types = new List<Type>() { typeof(decimal), typeof(char), typeof(void), 
+            typeof(Dictionary<string, string>) };
         
         foreach (var type in test_not_allowed_types)
         {

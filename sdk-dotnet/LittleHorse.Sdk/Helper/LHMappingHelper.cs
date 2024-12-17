@@ -39,7 +39,7 @@ namespace LittleHorse.Sdk.Helper
                 return VariableType.Bytes;
             }
 
-            if (typeof(IEnumerable).IsAssignableFrom(type))
+            if (typeof(IList).IsAssignableFrom(type))
             {
                 return VariableType.JsonArr;
             }
