@@ -2,14 +2,13 @@ package littlehorse
 
 import (
 	"context"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"log"
 	"reflect"
 	"runtime/debug"
 	"strconv"
 	"sync"
 	"time"
-
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -317,7 +316,6 @@ func (m *serverConnectionManager) doTask(taskToExec *taskExecutionInfo) {
 	taskResult := m.doTaskHelper(taskToExec.task)
 	_, err := (*taskToExec.specificStub).ReportTask(context.Background(), taskResult)
 	if err != nil {
-		log.Default().Print(err)
 		m.retryReportTask(context.Background(), taskResult, TOTAL_RETRIES)
 	}
 }
