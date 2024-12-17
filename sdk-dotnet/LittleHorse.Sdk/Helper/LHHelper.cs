@@ -5,7 +5,7 @@ namespace LittleHorse.Sdk.Helper
 {
     public static class LHHelper
     {
-        public static WfRunId GetWFRunId(TaskRunSource taskRunSource)
+        public static WfRunId? GetWfRunId(TaskRunSource taskRunSource)
         {
             switch (taskRunSource.TaskRunSourceCase)
             {
