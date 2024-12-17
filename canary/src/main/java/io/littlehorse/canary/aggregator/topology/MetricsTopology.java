@@ -173,6 +173,7 @@ public class MetricsTopology {
                 .setServerPort(key.getServerPort())
                 .setServerHost(key.getServerHost())
                 .setServerId(key.getServerId())
+                .setDataplaneId(key.getDataplaneId())
                 .setId("canary_%s".formatted(id));
 
         if (key.hasStatus() && !Strings.isNullOrEmpty(key.getStatus())) {
@@ -206,6 +207,7 @@ public class MetricsTopology {
                 .setServerPort(key.getServerPort())
                 .setStatus(key.getStatus())
                 .setServerId(key.getServerId())
+                .setDataplaneId(key.getDataplaneId())
                 .addAllTags(key.getTagsList())
                 .build();
     }
