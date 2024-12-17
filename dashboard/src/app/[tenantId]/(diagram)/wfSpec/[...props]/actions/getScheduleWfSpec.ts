@@ -19,7 +19,7 @@ export const getScheduleWfSpec = async ({ name, version, tenantId }: GetWfSpecPr
       await client.searchScheduledWfRun({
         wfSpecName: name,
         majorVersion: parseInt(majorVersion) || 0,
-        revision: parseInt(revision) | 0,
+        revision: parseInt(revision) || 0,
       })
     ).results.map(async scheduledWfRun => {
       return await client.getScheduledWfRun({
