@@ -7,7 +7,7 @@ import {
     DialogContent,
     DialogTrigger,
 } from '@/components/ui/dialog'
-import { CopyButton } from './copy-button'
+import { CopyButton } from './CopyButton'
 
 type OverflowTextProps = {
     text: string
