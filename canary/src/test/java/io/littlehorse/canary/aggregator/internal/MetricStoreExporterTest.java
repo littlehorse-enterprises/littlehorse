@@ -79,7 +79,7 @@ class MetricStoreExporterTest {
 
         assertThat(prometheusRegistry.scrape())
                 .contains(
-                        "my_metric{custom_tag=\"custom_value\",dataplane_id=\"my-dataplane\",server=\"localhost:2023\",server_id=\"my_server\",server_version=\"test\"} 1.0");
+                        "my_metric{custom_tag=\"custom_value\",server=\"localhost:2023\",server_version=\"test\"} 1.0");
     }
 
     private static MetricKey createMetricsKey(List<Tag> tags) {
@@ -92,8 +92,6 @@ class MetricStoreExporterTest {
                 .setServerPort(2023)
                 .setServerVersion("test")
                 .setId("my_metric")
-                .setServerId("my_server")
-                .setDataplaneId("my-dataplane")
                 .addAllTags(tags)
                 .build();
     }
@@ -126,7 +124,7 @@ class MetricStoreExporterTest {
         assertThat(prometheusRegistry.scrape())
                 .isEqualTo(
                         "# HELP my_metric  \n" + "# TYPE my_metric gauge\n"
-                                + "my_metric{custom_tag=\"custom_value\",dataplane_id=\"my-dataplane\",server=\"localhost2:2023\",server_id=\"my_server\",server_version=\"test\"} 1.0\n"
-                                + "my_metric{custom_tag=\"custom_value\",dataplane_id=\"my-dataplane\",server=\"localhost:2023\",server_id=\"my_server\",server_version=\"test\"} 1.0\n");
+                                + "my_metric{custom_tag=\"custom_value\",server=\"localhost2:2023\",server_version=\"test\"} 1.0\n"
+                                + "my_metric{custom_tag=\"custom_value\",server=\"localhost:2023\",server_version=\"test\"} 1.0\n");
     }
 }

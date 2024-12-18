@@ -27,8 +27,6 @@ message BeatKey {
   optional string status = 5;
   optional string id = 6;
   repeated Tag tags = 7;
-  string server_id = 8;
-  string dataplane_id = 9;
 }
 
 message BeatValue {

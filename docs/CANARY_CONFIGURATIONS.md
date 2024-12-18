@@ -15,8 +15,6 @@
       * [`lh.canary.metronome.get.retries`](#lhcanarymetronomegetretries)
       * [`lh.canary.metronome.data.path`](#lhcanarymetronomedatapath)
       * [`lh.canary.metronome.beat.extra.tags.<additional tag>`](#lhcanarymetronomebeatextratagsadditional-tag)
-      * [`lh.canary.metronome.server.id`](#lhcanarymetronomeserverid)
-      * [`lh.canary.metronome.server.dataplane.id`](#lhcanarymetronomeserverdataplaneid)
     * [Kafka Configurations](#kafka-configurations)
     * [LH Client Configurations](#lh-client-configurations)
   * [Task Worker](#task-worker)
@@ -168,28 +166,13 @@ For example: `lh.canary.metronome.beat.extra.tags.my_tag=my-value`.
 - **Default:** null
 - **Importance:** low
 
-#### `lh.canary.metronome.server.id`
-
-Add the tag server id the prometheus metrics (**mandatory**).
-For example: `lh.canary.metronome.server.id=lh`.
-
-- **Type:** string
-- **Default:** null
-- **Importance:** high
-
-#### `lh.canary.metronome.server.dataplane.id`
-
-Add the tag dataplane id the prometheus metrics (**mandatory**).
-For example: `lh.canary.metronome.server.dataplane.id=my-cluster-aws`.
-
-- **Type:** string
-- **Default:** null
-- **Importance:** high
+Limitations: Please note that it is not recommended to change the tag set once the canary has been started.
+For more information check https://github.com/prometheus/client_java/issues/696.
 
 ### Kafka Configurations
 
 LH Canary supports all kafka configurations. Use the prefix `lh.canary.kafka` and append the kafka config.
-Examples
+Examples:
 
 - For `security.protocol`, use `lh.canary.kafka.security.protocol`.
 - For `bootstrap.servers`, use `lh.canary.kafka.bootstrap.servers`.
