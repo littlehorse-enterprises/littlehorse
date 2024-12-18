@@ -178,7 +178,7 @@ The Go SDK currently (as of `0.11.0`) does not yet support throwing `LHTaskExcep
   <TabItem value="python" label="Python">
 
 ```python
-from littlehorse.exceptions import LHTaskExceptio
+from littlehorse.exceptions import LHTaskException
 
 async def ship_item(item_sku: str) -> str:
     if is_out_of_stock():
