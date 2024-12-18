@@ -148,3 +148,23 @@ jobs:
         run: dotnet build sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
       - name: Test Dotnet
         run: dotnet test sdk-dotnet/LittleHorse.Sdk.Tests
+
+    publish-sdk-dotnet:
+      if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+        - name: Setup Dotnet
+          uses: actions/setup-dotnet@v4
+          with:
+            dotnet-version: '6'
+            source-url: https://nuget.pkg.github.com/littlehorse/index.json
+          env:
+            NUGET_AUTH_TOKEN: ${{secrets.NUGET_TOKEN}}
+        - name: Build Project
+          run: dotnet build sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
+        - name: Create Package
+          run: dotnet pack --configuration Release sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
+        - name: Publish Nuget Package
+          run: dotnet nuget push sdk-dotnet/LittleHorse.Sdk/bin/Release/*.nupkg
