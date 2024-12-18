@@ -1,4 +1,6 @@
 name: tests
+permissions:
+  packages: write
 run-name: Tests
 on:
   workflow_dispatch:
@@ -159,11 +161,12 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '6'
+          source-url: https://nuget.pkg.github.com/littlehorse-enterprises/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Build Project
         run: dotnet build sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
       - name: Create Package
         run: dotnet pack --configuration Release sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
-      - name: Publish the package to nuget.org
-        run: dotnet nuget push sdk-dotnet/LittleHorse.Sdk/bin/Release/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
-        env:
-          NUGET_AUTH_TOKEN: ${{ secrets.NUGET_TOKEN }}
+      - name: Publish the package to GPR
+        run: dotnet nuget push sdk-dotnet/LittleHorse.Sdk/bin/Release/*.nupkg
