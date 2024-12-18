@@ -161,6 +161,10 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '6'
+      - name: Dump version
+        env:
+          TAG: 0.5.12-alpha
+        run: sed -i "s/<PackageVersion>.*<\/PackageVersion>/<PackageVersion>${TAG}<\/PackageVersion>/g" sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
       - name: Build Project
         run: dotnet build sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
       - name: Create Package
