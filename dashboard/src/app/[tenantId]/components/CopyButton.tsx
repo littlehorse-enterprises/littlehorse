@@ -1,3 +1,4 @@
+'use client'
 import { FC, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Check, Copy } from 'lucide-react'
@@ -11,17 +12,15 @@ interface CopyButtonProps {
 export const CopyButton: FC<CopyButtonProps> = ({ value, className }) => {
     const [copied, setCopied] = useState(false)
 
-    const handleCopy = () => {
-        navigator.clipboard.writeText(value)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 1000)
-    }
-
     return (
         <Button
             variant="ghost"
             size="icon"
-            onClick={handleCopy}
+            onClick={() => {
+                navigator.clipboard.writeText(value)
+                setCopied(true)
+                setTimeout(() => setCopied(false), 1000)
+            }}
             className={cn(className)}
         >
             {copied ? (
