@@ -2,6 +2,7 @@ import { VARIABLE_TYPES } from '@/app/constants'
 import { getVariableValue } from '@/app/utils'
 import { ThreadVarDef, Variable, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { FC } from 'react'
+import { OverflowText } from '../../../../components/OverflowText'
 
 type VariablesProps = {
   variableDefs: ThreadVarDef[]
@@ -30,7 +31,12 @@ export const Variables: FC<VariablesProps> = ({ variableDefs, variables }) => {
           <span className="rounded bg-green-300 p-1 text-xs">{accessLevels[variable.accessLevel]}</span>
           <span>=</span>
           <span className="truncate">
-            {getVariableValue(variables.find(v => v.id?.name === variable.varDef?.name)?.value)?.toString()}
+            <OverflowText
+              className="max-w-96"
+              text={
+                getVariableValue(variables.find(v => v.id?.name === variable.varDef?.name)?.value)?.toString() ?? ''
+              }
+            />
           </span>
         </div>
       ))}
