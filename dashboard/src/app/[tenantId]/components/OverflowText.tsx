@@ -1,3 +1,4 @@
+'use client'
 import { FC, useEffect, useRef, useState } from 'react'
 import { cn } from '@/components/utils'
 import { Button } from '@/components/ui/button'
@@ -8,20 +9,14 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog'
 import { CopyButton } from './CopyButton'
+import { tryFormatAsJson } from '@/app/utils/tryFormatAsJson'
 
 type OverflowTextProps = {
     text: string
     className?: string
 }
 
-export function formatAsJson(text: string): string {
-    try {
-        const parsed = JSON.parse(text);
-        return JSON.stringify(parsed, null, 4);
-    } catch {
-        return text;
-    }
-}
+
 
 export const OverflowText: FC<OverflowTextProps> = ({ text, className }) => {
     const textRef = useRef<HTMLDivElement>(null)
@@ -34,7 +29,7 @@ export const OverflowText: FC<OverflowTextProps> = ({ text, className }) => {
         }
     }, [text])
 
-    const formattedText = formatAsJson(text)
+    const formattedText = tryFormatAsJson(text)
 
     if (isOverflowing) {
         return (
@@ -70,9 +65,9 @@ export const OverflowText: FC<OverflowTextProps> = ({ text, className }) => {
     return (
         <div
             ref={textRef}
-            className={cn('truncate whitespace-nowrap overflow-hidden', className)}
+            className={className}
         >
             {formattedText}
-        </div>
+        </div >
     )
 }
