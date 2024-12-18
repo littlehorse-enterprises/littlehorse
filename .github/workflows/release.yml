@@ -146,6 +146,31 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
         run: npm publish --access public
 
+  sdk-dotnet:
+    runs-on: ubuntu-latest
+    needs:
+      - publish-docker
+      - prepare
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6'
+      - name: Bump version
+        env:
+          TAG: ${{ needs.prepare.outputs.tag }}
+        run: sed -i "s/<PackageVersion>.*<\/PackageVersion>/<PackageVersion>${TAG}<\/PackageVersion>/g" sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
+      - name: Build Project
+        run: dotnet build sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
+      - name: Create Package
+        run: dotnet pack --configuration Release sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
+      - name: Publish Package to nuget.org
+        run: dotnet nuget push sdk-dotnet/LittleHorse.Sdk/bin/Release/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.NUGET_TOKEN }}
+
   lhctl:
     runs-on: ubuntu-latest
     steps:
@@ -174,6 +199,7 @@ jobs:
       - sdk-java
       - sdk-python
       - sdk-js
+      - sdk-dotnet
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
