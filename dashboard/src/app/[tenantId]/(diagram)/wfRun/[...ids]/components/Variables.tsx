@@ -32,7 +32,7 @@ export const Variables: FC<VariablesProps> = ({ variableDefs, variables }) => {
           <span>=</span>
           <span className="truncate">
             <OverflowText
-              className="max-w-64"
+              className="max-w-96"
               text={
                 getVariableValue(variables.find(v => v.id?.name === variable.varDef?.name)?.value)?.toString() ?? ''
               }
