@@ -136,7 +136,7 @@ namespace LittleHorse.Sdk {
             
             var lhClient = new LittleHorseClient(channel);
 
-            _createdChannels.Add(channelKey, lhClient);
+            _createdChannels.TryAdd(channelKey, lhClient);
 
             return lhClient;
         }

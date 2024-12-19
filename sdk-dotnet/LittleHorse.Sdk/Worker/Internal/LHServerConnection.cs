@@ -80,6 +80,7 @@ namespace LittleHorse.Sdk.Worker.Internal
         public void Dispose()
         {
             _running = false;
+            GC.SuppressFinalize(this);
         }
 
         public bool IsSame(string host, int port)
