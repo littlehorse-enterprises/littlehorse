@@ -221,7 +221,11 @@ export interface VariableAssignment {
     | VariableAssignment_NodeOutputReference
     | undefined;
   /** Assign the value of an Expression. */
-  expression?: VariableAssignment_Expression | undefined;
+  expression?:
+    | VariableAssignment_Expression
+    | undefined;
+  /** Allows casting this Variable Assignment to a specific type */
+  typeToCastTo?: VariableType | undefined;
 }
 
 /** A FormatString formats a template String with values from the WfRun. */
@@ -257,7 +261,11 @@ export interface VariableAssignment_Expression {
   /** The operator in the expression. */
   operation: VariableMutationType;
   /** The right-hand-side of the expression. */
-  rhs: VariableAssignment | undefined;
+  rhs:
+    | VariableAssignment
+    | undefined;
+  /** Allows casting this expression to a specific type */
+  typeToCastTo?: VariableType | undefined;
 }
 
 /**
@@ -493,6 +501,7 @@ function createBaseVariableAssignment(): VariableAssignment {
     formatString: undefined,
     nodeOutput: undefined,
     expression: undefined,
+    typeToCastTo: undefined,
   };
 }
 
@@ -515,6 +524,9 @@ export const VariableAssignment = {
     }
     if (message.expression !== undefined) {
       VariableAssignment_Expression.encode(message.expression, writer.uint32(50).fork()).ldelim();
+    }
+    if (message.typeToCastTo !== undefined) {
+      writer.uint32(56).int32(variableTypeToNumber(message.typeToCastTo));
     }
     return writer;
   },
@@ -568,6 +580,13 @@ export const VariableAssignment = {
 
           message.expression = VariableAssignment_Expression.decode(reader, reader.uint32());
           continue;
+        case 7:
+          if (tag !== 56) {
+            break;
+          }
+
+          message.typeToCastTo = variableTypeFromJSON(reader.int32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -596,6 +615,7 @@ export const VariableAssignment = {
     message.expression = (object.expression !== undefined && object.expression !== null)
       ? VariableAssignment_Expression.fromPartial(object.expression)
       : undefined;
+    message.typeToCastTo = object.typeToCastTo ?? undefined;
     return message;
   },
 };
@@ -704,7 +724,7 @@ export const VariableAssignment_NodeOutputReference = {
 };
 
 function createBaseVariableAssignment_Expression(): VariableAssignment_Expression {
-  return { lhs: undefined, operation: VariableMutationType.ASSIGN, rhs: undefined };
+  return { lhs: undefined, operation: VariableMutationType.ASSIGN, rhs: undefined, typeToCastTo: undefined };
 }
 
 export const VariableAssignment_Expression = {
@@ -717,6 +737,9 @@ export const VariableAssignment_Expression = {
     }
     if (message.rhs !== undefined) {
       VariableAssignment.encode(message.rhs, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.typeToCastTo !== undefined) {
+      writer.uint32(32).int32(variableTypeToNumber(message.typeToCastTo));
     }
     return writer;
   },
@@ -749,6 +772,13 @@ export const VariableAssignment_Expression = {
 
           message.rhs = VariableAssignment.decode(reader, reader.uint32());
           continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.typeToCastTo = variableTypeFromJSON(reader.int32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -770,6 +800,7 @@ export const VariableAssignment_Expression = {
     message.rhs = (object.rhs !== undefined && object.rhs !== null)
       ? VariableAssignment.fromPartial(object.rhs)
       : undefined;
+    message.typeToCastTo = object.typeToCastTo ?? undefined;
     return message;
   },
 };

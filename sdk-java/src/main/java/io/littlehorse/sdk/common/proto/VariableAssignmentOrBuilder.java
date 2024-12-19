@@ -179,5 +179,33 @@ public interface VariableAssignmentOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableAssignment.ExpressionOrBuilder getExpressionOrBuilder();
 
+  /**
+   * <pre>
+   * Allows casting this Variable Assignment to a specific type
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableType type_to_cast_to = 7;</code>
+   * @return Whether the typeToCastTo field is set.
+   */
+  boolean hasTypeToCastTo();
+  /**
+   * <pre>
+   * Allows casting this Variable Assignment to a specific type
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableType type_to_cast_to = 7;</code>
+   * @return The enum numeric value on the wire for typeToCastTo.
+   */
+  int getTypeToCastToValue();
+  /**
+   * <pre>
+   * Allows casting this Variable Assignment to a specific type
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableType type_to_cast_to = 7;</code>
+   * @return The typeToCastTo.
+   */
+  io.littlehorse.sdk.common.proto.VariableType getTypeToCastTo();
+
   io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase getSourceCase();
 }

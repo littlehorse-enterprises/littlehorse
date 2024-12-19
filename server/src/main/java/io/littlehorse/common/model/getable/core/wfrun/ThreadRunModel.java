@@ -761,77 +761,77 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return assignVariable(assn, new HashMap<>());
     }
 
-    public VariableValueModel assignVariable(VariableAssignmentModel assn, Map<String, VariableValueModel> txnCache)
-            throws LHVarSubError {
-        VariableValueModel val = null;
-        switch (assn.getRhsSourceType()) {
-            case LITERAL_VALUE:
-                val = assn.getRhsLiteralValue();
-                break;
-            case VARIABLE_NAME:
-                if (txnCache.containsKey(assn.getVariableName())) {
-                    val = txnCache.get(assn.getVariableName());
-                } else {
-                    val = getVariable(assn.getVariableName()).getValue();
-                }
+    // private VariableValueModel assignVariable(VariableAssignmentModel assn, Map<String, VariableValueModel> txnCache)
+    //         throws LHVarSubError {
+    //     VariableValueModel val = null;
+    //     switch (assn.getRhsSourceType()) {
+    //         case LITERAL_VALUE:
+    //             val = assn.getRhsLiteralValue();
+    //             break;
+    //         case VARIABLE_NAME:
+    //             if (txnCache.containsKey(assn.getVariableName())) {
+    //                 val = txnCache.get(assn.getVariableName());
+    //             } else {
+    //                 val = getVariable(assn.getVariableName()).getValue();
+    //             }
 
-                if (val == null) {
-                    throw new LHVarSubError(null, "Variable " + assn.getVariableName() + " not in scope!");
-                }
+    //             if (val == null) {
+    //                 throw new LHVarSubError(null, "Variable " + assn.getVariableName() + " not in scope!");
+    //             }
 
-                break;
-            case FORMAT_STRING:
-                // first, assign the format string
-                VariableValueModel formatStringVarVal =
-                        assignVariable(assn.getFormatString().getFormat(), txnCache);
-                if (formatStringVarVal.getType() != VariableType.STR) {
-                    throw new LHVarSubError(
-                            null, "Format String template isn't a STR; it's a " + formatStringVarVal.getType());
-                }
+    //             break;
+    //         case FORMAT_STRING:
+    //             // first, assign the format string
+    //             VariableValueModel formatStringVarVal =
+    //                     assignVariable(assn.getFormatString().getFormat(), txnCache);
+    //             if (formatStringVarVal.getType() != VariableType.STR) {
+    //                 throw new LHVarSubError(
+    //                         null, "Format String template isn't a STR; it's a " + formatStringVarVal.getType());
+    //             }
 
-                List<Object> formatArgs = new ArrayList<>();
+    //             List<Object> formatArgs = new ArrayList<>();
 
-                // second, assign the vars
-                for (VariableAssignmentModel argAssn : assn.getFormatString().getArgs()) {
-                    VariableValueModel variableValue = assignVariable(argAssn, txnCache);
-                    formatArgs.add(variableValue.getVal());
-                }
+    //             // second, assign the vars
+    //             for (VariableAssignmentModel argAssn : assn.getFormatString().getArgs()) {
+    //                 VariableValueModel variableValue = assignVariable(argAssn, txnCache);
+    //                 formatArgs.add(variableValue.getVal());
+    //             }
 
-                // Finally, format the String.
-                try {
-                    val = new VariableValueModel(
-                            MessageFormat.format(formatStringVarVal.getStrVal(), formatArgs.toArray(new Object[0])));
-                } catch (RuntimeException e) {
-                    throw new LHVarSubError(e, "Error formatting variable");
-                }
-                break;
-            case NODE_OUTPUT:
-                String nodeReferenceName = assn.getNodeOutputReference().getNodeName();
-                NodeRunModel referencedNodeRun = getMostRecentNodeRun(nodeReferenceName);
-                Optional<VariableValueModel> output = referencedNodeRun.getOutput(processorContext);
-                if (output.isEmpty()) {
-                    throw new LHVarSubError(
-                            null,
-                            "Specified node " + nodeReferenceName + " of type " + referencedNodeRun.getType()
-                                    + ", number " + referencedNodeRun.getId().getPosition() + " has no output.");
-                }
-                val = output.get();
-                break;
-            case EXPRESSION:
-                ExpressionModel expression = assn.getExpression();
-                val = expression.evaluate(varAssn -> assignVariable(varAssn, txnCache));
-                break;
-            case SOURCE_NOT_SET:
-                // This should have been caught by the WfSpecModel#validate()
-                throw new IllegalStateException("Invalid WfSpec with un-set VariableAssignment.");
-        }
+    //             // Finally, format the String.
+    //             try {
+    //                 val = new VariableValueModel(
+    //                         MessageFormat.format(formatStringVarVal.getStrVal(), formatArgs.toArray(new Object[0])));
+    //             } catch (RuntimeException e) {
+    //                 throw new LHVarSubError(e, "Error formatting variable");
+    //             }
+    //             break;
+    //         case NODE_OUTPUT:
+    //             String nodeReferenceName = assn.getNodeOutputReference().getNodeName();
+    //             NodeRunModel referencedNodeRun = getMostRecentNodeRun(nodeReferenceName);
+    //             Optional<VariableValueModel> output = referencedNodeRun.getOutput(processorContext);
+    //             if (output.isEmpty()) {
+    //                 throw new LHVarSubError(
+    //                         null,
+    //                         "Specified node " + nodeReferenceName + " of type " + referencedNodeRun.getType()
+    //                                 + ", number " + referencedNodeRun.getId().getPosition() + " has no output.");
+    //             }
+    //             val = output.get();
+    //             break;
+    //         case EXPRESSION:
+    //             ExpressionModel expression = assn.getExpression();
+    //             val = expression.evaluate(varAssn -> assignVariable(varAssn, txnCache));
+    //             break;
+    //         case SOURCE_NOT_SET:
+    //             // This should have been caught by the WfSpecModel#validate()
+    //             throw new IllegalStateException("Invalid WfSpec with un-set VariableAssignment.");
+    //     }
 
-        if (assn.getJsonPath() != null) {
-            val = val.jsonPath(assn.getJsonPath());
-        }
+    //     if (assn.getJsonPath() != null) {
+    //         val = val.jsonPath(assn.getJsonPath());
+    //     }
 
-        return val;
-    }
+    //     return val;
+    // }
 
     public void putNodeRun(NodeRunModel nr) {
         processorContext.getableManager().put(nr);
