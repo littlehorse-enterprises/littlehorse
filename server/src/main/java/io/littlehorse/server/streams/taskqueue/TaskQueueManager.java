@@ -67,6 +67,12 @@ public class TaskQueueManager implements Closeable {
         return taskQueues.values();
     }
 
+    public long rehydrationCount() {
+        return taskQueues.values().stream()
+                .mapToLong(queue -> queue.rehydratedCount())
+                .sum();
+    }
+
     @Override
     public void close() {
         taskQueueCommandProducer.close();

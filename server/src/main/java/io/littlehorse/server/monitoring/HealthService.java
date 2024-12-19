@@ -50,7 +50,7 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
             TaskQueueManager taskQueueManager,
             MetadataCache metadataCache,
             BackendInternalComms internalComms) {
-        this.prom = new PrometheusMetricExporter(config);
+        this.prom = new PrometheusMetricExporter(config, internalComms.asyncWaiters());
         this.numberOfPartitionPerTopic = config.partitionsByTopic();
         this.jettyThreadPool.setName("javalin-service");
         this.jettyThreadPool.setMaxThreads(10);

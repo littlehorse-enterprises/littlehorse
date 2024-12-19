@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.Getter;
@@ -42,6 +43,7 @@ public class OneTaskQueue {
     private TenantIdModel tenantId;
 
     private String instanceName;
+    private AtomicLong rehydrationCount = new AtomicLong(0);
 
     private final Map<TaskId, TrackedPartition> taskTrack = new ConcurrentHashMap<>();
 
@@ -226,6 +228,7 @@ public class OneTaskQueue {
      */
     private void rehydrateFromStore(ReadOnlyGetableManager readOnlyGetableManager) {
         log.debug("Rehydrating");
+        rehydrationCount.incrementAndGet();
         if (readOnlyGetableManager.getSpecificTask().isEmpty()) {
             throw new IllegalStateException("Only specific task rehydration is permitted.");
         }
@@ -284,6 +287,10 @@ public class OneTaskQueue {
 
     public int size() {
         return pendingTasks.size();
+    }
+
+    public long rehydratedCount() {
+        return rehydrationCount.get();
     }
 
     private record QueueItem(TaskId streamsTaskId, ScheduledTaskModel scheduledTask) {}

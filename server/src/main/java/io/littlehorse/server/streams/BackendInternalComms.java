@@ -118,7 +118,7 @@ public class BackendInternalComms implements Closeable {
     private ChannelCredentials clientCreds;
 
     private Map<String, ManagedChannel> channels;
-    private AsyncWaiters asyncWaiters;
+    private final AsyncWaiters asyncWaiters;
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
     private final Context.Key<RequestExecutionContext> contextKey;
@@ -231,6 +231,10 @@ public class BackendInternalComms implements Closeable {
                 throw new LHApiException(ex.getStatus(), ex.getMessage());
             }
         }
+    }
+
+    public AsyncWaiters asyncWaiters() {
+        return asyncWaiters;
     }
 
     public ProducerCommandCallback createProducerCommandCallback(

@@ -17,6 +17,7 @@ public class TaskQueueManagerMetrics implements MeterBinder, Closeable {
     public static final String METRIC_NAME = "lh_in_memory_task_queue_size";
     public static final String TENANT_ID_TAG = "tenant_id";
     public static final String TASK_NAME_TAG = "task_name";
+    public static final String REHYDRATION_COUNT_METRIC_NAME = "taskqueue_rehydration_count";
     private final TaskQueueManager taskQueueManager;
     private final ScheduledExecutorService mainExecutor;
 
@@ -40,6 +41,8 @@ public class TaskQueueManagerMetrics implements MeterBinder, Closeable {
                             .tag(TASK_NAME_TAG, queue.getTaskDefName())
                             .register(registry);
                 });
+        Gauge.builder(REHYDRATION_COUNT_METRIC_NAME, taskQueueManager, TaskQueueManager::rehydrationCount)
+                .register(registry);
     }
 
     private boolean wasRegistered(MeterRegistry registry, OneTaskQueue queue) {

@@ -698,6 +698,8 @@ public class LHServerConfig extends ConfigBase {
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
                 org.apache.kafka.common.serialization.StringSerializer.class);
         conf.put(ProducerConfig.ACKS_CONFIG, "all");
+        conf.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, "5000");
+        conf.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, "10000");
         conf.put(ProducerConfig.LINGER_MS_CONFIG, getOrSetDefault(LINGER_MS_KEY, "0"));
         addKafkaSecuritySettings(conf);
         return conf;
@@ -707,7 +709,7 @@ public class LHServerConfig extends ConfigBase {
         Properties conf = getKafkaCommandProducerConfig("task-claim");
         //        conf.put(ProducerConfig.ACKS_CONFIG, "0");
         //        conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "false");
-        //        conf.put(ProducerConfig.LINGER_MS_CONFIG, "0");
+        //                conf.put(ProducerConfig.LINGER_MS_CONFIG, "200");
         //        conf.put(ProducerConfig.BATCH_SIZE_CONFIG, "49152");
         //        conf.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "1000");
         return conf;
