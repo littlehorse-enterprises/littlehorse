@@ -15,8 +15,7 @@ export default async function Page({ params: { props, tenantId } }: Props) {
 
   try {
     const wfSpec = await getWfSpec({ tenantId, name, version })
-    const scheduleWfSpec = await getScheduleWfSpec({ tenantId, name, version })
-    return <WfSpec spec={wfSpec} ScheduleWfSpec={scheduleWfSpec} />
+    return <WfSpec spec={wfSpec} />
   } catch (error) {
     if (error instanceof ClientError && error.code === Status.NOT_FOUND) return notFound()
     throw error
