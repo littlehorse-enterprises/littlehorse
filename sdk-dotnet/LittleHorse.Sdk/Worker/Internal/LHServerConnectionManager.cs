@@ -54,18 +54,22 @@ namespace LittleHorse.Sdk.Worker.Internal
         public void Dispose()
         {
             _running = false;
+            GC.SuppressFinalize(this);
         }
 
         private void RebalanceWork()
         {
             while (_running)
             {
-                DoHeartBeat();
                 try
                 {
+                    DoHeartBeat();
                     Thread.Sleep(BALANCER_SLEEP_TIME);
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    _logger?.LogError(ex, $"Something happened while doing heartbeats");
+                }
             }
         }
 
@@ -86,7 +90,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             catch (Exception ex)
             {
                 _logger?.LogError(ex, $"Failed contacting bootstrap host {_config.BootstrapHost}:{_config.BootstrapPort}");
-                _runningConnections = new List<LHServerConnection<T>>();
+                CloseAllConnections();
             }
         }
 
@@ -278,15 +282,13 @@ namespace LittleHorse.Sdk.Worker.Internal
             return _task.TaskMethod!.Invoke(_task.Executable, inputs);
         }
 
-        public void CloseConnection(string host, int port)
+        private void CloseAllConnections()
         {
-            var currConn = _runningConnections.FirstOrDefault(c => 
-                c.IsSame(host, port));
-
-            if (currConn != null)
+            _runningConnections.RemoveAll(serverConnection =>
             {
-                _runningConnections.Remove(currConn);
-            }
+                serverConnection.Dispose();
+                return true;
+            });
         }
     }
 }
