@@ -5,6 +5,7 @@ include(
         'sdk-java',
         'e2e-tests',
         'test-utils',
+        'test-utils-container',
         'canary'
 )
 
