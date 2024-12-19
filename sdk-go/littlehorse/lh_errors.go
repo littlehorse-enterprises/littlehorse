@@ -1,9 +1,11 @@
 package littlehorse
 
-import "github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
-
 type LHTaskException struct {
 	Name    string
 	Message string
-	Content *lhproto.VariableValue
+	Content interface{}
+}
+
+func (e *LHTaskException) Error() string {
+	return e.Message
 }
