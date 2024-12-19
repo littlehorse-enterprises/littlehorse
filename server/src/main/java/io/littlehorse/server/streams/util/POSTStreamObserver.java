@@ -111,6 +111,10 @@ public class POSTStreamObserver<U extends Message> implements StreamObserver<Wai
                 ctx.onNext(buildRespFromBytes(reply.getResult()));
             } catch (IllegalStateException e) {
                 log.debug("Call already closed");
+            } catch (StatusRuntimeException sre) {
+                if (sre.getStatus().getCode().equals(Status.CANCELLED.getCode())) {
+                    log.debug("Call already cancelled");
+                }
             }
         } else if (reply.hasPartitionMigratedResponse()) {
             internalComms.waitForCommand(command, this, requestContext);

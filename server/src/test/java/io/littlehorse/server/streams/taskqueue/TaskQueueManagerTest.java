@@ -39,7 +39,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TaskQueueManagerTest {
 
     private final LHServer mockServer = Mockito.mock();
-    private final TaskQueueManager queueManager = new TaskQueueManager(mockServer, Integer.MAX_VALUE);
+    private final TaskQueueCommandProducer mockProducer = Mockito.mock(TaskQueueCommandProducer.class);
+    private final TaskQueueManager queueManager = new TaskQueueManager(mockServer, Integer.MAX_VALUE, mockProducer);
     private final TaskDefModel taskDef = TestUtil.taskDef("my-task");
     private final TaskDefIdModel taskId = taskDef.getId();
     private final TaskId streamsTaskId = TaskId.parse("0_1");
@@ -80,18 +81,18 @@ public class TaskQueueManagerTest {
         queueManager.onTaskScheduled(streamsTaskId, taskId, taskToSchedule, tenantId);
         // Task was scheduled, now we need to verify only one task is returned to the client
         trackableObserver.onNext(pollTask);
-        verify(mockServer, times(1)).returnTaskToClient(taskToSchedule, trackableObserver);
+        verify(mockProducer, times(1)).returnTaskToClient(taskToSchedule, trackableObserver);
         Mockito.reset(mockServer);
         trackableObserver.onNext(pollTask);
-        verify(mockServer, never()).returnTaskToClient(taskToSchedule, trackableObserver);
+        verify(mockProducer).returnTaskToClient(taskToSchedule, trackableObserver);
     }
 
     @Test
     public void shouldFeedHungryClientWhenATaskIsScheduled() {
         trackableObserver.onNext(pollTask);
-        verify(mockServer, never()).returnTaskToClient(taskToSchedule, trackableObserver);
+        verify(mockProducer, never()).returnTaskToClient(taskToSchedule, trackableObserver);
         queueManager.onTaskScheduled(streamsTaskId, taskId, taskToSchedule, tenantId);
-        verify(mockServer, times(1)).returnTaskToClient(taskToSchedule, trackableObserver);
+        verify(mockProducer, times(1)).returnTaskToClient(taskToSchedule, trackableObserver);
     }
 
     @Test
@@ -110,6 +111,6 @@ public class TaskQueueManagerTest {
         for (int i = 0; i < numberOfTaskToSchedule; i++) {
             trackableObserver.onNext(pollTask);
         }
-        verify(mockServer, times(numberOfTaskToSchedule)).returnTaskToClient(taskToSchedule, trackableObserver);
+        verify(mockProducer, times(numberOfTaskToSchedule)).returnTaskToClient(taskToSchedule, trackableObserver);
     }
 }

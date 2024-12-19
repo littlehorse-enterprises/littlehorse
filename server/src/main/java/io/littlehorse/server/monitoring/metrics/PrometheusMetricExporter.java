@@ -4,6 +4,7 @@ import io.javalin.http.Handler;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.server.monitoring.StandbyMetrics;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
+import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;
@@ -27,11 +28,13 @@ public class PrometheusMetricExporter implements Closeable {
     private PrometheusMeterRegistry prometheusRegistry;
     private LHServerConfig config;
     private TaskQueueManagerMetrics taskQueueManagerMetrics;
+    private final AsyncWaiters asyncWaiters;
 
-    public PrometheusMetricExporter(LHServerConfig config) {
+    public PrometheusMetricExporter(LHServerConfig config, AsyncWaiters asyncWaiters) {
         this.config = config;
         this.prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
         this.prometheusRegistry.config().commonTags("application_id", config.getLHClusterId());
+        this.asyncWaiters = asyncWaiters;
         new ServerMetricFilter(prometheusRegistry, ServerFilterRules.fromLevel(config.getServerMetricLevel()))
                 .initialize();
     }
@@ -64,6 +67,9 @@ public class PrometheusMetricExporter implements Closeable {
 
         taskQueueManagerMetrics = new TaskQueueManagerMetrics(taskQueueManager);
         taskQueueManagerMetrics.bindTo(prometheusRegistry);
+
+        AsyncWaiterMetrics asyncWaiterMetrics = new AsyncWaiterMetrics(asyncWaiters);
+        asyncWaiterMetrics.bindTo(prometheusRegistry);
 
         JvmMemoryMetrics jvmMeter = new JvmMemoryMetrics();
         jvmMeter.bindTo(prometheusRegistry);
