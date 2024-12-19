@@ -146,6 +146,11 @@ func InterfaceToVarVal(someInterface interface{}) (*lhproto.VariableValue, error
 	out := &lhproto.VariableValue{}
 	var err error
 
+	interfaceAsVarVal, isVarVal := someInterface.(*lhproto.VariableValue)
+	if isVarVal {
+		return interfaceAsVarVal, nil
+	}
+
 	isPtr, _ := GetIsPtrAndType(reflect.TypeOf(someInterface))
 	if someInterface == nil {
 		return &lhproto.VariableValue{}, nil
