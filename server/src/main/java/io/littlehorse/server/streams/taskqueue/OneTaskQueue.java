@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -30,20 +31,21 @@ import org.apache.kafka.streams.processor.TaskId;
 @Slf4j
 public class OneTaskQueue {
 
-    private Queue<PollTaskRequestObserver> hungryClients;
-    private Lock lock;
+    private final Queue<PollTaskRequestObserver> hungryClients;
+    private final Lock lock;
 
-    private LinkedBlockingQueue<QueueItem> pendingTasks;
-    private TaskQueueManager parent;
+    private final LinkedBlockingQueue<QueueItem> pendingTasks;
+    private final TaskQueueManager parent;
 
     @Getter
     private String taskDefName;
 
     @Getter
-    private TenantIdModel tenantId;
+    private final TenantIdModel tenantId;
 
-    private String instanceName;
-    private AtomicLong rehydrationCount = new AtomicLong(0);
+    private final String instanceName;
+    private final AtomicBoolean needsRehydration = new AtomicBoolean(false);
+    private final AtomicLong rehydrationCount = new AtomicLong(0);
 
     private final Map<TaskId, TrackedPartition> taskTrack = new ConcurrentHashMap<>();
 
@@ -119,6 +121,9 @@ public class OneTaskQueue {
                 instanceName,
                 LHLibUtil.getWfRunId(scheduledTask.getSource().toProto()),
                 hungryClients.isEmpty());
+        if (needsRehydration.get()) {
+            return false;
+        }
 
         PollTaskRequestObserver luckyClient = null;
         try {
@@ -138,7 +143,11 @@ public class OneTaskQueue {
                         || trackedPartition.hasMoreDataOnDisk();
                 taskTrack.put(
                         streamsTaskId,
-                        new TrackedPartition(hasMoreTasksOnDisk, trackedPartition.lastRehydratedTask(), scheduledTask));
+                        new TrackedPartition(
+                                hasMoreTasksOnDisk,
+                                trackedPartition.lastRehydratedTask(),
+                                trackedPartition.lastReturnedTask()));
+                needsRehydration.set(hasMoreTasksOnDisk);
                 return !hasMoreTasksOnDisk;
             }
         } finally {
@@ -200,8 +209,7 @@ public class OneTaskQueue {
                         poll.streamsTaskId(), new TrackedPartition(true, nextTask.getCreatedAt(), nextTask));
                 taskTrack.put(
                         poll.streamsTaskId(),
-                        new TrackedPartition(
-                                trackedPartition.hasMoreDataOnDisk(), trackedPartition.lastRehydratedTask(), nextTask));
+                        new TrackedPartition(trackedPartition.hasMoreDataOnDisk(), nextTask.getCreatedAt(), nextTask));
             } else {
                 // case 2
                 hungryClients.add(requestObserver);
@@ -264,6 +272,7 @@ public class OneTaskQueue {
             }
             hasMoreTasksOnDisk = queueOutOfCapacity;
         }
+        needsRehydration.set(hasMoreTasksOnDisk);
         taskTrack.put(taskId, new TrackedPartition(hasMoreTasksOnDisk, lastRehydratedTask, null));
     }
 
@@ -271,13 +280,13 @@ public class OneTaskQueue {
             Boolean hasMoreDataOnDisk, Date lastRehydratedTask, ScheduledTaskModel lastReturnedTask) {}
 
     private boolean notRehydratedYet(
-            ScheduledTaskModel scheduledTask, Date lastRehydratedTask, ScheduledTaskModel lastReturnedTask) {
+            ScheduledTaskModel maybe, Date lastRehydratedTask, ScheduledTaskModel lastReturnedTask) {
         if (lastReturnedTask == null) {
             return true;
         }
-        return (lastRehydratedTask == null && !scheduledTask.getTaskRunId().equals(lastReturnedTask.getTaskRunId())
-                || (!scheduledTask.getTaskRunId().equals(lastReturnedTask.getTaskRunId())
-                        && scheduledTask.getCreatedAt().compareTo(lastRehydratedTask) >= 0));
+        return (lastRehydratedTask == null && !maybe.getTaskRunId().equals(lastReturnedTask.getTaskRunId())
+                || (!maybe.getTaskRunId().equals(lastReturnedTask.getTaskRunId())
+                        && maybe.getCreatedAt().compareTo(lastRehydratedTask) >= 0));
     }
 
     public void drainPartition(TaskId partitionToDrain) {
