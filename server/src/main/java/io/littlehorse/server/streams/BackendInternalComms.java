@@ -45,7 +45,6 @@ import io.littlehorse.common.proto.PartitionBookmarkPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.WaitForCommandRequest;
 import io.littlehorse.common.proto.WaitForCommandResponse;
-import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
@@ -116,8 +115,6 @@ public class BackendInternalComms implements Closeable {
     @Getter
     private HostInfo thisHost;
 
-    private LHProducer producer;
-
     private ChannelCredentials clientCreds;
 
     private Map<String, ManagedChannel> channels;
@@ -164,7 +161,6 @@ public class BackendInternalComms implements Closeable {
                 .build();
 
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
-        this.producer = config.getProducer();
         this.asyncWaiters = new AsyncWaiters(networkThreadPool);
     }
 
@@ -243,7 +239,8 @@ public class BackendInternalComms implements Closeable {
             RequestExecutionContext requestCtx) {
         Function<KeyQueryMetadata, LHInternalsStub> internalStub =
                 (meta) -> getInternalAsyncClient(meta.activeHost(), InternalCallCredentials.forContext(requestCtx));
-        return new ProducerCommandCallback(observer, command, coreStreams, thisHost, internalStub, asyncWaiters);
+        return new ProducerCommandCallback(
+                observer, command, coreStreams, thisHost, internalStub, asyncWaiters, networkThreadPool);
     }
 
     public void waitForCommand(
@@ -353,10 +350,6 @@ public class BackendInternalComms implements Closeable {
 
         otherHosts.put(streamsHost, info);
         return info;
-    }
-
-    public LHProducer getProducer() {
-        return producer;
     }
 
     public void onWorkflowEventThrown(WorkflowEventModel event) {
