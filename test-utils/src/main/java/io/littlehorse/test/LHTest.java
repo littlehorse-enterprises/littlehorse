@@ -26,5 +26,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(LHExtension.class)
 public @interface LHTest {
 
+    /**
+     * An array of external events that will be registered during bootstrapping.
+     */
     String[] externalEventNames() default {};
 }
