@@ -29,7 +29,7 @@ import org.apache.kafka.streams.processor.TaskId;
 // One instance of this class is responsible for coordinating the grpc backend for
 // one specific TaskDef on one LH Server host.
 @Slf4j
-public class OneTaskQueue {
+public class OneTaskQueue implements TaskQueue {
 
     private final Queue<PollTaskRequestObserver> hungryClients;
     private final Lock lock;
@@ -40,7 +40,6 @@ public class OneTaskQueue {
     @Getter
     private String taskDefName;
 
-    @Getter
     private final TenantIdModel tenantId;
 
     private final String instanceName;
@@ -169,6 +168,7 @@ public class OneTaskQueue {
      *                        that talks to the
      *                        client who made the PollTaskRequest.
      */
+    @Override
     public void onPollRequest(PollTaskRequestObserver requestObserver, RequestExecutionContext requestContext) {
 
         if (taskDefName == null) {
@@ -192,7 +192,7 @@ public class OneTaskQueue {
             lock.lock();
             if (pendingTasks.isEmpty()) {
                 for (Map.Entry<TaskId, TrackedPartition> taskHasMoreDataOnDisk : taskTrack.entrySet()) {
-                    if (taskHasMoreDataOnDisk.getValue().hasMoreDataOnDisk()) {
+                    if (taskHasMoreDataOnDisk.getValue().hasMoreDataOnDisk() || needsRehydration.get()) {
                         rehydrateFromStore(requestContext.getableManager(taskHasMoreDataOnDisk.getKey()));
                     }
                 }
@@ -289,15 +289,28 @@ public class OneTaskQueue {
                         && maybe.getCreatedAt().compareTo(lastRehydratedTask) >= 0));
     }
 
+    @Override
     public void drainPartition(TaskId partitionToDrain) {
         taskTrack.remove(partitionToDrain);
         pendingTasks.removeIf(queueItem -> queueItem.streamsTaskId().equals(partitionToDrain));
     }
 
+    @Override
     public int size() {
         return pendingTasks.size();
     }
 
+    @Override
+    public TenantIdModel tenantId() {
+        return tenantId;
+    }
+
+    @Override
+    public String taskDefName() {
+        return taskDefName;
+    }
+
+    @Override
     public long rehydratedCount() {
         return rehydrationCount.get();
     }

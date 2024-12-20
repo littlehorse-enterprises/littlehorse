@@ -16,7 +16,7 @@ import org.apache.kafka.streams.processor.TaskId;
 @Slf4j
 public class TaskQueueManager implements Closeable {
 
-    private final ConcurrentHashMap<TenantTaskName, OneTaskQueue> taskQueues;
+    private final ConcurrentHashMap<TenantTaskName, TaskQueue> taskQueues;
 
     @Getter
     private LHServer backend;
@@ -56,14 +56,14 @@ public class TaskQueueManager implements Closeable {
         taskQueueCommandProducer.returnTaskToClient(scheduledTask, luckyClient);
     }
 
-    private OneTaskQueue getSubQueue(TenantTaskName tenantTask) {
+    private TaskQueue getSubQueue(TenantTaskName tenantTask) {
         return taskQueues.computeIfAbsent(
                 tenantTask,
-                taskToCreate -> new OneTaskQueue(
+                taskToCreate -> new TaskQueueImpl(
                         taskToCreate.taskDefName(), this, individualQueueConfiguredCapacity, taskToCreate.tenantId()));
     }
 
-    public Collection<OneTaskQueue> all() {
+    public Collection<TaskQueue> all() {
         return taskQueues.values();
     }
 
