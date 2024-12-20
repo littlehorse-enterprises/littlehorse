@@ -9,6 +9,7 @@ import { FC } from 'react'
 import { NodeRunsList } from '../../NodeRunsList'
 import { NodeDetails } from '../NodeDetails'
 import { getTaskRun } from './getTaskRun'
+import { OverflowText } from '@/app/[tenantId]/components/OverflowText'
 
 export const TaskDetails: FC<{
   taskNode?: TaskNode
@@ -85,7 +86,11 @@ export const TaskDetails: FC<{
       {nodeRun && nodeRun.errorMessage && (
         <div className="mt-2 flex flex-col rounded bg-red-200 p-1">
           <h3 className="font-bold">Error</h3>
-          <pre className="overflow-x-auto">{nodeRun.errorMessage}</pre>
+          <OverflowText
+            variant="error"
+            className="text-nowrap"
+            text={data?.attempts[data?.attempts.length - 1]?.logOutput?.str ?? nodeRun.errorMessage}
+          />
         </div>
       )}
       <NodeRunsList nodeRuns={nodeRunsList} />
