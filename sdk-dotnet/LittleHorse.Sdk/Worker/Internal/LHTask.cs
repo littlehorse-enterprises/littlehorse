@@ -1,7 +1,7 @@
 using System.Reflection;
-using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
-using static LittleHorse.Common.Proto.LittleHorse;
+using static LittleHorse.Sdk.Common.Proto.LittleHorse;
 
 namespace LittleHorse.Sdk.Worker.Internal;
 

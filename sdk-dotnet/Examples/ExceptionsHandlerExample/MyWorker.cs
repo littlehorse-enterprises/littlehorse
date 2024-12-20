@@ -1,4 +1,4 @@
-using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Worker;
 using LHTaskException = LittleHorse.Sdk.Exceptions.LHTaskException;
 

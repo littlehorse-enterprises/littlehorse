@@ -1,12 +1,12 @@
 ﻿using Grpc.Core;
 using Grpc.Net.Client;
 using LittleHorse.Sdk.Authentication;
-using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Utils;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
-using static LittleHorse.Common.Proto.LittleHorse;
+using LittleHorse.Sdk.Common.Proto;
+using static LittleHorse.Sdk.Common.Proto.LittleHorse;
 
 namespace LittleHorse.Sdk {
 

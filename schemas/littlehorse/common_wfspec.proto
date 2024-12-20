@@ -10,7 +10,7 @@ import "object_id.proto";
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
-option csharp_namespace = "LittleHorse.Common.Proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 // A VariableAssignment is used within a WfSpec to determine how a value should be
 // assigned in the context of a specific WfRun. For example, in a TASK node, you

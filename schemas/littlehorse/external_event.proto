@@ -9,7 +9,7 @@ import "object_id.proto";
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
-option csharp_namespace = "LittleHorse.Common.Proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 // An ExternalEvent represents A Thing That Happened outside the context of a WfRun.
 // Generally, an ExternalEvent is used to represent a document getting signed, an incident

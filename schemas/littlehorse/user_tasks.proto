@@ -10,7 +10,7 @@ import "variable.proto";
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
-option csharp_namespace = "LittleHorse.Common.Proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 // UserTaskDef is the metadata blueprint for UserTaskRuns.
 message UserTaskDef {
