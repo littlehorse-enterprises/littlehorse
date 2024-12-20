@@ -3,7 +3,7 @@ package io.littlehorse.test;
 import io.littlehorse.test.internal.step.VerifyTaskRunOutputsStep;
 
 /**
- * {@code CapturedResult} is a wrapper for a response. see {@link VerifyTaskRunOutputsStep.SearchResultCaptor}
+ * {@code CapturedResult} is a wrapper for a response. see {@link io.littlehorse.test.internal.step.SearchResultCaptor}
  * @param <T> Search response type
  */
 public interface CapturedResult<T> {
@@ -13,5 +13,8 @@ public interface CapturedResult<T> {
      */
     T get();
 
+    /**
+     * Returns the search response type
+     */
     Class<T> type();
 }
