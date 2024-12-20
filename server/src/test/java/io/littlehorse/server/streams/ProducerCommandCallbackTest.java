@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.netty.shaded.io.netty.util.concurrent.ImmediateExecutor;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
@@ -38,8 +39,8 @@ class ProducerCommandCallbackTest {
     private final HostInfo hostInfo = new HostInfo("localhost", 2023);
     private final LHInternalsGrpc.LHInternalsStub stub = mock();
     private final Function<KeyQueryMetadata, LHInternalsGrpc.LHInternalsStub> stubProvider = (meta) -> stub;
-    private final ProducerCommandCallback producerCallback =
-            new ProducerCommandCallback(responseObserver, command, coreStreams, hostInfo, stubProvider, commandWaiters);
+    private final ProducerCommandCallback producerCallback = new ProducerCommandCallback(
+            responseObserver, command, coreStreams, hostInfo, stubProvider, commandWaiters, ImmediateExecutor.INSTANCE);
     private final RecordMetadata metadata = new RecordMetadata(new TopicPartition("my-topic", 2), 0L, 0, 0L, 0, 0);
     private final WaitForCommandResponse response = mock();
     private final KeyQueryMetadata keyQueryMetadata = new KeyQueryMetadata(hostInfo, Collections.emptySet(), 2);

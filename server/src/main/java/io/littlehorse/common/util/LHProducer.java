@@ -1,12 +1,13 @@
 package io.littlehorse.common.util;
 
-import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractCommand;
 import java.io.Closeable;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.Future;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Header;
@@ -14,18 +15,18 @@ import org.apache.kafka.common.utils.Bytes;
 
 public class LHProducer implements Closeable {
 
-    private KafkaProducer<String, Bytes> prod;
+    private final Producer<String, Bytes> prod;
 
-    public LHProducer(LHServerConfig config) {
-        prod = new KafkaProducer<>(config.getKafkaProducerConfig(config.getLHInstanceName()));
+    public LHProducer(Properties configs) {
+        prod = new KafkaProducer<>(configs);
+    }
+
+    public LHProducer(Producer<String, Bytes> prod) {
+        this.prod = prod;
     }
 
     public Future<RecordMetadata> send(String key, AbstractCommand<?> t, String topic, Callback cb, Header... headers) {
         return sendRecord(new ProducerRecord<>(topic, null, key, new Bytes(t.toBytes()), List.of(headers)), cb);
-    }
-
-    public Future<RecordMetadata> send(String key, AbstractCommand<?> t, String topic) {
-        return this.send(key, t, topic, null);
     }
 
     public Future<RecordMetadata> sendRecord(ProducerRecord<String, Bytes> record, Callback cb) {
