@@ -1,5 +1,5 @@
 using System.Runtime.CompilerServices;
-using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Common.Proto;
 
 [assembly: InternalsVisibleTo("LittleHorse.Sdk.Tests")]
 

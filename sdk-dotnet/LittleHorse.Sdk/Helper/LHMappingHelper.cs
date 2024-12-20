@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
-using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Utils;
 using LittleHorse.Sdk.Worker;
-using TaskStatus = LittleHorse.Common.Proto.TaskStatus;
+using TaskStatus = LittleHorse.Sdk.Common.Proto.TaskStatus;
 using Type = System.Type;
 
 namespace LittleHorse.Sdk.Helper

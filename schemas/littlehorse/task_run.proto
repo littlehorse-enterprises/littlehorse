@@ -12,7 +12,7 @@ import "user_tasks.proto";
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
-option csharp_namespace = "LittleHorse.Common.Proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 // A TaskRun resents a single instance of a TaskDef being executed.
 message TaskRun {

@@ -7,7 +7,7 @@ import "object_id.proto";
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
-option csharp_namespace = "LittleHorse.Common.Proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 // A Principal represents the identity of a client of LittleHorse, whether human or
 // machine. The ACL's on the Principal control what actions the client is allowed
