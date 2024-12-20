@@ -2,16 +2,18 @@
 import { Navigation } from '@/app/[tenantId]/components/Navigation'
 import { ScheduledWfRunIdList, WfSpec as Spec } from 'littlehorse-client/proto'
 import { LucidePlayCircle } from 'lucide-react'
-import { FC, useCallback } from 'react'
+import { FC, useCallback, useState } from 'react'
 import { Diagram } from '../../../components/Diagram'
 import { useModal } from '../../../hooks/useModal'
 import { Details } from './Details'
 import { Thread } from './Thread'
 import { WfRuns } from './WfRuns'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ScheduledWfRuns } from './ScheduledWfRuns'
+import { ScheduledWfRun } from 'littlehorse-client/proto'
 
 type WfSpecProps = {
   spec: Spec
-  ScheduleWfSpec: ScheduledWfRunIdList
 }
 export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
   const { setModal, setShowModal } = useModal()
@@ -37,7 +39,19 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
         .map(name => (
           <Thread key={name} name={name} spec={spec.threadSpecs[name]} />
         ))}
-      <WfRuns {...spec} />
+
+      <Tabs defaultValue="runs">
+        <TabsList>
+          <TabsTrigger value="runs">WfRuns</TabsTrigger>
+          <TabsTrigger value="schedule">ScheduledWfRuns</TabsTrigger>
+        </TabsList>
+        <TabsContent value="runs">
+          <WfRuns {...spec} />
+        </TabsContent>
+        <TabsContent value="schedule">
+          <ScheduledWfRuns {...spec} />
+        </TabsContent>
+      </Tabs>
     </>
   )
 }

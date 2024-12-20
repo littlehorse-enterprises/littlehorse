@@ -5,6 +5,7 @@ import (
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"log"
 	"reflect"
+	"runtime/debug"
 	"strconv"
 	"sync"
 	"time"
@@ -311,10 +312,39 @@ func (m *serverConnectionManager) submitTaskForExecution(task *lhproto.Scheduled
 }
 
 func (m *serverConnectionManager) doTask(taskToExec *taskExecutionInfo) {
+	defer m.recoverFromPanic(taskToExec)
 	taskResult := m.doTaskHelper(taskToExec.task)
 	_, err := (*taskToExec.specificStub).ReportTask(context.Background(), taskResult)
 	if err != nil {
 		m.retryReportTask(context.Background(), taskResult, TOTAL_RETRIES)
+	}
+}
+
+func (m *serverConnectionManager) recoverFromPanic(taskToExec *taskExecutionInfo) {
+	if v := recover(); v != nil {
+		varVal, _ := InterfaceToVarVal(v)
+		taskResult := &lhproto.ReportTaskRun{
+			TaskRunId: taskToExec.task.TaskRunId,
+			Time:      timestamppb.Now(),
+			Status:    lhproto.TaskStatus(lhproto.LHStatus_ERROR),
+			LogOutput: &lhproto.VariableValue{
+				Value: &lhproto.VariableValue_Str{
+					Str: string(debug.Stack()),
+				},
+			},
+			AttemptNumber: taskToExec.task.AttemptNumber,
+			Result: &lhproto.ReportTaskRun_Error{
+				Error: &lhproto.LHTaskError{
+					Type:    lhproto.LHErrorType_TASK_FAILURE,
+					Message: "Task Worker Panic: " + varVal.GetStr(),
+				},
+			},
+		}
+		_, err := (*taskToExec.specificStub).ReportTask(context.Background(), taskResult)
+		if err != nil {
+			log.Default().Print(err)
+			m.retryReportTask(context.Background(), taskResult, TOTAL_RETRIES)
+		}
 	}
 }
 
@@ -399,16 +429,52 @@ func (m *serverConnectionManager) doTaskHelper(task *lhproto.ScheduledTask) *lhp
 		errorReflect := invocationResults[len(invocationResults)-1]
 
 		if errorReflect.Interface() != nil {
-			errorVarVal, err := InterfaceToVarVal(errorReflect.Interface())
-			if err != nil {
-				log.Println("WARN: was unable to serialize error")
+			// Check if the error is an LHTaskException
+			if lhtErr, ok := errorReflect.Interface().(*LHTaskException); ok {
+				taskErrContent, err := InterfaceToVarVal(lhtErr.Content)
+
+				if err != nil {
+					msg := "LH_SDK_GO_ERR: Failed to serialize task error content passed from task worker: " + err.Error()
+
+					taskErrContent = &lhproto.VariableValue{
+						Value: &lhproto.VariableValue_Str{
+							Str: msg,
+						},
+					}
+				}
+
+				taskResult.Result = &lhproto.ReportTaskRun_Exception{
+					Exception: &lhproto.LHTaskException{
+						Name:    lhtErr.Name,
+						Message: lhtErr.Message,
+						Content: taskErrContent,
+					},
+				}
 			} else {
-				taskResult.LogOutput = errorVarVal
+				// Otherwise, try to interpret the error
+				if err, ok := errorReflect.Interface().(error); ok {
+					taskResult.Result = &lhproto.ReportTaskRun_Error{
+						Error: &lhproto.LHTaskError{
+							Type:    lhproto.LHErrorType_TASK_FAILURE,
+							Message: err.Error(),
+						},
+					}
+				} else {
+					// If the error returned by the taskMethod does not match the error interface
+					taskResult.Result = &lhproto.ReportTaskRun_Error{
+						Error: &lhproto.LHTaskError{
+							Type:    lhproto.LHErrorType_TASK_FAILURE,
+							Message: "Task Method error serialization failed.",
+						},
+					}
+				}
 			}
+
 			taskResult.Status = lhproto.TaskStatus_TASK_FAILED
 		}
 	}
 
+	taskResult.AttemptNumber = task.AttemptNumber
 	taskResult.Time = timestamppb.Now()
 
 	return taskResult
