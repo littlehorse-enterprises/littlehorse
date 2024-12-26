@@ -1,12 +1,13 @@
 package internal
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -16,11 +17,8 @@ import (
 var getUserTaskDefCmd = &cobra.Command{
 	Use:   "userTaskDef <name>",
 	Short: "Get a UserTaskDef by Name and optionally Version.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the ID of UserTaskDef to get.")
-		}
-
 		rawNameStr := args[0]
 		var name string
 		var version int32
