@@ -1,12 +1,14 @@
 package io.littlehorse.server.streams.taskqueue;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
@@ -23,8 +25,9 @@ public class TaskQueueImpl implements TaskQueue {
     private final Lock lock = new ReentrantLock();
     private final Queue<PollTaskRequestObserver> hungryClients = new LinkedList<>();
     private final String instanceName;
-    private final LinkedBlockingQueue<QueueItem> pendingTasks;
-    private final AtomicBoolean needsRehydration = new AtomicBoolean(false);
+    private final Map<TaskId, LinkedBlockingQueue<QueueItem>> pendingTasksPerPartition;
+    private final Map<TaskId, Boolean> rehydrationPerPartition = new ConcurrentHashMap<>();
+    private final AtomicReference<Iterator<TaskId>> partitionIterator;
 
     public TaskQueueImpl(String taskDefName, TaskQueueManager parent, int capacity, TenantIdModel tenantId) {
         this.taskDefName = taskDefName;
@@ -32,7 +35,9 @@ public class TaskQueueImpl implements TaskQueue {
         this.capacity = capacity;
         this.tenantId = tenantId;
         this.instanceName = parent.getBackend().getInstanceName();
-        this.pendingTasks = new LinkedBlockingQueue<>(capacity);
+        this.pendingTasksPerPartition = new ConcurrentHashMap<>();
+        this.partitionIterator = new AtomicReference<>(
+                Iterables.cycle(pendingTasksPerPartition.keySet()).iterator());
     }
 
     @Override
@@ -53,12 +58,22 @@ public class TaskQueueImpl implements TaskQueue {
     @Override
     public boolean onTaskScheduled(TaskId streamTaskId, ScheduledTaskModel scheduledTask) {
         boolean outOfCapacity = synchronizedBlock(() -> {
-            if (needsRehydration.get()) {
+            if (rehydrationPerPartition.getOrDefault(streamTaskId, false)) {
                 return true;
             }
+            LinkedBlockingQueue<QueueItem> pendingTasks =
+                    pendingTasksPerPartition.getOrDefault(streamTaskId, new LinkedBlockingQueue<>(capacity));
             boolean added = pendingTasks.offer(new QueueItem(streamTaskId, scheduledTask));
-            if (!added) {
-                needsRehydration.set(true);
+            if (added) {
+                pendingTasksPerPartition.computeIfAbsent(streamTaskId, taskId -> {
+                    partitionIterator.set(
+                            Iterables.cycle(Sets.union(pendingTasksPerPartition.keySet(), Set.of(streamTaskId)))
+                                    .iterator());
+                    return pendingTasks;
+                });
+                pendingTasksPerPartition.putIfAbsent(streamTaskId, pendingTasks);
+            } else {
+                rehydrationPerPartition.put(streamTaskId, true);
             }
             return !added;
         });
@@ -76,18 +91,24 @@ public class TaskQueueImpl implements TaskQueue {
     @Override
     public void onPollRequest(PollTaskRequestObserver requestObserver, RequestExecutionContext requestContext) {
         synchronizedBlock(() -> {
-            QueueItem nextItem = pendingTasks.poll();
-            if (nextItem != null) {
-                parent.itsAMatch(nextItem.scheduledTask(), requestObserver);
-            } else {
-                hungryClients.add(requestObserver);
+            if (partitionIterator.get().hasNext()) {
+                QueueItem nextItem = pendingTasksPerPartition
+                        .get(partitionIterator.get().next())
+                        .poll();
+                if (nextItem != null) {
+                    parent.itsAMatch(nextItem.scheduledTask(), requestObserver);
+                }
+                return;
             }
+            hungryClients.add(requestObserver);
         });
     }
 
     @Override
     public int size() {
-        return pendingTasks.size();
+        return pendingTasksPerPartition.values().stream()
+                .map(LinkedBlockingQueue::size)
+                .reduce(0, Integer::sum);
     }
 
     @Override
@@ -97,7 +118,7 @@ public class TaskQueueImpl implements TaskQueue {
 
     @Override
     public void drainPartition(TaskId partitionToDrain) {
-        pendingTasks.removeIf(queueItem -> queueItem.streamsTaskId().equals(partitionToDrain));
+        pendingTasksPerPartition.put(partitionToDrain, new LinkedBlockingQueue<>());
     }
 
     @Override
