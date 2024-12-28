@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Common.Proto;
 
 namespace LittleHorse.Sdk.Helper
 {

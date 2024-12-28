@@ -1,14 +1,14 @@
 ﻿using System.Reflection;
 using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
-using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Helper;
 using Microsoft.Extensions.Logging;
 using Polly;
-using static LittleHorse.Common.Proto.LittleHorse;
+using static LittleHorse.Sdk.Common.Proto.LittleHorse;
 using LHTaskException = LittleHorse.Sdk.Exceptions.LHTaskException;
-using TaskStatus = LittleHorse.Common.Proto.TaskStatus;
+using TaskStatus = LittleHorse.Sdk.Common.Proto.TaskStatus;
 
 namespace LittleHorse.Sdk.Worker.Internal
 {
