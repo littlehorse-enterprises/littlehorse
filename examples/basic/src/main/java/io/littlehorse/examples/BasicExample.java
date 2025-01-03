@@ -2,6 +2,7 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -25,6 +26,8 @@ public class BasicExample {
             wf -> {
                 WfRunVariable theName = wf.addVariable("input-name", VariableType.STR).searchable();
                 wf.execute("greet", theName);
+                wf.waitForCondition(wf.condition(theName, Comparator.EQUALS, "test"));
+                wf.execute("dismiss", theName);
             }
         );
     }
@@ -50,6 +53,15 @@ public class BasicExample {
         return worker;
     }
 
+    public static LHTaskWorker getTaskWorker2(LHConfig config) {
+        MyWorker2 executable = new MyWorker2();
+        LHTaskWorker worker = new LHTaskWorker(executable, "dismiss", config);
+
+        // Gracefully shutdown
+        Runtime.getRuntime().addShutdownHook(new Thread(worker::close));
+        return worker;
+    }
+
     public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
@@ -60,14 +72,16 @@ public class BasicExample {
 
         // New worker
         LHTaskWorker worker = getTaskWorker(config);
-
+        LHTaskWorker worker2 = getTaskWorker2(config);
         // Register task
         worker.registerTaskDef();
+        worker2.registerTaskDef();
 
         // Register a workflow
         workflow.registerWfSpec(config.getBlockingStub());
 
         // Run the worker
         worker.start();
+        worker2.start();
     }
 }
