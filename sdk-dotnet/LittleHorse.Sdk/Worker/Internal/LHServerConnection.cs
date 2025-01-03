@@ -14,7 +14,8 @@ namespace LittleHorse.Sdk.Worker.Internal
 {
     public class LHServerConnection<T> : IDisposable
     {
-        private const int MAX_REPORT_RETRIES = 5;
+        private const int REPORT_TASK_RETRIES_INTERVAL_SECONDS = 2;
+        private const int MAX_REPORT_RETRIES = 15;
         private const int POLLTASK_SLEEP_TIME = 5000;
         
         private readonly LHServerConnectionManager<T> _connectionManager;
@@ -66,23 +67,20 @@ namespace LittleHorse.Sdk.Worker.Internal
 
                          await _reportTaskSemaphore.WaitAsync();
 
-                         DoTask(scheduledTask);
+                         await DoTask(scheduledTask);
 
                          _logger?.LogDebug($"Scheduled task on threadpool for wfRun {wFRunId?.Id}");
                      }
                      else
                      {
-                         _logger?.LogError("Didn't successfully claim task, likely due to server restart.");
+                         _logger?.LogError("Didn't successfully claim task, likely due to a server crash.");
                          Thread.Sleep(POLLTASK_SLEEP_TIME);
                      }
                      _reportTaskSemaphore.Release();
-                     _logger?.LogDebug($"Task released");
 
                      if (_running)
                      {
-                         //Send other requests for poll Tasks to the server
                          await _call.RequestStream.WriteAsync(request);
-                         _logger?.LogDebug($"Request work on {_hostInfo.Host} : {_hostInfo.Port}");
                      }
                      else
                      {
@@ -92,7 +90,7 @@ namespace LittleHorse.Sdk.Worker.Internal
              });
 
             await _call.RequestStream.WriteAsync(request);
-            _logger?.LogDebug($"Request work on 2 {_hostInfo.Host} : {_hostInfo.Port}");
+
             await readTask;
         }
 
@@ -102,46 +100,57 @@ namespace LittleHorse.Sdk.Worker.Internal
             _call.Dispose();
             _reportTaskSemaphore.Dispose();
             _reportTaskSemaphore = new SemaphoreSlim(_connectionManager.Config.WorkerThreads);
-            GC.SuppressFinalize(this);
         }
 
         public bool IsSame(string host, int port)
         {
-            _logger!.LogError($"Hostinfo: Trying to connect to {_hostInfo}");
             return _hostInfo.Host.Equals(host) && _hostInfo.Port == port;
         }
       
-        private void DoTask(ScheduledTask scheduledTask)
+        private async Task DoTask(ScheduledTask scheduledTask)
         {
             ReportTaskRun result = ExecuteTask(scheduledTask, LHMappingHelper.MapDateTimeFromProtoTimeStamp(scheduledTask.CreatedAt));
-
+            
             var wfRunId = LHHelper.GetWfRunId(scheduledTask.Source);
 
             try
             {
-                var retriesLeft = MAX_REPORT_RETRIES;
-
-                _logger?.LogDebug($"Going to report task for wfRun {wfRunId?.Id}");
-                Policy.Handle<Exception>().WaitAndRetry(MAX_REPORT_RETRIES,
-                    retryAttempt => TimeSpan.FromSeconds(5),
-                    onRetry: (exception, timeSpan, retryCount, context) =>
-                    {
-                        --retriesLeft;
-                        _logger?.LogDebug(
-                            $"Failed to report task for wfRun {wfRunId}: {exception.Message}. Retries left: {retriesLeft}");
-                        _logger?.LogDebug(
-                            $"Retrying reportTask rpc on taskRun {LHHelper.TaskRunIdToString(result.TaskRunId)}");
-                    }).Execute(() => RunReportTask(result));
+                await ReportTaskWithRetries(result, wfRunId);
             }
             catch (Exception ex)
             {
                 _logger?.LogDebug($"Failed to report task for wfRun {wfRunId}: {ex.Message}. No retries left.");
             }
         }
-        
-        private void RunReportTask(ReportTaskRun reportedTask)
+
+        private async Task ReportTaskWithRetries(ReportTaskRun result, WfRunId? wfRunId)
         {
-            _client.ReportTask(reportedTask);
+            const int maxRetries = MAX_REPORT_RETRIES;
+            int retriesLeft = maxRetries;
+
+            _logger?.LogDebug($"Starting task reporting for wfRun {wfRunId?.Id}.");
+            
+            var retryPolicy = Policy
+                .Handle<Exception>()
+                .WaitAndRetry(
+                    retryCount: maxRetries,
+                    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(REPORT_TASK_RETRIES_INTERVAL_SECONDS),
+                    onRetry: (exception, timeSpan, retryCount, context) =>
+                    {
+                        retriesLeft--;
+                        _logger?.LogDebug($"Retry attempt {retryCount} failed for wfRun {wfRunId}. Exception: " +
+                                          $"{exception.Message}. Retries left: {retriesLeft}");
+                        _logger?.LogDebug("Retrying reportTask rpc on taskRun " +
+                                          $"{LHHelper.TaskRunIdToString(result.TaskRunId)}");
+                    });
+
+
+            await retryPolicy.Execute(() => RunReportTask(result));
+        }
+        
+        private async Task RunReportTask(ReportTaskRun reportedTask)
+        {
+            await _client.ReportTaskAsync(reportedTask);
         }
 
         private ReportTaskRun ExecuteTask(ScheduledTask scheduledTask, DateTime? scheduleTime)

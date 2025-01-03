@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Collections;
+using Grpc.Core;
 using LittleHorse.Sdk.Common.Proto;
 using Microsoft.Extensions.Logging;
 using static LittleHorse.Sdk.Common.Proto.LittleHorse;
@@ -14,7 +15,7 @@ namespace LittleHorse.Sdk.Worker.Internal
         private readonly ILogger? _logger;
         private readonly LittleHorseClient _bootstrapClient;
         private bool _running;
-        private List<LHServerConnection<T>> _runningConnections;
+        private readonly List<LHServerConnection<T>> _runningConnections;
         private readonly Thread _rebalanceThread;
         private readonly LHTask<T> _task;
 
@@ -42,50 +43,49 @@ namespace LittleHorse.Sdk.Worker.Internal
         public void Dispose()
         {
             _running = false;
-            GC.SuppressFinalize(this);
         }
 
         private void RebalanceWork()
         {
             while (_running)
             {
-                try
-                {
-                    DoHeartBeat();
-                    Thread.Sleep(BALANCER_SLEEP_TIME);
-                }
-                catch (Exception ex)
-                {
-                    _logger!.LogError(ex, $"Something weird happended {ex.Message}");
-                }
+                DoHeartBeat();
+                Thread.Sleep(BALANCER_SLEEP_TIME);
             }
         }
 
         private void DoHeartBeat()
         {
-            var request = new RegisterTaskWorkerRequest
-            {
-                TaskDefId = _task.TaskDef!.Id,
-                TaskWorkerId = _config.WorkerId
-            };
-            _logger?.LogError($"The code reach here 2: {request.TaskWorkerId} and {request.TaskDefId.Name}");
-            var asyncCall = _bootstrapClient.RegisterTaskWorkerAsync(request);
-
             try
             {
-                var response = asyncCall.ResponseAsync.Result;
+                var request = new RegisterTaskWorkerRequest
+                {
+                    TaskDefId = _task.TaskDef!.Id,
+                    TaskWorkerId = _config.WorkerId
+                };
+                var response = _bootstrapClient.RegisterTaskWorker(request: request,
+                    deadline: DateTime.UtcNow.AddSeconds(GRPC_UNARY_CALL_TIMEOUT_SECONDS));
+                
                 HandleRegisterTaskWorkerResponse(response);
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex,
-                    $"Failed contacting bootstrap host {_config.BootstrapHost}:{_config.BootstrapPort}");
+                switch (ex.InnerException)
+                {
+                    case RpcException { StatusCode: StatusCode.Internal }:
+                        _logger?.LogError(ex,
+                            $"Failed contacting bootstrap host {_config.BootstrapHost}:{_config.BootstrapPort}");
+                        break;
+                    case RpcException { StatusCode: StatusCode.DeadlineExceeded }:
+                        _logger?.LogError(ex, "Deadline exceeded trying to register task worker.");
+                        break;
+                    default:
+                        _logger?.LogError(ex, "Something happened trying to contact the bootstrap server.");
+                        break;
+                }
+
                 CloseAllConnections();
                 Thread.Sleep(BALANCER_SLEEP_TIME);
-            }
-            finally
-            {
-                asyncCall.Dispose();
             }
         }
 
@@ -123,7 +123,6 @@ namespace LittleHorse.Sdk.Worker.Internal
                     _runningConnections.RemoveAt(i);
                 }
             }
-            _logger!.LogError($"Number of running connections are {_runningConnections.Count}");
         }
 
         private bool ShouldBeRunning(LHServerConnection<T> runningThread, RepeatedField<LHHostInfo> hosts)
