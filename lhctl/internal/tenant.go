@@ -3,7 +3,6 @@ package internal
 import (
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
-	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -11,10 +10,8 @@ import (
 var putTenantCmd = &cobra.Command{
 	Use:   "tenant <id>",
 	Short: "Create a Tenant. Currently, updating Tenants is not supported.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument")
-		}
 		littlehorse.PrintResp(getGlobalClient(cmd).PutTenant(
 			requestContext(cmd),
 			&lhproto.PutTenantRequest{

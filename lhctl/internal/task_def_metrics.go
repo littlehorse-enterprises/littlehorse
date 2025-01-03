@@ -4,10 +4,11 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package internal
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"strconv"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -29,11 +30,8 @@ lhctl taskDefMetrics my-task MINUTES_5 12
 If you want to get taskDef Metrics at the cluster level, use CLUSTER_LEVEL_METRIC as your
 taskDefName.
 `,
+	Args: cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 3 {
-			log.Fatal("Must provide three arguments: taskDefName, windowType, and numWindows.")
-		}
-
 		taskDefName := args[0]
 		windowTypeStr := args[1]
 		windowType, isValid := lhproto.MetricsWindowLength_value[windowTypeStr]

@@ -5,10 +5,11 @@ package internal
 
 import (
 	"fmt"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"os"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -18,11 +19,8 @@ import (
 var deployExternalEventDefCmd = &cobra.Command{
 	Use:   "externalEventDef <filename>",
 	Short: "Create an ExternalEventDef from a JSON or Protobuf file.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the filename to deploy from.")
-
-		}
 		peed := &lhproto.PutExternalEventDefRequest{}
 
 		// First, read the file
@@ -35,8 +33,8 @@ var deployExternalEventDefCmd = &cobra.Command{
 		useProto, err := cmd.Flags().GetBool("proto")
 		if err != nil {
 			log.Fatal("Unexpected error: ", err)
-
 		}
+
 		if useProto {
 			fmt.Print("using proto")
 			err = proto.Unmarshal(dat, peed)
@@ -56,12 +54,8 @@ var deployExternalEventDefCmd = &cobra.Command{
 var getExternalEventDefCmd = &cobra.Command{
 	Use:   "externalEventDef <name>",
 	Short: "Get an ExternalEventDef by name.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the Name of ExternalEventDef to get.")
-
-		}
-
 		littlehorse.PrintResp(
 			getGlobalClient(cmd).GetExternalEventDef(
 				requestContext(cmd),
@@ -99,17 +93,13 @@ searches for all ExternalEventDefs.
 }
 
 var deleteExternalEventDefCmd = &cobra.Command{
-	Use:   "externalEventDef <name> <version>",
-	Short: "Delete a ExternalEventDef.",
-	Long: `Delete a ExternalEventDef. You must provide the name of the
+	Use:   "externalEventDef <name>",
+	Short: "Delete an ExternalEventDef.",
+	Long: `Delete an ExternalEventDef. You must provide the name of the
 ExternalEventDef to delete.
 	`,
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: Name of ExternalEventDef to Delete")
-
-		}
-
 		name := args[0]
 
 		littlehorse.PrintResp(

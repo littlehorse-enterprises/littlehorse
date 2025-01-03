@@ -4,16 +4,18 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package internal
 
 import (
+	"errors"
+	"log"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
-	"log"
 
 	"github.com/spf13/cobra"
 )
 
 // postEventCmd represents the postEvent command
 var postEventCmd = &cobra.Command{
-	Use:   "postEvent <wfRunId> <externalEventName> <varType> <payload>",
+	Use:   "postEvent <wfRunId> <externalEventName> [(<varType> <payload>)]",
 	Short: "Post an ExternalEvent to a WfRun.",
 	Long: `
 Post an ExternalEvent of a specified Event Type and Variable Type to a WfRun. Specifying
@@ -23,14 +25,20 @@ currently do not carry Schema information (this will change in a future release)
 The payload is deserialized according to the type. JSON objects should be provided as
 a string; BYTES objects should be b64-encoded.
 
-It's also possible to pass an empty input:
+It's also possible to pass an empty input by excluding the last two arguments:
 lhctl postEvent <wfRunId> <externalEventName>
 `,
-	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) < 2 {
-			log.Fatal("Required args: <wfRunId> <externalEventName> <varType> <payload> or  <wfRunId> <externalEventName> (to send an empty payload)")
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) == 3 {
+			return errors.New("requires 2 or 4 args. Note: When a <varType> is specified, a <payload> is also required")
+		}
+		if len(args) != 2 && len(args) != 4 {
+			return errors.New("requires 2 or 4 args")
 		}
 
+		return nil
+	},
+	Run: func(cmd *cobra.Command, args []string) {
 		wfRunIdStr, eedName := args[0], args[1]
 
 		wfRunId := littlehorse.StrToWfRunId(wfRunIdStr)

@@ -1,10 +1,11 @@
 package internal
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"strconv"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/spf13/cobra"
 )
@@ -19,11 +20,8 @@ specify whether to re-attempt the failed Node or to move on to the next Node in 
 The specified ThreadRun must be in the ERROR state, and if it has any parent ThreadRuns,
 the failure (or propagated failure) must not have been handled by a Failure Handlder.
 	`,
+	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) < 1 {
-			log.Fatal("You must provide at least 2 args: WfRunId and threadRunNumber.")
-		}
-
 		wfRunId := littlehorse.StrToWfRunId(args[0])
 		trn, err := strconv.Atoi(args[1])
 		if err != nil {

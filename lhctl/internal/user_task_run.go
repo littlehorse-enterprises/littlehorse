@@ -4,11 +4,12 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/spf13/cobra"
 )
@@ -19,10 +20,8 @@ var executeUserTaskRunCmd = &cobra.Command{
 	Long: `Given a provided wfRunId and userTaskGuid, this utility prompts you
 for your userId and then prompts you to fill out each required field of the
 UserTaskRun. At the end, the UserTaskRun is submitted`,
+	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 2 {
-			log.Fatal("You must provide the wfRunId and userTaskGuid")
-		}
 		client := getGlobalClient(cmd)
 		executeUserTask(cmd, args[0], args[1], &client)
 	},
@@ -33,10 +32,8 @@ var cancelUserTaskRunCmd = &cobra.Command{
 	Short: "Cancel a UserTaskRun",
 	Long: `Given a provided wfRunId and UserTaskGuid, this command allows you to
 	cancel the specified UserTaskRun. Cancelling a UserTaskRun will halt the entire WfRun execution.`,
+	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 2 {
-			log.Fatal("You must provide the wfRunId and userTaskGuid")
-		}
 		client := getGlobalClient(cmd)
 		cancelUserTask(cmd, args[0], args[1], &client)
 	},
@@ -48,10 +45,8 @@ var listUserTaskRunCmd = &cobra.Command{
 	Long: `
 Lists all UserTaskRun's for a given WfRun Id.
 `,
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("Must provide one arg: the WfRun ID!")
-		}
 		wfRunId := args[0]
 
 		req := &lhproto.ListUserTaskRunRequest{
@@ -66,7 +61,7 @@ Lists all UserTaskRun's for a given WfRun Id.
 }
 
 var assignUserTaskRunCmd = &cobra.Command{
-	Use:   "userTaskRun <wfRunId> <userTaskGuid> [options]",
+	Use:   "userTaskRun <wfRunId> <userTaskGuid>",
 	Short: "Reassign a UserTaskRun to a userGroup or specific userId",
 	Long: `Given a provided wfRunId and UserTaskGuid, this utility allows you
 to reassign the specified UserTaskRun.
@@ -78,10 +73,8 @@ The following option groups are supported:
 [userId] -> assign to a specific userId.
 [userGroup] -> assign to a userGroup of users
 `,
+	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 2 {
-			log.Fatal("Must provide two arguments: wfRunId, userTaskGuid")
-		}
 		overrideClaim, _ := cmd.Flags().GetBool("overrideClaim")
 
 		userId, _ := cmd.Flags().GetString("userId")
@@ -122,9 +115,9 @@ var getUserTaskRunCmd = &cobra.Command{
 	- ThreadRun Number
 	- UserTaskRun Number (i.e. chronological position within the ThreadRun)
 
-	You may provide all three identifiers as three separate arguments or you may provide
+	You may provide the identifiers as two separate arguments or you may provide
 	them delimited by the '/' character, as returned in all 'search' command queries.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Args: func(cmd *cobra.Command, args []string) error {
 		needsHelp := false
 		if len(args) == 1 {
 			args = strings.Split(args[0], "/")
@@ -135,10 +128,12 @@ var getUserTaskRunCmd = &cobra.Command{
 		}
 
 		if needsHelp {
-			log.Fatal("Must provide exactly 1 or 2 arguments. See 'lhctl get userTaskRun -h'")
-
+			return errors.New("must provide exactly 1 or 2 arguments. See 'lhctl get userTaskRun -h'")
 		}
 
+		return nil
+	},
+	Run: func(cmd *cobra.Command, args []string) {
 		wfRunId, userTaskGuid := args[0], args[1]
 
 		littlehorse.PrintResp(getGlobalClient(cmd).GetUserTaskRun(

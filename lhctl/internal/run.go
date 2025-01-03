@@ -1,16 +1,17 @@
 package internal
 
 import (
+	"log"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
-	"log"
 
 	"github.com/spf13/cobra"
 )
 
 // runCmd represents the run command
 var runCmd = &cobra.Command{
-	Use:   "run <wfSpecName> <<var1 name>> <<var1 val>>...",
+	Use:   "run <wfSpecName> [(<var1 name> <var1 val>)]...",
 	Short: "Run an instance of a WfSpec with provided Name and Input Variables.",
 	Long: `
 Run a workflow. You may optionally specify the ID for the WfRun and you may specify
@@ -25,11 +26,8 @@ The previous example appears as follows in context:
 
 lhctl run my_workflow_id foo '{"bar":"baz"}'
 `,
+	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) < 1 {
-			log.Fatal("You must provide at least 1 arg: WfSpec Id.")
-		}
-
 		runReq := &lhproto.RunWfRequest{}
 
 		wfSpecName := args[0]
