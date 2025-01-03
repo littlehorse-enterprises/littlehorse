@@ -1,6 +1,6 @@
 package io.littlehorse.server.monitoring.metrics;
 
-import io.littlehorse.server.streams.taskqueue.OneTaskQueue;
+import io.littlehorse.server.streams.taskqueue.TaskQueue;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -17,6 +17,7 @@ public class TaskQueueManagerMetrics implements MeterBinder, Closeable {
     public static final String METRIC_NAME = "lh_in_memory_task_queue_size";
     public static final String TENANT_ID_TAG = "tenant_id";
     public static final String TASK_NAME_TAG = "task_name";
+    public static final String REHYDRATION_COUNT_METRIC_NAME = "taskqueue_rehydration_count";
     private final TaskQueueManager taskQueueManager;
     private final ScheduledExecutorService mainExecutor;
 
@@ -34,20 +35,21 @@ public class TaskQueueManagerMetrics implements MeterBinder, Closeable {
         taskQueueManager.all().stream()
                 .filter(queue -> !wasRegistered(registry, queue))
                 .forEach(queue -> {
-                    log.trace("Adding new metric for queue {}", queue.getTaskDefName());
-                    Gauge.builder(METRIC_NAME, queue, OneTaskQueue::size)
-                            .tag(TENANT_ID_TAG, queue.getTenantId().getId())
-                            .tag(TASK_NAME_TAG, queue.getTaskDefName())
+                    log.trace("Adding new metric for queue {}", queue.taskDefName());
+                    Gauge.builder(METRIC_NAME, queue, TaskQueue::size)
+                            .tag(TENANT_ID_TAG, queue.tenantId().getId())
+                            .tag(TASK_NAME_TAG, queue.taskDefName())
                             .register(registry);
                 });
+        Gauge.builder(REHYDRATION_COUNT_METRIC_NAME, taskQueueManager, TaskQueueManager::rehydrationCount)
+                .register(registry);
     }
 
-    private boolean wasRegistered(MeterRegistry registry, OneTaskQueue queue) {
+    private boolean wasRegistered(MeterRegistry registry, TaskQueue queue) {
         return registry.getMeters().stream()
                 .filter(meter -> meter.getId().getName().equals(METRIC_NAME))
-                .filter(meter ->
-                        queue.getTenantId().getId().equals(meter.getId().getTag(TENANT_ID_TAG)))
-                .anyMatch(meter -> queue.getTaskDefName().equals(meter.getId().getTag(TASK_NAME_TAG)));
+                .filter(meter -> queue.tenantId().getId().equals(meter.getId().getTag(TENANT_ID_TAG)))
+                .anyMatch(meter -> queue.taskDefName().equals(meter.getId().getTag(TASK_NAME_TAG)));
     }
 
     @Override

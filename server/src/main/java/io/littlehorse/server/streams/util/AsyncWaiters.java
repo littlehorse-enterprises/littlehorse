@@ -111,6 +111,10 @@ public class AsyncWaiters {
         }
     }
 
+    public long size() {
+        return commandWaiters.size();
+    }
+
     public void handleRebalance(Set<TaskId> assignedTasks) {
         Set<Integer> assignedPartitions =
                 assignedTasks.stream().map(TaskId::partition).collect(Collectors.toSet());
