@@ -1,11 +1,10 @@
 import lhConfig from '@/lhConfig'
 import { ACLAction, ACLResource, Principal, ServerACLs } from 'littlehorse-client/proto'
-import { getServerSession } from 'next-auth'
 import { WhoAmI } from '../types'
-import { authOptions } from './api/auth/[...nextauth]/authOptions'
+import { auth } from '@/auth'
 
 const getWhoAmI = async (): Promise<WhoAmI> => {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   const client = lhConfig.getClient(session?.accessToken)
 
   const { id, perTenantAcls, globalAcls } = await client.whoami({})

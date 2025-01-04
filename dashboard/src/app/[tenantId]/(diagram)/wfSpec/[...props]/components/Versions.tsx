@@ -7,7 +7,7 @@ import { getWfSpecVersions } from '../actions/getVersions'
 export const Versions: FC<{ wfSpecId?: WfSpecId }> = ({ wfSpecId }) => {
   const [versions, setVersions] = useState<string[]>([])
   const { name, majorVersion, revision } = wfSpecId!
-  const { props } = useParams()
+  const { props } = useParams() as { props: string[] }
   const tenantId = useParams().tenantId as string
 
   const loadVersions = useCallback(async () => {

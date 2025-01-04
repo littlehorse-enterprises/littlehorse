@@ -1,11 +1,10 @@
 'use server'
 
-import { getServerSession } from 'next-auth'
-import { WithTenant } from '../types'
+import { auth } from '@/auth'
 import { getClient } from '../lhConfig'
-import { authOptions } from './api/auth/[...nextauth]/authOptions'
+import { WithTenant } from '../types'
 
 export const lhClient = async ({ tenantId }: WithTenant) => {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   return getClient({ tenantId, accessToken: session?.accessToken })
 }

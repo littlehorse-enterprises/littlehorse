@@ -5,11 +5,18 @@ import { getWfSpec } from './actions/getWfSpec'
 import { getScheduleWfSpec } from './actions/getScheduleWfSpec'
 import { WfSpec } from './components/WfSpec'
 
-type Props = { params: { props: string[]; tenantId: string } }
+type Props = { params: Promise<{ props: string[]; tenantId: string }> }
 
 export const dynamic = 'force-dynamic'
 
-export default async function Page({ params: { props, tenantId } }: Props) {
+export default async function Page(props0: Props) {
+  const params = await props0.params;
+
+  const {
+    props,
+    tenantId
+  } = params;
+
   const name = props[0]
   const version = props[1]
 
@@ -22,7 +29,13 @@ export default async function Page({ params: { props, tenantId } }: Props) {
   }
 }
 
-export async function generateMetadata({ params: { props } }: Props): Promise<Metadata> {
+export async function generateMetadata(props0: Props): Promise<Metadata> {
+  const params = await props0.params;
+
+  const {
+    props
+  } = params;
+
   const name = props[0]
 
   return {

@@ -1,9 +1,14 @@
 'use client'
-import { ClientSafeProvider, signIn } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import { FC } from 'react'
 
-export const LoginButton: FC<Pick<ClientSafeProvider, 'id' | 'name'>> = ({ id, name }) => {
+type LoginButtonProps = {
+  id: string
+  name: string
+}
+
+export const LoginButton: FC<LoginButtonProps> = ({ id, name }) => {
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') || '/'
   return (

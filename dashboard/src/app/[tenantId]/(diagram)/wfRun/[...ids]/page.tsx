@@ -4,9 +4,16 @@ import { ClientError, Status } from 'nice-grpc-common'
 import { WfRun } from './components/WfRun'
 import { getWfRun } from './getWfRun'
 
-type Props = { params: { ids: string[]; tenantId: string } }
+type Props = { params: Promise<{ ids: string[]; tenantId: string }> }
 
-export default async function Page({ params: { ids, tenantId } }: Props) {
+export default async function Page(props: Props) {
+  const params = await props.params;
+
+  const {
+    ids,
+    tenantId
+  } = params;
+
   try {
     return <WfRun {...await getWfRun({ ids, tenantId })} />
   } catch (error) {
@@ -15,7 +22,13 @@ export default async function Page({ params: { ids, tenantId } }: Props) {
   }
 }
 
-export async function generateMetadata({ params: { ids } }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
+
+  const {
+    ids
+  } = params;
+
   return {
     title: `WfRun ${ids[ids.length - 1]} | Littlehorse`,
   }

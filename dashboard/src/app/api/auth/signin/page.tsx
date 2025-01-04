@@ -1,5 +1,4 @@
 import { Metadata } from 'next'
-import { getProviders } from 'next-auth/react'
 import Image from 'next/image'
 import { LoginButton } from './LoginButton'
 import handsomeHorse from './handsome-horse.png'
@@ -10,7 +9,6 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 
 export default async function Login() {
-  const providers = await getProviders()
   const year = new Date().getFullYear()
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100">
@@ -24,9 +22,8 @@ export default async function Login() {
             <span className="my-3 block">Littlehorse</span>
             <span className="block text-blue-500">Dashboard</span>
           </h1>
-          {Object.values(providers || {}).map(({ id, name }) => (
-            <LoginButton key={id} id={id} name={name} />
-          ))}
+
+          <LoginButton id="keycloak" name="Keycloak" />
         </div>
         <div className="flex justify-center">Copyright &copy; {year} LittleHorse Enterprises LLC.</div>
       </div>

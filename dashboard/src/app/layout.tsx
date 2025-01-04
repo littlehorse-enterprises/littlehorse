@@ -13,13 +13,18 @@ export const metadata: Metadata = {
   title: 'LittleHorse | Dashboard',
 }
 
-export default async function RootLayout({
-  children,
-  params,
-}: Readonly<{
-  children: React.ReactNode
-  params?: { tenantId?: string }
-}>) {
+export default async function RootLayout(
+  props: Readonly<{
+    children: React.ReactNode
+    params?: { tenantId?: string }
+  }>
+) {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   const { tenants, user } = await getWhoAmI()
 
   return (

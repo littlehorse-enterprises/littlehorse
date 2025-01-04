@@ -1,9 +1,8 @@
 'use server'
-import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
 import { getClient } from '@/lhConfig'
 import { VersionList, WithBookmark, WithTenant } from '@/types'
-import { getServerSession } from 'next-auth'
+import { auth } from '@/auth'
 
 type GetWfSpecProps = {
   name: string
@@ -11,7 +10,7 @@ type GetWfSpecProps = {
   WithTenant
 
 export const getWfSpecVersions = async (props: GetWfSpecProps): Promise<VersionList> => {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   const { tenantId, name } = props
   const bookmark = props.bookmark ? Buffer.from(props.bookmark) : undefined
   const client = getClient({ tenantId, accessToken: session?.accessToken })

@@ -1,13 +1,13 @@
-import nextAuth from 'next-auth/middleware'
-import { NextResponse } from 'next/server'
+import { auth } from '@/auth'
 import { getToken } from 'next-auth/jwt'
+import { NextResponse } from 'next/server'
 
 const withoutAuth = () => {
   NextResponse.next()
 }
 
-const withAuth = nextAuth(async req => {
-  const token = await getToken({ req })
+const withAuth = auth(async req => {
+  const token = await getToken({ req, secret: process.env.AUTH_SECRET })
   const baseUrl = req.nextUrl.origin
   const currentPath = req.nextUrl.pathname
   if (!token || token.expiresAt! < Date.now() / 1000) {

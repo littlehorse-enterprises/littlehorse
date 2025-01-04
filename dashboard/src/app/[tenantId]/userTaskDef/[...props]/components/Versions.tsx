@@ -9,7 +9,7 @@ export const Versions: FC<{ id?: UserTaskDefId }> = ({ id }) => {
   const [versions, setVersions] = useState<string[]>([])
   const tenantId = useParams().tenantId as string
   const { name, version } = id!
-  const { props } = useParams()
+  const { props } = useParams() as { props: string[] }
 
   const loadVersions = useCallback(async () => {
     const { versions } = await getVersions({ name, tenantId })

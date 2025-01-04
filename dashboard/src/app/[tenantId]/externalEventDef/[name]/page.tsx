@@ -4,9 +4,16 @@ import { ClientError, Status } from 'nice-grpc-common'
 import { ExternalEventDef } from './components/ExternalEventDef'
 import { getExternalEventDef } from './getExternalEventDef'
 
-type Props = { params: { name: string; tenantId: string } }
+type Props = { params: Promise<{ name: string; tenantId: string }> }
 
-export default async function Page({ params: { name, tenantId } }: Props) {
+export default async function Page(props: Props) {
+  const params = await props.params;
+
+  const {
+    name,
+    tenantId
+  } = params;
+
   try {
     const spec = await getExternalEventDef(tenantId, { name })
     return <ExternalEventDef spec={spec} />
@@ -16,7 +23,13 @@ export default async function Page({ params: { name, tenantId } }: Props) {
   }
 }
 
-export async function generateMetadata({ params: { name } }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
+
+  const {
+    name
+  } = params;
+
   return {
     title: `ExternalEventDef ${name} | Littlehorse`,
   }
