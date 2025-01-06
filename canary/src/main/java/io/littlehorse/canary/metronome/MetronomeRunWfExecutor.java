@@ -125,6 +125,7 @@ public class MetronomeRunWfExecutor {
         @Override
         public void onFailure(final Throwable t) {
             lhClient.incrementWfRunCountMetric();
+            log.error("Hola Eduwer {}", t.getMessage(), t);
             sendMetricBeat(wfRunId, startedAt, BeatStatus.ERROR.name());
         }
     }
