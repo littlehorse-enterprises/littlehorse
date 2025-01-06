@@ -31,7 +31,6 @@ $docker_run protoc \
     --go_out=/littlehorse/sdk-go/lhproto \
     --grpc-java_out=/littlehorse/sdk-java/src/main/java \
     --go-grpc_out=/littlehorse/sdk-go/lhproto \
-    --doc_out=/littlehorse/docs/docs --doc_opt=/littlehorse/docs/protobuf-go-template.tpl,08-api.md \
     -I=/littlehorse/schemas/littlehorse \
     $PUBLIC_PROTOS
 

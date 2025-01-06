@@ -6,11 +6,12 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"io"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/pkg/browser"
@@ -187,7 +188,7 @@ func handleCallbackRequest(ctx context.Context, localServer *http.Server, lhConf
 				</style>
 			</head>
 			<body>
-				<div><img src="https://littlehorse.dev/img/logo.jpg"></div>
+				<div><img src="https://littlehorse.io/img/logo.jpg"></div>
 				<div class="title">LittleHorse</div>
 				<p class="text">Login Successful!, You can close this window now.</p>
 			</body>

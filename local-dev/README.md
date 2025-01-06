@@ -53,8 +53,6 @@ The LittleHorse repository contains the following components:
     - The LittleHorse Protocol Buffer Specification.
 - [`docker`](../docker)
     - Code for building the LittleHorse docker images.
-- [`docs`](../docs)
-    - Code for the documentation on [our website](https://littlehorse.dev).
 
 ## Setting Up Your Local Env
 
