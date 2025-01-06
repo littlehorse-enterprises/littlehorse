@@ -31,26 +31,9 @@ brew install dotnet
 ### Build
 
 ```
-cd sdk-dotnet
 dotnet build ./LittleHorse.Sdk
-```
-### Build and Run tests
-
-```
-dotnet build ./LittleHorse.Sdk
-dotnet test ./LittleHorse.Sdk.Tests
-```
-
-### Run Examples
-
-```
-dotnet run --project ./Examples/BasicExample
-dotnet run --project ./Examples/ExceptionsHandlerExample
-dotnet run --project ./Examples/MaskedFieldsExample
-dotnet run --project ./Examples/WorkerContextExample
 ```
 
 ### Self-signed TLS certificate
 
 According to [the official page](https://learn.microsoft.com/en-us/aspnet/core/grpc/troubleshoot?view=aspnetcore-7.0#call-a-grpc-service-with-an-untrustedinvalid-certificate): **The .NET gRPC client requires the service to have a trusted certificate.**
-
