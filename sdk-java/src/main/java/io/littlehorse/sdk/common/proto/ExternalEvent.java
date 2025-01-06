@@ -12,7 +12,7 @@ package io.littlehorse.sdk.common.proto;
  * ExternalEvent's are created via the 'rpc PutExternalEvent'
  *
  * For more context on ExternalEvents, check our documentation here:
- * https://littlehorse.dev/docs/concepts/external-events
+ * https://littlehorse.io/docs/server/concepts/external-events
  * </pre>
  *
  * Protobuf type {@code littlehorse.ExternalEvent}
@@ -492,7 +492,7 @@ private static final long serialVersionUID = 0L;
    * ExternalEvent's are created via the 'rpc PutExternalEvent'
    *
    * For more context on ExternalEvents, check our documentation here:
-   * https://littlehorse.dev/docs/concepts/external-events
+   * https://littlehorse.io/docs/server/concepts/external-events
    * </pre>
    *
    * Protobuf type {@code littlehorse.ExternalEvent}

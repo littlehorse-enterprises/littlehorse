@@ -10,7 +10,7 @@
     <Product>LittleHorseSDK</Product>
     <Copyright>LittleHorse Enterprises LLC</Copyright>
     <Description>LittleHorse is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications</Description>
-    <PackageProjectUrl>https://littlehorse.dev</PackageProjectUrl>
+    <PackageProjectUrl>https://littlehorse.io</PackageProjectUrl>
     <RepositoryUrl>https://github.com/littlehorse-enterprises/littlehorse</RepositoryUrl>
   </PropertyGroup>
 

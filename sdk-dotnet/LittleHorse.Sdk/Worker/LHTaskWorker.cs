@@ -49,8 +49,11 @@ namespace LittleHorse.Sdk.Worker
             }
 
             _task.PrepareLHTaskMethod();
-            _manager = new LHServerConnectionManager<T>(_config, _task);
-            _manager.Start();
+            if (_manager == null)
+            {
+                _manager = new LHServerConnectionManager<T>(_config, _task, _lhClient);
+                _manager.Start();    
+            }
         }
 
         /// <summary>

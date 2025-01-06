@@ -1,6 +1,6 @@
 # LittleHorse Java SDK
 
-For documentation on how to use this library, please go to [the LittleHorse website](https://littlehorse.dev).
+For documentation on how to use this library, please go to [the documentation](https://littlehorse.io/docs/server).
 
 > To be compatible with a wide range of Java versions, this library depends on Java 11
 

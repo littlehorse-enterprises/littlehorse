@@ -7,7 +7,7 @@ User Tasks are a type of `Node` in LittleHorse which allow you to assign a task 
 - Reminder Tasks are supported, such that a regular `TaskRun` is executed some period of time after the User Task is scheduled (if the User Task has not been completed yet). This is not included in this example.
 - Can include notes which are presented to the person executing the User Task. Notes are unique for each instance of the Workflow.
 
-For more information about User Tasks, please consult the [User Task Documentation](https://littlehorse.dev/docs/Concepts/12User%20Tasks) on our website.
+For more information about User Tasks, please consult the [User Task Documentation](https://littlehorse.io/docs/server/concepts/user-tasks) on our website.
 
 ### The Business Logic
 

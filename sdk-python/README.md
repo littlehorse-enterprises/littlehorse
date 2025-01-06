@@ -1,6 +1,6 @@
 # LittleHorse Python SDK
 
-For documentation on how to use this library, please go to [the LittleHorse website](https://littlehorse.dev).
+For documentation on how to use this library, please go to [the LittleHorse website](https://littlehorse.io).
 
 For examples go to the [examples](./examples/) folder.
 
