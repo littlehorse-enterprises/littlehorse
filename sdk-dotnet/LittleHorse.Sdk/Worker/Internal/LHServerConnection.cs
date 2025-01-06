@@ -128,7 +128,8 @@ namespace LittleHorse.Sdk.Worker.Internal
             const int maxRetries = MAX_REPORT_RETRIES;
             int retriesLeft = maxRetries;
 
-            _logger?.LogDebug($"Starting task reporting for wfRun {wfRunId?.Id}.");
+            _logger?.LogDebug($"Starting task reporting for wfRun {wfRunId?.Id} and " +
+                              $"TaskRunId {result.TaskRunId.TaskGuid}.");
             
             var retryPolicy = Policy
                 .Handle<Exception>()
@@ -138,7 +139,8 @@ namespace LittleHorse.Sdk.Worker.Internal
                     onRetry: (exception, timeSpan, retryCount, context) =>
                     {
                         retriesLeft--;
-                        _logger?.LogDebug($"Retry attempt {retryCount} failed for wfRun {wfRunId}. Exception: " +
+                        _logger?.LogDebug($"Retry attempt {retryCount} failed for wfRun {wfRunId} and " +
+                                          $"TaskRunId {result.TaskRunId.TaskGuid}. Exception: " +
                                           $"{exception.Message}. Retries left: {retriesLeft}");
                         _logger?.LogDebug("Retrying reportTask rpc on taskRun " +
                                           $"{LHHelper.TaskRunIdToString(result.TaskRunId)}");
