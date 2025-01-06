@@ -9,7 +9,7 @@
 
 
 <p align="center">
-<img alt="LH" src="./docs/static/img/2024-08-28-workflowRun.png" width="80%">
+<img alt="LH" src="./img/wfRun.png" width="80%">
 </p>
 
 [LittleHorse](https://littlehorse.io) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. By allowing LittleHorse to manage coordination and sequencing of your applications, you no longer have to worry about:
@@ -61,7 +61,7 @@ To run a workflow with LittleHorse, you need to:
 - The workflow engine ensures that your process gets executed correctly.
 
 <p align="center">
-<img src="./docs/static/img/2024-08-28-lh-application.png" width="75%">
+<img src="./img/architecture.png" width="75%">
 </p>
 
 To get started quickly with a basic workflow, try our quickstarts in [Java](https://github.com/littlehorse-enterprises/lh-quickstart-java), [Go](https://github.com/littlehorse-enterprises/lh-quickstart-go), and [Python](https://github.com/littlehorse-enterprises/lh-quickstart-python). For more detailed examples, you can check out:
