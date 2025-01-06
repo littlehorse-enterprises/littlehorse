@@ -154,9 +154,9 @@ public final class CommonWfspec {
       "\022\016\n\nREMOVE_KEY\020\010*\204\001\n\nComparator\022\r\n\tLESS_" +
       "THAN\020\000\022\020\n\014GREATER_THAN\020\001\022\020\n\014LESS_THAN_EQ" +
       "\020\002\022\023\n\017GREATER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nN" +
-      "OT_EQUALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007BI\n\037io.li" +
+      "OT_EQUALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007BM\n\037io.li" +
       "ttlehorse.sdk.common.protoP\001Z\t.;lhproto\252" +
-      "\002\030LittleHorse.Common.Protob\006proto3"
+      "\002\034LittleHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

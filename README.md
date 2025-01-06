@@ -1,7 +1,6 @@
 # LittleHorse
 
 <a href="https://littlehorse.io/"><img alt="littlehorse.io" src="https://raw.githubusercontent.com/littlehorse-enterprises/littlehorse/01ef9618b7b719c3aac1d2e2eb5096f164a659b1/docs/images/badge-littlehorse-io.svg"/></a>
-<a href="https://littlehorse.dev/"><img alt="littlehorse.dev" src="https://raw.githubusercontent.com/littlehorse-enterprises/littlehorse/01ef9618b7b719c3aac1d2e2eb5096f164a659b1/docs/images/badge-littlehorse-dev.svg"/></a>
 [![slack](https://img.shields.io/badge/Slack-511651.svg?logo=slack)](https://launchpass.com/littlehorsecommunity)
 
 <a href="https://central.sonatype.com/artifact/io.littlehorse/littlehorse-client"><img alt="java" src="https://img.shields.io/maven-central/v/io.littlehorse/littlehorse-client?logo=openjdk&logoColor=white&color=orange&label=java"></a>
@@ -13,7 +12,7 @@
 <img alt="LH" src="./docs/static/img/2024-08-28-workflowRun.png" width="80%">
 </p>
 
-[LittleHorse](https://littlehorse.dev) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. By allowing LittleHorse to manage coordination and sequencing of your applications, you no longer have to worry about:
+[LittleHorse](https://littlehorse.io) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. By allowing LittleHorse to manage coordination and sequencing of your applications, you no longer have to worry about:
 
 * Wiring microservices together with RPC calls or message queues.
 * Retries, timeouts, dead-letter queues.
@@ -44,13 +43,13 @@ docker run --name littlehorse -d -p 2023:2023 -p 8080:8080 ghcr.io/littlehorse-e
 
 ```
 -> lhctl version
-lhctl version: 0.11.0 (Git SHA homebrew)
-Server version: 0.11.1
+lhctl version: 0.12.1 (Git SHA homebrew)
+Server version: 0.12.1
 ```
 
 4. Navigate to the dashboard at `http://localhost:3000`
 
-For more information go to our [Quickstart Installation Docs](https://littlehorse.dev/docs/developer-guide/install).
+For more information go to our [Quickstart Installation Docs](https://littlehorse.io/docs/server/developer-guide/install).
 
 ### Running Your First Workflow
 
@@ -69,7 +68,7 @@ To get started quickly with a basic workflow, try our quickstarts in [Java](http
 - The [examples directory](./examples) in this repo
 - The [lh-examples repository](https://github.com/littlehorse-enterprises/lh-examples), which contains more complex applications.
 
-For documentation, visit [littlehorse.dev](https://www.littlehorse.dev/).
+For documentation, visit [littlehorse.io/docs/server](https://www.littlehorse.io/docs/server).
 
 ## Developing
 

@@ -160,9 +160,10 @@ public final class NodeRunOuterClass {
       "\003 \001(\0132\032.littlehorse.VariableValueH\000\210\001\001\022\034" +
       "\n\024was_properly_handled\030\004 \001(\010\022)\n\034failure_" +
       "handler_threadrun_id\030\005 \001(\005H\001\210\001\001B\n\n\010_cont" +
-      "entB\037\n\035_failure_handler_threadrun_idBI\n\037" +
+      "entB\037\n\035_failure_handler_threadrun_idBM\n\037" +
       "io.littlehorse.sdk.common.protoP\001Z\t.;lhp" +
-      "roto\252\002\030LittleHorse.Common.Protob\006proto3"
+      "roto\252\002\034LittleHorse.Sdk.Common.Protob\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

@@ -10,9 +10,10 @@ import { tryFormatAsJson } from '@/app/utils/tryFormatAsJson'
 type OverflowTextProps = {
   text: string
   className?: string
+  variant?: 'error'
 }
 
-export const OverflowText: FC<OverflowTextProps> = ({ text, className }) => {
+export const OverflowText: FC<OverflowTextProps> = ({ text, className, variant }) => {
   const textRef = useRef<HTMLDivElement>(null)
   const [isOverflowing, setIsOverflowing] = useState(false)
 
@@ -45,7 +46,7 @@ export const OverflowText: FC<OverflowTextProps> = ({ text, className }) => {
         </DialogTrigger>
         <DialogContent className="max-w-2xl gap-2 overflow-visible">
           <CopyButton value={formattedText} className="h-8 w-8 rounded-full" />
-          <div className="h-96 overflow-auto rounded-lg bg-gray-100">
+          <div className={cn('h-96 overflow-auto rounded-lg bg-gray-100', { 'bg-red-200 text-red-500': variant === 'error' })}>
             <div className="max-w-full whitespace-pre-wrap break-words p-4">{formattedText}</div>
           </div>
         </DialogContent>

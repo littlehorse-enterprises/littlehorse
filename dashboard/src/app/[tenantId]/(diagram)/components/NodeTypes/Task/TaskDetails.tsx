@@ -9,6 +9,8 @@ import { FC } from 'react'
 import { NodeRunsList } from '../../NodeRunsList'
 import { NodeDetails } from '../NodeDetails'
 import { getTaskRun } from './getTaskRun'
+import { OverflowText } from '@/app/[tenantId]/components/OverflowText'
+import { cn } from '@/components/utils'
 
 export const TaskDetails: FC<{
   taskNode?: TaskNode
@@ -39,6 +41,8 @@ export const TaskDetails: FC<{
   })
 
   if (!taskNode || (!taskDef && !nodeRun?.task?.taskRunId)) return null
+
+  const lastLogOutput = data?.attempts[data?.attempts.length - 1]?.logOutput?.str
 
   return (
     <NodeDetails>
@@ -82,10 +86,23 @@ export const TaskDetails: FC<{
           </ol>
         </div>
       )}
-      {nodeRun && nodeRun.errorMessage && (
-        <div className="mt-2 flex flex-col rounded bg-red-200 p-1">
-          <h3 className="font-bold">Error</h3>
-          <pre className="overflow-x-auto">{nodeRun.errorMessage}</pre>
+      {nodeRun && (
+        <div className={cn("mt-2 flex flex-col rounded bg-green-200 p-1", { 'bg-red-200': nodeRun.errorMessage })}>
+          <h3 className="font-bold">{nodeRun.errorMessage ? 'TaskRun Error' : 'No TaskRun Error'}</h3>
+          <OverflowText
+            variant="error"
+            className="text-nowrap w-36"
+            text={nodeRun.errorMessage ?? ''}
+          />
+        </div>
+      )}
+      {nodeRun && (
+        <div className={"mt-2 flex flex-col rounded bg-gray-200 p-1"}>
+          <p className="font-bold text-xs">{lastLogOutput ? 'Worker Log Output' : 'No Worker Log Output'}</p>
+          <OverflowText
+            className="text-nowrap w-36"
+            text={lastLogOutput ?? ''}
+          />
         </div>
       )}
       <NodeRunsList nodeRuns={nodeRunsList} />
