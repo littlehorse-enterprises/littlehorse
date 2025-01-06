@@ -4,11 +4,13 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package internal
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+	"errors"
 	"log"
 	"strconv"
 	"strings"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/spf13/cobra"
 )
@@ -25,7 +27,7 @@ var getVariableCmd = &cobra.Command{
 	You may provide all three identifiers as three separate arguments or you may provide
 	them delimited by the '/' character, as returned in all 'search' command queries.
 	`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Args: func(cmd *cobra.Command, args []string) error {
 		needsHelp := false
 		if len(args) == 1 {
 			args = strings.Split(args[0], "/")
@@ -36,8 +38,14 @@ var getVariableCmd = &cobra.Command{
 		}
 
 		if needsHelp {
-			log.Fatal("Must provide 1 or 3 arguments. See 'lhctl get variable -h'")
+			return errors.New("must provide 1 or 3 arguments. See 'lhctl get variable -h'")
+		}
 
+		return nil
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 1 {
+			args = strings.Split(args[0], "/")
 		}
 
 		threadRunNumber, err := strconv.Atoi(args[1])
@@ -73,6 +81,7 @@ Choose one of the following option groups:
 [wfRunId]
 [varType, value, name, wfSpecName, wfSpecVersion]
 `,
+	Args: cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
@@ -134,6 +143,7 @@ var listVariableCmd = &cobra.Command{
 	Long: `
 Lists all Variable's for a given WfRun Id.
 `,
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		// bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		// limit, _ := cmd.Flags().GetInt32("limit")

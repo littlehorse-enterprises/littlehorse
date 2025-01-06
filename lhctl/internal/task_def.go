@@ -5,10 +5,11 @@ package internal
 
 import (
 	"fmt"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"os"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -18,11 +19,8 @@ import (
 var deployTaskDefCmd = &cobra.Command{
 	Use:   "taskDef <filename>",
 	Short: "Create a TaskDef from a JSON or Protobuf file.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the filename to deploy from.")
-
-		}
 		ptd := &lhproto.PutTaskDefRequest{}
 
 		// First, read the file
