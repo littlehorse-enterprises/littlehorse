@@ -1,6 +1,6 @@
 # LittleHorse GoLang SDK
 
-For documentation on how to use this library, please go to [the LittleHorse website](https://littlehorse.dev).
+For documentation on how to use this library, please go to [the LittleHorse website](https://littlehorse.io/docs/server).
 
 ### Dependencies
 

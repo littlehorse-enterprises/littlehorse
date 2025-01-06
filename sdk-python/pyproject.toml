@@ -9,9 +9,9 @@ description = "LittleHorse is a high-performance microservice orchestration engi
 authors = [ "LittleHorse Engineering <engineering@littlehorse.io>",]
 readme = "README.md"
 license = "SSPL-1.0"
-homepage = "https://littlehorse.dev"
+homepage = "https://littlehorse.io"
 repository = "https://github.com/littlehorse-enterprises/littlehorse"
-documentation = "https://littlehorse.dev/docs/Overview"
+documentation = "https://littlehorse.io/docs/server"
 keywords = [ "littlehorse",]
 [[tool.poetry.packages]]
 include = "littlehorse"

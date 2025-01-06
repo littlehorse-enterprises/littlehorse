@@ -100,9 +100,9 @@ public final class Acls {
       "L_ALL_RESOURCES\020\006\022\031\n\025ACL_TASK_WORKER_GRO" +
       "UP\020\007\022\026\n\022ACL_WORKFLOW_EVENT\020\010*C\n\tACLActio" +
       "n\022\010\n\004READ\020\000\022\007\n\003RUN\020\001\022\022\n\016WRITE_METADATA\020\002" +
-      "\022\017\n\013ALL_ACTIONS\020\003BI\n\037io.littlehorse.sdk." +
-      "common.protoP\001Z\t.;lhproto\252\002\030LittleHorse." +
-      "Common.Protob\006proto3"
+      "\022\017\n\013ALL_ACTIONS\020\003BM\n\037io.littlehorse.sdk." +
+      "common.protoP\001Z\t.;lhproto\252\002\034LittleHorse." +
+      "Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

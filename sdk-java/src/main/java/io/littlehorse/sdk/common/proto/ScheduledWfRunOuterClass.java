@@ -45,9 +45,9 @@ public final class ScheduledWfRunOuterClass {
       "_at\030\006 \001(\0132\032.google.protobuf.Timestamp\032L\n" +
       "\016VariablesEntry\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 " +
       "\001(\0132\032.littlehorse.VariableValue:\0028\001B\023\n\021_" +
-      "parent_wf_run_idBI\n\037io.littlehorse.sdk.c" +
-      "ommon.protoP\001Z\t.;lhproto\252\002\030LittleHorse.C" +
-      "ommon.Protob\006proto3"
+      "parent_wf_run_idBM\n\037io.littlehorse.sdk.c" +
+      "ommon.protoP\001Z\t.;lhproto\252\002\034LittleHorse.S" +
+      "dk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
