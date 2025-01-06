@@ -35,7 +35,7 @@ public class OneTaskQueueTest {
     private final String taskName = "my-task";
     private final PollTaskRequestObserver mockClient = mock(Answers.RETURNS_DEEP_STUBS);
     private final ScheduledTaskModel mockTask = mock(Answers.RETURNS_DEEP_STUBS);
-    private final OneTaskQueue taskQueue = new OneTaskQueue(
+    private final TaskQueue taskQueue = new TaskQueueImpl2(
             taskName, taskQueueManager, Integer.MAX_VALUE, new TenantIdModel(LHConstants.DEFAULT_TENANT));
     private final Command command = commandProto();
     private final TaskId streamsTaskId = TaskId.parse("0_2");

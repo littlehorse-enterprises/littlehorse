@@ -296,7 +296,7 @@ public class OneTaskQueue implements TaskQueue {
     }
 
     @Override
-    public int size() {
+    public long size() {
         return pendingTasks.size();
     }
 

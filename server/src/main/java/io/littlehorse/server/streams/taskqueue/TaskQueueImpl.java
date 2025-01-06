@@ -8,6 +8,7 @@ import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -28,6 +29,7 @@ public class TaskQueueImpl implements TaskQueue {
     private final Map<TaskId, LinkedBlockingQueue<QueueItem>> pendingTasksPerPartition;
     private final Map<TaskId, Boolean> rehydrationPerPartition = new ConcurrentHashMap<>();
     private final AtomicReference<Iterator<TaskId>> partitionIterator;
+    private final AtomicLong counter = new AtomicLong();
 
     public TaskQueueImpl(String taskDefName, TaskQueueManager parent, int capacity, TenantIdModel tenantId) {
         this.taskDefName = taskDefName;
@@ -105,7 +107,7 @@ public class TaskQueueImpl implements TaskQueue {
     }
 
     @Override
-    public int size() {
+    public long size() {
         return pendingTasksPerPartition.values().stream()
                 .map(LinkedBlockingQueue::size)
                 .reduce(0, Integer::sum);

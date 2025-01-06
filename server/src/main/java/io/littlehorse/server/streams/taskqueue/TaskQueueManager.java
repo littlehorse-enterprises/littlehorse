@@ -59,7 +59,7 @@ public class TaskQueueManager implements Closeable {
     private TaskQueue getSubQueue(TenantTaskName tenantTask) {
         return taskQueues.computeIfAbsent(
                 tenantTask,
-                taskToCreate -> new TaskQueueImpl(
+                taskToCreate -> new TaskQueueImpl2(
                         taskToCreate.taskDefName(), this, individualQueueConfiguredCapacity, taskToCreate.tenantId()));
     }
 

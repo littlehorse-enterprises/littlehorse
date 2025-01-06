@@ -48,7 +48,7 @@ public interface TaskQueue {
      */
     void onPollRequest(PollTaskRequestObserver requestObserver, RequestExecutionContext requestContext);
 
-    int size();
+    long size();
 
     long rehydratedCount();
 

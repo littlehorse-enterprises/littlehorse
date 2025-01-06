@@ -133,6 +133,13 @@ public class ReadOnlyGetableManager {
     public ScheduledTaskModel getScheduledTask(TaskRunIdModel scheduledTaskId) {
         return store.get(scheduledTaskId.toString(), ScheduledTaskModel.class);
     }
+    /**
+     * Only use this method if you need to retrieve a Storeable
+     * @return Null if not found
+     */
+    public ScheduledTaskModel getScheduledTask(String storeKey) {
+        return store.get(storeKey, ScheduledTaskModel.class);
+    }
 
     public ExternalEventModel getUnclaimedEvent(WfRunIdModel wfRunId, ExternalEventDefIdModel externalEventDefId) {
         // We want to find the first Event that has the following characteristics:
