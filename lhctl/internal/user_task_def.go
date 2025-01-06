@@ -69,10 +69,8 @@ var getUserTaskDefCmd = &cobra.Command{
 var deployUserTaskDefCmd = &cobra.Command{
 	Use:   "userTaskDef <filename>",
 	Short: "Deploy a userTaskDef from a JSON or Protobuf file.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the filename to deploy from.")
-		}
 		pws := &lhproto.PutUserTaskDefRequest{}
 
 		// First, read the file
@@ -110,6 +108,7 @@ If you provide no optional arguments, searches for all UserTaskDefs.
 
 Returns a list of ObjectId's that can be passed into 'lhctl get userTaskDef'.
 	`,
+	Args: cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		name, _ := cmd.Flags().GetString("name")
 		prefix, _ := cmd.Flags().GetString("prefix")
@@ -143,11 +142,8 @@ var deleteUserTaskDefCmd = &cobra.Command{
 	Long: `Delete a UserTaskDef. You must provide the name and exact version of the
 UserTaskDef to delete.
 	`,
+	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 2 {
-			log.Fatal("You must provide two arguments: Name and Version of UserTaskDef to Delete")
-		}
-
 		name := args[0]
 		versionRaw := args[1]
 

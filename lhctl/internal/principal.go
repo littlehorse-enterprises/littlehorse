@@ -77,8 +77,10 @@ Search for Principals. You may provide any of the following option groups:
 
 [isAdmin, tenantId]
 
-* Note: To set the value of Boolean flags to false, you must use an '=' sign between the
-key and the value, like so: '--isAdmin=false'.
+* Note: '--isAdmin' is a Boolean flag with 3 states:
+	- return ALL          Flag is not present
+	- return only TRUE    Flag is present or reads '--isAdmin=true'
+	- return only FALSE   Flag reads '--isAdmin=false'
 
 * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
 options with this group to put a time bound on Principals which are returned.

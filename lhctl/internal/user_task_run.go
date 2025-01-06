@@ -152,6 +152,7 @@ var saveUserTaskRunProgressCmd = &cobra.Command{
 	Long: `Given a provied WfRunId and UserTaskGuid, this utility allows you
 to save current progress on a UserTask before executing the it.
 `,
+	Args: cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		wfRunId, _ := cmd.Flags().GetString("wfRunId")
@@ -244,6 +245,7 @@ Choose one of the following option groups:
   which are returned. The time bound applies to the time that the WfRun was
   created.
 `,
+	Args: cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")

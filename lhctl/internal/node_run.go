@@ -98,7 +98,7 @@ Lists all NodeRun's for a given WfRun Id.
 }
 
 var searchNodeRunCmd = &cobra.Command{
-	Use:   "nodeRun <node_type> <status>",
+	Use:   "nodeRun <nodeType> <status>",
 	Short: "Search for NodeRun's by providing Node Type and Status",
 	Long: `
 Search for NodeRun's by providing the type of the Node and the status of the NodeRun.

@@ -24,6 +24,7 @@ var putTenantCmd = &cobra.Command{
 var searchTenantCmd = &cobra.Command{
 	Use:   "tenant",
 	Short: "Search for all available TenantIds for current Principal",
+	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")

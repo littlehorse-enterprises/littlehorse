@@ -71,9 +71,9 @@ Search for ExternalEvent's by their ExternalEventDef Name.
 Returns a list of ObjectId's that can be passed into 'lhctl get externalEvent'.
 
 * Note: '--isClaimed' is a Boolean flag with 3 states:
-	- return ALL (flag is not present)
-	- return only TRUE (flag is present or reads '--isClaimed=true')
-	- return only FALSE (flag reads '--isClaimed=false')
+	- return ALL          Flag is not present
+	- return only TRUE    Flag is present or reads '--isClaimed=true'
+	- return only FALSE   Flag reads '--isClaimed=false'
 
 * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
 	options with this group to put a time bound on ExternalEvents which are
