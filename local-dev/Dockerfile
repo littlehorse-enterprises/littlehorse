@@ -3,7 +3,6 @@ ENV PROTOC_VERSION          23.4
 ENV PROTO_GEN_JAVA           1.57.2
 ENV PROTO_GEN_GO             1.31.0
 ENV PROTO_GEN_GO_GRPC        1.3.0
-ENV PROTO_GEN_GO_DOC         1.5.1
 ENV PROTO_GEN_PYTHON         1.57.0
 ENV PROTO_GEN_JS             1.178.0
 
@@ -40,8 +39,7 @@ RUN chmod +x /usr/local/bin/* && \
 
   # Install protoc-gen-go
 RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v${PROTO_GEN_GO} && \
-  go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v${PROTO_GEN_GO_GRPC} && \
-  go install github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc@v${PROTO_GEN_GO_DOC}
+  go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v${PROTO_GEN_GO_GRPC}
 
 # Install protoc-gen-python
 RUN pip3 install grpcio-tools==${PROTO_GEN_PYTHON}

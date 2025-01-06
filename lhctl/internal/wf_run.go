@@ -1,9 +1,10 @@
 package internal
 
 import (
+	"log"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
-	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -11,12 +12,8 @@ import (
 var getWfRunCmd = &cobra.Command{
 	Use:   "wfRun <id>",
 	Short: "Get a Workflow Run.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the ID of WfRun to get.")
-
-		}
-
 		littlehorse.PrintResp(getGlobalClient(cmd).GetWfRun(
 			requestContext(cmd),
 			littlehorse.StrToWfRunId(args[0]),
@@ -27,12 +24,8 @@ var getWfRunCmd = &cobra.Command{
 var getScheduledWfRun = &cobra.Command{
 	Use:   "scheduled <id>",
 	Short: "Get a scheduled run.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the ID of ScheduledWfRun to get.")
-
-		}
-
 		littlehorse.PrintResp(getGlobalClient(cmd).GetScheduledWfRun(
 			requestContext(cmd),
 			&lhproto.ScheduledWfRunId{
@@ -59,6 +52,7 @@ Search for WfRuns. You may provide any of the following option groups:
 
 Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 	`,
+	Args: cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
 		statusRaw, _ := cmd.Flags().GetString("status")
@@ -109,11 +103,8 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 var stopWfRunCmd = &cobra.Command{
 	Use:   "wfRun <id>",
 	Short: "Stop a Workflow Run.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the ID of WfRun to stop.")
-
-		}
 		trn, _ := cmd.Flags().GetInt32("threadRunNumber")
 
 		littlehorse.PrintResp(getGlobalClient(cmd).StopWfRun(
@@ -129,11 +120,8 @@ var stopWfRunCmd = &cobra.Command{
 var resumeWfRunCmd = &cobra.Command{
 	Use:   "wfRun <id>",
 	Short: "Stop a Workflow Run.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the ID of WfRun to resume.")
-
-		}
 		trn, _ := cmd.Flags().GetInt32("threadRunNumber")
 
 		littlehorse.PrintResp(getGlobalClient(cmd).ResumeWfRun(
@@ -149,12 +137,8 @@ var resumeWfRunCmd = &cobra.Command{
 var deleteWfRunCmd = &cobra.Command{
 	Use:   "wfRun <id>",
 	Short: "Delete a Workflow Run.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the ID of WfRun to delete.")
-
-		}
-
 		littlehorse.PrintResp(getGlobalClient(cmd).DeleteWfRun(
 			requestContext(cmd),
 			&lhproto.DeleteWfRunRequest{
@@ -169,11 +153,8 @@ var deleteWfRunCmd = &cobra.Command{
 var deleteScheduledWfRun = &cobra.Command{
 	Use:   "schedule <id>",
 	Short: "Delete a Scheduled Workflow Run.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the ID of ScheduledWfRun to delete.")
-		}
-
 		littlehorse.PrintResp(getGlobalClient(cmd).DeleteScheduledWfRun(
 			requestContext(cmd),
 			&lhproto.DeleteScheduledWfRunRequest{
@@ -188,11 +169,8 @@ var deleteScheduledWfRun = &cobra.Command{
 var scheduleWfCmd = &cobra.Command{
 	Use:   "run <cronExpression> <wfSpecName> <<var1 name>> <<var1 val>>...",
 	Short: "Run an instance of a WfSpec with provided Name and Input Variables.",
+	Args:  cobra.MinimumNArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) < 2 {
-			log.Fatal("You must provide at least 2 arg: Cron expression and WfSpec name.")
-		}
-
 		scheduleWfReq := &lhproto.ScheduleWfRequest{}
 
 		cronExpression := args[0]
@@ -291,8 +269,9 @@ odd total number of args. See 'lhctl run --help' for details.`)
 }
 
 var searchScheduledWfsCmd = &cobra.Command{
-	Use:   "schedule <wfSpecName> <majorVersion> <revision>",
+	Use:   "schedule <wfSpecName> [<majorVersion>] [<revision>]",
 	Short: "List all scheduled wf runs for a given wf spec",
+	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var majorVersion *int32

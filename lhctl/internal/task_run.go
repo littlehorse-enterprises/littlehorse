@@ -1,10 +1,12 @@
 package internal
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
+	"errors"
 	"log"
 	"strings"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/spf13/cobra"
 )
@@ -19,7 +21,7 @@ var getTaskRunCmd = &cobra.Command{
 
 	You may provide both identifiers as two separate arguments or you may provide
 	them delimited by the '/' character.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Args: func(cmd *cobra.Command, args []string) error {
 		needsHelp := false
 		if len(args) == 1 {
 			args = strings.Split(args[0], "/")
@@ -30,7 +32,14 @@ var getTaskRunCmd = &cobra.Command{
 		}
 
 		if needsHelp {
-			log.Fatal("Must provide 1 or 2 arguments. See 'lhctl get taskRun -h'")
+			return errors.New("must provide 1 or 2 arguments. See 'lhctl get taskRun -h'")
+		}
+
+		return nil
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 1 {
+			args = strings.Split(args[0], "/")
 		}
 
 		littlehorse.PrintResp(getGlobalClient(cmd).GetTaskRun(
@@ -44,7 +53,7 @@ var getTaskRunCmd = &cobra.Command{
 }
 
 var searchTaskRunCmd = &cobra.Command{
-	Use:   "taskRun",
+	Use:   "taskRun [<taskDefName>]",
 	Short: "Search for TaskRun's.",
 	Long: `
 Search for TaskRun's by their taskDefName and/or status. Returns a list of TaskRunId's.
@@ -70,10 +79,11 @@ Choose one of the following option groups:
   - TASK_OUTPUT_SERIALIZING_ERROR
   - TASK_INPUT_VAR_SUB_ERROR
 	`,
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		taskDefName := args[0]
 
 		statusStr, _ := cmd.Flags().GetString("status")
-		taskDefName, _ := cmd.Flags().GetString("taskDefName")
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 
@@ -81,10 +91,6 @@ Choose one of the following option groups:
 		earliest, latest := loadEarliestAndLatestStart(cmd)
 
 		if statusStr != "" {
-			if taskDefName == "" {
-				log.Fatal("Must provide taskDefName along with status!")
-			}
-
 			statusInt, ok := lhproto.TaskStatus_value[statusStr]
 			if !ok {
 				log.Fatal("Invalid status provided. See --help.")
@@ -110,10 +116,8 @@ var listTaskRunCmd = &cobra.Command{
 	Long: `
 Lists all TaskRun's for a given WfRun Id.
 `,
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("Must provide one arg: the WfRun ID!")
-		}
 		wfRunId := args[0]
 
 		req := &lhproto.ListTaskRunsRequest{

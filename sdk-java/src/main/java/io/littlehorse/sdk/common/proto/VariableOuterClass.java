@@ -43,9 +43,9 @@ public final class VariableOuterClass {
       "eId\022)\n\005value\030\002 \001(\0132\032.littlehorse.Variabl" +
       "eValue\022.\n\ncreated_at\030\003 \001(\0132\032.google.prot" +
       "obuf.Timestamp\022)\n\nwf_spec_id\030\004 \001(\0132\025.lit" +
-      "tlehorse.WfSpecId\022\016\n\006masked\030\005 \001(\010BI\n\037io." +
+      "tlehorse.WfSpecId\022\016\n\006masked\030\005 \001(\010BM\n\037io." +
       "littlehorse.sdk.common.protoP\001Z\t.;lhprot" +
-      "o\252\002\030LittleHorse.Common.Protob\006proto3"
+      "o\252\002\034LittleHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

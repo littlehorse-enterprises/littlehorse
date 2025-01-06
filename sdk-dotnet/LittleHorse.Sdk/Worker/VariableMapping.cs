@@ -1,4 +1,4 @@
-﻿using LittleHorse.Common.Proto;
+﻿using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Helper;
 using LittleHorse.Sdk.Utils;

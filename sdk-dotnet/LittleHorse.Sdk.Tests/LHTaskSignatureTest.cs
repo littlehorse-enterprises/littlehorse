@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Worker;

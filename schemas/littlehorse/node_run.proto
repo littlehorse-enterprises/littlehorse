@@ -10,7 +10,7 @@ import "object_id.proto";
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
-option csharp_namespace = "LittleHorse.Common.Proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 // A NodeRun is a running instance of a Node in a ThreadRun. Note that a NodeRun
 // is a Getable object, meaning it can be retried from the LittleHorse grpc API.

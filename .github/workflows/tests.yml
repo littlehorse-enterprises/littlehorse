@@ -133,3 +133,18 @@ jobs:
         run: |
           npm ci
           npm run test
+
+  tests-sdk-dotnet:
+    if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6'
+      - name: Build Project
+        run: dotnet build sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
+      - name: Test Dotnet
+        run: dotnet test sdk-dotnet/LittleHorse.Sdk.Tests

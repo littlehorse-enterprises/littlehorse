@@ -11,39 +11,3 @@ permissions:
 jobs:
   publish-docker:
     uses: ./.github/workflows/publish-docker.yml
-
-  publish-documentation:
-    name: Publish Documentation
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Log current path
-        run: pwd
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache-dependency-path: ./docs/package-lock.json
-          cache: npm
-
-      - name: Install dependencies
-        working-directory: ./docs
-        run: npm ci
-
-      - name: Build website
-        working-directory: ./docs
-        env: 
-          USE_SIMPLE_CSS_MINIFIER: true
-        run: npm run build
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/build
-          user_name: github-actions[bot]
-          user_email: 41898282+github-actions[bot]@users.noreply.github.com
-          cname: littlehorse.dev

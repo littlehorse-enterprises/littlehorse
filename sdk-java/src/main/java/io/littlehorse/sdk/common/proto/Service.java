@@ -961,9 +961,9 @@ public final class Service {
       "mi\022\026.google.protobuf.Empty\032\026.littlehorse" +
       ".Principal\"\000\022H\n\020GetServerVersion\022\026.googl" +
       "e.protobuf.Empty\032\032.littlehorse.ServerVer" +
-      "sion\"\000BI\n\037io.littlehorse.sdk.common.prot" +
-      "oP\001Z\t.;lhproto\252\002\030LittleHorse.Common.Prot" +
-      "ob\006proto3"
+      "sion\"\000BM\n\037io.littlehorse.sdk.common.prot" +
+      "oP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common." +
+      "Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
