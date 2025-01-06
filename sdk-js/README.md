@@ -1,7 +1,7 @@
 # Littlehorse gRPC Client
 
 This is the generated library to perform gRPC calls to littlehorse server from nodejs.
-For documentation on how to use this library, please go to [the LittleHorse website](https://littlehorse.dev).
+For documentation on how to use this library, please go to [the LittleHorse website](https://littlehorse.io/docs/server).
 
 ## Installation
 
