@@ -1,6 +1,6 @@
 # LittleHorse .NET SDK
 
-[LittleHorse](https://littlehorse.dev) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. The LittleHorse Runtime has uses in fields such as:
+[LittleHorse](https://littlehorse.io) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. The LittleHorse Runtime has uses in fields such as:
 
 - Business Process Management
 - Event-Driven Systems
@@ -8,7 +8,7 @@
 - Financial Transaction Processing
 - And More.
 
-For documentation on how to use this library, please go to [the LittleHorse website](https://littlehorse.dev).
+For documentation on how to use this library, please go to [the LittleHorse website](https://littlehorse.io/docs/server).
 
 > **This does not include the Workflow SDK**.
 

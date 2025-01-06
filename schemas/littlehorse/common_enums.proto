@@ -4,7 +4,7 @@ package littlehorse;
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
-option csharp_namespace = "LittleHorse.Common.Proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 // Status used for WfRun, ThreadRun, and NodeRun
 enum LHStatus {

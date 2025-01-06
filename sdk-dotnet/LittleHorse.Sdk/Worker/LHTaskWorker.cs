@@ -1,10 +1,10 @@
 ﻿using Grpc.Core;
-using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Helper;
 using LittleHorse.Sdk.Worker.Internal;
 using Microsoft.Extensions.Logging;
-using static LittleHorse.Common.Proto.LittleHorse;
+using static LittleHorse.Sdk.Common.Proto.LittleHorse;
 
 namespace LittleHorse.Sdk.Worker
 {
@@ -49,8 +49,11 @@ namespace LittleHorse.Sdk.Worker
             }
 
             _task.PrepareLHTaskMethod();
-            _manager = new LHServerConnectionManager<T>(_config, _task);
-            _manager.Start();
+            if (_manager == null)
+            {
+                _manager = new LHServerConnectionManager<T>(_config, _task, _lhClient);
+                _manager.Start();    
+            }
         }
 
         /// <summary>

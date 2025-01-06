@@ -431,11 +431,23 @@ func (m *serverConnectionManager) doTaskHelper(task *lhproto.ScheduledTask) *lhp
 		if errorReflect.Interface() != nil {
 			// Check if the error is an LHTaskException
 			if lhtErr, ok := errorReflect.Interface().(*LHTaskException); ok {
+				taskErrContent, err := InterfaceToVarVal(lhtErr.Content)
+
+				if err != nil {
+					msg := "LH_SDK_GO_ERR: Failed to serialize task error content passed from task worker: " + err.Error()
+
+					taskErrContent = &lhproto.VariableValue{
+						Value: &lhproto.VariableValue_Str{
+							Str: msg,
+						},
+					}
+				}
+
 				taskResult.Result = &lhproto.ReportTaskRun_Exception{
 					Exception: &lhproto.LHTaskException{
 						Name:    lhtErr.Name,
 						Message: lhtErr.Message,
-						Content: lhtErr.Content,
+						Content: taskErrContent,
 					},
 				}
 			} else {

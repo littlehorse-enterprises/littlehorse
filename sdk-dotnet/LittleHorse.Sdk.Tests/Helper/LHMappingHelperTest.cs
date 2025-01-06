@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Helper;
 using Google.Protobuf.WellKnownTypes;
 using LittleHorse.Sdk.Tests;

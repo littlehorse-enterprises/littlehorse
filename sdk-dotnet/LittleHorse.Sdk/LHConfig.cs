@@ -1,12 +1,13 @@
 ﻿using Grpc.Core;
 using Grpc.Net.Client;
 using LittleHorse.Sdk.Authentication;
-using LittleHorse.Common.Proto;
 using LittleHorse.Sdk.Utils;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
-using static LittleHorse.Common.Proto.LittleHorse;
+using System.Runtime.CompilerServices;
+using LittleHorse.Sdk.Common.Proto;
+using static LittleHorse.Sdk.Common.Proto.LittleHorse;
 
 namespace LittleHorse.Sdk {
 
@@ -121,6 +122,7 @@ namespace LittleHorse.Sdk {
             return GetGrpcClientInstance(BootstrapHost, BootstrapPort);
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public LittleHorseClient GetGrpcClientInstance(string host, int port)
         {
             string channelKey = $"{BootstrapProtocol}://{host}:{port}";
