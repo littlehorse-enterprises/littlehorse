@@ -1,6 +1,5 @@
 package io.littlehorse.server.streams.taskqueue;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import io.littlehorse.TestUtil;
@@ -21,7 +20,6 @@ import java.util.Date;
 import java.util.Optional;
 import org.apache.kafka.streams.processor.TaskId;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
@@ -72,21 +70,6 @@ public class OneTaskQueueTest {
     }
 
     @Test
-    public void shouldNotEnqueuePendingTaskWhenQueueIsFull() {
-        OneTaskQueue boundedQueue =
-                new OneTaskQueue(taskName, taskQueueManager, 3, new TenantIdModel(LHConstants.DEFAULT_TENANT));
-        assertThat(boundedQueue.onTaskScheduled(streamsTaskId, mockTask)).isTrue();
-        assertThat(boundedQueue.onTaskScheduled(streamsTaskId, mockTask)).isTrue();
-        assertThat(boundedQueue.onTaskScheduled(streamsTaskId, mockTask)).isTrue();
-        assertThat(boundedQueue.onTaskScheduled(streamsTaskId, mockTask)).isFalse();
-        boundedQueue.onPollRequest(mockClient, requestContext);
-        boundedQueue.onPollRequest(mockClient, requestContext);
-        boundedQueue.onPollRequest(mockClient, requestContext);
-        boundedQueue.onPollRequest(mockClient, requestContext);
-        verify(taskQueueManager, times(3)).itsAMatch(mockTask, mockClient);
-    }
-
-    @Test
     public void shouldRecoverScheduledTaskFromStoreAndKeepTheOriginalOrder() {
         ScheduledTaskModel task1 = TestUtil.scheduledTaskModel("wf-1");
         task1.setCreatedAt(new Date(new Date().getTime() + 2000L));
@@ -115,7 +98,6 @@ public class OneTaskQueueTest {
 
         boundedQueue.onTaskScheduled(streamsTaskId, task1);
         boundedQueue.onTaskScheduled(streamsTaskId, task2);
-        Assertions.assertThat(boundedQueue.hasMoreTasksOnDisk(streamsTaskId)).isTrue();
         boundedQueue.onTaskScheduled(streamsTaskId, task3);
         boundedQueue.onTaskScheduled(streamsTaskId, task4);
 

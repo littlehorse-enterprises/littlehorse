@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.taskqueue;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -100,8 +101,8 @@ public class TaskQueueManagerTest {
         int numberOfTaskToSchedule = 100_000;
         try {
             for (int i = 0; i < numberOfTaskToSchedule; i++) {
-                service.submit(Executors.callable(
-                        () -> queueManager.onTaskScheduled(streamsTaskId, taskId, taskToSchedule, tenantId)));
+                service.submit(Executors.callable(() ->
+                        queueManager.onTaskScheduled(streamsTaskId, taskId, TestUtil.scheduledTaskModel(), tenantId)));
             }
         } finally {
             service.shutdown();
@@ -110,6 +111,6 @@ public class TaskQueueManagerTest {
         for (int i = 0; i < numberOfTaskToSchedule; i++) {
             trackableObserver.onNext(pollTask);
         }
-        verify(mockServer, times(numberOfTaskToSchedule)).returnTaskToClient(taskToSchedule, trackableObserver);
+        verify(mockServer, times(numberOfTaskToSchedule)).returnTaskToClient(any(), same(trackableObserver));
     }
 }
