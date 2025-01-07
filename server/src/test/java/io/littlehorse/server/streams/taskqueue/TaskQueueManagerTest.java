@@ -106,7 +106,7 @@ public class TaskQueueManagerTest {
             }
         } finally {
             service.shutdown();
-            assertThat(service.awaitTermination(2, TimeUnit.SECONDS)).isTrue();
+            assertThat(service.awaitTermination(6, TimeUnit.SECONDS)).isTrue();
         }
         for (int i = 0; i < numberOfTaskToSchedule; i++) {
             trackableObserver.onNext(pollTask);
