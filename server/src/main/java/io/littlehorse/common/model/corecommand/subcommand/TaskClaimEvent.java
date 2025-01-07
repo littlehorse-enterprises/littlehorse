@@ -77,6 +77,7 @@ public class TaskClaimEvent extends CoreSubCommand<TaskClaimEventPb> {
         }
         executionContext.getTaskManager().markTaskAsScheduled(taskRunId);
         taskRun.onTaskAttemptStarted(this);
+        log.info("Claim task completed for taskRun {}", taskRunId);
         return Empty.newBuilder().build();
         // Needs to be done before we process the event, since processing the event
         // will delete the task schedule request.

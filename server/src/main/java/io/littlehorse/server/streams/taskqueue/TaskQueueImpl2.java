@@ -4,7 +4,6 @@ import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -22,7 +21,7 @@ public class TaskQueueImpl2 implements TaskQueue {
     private final Lock lock = new ReentrantLock();
     private final Queue<PollTaskRequestObserver> hungryClients = new LinkedList<>();
     private final String instanceName;
-    private final LinkedBlockingQueue<QueueItem> pendingTasks;
+    private final LinkedHashSet<QueueItem> pendingTasks;
     private final AtomicLong counter = new AtomicLong(0);
 
     public TaskQueueImpl2(String taskDefName, TaskQueueManager parent, int capacity, TenantIdModel tenantId) {
@@ -31,7 +30,7 @@ public class TaskQueueImpl2 implements TaskQueue {
         this.capacity = capacity;
         this.tenantId = tenantId;
         this.instanceName = parent.getBackend().getInstanceName();
-        this.pendingTasks = new LinkedBlockingQueue<>();
+        this.pendingTasks = new LinkedHashSet<>();
     }
 
     @Override
@@ -71,17 +70,15 @@ public class TaskQueueImpl2 implements TaskQueue {
 
     @Override
     public void onPollRequest(PollTaskRequestObserver requestObserver, RequestExecutionContext requestContext) {
-        ScheduledTaskModel nextTask = synchronizedBlock(() -> {
-            QueueItem nextItem = pendingTasks.poll();
-            if (nextItem != null) {
-                return nextItem.resolveTask(requestContext);
-            } else {
+        QueueItem nextItem = synchronizedBlock(() -> {
+            if (pendingTasks.isEmpty()) {
                 hungryClients.add(requestObserver);
                 return null;
             }
+            return pendingTasks.removeFirst();
         });
-        if (nextTask != null) {
-            parent.itsAMatch(nextTask, requestObserver);
+        if (nextItem != null) {
+            parent.itsAMatch(nextItem.resolveTask(requestContext), requestObserver);
         }
     }
 
@@ -97,7 +94,9 @@ public class TaskQueueImpl2 implements TaskQueue {
 
     @Override
     public void drainPartition(TaskId partitionToDrain) {
-        pendingTasks.removeIf(queueItem -> queueItem.taskId.equals(partitionToDrain));
+        synchronizedBlock(() -> {
+            pendingTasks.removeIf(queueItem -> queueItem.taskId.equals(partitionToDrain));
+        });
     }
 
     @Override
@@ -131,8 +130,24 @@ public class TaskQueueImpl2 implements TaskQueue {
                 counter.decrementAndGet();
                 return scheduledTask;
             } else {
-                return context.getableManager(taskId).getScheduledTask(scheduledTaskStoreKey);
+                ScheduledTaskModel task = context.getableManager(taskId).getScheduledTask(scheduledTaskStoreKey);
+                if (task == null) {
+                    throw new RuntimeException("Unable to find scheduled task for " + scheduledTaskStoreKey);
+                }
+                return task;
             }
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) return false;
+            QueueItem queueItem = (QueueItem) o;
+            return Objects.equals(scheduledTaskStoreKey, queueItem.scheduledTaskStoreKey);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(scheduledTaskStoreKey);
         }
     }
 

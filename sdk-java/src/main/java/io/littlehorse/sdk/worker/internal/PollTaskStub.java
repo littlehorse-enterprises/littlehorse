@@ -63,6 +63,7 @@ public final class PollTaskStub {
     public void doNext() throws InterruptedException {
         semaphore.acquire();
         ready.set(false);
+        log.info("doing next poll task");
         observer.onNext(PollTaskRequest.newBuilder()
                 .setClientId(taskWorkerId)
                 .setTaskDefId(taskDefId)
@@ -83,6 +84,7 @@ public final class PollTaskStub {
 
         @Override
         public void onNext(PollTaskResponse value) {
+            log.info("onNext: {}", value);
             if (value.hasResult()) {
                 taskExecutor.doTask(value.getResult(), bootstrapStub, mappings, executable, taskMethod);
             } else {

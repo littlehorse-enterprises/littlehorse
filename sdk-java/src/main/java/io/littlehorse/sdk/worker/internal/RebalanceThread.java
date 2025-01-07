@@ -90,7 +90,8 @@ final class RebalanceThread extends Thread {
                 if (!runningConnections.containsKey(lhHostInfo)) {
                     final List<PollThread> connections = new ArrayList<>();
                     for (int i = 0; i < config.getWorkerThreads(); i++) {
-                        String threadName = String.format("lh-poll-%s", i);
+                        String threadName =
+                                String.format("lh-poll-%s-%s", lhHostInfo.getHost() + ":" + lhHostInfo.getPort(), i);
                         PollThread connection = pollThreadFactory.create(threadName, lhHostInfo);
                         connection.start();
                         connections.add(connection);
