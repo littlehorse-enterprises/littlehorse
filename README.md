@@ -1,6 +1,8 @@
 # LittleHorse
 
-<a href="https://littlehorse.io/"><img alt="littlehorse.io" src="https://raw.githubusercontent.com/littlehorse-enterprises/littlehorse/01ef9618b7b719c3aac1d2e2eb5096f164a659b1/docs/images/badge-littlehorse-io.svg"/></a>
+<a href="https://littlehorse.io/"><img alt="littlehorse.io" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/site-badge.svg"/></a>
+<a href="https://littlehorse.io/learn"><img alt="littlehorse.io/learn" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/learn-badge.svg"/></a>
+<a href="https://littlehorse.io/docs"><img alt="littlehorse.io/docs" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/docs-badge.svg"/></a>
 [![slack](https://img.shields.io/badge/Slack-511651.svg?logo=slack)](https://launchpass.com/littlehorsecommunity)
 
 <a href="https://central.sonatype.com/artifact/io.littlehorse/littlehorse-client"><img alt="java" src="https://img.shields.io/maven-central/v/io.littlehorse/littlehorse-client?logo=openjdk&logoColor=white&color=orange&label=java"></a>
@@ -9,7 +11,7 @@
 
 
 <p align="center">
-<img alt="LH" src="./docs/static/img/2024-08-28-workflowRun.png" width="80%">
+<img alt="LH" src="./img/wfRun.png" width="80%">
 </p>
 
 [LittleHorse](https://littlehorse.io) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. By allowing LittleHorse to manage coordination and sequencing of your applications, you no longer have to worry about:
@@ -61,7 +63,7 @@ To run a workflow with LittleHorse, you need to:
 - The workflow engine ensures that your process gets executed correctly.
 
 <p align="center">
-<img src="./docs/static/img/2024-08-28-lh-application.png" width="75%">
+<img src="./img/architecture.png" width="75%">
 </p>
 
 To get started quickly with a basic workflow, try our quickstarts in [Java](https://github.com/littlehorse-enterprises/lh-quickstart-java), [Go](https://github.com/littlehorse-enterprises/lh-quickstart-go), and [Python](https://github.com/littlehorse-enterprises/lh-quickstart-python). For more detailed examples, you can check out:

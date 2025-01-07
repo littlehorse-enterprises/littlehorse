@@ -14,8 +14,9 @@ import (
 )
 
 var putPrincipalCmd = &cobra.Command{
-	Use:   "principal [id]",
-	Short: "Create principal.",
+	Use:   "principal <id>",
+	Short: "Create a principal",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		acl, _ := cmd.Flags().GetString("acl")
 		tenantId, _ := cmd.Flags().GetString("tenantId")
@@ -23,17 +24,22 @@ var putPrincipalCmd = &cobra.Command{
 		id := args[0]
 		serverAcls := []*lhproto.ServerACL{}
 		per_tenant_acls := make(map[string]*lhproto.ServerACLs)
-		for resource, actions := range parseAcl(acl) {
-			allowedResources := []lhproto.ACLResource{resource}
-			serverAcl := lhproto.ServerACL{
-				Resources:      allowedResources,
-				AllowedActions: actions,
+
+		if cmd.Flags().Lookup("acl").Changed {
+			for resource, actions := range parseAcl(acl) {
+				allowedResources := []lhproto.ACLResource{resource}
+				serverAcl := lhproto.ServerACL{
+					Resources:      allowedResources,
+					AllowedActions: actions,
+				}
+				serverAcls = append(serverAcls, &serverAcl)
 			}
-			serverAcls = append(serverAcls, &serverAcl)
 		}
 
-		per_tenant_acls[tenantId] = &lhproto.ServerACLs{
-			Acls: serverAcls,
+		if cmd.Flags().Lookup("tenantId").Changed {
+			per_tenant_acls[tenantId] = &lhproto.ServerACLs{
+				Acls: serverAcls,
+			}
 		}
 
 		putRequest := lhproto.PutPrincipalRequest{
@@ -41,6 +47,7 @@ var putPrincipalCmd = &cobra.Command{
 			PerTenantAcls: per_tenant_acls,
 			Overwrite:     overwrite,
 		}
+
 		littlehorse.PrintResp(getGlobalClient(cmd).PutPrincipal(
 			requestContext(cmd),
 			&putRequest,
@@ -70,8 +77,10 @@ Search for Principals. You may provide any of the following option groups:
 
 [isAdmin, tenantId]
 
-* Note: To set the value of Boolean flags, you must use an '=' sign between the key
-and the value, like so: '--isAdmin=false'
+* Note: '--isAdmin' is a Boolean flag with 3 states:
+	- return ALL          Flag is not present
+	- return only TRUE    Flag is present or reads '--isAdmin=true'
+	- return only FALSE   Flag reads '--isAdmin=false'
 
 * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
 options with this group to put a time bound on Principals which are returned.
@@ -79,6 +88,7 @@ The time bound applies to the time that the Principal was created.
 
 Returns a list of ObjectId's that can be passed into 'lhctl get principals'.
 	`,
+	Args: cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		isAdmin, _ := cmd.Flags().GetBool("isAdmin")
 		tenantId, _ := cmd.Flags().GetString("tenantId")
@@ -111,10 +121,8 @@ Returns a list of ObjectId's that can be passed into 'lhctl get principals'.
 var deployPrincipalCmd = &cobra.Command{
 	Use:   "principal <file>",
 	Short: "Deploy Principal from a file",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("Must provide one arg: the file of the principal to deploy")
-		}
 		putPrincipalReq := &lhproto.PutPrincipalRequest{}
 
 		// First, read the file
@@ -186,12 +194,8 @@ var (
 var deletePrincipalCmd = &cobra.Command{
 	Use:   "principal <id>",
 	Short: "Delete a Principal.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 1 {
-			log.Fatal("You must provide one argument: the ID of Principal to delete.")
-
-		}
-
 		littlehorse.PrintResp(getGlobalClient(cmd).DeletePrincipal(
 			requestContext(cmd),
 			&lhproto.DeletePrincipalRequest{
