@@ -22,7 +22,7 @@ var getWorkflowEventCmd = &cobra.Command{
 	You may provide all three identifiers as three separate arguments or you may provide
 	them delimited by the '/' character, as returned in all 'search' command queries.
 	`,
-	Args: cobra.MatchAll(cobra.ExactArgs(3)),
+	Args: cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 		wfRunId := args[0]
 		workflowEventDefName := args[1]
@@ -45,7 +45,7 @@ var getWorkflowEventCmd = &cobra.Command{
 }
 
 var searchWorkflowEventCmd = &cobra.Command{
-	Use:   "workflowEvent <workflowEventDefName> [...options]",
+	Use:   "workflowEvent <workflowEventDefName>",
 	Short: "Search for WorkflowEvent's by WorkflowEventDef Name",
 	Long: `
 Search for WorkflowEvent's by their WorkflowEventDef Name.
@@ -57,7 +57,7 @@ Returns a list of ObjectId's that can be passed into 'lhctl get workflowEvent'.
 	returned. The time bound applies to the time that the WorkflowEvents
 	were created.
 `,
-	Args: cobra.MatchAll(cobra.ExactArgs(1)),
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
@@ -86,7 +86,7 @@ var listWorkflowEventCmd = &cobra.Command{
 	Long: `
 Lists all WorkflowEvent's for a given WfRun Id.
 `,
-	Args: cobra.MatchAll(cobra.ExactArgs(1)),
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		wfRunId := args[0]
 

@@ -13,6 +13,7 @@ import (
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print Client and Server Version Information.",
+	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("lhctl version: " + rootCmd.Version)
 

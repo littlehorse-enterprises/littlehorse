@@ -4,10 +4,11 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package internal
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"log"
 	"strconv"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -29,11 +30,8 @@ lhctl wfSpecMetrics my-workflow 4321 MINUTES_5 12
 If you want to get cluster-level WfSpec metrics, you can use CLUSTER_LEVEL_METRIC
 as your wfSpecName, and 0 as your wfSpecVersion.
 `,
+	Args: cobra.ExactArgs(4),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 4 {
-			log.Fatal("Must provide four arguments: wfSpecName, windowType, numWindows, and wfSpecVersion.")
-		}
-
 		wfSpecName := args[0]
 		wfSpecVersion, err := strconv.Atoi(args[1])
 		if err != nil {
