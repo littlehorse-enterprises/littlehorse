@@ -61,13 +61,14 @@ export type NodeType =
   | 'START_MULTIPLE_THREADS'
   | 'THROW_EVENT'
   | 'UNKNOWN_NODE_TYPE'
-
+  | 'WAIT_FOR_CONDITION'
 export const getNodeType = (node: NodeObj): NodeType => {
   if (node['exit'] !== undefined) return 'EXIT'
   if (node['task'] !== undefined) return 'TASK'
   if (node['externalEvent'] !== undefined) return 'EXTERNAL_EVENT'
   if (node['startThread'] !== undefined) return 'START_THREAD'
   if (node['waitForThreads'] !== undefined) return 'WAIT_FOR_THREADS'
+  if (node['waitForCondition'] !== undefined) return 'WAIT_FOR_CONDITION'
   if (node['nop'] !== undefined) return 'NOP'
   if (node['sleep'] !== undefined) return 'SLEEP'
   if (node['userTask'] !== undefined) return 'USER_TASK'
