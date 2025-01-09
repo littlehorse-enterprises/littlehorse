@@ -38,9 +38,9 @@ export const NodeRun: FC<Modal> = ({ data }) => {
             defaultValue="item-1"
             collapsible
           >
-            {nodeRunsList?.map(nodeRun => (
-              <AccordionItem key={`item-${node.id?.position}`} node={nodeRun} userTaskNode={userTaskNode} />
-            ))}
+            {nodeRunsList?.map(nodeRun => {
+              return <AccordionItem key={`item-${node.id?.position}`} node={nodeRun} userTaskNode={userTaskNode} />
+            })}
           </Accordion.Root>
         </div>
       </DialogContent>

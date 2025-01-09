@@ -46,7 +46,11 @@ export const OverflowText: FC<OverflowTextProps> = ({ text, className, variant }
         </DialogTrigger>
         <DialogContent className="max-w-2xl gap-2 overflow-visible">
           <CopyButton value={formattedText} className="h-8 w-8 rounded-full" />
-          <div className={cn('h-96 overflow-auto rounded-lg bg-gray-100', { 'bg-red-200 text-red-500': variant === 'error' })}>
+          <div
+            className={cn('h-96 overflow-auto rounded-lg bg-gray-100', {
+              'bg-red-200 text-red-500': variant === 'error',
+            })}
+          >
             <div className="max-w-full whitespace-pre-wrap break-words p-4">{formattedText}</div>
           </div>
         </DialogContent>
