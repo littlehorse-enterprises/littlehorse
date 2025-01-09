@@ -11,8 +11,6 @@ import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -120,10 +118,6 @@ public class OneTaskQueue {
                 LHLibUtil.getWfRunId(scheduledTask.getSource().toProto()),
                 hungryClients.isEmpty());
 
-        if (taskTrack.containsKey(streamsTaskId) && taskTrack.get(streamsTaskId).hasMoreDataOnDisk()) {
-            return false;
-        }
-
         PollTaskRequestObserver luckyClient = null;
         try {
             lock.lock();
@@ -187,13 +181,8 @@ public class OneTaskQueue {
             lock.lock();
             if (pendingTasks.isEmpty()) {
                 for (Map.Entry<TaskId, TrackedPartition> taskHasMoreDataOnDisk : taskTrack.entrySet()) {
-                    long rehydrationStart = System.nanoTime();
-                    rehydrateFromStore(requestContext.getableManager(taskHasMoreDataOnDisk.getKey()));
-                    long rehydrationEnd = System.nanoTime();
-                    long latency = Duration.of(rehydrationEnd - rehydrationStart, ChronoUnit.NANOS)
-                            .toMillis();
-                    if (latency > 0) {
-                        log.info("Rehydration latency {}ms", latency);
+                    if (taskHasMoreDataOnDisk.getValue().hasMoreDataOnDisk()) {
+                        rehydrateFromStore(requestContext.getableManager(taskHasMoreDataOnDisk.getKey()));
                     }
                 }
             }
