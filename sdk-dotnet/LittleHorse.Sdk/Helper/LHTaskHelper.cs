@@ -3,9 +3,9 @@ using LittleHorse.Sdk.Common.Proto;
 
 namespace LittleHorse.Sdk.Helper
 {
-    public static class LHHelper
+    public static class LHTaskHelper
     {
-        public static WfRunId? GetWfRunId(TaskRunSource taskRunSource)
+        internal static WfRunId? GetWfRunId(TaskRunSource taskRunSource)
         {
             switch (taskRunSource.TaskRunSourceCase)
             {
@@ -16,11 +16,6 @@ namespace LittleHorse.Sdk.Helper
                 default:
                     return null;
             }
-        }
-
-        public static string TaskRunIdToString(TaskRunId taskRunId)
-        {
-            return $"{taskRunId.WfRunId}/{taskRunId.TaskGuid}";
         }
 
         private static string ParseWfRunIdToString(WfRunId wfRunId) {
@@ -34,7 +29,7 @@ namespace LittleHorse.Sdk.Helper
             return output.ToString();
         }
         
-        public static String ParseTaskRunIdToString(TaskRunId taskRunId) {
+        internal static String ParseTaskRunIdToString(TaskRunId taskRunId) {
             return ParseWfRunIdToString(taskRunId.WfRunId) + "/" + taskRunId.TaskGuid;
         }
     }

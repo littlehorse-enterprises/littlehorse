@@ -38,7 +38,7 @@ public class VariableMappingTest
 
         foreach (var type in testAllowedTypes)
         {
-            var variableType = LHMappingHelper.MapDotNetTypeToLHVariableType(type);
+            var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type);
             TaskDef? taskDef = getTaskDefForTest(variableType);
         
             var result = new VariableMapping(taskDef!, position, type, paramName);
@@ -52,7 +52,7 @@ public class VariableMappingTest
     {
         Type type1 = typeof(Int64);
         Type type2 = typeof(string);
-        var variableType = LHMappingHelper.MapDotNetTypeToLHVariableType(type1);
+        var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type1);
         TaskDef? taskDef = getTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
@@ -66,7 +66,7 @@ public class VariableMappingTest
     {
         Type type1 = typeof(double);
         Type type2 = typeof(Int64);
-        var variableType = LHMappingHelper.MapDotNetTypeToLHVariableType(type1);
+        var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type1);
         TaskDef? taskDef = getTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
@@ -80,7 +80,7 @@ public class VariableMappingTest
     {
         Type type1 = typeof(string);
         Type type2 = typeof(double);
-        var variableType = LHMappingHelper.MapDotNetTypeToLHVariableType(type1);
+        var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type1);
         TaskDef? taskDef = getTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
@@ -94,7 +94,7 @@ public class VariableMappingTest
     {
         Type type1 = typeof(bool);
         Type type2 = typeof(string);
-        var variableType = LHMappingHelper.MapDotNetTypeToLHVariableType(type1);
+        var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type1);
         TaskDef? taskDef = getTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
@@ -108,7 +108,7 @@ public class VariableMappingTest
     {
         Type type1 = typeof(byte[]);
         Type type2 = typeof(string);
-        var variableType = LHMappingHelper.MapDotNetTypeToLHVariableType(type1);
+        var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type1);
         TaskDef? taskDef = getTaskDefForTest(variableType);
         
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
@@ -339,7 +339,7 @@ public class VariableMappingTest
 
     private VariableMapping getVariableMappingForTest(Type type, string paramName, int position)
     {
-        var variableType = LHMappingHelper.MapDotNetTypeToLHVariableType(type);
+        var variableType = LHMappingHelper.DotNetTypeToLHVariableType(type);
         TaskDef? taskDef = getTaskDefForTest(variableType);
         
         var variableMapping = new VariableMapping(taskDef!, position, type, paramName);
