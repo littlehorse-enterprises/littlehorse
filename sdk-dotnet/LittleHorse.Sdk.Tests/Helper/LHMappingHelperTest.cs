@@ -7,7 +7,7 @@ using LittleHorse.Sdk.Tests;
 using Xunit;
 using Type = System.Type;
 
-public class LhMappingTest
+public class LHMappingHelperTest
 {
     [Fact]
     public void LHHelper_WithSystemIntegralVariableType_ShouldReturnLHVariableIntType()
