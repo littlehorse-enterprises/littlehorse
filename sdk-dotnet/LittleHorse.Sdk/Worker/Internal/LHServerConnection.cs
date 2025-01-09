@@ -62,7 +62,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                      if (taskToDo.Result != null)
                      {
                          var scheduledTask = taskToDo.Result;
-                         var wFRunId = LHHelper.GetWfRunId(scheduledTask.Source);
+                         var wFRunId = LHTaskHelper.GetWfRunId(scheduledTask.Source);
                          _logger?.LogDebug($"Received task schedule request for wfRun {wFRunId?.Id}");
 
                          await _reportTaskSemaphore.WaitAsync();
@@ -109,9 +109,9 @@ namespace LittleHorse.Sdk.Worker.Internal
       
         private async Task DoTask(ScheduledTask scheduledTask)
         {
-            ReportTaskRun result = ExecuteTask(scheduledTask, LHMappingHelper.MapDateTimeFromProtoTimeStamp(scheduledTask.CreatedAt));
+            ReportTaskRun result = ExecuteTask(scheduledTask, LHMappingHelper.DateTimeFromProtoTimeStamp(scheduledTask.CreatedAt));
             
-            var wfRunId = LHHelper.GetWfRunId(scheduledTask.Source);
+            var wfRunId = LHTaskHelper.GetWfRunId(scheduledTask.Source);
 
             try
             {
@@ -143,7 +143,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                                           $"TaskRunId {result.TaskRunId.TaskGuid}. Exception: " +
                                           $"{exception.Message}. Retries left: {retriesLeft}");
                         _logger?.LogDebug("Retrying reportTask rpc on taskRun " +
-                                          $"{LHHelper.TaskRunIdToString(result.TaskRunId)}");
+                                          $"{result.TaskRunId.WfRunId}/{result.TaskRunId.TaskGuid}");
                     });
 
 
@@ -168,7 +168,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             try
             {
                 var result = Invoke(scheduledTask, workerContext);
-                var serialized = LHMappingHelper.MapObjectToVariableValue(result);
+                var serialized = LHMappingHelper.ObjectToVariableValue(result);
 
                 taskResult.Output = serialized;
                 taskResult.Status = TaskStatus.TaskSuccess;
@@ -187,7 +187,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             catch (LHInputVarSubstitutionException ex)
             {
                 _logger?.LogError(ex, "Failed calculating task input variables");
-                taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
+                taskResult.LogOutput = LHMappingHelper.ExceptionToVariableValue(ex, workerContext);
                 taskResult.Status = TaskStatus.TaskInputVarSubError;
                 taskResult.Error = new LHTaskError
                 {
@@ -197,7 +197,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             catch (LHSerdeException ex)
             {
                 _logger?.LogError(ex, "Failed serializing Task Output");
-                taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
+                taskResult.LogOutput = LHMappingHelper.ExceptionToVariableValue(ex, workerContext);
                 taskResult.Status = TaskStatus.TaskOutputSerializingError;
                 taskResult.Error = new LHTaskError
                 {
@@ -209,7 +209,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                 if (ex.GetBaseException() is LHTaskException taskException)
                 {
                     _logger?.LogError(ex, "Task Method threw a Business Exception");
-                    taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
+                    taskResult.LogOutput = LHMappingHelper.ExceptionToVariableValue(ex, workerContext);
                     taskResult.Status = TaskStatus.TaskException;
                     taskResult.Exception = new Common.Proto.LHTaskException
                     {
@@ -221,7 +221,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                 else
                 {
                     _logger?.LogError(ex, "Task Method threw an exception");
-                    taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
+                    taskResult.LogOutput = LHMappingHelper.ExceptionToVariableValue(ex, workerContext);
                     taskResult.Status = TaskStatus.TaskFailed;
                     taskResult.Error = new LHTaskError
                     {
@@ -233,7 +233,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             catch (Exception ex)
             {
                 _logger?.LogError(ex, "Unexpected exception during task execution");
-                taskResult.LogOutput = LHMappingHelper.MapExceptionToVariableValue(ex, workerContext);
+                taskResult.LogOutput = LHMappingHelper.ExceptionToVariableValue(ex, workerContext);
                 taskResult.Status = TaskStatus.TaskFailed;
                 taskResult.Error = new LHTaskError
                 {
