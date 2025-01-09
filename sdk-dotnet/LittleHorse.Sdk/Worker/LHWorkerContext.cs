@@ -34,7 +34,7 @@ namespace LittleHorse.Sdk.Worker
         /// </returns>
         public WfRunId GetWfRunId() 
         {
-            return LHHelper.GetWfRunId(_scheduleTask.Source)!;
+            return LHTaskHelper.GetWfRunId(_scheduleTask.Source)!;
         }
         
         /// <summary>
@@ -158,7 +158,7 @@ namespace LittleHorse.Sdk.Worker
         /// </returns>
         public String GetIdempotencyKey() 
         {
-            return LHHelper.ParseTaskRunIdToString(GetTaskRunId());
+            return LHTaskHelper.ParseTaskRunIdToString(GetTaskRunId());
         }
     }
 }
