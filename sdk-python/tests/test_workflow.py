@@ -238,9 +238,7 @@ class TestThreadBuilder(unittest.TestCase):
                                 failure_name="my_failure_name", message="my_message"
                             )
                         ),
-                        outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
                     ),
-                    "2-exit-EXIT": Node(exit=ExitNode()),
                 },
             ),
         )
@@ -268,9 +266,7 @@ class TestThreadBuilder(unittest.TestCase):
                                 ),
                             )
                         ),
-                        outgoing_edges=[Edge(sink_node_name="2-exit-EXIT")],
                     ),
-                    "2-exit-EXIT": Node(exit=ExitNode()),
                 },
             ),
         )

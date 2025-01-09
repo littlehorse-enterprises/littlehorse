@@ -20,7 +20,7 @@ public class LHMappingHelperTest
         
         foreach (var type in test_allowed_types)
         {
-            var result = LHMappingHelper.MapDotNetTypeToLHVariableType(type);
+            var result = LHMappingHelper.DotNetTypeToLHVariableType(type);
             
             Assert.True(result == VariableType.Int);
         }
@@ -33,7 +33,7 @@ public class LHMappingHelperTest
         
         foreach (var type in test_allowed_types)
         {
-            var result = LHMappingHelper.MapDotNetTypeToLHVariableType(type);
+            var result = LHMappingHelper.DotNetTypeToLHVariableType(type);
             
             Assert.True(result == VariableType.Double);
         }
@@ -44,7 +44,7 @@ public class LHMappingHelperTest
     {
         var type = typeof(String);
         
-        var result = LHMappingHelper.MapDotNetTypeToLHVariableType(type);
+        var result = LHMappingHelper.DotNetTypeToLHVariableType(type);
         
         Assert.True(result == VariableType.Str);
     }
@@ -54,7 +54,7 @@ public class LHMappingHelperTest
     {
         var type = typeof(bool);
         
-        var result = LHMappingHelper.MapDotNetTypeToLHVariableType(type);
+        var result = LHMappingHelper.DotNetTypeToLHVariableType(type);
         
         Assert.True(result == VariableType.Bool);
     }
@@ -64,7 +64,7 @@ public class LHMappingHelperTest
     {
         var type = typeof(byte[]);
         
-        var result = LHMappingHelper.MapDotNetTypeToLHVariableType(type);
+        var result = LHMappingHelper.DotNetTypeToLHVariableType(type);
         
         Assert.True(result == VariableType.Bytes);
     }
@@ -76,7 +76,7 @@ public class LHMappingHelperTest
         
         foreach (var type in test_allowed_types)
         {
-            var result = LHMappingHelper.MapDotNetTypeToLHVariableType(type);
+            var result = LHMappingHelper.DotNetTypeToLHVariableType(type);
             
             Assert.True(result == VariableType.JsonArr);
         }
@@ -90,7 +90,7 @@ public class LHMappingHelperTest
         
         foreach (var type in test_not_allowed_types)
         {
-            var result = LHMappingHelper.MapDotNetTypeToLHVariableType(type);
+            var result = LHMappingHelper.DotNetTypeToLHVariableType(type);
             
             Assert.Equal(VariableType.JsonObj, result);
         }
@@ -99,7 +99,7 @@ public class LHMappingHelperTest
     [Fact]
     public void LHHelper_WithNullProtoTimestamp_ShouldReturnNull()
     {
-        var result = LHMappingHelper.MapDateTimeFromProtoTimeStamp(null!);
+        var result = LHMappingHelper.DateTimeFromProtoTimeStamp(null!);
         
         Assert.Null(result);
     }
@@ -113,7 +113,7 @@ public class LHMappingHelperTest
             Nanos = 0
         };
         
-        var result = LHMappingHelper.MapDateTimeFromProtoTimeStamp(protoTimestamp);
+        var result = LHMappingHelper.DateTimeFromProtoTimeStamp(protoTimestamp);
         
         DateTime now = DateTime.Now;
         DateTime expectedDatetimeWithoutSeconds = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0);
@@ -128,7 +128,7 @@ public class LHMappingHelperTest
         
         Timestamp specificTimestamp = Timestamp.FromDateTime(specificDateTime);
         
-        var result = LHMappingHelper.MapDateTimeFromProtoTimeStamp(specificTimestamp);
+        var result = LHMappingHelper.DateTimeFromProtoTimeStamp(specificTimestamp);
         
         Assert.Equal(specificDateTime, result);
     }
@@ -139,7 +139,7 @@ public class LHMappingHelperTest
         VariableValue value = new VariableValue();
         value.Str = "test";
         
-        var result = LHMappingHelper.MapObjectToVariableValue(value);
+        var result = LHMappingHelper.ObjectToVariableValue(value);
         
         Assert.Equal(value, result);
     }
@@ -147,7 +147,7 @@ public class LHMappingHelperTest
     [Fact]
     public void LHHelper_WithNullLHVariableValue_ShouldReturnNewLHVariableValue()
     {
-        var result = LHMappingHelper.MapObjectToVariableValue(null);
+        var result = LHMappingHelper.ObjectToVariableValue(null);
         
         Assert.NotNull(result);
     }
@@ -162,7 +162,7 @@ public class LHMappingHelperTest
         
         foreach (var obj in test_int_values)
         {
-            var result = LHMappingHelper.MapObjectToVariableValue(obj);
+            var result = LHMappingHelper.ObjectToVariableValue(obj);
             
             Assert.Equal(expectedValue, result.Int);
         }
@@ -175,7 +175,7 @@ public class LHMappingHelperTest
 
        foreach (var value in testFloatValues)
        {
-           var result = LHMappingHelper.MapObjectToVariableValue(value);
+           var result = LHMappingHelper.ObjectToVariableValue(value);
            
            if (value is double doubleValue) 
                Assert.Equal(doubleValue, result.Double);
@@ -189,7 +189,7 @@ public class LHMappingHelperTest
     {
         var stringValue = "This is a test";
         
-        var result = LHMappingHelper.MapObjectToVariableValue(stringValue);
+        var result = LHMappingHelper.ObjectToVariableValue(stringValue);
         
         Assert.Equal(stringValue, result.Str);
     }
@@ -199,7 +199,7 @@ public class LHMappingHelperTest
     {
         var boolValue = true;
         
-        var result = LHMappingHelper.MapObjectToVariableValue(boolValue);
+        var result = LHMappingHelper.ObjectToVariableValue(boolValue);
         
         Assert.Equal(boolValue, result.Bool);
     }
@@ -209,7 +209,7 @@ public class LHMappingHelperTest
     {
         var bytes = new byte[] { 0x20, 0x20, 0x20 };
         
-        var result = LHMappingHelper.MapObjectToVariableValue(bytes);
+        var result = LHMappingHelper.ObjectToVariableValue(bytes);
         
         Assert.Equal(bytes, result.Bytes);
     }
@@ -224,7 +224,7 @@ public class LHMappingHelperTest
             new Person(){ Age = 32, Cars = new List<Car>() {car}, FirstName = "Test2"}
         };
         
-        var result = LHMappingHelper.MapObjectToVariableValue(persons);
+        var result = LHMappingHelper.ObjectToVariableValue(persons);
         
         Assert.Contains("\"Age\":36", result.JsonArr);
         Assert.Contains("\"FirstName\":\"Test2\"", result.JsonArr);
@@ -236,7 +236,7 @@ public class LHMappingHelperTest
         var car = new Car {Id = 1, Cost = 134.45E-2f};
         var person = new Person() { Age = 36, Cars = new List<Car>() {car}, FirstName = "Test"};
         
-        var result = LHMappingHelper.MapObjectToVariableValue(person);
+        var result = LHMappingHelper.ObjectToVariableValue(person);
         
         Assert.Contains("\"FirstName\":\"Test\"", result.JsonObj);
     }
