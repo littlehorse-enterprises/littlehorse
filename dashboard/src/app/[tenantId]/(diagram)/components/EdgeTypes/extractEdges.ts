@@ -1,4 +1,5 @@
 import { getVariable } from '@/app/utils'
+import { getComparatorSymbol } from '@/app/utils/comparatorUtils'
 import { Comparator, Edge as EdgeProto, ThreadSpec } from 'littlehorse-client/proto'
 import { Edge, MarkerType } from 'reactflow'
 
@@ -41,18 +42,5 @@ const extractEdgeLabel = ({ condition }: EdgeProto) => {
   if (!condition) return
 
   const { left, right, comparator } = condition
-  return `${getVariable(left)} ${getComparator(comparator)} ${getVariable(right)}`
-}
-
-const getComparator = (comparator: Comparator) => Conditions[comparator]
-export const Conditions: Record<Comparator, string> = {
-  [Comparator.LESS_THAN]: '<',
-  [Comparator.GREATER_THAN]: '>',
-  [Comparator.LESS_THAN_EQ]: '<=',
-  [Comparator.GREATER_THAN_EQ]: '>=',
-  [Comparator.EQUALS]: '=',
-  [Comparator.NOT_EQUALS]: '!=',
-  [Comparator.IN]: 'IN',
-  [Comparator.NOT_IN]: 'NOT IN',
-  [Comparator.UNRECOGNIZED]: '',
+  return `${getVariable(left)} ${getComparatorSymbol(comparator)} ${getVariable(right)}`
 }

@@ -87,22 +87,15 @@ export const TaskDetails: FC<{
         </div>
       )}
       {nodeRun && (
-        <div className={cn("mt-2 flex flex-col rounded bg-green-200 p-1", { 'bg-red-200': nodeRun.errorMessage })}>
+        <div className={cn('mt-2 flex flex-col rounded bg-green-200 p-1', { 'bg-red-200': nodeRun.errorMessage })}>
           <h3 className="font-bold">{nodeRun.errorMessage ? 'TaskRun Error' : 'No TaskRun Error'}</h3>
-          <OverflowText
-            variant="error"
-            className="text-nowrap w-36"
-            text={nodeRun.errorMessage ?? ''}
-          />
+          <OverflowText variant="error" className="w-36 text-nowrap" text={nodeRun.errorMessage ?? ''} />
         </div>
       )}
       {nodeRun && (
-        <div className={"mt-2 flex flex-col rounded bg-gray-200 p-1"}>
-          <p className="font-bold text-xs">{lastLogOutput ? 'Worker Log Output' : 'No Worker Log Output'}</p>
-          <OverflowText
-            className="text-nowrap w-36"
-            text={lastLogOutput ?? ''}
-          />
+        <div className={'mt-2 flex flex-col rounded bg-gray-200 p-1'}>
+          <p className="text-xs font-bold">{lastLogOutput ? 'Worker Log Output' : 'No Worker Log Output'}</p>
+          <OverflowText className="w-36 text-nowrap" text={lastLogOutput ?? ''} />
         </div>
       )}
       <NodeRunsList nodeRuns={nodeRunsList} />

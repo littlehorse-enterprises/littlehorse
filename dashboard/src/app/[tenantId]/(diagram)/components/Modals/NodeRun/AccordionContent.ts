@@ -10,6 +10,7 @@ import {
   WaitForThreadDefDetail,
   WorkflowEventDefDetail,
 } from './'
+import { WaitForConditionDefDetail } from './WaitForConditionDefDetail'
 
 export type AccordionNode = { nodeRun: NodeRun; userTaskNode?: UserTaskNode }
 type AccordionNodes = {
@@ -17,6 +18,7 @@ type AccordionNodes = {
 }
 
 export const AccordionComponents: AccordionNodes = {
+  WAIT_FOR_CONDITION: WaitForConditionDefDetail,
   ENTRYPOINT: TaskDefDetail,
   EXIT: TaskDefDetail,
   EXTERNAL_EVENT: ExternalEventDefDetail,
