@@ -1,5 +1,6 @@
+import { lhClient } from '../lhClient'
 import { Search } from './components/Search'
 
-export default function Home() {
+export default async function Home() {
   return <Search />
 }

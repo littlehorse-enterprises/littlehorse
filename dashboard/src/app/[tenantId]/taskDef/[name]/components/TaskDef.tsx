@@ -7,24 +7,40 @@ import { concatWfRunIds, localDateTimeToUTCIsoString, utcToLocalDateTime } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useInfiniteQuery } from '@tanstack/react-query'
-import { TaskDef as TaskDefProto, TaskStatus } from 'littlehorse-client/proto'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { TaskDef as TaskDefProto, TaskStatus, WfSpecIdList } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { FC, Fragment, useState } from 'react'
 import { PaginatedTaskRunList, searchTaskRun } from '../actions/searchTaskRun'
 import { Details } from './Details'
 import { InputVars } from './InputVars'
+import { getWfSpecsByTaskDef } from '@/app/actions/getWfSpecsByTaskDef'
+import { WfSpecData } from '@/types'
+import { TagIcon } from 'lucide-react'
+import { Separator } from '@/components/ui/separator'
+import { SelectionLink } from '@/app/[tenantId]/components/SelectionLink'
 
 type Props = {
   spec: TaskDefProto
 }
+
 export const TaskDef: FC<Props> = ({ spec }) => {
   const [selectedStatus, setSelectedStatus] = useState<TaskStatus | 'ALL'>('ALL')
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
   const tenantId = useParams().tenantId as string
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const taskDefName = spec.id?.name || ''
+
+  const { data: wfSpecs } = useQuery({
+    queryKey: ['wfSpecs', tenantId, taskDefName],
+    queryFn: async () => {
+      if (!tenantId || !taskDefName) return
+      return await getWfSpecsByTaskDef(tenantId, taskDefName)
+    },
+    enabled: !!tenantId && !!taskDefName,
+  })
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ['taskRun', selectedStatus, tenantId, limit, createdAfter, createdBefore],
@@ -42,11 +58,31 @@ export const TaskDef: FC<Props> = ({ spec }) => {
       })
     },
   })
+
   return (
     <>
       <Navigation href="/?type=TaskDef" title="Go back to TaskDefs" />
       <Details id={spec.id} />
       <InputVars inputVars={spec.inputVars} />
+
+      <h2 className="mb-2 mt-2 text-lg font-bold">WfSpec Usage</h2>
+      {wfSpecs && (
+        <div className="flex max-h-[200px] flex-col overflow-auto">
+          {wfSpecs.results.map(wfSpec => (
+            <Fragment key={wfSpec.name}>
+              <SelectionLink href={`/wfSpec/${wfSpec.name}/${wfSpec.majorVersion}.${wfSpec.revision}`}>
+                <p className="group">{wfSpec.name}</p>
+                <div className="flex items-center gap-2 rounded bg-blue-200 px-2 font-mono text-sm text-gray-500">
+                  <TagIcon className="h-4 w-4 fill-none stroke-gray-500 stroke-1" />v{wfSpec.majorVersion}.
+                  {wfSpec.revision}
+                </div>
+              </SelectionLink>
+              <Separator />
+            </Fragment>
+          ))}
+        </div>
+      )}
+
       <hr className="mt-6" />
       <div className="mb-4 mt-6 flex items-center justify-between">
         <h2 className="text-2xl font-bold">Related Task Run&apos;s:</h2>
