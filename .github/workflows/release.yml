@@ -47,10 +47,13 @@ jobs:
         run: sed -i "s/version=.*/version=${TAG}/g" gradle.properties
 
       - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v5
+        uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: List keys
+        run: gpg -K
 
       - name: Generate KeyRing
         run: gpg --keyring secring.gpg --export-secret-keys --passphrase ${{ secrets.GPG_PASSPHRASE }} --batch --yes --pinentry-mode=loopback > ~/.gnupg/secring.gpg
