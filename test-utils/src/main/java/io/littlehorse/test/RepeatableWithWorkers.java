@@ -6,13 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Injects a {@link LHWorkflow} instance into the test class
+ * Repeatable annotation for {@link WithWorkers}
  */
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface LHWorkflow {
-    /**
-     * @return WfSpec name
-     */
-    String value();
+public @interface RepeatableWithWorkers {
+    WithWorkers[] value();
 }
