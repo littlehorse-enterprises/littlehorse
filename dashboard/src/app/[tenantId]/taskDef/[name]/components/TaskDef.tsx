@@ -65,23 +65,25 @@ export const TaskDef: FC<Props> = ({ spec }) => {
       <Details id={spec.id} />
       <InputVars inputVars={spec.inputVars} />
 
-      <h2 className="text-lg font-bold mt-2 mb-2">WfSpec Usage</h2>
-      {wfSpecs && <div className="flex max-h-[200px] flex-col overflow-auto">
-        {wfSpecs.results.map(wfSpec => (
-          <Fragment key={wfSpec.name}>
-            <SelectionLink href={`/wfSpec/${wfSpec.name}/${wfSpec.majorVersion}.${wfSpec.revision}`}>
-              <p className="group">{wfSpec.name}</p>
-              <div className="flex items-center gap-2 rounded bg-blue-200 px-2 font-mono text-sm text-gray-500">
-                <TagIcon className="h-4 w-4 fill-none stroke-gray-500 stroke-1" />
-                v{wfSpec.majorVersion}.{wfSpec.revision}
-              </div>
-            </SelectionLink>
-            <Separator />
-          </Fragment>
-        ))}
-      </div>}
+      <h2 className="mb-2 mt-2 text-lg font-bold">WfSpec Usage</h2>
+      {wfSpecs && (
+        <div className="flex max-h-[200px] flex-col overflow-auto">
+          {wfSpecs.results.map(wfSpec => (
+            <Fragment key={wfSpec.name}>
+              <SelectionLink href={`/wfSpec/${wfSpec.name}/${wfSpec.majorVersion}.${wfSpec.revision}`}>
+                <p className="group">{wfSpec.name}</p>
+                <div className="flex items-center gap-2 rounded bg-blue-200 px-2 font-mono text-sm text-gray-500">
+                  <TagIcon className="h-4 w-4 fill-none stroke-gray-500 stroke-1" />v{wfSpec.majorVersion}.
+                  {wfSpec.revision}
+                </div>
+              </SelectionLink>
+              <Separator />
+            </Fragment>
+          ))}
+        </div>
+      )}
 
-      < hr className="mt-6" />
+      <hr className="mt-6" />
       <div className="mb-4 mt-6 flex items-center justify-between">
         <h2 className="text-2xl font-bold">Related Task Run&apos;s:</h2>
         <select
@@ -120,57 +122,55 @@ export const TaskDef: FC<Props> = ({ spec }) => {
         </div>
       </div>
 
-      {
-        isPending ? (
-          <div className="flex min-h-[360px] items-center justify-center text-center">
-            <RefreshCwIcon className="h-8 w-8 animate-spin text-blue-500" />
-          </div>
-        ) : (
-          <div className="flex min-h-[360px] flex-col gap-4">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead scope="col">WfRun Id</TableHead>
-                  <TableHead scope="col">Task GUID</TableHead>
-                  <TableHead scope="col">Creation Date</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data?.pages.map((page, i) => (
-                  <Fragment key={i}>
-                    {page.resultsWithDetails.length > 0 ? (
-                      page.resultsWithDetails.map(({ taskRun }) => {
-                        return (
-                          <TableRow key={taskRun.id?.taskGuid}>
-                            <TableCell>
-                              <LinkWithTenant
-                                className="py-2 text-blue-500 hover:underline"
-                                target="_blank"
-                                href={`/wfRun/${concatWfRunIds(taskRun.id?.wfRunId!)}?threadRunNumber=${taskRun.source?.taskNode?.nodeRunId?.threadRunNumber ?? taskRun.source?.userTaskTrigger?.nodeRunId?.threadRunNumber}&nodeRunName=${taskRun.source?.taskNode?.nodeRunId?.position}-${spec.id?.name}-TASK`}
-                              >
-                                {concatWfRunIds(taskRun.id?.wfRunId!)}
-                              </LinkWithTenant>
-                            </TableCell>
-                            <TableCell>{taskRun.id?.taskGuid}</TableCell>
+      {isPending ? (
+        <div className="flex min-h-[360px] items-center justify-center text-center">
+          <RefreshCwIcon className="h-8 w-8 animate-spin text-blue-500" />
+        </div>
+      ) : (
+        <div className="flex min-h-[360px] flex-col gap-4">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead scope="col">WfRun Id</TableHead>
+                <TableHead scope="col">Task GUID</TableHead>
+                <TableHead scope="col">Creation Date</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data?.pages.map((page, i) => (
+                <Fragment key={i}>
+                  {page.resultsWithDetails.length > 0 ? (
+                    page.resultsWithDetails.map(({ taskRun }) => {
+                      return (
+                        <TableRow key={taskRun.id?.taskGuid}>
+                          <TableCell>
+                            <LinkWithTenant
+                              className="py-2 text-blue-500 hover:underline"
+                              target="_blank"
+                              href={`/wfRun/${concatWfRunIds(taskRun.id?.wfRunId!)}?threadRunNumber=${taskRun.source?.taskNode?.nodeRunId?.threadRunNumber ?? taskRun.source?.userTaskTrigger?.nodeRunId?.threadRunNumber}&nodeRunName=${taskRun.source?.taskNode?.nodeRunId?.position}-${spec.id?.name}-TASK`}
+                            >
+                              {concatWfRunIds(taskRun.id?.wfRunId!)}
+                            </LinkWithTenant>
+                          </TableCell>
+                          <TableCell>{taskRun.id?.taskGuid}</TableCell>
 
-                            <TableCell>{taskRun.scheduledAt ? utcToLocalDateTime(taskRun.scheduledAt) : 'N/A'}</TableCell>
-                          </TableRow>
-                        )
-                      })
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={3} className="text-center">
-                          No data
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </Fragment>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        )
-      }
+                          <TableCell>{taskRun.scheduledAt ? utcToLocalDateTime(taskRun.scheduledAt) : 'N/A'}</TableCell>
+                        </TableRow>
+                      )
+                    })
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={3} className="text-center">
+                        No data
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </Fragment>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
 
       <div className="mt-6">
         <SearchFooter
