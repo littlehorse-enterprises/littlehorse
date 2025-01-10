@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'signing'
     id 'com.diffplug.spotless' version '6.25.0'
 }
 
@@ -58,7 +59,16 @@ tasks.register('sourcesJar', Jar) {
 
 publishing {
     repositories {
-        mavenLocal()
+        repositories {
+            maven {
+                name = "ossrh"
+                url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                credentials {
+                    username = findProperty('ossrhUsername')
+                    password = findProperty('ossrhPassword')
+                }
+            }
+        }
     }
 
     publications {
@@ -94,4 +104,14 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    required { gradle.taskGraph.hasTask("publish") }
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    excludes = []
+    options.memberLevel = JavadocMemberLevel.PUBLIC
 }

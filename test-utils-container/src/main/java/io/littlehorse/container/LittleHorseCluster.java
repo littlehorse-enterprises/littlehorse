@@ -13,6 +13,9 @@ import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
 /**
+ * <p>
+ * LH Cluster Testcontainers implementation
+ * </p>
  * Example of using:
  * <blockquote><pre>
  *     {@code @Container}
@@ -25,8 +28,8 @@ import org.testcontainers.utility.DockerImageName;
  */
 public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
 
-    public static final String LHC_API_HOST = "LHC_API_HOST";
-    public static final String LHC_API_PORT = "LHC_API_PORT";
+    protected static final String LHC_API_HOST = "LHC_API_HOST";
+    protected static final String LHC_API_PORT = "LHC_API_PORT";
     private static final Network NETWORK = Network.newNetwork();
     private static final String KAFKA_HOSTNAME = "kafka";
     private static final String LH_HOSTNAME = "littlehorse";
@@ -37,8 +40,8 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
     /**
      * It creates a KafkaContainer and a list of LittleHorseContainer
      *
-     * @param kafkaImage       Example: DockerImageName.parse("apache/kafka-native:latest")
-     * @param littlehorseImage Example: DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest")
+     * @param kafkaImage       Example: {@code DockerImageName.parse("apache/kafka-native:latest")}
+     * @param littlehorseImage Example: {@code DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest")}
      * @param instances        LH cluster size
      */
     private LittleHorseCluster(
@@ -77,7 +80,7 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
     }
 
     /**
-     * New LittleHorseClusterBuilder
+     * New builder
      *
      * @return LittleHorseClusterBuilder
      */
@@ -86,7 +89,7 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
     }
 
     /**
-     * Return a properties object
+     * Return a properties object with the client configuration for connections
      * <p>
      * Use: {@code new LHConfig(littleHorseCluster.getClientProperties())}
      * </p>
@@ -99,6 +102,9 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
         return properties;
     }
 
+    /**
+     * Cluster Builder
+     */
     public static class LittleHorseClusterBuilder {
         private String kafkaImage = "apache/kafka-native:latest";
         private String littlehorseImage = "ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest";
@@ -137,7 +143,7 @@ public class LittleHorseCluster extends GenericContainer<LittleHorseCluster> {
         }
 
         /**
-         * CLuster size
+         * LH Cluster size
          *
          * @param instances Size
          * @return This builder

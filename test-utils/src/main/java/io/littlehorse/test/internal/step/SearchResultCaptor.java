@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *  workflowVerifier.prepareRun(myWorkflow)
  *        .doSearch(SearchWfSpecRequest.class, searchResultCaptor.capture(), searchRequest)
  *        .start();
- *  CapturedResult<WfSpecIdList> capturedResult =  searchResultCaptor.getValue();
+ *  CapturedResult{@code <WfSpecIdList>} capturedResult =  searchResultCaptor.getValue();
  * </pre></blockquote>
  * @param <T> Search response type.
  */

@@ -10,6 +10,30 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 
+/**
+ * <p>
+ * LH Testcontainers implementation
+ * </p>
+ * Example of using:
+ * <blockquote><pre>
+ * public LittleHorseContainer littleHorseInstance = new LittleHorseContainer(littlehorseImage)
+ *             .withKafkaBootstrapServers(kafkaBootstrapServers)
+ *             .withAdvertisedPort(externalPort)
+ *             .withInstanceId(instanceId)
+ *             .withInternalAdvertisedHost(internalHostname) // unique hostname for each instance
+ *             .withNetwork(dockerNetwork)
+ *             .dependsOn(kafka);
+ * </pre></blockquote>
+ * Example of using with LittleHorseCluster (@see {@link LittleHorseCluster#newBuilder()}):
+ * <blockquote><pre>
+ * {@code @Container}
+ * public LittleHorseCluster littleHorseCluster = LittleHorseCluster.newBuilder()
+ *             .withInstances(2)
+ *             .withKafkaImage("apache/kafka-native:latest")
+ *             .withLittlehorseImage("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:master")
+ *             .build();
+ * </pre></blockquote>
+ */
 class LittleHorseContainer extends GenericContainer<LittleHorseContainer> {
 
     private static final String LHS_INTERNAL_ADVERTISED_HOST = "LHS_INTERNAL_ADVERTISED_HOST";
@@ -37,7 +61,7 @@ class LittleHorseContainer extends GenericContainer<LittleHorseContainer> {
     /**
      * Create LittleHorse Testcontainers Wrapper
      *
-     * @param littlehorseImage Example: DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest")
+     * @param littlehorseImage Example: {@code DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest")}
      */
     LittleHorseContainer(final DockerImageName littlehorseImage) {
         super(littlehorseImage);
@@ -53,9 +77,10 @@ class LittleHorseContainer extends GenericContainer<LittleHorseContainer> {
     }
 
     /**
-     * Kafka bootstrap servers. Configures the LHS_KAFKA_BOOTSTRAP_SERVERS env variable
+     * Kafka bootstrap servers. Configures the {@code LHS_KAFKA_BOOTSTRAP_SERVERS} env variable.
+     * @see <a href="https://www.littlehorse.io/docs/server/operations/server-configuration#lhs_kafka_bootstrap_servers">Server Documentation.</a>
      *
-     * @param bootstrapServers Example: "kafka:19092"
+     * @param bootstrapServers Example: kafka:19092
      * @return This testcontainer
      */
     public LittleHorseContainer withKafkaBootstrapServers(final String bootstrapServers) {
@@ -63,7 +88,8 @@ class LittleHorseContainer extends GenericContainer<LittleHorseContainer> {
     }
 
     /**
-     * External port for connection. It configures the LHS_ADVERTISED_LISTENERS env variable
+     * External port for connection. It configures the {@code LHS_ADVERTISED_LISTENERS} env variable.
+     * @see <a href="https://www.littlehorse.io/docs/server/operations/server-configuration#lhs_advertised_listeners">Server Documentation.</a>
      *
      * @param port Example: 32023
      * @return This testcontainer
@@ -85,10 +111,11 @@ class LittleHorseContainer extends GenericContainer<LittleHorseContainer> {
     }
 
     /**
-     * For docker network. It configures the LHS_INTERNAL_ADVERTISED_HOST env variable
+     * For docker network. It configures the {@code LHS_INTERNAL_ADVERTISED_HOST} env variable.
+     * @see <a href="https://www.littlehorse.io/docs/server/operations/server-configuration#lhs_internal_advertised_host">Server Documentation.</a>
      *
-     * @param hostname
-     * @return
+     * @param hostname Example: server1
+     * @return This testcontainer
      */
     public LittleHorseContainer withInternalAdvertisedHost(final String hostname) {
         return this.withEnv(LHS_INTERNAL_ADVERTISED_HOST, hostname).withNetworkAliases(hostname);
@@ -97,16 +124,16 @@ class LittleHorseContainer extends GenericContainer<LittleHorseContainer> {
     /**
      * Get LH host
      *
-     * @return hostname: localhost
+     * @return Hostname: localhost
      */
     public String getApiHost() {
         return getHost();
     }
 
     /**
-     * Get docker network hostname
+     * Get docker internal network hostname
      *
-     * @return Docker hostname
+     * @return Internal docker hostname
      */
     public String getInternalApiHost() {
         if (getNetworkAliases().isEmpty()) {
@@ -118,16 +145,16 @@ class LittleHorseContainer extends GenericContainer<LittleHorseContainer> {
     /**
      * Get docker internal network port
      *
-     * @return Docket network port
+     * @return Internal docket network port
      */
     public int getInternalApiPort() {
         return DEFAULT_INTERNAL_PORT;
     }
 
     /**
-     * Get port
+     * Get external port
      *
-     * @return port: 32023
+     * @return External port: 32023
      */
     public int getApiPort() {
         return getMappedPort(DEFAULT_INTERNAL_PORT);
