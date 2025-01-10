@@ -56,7 +56,9 @@ jobs:
         run: gpg -K
 
       - name: Generate KeyRing
-        run: gpg --keyring secring.gpg --export-secret-keys --passphrase ${{ secrets.GPG_PASSPHRASE }} --batch --yes --pinentry-mode=loopback > ~/.gnupg/secring.gpg
+        run: |
+          gpg --keyring secring.gpg --export-secret-keys --passphrase ${{ secrets.GPG_PASSPHRASE }} --batch --yes --pinentry-mode=loopback > ~/.gnupg/secring.gpg
+          ls ~/.gnupg/
 
       - name: Tests
         run: ./gradlew sdk-java:test test-utils:test test-utils-container:test
