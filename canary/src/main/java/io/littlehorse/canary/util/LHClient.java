@@ -22,7 +22,7 @@ public class LHClient implements MeterBinder {
     private final String workflowName;
     private final int workflowRevision;
     private final int workflowVersion;
-    private static final String WF_RUN_COUNTER_NAME = "canary_wf_run";
+    private static final String WF_RUN_COUNTER_NAME = "canary_metronome_wf_run";
     private final CounterMetric wfRunCounter = new CounterMetric(WF_RUN_COUNTER_NAME);
 
     public LHClient(

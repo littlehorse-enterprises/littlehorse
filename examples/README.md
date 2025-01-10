@@ -6,7 +6,7 @@ Here you will find a few examples to demonstrate simple `WfSpec` concepts in Lit
 
 First, you need a running LH Server (either locally in your own terminal, or remote).
 
-> The [LittleHorse Website](https://littlehorse.dev) has information about how to run it.
+> The [LittleHorse Website](https://littlehorse.io/docs/server) has information about how to run it.
 > In addition, you can go to [docker-compose](docker-compose) and check the documentation.
 
 Next, you'll need to have the `lhctl` command line tool installed.
@@ -15,7 +15,7 @@ Finally, you'll need `gradle` and Java 17 or later.
 
 ## Understanding the Java Wf SDK
 
-See the Concepts documentation on the [LittleHorse Website](https://littlehorse.dev/docs/Overview).
+See the Concepts documentation on the [LittleHorse Website](https://littlehorse.io/docs/server).
 
 ## Configuration
 

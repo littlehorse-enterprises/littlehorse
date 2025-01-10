@@ -150,9 +150,9 @@ public final class ObjectId {
       "ehorse.MetricsWindowLength\022)\n\nwf_spec_id" +
       "\030\003 \001(\0132\025.littlehorse.WfSpecId\"\031\n\013Princip" +
       "alId\022\n\n\002id\030\001 \001(\t\"\026\n\010TenantId\022\n\n\002id\030\001 \001(\t" +
-      "\"\036\n\020ScheduledWfRunId\022\n\n\002id\030\001 \001(\tBI\n\037io.l" +
+      "\"\036\n\020ScheduledWfRunId\022\n\n\002id\030\001 \001(\tBM\n\037io.l" +
       "ittlehorse.sdk.common.protoP\001Z\t.;lhproto" +
-      "\252\002\030LittleHorse.Common.Protob\006proto3"
+      "\252\002\034LittleHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

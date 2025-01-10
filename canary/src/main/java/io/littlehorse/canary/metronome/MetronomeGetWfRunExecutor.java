@@ -104,6 +104,7 @@ public class MetronomeGetWfRunExecutor {
         try {
             return lhClient.getCanaryWfRun(id);
         } catch (Exception e) {
+            log.error("Error executing getWfRun {}", e.getMessage(), e);
             producer.sendFuture(
                     id, BeatType.GET_WF_RUN_REQUEST, BeatStatus.ERROR.name(), Duration.between(start, Instant.now()));
             return null;

@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Helper;
 using LittleHorse.Sdk.Worker.Internal;
@@ -85,7 +85,7 @@ namespace LittleHorse.Sdk.Worker
                     continue;
                 }
 
-                var paramLHType = LHMappingHelper.MapDotNetTypeToLHVariableType(paramType);
+                var paramLHType = LHMappingHelper.DotNetTypeToLHVariableType(paramType);
 
                 bool maskedParam = false;
                 var paramName = defaultParamName; 
@@ -110,7 +110,7 @@ namespace LittleHorse.Sdk.Worker
         
         private void BuildOutputSchemaSignature()
         {
-            var returnType = LHMappingHelper.MapDotNetTypeToLHVariableType(TaskMethod.ReturnType);
+            var returnType = LHMappingHelper.DotNetTypeToLHVariableType(TaskMethod.ReturnType);
             var maskedValue = false;
             String outputSchemaVarName = "output";
 

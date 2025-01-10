@@ -19,7 +19,7 @@ import { VariableValue } from "./variable";
  * ExternalEvent's are created via the 'rpc PutExternalEvent'
  *
  * For more context on ExternalEvents, check our documentation here:
- * https://littlehorse.dev/docs/concepts/external-events
+ * https://littlehorse.io/docs/server/concepts/external-events
  */
 export interface ExternalEvent {
   /**

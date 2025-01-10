@@ -20,8 +20,6 @@ export const WfRunsHeader: FC<Props> = ({ spec, currentStatus, currentWindow, se
 
   return (
     <div className="mb-4 flex items-center justify-between">
-      <h2 className="text-2xl font-bold">WfRun Search</h2>
-
       <div className="flex items-center justify-between gap-4">
         <Select value={currentWindow.toString()} onValueChange={value => setWindow(parseInt(value) as TimeRange)}>
           <SelectTrigger className="w-[150px] min-w-fit">

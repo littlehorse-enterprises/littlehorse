@@ -9,7 +9,31 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCanMakeSearcjableVariable(t *testing.T) {
+func TestEarlyReturnOnExitNode(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		t.Execute("some-task")
+		t.Fail("failure message", "my-failure", nil)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+
+	exitNodeCount := 0
+
+	for _, value := range entrypoint.Nodes {
+		if value.GetExit() != nil {
+			exitNodeCount += 1
+		}
+	}
+
+	assert.Equal(t, exitNodeCount, 1)
+}
+
+func TestCanMakeSearchableVariable(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		t.AddVariable(
 			"my-var", lhproto.VariableType_BOOL,

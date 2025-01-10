@@ -131,7 +131,11 @@ public class ReadOnlyGetableManager {
      * @return Null if not found
      */
     public ScheduledTaskModel getScheduledTask(TaskRunIdModel scheduledTaskId) {
-        return store.get(scheduledTaskId.toString(), ScheduledTaskModel.class);
+        return getScheduledTask(scheduledTaskId.toString());
+    }
+
+    public ScheduledTaskModel getScheduledTask(String scheduledTaskId) {
+        return store.get(scheduledTaskId, ScheduledTaskModel.class);
     }
 
     public ExternalEventModel getUnclaimedEvent(WfRunIdModel wfRunId, ExternalEventDefIdModel externalEventDefId) {

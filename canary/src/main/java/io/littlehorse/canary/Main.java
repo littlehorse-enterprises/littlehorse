@@ -68,7 +68,8 @@ public class Main {
                     lhConfig.getApiBootstrapPort(),
                     lhClient.getServerVersion(),
                     canaryConfig.getTopicName(),
-                    canaryConfig.toKafkaConfig().toMap());
+                    canaryConfig.toKafkaConfig().toMap(),
+                    canaryConfig.getMetronomeBeatExtraTags());
 
             // start worker
             if (canaryConfig.isMetronomeWorkerEnabled()) {

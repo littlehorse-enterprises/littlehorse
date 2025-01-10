@@ -1,18 +1,18 @@
 ﻿using System.Collections;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
-using LittleHorse.Common.Proto;
+using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Utils;
 using LittleHorse.Sdk.Worker;
-using TaskStatus = LittleHorse.Common.Proto.TaskStatus;
+using TaskStatus = LittleHorse.Sdk.Common.Proto.TaskStatus;
 using Type = System.Type;
 
 namespace LittleHorse.Sdk.Helper
 {
     public static class LHMappingHelper
     {
-        public static VariableType MapDotNetTypeToLHVariableType(Type type)
+        public static VariableType DotNetTypeToLHVariableType(Type type)
         {
             if (IsInt(type))
             {
@@ -39,7 +39,7 @@ namespace LittleHorse.Sdk.Helper
                 return VariableType.Bytes;
             }
 
-            if (typeof(IEnumerable).IsAssignableFrom(type))
+            if (typeof(IList).IsAssignableFrom(type))
             {
                 return VariableType.JsonArr;
             }
@@ -47,7 +47,7 @@ namespace LittleHorse.Sdk.Helper
             return VariableType.JsonObj;
         }
         
-        public static DateTime? MapDateTimeFromProtoTimeStamp(Timestamp protoTimestamp)
+        public static DateTime? DateTimeFromProtoTimeStamp(Timestamp protoTimestamp)
         {
             if (protoTimestamp == null) return null;
 
@@ -62,7 +62,7 @@ namespace LittleHorse.Sdk.Helper
             return outDate;
         }
         
-        public static VariableValue MapObjectToVariableValue(object? obj)
+        public static VariableValue ObjectToVariableValue(object? obj)
         {
             if (obj is VariableValue variableValue) return variableValue;
 
@@ -105,7 +105,7 @@ namespace LittleHorse.Sdk.Helper
             return result;
         }
         
-        public static VariableValue MapExceptionToVariableValue(Exception exception, LHWorkerContext ctx)
+        public static VariableValue ExceptionToVariableValue(Exception exception, LHWorkerContext ctx)
         {
             using (StringWriter sw = new StringWriter())
             {
@@ -128,7 +128,7 @@ namespace LittleHorse.Sdk.Helper
             }
         }
         
-        public static string? MapProtoToJson(IMessage o)
+        public static string? ProtoToJson(IMessage o)
         {
             try
             {

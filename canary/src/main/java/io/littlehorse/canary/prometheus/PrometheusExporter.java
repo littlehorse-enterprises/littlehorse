@@ -3,8 +3,8 @@ package io.littlehorse.canary.prometheus;
 import io.littlehorse.canary.util.ShutdownHook;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.binder.MeterBinder;
-import io.micrometer.prometheus.PrometheusConfig;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
+import io.micrometer.prometheusmetrics.PrometheusConfig;
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 import java.util.Map;
 
 public class PrometheusExporter {

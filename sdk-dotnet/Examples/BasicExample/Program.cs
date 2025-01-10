@@ -51,9 +51,9 @@ public class Program
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var config = GetLHConfig(args, loggerFactory);
-            
+
             MyWorker executable = new MyWorker();
-            var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet-dotnet", config);
+            var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet", config);
 
             taskWorker.RegisterTaskDef();
 

@@ -2,10 +2,8 @@ package io.littlehorse.server.streams;
 
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.LHTimer;
-import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.MetadataCommand;
-import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.common.util.serde.ProtobufDeserializer;
 import io.littlehorse.server.LHServer;
@@ -14,7 +12,6 @@ import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.processors.CommandProcessor;
 import io.littlehorse.server.streams.topology.core.processors.MetadataGlobalStoreProcessor;
 import io.littlehorse.server.streams.topology.core.processors.MetadataProcessor;
-import io.littlehorse.server.streams.topology.core.processors.RepartitionCommandProcessor;
 import io.littlehorse.server.streams.topology.timer.TimerProcessor;
 import io.littlehorse.server.streams.util.MetadataCache;
 import org.apache.kafka.common.serialization.Serde;
@@ -147,20 +144,6 @@ public class ServerTopology {
         StoreBuilder<KeyValueStore<String, Bytes>> coreStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(CORE_STORE), Serdes.String(), Serdes.Bytes());
         topo.addStateStore(coreStoreBuilder, CORE_PROCESSOR);
-
-        // Repartition sub-topology
-        topo.addSource(
-                CORE_REPARTITION_SOURCE,
-                Serdes.String().deserializer(),
-                new LHDeserializer<>(RepartitionCommand.class),
-                config.getRepartitionTopicName());
-        topo.addProcessor(
-                CORE_REPARTITION_PROCESSOR,
-                () -> new RepartitionCommandProcessor(config, metadataCache),
-                CORE_REPARTITION_SOURCE);
-        StoreBuilder<KeyValueStore<String, Bytes>> repartitionedStoreBuilder = Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(CORE_REPARTITION_STORE), Serdes.String(), Serdes.Bytes());
-        topo.addStateStore(repartitionedStoreBuilder, CORE_REPARTITION_PROCESSOR);
 
         // Metadata Global Store
         StoreBuilder<KeyValueStore<String, Bytes>> globalStoreBuilder = Stores.keyValueStoreBuilder(

@@ -8,7 +8,7 @@ import "object_id.proto";
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
-option csharp_namespace = "LittleHorse.Common.Proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 // VariableValue is a structure containing a value in LittleHorse. It can be
 // used to pass input variables into a WfRun/ThreadRun/TaskRun/etc, as output

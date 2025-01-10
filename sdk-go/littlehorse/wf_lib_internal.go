@@ -72,9 +72,11 @@ func (l *LHWorkflow) compile() (*lhproto.PutWfSpecRequest, error) {
 				function(&thr)
 
 				// Now add exit node to make a sandwich
-				_, exitNode := thr.createBlankNode("exit", "EXIT")
-				exitNode.Node = &lhproto.Node_Exit{
-					Exit: &lhproto.ExitNode{},
+				if thr.spec.Nodes[*thr.lastNodeName].GetExit() == nil {
+					_, exitNode := thr.createBlankNode("exit", "EXIT")
+					exitNode.Node = &lhproto.Node_Exit{
+						Exit: &lhproto.ExitNode{},
+					}
 				}
 				thr.isActive = false
 				// Now save the thread to the protobuf

@@ -31,7 +31,8 @@ public class Aggregator implements MeterBinder {
 
     @Override
     public void bindTo(final MeterRegistry registry) {
-        final MetricStoreExporter prometheusMetricStoreExporter = new MetricStoreExporter(kafkaStreams, METRICS_STORE);
+        final MetricStoreExporter prometheusMetricStoreExporter =
+                new MetricStoreExporter(kafkaStreams, METRICS_STORE, Duration.ofSeconds(30));
         prometheusMetricStoreExporter.bindTo(registry);
     }
 }

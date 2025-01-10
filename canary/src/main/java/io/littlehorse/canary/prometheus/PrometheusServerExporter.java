@@ -1,9 +1,9 @@
 package io.littlehorse.canary.prometheus;
 
 import io.javalin.Javalin;
+import io.javalin.http.ContentType;
 import io.javalin.http.Context;
 import io.littlehorse.canary.util.ShutdownHook;
-import io.prometheus.client.exporter.common.TextFormat;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -22,6 +22,6 @@ public class PrometheusServerExporter {
 
     private void printMetrics(final Context context) {
         log.trace("Processing metrics request");
-        context.contentType(TextFormat.CONTENT_TYPE_004).result(prometheusExporter.scrape());
+        context.contentType(ContentType.PLAIN).result(prometheusExporter.scrape());
     }
 }

@@ -45,8 +45,7 @@ public class MetricsTopology {
                 .filterNot(MetricsTopology::isExhaustedRetries)
                 // remove the id
                 .groupBy(
-                        MetricsTopology::cleanBeatKey,
-                        Grouped.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.BeatValue()))
+                        MetricsTopology::removeWfId, Grouped.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.BeatValue()))
                 // reset aggregator every minute
                 .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(5)))
                 // calculate average
@@ -62,8 +61,7 @@ public class MetricsTopology {
         final KStream<MetricKey, MetricValue> countMetricStream = beatsStream
                 // remove the id
                 .groupBy(
-                        MetricsTopology::cleanBeatKey,
-                        Grouped.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.BeatValue()))
+                        MetricsTopology::removeWfId, Grouped.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.BeatValue()))
                 // count all
                 .count(initializeCountStore(COUNT_STORE))
                 .toStream()
@@ -181,6 +179,10 @@ public class MetricsTopology {
                     Tag.newBuilder().setKey("status").setValue(key.getStatus().toLowerCase()));
         }
 
+        if (key.getTagsCount() > 0) {
+            builder.addAllTags(key.getTagsList());
+        }
+
         return builder.build();
     }
 
@@ -195,13 +197,14 @@ public class MetricsTopology {
         return AverageAggregator.newBuilder().build();
     }
 
-    private static BeatKey cleanBeatKey(final BeatKey key, final BeatValue value) {
+    private static BeatKey removeWfId(final BeatKey key, final BeatValue value) {
         return BeatKey.newBuilder()
                 .setType(key.getType())
                 .setServerVersion(key.getServerVersion())
                 .setServerHost(key.getServerHost())
                 .setServerPort(key.getServerPort())
                 .setStatus(key.getStatus())
+                .addAllTags(key.getTagsList())
                 .build();
     }
 

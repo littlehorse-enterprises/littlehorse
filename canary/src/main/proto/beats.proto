@@ -5,6 +5,7 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.canary.proto";
 
 import "google/protobuf/timestamp.proto";
+import "metrics.proto";
 
 enum BeatType {
   WF_RUN_REQUEST = 0;
@@ -25,6 +26,7 @@ message BeatKey {
   BeatType type = 4;
   optional string status = 5;
   optional string id = 6;
+  repeated Tag tags = 7;
 }
 
 message BeatValue {

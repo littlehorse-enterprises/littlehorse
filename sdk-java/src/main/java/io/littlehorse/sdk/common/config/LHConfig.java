@@ -167,7 +167,7 @@ public class LHConfig extends ConfigBase {
      * @return a future gRPC stub for that host/port combo.
      */
     public LittleHorseFutureStub getFutureStub() {
-        return getBaseFutureStub(getApiBootstrapHost(), getApiBootstrapPort());
+        return getFutureStub(getApiBootstrapHost(), getApiBootstrapPort());
     }
 
     /**

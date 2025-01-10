@@ -951,7 +951,9 @@ class WorkflowThread:
         self.is_active = True
         self.add_node("entrypoint", EntrypointNode())
         initializer(self)
-        self.add_node("exit", ExitNode())
+        node = self._last_node()
+        if node.node_case != NodeCase.EXIT:
+            self.add_node("exit", ExitNode())
         self.is_active = False
 
     def spawn_thread(

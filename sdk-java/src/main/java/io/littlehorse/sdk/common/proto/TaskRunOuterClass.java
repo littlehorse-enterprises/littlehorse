@@ -102,9 +102,9 @@ public final class TaskRunOuterClass {
       "LHErrorType\022\017\n\007message\030\002 \001(\t\"]\n\017LHTaskEx" +
       "ception\022\014\n\004name\030\001 \001(\t\022\017\n\007message\030\002 \001(\t\022+" +
       "\n\007content\030\003 \001(\0132\032.littlehorse.VariableVa" +
-      "lueBI\n\037io.littlehorse.sdk.common.protoP\001" +
-      "Z\t.;lhproto\252\002\030LittleHorse.Common.Protob\006" +
-      "proto3"
+      "lueBM\n\037io.littlehorse.sdk.common.protoP\001" +
+      "Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Pro" +
+      "tob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
