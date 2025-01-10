@@ -49,7 +49,7 @@ lhctl version: 0.12.1 (Git SHA homebrew)
 Server version: 0.12.1
 ```
 
-4. Navigate to the dashboard at `http://localhost:3000`
+4. Navigate to the dashboard at `http://localhost:8080`
 
 For more information go to our [Quickstart Installation Docs](https://littlehorse.io/docs/server/developer-guide/install).
 
