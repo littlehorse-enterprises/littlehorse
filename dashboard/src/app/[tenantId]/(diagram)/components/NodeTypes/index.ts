@@ -13,6 +13,7 @@ import { UserTask } from './UserTask/UserTask'
 import { WaitForThreads } from './WaitForThreads'
 import { NodeType } from './extractNodes'
 import { ThrowEvent } from './ThrowEvent'
+import { WaitForCondition } from './WaitForCondition'
 
 const nodeTypes: Record<NodeType, ComponentType<NodeProps>> = {
   ENTRYPOINT: Entrypoint,
@@ -22,6 +23,7 @@ const nodeTypes: Record<NodeType, ComponentType<NodeProps>> = {
   EXTERNAL_EVENT: ExternalEvent,
   START_THREAD: StartThread,
   WAIT_FOR_THREADS: WaitForThreads,
+  WAIT_FOR_CONDITION: WaitForCondition,
   SLEEP: Sleep,
   USER_TASK: UserTask,
   START_MULTIPLE_THREADS: StartMultipleThreads,

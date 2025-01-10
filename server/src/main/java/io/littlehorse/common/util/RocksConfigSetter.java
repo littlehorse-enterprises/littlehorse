@@ -8,6 +8,7 @@ import org.apache.kafka.streams.state.internals.BlockBasedTableConfigWithAccessi
 import org.rocksdb.Cache;
 import org.rocksdb.CompactionStyle;
 import org.rocksdb.Options;
+import org.rocksdb.RateLimiter;
 
 @Slf4j
 public class RocksConfigSetter implements RocksDBConfigSetter {
@@ -75,7 +76,15 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         }
         // Streams default is 3
         options.setMaxWriteBufferNumber(5);
-
+        long rateLimit = serverConfig.getCoreStoreRateLimitBytes();
+        if (rateLimit > 0) {
+            options.setRateLimiter(new RateLimiter(
+                    rateLimit,
+                    RateLimiter.DEFAULT_REFILL_PERIOD_MICROS,
+                    RateLimiter.DEFAULT_FAIRNESS,
+                    RateLimiter.DEFAULT_MODE,
+                    false));
+        }
         // Future Work: Enable larger scaling by using Partitioned Index Filters
         // https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters
         //

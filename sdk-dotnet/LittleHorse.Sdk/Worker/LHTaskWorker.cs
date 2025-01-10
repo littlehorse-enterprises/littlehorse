@@ -138,7 +138,7 @@ namespace LittleHorse.Sdk.Worker
 
                 var response = _lhClient.PutTaskDef(request);
                 
-                _logger?.LogInformation($"Created TaskDef:\n{LHMappingHelper.MapProtoToJson(response)}");
+                _logger?.LogInformation($"Created TaskDef:\n{LHMappingHelper.ProtoToJson(response)}");
             }
             catch (RpcException ex)
             {
