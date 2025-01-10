@@ -26,7 +26,7 @@ jobs:
       - name: Tests
         run: ./gradlew sdk-java:spotlessCheck sdk-java:test sdk-java:build
 
-      - name: Java Documentaion
+      - name: Java Documentation
         run: ./gradlew sdk-java:javadoc
 
   tests-sdk-go:
@@ -119,40 +119,46 @@ jobs:
   tests-test-utils:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [ "11", "17", "21" ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Java
+      - name: Setup Java ${{ matrix.java-version }}
         uses: actions/setup-java@v4
         with:
           distribution: "corretto"
-          java-version: 21
-
-      - name: Validate Indentations
-        run: ./gradlew test-utils:spotlessCheck
+          java-version: ${{ matrix.java-version }}
 
       - name: Tests
-        run: ./gradlew test-utils:test
+        run: ./gradlew test-utils:spotlessCheck test-utils:test test-utils:build
+
+      - name: Java Documentation
+        run: ./gradlew test-utils:javadoc
 
   tests-test-utils-container:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [ "11", "17", "21" ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Java
+      - name: Setup Java ${{ matrix.java-version }}
         uses: actions/setup-java@v4
         with:
           distribution: "corretto"
-          java-version: 21
-
-      - name: Validate Indentations
-        run: ./gradlew test-utils-container:spotlessCheck
+          java-version: ${{ matrix.java-version }}
 
       - name: Tests
-        run: ./gradlew test-utils-container:test
+        run: ./gradlew test-utils-container:spotlessCheck test-utils-container:test test-utils-container:build
+
+      - name: Java Documentation
+        run: ./gradlew test-utils-container:javadoc
 
   tests-dashboard:
     if: ${{ !contains(github.event.head_commit.message, '[skip main]') }}
