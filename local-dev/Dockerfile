@@ -3,7 +3,7 @@ ENV PROTOC_VERSION          23.4
 ENV PROTO_GEN_JAVA           1.57.2
 ENV PROTO_GEN_GO             1.31.0
 ENV PROTO_GEN_GO_GRPC        1.3.0
-ENV PROTO_GEN_PYTHON         1.57.0
+ENV PROTO_GEN_PYTHON         1.69.0
 ENV PROTO_GEN_JS             1.178.0
 
 ENV GOBIN /usr/local/bin
