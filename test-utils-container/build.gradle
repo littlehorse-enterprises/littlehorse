@@ -9,15 +9,18 @@ repositories {
     mavenCentral()
 }
 
+var testcontainersVersion = "1.20.4"
 var slf4jVersion = "2.0.7"
 
 dependencies {
-    implementation(project(':sdk-java'))
-    implementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
-    implementation 'org.awaitility:awaitility:4.2.0'
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    api "org.testcontainers:kafka:${testcontainersVersion}"
+    api "org.testcontainers:testcontainers:${testcontainersVersion}"
 
+    testImplementation project(':sdk-java')
+    testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
     testImplementation "org.slf4j:slf4j-simple:${slf4jVersion}"
+    testImplementation "org.testcontainers:junit-jupiter:${testcontainersVersion}"
 }
 
 java {
@@ -56,12 +59,14 @@ tasks.register('sourcesJar', Jar) {
 
 publishing {
     repositories {
-        maven {
-            name = "ossrh"
-            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            credentials {
-                username = findProperty('ossrhUsername')
-                password = findProperty('ossrhPassword')
+        repositories {
+            maven {
+                name = "ossrh"
+                url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                credentials {
+                    username = findProperty('ossrhUsername')
+                    password = findProperty('ossrhPassword')
+                }
             }
         }
     }
@@ -69,14 +74,14 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId = group
-            artifactId = 'littlehorse-test-utils'
+            artifactId = 'littlehorse-test-utils-container'
             version = version
             from components.java
             artifact sourcesJar
             artifact javadocJar
             pom {
-                name = 'LittleHorse Test Utils'
-                description = 'LittleHorse Test Utils is a testing library for Littlehorse runtime'
+                name = 'LittleHorse Test Utils Container'
+                description = 'LittleHorse Test Utils for Testcontainers'
                 url = 'https://github.com/littlehorse-enterprises/littlehorse'
                 licenses {
                     license {

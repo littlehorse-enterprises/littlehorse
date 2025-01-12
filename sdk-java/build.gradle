@@ -67,11 +67,15 @@ publishing {
 
 signing {
     required { gradle.taskGraph.hasTask("publish") }
+
+    def signingKey = findProperty("signingKey")
+    def signingPassword = findProperty("signingPassword")
+    useInMemoryPgpKeys(signingKey, signingPassword)
+
     sign publishing.publications.mavenJava
 }
 
 repositories {
-    // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
 
@@ -145,6 +149,7 @@ test {
     }
     jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
 }
+
 spotless {
     java {
         target('**/*.java')
