@@ -8,6 +8,7 @@ import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.WaitForCommandRequest;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.server.streams.util.AsyncWaiters;
+import java.util.concurrent.Executor;
 import java.util.function.Function;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
@@ -23,6 +24,7 @@ public class ProducerCommandCallback implements Callback {
     private final HostInfo thisHost;
     private final Function<KeyQueryMetadata, LHInternalsGrpc.LHInternalsStub> internalStub;
     private final AsyncWaiters asyncWaiters;
+    private final Executor networkThreadPool;
 
     public ProducerCommandCallback(
             StreamObserver<WaitForCommandResponse> observer,
@@ -30,26 +32,30 @@ public class ProducerCommandCallback implements Callback {
             KafkaStreams coreStreams,
             HostInfo thisHost,
             Function<KeyQueryMetadata, LHInternalsGrpc.LHInternalsStub> internalStub,
-            AsyncWaiters asyncWaiters) {
+            AsyncWaiters asyncWaiters,
+            Executor networkThreadPool) {
         this.observer = observer;
         this.command = command;
         this.coreStreams = coreStreams;
         this.thisHost = thisHost;
         this.internalStub = internalStub;
         this.asyncWaiters = asyncWaiters;
+        this.networkThreadPool = networkThreadPool;
     }
 
     @Override
     public void onCompletion(RecordMetadata metadata, Exception exception) {
-        try {
-            if (exception != null) {
-                observer.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
-            } else {
-                waitForCommand(command, observer);
+        this.networkThreadPool.execute(() -> {
+            try {
+                if (exception != null) {
+                    observer.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
+                } else {
+                    waitForCommand(command, observer);
+                }
+            } catch (LHApiException ex) {
+                observer.onError(ex);
             }
-        } catch (LHApiException ex) {
-            observer.onError(ex);
-        }
+        });
     }
 
     private void waitForCommand(AbstractCommand<?> command, StreamObserver<WaitForCommandResponse> observer) {
