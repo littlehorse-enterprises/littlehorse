@@ -17,7 +17,6 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
-import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
@@ -32,13 +31,11 @@ import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.SaveUserTaskRunProgressRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ScheduleWfRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
-import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
@@ -106,7 +103,6 @@ import io.littlehorse.sdk.common.proto.ExternalEventIdList;
 import io.littlehorse.sdk.common.proto.ExternalEventList;
 import io.littlehorse.sdk.common.proto.GetLatestUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
-import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.ListExternalEventsRequest;
 import io.littlehorse.sdk.common.proto.ListNodeRunsRequest;
 import io.littlehorse.sdk.common.proto.ListTaskMetricsRequest;
@@ -200,9 +196,9 @@ import io.littlehorse.sdk.common.proto.WorkflowEventDefIdList;
 import io.littlehorse.sdk.common.proto.WorkflowEventId;
 import io.littlehorse.sdk.common.proto.WorkflowEventIdList;
 import io.littlehorse.sdk.common.proto.WorkflowEventList;
-import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.streams.BackendInternalComms;
+import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanReply;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListExternalEventsRequestModel;
@@ -259,21 +255,17 @@ import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
-import io.littlehorse.server.streams.util.POSTStreamObserver;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.time.Duration;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
-import org.apache.kafka.streams.processor.TaskId;
 
 /**
  * This class provides the implementation for public RPCs.
@@ -291,6 +283,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     private final CoreStoreProvider coreStoreProvider;
     private final ScheduledExecutorService networkThreadpool;
     private final String listenerName;
+    private final CommandSender commandSender;
 
     private Server grpcListener;
 
@@ -306,7 +299,8 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             CoreStoreProvider coreStoreProvider,
             MetadataCache metadataCache,
             List<ServerInterceptor> interceptors,
-            Context.Key<RequestExecutionContext> contextKey) {
+            Context.Key<RequestExecutionContext> contextKey,
+            CommandSender commandSender) {
 
         // All dependencies are passed in as arguments; nothing is instantiated here,
         // because all listeners share the same threading infrastructure.
@@ -334,6 +328,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         }
         builder.intercept(new GlobalExceptionHandler());
         this.grpcListener = builder.build();
+        this.commandSender = commandSender;
     }
 
     public void start() throws IOException {
@@ -670,7 +665,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             }
         };
 
-        LHProducer producer = internalComms.getProducer();
+        LHProducer producer = internalComms.getCommandProducer();
         producer.send(
                 command.getPartitionKey(),
                 command,
@@ -1086,28 +1081,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ctx.onCompleted();
     }
 
-    /*
-     * Sends a command to Kafka and simultaneously does a waitForProcessing() internal
-     * grpc call that asynchronously waits for the command to be processed. It
-     * infers the request context from the GRPC Context.
-     */
-    public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
-        TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
-
-        processCommand(
-                new CommandModel(claimEvent),
-                client.getResponseObserver(),
-                PollTaskResponse.class,
-                false,
-                client.getPrincipalId(),
-                client.getTenantId(),
-                client.getRequestContext());
-    }
-
-    public LHProducer getProducer() {
-        return internalComms.getProducer();
-    }
-
     public void onResponseReceived(String commandId, WaitForCommandResponse response) {
         internalComms.onResponseReceived(commandId, response);
     }
@@ -1123,12 +1096,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
      * Explicit request context. Useful for callers who do not have access to the GRPC
      * context, for example the `returnTaskToClient()` method. That method is called
      * from within the CommandProcessor#process() method.
-     *
-     * REFACTOR_SUGGESTION: We should create a CommandSender.java class which is responsible
-     * for sending commands to Kafka and waiting for the execution. That class should
-     * not depend on RequestExecutionContext but rather the AuthorizationContext. The
-     * `TaskClaimEvent#reportTaskToClient()` flow should not go through KafkaStreamsServerImpl
-     * anymore.
      */
     private <AC extends Message, RC extends Message> void processCommand(
             AbstractCommand<AC> command,
@@ -1141,7 +1108,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 // If this observer event has already closed, Async Waiters might attempt to finish it.
             });
         }
-        processCommand(
+        commandSender.doSend(
                 command,
                 responseObserver,
                 responseCls,
@@ -1151,72 +1118,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 requestContext);
     }
 
-    /*
-     * This method is called from within the `CommandProcessor#process()` method (specifically, on the
-     * TaskClaimEvent#process()) method. Therefore, we cannot infer the RequestExecutionContext like
-     * we do in the other places, because the GRPC context does not exist in this case.
-     * Note that this is not a GRPC method that @Override's a super method and takes in
-     * a protobuf + StreamObserver.
-     */
-    private <AC extends Message, RC extends Message> void processCommand(
-            AbstractCommand<AC> command,
-            StreamObserver<RC> responseObserver,
-            Class<RC> responseCls,
-            boolean shouldCompleteStream,
-            PrincipalIdModel principalId,
-            TenantIdModel tenantId,
-            RequestExecutionContext context) {
-        StreamObserver<WaitForCommandResponse> commandObserver = new POSTStreamObserver<>(
-                responseObserver,
-                responseCls,
-                shouldCompleteStream,
-                internalComms,
-                command,
-                context,
-                // Streams Session Timeout is how long it takes to notice that the server is down.
-                // Then we need the rebalance to occur, and the new server must process the command.
-                // So we give it a buffer of 10 additional seconds.
-                Duration.ofMillis(10_000 + serverConfig.getStreamsSessionTimeout()),
-                networkThreadpool);
-
-        Callback callback = this.internalComms.createProducerCommandCallback(command, commandObserver, context);
-
-        command.setCommandId(LHUtil.generateGuid());
-
-        Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
-        internalComms
-                .getProducer()
-                .send(
-                        command.getPartitionKey(),
-                        command,
-                        command.getTopic(serverConfig),
-                        callback,
-                        commandMetadata.toArray());
-    }
-
     private WfService getServiceFromContext() {
         return requestContext().service();
-    }
-
-    public void onTaskScheduled(
-            TaskId streamsTaskId, TaskDefIdModel taskDef, ScheduledTaskModel scheduledTask, TenantIdModel tenantId) {
-        taskQueueManager.onTaskScheduled(streamsTaskId, taskDef, scheduledTask, tenantId);
-    }
-
-    public void drainPartitionTaskQueue(TaskId streamsTaskId) {
-        taskQueueManager.drainPartition(streamsTaskId);
-    }
-
-    public Set<HostModel> getAllInternalHosts() {
-        return internalComms.getAllInternalHosts();
-    }
-
-    public LHHostInfo getAdvertisedHost(
-            HostModel host, String listenerName, InternalCallCredentials internalCredentials) {
-        return internalComms.getAdvertisedHost(host, listenerName, internalCredentials);
-    }
-
-    public void onEventThrown(WorkflowEventModel event) {
-        internalComms.onWorkflowEventThrown(event);
     }
 }

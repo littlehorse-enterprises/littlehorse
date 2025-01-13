@@ -7,24 +7,21 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.ScheduledTaskModel;
-import io.littlehorse.common.model.corecommand.CommandModel;
-import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.WaitForCommandResponse;
-import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
-import io.littlehorse.sdk.common.proto.PollTaskResponse;
 import io.littlehorse.server.auth.RequestAuthorizer;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.streams.BackendInternalComms;
+import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -68,6 +65,7 @@ public class LHServer {
     private final CoreStoreProvider coreStoreProvider;
     private final ScheduledExecutorService networkThreadpool;
     private final List<LHServerListener> listeners;
+    private final CommandSender commandSender;
 
     private RequestExecutionContext requestContext() {
         return contextKey.get();
@@ -76,6 +74,7 @@ public class LHServer {
     public LHServer(LHServerConfig config) throws LHMisconfigurationException {
         this.metadataCache = new MetadataCache();
         this.config = config;
+        this.networkThreadpool = Executors.newScheduledThreadPool(config.getNumNetworkThreads());
         this.taskQueueManager = new TaskQueueManager(this, LHConstants.MAX_TASKRUNS_IN_ONE_TASKQUEUE);
 
         // Kafka Streams Setup
@@ -97,7 +96,6 @@ public class LHServer {
             return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
         });
 
-        this.networkThreadpool = Executors.newScheduledThreadPool(config.getNumNetworkThreads());
         coreStoreProvider = new CoreStoreProvider(this.coreStreams);
         this.internalComms = new BackendInternalComms(
                 config, coreStreams, timerStreams, networkThreadpool, metadataCache, contextKey, coreStoreProvider);
@@ -105,7 +103,13 @@ public class LHServer {
         // Health Server Setup
         this.healthService =
                 new HealthService(config, coreStreams, timerStreams, taskQueueManager, metadataCache, internalComms);
-
+        this.commandSender = new CommandSender(
+                internalComms,
+                networkThreadpool,
+                internalComms.getCommandProducer(),
+                internalComms.getTaskClaimProducer(),
+                config.getStreamsSessionTimeout(),
+                config);
         this.listeners =
                 config.getListeners().stream().map(this::createListener).toList();
     }
@@ -122,7 +126,8 @@ public class LHServer {
                         new MetricCollectingServerInterceptor(healthService.getMeterRegistry()),
                         new RequestAuthorizer(contextKey, metadataCache, coreStoreProvider, config),
                         listenerConfig.getRequestAuthenticator()),
-                contextKey);
+                contextKey,
+                commandSender);
     }
 
     public String getInstanceName() {
@@ -135,20 +140,7 @@ public class LHServer {
      * infers the request context from the GRPC Context.
      */
     public void returnTaskToClient(ScheduledTaskModel scheduledTask, PollTaskRequestObserver client) {
-        TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
-
-        processCommand(
-                new CommandModel(claimEvent),
-                client.getResponseObserver(),
-                PollTaskResponse.class,
-                false,
-                client.getPrincipalId(),
-                client.getTenantId(),
-                client.getRequestContext());
-    }
-
-    public LHProducer getProducer() {
-        return internalComms.getProducer();
+        commandSender.doSend(scheduledTask, client);
     }
 
     public void onResponseReceived(String commandId, WaitForCommandResponse response) {
@@ -160,41 +152,17 @@ public class LHServer {
     }
 
     /*
-     * Sends a command to Kafka and simultaneously does a waitForProcessing() internal
-     * grpc call that asynchronously waits for the command to be processed.
-     *
-     * Explicit request context. Useful for callers who do not have access to the GRPC
-     * context, for example the `returnTaskToClient()` method. That method is called
-     * from within the CommandProcessor#process() method.
+     * This method is called from within the `CommandProcessor#process()` method (specifically, on the
+     * TaskClaimEvent#process()) method. Therefore, we cannot infer the RequestExecutionContext like
+     * we do in the other places, because the GRPC context does not exist in this case.
+     * Note that this is not a GRPC method that @Override's a super method and takes in
+     * a protobuf + StreamObserver.
      *
      * REFACTOR_SUGGESTION: We should create a CommandSender.java class which is responsible
      * for sending commands to Kafka and waiting for the execution. That class should
      * not depend on RequestExecutionContext but rather the AuthorizationContext. The
      * `TaskClaimEvent#reportTaskToClient()` flow should not go through KafkaStreamsServerImpl
      * anymore.
-     */
-    private <AC extends Message, RC extends Message> void processCommand(
-            AbstractCommand<AC> command,
-            StreamObserver<RC> responseObserver,
-            Class<RC> responseCls,
-            boolean shouldCompleteStream) {
-        RequestExecutionContext requestContext = requestContext();
-        processCommand(
-                command,
-                responseObserver,
-                responseCls,
-                shouldCompleteStream,
-                requestContext.authorization().principalId(),
-                requestContext.authorization().tenantId(),
-                requestContext);
-    }
-
-    /*
-     * This method is called from within the `CommandProcessor#process()` method (specifically, on the
-     * TaskClaimEvent#process()) method. Therefore, we cannot infer the RequestExecutionContext like
-     * we do in the other places, because the GRPC context does not exist in this case.
-     * Note that this is not a GRPC method that @Override's a super method and takes in
-     * a protobuf + StreamObserver.
      */
     private <AC extends Message, RC extends Message> void processCommand(
             AbstractCommand<AC> command,
@@ -223,7 +191,7 @@ public class LHServer {
 
         Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
         internalComms
-                .getProducer()
+                .getCommandProducer()
                 .send(
                         command.getPartitionKey(),
                         command,

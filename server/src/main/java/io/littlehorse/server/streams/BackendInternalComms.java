@@ -116,17 +116,18 @@ public class BackendInternalComms implements Closeable {
     @Getter
     private HostInfo thisHost;
 
-    private LHProducer producer;
+    private final LHProducer commandProducer;
+    private final LHProducer taskClaimProducer;
 
-    private ChannelCredentials clientCreds;
+    private final ChannelCredentials clientCreds;
 
-    private Map<String, ManagedChannel> channels;
-    private AsyncWaiters asyncWaiters;
-    private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
+    private final Map<String, ManagedChannel> channels;
+    private final AsyncWaiters asyncWaiters;
+    private final ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsResponse> otherHosts;
 
     private final Context.Key<RequestExecutionContext> contextKey;
     private final Pattern tenantScopedObjectIdExtractorPattern = Pattern.compile("[0-9]+/[0-9]+/");
-    private Executor networkThreadPool;
+    private final Executor networkThreadPool;
 
     public BackendInternalComms(
             LHServerConfig config,
@@ -164,7 +165,8 @@ public class BackendInternalComms implements Closeable {
                 .build();
 
         thisHost = new HostInfo(config.getInternalAdvertisedHost(), config.getInternalAdvertisedPort());
-        this.producer = config.getProducer();
+        this.commandProducer = config.getCommandProducer();
+        this.taskClaimProducer = config.getTaskClaimProducer();
         this.asyncWaiters = new AsyncWaiters(networkThreadPool);
     }
 
@@ -355,8 +357,12 @@ public class BackendInternalComms implements Closeable {
         return info;
     }
 
-    public LHProducer getProducer() {
-        return producer;
+    public LHProducer getCommandProducer() {
+        return commandProducer;
+    }
+
+    public LHProducer getTaskClaimProducer() {
+        return taskClaimProducer;
     }
 
     public void onWorkflowEventThrown(WorkflowEventModel event) {
