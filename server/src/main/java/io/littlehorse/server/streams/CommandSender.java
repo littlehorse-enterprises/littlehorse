@@ -94,6 +94,7 @@ public class CommandSender {
                 taskClaim,
                 taskClaim.getTopic(serverConfig),
                 new TaskClaimEventProducerCallback(scheduledTask, client),
-                HeadersUtil.metadataHeadersFor(client.getTenantId(), client.getPrincipalId()).toArray());
+                HeadersUtil.metadataHeadersFor(client.getTenantId(), client.getPrincipalId())
+                        .toArray());
     }
 }
