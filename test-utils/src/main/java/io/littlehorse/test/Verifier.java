@@ -11,5 +11,10 @@ public interface Verifier {
         return start(wfId);
     }
 
+    /**
+     * Start running all the steps in the verification chain
+     * @param id specifies the id for the WfRun. Littlehorse server will create a random ID
+     * @return {@link WfRunId} returned by LH Server
+     */
     WfRunId start(WfRunId id);
 }
