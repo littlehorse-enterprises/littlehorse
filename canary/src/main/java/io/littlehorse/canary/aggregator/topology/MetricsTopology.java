@@ -236,7 +236,7 @@ public class MetricsTopology {
     }
 
     private static void peekMetrics(final MetricKey key, final MetricValue value) {
-        log.info(
+        log.debug(
                 "server={}:{}, id={}, tags={}, values={}",
                 key.getServerHost(),
                 key.getServerPort(),

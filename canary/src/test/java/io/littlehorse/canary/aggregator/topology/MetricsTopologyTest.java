@@ -38,15 +38,13 @@ class MetricsTopologyTest {
     private static String getRandomId() {
         return UUID.randomUUID().toString();
     }
+
     private static MetricValue newMetricValue(double value) {
         return MetricValue.newBuilder().putValues("count", value).build();
     }
-    private static MetricValue newMetricValueCount(double value) {
-        return MetricValue.newBuilder().putValues("count", value).build();
-    }
 
-    private static MetricValue newMetricValueAvg(double avg, double max) {
-        return MetricValue.newBuilder().putValues("avg", avg).putValues("max", max).build();
+    private static MetricValue newMetricValue(double avg, double max, double count) {
+        return MetricValue.newBuilder().putValues("avg", avg).putValues("max", max).putValues("count", count).build();
     }
 
     private static MetricKey newMetricKey(String id) {
@@ -172,9 +170,7 @@ class MetricsTopologyTest {
 
         assertThat(getCount()).isEqualTo(1);
         assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "ok")))
-                .isEqualTo(newMetricValueAvg(20., 30.));
-//        assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "ok")))
-//                .isEqualTo(newMetricValueCount(3.));
+                .isEqualTo(newMetricValue(20., 30., 3.));
     }
 
     @Test
