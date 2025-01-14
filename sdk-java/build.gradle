@@ -114,8 +114,8 @@ dependencies {
     api "io.grpc:grpc-protobuf:${grpcVersion}"
     api "io.grpc:grpc-services:${grpcVersion}"
     api "io.grpc:grpc-stub:${grpcVersion}"
-    api 'com.google.protobuf:protobuf-java:3.23.4'
-    api 'com.google.protobuf:protobuf-java-util:3.23.4'
+    api "com.google.protobuf:protobuf-java:${protobufVersion}"
+    api "com.google.protobuf:protobuf-java-util:${protobufVersion}"
     api 'org.apache.tomcat:annotations-api:6.0.53'
 
     // Mocking

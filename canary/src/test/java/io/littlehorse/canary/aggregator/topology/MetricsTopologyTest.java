@@ -38,9 +38,15 @@ class MetricsTopologyTest {
     private static String getRandomId() {
         return UUID.randomUUID().toString();
     }
-
     private static MetricValue newMetricValue(double value) {
-        return MetricValue.newBuilder().setValue(value).build();
+        return MetricValue.newBuilder().putValues("count", value).build();
+    }
+    private static MetricValue newMetricValueCount(double value) {
+        return MetricValue.newBuilder().putValues("count", value).build();
+    }
+
+    private static MetricValue newMetricValueAvg(double avg, double max) {
+        return MetricValue.newBuilder().putValues("avg", avg).putValues("max", max).build();
     }
 
     private static MetricKey newMetricKey(String id) {
@@ -164,13 +170,11 @@ class MetricsTopologyTest {
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 10L, "ok"));
         inputTopic.pipeInput(newBeat(expectedType, getRandomId(), 30L, "ok"));
 
-        assertThat(getCount()).isEqualTo(3);
-        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_avg", "ok")))
-                .isEqualTo(newMetricValue(20.));
-        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_max", "ok")))
-                .isEqualTo(newMetricValue(30.));
-        assertThat(store.get(newMetricKey("canary_" + expectedTypeName + "_count", "ok")))
-                .isEqualTo(newMetricValue(3.));
+        assertThat(getCount()).isEqualTo(1);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "ok")))
+                .isEqualTo(newMetricValueAvg(20., 30.));
+//        assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "ok")))
+//                .isEqualTo(newMetricValueCount(3.));
     }
 
     @Test

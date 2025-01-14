@@ -59,7 +59,7 @@ class MetricStoreExporterTest {
         MetricKey key = createMetricsKey(List.of(
                 Tag.newBuilder().setKey("custom_tag").setValue("custom_value").build()));
         MetricKey key2 = createMetricsKey(List.of());
-        MetricValue value = MetricValue.newBuilder().setValue(1.0).build();
+        MetricValue value = MetricValue.newBuilder().putValues("count",1.0).build();
 
         // records
         when(records.hasNext()).thenReturn(true, false);
@@ -79,7 +79,41 @@ class MetricStoreExporterTest {
 
         assertThat(prometheusRegistry.scrape())
                 .contains(
-                        "my_metric{custom_tag=\"custom_value\",server=\"localhost:2023\",server_version=\"test\"} 1.0");
+                        "my_metric_count{custom_tag=\"custom_value\",server=\"localhost:2023\",server_version=\"test\"} 1.0");
+    }
+
+    @Test
+    public void shouldScrapeMultipleMetricsFromOneKey() throws InterruptedException {
+        // metrics
+        MetricKey key = createMetricsKey(List.of(
+                Tag.newBuilder().setKey("custom_tag").setValue("custom_value").build()));
+        MetricKey key2 = createMetricsKey(List.of());
+        MetricValue value = MetricValue.newBuilder().putValues("avg",1.0).putValues("max",2.0).build();
+
+        // records
+        when(records.hasNext()).thenReturn(true, false);
+        when(records.next()).thenReturn(KeyValue.pair(key, value));
+        doNothing().when(records).close();
+
+        // store
+        when(store.all()).thenReturn(records);
+
+        // kafka streams
+        when(kafkaStreams.state()).thenReturn(KafkaStreams.State.RUNNING);
+        when(kafkaStreams.store(any())).thenReturn(store);
+
+        metricExporter.bindTo(prometheusRegistry);
+
+        Thread.sleep(500);
+
+        assertThat(prometheusRegistry.scrape())
+                .isEqualTo(
+                        "# HELP my_metric_avg  \n" +
+                                "# TYPE my_metric_avg gauge\n" +
+                                "my_metric_avg{custom_tag=\"custom_value\",server=\"localhost:2023\",server_version=\"test\"} 1.0\n" +
+                                "# HELP my_metric_max  \n" +
+                                "# TYPE my_metric_max gauge\n" +
+                                "my_metric_max{custom_tag=\"custom_value\",server=\"localhost:2023\",server_version=\"test\"} 2.0\n");
     }
 
     private static MetricKey createMetricsKey(List<Tag> tags) {
@@ -103,7 +137,7 @@ class MetricStoreExporterTest {
                 Tag.newBuilder().setKey("custom_tag").setValue("custom_value").build());
         MetricKey key1 = createMetricsKey(tags);
         MetricKey key2 = createMetricsKey("localhost2", tags);
-        MetricValue value = MetricValue.newBuilder().setValue(1.0).build();
+        MetricValue value = MetricValue.newBuilder().putValues("count",1.0).build();
 
         // records
         when(records.hasNext()).thenReturn(true, true, false);
@@ -123,8 +157,8 @@ class MetricStoreExporterTest {
         System.out.printf(prometheusRegistry.scrape());
         assertThat(prometheusRegistry.scrape())
                 .isEqualTo(
-                        "# HELP my_metric  \n" + "# TYPE my_metric gauge\n"
-                                + "my_metric{custom_tag=\"custom_value\",server=\"localhost2:2023\",server_version=\"test\"} 1.0\n"
-                                + "my_metric{custom_tag=\"custom_value\",server=\"localhost:2023\",server_version=\"test\"} 1.0\n");
+                        "# HELP my_metric_count  \n" + "# TYPE my_metric_count gauge\n"
+                                + "my_metric_count{custom_tag=\"custom_value\",server=\"localhost2:2023\",server_version=\"test\"} 1.0\n"
+                                + "my_metric_count{custom_tag=\"custom_value\",server=\"localhost:2023\",server_version=\"test\"} 1.0\n");
     }
 }

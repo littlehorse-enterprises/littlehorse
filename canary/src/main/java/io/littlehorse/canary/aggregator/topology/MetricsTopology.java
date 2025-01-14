@@ -5,7 +5,6 @@ import io.littlehorse.canary.aggregator.internal.BeatTimeExtractor;
 import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
 import io.littlehorse.canary.proto.*;
 import java.time.Duration;
-import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
@@ -55,7 +54,7 @@ public class MetricsTopology {
                         initializeLatencyStore())
                 // build metric
                 .toStream(MetricsTopology::extractKeyFromWindow)
-                .flatMap(MetricsTopology::makeLatencyMetrics);
+                .map(MetricsTopology::mapBeatToMetricLatency);
 
         // build count metric stream
         final KStream<MetricKey, MetricValue> countMetricStream = beatsStream
@@ -63,9 +62,9 @@ public class MetricsTopology {
                 .groupBy(
                         MetricsTopology::removeWfId, Grouped.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.BeatValue()))
                 // count all
-                .count(initializeCountStore(COUNT_STORE))
+                .count(initializeBeatCountStore(COUNT_STORE))
                 .toStream()
-                .map(MetricsTopology::makeCountMetric);
+                .map(MetricsTopology::mapBeatToMetricCount);
 
         // build duplicated task run stream
         final KStream<MetricKey, MetricValue> duplicatedTaskRunStream = beatsStream
@@ -73,22 +72,30 @@ public class MetricsTopology {
                 .filter(MetricsTopology::filterTaskRunBeats)
                 .groupByKey()
                 // count all the records with the same idempotency key and attempt number
-                .count(initializeCountStore(DUPLICATED_TASK_RUN_STORE))
+                .count(initializeBeatCountStore(DUPLICATED_TASK_RUN_STORE))
                 // filter by duplicated
                 .filter(MetricsTopology::selectDuplicatedTaskRun)
                 // group by server
                 .groupBy(
-                        MetricsTopology::buildDuplicatedMetric, Grouped.with(ProtobufSerdes.MetricKey(), Serdes.Long()))
+                        MetricsTopology::mapBeatToDuplicatedTaskRunMetric,
+                        Grouped.with(ProtobufSerdes.MetricKey(), Serdes.Long()))
                 // count by server
-                .count(initializeDuplicatedTaskRunStore())
+                .count(initializeMetricCountStore(DUPLICATED_TASK_RUN_BY_SERVER_STORE))
                 .toStream()
-                .mapValues(MetricsTopology::makeDuplicatedTaskRunCountMetric);
+                .mapValues(MetricsTopology::buildMetricValueCount);
 
         // merge streams
         latencyMetricsStream
                 .merge(countMetricStream)
                 .merge(duplicatedTaskRunStream)
                 // peek
+                .groupByKey(Grouped.with(ProtobufSerdes.MetricKey(), ProtobufSerdes.MetricValue()))
+                .aggregate(
+                        () -> MetricValue.newBuilder().build()
+                        , (metricKey, metricValue, aggregator) ->
+                                MetricValue.newBuilder().putAllValues(aggregator.getValuesMap()).putAllValues(metricValue.getValuesMap()).build()
+                        , initializeTestStore())
+                .toStream()
                 .peek(MetricsTopology::peekMetrics)
                 // save metrics
                 .toTable(Named.as(METRICS_STORE), initializeMetricStore());
@@ -104,19 +111,27 @@ public class MetricsTopology {
         return value > 1L;
     }
 
-    private static MetricValue makeDuplicatedTaskRunCountMetric(final MetricKey readOnlyKey, final Long value) {
-        return buildMetricValue(value);
+    private static MetricValue buildMetricValueCount(final Long value) {
+        return MetricValue.newBuilder().putValues("count", value).build();
     }
 
-    private Materialized<MetricKey, Long, KeyValueStore<Bytes, byte[]>> initializeDuplicatedTaskRunStore() {
-        return Materialized.<MetricKey, Long, KeyValueStore<Bytes, byte[]>>as(DUPLICATED_TASK_RUN_BY_SERVER_STORE)
+    private static MetricValue buildMetricValueAvg(final Double avg, final Double max) {
+        return MetricValue.newBuilder()
+                .putValues("avg", avg)
+                .putValues("max", max)
+                .build();
+    }
+
+    private Materialized<MetricKey, Long, KeyValueStore<Bytes, byte[]>> initializeMetricCountStore(
+            final String storeName) {
+        return Materialized.<MetricKey, Long, KeyValueStore<Bytes, byte[]>>as(storeName)
                 .withKeySerde(ProtobufSerdes.MetricKey())
                 .withValueSerde(Serdes.Long())
                 .withRetention(storeRetention);
     }
 
-    private static KeyValue<MetricKey, Long> buildDuplicatedMetric(final BeatKey key, final Long count) {
-        return KeyValue.pair(buildMetricKey(key, "duplicated_task_run_count"), count);
+    private static KeyValue<MetricKey, Long> mapBeatToDuplicatedTaskRunMetric(final BeatKey key, final Long count) {
+        return KeyValue.pair(buildMetricKey(key, "duplicated_task_run"), count);
     }
 
     private static boolean filterTaskRunBeats(final BeatKey key, final BeatValue value) {
@@ -127,16 +142,16 @@ public class MetricsTopology {
         return keyWindowed.key();
     }
 
-    private Materialized<BeatKey, Long, KeyValueStore<Bytes, byte[]>> initializeCountStore(final String storeName) {
+    private Materialized<BeatKey, Long, KeyValueStore<Bytes, byte[]>> initializeBeatCountStore(final String storeName) {
         return Materialized.<BeatKey, Long, KeyValueStore<Bytes, byte[]>>as(storeName)
                 .withKeySerde(ProtobufSerdes.BeatKey())
                 .withValueSerde(Serdes.Long())
                 .withRetention(storeRetention);
     }
 
-    private static KeyValue<MetricKey, MetricValue> makeCountMetric(final BeatKey key, final Long count) {
+    private static KeyValue<MetricKey, MetricValue> mapBeatToMetricCount(final BeatKey key, final Long count) {
         final String metricIdPrefix = key.getType().toString().toLowerCase();
-        return KeyValue.pair(buildMetricKey(key, "%s_%s".formatted(metricIdPrefix, "count")), buildMetricValue(count));
+        return KeyValue.pair(buildMetricKey(key, metricIdPrefix), buildMetricValueCount(count));
     }
 
     private static Consumed<BeatKey, BeatValue> initializeSerdes() {
@@ -151,20 +166,10 @@ public class MetricsTopology {
                 .withRetention(storeRetention);
     }
 
-    private static List<KeyValue<MetricKey, MetricValue>> makeLatencyMetrics(
+    private static KeyValue<MetricKey, MetricValue> mapBeatToMetricLatency(
             final BeatKey key, final AverageAggregator value) {
         final String metricIdPrefix = key.getType().toString().toLowerCase();
-        return List.of(
-                KeyValue.pair(
-                        buildMetricKey(key, "%s_%s".formatted(metricIdPrefix, "avg")),
-                        buildMetricValue(value.getAvg())),
-                KeyValue.pair(
-                        buildMetricKey(key, "%s_%s".formatted(metricIdPrefix, "max")),
-                        buildMetricValue(value.getMax())));
-    }
-
-    private static MetricValue buildMetricValue(final double value) {
-        return MetricValue.newBuilder().setValue(value).build();
+        return KeyValue.pair(buildMetricKey(key, metricIdPrefix), buildMetricValueAvg(value.getAvg(), value.getMax()));
     }
 
     private static MetricKey buildMetricKey(final BeatKey key, final String id) {
@@ -184,6 +189,13 @@ public class MetricsTopology {
         }
 
         return builder.build();
+    }
+
+    private Materialized<MetricKey, MetricValue, KeyValueStore<Bytes, byte[]>> initializeTestStore() {
+        return Materialized.<MetricKey, MetricValue, KeyValueStore<Bytes, byte[]>>as(LATENCY_STORE+"-TEST")
+                .withKeySerde(ProtobufSerdes.MetricKey())
+                .withValueSerde(ProtobufSerdes.MetricValue())
+                .withRetention(storeRetention);
     }
 
     private Materialized<BeatKey, AverageAggregator, WindowStore<Bytes, byte[]>> initializeLatencyStore() {
@@ -224,14 +236,14 @@ public class MetricsTopology {
     }
 
     private static void peekMetrics(final MetricKey key, final MetricValue value) {
-        log.debug(
-                "server={}:{}, id={}, tags={}, value={}",
+        log.info(
+                "server={}:{}, id={}, tags={}, values={}",
                 key.getServerHost(),
                 key.getServerPort(),
                 key.getId(),
                 key.getTagsList().stream()
                         .map(tag -> "%s:%s".formatted(tag.getKey(), tag.getValue()))
                         .collect(Collectors.joining(" ")),
-                value.getValue());
+                value.getValuesMap());
     }
 }
