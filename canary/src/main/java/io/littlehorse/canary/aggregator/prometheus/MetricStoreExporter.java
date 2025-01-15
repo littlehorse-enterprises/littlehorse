@@ -65,7 +65,7 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
                     try {
                         updateMetrics(registry);
                     } catch (Exception e) {
-                        log.warn("Error when exporting metrics", e);
+                        log.error("Error when exporting metrics", e);
                     }
                 },
                 0,
