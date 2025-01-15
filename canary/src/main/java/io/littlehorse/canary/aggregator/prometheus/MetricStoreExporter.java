@@ -102,6 +102,7 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
                                         .register(registry)
                                         .getId();
                                 cachedMeters.put(metric, new CachedMeter(meterId, newMeter));
+                                log.info("Metric {} added", metric);
                             } else {
                                 log.debug("Updating existing metric {}", metric.getId());
                                 cachedMeter.getMeter().set(metric.getValue());
