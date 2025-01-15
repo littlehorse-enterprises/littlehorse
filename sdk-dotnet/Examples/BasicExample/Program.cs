@@ -5,7 +5,7 @@ using LittleHorse.Sdk.Workflow.Spec;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
-public abstract class Program
+public class Program
 {
     private static ServiceProvider? _serviceProvider;
     private static void SetupApplication()
@@ -51,7 +51,7 @@ public abstract class Program
         {
         }
         
-        return new Workflow("basic-example", MyEntryPoint);
+        return new Workflow("example-basic", MyEntryPoint);
     }
 
     static void Main(string[] args)
