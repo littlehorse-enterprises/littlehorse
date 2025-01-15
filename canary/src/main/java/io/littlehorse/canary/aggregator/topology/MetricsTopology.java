@@ -124,7 +124,7 @@ public class MetricsTopology {
         return MetricValue.newBuilder().putValues("count", value).build();
     }
 
-    private static MetricValue buildMetricValueAvg(final Double avg, final Double max) {
+    private static MetricValue mapAvgToMetricValue(final Double avg, final Double max) {
         return MetricValue.newBuilder()
                 .putValues("avg", avg)
                 .putValues("max", max)
@@ -179,7 +179,7 @@ public class MetricsTopology {
     private static KeyValue<MetricKey, MetricValue> mapBeatToMetricLatency(
             final BeatKey key, final AverageAggregator value) {
         final String metricIdPrefix = key.getType().toString().toLowerCase();
-        return KeyValue.pair(buildMetricKey(key, metricIdPrefix), buildMetricValueAvg(value.getAvg(), value.getMax()));
+        return KeyValue.pair(buildMetricKey(key, metricIdPrefix), mapAvgToMetricValue(value.getAvg(), value.getMax()));
     }
 
     private static MetricKey buildMetricKey(final BeatKey key, final String id) {
