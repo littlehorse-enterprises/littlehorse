@@ -9,14 +9,6 @@ import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.binder.MeterBinder;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.StoreQueryParameters;
-import org.apache.kafka.streams.state.KeyValueIterator;
-import org.apache.kafka.streams.state.QueryableStoreTypes;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
-
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +19,13 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.KeyValue;
+import org.apache.kafka.streams.StoreQueryParameters;
+import org.apache.kafka.streams.state.KeyValueIterator;
+import org.apache.kafka.streams.state.QueryableStoreTypes;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 @Slf4j
 public class MetricStoreExporter implements MeterBinder, AutoCloseable {
@@ -87,11 +86,10 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
             while (records.hasNext()) {
                 final KeyValue<MetricKey, MetricValue> record = records.next();
 
-                record.value.getValuesMap()
-                        .entrySet().stream()
-                        .map(entry -> new PrometheusMetric(toMetricId(record.key, entry.getKey()), toMetricTags(record.key), entry.getValue()))
+                record.value.getValuesMap().entrySet().stream()
+                        .map(entry -> new PrometheusMetric(
+                                toMetricId(record.key, entry.getKey()), toMetricTags(record.key), entry.getValue()))
                         .forEach(metric -> {
-
                             foundMetrics.add(metric);
                             final CachedMeter current = currentMeters.get(metric);
 
@@ -125,9 +123,7 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
                 });
     }
 
-    record CachedMeter(Meter.Id id, AtomicDouble meter) {
-    }
+    record CachedMeter(Meter.Id id, AtomicDouble meter) {}
 
-    record PrometheusMetric(String id, List<Tag> tags, Double value) {
-    }
+    record PrometheusMetric(String id, List<Tag> tags, Double value) {}
 }

@@ -51,7 +51,7 @@ public class MetricsTopology {
                 .aggregate(
                         MetricsTopology::initializeAverageAggregator,
                         MetricsTopology::aggregateAverage,
-                        initializeLatencyStore())
+                        initializeLatencyStore(LATENCY_STORE))
                 // build metric
                 .toStream(MetricsTopology::extractKeyFromWindow)
                 .map(MetricsTopology::mapBeatToMetricLatency);
@@ -82,25 +82,35 @@ public class MetricsTopology {
                 // count by server
                 .count(initializeMetricCountStore(DUPLICATED_TASK_RUN_BY_SERVER_STORE))
                 .toStream()
-                .mapValues(MetricsTopology::buildMetricValueCount);
+                .mapValues(MetricsTopology::mapLongToMetricValue);
 
         // merge streams
         latencyMetricsStream
                 .merge(countMetricStream)
                 .merge(duplicatedTaskRunStream)
-                // peek
+                // group by metric
                 .groupByKey(Grouped.with(ProtobufSerdes.MetricKey(), ProtobufSerdes.MetricValue()))
+                // aggregate metric values
                 .aggregate(
-                        () -> MetricValue.newBuilder().build()
-                        , (metricKey, metricValue, aggregator) ->
-                                MetricValue.newBuilder().putAllValues(aggregator.getValuesMap()).putAllValues(metricValue.getValuesMap()).build()
-                        , initializeTestStore())
-                .toStream()
-                .peek(MetricsTopology::peekMetrics)
-                // save metrics
-                .toTable(Named.as(METRICS_STORE), initializeMetricStore());
+                        MetricsTopology::initializeMetricAggregator,
+                        MetricsTopology::aggregateMetrics,
+                        initializeMetricStore(METRICS_STORE));
 
         return streamsBuilder.build();
+    }
+
+    private static MetricValue aggregateMetrics(
+            final MetricKey metricKey, final MetricValue metricValue, final MetricValue aggregator) {
+        return MetricValue.newBuilder()
+                // previous values
+                .putAllValues(aggregator.getValuesMap())
+                // new values
+                .putAllValues(metricValue.getValuesMap())
+                .build();
+    }
+
+    private static MetricValue initializeMetricAggregator() {
+        return MetricValue.newBuilder().build();
     }
 
     private static boolean isExhaustedRetries(final BeatKey key, final BeatValue value) {
@@ -111,7 +121,7 @@ public class MetricsTopology {
         return value > 1L;
     }
 
-    private static MetricValue buildMetricValueCount(final Long value) {
+    private static MetricValue mapLongToMetricValue(final Long value) {
         return MetricValue.newBuilder().putValues("count", value).build();
     }
 
@@ -151,7 +161,7 @@ public class MetricsTopology {
 
     private static KeyValue<MetricKey, MetricValue> mapBeatToMetricCount(final BeatKey key, final Long count) {
         final String metricIdPrefix = key.getType().toString().toLowerCase();
-        return KeyValue.pair(buildMetricKey(key, metricIdPrefix), buildMetricValueCount(count));
+        return KeyValue.pair(buildMetricKey(key, metricIdPrefix), mapLongToMetricValue(count));
     }
 
     private static Consumed<BeatKey, BeatValue> initializeSerdes() {
@@ -159,8 +169,9 @@ public class MetricsTopology {
                 .withTimestampExtractor(new BeatTimeExtractor());
     }
 
-    private Materialized<MetricKey, MetricValue, KeyValueStore<Bytes, byte[]>> initializeMetricStore() {
-        return Materialized.<MetricKey, MetricValue, KeyValueStore<Bytes, byte[]>>as(METRICS_STORE)
+    private Materialized<MetricKey, MetricValue, KeyValueStore<Bytes, byte[]>> initializeMetricStore(
+            final String storeName) {
+        return Materialized.<MetricKey, MetricValue, KeyValueStore<Bytes, byte[]>>as(storeName)
                 .withKeySerde(ProtobufSerdes.MetricKey())
                 .withValueSerde(ProtobufSerdes.MetricValue())
                 .withRetention(storeRetention);
@@ -191,15 +202,9 @@ public class MetricsTopology {
         return builder.build();
     }
 
-    private Materialized<MetricKey, MetricValue, KeyValueStore<Bytes, byte[]>> initializeTestStore() {
-        return Materialized.<MetricKey, MetricValue, KeyValueStore<Bytes, byte[]>>as(LATENCY_STORE+"-TEST")
-                .withKeySerde(ProtobufSerdes.MetricKey())
-                .withValueSerde(ProtobufSerdes.MetricValue())
-                .withRetention(storeRetention);
-    }
-
-    private Materialized<BeatKey, AverageAggregator, WindowStore<Bytes, byte[]>> initializeLatencyStore() {
-        return Materialized.<BeatKey, AverageAggregator, WindowStore<Bytes, byte[]>>as(LATENCY_STORE)
+    private Materialized<BeatKey, AverageAggregator, WindowStore<Bytes, byte[]>> initializeLatencyStore(
+            final String storeName) {
+        return Materialized.<BeatKey, AverageAggregator, WindowStore<Bytes, byte[]>>as(storeName)
                 .withKeySerde(ProtobufSerdes.BeatKey())
                 .withValueSerde(ProtobufSerdes.AverageAggregator())
                 .withRetention(storeRetention);
