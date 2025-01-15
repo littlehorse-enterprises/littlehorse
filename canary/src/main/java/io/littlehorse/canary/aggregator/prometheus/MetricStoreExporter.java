@@ -1,4 +1,4 @@
-package io.littlehorse.canary.aggregator.internal;
+package io.littlehorse.canary.aggregator.prometheus;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import io.littlehorse.canary.proto.MetricKey;
@@ -32,7 +32,7 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
 
     private final KafkaStreams kafkaStreams;
     private final String storeName;
-    private final Map<PrometheusMetric, CachedMeter> currentMeters = new HashMap<>();
+    private final Map<PrometheusMetric, CachedMeter> cachedMeters = new HashMap<>();
     private final Duration refreshPeriod;
     private ScheduledExecutorService mainExecutor;
 
@@ -87,34 +87,38 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
                 final KeyValue<MetricKey, MetricValue> record = records.next();
 
                 record.value.getValuesMap().entrySet().stream()
-                        .map(entry -> new PrometheusMetric(
-                                toMetricId(record.key, entry.getKey()), toMetricTags(record.key), entry.getValue()))
+                        .map(entry -> PrometheusMetric.builder()
+                                .id(toMetricId(record.key, entry.getKey()))
+                                .tags(toMetricTags(record.key))
+                                .value(entry.getValue())
+                                .build())
                         .forEach(metric -> {
                             foundMetrics.add(metric);
-                            final CachedMeter current = currentMeters.get(metric);
+                            final CachedMeter cachedMeter = cachedMeters.get(metric);
 
-                            if (current == null) {
-                                final AtomicDouble newMeter = new AtomicDouble(metric.value);
-                                final Meter.Id meterId = Gauge.builder(metric.id, newMeter, AtomicDouble::get)
-                                        .tags(metric.tags)
+                            if (cachedMeter == null) {
+                                final AtomicDouble newMeter = new AtomicDouble(metric.getValue());
+                                final Meter.Id meterId = Gauge.builder(metric.getId(), newMeter, AtomicDouble::get)
+                                        .tags(metric.getTags())
                                         .register(registry)
                                         .getId();
-                                currentMeters.put(metric, new CachedMeter(meterId, newMeter));
+                                cachedMeters.put(metric, new CachedMeter(meterId, newMeter));
                             } else {
-                                current.meter.set(metric.value);
+                                log.debug("Updating existing metric {}", metric.getId());
+                                cachedMeter.getMeter().set(metric.getValue());
                             }
                         });
             }
         }
 
-        currentMeters.keySet().stream()
+        cachedMeters.keySet().stream()
                 .filter(metricKey -> !foundMetrics.contains(metricKey))
                 .forEach(metricKey -> {
-                    final CachedMeter prometheusMetric = currentMeters.remove(metricKey);
-                    final boolean wasRemovedFromRegistry = registry.remove(prometheusMetric.id) != null;
+                    final CachedMeter cachedMeter = cachedMeters.remove(metricKey);
+                    final boolean wasRemovedFromRegistry = registry.remove(cachedMeter.getId()) != null;
 
                     if (wasRemovedFromRegistry) {
-                        log.debug("Metric {} removed", metricKey);
+                        log.info("Metric {} removed", metricKey);
                     } else {
                         log.warn(
                                 "It was not possible to remove metric '{}', not present at the MeterRegistry",
@@ -122,8 +126,4 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
                     }
                 });
     }
-
-    record CachedMeter(Meter.Id id, AtomicDouble meter) {}
-
-    record PrometheusMetric(String id, List<Tag> tags, Double value) {}
 }

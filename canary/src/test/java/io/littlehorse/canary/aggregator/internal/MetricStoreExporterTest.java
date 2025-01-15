@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import io.littlehorse.canary.aggregator.prometheus.MetricStoreExporter;
 import io.littlehorse.canary.proto.MetricKey;
 import io.littlehorse.canary.proto.MetricValue;
 import io.littlehorse.canary.proto.Tag;

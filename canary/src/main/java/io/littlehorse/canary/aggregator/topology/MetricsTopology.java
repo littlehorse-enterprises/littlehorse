@@ -5,7 +5,6 @@ import io.littlehorse.canary.aggregator.internal.BeatTimeExtractor;
 import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
 import io.littlehorse.canary.proto.*;
 import java.time.Duration;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -238,17 +237,5 @@ public class MetricsTopology {
                 .setAvg(avg)
                 .setMax(max)
                 .build();
-    }
-
-    private static void peekMetrics(final MetricKey key, final MetricValue value) {
-        log.debug(
-                "server={}:{}, id={}, tags={}, values={}",
-                key.getServerHost(),
-                key.getServerPort(),
-                key.getId(),
-                key.getTagsList().stream()
-                        .map(tag -> "%s:%s".formatted(tag.getKey(), tag.getValue()))
-                        .collect(Collectors.joining(" ")),
-                value.getValuesMap());
     }
 }

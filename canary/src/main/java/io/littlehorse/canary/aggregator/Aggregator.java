@@ -2,7 +2,7 @@ package io.littlehorse.canary.aggregator;
 
 import static io.littlehorse.canary.aggregator.topology.MetricsTopology.METRICS_STORE;
 
-import io.littlehorse.canary.aggregator.internal.MetricStoreExporter;
+import io.littlehorse.canary.aggregator.prometheus.MetricStoreExporter;
 import io.littlehorse.canary.aggregator.topology.MetricsTopology;
 import io.littlehorse.canary.util.ShutdownHook;
 import io.micrometer.core.instrument.MeterRegistry;
