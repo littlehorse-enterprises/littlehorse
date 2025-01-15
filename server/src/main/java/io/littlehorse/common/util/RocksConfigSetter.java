@@ -63,7 +63,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         options.setTableFormatConfig(tableConfig);
 
         options.setOptimizeFiltersForHits(OPTIMIZE_FILTERS_FOR_HITS);
-        options.setCompactionStyle(CompactionStyle.LEVEL);
+        options.setCompactionStyle(CompactionStyle.UNIVERSAL);
 
         options.setIncreaseParallelism(serverConfig.getRocksDBCompactionThreads());
 
