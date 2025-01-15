@@ -8,23 +8,23 @@ public class Workflow
 {
     private string _name;
     private Action<WorkflowThread> _entryPoint;
+    private PutWfSpecRequest _compiledWorkflow;
     private PutWfSpecRequest _spec;
     private Queue<Tuple<string, Action<WorkflowThread>>> _threadActions;
-    private WorkflowRetentionPolicy _wfRetentionPolicy;
+
 
     public Workflow(string name, Action<WorkflowThread> entryPoint)
     {
         _name = name;
+        _compiledWorkflow = null!;
         _entryPoint = entryPoint;
         _spec = new PutWfSpecRequest { Name = name };
         _threadActions = new Queue<Tuple<string, Action<WorkflowThread>>>();
     }
-    
-    public PutWfSpecRequest CompileWorkflow() {
-        if (_spec == null) {
-            CompileWorkflowDetails();
-        }
-        return _spec;
+
+    private PutWfSpecRequest CompileWorkflow()
+    {
+        return _compiledWorkflow ??= CompileWorkflowDetails();
     }
 
     public void RegisterWfSpec(LittleHorseClient lhClient)
@@ -56,15 +56,6 @@ public class Workflow
             _spec.ThreadSpecs.Add(actionName, wfThread.Compile());
         }
 
-        if (_wfRetentionPolicy != null) {
-            _spec.RetentionPolicy = _wfRetentionPolicy;
-        }
-
         return _spec;
-    }
-    
-    public Workflow WithRetentionPolicy(WorkflowRetentionPolicy policy) {
-        _wfRetentionPolicy = policy;
-        return this;
     }
 }

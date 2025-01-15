@@ -1,10 +1,11 @@
 ﻿using Examples.BasicExample;
 using LittleHorse.Sdk;
 using LittleHorse.Sdk.Worker;
+using LittleHorse.Sdk.Workflow.Spec;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
-public class Program
+public abstract class Program
 {
     private static ServiceProvider? _serviceProvider;
     private static void SetupApplication()
@@ -44,6 +45,15 @@ public class Program
         return config;
     }
 
+    private static Workflow GetWorkflow()
+    {
+        void MyEntryPoint(WorkflowThread wf)
+        {
+        }
+        
+        return new Workflow("basic-example", MyEntryPoint);
+    }
+
     static void Main(string[] args)
     {
         SetupApplication();
@@ -54,8 +64,10 @@ public class Program
 
             MyWorker executable = new MyWorker();
             var taskWorker = new LHTaskWorker<MyWorker>(executable, "greet", config);
-
             taskWorker.RegisterTaskDef();
+            
+            var workflow = GetWorkflow();
+            workflow.RegisterWfSpec(config.GetGrpcClientInstance());
 
             Thread.Sleep(1000);
 
