@@ -33,13 +33,13 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
     private final KafkaStreams kafkaStreams;
     private final String storeName;
     private final Map<PrometheusMetric, CachedMeter> cachedMeters = new HashMap<>();
-    private final Duration refreshPeriod;
+    private final Duration frequency;
     private ScheduledExecutorService mainExecutor;
 
-    public MetricStoreExporter(final KafkaStreams kafkaStreams, final String storeName, final Duration refreshPeriod) {
+    public MetricStoreExporter(final KafkaStreams kafkaStreams, final String storeName, final Duration frequency) {
         this.kafkaStreams = kafkaStreams;
         this.storeName = storeName;
-        this.refreshPeriod = refreshPeriod;
+        this.frequency = frequency;
     }
 
     private static List<Tag> toMetricTags(final MetricKey key) {
@@ -60,8 +60,7 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
     public void bindTo(final MeterRegistry registry) {
         mainExecutor = Executors.newSingleThreadScheduledExecutor();
         ShutdownHook.add("Latency Metrics Exporter", this);
-        mainExecutor.scheduleAtFixedRate(
-                () -> updateMetrics(registry), 0, refreshPeriod.toMillis(), TimeUnit.MILLISECONDS);
+        mainExecutor.scheduleAtFixedRate(() -> updateMetrics(registry), 0, frequency.toMillis(), TimeUnit.MILLISECONDS);
     }
 
     public void close() throws InterruptedException {
