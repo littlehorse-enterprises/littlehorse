@@ -60,7 +60,17 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
     public void bindTo(final MeterRegistry registry) {
         mainExecutor = Executors.newSingleThreadScheduledExecutor();
         ShutdownHook.add("Latency Metrics Exporter", this);
-        mainExecutor.scheduleAtFixedRate(() -> updateMetrics(registry), 0, frequency.toMillis(), TimeUnit.MILLISECONDS);
+        mainExecutor.scheduleAtFixedRate(
+                () -> {
+                    try {
+                        updateMetrics(registry);
+                    } catch (Exception e) {
+                        log.warn("Error when exporting metrics", e);
+                    }
+                },
+                0,
+                frequency.toMillis(),
+                TimeUnit.MILLISECONDS);
     }
 
     public void close() throws InterruptedException {
@@ -69,7 +79,7 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
     }
 
     private void updateMetrics(final MeterRegistry registry) {
-        log.trace("Exporting metrics");
+        log.debug("Exporting metrics");
 
         if (!kafkaStreams.state().equals(KafkaStreams.State.RUNNING)) {
             log.warn("It was not possible to export metrics because kafka streams is not running");
@@ -111,19 +121,19 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
             }
         }
 
-        cachedMeters.keySet().stream()
+        final List<PrometheusMetric> metricsToRemove = cachedMeters.keySet().stream()
                 .filter(metricKey -> !foundMetrics.contains(metricKey))
-                .forEach(metricKey -> {
-                    final CachedMeter cachedMeter = cachedMeters.remove(metricKey);
-                    final boolean wasRemovedFromRegistry = registry.remove(cachedMeter.getId()) != null;
+                .toList();
+        // to avoid ConcurrentModificationException
+        metricsToRemove.forEach(metricKey -> {
+            final CachedMeter cachedMeter = cachedMeters.remove(metricKey);
+            final boolean wasRemovedFromRegistry = registry.remove(cachedMeter.getId()) != null;
 
-                    if (wasRemovedFromRegistry) {
-                        log.info("Metric {} removed", metricKey);
-                    } else {
-                        log.warn(
-                                "It was not possible to remove metric '{}', not present at the MeterRegistry",
-                                metricKey);
-                    }
-                });
+            if (wasRemovedFromRegistry) {
+                log.info("Metric {} removed", metricKey);
+            } else {
+                log.warn("It was not possible to remove metric '{}', not present at the MeterRegistry", metricKey);
+            }
+        });
     }
 }
