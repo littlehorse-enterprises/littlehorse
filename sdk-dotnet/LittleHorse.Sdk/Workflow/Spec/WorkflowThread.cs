@@ -10,12 +10,14 @@ public class WorkflowThread
     private ThreadSpec _spec;
     public string LastNodeName;
     private bool _isActive;
+    private List<WfRunVariable> _wfRunVariables;
     
-    public WorkflowThread(String name, Workflow parent)
+    public WorkflowThread(String name, Workflow parent, Action<WorkflowThread> action)
     {
         _name = name;
         _parentWorkflow = parent;
         _spec = new ThreadSpec();
+        _wfRunVariables = new List<WfRunVariable>();
 
         var entrypointNode = new Node { Entrypoint = new EntrypointNode() };
 
@@ -23,10 +25,11 @@ public class WorkflowThread
         LastNodeName = entrypointNodeName;
         _spec.Nodes.Add(entrypointNodeName, entrypointNode);
         _isActive = true;
+        action.Invoke(this);
 
         var exitNode = GetLastNode(LastNodeName);
         if (exitNode.NodeCase == Node.NodeOneofCase.Exit) {
-            addNode("exit", Node.NodeOneofCase.Exit, new ExitNode());
+            AddNode("exit", Node.NodeOneofCase.Exit, new ExitNode());
         }
         _isActive = false;
 
@@ -35,6 +38,16 @@ public class WorkflowThread
 
     public ThreadSpec Compile()
     {
+        if (_spec.VariableDefs != null)
+        {
+            _spec.VariableDefs.Clear();
+        }
+
+        foreach (var wfRunVariable in _wfRunVariables)
+        {
+            _spec.VariableDefs!.Add(wfRunVariable.Compile());
+        }
+        
         return _spec;
     }
 
@@ -54,7 +67,7 @@ public class WorkflowThread
         }
     }
     
-    private String addNode(String name, Node.NodeOneofCase type, IMessage subNode) {
+    private string AddNode(string name, Node.NodeOneofCase type, IMessage subNode) {
         CheckIfWorkflowThreadIsActive();
         String nextNodeName = GetNodeName(name, type);
         if (LastNodeName == null) {
@@ -87,5 +100,13 @@ public class WorkflowThread
     
     private String GetNodeName(String name, Node.NodeOneofCase type) {
         return $"{_spec.Nodes.Count}-{name}-{type}";
+    }
+    
+    public WfRunVariable AddVariable(String name, Object typeOrDefaultVal) {
+        CheckIfWorkflowThreadIsActive();
+        var wfRunVariable = new WfRunVariable(name, typeOrDefaultVal, this);
+        _wfRunVariables.Add(wfRunVariable);
+        
+        return wfRunVariable;
     }
 }

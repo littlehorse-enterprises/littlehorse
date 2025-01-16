@@ -142,6 +142,28 @@ namespace LittleHorse.Sdk.Helper
             }
         }
 
+        public static VariableType ValueCaseToVariableType(VariableValue.ValueOneofCase valueCase)
+        {
+            switch (valueCase) {
+                case VariableValue.ValueOneofCase.Str:
+                    return VariableType.Str;
+                case VariableValue.ValueOneofCase.Bytes:
+                    return VariableType.Bytes;
+                case VariableValue.ValueOneofCase.Int:
+                    return VariableType.Int;
+                case VariableValue.ValueOneofCase.Double:
+                    return VariableType.Double;
+                case VariableValue.ValueOneofCase.Bool:
+                    return VariableType.Bool;
+                case VariableValue.ValueOneofCase.JsonArr:
+                    return VariableType.JsonArr;
+                case VariableValue.ValueOneofCase.JsonObj:
+                case VariableValue.ValueOneofCase.None:
+                default:
+                    return VariableType.JsonObj;
+            }
+        }
+
         internal static bool IsFloat(Type type)
         {
             return type.IsAssignableFrom(typeof(float))

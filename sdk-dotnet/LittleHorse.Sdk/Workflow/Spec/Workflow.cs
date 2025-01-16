@@ -1,4 +1,6 @@
 using LittleHorse.Sdk.Common.Proto;
+using LittleHorse.Sdk.Helper;
+using Microsoft.Extensions.Logging;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
@@ -6,33 +8,36 @@ using static LittleHorse.Sdk.Common.Proto.LittleHorse;
 
 public class Workflow
 {
+    private readonly ILogger<Workflow>? _logger;
     private string _name;
     private Action<WorkflowThread> _entryPoint;
     private PutWfSpecRequest _compiledWorkflow;
     private PutWfSpecRequest _spec;
     private Queue<Tuple<string, Action<WorkflowThread>>> _threadActions;
-
+    private string _parentWfSpecName;
 
     public Workflow(string name, Action<WorkflowThread> entryPoint)
     {
+        _logger = LHLoggerFactoryProvider.GetLogger<Workflow>();
         _name = name;
         _compiledWorkflow = null!;
+        _parentWfSpecName = string.Empty;
         _entryPoint = entryPoint;
         _spec = new PutWfSpecRequest { Name = name };
         _threadActions = new Queue<Tuple<string, Action<WorkflowThread>>>();
     }
 
-    private PutWfSpecRequest CompileWorkflow()
+    private PutWfSpecRequest Compile()
     {
         return _compiledWorkflow ??= CompileWorkflowDetails();
     }
 
     public void RegisterWfSpec(LittleHorseClient lhClient)
     {
-        lhClient.PutWfSpec(CompileWorkflow());
+        _logger!.LogInformation(LHMappingHelper.ProtoToJson(lhClient.PutWfSpec(Compile())));
     }
-    
-    public String AddSubThread(String subThreadName, Action<WorkflowThread> subThreadAction) {
+
+    private String AddSubThread(String subThreadName, Action<WorkflowThread> subThreadAction) {
         foreach (var threadPair in _threadActions)
         {
             if (threadPair.Item1 == subThreadName)
@@ -52,8 +57,14 @@ public class Workflow
         while (_threadActions.Count != 0) {
             Tuple<string, Action<WorkflowThread>> nextThreadAction = _threadActions.Dequeue();
             string actionName = nextThreadAction.Item1;
-            WorkflowThread wfThread = new WorkflowThread(_name, this);
+            Action<WorkflowThread> threadAction = nextThreadAction.Item2;
+            WorkflowThread wfThread = new WorkflowThread(_name, this, threadAction);
             _spec.ThreadSpecs.Add(actionName, wfThread.Compile());
+        }
+        
+        if (!string.IsNullOrEmpty(_parentWfSpecName))
+        {
+            _spec.ParentWfSpec = new WfSpec.Types.ParentWfSpecReference { WfSpecName = _parentWfSpecName };
         }
 
         return _spec;

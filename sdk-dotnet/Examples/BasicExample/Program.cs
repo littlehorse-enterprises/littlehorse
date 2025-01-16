@@ -1,5 +1,6 @@
 ﻿using Examples.BasicExample;
 using LittleHorse.Sdk;
+using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Worker;
 using LittleHorse.Sdk.Workflow.Spec;
 using Microsoft.Extensions.Logging;
@@ -49,6 +50,7 @@ public class Program
     {
         void MyEntryPoint(WorkflowThread wf)
         {
+            wf.AddVariable("input-name", VariableType.Str);
         }
         
         return new Workflow("example-basic", MyEntryPoint);
