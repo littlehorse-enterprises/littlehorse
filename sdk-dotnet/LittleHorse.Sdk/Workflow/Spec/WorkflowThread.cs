@@ -27,8 +27,8 @@ public class WorkflowThread
         _isActive = true;
         action.Invoke(this);
 
-        var exitNode = GetLastNode(LastNodeName);
-        if (exitNode.NodeCase == Node.NodeOneofCase.Exit) {
+        var lastNode = FindNode(LastNodeName);
+        if (lastNode.NodeCase != Node.NodeOneofCase.Exit) {
             AddNode("exit", Node.NodeOneofCase.Exit, new ExitNode());
         }
         _isActive = false;
@@ -51,14 +51,14 @@ public class WorkflowThread
         return _spec;
     }
 
-    private Node GetLastNode(string lastNodeName)
+    private Node FindNode(string nodeName)
     {
-        if (_spec.Nodes.Last().Key  != lastNodeName)
+        if (_spec.Nodes.Last().Key  != nodeName)
         {
             throw new ArgumentException("No node found");
         }
 
-        return _spec.Nodes[lastNodeName];
+        return _spec.Nodes[nodeName];
     }
     
     private void CheckIfWorkflowThreadIsActive() {
@@ -74,18 +74,24 @@ public class WorkflowThread
             throw new InvalidOperationException("Not possible to have null last node here");
         }
 
-        var feederNode = GetLastNode(LastNodeName);
+        var feederNode = FindNode(LastNodeName);
         var edge = new Edge {SinkNodeName = nextNodeName};
         
         if (feederNode.NodeCase != Node.NodeOneofCase.Exit) {
             feederNode.OutgoingEdges.Add(edge);
-            _spec.Nodes.Add(LastNodeName, feederNode);
+            _spec.Nodes[LastNodeName] = feederNode;
         }
 
         Node node = new Node();
         switch (type) {
             case Node.NodeOneofCase.Task:
                 node.Task = (TaskNode) subNode;
+                break;
+            case Node.NodeOneofCase.Entrypoint:
+                node.Task = (TaskNode) subNode;
+                break;
+            case Node.NodeOneofCase.Exit:
+                node.Exit = (ExitNode) subNode;
                 break;
             case Node.NodeOneofCase.None:
                 // not possible
