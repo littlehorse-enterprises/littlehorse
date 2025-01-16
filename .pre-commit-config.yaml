@@ -31,12 +31,12 @@ repos:
     hooks:
       # Dependencies
 
-#      - id: install-python
-#        name: Install Python Dependencies
-#        language: system
-#        always_run: true
-#        pass_filenames: false
-#        entry: poetry -C ./sdk-python install
+      - id: install-python
+        name: Install Python Dependencies
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: poetry -C ./sdk-python install
 
       - id: install-sdk-js
         name: Install Javascript Dependencies
@@ -54,12 +54,12 @@ repos:
         pass_filenames: false
         entry: ./gradlew spotlessApply
 
-#      - id: format-python
-#        name: Format Python Code
-#        language: system
-#        always_run: true
-#        pass_filenames: false
-#        entry: poetry -C ./sdk-python run black .
+      - id: format-python
+        name: Format Python Code
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: poetry -C ./sdk-python run black .
 
       - id: format-go
         name: Format Go Code
@@ -77,19 +77,19 @@ repos:
 
       # Linters
 
-#      - id: lint-python
-#        name: Lint Python Code
-#        language: system
-#        always_run: true
-#        pass_filenames: false
-#        entry: poetry -C ./sdk-python run ruff check --fix .
+      - id: lint-python
+        name: Lint Python Code
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: poetry -C ./sdk-python run ruff check --fix .
 
-#      - id: mypy
-#        name: Validating Python Types
-#        language: system
-#        always_run: true
-#        pass_filenames: false
-#        entry: poetry -C ./sdk-python run mypy .
+      - id: mypy
+        name: Validating Python Types
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: poetry -C ./sdk-python run mypy .
 
       # Tests
 
@@ -114,12 +114,12 @@ repos:
         pass_filenames: false
         entry: bash -c 'cd ./sdk-go && go test ./...'
 
-#      - id: python-tests
-#        name: Running SDK Python Tests
-#        language: system
-#        always_run: true
-#        pass_filenames: false
-#        entry: poetry -C ./sdk-python run python -m unittest discover -s .
+      - id: python-tests
+        name: Running SDK Python Tests
+        language: system
+        always_run: true
+        pass_filenames: false
+        entry: poetry -C ./sdk-python run python -m unittest discover -s .
 
       - id: sdk-js-tests
         name: Running SDK Javascript tests
