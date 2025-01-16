@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Google.Protobuf;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Helper;
 using Google.Protobuf.WellKnownTypes;
@@ -227,6 +228,7 @@ public class LHMappingHelperTest
         var result = LHMappingHelper.ObjectToVariableValue(persons);
         
         Assert.Contains("\"Age\":36", result.JsonArr);
+        Console.WriteLine(result.JsonArr);
         Assert.Contains("\"FirstName\":\"Test2\"", result.JsonArr);
     }
     
@@ -239,5 +241,51 @@ public class LHMappingHelperTest
         var result = LHMappingHelper.ObjectToVariableValue(person);
         
         Assert.Contains("\"FirstName\":\"Test\"", result.JsonObj);
+    }
+    
+    [Fact]
+    public void LHHelper_WithLHVariableValueType_ShouldReturnLHVariableType()
+    {
+        var intVariableValue = new VariableValue { Int = 1234 };
+        var doubleVariableValue = new VariableValue { Double = 12.35 };
+        var stringVariableValue = new VariableValue { Str = "test" };
+        var boolVariableValue = new VariableValue { Bool = true };
+        var bytesVariableValue = new VariableValue { Bytes = ByteString.FromBase64("aG9sYQ==") };
+        var jsonArrayVariableValue = new VariableValue { JsonArr = "[{\"name\": \"obiwan\"}, {\"name\": \"pepito\"}]" };
+        
+        var variableValues = new Dictionary<VariableType, VariableValue>
+        {
+            { VariableType.Int, intVariableValue },
+            { VariableType.Double, doubleVariableValue },
+            { VariableType.Str, stringVariableValue },
+            { VariableType.Bool, boolVariableValue },
+            { VariableType.Bytes, bytesVariableValue },
+            { VariableType.JsonArr, jsonArrayVariableValue }
+        };
+        
+
+        foreach (var variableValue in variableValues)
+        {
+            var expectedType = variableValue.Key;
+            var result = LHMappingHelper.ValueCaseToVariableType(variableValue.Value.ValueCase);
+        
+            Assert.Equal( expectedType, result);
+        }
+    }
+
+    [Fact]
+    public void LHHelper_WithLHVariableValueType_ShouldReturnLHJsonVariableType()
+    {
+        var jsonObjVariableValue = new VariableValue { JsonObj = "{\"name\": \"obiwan\"}" };
+        var noneVariableValue = new VariableValue();
+        
+        var variableValues = new List<VariableValue> { jsonObjVariableValue, noneVariableValue };
+
+        foreach (var variableValue in variableValues)
+        {
+            var result = LHMappingHelper.ValueCaseToVariableType(variableValue.ValueCase);
+            
+            Assert.Equal(VariableType.JsonObj, result);
+        }
     }
 }
