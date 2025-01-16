@@ -2,7 +2,7 @@ package io.littlehorse.canary.aggregator;
 
 import static io.littlehorse.canary.aggregator.topology.MetricsTopology.METRICS_STORE;
 
-import io.littlehorse.canary.aggregator.internal.MetricStoreExporter;
+import io.littlehorse.canary.aggregator.prometheus.MetricStoreExporter;
 import io.littlehorse.canary.aggregator.topology.MetricsTopology;
 import io.littlehorse.canary.util.ShutdownHook;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -17,10 +17,15 @@ import org.apache.kafka.streams.StreamsConfig;
 public class Aggregator implements MeterBinder {
 
     private final KafkaStreams kafkaStreams;
+    private final Duration exportFrequency;
 
     public Aggregator(
-            final Map<String, Object> kafkaStreamsConfig, final String inputTopic, final Duration storeRetention) {
+            final Map<String, Object> kafkaStreamsConfig,
+            final String inputTopic,
+            final Duration storeRetention,
+            final Duration exportFrequency) {
         final MetricsTopology metricsTopology = new MetricsTopology(inputTopic, storeRetention);
+        this.exportFrequency = exportFrequency;
 
         kafkaStreams = new KafkaStreams(metricsTopology.toTopology(), new StreamsConfig(kafkaStreamsConfig));
         ShutdownHook.add("Aggregator Topology", kafkaStreams);
@@ -32,7 +37,7 @@ public class Aggregator implements MeterBinder {
     @Override
     public void bindTo(final MeterRegistry registry) {
         final MetricStoreExporter prometheusMetricStoreExporter =
-                new MetricStoreExporter(kafkaStreams, METRICS_STORE, Duration.ofSeconds(30));
+                new MetricStoreExporter(kafkaStreams, METRICS_STORE, exportFrequency);
         prometheusMetricStoreExporter.bindTo(registry);
     }
 }

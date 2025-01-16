@@ -15,7 +15,7 @@ message MetricKey {
 }
 
 message MetricValue {
-  double value = 1;
+    map<string, double> values = 1;
 }
 
 message Tag {
