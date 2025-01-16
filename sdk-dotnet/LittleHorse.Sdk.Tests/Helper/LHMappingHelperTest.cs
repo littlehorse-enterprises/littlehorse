@@ -228,7 +228,6 @@ public class LHMappingHelperTest
         var result = LHMappingHelper.ObjectToVariableValue(persons);
         
         Assert.Contains("\"Age\":36", result.JsonArr);
-        Console.WriteLine(result.JsonArr);
         Assert.Contains("\"FirstName\":\"Test2\"", result.JsonArr);
     }
     
