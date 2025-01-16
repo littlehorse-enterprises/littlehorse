@@ -86,11 +86,11 @@ compileJava {
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.25.2'
+        artifact = "com.google.protobuf:protoc:${protobufVersion}"
     }
     plugins {
         grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:1.61.0'
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}sdfsd"
         }
     }
 }
