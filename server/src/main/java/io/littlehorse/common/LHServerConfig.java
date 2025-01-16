@@ -182,8 +182,8 @@ public class LHServerConfig extends ConfigBase {
     }
 
     private Admin kafkaAdmin;
-    private LHProducer producer;
-    private LHProducer txnProducer;
+    private LHProducer commandProducer;
+    private LHProducer taskClaimProducer;
 
     public int getHotMetadataPartition() {
         return (Utils.toPositive(Utils.murmur2(LHConstants.META_PARTITION_KEY.getBytes())) % getClusterPartitions());
@@ -667,15 +667,22 @@ public class LHServerConfig extends ConfigBase {
 
     public void cleanup() {
         if (this.kafkaAdmin != null) this.kafkaAdmin.close();
-        if (this.producer != null) this.producer.close();
-        if (this.txnProducer != null) this.txnProducer.close();
+        if (this.commandProducer != null) this.commandProducer.close();
+        if (this.taskClaimProducer != null) this.taskClaimProducer.close();
     }
 
-    public LHProducer getProducer() {
-        if (producer == null) {
-            producer = new LHProducer(this);
+    public LHProducer getCommandProducer() {
+        if (commandProducer == null) {
+            commandProducer = new LHProducer(this.getKafkaProducerConfig(this.getLHInstanceName()));
         }
-        return producer;
+        return commandProducer;
+    }
+
+    public LHProducer getTaskClaimProducer() {
+        if (taskClaimProducer == null) {
+            taskClaimProducer = new LHProducer(this.getKafkaProducerConfig(this.getLHInstanceName()));
+        }
+        return taskClaimProducer;
     }
 
     public boolean shouldCreateTopics() {

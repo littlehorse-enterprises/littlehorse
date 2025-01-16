@@ -112,7 +112,8 @@ public class Main {
             final Aggregator aggregator = new Aggregator(
                     canaryConfig.toKafkaConfig().toMap(),
                     canaryConfig.getTopicName(),
-                    canaryConfig.getAggregatorStoreRetention());
+                    canaryConfig.getAggregatorStoreRetention(),
+                    canaryConfig.getAggregatorExportFrequency());
             prometheusExporter.addMeasurable(aggregator);
         }
     }
