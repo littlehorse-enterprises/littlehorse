@@ -26,7 +26,7 @@ export default async function RootLayout({
     <WhoAmIContext user={user} tenants={tenants} tenantId={params?.tenantId}>
       <Header />
       <QueryProvider>
-        {children}
+        <div className="mx-auto max-w-screen-xl px-8">{children}</div>
         <Toaster position="top-center" richColors />
       </QueryProvider>
     </WhoAmIContext>
