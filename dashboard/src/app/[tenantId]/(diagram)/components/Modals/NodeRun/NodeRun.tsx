@@ -17,7 +17,7 @@ export const NodeRun: FC<Modal> = ({ data }) => {
       <DialogContent className="flex max-w-5xl flex-col">
         <DialogHeader>
           <DialogTitle className="mr-8 flex items-center justify-between">
-            <h2 className="text-lg font-bold">NodeRuns</h2>
+            <h2 className="text-lg font-bold">TaskAttempts</h2>
             {taskNode && <TaskLink taskName={taskNode.taskDefId?.name} />}
           </DialogTitle>
         </DialogHeader>
