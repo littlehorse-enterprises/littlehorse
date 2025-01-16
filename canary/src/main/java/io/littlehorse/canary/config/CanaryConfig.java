@@ -37,6 +37,7 @@ public class CanaryConfig implements Config {
 
     public static final String AGGREGATOR_ENABLE = "aggregator.enable";
     public static final String AGGREGATOR_STORE_RETENTION_MS = "aggregator.store.retention.ms";
+    public static final String AGGREGATOR_EXPORT_FREQUENCY_MS = "aggregator.export.frequency.ms";
 
     public static final String METRICS_PORT = "metrics.port";
     public static final String METRICS_PATH = "metrics.path";
@@ -116,6 +117,10 @@ public class CanaryConfig implements Config {
 
     public Duration getAggregatorStoreRetention() {
         return Duration.ofMillis(Long.parseLong(getConfig(AGGREGATOR_STORE_RETENTION_MS)));
+    }
+
+    public Duration getAggregatorExportFrequency() {
+        return Duration.ofMillis(Long.parseLong(getConfig(AGGREGATOR_EXPORT_FREQUENCY_MS)));
     }
 
     public Duration getMetronomeRunFrequency() {
