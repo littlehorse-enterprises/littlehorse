@@ -18,9 +18,9 @@ public class WorkflowThreadTest
     public void WorkflowThread_WithoutInvokingLogic_ShouldCompileSpecEntrypointAndExitNodes()
     {
         var workflowName = "TestWorkflow";
-        var mockAction = new Mock<Action<WorkflowThread>>();
-        var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockAction.Object);
-        var workflowThread = new WorkflowThread(workflowName, mockWorkflow.Object, mockAction.Object);
+        var mockEntrypointFunction = new Mock<Action<WorkflowThread>>();
+        var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockEntrypointFunction.Object);
+        var workflowThread = new WorkflowThread(workflowName, mockWorkflow.Object, mockEntrypointFunction.Object);
 
         var wfThreadCompiled = workflowThread.Compile();
         
@@ -37,17 +37,19 @@ public class WorkflowThreadTest
     }
 
     [Fact]
-    public void WorkflowThread_InvokingAddVariables_ShouldBuildSpecWithNodesAndVariableDefs()
+    public void WorkflowThread_InvokingAddVariables_ShouldBuildSpecWithNodesAndVariablesDefs()
     {
         var workflowName = "TestWorkflow";
-        var mockEntrypointAction = new Mock<Action<WorkflowThread>>();
-        var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockEntrypointAction.Object);
-        Action<WorkflowThread> addVariablesAction = wf =>
+        var mockParentFunction = new Mock<Action<WorkflowThread>>();
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockParentFunction.Object);
+
+        void AddVariablesAction(WorkflowThread wf)
         {
             wf.AddVariable("str-test-variable", VariableType.Str);
             wf.AddVariable("int-test-variable", 5);
-        };
-        var workflowThread = new WorkflowThread(workflowName, mockWorkflow.Object, addVariablesAction);
+        }
+
+        var workflowThread = new WorkflowThread(workflowName, mockParentWorkflow.Object, AddVariablesAction);
         
         var wfThreadCompiled = workflowThread.Compile();
         

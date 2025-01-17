@@ -11,7 +11,7 @@ public class Workflow
     private readonly ILogger<Workflow>? _logger;
     private string _name;
     private Action<WorkflowThread> _entryPoint;
-    private PutWfSpecRequest _compiledWorkflow;
+    private PutWfSpecRequest? _compiledWorkflow;
     private PutWfSpecRequest _spec;
     private Queue<Tuple<string, Action<WorkflowThread>>> _threadActions;
     private string _parentWfSpecName;
@@ -20,16 +20,16 @@ public class Workflow
     {
         _logger = LHLoggerFactoryProvider.GetLogger<Workflow>();
         _name = name;
-        _compiledWorkflow = null!;
         _parentWfSpecName = string.Empty;
         _entryPoint = entryPoint;
+        _compiledWorkflow = null!;
         _spec = new PutWfSpecRequest { Name = name };
         _threadActions = new Queue<Tuple<string, Action<WorkflowThread>>>();
     }
 
-    private PutWfSpecRequest Compile()
+    public PutWfSpecRequest Compile()
     {
-        return _compiledWorkflow ??= CompileWorkflowDetails();
+        return _compiledWorkflow ?? CompileWorkflowDetails();
     }
 
     public void RegisterWfSpec(LittleHorseClient lhClient)
