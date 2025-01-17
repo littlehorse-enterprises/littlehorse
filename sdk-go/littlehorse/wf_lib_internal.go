@@ -465,6 +465,24 @@ func (t *WorkflowThread) assignVariable(
 				},
 			},
 		}
+	case *TaskNodeOutput:
+		out = &lhproto.VariableAssignment{
+			JsonPath: v.Output.jsonPath,
+			Source: &lhproto.VariableAssignment_NodeOutput{
+				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
+					NodeName: v.Output.nodeName,
+				},
+			},
+		}
+	case TaskNodeOutput:
+		out = &lhproto.VariableAssignment{
+			JsonPath: v.Output.jsonPath,
+			Source: &lhproto.VariableAssignment_NodeOutput{
+				NodeOutput: &lhproto.VariableAssignment_NodeOutputReference{
+					NodeName: v.Output.nodeName,
+				},
+			},
+		}
 	case *LHExpression:
 		lhs, lhsErr := t.assignVariable(v.lhs)
 
