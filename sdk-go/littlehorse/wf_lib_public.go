@@ -361,6 +361,70 @@ func (t *WorkflowThread) AddVariable(
 	return t.addVariable(name, varType, nil)
 }
 
+func (t *WorkflowThread) Add(lhs interface{}, rhs interface{}) LHExpression {
+	return LHExpression{
+		lhs:       lhs,
+		rhs:       rhs,
+		operation: lhproto.VariableMutationType_ADD,
+	}
+}
+
+func (t *WorkflowThread) Subtract(lhs interface{}, rhs interface{}) LHExpression {
+	return LHExpression{
+		lhs:       lhs,
+		rhs:       rhs,
+		operation: lhproto.VariableMutationType_SUBTRACT,
+	}
+}
+
+func (t *WorkflowThread) Multiply(lhs interface{}, rhs interface{}) LHExpression {
+	return LHExpression{
+		lhs:       lhs,
+		rhs:       rhs,
+		operation: lhproto.VariableMutationType_MULTIPLY,
+	}
+}
+
+func (t *WorkflowThread) Divide(lhs interface{}, rhs interface{}) LHExpression {
+	return LHExpression{
+		lhs:       lhs,
+		rhs:       rhs,
+		operation: lhproto.VariableMutationType_DIVIDE,
+	}
+}
+
+func (t *WorkflowThread) Extend(lhs interface{}, rhs interface{}) LHExpression {
+	return LHExpression{
+		lhs:       lhs,
+		rhs:       rhs,
+		operation: lhproto.VariableMutationType_EXTEND,
+	}
+}
+
+func (t *WorkflowThread) RemoveIfPresent(lhs interface{}, rhs interface{}) LHExpression {
+	return LHExpression{
+		lhs:       lhs,
+		rhs:       rhs,
+		operation: lhproto.VariableMutationType_REMOVE_IF_PRESENT,
+	}
+}
+
+func (t *WorkflowThread) RemoveIndex(lhs interface{}, rhs interface{}) LHExpression {
+	return LHExpression{
+		lhs:       lhs,
+		rhs:       rhs,
+		operation: lhproto.VariableMutationType_REMOVE_INDEX,
+	}
+}
+
+func (t *WorkflowThread) RemoveKey(lhs interface{}, key interface{}) LHExpression {
+	return LHExpression{
+		lhs:       lhs,
+		rhs:       key,
+		operation: lhproto.VariableMutationType_REMOVE_KEY,
+	}
+}
+
 func (t *WorkflowThread) WithRetentionPolicy(policy *lhproto.ThreadRetentionPolicy) {
 	t.spec.RetentionPolicy = policy
 }

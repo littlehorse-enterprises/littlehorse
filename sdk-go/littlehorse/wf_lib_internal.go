@@ -779,38 +779,6 @@ func (tn *TaskNodeOutput) withRetriesImpl(retries int) *TaskNodeOutput {
 	return tn
 }
 
-func (t *WorkflowThread) multiply(lhs interface{}, rhs interface{}) {
-	return // TODO: LHExpression
-}
-
-func (t *WorkflowThread) add(lhs interface{}, rhs interface{}) {
-	return // TODO: LHExpression
-}
-
-func (t *WorkflowThread) divide(lhs interface{}, rhs interface{}) {
-	return // TODO: LHExpression
-}
-
-func (t *WorkflowThread) subtract(lhs interface{}, rhs interface{}) {
-	return // TODO: LHExpression
-}
-
-func (t *WorkflowThread) extend(lhs interface{}, rhs interface{}) {
-	return // TODO: LHExpression
-}
-
-func (t *WorkflowThread) removeIfPresent(lhs interface{}, rhs interface{}) {
-	return // TODO: LHExpression
-}
-
-func (t *WorkflowThread) removeIndex(lhs interface{}, rhs interface{}) {
-	return // TODO: LHExpression
-}
-
-func (t *WorkflowThread) removeKey(lhs interface{}, rhs interface{}) {
-	return // TODO: LHExpression
-}
-
 func (t *WorkflowThread) addVariable(
 	name string, varType lhproto.VariableType, defaultValue interface{},
 ) *WfRunVariable {
