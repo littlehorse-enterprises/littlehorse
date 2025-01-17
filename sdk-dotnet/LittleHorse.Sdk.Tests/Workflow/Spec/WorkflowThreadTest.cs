@@ -18,8 +18,8 @@ public class WorkflowThreadTest
     public void WorkflowThread_WithoutInvokingLogic_ShouldCompileSpecEntrypointAndExitNodes()
     {
         var workflowName = "TestWorkflow";
-        var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, null!);
         var mockAction = new Mock<Action<WorkflowThread>>();
+        var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockAction.Object);
         var workflowThread = new WorkflowThread(workflowName, mockWorkflow.Object, mockAction.Object);
 
         var wfThreadCompiled = workflowThread.Compile();
@@ -40,13 +40,14 @@ public class WorkflowThreadTest
     public void WorkflowThread_InvokingAddVariables_ShouldBuildSpecWithNodesAndVariableDefs()
     {
         var workflowName = "TestWorkflow";
-        var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, null!);
-        Action<WorkflowThread> addVariables = wf =>
+        var mockEntrypointAction = new Mock<Action<WorkflowThread>>();
+        var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockEntrypointAction.Object);
+        Action<WorkflowThread> addVariablesAction = wf =>
         {
             wf.AddVariable("str-test-variable", VariableType.Str);
             wf.AddVariable("int-test-variable", 5);
         };
-        var workflowThread = new WorkflowThread(workflowName, mockWorkflow.Object, addVariables);
+        var workflowThread = new WorkflowThread(workflowName, mockWorkflow.Object, addVariablesAction);
         
         var wfThreadCompiled = workflowThread.Compile();
         
