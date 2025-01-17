@@ -2,17 +2,29 @@ using System;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Helper;
 using LittleHorse.Sdk.Workflow.Spec;
+using Moq;
 using Xunit;
 
 namespace LittleHorse.Sdk.Tests.Workflow.Spec;
 
 public class WfRunVariableTest
 {
+    private WorkflowThread _parentWfThread;
+    
+    public WfRunVariableTest()
+    {
+        LHLoggerFactoryProvider.Initialize(null);
+        var workflowName = "TestWorkflow";
+        var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, null!);
+        var mockAction = new Mock<Action<WorkflowThread>>();
+        _parentWfThread = new WorkflowThread(workflowName, mockWorkflow.Object, mockAction.Object);
+    }
+    
     [Fact]
     public void WfRunVariable_WithoutTypeOrDefaultValue_ShouldThrownAnException()
     {
         var exception = Assert.Throws<InvalidOperationException>(() => 
-            new WfRunVariable("test-var", null, null));
+            new WfRunVariable("test-var", null!, _parentWfThread));
         
         Assert.Contains("The 'typeOrDefaultVal' argument must be either a VariableType", exception.Message);
     }
@@ -22,7 +34,7 @@ public class WfRunVariableTest
     {
         var variableValue = "This is a test";
         
-        var wfRunVariable = new WfRunVariable("test-var", variableValue, null);
+        var wfRunVariable = new WfRunVariable("test-var", variableValue, _parentWfThread);
         
         Assert.Equal(VariableType.Str, wfRunVariable.Type);
     }
@@ -32,7 +44,7 @@ public class WfRunVariableTest
     {
         const VariableType expectedType = VariableType.Bool;
         
-        var wfRunVariable = new WfRunVariable("test-var", expectedType, null);
+        var wfRunVariable = new WfRunVariable("test-var", expectedType, _parentWfThread);
         
         Assert.Equal(expectedType, wfRunVariable.Type);
     }
@@ -41,7 +53,7 @@ public class WfRunVariableTest
     public void WfRunVariable_WithThreadVarDef_ShouldCompileSuccessfully()
     {
         const VariableType expectedType = VariableType.Str;
-        var wfRunVariable = new WfRunVariable("test-var", expectedType, null);
+        var wfRunVariable = new WfRunVariable("test-var", expectedType, _parentWfThread);
         
         var compiledWfRunVariable = wfRunVariable.Compile();
         
