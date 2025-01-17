@@ -27,7 +27,7 @@ export const NodeRunsList: FC<Prop> = ({ nodeRuns, taskNode, userTaskNode, nodeR
         onClick={showNodeRuns}
       >
         <EyeIcon className="h-4 w-4" />
-        View TaskAttempts
+        {nodeRuns.length > 1 ? 'View NodeRuns' : 'View NodeRun'}
       </Button>
     </div>
   )
