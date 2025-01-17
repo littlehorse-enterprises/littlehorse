@@ -332,7 +332,7 @@ func TestParallelSpawnThreads(t *testing.T) {
 	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
 	spawnNode := entrypoint.Nodes["1-some-threads-START_MULTIPLE_THREADS"]
 	assert.Equal(t, len(spawnNode.OutgoingEdges[0].VariableMutations), 1)
-	assert.NotNil(t, spawnNode.OutgoingEdges[0].VariableMutations[0].GetNodeOutput())
+	assert.NotNil(t, spawnNode.OutgoingEdges[0].VariableMutations[0].GetRhsAssignment())
 
 	_, ok := putWf.ThreadSpecs[spawnNode.GetStartMultipleThreads().ThreadSpecName]
 	assert.True(t, ok)
