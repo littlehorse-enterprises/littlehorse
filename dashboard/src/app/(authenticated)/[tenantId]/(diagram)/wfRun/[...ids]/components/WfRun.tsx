@@ -1,16 +1,24 @@
 'use client'
 import { Diagram } from '@/app/(authenticated)/[tenantId]/(diagram)/components/Diagram'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
-import { useSearchParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { FC } from 'react'
 import { Modals } from '../../../components/Modals'
-import { WfRunResponse } from '../getWfRun'
+import { WfRunResponse } from '../../../../../../actions/getWfRun'
 import { Details } from './Details'
 import { Variables } from './Variables'
+import { useWfRun } from '@/app/hooks/useWfRun'
 
-export const WfRun: FC<WfRunResponse> = ({ wfRun, wfSpec, nodeRuns, variables }) => {
+export const WfRun: FC<{ id: string, tenantId: string }> = ({ id, tenantId }) => {
   const searchParams = useSearchParams()
   const threadRunNumber = Number(searchParams.get('threadRunNumber'))
+  const { wfRunData, isLoading, isError } = useWfRun({ id: id, tenantId })
+
+  if (!wfRunData) return null
+  const { wfRun, wfSpec, nodeRuns, variables } = wfRunData;
+
+  if (!wfRun) return null
+
   return (
     <div className="mb-16">
       <Navigation

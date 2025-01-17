@@ -40,6 +40,7 @@
     "react-hook-form": "^7.53.2",
     "reactflow": "^11.11.3",
     "sonner": "^1.7.0",
+    "swr": "^2.3.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "use-debounce": "^10.0.0"
