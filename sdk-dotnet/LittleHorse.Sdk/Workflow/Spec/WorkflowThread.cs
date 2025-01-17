@@ -38,7 +38,7 @@ public class WorkflowThread
 
     public ThreadSpec Compile()
     {
-        if (_spec.VariableDefs != null)
+        if (_spec.VariableDefs.Count > 0)
         {
             _spec.VariableDefs.Clear();
         }

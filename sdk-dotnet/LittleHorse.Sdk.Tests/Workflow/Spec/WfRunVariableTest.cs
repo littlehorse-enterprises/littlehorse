@@ -47,7 +47,8 @@ public class WfRunVariableTest
         
         var actualResult = LHMappingHelper.ProtoToJson(compiledWfRunVariable);
         var expectedResult =
-            "{ \"varDef\": { \"type\": \"STR\", \"name\": \"test-var\", \"maskedValue\": false }, \"required\": false, \"searchable\": false, \"jsonIndexes\": [ ], \"accessLevel\": \"PRIVATE_VAR\" }";
+            "{ \"varDef\": { \"type\": \"STR\", \"name\": \"test-var\", \"maskedValue\": false }," +
+            " \"required\": false, \"searchable\": false, \"jsonIndexes\": [ ], \"accessLevel\": \"PRIVATE_VAR\" }";
         
         Assert.Equal(expectedResult, actualResult);
     }
