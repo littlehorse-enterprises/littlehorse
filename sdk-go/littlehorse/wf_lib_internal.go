@@ -123,7 +123,7 @@ func (t *WorkflowThread) createTaskNode(taskDefName interface{}, args []interfac
 	return taskNode
 }
 
-func (t *WorkflowThread) executeTask(taskDefName interface{}, args []interface{}) NodeOutput {
+func (t *WorkflowThread) executeTask(taskDefName interface{}, args []interface{}) *TaskNodeOutput {
 	t.checkIfIsActive()
 
 	// Need to fancily determine the name for the node
@@ -146,10 +146,16 @@ func (t *WorkflowThread) executeTask(taskDefName interface{}, args []interface{}
 		Task: t.createTaskNode(taskDefName, args),
 	}
 
-	return NodeOutput{
-		nodeName: nodeName,
-		thread:   t,
+	taskNodeOutput := TaskNodeOutput{
+		Output: NodeOutput{
+			nodeName: nodeName,
+			thread:   t,
+		},
+		node:   node,
+		parent: t,
 	}
+
+	return &taskNodeOutput
 }
 
 func (t *WorkflowThread) releaseToGroupOnDeadline(
@@ -459,6 +465,52 @@ func (t *WorkflowThread) assignVariable(
 				},
 			},
 		}
+	case *LHExpression:
+		lhs, lhsErr := t.assignVariable(v.lhs)
+
+		if lhsErr != nil {
+			t.throwError(lhsErr)
+		}
+
+		rhs, rhsErr := t.assignVariable(v.rhs)
+
+		if rhsErr != nil {
+			t.throwError(rhsErr)
+		}
+
+		out = &lhproto.VariableAssignment{
+			JsonPath: nil,
+			Source: &lhproto.VariableAssignment_Expression_{
+				Expression: &lhproto.VariableAssignment_Expression{
+					Lhs:       lhs,
+					Operation: v.operation,
+					Rhs:       rhs,
+				},
+			},
+		}
+	case LHExpression:
+		lhs, lhsErr := t.assignVariable(v.lhs)
+
+		if lhsErr != nil {
+			t.throwError(lhsErr)
+		}
+
+		rhs, rhsErr := t.assignVariable(v.rhs)
+
+		if rhsErr != nil {
+			t.throwError(rhsErr)
+		}
+
+		out = &lhproto.VariableAssignment{
+			JsonPath: nil,
+			Source: &lhproto.VariableAssignment_Expression_{
+				Expression: &lhproto.VariableAssignment_Expression{
+					Lhs:       lhs,
+					Operation: v.operation,
+					Rhs:       rhs,
+				},
+			},
+		}
 	default:
 		var tmp *lhproto.VariableValue
 		tmp, err = InterfaceToVarVal(v)
@@ -687,58 +739,58 @@ func (t *WorkflowThread) mutate(
 		Operation:   mType,
 	}
 
-	switch r := rhs.(type) {
-	case NodeOutput:
-		if r.nodeName != *t.lastNodeName {
-			t.throwError(errors.New(
-				"Cannot use an old NodeOutput from node " + r.nodeName,
-			))
-		}
-		mutation.RhsValue = &lhproto.VariableMutation_NodeOutput{
-			NodeOutput: &lhproto.VariableMutation_NodeOutputSource{
-				Jsonpath: r.jsonPath,
-			},
-		}
-	case *NodeOutput:
-		if r.nodeName != *t.lastNodeName {
-			t.throwError(errors.New(
-				"Cannot use an old NodeOutput from node " + r.nodeName,
-			))
-		}
-		mutation.RhsValue = &lhproto.VariableMutation_NodeOutput{
-			NodeOutput: &lhproto.VariableMutation_NodeOutputSource{
-				Jsonpath: r.jsonPath,
-			},
-		}
-	case WfRunVariable:
-		mutation.RhsValue = &lhproto.VariableMutation_RhsAssignment{
-			RhsAssignment: &lhproto.VariableAssignment{
-				JsonPath: r.jsonPath,
-				Source: &lhproto.VariableAssignment_VariableName{
-					VariableName: r.Name,
-				},
-			},
-		}
-	case *WfRunVariable:
-		mutation.RhsValue = &lhproto.VariableMutation_RhsAssignment{
-			RhsAssignment: &lhproto.VariableAssignment{
-				JsonPath: r.jsonPath,
-				Source: &lhproto.VariableAssignment_VariableName{
-					VariableName: r.Name,
-				},
-			},
-		}
-	default:
-		rhsVarVal, err := InterfaceToVarVal(r)
-		if err != nil {
-			t.throwError(tracerr.Wrap(err))
-		}
-		mutation.RhsValue = &lhproto.VariableMutation_LiteralValue{
-			LiteralValue: rhsVarVal,
-		}
+	rhsValue, err := t.assignVariable(rhs)
+
+	if err != nil {
+		t.throwError(errors.New("can't assign RHS value"))
+	}
+
+	mutation.RhsValue = &lhproto.VariableMutation_RhsAssignment{
+		RhsAssignment: rhsValue,
 	}
 
 	t.variableMutations = append(t.variableMutations, mutation)
+}
+func (tn *TaskNodeOutput) withExponentialBackoffImpl(policy *lhproto.ExponentialBackoffRetryPolicy) *TaskNodeOutput {
+	tn.parent.overrideTaskExponentialBackoffPolicy(tn, policy)
+	return tn
+}
+
+func (tn *TaskNodeOutput) withRetriesImpl(retries int) *TaskNodeOutput {
+	tn.parent.overrideTaskRetries(tn, retries)
+	return tn
+}
+
+func (t *WorkflowThread) multiply(lhs interface{}, rhs interface{}) {
+	return // TODO: LHExpression
+}
+
+func (t *WorkflowThread) add(lhs interface{}, rhs interface{}) {
+	return // TODO: LHExpression
+}
+
+func (t *WorkflowThread) divide(lhs interface{}, rhs interface{}) {
+	return // TODO: LHExpression
+}
+
+func (t *WorkflowThread) subtract(lhs interface{}, rhs interface{}) {
+	return // TODO: LHExpression
+}
+
+func (t *WorkflowThread) extend(lhs interface{}, rhs interface{}) {
+	return // TODO: LHExpression
+}
+
+func (t *WorkflowThread) removeIfPresent(lhs interface{}, rhs interface{}) {
+	return // TODO: LHExpression
+}
+
+func (t *WorkflowThread) removeIndex(lhs interface{}, rhs interface{}) {
+	return // TODO: LHExpression
+}
+
+func (t *WorkflowThread) removeKey(lhs interface{}, rhs interface{}) {
+	return // TODO: LHExpression
 }
 
 func (t *WorkflowThread) addVariable(
@@ -774,6 +826,34 @@ func (t *WorkflowThread) addVariable(
 		thread:       t,
 		threadVarDef: threadVarDef,
 	}
+}
+
+func (t *WorkflowThread) DeclareBool(name string, defaultValue interface{}) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_BOOL, defaultValue)
+}
+
+func (t *WorkflowThread) DeclareInt(name string, defaultValue interface{}) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_INT, defaultValue)
+}
+
+func (t *WorkflowThread) DeclareStr(name string, defaultValue interface{}) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_STR, defaultValue)
+}
+
+func (t *WorkflowThread) DeclareDouble(name string, defaultValue interface{}) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_DOUBLE, defaultValue)
+}
+
+func (t *WorkflowThread) DeclareBytes(name string, defaultValue interface{}) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_BYTES, defaultValue)
+}
+
+func (t *WorkflowThread) DeclareJsonArr(name string, defaultValue interface{}) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_JSON_ARR, defaultValue)
+}
+
+func (t *WorkflowThread) DeclareJsonObj(name string, defaultValue interface{}) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_JSON_OBJ, defaultValue)
 }
 
 func (t *WorkflowThread) condition(
@@ -964,6 +1044,51 @@ func (c *WorkflowCondition) getReverse() *lhproto.EdgeCondition {
 	}
 
 	return out
+}
+
+func (t *WorkflowThread) overrideTaskRetries(taskNodeOutput *TaskNodeOutput, retries int) {
+	t.checkIfIsActive()
+
+	node := t.spec.Nodes[taskNodeOutput.Output.nodeName]
+	if node.GetTask() == nil {
+		// Error
+		t.throwError(errors.New("impossible to not have task node here"))
+	}
+
+	node.GetTask().Retries = int32(retries)
+}
+
+func (t *WorkflowThread) overrideTaskExponentialBackoffPolicy(taskNodeOutput *TaskNodeOutput, policy *lhproto.ExponentialBackoffRetryPolicy) {
+	t.checkIfIsActive()
+
+	node := t.spec.Nodes[taskNodeOutput.Output.nodeName]
+	if node.GetTask() == nil {
+		t.throwError(errors.New("impossible to not have task node here"))
+	}
+
+	node.GetTask().ExponentialBackoff = policy
+}
+
+func (t *WorkflowThread) addTimeoutToExtEvt(nodeOutput *NodeOutput, timeoutSeconds int) {
+	t.checkIfIsActive()
+
+	node := t.spec.Nodes[nodeOutput.nodeName]
+	if node.GetTask() != nil {
+		node.GetTask().TimeoutSeconds = int32(timeoutSeconds)
+	} else if node.GetExternalEvent() != nil {
+		node.GetExternalEvent().TimeoutSeconds = &lhproto.VariableAssignment{
+			JsonPath: nil,
+			Source: &lhproto.VariableAssignment_LiteralValue{
+				LiteralValue: &lhproto.VariableValue{
+					Value: &lhproto.VariableValue_Int{
+						Int: int64(timeoutSeconds),
+					},
+				},
+			},
+		}
+	} else {
+		t.throwError(errors.New("timeouts are only supposed on ExternalEvent and Task nodes."))
+	}
 }
 
 func (t *WorkflowThread) spawnThread(
