@@ -11,11 +11,16 @@ import { WfRuns } from './WfRuns'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScheduledWfRuns } from './ScheduledWfRuns'
 import { ScheduledWfRun } from 'littlehorse-client/proto'
+import { useWfSpec } from '@/app/hooks/useWfSpec'
+import { useParams } from 'next/navigation'
 
 type WfSpecProps = {
   spec: Spec
 }
 export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
+  const tenantId = useParams().tenantId as string
+  const { wfSpec, isLoading, isError } = useWfSpec(tenantId, spec.id!.name, spec.id!.majorVersion.toString(), spec.id!.revision.toString())
+
   const { setModal, setShowModal } = useModal()
 
   const onClick = useCallback(() => {
