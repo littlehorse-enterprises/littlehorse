@@ -15,50 +15,30 @@ import { SearchVariableDialog } from './SearchVariableDialog'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { useParams, useSearchParams } from 'next/navigation'
 import { RefreshCwIcon } from 'lucide-react'
+import useSWR from 'swr'
 
 export const ScheduledWfRuns = (spec: WfSpec) => {
   const [currentWindow, setWindow] = useState<TimeRange>(-1)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
-  const [scheduledWfRuns, setScheduledWfRuns] = useState<ScheduledWfRun[]>([])
   const tenantId = useParams().tenantId as string
 
-  useEffect(() => {
-    let isMounted = true
+  const fetchScheduledWfRuns = async () => {
+    return await getScheduleWfSpec({
+      name: spec.id!.name,
+      version: spec.id!.majorVersion + '.' + spec.id!.revision,
+      tenantId: tenantId,
+    })
+  }
 
-    const fetchScheduledWfRuns = async () => {
-      try {
-        setIsLoading(true)
-        setError(null)
-        const runs = await getScheduleWfSpec({
-          name: spec.id!.name,
-          version: spec.id!.majorVersion + '.' + spec.id!.revision,
-          tenantId: tenantId,
-        })
-        if (isMounted) {
-          setScheduledWfRuns(runs)
-        }
-      } catch (err) {
-        if (isMounted) {
-          setError(err instanceof Error ? err : new Error('Failed to fetch scheduled runs'))
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
-      }
-    }
+  const { data: scheduledWfRuns, error } = useSWR(
+    ['scheduledWfRuns', spec.id, tenantId],
+    fetchScheduledWfRuns
+  )
 
-    fetchScheduledWfRuns()
-
-    return () => {
-      isMounted = false
-    }
-  }, [spec.id, tenantId])
+  const isLoading = !scheduledWfRuns && !error
 
   const filteredScheduledWfRuns = useMemo(
     () =>
-      scheduledWfRuns
+      (scheduledWfRuns || [])
         .filter(scheduledWfRun => {
           if (currentWindow === -1) return true
           const timeWindow = getCronTimeWindow(scheduledWfRun.cronExpression)
