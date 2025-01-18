@@ -1,6 +1,6 @@
 'use client'
 import { SEARCH_DEFAULT_LIMIT, SEARCH_ENTITIES, SearchType } from '@/app/constants'
-import { useInfiniteQuery } from '@tanstack/react-query'
+import useSWRInfinite from 'swr/infinite'
 import { RefreshCwIcon } from 'lucide-react'
 import { useParams, useSearchParams } from 'next/navigation'
 import { FC, useState } from 'react'
@@ -16,14 +16,21 @@ export const Search: FC<{}> = () => {
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
   const tenantId = useParams().tenantId as string
 
-  const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ['search', type, tenantId, limit, prefix],
-    initialPageParam: undefined,
-    getNextPageParam: (lastPage: SearchResponse) => lastPage.bookmark,
-    queryFn: async ({ pageParam: bookmark }) => {
+  const getKey = (pageIndex: number, previousPageData: SearchResponse | null) => {
+    if (previousPageData && !previousPageData.bookmark) return null // reached the end
+    return ['search', type, tenantId, limit, prefix, previousPageData?.bookmark]
+  }
+
+  const { data, error, size, setSize } = useSWRInfinite<SearchResponse>(
+    getKey,
+    async (key) => {
+      const [, type, tenantId, limit, prefix, bookmark] = key
       return search({ type, limit, prefix, bookmark, tenantId })
     },
-  })
+  )
+
+  const isPending = !data && !error
+  const hasNextPage = !!(data && data[data.length - 1]?.bookmark)
 
   return (
     <div className="flex flex-col">
@@ -34,14 +41,14 @@ export const Search: FC<{}> = () => {
         </div>
       ) : (
         <div>
-          {type === 'WfSpec' && <WfSpecTable pages={data?.pages} />}
-          {type === 'TaskDef' && <TaskDefTable pages={data?.pages} />}
-          {type === 'UserTaskDef' && <UserTaskDefTable pages={data?.pages} />}
-          {type === 'ExternalEventDef' && <ExternalEventDefTable pages={data?.pages} />}
-          {type === 'WorkflowEventDef' && <WorkflowEventDefTable pages={data?.pages} />}
+          {type === 'WfSpec' && <WfSpecTable pages={data} />}
+          {type === 'TaskDef' && <TaskDefTable pages={data} />}
+          {type === 'UserTaskDef' && <UserTaskDefTable pages={data} />}
+          {type === 'ExternalEventDef' && <ExternalEventDefTable pages={data} />}
+          {type === 'WorkflowEventDef' && <WorkflowEventDefTable pages={data} />}
         </div>
       )}
-      <SearchFooter currentLimit={limit} setLimit={setLimit} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} />
+      <SearchFooter currentLimit={limit} setLimit={setLimit} hasNextPage={hasNextPage} fetchNextPage={() => setSize(size + 1)} />
     </div>
   )
 }
