@@ -6,6 +6,7 @@ import { Header } from './[tenantId]/components/Header'
 import { QueryProvider } from './[tenantId]/components/QueryProvider'
 import getWhoAmI from '../getWhoami'
 import '../globals.css'
+import { SWRConfig } from 'swr'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,12 +24,22 @@ export default async function RootLayout({
   const { tenants, user } = await getWhoAmI()
 
   return (
-    <WhoAmIContext user={user} tenants={tenants} tenantId={params?.tenantId}>
-      <Header />
-      <QueryProvider>
-        <div className="mx-auto max-w-screen-xl px-8">{children}</div>
-        <Toaster position="top-center" richColors />
-      </QueryProvider>
-    </WhoAmIContext>
+    <SWRConfig
+      value={{
+        refreshInterval: 3000,
+        revalidateOnFocus: true,
+        revalidateOnReconnect: true,
+        revalidateOnMount: true,
+        revalidateIfStale: true,
+      }}
+    >
+      <WhoAmIContext user={user} tenants={tenants} tenantId={params?.tenantId}>
+        <Header />
+        <QueryProvider>
+          <div className="mx-auto max-w-screen-xl px-8">{children}</div>
+          <Toaster position="top-center" richColors />
+        </QueryProvider>
+      </WhoAmIContext>
+    </SWRConfig>
   )
 }

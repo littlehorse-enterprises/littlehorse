@@ -1,5 +1,4 @@
 'use client'
-import { ThreadRunWithNodeRuns } from '@/app/(authenticated)/[tenantId]/(diagram)/wfRun/[...ids]/getWfRun'
 import { NodeRun, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -12,6 +11,7 @@ import { Layouter } from './Layouter'
 import nodeTypes from './NodeTypes'
 import { extractNodes } from './NodeTypes/extractNodes'
 import { ThreadPanel } from './ThreadPanel'
+import { ThreadRunWithNodeRuns } from '@/app/actions/getWfRun'
 
 type Props = {
   wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }

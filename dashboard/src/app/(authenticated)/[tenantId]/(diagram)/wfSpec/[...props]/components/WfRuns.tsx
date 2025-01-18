@@ -2,7 +2,7 @@
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
 import { concatWfRunIds } from '@/app/utils'
-import { useInfiniteQuery } from '@tanstack/react-query'
+import useSWRInfinite from 'swr/infinite'
 import { WfSpec, lHStatusFromJSON } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
 import { useParams, useSearchParams } from 'next/navigation'
@@ -30,11 +30,15 @@ export const WfRuns: FC<WfSpec> = spec => {
     }
   }, [window])
 
-  const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ['wfRun', status, tenantId, limit, startTime],
-    initialPageParam: undefined,
-    getNextPageParam: (lastPage: PaginatedWfRunIdList) => lastPage.bookmarkAsString,
-    queryFn: async ({ pageParam }) => {
+  const getKey = (pageIndex: number, previousPageData: PaginatedWfRunIdList | null) => {
+    if (previousPageData && !previousPageData.bookmarkAsString) return null // reached the end
+    return ['wfRun', status, tenantId, limit, startTime, previousPageData?.bookmarkAsString]
+  }
+
+  const { data, error, size, setSize } = useSWRInfinite<PaginatedWfRunIdList>(
+    getKey,
+    async (key) => {
+      const [, status, tenantId, limit, startTime, bookmarkAsString] = key
       return await searchWfRun({
         wfSpecName: spec.id!.name,
         wfSpecMajorVersion: spec.id!.majorVersion,
@@ -43,11 +47,14 @@ export const WfRuns: FC<WfSpec> = spec => {
         limit,
         status: status === 'ALL' ? undefined : status,
         tenantId,
-        bookmarkAsString: pageParam,
+        bookmarkAsString,
         ...startTime,
       })
-    },
-  })
+    }
+  )
+
+  const isPending = !data && !error
+  const hasNextPage = !!(data && data[data.length - 1]?.bookmarkAsString)
 
   return (
     <div className="mb-4 flex flex-col">
@@ -58,7 +65,7 @@ export const WfRuns: FC<WfSpec> = spec => {
         </div>
       ) : (
         <div className="flex min-h-[360px] flex-col">
-          {data?.pages.map((page, i) => (
+          {data?.map((page, i) => (
             <Fragment key={i}>
               {page.results.map(wfRunId => (
                 <SelectionLink key={wfRunId.id} href={`/wfRun/${concatWfRunIds(wfRunId)}`}>
@@ -69,7 +76,7 @@ export const WfRuns: FC<WfSpec> = spec => {
           ))}
         </div>
       )}
-      <SearchFooter currentLimit={limit} setLimit={setLimit} hasNextPage={hasNextPage} fetchNextPage={fetchNextPage} />
+      <SearchFooter currentLimit={limit} setLimit={setLimit} hasNextPage={hasNextPage} fetchNextPage={() => setSize(size + 1)} />
     </div>
   )
 }
