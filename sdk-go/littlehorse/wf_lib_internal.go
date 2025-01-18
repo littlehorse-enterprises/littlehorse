@@ -61,7 +61,7 @@ func (l *LHWorkflow) compile() (*lhproto.PutWfSpecRequest, error) {
 					},
 					OutgoingEdges: make([]*lhproto.Edge, 0),
 				}
-				nodeName := "0-ENTRYPOINT"
+				nodeName := "0-entrypoint-ENTRYPOINT"
 				thr.lastNodeName = &nodeName
 				thr.lastNodeCondition = &WorkflowCondition{}
 				thr.spec.Nodes = make(map[string]*lhproto.Node)

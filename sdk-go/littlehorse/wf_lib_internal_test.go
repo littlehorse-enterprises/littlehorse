@@ -358,6 +358,90 @@ func TestAssignNodeOutput(t *testing.T) {
 	assert.Equal(t, taskNode.GetTask().Variables[0].GetNodeOutput().NodeName, "1-task-one-TASK")
 }
 
+func TestMutationsShouldUseVariableAssignment(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		myVar := t.DeclareStr("my-var", nil)
+		myVar.Assign("some-value")
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	taskNode := entrypoint.Nodes["0-entrypoint-ENTRYPOINT"]
+	assert.Equal(t, taskNode.OutgoingEdges[0].VariableMutations[0].GetRhsAssignment().GetLiteralValue().GetStr(), "some-value")
+}
+
+func TestNodeOutputMutationsShouldUseVariableAssignment(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		myVar := t.DeclareStr("my-var", nil)
+		myVar.Assign(t.Execute("use-the-force"))
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	taskNode := entrypoint.Nodes["1-use-the-force-TASK"]
+	assert.Equal(t, taskNode.OutgoingEdges[0].VariableMutations[0].GetRhsAssignment().GetNodeOutput().NodeName, "1-use-the-force-TASK")
+}
+
+func TestNodeOutputMutationsShouldCarryJsonPath(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		myVar := t.DeclareStr("my-var", nil)
+		myVar.Assign(t.Execute("use-the-force").Output.JsonPath("$.hello.there"))
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	taskNode := entrypoint.Nodes["1-use-the-force-TASK"]
+	assert.Equal(t, taskNode.OutgoingEdges[0].VariableMutations[0].GetRhsAssignment().GetJsonPath(), "$.hello.there")
+}
+
+func TestAssigningVariablesToOtherVariablesShouldUseVariableAssignment(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		myVar := t.DeclareStr("my-var", nil)
+		otherVar := t.DeclareStr("other-var", nil)
+		myVar.Assign(otherVar)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	taskNode := entrypoint.Nodes["0-entrypoint-ENTRYPOINT"]
+	assert.Equal(t, taskNode.OutgoingEdges[0].VariableMutations[0].GetRhsAssignment().GetVariableName(), "other-var")
+}
+
+func TestAssigningVariablesToOtherVariablesShouldCarryJsonPath(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		myVar := t.DeclareStr("my-var", nil)
+		otherVar := t.DeclareJsonObj("other-var", nil)
+		myVar.Assign(otherVar.JsonPath("$.hello.there"))
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	taskNode := entrypoint.Nodes["0-entrypoint-ENTRYPOINT"]
+
+	assert.Equal(t, taskNode.OutgoingEdges[0].VariableMutations[0].GetRhsAssignment().GetVariableName(), "other-var")
+	assert.Equal(t, taskNode.OutgoingEdges[0].VariableMutations[0].GetRhsAssignment().GetJsonPath(), "$.hello.there")
+}
+
 func TestParallelSpawnThreadsWithInput(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		myArr := t.AddVariable("my-arr", lhproto.VariableType_JSON_ARR)
