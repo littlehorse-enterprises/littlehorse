@@ -63,7 +63,7 @@ public class WorkflowThread
     
     private void CheckIfWorkflowThreadIsActive() {
         if (!_isActive) {
-            throw new InvalidOperationException("Using a inactive thread");
+            throw new InvalidOperationException("Using an inactive thread");
         }
     }
     
