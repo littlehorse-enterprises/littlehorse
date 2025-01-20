@@ -14,7 +14,8 @@ public class Workflow
     private PutWfSpecRequest? _compiledWorkflow;
     private PutWfSpecRequest _spec;
     private Queue<Tuple<string, Action<WorkflowThread>>> _threadActions;
-    private string _parentWfSpecName;
+    private readonly string _parentWfSpecName;
+    private HashSet<string> _requiredTaskDefNames;
 
     public Workflow(string name, Action<WorkflowThread> entryPoint)
     {
@@ -25,6 +26,7 @@ public class Workflow
         _compiledWorkflow = null!;
         _spec = new PutWfSpecRequest { Name = name };
         _threadActions = new Queue<Tuple<string, Action<WorkflowThread>>>();
+        _requiredTaskDefNames = new HashSet<string>();
     }
 
     public PutWfSpecRequest Compile()
@@ -37,7 +39,8 @@ public class Workflow
         _logger!.LogInformation(LHMappingHelper.ProtoToJson(lhClient.PutWfSpec(Compile())));
     }
 
-    private String AddSubThread(String subThreadName, Action<WorkflowThread> subThreadAction) {
+    private String AddSubThread(String subThreadName, Action<WorkflowThread> subThreadAction) 
+    {
         foreach (var threadPair in _threadActions)
         {
             if (threadPair.Item1 == subThreadName)
@@ -50,11 +53,13 @@ public class Workflow
         return subThreadName;
     }
     
-    private PutWfSpecRequest CompileWorkflowDetails( ) {
+    private PutWfSpecRequest CompileWorkflowDetails( ) 
+    {
         String entrypointThreadName = AddSubThread("entrypoint", _entryPoint);
         _spec.EntrypointThreadName = entrypointThreadName;
 
-        while (_threadActions.Count != 0) {
+        while (_threadActions.Count != 0) 
+        {
             Tuple<string, Action<WorkflowThread>> nextThreadAction = _threadActions.Dequeue();
             string actionName = nextThreadAction.Item1;
             Action<WorkflowThread> threadAction = nextThreadAction.Item2;
@@ -68,5 +73,10 @@ public class Workflow
         }
 
         return _spec;
+    }
+    
+    internal void AddTaskDefName(String taskDefName) 
+    {
+        _requiredTaskDefNames.Add(taskDefName);
     }
 }
