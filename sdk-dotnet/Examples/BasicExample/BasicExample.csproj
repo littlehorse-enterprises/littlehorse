@@ -8,11 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="LittleHorse.Sdk" Version="0.5.8-alpha" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\LittleHorse.Sdk\LittleHorse.Sdk.csproj" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,67 @@
+using System;
+using LittleHorse.Sdk.Common.Proto;
+using LittleHorse.Sdk.Helper;
+using LittleHorse.Sdk.Workflow.Spec;
+using Moq;
+using Xunit;
+
+namespace LittleHorse.Sdk.Tests.Workflow.Spec;
+
+public class WfRunVariableTest
+{
+    private WorkflowThread _parentWfThread;
+    
+    public WfRunVariableTest()
+    {
+        LHLoggerFactoryProvider.Initialize(null);
+        var workflowName = "TestWorkflow";
+        var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, null!);
+        var mockAction = new Mock<Action<WorkflowThread>>();
+        _parentWfThread = new WorkflowThread(workflowName, mockWorkflow.Object, mockAction.Object);
+    }
+    
+    [Fact]
+    public void WfRunVariable_WithoutTypeOrDefaultValue_ShouldThrownAnException()
+    {
+        var exception = Assert.Throws<InvalidOperationException>(() => 
+            new WfRunVariable("test-var", null!, _parentWfThread));
+        
+        Assert.Contains("The 'typeOrDefaultVal' argument must be either a VariableType", exception.Message);
+    }
+    
+    [Fact]
+    public void WfRunVariable_WithDefaultValue_ShouldSetAVariableType()
+    {
+        var variableValue = "This is a test";
+        
+        var wfRunVariable = new WfRunVariable("test-var", variableValue, _parentWfThread);
+        
+        Assert.Equal(VariableType.Str, wfRunVariable.Type);
+    }
+
+    [Fact]
+    public void WfRunVariable_WithType_ShouldSetAVariableType()
+    {
+        const VariableType expectedType = VariableType.Bool;
+        
+        var wfRunVariable = new WfRunVariable("test-var", expectedType, _parentWfThread);
+        
+        Assert.Equal(expectedType, wfRunVariable.Type);
+    }
+    
+    [Fact]
+    public void WfRunVariable_WithThreadVarDef_ShouldCompileSuccessfully()
+    {
+        const VariableType expectedType = VariableType.Str;
+        var wfRunVariable = new WfRunVariable("test-var", expectedType, _parentWfThread);
+        
+        var compiledWfRunVariable = wfRunVariable.Compile();
+        
+        var actualResult = LHMappingHelper.ProtoToJson(compiledWfRunVariable);
+        var expectedResult =
+            "{ \"varDef\": { \"type\": \"STR\", \"name\": \"test-var\", \"maskedValue\": false }," +
+            " \"required\": false, \"searchable\": false, \"jsonIndexes\": [ ], \"accessLevel\": \"PRIVATE_VAR\" }";
+        
+        Assert.Equal(expectedResult, actualResult);
+    }
+}
