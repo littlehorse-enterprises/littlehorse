@@ -32,6 +32,8 @@ type WorkflowThread struct {
 }
 
 type WfRunVariable struct {
+	LHExpression
+
 	Name    string
 	VarType *lhproto.VariableType
 
@@ -44,6 +46,12 @@ type NodeOutput struct {
 	nodeName string
 	jsonPath *string
 	thread   *WorkflowThread
+}
+
+type TaskNodeOutput struct {
+	Output NodeOutput
+	node   *lhproto.Node
+	parent *WorkflowThread
 }
 
 type UserTaskOutput struct {
@@ -72,6 +80,12 @@ type LHFormatString struct {
 	thread     *WorkflowThread
 }
 
+type LHExpression struct {
+	lhs       interface{}
+	rhs       interface{}
+	operation lhproto.VariableMutationType
+}
+
 type LHErrorType string
 
 const (
@@ -90,6 +104,83 @@ func (n *NodeOutput) JsonPath(path string) NodeOutput {
 	return n.jsonPathImpl(path)
 }
 
+func (n *NodeOutput) Timeout(timeout int) *NodeOutput {
+	n.thread.addTimeoutToExtEvt(n, timeout)
+	return n
+}
+
+func (n *NodeOutput) Add(other interface{}) LHExpression {
+	return LHExpression{
+		lhs:       n,
+		rhs:       other,
+		operation: lhproto.VariableMutationType_ADD,
+	}
+}
+
+func (n *NodeOutput) Subtract(other interface{}) LHExpression {
+	return LHExpression{
+		lhs:       n,
+		rhs:       other,
+		operation: lhproto.VariableMutationType_SUBTRACT,
+	}
+}
+
+func (n *NodeOutput) Multiply(other interface{}) LHExpression {
+	return LHExpression{
+		lhs:       n,
+		rhs:       other,
+		operation: lhproto.VariableMutationType_MULTIPLY,
+	}
+}
+
+func (n *NodeOutput) Divide(other interface{}) LHExpression {
+	return LHExpression{
+		lhs:       n,
+		rhs:       other,
+		operation: lhproto.VariableMutationType_DIVIDE,
+	}
+}
+
+func (n *NodeOutput) Extend(other interface{}) LHExpression {
+	return LHExpression{
+		lhs:       n,
+		rhs:       other,
+		operation: lhproto.VariableMutationType_EXTEND,
+	}
+}
+
+func (n *NodeOutput) RemoveIfPresent(other interface{}) LHExpression {
+	return LHExpression{
+		lhs:       n,
+		rhs:       other,
+		operation: lhproto.VariableMutationType_REMOVE_IF_PRESENT,
+	}
+}
+
+func (n *NodeOutput) RemoveIndex_ByInt(index int) LHExpression {
+	return LHExpression{
+		lhs:       n,
+		rhs:       index,
+		operation: lhproto.VariableMutationType_REMOVE_INDEX,
+	}
+}
+
+func (n *NodeOutput) RemoveIndex_ByExpression(index LHExpression) LHExpression {
+	return LHExpression{
+		lhs:       n,
+		rhs:       index,
+		operation: lhproto.VariableMutationType_REMOVE_INDEX,
+	}
+}
+
+func (n *NodeOutput) RemoveKey(key interface{}) LHExpression {
+	return LHExpression{
+		lhs:       n,
+		rhs:       key,
+		operation: lhproto.VariableMutationType_REMOVE_KEY,
+	}
+}
+
 func (n *NodeOutput) HandleExceptionOnChild(handler ThreadFunc, exceptionName *string) {
 	n.handleExceptionOnChild(handler, exceptionName)
 }
@@ -100,6 +191,14 @@ func (n *NodeOutput) HandleErrorOnChild(handler ThreadFunc, errorName *string) {
 
 func (n *NodeOutput) HandleAnyFailureOnChild(handler ThreadFunc) {
 	n.handleAnyFailureOnChild(handler)
+}
+
+func (t *TaskNodeOutput) WithRetries(retries int) *TaskNodeOutput {
+	return t.withRetriesImpl(retries)
+}
+
+func (t *TaskNodeOutput) WithExponentialBackoff(policy *lhproto.ExponentialBackoffRetryPolicy) *TaskNodeOutput {
+	return t.withExponentialBackoffImpl(policy)
 }
 
 func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
@@ -134,6 +233,114 @@ func (w *WfRunVariable) Required() *WfRunVariable {
 	return w.requiredImpl()
 }
 
+func (w *WfRunVariable) IsEqualTo(rhs interface{}) *WorkflowCondition {
+	return w.thread.condition(w, lhproto.Comparator_EQUALS, rhs)
+}
+
+func (w *WfRunVariable) IsNotEqualTo(rhs interface{}) *WorkflowCondition {
+	return w.thread.condition(w, lhproto.Comparator_NOT_EQUALS, rhs)
+}
+
+func (w *WfRunVariable) IsGreaterThan(rhs interface{}) *WorkflowCondition {
+	return w.thread.condition(w, lhproto.Comparator_GREATER_THAN, rhs)
+}
+
+func (w *WfRunVariable) IsGreaterThanEq(rhs interface{}) *WorkflowCondition {
+	return w.thread.condition(w, lhproto.Comparator_GREATER_THAN_EQ, rhs)
+}
+
+func (w *WfRunVariable) IsLessThan(rhs interface{}) *WorkflowCondition {
+	return w.thread.condition(w, lhproto.Comparator_LESS_THAN, rhs)
+}
+
+func (w *WfRunVariable) IsLessThanEq(rhs interface{}) *WorkflowCondition {
+	return w.thread.condition(w, lhproto.Comparator_LESS_THAN_EQ, rhs)
+}
+
+func (w *WfRunVariable) DoesContain(rhs interface{}) *WorkflowCondition {
+	return w.thread.condition(w, lhproto.Comparator_IN, rhs)
+}
+
+func (w *WfRunVariable) DoesNotContain(rhs interface{}) *WorkflowCondition {
+	return w.thread.condition(w, lhproto.Comparator_NOT_IN, rhs)
+}
+
+func (w *WfRunVariable) IsIn(rhs interface{}) *WorkflowCondition {
+	return w.thread.condition(w, lhproto.Comparator_IN, rhs)
+}
+
+func (w *WfRunVariable) IsNotIn(rhs interface{}) *WorkflowCondition {
+	return w.thread.condition(w, lhproto.Comparator_NOT_IN, rhs)
+}
+
+func (w *WfRunVariable) Assign(rhs interface{}) {
+	w.thread.mutate(w, lhproto.VariableMutationType_ASSIGN, rhs)
+}
+
+func (w *WfRunVariable) Add(other interface{}) LHExpression {
+	return LHExpression{
+		lhs:       w,
+		rhs:       other,
+		operation: lhproto.VariableMutationType_ADD,
+	}
+}
+
+func (w *WfRunVariable) Multiply(other interface{}) LHExpression {
+	return LHExpression{
+		lhs:       w,
+		rhs:       other,
+		operation: lhproto.VariableMutationType_MULTIPLY,
+	}
+}
+
+func (w *WfRunVariable) Divide(other interface{}) LHExpression {
+	return LHExpression{
+		lhs:       w,
+		rhs:       other,
+		operation: lhproto.VariableMutationType_DIVIDE,
+	}
+}
+
+func (w *WfRunVariable) Extend(other interface{}) LHExpression {
+	return LHExpression{
+		lhs:       w,
+		rhs:       other,
+		operation: lhproto.VariableMutationType_EXTEND,
+	}
+}
+
+func (w *WfRunVariable) RemoveIfPresent(other interface{}) LHExpression {
+	return LHExpression{
+		lhs:       w,
+		rhs:       other,
+		operation: lhproto.VariableMutationType_REMOVE_IF_PRESENT,
+	}
+}
+
+func (w *WfRunVariable) RemoveIndex_ByInt(index int) LHExpression {
+	return LHExpression{
+		lhs:       w,
+		rhs:       index,
+		operation: lhproto.VariableMutationType_REMOVE_INDEX,
+	}
+}
+
+func (w *WfRunVariable) RemoveIndex_ByExpression(index LHExpression) LHExpression {
+	return LHExpression{
+		lhs:       w,
+		rhs:       index,
+		operation: lhproto.VariableMutationType_REMOVE_INDEX,
+	}
+}
+
+func (w *WfRunVariable) RemoveKey(key interface{}) LHExpression {
+	return LHExpression{
+		lhs:       w,
+		rhs:       key,
+		operation: lhproto.VariableMutationType_REMOVE_KEY,
+	}
+}
+
 func (l *LHWorkflow) WithRetentionPolicy(policy *lhproto.WorkflowRetentionPolicy) *LHWorkflow {
 	l.spec.RetentionPolicy = policy
 	return l
@@ -154,6 +361,70 @@ func (t *WorkflowThread) AddVariable(
 	return t.addVariable(name, varType, nil)
 }
 
+func (t *WorkflowThread) Add(lhs interface{}, rhs interface{}) LHExpression {
+	return LHExpression{
+		lhs:       lhs,
+		rhs:       rhs,
+		operation: lhproto.VariableMutationType_ADD,
+	}
+}
+
+func (t *WorkflowThread) Subtract(lhs interface{}, rhs interface{}) LHExpression {
+	return LHExpression{
+		lhs:       lhs,
+		rhs:       rhs,
+		operation: lhproto.VariableMutationType_SUBTRACT,
+	}
+}
+
+func (t *WorkflowThread) Multiply(lhs interface{}, rhs interface{}) LHExpression {
+	return LHExpression{
+		lhs:       lhs,
+		rhs:       rhs,
+		operation: lhproto.VariableMutationType_MULTIPLY,
+	}
+}
+
+func (t *WorkflowThread) Divide(lhs interface{}, rhs interface{}) LHExpression {
+	return LHExpression{
+		lhs:       lhs,
+		rhs:       rhs,
+		operation: lhproto.VariableMutationType_DIVIDE,
+	}
+}
+
+func (t *WorkflowThread) Extend(lhs interface{}, rhs interface{}) LHExpression {
+	return LHExpression{
+		lhs:       lhs,
+		rhs:       rhs,
+		operation: lhproto.VariableMutationType_EXTEND,
+	}
+}
+
+func (t *WorkflowThread) RemoveIfPresent(lhs interface{}, rhs interface{}) LHExpression {
+	return LHExpression{
+		lhs:       lhs,
+		rhs:       rhs,
+		operation: lhproto.VariableMutationType_REMOVE_IF_PRESENT,
+	}
+}
+
+func (t *WorkflowThread) RemoveIndex(lhs interface{}, rhs interface{}) LHExpression {
+	return LHExpression{
+		lhs:       lhs,
+		rhs:       rhs,
+		operation: lhproto.VariableMutationType_REMOVE_INDEX,
+	}
+}
+
+func (t *WorkflowThread) RemoveKey(lhs interface{}, key interface{}) LHExpression {
+	return LHExpression{
+		lhs:       lhs,
+		rhs:       key,
+		operation: lhproto.VariableMutationType_REMOVE_KEY,
+	}
+}
+
 func (t *WorkflowThread) WithRetentionPolicy(policy *lhproto.ThreadRetentionPolicy) {
 	t.spec.RetentionPolicy = policy
 }
@@ -164,7 +435,7 @@ func (t *WorkflowThread) AddVariableWithDefault(
 	return t.addVariable(name, varType, defaultValue)
 }
 
-func (t *WorkflowThread) Execute(taskDefName interface{}, args ...interface{}) NodeOutput {
+func (t *WorkflowThread) Execute(taskDefName interface{}, args ...interface{}) *TaskNodeOutput {
 	return t.executeTask(taskDefName, args)
 }
 
@@ -264,8 +535,8 @@ func (t *WorkflowThread) ReassignUserTaskOnDeadline(
 	t.reassignUserTaskOnDeadline(userTask, userId, userGroup, deadlineSeconds)
 }
 
-func (t *WorkflowThread) WaitForEvent(eventName string) NodeOutput {
-	return *t.waitForEvent(eventName)
+func (t *WorkflowThread) WaitForEvent(eventName string) *NodeOutput {
+	return t.waitForEvent(eventName)
 }
 
 func (t *WorkflowThread) Sleep(sleepSeconds int) {
