@@ -10,6 +10,7 @@ cd "${CONTEXT_DIR}"
 dashboard=false
 canary=false
 server=false
+standalone=false
 
 if [[ $# -eq 0 ]]; then
   server=true
@@ -22,6 +23,9 @@ while [[ $# -gt 0 ]]; do
       ;;
     --canary)
       canary=true
+      ;;
+    --standalone)
+      standalone=true
       ;;
     --server)
       server=true
@@ -53,4 +57,14 @@ if [[ ${server} = true ]]; then
     echo "Building lh-server"
     ./gradlew server:shadowJar -x test -x spotlessJavaCheck
     docker build -t littlehorse/lh-server:latest -f docker/server/Dockerfile .
+fi
+
+if [[ ${standalone} = true ]]; then
+    echo "Building lh-standalone"
+    cd dashboard
+    npm install
+    npm run build
+    cd ..
+    ./gradlew server:shadowJar -x test -x spotlessJavaCheck
+    docker build -t littlehorse/lh-standalone:latest -f docker/standalone/Dockerfile .
 fi
