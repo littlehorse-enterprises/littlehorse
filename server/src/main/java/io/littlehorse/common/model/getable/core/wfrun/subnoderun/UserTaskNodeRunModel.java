@@ -112,4 +112,9 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
         out.onArrival(time);
         processorContext.getableManager().put(out);
     }
+
+    @Override
+    public Optional<UserTaskRunIdModel> getCreatedSubGetableId() {
+        return Optional.ofNullable(userTaskRunId);
+    }
 }

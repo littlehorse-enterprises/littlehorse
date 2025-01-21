@@ -5,6 +5,7 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/timestamp.proto";
+import "object_id.proto";
 
 
 enum LHStoreType {
@@ -23,6 +24,7 @@ enum StoreableType {
     PARTITION_METRICS = 6;
     METRIC_WINDOW = 7;
     INITIALIZATION_LOG = 8;
+    WFRUN_STORED_INVENTORY = 9;
 }
 
 enum GetableClassEnum {
@@ -70,6 +72,21 @@ message TagPb {
     // Observation: it's possible that we could optimize by removing fields 1-4
     // and only relying upon the store key. However, that would complicate
     // the code a bit and may just be premature optimization.
+}
+
+// This is a hack to remove the need for doing range scans during the WfRun Deletion
+// process. We can iterate through nodeRun's just by knowing their id's; however, it
+// turns out that we can't guess all of the External Event Id's without journalling
+// them somewhere.
+message WfRunStoredInventory {
+    WfRunId wf_run_id = 1;
+    repeated ExternalEventId external_events = 3;
+
+    // Don't need to store NodeRunId's because we can get them from the WfRun
+    // Don't need to store TaskRunid's because we can get them from the NodeRun
+    // Don't need to store Variable's because we can get them from the WfSpec
+    // Don't need to store UserTaskRun's because we can get them from the NodeRun
+    // Don't need to store WorkflowEvent's because we can get them from the NodeRun's
 }
 
 message TagsCachePb {

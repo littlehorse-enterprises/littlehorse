@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.core.wfrun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -98,5 +99,13 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
      */
     public NodeModel getNode() {
         return nodeRun.getNode();
+    }
+
+    /**
+     * Returns the created sub-Getable for this NodeRunModel. For example, a TaskNodeRunModel would
+     * return the associated TaskRunModel.
+     */
+    public Optional<? extends CoreObjectId<?, ?, ?>> getCreatedSubGetableId() {
+        return Optional.empty();
     }
 }

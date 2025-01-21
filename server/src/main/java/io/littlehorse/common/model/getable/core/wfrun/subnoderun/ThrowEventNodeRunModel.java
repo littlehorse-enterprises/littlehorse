@@ -94,4 +94,9 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
                 .max(Comparator.comparingInt(
                         workflowEvent -> workflowEvent.getId().getId()));
     }
+
+    @Override
+    public Optional<WorkflowEventIdModel> getCreatedSubGetableId() {
+        return Optional.ofNullable(workflowEventId);
+    }
 }
