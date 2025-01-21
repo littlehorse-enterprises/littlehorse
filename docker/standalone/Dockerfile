@@ -11,8 +11,7 @@ ENV DASHBOARD_NEXT=true
 ENV NODE_ENV=production
 
 RUN mkdir /kafka /lh
-RUN apt update && apt install -y tar gzip wget uuid-runtime openjdk-21-jdk curl ca-certificates gnupg nodejs \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y tar gzip unzip wget uuid-runtime openjdk-21-jdk curl ca-certificates gnupg nodejs && apt clean
 RUN wget -q https://dlcdn.apache.org/kafka/${KAFKA_VERSION}/kafka_2.13-${KAFKA_VERSION}.tgz -O /tmp/kafka.tgz \
     && tar -xzf /tmp/kafka.tgz --strip-components 1 -C /kafka \
     && rm /tmp/kafka.tgz
