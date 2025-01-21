@@ -8,7 +8,8 @@ import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.proto.WfRunStoredInventory;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,10 +20,10 @@ public class WfRunStoredInventoryModel extends Storeable<WfRunStoredInventory> {
     private WfRunIdModel wfRunId;
 
     @Getter
-    private HashSet<ExternalEventIdModel> externalEventIds;
+    private List<ExternalEventIdModel> externalEventIds;
 
     public WfRunStoredInventoryModel() {
-        externalEventIds = new HashSet<>();
+        externalEventIds = new ArrayList<>();
     }
 
     @Override

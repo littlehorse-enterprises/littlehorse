@@ -68,7 +68,15 @@ public class GetableManager extends ReadOnlyGetableManager {
         if (getable instanceof ExternalEventModel) {
             WfRunStoredInventoryModel inventory = getOrCreateStoredInventory(
                     ((ExternalEventModel) getable).getId().getWfRunId());
-            inventory.getExternalEventIds().add(((ExternalEventModel) getable).getObjectId());
+
+            ExternalEventIdModel evtId = ((ExternalEventModel) getable).getObjectId();
+
+            // Only add it if it doesn't already exist
+            if (!inventory.getExternalEventIds().stream().anyMatch(candidate -> {
+                return evtId.equals(candidate);
+            })) {
+                inventory.getExternalEventIds().add(((ExternalEventModel) getable).getObjectId());
+            }
             store.put(inventory);
         }
 
