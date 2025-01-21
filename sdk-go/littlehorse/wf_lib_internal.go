@@ -1037,7 +1037,6 @@ func (t *WorkflowThread) overrideTaskRetries(taskNodeOutput *TaskNodeOutput, ret
 
 	node := t.spec.Nodes[taskNodeOutput.Output.nodeName]
 	if node.GetTask() == nil {
-		// Error
 		t.throwError(errors.New("impossible to not have task node here"))
 	}
 
