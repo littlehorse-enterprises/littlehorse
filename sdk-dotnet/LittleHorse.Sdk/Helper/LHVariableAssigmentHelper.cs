@@ -5,7 +5,7 @@ namespace LittleHorse.Sdk.Helper;
 
 internal static class LHVariableAssigmentHelper
 {
-    internal static VariableAssignment AssignVariable(Object variable) 
+    internal static VariableAssignment AssignVariable(object? variable) 
     {
         var variableAssignment = new VariableAssignment();
 
@@ -16,25 +16,28 @@ internal static class LHVariableAssigmentHelper
         else if (variable.GetType() == typeof(WfRunVariable)) 
         {
             var wrVariable = (WfRunVariable) variable;
-            if (wrVariable.JsonPath != null
-                ) {
+            if (wrVariable.JsonPath != null) 
+            {
                 variableAssignment.JsonPath = wrVariable.JsonPath;
             }
             variableAssignment.VariableName = wrVariable.Name;
         } 
-        /*else if (variable is NodeOutput) 
+        else if (variable is NodeOutput nodeReference) 
         {
             // We can use the new `VariableAssignment` feature: NodeOutputReference
-            NodeOutputImpl nodeReference = (NodeOutputImpl) variable;
+            var nodeOutputReference = new VariableAssignment.Types.NodeOutputReference
+            {
+                NodeName = nodeReference.NodeName
+            };
+            variableAssignment.NodeOutput = nodeOutputReference;
 
-            variableAssignment.setNodeOutput(VariableAssignment.Types.NodeOutputReference.newBuilder()
-                    .setNodeName(nodeReference.nodeName)
-                    .build());
-
-            if (nodeReference.jsonPath != null) {
-                variableAssignment.setJsonPath(nodeReference.jsonPath);
+            if (nodeReference.JsonPath != null)
+            {
+                variableAssignment.JsonPath = nodeReference.JsonPath;
             }
-        } else if (variable.getClass().equals(LHFormatStringImpl.class)) {
+        }
+        /*else if (variable.getClass().equals(LHFormatStringImpl.class)) 
+        {
             LHFormatStringImpl format = (LHFormatStringImpl) variable;
             variableAssignment.setFormatString(VariableAssignment.FormatString.newBuilder()
                     .setFormat(assignVariable(format.getFormat()))
@@ -46,14 +49,12 @@ internal static class LHVariableAssigmentHelper
                     .setLhs(assignVariable(expr.getLhs()))
                     .setOperation(expr.getOperation())
                     .setRhs(assignVariable(expr.getRhs())));
-        } else {
-            try {
-                VariableValue defVal = LHLibUtil.objToVarVal(variable);
-                variableAssignment.setLiteralValue(defVal);
-            } catch (LHSerdeError exn) {
-                throw new RuntimeException(exn);
-            }
-        }*/
+        } */
+        else 
+        {
+            VariableValue defVal = LHMappingHelper.ObjectToVariableValue(variable);
+            variableAssignment.LiteralValue = defVal;
+        }
 
         return variableAssignment;
     }
