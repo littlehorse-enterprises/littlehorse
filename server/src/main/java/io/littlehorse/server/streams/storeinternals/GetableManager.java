@@ -6,6 +6,9 @@ import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.CoreObjectId;
+import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -62,6 +65,13 @@ public class GetableManager extends ReadOnlyGetableManager {
             return;
         }
 
+        if (getable instanceof ExternalEventModel) {
+            WfRunStoredInventoryModel inventory = getOrCreateStoredInventory(
+                    ((ExternalEventModel) getable).getId().getWfRunId());
+            inventory.getExternalEventIds().add(((ExternalEventModel) getable).getObjectId());
+            store.put(inventory);
+        }
+
         // At this point, we know that `getable` has not yet been stored *in this
         // transaction* since it's not in the buffer. So we need to store it.
         //
@@ -81,6 +91,15 @@ public class GetableManager extends ReadOnlyGetableManager {
         uncommittedChanges.put(getable.getObjectId().getStoreableKey(), toPut);
     }
 
+    private WfRunStoredInventoryModel getOrCreateStoredInventory(WfRunIdModel wfRunId) {
+        WfRunStoredInventoryModel result = store.get(wfRunId.getStoreableKey(), WfRunStoredInventoryModel.class);
+        if (result == null) {
+            result = new WfRunStoredInventoryModel();
+            result.setWfRunId(wfRunId);
+        }
+        return result;
+    }
+
     /**
      * Marks a provided Getable for deletion upon the committing of the
      * "transaction"
@@ -98,6 +117,17 @@ public class GetableManager extends ReadOnlyGetableManager {
 
         if (thingToDelete == null) {
             return null;
+        }
+
+        if (thingToDelete instanceof ExternalEventModel) {
+            WfRunStoredInventoryModel inventory = getOrCreateStoredInventory(
+                    ((ExternalEventModel) thingToDelete).getId().getWfRunId());
+            inventory.getExternalEventIds().remove(((ExternalEventModel) thingToDelete).getObjectId());
+            if (inventory.getExternalEventIds().isEmpty()) {
+                store.delete(inventory.getStoreKey(), StoreableType.WFRUN_STORED_INVENTORY);
+            } else {
+                store.put(inventory);
+            }
         }
 
         // Then we need to update the GetableToStore to reflect that we're
@@ -126,6 +156,15 @@ public class GetableManager extends ReadOnlyGetableManager {
         for (GetableToStore<U, T> itemToDelete : allItems) {
             // Marking the objectToStore as null causes the flush() to delete it.
             itemToDelete.setObjectToStore(null);
+        }
+    }
+
+    public void deleteAllExternalEventsFor(WfRunIdModel wfRunId) {
+        log.trace("Deleting all ExternalEvents for WfRun {}", wfRunId);
+
+        WfRunStoredInventoryModel inventory = getOrCreateStoredInventory(wfRunId);
+        for (ExternalEventIdModel externalEventId : inventory.getExternalEventIds()) {
+            delete(externalEventId);
         }
     }
 
