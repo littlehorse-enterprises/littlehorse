@@ -13,6 +13,7 @@ import io.littlehorse.sdk.common.proto.ListNodeRunsRequest;
 import io.littlehorse.sdk.common.proto.ListTaskRunsRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.NodeRun;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.TaskRunId;
@@ -122,8 +123,11 @@ public class WfRunDeletionTest {
         String firstEvtGuid = "event-from-before-wfrun";
         String secondEvtGuid = "event-from-during-wfrun";
 
-        ExternalEventDefId ignoredEvtDefId =
-                ExternalEventDefId.newBuilder().setName(IGNORED_EVT).build();
+        // The test util doesn't create events not used by the wfspec
+        ExternalEventDefId ignoredEvtDefId = client.putExternalEventDef(PutExternalEventDefRequest.newBuilder()
+                        .setName(IGNORED_EVT)
+                        .build())
+                .getId();
 
         ExternalEventId firstEvtId = ExternalEventId.newBuilder()
                 .setWfRunId(id)
