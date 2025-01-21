@@ -149,4 +149,9 @@ public class TaskNodeRunModel extends SubNodeRun<TaskNodeRun> {
         // For now, we can't interrupt a TaskRun until it's fully done.
         return !processorContext.getableManager().get(getTaskRunId()).isStillRunning();
     }
+
+    @Override
+    public Optional<TaskRunIdModel> getCreatedSubGetableId() {
+        return Optional.ofNullable(taskRunId);
+    }
 }
