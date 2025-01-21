@@ -28,6 +28,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 @LHTest(externalEventNames = {WfRunDeletionTest.COMPLETE_WFRUN_EVT, WfRunDeletionTest.IGNORED_EVT})
@@ -51,6 +53,71 @@ public class WfRunDeletionTest {
     }
 
     @Test
+    @Order(1)
+    void deletingWfRunShouldDeleteIndexEntries() {
+        WfRunId id = WfRunId.newBuilder().setId(LHUtil.generateGuid()).build();
+        verifier.prepareRun(basicExternalEvent)
+                .thenSendExternalEventWithContent(COMPLETE_WFRUN_EVT, "asdf")
+                .waitForStatus(LHStatus.COMPLETED)
+                .start(id);
+
+        // Make sure that we can find the wfRun in a search
+        Timestamp oneMinuteAgo = LHLibUtil.fromDate(
+                new Date(Instant.now().minus(Duration.ofMinutes(1)).toEpochMilli()));
+        WfRunIdList searchResult = client.searchWfRun(SearchWfRunRequest.newBuilder()
+                .setWfSpecName("delete-wfrun")
+                .setEarliestStart(oneMinuteAgo)
+                .build());
+
+        assertTrue(searchResult.getResultsList().stream()
+                .anyMatch(candidate -> candidate.getId().equals(id.getId())));
+
+        // Delete the WfRun
+        client.deleteWfRun(DeleteWfRunRequest.newBuilder().setId(id).build());
+
+        // Make sure that we can't find the wfRun in a search
+        searchResult = client.searchWfRun(SearchWfRunRequest.newBuilder()
+                .setWfSpecName("delete-wfrun")
+                .setEarliestStart(oneMinuteAgo)
+                .build());
+        assertTrue(!searchResult.getResultsList().stream()
+                .anyMatch(candidate -> candidate.getId().equals(id.getId())));
+
+        // Obviously we shouldn't be able to find the WfRun
+        assertTrue(LHTestExceptionUtil.throwsNotFound(() -> {
+            client.getWfRun(id);
+            return null;
+        }));
+    }
+
+    @Test
+    @Order(2)
+    void deletingWfRunShouldDeleteNodeRuns() {
+        WfRunId id = WfRunId.newBuilder().setId(LHUtil.generateGuid()).build();
+        verifier.prepareRun(basicExternalEvent)
+                .thenSendExternalEventWithContent(COMPLETE_WFRUN_EVT, "asdf")
+                .waitForStatus(LHStatus.COMPLETED)
+                .start(id);
+
+        // Find the TaskRun
+        List<NodeRun> nodeRuns = client.listNodeRuns(
+                        ListNodeRunsRequest.newBuilder().setWfRunId(id).build())
+                .getResultsList();
+
+        // Delete the WfRun
+        client.deleteWfRun(DeleteWfRunRequest.newBuilder().setId(id).build());
+
+        // Verify that all of the NodeRuns are gone;
+        for (NodeRun nodeRun : nodeRuns) {
+            assertTrue(LHTestExceptionUtil.throwsNotFound(() -> {
+                client.getNodeRun(nodeRun.getId());
+                return null;
+            }));
+        }
+    }
+
+    @Test
+    @Order(3)
     void deletingWfRunShouldDeleteExternalEvents() {
         WfRunId id = WfRunId.newBuilder().setId(LHUtil.generateGuid()).build();
         String firstEvtGuid = "event-from-before-wfrun";
@@ -109,68 +176,6 @@ public class WfRunDeletionTest {
             client.getExternalEvent(secondEvtId);
             return null;
         }));
-    }
-
-    @Test
-    void deletingWfRunShouldDeleteIndexEntries() {
-        WfRunId id = WfRunId.newBuilder().setId(LHUtil.generateGuid()).build();
-        verifier.prepareRun(basicExternalEvent)
-                .thenSendExternalEventWithContent(COMPLETE_WFRUN_EVT, "asdf")
-                .waitForStatus(LHStatus.COMPLETED)
-                .start(id);
-
-        // Make sure that we can find the wfRun in a search
-        Timestamp oneMinuteAgo = LHLibUtil.fromDate(
-                new Date(Instant.now().minus(Duration.ofMinutes(1)).toEpochMilli()));
-        WfRunIdList searchResult = client.searchWfRun(SearchWfRunRequest.newBuilder()
-                .setWfSpecName("delete-wfrun")
-                .setEarliestStart(oneMinuteAgo)
-                .build());
-
-        assertTrue(searchResult.getResultsList().stream()
-                .anyMatch(candidate -> candidate.getId().equals(id.getId())));
-
-        // Delete the WfRun
-        client.deleteWfRun(DeleteWfRunRequest.newBuilder().setId(id).build());
-
-        // Make sure that we can't find the wfRun in a search
-        searchResult = client.searchWfRun(SearchWfRunRequest.newBuilder()
-                .setWfSpecName("delete-wfrun")
-                .setEarliestStart(oneMinuteAgo)
-                .build());
-        assertTrue(!searchResult.getResultsList().stream()
-                .anyMatch(candidate -> candidate.getId().equals(id.getId())));
-
-        // Obviously we shouldn't be able to find the WfRun
-        assertTrue(LHTestExceptionUtil.throwsNotFound(() -> {
-            client.getWfRun(id);
-            return null;
-        }));
-    }
-
-    @Test
-    void deletingWfRunShouldDeleteNodeRuns() {
-        WfRunId id = WfRunId.newBuilder().setId(LHUtil.generateGuid()).build();
-        verifier.prepareRun(basicExternalEvent)
-                .thenSendExternalEventWithContent(COMPLETE_WFRUN_EVT, "asdf")
-                .waitForStatus(LHStatus.COMPLETED)
-                .start(id);
-
-        // Find the TaskRun
-        List<NodeRun> nodeRuns = client.listNodeRuns(
-                        ListNodeRunsRequest.newBuilder().setWfRunId(id).build())
-                .getResultsList();
-
-        // Delete the WfRun
-        client.deleteWfRun(DeleteWfRunRequest.newBuilder().setId(id).build());
-
-        // Verify that all of the NodeRuns are gone;
-        for (NodeRun nodeRun : nodeRuns) {
-            assertTrue(LHTestExceptionUtil.throwsNotFound(() -> {
-                client.getNodeRun(nodeRun.getId());
-                return null;
-            }));
-        }
     }
 
     @Test
