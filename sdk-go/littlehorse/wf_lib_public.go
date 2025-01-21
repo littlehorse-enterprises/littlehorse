@@ -193,7 +193,7 @@ func (n *NodeOutput) HandleAnyFailureOnChild(handler ThreadFunc) {
 	n.handleAnyFailureOnChild(handler)
 }
 
-func (t *TaskNodeOutput) WithRetries(retries int) *TaskNodeOutput {
+func (t *TaskNodeOutput) WithRetries(retries int32) *TaskNodeOutput {
 	return t.withRetriesImpl(retries)
 }
 

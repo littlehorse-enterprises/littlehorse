@@ -457,6 +457,27 @@ func TestAddRetriesToTaskNodeOutput(t *testing.T) {
 	assert.Equal(t, taskNode.GetTask().Retries, int32(5))
 }
 
+func TestExponentialBackoffRetryPolicyToTaskNodeOutput(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		t.Execute("task-one").WithExponentialBackoff(&lhproto.ExponentialBackoffRetryPolicy{
+			BaseIntervalMs: 500,
+			MaxDelayMs:     2000,
+			Multiplier:     2,
+		})
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	taskNode := entrypoint.Nodes["1-task-one-TASK"]
+	assert.Equal(t, taskNode.GetTask().ExponentialBackoff.BaseIntervalMs, int32(500))
+	assert.Equal(t, taskNode.GetTask().ExponentialBackoff.MaxDelayMs, int64(2000))
+	assert.Equal(t, taskNode.GetTask().ExponentialBackoff.Multiplier, float32(2))
+}
+
 func TestParallelSpawnThreadsWithInput(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		myArr := t.AddVariable("my-arr", lhproto.VariableType_JSON_ARR)
