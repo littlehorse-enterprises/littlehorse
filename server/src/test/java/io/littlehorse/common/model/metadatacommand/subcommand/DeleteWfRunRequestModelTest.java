@@ -1,24 +1,14 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
-import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
-import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
-import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
-import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
-import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
-import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.proto.Command;
@@ -35,8 +25,6 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
 import java.util.UUID;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
-import org.apache.kafka.streams.processor.api.Record;
-import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 public class DeleteWfRunRequestModelTest {
