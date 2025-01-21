@@ -1,5 +1,7 @@
 package io.littlehorse.test.internal.step;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.ListTaskRunsRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -27,12 +29,10 @@ public class VerifyTaskRunOutputsStep extends AbstractStep {
 
         TaskRunList taskRuns = lhClient.listTaskRuns(
                 ListTaskRunsRequest.newBuilder().setWfRunId(wfRunId).build());
-        if (expectedOutputs.size() != taskRuns.getResultsList().size()) {
-            throw new StepExecutionException(
-                    id,
-                    context.getWfRunId(),
-                    "Expected %d taskRuns but got %d".formatted(expectedOutputs.size(), taskRuns.getResultsCount()));
-        }
+        assertEquals(
+                expectedOutputs.size(),
+                taskRuns.getResultsList().size(),
+                "Expected %d taskRuns but got %d".formatted(expectedOutputs.size(), taskRuns.getResultsCount()));
 
         // Currently, the result of the rpc ListTaskRuns is NOT sorted. It will
         // be sorted after LH-152. So for now we manually sort.
@@ -50,21 +50,50 @@ public class VerifyTaskRunOutputsStep extends AbstractStep {
 
         for (int i = 0; i < sortedTasks.size(); i++) {
             VariableValue taskOutput = sortedTasks.get(i).getAttempts(0).getOutput();
-
-            if (!areEqual(taskOutput, expected.get(i))) {
-                throw new StepExecutionException(id, context.getWfRunId(), "Task outputs didn't match!");
-            }
+            areEqual(taskOutput, expected.get(i));
         }
     }
 
-    private boolean areEqual(VariableValue first, VariableValue second) {
-        if (first.getValueCase() != second.getValueCase()) return false;
-
+    private void areEqual(VariableValue first, VariableValue second) {
+        assertSame(
+                first.getValueCase(),
+                second.getValueCase(),
+                "Expected " + first.getValueCase() + " but got " + second.getValueCase());
+        Object firstValue;
+        Object secondValue;
         switch (first.getValueCase()) {
             case INT:
-                return first.getInt() == second.getInt();
+                firstValue = first.getInt();
+                secondValue = second.getInt();
+                break;
+            case STR:
+                firstValue = first.getStr();
+                secondValue = second.getStr();
+                break;
+            case BOOL:
+                firstValue = first.getBool();
+                secondValue = second.getBool();
+                break;
+            case BYTES:
+                firstValue = first.getBytes();
+                secondValue = second.getBytes();
+                break;
+            case DOUBLE:
+                firstValue = first.getDouble();
+                secondValue = second.getDouble();
+                break;
+            case JSON_ARR:
+                firstValue = first.getJsonArr();
+                secondValue = second.getJsonArr();
+                break;
+            case JSON_OBJ:
+                firstValue = first.getJsonObj();
+                secondValue = second.getJsonObj();
+                break;
             default:
+                throw new UnsupportedOperationException(
+                        String.format("As of now, %s values are not supported", first.getValueCase()));
         }
-        throw new UnsupportedOperationException("As of now, only INT values are supported");
+        assertEquals(firstValue, secondValue);
     }
 }
