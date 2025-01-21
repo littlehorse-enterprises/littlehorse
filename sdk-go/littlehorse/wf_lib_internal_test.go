@@ -442,6 +442,21 @@ func TestAssigningVariablesToOtherVariablesShouldCarryJsonPath(t *testing.T) {
 	assert.Equal(t, taskNode.OutgoingEdges[0].VariableMutations[0].GetRhsAssignment().GetJsonPath(), "$.hello.there")
 }
 
+func TestAddRetriesToTaskNodeOutput(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		t.Execute("task-one").WithRetries(5)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	if err != nil {
+		t.Error(err)
+	}
+
+	entrypoint := putWf.ThreadSpecs[putWf.EntrypointThreadName]
+	taskNode := entrypoint.Nodes["1-task-one-TASK"]
+	assert.Equal(t, taskNode.GetTask().Retries, int32(5))
+}
+
 func TestParallelSpawnThreadsWithInput(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		myArr := t.AddVariable("my-arr", lhproto.VariableType_JSON_ARR)
