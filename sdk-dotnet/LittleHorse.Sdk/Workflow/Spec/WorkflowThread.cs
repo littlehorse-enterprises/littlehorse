@@ -7,7 +7,7 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 public class WorkflowThread
 {
     private String _name;
-    private Workflow _parentWorkflow;
+    private Workflow _parent;
     private ThreadSpec _spec;
     public string LastNodeName;
     private bool _isActive;
@@ -16,7 +16,7 @@ public class WorkflowThread
     public WorkflowThread(String name, Workflow parent, Action<WorkflowThread> action)
     {
         _name = name;
-        _parentWorkflow = parent;
+        _parent = parent;
         _spec = new ThreadSpec();
         _wfRunVariables = new List<WfRunVariable>();
 
@@ -124,14 +124,15 @@ public class WorkflowThread
         return wfRunVariable;
     }
     
-    /*public NodeOutput Execute(String taskName, params object[] args) {
+    public NodeOutput Execute(String taskName, params object[] args) {
         CheckIfWorkflowThreadIsActive();
-        _parentWorkflow.AddTaskDefName(taskName);
-        var taskNode = createTaskNode(
+        _parent.AddTaskDefName(taskName);
+        var taskNode = CreateTaskNode(
             new TaskNode {TaskDefId = new TaskDefId {Name = taskName}}, args);
-        string nodeName = addNode(taskName, NodeCase.TASK, taskNode);
+        string nodeName = AddNode(taskName, Node.NodeOneofCase.Task, taskNode);
+        
         return new NodeOutput(nodeName, this);
-    }*/
+    }
     
     public VariableAssignment AssignVariable(Object variable) 
     {
@@ -139,28 +140,24 @@ public class WorkflowThread
         return LHVariableAssigmentHelper.AssignVariable(variable);
     }
 
-    /*private TaskNode createTaskNode(TaskNode taskNode, params object[] args) {
+    private TaskNode CreateTaskNode(TaskNode taskNode, params object[] args) {
 
         foreach (var arg in args)
         {
-            taskNode.Variables.Add();
+            taskNode.Variables.Add(AssignVariable(arg));
         }
 
-        (Object var : args) {
-            taskNode.addVariables(assignVariable(var));
+        if (_parent.GetDefaultTaskTimeout() != 0) {
+            taskNode.TimeoutSeconds = _parent.GetDefaultTaskTimeout();
         }
 
-        if (parent.getDefaultTaskTimeout() != null) {
-            taskNode.setTimeoutSeconds(parent.getDefaultTaskTimeout());
+        taskNode.Retries = _parent.GetDefaultSimpleRetries();
+
+        if (_parent.GetDefaultExponentialBackoffRetryPolicy() != null) {
+            taskNode.ExponentialBackoff = 
+                _parent.GetDefaultExponentialBackoffRetryPolicy();
         }
 
-        taskNode.setRetries(parent.getDefaultSimpleRetries());
-
-        if (parent.getDefaultExponentialBackoffRetryPolicy().isPresent()) {
-            taskNode.setExponentialBackoff(
-                parent.getDefaultExponentialBackoffRetryPolicy().get());
-        }
-
-        return taskNode.build();
-    }*/
+        return taskNode;
+    }
 }
