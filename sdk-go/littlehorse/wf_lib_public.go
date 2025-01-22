@@ -104,7 +104,7 @@ func (n *NodeOutput) JsonPath(path string) NodeOutput {
 	return n.jsonPathImpl(path)
 }
 
-func (n *NodeOutput) Timeout(timeout int) *NodeOutput {
+func (n *NodeOutput) Timeout(timeout int64) *NodeOutput {
 	n.thread.addTimeoutToExtEvt(n, timeout)
 	return n
 }
