@@ -5,15 +5,15 @@ namespace LittleHorse.Sdk.Helper;
 
 internal static class LHVariableAssigmentHelper
 {
-    internal static VariableAssignment AssignVariable(object? variable) 
+    internal static VariableAssignment AssignVariable(object? variable)
     {
         var variableAssignment = new VariableAssignment();
 
-        if (variable == null) 
+        if (variable == null)
         {
             variableAssignment.LiteralValue = new VariableValue();
-        } 
-        else if (variable.GetType() == typeof(WfRunVariable)) 
+        }
+        else if (variable.GetType() == typeof(WfRunVariable))
         {
             var wrVariable = (WfRunVariable) variable;
             
@@ -23,7 +23,7 @@ internal static class LHVariableAssigmentHelper
             }
             variableAssignment.VariableName = wrVariable.Name;
         } 
-        else if (variable is NodeOutput nodeReference) 
+        else if (variable is NodeOutput nodeReference)
         {
             // We can use the new `VariableAssignment` feature: NodeOutputReference
             var nodeOutputReference = new VariableAssignment.Types.NodeOutputReference
@@ -36,7 +36,7 @@ internal static class LHVariableAssigmentHelper
             {
                 variableAssignment.JsonPath = nodeReference.JsonPath;
             }
-        } // TODO: Add else if conditions for format strings and LH Expressions, it is still not needed
+        } // TODO: Add else if conditions for format strings and LH Expressions, it is not needed yet
         else
         {
             VariableValue defVal = LHMappingHelper.ObjectToVariableValue(variable);
