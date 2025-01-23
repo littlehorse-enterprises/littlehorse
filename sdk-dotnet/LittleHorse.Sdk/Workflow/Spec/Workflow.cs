@@ -136,7 +136,8 @@ public class Workflow
         _defaultSimpleRetries = defaultSimpleRetries;
     }
     
-    internal ExponentialBackoffRetryPolicy? GetDefaultExponentialBackoffRetryPolicy() {
+    internal ExponentialBackoffRetryPolicy? GetDefaultExponentialBackoffRetryPolicy() 
+	{
         return _defaultExponentialBackoff!;
     }
 }

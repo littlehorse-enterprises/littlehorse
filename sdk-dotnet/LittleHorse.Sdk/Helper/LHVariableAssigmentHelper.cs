@@ -16,6 +16,7 @@ internal static class LHVariableAssigmentHelper
         else if (variable.GetType() == typeof(WfRunVariable)) 
         {
             var wrVariable = (WfRunVariable) variable;
+            
             if (wrVariable.JsonPath != null) 
             {
                 variableAssignment.JsonPath = wrVariable.JsonPath;
@@ -35,22 +36,8 @@ internal static class LHVariableAssigmentHelper
             {
                 variableAssignment.JsonPath = nodeReference.JsonPath;
             }
-        }
-        /*else if (variable.getClass().equals(LHFormatStringImpl.class)) 
-        {
-            LHFormatStringImpl format = (LHFormatStringImpl) variable;
-            variableAssignment.setFormatString(VariableAssignment.FormatString.newBuilder()
-                    .setFormat(assignVariable(format.getFormat()))
-                    .addAllArgs(format.getArgs()));
-
-        } else if (variable instanceof LHExpressionImpl) {
-            LHExpressionImpl expr = (LHExpressionImpl) variable;
-            variableAssignment.setExpression(Expression.newBuilder()
-                    .setLhs(assignVariable(expr.getLhs()))
-                    .setOperation(expr.getOperation())
-                    .setRhs(assignVariable(expr.getRhs())));
-        } */
-        else 
+        } // TODO: Add else if conditions for format strings and LH Expressions, it is still not needed
+        else
         {
             VariableValue defVal = LHMappingHelper.ObjectToVariableValue(variable);
             variableAssignment.LiteralValue = defVal;
