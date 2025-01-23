@@ -774,7 +774,7 @@ func (tn *TaskNodeOutput) withExponentialBackoffImpl(policy *lhproto.Exponential
 	return tn
 }
 
-func (tn *TaskNodeOutput) withRetriesImpl(retries int) *TaskNodeOutput {
+func (tn *TaskNodeOutput) withRetriesImpl(retries int32) *TaskNodeOutput {
 	tn.parent.overrideTaskRetries(tn, retries)
 	return tn
 }
@@ -1032,16 +1032,15 @@ func (c *WorkflowCondition) getReverse() *lhproto.EdgeCondition {
 	return out
 }
 
-func (t *WorkflowThread) overrideTaskRetries(taskNodeOutput *TaskNodeOutput, retries int) {
+func (t *WorkflowThread) overrideTaskRetries(taskNodeOutput *TaskNodeOutput, retries int32) {
 	t.checkIfIsActive()
 
 	node := t.spec.Nodes[taskNodeOutput.Output.nodeName]
 	if node.GetTask() == nil {
-		// Error
 		t.throwError(errors.New("impossible to not have task node here"))
 	}
 
-	node.GetTask().Retries = int32(retries)
+	node.GetTask().Retries = retries
 }
 
 func (t *WorkflowThread) overrideTaskExponentialBackoffPolicy(taskNodeOutput *TaskNodeOutput, policy *lhproto.ExponentialBackoffRetryPolicy) {
