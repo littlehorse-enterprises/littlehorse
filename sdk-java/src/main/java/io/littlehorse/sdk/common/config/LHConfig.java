@@ -89,7 +89,8 @@ public class LHConfig extends ConfigBase {
             LHConfig.OAUTH_CLIENT_SECRET_KEY,
             LHConfig.NUM_WORKER_THREADS_KEY,
             LHConfig.TASK_WORKER_VERSION_KEY,
-            LHConfig.INFLIGHT_TASKS_KEY);
+            LHConfig.INFLIGHT_TASKS_KEY,
+            LHConfig.TENANT_ID_KEY);
 
     /**
      * Returns a set of all config names.
