@@ -54,7 +54,7 @@ public class Program
             wf.Execute("greet", name);
         }
         
-        return new Workflow("example-basic2", MyEntryPoint);
+        return new Workflow("example-basic", MyEntryPoint);
     }
 
     static void Main(string[] args)
