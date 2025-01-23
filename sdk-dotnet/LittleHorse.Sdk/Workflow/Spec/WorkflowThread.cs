@@ -100,7 +100,6 @@ public class WorkflowThread
                 node.Exit = (ExitNode) subNode;
                 break;
             case Node.NodeOneofCase.None:
-                // not possible
                 throw new InvalidOperationException("Not possible");
         }
 
