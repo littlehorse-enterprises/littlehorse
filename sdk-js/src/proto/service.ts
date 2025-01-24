@@ -27,6 +27,15 @@ import { VariableDef } from "./common_wfspec";
 import { ExternalEvent, ExternalEventDef, ExternalEventRetentionPolicy } from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
+import {
+  MeasurableObject,
+  measurableObjectFromJSON,
+  measurableObjectToNumber,
+  Metric,
+  MetricType,
+  metricTypeFromJSON,
+  metricTypeToNumber,
+} from "./metrics";
 import { NodeRun } from "./node_run";
 import {
   ExternalEventDefId,
@@ -166,6 +175,11 @@ export interface PutWfSpecRequest {
 export interface PutWfSpecRequest_ThreadSpecsEntry {
   key: string;
   value: ThreadSpec | undefined;
+}
+
+export interface PutMetricRequest {
+  measurable: MeasurableObject;
+  type: MetricType;
 }
 
 /** Creates a TaskDef. */
@@ -1749,6 +1763,62 @@ export const PutWfSpecRequest_ThreadSpecsEntry = {
     message.value = (object.value !== undefined && object.value !== null)
       ? ThreadSpec.fromPartial(object.value)
       : undefined;
+    return message;
+  },
+};
+
+function createBasePutMetricRequest(): PutMetricRequest {
+  return { measurable: MeasurableObject.WORKFLOW, type: MetricType.COUNT };
+}
+
+export const PutMetricRequest = {
+  encode(message: PutMetricRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.measurable !== MeasurableObject.WORKFLOW) {
+      writer.uint32(8).int32(measurableObjectToNumber(message.measurable));
+    }
+    if (message.type !== MetricType.COUNT) {
+      writer.uint32(16).int32(metricTypeToNumber(message.type));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutMetricRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutMetricRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.measurable = measurableObjectFromJSON(reader.int32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.type = metricTypeFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<PutMetricRequest>): PutMetricRequest {
+    return PutMetricRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PutMetricRequest>): PutMetricRequest {
+    const message = createBasePutMetricRequest();
+    message.measurable = object.measurable ?? MeasurableObject.WORKFLOW;
+    message.type = object.type ?? MetricType.COUNT;
     return message;
   },
 };
@@ -7770,6 +7840,15 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Creates a new metric */
+    putMetric: {
+      name: "PutMetric",
+      requestType: PutMetricRequest,
+      requestStream: false,
+      responseType: Metric,
+      responseStream: false,
+      options: {},
+    },
     /** Gets a WfSpec. */
     getWfSpec: {
       name: "GetWfSpec",
@@ -8500,6 +8579,8 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   ): Promise<DeepPartial<WorkflowEventDef>>;
   /** Creates a WfSpec. */
   putWfSpec(request: PutWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfSpec>>;
+  /** Creates a new metric */
+  putMetric(request: PutMetricRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Metric>>;
   /** Gets a WfSpec. */
   getWfSpec(request: WfSpecId, context: CallContext & CallContextExt): Promise<DeepPartial<WfSpec>>;
   /** Returns the latest WfSpec with a specified name (and optionally a specified Major Version). */
@@ -8867,6 +8948,8 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   ): Promise<WorkflowEventDef>;
   /** Creates a WfSpec. */
   putWfSpec(request: DeepPartial<PutWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<WfSpec>;
+  /** Creates a new metric */
+  putMetric(request: DeepPartial<PutMetricRequest>, options?: CallOptions & CallOptionsExt): Promise<Metric>;
   /** Gets a WfSpec. */
   getWfSpec(request: DeepPartial<WfSpecId>, options?: CallOptions & CallOptionsExt): Promise<WfSpec>;
   /** Returns the latest WfSpec with a specified name (and optionally a specified Major Version). */

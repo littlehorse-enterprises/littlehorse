@@ -14,6 +14,7 @@ import littlehorse.model.task_def_pb2 as _task_def_pb2
 import littlehorse.model.acls_pb2 as _acls_pb2
 import littlehorse.model.workflow_event_pb2 as _workflow_event_pb2
 import littlehorse.model.scheduled_wf_run_pb2 as _scheduled_wf_run_pb2
+import littlehorse.model.metrics_pb2 as _metrics_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -59,6 +60,14 @@ class PutWfSpecRequest(_message.Message):
     parent_wf_spec: _wf_spec_pb2.WfSpec.ParentWfSpecReference
     allowed_updates: AllowedUpdateType
     def __init__(self, name: _Optional[str] = ..., thread_specs: _Optional[_Mapping[str, _wf_spec_pb2.ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[_wf_spec_pb2.WorkflowRetentionPolicy, _Mapping]] = ..., parent_wf_spec: _Optional[_Union[_wf_spec_pb2.WfSpec.ParentWfSpecReference, _Mapping]] = ..., allowed_updates: _Optional[_Union[AllowedUpdateType, str]] = ...) -> None: ...
+
+class PutMetricRequest(_message.Message):
+    __slots__ = ["measurable", "type"]
+    MEASURABLE_FIELD_NUMBER: _ClassVar[int]
+    TYPE_FIELD_NUMBER: _ClassVar[int]
+    measurable: _metrics_pb2.MeasurableObject
+    type: _metrics_pb2.MetricType
+    def __init__(self, measurable: _Optional[_Union[_metrics_pb2.MeasurableObject, str]] = ..., type: _Optional[_Union[_metrics_pb2.MetricType, str]] = ...) -> None: ...
 
 class PutTaskDefRequest(_message.Message):
     __slots__ = ["name", "input_vars", "output_schema"]

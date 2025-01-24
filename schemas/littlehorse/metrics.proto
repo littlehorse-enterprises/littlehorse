@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = ".;lhproto";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
+
+
+message Metric {
+  MetricId id = 1;
+  google.protobuf.Timestamp created_at = 2;
+  MeasurableObject measurable = 3;
+  MetricType type = 4;
+}
+
+message MetricId {
+  string id = 1;
+}
+
+enum MeasurableObject {
+  WORKFLOW = 0;
+  TASK = 1;
+}
+
+enum MetricType {
+  COUNT = 0;
+  AVG = 1;
+  RATIO = 2;
+}

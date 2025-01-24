@@ -80,6 +80,10 @@ public enum GetableClassEnum
    * <code>SCHEDULED_WF_RUN = 17;</code>
    */
   SCHEDULED_WF_RUN(17),
+  /**
+   * <code>METRIC = 18;</code>
+   */
+  METRIC(18),
   UNRECOGNIZED(-1),
   ;
 
@@ -155,6 +159,10 @@ public enum GetableClassEnum
    * <code>SCHEDULED_WF_RUN = 17;</code>
    */
   public static final int SCHEDULED_WF_RUN_VALUE = 17;
+  /**
+   * <code>METRIC = 18;</code>
+   */
+  public static final int METRIC_VALUE = 18;
 
 
   public final int getNumber() {
@@ -199,6 +207,7 @@ public enum GetableClassEnum
       case 15: return WORKFLOW_EVENT_DEF;
       case 16: return WORKFLOW_EVENT;
       case 17: return SCHEDULED_WF_RUN;
+      case 18: return METRIC;
       default: return null;
     }
   }

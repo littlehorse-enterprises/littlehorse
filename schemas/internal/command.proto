@@ -95,6 +95,7 @@ message MetadataCommand {
         // TODO: DeleteTenant
 
         DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;
+        PutMetricRequest put_metric = 17;
     }
 }
 

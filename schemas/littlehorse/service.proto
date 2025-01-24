@@ -18,6 +18,7 @@ import "task_def.proto";
 import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
+import "metrics.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -45,6 +46,9 @@ service LittleHorse {
 
   // Creates a WfSpec.
   rpc PutWfSpec(PutWfSpecRequest) returns (WfSpec) {}
+
+  // Creates a new metric
+  rpc PutMetric(PutMetricRequest) returns (Metric) {}
 
   // Gets a WfSpec.
   rpc GetWfSpec(WfSpecId) returns (WfSpec) {}
@@ -325,6 +329,11 @@ message PutWfSpecRequest {
   // breaking changes to the WfSpec, prevent any changes to the WfSpec, or allow
   // all changes to the WfSpec.
   AllowedUpdateType allowed_updates = 10;
+}
+
+message PutMetricRequest {
+  MeasurableObject measurable = 1;
+  MetricType type = 2;
 }
 
 // This enum controls the behavior of a PutWfSpecRequest when a WfSpec with the same

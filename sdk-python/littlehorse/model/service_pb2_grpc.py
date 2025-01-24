@@ -6,6 +6,7 @@ import warnings
 import littlehorse.model.acls_pb2 as acls__pb2
 import littlehorse.model.external_event_pb2 as external__event__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
+import littlehorse.model.metrics_pb2 as metrics__pb2
 import littlehorse.model.node_run_pb2 as node__run__pb2
 import littlehorse.model.object_id_pb2 as object__id__pb2
 import littlehorse.model.scheduled_wf_run_pb2 as scheduled__wf__run__pb2
@@ -81,6 +82,11 @@ class LittleHorseStub(object):
                 '/littlehorse.LittleHorse/PutWfSpec',
                 request_serializer=service__pb2.PutWfSpecRequest.SerializeToString,
                 response_deserializer=wf__spec__pb2.WfSpec.FromString,
+                _registered_method=True)
+        self.PutMetric = channel.unary_unary(
+                '/littlehorse.LittleHorse/PutMetric',
+                request_serializer=service__pb2.PutMetricRequest.SerializeToString,
+                response_deserializer=metrics__pb2.Metric.FromString,
                 _registered_method=True)
         self.GetWfSpec = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetWfSpec',
@@ -471,6 +477,13 @@ class LittleHorseServicer(object):
 
     def PutWfSpec(self, request, context):
         """Creates a WfSpec.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PutMetric(self, request, context):
+        """Creates a new metric
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1044,6 +1057,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.PutWfSpecRequest.FromString,
                     response_serializer=wf__spec__pb2.WfSpec.SerializeToString,
             ),
+            'PutMetric': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutMetric,
+                    request_deserializer=service__pb2.PutMetricRequest.FromString,
+                    response_serializer=metrics__pb2.Metric.SerializeToString,
+            ),
             'GetWfSpec': grpc.unary_unary_rpc_method_handler(
                     servicer.GetWfSpec,
                     request_deserializer=object__id__pb2.WfSpecId.FromString,
@@ -1574,6 +1592,33 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/PutWfSpec',
             service__pb2.PutWfSpecRequest.SerializeToString,
             wf__spec__pb2.WfSpec.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PutMetric(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/PutMetric',
+            service__pb2.PutMetricRequest.SerializeToString,
+            metrics__pb2.Metric.FromString,
             options,
             channel_credentials,
             insecure,
