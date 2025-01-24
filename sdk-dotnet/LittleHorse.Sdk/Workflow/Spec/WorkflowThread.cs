@@ -63,8 +63,10 @@ public class WorkflowThread
         return _spec.Nodes[nodeName];
     }
     
-    private void CheckIfWorkflowThreadIsActive() {
-        if (!_isActive) {
+    private void CheckIfWorkflowThreadIsActive() 
+    {
+        if (!_isActive) 
+        {
             throw new InvalidOperationException("Using an inactive thread");
         }
     }
@@ -79,7 +81,7 @@ public class WorkflowThread
         }
 
         var feederNode = FindNode(LastNodeName);
-        var edge = new Edge {SinkNodeName = nextNodeName};
+        var edge = new Edge { SinkNodeName = nextNodeName };
         
         if (feederNode.NodeCase != Node.NodeOneofCase.Exit) 
         {
@@ -123,7 +125,8 @@ public class WorkflowThread
         return wfRunVariable;
     }
     
-    public NodeOutput Execute(String taskName, params object[] args) {
+    public NodeOutput Execute(String taskName, params object[] args) 
+    {
         CheckIfWorkflowThreadIsActive();
         _parent.AddTaskDefName(taskName);
         var taskNode = CreateTaskNode(
@@ -139,20 +142,23 @@ public class WorkflowThread
         return LHVariableAssigmentHelper.AssignVariable(variable);
     }
 
-    private TaskNode CreateTaskNode(TaskNode taskNode, params object[] args) {
+    private TaskNode CreateTaskNode(TaskNode taskNode, params object[] args)
+    {
 
         foreach (var arg in args)
         {
             taskNode.Variables.Add(AssignVariable(arg));
         }
 
-        if (_parent.GetDefaultTaskTimeout() != 0) {
+        if (_parent.GetDefaultTaskTimeout() != 0)
+        {
             taskNode.TimeoutSeconds = _parent.GetDefaultTaskTimeout();
         }
 
         taskNode.Retries = _parent.GetDefaultSimpleRetries();
 
-        if (_parent.GetDefaultExponentialBackoffRetryPolicy() != null) {
+        if (_parent.GetDefaultExponentialBackoffRetryPolicy() != null)
+        {
             taskNode.ExponentialBackoff = 
                 _parent.GetDefaultExponentialBackoffRetryPolicy();
         }
