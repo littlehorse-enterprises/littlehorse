@@ -67,19 +67,15 @@ public class LHVariableAssigmentHelperTest
        Assert.Equal(nodeOutput.JsonPath, variableAssigment.JsonPath);
     }
 
-    [Fact]
-    public void VariableAssigment_WithNotDefinedObject_ShouldAssignObjectAsDefaultVariable()
+    [Theory]
+    [InlineData("TestVariable")]
+    [InlineData(5)]
+    [InlineData(true)]
+    [InlineData(7.892)]
+    public void VariableAssigment_WithNotDefinedObject_ShouldAssignObjectAsDefaultVariable(object notDefinedObject)
     {
-        var notDefinedObjects = new List<object>
-        {
-            "TestVariable", 5, true, 7.892
-        };
-
-        foreach (var notDefinedObject in notDefinedObjects)
-        {
-            var variableAssigment = LHVariableAssigmentHelper.AssignVariable(notDefinedObject);
-            
-            Assert.Contains(notDefinedObject.ToString()!.ToLower(), variableAssigment.LiteralValue.ToString().ToLower());
-        }
+        var variableAssigment = LHVariableAssigmentHelper.AssignVariable(notDefinedObject);
+        
+        Assert.Contains(notDefinedObject.ToString()!.ToLower(), variableAssigment.LiteralValue.ToString().ToLower());
     }
 }

@@ -12,7 +12,7 @@ public class NodeOutput
         Parent = parent;
     }
     
-    public NodeOutput WithJsonPath(String path) 
+    public NodeOutput WithJsonPath(string path) 
     {
         if (JsonPath != null) 
         {
