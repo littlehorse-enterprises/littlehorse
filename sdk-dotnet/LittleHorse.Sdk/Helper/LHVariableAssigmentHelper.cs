@@ -5,7 +5,7 @@ namespace LittleHorse.Sdk.Helper;
 
 internal static class LHVariableAssigmentHelper
 {
-    internal static VariableAssignment AssignVariable(object? variable)
+    internal static VariableAssignment AssignVariable(object? value)
     {
         var variableAssignment = new VariableAssignment();
 
