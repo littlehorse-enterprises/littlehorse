@@ -49,7 +49,7 @@ public class Main {
                     canaryConfig.getTopicName(), canaryConfig.getTopicPartitions(), canaryConfig.getTopicReplicas());
 
             new TopicCreator(
-                    canaryConfig.toKafkaConfig().toMap(), canaryConfig.getTopicCreationTimeout(), List.of(topic));
+                    canaryConfig.toKafkaAdminConfig().toMap(), canaryConfig.getTopicCreationTimeout(), List.of(topic));
         }
         final boolean metronomeOrWorkerEnabled =
                 canaryConfig.isMetronomeEnabled() || canaryConfig.isMetronomeWorkerEnabled();
@@ -68,7 +68,7 @@ public class Main {
                     lhConfig.getApiBootstrapPort(),
                     lhClient.getServerVersion(),
                     canaryConfig.getTopicName(),
-                    canaryConfig.toKafkaConfig().toMap(),
+                    canaryConfig.toKafkaProducerConfig().toMap(),
                     canaryConfig.getMetronomeBeatExtraTags());
 
             // start worker
@@ -110,7 +110,7 @@ public class Main {
             new PrometheusServerExporter(
                     canaryConfig.getMetricsPort(), canaryConfig.getMetricsPath(), prometheusExporter);
             final Aggregator aggregator = new Aggregator(
-                    canaryConfig.toKafkaConfig().toMap(),
+                    canaryConfig.toKafkaStreamsConfig().toMap(),
                     canaryConfig.getTopicName(),
                     canaryConfig.getAggregatorStoreRetention(),
                     canaryConfig.getAggregatorExportFrequency());

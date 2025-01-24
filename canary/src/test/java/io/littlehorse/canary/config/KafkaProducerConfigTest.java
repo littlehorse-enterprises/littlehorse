@@ -16,7 +16,7 @@ class KafkaProducerConfigTest {
     @Test
     void toMapMustCreateCopy() {
         Map<String, Object> input = Map.of("kafka." + EXPECTED_KEY, EXPECTED_VALUE);
-        KafkaConfig kafkaAdminConfig = new KafkaConfig(input);
+        KafkaAdminConfig kafkaAdminConfig = new KafkaAdminConfig(input);
 
         Map<String, Object> output = kafkaAdminConfig.toMap();
         log.info("Configs: {}", output);
@@ -28,7 +28,7 @@ class KafkaProducerConfigTest {
     void filterMap() {
         Map<String, Object> input =
                 Map.of("kafka." + EXPECTED_KEY, EXPECTED_VALUE, "not.a.valid.key", "To be filtered");
-        KafkaConfig kafkaAdminConfig = new KafkaConfig(input);
+        KafkaAdminConfig kafkaAdminConfig = new KafkaAdminConfig(input);
 
         Map<String, Object> output = kafkaAdminConfig.toMap();
 
@@ -50,7 +50,7 @@ class KafkaProducerConfigTest {
                 "acks", "all",
                 "client.id", "id",
                 "enable.idempotence", "true");
-        KafkaConfig kafkaAdminConfig = new KafkaConfig(input);
+        KafkaAdminConfig kafkaAdminConfig = new KafkaAdminConfig(input);
 
         Map<String, Object> output = kafkaAdminConfig.toMap();
         log.info("Configs: {}", output);
