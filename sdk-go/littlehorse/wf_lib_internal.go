@@ -1054,7 +1054,7 @@ func (t *WorkflowThread) overrideTaskExponentialBackoffPolicy(taskNodeOutput *Ta
 	node.GetTask().ExponentialBackoff = policy
 }
 
-func (t *WorkflowThread) addTimeoutToExtEvt(nodeOutput *NodeOutput, timeoutSeconds int) {
+func (t *WorkflowThread) addTimeoutToExtEvt(nodeOutput *NodeOutput, timeoutSeconds int64) {
 	t.checkIfIsActive()
 
 	node := t.spec.Nodes[nodeOutput.nodeName]
