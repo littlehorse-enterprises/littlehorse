@@ -50,7 +50,8 @@ public class Program
     {
         void MyEntryPoint(WorkflowThread wf)
         {
-            wf.AddVariable("input-name", VariableType.Str);
+            var name = wf.AddVariable("input-name", VariableType.Str).Searchable();
+            wf.Execute("greet", name);
         }
         
         return new Workflow("example-basic", MyEntryPoint);

@@ -58,7 +58,7 @@ public class VariableMappingTest
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
             () => new VariableMapping(taskDef!, 0, type2, "any param name"));
             
-        Assert.Contains($"TaskDef provides INT, func accepts", exception.Message);
+        Assert.Contains("TaskDef provides INT, func accepts", exception.Message);
     }
     
     [Fact]
@@ -72,7 +72,7 @@ public class VariableMappingTest
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
             () => new VariableMapping(taskDef!, 0, type2, "any param name"));
             
-        Assert.Contains($"TaskDef provides DOUBLE, func accepts", exception.Message);
+        Assert.Contains("TaskDef provides DOUBLE, func accepts", exception.Message);
     }
     
     [Fact]
@@ -86,7 +86,7 @@ public class VariableMappingTest
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
             () => new VariableMapping(taskDef!, 0, type2, "any param name"));
             
-        Assert.Contains($"TaskDef provides STRING, func accepts", exception.Message);
+        Assert.Contains("TaskDef provides STRING, func accepts", exception.Message);
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public class VariableMappingTest
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
             () => new VariableMapping(taskDef!, 0, type2, "any param name"));
             
-        Assert.Contains($"TaskDef provides BOOL, func accepts", exception.Message);
+        Assert.Contains("TaskDef provides BOOL, func accepts", exception.Message);
     }
     
     [Fact]
@@ -114,7 +114,7 @@ public class VariableMappingTest
         var exception = Assert.Throws<LHTaskSchemaMismatchException>(
             () => new VariableMapping(taskDef!, 0, type2, "any param name"));
             
-        Assert.Contains($"TaskDef provides BYTES, func accepts", exception.Message);
+        Assert.Contains("TaskDef provides BYTES, func accepts", exception.Message);
     }
     
     [Fact]

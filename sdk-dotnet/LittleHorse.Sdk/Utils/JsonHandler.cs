@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using LittleHorse.Sdk.Exceptions;
 using Newtonsoft.Json;
 
 [assembly: InternalsVisibleTo("LittleHorse.Sdk.Tests")]
@@ -16,6 +17,13 @@ internal static class JsonHandler
     
     internal static object? DeserializeFromJson(string json, Type type)
     {
-        return JsonConvert.DeserializeObject(json, type);
+        try
+        {
+            return JsonConvert.DeserializeObject(json, type);
+        }
+        catch (Exception e)
+        {
+            throw new LHJsonProcessingException(e.Message);
+        }
     }
 }
