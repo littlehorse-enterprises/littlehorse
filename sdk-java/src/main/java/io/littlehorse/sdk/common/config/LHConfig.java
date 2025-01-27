@@ -22,74 +22,88 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 
 /** This class is used to configure the LHClient class. */
 @Slf4j
 public class LHConfig extends ConfigBase {
 
+    enum ConfigKeys {
+        LHC_API_HOST,
+        LHC_API_PORT,
+        LHC_API_PROTOCOL,
+        LHC_TENANT_ID,
+        LHC_CLIENT_CERT,
+        LHC_CLIENT_KEY,
+        LHC_CA_CERT,
+        LHC_OAUTH_CLIENT_ID,
+        LHC_OAUTH_CLIENT_SECRET,
+        LHC_OAUTH_ACCESS_TOKEN_URL,
+        LHW_TASK_WORKER_ID,
+        LHW_TASK_WORKER_VERSION,
+        LHW_NUM_WORKER_THREADS,
+        LHC_GRPC_KEEPALIVE_TIME_MS,
+        LHC_GRPC_KEEPALIVE_TIMEOUT_MS,
+        LHC_INFLIGHT_TASKS
+    }
+
     /** The bootstrap host for the LH Server. */
-    public static final String API_HOST_KEY = "LHC_API_HOST";
+    public static final String API_HOST_KEY = ConfigKeys.LHC_API_HOST.name();
 
     /** The bootstrap port for the LH Server. */
-    public static final String API_PORT_KEY = "LHC_API_PORT";
+    public static final String API_PORT_KEY = ConfigKeys.LHC_API_PORT.name();
 
     /** The bootstrap protocol for the LH Server. */
-    public static final String API_PROTOCOL_KEY = "LHC_API_PROTOCOL";
+    public static final String API_PROTOCOL_KEY = ConfigKeys.LHC_API_PROTOCOL.name();
 
     /** The Client Id. */
-    public static final String TASK_WORKER_ID_KEY = "LHW_TASK_WORKER_ID";
+    public static final String TASK_WORKER_ID_KEY = ConfigKeys.LHW_TASK_WORKER_ID.name();
 
-    /** The Tenant Id for this client, null will be used if not set */
-    public static final String TENANT_ID_KEY = "LHC_TENANT_ID";
+    /** Define a version for current worker instance for debugging purposes. */
+    public static final String TASK_WORKER_VERSION_KEY = ConfigKeys.LHW_TASK_WORKER_VERSION.name();
+
+    /** The Tenant Id for this client, null will be used if not set. */
+    public static final String TENANT_ID_KEY = ConfigKeys.LHC_TENANT_ID.name();
 
     /** Optional location of Client Cert file. */
-    public static final String CLIENT_CERT_KEY = "LHC_CLIENT_CERT";
+    public static final String CLIENT_CERT_KEY = ConfigKeys.LHC_CLIENT_CERT.name();
 
     /** Optional location of Client Private Key File. */
-    public static final String CLIENT_KEY_KEY = "LHC_CLIENT_KEY";
+    public static final String CLIENT_KEY_KEY = ConfigKeys.LHC_CLIENT_KEY.name();
 
     /** Optional location of CA Cert File. */
-    public static final String CA_CERT_KEY = "LHC_CA_CERT";
+    public static final String CA_CERT_KEY = ConfigKeys.LHC_CA_CERT.name();
 
-    public static final String OAUTH_CLIENT_ID_KEY = "LHC_OAUTH_CLIENT_ID";
-    public static final String OAUTH_CLIENT_SECRET_KEY = "LHC_OAUTH_CLIENT_SECRET";
-    public static final String OAUTH_ACCESS_TOKEN_URL = "LHC_OAUTH_ACCESS_TOKEN_URL";
+    /** OAuth client id. */
+    public static final String OAUTH_CLIENT_ID_KEY = ConfigKeys.LHC_OAUTH_CLIENT_ID.name();
+
+    /** OAuth client secret. */
+    public static final String OAUTH_CLIENT_SECRET_KEY = ConfigKeys.LHC_OAUTH_CLIENT_SECRET.name();
+
+    /** OAuth access token url. */
+    public static final String OAUTH_ACCESS_TOKEN_URL_KEY = ConfigKeys.LHC_OAUTH_ACCESS_TOKEN_URL.name();
 
     /** The number of worker threads to run. */
-    public static final String NUM_WORKER_THREADS_KEY = "LHW_NUM_WORKER_THREADS";
+    public static final String NUM_WORKER_THREADS_KEY = ConfigKeys.LHW_NUM_WORKER_THREADS.name();
 
     /** GRPC Connection Keepalive Interval */
-    public static final String GRPC_KEEPALIVE_TIME_MS_KEY = "LHC_GRPC_KEEPALIVE_TIME_MS";
+    public static final String GRPC_KEEPALIVE_TIME_MS_KEY = ConfigKeys.LHC_GRPC_KEEPALIVE_TIME_MS.name();
 
     /** GRPC Connection Keepalive Interval */
-    public static final String GRPC_KEEPALIVE_TIMEOUT_MS_KEY = "LHC_GRPC_KEEPALIVE_TIMEOUT_MS";
+    public static final String GRPC_KEEPALIVE_TIMEOUT_MS_KEY = ConfigKeys.LHC_GRPC_KEEPALIVE_TIMEOUT_MS.name();
 
-    public static final String TASK_WORKER_VERSION_KEY = "LHW_TASK_WORKER_VERSION";
-    public static final String DEFAULT_PUBLIC_LISTENER = "PLAIN";
-    public static final String DEFAULT_PROTOCOL = "PLAINTEXT";
-    public static final String INFLIGHT_TASKS_KEY = "INFLIGHT_TASKS";
+    /** Defines inflight request per polling thread */
+    public static final String INFLIGHT_TASKS_KEY = ConfigKeys.LHC_INFLIGHT_TASKS.name();
 
-    private static final Set<String> configNames = Set.of(
-            LHConfig.API_HOST_KEY,
-            LHConfig.API_PORT_KEY,
-            LHConfig.API_PROTOCOL_KEY,
-            LHConfig.TASK_WORKER_ID_KEY,
-            LHConfig.CLIENT_CERT_KEY,
-            LHConfig.CLIENT_KEY_KEY,
-            LHConfig.CA_CERT_KEY,
-            LHConfig.OAUTH_ACCESS_TOKEN_URL,
-            LHConfig.OAUTH_CLIENT_ID_KEY,
-            LHConfig.OAUTH_CLIENT_SECRET_KEY,
-            LHConfig.NUM_WORKER_THREADS_KEY,
-            LHConfig.TASK_WORKER_VERSION_KEY,
-            LHConfig.INFLIGHT_TASKS_KEY);
+    private static final String DEFAULT_PROTOCOL = "PLAINTEXT";
 
     /**
      * Returns a set of all config names.
@@ -97,7 +111,7 @@ public class LHConfig extends ConfigBase {
      * @return A Set of all config names.
      */
     public static Set<String> configNames() {
-        return LHConfig.configNames;
+        return Arrays.stream(ConfigKeys.values()).map(Enum::name).collect(Collectors.toUnmodifiableSet());
     }
 
     private Map<String, Channel> createdChannels;
@@ -383,8 +397,8 @@ public class LHConfig extends ConfigBase {
     }
 
     public String getApiProtocol() {
-        String protocol = getOrSetDefault(API_PROTOCOL_KEY, "PLAINTEXT");
-        if (!protocol.equals("PLAINTEXT") && !protocol.equals("TLS")) {
+        String protocol = getOrSetDefault(API_PROTOCOL_KEY, DEFAULT_PROTOCOL);
+        if (!protocol.equals(DEFAULT_PROTOCOL) && !protocol.equals("TLS")) {
             throw new IllegalArgumentException("Invalid protocol: " + protocol);
         }
         return protocol;
@@ -407,7 +421,7 @@ public class LHConfig extends ConfigBase {
     public boolean isOauth() {
         String clientId = getOrSetDefault(OAUTH_CLIENT_ID_KEY, null);
         String clientSecret = getOrSetDefault(OAUTH_CLIENT_SECRET_KEY, null);
-        String tokenEndpointUrl = getOrSetDefault(OAUTH_ACCESS_TOKEN_URL, null);
+        String tokenEndpointUrl = getOrSetDefault(OAUTH_ACCESS_TOKEN_URL_KEY, null);
 
         if (clientId == null && clientSecret == null && tokenEndpointUrl == null) {
             log.warn("OAuth is disable");
