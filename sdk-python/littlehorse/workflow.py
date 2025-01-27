@@ -1305,26 +1305,26 @@ class WorkflowThread:
     def remove_key(self, lhs: Any, rhs: Any) -> LHExpression:
         return LHExpression(lhs, VariableMutationType.REMOVE_KEY, rhs)
 
-    def declare_bool(self, name: str) -> WfRunVariable:
-        return self.add_variable(name, VariableType.BOOL)
+    def declare_bool(self, name: str, default_value: Any | None) -> WfRunVariable:
+        return self.add_variable(name, VariableType.BOOL, default_value=default_value)
 
-    def declare_int(self, name: str) -> WfRunVariable:
-        return self.add_variable(name, VariableType.INT)
+    def declare_int(self, name: str, default_value: Any | None) -> WfRunVariable:
+        return self.add_variable(name, VariableType.INT, default_value=default_value)
 
-    def declare_str(self, name: str) -> WfRunVariable:
-        return self.add_variable(name, VariableType.STR)
+    def declare_str(self, name: str, default_value: Any | None) -> WfRunVariable:
+        return self.add_variable(name, VariableType.STR, default_value=default_value)
 
-    def declare_double(self, name: str) -> WfRunVariable:
-        return self.add_variable(name, VariableType.DOUBLE)
+    def declare_double(self, name: str, default_value: Any | None) -> WfRunVariable:
+        return self.add_variable(name, VariableType.DOUBLE, default_value=default_value)
 
-    def declare_bytes(self, name: str) -> WfRunVariable:
-        return self.add_variable(name, VariableType.BYTES)
+    def declare_bytes(self, name: str, default_value: Any | None) -> WfRunVariable:
+        return self.add_variable(name, VariableType.BYTES, default_value=default_value)
 
-    def declare_json_arr(self, name: str) -> WfRunVariable:
-        return self.add_variable(name, VariableType.JSON_ARR)
+    def declare_json_arr(self, name: str, default_value: Any | None) -> WfRunVariable:
+        return self.add_variable(name, VariableType.JSON_ARR, default_value=default_value)
 
-    def declare_json_obj(self, name: str) -> WfRunVariable:
-        return self.add_variable(name, VariableType.JSON_OBJ)
+    def declare_json_obj(self, name: str, default_value: Any | None) -> WfRunVariable:
+        return self.add_variable(name, VariableType.JSON_OBJ, default_value=default_value)
 
     def handle_any_failure(
         self, node: NodeOutput, initializer: "ThreadInitializer"
