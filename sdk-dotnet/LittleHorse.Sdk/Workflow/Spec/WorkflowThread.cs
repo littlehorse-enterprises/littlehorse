@@ -111,12 +111,12 @@ public class WorkflowThread
         return nextNodeName;
     }
     
-    private String GetNodeName(String name, Node.NodeOneofCase type) 
+    private string GetNodeName(string name, Node.NodeOneofCase type) 
     {
         return $"{_spec.Nodes.Count}-{name}-{type}";
     }
     
-    public WfRunVariable AddVariable(String name, Object typeOrDefaultVal) 
+    public WfRunVariable AddVariable(string name, Object typeOrDefaultVal) 
     {
         CheckIfWorkflowThreadIsActive();
         var wfRunVariable = new WfRunVariable(name, typeOrDefaultVal, this);
@@ -125,7 +125,7 @@ public class WorkflowThread
         return wfRunVariable;
     }
     
-    public NodeOutput Execute(String taskName, params object[] args) 
+    public NodeOutput Execute(string taskName, params object[] args) 
     {
         CheckIfWorkflowThreadIsActive();
         _parent.AddTaskDefName(taskName);
