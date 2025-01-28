@@ -9,7 +9,7 @@ namespace LittleHorse.Sdk.Worker
     public class VariableMapping
     {
         private ILogger<VariableMapping>? _logger;
-        private string? _name;
+        private readonly string? _name;
         private Type _type;
         private int _position;
 

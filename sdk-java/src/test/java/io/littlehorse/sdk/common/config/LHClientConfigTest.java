@@ -4,7 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
@@ -80,12 +83,19 @@ public class LHClientConfigTest {
 
     @Test
     void haveAllConfigs() {
-        assertThat(LHConfig.configNames().size()).isEqualTo(13);
+        assertThat(LHConfig.configNames().size()).isEqualTo(LHConfig.ConfigKeys.values().length);
     }
 
     @Test
     void shouldThrowAnExceptionIfTryToModifyConfigNames() {
         assertThrows(UnsupportedOperationException.class, () -> LHConfig.configNames()
                 .add(faker.regexify("[a-z]{10}")));
+    }
+
+    @Test
+    void shouldExportAllConfigs() {
+        List<String> keys =
+                Arrays.stream(LHConfig.ConfigKeys.values()).map(Enum::name).collect(Collectors.toList());
+        assertThat(LHConfig.configNames()).containsExactlyInAnyOrderElementsOf(keys);
     }
 }
