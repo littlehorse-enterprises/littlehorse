@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from littlehorse.model import LHErrorType, VariableType
 from littlehorse.model import (
