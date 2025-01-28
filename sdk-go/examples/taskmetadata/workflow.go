@@ -1,9 +1,9 @@
 package taskmetadata
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"strconv"
+
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 )
 
 type InputData struct {
@@ -28,6 +28,6 @@ func GetInfo(input *InputData, context *littlehorse.WorkerContext) string {
 }
 
 func MyWorkflowGet(wf *littlehorse.WorkflowThread) {
-	inputVar := wf.AddVariable("input", lhproto.VariableType_JSON_OBJ)
+	inputVar := wf.DeclareJsonObj("input")
 	wf.Execute(TaskDefName, inputVar)
 }
