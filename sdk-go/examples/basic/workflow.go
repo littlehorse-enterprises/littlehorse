@@ -1,7 +1,6 @@
 package basic
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 )
 
@@ -17,7 +16,7 @@ func Greet(name string) string {
 }
 
 func MyWorkflow(wf *littlehorse.WorkflowThread) {
-	nameVar := wf.AddVariableWithDefault("name", lhproto.VariableType_STR, "Qui-Gon Jinn")
+	nameVar := wf.DeclareStr("name").WithDefault("Qui-Gon Jinn")
 
 	// Make it searchable
 	nameVar.Searchable()

@@ -588,6 +588,21 @@ func (w *LHWorkflow) addSubThread(threadName string, tf ThreadFunc) string {
 	return threadName
 }
 
+func (w *WfRunVariable) withDefaultImpl(defaultValue interface{}) *WfRunVariable {
+	if defaultValue != nil {
+		defaultVarVal, err := InterfaceToVarVal(defaultValue)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if *GetVarType(defaultVarVal) != w.threadVarDef.VarDef.Type {
+			log.Fatal("provided default value for variable " + w.Name + " didn't match type " + w.threadVarDef.VarDef.Type.String())
+		}
+		w.threadVarDef.VarDef.DefaultValue = defaultVarVal
+	}
+
+	return w
+}
+
 func (w *WfRunVariable) searchableImpl() *WfRunVariable {
 	w.threadVarDef.Searchable = true
 	return w
@@ -780,23 +795,12 @@ func (tn *TaskNodeOutput) withRetriesImpl(retries int32) *TaskNodeOutput {
 }
 
 func (t *WorkflowThread) addVariable(
-	name string, varType lhproto.VariableType, defaultValue interface{},
+	name string, varType lhproto.VariableType,
 ) *WfRunVariable {
 	t.checkIfIsActive()
 	varDef := &lhproto.VariableDef{
 		Type: varType,
 		Name: name,
-	}
-
-	if defaultValue != nil {
-		defaultVarVal, err := InterfaceToVarVal(defaultValue)
-		if err != nil {
-			log.Fatal(err)
-		}
-		if *GetVarType(defaultVarVal) != varType {
-			log.Fatal("provided default value for variable " + name + " didn't match type " + varType.String())
-		}
-		varDef.DefaultValue = defaultVarVal
 	}
 
 	threadVarDef := &lhproto.ThreadVarDef{
@@ -812,34 +816,6 @@ func (t *WorkflowThread) addVariable(
 		thread:       t,
 		threadVarDef: threadVarDef,
 	}
-}
-
-func (t *WorkflowThread) DeclareBool(name string, defaultValue interface{}) *WfRunVariable {
-	return t.addVariable(name, lhproto.VariableType_BOOL, defaultValue)
-}
-
-func (t *WorkflowThread) DeclareInt(name string, defaultValue interface{}) *WfRunVariable {
-	return t.addVariable(name, lhproto.VariableType_INT, defaultValue)
-}
-
-func (t *WorkflowThread) DeclareStr(name string, defaultValue interface{}) *WfRunVariable {
-	return t.addVariable(name, lhproto.VariableType_STR, defaultValue)
-}
-
-func (t *WorkflowThread) DeclareDouble(name string, defaultValue interface{}) *WfRunVariable {
-	return t.addVariable(name, lhproto.VariableType_DOUBLE, defaultValue)
-}
-
-func (t *WorkflowThread) DeclareBytes(name string, defaultValue interface{}) *WfRunVariable {
-	return t.addVariable(name, lhproto.VariableType_BYTES, defaultValue)
-}
-
-func (t *WorkflowThread) DeclareJsonArr(name string, defaultValue interface{}) *WfRunVariable {
-	return t.addVariable(name, lhproto.VariableType_JSON_ARR, defaultValue)
-}
-
-func (t *WorkflowThread) DeclareJsonObj(name string, defaultValue interface{}) *WfRunVariable {
-	return t.addVariable(name, lhproto.VariableType_JSON_OBJ, defaultValue)
 }
 
 func (t *WorkflowThread) condition(
@@ -1083,7 +1059,7 @@ func (t *WorkflowThread) spawnThread(
 	threadName = t.wf.addSubThread(threadName, tFunc)
 
 	nodeName, node := t.createBlankNode(threadName, "SPAWN_THREAD")
-	cachedThreadVar := t.addVariable(nodeName, lhproto.VariableType_INT, nil)
+	cachedThreadVar := t.addVariable(nodeName, lhproto.VariableType_INT)
 
 	node.Node = &lhproto.Node_StartThread{
 		StartThread: &lhproto.StartThreadNode{
@@ -1181,7 +1157,7 @@ func (t *WorkflowThread) spawnThreadForEach(
 	}
 
 	internalThreadNumbersVar := t.addVariable(
-		nodeName, lhproto.VariableType_JSON_ARR, nil,
+		nodeName, lhproto.VariableType_JSON_ARR,
 	)
 
 	t.mutate(
