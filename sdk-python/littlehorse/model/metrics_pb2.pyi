@@ -23,19 +23,35 @@ AVG: MetricType
 RATIO: MetricType
 
 class Metric(_message.Message):
-    __slots__ = ["id", "created_at", "measurable", "type"]
+    __slots__ = ["id", "created_at"]
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
-    MEASURABLE_FIELD_NUMBER: _ClassVar[int]
-    TYPE_FIELD_NUMBER: _ClassVar[int]
     id: MetricId
     created_at: _timestamp_pb2.Timestamp
-    measurable: MeasurableObject
-    type: MetricType
-    def __init__(self, id: _Optional[_Union[MetricId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., measurable: _Optional[_Union[MeasurableObject, str]] = ..., type: _Optional[_Union[MetricType, str]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[MetricId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
 class MetricId(_message.Message):
+    __slots__ = ["measurable", "type"]
+    MEASURABLE_FIELD_NUMBER: _ClassVar[int]
+    TYPE_FIELD_NUMBER: _ClassVar[int]
+    measurable: MeasurableObject
+    type: MetricType
+    def __init__(self, measurable: _Optional[_Union[MeasurableObject, str]] = ..., type: _Optional[_Union[MetricType, str]] = ...) -> None: ...
+
+class PartitionMetric(_message.Message):
+    __slots__ = ["id", "value", "created_at", "window_start"]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    CREATED_AT_FIELD_NUMBER: _ClassVar[int]
+    WINDOW_START_FIELD_NUMBER: _ClassVar[int]
+    id: PartitionMetricId
+    value: float
+    created_at: _timestamp_pb2.Timestamp
+    window_start: _timestamp_pb2.Timestamp
+    def __init__(self, id: _Optional[_Union[PartitionMetricId, _Mapping]] = ..., value: _Optional[float] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+
+class PartitionMetricId(_message.Message):
     __slots__ = ["id"]
     ID_FIELD_NUMBER: _ClassVar[int]
-    id: str
-    def __init__(self, id: _Optional[str] = ...) -> None: ...
+    id: MetricId
+    def __init__(self, id: _Optional[_Union[MetricId, _Mapping]] = ...) -> None: ...

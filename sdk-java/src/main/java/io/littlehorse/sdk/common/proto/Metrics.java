@@ -24,6 +24,16 @@ public final class Metrics {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_MetricId_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_PartitionMetric_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_PartitionMetric_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_PartitionMetricId_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_PartitionMetricId_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -34,17 +44,22 @@ public final class Metrics {
   static {
     java.lang.String[] descriptorData = {
       "\n\rmetrics.proto\022\013littlehorse\032\037google/pro" +
-      "tobuf/timestamp.proto\"\265\001\n\006Metric\022!\n\002id\030\001" +
-      " \001(\0132\025.littlehorse.MetricId\022.\n\ncreated_a" +
-      "t\030\002 \001(\0132\032.google.protobuf.Timestamp\0221\n\nm" +
-      "easurable\030\003 \001(\0162\035.littlehorse.Measurable" +
-      "Object\022%\n\004type\030\004 \001(\0162\027.littlehorse.Metri" +
-      "cType\"\026\n\010MetricId\022\n\n\002id\030\001 \001(\t**\n\020Measura" +
-      "bleObject\022\014\n\010WORKFLOW\020\000\022\010\n\004TASK\020\001*+\n\nMet" +
-      "ricType\022\t\n\005COUNT\020\000\022\007\n\003AVG\020\001\022\t\n\005RATIO\020\002BM" +
-      "\n\037io.littlehorse.sdk.common.protoP\001Z\t.;l" +
-      "hproto\252\002\034LittleHorse.Sdk.Common.Protob\006p" +
-      "roto3"
+      "tobuf/timestamp.proto\"[\n\006Metric\022!\n\002id\030\001 " +
+      "\001(\0132\025.littlehorse.MetricId\022.\n\ncreated_at" +
+      "\030\002 \001(\0132\032.google.protobuf.Timestamp\"d\n\010Me" +
+      "tricId\0221\n\nmeasurable\030\001 \001(\0162\035.littlehorse" +
+      ".MeasurableObject\022%\n\004type\030\002 \001(\0162\027.little" +
+      "horse.MetricType\"\256\001\n\017PartitionMetric\022*\n\002" +
+      "id\030\001 \001(\0132\036.littlehorse.PartitionMetricId" +
+      "\022\r\n\005value\030\002 \001(\001\022.\n\ncreated_at\030\003 \001(\0132\032.go" +
+      "ogle.protobuf.Timestamp\0220\n\014window_start\030" +
+      "\004 \001(\0132\032.google.protobuf.Timestamp\"6\n\021Par" +
+      "titionMetricId\022!\n\002id\030\001 \001(\0132\025.littlehorse" +
+      ".MetricId**\n\020MeasurableObject\022\014\n\010WORKFLO" +
+      "W\020\000\022\010\n\004TASK\020\001*+\n\nMetricType\022\t\n\005COUNT\020\000\022\007" +
+      "\n\003AVG\020\001\022\t\n\005RATIO\020\002BM\n\037io.littlehorse.sdk" +
+      ".common.protoP\001Z\t.;lhproto\252\002\034LittleHorse" +
+      ".Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -56,12 +71,24 @@ public final class Metrics {
     internal_static_littlehorse_Metric_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_Metric_descriptor,
-        new java.lang.String[] { "Id", "CreatedAt", "Measurable", "Type", });
+        new java.lang.String[] { "Id", "CreatedAt", });
     internal_static_littlehorse_MetricId_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_littlehorse_MetricId_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_MetricId_descriptor,
+        new java.lang.String[] { "Measurable", "Type", });
+    internal_static_littlehorse_PartitionMetric_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_littlehorse_PartitionMetric_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_PartitionMetric_descriptor,
+        new java.lang.String[] { "Id", "Value", "CreatedAt", "WindowStart", });
+    internal_static_littlehorse_PartitionMetricId_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_littlehorse_PartitionMetricId_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_PartitionMetricId_descriptor,
         new java.lang.String[] { "Id", });
     com.google.protobuf.TimestampProto.getDescriptor();
   }

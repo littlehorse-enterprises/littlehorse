@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rmetrics.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb5\x01\n\x06Metric\x12!\n\x02id\x18\x01 \x01(\x0b\x32\x15.littlehorse.MetricId\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\nmeasurable\x18\x03 \x01(\x0e\x32\x1d.littlehorse.MeasurableObject\x12%\n\x04type\x18\x04 \x01(\x0e\x32\x17.littlehorse.MetricType\"\x16\n\x08MetricId\x12\n\n\x02id\x18\x01 \x01(\t**\n\x10MeasurableObject\x12\x0c\n\x08WORKFLOW\x10\x00\x12\x08\n\x04TASK\x10\x01*+\n\nMetricType\x12\t\n\x05\x43OUNT\x10\x00\x12\x07\n\x03\x41VG\x10\x01\x12\t\n\x05RATIO\x10\x02\x42M\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rmetrics.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\"[\n\x06Metric\x12!\n\x02id\x18\x01 \x01(\x0b\x32\x15.littlehorse.MetricId\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"d\n\x08MetricId\x12\x31\n\nmeasurable\x18\x01 \x01(\x0e\x32\x1d.littlehorse.MeasurableObject\x12%\n\x04type\x18\x02 \x01(\x0e\x32\x17.littlehorse.MetricType\"\xae\x01\n\x0fPartitionMetric\x12*\n\x02id\x18\x01 \x01(\x0b\x32\x1e.littlehorse.PartitionMetricId\x12\r\n\x05value\x18\x02 \x01(\x01\x12.\n\ncreated_at\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x30\n\x0cwindow_start\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"6\n\x11PartitionMetricId\x12!\n\x02id\x18\x01 \x01(\x0b\x32\x15.littlehorse.MetricId**\n\x10MeasurableObject\x12\x0c\n\x08WORKFLOW\x10\x00\x12\x08\n\x04TASK\x10\x01*+\n\nMetricType\x12\t\n\x05\x43OUNT\x10\x00\x12\x07\n\x03\x41VG\x10\x01\x12\t\n\x05RATIO\x10\x02\x42M\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -23,12 +23,16 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'\n\037io.littlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Proto'
-  _globals['_MEASURABLEOBJECT']._serialized_start=271
-  _globals['_MEASURABLEOBJECT']._serialized_end=313
-  _globals['_METRICTYPE']._serialized_start=315
-  _globals['_METRICTYPE']._serialized_end=358
-  _globals['_METRIC']._serialized_start=64
-  _globals['_METRIC']._serialized_end=245
-  _globals['_METRICID']._serialized_start=247
-  _globals['_METRICID']._serialized_end=269
+  _globals['_MEASURABLEOBJECT']._serialized_start=491
+  _globals['_MEASURABLEOBJECT']._serialized_end=533
+  _globals['_METRICTYPE']._serialized_start=535
+  _globals['_METRICTYPE']._serialized_end=578
+  _globals['_METRIC']._serialized_start=63
+  _globals['_METRIC']._serialized_end=154
+  _globals['_METRICID']._serialized_start=156
+  _globals['_METRICID']._serialized_end=256
+  _globals['_PARTITIONMETRIC']._serialized_start=259
+  _globals['_PARTITIONMETRIC']._serialized_end=433
+  _globals['_PARTITIONMETRICID']._serialized_start=435
+  _globals['_PARTITIONMETRICID']._serialized_end=489
 # @@protoc_insertion_point(module_scope)

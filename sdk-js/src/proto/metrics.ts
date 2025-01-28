@@ -83,16 +83,26 @@ export function metricTypeToNumber(object: MetricType): number {
 export interface Metric {
   id: MetricId | undefined;
   createdAt: string | undefined;
+}
+
+export interface MetricId {
   measurable: MeasurableObject;
   type: MetricType;
 }
 
-export interface MetricId {
-  id: string;
+export interface PartitionMetric {
+  id: PartitionMetricId | undefined;
+  value: number;
+  createdAt: string | undefined;
+  windowStart: string | undefined;
+}
+
+export interface PartitionMetricId {
+  id: MetricId | undefined;
 }
 
 function createBaseMetric(): Metric {
-  return { id: undefined, createdAt: undefined, measurable: MeasurableObject.WORKFLOW, type: MetricType.COUNT };
+  return { id: undefined, createdAt: undefined };
 }
 
 export const Metric = {
@@ -102,12 +112,6 @@ export const Metric = {
     }
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
-    }
-    if (message.measurable !== MeasurableObject.WORKFLOW) {
-      writer.uint32(24).int32(measurableObjectToNumber(message.measurable));
-    }
-    if (message.type !== MetricType.COUNT) {
-      writer.uint32(32).int32(metricTypeToNumber(message.type));
     }
     return writer;
   },
@@ -133,20 +137,6 @@ export const Metric = {
 
           message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
-        case 3:
-          if (tag !== 24) {
-            break;
-          }
-
-          message.measurable = measurableObjectFromJSON(reader.int32());
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.type = metricTypeFromJSON(reader.int32());
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -163,20 +153,21 @@ export const Metric = {
     const message = createBaseMetric();
     message.id = (object.id !== undefined && object.id !== null) ? MetricId.fromPartial(object.id) : undefined;
     message.createdAt = object.createdAt ?? undefined;
-    message.measurable = object.measurable ?? MeasurableObject.WORKFLOW;
-    message.type = object.type ?? MetricType.COUNT;
     return message;
   },
 };
 
 function createBaseMetricId(): MetricId {
-  return { id: "" };
+  return { measurable: MeasurableObject.WORKFLOW, type: MetricType.COUNT };
 }
 
 export const MetricId = {
   encode(message: MetricId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.measurable !== MeasurableObject.WORKFLOW) {
+      writer.uint32(8).int32(measurableObjectToNumber(message.measurable));
+    }
+    if (message.type !== MetricType.COUNT) {
+      writer.uint32(16).int32(metricTypeToNumber(message.type));
     }
     return writer;
   },
@@ -189,11 +180,18 @@ export const MetricId = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
+          if (tag !== 8) {
             break;
           }
 
-          message.id = reader.string();
+          message.measurable = measurableObjectFromJSON(reader.int32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.type = metricTypeFromJSON(reader.int32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -209,7 +207,131 @@ export const MetricId = {
   },
   fromPartial(object: DeepPartial<MetricId>): MetricId {
     const message = createBaseMetricId();
-    message.id = object.id ?? "";
+    message.measurable = object.measurable ?? MeasurableObject.WORKFLOW;
+    message.type = object.type ?? MetricType.COUNT;
+    return message;
+  },
+};
+
+function createBasePartitionMetric(): PartitionMetric {
+  return { id: undefined, value: 0, createdAt: undefined, windowStart: undefined };
+}
+
+export const PartitionMetric = {
+  encode(message: PartitionMetric, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      PartitionMetricId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.value !== 0) {
+      writer.uint32(17).double(message.value);
+    }
+    if (message.createdAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(26).fork()).ldelim();
+    }
+    if (message.windowStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(34).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PartitionMetric {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePartitionMetric();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = PartitionMetricId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 17) {
+            break;
+          }
+
+          message.value = reader.double();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<PartitionMetric>): PartitionMetric {
+    return PartitionMetric.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PartitionMetric>): PartitionMetric {
+    const message = createBasePartitionMetric();
+    message.id = (object.id !== undefined && object.id !== null) ? PartitionMetricId.fromPartial(object.id) : undefined;
+    message.value = object.value ?? 0;
+    message.createdAt = object.createdAt ?? undefined;
+    message.windowStart = object.windowStart ?? undefined;
+    return message;
+  },
+};
+
+function createBasePartitionMetricId(): PartitionMetricId {
+  return { id: undefined };
+}
+
+export const PartitionMetricId = {
+  encode(message: PartitionMetricId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      MetricId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PartitionMetricId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePartitionMetricId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = MetricId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<PartitionMetricId>): PartitionMetricId {
+    return PartitionMetricId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PartitionMetricId>): PartitionMetricId {
+    const message = createBasePartitionMetricId();
+    message.id = (object.id !== undefined && object.id !== null) ? MetricId.fromPartial(object.id) : undefined;
     return message;
   },
 };

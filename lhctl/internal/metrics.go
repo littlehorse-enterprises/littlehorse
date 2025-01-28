@@ -37,7 +37,7 @@ func toType(metricType string) lhproto.MetricType {
 	if strings.ToLower(metricType) == "avg" {
 		return lhproto.MetricType_AVG
 	} else if strings.ToLower(metricType) == "count" {
-		return lhproto.MetricType_AVG
+		return lhproto.MetricType_COUNT
 	} else if strings.ToLower(metricType) == "ratio" {
 		return lhproto.MetricType_RATIO
 	} else {

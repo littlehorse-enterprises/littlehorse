@@ -120,6 +120,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 break;
             case PUT_METRIC:
                 out.setPutMetric(putMetric.toProto());
+                break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
         }

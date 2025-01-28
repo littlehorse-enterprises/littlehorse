@@ -27,15 +27,13 @@ public class PutMetricRequestModel extends MetadataSubCommand<PutMetricRequest> 
 
     @Override
     public PutMetricRequest.Builder toProto() {
-        return PutMetricRequest.newBuilder()
-                .setMeasurable(measurable)
-                .setType(metricType);
+        return PutMetricRequest.newBuilder().setMeasurable(measurable).setType(metricType);
     }
 
     @Override
     public Metric process(MetadataCommandExecution executionContext) {
         String id = LHUtil.generateGuid();
-        MetricModel metricModel = new MetricModel(new MetricIdModel(id), measurable, metricType);
+        MetricModel metricModel = new MetricModel(new MetricIdModel(measurable, metricType));
         executionContext.metadataManager().put(metricModel);
         return metricModel.toProto().build();
     }

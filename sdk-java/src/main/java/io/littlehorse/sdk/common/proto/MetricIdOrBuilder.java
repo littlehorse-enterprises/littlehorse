@@ -8,14 +8,24 @@ public interface MetricIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string id = 1;</code>
-   * @return The id.
+   * <code>.littlehorse.MeasurableObject measurable = 1;</code>
+   * @return The enum numeric value on the wire for measurable.
    */
-  java.lang.String getId();
+  int getMeasurableValue();
   /**
-   * <code>string id = 1;</code>
-   * @return The bytes for id.
+   * <code>.littlehorse.MeasurableObject measurable = 1;</code>
+   * @return The measurable.
    */
-  com.google.protobuf.ByteString
-      getIdBytes();
+  io.littlehorse.sdk.common.proto.MeasurableObject getMeasurable();
+
+  /**
+   * <code>.littlehorse.MetricType type = 2;</code>
+   * @return The enum numeric value on the wire for type.
+   */
+  int getTypeValue();
+  /**
+   * <code>.littlehorse.MetricType type = 2;</code>
+   * @return The type.
+   */
+  io.littlehorse.sdk.common.proto.MetricType getType();
 }

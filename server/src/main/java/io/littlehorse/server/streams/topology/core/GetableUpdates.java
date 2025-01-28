@@ -64,7 +64,6 @@ public class GetableUpdates {
             this.creationDate = new Date();
             this.tenantId = tenantId;
             this.firstEventLatency = System.currentTimeMillis() - firstEventDate.getTime();
-            ;
         }
     }
 

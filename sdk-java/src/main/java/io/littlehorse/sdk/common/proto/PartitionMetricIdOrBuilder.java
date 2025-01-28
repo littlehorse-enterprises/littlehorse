@@ -3,8 +3,8 @@
 
 package io.littlehorse.sdk.common.proto;
 
-public interface MetricOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.Metric)
+public interface PartitionMetricIdOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.PartitionMetricId)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -21,19 +21,4 @@ public interface MetricOrBuilder extends
    * <code>.littlehorse.MetricId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.MetricIdOrBuilder getIdOrBuilder();
-
-  /**
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
-   * @return Whether the createdAt field is set.
-   */
-  boolean hasCreatedAt();
-  /**
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
-   * @return The createdAt.
-   */
-  com.google.protobuf.Timestamp getCreatedAt();
-  /**
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
-   */
-  com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 }

@@ -1,33 +1,39 @@
 package io.littlehorse.common.model.getable.objectId;
 
-import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.getable.MetadataId;
 import io.littlehorse.common.model.getable.global.metrics.MetricModel;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.MeasurableObject;
 import io.littlehorse.sdk.common.proto.Metric;
 import io.littlehorse.sdk.common.proto.MetricId;
+import io.littlehorse.sdk.common.proto.MetricType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 
 public class MetricIdModel extends MetadataId<MetricId, Metric, MetricModel> {
 
-    private String id;
+    private MeasurableObject measurable;
+    private MetricType type;
 
     public MetricIdModel() {}
-    public MetricIdModel(String id) {
-        this.id = id;
+
+    public MetricIdModel(MeasurableObject measurable, MetricType type) {
+        this.measurable = measurable;
+        this.type = type;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         MetricId p = (MetricId) proto;
-        this.id = p.getId();
+        this.measurable = p.getMeasurable();
+        this.type = p.getType();
     }
 
     @Override
     public MetricId.Builder toProto() {
-        return MetricId.newBuilder().setId(id);
+        return MetricId.newBuilder().setMeasurable(measurable).setType(type);
     }
 
     @Override
@@ -37,12 +43,15 @@ public class MetricIdModel extends MetadataId<MetricId, Metric, MetricModel> {
 
     @Override
     public String toString() {
-        return id;
+        return LHUtil.getCompositeId(measurable.toString(), type.toString());
     }
 
     @Override
     public void initFromString(String storeKey) {
-        this.id = storeKey;
+        MeasurableObject measurable = MeasurableObject.valueOf(storeKey.split("/")[0]);
+        MetricType type = MetricType.valueOf(storeKey.split("/")[1]);
+        this.measurable = measurable;
+        this.type = type;
     }
 
     @Override

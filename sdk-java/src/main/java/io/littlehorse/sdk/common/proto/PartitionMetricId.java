@@ -4,38 +4,38 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.Metric}
+ * Protobuf type {@code littlehorse.PartitionMetricId}
  */
-public final class Metric extends
+public final class PartitionMetricId extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.Metric)
-    MetricOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.PartitionMetricId)
+    PartitionMetricIdOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use Metric.newBuilder() to construct.
-  private Metric(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use PartitionMetricId.newBuilder() to construct.
+  private PartitionMetricId(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private Metric() {
+  private PartitionMetricId() {
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new Metric();
+    return new PartitionMetricId();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_Metric_descriptor;
+    return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_PartitionMetricId_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_Metric_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_PartitionMetricId_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.Metric.class, io.littlehorse.sdk.common.proto.Metric.Builder.class);
+            io.littlehorse.sdk.common.proto.PartitionMetricId.class, io.littlehorse.sdk.common.proto.PartitionMetricId.Builder.class);
   }
 
   public static final int ID_FIELD_NUMBER = 1;
@@ -64,32 +64,6 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.MetricId.getDefaultInstance() : id_;
   }
 
-  public static final int CREATED_AT_FIELD_NUMBER = 2;
-  private com.google.protobuf.Timestamp createdAt_;
-  /**
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
-   * @return Whether the createdAt field is set.
-   */
-  @java.lang.Override
-  public boolean hasCreatedAt() {
-    return createdAt_ != null;
-  }
-  /**
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
-   * @return The createdAt.
-   */
-  @java.lang.Override
-  public com.google.protobuf.Timestamp getCreatedAt() {
-    return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
-  }
-  /**
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
-   */
-  @java.lang.Override
-  public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
-    return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -107,9 +81,6 @@ private static final long serialVersionUID = 0L;
     if (id_ != null) {
       output.writeMessage(1, getId());
     }
-    if (createdAt_ != null) {
-      output.writeMessage(2, getCreatedAt());
-    }
     getUnknownFields().writeTo(output);
   }
 
@@ -123,10 +94,6 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getId());
     }
-    if (createdAt_ != null) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getCreatedAt());
-    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -137,20 +104,15 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.Metric)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.PartitionMetricId)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.Metric other = (io.littlehorse.sdk.common.proto.Metric) obj;
+    io.littlehorse.sdk.common.proto.PartitionMetricId other = (io.littlehorse.sdk.common.proto.PartitionMetricId) obj;
 
     if (hasId() != other.hasId()) return false;
     if (hasId()) {
       if (!getId()
           .equals(other.getId())) return false;
-    }
-    if (hasCreatedAt() != other.hasCreatedAt()) return false;
-    if (hasCreatedAt()) {
-      if (!getCreatedAt()
-          .equals(other.getCreatedAt())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -167,53 +129,49 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId().hashCode();
     }
-    if (hasCreatedAt()) {
-      hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
-      hash = (53 * hash) + getCreatedAt().hashCode();
-    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.Metric parseFrom(
+  public static io.littlehorse.sdk.common.proto.PartitionMetricId parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.Metric parseFrom(
+  public static io.littlehorse.sdk.common.proto.PartitionMetricId parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.Metric parseFrom(
+  public static io.littlehorse.sdk.common.proto.PartitionMetricId parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.Metric parseFrom(
+  public static io.littlehorse.sdk.common.proto.PartitionMetricId parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.Metric parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.PartitionMetricId parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.Metric parseFrom(
+  public static io.littlehorse.sdk.common.proto.PartitionMetricId parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.Metric parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.PartitionMetricId parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.Metric parseFrom(
+  public static io.littlehorse.sdk.common.proto.PartitionMetricId parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -221,26 +179,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.Metric parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.PartitionMetricId parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.Metric parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.PartitionMetricId parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.Metric parseFrom(
+  public static io.littlehorse.sdk.common.proto.PartitionMetricId parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.Metric parseFrom(
+  public static io.littlehorse.sdk.common.proto.PartitionMetricId parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -253,7 +211,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.Metric prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.PartitionMetricId prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -269,26 +227,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.Metric}
+   * Protobuf type {@code littlehorse.PartitionMetricId}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.Metric)
-      io.littlehorse.sdk.common.proto.MetricOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.PartitionMetricId)
+      io.littlehorse.sdk.common.proto.PartitionMetricIdOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_Metric_descriptor;
+      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_PartitionMetricId_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_Metric_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_PartitionMetricId_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.Metric.class, io.littlehorse.sdk.common.proto.Metric.Builder.class);
+              io.littlehorse.sdk.common.proto.PartitionMetricId.class, io.littlehorse.sdk.common.proto.PartitionMetricId.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.Metric.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.PartitionMetricId.newBuilder()
     private Builder() {
 
     }
@@ -307,28 +265,23 @@ private static final long serialVersionUID = 0L;
         idBuilder_.dispose();
         idBuilder_ = null;
       }
-      createdAt_ = null;
-      if (createdAtBuilder_ != null) {
-        createdAtBuilder_.dispose();
-        createdAtBuilder_ = null;
-      }
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_Metric_descriptor;
+      return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_PartitionMetricId_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.Metric getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.Metric.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.PartitionMetricId getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.PartitionMetricId.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.Metric build() {
-      io.littlehorse.sdk.common.proto.Metric result = buildPartial();
+    public io.littlehorse.sdk.common.proto.PartitionMetricId build() {
+      io.littlehorse.sdk.common.proto.PartitionMetricId result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -336,24 +289,19 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.Metric buildPartial() {
-      io.littlehorse.sdk.common.proto.Metric result = new io.littlehorse.sdk.common.proto.Metric(this);
+    public io.littlehorse.sdk.common.proto.PartitionMetricId buildPartial() {
+      io.littlehorse.sdk.common.proto.PartitionMetricId result = new io.littlehorse.sdk.common.proto.PartitionMetricId(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.Metric result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.PartitionMetricId result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.id_ = idBuilder_ == null
             ? id_
             : idBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.createdAt_ = createdAtBuilder_ == null
-            ? createdAt_
-            : createdAtBuilder_.build();
       }
     }
 
@@ -391,21 +339,18 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.Metric) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.Metric)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.PartitionMetricId) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.PartitionMetricId)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.Metric other) {
-      if (other == io.littlehorse.sdk.common.proto.Metric.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.PartitionMetricId other) {
+      if (other == io.littlehorse.sdk.common.proto.PartitionMetricId.getDefaultInstance()) return this;
       if (other.hasId()) {
         mergeId(other.getId());
-      }
-      if (other.hasCreatedAt()) {
-        mergeCreatedAt(other.getCreatedAt());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -440,13 +385,6 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 18: {
-              input.readMessage(
-                  getCreatedAtFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -582,125 +520,6 @@ private static final long serialVersionUID = 0L;
       }
       return idBuilder_;
     }
-
-    private com.google.protobuf.Timestamp createdAt_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
-    /**
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
-     * @return Whether the createdAt field is set.
-     */
-    public boolean hasCreatedAt() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
-     * @return The createdAt.
-     */
-    public com.google.protobuf.Timestamp getCreatedAt() {
-      if (createdAtBuilder_ == null) {
-        return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
-      } else {
-        return createdAtBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
-     */
-    public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
-      if (createdAtBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        createdAt_ = value;
-      } else {
-        createdAtBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
-     */
-    public Builder setCreatedAt(
-        com.google.protobuf.Timestamp.Builder builderForValue) {
-      if (createdAtBuilder_ == null) {
-        createdAt_ = builderForValue.build();
-      } else {
-        createdAtBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
-     */
-    public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
-      if (createdAtBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
-          createdAt_ != null &&
-          createdAt_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-          getCreatedAtBuilder().mergeFrom(value);
-        } else {
-          createdAt_ = value;
-        }
-      } else {
-        createdAtBuilder_.mergeFrom(value);
-      }
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
-     */
-    public Builder clearCreatedAt() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      createdAt_ = null;
-      if (createdAtBuilder_ != null) {
-        createdAtBuilder_.dispose();
-        createdAtBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
-     */
-    public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return getCreatedAtFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
-     */
-    public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
-      if (createdAtBuilder_ != null) {
-        return createdAtBuilder_.getMessageOrBuilder();
-      } else {
-        return createdAt_ == null ?
-            com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
-      }
-    }
-    /**
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-        getCreatedAtFieldBuilder() {
-      if (createdAtBuilder_ == null) {
-        createdAtBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                getCreatedAt(),
-                getParentForChildren(),
-                isClean());
-        createdAt_ = null;
-      }
-      return createdAtBuilder_;
-    }
     @java.lang.Override
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -714,23 +533,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.Metric)
+    // @@protoc_insertion_point(builder_scope:littlehorse.PartitionMetricId)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.Metric)
-  private static final io.littlehorse.sdk.common.proto.Metric DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.PartitionMetricId)
+  private static final io.littlehorse.sdk.common.proto.PartitionMetricId DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.Metric();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.PartitionMetricId();
   }
 
-  public static io.littlehorse.sdk.common.proto.Metric getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.PartitionMetricId getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<Metric>
-      PARSER = new com.google.protobuf.AbstractParser<Metric>() {
+  private static final com.google.protobuf.Parser<PartitionMetricId>
+      PARSER = new com.google.protobuf.AbstractParser<PartitionMetricId>() {
     @java.lang.Override
-    public Metric parsePartialFrom(
+    public PartitionMetricId parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -749,17 +568,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<Metric> parser() {
+  public static com.google.protobuf.Parser<PartitionMetricId> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<Metric> getParserForType() {
+  public com.google.protobuf.Parser<PartitionMetricId> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.Metric getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.PartitionMetricId getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

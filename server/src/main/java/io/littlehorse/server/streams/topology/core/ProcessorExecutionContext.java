@@ -86,6 +86,8 @@ public class ProcessorExecutionContext implements ExecutionContext {
         this.authContext = this.authContextFor();
         this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
         this.eventsToThrow = new ArrayList<>();
+        this.metricsAggregator = new MetricsUpdater(tenantMetadataStore, coreStore);
+        this.getableUpdates().subscribe(metricsAggregator);
     }
 
     /**
