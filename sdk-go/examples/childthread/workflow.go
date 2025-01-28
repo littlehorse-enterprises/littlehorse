@@ -1,7 +1,6 @@
 package childthread
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 )
 
@@ -20,7 +19,7 @@ func ChildThreadTask(input string) string {
 }
 
 func ChildThreadWorkflow(wf *littlehorse.WorkflowThread) {
-	inputVar := wf.AddVariable("input", lhproto.VariableType_STR)
+	inputVar := wf.DeclareStr("input")
 	childThread := wf.SpawnThread(
 		func(child *littlehorse.WorkflowThread) {
 			child.Execute(ChildTaskName, inputVar)
