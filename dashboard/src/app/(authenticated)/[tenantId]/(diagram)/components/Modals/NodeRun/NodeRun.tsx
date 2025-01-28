@@ -12,6 +12,8 @@ export const NodeRun: FC<Modal> = ({ data }) => {
   const node = nodeRunsList[0]
   const { showModal, setShowModal } = useModal()
 
+  const sortedNodeRunsList = nodeRunsList?.sort((a, b) => b.id!.position - a.id!.position)
+
   return (
     <Dialog open={showModal} onOpenChange={open => setShowModal(open)}>
       <DialogContent className="flex max-w-5xl flex-col">
@@ -35,11 +37,11 @@ export const NodeRun: FC<Modal> = ({ data }) => {
           <Accordion.Root
             className="bg-mauve6 wfull rounded-md shadow-[0_2px_10px] shadow-black/5"
             type="single"
-            defaultValue="item-1"
+            defaultValue={`item-${sortedNodeRunsList[0].id?.position}`}
             collapsible
           >
-            {nodeRunsList?.map(nodeRun => (
-              <AccordionItem key={`item-${node.id?.position}`} node={nodeRun} userTaskNode={userTaskNode} />
+            {sortedNodeRunsList?.map(nodeRun => (
+              <AccordionItem key={`item-${nodeRun.id?.position}`} node={nodeRun} userTaskNode={userTaskNode} />
             ))}
           </Accordion.Root>
         </div>

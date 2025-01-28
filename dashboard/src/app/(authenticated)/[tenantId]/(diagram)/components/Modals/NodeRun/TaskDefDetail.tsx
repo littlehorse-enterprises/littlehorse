@@ -8,6 +8,8 @@ import { formatJsonOrReturnOriginalValue, getVariableValue, utcToLocalDateTime }
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { getTaskRun } from '../../NodeTypes/Task/getTaskRun'
 import { AccordionNode } from './AccordionContent'
+import { OverflowText } from '@/app/(authenticated)/[tenantId]/components/OverflowText'
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
 
 export const TaskDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
   const taskId = nodeRun.task?.taskRunId?.taskGuid
@@ -40,6 +42,8 @@ export const TaskDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
 
   if (!data) return
 
+  const lastLogOutput = data?.attempts[data?.attempts.length - 1]?.logOutput?.str
+
   return (
     <>
       <div className="flex justify-between align-top">
@@ -57,6 +61,7 @@ export const TaskDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
             })}
           </div>
         )}
+
         <div className="mb-2 mt-1 flex ">
           <span className="font-bold">Task GUID :</span>
           <span> {taskId}</span>
@@ -74,53 +79,69 @@ export const TaskDefDetail: FC<AccordionNode> = ({ nodeRun }) => {
       <hr className="mt-6" />
 
       <div className="flex min-h-[160px] flex-col gap-4">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-neutral-300 ">
-              <TableHead scope="col">
-                <strong>Attempt </strong>
-              </TableHead>
-              <TableHead scope="col">
-                <strong>Start Time</strong>
-              </TableHead>
-              <TableHead scope="col">
-                <strong>End Time</strong>
-              </TableHead>
-              <TableHead scope="col">
-                <strong>Status</strong>
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data?.attempts.map((attempt, index) => {
-              return (
-                <Fragment key={attempt.taskWorkerId}>
-                  <TableRow>
-                    <TableCell className="p-1">{index + 1}</TableCell>
-                    <TableCell className="p-1">{attempt.startTime && utcToLocalDateTime(attempt.startTime)}</TableCell>
-                    <TableCell className="p-1">{attempt.endTime && utcToLocalDateTime(attempt.endTime)}</TableCell>
-                    <TableCell className="p-1">
-                      <div
-                        className={cn(
-                          'flex items-center justify-between p-2',
-                          attempt.exception || attempt.error ? 'bg-red-200' : 'bg-green-200'
-                        )}
-                      >
-                        {attempt?.status}
-                      </div>
-                    </TableCell>
-                  </TableRow>
+        <Accordion type="single" defaultValue="item-1" collapsible>
+          {data?.attempts.map((attempt, index) => (
+            <Fragment key={attempt.taskWorkerId}>
+              <AccordionItem value={`item-${index + 1}`}>
+                <AccordionTrigger>
+                  TaskAttempt {index + 1}
+                </AccordionTrigger>
+                <AccordionContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-neutral-300 ">
+                        <TableHead scope="col">
+                          <strong>Start Time</strong>
+                        </TableHead>
+                        <TableHead scope="col">
+                          <strong>End Time</strong>
+                        </TableHead>
+                        <TableHead scope="col">
+                          <strong>Status</strong>
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell className="p-1">{attempt.startTime && utcToLocalDateTime(attempt.startTime)}</TableCell>
+                        <TableCell className="p-1">{attempt.endTime && utcToLocalDateTime(attempt.endTime)}</TableCell>
+                        <TableCell className="p-1">
+                          <div
+                            className={cn(
+                              'flex items-center justify-between p-2',
+                              attempt.exception || attempt.error ? 'bg-red-200' : 'bg-green-200'
+                            )}
+                          >
+                            {attempt?.status}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
 
-                  <TableRow>
-                    <TableCell colSpan={4} className="px-0">
-                      <AttemptErrorExceptionOutput attempt={attempt} />
-                    </TableCell>
-                  </TableRow>
-                </Fragment>
-              )
-            })}
-          </TableBody>
-        </Table>
+                  <div className="flex gap-2 mb-3">
+                    {nodeRun && (
+                      <div
+                        className={cn('mt-2 h-fit flex flex-col rounded bg-green-200 p-1', { 'bg-red-200': nodeRun.errorMessage })}
+                      >
+                        <p className="text-md font-bold">{nodeRun.errorMessage ? 'TaskRun Error' : 'No TaskRun Error'}</p>
+                        <OverflowText variant="error" className="w-36 text-nowrap" text={nodeRun.errorMessage ?? ''} />
+                      </div>
+                    )}
+                    {nodeRun && (
+                      <div className={'mt-2 flex h-fit flex-col rounded bg-gray-200 p-1'}>
+                        <p className="text-md font-bold">{lastLogOutput ? 'Worker Log Output' : 'No Worker Log Output'}</p>
+                        <OverflowText className="w-36 text-nowrap" text={lastLogOutput ?? ''} />
+                      </div>
+                    )}
+                  </div>
+
+                  <AttemptErrorExceptionOutput attempt={attempt} />
+                </AccordionContent>
+              </AccordionItem>
+            </Fragment>
+          ))}
+        </Accordion>
       </div>
     </>
   )
