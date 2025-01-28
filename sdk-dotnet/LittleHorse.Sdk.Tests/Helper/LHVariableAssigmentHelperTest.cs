@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Helper;
 using LittleHorse.Sdk.Workflow.Spec;
