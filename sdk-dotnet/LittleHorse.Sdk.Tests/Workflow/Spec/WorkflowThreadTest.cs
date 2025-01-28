@@ -9,18 +9,27 @@ namespace LittleHorse.Sdk.Tests.Workflow.Spec;
 
 public class WorkflowThreadTest
 {
+    private Action<WorkflowThread> _action;
+    void ParentEntrypoint(WorkflowThread thread)
+    {
+    }
+    
     public WorkflowThreadTest()
     {
         LHLoggerFactoryProvider.Initialize(null);
+        _action = ParentEntrypoint;
     }
     
     [Fact]
-    public void WorkflowThread_WithoutInvokingLogic_ShouldCompileSpecEntrypointAndExitNodes()
+    public void WorkflowThread_WithEmptyFunction_ShouldCompileSpecEntrypointAndExitNodes()
     {
         var workflowName = "TestWorkflow";
-        var mockEntrypointFunction = new Mock<Action<WorkflowThread>>();
-        var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockEntrypointFunction.Object);
-        var workflowThread = new WorkflowThread(workflowName, mockWorkflow.Object, mockEntrypointFunction.Object);
+        void Entrypoint(WorkflowThread thread)
+        {
+            
+        }
+        var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        var workflowThread = new WorkflowThread(workflowName, mockWorkflow.Object, Entrypoint);
 
         var wfThreadCompiled = workflowThread.Compile();
         
@@ -40,8 +49,7 @@ public class WorkflowThreadTest
     public void WorkflowThread_InvokingAddVariables_ShouldBuildSpecWithNodesAndVariablesDefs()
     {
         var workflowName = "TestWorkflow";
-        var mockParentFunction = new Mock<Action<WorkflowThread>>();
-        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockParentFunction.Object);
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
 
         void AddVariablesAction(WorkflowThread wf)
         {
@@ -74,9 +82,8 @@ public class WorkflowThreadTest
     public void WfThread_InvokingActionAfterItsInstantiation_ShouldThrowAnError()
     {
         var workflowName = "TestWorkflow";
-        var mockParentFunction = new Mock<Action<WorkflowThread>>();
-        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockParentFunction.Object);
-        var wfThread = new WorkflowThread(workflowName, mockParentWorkflow.Object, mockParentFunction.Object);
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        var wfThread = new WorkflowThread(workflowName, mockParentWorkflow.Object, ParentEntrypoint);
         
         var exception = Assert.Throws<InvalidOperationException>(() => wfThread.Execute("test-task-name"));
             
@@ -87,8 +94,7 @@ public class WorkflowThreadTest
     public void WfThread_InvokingExecuteTasksWithArgs_ShouldReturnATaskTypeNodeOutput()
     {
         var workflowName = "TestWorkflow";
-        var mockParentFunction = new Mock<Action<WorkflowThread>>();
-        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockParentFunction.Object);
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
         
         void ExecuteAction(WorkflowThread wf)
         {
@@ -106,8 +112,7 @@ public class WorkflowThreadTest
     public void WfThread_InvokingExecuteTasksWithNoArgs_ShouldReturnATaskTypeNodeOutput()
     {
         var workflowName = "TestWorkflow";
-        var mockParentFunction = new Mock<Action<WorkflowThread>>();
-        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockParentFunction.Object);
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
         
         void ExecuteAction(WorkflowThread wf)
         {
@@ -124,8 +129,7 @@ public class WorkflowThreadTest
     public void WfThread_InvokingExecuteTasksWithArgs_ShouldBuildSpecWIthTaskNodeAndVariablesDefs()
     {
         var workflowName = "TestWorkflow";
-        var mockParentFunction = new Mock<Action<WorkflowThread>>();
-        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockParentFunction.Object);
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
         void EntryPointAction(WorkflowThread wf)
         {
             var variableDef = wf.AddVariable("str-test-variable", VariableType.Str);
