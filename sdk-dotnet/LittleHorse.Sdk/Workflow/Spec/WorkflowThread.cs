@@ -12,6 +12,8 @@ public class WorkflowThread
     public string LastNodeName;
     private bool _isActive;
     private List<WfRunVariable> _wfRunVariables;
+    private EdgeCondition _lastNodeCondition;
+    private Queue<VariableMutation> _variableMutations;
     
     public WorkflowThread(String name, Workflow parent, Action<WorkflowThread> action)
     {
@@ -19,6 +21,7 @@ public class WorkflowThread
         _parent = parent;
         _spec = new ThreadSpec();
         _wfRunVariables = new List<WfRunVariable>();
+        _variableMutations = new Queue<VariableMutation>();
 
         var entrypointNode = new Node { Entrypoint = new EntrypointNode() };
 
@@ -82,6 +85,8 @@ public class WorkflowThread
 
         var feederNode = FindNode(LastNodeName);
         var edge = new Edge { SinkNodeName = nextNodeName };
+        
+        edge.VariableMutations.Add(CollectVariableMutations());
         
         if (feederNode.NodeCase != Node.NodeOneofCase.Exit) 
         {
@@ -247,5 +252,47 @@ public class WorkflowThread
     public WfRunVariable DeclareJsonObj(string name) 
     {
         return AddVariable(name, VariableType.JsonObj);
+    }
+    
+    private void AddNopNode() 
+    {
+        CheckIfWorkflowThreadIsActive();
+        AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
+    }
+    
+    private List<VariableMutation> CollectVariableMutations() 
+    {
+        var variablesFromIfBlock = new List<VariableMutation>();
+        while (_variableMutations.Count > 0) 
+        {
+            variablesFromIfBlock.Add(_variableMutations.Dequeue());
+        }
+        
+        return variablesFromIfBlock;
+    }
+    
+    public void DoIf(WorkflowCondition condition, Action<WorkflowThread> ifBody, Action<WorkflowThread>? elseBody = null) 
+    {
+        CheckIfWorkflowThreadIsActive();
+        var cond = condition;
+
+        AddNopNode();
+        String treeRootNodeName = LastNodeName;
+        _lastNodeCondition = cond.GetSpec();
+        ifBody.Invoke(this);
+        
+        if (elseBody != null)
+        {
+            elseBody.Invoke(this);
+            var variablesFromIfBlock = CollectVariableMutations();
+            
+        }
+        
+        var treeRootNode = FindNode(treeRootNodeName);
+        var edge = new Edge { SinkNodeName = LastNodeName, Condition = cond.GetReverse() };
+        treeRootNode.OutgoingEdges.Add(edge);
+        _spec.Nodes.Add(treeRootNodeName, treeRootNode);
+        
+        AddNopNode();
     }
 }
