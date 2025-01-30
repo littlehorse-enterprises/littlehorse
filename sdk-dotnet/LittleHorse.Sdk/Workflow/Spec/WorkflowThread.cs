@@ -93,7 +93,7 @@ public class WorkflowThread
             throw new InvalidOperationException("Not possible to have null last node here");
         }
 
-        var feederNode = FindLastNode();
+        var feederNode = FindNode(LastNodeName);
         var edge = new Edge { SinkNodeName = nextNodeName };
         
         edge.VariableMutations.AddRange(CollectVariableMutations());
