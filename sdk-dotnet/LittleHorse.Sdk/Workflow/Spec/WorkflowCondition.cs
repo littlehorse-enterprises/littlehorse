@@ -16,7 +16,7 @@ public class WorkflowCondition
         return _spec;
     }
 
-    public EdgeCondition GetReverse()
+    public EdgeCondition GetOpposite()
     {
         var output = new EdgeCondition
         {

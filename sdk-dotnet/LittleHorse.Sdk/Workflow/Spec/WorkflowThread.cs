@@ -12,8 +12,8 @@ public class WorkflowThread
     public string LastNodeName;
     private bool _isActive;
     private List<WfRunVariable> _wfRunVariables;
-    private EdgeCondition _lastNodeCondition;
-    private Queue<VariableMutation> _variableMutations;
+    private EdgeCondition? _lastNodeCondition;
+    private readonly Queue<VariableMutation> _variableMutations;
     
     public WorkflowThread(String name, Workflow parent, Action<WorkflowThread> action)
     {
@@ -25,13 +25,13 @@ public class WorkflowThread
 
         var entrypointNode = new Node { Entrypoint = new EntrypointNode() };
 
-        String entrypointNodeName = "0-entrypoint-ENTRYPOINT";
+        var entrypointNodeName = "0-entrypoint-ENTRYPOINT";
         LastNodeName = entrypointNodeName;
         _spec.Nodes.Add(entrypointNodeName, entrypointNode);
         _isActive = true;
         action.Invoke(this);
 
-        var lastNode = FindNode(LastNodeName);
+        var lastNode = FindLastNode();
         if (lastNode.NodeCase != Node.NodeOneofCase.Exit) 
         {
             AddNode("exit", Node.NodeOneofCase.Exit, new ExitNode());
@@ -56,14 +56,24 @@ public class WorkflowThread
         return _spec;
     }
 
-    private Node FindNode(string nodeName)
+    private Node FindLastNode()
     {
-        if (_spec.Nodes.Last().Key  != nodeName)
+        if (_spec.Nodes.Last().Key  != LastNodeName)
         {
-            throw new ArgumentException("No node found");
+            throw new ArgumentException("No node found.");
         }
 
-        return _spec.Nodes[nodeName];
+        return _spec.Nodes[LastNodeName];
+    }
+    
+    private Node FindNode(string nodeName)
+    {
+        if (!_spec.Nodes.TryGetValue(nodeName, out var node))
+        {
+            throw new ArgumentException("Node not found.");
+        }
+
+        return node;
     }
     
     private void CheckIfWorkflowThreadIsActive() 
@@ -83,10 +93,15 @@ public class WorkflowThread
             throw new InvalidOperationException("Not possible to have null last node here");
         }
 
-        var feederNode = FindNode(LastNodeName);
+        var feederNode = FindLastNode();
         var edge = new Edge { SinkNodeName = nextNodeName };
         
-        edge.VariableMutations.Add(CollectVariableMutations());
+        edge.VariableMutations.AddRange(CollectVariableMutations());
+        
+        if (_lastNodeCondition != null) {
+            edge.Condition = _lastNodeCondition;
+            _lastNodeCondition = null;
+        }
         
         if (feederNode.NodeCase != Node.NodeOneofCase.Exit) 
         {
@@ -101,7 +116,10 @@ public class WorkflowThread
                 node.Task = (TaskNode) subNode;
                 break;
             case Node.NodeOneofCase.Entrypoint:
-                node.Task = (TaskNode) subNode;
+                node.Entrypoint = (EntrypointNode) subNode;
+                break;
+            case Node.NodeOneofCase.Nop:
+                node.Nop = (NopNode) subNode;
                 break;
             case Node.NodeOneofCase.Exit:
                 node.Exit = (ExitNode) subNode;
@@ -135,7 +153,7 @@ public class WorkflowThread
         CheckIfWorkflowThreadIsActive();
         _parent.AddTaskDefName(taskName);
         var taskNode = CreateTaskNode(
-            new TaskNode {TaskDefId = new TaskDefId {Name = taskName}}, args);
+            new TaskNode { TaskDefId = new TaskDefId { Name = taskName } }, args);
         string nodeName = AddNode(taskName, Node.NodeOneofCase.Task, taskNode);
         
         return new NodeOutput(nodeName, this);
@@ -254,12 +272,6 @@ public class WorkflowThread
         return AddVariable(name, VariableType.JsonObj);
     }
     
-    private void AddNopNode() 
-    {
-        CheckIfWorkflowThreadIsActive();
-        AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
-    }
-    
     private List<VariableMutation> CollectVariableMutations() 
     {
         var variablesFromIfBlock = new List<VariableMutation>();
@@ -274,25 +286,60 @@ public class WorkflowThread
     public void DoIf(WorkflowCondition condition, Action<WorkflowThread> ifBody, Action<WorkflowThread>? elseBody = null) 
     {
         CheckIfWorkflowThreadIsActive();
-        var cond = condition;
 
-        AddNopNode();
-        String treeRootNodeName = LastNodeName;
-        _lastNodeCondition = cond.GetSpec();
+        AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
+        var treeRootName = LastNodeName;
+        _lastNodeCondition = condition.GetSpec();
+
         ifBody.Invoke(this);
         
+        var lastConditionFromIfBlock = _lastNodeCondition;
+        var lastNodeFromIfBlockName = LastNodeName;
+        var variablesFromIfBlock = CollectVariableMutations();
+
+        LastNodeName = treeRootName;
+
         if (elseBody != null)
         {
+            _lastNodeCondition = condition.GetOpposite();
             elseBody.Invoke(this);
-            var variablesFromIfBlock = CollectVariableMutations();
-            
         }
         
-        var treeRootNode = FindNode(treeRootNodeName);
-        var edge = new Edge { SinkNodeName = LastNodeName, Condition = cond.GetReverse() };
-        treeRootNode.OutgoingEdges.Add(edge);
-        _spec.Nodes.Add(treeRootNodeName, treeRootNode);
+        AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
+        var lastNodeFromIfBlock = FindNode(lastNodeFromIfBlockName);
+        var ifBlockEdge = new Edge { SinkNodeName = LastNodeName };
+        ifBlockEdge.VariableMutations.AddRange(variablesFromIfBlock);
+        if (lastNodeFromIfBlockName == treeRootName)
+        {
+            ifBlockEdge.Condition = lastConditionFromIfBlock;
+        }
         
-        AddNopNode();
+        lastNodeFromIfBlock.OutgoingEdges.Add(ifBlockEdge);
+
+        _spec.Nodes.Add(lastNodeFromIfBlockName, lastNodeFromIfBlock);
+    }
+    
+    /// <summary>
+    /// Returns a WorkflowCondition used in `WorkflowThread::doIf()`
+    /// </summary>
+    /// <param name="lhs">
+    /// It is either a literal value (which the Library casts to a Variable Value) or a
+    /// `WfRunVariable` representing the LHS of the expression.
+    /// </param>
+    /// <param name="rhs">
+    /// It is either a literal value (which the Library casts to a Variable Value) or a
+    /// `WfRunVariable` representing the RHS of the expression.
+    /// </param>
+    /// <returns>The value of <paramref name="WorkflowCondition" /> </returns>
+    public WorkflowCondition Condition(object lhs, Comparator comparator, object rhs) 
+    {
+        var edge = new EdgeCondition
+            {
+                Comparator = comparator,
+                Left = AssignVariable(lhs),
+                Right = AssignVariable(rhs)
+            };
+
+        return new WorkflowCondition(edge);
     }
 }
