@@ -50,10 +50,10 @@ public abstract class Program
     {
         void MyEntryPoint(WorkflowThread wf)
         {
-            var foo = wf.DeclareJsonObj("foo").Required();
+            var foo = wf.DeclareJsonObj("foo");
             wf.Execute("task-a");
             wf.DoIf(
-                wf.Condition(foo.JsonPath = "$.bar", Comparator.GreaterThan, 20),
+                wf.Condition(foo.WithJsonPath("$.bar"), Comparator.GreaterThan, 10),
                 ifThread =>
                 {
                     ifThread.Execute("task-b");

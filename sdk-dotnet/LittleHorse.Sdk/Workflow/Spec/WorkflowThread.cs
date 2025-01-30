@@ -286,10 +286,10 @@ public class WorkflowThread
     public void DoIf(WorkflowCondition condition, Action<WorkflowThread> ifBody, Action<WorkflowThread>? elseBody = null) 
     {
         CheckIfWorkflowThreadIsActive();
-
+        
         AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
         var treeRootName = LastNodeName;
-        _lastNodeCondition = condition.GetSpec();
+        _lastNodeCondition = condition.Compile();
 
         ifBody.Invoke(this);
         
@@ -316,7 +316,7 @@ public class WorkflowThread
         
         lastNodeFromIfBlock.OutgoingEdges.Add(ifBlockEdge);
 
-        _spec.Nodes.Add(lastNodeFromIfBlockName, lastNodeFromIfBlock);
+        //_spec.Nodes.Add(lastNodeFromIfBlockName, lastNodeFromIfBlock);
     }
     
     /// <summary>
@@ -333,13 +333,6 @@ public class WorkflowThread
     /// <returns>The value of <paramref name="WorkflowCondition" /> </returns>
     public WorkflowCondition Condition(object lhs, Comparator comparator, object rhs) 
     {
-        var edge = new EdgeCondition
-            {
-                Comparator = comparator,
-                Left = AssignVariable(lhs),
-                Right = AssignVariable(rhs)
-            };
-
-        return new WorkflowCondition(edge);
+        return new WorkflowCondition(lhs, comparator, rhs);
     }
 }

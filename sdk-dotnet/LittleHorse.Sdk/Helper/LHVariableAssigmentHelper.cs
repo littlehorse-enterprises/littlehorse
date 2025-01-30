@@ -36,7 +36,17 @@ internal static class LHVariableAssigmentHelper
             {
                 variableAssignment.JsonPath = nodeReference.JsonPath;
             }
-        } // TODO: Add else if conditions for format strings and LH Expressions, it is not needed yet
+        }
+        else if (value is LHExpression expr) 
+        {
+            variableAssignment.Expression = new VariableAssignment.Types.Expression
+            {
+                Lhs = AssignVariable(expr.Lhs),
+                Operation = expr.Operation,
+                Rhs = AssignVariable(expr.Rhs),
+            };
+        }
+        // TODO: Add else if condition to format strings
         else
         {
             VariableValue defVal = LHMappingHelper.ObjectToVariableValue(value);
