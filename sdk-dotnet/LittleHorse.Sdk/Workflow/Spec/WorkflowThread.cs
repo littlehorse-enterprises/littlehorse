@@ -136,7 +136,7 @@ public class WorkflowThread
     
     private string GetNodeName(string name, Node.NodeOneofCase type) 
     {
-        return $"{_spec.Nodes.Count}-{name}-{type}";
+        return $"{_spec.Nodes.Count}-{name}-{type.ToString().ToUpper()}";
     }
     
     public WfRunVariable AddVariable(string name, Object typeOrDefaultVal) 

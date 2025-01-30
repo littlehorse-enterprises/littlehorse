@@ -55,9 +55,7 @@ public abstract class Program
             wf.DoIf(
                 wf.Condition(foo.WithJsonPath("$.bar"), Comparator.GreaterThan, 10),
                 ifThread =>
-                {
-                    ifThread.Execute("task-b");
-                },
+                    ifThread.Execute("task-b"), 
                 elseThread => elseThread.Execute("task-c")
             );
             wf.Execute("task-d");

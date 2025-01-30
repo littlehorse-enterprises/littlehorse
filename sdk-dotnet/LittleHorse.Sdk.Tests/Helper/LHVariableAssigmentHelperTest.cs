@@ -43,15 +43,13 @@ public class LHVariableAssigmentHelperTest
     [Fact]
     public void VariableAssigment_WithWfRunVariableContainingJson_ShouldAssignDetailsToVariable()
     {
-        var wfRunVariable = new WfRunVariable("TestVariable", VariableType.Str, _parentWfThread)
-        {
-            JsonPath = "$.order"
-        };
+        var wfRunVariable = new WfRunVariable("TestVariable", VariableType.JsonObj, _parentWfThread);
+        var wfRunVariableWithJson = wfRunVariable.WithJsonPath("$.order");
 
-        var variableAssigment = LHVariableAssigmentHelper.AssignVariable(wfRunVariable);
+        var variableAssigment = LHVariableAssigmentHelper.AssignVariable(wfRunVariableWithJson);
         
-        Assert.Equal(wfRunVariable.Name, variableAssigment.VariableName);
-        Assert.Equal(wfRunVariable.JsonPath, variableAssigment.JsonPath);
+        Assert.Equal(wfRunVariableWithJson.Name, variableAssigment.VariableName);
+        Assert.Equal(wfRunVariableWithJson.JsonPath, variableAssigment.JsonPath);
     }
 
     [Fact]
