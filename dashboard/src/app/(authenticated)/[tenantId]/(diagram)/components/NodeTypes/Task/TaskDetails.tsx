@@ -11,6 +11,9 @@ import { NodeDetails } from '../NodeDetails'
 import { getTaskRun } from './getTaskRun'
 import { OverflowText } from '@/app/(authenticated)/[tenantId]/components/OverflowText'
 import { cn } from '@/components/utils'
+import { DiagramDataGroup } from '../DiagramDataGroup/DiagramDataGroup'
+import { Duration } from '../DiagramDataGroup/Duration'
+import { Entry } from '../DiagramDataGroup/Entry'
 
 export const TaskDetails: FC<{
   taskNode?: TaskNode
@@ -44,61 +47,26 @@ export const TaskDetails: FC<{
 
   const lastLogOutput = data?.attempts[data?.attempts.length - 1]?.logOutput?.str
 
-  return (
+  return nodeRun ? (
+    <NodeDetails>
+      <DiagramDataGroup tab="Task" label="TaskRun">
+        <div>TaskRun</div>
+      </DiagramDataGroup>
+      <DiagramDataGroup tab="Task" label="TaskAttempts">
+        <Entry separator>
+          {/* // ! use taskRun arrival here */}
+          <Duration arrival={nodeRun.arrivalTime} ended={nodeRun.endTime} />
+        </Entry>
+      </DiagramDataGroup>
+    </NodeDetails>
+  ) : (
     <NodeDetails>
       <div className="mb-2">
         <div className="flex items-center gap-1 whitespace-nowrap text-nowrap">
           <h3 className="font-bold">TaskDef</h3>
-          {nodeRun ? (
-            <TaskLink taskName={taskNode.taskDefId?.name} />
-          ) : (
-            <>
-              {taskNode.taskDefId && <TaskLink taskName={taskNode.taskDefId.name} />}
-              {taskNode.dynamicTask && <>{getVariable(taskNode.dynamicTask)}</>}
-            </>
-          )}
-        </div>
-        <div className="flex gap-2 text-nowrap">
-          <div className="flex items-center justify-center">Timeout: {taskNode.timeoutSeconds}s</div>
-          <div className="flex items-center justify-center">Retries: {taskNode.retries}</div>
+          {taskNode.dynamicTask && <>{getVariable(taskNode.dynamicTask)}</>}
         </div>
       </div>
-      {taskNode.variables && taskNode.variables.length > 0 && !(nodeRunsList?.length > 1) && (
-        <div className="whitespace-nowrap">
-          <h3 className="font-bold">Inputs</h3>
-          <ol className="list-inside list-decimal">
-            {taskNode.variables.map((variable, i) => (
-              <li className="mb-1 flex gap-1" key={`variable.${i}`}>
-                <div className="bg-gray-200 px-2 font-mono text-fuchsia-500">
-                  {data?.inputVariables?.[i]?.varName ??
-                    taskDef?.inputVars[i].name ??
-                    variable.variableName ??
-                    `arg${i}`}
-                </div>
-                <div> = </div>
-                <div className="truncate">
-                  {data?.inputVariables?.[i]?.value
-                    ? getVariableValue(data?.inputVariables[i].value)
-                    : getVariable(variable)}
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      )}
-      {nodeRun && (
-        <div className={cn('mt-2 flex flex-col rounded bg-green-200 p-1', { 'bg-red-200': nodeRun.errorMessage })}>
-          <h3 className="font-bold">{nodeRun.errorMessage ? 'TaskRun Error' : 'No TaskRun Error'}</h3>
-          <OverflowText variant="error" className="w-36 text-nowrap" text={nodeRun.errorMessage ?? ''} />
-        </div>
-      )}
-      {nodeRun && (
-        <div className={'mt-2 flex flex-col rounded bg-gray-200 p-1'}>
-          <p className="text-xs font-bold">{lastLogOutput ? 'Worker Log Output' : 'No Worker Log Output'}</p>
-          <OverflowText className="w-36 text-nowrap" text={lastLogOutput ?? ''} />
-        </div>
-      )}
-      <NodeRunsList nodeRuns={nodeRunsList} />
     </NodeDetails>
   )
 }
