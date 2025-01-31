@@ -1321,10 +1321,14 @@ class WorkflowThread:
         return self.add_variable(name, VariableType.BYTES, default_value=default_value)
 
     def declare_json_arr(self, name: str, default_value: Any = None) -> WfRunVariable:
-        return self.add_variable(name, VariableType.JSON_ARR, default_value=default_value)
+        return self.add_variable(
+            name, VariableType.JSON_ARR, default_value=default_value
+        )
 
     def declare_json_obj(self, name: str, default_value: Any = None) -> WfRunVariable:
-        return self.add_variable(name, VariableType.JSON_OBJ, default_value=default_value)
+        return self.add_variable(
+            name, VariableType.JSON_OBJ, default_value=default_value
+        )
 
     def handle_any_failure(
         self, node: NodeOutput, initializer: "ThreadInitializer"
