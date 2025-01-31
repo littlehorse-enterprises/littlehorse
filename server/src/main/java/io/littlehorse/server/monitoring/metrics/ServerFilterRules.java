@@ -37,7 +37,9 @@ public final class ServerFilterRules {
             accept("kafka_producer_request"),
             accept("kafka_producer_outgoing_byte"),
             accept("kafka_producer_record_error"),
-            accept("kafka_stream_processor_record_e2e"),
+
+            // Processors
+            accept("kafka_stream_processor_node_record_e2e"),
 
             // Filter metrics to reduce
             deny("kafka_stream_state_"),
@@ -78,6 +80,9 @@ public final class ServerFilterRules {
             accept("kafka_producer_request"),
             accept("kafka_producer_outgoing_byte"),
             accept("kafka_producer_record_error"),
+
+            // Processors
+            accept("kafka_stream_processor_node_record_e2e"),
 
             // Filter metrics to reduce
             deny("kafka_stream_state"),
