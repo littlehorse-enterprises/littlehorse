@@ -1,9 +1,6 @@
-using System.Runtime.CompilerServices;
 using Google.Protobuf;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Helper;
-
-[assembly: InternalsVisibleTo("LittleHorse.Sdk.Workflow.Spec")]
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
