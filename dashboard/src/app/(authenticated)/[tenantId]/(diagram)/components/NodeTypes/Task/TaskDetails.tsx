@@ -11,9 +11,9 @@ import { NodeDetails } from '../NodeDetails'
 import { getTaskRun } from './getTaskRun'
 import { OverflowText } from '@/app/(authenticated)/[tenantId]/components/OverflowText'
 import { cn } from '@/components/utils'
-import { DiagramDataGroup } from '../DiagramDataGroup/DiagramDataGroup'
-import { Duration } from '../DiagramDataGroup/Duration'
-import { Entry } from '../DiagramDataGroup/Entry'
+import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
+import { Duration } from '../DataGroupComponents/Duration'
+import { Entry } from '../DataGroupComponents/Entry'
 
 export const TaskDetails: FC<{
   taskNode?: TaskNode
@@ -47,26 +47,28 @@ export const TaskDetails: FC<{
 
   const lastLogOutput = data?.attempts[data?.attempts.length - 1]?.logOutput?.str
 
-  return nodeRun ? (
-    <NodeDetails>
-      <DiagramDataGroup tab="Task" label="TaskRun">
-        <div>TaskRun</div>
-      </DiagramDataGroup>
-      <DiagramDataGroup tab="Task" label="TaskAttempts">
-        <Entry separator>
-          {/* // ! use taskRun arrival here */}
-          <Duration arrival={nodeRun.arrivalTime} ended={nodeRun.endTime} />
-        </Entry>
-      </DiagramDataGroup>
-    </NodeDetails>
-  ) : (
-    <NodeDetails>
-      <div className="mb-2">
-        <div className="flex items-center gap-1 whitespace-nowrap text-nowrap">
-          <h3 className="font-bold">TaskDef</h3>
-          {taskNode.dynamicTask && <>{getVariable(taskNode.dynamicTask)}</>}
+  return (
+    <NodeDetails nodeRun={nodeRun}>
+      {nodeRun ? (
+        <>
+          <DiagramDataGroup tab="Task" label="TaskRun">
+            <div>TaskRun</div>
+          </DiagramDataGroup>
+          <DiagramDataGroup tab="Task" label="TaskAttempts">
+            <Entry separator>
+              {/* // ! use taskRun arrival here */}
+              <Duration arrival={nodeRun.arrivalTime} ended={nodeRun.endTime} />
+            </Entry>
+          </DiagramDataGroup>
+        </>
+      ) : (
+        <div className="mb-2">
+          <div className="flex items-center gap-1 whitespace-nowrap text-nowrap">
+            <h3 className="font-bold">TaskDef</h3>
+            {taskNode.dynamicTask && <>{getVariable(taskNode.dynamicTask)}</>}
+          </div>
         </div>
-      </div>
+      )}
     </NodeDetails>
   )
 }

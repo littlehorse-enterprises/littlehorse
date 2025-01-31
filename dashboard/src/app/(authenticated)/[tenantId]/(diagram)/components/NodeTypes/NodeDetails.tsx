@@ -2,12 +2,13 @@ import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { CSSProperties, FC, PropsWithChildren, ReactNode, useEffect, useMemo } from 'react'
 import { internalsSymbol, useNodeId, useStore } from 'reactflow'
-import { DiagramDataGroup } from './DiagramDataGroup/DiagramDataGroup'
+import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
 import React from 'react'
+import { NodeRun } from 'littlehorse-client/proto'
 
-type Props = PropsWithChildren<{}>
+type Props = PropsWithChildren<{ nodeRun: NodeRun }>
 
-export const NodeDetails: FC<Props> = ({ children }) => {
+export const NodeDetails: FC<Props> = ({ children, nodeRun }) => {
   const contextNodeId = useNodeId()
   const nodes = useStore(state => state.getNodes())
   const setNodes = useStore(state => state.setNodes)
@@ -44,9 +45,19 @@ export const NodeDetails: FC<Props> = ({ children }) => {
 
   const tabsContentClassName = "flex gap-4"
 
-  const diagramDataGroups = React.Children.toArray(children).filter(
-    child => React.isValidElement(child) && child.type === DiagramDataGroup
-  ) as React.ReactElement[];
+
+  const diagramDataGroups = React.Children.toArray(children).flatMap(child => {
+    if (React.isValidElement(child)) {
+      if (child.type === DiagramDataGroup) {
+        return [child];
+      } else if (child.type === React.Fragment) {
+        return React.Children.toArray(child.props.children).filter(
+          fragmentChild => React.isValidElement(fragmentChild) && fragmentChild.type === DiagramDataGroup
+        );
+      }
+    }
+    return [];
+  }) as React.ReactElement[];
 
   const groupedDiagramDataGroups = diagramDataGroups.reduce((acc, diagramDataGroup) => {
     const tabName = diagramDataGroup.props.tab || 'default';
@@ -56,8 +67,6 @@ export const NodeDetails: FC<Props> = ({ children }) => {
     acc[tabName].push(diagramDataGroup);
     return acc;
   }, {} as Record<string, React.ReactElement[]>) as Record<string, React.ReactElement[]>;
-
-  console.log(groupedDiagramDataGroups)
 
   return (
     <div style={wrapperStyle} className="flex gap-4 justify-center drop-shadow mb-6 items-center">
