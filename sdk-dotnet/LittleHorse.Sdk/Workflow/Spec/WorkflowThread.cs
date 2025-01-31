@@ -1,6 +1,9 @@
+using System.Runtime.CompilerServices;
 using Google.Protobuf;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Helper;
+
+[assembly: InternalsVisibleTo("LittleHorse.Sdk.Workflow.Spec")]
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
@@ -162,7 +165,7 @@ public class WorkflowThread
     public VariableAssignment AssignVariable(Object variable) 
     {
         CheckIfWorkflowThreadIsActive();
-        return LHVariableAssigmentHelper.AssignVariable(variable);
+        return AssignVariableHelper(variable);
     }
 
     private TaskNode CreateTaskNode(TaskNode taskNode, params object[] args)
@@ -315,8 +318,6 @@ public class WorkflowThread
         }
         
         lastNodeFromIfBlock.OutgoingEdges.Add(ifBlockEdge);
-
-        //_spec.Nodes.Add(lastNodeFromIfBlockName, lastNodeFromIfBlock);
     }
     
     /// <summary>
@@ -331,8 +332,60 @@ public class WorkflowThread
     /// `WfRunVariable` representing the RHS of the expression.
     /// </param>
     /// <returns>The value of <paramref name="WorkflowCondition" /> </returns>
-    public WorkflowCondition Condition(object lhs, Comparator comparator, object rhs) 
+    public WorkflowCondition Condition(object lhs, Comparator comparator, object rhs)
     {
-        return new WorkflowCondition(lhs, comparator, rhs);
+        return new WorkflowCondition(AssignVariableHelper(lhs), 
+            comparator, AssignVariableHelper(rhs));
+    }
+    
+    internal VariableAssignment AssignVariableHelper(object? value)
+    {
+        var variableAssignment = new VariableAssignment();
+
+        if (value == null)
+        {
+            variableAssignment.LiteralValue = new VariableValue();
+        }
+        else if (value.GetType() == typeof(WfRunVariable))
+        {
+            var wrVariable = (WfRunVariable) value;
+            
+            if (wrVariable.JsonPath != null) 
+            {
+                variableAssignment.JsonPath = wrVariable.JsonPath;
+            }
+            variableAssignment.VariableName = wrVariable.Name;
+        } 
+        else if (value is NodeOutput nodeReference)
+        {
+            // We can use the new `VariableAssignment` feature: NodeOutputReference
+            var nodeOutputReference = new VariableAssignment.Types.NodeOutputReference
+            {
+                NodeName = nodeReference.NodeName
+            };
+            variableAssignment.NodeOutput = nodeOutputReference;
+
+            if (nodeReference.JsonPath != null)
+            {
+                variableAssignment.JsonPath = nodeReference.JsonPath;
+            }
+        }
+        else if (value is LHExpression expr) 
+        {
+            variableAssignment.Expression = new VariableAssignment.Types.Expression
+            {
+                Lhs = AssignVariable(expr.Lhs),
+                Operation = expr.Operation,
+                Rhs = AssignVariable(expr.Rhs),
+            };
+        }
+        // TODO: Add else if condition to format strings
+        else
+        {
+            VariableValue defVal = LHMappingHelper.ObjectToVariableValue(value);
+            variableAssignment.LiteralValue = defVal;
+        }
+
+        return variableAssignment;
     }
 }

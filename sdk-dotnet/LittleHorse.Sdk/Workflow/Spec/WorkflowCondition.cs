@@ -1,27 +1,26 @@
 using LittleHorse.Sdk.Common.Proto;
-using LittleHorse.Sdk.Helper;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
 public class WorkflowCondition
 {
-    private readonly object _leftHandSite;
+    private readonly VariableAssignment _leftHandSite;
     private readonly Comparator _comparator;
-    private readonly object _rightHandSite;
+    private readonly VariableAssignment _rightHandSite;
 
-    public WorkflowCondition(object leftHandSite, Comparator comparator, object rightHandSite) 
+    internal WorkflowCondition(VariableAssignment leftHandSite, Comparator comparator, VariableAssignment rightHandSite) 
     {
         _leftHandSite = leftHandSite;
         _comparator = comparator;
         _rightHandSite = rightHandSite;
     }
 
-    public EdgeCondition GetOpposite()
+    internal EdgeCondition GetOpposite()
     {
         var output = new EdgeCondition
         {
-            Left = LHVariableAssigmentHelper.AssignVariable(_leftHandSite),
-            Right = LHVariableAssigmentHelper.AssignVariable(_rightHandSite)
+            Left = _leftHandSite,
+            Right = _rightHandSite
         };
         switch (_comparator) 
         {
@@ -56,17 +55,13 @@ public class WorkflowCondition
         return output;
     }
 
-    /// <summary>
-    /// Compiles the EdgeCondition into Proto objects
-    /// </summary>
-    /// <returns>The value of <paramref name="EdgeCondition" /> </returns>
-    public EdgeCondition Compile()
+    internal EdgeCondition Compile()
     {
         return new EdgeCondition
         {
-            Left = LHVariableAssigmentHelper.AssignVariable(_leftHandSite),
+            Left = _leftHandSite,
             Comparator = _comparator,
-            Right = LHVariableAssigmentHelper.AssignVariable(_rightHandSite)
+            Right = _rightHandSite
         };
     }
 }
