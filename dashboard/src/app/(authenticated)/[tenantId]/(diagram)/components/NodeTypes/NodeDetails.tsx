@@ -1,6 +1,7 @@
+'use client'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { CSSProperties, FC, PropsWithChildren, ReactNode, useEffect, useMemo } from 'react'
+import { CSSProperties, FC, PropsWithChildren, ReactNode, useEffect, useMemo, useState } from 'react'
 import { internalsSymbol, useNodeId, useStore } from 'reactflow'
 import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
 import React from 'react'
@@ -9,10 +10,12 @@ import { Duration } from './DataGroupComponents/Duration'
 import { Entry } from './DataGroupComponents/Entry'
 import { ErrorMessage } from './DataGroupComponents/ErrorMessage'
 import { Status } from './DataGroupComponents/Status'
+import { DiagramDataGroupIndexer } from './DataGroupComponents/DiagramDataGroupIndexer'
 
-type Props = PropsWithChildren<{ nodeRun: NodeRun | undefined }>
+type Props = PropsWithChildren<{ nodeRunList: NodeRun[] | undefined }>
 
-export const NodeDetails: FC<Props> = ({ children, nodeRun }) => {
+export const NodeDetails: FC<Props> = ({ children, nodeRunList }) => {
+  const [nodeRunsIndex, setNodeRunsIndex] = useState(0)
   const contextNodeId = useNodeId()
   const nodes = useStore(state => state.getNodes())
   const setNodes = useStore(state => state.setNodes)
@@ -73,7 +76,7 @@ export const NodeDetails: FC<Props> = ({ children, nodeRun }) => {
   }, {} as Record<string, React.ReactElement[]>) as Record<string, React.ReactElement[]>;
 
   return (
-    <div style={wrapperStyle} className="flex gap-4 justify-center drop-shadow mb-6 items-center">
+    <div style={wrapperStyle} className="flex gap-4 justify-center drop-shadow mb-6 items-center select-none">
       <Tabs defaultValue="node" className="flex flex-col items-center ">
         <TabsList className="mb-7">
           <TabsTrigger value="node">Node</TabsTrigger>
@@ -82,16 +85,17 @@ export const NodeDetails: FC<Props> = ({ children, nodeRun }) => {
           ))}
         </TabsList>
         <TabsContent value="node" className={tabsContentClassName}>
-          {nodeRun && (
-            <DiagramDataGroup tab="Node" label="NodeRun">
+          {nodeRunList && (
+            <DiagramDataGroup tab="Node" label="NodeRun" >
+              <DiagramDataGroupIndexer index={nodeRunsIndex} setIndex={setNodeRunsIndex} indexes={nodeRunList.length} />
               <Entry label="Status:">
-                <Status status={nodeRun.status} />
+                <Status status={nodeRunList[nodeRunsIndex].status} />
               </Entry>
               <Entry label="Error Message:">
-                <ErrorMessage errorMessage={nodeRun.errorMessage} />
+                <ErrorMessage errorMessage={nodeRunList[nodeRunsIndex].errorMessage} />
               </Entry>
               <Entry separator>
-                <Duration arrival={nodeRun.arrivalTime} ended={nodeRun.endTime} />
+                <Duration arrival={nodeRunList[nodeRunsIndex].arrivalTime} ended={nodeRunList[nodeRunsIndex].endTime} />
               </Entry>
             </DiagramDataGroup>
           )}
