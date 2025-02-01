@@ -4,9 +4,13 @@ import { CSSProperties, FC, PropsWithChildren, ReactNode, useEffect, useMemo } f
 import { internalsSymbol, useNodeId, useStore } from 'reactflow'
 import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
 import React from 'react'
-import { NodeRun } from 'littlehorse-client/proto'
+import { NodeRun, TaskRun } from 'littlehorse-client/proto'
+import { Duration } from './DataGroupComponents/Duration'
+import { Entry } from './DataGroupComponents/Entry'
+import { ErrorMessage } from './DataGroupComponents/ErrorMessage'
+import { Status } from './DataGroupComponents/Status'
 
-type Props = PropsWithChildren<{ nodeRun: NodeRun }>
+type Props = PropsWithChildren<{ nodeRun: NodeRun | undefined }>
 
 export const NodeDetails: FC<Props> = ({ children, nodeRun }) => {
   const contextNodeId = useNodeId()
@@ -78,7 +82,19 @@ export const NodeDetails: FC<Props> = ({ children, nodeRun }) => {
           ))}
         </TabsList>
         <TabsContent value="node" className={tabsContentClassName}>
-
+          {nodeRun && (
+            <DiagramDataGroup tab="Node" label="NodeRun">
+              <Entry label="Status:">
+                <Status status={nodeRun.status} />
+              </Entry>
+              <Entry label="Error Message:">
+                <ErrorMessage errorMessage={nodeRun.errorMessage} />
+              </Entry>
+              <Entry separator>
+                <Duration arrival={nodeRun.arrivalTime} ended={nodeRun.endTime} />
+              </Entry>
+            </DiagramDataGroup>
+          )}
         </TabsContent>
         {Object.keys(groupedDiagramDataGroups).map((tabName, index) => (
           <TabsContent key={index} value={tabName} className={tabsContentClassName}>
