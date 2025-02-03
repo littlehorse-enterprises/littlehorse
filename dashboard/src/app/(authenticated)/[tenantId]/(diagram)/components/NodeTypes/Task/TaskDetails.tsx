@@ -53,7 +53,6 @@ export const TaskDetails: FC<{
   const resultString = taskRunData?.attempts[taskAttemptIndex].error ? "ERROR" : taskRunData?.attempts[taskAttemptIndex].exception ? "EXCEPTION" : taskRunData?.attempts[taskAttemptIndex].output ? "OUTPUT" : undefined
 
   // ! ensure taskRunData is mapping to the correct nodeRun from nodeRunsList. idk smthn like that
-  console.log(nodeRunsList)
 
   return (
     <NodeDetails nodeRunList={nodeRunsList}>
