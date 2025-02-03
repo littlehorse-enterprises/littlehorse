@@ -6,7 +6,6 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 
 public class WorkflowThread
 {
-    private String _name;
     private Workflow _parent;
     private ThreadSpec _spec;
     public string LastNodeName;
@@ -15,9 +14,8 @@ public class WorkflowThread
     private EdgeCondition? _lastNodeCondition;
     private readonly Queue<VariableMutation> _variableMutations;
     
-    public WorkflowThread(String name, Workflow parent, Action<WorkflowThread> action)
+    public WorkflowThread(Workflow parent, Action<WorkflowThread> action)
     {
-        _name = name;
         _parent = parent;
         _spec = new ThreadSpec();
         _wfRunVariables = new List<WfRunVariable>();
@@ -283,12 +281,27 @@ public class WorkflowThread
         return variablesFromIfBlock;
     }
     
+    /// <summary>
+    /// Conditionally executes one of two workflow code branches; equivalent to an if/else statement
+    /// in programming.
+    /// </summary>
+    /// <param name="condition">
+    /// It is the WorkflowCondition to be satisfied.
+    /// </param>
+    /// /// <param name="ifBody">
+    /// It is the block of ThreadSpec code to be executed if the provided WorkflowCondition
+    /// is satisfied.
+    /// </param>
+    /// /// <param name="elseBody">
+    /// It is the block of ThreadSpec code to be executed if the provided
+    /// WorkflowCondition is NOT satisfied.
+    /// </param>
     public void DoIf(WorkflowCondition condition, Action<WorkflowThread> ifBody, Action<WorkflowThread>? elseBody = null) 
     {
         CheckIfWorkflowThreadIsActive();
         
         AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
-        var treeRootName = LastNodeName;
+        var treeRootNodeName = LastNodeName;
         _lastNodeCondition = condition.Compile();
 
         ifBody.Invoke(this);
@@ -297,24 +310,32 @@ public class WorkflowThread
         var lastNodeFromIfBlockName = LastNodeName;
         var variablesFromIfBlock = CollectVariableMutations();
 
-        LastNodeName = treeRootName;
-
         if (elseBody != null)
         {
+            LastNodeName = treeRootNodeName;
             _lastNodeCondition = condition.GetOpposite();
             elseBody.Invoke(this);
+            AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
+            var lastNodeFromIfBlock = FindNode(lastNodeFromIfBlockName);
+            var ifBlockEdge = new Edge { SinkNodeName = LastNodeName };
+            ifBlockEdge.VariableMutations.AddRange(variablesFromIfBlock);
+            if (lastNodeFromIfBlockName == treeRootNodeName)
+            {
+                ifBlockEdge.Condition = lastConditionFromIfBlock;
+            }
+            lastNodeFromIfBlock.OutgoingEdges.Add(ifBlockEdge);
         }
-        
-        AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
-        var lastNodeFromIfBlock = FindNode(lastNodeFromIfBlockName);
-        var ifBlockEdge = new Edge { SinkNodeName = LastNodeName };
-        ifBlockEdge.VariableMutations.AddRange(variablesFromIfBlock);
-        if (lastNodeFromIfBlockName == treeRootName)
+        else
         {
-            ifBlockEdge.Condition = lastConditionFromIfBlock;
+            AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
+
+            var treeRoot = FindNode(treeRootNodeName);
+            treeRoot.OutgoingEdges.Add(new Edge
+            {
+                SinkNodeName = LastNodeName,
+                Condition = condition.GetOpposite()
+            });
         }
-        
-        lastNodeFromIfBlock.OutgoingEdges.Add(ifBlockEdge);
     }
     
     /// <summary>

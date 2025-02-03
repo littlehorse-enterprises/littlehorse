@@ -16,7 +16,7 @@ public class LHVariableAssigmentTest
         var workflowName = "TestWorkflow";
         var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, null!);
         var mockAction = new Mock<Action<WorkflowThread>>();
-        _parentWfThread = new WorkflowThread(workflowName, mockWorkflow.Object, mockAction.Object);
+        _parentWfThread = new WorkflowThread(mockWorkflow.Object, mockAction.Object);
     }
     
     [Fact]

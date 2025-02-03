@@ -21,7 +21,7 @@ public class WfRunVariableTest
         }
         Action<WorkflowThread> action = Entrypoint; 
         var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, action);
-        _parentWfThread = new WorkflowThread(workflowName, mockWorkflow.Object, Entrypoint);
+        _parentWfThread = new WorkflowThread(mockWorkflow.Object, Entrypoint);
     }
     
     [Fact]
