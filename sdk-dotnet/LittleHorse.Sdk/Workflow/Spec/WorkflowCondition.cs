@@ -4,23 +4,23 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 
 public class WorkflowCondition
 {
-    private readonly VariableAssignment _leftHandSite;
+    private readonly VariableAssignment _leftHandSide;
     private readonly Comparator _comparator;
-    private readonly VariableAssignment _rightHandSite;
+    private readonly VariableAssignment _rightHandSide;
 
-    internal WorkflowCondition(VariableAssignment leftHandSite, Comparator comparator, VariableAssignment rightHandSite) 
+    internal WorkflowCondition(VariableAssignment leftHandSide, Comparator comparator, VariableAssignment rightHandSide) 
     {
-        _leftHandSite = leftHandSite;
+        _leftHandSide = leftHandSide;
         _comparator = comparator;
-        _rightHandSite = rightHandSite;
+        _rightHandSide = rightHandSide;
     }
 
     internal EdgeCondition GetOpposite()
     {
         var output = new EdgeCondition
         {
-            Left = _leftHandSite,
-            Right = _rightHandSite
+            Left = _leftHandSide,
+            Right = _rightHandSide
         };
         switch (_comparator) 
         {
@@ -59,9 +59,9 @@ public class WorkflowCondition
     {
         return new EdgeCondition
         {
-            Left = _leftHandSite,
+            Left = _leftHandSide,
             Comparator = _comparator,
-            Right = _rightHandSite
+            Right = _rightHandSide
         };
     }
 }
