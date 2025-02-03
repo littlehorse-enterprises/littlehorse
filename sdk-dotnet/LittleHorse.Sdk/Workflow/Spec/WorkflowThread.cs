@@ -314,7 +314,9 @@ public class WorkflowThread
         {
             LastNodeName = treeRootNodeName;
             _lastNodeCondition = condition.GetOpposite();
+            
             elseBody.Invoke(this);
+            
             AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
             var lastNodeFromIfBlock = FindNode(lastNodeFromIfBlockName);
             var ifBlockEdge = new Edge { SinkNodeName = LastNodeName };
