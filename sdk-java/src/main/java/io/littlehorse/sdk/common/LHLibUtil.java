@@ -165,6 +165,9 @@ public class LHLibUtil {
             if (List.class.isAssignableFrom(o.getClass())) {
                 out.setJsonArr(jsonStr);
             } else {
+                if (!jsonStr.startsWith("{")) {
+                    throw new LHSerdeError("Failed deserializing object into a VariableValue");
+                }
                 out.setJsonObj(jsonStr);
             }
         }
