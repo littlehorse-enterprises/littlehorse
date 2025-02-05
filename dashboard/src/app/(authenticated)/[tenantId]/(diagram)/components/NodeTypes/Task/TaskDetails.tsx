@@ -73,7 +73,7 @@ export const TaskDetails: FC<{
               </Entry>
             </DiagramDataGroup>
 
-            <DiagramDataGroup label="TaskAttempt" from="TaskRun">
+            <DiagramDataGroup label={taskRunData.attempts.length > 1 ? `TaskAttempt #${taskAttemptIndex}` : "TaskAttempt"} from="TaskRun">
               <DiagramDataGroupIndexer index={taskAttemptIndex} setIndex={setTaskAttemptIndex} indexes={taskRunData.attempts.length} />
               <Entry label="Status:">
                 <Status status={taskRunData.attempts[taskAttemptIndex].status} />
