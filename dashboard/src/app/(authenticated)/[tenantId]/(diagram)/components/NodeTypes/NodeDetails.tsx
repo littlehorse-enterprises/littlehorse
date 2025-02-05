@@ -12,10 +12,11 @@ import { ErrorMessage } from './DataGroupComponents/ErrorMessage'
 import { Status } from './DataGroupComponents/Status'
 import { DiagramDataGroupIndexer } from './DataGroupComponents/DiagramDataGroupIndexer'
 
-type Props = PropsWithChildren<{ nodeRunList: NodeRun[] | undefined }>
+type Props = PropsWithChildren<{ nodeRunList: NodeRun[] | undefined, nodeRunsIndex?: number, setNodeRunsIndex?: (index: number) => void }>
 
-export const NodeDetails: FC<Props> = ({ children, nodeRunList }) => {
-  const [nodeRunsIndex, setNodeRunsIndex] = useState(0)
+export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, setNodeRunsIndex }) => {
+  let [nodeRunsIndexInternal, setNodeRunsIndexInternal] = (nodeRunsIndex !== undefined && setNodeRunsIndex !== undefined) ? [nodeRunsIndex, setNodeRunsIndex] : useState(0)
+
   const contextNodeId = useNodeId()
   const nodes = useStore(state => state.getNodes())
   const setNodes = useStore(state => state.setNodes)
@@ -50,9 +51,6 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList }) => {
     zIndex,
   }
 
-  const tabsContentClassName = "flex gap-4"
-
-
   const diagramDataGroups = React.Children.toArray(children).flatMap(child => {
     if (React.isValidElement(child)) {
       if (child.type === DiagramDataGroup) {
@@ -66,50 +64,27 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList }) => {
     return [];
   }) as React.ReactElement[];
 
-  const groupedDiagramDataGroups = diagramDataGroups.reduce((acc, diagramDataGroup) => {
-    const tabName = diagramDataGroup.props.tab || 'default';
-    if (!acc[tabName]) {
-      acc[tabName] = [];
-    }
-    acc[tabName].push(diagramDataGroup);
-    return acc;
-  }, {} as Record<string, React.ReactElement[]>) as Record<string, React.ReactElement[]>;
-
   return (
-    <div style={wrapperStyle} className="flex gap-4 justify-center drop-shadow mb-6 items-center select-none">
-      <Tabs defaultValue="node" className="flex flex-col items-center ">
-        <TabsList className="mb-7">
-          <TabsTrigger value="node">Node</TabsTrigger>
-          {Object.keys(groupedDiagramDataGroups).map((tabName, index) => (
-            <TabsTrigger key={index} value={tabName}>{tabName}</TabsTrigger>
-          ))}
-        </TabsList>
-        <TabsContent value="node" className={tabsContentClassName}>
-          {nodeRunList && (
-            <DiagramDataGroup tab="Node" label="NodeRun" >
-              <DiagramDataGroupIndexer index={nodeRunsIndex} setIndex={setNodeRunsIndex} indexes={nodeRunList.length} />
-              <Entry label="Status:">
-                <Status status={nodeRunList[nodeRunsIndex].status} />
-              </Entry>
-              <Entry label="Error Message:">
-                <ErrorMessage errorMessage={nodeRunList[nodeRunsIndex].errorMessage} />
-              </Entry>
-              <Entry separator>
-                <Duration arrival={nodeRunList[nodeRunsIndex].arrivalTime} ended={nodeRunList[nodeRunsIndex].endTime} />
-              </Entry>
-            </DiagramDataGroup>
-          )}
-        </TabsContent>
-        {Object.keys(groupedDiagramDataGroups).map((tabName, index) => (
-          <TabsContent key={index} value={tabName} className={tabsContentClassName}>
-            {groupedDiagramDataGroups[tabName].map((element, i) => (
-              <span key={i}>
-                {element}
-              </span>
-            ))}
-          </TabsContent>
-        ))}
-      </Tabs>
+    <div style={wrapperStyle} className="flex gap-4 justify-center drop-shadow mb-6 items-start select-none">
+      {nodeRunList && (
+        <DiagramDataGroup label="NodeRun" >
+          <DiagramDataGroupIndexer index={nodeRunsIndexInternal} setIndex={setNodeRunsIndexInternal} indexes={nodeRunList.length} />
+          <Entry label="Status:">
+            <Status status={nodeRunList[nodeRunsIndexInternal].status} />
+          </Entry>
+          <Entry label="Error Message:">
+            <ErrorMessage errorMessage={nodeRunList[nodeRunsIndexInternal].errorMessage} />
+          </Entry>
+          <Entry separator>
+            <Duration arrival={nodeRunList[nodeRunsIndexInternal].arrivalTime} ended={nodeRunList[nodeRunsIndexInternal].endTime} />
+          </Entry>
+        </DiagramDataGroup>
+      )}
+      {diagramDataGroups.map((element, i) => (
+        <span key={i}>
+          {element}
+        </span>
+      ))}
     </div>
   )
 }

@@ -24,13 +24,14 @@ export const TaskDetails: FC<{
   selected: boolean
   nodeRunsList: NodeRun[]
 }> = ({ taskNode, nodeRun, selected, nodeRunsList }) => {
+  const [nodeRunsIndex, setNodeRunsIndex] = useState(0)
   const [taskAttemptIndex, setTaskAttemptIndex] = useState(0)
   const tenantId = useParams().tenantId as string
   const { data: taskRunData } = useQuery({
-    queryKey: ['taskRun', nodeRun, tenantId],
+    queryKey: ['taskRun', nodeRun, tenantId, nodeRunsIndex],
     queryFn: async () => {
-      if (!nodeRun?.task?.taskRunId) return null
-      return await getTaskRun({ tenantId, ...nodeRun.task.taskRunId })
+      if (!nodeRunsList[nodeRunsIndex].task?.taskRunId) return null
+      return await getTaskRun({ tenantId, ...nodeRunsList[nodeRunsIndex].task.taskRunId })
     },
   })
 
@@ -47,19 +48,20 @@ export const TaskDetails: FC<{
     },
   })
 
+  console.log(taskRunData?.id, nodeRunsIndex)
+
   if (!taskNode || (!taskDef && !nodeRun?.task?.taskRunId)) return null
 
   const message = taskRunData?.attempts[taskAttemptIndex].error?.message ?? taskRunData?.attempts[taskAttemptIndex].exception?.message ?? String(getVariableValue(taskRunData?.attempts[taskAttemptIndex].output)) ?? undefined
   const resultString = taskRunData?.attempts[taskAttemptIndex].error ? "ERROR" : taskRunData?.attempts[taskAttemptIndex].exception ? "EXCEPTION" : taskRunData?.attempts[taskAttemptIndex].output ? "OUTPUT" : undefined
 
   // ! ensure taskRunData is mapping to the correct nodeRun from nodeRunsList. idk smthn like that
-
   return (
-    <NodeDetails nodeRunList={nodeRunsList}>
+    <NodeDetails nodeRunList={nodeRunsList} nodeRunsIndex={nodeRunsIndex} setNodeRunsIndex={setNodeRunsIndex}>
       {nodeRun ? (
         taskRunData ? (
           <>
-            <DiagramDataGroup tab="Task" label="TaskRun">
+            <DiagramDataGroup label="TaskRun">
               <Entry label="Status:">
                 <Status status={taskRunData.status} />
               </Entry>
@@ -74,7 +76,7 @@ export const TaskDetails: FC<{
               </Entry>
             </DiagramDataGroup>
 
-            <DiagramDataGroup tab="Task" label="TaskAttempt" from="TaskRun">
+            <DiagramDataGroup label="TaskAttempt" from="TaskRun">
               <DiagramDataGroupIndexer index={taskAttemptIndex} setIndex={setTaskAttemptIndex} indexes={taskRunData.attempts.length} />
               <Entry label="Status:">
                 <Status status={taskRunData.attempts[taskAttemptIndex].status} />
