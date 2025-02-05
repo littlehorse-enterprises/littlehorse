@@ -29,16 +29,16 @@ public class WorkflowThreadTest
             
         }
         var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
-        var workflowThread = new WorkflowThread(workflowName, mockWorkflow.Object, Entrypoint);
+        var workflowThread = new WorkflowThread(mockWorkflow.Object, Entrypoint);
 
         var wfThreadCompiled = workflowThread.Compile();
         
         var actualResult = LHMappingHelper.ProtoToJson(wfThreadCompiled);
         var expectedResult =
             "{ \"nodes\": { \"0-entrypoint-ENTRYPOINT\": { \"outgoingEdges\": [ { \"sinkNodeName\":" +
-            " \"1-exit-Exit\", \"variableMutations\": [ ] } ], " +
+            " \"1-exit-EXIT\", \"variableMutations\": [ ] } ], " +
             "\"failureHandlers\": [ ], \"entrypoint\": { } }, " +
-            "\"1-exit-Exit\": { \"outgoingEdges\": [ ], \"failureHandlers\": [ ], " +
+            "\"1-exit-EXIT\": { \"outgoingEdges\": [ ], \"failureHandlers\": [ ], " +
             "\"exit\": { } } }, \"variableDefs\": [ ], \"interruptDefs\": [ ] }";
         var expectedNumberOfNodes = 2;
         Assert.Equal(expectedNumberOfNodes, wfThreadCompiled.Nodes.Count);
@@ -57,14 +57,14 @@ public class WorkflowThreadTest
             wf.AddVariable("int-test-variable", 5);
         }
 
-        var workflowThread = new WorkflowThread(workflowName, mockParentWorkflow.Object, AddVariablesAction);
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, AddVariablesAction);
         
         var wfThreadCompiled = workflowThread.Compile();
         
         var actualResult = LHMappingHelper.ProtoToJson(wfThreadCompiled);
         var expectedResult = "{ \"nodes\": { \"0-entrypoint-ENTRYPOINT\": { \"outgoingEdges\": " +
-                             "[ { \"sinkNodeName\": \"1-exit-Exit\", \"variableMutations\": [ ] } ], " +
-                             "\"failureHandlers\": [ ], \"entrypoint\": { } }, \"1-exit-Exit\": { \"outgoingEdges\": [ ], " +
+                             "[ { \"sinkNodeName\": \"1-exit-EXIT\", \"variableMutations\": [ ] } ], " +
+                             "\"failureHandlers\": [ ], \"entrypoint\": { } }, \"1-exit-EXIT\": { \"outgoingEdges\": [ ], " +
                              "\"failureHandlers\": [ ], \"exit\": { } } }, \"variableDefs\": [ { \"varDef\": " +
                              "{ \"type\": \"STR\", \"name\": \"str-test-variable\", \"maskedValue\": false }, " +
                              "\"required\": false, \"searchable\": false, \"jsonIndexes\": [ ], \"accessLevel\": " +
@@ -83,7 +83,7 @@ public class WorkflowThreadTest
     {
         var workflowName = "TestWorkflow";
         var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
-        var wfThread = new WorkflowThread(workflowName, mockParentWorkflow.Object, ParentEntrypoint);
+        var wfThread = new WorkflowThread(mockParentWorkflow.Object, ParentEntrypoint);
         
         var exception = Assert.Throws<InvalidOperationException>(() => wfThread.Execute("test-task-name"));
             
@@ -102,10 +102,10 @@ public class WorkflowThreadTest
             var variable = wf.AddVariable("str-test-variable", VariableType.Str);
             var actualNodeOutput = wf.Execute(expectedTaskName, variable);
             
-            Assert.Contains(expectedTaskName + "-Task", actualNodeOutput.NodeName);
+            Assert.Contains(expectedTaskName + "-TASK", actualNodeOutput.NodeName);
         }
         
-        new WorkflowThread(workflowName, mockParentWorkflow.Object, ExecuteAction);
+        new WorkflowThread(mockParentWorkflow.Object, ExecuteAction);
     }
     
     [Fact]
@@ -119,14 +119,14 @@ public class WorkflowThreadTest
             var expectedTaskName = "test-task-name";
             var actualNodeOutput = wf.Execute(expectedTaskName);
             
-            Assert.Contains(expectedTaskName + "-Task", actualNodeOutput.NodeName);
+            Assert.Contains(expectedTaskName + "-TASK", actualNodeOutput.NodeName);
         }
         
-        new WorkflowThread(workflowName, mockParentWorkflow.Object, ExecuteAction);
+        new WorkflowThread(mockParentWorkflow.Object, ExecuteAction);
     }
 
     [Fact]
-    public void WfThread_InvokingExecuteTasksWithArgs_ShouldBuildSpecWIthTaskNodeAndVariablesDefs()
+    public void WfThread_InvokingExecuteTasksWithArgs_ShouldBuildSpecWithTaskNodeAndVariablesDefs()
     {
         var workflowName = "TestWorkflow";
         var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
@@ -135,18 +135,18 @@ public class WorkflowThreadTest
             var variableDef = wf.AddVariable("str-test-variable", VariableType.Str);
             wf.Execute("test-task-name", variableDef);
         }
-        var workflowThread = new WorkflowThread(workflowName, mockParentWorkflow.Object, EntryPointAction);
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
         
         var wfThreadCompiled = workflowThread.Compile();
         
         var actualResult = LHMappingHelper.ProtoToJson(wfThreadCompiled);
         var expectedResult =
             "{ \"nodes\": { \"0-entrypoint-ENTRYPOINT\": { \"outgoingEdges\": [ { \"sinkNodeName\": " +
-            "\"1-test-task-name-Task\", \"variableMutations\": [ ] } ], \"failureHandlers\": [ ], \"entrypoint\": " +
-            "{ } }, \"1-test-task-name-Task\": { \"outgoingEdges\": [ { \"sinkNodeName\": \"2-exit-Exit\", " +
+            "\"1-test-task-name-TASK\", \"variableMutations\": [ ] } ], \"failureHandlers\": [ ], \"entrypoint\": " +
+            "{ } }, \"1-test-task-name-TASK\": { \"outgoingEdges\": [ { \"sinkNodeName\": \"2-exit-EXIT\", " +
             "\"variableMutations\": [ ] } ], \"failureHandlers\": [ ], \"task\": { \"taskDefId\": { \"name\": " +
             "\"test-task-name\" }, \"timeoutSeconds\": 0, \"retries\": 0, \"variables\": [ { \"variableName\": " +
-            "\"str-test-variable\" } ] } }, \"2-exit-Exit\": { \"outgoingEdges\": [ ], \"failureHandlers\": [ ], " +
+            "\"str-test-variable\" } ] } }, \"2-exit-EXIT\": { \"outgoingEdges\": [ ], \"failureHandlers\": [ ], " +
             "\"exit\": { } } }, \"variableDefs\": [ { \"varDef\": { \"type\": \"STR\", \"name\": \"str-test-variable\", " +
             "\"maskedValue\": false }, \"required\": false, \"searchable\": false, \"jsonIndexes\": [ ], " +
             "\"accessLevel\": \"PRIVATE_VAR\" } ], \"interruptDefs\": [ ] }";
