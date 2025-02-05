@@ -3,7 +3,10 @@ package io.littlehorse.sdk.common;
 import static com.google.protobuf.util.Timestamps.fromMillis;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -68,11 +71,12 @@ public class LHLibUtil {
         return builder.build().toByteArray();
     }
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
+    private static ObjectWriter writer = new ObjectMapper().writer().with(SerializationFeature.WRAP_ROOT_VALUE);
 
     public static String serializeToJson(Object o) throws LHJsonProcessingException {
         try {
-            return mapper.writeValueAsString(o);
+            return writer.writeValueAsString(o);
         } catch (JsonProcessingException exn) {
             throw new LHJsonProcessingException(exn);
         }
@@ -165,9 +169,6 @@ public class LHLibUtil {
             if (List.class.isAssignableFrom(o.getClass())) {
                 out.setJsonArr(jsonStr);
             } else {
-                if (!jsonStr.startsWith("{")) {
-                    throw new LHSerdeError("Failed deserializing object into a VariableValue");
-                }
                 out.setJsonObj(jsonStr);
             }
         }
