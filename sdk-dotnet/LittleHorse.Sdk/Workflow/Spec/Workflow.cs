@@ -73,7 +73,7 @@ public class Workflow
             Tuple<string, Action<WorkflowThread>> nextThreadAction = _threadActions.Dequeue();
             string actionName = nextThreadAction.Item1;
             Action<WorkflowThread> threadAction = nextThreadAction.Item2;
-            WorkflowThread wfThread = new WorkflowThread(_name, this, threadAction);
+            WorkflowThread wfThread = new WorkflowThread(this, threadAction);
             _spec.ThreadSpecs.Add(actionName, wfThread.Compile());
         }
         
