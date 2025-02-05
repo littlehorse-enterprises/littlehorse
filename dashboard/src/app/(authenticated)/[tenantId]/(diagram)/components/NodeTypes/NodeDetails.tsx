@@ -70,10 +70,15 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, s
     return [];
   }) as React.ReactElement[];
 
+
+  if (!nodeRunList || nodeRunList.length === 0) {
+    return null;
+  }
+
   return (
     <div style={wrapperStyle} className="flex gap-4 justify-center drop-shadow mb-6 items-start select-none">
       {nodeRunList && (
-        <DiagramDataGroup label="NodeRun" >
+        <DiagramDataGroup label={nodeRunList.length > 1 ? `NodeRun #${nodeRunsIndexInternal}` : "NodeRun"} >
           <DiagramDataGroupIndexer index={nodeRunsIndexInternal} setIndex={setNodeRunsIndexInternal} indexes={nodeRunList.length} />
           <Entry label="Status:">
             <Status status={nodeRunList[nodeRunsIndexInternal].status} />
