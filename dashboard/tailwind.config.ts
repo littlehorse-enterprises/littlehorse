@@ -47,6 +47,13 @@ const config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        status: {
+          running: 'theme("colors.blue.300")',
+          success: 'theme("colors.green.300")',
+          failed: 'theme("colors.red.300")',
+          exception: 'theme("colors.orange.300")',
+          halting: 'theme("colors.purple.300")',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
