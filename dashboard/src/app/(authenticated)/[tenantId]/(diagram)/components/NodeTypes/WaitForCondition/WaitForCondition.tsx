@@ -11,7 +11,7 @@ import { NodeDetails } from '../NodeDetails'
 import { NodeRunsList } from '../../NodeRunsList'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { Condition } from './Condition'
-
+import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   console.log(data)
   if (!data.waitForCondition) return null
@@ -19,8 +19,8 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   const { fade, waitForCondition: waitForConditionNode, nodeNeedsToBeHighlighted, nodeRun } = data
   return (
     <>
-      <NodeDetails>
-        <div>
+      <NodeDetails nodeRunList={data.nodeRunsList}>
+        <DiagramDataGroup label="WaitForCondition">
           <div>
             <div className="flex items-center gap-1 text-nowrap">
               <h3 className="mb-2 font-bold">WaitForCondition</h3>
@@ -45,7 +45,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
             }
           </div>
           <NodeRunsList nodeRuns={data?.nodeRunsList} />
-        </div>
+        </DiagramDataGroup>
       </NodeDetails>
       <Fade fade={fade} status={data?.nodeRunsList?.[data?.nodeRunsList.length - 1]?.status}>
         <div className="relative cursor-pointer items-center justify-center text-xs">
@@ -75,3 +75,4 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
 }
 
 export const WaitForCondition = memo(Node)
+
