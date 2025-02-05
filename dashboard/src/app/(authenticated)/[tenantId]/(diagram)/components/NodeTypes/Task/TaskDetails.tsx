@@ -16,7 +16,7 @@ import { getTaskRun } from './getTaskRun'
 import { DiagramDataGroupIndexer } from '../DataGroupComponents/DiagramDataGroupIndexer'
 import { Result } from '../DataGroupComponents/Result'
 import { OverflowText } from '@/app/(authenticated)/[tenantId]/components/OverflowText'
-import { ViewVariables } from '../DataGroupComponents/Variables'
+import { ViewVariableAssignments, ViewVariables } from '../DataGroupComponents/Variables'
 
 export const TaskDetails: FC<{
   taskNode?: TaskNode
@@ -48,14 +48,11 @@ export const TaskDetails: FC<{
     },
   })
 
-  console.log(taskRunData?.id, nodeRunsIndex)
-
   if (!taskNode || (!taskDef && !nodeRun?.task?.taskRunId)) return null
 
   const message = taskRunData?.attempts[taskAttemptIndex].error?.message ?? taskRunData?.attempts[taskAttemptIndex].exception?.message ?? String(getVariableValue(taskRunData?.attempts[taskAttemptIndex].output)) ?? undefined
   const resultString = taskRunData?.attempts[taskAttemptIndex].error ? "ERROR" : taskRunData?.attempts[taskAttemptIndex].exception ? "EXCEPTION" : taskRunData?.attempts[taskAttemptIndex].output ? "OUTPUT" : undefined
 
-  // ! ensure taskRunData is mapping to the correct nodeRun from nodeRunsList. idk smthn like that
   return (
     <NodeDetails nodeRunList={nodeRunsList} nodeRunsIndex={nodeRunsIndex} setNodeRunsIndex={setNodeRunsIndex}>
       {nodeRun ? (
@@ -98,12 +95,17 @@ export const TaskDetails: FC<{
           </>
         ) : null
       ) : (
-        <div className="mb-2">
-          <div className="flex items-center gap-1 whitespace-nowrap text-nowrap">
-            <h3 className="font-bold">TaskDef</h3>
-            {taskNode.dynamicTask && <>{getVariable(taskNode.dynamicTask)}</>}
-          </div>
-        </div>
+        <DiagramDataGroup label="TaskDef">
+          <Entry label="Retries">
+            {taskNode?.retries}
+          </Entry>
+          <Entry label="Timeout">
+            {taskNode?.timeoutSeconds}
+          </Entry>
+          <Entry label="Variables">
+            <ViewVariableAssignments variables={taskNode?.variables} />
+          </Entry>
+        </DiagramDataGroup>
       )}
     </NodeDetails>
   )

@@ -15,7 +15,7 @@ import { DiagramDataGroupIndexer } from './DataGroupComponents/DiagramDataGroupI
 type Props = PropsWithChildren<{ nodeRunList: NodeRun[] | undefined, nodeRunsIndex?: number, setNodeRunsIndex?: (index: number) => void }>
 
 export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, setNodeRunsIndex }) => {
-  let [nodeRunsIndexInternal, setNodeRunsIndexInternal] = (nodeRunsIndex !== undefined && setNodeRunsIndex !== undefined) ? [nodeRunsIndex, setNodeRunsIndex] : useState(0)
+  const [nodeRunsIndexInternal, setNodeRunsIndexInternal] = useState(nodeRunsIndex ?? 0);
 
   const contextNodeId = useNodeId()
   const nodes = useStore(state => state.getNodes())
@@ -38,6 +38,12 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, s
       )
     }
   }, [nodes, selectedNode, setNodes])
+
+  useEffect(() => {
+    if (nodeRunsIndex !== undefined && setNodeRunsIndex !== undefined) {
+      setNodeRunsIndex(nodeRunsIndexInternal);
+    }
+  }, [nodeRunsIndexInternal, setNodeRunsIndex]);
 
   const zIndex: number = Math.max(...nodes.map(node => (node[internalsSymbol]?.z || 1) + 10))
   if (!selectedNode) {

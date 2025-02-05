@@ -13,7 +13,6 @@ import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWith
 import { Condition } from './Condition'
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
-  console.log(data)
   if (!data.waitForCondition) return null
 
   const { fade, waitForCondition: waitForConditionNode, nodeNeedsToBeHighlighted, nodeRun } = data
