@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Utility class to transform LittleHorse objects into Java objects

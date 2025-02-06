@@ -33,11 +33,11 @@ public class LHVariableMapperTest {
         VariableValue jsonArr = VariableValue.newBuilder().setJsonArr(jsonArray).build();
         Collection<Person> listOfPeople = asList(jsonArr, Person.class);
         assertThat(listOfPeople)
-            .hasSize(3)
-            .allMatch(Objects::nonNull)
-            .allMatch(person -> Objects.nonNull(person.name))
-            .allMatch(person -> Objects.nonNull(person.city))
-            .allMatch(person -> person.age > 0);
+                .hasSize(3)
+                .allMatch(Objects::nonNull)
+                .allMatch(person -> Objects.nonNull(person.name))
+                .allMatch(person -> Objects.nonNull(person.city))
+                .allMatch(person -> person.age > 0);
     }
 
     @Test
