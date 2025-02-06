@@ -2,7 +2,6 @@ package io.littlehorse.sdk.common;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import io.littlehorse.sdk.common.proto.VariableValue;
 import java.util.Collection;
 
@@ -123,7 +122,7 @@ public final class LHVariableMapper {
      */
     public static <T> Collection<T> asList(VariableValue var, Class<T> clazz) {
         enforceType(var.getValueCase(), Collection.class);
-        TypeToken<Collection<T>> collectionType = new TypeToken<Collection<T>>(){};
+        TypeToken<Collection<T>> collectionType = new TypeToken<Collection<T>>() {};
         return gson.fromJson(var.getJsonArr(), collectionType);
     }
 

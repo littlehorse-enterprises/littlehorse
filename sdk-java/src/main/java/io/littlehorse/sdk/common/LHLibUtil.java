@@ -170,7 +170,9 @@ public class LHLibUtil {
                     out.setJsonObj(jsonResult.getJsonStr());
                     break;
                 case STRING:
-                    out.setStr(jsonResult.getJsonStr().substring(1, jsonResult.getJsonStr().length()-1));
+                    out.setStr(jsonResult
+                            .getJsonStr()
+                            .substring(1, jsonResult.getJsonStr().length() - 1));
                     break;
                 default:
                     throw new LHSerdeError(new LHJsonProcessingException("Error"), "Failed deserializing json");
