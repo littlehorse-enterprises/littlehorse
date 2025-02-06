@@ -13,7 +13,7 @@ export function Duration({ arrival, ended }: { arrival: string | undefined, ende
     const arrivalDay = arrivalDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })
     const endedDay = endedDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })
 
-    return <div className="flex items-center justify-center gap-1">
+    return <div className="flex items-center justify-center gap-1 px-1">
         <p className="font-light text-[10px] text-center">Arrival: <br /> {arrivalDay} ({arrivalTime})</p>
         <div className="min-w-20 w-fit h-8 text-sm bg-blue-400 rounded-md items-center justify-center flex text-white">
             {ended ? durationDisplay : 'N/A'}

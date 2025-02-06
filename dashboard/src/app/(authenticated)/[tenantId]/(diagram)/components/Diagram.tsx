@@ -1,6 +1,6 @@
 'use client'
-import { NodeRun, WfRun, WfSpec } from 'littlehorse-client/proto'
-import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
+import { LHStatus, NodeRun, WfRun, WfSpec } from 'littlehorse-client/proto'
+import { ReadonlyURLSearchParams, useParams, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'
 import 'reactflow/dist/base.css'
@@ -12,6 +12,11 @@ import nodeTypes from './NodeTypes'
 import { extractNodes } from './NodeTypes/extractNodes'
 import { ThreadPanel } from './ThreadPanel'
 import { ThreadRunWithNodeRuns } from '@/app/actions/getWfRun'
+import { Button } from '@/components/ui/button'
+import { PlayCircleIcon, PlayIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
+import { stopWfRun } from '@/app/actions/stopWfRun'
+import { resumeWfRun } from '@/app/actions/resumeWfRun'
+import { rescueWfRun } from '@/app/actions/rescueWfRun'
 
 type Props = {
   wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }
@@ -41,6 +46,7 @@ const determineDefaultThreadRun = (
 }
 
 export const Diagram: FC<Props> = ({ spec, wfRun }) => {
+  const tenantId = useParams().tenantId as string
   const currentThread = wfRun
     ? wfRun.threadRuns[wfRun.greatestThreadrunNumber].threadSpecName
     : spec.entrypointThreadName
@@ -79,9 +85,33 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
     updateGraph()
   }, [updateGraph])
 
+  console.log(wfRun)
+
   return (
     <ThreadProvider value={{ thread, setThread }}>
-      <ThreadPanel spec={spec} wfRun={wfRun} />
+      <div className="flex gap-3 justify-between">
+        <ThreadPanel spec={spec} wfRun={wfRun} />
+        {wfRun && <div>
+          {wfRun.status === LHStatus.RUNNING && <Button variant="destructive" className="flex items-center gap-2 font-bold" onClick={async () => {
+            await stopWfRun(tenantId, wfRun.id!)
+          }}>
+            STOP <StopCircleIcon />
+          </Button>}
+          {wfRun.status === LHStatus.HALTED && (
+            <Button className="flex items-center gap-2 bg-green-500 hover:bg-green-600 font-bold" onClick={async () => {
+              await resumeWfRun(tenantId, wfRun.id!)
+            }}>
+              RESUME <PlayCircleIcon />
+            </Button>
+          )}
+          {wfRun.status === LHStatus.ERROR && <Button className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 font-bold" onClick={async () => {
+            await rescueWfRun(tenantId, wfRun.id!)
+          }}>
+            RESCUE <RotateCcwIcon />
+          </Button>}
+        </div>
+        }
+      </div>
       <div className="mb-4 min-h-[800px] min-w-full rounded border-2 border-slate-100 bg-slate-50 shadow-inner">
         <ReactFlow
           nodes={nodes}
@@ -98,6 +128,6 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
         </ReactFlow>
         <Layouter nodeRuns={threadNodeRuns} nodeRunNameToBeHighlighted={nodeRunNameToBeHighlighted} />
       </div>
-    </ThreadProvider>
+    </ThreadProvider >
   )
 }
