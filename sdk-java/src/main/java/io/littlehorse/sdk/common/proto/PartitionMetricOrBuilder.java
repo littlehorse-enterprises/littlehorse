@@ -23,38 +23,41 @@ public interface PartitionMetricOrBuilder extends
   io.littlehorse.sdk.common.proto.PartitionMetricIdOrBuilder getIdOrBuilder();
 
   /**
-   * <code>double value = 2;</code>
-   * @return The value.
-   */
-  double getValue();
-
-  /**
-   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
   boolean hasCreatedAt();
   /**
-   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
   com.google.protobuf.Timestamp getCreatedAt();
   /**
-   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
-   * <code>.google.protobuf.Timestamp window_start = 4;</code>
-   * @return Whether the windowStart field is set.
+   * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
    */
-  boolean hasWindowStart();
+  java.util.List<io.littlehorse.sdk.common.proto.PartitionWindowedMetric> 
+      getActiveWindowsList();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 4;</code>
-   * @return The windowStart.
+   * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
    */
-  com.google.protobuf.Timestamp getWindowStart();
+  io.littlehorse.sdk.common.proto.PartitionWindowedMetric getActiveWindows(int index);
   /**
-   * <code>.google.protobuf.Timestamp window_start = 4;</code>
+   * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
    */
-  com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
+  int getActiveWindowsCount();
+  /**
+   * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
+   */
+  java.util.List<? extends io.littlehorse.sdk.common.proto.PartitionWindowedMetricOrBuilder> 
+      getActiveWindowsOrBuilderList();
+  /**
+   * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.PartitionWindowedMetricOrBuilder getActiveWindowsOrBuilder(
+      int index);
 }

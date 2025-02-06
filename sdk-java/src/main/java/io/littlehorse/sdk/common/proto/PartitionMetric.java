@@ -16,6 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private PartitionMetric() {
+    activeWindows_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -64,21 +65,10 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.PartitionMetricId.getDefaultInstance() : id_;
   }
 
-  public static final int VALUE_FIELD_NUMBER = 2;
-  private double value_ = 0D;
-  /**
-   * <code>double value = 2;</code>
-   * @return The value.
-   */
-  @java.lang.Override
-  public double getValue() {
-    return value_;
-  }
-
-  public static final int CREATED_AT_FIELD_NUMBER = 3;
+  public static final int CREATED_AT_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp createdAt_;
   /**
-   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
   @java.lang.Override
@@ -86,7 +76,7 @@ private static final long serialVersionUID = 0L;
     return createdAt_ != null;
   }
   /**
-   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
   @java.lang.Override
@@ -94,37 +84,52 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
   /**
-   * <code>.google.protobuf.Timestamp created_at = 3;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
 
-  public static final int WINDOW_START_FIELD_NUMBER = 4;
-  private com.google.protobuf.Timestamp windowStart_;
+  public static final int ACTIVE_WINDOWS_FIELD_NUMBER = 3;
+  @SuppressWarnings("serial")
+  private java.util.List<io.littlehorse.sdk.common.proto.PartitionWindowedMetric> activeWindows_;
   /**
-   * <code>.google.protobuf.Timestamp window_start = 4;</code>
-   * @return Whether the windowStart field is set.
+   * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
    */
   @java.lang.Override
-  public boolean hasWindowStart() {
-    return windowStart_ != null;
+  public java.util.List<io.littlehorse.sdk.common.proto.PartitionWindowedMetric> getActiveWindowsList() {
+    return activeWindows_;
   }
   /**
-   * <code>.google.protobuf.Timestamp window_start = 4;</code>
-   * @return The windowStart.
+   * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
    */
   @java.lang.Override
-  public com.google.protobuf.Timestamp getWindowStart() {
-    return windowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : windowStart_;
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.PartitionWindowedMetricOrBuilder> 
+      getActiveWindowsOrBuilderList() {
+    return activeWindows_;
   }
   /**
-   * <code>.google.protobuf.Timestamp window_start = 4;</code>
+   * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
    */
   @java.lang.Override
-  public com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder() {
-    return windowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : windowStart_;
+  public int getActiveWindowsCount() {
+    return activeWindows_.size();
+  }
+  /**
+   * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PartitionWindowedMetric getActiveWindows(int index) {
+    return activeWindows_.get(index);
+  }
+  /**
+   * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PartitionWindowedMetricOrBuilder getActiveWindowsOrBuilder(
+      int index) {
+    return activeWindows_.get(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -144,14 +149,11 @@ private static final long serialVersionUID = 0L;
     if (id_ != null) {
       output.writeMessage(1, getId());
     }
-    if (java.lang.Double.doubleToRawLongBits(value_) != 0) {
-      output.writeDouble(2, value_);
-    }
     if (createdAt_ != null) {
-      output.writeMessage(3, getCreatedAt());
+      output.writeMessage(2, getCreatedAt());
     }
-    if (windowStart_ != null) {
-      output.writeMessage(4, getWindowStart());
+    for (int i = 0; i < activeWindows_.size(); i++) {
+      output.writeMessage(3, activeWindows_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -166,17 +168,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getId());
     }
-    if (java.lang.Double.doubleToRawLongBits(value_) != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeDoubleSize(2, value_);
-    }
     if (createdAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getCreatedAt());
+        .computeMessageSize(2, getCreatedAt());
     }
-    if (windowStart_ != null) {
+    for (int i = 0; i < activeWindows_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, getWindowStart());
+        .computeMessageSize(3, activeWindows_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -198,19 +196,13 @@ private static final long serialVersionUID = 0L;
       if (!getId()
           .equals(other.getId())) return false;
     }
-    if (java.lang.Double.doubleToLongBits(getValue())
-        != java.lang.Double.doubleToLongBits(
-            other.getValue())) return false;
     if (hasCreatedAt() != other.hasCreatedAt()) return false;
     if (hasCreatedAt()) {
       if (!getCreatedAt()
           .equals(other.getCreatedAt())) return false;
     }
-    if (hasWindowStart() != other.hasWindowStart()) return false;
-    if (hasWindowStart()) {
-      if (!getWindowStart()
-          .equals(other.getWindowStart())) return false;
-    }
+    if (!getActiveWindowsList()
+        .equals(other.getActiveWindowsList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -226,16 +218,13 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId().hashCode();
     }
-    hash = (37 * hash) + VALUE_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-        java.lang.Double.doubleToLongBits(getValue()));
     if (hasCreatedAt()) {
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
     }
-    if (hasWindowStart()) {
-      hash = (37 * hash) + WINDOW_START_FIELD_NUMBER;
-      hash = (53 * hash) + getWindowStart().hashCode();
+    if (getActiveWindowsCount() > 0) {
+      hash = (37 * hash) + ACTIVE_WINDOWS_FIELD_NUMBER;
+      hash = (53 * hash) + getActiveWindowsList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -373,17 +362,18 @@ private static final long serialVersionUID = 0L;
         idBuilder_.dispose();
         idBuilder_ = null;
       }
-      value_ = 0D;
       createdAt_ = null;
       if (createdAtBuilder_ != null) {
         createdAtBuilder_.dispose();
         createdAtBuilder_ = null;
       }
-      windowStart_ = null;
-      if (windowStartBuilder_ != null) {
-        windowStartBuilder_.dispose();
-        windowStartBuilder_ = null;
+      if (activeWindowsBuilder_ == null) {
+        activeWindows_ = java.util.Collections.emptyList();
+      } else {
+        activeWindows_ = null;
+        activeWindowsBuilder_.clear();
       }
+      bitField0_ = (bitField0_ & ~0x00000004);
       return this;
     }
 
@@ -410,9 +400,22 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.PartitionMetric buildPartial() {
       io.littlehorse.sdk.common.proto.PartitionMetric result = new io.littlehorse.sdk.common.proto.PartitionMetric(this);
+      buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
+    }
+
+    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.PartitionMetric result) {
+      if (activeWindowsBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0)) {
+          activeWindows_ = java.util.Collections.unmodifiableList(activeWindows_);
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.activeWindows_ = activeWindows_;
+      } else {
+        result.activeWindows_ = activeWindowsBuilder_.build();
+      }
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.PartitionMetric result) {
@@ -423,17 +426,9 @@ private static final long serialVersionUID = 0L;
             : idBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.value_ = value_;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.createdAt_ = createdAtBuilder_ == null
             ? createdAt_
             : createdAtBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.windowStart_ = windowStartBuilder_ == null
-            ? windowStart_
-            : windowStartBuilder_.build();
       }
     }
 
@@ -484,14 +479,34 @@ private static final long serialVersionUID = 0L;
       if (other.hasId()) {
         mergeId(other.getId());
       }
-      if (other.getValue() != 0D) {
-        setValue(other.getValue());
-      }
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
       }
-      if (other.hasWindowStart()) {
-        mergeWindowStart(other.getWindowStart());
+      if (activeWindowsBuilder_ == null) {
+        if (!other.activeWindows_.isEmpty()) {
+          if (activeWindows_.isEmpty()) {
+            activeWindows_ = other.activeWindows_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureActiveWindowsIsMutable();
+            activeWindows_.addAll(other.activeWindows_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.activeWindows_.isEmpty()) {
+          if (activeWindowsBuilder_.isEmpty()) {
+            activeWindowsBuilder_.dispose();
+            activeWindowsBuilder_ = null;
+            activeWindows_ = other.activeWindows_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+            activeWindowsBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getActiveWindowsFieldBuilder() : null;
+          } else {
+            activeWindowsBuilder_.addAllMessages(other.activeWindows_);
+          }
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -526,25 +541,26 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 17: {
-              value_ = input.readDouble();
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 17
-            case 26: {
+            case 18: {
               input.readMessage(
                   getCreatedAtFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 18
+            case 26: {
+              io.littlehorse.sdk.common.proto.PartitionWindowedMetric m =
+                  input.readMessage(
+                      io.littlehorse.sdk.common.proto.PartitionWindowedMetric.parser(),
+                      extensionRegistry);
+              if (activeWindowsBuilder_ == null) {
+                ensureActiveWindowsIsMutable();
+                activeWindows_.add(m);
+              } else {
+                activeWindowsBuilder_.addMessage(m);
+              }
               break;
             } // case 26
-            case 34: {
-              input.readMessage(
-                  getWindowStartFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000008;
-              break;
-            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -681,50 +697,18 @@ private static final long serialVersionUID = 0L;
       return idBuilder_;
     }
 
-    private double value_ ;
-    /**
-     * <code>double value = 2;</code>
-     * @return The value.
-     */
-    @java.lang.Override
-    public double getValue() {
-      return value_;
-    }
-    /**
-     * <code>double value = 2;</code>
-     * @param value The value to set.
-     * @return This builder for chaining.
-     */
-    public Builder setValue(double value) {
-
-      value_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>double value = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearValue() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      value_ = 0D;
-      onChanged();
-      return this;
-    }
-
     private com.google.protobuf.Timestamp createdAt_;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return Whether the createdAt field is set.
      */
     public boolean hasCreatedAt() {
-      return ((bitField0_ & 0x00000004) != 0);
+      return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return The createdAt.
      */
     public com.google.protobuf.Timestamp getCreatedAt() {
@@ -735,7 +719,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
       if (createdAtBuilder_ == null) {
@@ -746,12 +730,12 @@ private static final long serialVersionUID = 0L;
       } else {
         createdAtBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -760,16 +744,16 @@ private static final long serialVersionUID = 0L;
       } else {
         createdAtBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
       if (createdAtBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0) &&
+        if (((bitField0_ & 0x00000002) != 0) &&
           createdAt_ != null &&
           createdAt_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getCreatedAtBuilder().mergeFrom(value);
@@ -779,15 +763,15 @@ private static final long serialVersionUID = 0L;
       } else {
         createdAtBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder clearCreatedAt() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000002);
       createdAt_ = null;
       if (createdAtBuilder_ != null) {
         createdAtBuilder_.dispose();
@@ -797,15 +781,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return getCreatedAtFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
       if (createdAtBuilder_ != null) {
@@ -816,7 +800,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp created_at = 3;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
@@ -832,123 +816,244 @@ private static final long serialVersionUID = 0L;
       return createdAtBuilder_;
     }
 
-    private com.google.protobuf.Timestamp windowStart_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> windowStartBuilder_;
-    /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
-     * @return Whether the windowStart field is set.
-     */
-    public boolean hasWindowStart() {
-      return ((bitField0_ & 0x00000008) != 0);
+    private java.util.List<io.littlehorse.sdk.common.proto.PartitionWindowedMetric> activeWindows_ =
+      java.util.Collections.emptyList();
+    private void ensureActiveWindowsIsMutable() {
+      if (!((bitField0_ & 0x00000004) != 0)) {
+        activeWindows_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.PartitionWindowedMetric>(activeWindows_);
+        bitField0_ |= 0x00000004;
+       }
     }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PartitionWindowedMetric, io.littlehorse.sdk.common.proto.PartitionWindowedMetric.Builder, io.littlehorse.sdk.common.proto.PartitionWindowedMetricOrBuilder> activeWindowsBuilder_;
+
     /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
-     * @return The windowStart.
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
      */
-    public com.google.protobuf.Timestamp getWindowStart() {
-      if (windowStartBuilder_ == null) {
-        return windowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : windowStart_;
+    public java.util.List<io.littlehorse.sdk.common.proto.PartitionWindowedMetric> getActiveWindowsList() {
+      if (activeWindowsBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(activeWindows_);
       } else {
-        return windowStartBuilder_.getMessage();
+        return activeWindowsBuilder_.getMessageList();
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
      */
-    public Builder setWindowStart(com.google.protobuf.Timestamp value) {
-      if (windowStartBuilder_ == null) {
+    public int getActiveWindowsCount() {
+      if (activeWindowsBuilder_ == null) {
+        return activeWindows_.size();
+      } else {
+        return activeWindowsBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PartitionWindowedMetric getActiveWindows(int index) {
+      if (activeWindowsBuilder_ == null) {
+        return activeWindows_.get(index);
+      } else {
+        return activeWindowsBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
+     */
+    public Builder setActiveWindows(
+        int index, io.littlehorse.sdk.common.proto.PartitionWindowedMetric value) {
+      if (activeWindowsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        windowStart_ = value;
+        ensureActiveWindowsIsMutable();
+        activeWindows_.set(index, value);
+        onChanged();
       } else {
-        windowStartBuilder_.setMessage(value);
+        activeWindowsBuilder_.setMessage(index, value);
       }
-      bitField0_ |= 0x00000008;
-      onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
      */
-    public Builder setWindowStart(
-        com.google.protobuf.Timestamp.Builder builderForValue) {
-      if (windowStartBuilder_ == null) {
-        windowStart_ = builderForValue.build();
+    public Builder setActiveWindows(
+        int index, io.littlehorse.sdk.common.proto.PartitionWindowedMetric.Builder builderForValue) {
+      if (activeWindowsBuilder_ == null) {
+        ensureActiveWindowsIsMutable();
+        activeWindows_.set(index, builderForValue.build());
+        onChanged();
       } else {
-        windowStartBuilder_.setMessage(builderForValue.build());
+        activeWindowsBuilder_.setMessage(index, builderForValue.build());
       }
-      bitField0_ |= 0x00000008;
-      onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
      */
-    public Builder mergeWindowStart(com.google.protobuf.Timestamp value) {
-      if (windowStartBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0) &&
-          windowStart_ != null &&
-          windowStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-          getWindowStartBuilder().mergeFrom(value);
-        } else {
-          windowStart_ = value;
+    public Builder addActiveWindows(io.littlehorse.sdk.common.proto.PartitionWindowedMetric value) {
+      if (activeWindowsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
         }
+        ensureActiveWindowsIsMutable();
+        activeWindows_.add(value);
+        onChanged();
       } else {
-        windowStartBuilder_.mergeFrom(value);
+        activeWindowsBuilder_.addMessage(value);
       }
-      bitField0_ |= 0x00000008;
-      onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
      */
-    public Builder clearWindowStart() {
-      bitField0_ = (bitField0_ & ~0x00000008);
-      windowStart_ = null;
-      if (windowStartBuilder_ != null) {
-        windowStartBuilder_.dispose();
-        windowStartBuilder_ = null;
+    public Builder addActiveWindows(
+        int index, io.littlehorse.sdk.common.proto.PartitionWindowedMetric value) {
+      if (activeWindowsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureActiveWindowsIsMutable();
+        activeWindows_.add(index, value);
+        onChanged();
+      } else {
+        activeWindowsBuilder_.addMessage(index, value);
       }
-      onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
      */
-    public com.google.protobuf.Timestamp.Builder getWindowStartBuilder() {
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return getWindowStartFieldBuilder().getBuilder();
+    public Builder addActiveWindows(
+        io.littlehorse.sdk.common.proto.PartitionWindowedMetric.Builder builderForValue) {
+      if (activeWindowsBuilder_ == null) {
+        ensureActiveWindowsIsMutable();
+        activeWindows_.add(builderForValue.build());
+        onChanged();
+      } else {
+        activeWindowsBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
      */
-    public com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder() {
-      if (windowStartBuilder_ != null) {
-        return windowStartBuilder_.getMessageOrBuilder();
+    public Builder addActiveWindows(
+        int index, io.littlehorse.sdk.common.proto.PartitionWindowedMetric.Builder builderForValue) {
+      if (activeWindowsBuilder_ == null) {
+        ensureActiveWindowsIsMutable();
+        activeWindows_.add(index, builderForValue.build());
+        onChanged();
       } else {
-        return windowStart_ == null ?
-            com.google.protobuf.Timestamp.getDefaultInstance() : windowStart_;
+        activeWindowsBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
+     */
+    public Builder addAllActiveWindows(
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.PartitionWindowedMetric> values) {
+      if (activeWindowsBuilder_ == null) {
+        ensureActiveWindowsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, activeWindows_);
+        onChanged();
+      } else {
+        activeWindowsBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
+     */
+    public Builder clearActiveWindows() {
+      if (activeWindowsBuilder_ == null) {
+        activeWindows_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+      } else {
+        activeWindowsBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
+     */
+    public Builder removeActiveWindows(int index) {
+      if (activeWindowsBuilder_ == null) {
+        ensureActiveWindowsIsMutable();
+        activeWindows_.remove(index);
+        onChanged();
+      } else {
+        activeWindowsBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PartitionWindowedMetric.Builder getActiveWindowsBuilder(
+        int index) {
+      return getActiveWindowsFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PartitionWindowedMetricOrBuilder getActiveWindowsOrBuilder(
+        int index) {
+      if (activeWindowsBuilder_ == null) {
+        return activeWindows_.get(index);  } else {
+        return activeWindowsBuilder_.getMessageOrBuilder(index);
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 4;</code>
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
      */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-        getWindowStartFieldBuilder() {
-      if (windowStartBuilder_ == null) {
-        windowStartBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                getWindowStart(),
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.PartitionWindowedMetricOrBuilder> 
+         getActiveWindowsOrBuilderList() {
+      if (activeWindowsBuilder_ != null) {
+        return activeWindowsBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(activeWindows_);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PartitionWindowedMetric.Builder addActiveWindowsBuilder() {
+      return getActiveWindowsFieldBuilder().addBuilder(
+          io.littlehorse.sdk.common.proto.PartitionWindowedMetric.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PartitionWindowedMetric.Builder addActiveWindowsBuilder(
+        int index) {
+      return getActiveWindowsFieldBuilder().addBuilder(
+          index, io.littlehorse.sdk.common.proto.PartitionWindowedMetric.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.PartitionWindowedMetric active_windows = 3;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.PartitionWindowedMetric.Builder> 
+         getActiveWindowsBuilderList() {
+      return getActiveWindowsFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.PartitionWindowedMetric, io.littlehorse.sdk.common.proto.PartitionWindowedMetric.Builder, io.littlehorse.sdk.common.proto.PartitionWindowedMetricOrBuilder> 
+        getActiveWindowsFieldBuilder() {
+      if (activeWindowsBuilder_ == null) {
+        activeWindowsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.PartitionWindowedMetric, io.littlehorse.sdk.common.proto.PartitionWindowedMetric.Builder, io.littlehorse.sdk.common.proto.PartitionWindowedMetricOrBuilder>(
+                activeWindows_,
+                ((bitField0_ & 0x00000004) != 0),
                 getParentForChildren(),
                 isClean());
-        windowStart_ = null;
+        activeWindows_ = null;
       }
-      return windowStartBuilder_;
+      return activeWindowsBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

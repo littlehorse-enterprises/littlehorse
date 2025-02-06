@@ -49,7 +49,7 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
                             getable = new StoredGetable<>(new PartitionMetricModel(metric.getObjectId()));
                         }
                         PartitionMetricModel partitionMetric = getable.getStoredObject();
-                        partitionMetric.increment();
+                        partitionMetric.incrementCurrentWindow();
                         tenantStore.put(new StoredGetable<>(partitionMetric));
                     }
                 }

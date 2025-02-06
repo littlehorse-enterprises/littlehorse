@@ -10,15 +10,15 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.PartitionMetric;
+import io.littlehorse.sdk.common.proto.PartitionWindowedMetric;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
     private PartitionMetricIdModel id;
     private Date createdAt;
-    private LocalDateTime windowStart;
+    private Set<PartitionWindowedMetricModel> activeWindowedMetrics;
 
     @Getter
     private double value;
@@ -34,11 +34,9 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
     public PartitionMetricModel() {}
 
     public PartitionMetricModel(MetricIdModel metricId) {
-        log.info("Creating PartitionMetricModel");
         this.id = new PartitionMetricIdModel(metricId);
         this.createdAt = new Date();
-        this.windowStart = LocalDateTime.ofInstant(
-                LHUtil.getWindowStart(this.createdAt, Duration.ofMinutes(1)).toInstant(), ZoneId.systemDefault());
+        this.activeWindowedMetrics = null;
     }
 
     @Override
@@ -63,12 +61,14 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
 
     @Override
     public PartitionMetric.Builder toProto() {
+        List<PartitionWindowedMetric> windowedMetrics = activeWindowedMetrics.stream()
+                .map(PartitionWindowedMetricModel::toProto)
+                .map(PartitionWindowedMetric.Builder::build)
+                .toList();
         return PartitionMetric.newBuilder()
                 .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(createdAt))
-                .setValue(value)
-                .setWindowStart(LHUtil.fromDate(
-                        Date.from(windowStart.atZone(ZoneId.systemDefault()).toInstant())));
+                .addAllActiveWindows(windowedMetrics);
     }
 
     @Override
@@ -76,9 +76,10 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
         PartitionMetric p = (PartitionMetric) proto;
         this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         this.id = LHSerializable.fromProto(p.getId(), PartitionMetricIdModel.class, context);
-        this.value = p.getValue();
-        this.windowStart =
-                LocalDateTime.ofInstant(LHUtil.fromProtoTs(p.getWindowStart()).toInstant(), ZoneId.systemDefault());
+        this.activeWindowedMetrics = p.getActiveWindowsList().stream()
+                .map(windowedMetric ->
+                        LHSerializable.fromProto(windowedMetric, PartitionWindowedMetricModel.class, context))
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
@@ -86,17 +87,14 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
         return PartitionMetric.class;
     }
 
-    public void increment() {
-        if (windowClosed()) {
-            value = 0;
-            windowStart = LocalDateTime.ofInstant(
-                    LHUtil.getWindowStart(new Date(), Duration.ofMinutes(1)).toInstant(), ZoneId.systemDefault());
-        }
-        value++;
+    public void incrementCurrentWindow() {
+        currentWindow().increment();
     }
 
-    private boolean windowClosed() {
-        long elapsed = Duration.between(windowStart, LocalDateTime.now()).toMillis();
-        return elapsed > Duration.ofMinutes(1).toMillis();
+    private PartitionWindowedMetricModel currentWindow() {
+        return activeWindowedMetrics.stream()
+                .filter(PartitionWindowedMetricModel::windowClosed)
+                .findFirst()
+                .orElse(new PartitionWindowedMetricModel(0));
     }
 }

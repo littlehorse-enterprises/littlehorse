@@ -92,8 +92,12 @@ export interface MetricId {
 
 export interface PartitionMetric {
   id: PartitionMetricId | undefined;
-  value: number;
   createdAt: string | undefined;
+  activeWindows: PartitionWindowedMetric[];
+}
+
+export interface PartitionWindowedMetric {
+  value: number;
   windowStart: string | undefined;
 }
 
@@ -214,7 +218,7 @@ export const MetricId = {
 };
 
 function createBasePartitionMetric(): PartitionMetric {
-  return { id: undefined, value: 0, createdAt: undefined, windowStart: undefined };
+  return { id: undefined, createdAt: undefined, activeWindows: [] };
 }
 
 export const PartitionMetric = {
@@ -222,14 +226,11 @@ export const PartitionMetric = {
     if (message.id !== undefined) {
       PartitionMetricId.encode(message.id, writer.uint32(10).fork()).ldelim();
     }
-    if (message.value !== 0) {
-      writer.uint32(17).double(message.value);
-    }
     if (message.createdAt !== undefined) {
-      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(26).fork()).ldelim();
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
     }
-    if (message.windowStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(34).fork()).ldelim();
+    for (const v of message.activeWindows) {
+      PartitionWindowedMetric.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -249,25 +250,18 @@ export const PartitionMetric = {
           message.id = PartitionMetricId.decode(reader, reader.uint32());
           continue;
         case 2:
-          if (tag !== 17) {
+          if (tag !== 18) {
             break;
           }
 
-          message.value = reader.double();
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         case 3:
           if (tag !== 26) {
             break;
           }
 
-          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          continue;
-        case 4:
-          if (tag !== 34) {
-            break;
-          }
-
-          message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.activeWindows.push(PartitionWindowedMetric.decode(reader, reader.uint32()));
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -284,8 +278,63 @@ export const PartitionMetric = {
   fromPartial(object: DeepPartial<PartitionMetric>): PartitionMetric {
     const message = createBasePartitionMetric();
     message.id = (object.id !== undefined && object.id !== null) ? PartitionMetricId.fromPartial(object.id) : undefined;
-    message.value = object.value ?? 0;
     message.createdAt = object.createdAt ?? undefined;
+    message.activeWindows = object.activeWindows?.map((e) => PartitionWindowedMetric.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBasePartitionWindowedMetric(): PartitionWindowedMetric {
+  return { value: 0, windowStart: undefined };
+}
+
+export const PartitionWindowedMetric = {
+  encode(message: PartitionWindowedMetric, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.value !== 0) {
+      writer.uint32(9).double(message.value);
+    }
+    if (message.windowStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PartitionWindowedMetric {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePartitionWindowedMetric();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 9) {
+            break;
+          }
+
+          message.value = reader.double();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<PartitionWindowedMetric>): PartitionWindowedMetric {
+    return PartitionWindowedMetric.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PartitionWindowedMetric>): PartitionWindowedMetric {
+    const message = createBasePartitionWindowedMetric();
+    message.value = object.value ?? 0;
     message.windowStart = object.windowStart ?? undefined;
     return message;
   },
