@@ -3,8 +3,9 @@ package io.littlehorse.sdk.common;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.List;
 
 /**
  * Utility class to transform LittleHorse objects into Java objects
@@ -121,12 +122,10 @@ public final class LHVariableMapper {
      * @return The collection of deserialized Json objects value represented by the VariableValue.
      * @throws IllegalArgumentException If the VariableValue does not contain Json array.
      */
-    @SuppressWarnings("unchecked")
     public static <T> Collection<T> asList(VariableValue var, Class<T> clazz) {
         enforceType(var.getValueCase(), Collection.class);
-        TypeToken<Collection<Object>> collectionType = new TypeToken<Collection<Object>>() {};
-        Collection<Object> collection = gson.fromJson(var.getJsonArr(), collectionType);
-        return collection.stream().map((item) -> (T) item).collect(Collectors.toList());
+        Type typeOfT = TypeToken.getParameterized(Collection.class, clazz).getType();
+        return new Gson().fromJson(var.getJsonArr(), typeOfT);
     }
 
     private static void enforceType(VariableValue.ValueCase valueCase, Class<?> targetType) {

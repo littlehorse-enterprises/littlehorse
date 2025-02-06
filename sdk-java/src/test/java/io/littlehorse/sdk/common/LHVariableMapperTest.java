@@ -1,6 +1,7 @@
 package io.littlehorse.sdk.common;
 
 import static io.littlehorse.sdk.common.LHVariableMapper.*;
+import static io.littlehorse.sdk.common.LHVariableMapper.as;
 import static org.assertj.core.api.Assertions.*;
 
 import com.google.protobuf.ByteString;
@@ -32,11 +33,11 @@ public class LHVariableMapperTest {
         VariableValue jsonArr = VariableValue.newBuilder().setJsonArr(jsonArray).build();
         Collection<Person> listOfPeople = asList(jsonArr, Person.class);
         assertThat(listOfPeople)
-                .hasSize(3)
-                .allMatch(Objects::nonNull)
-                .allMatch(person -> Objects.nonNull(person.name))
-                .allMatch(person -> Objects.nonNull(person.city))
-                .allMatch(person -> person.age > 0);
+            .hasSize(3)
+            .allMatch(Objects::nonNull)
+            .allMatch(person -> Objects.nonNull(person.name))
+            .allMatch(person -> Objects.nonNull(person.city))
+            .allMatch(person -> person.age > 0);
     }
 
     @Test
@@ -95,7 +96,7 @@ public class LHVariableMapperTest {
         assertThatThrownBy(() -> asList(boolVal, Person.class))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Not possible to convert variable type BOOL to Collection");
-        assertThatThrownBy(() -> as(boolVal, Person.class)).isInstanceOf(RuntimeException.class);
+        assertThat(as(boolVal, Person.class)).isNull();
     }
 
     public static class Person {
