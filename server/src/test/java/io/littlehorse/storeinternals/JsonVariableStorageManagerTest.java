@@ -2,7 +2,7 @@ package io.littlehorse.storeinternals;
 
 import static org.mockito.Mockito.mock;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
@@ -21,6 +21,7 @@ import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,16 +60,16 @@ public class JsonVariableStorageManagerTest {
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
     private GetableManager getableManager;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private Gson gson = new Gson();
 
     @BeforeEach
     public void setup() throws Exception {
         initializeDependencies();
 
         // JSON_OBJ test
+        String content = new String(Files.readAllBytes(Paths.get("./src/test/resources/json-variables-example.json")));
         @SuppressWarnings("unchecked")
-        Map<String, Object> map = objectMapper.readValue(
-                Paths.get("./src/test/resources/json-variables-example.json").toFile(), Map.class);
+        Map<String, Object> map = gson.fromJson(content, Map.class);
 
         VariableModel jsonObjVariable = TestUtil.variable("wfrun-id");
         jsonObjVariable.getId().setName("testVariable");
@@ -199,7 +200,7 @@ public class JsonVariableStorageManagerTest {
         List<String> expectedKeys = List.of(
                 "5/__wfSpecId_testWfSpecName/00000/00000__test_asdf",
                 "5/__wfSpecId_testWfSpecName/00000/00000__test_fdsa",
-                "5/__wfSpecId_testWfSpecName/00000/00000__test_1234",
+                "5/__wfSpecId_testWfSpecName/00000/00000__test_1234.0",
                 "5/__wfSpecId_testWfSpecName/00000/00000__test\\_$.foo_bar");
         Assertions.assertThat(storedTagPrefixStoreKeys()).containsAll(expectedKeys);
     }

@@ -81,7 +81,7 @@ public class LHLibUtil {
         } else if (jsonElement.isJsonArray()) {
             jsonType = JsonResult.JsonType.ARRAY;
         }
-        return new JsonResult(jsonElement.getAsString(), jsonType);
+        return new JsonResult(jsonElement.toString(), jsonType);
     }
 
     public static <T extends Object> T deserializeFromjson(String json, Class<T> cls) throws LHJsonProcessingException {
