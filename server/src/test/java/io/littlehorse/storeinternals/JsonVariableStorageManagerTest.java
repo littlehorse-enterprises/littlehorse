@@ -204,7 +204,7 @@ public class JsonVariableStorageManagerTest {
         List<String> expectedKeys = List.of(
                 "5/__wfSpecId_testWfSpecName/00000/00000__test_asdf",
                 "5/__wfSpecId_testWfSpecName/00000/00000__test_fdsa",
-                "5/__wfSpecId_testWfSpecName/00000/00000__test_1234.0",
+                "5/__wfSpecId_testWfSpecName/00000/00000__test_1234",
                 "5/__wfSpecId_testWfSpecName/00000/00000__test\\_$.foo_bar");
         Assertions.assertThat(storedTagPrefixStoreKeys()).containsAll(expectedKeys);
     }
