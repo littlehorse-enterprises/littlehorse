@@ -78,13 +78,18 @@ public class LHLibUtil {
 
     public static JsonResult serializeToJson(Object o) {
         JsonElement jsonElement = LH_GSON.toJsonTree(o);
-        JsonResult.JsonType jsonType = JsonResult.JsonType.STRING;
+        JsonResult.JsonType jsonType = null;
 
         if (jsonElement.isJsonObject()) {
             jsonType = JsonResult.JsonType.OBJECT;
         } else if (jsonElement.isJsonArray()) {
             jsonType = JsonResult.JsonType.ARRAY;
+        } else if (jsonElement.isJsonNull()) {
+            jsonType = JsonResult.JsonType.NULL;
+        } else if (jsonElement.isJsonPrimitive()) {
+            jsonType = JsonResult.JsonType.PRIMITIVE;
         }
+
         return new JsonResult(jsonElement.toString(), jsonType);
     }
 
@@ -168,21 +173,21 @@ public class LHLibUtil {
 
             switch (jsonResult.getType()) {
                 case ARRAY:
-                    System.out.println("Array:" + jsonResult.getJsonStr());
                     out.setJsonArr(jsonResult.getJsonStr());
                     break;
                 case OBJECT:
-                    System.out.println("Json:" + jsonResult.getJsonStr());
                     out.setJsonObj(jsonResult.getJsonStr());
                     break;
-                case STRING:
-                    System.out.println("String:" + jsonResult.getJsonStr());
+                case PRIMITIVE:
+                    // Trims the quotes off the string
                     out.setStr(jsonResult
                             .getJsonStr()
                             .substring(1, jsonResult.getJsonStr().length() - 1));
                     break;
+                case NULL:
+                    break;
                 default:
-                    throw new LHSerdeError(new LHJsonProcessingException("Error"), "Failed deserializing json");
+                    throw new LHSerdeError("Failed deserializing object to Json: " + o.toString());
             }
         }
 
