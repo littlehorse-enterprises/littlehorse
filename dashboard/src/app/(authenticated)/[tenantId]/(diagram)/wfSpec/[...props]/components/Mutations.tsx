@@ -12,7 +12,7 @@ export const Mutations: FC<Props> = ({ nodes }) => {
     }, [])
   }, [nodes])
 
-  if (mutations.length === 0) return <></>
+  if (mutations.length === 0) return <p className="font-semibold">No mutations</p>
 
   return (
     <div className="">
