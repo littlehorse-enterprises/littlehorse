@@ -1,6 +1,6 @@
 package e2e;
 
-import com.google.gson.Gson;
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -173,7 +173,7 @@ public class ExpressionTest {
                 .thenVerifyVariable(0, "json", variable -> {
                     String jsonStr = variable.getJsonObj();
                     @SuppressWarnings("unchecked")
-                    Map<String, Object> jsonMap = new Gson().fromJson(jsonStr, Map.class);
+                    Map<String, Object> jsonMap = LHLibUtil.LH_GSON.fromJson(jsonStr, Map.class);
                     Assertions.assertEquals("bar", jsonMap.get("foo"));
                 })
                 .start();
@@ -186,7 +186,7 @@ public class ExpressionTest {
                 .thenVerifyVariable(0, "json", variable -> {
                     String jsonStr = variable.getJsonObj();
                     @SuppressWarnings("unchecked")
-                    Map<String, Object> jsonMap = new Gson().fromJson(jsonStr, Map.class);
+                    Map<String, Object> jsonMap = LHLibUtil.LH_GSON.fromJson(jsonStr, Map.class);
                     Assertions.assertEquals("bar", jsonMap.get("foo"));
                 })
                 .start();
@@ -211,7 +211,7 @@ public class ExpressionTest {
                 .thenVerifyVariable(0, "nested-json", variable -> {
                     String jsonStr = variable.getJsonObj();
                     @SuppressWarnings("unchecked")
-                    Map<String, Object> jsonMap = new Gson().fromJson(jsonStr, Map.class);
+                    Map<String, Object> jsonMap = LHLibUtil.LH_GSON.fromJson(jsonStr, Map.class);
                     @SuppressWarnings("unchecked")
                     Map<String, String> fooMap = (Map<String, String>) jsonMap.get("foo");
                     Assertions.assertEquals("baz", fooMap.get("bar"));

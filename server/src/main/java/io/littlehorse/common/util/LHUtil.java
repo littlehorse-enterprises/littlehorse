@@ -37,6 +37,10 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class LHUtil {
 
+    public static final Gson LH_GSON = new GsonBuilder()
+            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .create();
+
     public static Timestamp fromDate(Date date) {
         if (date == null) return null;
         return fromMillis(date.getTime());
@@ -217,18 +221,14 @@ public class LHUtil {
         return val;
     }
 
-    private static Gson gson = new GsonBuilder()
-            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
-            .create();
-
     @SuppressWarnings("unchecked")
     public static List<Object> strToJsonArr(String jsonStr) throws LHApiException {
-        return gson.fromJson(jsonStr, List.class);
+        return LH_GSON.fromJson(jsonStr, List.class);
     }
 
     @SuppressWarnings("unchecked")
     public static Map<String, Object> strToJsonObj(String jsonStr) {
-        return gson.fromJson(jsonStr, Map.class);
+        return LH_GSON.fromJson(jsonStr, Map.class);
     }
 
     public static String b64Encode(byte[] bytes) {
@@ -239,7 +239,7 @@ public class LHUtil {
         if (obj == null) return null;
         if (obj instanceof Map || obj instanceof List) {
             try {
-                return gson.toJson(obj);
+                return LH_GSON.toJson(obj);
             } catch (Exception exn) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT, "Unable to serialize argument: %s".formatted(exn.getMessage()));

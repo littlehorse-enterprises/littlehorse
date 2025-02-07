@@ -72,12 +72,12 @@ public class LHLibUtil {
         return builder.build().toByteArray();
     }
 
-    private static Gson gson = new GsonBuilder()
+    public static final Gson LH_GSON = new GsonBuilder()
             .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
             .create();
 
     public static JsonResult serializeToJson(Object o) {
-        JsonElement jsonElement = gson.toJsonTree(o);
+        JsonElement jsonElement = LH_GSON.toJsonTree(o);
         JsonResult.JsonType jsonType = JsonResult.JsonType.STRING;
 
         if (jsonElement.isJsonObject()) {
@@ -90,7 +90,7 @@ public class LHLibUtil {
 
     public static <T extends Object> T deserializeFromjson(String json, Class<T> cls) throws LHJsonProcessingException {
         try {
-            return gson.fromJson(json, cls);
+            return LH_GSON.fromJson(json, cls);
         } catch (JsonSyntaxException exn) {
             throw new LHJsonProcessingException(exn.getMessage());
         }

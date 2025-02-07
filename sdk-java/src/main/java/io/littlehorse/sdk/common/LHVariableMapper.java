@@ -1,8 +1,5 @@
 package io.littlehorse.sdk.common;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.ToNumberPolicy;
 import com.google.gson.reflect.TypeToken;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import java.lang.reflect.Type;
@@ -12,10 +9,6 @@ import java.util.Collection;
  * Utility class to transform LittleHorse objects into Java objects
  */
 public final class LHVariableMapper {
-
-    private static Gson gson = new GsonBuilder()
-            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
-            .create();
 
     private LHVariableMapper() {
         // no instances for this class
@@ -114,7 +107,7 @@ public final class LHVariableMapper {
      * @throws IllegalArgumentException If the VariableValue does not contain Json object.
      */
     public static <T> T as(VariableValue var, Class<T> clazz) {
-        return gson.fromJson(var.getJsonObj(), clazz);
+        return LHLibUtil.LH_GSON.fromJson(var.getJsonObj(), clazz);
     }
 
     /**
@@ -128,7 +121,7 @@ public final class LHVariableMapper {
     public static <T> Collection<T> asList(VariableValue var, Class<T> clazz) {
         enforceType(var.getValueCase(), Collection.class);
         Type typeOfT = TypeToken.getParameterized(Collection.class, clazz).getType();
-        return gson.fromJson(var.getJsonArr(), typeOfT);
+        return LHLibUtil.LH_GSON.fromJson(var.getJsonArr(), typeOfT);
     }
 
     private static void enforceType(VariableValue.ValueCase valueCase, Class<?> targetType) {
