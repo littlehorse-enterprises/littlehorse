@@ -13,9 +13,6 @@ import { EyeIcon } from "lucide-react";
 import { VARIABLE_TYPES } from "@/app/constants";
 
 export function ViewVariables({ variables }: { variables: VarNameAndVal[] }) {
-
-    console.log(variables)
-
     return (
         <Dialog>
             <DialogTrigger asChild>
