@@ -63,6 +63,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 break;
             case JSON_OBJ:
                 jsonObjVal = LHUtil.strToJsonObj(p.getJsonObj());
+                System.out.println("ObjVal: " + jsonObjVal);
                 break;
             case DOUBLE:
                 doubleVal = p.getDouble();

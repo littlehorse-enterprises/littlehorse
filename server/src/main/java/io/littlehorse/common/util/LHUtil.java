@@ -9,6 +9,8 @@ import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.ToNumberPolicy;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.grpc.Status;
@@ -215,7 +217,9 @@ public class LHUtil {
         return val;
     }
 
-    private static Gson gson = new Gson();
+    private static Gson gson = new GsonBuilder()
+            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .create();
 
     @SuppressWarnings("unchecked")
     public static List<Object> strToJsonArr(String jsonStr) throws LHApiException {

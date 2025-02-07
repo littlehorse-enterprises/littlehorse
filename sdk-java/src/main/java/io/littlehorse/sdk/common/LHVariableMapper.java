@@ -1,6 +1,8 @@
 package io.littlehorse.sdk.common;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.ToNumberPolicy;
 import com.google.gson.reflect.TypeToken;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import java.lang.reflect.Type;
@@ -11,7 +13,9 @@ import java.util.Collection;
  */
 public final class LHVariableMapper {
 
-    private static Gson gson = new Gson();
+    private static Gson gson = new GsonBuilder()
+            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .create();
 
     private LHVariableMapper() {
         // no instances for this class
@@ -124,7 +128,7 @@ public final class LHVariableMapper {
     public static <T> Collection<T> asList(VariableValue var, Class<T> clazz) {
         enforceType(var.getValueCase(), Collection.class);
         Type typeOfT = TypeToken.getParameterized(Collection.class, clazz).getType();
-        return new Gson().fromJson(var.getJsonArr(), typeOfT);
+        return gson.fromJson(var.getJsonArr(), typeOfT);
     }
 
     private static void enforceType(VariableValue.ValueCase valueCase, Class<?> targetType) {

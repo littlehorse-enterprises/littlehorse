@@ -3,6 +3,8 @@ package io.littlehorse.storeinternals;
 import static org.mockito.Mockito.mock;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.ToNumberPolicy;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
@@ -60,7 +62,9 @@ public class JsonVariableStorageManagerTest {
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
     private GetableManager getableManager;
-    private Gson gson = new Gson();
+    private static Gson gson = new GsonBuilder()
+            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .create();
 
     @BeforeEach
     public void setup() throws Exception {

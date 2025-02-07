@@ -3,8 +3,10 @@ package io.littlehorse.sdk.common;
 import static com.google.protobuf.util.Timestamps.fromMillis;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.ToNumberPolicy;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -70,7 +72,9 @@ public class LHLibUtil {
         return builder.build().toByteArray();
     }
 
-    private static Gson gson = new Gson();
+    private static Gson gson = new GsonBuilder()
+            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .create();
 
     public static JsonResult serializeToJson(Object o) {
         JsonElement jsonElement = gson.toJsonTree(o);
@@ -164,12 +168,15 @@ public class LHLibUtil {
 
             switch (jsonResult.getType()) {
                 case ARRAY:
+                    System.out.println("Array:" + jsonResult.getJsonStr());
                     out.setJsonArr(jsonResult.getJsonStr());
                     break;
                 case OBJECT:
+                    System.out.println("Json:" + jsonResult.getJsonStr());
                     out.setJsonObj(jsonResult.getJsonStr());
                     break;
                 case STRING:
+                    System.out.println("String:" + jsonResult.getJsonStr());
                     out.setStr(jsonResult
                             .getJsonStr()
                             .substring(1, jsonResult.getJsonStr().length() - 1));
