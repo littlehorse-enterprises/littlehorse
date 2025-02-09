@@ -1,6 +1,6 @@
 'use client'
-import { NodeRun, WfRun, WfSpec } from 'littlehorse-client/proto'
-import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
+import { LHStatus, NodeRun, WfRun, WfSpec } from 'littlehorse-client/proto'
+import { ReadonlyURLSearchParams, useParams, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'
 import 'reactflow/dist/base.css'
@@ -12,6 +12,12 @@ import nodeTypes from './NodeTypes'
 import { extractNodes } from './NodeTypes/extractNodes'
 import { ThreadPanel } from './ThreadPanel'
 import { ThreadRunWithNodeRuns } from '@/app/actions/getWfRun'
+import { Button } from '@/components/ui/button'
+import { PlayCircleIcon, PlayIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import { resumeWfRun } from '@/app/actions/resumeWfRun'
+import { stopWfRun } from '@/app/actions/stopWfRun'
+import { rescueWfRun } from '@/app/actions/rescueWfRun'
 
 type Props = {
   wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }
@@ -41,6 +47,7 @@ const determineDefaultThreadRun = (
 }
 
 export const Diagram: FC<Props> = ({ spec, wfRun }) => {
+  const tenantId = useParams().tenantId as string
   const currentThread = wfRun
     ? wfRun.threadRuns[wfRun.greatestThreadrunNumber].threadSpecName
     : spec.entrypointThreadName
@@ -79,9 +86,62 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
     updateGraph()
   }, [updateGraph])
 
+  const verb = wfRun?.status === LHStatus.RUNNING ? "Stop" :
+    wfRun?.status === LHStatus.HALTED ? "Resume" :
+      wfRun?.status === LHStatus.ERROR ? "Rescue" : "";
+
   return (
     <ThreadProvider value={{ thread, setThread }}>
-      <ThreadPanel spec={spec} wfRun={wfRun} />
+      <div className="flex gap-3 justify-between">
+        <ThreadPanel spec={spec} wfRun={wfRun} />
+        {wfRun && <div>
+          <AlertDialog>
+            {wfRun.status === LHStatus.RUNNING && (
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="flex items-center gap-2 font-bold">
+                  STOP <StopCircleIcon />
+                </Button>
+              </AlertDialogTrigger>
+            )}
+            {wfRun.status === LHStatus.HALTED && (
+              <AlertDialogTrigger asChild>
+                <Button className="flex items-center gap-2 bg-green-500 hover:bg-green-600 font-bold">
+                  RESUME <PlayCircleIcon />
+                </Button>
+              </AlertDialogTrigger>
+            )}
+            {wfRun.status === LHStatus.ERROR && (
+              <AlertDialogTrigger asChild>
+                <Button className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 font-bold">
+                  RESCUE <RotateCcwIcon />
+                </Button>
+              </AlertDialogTrigger>
+            )}
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {`Confirm ${verb}`}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  {`Are you sure you want to ${verb.toLowerCase()} this workflow run?`}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={async () => {
+                  if (wfRun.status === LHStatus.RUNNING) {
+                    await stopWfRun(tenantId, wfRun.id!)
+                  } else if (wfRun.status === LHStatus.HALTED) {
+                    await resumeWfRun(tenantId, wfRun.id!)
+                  } else if (wfRun.status === LHStatus.ERROR) {
+                    await rescueWfRun(tenantId, wfRun.id!)
+                  }
+                }}>Confirm</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>}
+      </div>
       <div className="mb-4 min-h-[800px] min-w-full rounded border-2 border-slate-100 bg-slate-50 shadow-inner">
         <ReactFlow
           nodes={nodes}

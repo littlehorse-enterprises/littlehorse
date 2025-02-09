@@ -1,3 +1,4 @@
+'use client'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { getTaskDef } from '@/app/(authenticated)/[tenantId]/taskDef/[name]/getTaskDef'
 import { getVariable, getVariableValue } from '@/app/utils'
@@ -5,25 +6,32 @@ import { useQuery } from '@tanstack/react-query'
 import { NodeRun, TaskNode } from 'littlehorse-client/proto'
 import { ExternalLinkIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
-import { FC } from 'react'
-import { NodeRunsList } from '../../NodeRunsList'
+import { FC, useState } from 'react'
 import { NodeDetails } from '../NodeDetails'
+import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
+import { Duration } from '../DataGroupComponents/Duration'
+import { Entry } from '../DataGroupComponents/Entry'
+import { Status } from '../DataGroupComponents/Status'
 import { getTaskRun } from './getTaskRun'
+import { DiagramDataGroupIndexer } from '../DataGroupComponents/DiagramDataGroupIndexer'
+import { Result } from '../DataGroupComponents/Result'
 import { OverflowText } from '@/app/(authenticated)/[tenantId]/components/OverflowText'
-import { cn } from '@/components/utils'
+import { ViewVariableAssignments, ViewVariables } from '../DataGroupComponents/Variables'
 
 export const TaskDetails: FC<{
   taskNode?: TaskNode
   nodeRun?: NodeRun
   selected: boolean
-  nodeRunsList: [NodeRun]
+  nodeRunsList: NodeRun[]
 }> = ({ taskNode, nodeRun, selected, nodeRunsList }) => {
+  const [nodeRunsIndex, setNodeRunsIndex] = useState(0)
+  const [taskAttemptIndex, setTaskAttemptIndex] = useState(0)
   const tenantId = useParams().tenantId as string
-  const { data } = useQuery({
-    queryKey: ['taskRun', nodeRun, tenantId],
+  const { data: taskRunData } = useQuery({
+    queryKey: ['taskRun', nodeRun, tenantId, nodeRunsIndex],
     queryFn: async () => {
-      if (!nodeRun?.task?.taskRunId) return null
-      return await getTaskRun({ tenantId, ...nodeRun.task.taskRunId })
+      if (!nodeRunsList[nodeRunsIndex].task?.taskRunId) return null
+      return await getTaskRun({ tenantId, ...nodeRunsList[nodeRunsIndex].task.taskRunId })
     },
   })
 
@@ -42,63 +50,63 @@ export const TaskDetails: FC<{
 
   if (!taskNode || (!taskDef && !nodeRun?.task?.taskRunId)) return null
 
-  const lastLogOutput = data?.attempts[data?.attempts.length - 1]?.logOutput?.str
+  const message = taskRunData?.attempts[taskAttemptIndex].error?.message ?? taskRunData?.attempts[taskAttemptIndex].exception?.message ?? String(getVariableValue(taskRunData?.attempts[taskAttemptIndex].output)) ?? undefined
+  const resultString = taskRunData?.attempts[taskAttemptIndex].error ? "ERROR" : taskRunData?.attempts[taskAttemptIndex].exception ? "EXCEPTION" : taskRunData?.attempts[taskAttemptIndex].output ? "OUTPUT" : undefined
 
   return (
-    <NodeDetails>
-      <div className="mb-2">
-        <div className="flex items-center gap-1 whitespace-nowrap text-nowrap">
-          <h3 className="font-bold">TaskDef</h3>
-          {nodeRun ? (
-            <TaskLink taskName={taskNode.taskDefId?.name} />
-          ) : (
-            <>
-              {taskNode.taskDefId && <TaskLink taskName={taskNode.taskDefId.name} />}
-              {taskNode.dynamicTask && <>{getVariable(taskNode.dynamicTask)}</>}
-            </>
-          )}
-        </div>
-        <div className="flex gap-2 text-nowrap">
-          <div className="flex items-center justify-center">Timeout: {taskNode.timeoutSeconds}s</div>
-          <div className="flex items-center justify-center">Retries: {taskNode.retries}</div>
-        </div>
-      </div>
-      {taskNode.variables && taskNode.variables.length > 0 && !(nodeRunsList?.length > 1) && (
-        <div className="whitespace-nowrap">
-          <h3 className="font-bold">Inputs</h3>
-          <ol className="list-inside list-decimal">
-            {taskNode.variables.map((variable, i) => (
-              <li className="mb-1 flex gap-1" key={`variable.${i}`}>
-                <div className="bg-gray-200 px-2 font-mono text-fuchsia-500">
-                  {data?.inputVariables?.[i]?.varName ??
-                    taskDef?.inputVars[i].name ??
-                    variable.variableName ??
-                    `arg${i}`}
+    <NodeDetails nodeRunList={nodeRunsList} nodeRunsIndex={nodeRunsIndex} setNodeRunsIndex={setNodeRunsIndex}>
+      {nodeRun ? (
+        taskRunData ? (
+          <>
+            <DiagramDataGroup label="TaskRun">
+              <Entry label="Status:">
+                <Status status={taskRunData.status} />
+              </Entry>
+              <Entry label="Timeout:">
+                {taskRunData.timeoutSeconds}
+              </Entry>
+              <Entry label="Max Attempts:">
+                {taskRunData.totalAttempts}
+              </Entry>
+              <Entry label="Input Variables:">
+                <ViewVariables variables={taskRunData.inputVariables} />
+              </Entry>
+            </DiagramDataGroup>
+
+            <DiagramDataGroup label={taskRunData.attempts.length > 1 ? `TaskAttempt #${taskAttemptIndex}` : "TaskAttempt"} from="TaskRun">
+              <DiagramDataGroupIndexer index={taskAttemptIndex} setIndex={setTaskAttemptIndex} indexes={taskRunData.attempts.length} />
+              <Entry label="Status:">
+                <Status status={taskRunData.attempts[taskAttemptIndex].status} />
+              </Entry>
+              {message && resultString &&
+                <Entry label="Result:">
+                  <Result resultString={resultString} resultMessage={message} variant={resultString === "ERROR" ? "error" : undefined} />
+                </Entry>
+              }
+              <Entry label="Worker Log Output:">
+                <div className={"bg-gray-300 rounded-lg text-center border border-black max-w-52 text-nowrap min-h-5"} >
+                  <OverflowText text={taskRunData.attempts[taskAttemptIndex].logOutput?.str ?? "-"} className="text-xs" variant={resultString === "ERROR" ? "error" : undefined} />
                 </div>
-                <div> = </div>
-                <div className="truncate">
-                  {data?.inputVariables?.[i]?.value
-                    ? getVariableValue(data?.inputVariables[i].value)
-                    : getVariable(variable)}
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
+              </Entry>
+              <Entry separator>
+                <Duration arrival={taskRunData.attempts[taskAttemptIndex].startTime} ended={taskRunData.attempts[taskAttemptIndex].endTime} />
+              </Entry>
+            </DiagramDataGroup>
+          </>
+        ) : null
+      ) : (
+        <DiagramDataGroup label="TaskDef">
+          <Entry label="Retries">
+            {taskNode?.retries}
+          </Entry>
+          <Entry label="Timeout">
+            {taskNode?.timeoutSeconds}
+          </Entry>
+          <Entry label="Variables">
+            <ViewVariableAssignments variables={taskNode?.variables} />
+          </Entry>
+        </DiagramDataGroup>
       )}
-      {nodeRun && (
-        <div className={cn('mt-2 flex flex-col rounded bg-green-200 p-1', { 'bg-red-200': nodeRun.errorMessage })}>
-          <h3 className="font-bold">{nodeRun.errorMessage ? 'TaskRun Error' : 'No TaskRun Error'}</h3>
-          <OverflowText variant="error" className="w-36 text-nowrap" text={nodeRun.errorMessage ?? ''} />
-        </div>
-      )}
-      {nodeRun && (
-        <div className={'mt-2 flex flex-col rounded bg-gray-200 p-1'}>
-          <p className="text-xs font-bold">{lastLogOutput ? 'Worker Log Output' : 'No Worker Log Output'}</p>
-          <OverflowText className="w-36 text-nowrap" text={lastLogOutput ?? ''} />
-        </div>
-      )}
-      <NodeRunsList nodeRuns={nodeRunsList} />
     </NodeDetails>
   )
 }

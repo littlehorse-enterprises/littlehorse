@@ -10,6 +10,7 @@ import { NodeDetails } from '../NodeDetails'
 import { useParams, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { ExternalLinkButton } from '../../ExternalLinkButton'
+import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 
 const Node: FC<NodeProps> = ({ data, selected }) => {
   const router = useRouter()
@@ -20,23 +21,24 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
 
   return (
     <>
-      <NodeDetails>
-        <div className="flex flex-col">
-          <h3 className="font-bold">UserTask</h3>
-          <ExternalLinkButton href={`/userTaskDef/${userTask.userTaskDefName}`} label={userTask.userTaskDefName} />
-          {nodeRun && (
-            <ExternalLinkButton
-              href={`/userTaskDef/audit/${nodeRun.id?.wfRunId?.id}/${nodeRun.userTask?.userTaskRunId?.userTaskGuid}`}
-              label="Audit Log"
-            />
-          )}
+      <NodeDetails nodeRunList={data.nodeRunsList}>
+        <DiagramDataGroup label="UserTask">
+          <div className="flex flex-col">
+            <ExternalLinkButton href={`/userTaskDef/${userTask.userTaskDefName}`} label={userTask.userTaskDefName} />
+            {nodeRun && (
+              <ExternalLinkButton
+                href={`/userTaskDef/audit/${nodeRun.id?.wfRunId?.id}/${nodeRun.userTask?.userTaskRunId?.userTaskGuid}`}
+                label="Audit Log"
+              />
+            )}
 
-          {nodeRun ? (
-            <NodeRunsList nodeRuns={nodeRunsList} userTaskNode={userTask} nodeRun={nodeRun} />
-          ) : (
-            <UserTaskDefDetails userTask={userTask} />
-          )}
-        </div>
+            {nodeRun ? (
+              <NodeRunsList nodeRuns={nodeRunsList} userTaskNode={userTask} nodeRun={nodeRun} />
+            ) : (
+              <UserTaskDefDetails userTask={userTask} />
+            )}
+          </div>
+        </DiagramDataGroup>
       </NodeDetails>
       <Fade fade={fade} status={nodeRunsList?.[nodeRunsList.length - 1]?.status}>
         <div
