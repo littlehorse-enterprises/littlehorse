@@ -70,8 +70,7 @@ public class ExpressionTest {
         verifier.prepareRun(expressionWf, Arg.of("thing-to-divide-by-zero", 1))
                 .waitForStatus(LHStatus.ERROR)
                 .thenVerifyLastNodeRun(0, nodeRun -> {
-                    // TODO: Issue #1083 will allow us to uncomment this assertion.
-                    // Assertions.assertEquals(LHStatus.ERROR, nodeRun.getStatus());
+                    Assertions.assertEquals(LHStatus.ERROR, nodeRun.getStatus());
                     Failure mathTest = nodeRun.getFailures(0);
                     Assertions.assertEquals(mathTest.getFailureName(), LHErrorType.VAR_SUB_ERROR.toString());
                     Assertions.assertTrue(mathTest.getMessage().toLowerCase().contains("divide by zero"));
@@ -135,8 +134,7 @@ public class ExpressionTest {
                         expressionWf, Arg.of("quantity", 5), Arg.of("price", 2.5), Arg.of("discount-percentage", null))
                 .waitForStatus(LHStatus.ERROR)
                 .thenVerifyLastNodeRun(0, nodeRun -> {
-                    // TODO: Issue #1083 will allow us to uncomment this assertion.
-                    // Assertions.assertEquals(LHStatus.ERROR, nodeRun.getStatus());
+                    Assertions.assertEquals(LHStatus.ERROR, nodeRun.getStatus());
                     Failure mathTest = nodeRun.getFailures(0);
                     Assertions.assertEquals(mathTest.getFailureName(), LHErrorType.VAR_SUB_ERROR.toString());
                     Assertions.assertTrue(mathTest.getMessage().toLowerCase().contains("value_not_set")
