@@ -71,7 +71,7 @@ public class JsonVariableStorageManagerTest {
         initializeDependencies();
 
         // JSON_OBJ test
-        String content = new String(Files.readAllBytes(Paths.get("./src/test/resources/json-variables-example.json")));
+        String content = Files.readString(Paths.get("./src/test/resources/json-variables-example.json"));
         @SuppressWarnings("unchecked")
         Map<String, Object> map = gson.fromJson(content, Map.class);
 
