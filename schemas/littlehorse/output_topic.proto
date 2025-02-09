@@ -1,0 +1,64 @@
+syntax = "proto3";
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "object_id.proto";
+import "common_enums.proto";
+import "workflow_event.proto";
+
+option go_package = ".;lhproto";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
+
+// An OutputTopicRecord is a single record in the output topic, which can
+// denote one of several different types of events.
+message OutputTopicRecord {
+    // The ID of the WfRun that produced this record.
+    WfRunId id = 1;
+
+    // The time at which the event occurred.
+    google.protobuf.Timestamp timestamp = 2;
+
+    oneof payload {
+        // Records the results of a TaskRun in the Output Topic.
+        TaskRunExecutedRecord task_run_executed = 3;
+
+        // Records a WorkflowEvent that was thrown into the Output Topic.
+        WorkflowEventRecord workflow_event = 4;
+
+        // Records an update to a WfRun which is treated as an "Entity", with
+        // the public variables of the WfRun treated as fields in the Entity.
+        WfRunEntityRecord wf_run_entity = 5;
+    }
+}
+
+// Record to state that a TaskRun was started.
+message TaskRunExecutedRecord {
+    // The TaskRun that was executed. All information about TaskAttempts,
+    // input variables, start times, failures, etc is included in the
+    // TaskRun itself.
+    TaskRun task_run = 1;
+}
+
+// Record in the Output Topic to denote that a WorkflowEvent was thrown
+// by a WfRun.
+message WorkflowEventRecord {
+    // The WorkflowEvent that was thrown.
+    WorkflowEvent workflow_event = 1;
+
+    // The WfSpecId for the WfRun that threw the WorkflowEvent.
+    WfSpecId wf_spec_id = 2;
+}
+
+// Represents a snapshot of a WfRun as an entity. Used in the Output Topic
+// to allow exporting a WfRun's public variables into external systems. This
+// only includes Variables that are of type `PUBLIC_VAR` and in the entrypoint
+// ThreadRun.
+message WfRunEntityRecord {
+    // The current status of the WfRun.
+    LHStatus status = 1;
+
+    // The public Variablesi n the entrypoint ThreadRun
+    map<String, Variable> public_variables = 2;
+}
