@@ -12,7 +12,7 @@ export const accessLevels: { [key in WfRunVariableAccessLevel]: string } = {
 }
 
 export const Variables: FC<VariablesProps> = ({ variableDefs }) => {
-  if (variableDefs.length === 0) return <></>
+  if (variableDefs.length === 0) return <p className="font-semibold">No variables</p>
   return (
     <div className="">
       <h2 className="text-md mb-2 font-bold">Variables</h2>
