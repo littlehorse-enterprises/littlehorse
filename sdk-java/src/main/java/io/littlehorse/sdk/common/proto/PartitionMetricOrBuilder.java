@@ -60,4 +60,19 @@ public interface PartitionMetricOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.PartitionWindowedMetricOrBuilder getActiveWindowsOrBuilder(
       int index);
+
+  /**
+   * <code>.google.protobuf.Duration window_length = 4;</code>
+   * @return Whether the windowLength field is set.
+   */
+  boolean hasWindowLength();
+  /**
+   * <code>.google.protobuf.Duration window_length = 4;</code>
+   * @return The windowLength.
+   */
+  com.google.protobuf.Duration getWindowLength();
+  /**
+   * <code>.google.protobuf.Duration window_length = 4;</code>
+   */
+  com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder();
 }

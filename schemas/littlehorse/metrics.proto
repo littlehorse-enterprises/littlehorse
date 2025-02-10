@@ -3,6 +3,7 @@ syntax = "proto3";
 package littlehorse;
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -13,6 +14,7 @@ option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 message Metric {
   MetricId id = 1;
   google.protobuf.Timestamp created_at = 2;
+  google.protobuf.Duration window_length = 3;
 }
 
 message MetricId {
@@ -35,6 +37,7 @@ message PartitionMetric {
   PartitionMetricId id = 1;
   google.protobuf.Timestamp created_at = 2;
   repeated PartitionWindowedMetric active_windows = 3;
+  google.protobuf.Duration window_length = 4;
 }
 
 message PartitionWindowedMetric {

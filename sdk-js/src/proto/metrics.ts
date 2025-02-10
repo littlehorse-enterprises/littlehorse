@@ -6,6 +6,7 @@
 
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
+import { Duration } from "./google/protobuf/duration";
 import { Timestamp } from "./google/protobuf/timestamp";
 
 export enum MeasurableObject {
@@ -83,6 +84,7 @@ export function metricTypeToNumber(object: MetricType): number {
 export interface Metric {
   id: MetricId | undefined;
   createdAt: string | undefined;
+  windowLength: Duration | undefined;
 }
 
 export interface MetricId {
@@ -94,6 +96,7 @@ export interface PartitionMetric {
   id: PartitionMetricId | undefined;
   createdAt: string | undefined;
   activeWindows: PartitionWindowedMetric[];
+  windowLength: Duration | undefined;
 }
 
 export interface PartitionWindowedMetric {
@@ -106,7 +109,7 @@ export interface PartitionMetricId {
 }
 
 function createBaseMetric(): Metric {
-  return { id: undefined, createdAt: undefined };
+  return { id: undefined, createdAt: undefined, windowLength: undefined };
 }
 
 export const Metric = {
@@ -116,6 +119,9 @@ export const Metric = {
     }
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
+    }
+    if (message.windowLength !== undefined) {
+      Duration.encode(message.windowLength, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -141,6 +147,13 @@ export const Metric = {
 
           message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.windowLength = Duration.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -157,6 +170,9 @@ export const Metric = {
     const message = createBaseMetric();
     message.id = (object.id !== undefined && object.id !== null) ? MetricId.fromPartial(object.id) : undefined;
     message.createdAt = object.createdAt ?? undefined;
+    message.windowLength = (object.windowLength !== undefined && object.windowLength !== null)
+      ? Duration.fromPartial(object.windowLength)
+      : undefined;
     return message;
   },
 };
@@ -218,7 +234,7 @@ export const MetricId = {
 };
 
 function createBasePartitionMetric(): PartitionMetric {
-  return { id: undefined, createdAt: undefined, activeWindows: [] };
+  return { id: undefined, createdAt: undefined, activeWindows: [], windowLength: undefined };
 }
 
 export const PartitionMetric = {
@@ -231,6 +247,9 @@ export const PartitionMetric = {
     }
     for (const v of message.activeWindows) {
       PartitionWindowedMetric.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.windowLength !== undefined) {
+      Duration.encode(message.windowLength, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -263,6 +282,13 @@ export const PartitionMetric = {
 
           message.activeWindows.push(PartitionWindowedMetric.decode(reader, reader.uint32()));
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.windowLength = Duration.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -280,6 +306,9 @@ export const PartitionMetric = {
     message.id = (object.id !== undefined && object.id !== null) ? PartitionMetricId.fromPartial(object.id) : undefined;
     message.createdAt = object.createdAt ?? undefined;
     message.activeWindows = object.activeWindows?.map((e) => PartitionWindowedMetric.fromPartial(e)) || [];
+    message.windowLength = (object.windowLength !== undefined && object.windowLength !== null)
+      ? Duration.fromPartial(object.windowLength)
+      : undefined;
     return message;
   },
 };

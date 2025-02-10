@@ -12,6 +12,7 @@ import io.littlehorse.sdk.common.proto.MetricType;
 import io.littlehorse.sdk.common.proto.PutMetricRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataCommandExecution;
+import java.time.Duration;
 
 public class PutMetricRequestModel extends MetadataSubCommand<PutMetricRequest> {
 
@@ -33,7 +34,7 @@ public class PutMetricRequestModel extends MetadataSubCommand<PutMetricRequest> 
     @Override
     public Metric process(MetadataCommandExecution executionContext) {
         String id = LHUtil.generateGuid();
-        MetricModel metricModel = new MetricModel(new MetricIdModel(measurable, metricType));
+        MetricModel metricModel = new MetricModel(new MetricIdModel(measurable, metricType), Duration.ofMinutes(1));
         executionContext.metadataManager().put(metricModel);
         return metricModel.toProto().build();
     }

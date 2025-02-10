@@ -1,4 +1,5 @@
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
+from google.protobuf import duration_pb2 as _duration_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -24,12 +25,14 @@ AVG: MetricType
 RATIO: MetricType
 
 class Metric(_message.Message):
-    __slots__ = ["id", "created_at"]
+    __slots__ = ["id", "created_at", "window_length"]
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
+    WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
     id: MetricId
     created_at: _timestamp_pb2.Timestamp
-    def __init__(self, id: _Optional[_Union[MetricId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    window_length: _duration_pb2.Duration
+    def __init__(self, id: _Optional[_Union[MetricId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., window_length: _Optional[_Union[_duration_pb2.Duration, _Mapping]] = ...) -> None: ...
 
 class MetricId(_message.Message):
     __slots__ = ["measurable", "type"]
@@ -40,14 +43,16 @@ class MetricId(_message.Message):
     def __init__(self, measurable: _Optional[_Union[MeasurableObject, str]] = ..., type: _Optional[_Union[MetricType, str]] = ...) -> None: ...
 
 class PartitionMetric(_message.Message):
-    __slots__ = ["id", "created_at", "active_windows"]
+    __slots__ = ["id", "created_at", "active_windows", "window_length"]
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     ACTIVE_WINDOWS_FIELD_NUMBER: _ClassVar[int]
+    WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
     id: PartitionMetricId
     created_at: _timestamp_pb2.Timestamp
     active_windows: _containers.RepeatedCompositeFieldContainer[PartitionWindowedMetric]
-    def __init__(self, id: _Optional[_Union[PartitionMetricId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., active_windows: _Optional[_Iterable[_Union[PartitionWindowedMetric, _Mapping]]] = ...) -> None: ...
+    window_length: _duration_pb2.Duration
+    def __init__(self, id: _Optional[_Union[PartitionMetricId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., active_windows: _Optional[_Iterable[_Union[PartitionWindowedMetric, _Mapping]]] = ..., window_length: _Optional[_Union[_duration_pb2.Duration, _Mapping]] = ...) -> None: ...
 
 class PartitionWindowedMetric(_message.Message):
     __slots__ = ["value", "window_start"]

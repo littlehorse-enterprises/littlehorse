@@ -117,6 +117,11 @@ public class LHUtil {
         return new Date((time.getTime() / windowLengthMillis) * windowLengthMillis);
     }
 
+    public static Date getWindowStart(long time, Duration windowLength) {
+        long windowLengthMillis = windowLength.toMillis();
+        return new Date((time / windowLengthMillis) * windowLengthMillis);
+    }
+
     public static long getWindowLengthMillis(MetricsWindowLength type) {
         switch (type) {
             case MINUTES_5:

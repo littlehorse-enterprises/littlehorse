@@ -36,4 +36,19 @@ public interface MetricOrBuilder extends
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
+
+  /**
+   * <code>.google.protobuf.Duration window_length = 3;</code>
+   * @return Whether the windowLength field is set.
+   */
+  boolean hasWindowLength();
+  /**
+   * <code>.google.protobuf.Duration window_length = 3;</code>
+   * @return The windowLength.
+   */
+  com.google.protobuf.Duration getWindowLength();
+  /**
+   * <code>.google.protobuf.Duration window_length = 3;</code>
+   */
+  com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder();
 }

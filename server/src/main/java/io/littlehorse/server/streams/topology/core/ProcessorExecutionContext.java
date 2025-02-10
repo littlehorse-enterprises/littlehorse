@@ -141,6 +141,9 @@ public class ProcessorExecutionContext implements ExecutionContext {
      * decide when to call this method
      */
     public void endExecution() {
+        if (metricsAggregator != null) {
+            metricsAggregator.maybePersistState();
+        }
         if (storageManager != null) {
             storageManager.commit();
         }
@@ -148,9 +151,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
             currentTaskManager.forwardPendingTimers();
             currentTaskManager.forwardPendingTasks();
         }
-        if (metricsAggregator != null) {
-            metricsAggregator.maybePersistState();
-        }
+
         for (WorkflowEventModel event : eventsToThrow) {
             server.onEventThrown(event);
         }

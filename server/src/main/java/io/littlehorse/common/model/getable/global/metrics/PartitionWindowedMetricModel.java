@@ -10,8 +10,10 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+@Slf4j
 public class PartitionWindowedMetricModel extends LHSerializable<PartitionWindowedMetric>
         implements Comparable<PartitionWindowedMetricModel> {
 
@@ -20,10 +22,10 @@ public class PartitionWindowedMetricModel extends LHSerializable<PartitionWindow
 
     public PartitionWindowedMetricModel() {}
 
-    public PartitionWindowedMetricModel(double initialValue) {
+    public PartitionWindowedMetricModel(double initialValue, long currentTimeMillis, Duration windowLength) {
         this.value = initialValue;
         this.windowStart = LocalDateTime.ofInstant(
-                LHUtil.getWindowStart(new Date(), Duration.ofMinutes(1)).toInstant(), ZoneId.systemDefault());
+                LHUtil.getWindowStart(currentTimeMillis, windowLength).toInstant(), ZoneId.systemDefault());
     }
 
     @Override
@@ -52,12 +54,21 @@ public class PartitionWindowedMetricModel extends LHSerializable<PartitionWindow
         return o.windowStart.compareTo(windowStart);
     }
 
-    boolean windowClosed() {
-        long elapsed = Duration.between(windowStart, LocalDateTime.now()).toMillis();
-        return elapsed > Duration.ofMinutes(1).toMillis();
+    boolean windowClosed(Duration windowLength, LocalDateTime currentTime) {
+        long elapsed = Duration.between(windowStart, currentTime).toMillis();
+        boolean closed = elapsed > windowLength.toMillis();
+        if (closed) {
+            log.info("Window closed, creating a new one. Elapsed time: {} ms", elapsed);
+        }
+        return closed;
     }
 
     public void increment() {
+        log.info("increment value: {}", value);
         value++;
+    }
+
+    double getValue() {
+        return value;
     }
 }

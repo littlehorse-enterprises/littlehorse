@@ -132,6 +132,32 @@ private static final long serialVersionUID = 0L;
     return activeWindows_.get(index);
   }
 
+  public static final int WINDOW_LENGTH_FIELD_NUMBER = 4;
+  private com.google.protobuf.Duration windowLength_;
+  /**
+   * <code>.google.protobuf.Duration window_length = 4;</code>
+   * @return Whether the windowLength field is set.
+   */
+  @java.lang.Override
+  public boolean hasWindowLength() {
+    return windowLength_ != null;
+  }
+  /**
+   * <code>.google.protobuf.Duration window_length = 4;</code>
+   * @return The windowLength.
+   */
+  @java.lang.Override
+  public com.google.protobuf.Duration getWindowLength() {
+    return windowLength_ == null ? com.google.protobuf.Duration.getDefaultInstance() : windowLength_;
+  }
+  /**
+   * <code>.google.protobuf.Duration window_length = 4;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder() {
+    return windowLength_ == null ? com.google.protobuf.Duration.getDefaultInstance() : windowLength_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -155,6 +181,9 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < activeWindows_.size(); i++) {
       output.writeMessage(3, activeWindows_.get(i));
     }
+    if (windowLength_ != null) {
+      output.writeMessage(4, getWindowLength());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -175,6 +204,10 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < activeWindows_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, activeWindows_.get(i));
+    }
+    if (windowLength_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, getWindowLength());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -203,6 +236,11 @@ private static final long serialVersionUID = 0L;
     }
     if (!getActiveWindowsList()
         .equals(other.getActiveWindowsList())) return false;
+    if (hasWindowLength() != other.hasWindowLength()) return false;
+    if (hasWindowLength()) {
+      if (!getWindowLength()
+          .equals(other.getWindowLength())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -225,6 +263,10 @@ private static final long serialVersionUID = 0L;
     if (getActiveWindowsCount() > 0) {
       hash = (37 * hash) + ACTIVE_WINDOWS_FIELD_NUMBER;
       hash = (53 * hash) + getActiveWindowsList().hashCode();
+    }
+    if (hasWindowLength()) {
+      hash = (37 * hash) + WINDOW_LENGTH_FIELD_NUMBER;
+      hash = (53 * hash) + getWindowLength().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -374,6 +416,11 @@ private static final long serialVersionUID = 0L;
         activeWindowsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000004);
+      windowLength_ = null;
+      if (windowLengthBuilder_ != null) {
+        windowLengthBuilder_.dispose();
+        windowLengthBuilder_ = null;
+      }
       return this;
     }
 
@@ -429,6 +476,11 @@ private static final long serialVersionUID = 0L;
         result.createdAt_ = createdAtBuilder_ == null
             ? createdAt_
             : createdAtBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.windowLength_ = windowLengthBuilder_ == null
+            ? windowLength_
+            : windowLengthBuilder_.build();
       }
     }
 
@@ -508,6 +560,9 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
+      if (other.hasWindowLength()) {
+        mergeWindowLength(other.getWindowLength());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -561,6 +616,13 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 26
+            case 34: {
+              input.readMessage(
+                  getWindowLengthFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1054,6 +1116,125 @@ private static final long serialVersionUID = 0L;
         activeWindows_ = null;
       }
       return activeWindowsBuilder_;
+    }
+
+    private com.google.protobuf.Duration windowLength_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Duration, com.google.protobuf.Duration.Builder, com.google.protobuf.DurationOrBuilder> windowLengthBuilder_;
+    /**
+     * <code>.google.protobuf.Duration window_length = 4;</code>
+     * @return Whether the windowLength field is set.
+     */
+    public boolean hasWindowLength() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>.google.protobuf.Duration window_length = 4;</code>
+     * @return The windowLength.
+     */
+    public com.google.protobuf.Duration getWindowLength() {
+      if (windowLengthBuilder_ == null) {
+        return windowLength_ == null ? com.google.protobuf.Duration.getDefaultInstance() : windowLength_;
+      } else {
+        return windowLengthBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.google.protobuf.Duration window_length = 4;</code>
+     */
+    public Builder setWindowLength(com.google.protobuf.Duration value) {
+      if (windowLengthBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        windowLength_ = value;
+      } else {
+        windowLengthBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Duration window_length = 4;</code>
+     */
+    public Builder setWindowLength(
+        com.google.protobuf.Duration.Builder builderForValue) {
+      if (windowLengthBuilder_ == null) {
+        windowLength_ = builderForValue.build();
+      } else {
+        windowLengthBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Duration window_length = 4;</code>
+     */
+    public Builder mergeWindowLength(com.google.protobuf.Duration value) {
+      if (windowLengthBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) != 0) &&
+          windowLength_ != null &&
+          windowLength_ != com.google.protobuf.Duration.getDefaultInstance()) {
+          getWindowLengthBuilder().mergeFrom(value);
+        } else {
+          windowLength_ = value;
+        }
+      } else {
+        windowLengthBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Duration window_length = 4;</code>
+     */
+    public Builder clearWindowLength() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      windowLength_ = null;
+      if (windowLengthBuilder_ != null) {
+        windowLengthBuilder_.dispose();
+        windowLengthBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Duration window_length = 4;</code>
+     */
+    public com.google.protobuf.Duration.Builder getWindowLengthBuilder() {
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return getWindowLengthFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.google.protobuf.Duration window_length = 4;</code>
+     */
+    public com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder() {
+      if (windowLengthBuilder_ != null) {
+        return windowLengthBuilder_.getMessageOrBuilder();
+      } else {
+        return windowLength_ == null ?
+            com.google.protobuf.Duration.getDefaultInstance() : windowLength_;
+      }
+    }
+    /**
+     * <code>.google.protobuf.Duration window_length = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Duration, com.google.protobuf.Duration.Builder, com.google.protobuf.DurationOrBuilder> 
+        getWindowLengthFieldBuilder() {
+      if (windowLengthBuilder_ == null) {
+        windowLengthBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Duration, com.google.protobuf.Duration.Builder, com.google.protobuf.DurationOrBuilder>(
+                getWindowLength(),
+                getParentForChildren(),
+                isClean());
+        windowLength_ = null;
+      }
+      return windowLengthBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

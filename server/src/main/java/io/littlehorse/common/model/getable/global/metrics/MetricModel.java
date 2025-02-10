@@ -12,32 +12,44 @@ import io.littlehorse.sdk.common.proto.Metric;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import lombok.Getter;
 
 public class MetricModel extends MetadataGetable<Metric> {
 
     private MetricIdModel id;
     private Date createdAt;
 
+    @Getter
+    private Duration windowLength;
+
     public MetricModel() {}
 
-    public MetricModel(MetricIdModel id) {
+    public MetricModel(MetricIdModel id, Duration windowLength) {
         this.id = id;
         this.createdAt = new Date();
+        this.windowLength = windowLength;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         Metric p = (Metric) proto;
-        id = LHSerializable.fromProto(p.getId(), MetricIdModel.class, context);
-        createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
+        this.id = LHSerializable.fromProto(p.getId(), MetricIdModel.class, context);
+        this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
+        this.windowLength = Duration.ofSeconds(p.getWindowLength().getSeconds());
     }
 
     @Override
     public Metric.Builder toProto() {
-        return Metric.newBuilder().setId(id.toProto()).setCreatedAt(LHUtil.fromDate(createdAt));
+        return Metric.newBuilder()
+                .setId(id.toProto())
+                .setCreatedAt(LHUtil.fromDate(createdAt))
+                .setWindowLength(com.google.protobuf.Duration.newBuilder()
+                        .setSeconds(this.windowLength.getSeconds())
+                        .build());
     }
 
     @Override
