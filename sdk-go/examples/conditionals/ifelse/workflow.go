@@ -2,6 +2,7 @@ package ifelse
 
 import (
 	"fmt"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
@@ -24,7 +25,7 @@ func Donut() string {
 }
 
 func DonutWorkflow(wf *littlehorse.WorkflowThread) {
-	numDonuts := wf.AddVariable("number-of-donuts", lhproto.VariableType_INT)
+	numDonuts := wf.DeclareInt("number-of-donuts")
 
 	wf.DoIfElse(
 		wf.Condition(numDonuts, lhproto.Comparator_LESS_THAN, 10),

@@ -15,9 +15,13 @@ public class WfRunVariableTest
     {
         LHLoggerFactoryProvider.Initialize(null);
         var workflowName = "TestWorkflow";
-        var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, null!);
-        var mockAction = new Mock<Action<WorkflowThread>>();
-        _parentWfThread = new WorkflowThread(workflowName, mockWorkflow.Object, mockAction.Object);
+        void Entrypoint(WorkflowThread thread)
+        {
+            
+        }
+        Action<WorkflowThread> action = Entrypoint; 
+        var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, action);
+        _parentWfThread = new WorkflowThread(mockWorkflow.Object, Entrypoint);
     }
     
     [Fact]

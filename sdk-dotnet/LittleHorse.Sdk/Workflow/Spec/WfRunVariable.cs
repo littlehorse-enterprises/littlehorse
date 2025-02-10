@@ -16,7 +16,7 @@ public class WfRunVariable
     private bool _searchable;
     private bool _masked;
     private readonly List<JsonIndex> _jsonIndexes;
-    public string? JsonPath { get; set; }
+    public string? JsonPath { get; private set; }
     
     public WfRunVariable(string name, object typeOrDefaultVal, WorkflowThread parent) 
     {

@@ -360,7 +360,7 @@ func TestAssignNodeOutput(t *testing.T) {
 
 func TestMutationsShouldUseVariableAssignment(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
-		myVar := t.DeclareStr("my-var", nil)
+		myVar := t.DeclareStr("my-var")
 		myVar.Assign("some-value")
 	}, "my-workflow")
 
@@ -376,7 +376,7 @@ func TestMutationsShouldUseVariableAssignment(t *testing.T) {
 
 func TestNodeOutputMutationsShouldUseVariableAssignment(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
-		myVar := t.DeclareStr("my-var", nil)
+		myVar := t.DeclareStr("my-var")
 		myVar.Assign(t.Execute("use-the-force"))
 	}, "my-workflow")
 
@@ -392,7 +392,7 @@ func TestNodeOutputMutationsShouldUseVariableAssignment(t *testing.T) {
 
 func TestNodeOutputMutationsShouldCarryJsonPath(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
-		myVar := t.DeclareStr("my-var", nil)
+		myVar := t.DeclareStr("my-var")
 		myVar.Assign(t.Execute("use-the-force").Output.JsonPath("$.hello.there"))
 	}, "my-workflow")
 
@@ -408,8 +408,8 @@ func TestNodeOutputMutationsShouldCarryJsonPath(t *testing.T) {
 
 func TestAssigningVariablesToOtherVariablesShouldUseVariableAssignment(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
-		myVar := t.DeclareStr("my-var", nil)
-		otherVar := t.DeclareStr("other-var", nil)
+		myVar := t.DeclareStr("my-var")
+		otherVar := t.DeclareStr("other-var")
 		myVar.Assign(otherVar)
 	}, "my-workflow")
 
@@ -425,8 +425,8 @@ func TestAssigningVariablesToOtherVariablesShouldUseVariableAssignment(t *testin
 
 func TestAssigningVariablesToOtherVariablesShouldCarryJsonPath(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
-		myVar := t.DeclareStr("my-var", nil)
-		otherVar := t.DeclareJsonObj("other-var", nil)
+		myVar := t.DeclareStr("my-var")
+		otherVar := t.DeclareJsonObj("other-var")
 		myVar.Assign(otherVar.JsonPath("$.hello.there"))
 	}, "my-workflow")
 

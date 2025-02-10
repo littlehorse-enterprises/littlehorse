@@ -6,34 +6,32 @@ import { NodeProps } from '.'
 import { NodeRunsList } from '../NodeRunsList'
 import { Fade } from './Fade'
 import { NodeDetails } from './NodeDetails'
-
+import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
 const Node: FC<NodeProps> = ({ data }) => {
   const { fade, nodeRunsList } = data
 
   return (
     <>
-      <NodeDetails>
-        <div className="flex items-center gap-1 text-nowrap">
-          <h3 className="font-bold">WaitForThreads</h3>
-        </div>
-        {data.waitForThreads?.threadList && (
-          <div className="whitespace-nowrap">{getVariable(data.waitForThreads?.threadList)}</div>
-        )}
-        {data.waitForThreads?.threads?.threads.map(thread => (
-          <div
-            key={`${getVariable(thread.threadRunNumber)}`}
-            className="flex items-center justify-center whitespace-nowrap"
-          >
-            {getVariable(thread.threadRunNumber)}
-          </div>
-        ))}
-        {data.nodeRun && data.nodeRun.errorMessage && (
-          <div className="mt-2 flex flex-col rounded bg-red-200 p-1">
-            <h3 className="font-bold">Error</h3>
-            <pre className="overflow-x-auto">{data.nodeRun.errorMessage}</pre>
-          </div>
-        )}
-        <NodeRunsList nodeRuns={nodeRunsList} />
+      <NodeDetails nodeRunList={nodeRunsList}>
+        <DiagramDataGroup label="WaitForThreads">
+          {data.waitForThreads?.threadList && (
+            <div className="whitespace-nowrap">{getVariable(data.waitForThreads?.threadList)}</div>
+          )}
+          {data.waitForThreads?.threads?.threads.map(thread => (
+            <div
+              key={`${getVariable(thread.threadRunNumber)}`}
+              className="flex items-center justify-center whitespace-nowrap"
+            >
+              {getVariable(thread.threadRunNumber)}
+            </div>
+          ))}
+          {data.nodeRun && data.nodeRun.errorMessage && (
+            <div className="mt-2 flex flex-col rounded bg-red-200 p-1">
+              <h3 className="font-bold">Error</h3>
+              <pre className="overflow-x-auto">{data.nodeRun.errorMessage}</pre>
+            </div>
+          )}
+        </DiagramDataGroup>
       </NodeDetails>
       <Fade fade={fade} status={data.nodeRun?.status}>
         <div className="relative cursor-pointer">

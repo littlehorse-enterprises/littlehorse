@@ -9,27 +9,36 @@ namespace LittleHorse.Sdk.Tests.Workflow.Spec;
 
 public class WorkflowThreadTest
 {
+    private Action<WorkflowThread> _action;
+    void ParentEntrypoint(WorkflowThread thread)
+    {
+    }
+    
     public WorkflowThreadTest()
     {
         LHLoggerFactoryProvider.Initialize(null);
+        _action = ParentEntrypoint;
     }
     
     [Fact]
-    public void WorkflowThread_WithoutInvokingLogic_ShouldCompileSpecEntrypointAndExitNodes()
+    public void WorkflowThread_WithEmptyFunction_ShouldCompileSpecEntrypointAndExitNodes()
     {
         var workflowName = "TestWorkflow";
-        var mockEntrypointFunction = new Mock<Action<WorkflowThread>>();
-        var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockEntrypointFunction.Object);
-        var workflowThread = new WorkflowThread(workflowName, mockWorkflow.Object, mockEntrypointFunction.Object);
+        void Entrypoint(WorkflowThread thread)
+        {
+            
+        }
+        var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        var workflowThread = new WorkflowThread(mockWorkflow.Object, Entrypoint);
 
         var wfThreadCompiled = workflowThread.Compile();
         
         var actualResult = LHMappingHelper.ProtoToJson(wfThreadCompiled);
         var expectedResult =
             "{ \"nodes\": { \"0-entrypoint-ENTRYPOINT\": { \"outgoingEdges\": [ { \"sinkNodeName\":" +
-            " \"1-exit-Exit\", \"variableMutations\": [ ] } ], " +
+            " \"1-exit-EXIT\", \"variableMutations\": [ ] } ], " +
             "\"failureHandlers\": [ ], \"entrypoint\": { } }, " +
-            "\"1-exit-Exit\": { \"outgoingEdges\": [ ], \"failureHandlers\": [ ], " +
+            "\"1-exit-EXIT\": { \"outgoingEdges\": [ ], \"failureHandlers\": [ ], " +
             "\"exit\": { } } }, \"variableDefs\": [ ], \"interruptDefs\": [ ] }";
         var expectedNumberOfNodes = 2;
         Assert.Equal(expectedNumberOfNodes, wfThreadCompiled.Nodes.Count);
@@ -40,8 +49,7 @@ public class WorkflowThreadTest
     public void WorkflowThread_InvokingAddVariables_ShouldBuildSpecWithNodesAndVariablesDefs()
     {
         var workflowName = "TestWorkflow";
-        var mockParentFunction = new Mock<Action<WorkflowThread>>();
-        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockParentFunction.Object);
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
 
         void AddVariablesAction(WorkflowThread wf)
         {
@@ -49,14 +57,14 @@ public class WorkflowThreadTest
             wf.AddVariable("int-test-variable", 5);
         }
 
-        var workflowThread = new WorkflowThread(workflowName, mockParentWorkflow.Object, AddVariablesAction);
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, AddVariablesAction);
         
         var wfThreadCompiled = workflowThread.Compile();
         
         var actualResult = LHMappingHelper.ProtoToJson(wfThreadCompiled);
         var expectedResult = "{ \"nodes\": { \"0-entrypoint-ENTRYPOINT\": { \"outgoingEdges\": " +
-                             "[ { \"sinkNodeName\": \"1-exit-Exit\", \"variableMutations\": [ ] } ], " +
-                             "\"failureHandlers\": [ ], \"entrypoint\": { } }, \"1-exit-Exit\": { \"outgoingEdges\": [ ], " +
+                             "[ { \"sinkNodeName\": \"1-exit-EXIT\", \"variableMutations\": [ ] } ], " +
+                             "\"failureHandlers\": [ ], \"entrypoint\": { } }, \"1-exit-EXIT\": { \"outgoingEdges\": [ ], " +
                              "\"failureHandlers\": [ ], \"exit\": { } } }, \"variableDefs\": [ { \"varDef\": " +
                              "{ \"type\": \"STR\", \"name\": \"str-test-variable\", \"maskedValue\": false }, " +
                              "\"required\": false, \"searchable\": false, \"jsonIndexes\": [ ], \"accessLevel\": " +
@@ -74,9 +82,8 @@ public class WorkflowThreadTest
     public void WfThread_InvokingActionAfterItsInstantiation_ShouldThrowAnError()
     {
         var workflowName = "TestWorkflow";
-        var mockParentFunction = new Mock<Action<WorkflowThread>>();
-        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockParentFunction.Object);
-        var wfThread = new WorkflowThread(workflowName, mockParentWorkflow.Object, mockParentFunction.Object);
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        var wfThread = new WorkflowThread(mockParentWorkflow.Object, ParentEntrypoint);
         
         var exception = Assert.Throws<InvalidOperationException>(() => wfThread.Execute("test-task-name"));
             
@@ -87,8 +94,7 @@ public class WorkflowThreadTest
     public void WfThread_InvokingExecuteTasksWithArgs_ShouldReturnATaskTypeNodeOutput()
     {
         var workflowName = "TestWorkflow";
-        var mockParentFunction = new Mock<Action<WorkflowThread>>();
-        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockParentFunction.Object);
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
         
         void ExecuteAction(WorkflowThread wf)
         {
@@ -96,53 +102,51 @@ public class WorkflowThreadTest
             var variable = wf.AddVariable("str-test-variable", VariableType.Str);
             var actualNodeOutput = wf.Execute(expectedTaskName, variable);
             
-            Assert.Contains(expectedTaskName + "-Task", actualNodeOutput.NodeName);
+            Assert.Contains(expectedTaskName + "-TASK", actualNodeOutput.NodeName);
         }
         
-        new WorkflowThread(workflowName, mockParentWorkflow.Object, ExecuteAction);
+        new WorkflowThread(mockParentWorkflow.Object, ExecuteAction);
     }
     
     [Fact]
     public void WfThread_InvokingExecuteTasksWithNoArgs_ShouldReturnATaskTypeNodeOutput()
     {
         var workflowName = "TestWorkflow";
-        var mockParentFunction = new Mock<Action<WorkflowThread>>();
-        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockParentFunction.Object);
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
         
         void ExecuteAction(WorkflowThread wf)
         {
             var expectedTaskName = "test-task-name";
             var actualNodeOutput = wf.Execute(expectedTaskName);
             
-            Assert.Contains(expectedTaskName + "-Task", actualNodeOutput.NodeName);
+            Assert.Contains(expectedTaskName + "-TASK", actualNodeOutput.NodeName);
         }
         
-        new WorkflowThread(workflowName, mockParentWorkflow.Object, ExecuteAction);
+        new WorkflowThread(mockParentWorkflow.Object, ExecuteAction);
     }
 
     [Fact]
-    public void WfThread_InvokingExecuteTasksWithArgs_ShouldBuildSpecWIthTaskNodeAndVariablesDefs()
+    public void WfThread_InvokingExecuteTasksWithArgs_ShouldBuildSpecWithTaskNodeAndVariablesDefs()
     {
         var workflowName = "TestWorkflow";
-        var mockParentFunction = new Mock<Action<WorkflowThread>>();
-        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, mockParentFunction.Object);
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
         void EntryPointAction(WorkflowThread wf)
         {
             var variableDef = wf.AddVariable("str-test-variable", VariableType.Str);
             wf.Execute("test-task-name", variableDef);
         }
-        var workflowThread = new WorkflowThread(workflowName, mockParentWorkflow.Object, EntryPointAction);
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
         
         var wfThreadCompiled = workflowThread.Compile();
         
         var actualResult = LHMappingHelper.ProtoToJson(wfThreadCompiled);
         var expectedResult =
             "{ \"nodes\": { \"0-entrypoint-ENTRYPOINT\": { \"outgoingEdges\": [ { \"sinkNodeName\": " +
-            "\"1-test-task-name-Task\", \"variableMutations\": [ ] } ], \"failureHandlers\": [ ], \"entrypoint\": " +
-            "{ } }, \"1-test-task-name-Task\": { \"outgoingEdges\": [ { \"sinkNodeName\": \"2-exit-Exit\", " +
+            "\"1-test-task-name-TASK\", \"variableMutations\": [ ] } ], \"failureHandlers\": [ ], \"entrypoint\": " +
+            "{ } }, \"1-test-task-name-TASK\": { \"outgoingEdges\": [ { \"sinkNodeName\": \"2-exit-EXIT\", " +
             "\"variableMutations\": [ ] } ], \"failureHandlers\": [ ], \"task\": { \"taskDefId\": { \"name\": " +
             "\"test-task-name\" }, \"timeoutSeconds\": 0, \"retries\": 0, \"variables\": [ { \"variableName\": " +
-            "\"str-test-variable\" } ] } }, \"2-exit-Exit\": { \"outgoingEdges\": [ ], \"failureHandlers\": [ ], " +
+            "\"str-test-variable\" } ] } }, \"2-exit-EXIT\": { \"outgoingEdges\": [ ], \"failureHandlers\": [ ], " +
             "\"exit\": { } } }, \"variableDefs\": [ { \"varDef\": { \"type\": \"STR\", \"name\": \"str-test-variable\", " +
             "\"maskedValue\": false }, \"required\": false, \"searchable\": false, \"jsonIndexes\": [ ], " +
             "\"accessLevel\": \"PRIVATE_VAR\" } ], \"interruptDefs\": [ ] }";

@@ -219,6 +219,99 @@ class TestThreadBuilder(unittest.TestCase):
             ),
         )
 
+    def test_compile_with_declare_str(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.declare_str("test-var", default_value="Qui-Gon Jinn")
+
+        wfSpec = Workflow("obiwan", my_entrypoint).compile()
+        entrypoint = wfSpec.thread_specs[wfSpec.entrypoint_thread_name]
+        variable_def = entrypoint.variable_defs[0].var_def
+
+        self.assertEqual(variable_def.name, "test-var")
+        self.assertEqual(variable_def.type, VariableType.STR)
+        self.assertEqual(variable_def.default_value, VariableValue(str="Qui-Gon Jinn"))
+
+    def test_compile_with_declare_int(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.declare_int("test-var", default_value=1977)
+
+        wfSpec = Workflow("obiwan", my_entrypoint).compile()
+        entrypoint = wfSpec.thread_specs[wfSpec.entrypoint_thread_name]
+        variable_def = entrypoint.variable_defs[0].var_def
+
+        self.assertEqual(variable_def.name, "test-var")
+        self.assertEqual(variable_def.type, VariableType.INT)
+        self.assertEqual(variable_def.default_value, VariableValue(int=1977))
+
+    def test_compile_with_declare_double(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.declare_double("test-var", default_value=3.141592)
+
+        wfSpec = Workflow("obiwan", my_entrypoint).compile()
+        entrypoint = wfSpec.thread_specs[wfSpec.entrypoint_thread_name]
+        variable_def = entrypoint.variable_defs[0].var_def
+
+        self.assertEqual(variable_def.name, "test-var")
+        self.assertEqual(variable_def.type, VariableType.DOUBLE)
+        self.assertEqual(variable_def.default_value, VariableValue(double=3.141592))
+
+    def test_compile_with_declare_bool(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.declare_bool("test-var", default_value=False)
+
+        wfSpec = Workflow("obiwan", my_entrypoint).compile()
+        entrypoint = wfSpec.thread_specs[wfSpec.entrypoint_thread_name]
+        variable_def = entrypoint.variable_defs[0].var_def
+
+        self.assertEqual(variable_def.name, "test-var")
+        self.assertEqual(variable_def.type, VariableType.BOOL)
+        self.assertEqual(variable_def.default_value, VariableValue(bool=False))
+
+    def test_compile_with_declare_bytes(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.declare_bytes("test-var", default_value=b"Hello World")
+
+        wfSpec = Workflow("obiwan", my_entrypoint).compile()
+        entrypoint = wfSpec.thread_specs[wfSpec.entrypoint_thread_name]
+        variable_def = entrypoint.variable_defs[0].var_def
+
+        self.assertEqual(variable_def.name, "test-var")
+        self.assertEqual(variable_def.type, VariableType.BYTES)
+        self.assertEqual(
+            variable_def.default_value, VariableValue(bytes=b"Hello World")
+        )
+
+    def test_compile_with_declare_json_obj(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.declare_json_obj(
+                "test-var", default_value={"key1": 5, "key2": "value2"}
+            )
+
+        wfSpec = Workflow("obiwan", my_entrypoint).compile()
+        entrypoint = wfSpec.thread_specs[wfSpec.entrypoint_thread_name]
+        variable_def = entrypoint.variable_defs[0].var_def
+
+        self.assertEqual(variable_def.name, "test-var")
+        self.assertEqual(variable_def.type, VariableType.JSON_OBJ)
+        self.assertEqual(
+            variable_def.default_value,
+            VariableValue(json_obj='{"key1": 5, "key2": "value2"}'),
+        )
+
+    def test_compile_with_declare_json_arr(self):
+        def my_entrypoint(thread: WorkflowThread) -> None:
+            thread.declare_json_arr("test-var", default_value=[5, 10, 15, 20])
+
+        wfSpec = Workflow("obiwan", my_entrypoint).compile()
+        entrypoint = wfSpec.thread_specs[wfSpec.entrypoint_thread_name]
+        variable_def = entrypoint.variable_defs[0].var_def
+
+        self.assertEqual(variable_def.name, "test-var")
+        self.assertEqual(variable_def.type, VariableType.JSON_ARR)
+        self.assertEqual(
+            variable_def.default_value, VariableValue(json_arr="[5, 10, 15, 20]")
+        )
+
     def test_fail(self):
         def my_entrypoint(thread: WorkflowThread) -> None:
             thread.fail("my_failure_name", "my_message")

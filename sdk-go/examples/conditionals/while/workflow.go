@@ -2,6 +2,7 @@ package while
 
 import (
 	"fmt"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
@@ -19,7 +20,7 @@ func Donut(num int) int {
 }
 
 func DonutWorkflow(wf *littlehorse.WorkflowThread) {
-	numDonuts := wf.AddVariable("number-of-donuts", lhproto.VariableType_INT)
+	numDonuts := wf.DeclareInt("number-of-donuts")
 
 	wf.DoWhile(
 		wf.Condition(numDonuts, lhproto.Comparator_GREATER_THAN, 0),
