@@ -187,7 +187,7 @@ public class LHLibUtil {
                 case NULL:
                     break;
                 default:
-                    throw new LHSerdeError("Failed deserializing object to Json: " + o.toString());
+                    throw new LHSerdeError("Failed serializing object to Json: " + o.toString());
             }
         }
 
