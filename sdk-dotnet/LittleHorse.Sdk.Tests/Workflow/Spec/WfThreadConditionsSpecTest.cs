@@ -110,4 +110,56 @@ public class WfThreadDoIfTest
         Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
         Assert.Equal(expectedSpec, actualSpec);
     }
+
+    [Fact]
+    public void WfThread_WithDoWhileStatement_ShouldCompileWithAVarMutationChangeTheCondition()
+    {
+        var numberOfExitNodes = 1;
+        var numberOfEntrypointNodes = 1;
+        var numberOfNopNodes = 2;
+        var numberOfTasks = 1;
+        void Entrypoint(WorkflowThread thread)
+        {
+            var numDonuts = thread.DeclareInt("number-of-donuts").Required();
+            thread.DoWhile(thread.Condition(numDonuts, Comparator.GreaterThan, 0),
+                whileThread =>
+                {
+                    whileThread.Execute("eating-donut", numDonuts);
+                    thread.Mutate(numDonuts, VariableMutationType.Assign, 0);
+                });
+        }
+        var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>("test-workflow", _action);
+        var wfThread = new WorkflowThread(mockWorkflow.Object, Entrypoint);
+        
+        var compiledWfThread = wfThread.Compile();
+        
+        var actualSpec = LHMappingHelper.ProtoToJson(compiledWfThread);
+        var expectedSpec = "{ \"nodes\": { \"0-entrypoint-ENTRYPOINT\": { \"outgoingEdges\": [ { \"sinkNodeName\":" +
+                           " \"1-nop-NOP\", \"variableMutations\": [ ] } ], \"failureHandlers\": [ ], " +
+                           "\"entrypoint\": { } }, \"1-nop-NOP\": { \"outgoingEdges\": [ { \"sinkNodeName\": " +
+                           "\"2-eating-donut-TASK\", \"condition\": { \"comparator\": \"GREATER_THAN\", \"left\": " +
+                           "{ \"variableName\": \"number-of-donuts\" }, \"right\": { \"literalValue\": " +
+                           "{ \"int\": \"0\" } } }, \"variableMutations\": [ ] }, { \"sinkNodeName\": " +
+                           "\"3-nop-NOP\", \"condition\": { \"comparator\": \"LESS_THAN_EQ\", \"left\": " +
+                           "{ \"variableName\": \"number-of-donuts\" }, \"right\": { \"literalValue\": " +
+                           "{ \"int\": \"0\" } } }, \"variableMutations\": [ ] } ], \"failureHandlers\": [ ], " +
+                           "\"nop\": { } }, \"2-eating-donut-TASK\": { \"outgoingEdges\": [ { \"sinkNodeName\": " +
+                           "\"3-nop-NOP\", \"variableMutations\": [ { \"lhsName\": \"number-of-donuts\", " +
+                           "\"operation\": \"ASSIGN\", \"rhsAssignment\": { \"literalValue\": { \"int\": \"0\" " +
+                           "} } } ] } ], \"failureHandlers\": [ ], \"task\": { \"taskDefId\": { \"name\": " +
+                           "\"eating-donut\" }, \"timeoutSeconds\": 0, \"retries\": 0, \"variables\": " +
+                           "[ { \"variableName\": \"number-of-donuts\" } ] } }, \"3-nop-NOP\": " +
+                           "{ \"outgoingEdges\": [ { \"sinkNodeName\": \"1-nop-NOP\", \"condition\": " +
+                           "{ \"comparator\": \"GREATER_THAN\", \"left\": { \"variableName\": " +
+                           "\"number-of-donuts\" }, \"right\": { \"literalValue\": { \"int\": \"0\" } } }, " +
+                           "\"variableMutations\": [ ] }, { \"sinkNodeName\": \"4-exit-EXIT\", " +
+                           "\"variableMutations\": [ ] } ], \"failureHandlers\": [ ], \"nop\": { } }, " +
+                           "\"4-exit-EXIT\": { \"outgoingEdges\": [ ], \"failureHandlers\": [ ], \"exit\": " +
+                           "{ } } }, \"variableDefs\": [ { \"varDef\": { \"type\": \"INT\", \"name\": " +
+                           "\"number-of-donuts\", \"maskedValue\": false }, \"required\": true, \"searchable\": " +
+                           "false, \"jsonIndexes\": [ ], \"accessLevel\": \"PRIVATE_VAR\" } ], \"interruptDefs\": [ ] }";
+        var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfExitNodes + numberOfNopNodes + numberOfTasks;
+        Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
+        Assert.Equal(expectedSpec, actualSpec);
+    }
 }
