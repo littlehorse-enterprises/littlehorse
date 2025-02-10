@@ -15,7 +15,7 @@ const Node: FC<NodeProps> = ({ data }) => {
   const variables = Object.entries(data.startThread.variables)
   return (
     <>
-      <NodeDetails>
+      <NodeDetails nodeRunList={nodeRunsList}>
         <div className="flex items-center gap-1 text-nowrap">
           <h3 className="font-bold">StartThread</h3>
           <button
