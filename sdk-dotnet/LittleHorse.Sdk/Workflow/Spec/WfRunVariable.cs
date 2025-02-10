@@ -18,7 +18,7 @@ public class WfRunVariable
     private readonly List<JsonIndex> _jsonIndexes;
     public string? JsonPath { get; private set; }
     
-    public WfRunVariable(string name, object typeOrDefaultVal, WorkflowThread parent) 
+    public WfRunVariable(string name, object typeOrDefaultVal, WorkflowThread parent)
     {
         Name = name;
         _parent = parent;
@@ -130,5 +130,32 @@ public class WfRunVariable
         };
         
         return outVariable;
+    }
+    
+    /// <summary>
+    /// Mutates the value of this WfRunVariable and sets it to the value provided on the RHS.
+    ///
+    /// If the LHS of this WfRunVariable is set, then the sub-element of this WfRunVariable
+    /// provided by the Json Path is mutated.
+    /// </summary>
+    /// <param name="rhs">
+    /// It is the value to set this WfRunVariable to.
+    /// </param>
+    public void Assign(object rhs)
+    {
+        _parent.Mutate(this, VariableMutationType.Assign, rhs);
+    }
+    
+    /// <summary>
+    /// Returns an expression whose value is the `other` subtracted from this expression.
+    /// </summary>
+    /// <param name="other">
+    /// It is the value to be subtracted from this expression.
+    /// </param>
+    /// <returns> An expression whose value is the `other` subtracted from this expression. <paramref name="LHExpression" />
+    /// </returns>
+    public LHExpression Subtract(object other) 
+    {
+        return new LHExpression(this, VariableMutationType.Subtract, other);
     }
 }
