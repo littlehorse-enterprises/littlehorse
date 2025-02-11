@@ -112,7 +112,7 @@ public class WfThreadDoIfTest
     }
 
     [Fact]
-    public void WfThread_WithDoWhileStatement_ShouldCompileWithAVarMutationChangeTheCondition()
+    public void WfThread_WithDoWhileStatement_ShouldCompileWithAVarMutationChangingTheCondition()
     {
         var numberOfExitNodes = 1;
         var numberOfEntrypointNodes = 1;
@@ -133,33 +133,115 @@ public class WfThreadDoIfTest
         
         var compiledWfThread = wfThread.Compile();
         
-        var actualSpec = LHMappingHelper.ProtoToJson(compiledWfThread);
-        var expectedSpec = "{ \"nodes\": { \"0-entrypoint-ENTRYPOINT\": { \"outgoingEdges\": [ { \"sinkNodeName\":" +
-                           " \"1-nop-NOP\", \"variableMutations\": [ ] } ], \"failureHandlers\": [ ], " +
-                           "\"entrypoint\": { } }, \"1-nop-NOP\": { \"outgoingEdges\": [ { \"sinkNodeName\": " +
-                           "\"2-eating-donut-TASK\", \"condition\": { \"comparator\": \"GREATER_THAN\", \"left\": " +
-                           "{ \"variableName\": \"number-of-donuts\" }, \"right\": { \"literalValue\": " +
-                           "{ \"int\": \"0\" } } }, \"variableMutations\": [ ] }, { \"sinkNodeName\": " +
-                           "\"3-nop-NOP\", \"condition\": { \"comparator\": \"LESS_THAN_EQ\", \"left\": " +
-                           "{ \"variableName\": \"number-of-donuts\" }, \"right\": { \"literalValue\": " +
-                           "{ \"int\": \"0\" } } }, \"variableMutations\": [ ] } ], \"failureHandlers\": [ ], " +
-                           "\"nop\": { } }, \"2-eating-donut-TASK\": { \"outgoingEdges\": [ { \"sinkNodeName\": " +
-                           "\"3-nop-NOP\", \"variableMutations\": [ { \"lhsName\": \"number-of-donuts\", " +
-                           "\"operation\": \"ASSIGN\", \"rhsAssignment\": { \"literalValue\": { \"int\": \"0\" " +
-                           "} } } ] } ], \"failureHandlers\": [ ], \"task\": { \"taskDefId\": { \"name\": " +
-                           "\"eating-donut\" }, \"timeoutSeconds\": 0, \"retries\": 0, \"variables\": " +
-                           "[ { \"variableName\": \"number-of-donuts\" } ] } }, \"3-nop-NOP\": " +
-                           "{ \"outgoingEdges\": [ { \"sinkNodeName\": \"1-nop-NOP\", \"condition\": " +
-                           "{ \"comparator\": \"GREATER_THAN\", \"left\": { \"variableName\": " +
-                           "\"number-of-donuts\" }, \"right\": { \"literalValue\": { \"int\": \"0\" } } }, " +
-                           "\"variableMutations\": [ ] }, { \"sinkNodeName\": \"4-exit-EXIT\", " +
-                           "\"variableMutations\": [ ] } ], \"failureHandlers\": [ ], \"nop\": { } }, " +
-                           "\"4-exit-EXIT\": { \"outgoingEdges\": [ ], \"failureHandlers\": [ ], \"exit\": " +
-                           "{ } } }, \"variableDefs\": [ { \"varDef\": { \"type\": \"INT\", \"name\": " +
-                           "\"number-of-donuts\", \"maskedValue\": false }, \"required\": true, \"searchable\": " +
-                           "false, \"jsonIndexes\": [ ], \"accessLevel\": \"PRIVATE_VAR\" } ], \"interruptDefs\": [ ] }";
+        var expectedSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-nop-NOP" }
+            }
+        };
+
+        var nop1Node = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-eating-donut-TASK",
+                    Condition = new EdgeCondition
+                    {
+                        Comparator = Comparator.GreaterThan,
+                        Left = new VariableAssignment { VariableName = "number-of-donuts" },
+                        Right = new VariableAssignment { LiteralValue = new VariableValue { Int = 0 } }
+                    }
+                },
+                new Edge
+                {
+                    SinkNodeName = "3-nop-NOP",
+                    Condition = new EdgeCondition
+                    {
+                        Comparator = Comparator.LessThanEq,
+                        Left = new VariableAssignment { VariableName = "number-of-donuts" },
+                        Right = new VariableAssignment { LiteralValue = new VariableValue { Int = 0 } }
+                    }
+                }
+            }
+        };
+
+        var eatingDonutTaskNode = new Node
+        {
+            Task = new TaskNode
+            {
+                TaskDefId = new TaskDefId { Name = "eating-donut" },
+                Variables = { new VariableAssignment { VariableName = "number-of-donuts" } }
+            },
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "3-nop-NOP", VariableMutations =
+                    {
+                        new VariableMutation
+                        {
+                            LhsName = "number-of-donuts",
+                            Operation = VariableMutationType.Assign,
+                            RhsAssignment = new VariableAssignment { LiteralValue = new VariableValue { Int = 0 } }
+                        }
+                    }
+                }
+            }
+        };
+
+        var nop3Node = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "1-nop-NOP",
+                    Condition = new EdgeCondition
+                    {
+                        Comparator = Comparator.GreaterThan,
+                        Left = new VariableAssignment { VariableName = "number-of-donuts" },
+                        Right = new VariableAssignment { LiteralValue = new VariableValue { Int = 0 } }
+                    }
+                },
+                new Edge
+                {
+                    SinkNodeName = "4-exit-EXIT"
+                }
+            }
+        };
+
+        var exitNode = new Node
+        {
+            Exit = new ExitNode(),
+        };
+
+        var threadVarDef = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "number-of-donuts",
+                Type = VariableType.Int
+            },
+            Required = true,
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        
+        expectedSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedSpec.Nodes.Add("1-nop-NOP", nop1Node);
+        expectedSpec.Nodes.Add("2-eating-donut-TASK", eatingDonutTaskNode);
+        expectedSpec.Nodes.Add("3-nop-NOP", nop3Node);
+        expectedSpec.Nodes.Add("4-exit-EXIT", exitNode);
+        expectedSpec.VariableDefs.Add(threadVarDef);
+        
         var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfExitNodes + numberOfNopNodes + numberOfTasks;
         Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
-        Assert.Equal(expectedSpec, actualSpec);
+        Assert.Equal(expectedSpec, compiledWfThread);
     }
 }
