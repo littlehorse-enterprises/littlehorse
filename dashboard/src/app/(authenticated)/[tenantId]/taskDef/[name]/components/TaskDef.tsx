@@ -85,6 +85,14 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                   <Separator />
                 </Fragment>
               ))}
+              <div className="mt-6">
+                <SearchFooter
+                  currentLimit={wfSpecLimit}
+                  setLimit={setWfSpecLimit}
+                  hasNextPage={wfSpecsHasNextPage}
+                  fetchNextPage={wfSpecsFetchNextPage}
+                />
+              </div>
             </div>
           )}
         </div>
@@ -93,23 +101,24 @@ export const TaskDef: FC<Props> = ({ spec }) => {
 
         <div className="flex-[2.5]">
           <h2 className="text-2xl font-bold">Related Task Run&apos;s:</h2>
-          <select
-            className="rounded border px-2 py-2"
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-              setSelectedStatus(e.target.value as TaskStatus)
-            }}
-          >
-            <option>ALL</option>
-            {Object.keys(TaskStatus)
-              .filter(status => status != TaskStatus.UNRECOGNIZED)
-              .map(status => (
-                <option key={status}>{status}</option>
-              ))}
-          </select>
-          <div className="mb-5 flex flex-col max-w-fit items-start justify-between">
-            <div className="flex">
-              <div className="flex items-center justify-between">
-                <Label className="mr-3 font-bold">Created after:</Label>
+          <div className="mb-5 flex flex-col w-full items-start justify-between">
+
+            <div className="flex justify-around w-full gap-5">
+              <select
+                className="rounded border px-2 py-2 max-w-72"
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                  setSelectedStatus(e.target.value as TaskStatus)
+                }}
+              >
+                <option>ALL</option>
+                {Object.keys(TaskStatus)
+                  .filter(status => status != TaskStatus.UNRECOGNIZED)
+                  .map(status => (
+                    <option key={status}>{status}</option>
+                  ))}
+              </select>
+              <div className="flex items-center justify-between gap-1">
+                <Label className="font-bold text-right">Created after:</Label>
                 <Input
                   type="datetime-local"
                   value={createdAfter}
@@ -118,8 +127,8 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                 />
               </div>
 
-              <div className="ml-10 flex items-center justify-between">
-                <Label className="mr-4 font-bold">Created before:</Label>
+              <div className="flex items-center justify-between gap-1">
+                <Label className="font-bold text-right">Created before:</Label>
                 <Input
                   type="datetime-local"
                   value={createdBefore}
@@ -178,28 +187,21 @@ export const TaskDef: FC<Props> = ({ spec }) => {
               </div>
             )}
           </div>
-
           <div className="mt-6">
             <SearchFooter
-              currentLimit={wfSpecLimit}
-              setLimit={setWfSpecLimit}
-              hasNextPage={wfSpecsHasNextPage}
-              fetchNextPage={wfSpecsFetchNextPage}
+              currentLimit={limit}
+              setLimit={setLimit}
+              hasNextPage={hasNextPage}
+              fetchNextPage={fetchNextPage}
             />
           </div>
+
 
           <hr className="mt-6" />
         </div>
       </div>
 
-      <div className="mt-6">
-        <SearchFooter
-          currentLimit={limit}
-          setLimit={setLimit}
-          hasNextPage={hasNextPage}
-          fetchNextPage={fetchNextPage}
-        />
-      </div>
+
     </>
   )
 }
