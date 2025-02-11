@@ -16,7 +16,6 @@ import com.google.protobuf.Timestamp;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.sdk.common.proto.MetricsWindowLength;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.nio.charset.StandardCharsets;
