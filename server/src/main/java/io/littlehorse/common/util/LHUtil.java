@@ -222,7 +222,7 @@ public class LHUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static List<Object> strToJsonArr(String jsonStr) throws LHApiException {
+    public static List<Object> strToJsonArr(String jsonStr) {
         return LH_GSON.fromJson(jsonStr, List.class);
     }
 
@@ -238,12 +238,7 @@ public class LHUtil {
     public static String objToString(Object obj) {
         if (obj == null) return null;
         if (obj instanceof Map || obj instanceof List) {
-            try {
-                return LH_GSON.toJson(obj);
-            } catch (Exception exn) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT, "Unable to serialize argument: %s".formatted(exn.getMessage()));
-            }
+            return LH_GSON.toJson(obj);
         }
         return obj.toString();
     }
