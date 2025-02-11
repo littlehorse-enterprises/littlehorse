@@ -85,7 +85,7 @@ public class WorkflowThread
     private string AddNode(string name, Node.NodeOneofCase type, IMessage subNode) 
     {
         CheckIfWorkflowThreadIsActive();
-        String nextNodeName = GetNodeName(name, type);
+        string nextNodeName = GetNodeName(name, type);
         if (LastNodeName == null) 
         {
             throw new InvalidOperationException("Not possible to have null last node here");
@@ -339,6 +339,35 @@ public class WorkflowThread
             });
         }
     }
+
+    public void DoWhile(WorkflowCondition condition, Action<WorkflowThread> whileThread)
+    {
+        CheckIfWorkflowThreadIsActive();
+
+        AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
+        var treeRootNodeName = LastNodeName;
+        _lastNodeCondition = condition.Compile();
+        
+        whileThread.Invoke(this);
+        
+        AddNode("nop", Node.NodeOneofCase.Nop, new NopNode());
+        
+        var treeLastNodeName = LastNodeName;
+        
+        var treeRoot = FindNode(treeRootNodeName);
+        treeRoot.OutgoingEdges.Add(new Edge
+        {
+            SinkNodeName = treeLastNodeName,
+            Condition = condition.GetOpposite()
+        });
+
+        var treeLast = FindNode(treeLastNodeName);
+        treeLast.OutgoingEdges.Add(new Edge
+        {
+            SinkNodeName = treeRootNodeName,
+            Condition = condition.Compile()
+        });
+    }
     
     /// <summary>
     /// Returns a WorkflowCondition used in `WorkflowThread::doIf()`
@@ -356,6 +385,33 @@ public class WorkflowThread
     {
         return new WorkflowCondition(AssignVariableHelper(lhs), 
             comparator, AssignVariableHelper(rhs));
+    }
+    
+    /// <summary>
+    /// Adds a VariableMutation to the last Node
+    /// </summary>
+    /// <param name="lhs">It is a handle to the WfRunVariable to mutate.</param>
+    /// <param name="type">It is the mutation type to use, for example, `VariableMutationType.ASSIGN`.</param>
+    /// <param name="rhs">
+    /// It is either a literal value (which the Library casts to a Variable Value), a
+    /// `WfRunVariable` which determines the right hand side of the expression, or a `NodeOutput`
+    /// (which allows you to use the output of a Node Run to mutate variables).
+    /// </param>
+    public void Mutate(WfRunVariable lhsVar, VariableMutationType type, object rhs)
+    {
+        CheckIfWorkflowThreadIsActive();
+        var mutation = new VariableMutation
+        {
+            LhsName = lhsVar.Name,
+            Operation = type,
+            RhsAssignment = AssignVariableHelper(rhs)
+        };
+        if (lhsVar.JsonPath != null)
+        {
+            mutation.LhsJsonPath = lhsVar.JsonPath;
+        }
+
+        _variableMutations.Enqueue(mutation);
     }
     
     internal VariableAssignment AssignVariableHelper(object? value)
