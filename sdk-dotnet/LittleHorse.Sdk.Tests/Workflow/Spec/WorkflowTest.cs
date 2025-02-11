@@ -27,8 +27,8 @@ public class WorkflowTest
         var actualResult = LHMappingHelper.ProtoToJson(result);
         var expectedResult = "{ \"name\": \"example-basic\", \"threadSpecs\": { \"entrypoint\": " +
                              "{ \"nodes\": { \"0-entrypoint-ENTRYPOINT\": { \"outgoingEdges\": " +
-                             "[ { \"sinkNodeName\": \"1-exit-Exit\", \"variableMutations\": [ ] } ], " +
-                             "\"failureHandlers\": [ ], \"entrypoint\": { } }, \"1-exit-Exit\": { \"outgoingEdges\": " +
+                             "[ { \"sinkNodeName\": \"1-exit-EXIT\", \"variableMutations\": [ ] } ], " +
+                             "\"failureHandlers\": [ ], \"entrypoint\": { } }, \"1-exit-EXIT\": { \"outgoingEdges\": " +
                              "[ ], \"failureHandlers\": [ ], \"exit\": { } } }, \"variableDefs\": [ { \"varDef\": " +
                              "{ \"type\": \"STR\", \"name\": \"input-name\", \"maskedValue\": false }, \"required\": " +
                              "false, \"searchable\": false, \"jsonIndexes\": [ ], \"accessLevel\": " +

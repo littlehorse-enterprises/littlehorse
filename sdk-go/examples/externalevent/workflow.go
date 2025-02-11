@@ -21,7 +21,7 @@ const (
 )
 
 func ExternalEventWorkflow(wf *littlehorse.WorkflowThread) {
-	nameVar := wf.AddVariable("name", lhproto.VariableType_STR)
+	nameVar := wf.DeclareStr("name")
 	wf.Execute(AskForNameTaskName)
 
 	eventOutput := wf.WaitForEvent(EventDefName)

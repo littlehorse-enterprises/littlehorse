@@ -92,7 +92,7 @@ namespace LittleHorse.Sdk.Helper
             {
                 var jsonStr = JsonHandler.ObjectSerializeToJson(obj);
 
-                if (obj is IEnumerable)
+                if (obj is IList)
                 {
                     result.JsonArr = jsonStr;
                 }
