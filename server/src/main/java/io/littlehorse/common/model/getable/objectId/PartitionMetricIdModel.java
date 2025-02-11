@@ -10,7 +10,9 @@ import io.littlehorse.sdk.common.proto.PartitionMetric;
 import io.littlehorse.sdk.common.proto.PartitionMetricId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
+import lombok.Getter;
 
+@Getter
 public class PartitionMetricIdModel extends CoreObjectId<PartitionMetricId, PartitionMetric, PartitionMetricModel> {
 
     private MetricIdModel metricId;

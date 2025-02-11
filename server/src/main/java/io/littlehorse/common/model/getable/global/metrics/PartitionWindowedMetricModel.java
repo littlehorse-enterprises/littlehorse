@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 
 @Slf4j
 public class PartitionWindowedMetricModel extends LHSerializable<PartitionWindowedMetric>
@@ -50,7 +49,7 @@ public class PartitionWindowedMetricModel extends LHSerializable<PartitionWindow
     }
 
     @Override
-    public int compareTo(@NotNull PartitionWindowedMetricModel o) {
+    public int compareTo(PartitionWindowedMetricModel o) {
         return o.windowStart.compareTo(windowStart);
     }
 
@@ -64,11 +63,14 @@ public class PartitionWindowedMetricModel extends LHSerializable<PartitionWindow
     }
 
     public void increment() {
-        log.info("increment value: {}", value);
         value++;
     }
 
     double getValue() {
         return value;
+    }
+
+    Date getWindowStart() {
+        return Date.from(windowStart.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

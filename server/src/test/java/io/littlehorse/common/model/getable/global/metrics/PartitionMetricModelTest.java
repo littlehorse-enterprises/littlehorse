@@ -2,6 +2,8 @@ package io.littlehorse.common.model.getable.global.metrics;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.littlehorse.common.model.AggregateMetricsModel;
+import io.littlehorse.common.model.RepartitionWindowedMetricModel;
 import io.littlehorse.common.model.getable.objectId.MetricIdModel;
 import io.littlehorse.sdk.common.proto.MeasurableObject;
 import io.littlehorse.sdk.common.proto.MetricType;
@@ -11,6 +13,8 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
@@ -52,5 +56,29 @@ class PartitionMetricModelTest {
                 .isEqualTo(2.0));
         assertThat(activeWindows.next()).satisfies(windowedMetric -> assertThat(windowedMetric.getValue())
                 .isEqualTo(3.0));
+    }
+
+    @Test
+    void shouldBuildRepartitionCommand() {
+        PartitionMetricModel partitionMetric = new PartitionMetricModel(workflowRunningMetricId, Duration.ofMinutes(1));
+        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
+        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
+        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
+        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
+        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
+        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
+        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
+        Optional<AggregateMetricsModel> repartitionCommand = partitionMetric.buildRepartitionCommand();
+        assertThat(repartitionCommand).isNotEmpty();
+        List<RepartitionWindowedMetricModel> windowedMetrics =
+                repartitionCommand.get().getWindowedMetrics();
+        assertThat(windowedMetrics).hasSize(1).allSatisfy(windowedMetric -> {
+            PartitionWindowedMetricModel partitionWindowed =
+                    partitionMetric.getActiveWindowedMetrics().iterator().next();
+            assertThat(windowedMetric.getValue()).isEqualTo(partitionWindowed.getValue());
+            assertThat(windowedMetric.getMetricId())
+                    .isEqualTo(partitionMetric.getObjectId().getMetricId());
+            assertThat(windowedMetric.getWindowStart()).isEqualTo(partitionWindowed.getWindowStart());
+        });
     }
 }
