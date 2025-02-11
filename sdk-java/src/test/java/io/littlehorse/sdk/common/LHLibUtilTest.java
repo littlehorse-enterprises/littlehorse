@@ -4,6 +4,7 @@ import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -86,8 +87,12 @@ public class LHLibUtilTest {
     }
 
     @Test
-    void validateCollectionToStringArrayConversion() {
+    void validateListToStringArrayConversion() {
+        List<Object> list = List.of("item1", 2, 3.0,Map.of("key1", "val1"));
 
+        VariableValue varVal = LHLibUtil.objToVarVal(list);
+
+        Assertions.assertThat(varVal.getJsonArr()).isEqualTo("[\"item1\",2,3.0,{\"key1\":\"val1\"}]");
     }
 
     @Test
