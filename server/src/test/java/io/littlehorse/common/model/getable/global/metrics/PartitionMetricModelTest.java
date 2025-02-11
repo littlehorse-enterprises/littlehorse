@@ -68,7 +68,8 @@ class PartitionMetricModelTest {
         partitionMetric.incrementCurrentWindow(LocalDateTime.now());
         partitionMetric.incrementCurrentWindow(LocalDateTime.now());
         partitionMetric.incrementCurrentWindow(LocalDateTime.now());
-        Optional<AggregateMetricsModel> repartitionCommand = partitionMetric.buildRepartitionCommand();
+        Optional<AggregateMetricsModel> repartitionCommand =
+                partitionMetric.buildRepartitionCommand(LocalDateTime.now());
         assertThat(repartitionCommand).isNotEmpty();
         List<RepartitionWindowedMetricModel> windowedMetrics =
                 repartitionCommand.get().getWindowedMetrics();
@@ -80,5 +81,29 @@ class PartitionMetricModelTest {
                     .isEqualTo(partitionMetric.getObjectId().getMetricId());
             assertThat(windowedMetric.getWindowStart()).isEqualTo(partitionWindowed.getWindowStart());
         });
+    }
+
+    @Test
+    void shouldRemoveClosedWindowsAfterRepartition() {
+        LocalDateTime instant1 = LocalDateTime.now();
+        LocalDateTime instant2 = instant1.plusDays(2);
+        LocalDateTime instant3 = instant2.plusDays(2);
+        PartitionMetricModel partitionMetric = new PartitionMetricModel(workflowRunningMetricId, Duration.ofMinutes(1));
+        partitionMetric.incrementCurrentWindow(instant1);
+        partitionMetric.incrementCurrentWindow(instant1);
+        AggregateMetricsModel repartitionCommand1 =
+                partitionMetric.buildRepartitionCommand(instant1).get();
+        partitionMetric.incrementCurrentWindow(instant2);
+        partitionMetric.incrementCurrentWindow(instant2);
+        AggregateMetricsModel repartitionCommand2 =
+                partitionMetric.buildRepartitionCommand(instant2).get();
+        partitionMetric.incrementCurrentWindow(instant3);
+        partitionMetric.incrementCurrentWindow(instant3);
+        AggregateMetricsModel repartitionCommand3 =
+                partitionMetric.buildRepartitionCommand(instant3).get();
+
+        assertThat(repartitionCommand1.getWindowedMetrics()).hasSize(1);
+        assertThat(repartitionCommand2.getWindowedMetrics()).hasSize(2);
+        assertThat(repartitionCommand3.getWindowedMetrics()).hasSize(2);
     }
 }

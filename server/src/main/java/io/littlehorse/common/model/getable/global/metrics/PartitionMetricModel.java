@@ -117,12 +117,13 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
         return activeWindowedMetrics;
     }
 
-    public Optional<AggregateMetricsModel> buildRepartitionCommand() {
+    public Optional<AggregateMetricsModel> buildRepartitionCommand(LocalDateTime currentTime) {
         if (activeWindowedMetrics.isEmpty()) {
             return Optional.empty();
         }
         List<RepartitionWindowedMetricModel> windowedMetrics =
                 activeWindowedMetrics.stream().map(this::toRepartitionMetric).toList();
+        activeWindowedMetrics.removeIf(windowedMetric -> windowedMetric.windowClosed(windowLength, currentTime));
         return Optional.of(new AggregateMetricsModel(windowedMetrics));
     }
 
