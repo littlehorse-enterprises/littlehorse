@@ -15,7 +15,7 @@ import { FC, Fragment, useState } from 'react'
 import { PaginatedTaskRunList, searchTaskRun } from '../actions/searchTaskRun'
 import { Details } from './Details'
 import { InputVars } from './InputVars'
-import { getWfSpecsByTaskDef } from '@/app/actions/getWfSpecsByTaskDef'
+import { searchWfSpecs, PaginatedWfSpecList } from '@/app/actions/getWfSpecsByTaskDef'
 import { WfSpecData } from '@/types'
 import { TagIcon } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
@@ -31,15 +31,16 @@ export const TaskDef: FC<Props> = ({ spec }) => {
   const [createdBefore, setCreatedBefore] = useState('')
   const tenantId = useParams().tenantId as string
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [wfSpecLimit, setWfSpecLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
   const taskDefName = spec.id?.name || ''
 
-  const { data: wfSpecs } = useQuery({
-    queryKey: ['wfSpecs', tenantId, taskDefName],
-    queryFn: async () => {
-      if (!tenantId || !taskDefName) return
-      return await getWfSpecsByTaskDef(tenantId, taskDefName)
+  const { isPending: wfSpecsIsPending, data: wfSpecsData, hasNextPage: wfSpecsHasNextPage, fetchNextPage: wfSpecsFetchNextPage } = useInfiniteQuery({
+    queryKey: ['wfSpecs', tenantId, limit, taskDefName],
+    initialPageParam: undefined,
+    getNextPageParam: (lastPage: PaginatedWfSpecList) => lastPage.bookmarkAsString,
+    queryFn: async ({ pageParam }) => {
+      return await searchWfSpecs({ tenantId, bookmarkAsString: pageParam, limit: wfSpecLimit, taskDefName })
     },
-    enabled: !!tenantId && !!taskDefName,
   })
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
@@ -66,9 +67,9 @@ export const TaskDef: FC<Props> = ({ spec }) => {
       <InputVars inputVars={spec.inputVars} />
 
       <h2 className="mb-2 mt-2 text-lg font-bold">WfSpec Usage</h2>
-      {wfSpecs && (
+      {wfSpecsData && (
         <div className="flex max-h-[200px] flex-col overflow-auto">
-          {wfSpecs.results.map(wfSpec => (
+          {wfSpecsData.pages.flatMap(page => page.results).map(wfSpec => (
             <Fragment key={wfSpec.name}>
               <SelectionLink href={`/wfSpec/${wfSpec.name}/${wfSpec.majorVersion}.${wfSpec.revision}`}>
                 <p className="group">{wfSpec.name}</p>
@@ -82,6 +83,15 @@ export const TaskDef: FC<Props> = ({ spec }) => {
           ))}
         </div>
       )}
+
+      <div className="mt-6">
+        <SearchFooter
+          currentLimit={wfSpecLimit}
+          setLimit={setWfSpecLimit}
+          hasNextPage={wfSpecsHasNextPage}
+          fetchNextPage={wfSpecsFetchNextPage}
+        />
+      </div>
 
       <hr className="mt-6" />
       <div className="mb-4 mt-6 flex items-center justify-between">
