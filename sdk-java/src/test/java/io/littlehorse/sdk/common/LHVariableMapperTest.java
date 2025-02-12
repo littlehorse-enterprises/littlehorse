@@ -1,6 +1,7 @@
 package io.littlehorse.sdk.common;
 
 import static io.littlehorse.sdk.common.LHVariableMapper.*;
+import static io.littlehorse.sdk.common.LHVariableMapper.as;
 import static org.assertj.core.api.Assertions.*;
 
 import com.google.protobuf.ByteString;
@@ -95,7 +96,7 @@ public class LHVariableMapperTest {
         assertThatThrownBy(() -> asList(boolVal, Person.class))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Not possible to convert variable type BOOL to Collection");
-        assertThatThrownBy(() -> as(boolVal, Person.class)).isInstanceOf(RuntimeException.class);
+        assertThat(as(boolVal, Person.class)).isNull();
     }
 
     public static class Person {

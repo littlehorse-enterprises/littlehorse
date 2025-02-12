@@ -1,6 +1,5 @@
 package io.littlehorse.server.monitoring;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -44,7 +43,6 @@ public final class StandbyStoresOnInstance {
      * Calculates the total lag across all partitions in the store
      * @return sum of lag values for all partitions.
      */
-    @JsonProperty("totalLag")
     public long totalLag() {
         return partitions.stream()
                 .map(StandbyTopicPartitionMetrics::getCurrentLag)
@@ -58,7 +56,6 @@ public final class StandbyStoresOnInstance {
      *
      * @return The number of registered partitions for this store.
      */
-    @JsonProperty("numberOfRegisteredPartitions")
     public int registeredPartitions() {
         return partitions.size();
     }

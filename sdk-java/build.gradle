@@ -105,9 +105,8 @@ dependencies {
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     // JSONPath
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2'
     implementation 'com.jayway.jsonpath:json-path:2.9.0'
+    implementation 'com.google.code.gson:gson:2.12.1'
 
     // Protobuf
     api "io.grpc:grpc-netty-shaded:${grpcVersion}"
