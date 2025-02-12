@@ -1,5 +1,6 @@
 package io.littlehorse.common.model.getable.core.variable;
 
+import com.google.gson.JsonSyntaxException;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 import com.jayway.jsonpath.Configuration;
@@ -41,6 +42,10 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
     private ExecutionContext context;
 
+    private boolean deserializationErrorPresent = false;
+    private String deserializationErrorMessage;
+    private String jsonStr;
+
     public static VariableValueModel fromProto(VariableValue proto, ExecutionContext context) {
         VariableValueModel out = new VariableValueModel();
         out.initFrom(proto, context);
@@ -59,10 +64,25 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         type = p.getValueCase();
         switch (type) {
             case JSON_ARR:
-                jsonArrVal = LHUtil.strToJsonArr(p.getJsonArr());
+                try {
+                    jsonArrVal = LHUtil.strToJsonArr(p.getJsonArr());
+                    deserializationErrorPresent = false;
+                } catch (JsonSyntaxException jsonSyntaxException) {
+                    System.out.println("Failed");
+                    jsonStr = p.getJsonArr();
+                    this.deserializationErrorMessage = "Error deserializing JSON Arr";
+                    this.deserializationErrorPresent = true;
+                }
                 break;
             case JSON_OBJ:
-                jsonObjVal = LHUtil.strToJsonObj(p.getJsonObj());
+                try {
+                    jsonObjVal = LHUtil.strToJsonObj(p.getJsonObj());
+                    deserializationErrorPresent = false;
+                } catch (JsonSyntaxException jsonSyntaxException) {
+                    jsonStr = p.getJsonObj();
+                    this.deserializationErrorMessage = "Error deserializing JSON Obj";
+                    this.deserializationErrorPresent = true;
+                }
                 break;
             case DOUBLE:
                 doubleVal = p.getDouble();
@@ -149,11 +169,17 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         switch (type) {
             case JSON_ARR:
                 if (jsonArrVal != null) {
-                    out.setJsonArr(LHUtil.objToString(jsonArrVal));
+                    if (this.deserializationErrorPresent) {
+                        out.setJsonArr((this.jsonStr));
+                    } else {
+                        out.setJsonArr(LHUtil.objToString(jsonArrVal));
+                    }
                 }
                 break;
             case JSON_OBJ:
-                if (jsonObjVal != null) {
+                if (this.deserializationErrorPresent) {
+                    out.setJsonObj(this.jsonStr);
+                } else if (jsonObjVal != null) {
                     out.setJsonObj(LHUtil.objToString(jsonObjVal));
                 }
                 break;
