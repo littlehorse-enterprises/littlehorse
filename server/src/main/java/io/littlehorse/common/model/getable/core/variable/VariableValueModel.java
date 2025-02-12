@@ -219,7 +219,6 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         return type == ValueCase.VALUE_NOT_SET;
     }
 
-    @SuppressWarnings("unchecked")
     public VariableValueModel jsonPath(String path) throws LHVarSubError {
         Object val;
         String jsonStr;
