@@ -1,7 +1,6 @@
 package e2e;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -70,8 +69,7 @@ public class ExpressionTest {
         verifier.prepareRun(expressionWf, Arg.of("thing-to-divide-by-zero", 1))
                 .waitForStatus(LHStatus.ERROR)
                 .thenVerifyLastNodeRun(0, nodeRun -> {
-                    // TODO: Issue #1083 will allow us to uncomment this assertion.
-                    // Assertions.assertEquals(LHStatus.ERROR, nodeRun.getStatus());
+                    Assertions.assertEquals(LHStatus.ERROR, nodeRun.getStatus());
                     Failure mathTest = nodeRun.getFailures(0);
                     Assertions.assertEquals(mathTest.getFailureName(), LHErrorType.VAR_SUB_ERROR.toString());
                     Assertions.assertTrue(mathTest.getMessage().toLowerCase().contains("divide by zero"));
@@ -135,8 +133,7 @@ public class ExpressionTest {
                         expressionWf, Arg.of("quantity", 5), Arg.of("price", 2.5), Arg.of("discount-percentage", null))
                 .waitForStatus(LHStatus.ERROR)
                 .thenVerifyLastNodeRun(0, nodeRun -> {
-                    // TODO: Issue #1083 will allow us to uncomment this assertion.
-                    // Assertions.assertEquals(LHStatus.ERROR, nodeRun.getStatus());
+                    Assertions.assertEquals(LHStatus.ERROR, nodeRun.getStatus());
                     Failure mathTest = nodeRun.getFailures(0);
                     Assertions.assertEquals(mathTest.getFailureName(), LHErrorType.VAR_SUB_ERROR.toString());
                     Assertions.assertTrue(mathTest.getMessage().toLowerCase().contains("value_not_set")
@@ -173,13 +170,9 @@ public class ExpressionTest {
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "json", variable -> {
                     String jsonStr = variable.getJsonObj();
-                    try {
-                        @SuppressWarnings("unchecked")
-                        Map<String, Object> jsonMap = new ObjectMapper().readValue(jsonStr, Map.class);
-                        Assertions.assertEquals("bar", jsonMap.get("foo"));
-                    } catch (JsonProcessingException exn) {
-                        throw new RuntimeException(exn);
-                    }
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> jsonMap = LHLibUtil.LH_GSON.fromJson(jsonStr, Map.class);
+                    Assertions.assertEquals("bar", jsonMap.get("foo"));
                 })
                 .start();
     }
@@ -190,13 +183,9 @@ public class ExpressionTest {
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "json", variable -> {
                     String jsonStr = variable.getJsonObj();
-                    try {
-                        @SuppressWarnings("unchecked")
-                        Map<String, Object> jsonMap = new ObjectMapper().readValue(jsonStr, Map.class);
-                        Assertions.assertEquals("bar", jsonMap.get("foo"));
-                    } catch (JsonProcessingException exn) {
-                        throw new RuntimeException(exn);
-                    }
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> jsonMap = LHLibUtil.LH_GSON.fromJson(jsonStr, Map.class);
+                    Assertions.assertEquals("bar", jsonMap.get("foo"));
                 })
                 .start();
     }
@@ -219,14 +208,11 @@ public class ExpressionTest {
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "nested-json", variable -> {
                     String jsonStr = variable.getJsonObj();
-                    try {
-                        @SuppressWarnings("unchecked")
-                        Map<String, Object> jsonMap = new ObjectMapper().readValue(jsonStr, Map.class);
-                        Map<String, String> fooMap = (Map<String, String>) jsonMap.get("foo");
-                        Assertions.assertEquals("baz", fooMap.get("bar"));
-                    } catch (JsonProcessingException exn) {
-                        throw new RuntimeException(exn);
-                    }
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> jsonMap = LHLibUtil.LH_GSON.fromJson(jsonStr, Map.class);
+                    @SuppressWarnings("unchecked")
+                    Map<String, String> fooMap = (Map<String, String>) jsonMap.get("foo");
+                    Assertions.assertEquals("baz", fooMap.get("bar"));
                 })
                 .start();
     }

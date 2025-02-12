@@ -4,10 +4,11 @@ In this example you will see how to use conditionals.
 It will execute an "if" or "else" depending on the value of "bar".
 If bar is greater than 10 then execute task-b else execute task-c.
 
-Let's run the example in `ConditionalsExample.java`
+Let's run the example in `ConditionalsExample`
 
 ```
-./gradlew example-conditionals:run
+dotnet build
+dotnet run
 ```
 
 In another terminal, use `lhctl` to run the workflow:
@@ -26,7 +27,7 @@ In addition, you can check the result with:
 # This call shows the result
 lhctl get wfRun <wf_run_id>
 
-# This will show you all nodes in the run
+# This will show you all nodes in tha run
 lhctl list nodeRun <wf_run_id>
 
 # This shows the task run information

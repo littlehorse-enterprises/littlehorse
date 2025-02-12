@@ -49,7 +49,7 @@ public class Workflow
         _logger!.LogInformation(LHMappingHelper.ProtoToJson(client.PutWfSpec(Compile())));
     }
 
-    private String AddSubThread(String subThreadName, Action<WorkflowThread> subThreadAction) 
+    private string AddSubThread(string subThreadName, Action<WorkflowThread> subThreadAction) 
     {
         foreach (var threadPair in _threadActions)
         {
@@ -65,7 +65,7 @@ public class Workflow
     
     private PutWfSpecRequest CompileWorkflowDetails( ) 
     {
-        String entrypointThreadName = AddSubThread("entrypoint", _entryPoint);
+        string entrypointThreadName = AddSubThread("entrypoint", _entryPoint);
         _spec.EntrypointThreadName = entrypointThreadName;
 
         while (_threadActions.Count != 0) 
@@ -73,7 +73,7 @@ public class Workflow
             Tuple<string, Action<WorkflowThread>> nextThreadAction = _threadActions.Dequeue();
             string actionName = nextThreadAction.Item1;
             Action<WorkflowThread> threadAction = nextThreadAction.Item2;
-            WorkflowThread wfThread = new WorkflowThread(this, threadAction);
+            var wfThread = new WorkflowThread(this, threadAction);
             _spec.ThreadSpecs.Add(actionName, wfThread.Compile());
         }
         
@@ -85,7 +85,7 @@ public class Workflow
         return _spec;
     }
     
-    internal void AddTaskDefName(String taskDefName) 
+    internal void AddTaskDefName(string taskDefName) 
     {
         _requiredTaskDefNames.Add(taskDefName);
     }

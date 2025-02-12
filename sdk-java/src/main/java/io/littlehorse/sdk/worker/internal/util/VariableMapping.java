@@ -62,7 +62,7 @@ public class VariableMapping {
                 break;
             case JSON_ARR:
             case JSON_OBJ:
-                log.info("Info: Will use Jackson to deserialize Json into {}", type.getName());
+                log.info("Info: Will use Gson to deserialize Json into {}", type.getName());
                 break;
             case UNRECOGNIZED:
                 throw new RuntimeException("Not possible");
