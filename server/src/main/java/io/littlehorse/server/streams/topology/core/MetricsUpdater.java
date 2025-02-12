@@ -4,6 +4,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.PartitionMetricsModel;
 import io.littlehorse.common.model.TaskStatusChangedModel;
 import io.littlehorse.common.model.getable.global.metrics.MetricModel;
+import io.littlehorse.common.model.getable.global.metrics.PartitionMetricInventoryModel;
 import io.littlehorse.common.model.getable.global.metrics.PartitionMetricModel;
 import io.littlehorse.common.model.getable.objectId.MetricIdModel;
 import io.littlehorse.common.model.getable.objectId.PartitionMetricIdModel;
@@ -13,6 +14,7 @@ import io.littlehorse.sdk.common.proto.Metric;
 import io.littlehorse.sdk.common.proto.MetricType;
 import io.littlehorse.sdk.common.proto.PartitionMetric;
 import io.littlehorse.server.streams.store.StoredGetable;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.GetableUpdates.GetableStatusUpdate;
@@ -27,10 +29,15 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
     private final ReadOnlyTenantScopedStore metadataStore;
     private final TenantScopedStore tenantStore;
     private PartitionMetricsModel aggregateModel;
+    private ClusterScopedStore clusterScopedCoreStore;
 
-    public MetricsUpdater(ReadOnlyTenantScopedStore metadataStore, TenantScopedStore tenantStore) {
+    public MetricsUpdater(
+            ReadOnlyTenantScopedStore metadataStore,
+            TenantScopedStore tenantStore,
+            ClusterScopedStore clusterScopedCoreStore) {
         this.metadataStore = metadataStore;
         this.tenantStore = tenantStore;
+        this.clusterScopedCoreStore = clusterScopedCoreStore;
     }
 
     @Override
@@ -44,14 +51,26 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
                 if (metric != null) {
                     if (wfRunEvent.getNewStatus().equals(LHStatus.RUNNING)) {
                         StoredGetable<PartitionMetric, PartitionMetricModel> getable = tenantStore.get(
-                                new PartitionMetricIdModel(metric.getObjectId()).getStoreableKey(),
+                                new PartitionMetricIdModel(metric.getObjectId(), statusUpdate.getTenantId())
+                                        .getStoreableKey(),
                                 StoredGetable.class);
                         if (getable == null) {
-                            getable = new StoredGetable<>(
-                                    new PartitionMetricModel(metric.getObjectId(), metric.getWindowLength()));
+                            getable = new StoredGetable<>(new PartitionMetricModel(
+                                    metric.getObjectId(), metric.getWindowLength(), statusUpdate.getTenantId()));
                         }
+                        PartitionMetricInventoryModel partitionMetricInventory = clusterScopedCoreStore.get(
+                                PartitionMetricInventoryModel.METRIC_INVENTORY_STORE_KEY,
+                                PartitionMetricInventoryModel.class);
+                        if (partitionMetricInventory == null) {
+                            partitionMetricInventory = new PartitionMetricInventoryModel();
+                        }
+                        clusterScopedCoreStore.put(new PartitionMetricInventoryModel());
                         PartitionMetricModel partitionMetric = getable.getStoredObject();
                         partitionMetric.incrementCurrentWindow(LocalDateTime.now());
+                        boolean added = partitionMetricInventory.addMetric(partitionMetric.getObjectId());
+                        if (added) {
+                            clusterScopedCoreStore.put(partitionMetricInventory);
+                        }
                         tenantStore.put(new StoredGetable<>(partitionMetric));
                     }
                 }

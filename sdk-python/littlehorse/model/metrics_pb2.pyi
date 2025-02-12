@@ -1,5 +1,6 @@
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 from google.protobuf import duration_pb2 as _duration_pb2
+import littlehorse.model.object_id_pb2 as _object_id_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -63,7 +64,9 @@ class PartitionWindowedMetric(_message.Message):
     def __init__(self, value: _Optional[float] = ..., window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
 class PartitionMetricId(_message.Message):
-    __slots__ = ["id"]
+    __slots__ = ["id", "tenant_id"]
     ID_FIELD_NUMBER: _ClassVar[int]
+    TENANT_ID_FIELD_NUMBER: _ClassVar[int]
     id: MetricId
-    def __init__(self, id: _Optional[_Union[MetricId, _Mapping]] = ...) -> None: ...
+    tenant_id: _object_id_pb2.TenantId
+    def __init__(self, id: _Optional[_Union[MetricId, _Mapping]] = ..., tenant_id: _Optional[_Union[_object_id_pb2.TenantId, _Mapping]] = ...) -> None: ...

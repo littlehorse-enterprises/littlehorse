@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.littlehorse.common.model.AggregateMetricsModel;
 import io.littlehorse.common.model.RepartitionWindowedMetricModel;
 import io.littlehorse.common.model.getable.objectId.MetricIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.proto.MeasurableObject;
 import io.littlehorse.sdk.common.proto.MetricType;
 import io.littlehorse.sdk.common.proto.PartitionMetric;
@@ -23,10 +24,12 @@ class PartitionMetricModelTest {
     private final MetricIdModel workflowRunningMetricId =
             new MetricIdModel(MeasurableObject.WORKFLOW, MetricType.COUNT);
     private final TestTenantScopedStore tenantScopedStore = new TestTenantScopedStore();
+    private final TenantIdModel testTenantId = new TenantIdModel("test");
 
     @Test
     void shouldGroupSamplesInASingleWindow() {
-        PartitionMetricModel partitionMetric = new PartitionMetricModel(workflowRunningMetricId, Duration.ofMinutes(1));
+        PartitionMetricModel partitionMetric =
+                new PartitionMetricModel(workflowRunningMetricId, Duration.ofMinutes(1), testTenantId);
         partitionMetric.incrementCurrentWindow(LocalDateTime.now());
         partitionMetric.incrementCurrentWindow(LocalDateTime.now());
         partitionMetric.incrementCurrentWindow(LocalDateTime.now());
@@ -37,7 +40,8 @@ class PartitionMetricModelTest {
 
     @Test
     void shouldGroupSamplesInASecondWindow() {
-        PartitionMetricModel partitionMetric = new PartitionMetricModel(workflowRunningMetricId, Duration.ofMinutes(1));
+        PartitionMetricModel partitionMetric =
+                new PartitionMetricModel(workflowRunningMetricId, Duration.ofMinutes(1), testTenantId);
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime later = now.plusMinutes(2);
         partitionMetric.incrementCurrentWindow(now);
@@ -60,7 +64,8 @@ class PartitionMetricModelTest {
 
     @Test
     void shouldBuildRepartitionCommand() {
-        PartitionMetricModel partitionMetric = new PartitionMetricModel(workflowRunningMetricId, Duration.ofMinutes(1));
+        PartitionMetricModel partitionMetric =
+                new PartitionMetricModel(workflowRunningMetricId, Duration.ofMinutes(1), testTenantId);
         partitionMetric.incrementCurrentWindow(LocalDateTime.now());
         partitionMetric.incrementCurrentWindow(LocalDateTime.now());
         partitionMetric.incrementCurrentWindow(LocalDateTime.now());
@@ -88,7 +93,8 @@ class PartitionMetricModelTest {
         LocalDateTime instant1 = LocalDateTime.now();
         LocalDateTime instant2 = instant1.plusDays(2);
         LocalDateTime instant3 = instant2.plusDays(2);
-        PartitionMetricModel partitionMetric = new PartitionMetricModel(workflowRunningMetricId, Duration.ofMinutes(1));
+        PartitionMetricModel partitionMetric =
+                new PartitionMetricModel(workflowRunningMetricId, Duration.ofMinutes(1), testTenantId);
         partitionMetric.incrementCurrentWindow(instant1);
         partitionMetric.incrementCurrentWindow(instant1);
         AggregateMetricsModel repartitionCommand1 =

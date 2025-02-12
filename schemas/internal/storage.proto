@@ -6,6 +6,7 @@ option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/timestamp.proto";
 import "object_id.proto";
+import "metrics.proto";
 
 
 enum LHStoreType {
@@ -25,6 +26,7 @@ enum StoreableType {
     METRIC_WINDOW = 7;
     INITIALIZATION_LOG = 8;
     WFRUN_STORED_INVENTORY = 9;
+    METRIC_PARTITION_INVENTORY = 10;
 }
 
 enum GetableClassEnum {
@@ -103,4 +105,8 @@ message StoredGetablePb {
     TagsCachePb index_cache = 1;
     bytes getable_payload = 2;
     GetableClassEnum type = 3;
+}
+
+message PartitionMetricInventory {
+    repeated PartitionMetricId metrics = 1;
 }

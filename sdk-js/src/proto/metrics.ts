@@ -8,6 +8,7 @@
 import _m0 from "protobufjs/minimal";
 import { Duration } from "./google/protobuf/duration";
 import { Timestamp } from "./google/protobuf/timestamp";
+import { TenantId } from "./object_id";
 
 export enum MeasurableObject {
   WORKFLOW = "WORKFLOW",
@@ -106,6 +107,7 @@ export interface PartitionWindowedMetric {
 
 export interface PartitionMetricId {
   id: MetricId | undefined;
+  tenantId: TenantId | undefined;
 }
 
 function createBaseMetric(): Metric {
@@ -370,13 +372,16 @@ export const PartitionWindowedMetric = {
 };
 
 function createBasePartitionMetricId(): PartitionMetricId {
-  return { id: undefined };
+  return { id: undefined, tenantId: undefined };
 }
 
 export const PartitionMetricId = {
   encode(message: PartitionMetricId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== undefined) {
       MetricId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.tenantId !== undefined) {
+      TenantId.encode(message.tenantId, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -395,6 +400,13 @@ export const PartitionMetricId = {
 
           message.id = MetricId.decode(reader, reader.uint32());
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.tenantId = TenantId.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -410,6 +422,9 @@ export const PartitionMetricId = {
   fromPartial(object: DeepPartial<PartitionMetricId>): PartitionMetricId {
     const message = createBasePartitionMetricId();
     message.id = (object.id !== undefined && object.id !== null) ? MetricId.fromPartial(object.id) : undefined;
+    message.tenantId = (object.tenantId !== undefined && object.tenantId !== null)
+      ? TenantId.fromPartial(object.tenantId)
+      : undefined;
     return message;
   },
 };

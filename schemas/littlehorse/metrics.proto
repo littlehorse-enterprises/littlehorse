@@ -4,6 +4,7 @@ package littlehorse;
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
+import "object_id.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -47,4 +48,5 @@ message PartitionWindowedMetric {
 
 message PartitionMetricId {
    MetricId id = 1;
+   TenantId tenant_id = 2;
 }

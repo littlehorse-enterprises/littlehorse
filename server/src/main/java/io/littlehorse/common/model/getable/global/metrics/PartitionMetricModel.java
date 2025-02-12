@@ -8,6 +8,7 @@ import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.RepartitionWindowedMetricModel;
 import io.littlehorse.common.model.getable.objectId.MetricIdModel;
 import io.littlehorse.common.model.getable.objectId.PartitionMetricIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
@@ -36,8 +37,8 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
 
     public PartitionMetricModel() {}
 
-    public PartitionMetricModel(MetricIdModel metricId, Duration windowLength) {
-        this.id = new PartitionMetricIdModel(metricId);
+    public PartitionMetricModel(MetricIdModel metricId, Duration windowLength, TenantIdModel tenantId) {
+        this.id = new PartitionMetricIdModel(metricId, tenantId);
         this.createdAt = new Date();
         this.activeWindowedMetrics = new TreeSet<>();
         this.windowLength = windowLength;

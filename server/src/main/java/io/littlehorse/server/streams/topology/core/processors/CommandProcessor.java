@@ -3,18 +3,17 @@ package io.littlehorse.server.streams.topology.core.processors;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.model.PartitionMetricsModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.global.metrics.PartitionMetricInventoryModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateTaskMetricsModel;
-import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.AggregateWfMetricsModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.Tenant;
@@ -78,7 +77,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
         this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
         onPartitionClaimed();
-        ctx.schedule(Duration.ofSeconds(30), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
+        ctx.schedule(Duration.ofSeconds(5), PunctuationType.WALL_CLOCK_TIME, this::forwardMetricsUpdates);
     }
 
     @Override
@@ -161,21 +160,19 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     private void forwardMetricsUpdates(long timestamp) {
-        ClusterScopedStore coreDefaultStore =
-                ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
-        PartitionMetricsModel metricsOnCurrentPartition =
-                coreDefaultStore.get(LHConstants.PARTITION_METRICS_KEY, PartitionMetricsModel.class);
-
-        if (metricsOnCurrentPartition != null) {
-            for (AggregateWfMetricsModel aggregateWfMetrics : metricsOnCurrentPartition.buildWfRepartitionCommands()) {
-                forwardMetricSubcommand(aggregateWfMetrics);
-            }
-            for (AggregateTaskMetricsModel aggregateTaskMetrics :
-                    metricsOnCurrentPartition.buildTaskMetricRepartitionCommand()) {
-                forwardMetricSubcommand(aggregateTaskMetrics);
-            }
-            coreDefaultStore.delete(metricsOnCurrentPartition);
+        ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(this.nativeStore, new BackgroundContext());
+        PartitionMetricInventoryModel metricInventory = clusterStore.get(
+                PartitionMetricInventoryModel.METRIC_INVENTORY_STORE_KEY, PartitionMetricInventoryModel.class);
+        if (metricInventory != null) {
+            log.info(
+                    "Found metric inventory size: {}",
+                    metricInventory.getMetrics().size());
+        } else {
+            log.info("No metric inventory found for partition {}", ctx.taskId());
         }
+        String startKey = LHUtil.getCompositeId(
+                StoredGetable.getSubstorePrefix(StoreableType.STORED_GETABLE),
+                String.valueOf(GetableClassEnum.METRIC.getNumber()));
     }
 
     private void forwardMetricSubcommand(RepartitionSubCommand repartitionSubCommand) {
