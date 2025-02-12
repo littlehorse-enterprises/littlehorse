@@ -1,17 +1,14 @@
 package io.littlehorse.sdk.common;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.google.gson.reflect.TypeToken;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 /**
  * Utility class to transform LittleHorse objects into Java objects
  */
 public final class LHVariableMapper {
-
-    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private LHVariableMapper() {
         // no instances for this class
@@ -110,11 +107,7 @@ public final class LHVariableMapper {
      * @throws IllegalArgumentException If the VariableValue does not contain Json object.
      */
     public static <T> T as(VariableValue var, Class<T> clazz) {
-        try {
-            return MAPPER.readValue(var.getJsonObj(), clazz);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        return LHLibUtil.LH_GSON.fromJson(var.getJsonObj(), clazz);
     }
 
     /**
@@ -126,13 +119,9 @@ public final class LHVariableMapper {
      * @throws IllegalArgumentException If the VariableValue does not contain Json array.
      */
     public static <T> Collection<T> asList(VariableValue var, Class<T> clazz) {
-        try {
-            enforceType(var.getValueCase(), Collection.class);
-            return MAPPER.readValue(
-                    var.getJsonArr(), TypeFactory.defaultInstance().constructCollectionType(Collection.class, clazz));
-        } catch (JsonProcessingException exn) {
-            throw new RuntimeException(exn);
-        }
+        enforceType(var.getValueCase(), Collection.class);
+        Type typeOfT = TypeToken.getParameterized(Collection.class, clazz).getType();
+        return LHLibUtil.LH_GSON.fromJson(var.getJsonArr(), typeOfT);
     }
 
     private static void enforceType(VariableValue.ValueCase valueCase, Class<?> targetType) {
