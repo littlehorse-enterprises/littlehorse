@@ -147,15 +147,132 @@ public class WfRunVariable
     }
     
     /// <summary>
+    /// Returns an expression whose value is the `other` added to this expression.
+    /// </summary>
+    /// <param name="other">
+    /// It is the value to be added to this expression.
+    /// </param>
+    /// <returns> An expression whose value is the `other` added to this expression.
+    /// </returns>
+    public LHExpression Add(object other)
+    {
+        return new LHExpression(this, VariableMutationType.Add, other);
+    }
+    
+    /// <summary>
     /// Returns an expression whose value is the `other` subtracted from this expression.
     /// </summary>
     /// <param name="other">
     /// It is the value to be subtracted from this expression.
     /// </param>
-    /// <returns> An expression whose value is the `other` subtracted from this expression. <paramref name="LHExpression" />
+    /// <returns> An expression whose value is the `other` subtracted from this expression.
     /// </returns>
     public LHExpression Subtract(object other) 
     {
         return new LHExpression(this, VariableMutationType.Subtract, other);
+    }
+    
+    /// <summary>
+    /// Returns an expression whose value is the `other` multiplied by this expression.
+    /// </summary>
+    /// <param name="other">
+    /// It is the value to be multiplied by this expression.
+    /// </param>
+    /// <returns> An expression whose value is the `other` multiplied by this expression.
+    /// </returns>
+    public LHExpression Multiply(object other) 
+    {
+        return new LHExpression(this, VariableMutationType.Multiply, other);
+    }
+    
+    /// <summary>
+    /// Returns an expression whose value is the `other` divided by the `other`.
+    /// </summary>
+    /// <param name="other">
+    /// It is the value to divide this expression by.
+    /// </param>
+    /// <returns> An expression whose value is this expression divided by the `other`.
+    /// </returns>
+    public LHExpression Divide(object other) 
+    {
+        return new LHExpression(this, VariableMutationType.Divide, other);
+    }
+    
+    /// <summary>
+    /// Returns an expression whose value is this expression extended by the `other`.
+    /// </summary>
+    /// <param name="other">
+    /// It is the value to extend this expression by.
+    /// </param>
+    /// <returns> An expression whose value is this expression extended by the `other`. </returns>
+    public LHExpression Extend(object other) 
+    {
+        return new LHExpression(this, VariableMutationType.Extend, other);
+    }
+    
+    /// <summary>
+    /// Returns an expression whose value is this expression with all occurrences of
+    /// `other` removed.
+    /// </summary>
+    /// <param name="other">
+    /// It is the value to remove from this expression.
+    /// </param>
+    /// <returns> An expression whose value is this expression with all occurrences of
+    /// `other` removed.
+    /// </returns>
+    public LHExpression RemoveIfPresent(object other) 
+    {
+        return new LHExpression(this, VariableMutationType.RemoveIfPresent, other);
+    }
+    
+    /// <summary>
+    /// Returns an expression whose value is this expression with the index specified
+    /// by `index` removed.
+    ///
+    /// Valid only for JSON_ARR expressions.
+    /// </summary>
+    /// <param name="index">
+    /// It is the index at which to insert the other `index`.
+    /// </param>
+    /// <returns> An expression whose value is this expression with the `other` inserted
+    /// at the specified `index`.
+    /// </returns>
+    public LHExpression RemoveIndex(int index) 
+    {
+        return new LHExpression(this, VariableMutationType.RemoveIndex, index);
+    }
+    
+    /// <summary>
+    /// Returns an expression whose value is this expression with the index specified
+    /// by `index` removed.
+    ///
+    /// Valid only for JSON_ARR expressions.
+    /// </summary>
+    /// <param name="index">
+    /// It is the index at which to remove the value.
+    /// </param>
+    /// <returns> An expression whose value is this expression with the value at the
+    /// specified `index` removed.
+    /// </returns>
+    public LHExpression RemoveIndex(LHExpression index) 
+    {
+        return new LHExpression(this, VariableMutationType.RemoveIndex, index);
+    }
+    
+    /// <summary>
+    /// Returns an expression whose value is this expression with the key specified
+    /// by `key` removed.
+    ///
+    /// Valid only for JSON_OBJ expressions.
+    /// </summary>
+    /// <param name="key">
+    /// It is the key to remove from this expression.
+    /// </param>
+    /// <returns> An expression whose value is this expression with the key specified
+    /// by `key` removed.
+    /// </returns>
+    public LHExpression RemoveKey(object key) 
+    {
+        return new LHExpression(this, VariableMutationType.RemoveKey, key);
     }
 }
