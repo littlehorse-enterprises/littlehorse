@@ -6,11 +6,11 @@ SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 WORK_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 PUBLIC_PROTOS=$(ls "$WORK_DIR"/schemas/littlehorse | grep -v -E "^internal")
 INTERNAL_PROTOS=$(ls "$WORK_DIR"/schemas/internal)
-docker_run="docker run --user $(id -u):$(id -g) --rm -it -v ${WORK_DIR}:/littlehorse lh-protoc:23.4"
+docker_run="docker run --user $(id -u):$(id -g) --rm -it -v ${WORK_DIR}:/littlehorse lh-protoc"
 
 # compile protoc
-echo "Compiling docker image 'lh-protoc:23.4'"
-docker build -q --tag lh-protoc:23.4 -f "${SCRIPT_DIR}/Dockerfile" "${SCRIPT_DIR}"
+echo "Compiling docker image 'lh-protoc'"
+docker build -q --tag lh-protoc -f "${SCRIPT_DIR}/Dockerfile" "${SCRIPT_DIR}"
 
 # check protoc version
 echo "Docker image compiled, protoc --version: " $($docker_run protoc --version)

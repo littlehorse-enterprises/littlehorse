@@ -11,7 +11,7 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
     }
 
     public static String getSubstorePrefix(StoreableType storeableType) {
-        return String.valueOf(storeableType.getNumber()) + "/";
+        return storeableType.getNumber() + "/";
     }
 
     public static String stripPrefix(String fullStoreKey) {

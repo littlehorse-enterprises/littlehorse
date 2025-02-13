@@ -11,7 +11,6 @@ readme = "README.md"
 license = { text = "SSPL-1.0" }
 keywords = ["littlehorse"]
 classifiers = [
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -19,10 +18,9 @@ classifiers = [
 ]
 requires-python = ">=3.10,<3.14"
 dependencies = [
-    # the server is using protobuf 23.4 (compile-proto.sh), in python it is 4.23.4
-    "protobuf==4.23.4",
-    # compile-proto.sh is using grpcio 1.69.0 (local-dev/Dockerfile)
-    "grpcio==1.69.0",
+    # the server is using protobuf 29.3 (local-dev/Dockerfile), in python it is 5.29.3
+    "protobuf==5.29.3",
+    "grpcio==1.70.0",
     # other utilities
     "jproperties>=2.1,<2.2",
     "authlib>=1.4,<1.5",
