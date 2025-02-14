@@ -7,7 +7,7 @@ import { getWfRun } from '../../../../../actions/getWfRun'
 type Props = { params: { ids: string[]; tenantId: string } }
 
 export default async function Page({ params: { ids, tenantId } }: Props) {
-  const id = ids[0];
+  const id = ids.join('_');
   try {
     return <WfRun id={id} tenantId={tenantId} />
   } catch (error) {
