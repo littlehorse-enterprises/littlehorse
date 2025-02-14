@@ -65,9 +65,9 @@ class PutMetricRequest(_message.Message):
     __slots__ = ["measurable", "type"]
     MEASURABLE_FIELD_NUMBER: _ClassVar[int]
     TYPE_FIELD_NUMBER: _ClassVar[int]
-    measurable: _metrics_pb2.MeasurableObject
-    type: _metrics_pb2.MetricType
-    def __init__(self, measurable: _Optional[_Union[_metrics_pb2.MeasurableObject, str]] = ..., type: _Optional[_Union[_metrics_pb2.MetricType, str]] = ...) -> None: ...
+    measurable: _common_enums_pb2.MeasurableObject
+    type: _common_enums_pb2.MetricType
+    def __init__(self, measurable: _Optional[_Union[_common_enums_pb2.MeasurableObject, str]] = ..., type: _Optional[_Union[_common_enums_pb2.MetricType, str]] = ...) -> None: ...
 
 class PutTaskDefRequest(_message.Message):
     __slots__ = ["name", "input_vars", "output_schema"]

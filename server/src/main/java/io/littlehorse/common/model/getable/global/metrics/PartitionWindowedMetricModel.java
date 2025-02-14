@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PartitionWindowedMetricModel extends LHSerializable<PartitionWindowedMetric>
         implements Comparable<PartitionWindowedMetricModel> {
-
     private double value;
     private LocalDateTime windowStart;
 
@@ -63,7 +62,7 @@ public class PartitionWindowedMetricModel extends LHSerializable<PartitionWindow
         value++;
     }
 
-    double getValue() {
+    public double getValue() {
         return value;
     }
 

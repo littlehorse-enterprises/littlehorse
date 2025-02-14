@@ -39,10 +39,12 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.header.Headers;
@@ -191,6 +193,21 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 current.addWindowedMetric(windowedMetrics);
                 commandsPerTenant.putIfAbsent(partitionMetricId.getTenantId(), current);
             }
+            forwardRepartitionCommands(commandsPerTenant.values());
+        }
+    }
+
+    private void forwardRepartitionCommands(Collection<AggregateMetricsModel> repartitionSubCommands) {
+        String topicName = config.getRepartitionTopicName();
+        for (RepartitionSubCommand repartitionSubCommand : repartitionSubCommands) {
+            String partitionKey = repartitionSubCommand.getPartitionKey();
+            RepartitionCommand command = new RepartitionCommand(
+                    repartitionSubCommand, new Date(), UUID.randomUUID().toString());
+            CommandProcessorOutput output = new CommandProcessorOutput(topicName, command, partitionKey);
+            Record<String, CommandProcessorOutput> kafkaRecord =
+                    new Record<>(partitionKey, output, System.currentTimeMillis());
+            log.info("Forwarding repartition command: {}", partitionKey);
+            ctx.forward(kafkaRecord);
         }
     }
 

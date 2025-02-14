@@ -149,3 +149,19 @@ class ScheduledWfRunId(_message.Message):
     ID_FIELD_NUMBER: _ClassVar[int]
     id: str
     def __init__(self, id: _Optional[str] = ...) -> None: ...
+
+class MetricId(_message.Message):
+    __slots__ = ["measurable", "type"]
+    MEASURABLE_FIELD_NUMBER: _ClassVar[int]
+    TYPE_FIELD_NUMBER: _ClassVar[int]
+    measurable: _common_enums_pb2.MeasurableObject
+    type: _common_enums_pb2.MetricType
+    def __init__(self, measurable: _Optional[_Union[_common_enums_pb2.MeasurableObject, str]] = ..., type: _Optional[_Union[_common_enums_pb2.MetricType, str]] = ...) -> None: ...
+
+class MetricRunId(_message.Message):
+    __slots__ = ["metric_id", "window_start"]
+    METRIC_ID_FIELD_NUMBER: _ClassVar[int]
+    WINDOW_START_FIELD_NUMBER: _ClassVar[int]
+    metric_id: MetricId
+    window_start: _timestamp_pb2.Timestamp
+    def __init__(self, metric_id: _Optional[_Union[MetricId, _Mapping]] = ..., window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...

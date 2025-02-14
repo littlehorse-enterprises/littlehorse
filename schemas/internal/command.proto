@@ -14,7 +14,6 @@ import "variable.proto";
 import "storage.proto";
 import "acls.proto";
 import "job.proto";
-import "metrics.proto";
 
 
 // This is the schema of everything that flows through the Central Command topic.

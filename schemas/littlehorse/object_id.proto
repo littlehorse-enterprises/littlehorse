@@ -193,3 +193,13 @@ message TenantId {
 message ScheduledWfRunId {
   string id = 1;
 }
+
+message MetricId {
+  MeasurableObject measurable = 1;
+  MetricType type = 2;
+}
+
+message MetricRunId {
+  MetricId metric_id = 1;
+  google.protobuf.Timestamp window_start = 2;
+}

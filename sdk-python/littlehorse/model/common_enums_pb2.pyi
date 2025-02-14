@@ -59,6 +59,17 @@ class LHErrorType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     VAR_ERROR: _ClassVar[LHErrorType]
     TASK_ERROR: _ClassVar[LHErrorType]
     INTERNAL_ERROR: _ClassVar[LHErrorType]
+
+class MeasurableObject(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    WORKFLOW: _ClassVar[MeasurableObject]
+    TASK: _ClassVar[MeasurableObject]
+
+class MetricType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    COUNT: _ClassVar[MetricType]
+    AVG: _ClassVar[MetricType]
+    RATIO: _ClassVar[MetricType]
 STARTING: LHStatus
 RUNNING: LHStatus
 COMPLETED: LHStatus
@@ -97,3 +108,8 @@ TASK_FAILURE: LHErrorType
 VAR_ERROR: LHErrorType
 TASK_ERROR: LHErrorType
 INTERNAL_ERROR: LHErrorType
+WORKFLOW: MeasurableObject
+TASK: MeasurableObject
+COUNT: MetricType
+AVG: MetricType
+RATIO: MetricType

@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.metrics.MetricRunModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
@@ -24,6 +25,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.MetricIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricRunIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PartitionMetricIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
@@ -109,6 +111,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.METRIC;
         } else if (cls.equals(PartitionMetricModel.class)) {
             return GetableClassEnum.PARTITION_METRIC;
+        } else if (cls.equals(MetricRunModel.class)) {
+            return GetableClassEnum.METRIC_RUN;
         } else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -156,6 +160,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return MetricModel.class;
             case PARTITION_METRIC:
                 return PartitionMetricModel.class;
+            case METRIC_RUN:
+                return MetricRunModel.class;
             case UNRECOGNIZED:
                 // default:
         }
@@ -204,6 +210,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return MetricIdModel.class;
             case PARTITION_METRIC:
                 return PartitionMetricIdModel.class;
+            case METRIC_RUN:
+                return MetricRunIdModel.class;
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");

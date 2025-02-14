@@ -86,7 +86,7 @@ public final class Storage {
       "LH_TIMER\020\004\022\007\n\003TAG\020\005\022\025\n\021PARTITION_METRICS" +
       "\020\006\022\021\n\rMETRIC_WINDOW\020\007\022\026\n\022INITIALIZATION_" +
       "LOG\020\010\022\032\n\026WFRUN_STORED_INVENTORY\020\t\022\036\n\032MET" +
-      "RIC_PARTITION_INVENTORY\020\n*\366\002\n\020GetableCla" +
+      "RIC_PARTITION_INVENTORY\020\n*\206\003\n\020GetableCla" +
       "ssEnum\022\014\n\010TASK_DEF\020\000\022\026\n\022EXTERNAL_EVENT_D" +
       "EF\020\001\022\013\n\007WF_SPEC\020\002\022\n\n\006WF_RUN\020\003\022\014\n\010NODE_RU" +
       "N\020\004\022\014\n\010VARIABLE\020\005\022\022\n\016EXTERNAL_EVENT\020\006\022\024\n" +
@@ -96,8 +96,9 @@ public final class Storage {
       "RINCIPAL\020\r\022\n\n\006TENANT\020\016\022\026\n\022WORKFLOW_EVENT" +
       "_DEF\020\017\022\022\n\016WORKFLOW_EVENT\020\020\022\024\n\020SCHEDULED_" +
       "WF_RUN\020\021\022\n\n\006METRIC\020\022\022\024\n\020PARTITION_METRIC" +
-      "\020\023*\033\n\016TagStorageType\022\t\n\005LOCAL\020\000B\037\n\033io.li" +
-      "ttlehorse.common.protoP\001b\006proto3"
+      "\020\023\022\016\n\nMETRIC_RUN\020\024*\033\n\016TagStorageType\022\t\n\005" +
+      "LOCAL\020\000B\037\n\033io.littlehorse.common.protoP\001" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

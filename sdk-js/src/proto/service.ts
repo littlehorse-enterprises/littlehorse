@@ -13,9 +13,15 @@ import {
   LHStatus,
   lHStatusFromJSON,
   lHStatusToNumber,
+  MeasurableObject,
+  measurableObjectFromJSON,
+  measurableObjectToNumber,
   MetricsWindowLength,
   metricsWindowLengthFromJSON,
   metricsWindowLengthToNumber,
+  MetricType,
+  metricTypeFromJSON,
+  metricTypeToNumber,
   TaskStatus,
   taskStatusFromJSON,
   taskStatusToNumber,
@@ -27,15 +33,7 @@ import { VariableDef } from "./common_wfspec";
 import { ExternalEvent, ExternalEventDef, ExternalEventRetentionPolicy } from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
-import {
-  MeasurableObject,
-  measurableObjectFromJSON,
-  measurableObjectToNumber,
-  Metric,
-  MetricType,
-  metricTypeFromJSON,
-  metricTypeToNumber,
-} from "./metrics";
+import { Metric } from "./metrics";
 import { NodeRun } from "./node_run";
 import {
   ExternalEventDefId,
