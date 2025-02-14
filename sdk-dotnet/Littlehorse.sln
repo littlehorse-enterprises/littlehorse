@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConditionalsExample", "Exam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConditionalsWhileExample", "Examples\ConditionalsWhileExample\ConditionalsWhileExample.csproj", "{40D76EE3-8B4F-4EAA-A3F0-AAA0DE9D8113}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MutationExample", "Examples\MutationExample\MutationExample.csproj", "{DEA03A93-461C-48BC-A218-9C75313DC210}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +64,10 @@ Global
 		{40D76EE3-8B4F-4EAA-A3F0-AAA0DE9D8113}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40D76EE3-8B4F-4EAA-A3F0-AAA0DE9D8113}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40D76EE3-8B4F-4EAA-A3F0-AAA0DE9D8113}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEA03A93-461C-48BC-A218-9C75313DC210}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEA03A93-461C-48BC-A218-9C75313DC210}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEA03A93-461C-48BC-A218-9C75313DC210}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEA03A93-461C-48BC-A218-9C75313DC210}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{88CB23B3-1174-45F5-9F72-46AB57BAB661} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
@@ -70,5 +76,6 @@ Global
 		{93DB9DF9-A48B-436F-8892-AE4CAD42323E} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
 		{D37393B1-3D05-4A76-BEC3-D801EB576130} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
 		{40D76EE3-8B4F-4EAA-A3F0-AAA0DE9D8113} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
+		{DEA03A93-461C-48BC-A218-9C75313DC210} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
 	EndGlobalSection
 EndGlobal
