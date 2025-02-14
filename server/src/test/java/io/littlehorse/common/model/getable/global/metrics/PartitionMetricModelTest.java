@@ -2,7 +2,6 @@ package io.littlehorse.common.model.getable.global.metrics;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.littlehorse.common.model.AggregateMetricsModel;
 import io.littlehorse.common.model.RepartitionWindowedMetricModel;
 import io.littlehorse.common.model.getable.objectId.MetricIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
@@ -15,7 +14,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
@@ -73,11 +71,9 @@ class PartitionMetricModelTest {
         partitionMetric.incrementCurrentWindow(LocalDateTime.now());
         partitionMetric.incrementCurrentWindow(LocalDateTime.now());
         partitionMetric.incrementCurrentWindow(LocalDateTime.now());
-        Optional<AggregateMetricsModel> repartitionCommand =
-                partitionMetric.buildRepartitionCommand(LocalDateTime.now());
-        assertThat(repartitionCommand).isNotEmpty();
         List<RepartitionWindowedMetricModel> windowedMetrics =
-                repartitionCommand.get().getWindowedMetrics();
+                partitionMetric.buildRepartitionCommand(LocalDateTime.now());
+        assertThat(windowedMetrics).isNotEmpty();
         assertThat(windowedMetrics).hasSize(1).allSatisfy(windowedMetric -> {
             PartitionWindowedMetricModel partitionWindowed =
                     partitionMetric.getActiveWindowedMetrics().iterator().next();
@@ -97,19 +93,16 @@ class PartitionMetricModelTest {
                 new PartitionMetricModel(workflowRunningMetricId, Duration.ofMinutes(1), testTenantId);
         partitionMetric.incrementCurrentWindow(instant1);
         partitionMetric.incrementCurrentWindow(instant1);
-        AggregateMetricsModel repartitionCommand1 =
-                partitionMetric.buildRepartitionCommand(instant1).get();
+        List<RepartitionWindowedMetricModel> windowedMetrics1 = partitionMetric.buildRepartitionCommand(instant1);
         partitionMetric.incrementCurrentWindow(instant2);
         partitionMetric.incrementCurrentWindow(instant2);
-        AggregateMetricsModel repartitionCommand2 =
-                partitionMetric.buildRepartitionCommand(instant2).get();
+        List<RepartitionWindowedMetricModel> windowedMetrics2 = partitionMetric.buildRepartitionCommand(instant2);
         partitionMetric.incrementCurrentWindow(instant3);
         partitionMetric.incrementCurrentWindow(instant3);
-        AggregateMetricsModel repartitionCommand3 =
-                partitionMetric.buildRepartitionCommand(instant3).get();
+        List<RepartitionWindowedMetricModel> windowedMetrics3 = partitionMetric.buildRepartitionCommand(instant3);
 
-        assertThat(repartitionCommand1.getWindowedMetrics()).hasSize(1);
-        assertThat(repartitionCommand2.getWindowedMetrics()).hasSize(2);
-        assertThat(repartitionCommand3.getWindowedMetrics()).hasSize(2);
+        assertThat(windowedMetrics1).hasSize(1);
+        assertThat(windowedMetrics2).hasSize(2);
+        assertThat(windowedMetrics3).hasSize(2);
     }
 }

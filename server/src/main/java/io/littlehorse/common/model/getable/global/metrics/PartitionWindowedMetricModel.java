@@ -55,11 +55,8 @@ public class PartitionWindowedMetricModel extends LHSerializable<PartitionWindow
 
     boolean windowClosed(Duration windowLength, LocalDateTime currentTime) {
         long elapsed = Duration.between(windowStart, currentTime).toMillis();
-        boolean closed = elapsed > windowLength.toMillis();
-        if (closed) {
-            log.info("Window closed, creating a new one. Elapsed time: {} ms", elapsed);
-        }
-        return closed;
+
+        return elapsed > windowLength.toMillis();
     }
 
     public void increment() {

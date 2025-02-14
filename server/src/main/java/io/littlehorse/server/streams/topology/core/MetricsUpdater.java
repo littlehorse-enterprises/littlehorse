@@ -62,9 +62,9 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
                                 PartitionMetricInventoryModel.METRIC_INVENTORY_STORE_KEY,
                                 PartitionMetricInventoryModel.class);
                         if (partitionMetricInventory == null) {
+                            log.info("Creating new partition metric inventory");
                             partitionMetricInventory = new PartitionMetricInventoryModel();
                         }
-                        clusterScopedCoreStore.put(new PartitionMetricInventoryModel());
                         PartitionMetricModel partitionMetric = getable.getStoredObject();
                         partitionMetric.incrementCurrentWindow(LocalDateTime.now());
                         boolean added = partitionMetricInventory.addMetric(partitionMetric.getObjectId());

@@ -115,6 +115,7 @@ message AggregateTaskMetrics {
 
 message AggregateMetrics {
     repeated RepartitionWindowedMetric windowed_metrics = 1;
+    TenantId tenant_id = 2;
 }
 
 message WfMetricUpdate {

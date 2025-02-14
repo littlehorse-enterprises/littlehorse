@@ -3,7 +3,6 @@ package io.littlehorse.common.model.getable.global.metrics;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
-import io.littlehorse.common.model.AggregateMetricsModel;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.RepartitionWindowedMetricModel;
 import io.littlehorse.common.model.getable.objectId.MetricIdModel;
@@ -118,14 +117,14 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
         return activeWindowedMetrics;
     }
 
-    public Optional<AggregateMetricsModel> buildRepartitionCommand(LocalDateTime currentTime) {
+    public List<RepartitionWindowedMetricModel> buildRepartitionCommand(LocalDateTime currentTime) {
         if (activeWindowedMetrics.isEmpty()) {
-            return Optional.empty();
+            return List.of();
         }
         List<RepartitionWindowedMetricModel> windowedMetrics =
                 activeWindowedMetrics.stream().map(this::toRepartitionMetric).toList();
         activeWindowedMetrics.removeIf(windowedMetric -> windowedMetric.windowClosed(windowLength, currentTime));
-        return Optional.of(new AggregateMetricsModel(windowedMetrics));
+        return windowedMetrics;
     }
 
     private RepartitionWindowedMetricModel toRepartitionMetric(PartitionWindowedMetricModel windowedMetric) {

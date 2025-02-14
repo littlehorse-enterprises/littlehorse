@@ -3,19 +3,23 @@ package io.littlehorse.server.streams.topology.core.processors;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.AggregateMetricsModel;
+import io.littlehorse.common.model.RepartitionWindowedMetricModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.metrics.PartitionMetricInventoryModel;
+import io.littlehorse.common.model.getable.global.metrics.PartitionMetricModel;
+import io.littlehorse.common.model.getable.objectId.PartitionMetricIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
-import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.PartitionMetric;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.ServerTopology;
@@ -33,7 +37,12 @@ import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.header.Headers;
@@ -164,15 +173,25 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         PartitionMetricInventoryModel metricInventory = clusterStore.get(
                 PartitionMetricInventoryModel.METRIC_INVENTORY_STORE_KEY, PartitionMetricInventoryModel.class);
         if (metricInventory != null) {
-            log.info(
-                    "Found metric inventory size: {}",
-                    metricInventory.getMetrics().size());
-        } else {
-            log.info("No metric inventory found for partition {}", ctx.taskId());
+            Map<TenantIdModel, AggregateMetricsModel> commandsPerTenant = new HashMap<>();
+            for (PartitionMetricIdModel partitionMetricId : metricInventory.getMetrics()) {
+                TenantScopedStore tenantStore = TenantScopedStore.newInstance(
+                        nativeStore, partitionMetricId.getTenantId(), new BackgroundContext());
+                StoredGetable<PartitionMetric, PartitionMetricModel> storeable = tenantStore.get(
+                        new PartitionMetricIdModel(partitionMetricId.getMetricId(), partitionMetricId.getTenantId())
+                                .getStoreableKey(),
+                        StoredGetable.class);
+                PartitionMetricModel partitionMetric = storeable.getStoredObject();
+                List<RepartitionWindowedMetricModel> windowedMetrics =
+                        partitionMetric.buildRepartitionCommand(LocalDateTime.now());
+                tenantStore.put(new StoredGetable<>(partitionMetric));
+                AggregateMetricsModel current = commandsPerTenant.getOrDefault(
+                        partitionMetricId.getTenantId(),
+                        new AggregateMetricsModel(partitionMetricId.getTenantId(), new ArrayList<>()));
+                current.addWindowedMetric(windowedMetrics);
+                commandsPerTenant.putIfAbsent(partitionMetricId.getTenantId(), current);
+            }
         }
-        String startKey = LHUtil.getCompositeId(
-                StoredGetable.getSubstorePrefix(StoreableType.STORED_GETABLE),
-                String.valueOf(GetableClassEnum.METRIC.getNumber()));
     }
 
     private void forwardMetricSubcommand(RepartitionSubCommand repartitionSubCommand) {
