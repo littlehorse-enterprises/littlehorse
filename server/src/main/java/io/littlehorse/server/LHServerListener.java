@@ -70,6 +70,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecReques
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWorkflowEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.MigrateWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutMetricRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
@@ -114,6 +115,7 @@ import io.littlehorse.sdk.common.proto.ListWfMetricsRequest;
 import io.littlehorse.sdk.common.proto.ListWfMetricsResponse;
 import io.littlehorse.sdk.common.proto.ListWorkflowEventsRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseImplBase;
+import io.littlehorse.sdk.common.proto.Metric;
 import io.littlehorse.sdk.common.proto.MigrateWfSpecRequest;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
@@ -126,6 +128,7 @@ import io.littlehorse.sdk.common.proto.PrincipalId;
 import io.littlehorse.sdk.common.proto.PrincipalIdList;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
+import io.littlehorse.sdk.common.proto.PutMetricRequest;
 import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
@@ -554,6 +557,12 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void putWfSpec(PutWfSpecRequest req, StreamObserver<WfSpec> ctx) {
         PutWfSpecRequestModel reqModel = LHSerializable.fromProto(req, PutWfSpecRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, WfSpec.class, true);
+    }
+
+    @Override
+    public void putMetric(PutMetricRequest req, StreamObserver<Metric> ctx) {
+        PutMetricRequestModel reqModel = LHSerializable.fromProto(req, PutMetricRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, Metric.class, true);
     }
 
     @Override
