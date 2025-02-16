@@ -35,6 +35,7 @@ import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.header.Headers;
@@ -53,6 +54,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private final LHServer server;
     private final MetadataCache metadataCache;
     private final TaskQueueManager globalTaskQueueManager;
+    private final ExecutorService networkThreadPool;
 
     private KeyValueStore<String, Bytes> nativeStore;
     private KeyValueStore<String, Bytes> globalStore;
@@ -70,6 +72,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.metadataCache = metadataCache;
         this.globalTaskQueueManager = globalTaskQueueManager;
         this.exceptionHandler = new LHProcessingExceptionHandler(server);
+        this.networkThreadPool = server.getNetworkThreadpool();
     }
 
     @Override
@@ -105,7 +108,19 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                         .setResult(response.toByteString())
                         .build();
 
-                server.onResponseReceived(command.getCommandId(), cmdReply);
+                // The 'onResponseReceived' method can involve waiting on a lock in the AsyncWaiters class;
+                // we don't want to do that here so submit to an executor for async processing.
+                //
+                // LHServer#onResponseReceived()
+                // BackendInternalComms#onResponseReceived()
+                // AsyncWaiters#registerCommandProcessed()
+                // CommandWaiter#setResponseAndMaybeComplete()
+                //
+                // The CommandWaiter method involves blocking on a lock. No need to hold up the stream thread
+                // for this.
+                networkThreadPool.submit(() -> {
+                    server.onResponseReceived(command.getCommandId(), cmdReply);
+                });
             }
         } catch (KafkaException ke) {
             throw ke;
