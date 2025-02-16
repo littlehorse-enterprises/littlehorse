@@ -67,8 +67,16 @@ public class CanaryConfig implements Config {
         return new LittleHorseConfig(configs);
     }
 
-    public KafkaConfig toKafkaConfig() {
-        return new KafkaConfig(configs);
+    public KafkaAdminConfig toKafkaAdminConfig() {
+        return new KafkaAdminConfig(configs);
+    }
+
+    public KafkaStreamsConfig toKafkaStreamsConfig() {
+        return new KafkaStreamsConfig(configs);
+    }
+
+    public KafkaProducerConfig toKafkaProducerConfig() {
+        return new KafkaProducerConfig(configs);
     }
 
     public String getConfig(final String configName) {
@@ -190,4 +198,5 @@ public class CanaryConfig implements Config {
     public String getMetronomeDataPath() {
         return getConfig(METRONOME_DATA_PATH);
     }
+
 }
