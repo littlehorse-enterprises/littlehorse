@@ -56,8 +56,8 @@ enum TaskStatus {
   TASK_FAILED = 3;
   // Task Worker did not report a result in time.
   TASK_TIMEOUT = 4;
-  // Task Worker reported that it was unable to serialize the output of the TaskRun.
-  TASK_OUTPUT_SERIALIZING_ERROR = 5;
+  // The output of the TaskRun was unable to be serialized or deserialized.
+  TASK_OUTPUT_SERDE_ERROR = 5;
   // Task Worker was unable to deserialize the input variables into appropriate language-specific
   // objects to pass into the Task Function
   TASK_INPUT_VAR_SUB_ERROR = 6;

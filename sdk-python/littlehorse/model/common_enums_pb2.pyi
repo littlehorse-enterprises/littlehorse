@@ -27,7 +27,7 @@ class TaskStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     TASK_SUCCESS: _ClassVar[TaskStatus]
     TASK_FAILED: _ClassVar[TaskStatus]
     TASK_TIMEOUT: _ClassVar[TaskStatus]
-    TASK_OUTPUT_SERIALIZING_ERROR: _ClassVar[TaskStatus]
+    TASK_OUTPUT_SERDE_ERROR: _ClassVar[TaskStatus]
     TASK_INPUT_VAR_SUB_ERROR: _ClassVar[TaskStatus]
     TASK_EXCEPTION: _ClassVar[TaskStatus]
     TASK_PENDING: _ClassVar[TaskStatus]
@@ -74,7 +74,7 @@ TASK_RUNNING: TaskStatus
 TASK_SUCCESS: TaskStatus
 TASK_FAILED: TaskStatus
 TASK_TIMEOUT: TaskStatus
-TASK_OUTPUT_SERIALIZING_ERROR: TaskStatus
+TASK_OUTPUT_SERDE_ERROR: TaskStatus
 TASK_INPUT_VAR_SUB_ERROR: TaskStatus
 TASK_EXCEPTION: TaskStatus
 TASK_PENDING: TaskStatus
