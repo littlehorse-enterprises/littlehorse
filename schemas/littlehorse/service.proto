@@ -296,6 +296,8 @@ service LittleHorse {
 
   // Gets the version of the LH Server.
   rpc GetServerVersion(google.protobuf.Empty) returns (ServerVersion) {}
+
+  rpc ListMetricRuns(ListMetricRunRequest) returns (MetricRunList) {}
 }
 
 // Returns the UserTaskDef with a given name and the highest version number.
@@ -1449,4 +1451,13 @@ message ServerVersion {
   // Prerelease Identifier. If this is set, then the server is NOT a production release
   // but rather a release candidate or experimental pre-release.
   optional string pre_release_identifier = 4;
+}
+
+
+message MetricRunList {
+  repeated MetricRun results = 1;
+}
+
+message ListMetricRunRequest {
+  MetricId metric_id = 1;
 }

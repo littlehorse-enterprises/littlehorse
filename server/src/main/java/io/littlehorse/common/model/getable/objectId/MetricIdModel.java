@@ -11,6 +11,7 @@ import io.littlehorse.sdk.common.proto.Metric;
 import io.littlehorse.sdk.common.proto.MetricId;
 import io.littlehorse.sdk.common.proto.MetricType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Optional;
 
 public class MetricIdModel extends MetadataId<MetricId, Metric, MetricModel> {
 
@@ -57,5 +58,10 @@ public class MetricIdModel extends MetadataId<MetricId, Metric, MetricModel> {
     @Override
     public GetableClassEnum getType() {
         return GetableClassEnum.METRIC;
+    }
+
+    @Override
+    public Optional<String> getPartitionKey() {
+        return Optional.of(LHUtil.getCompositeId(measurable.toString(), type.toString()));
     }
 }

@@ -19,6 +19,7 @@ import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.GetableUpdates.GetableStatusUpdate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,7 +50,9 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
             if (storedGetable != null) {
                 MetricModel metric = storedGetable.getStoredObject();
                 if (metric != null) {
-                    if (wfRunEvent.getNewStatus().equals(LHStatus.RUNNING)) {
+                    if (Objects.isNull(wfRunEvent.getPreviousStatus())
+                            && wfRunEvent.getNewStatus().equals(LHStatus.RUNNING)) {
+                        log.info("Updating metrics for {}", metric);
                         StoredGetable<PartitionMetric, PartitionMetricModel> getable = tenantStore.get(
                                 new PartitionMetricIdModel(metric.getObjectId(), statusUpdate.getTenantId())
                                         .getStoreableKey(),

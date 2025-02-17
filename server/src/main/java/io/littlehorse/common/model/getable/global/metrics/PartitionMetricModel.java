@@ -128,7 +128,6 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
     }
 
     private RepartitionWindowedMetricModel toRepartitionMetric(PartitionWindowedMetricModel windowedMetric) {
-        return new RepartitionWindowedMetricModel(
-                id.getMetricId(), windowedMetric.getValue(), windowedMetric.getWindowStart());
+        return new RepartitionWindowedMetricModel(windowedMetric.getValue(), windowedMetric.getWindowStart());
     }
 }

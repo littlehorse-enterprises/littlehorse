@@ -50,8 +50,9 @@ public class MetricRunIdModel extends RepartitionedId<MetricRunId, MetricRun, Me
     @Override
     public void initFromString(String storeKey) {
         String[] parts = storeKey.split("/");
-        this.metricId = (MetricIdModel) MetricIdModel.fromString(parts[0], MetricIdModel.class);
-        this.windowStart = new Date(Long.parseLong(parts[1]));
+        this.metricId = (MetricIdModel)
+                MetricIdModel.fromString(LHUtil.getCompositeId(parts[0], parts[1]), MetricIdModel.class);
+        this.windowStart = new Date(Long.parseLong(parts[2]));
     }
 
     @Override

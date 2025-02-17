@@ -2,7 +2,7 @@ package io.littlehorse.server.streams.lhinternalscan;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.proto.InternalScanPb;
 
 public class ObjectIdScanBoundaryStrategy implements SearchScanBoundaryStrategy {
@@ -31,8 +31,12 @@ public class ObjectIdScanBoundaryStrategy implements SearchScanBoundaryStrategy 
         return partitionKey;
     }
 
-    public static ObjectIdScanBoundaryStrategy from(WfRunIdModel wfRunId) {
+    public static ObjectIdScanBoundaryStrategy from(ObjectIdModel<?, ?, ?> wfRunId) {
         return new ObjectIdScanBoundaryStrategy(wfRunId.getPartitionKey().get(), wfRunId + "/", wfRunId + "/~");
+    }
+
+    public static ObjectIdScanBoundaryStrategy fromPrefix(String partitionKey, String prefix) {
+        return new ObjectIdScanBoundaryStrategy(partitionKey, prefix + "/", prefix + "/~");
     }
 
     public static ObjectIdScanBoundaryStrategy prefixMetadataScan() {

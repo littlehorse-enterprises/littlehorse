@@ -96,6 +96,7 @@ const (
 	LittleHorse_GetPrincipal_FullMethodName            = "/littlehorse.LittleHorse/GetPrincipal"
 	LittleHorse_Whoami_FullMethodName                  = "/littlehorse.LittleHorse/Whoami"
 	LittleHorse_GetServerVersion_FullMethodName        = "/littlehorse.LittleHorse/GetServerVersion"
+	LittleHorse_ListMetricRuns_FullMethodName          = "/littlehorse.LittleHorse/ListMetricRuns"
 )
 
 // LittleHorseClient is the client API for LittleHorse service.
@@ -308,6 +309,7 @@ type LittleHorseClient interface {
 	Whoami(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Principal, error)
 	// Gets the version of the LH Server.
 	GetServerVersion(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ServerVersion, error)
+	ListMetricRuns(ctx context.Context, in *ListMetricRunRequest, opts ...grpc.CallOption) (*MetricRunList, error)
 }
 
 type littleHorseClient struct {
@@ -1024,6 +1026,15 @@ func (c *littleHorseClient) GetServerVersion(ctx context.Context, in *emptypb.Em
 	return out, nil
 }
 
+func (c *littleHorseClient) ListMetricRuns(ctx context.Context, in *ListMetricRunRequest, opts ...grpc.CallOption) (*MetricRunList, error) {
+	out := new(MetricRunList)
+	err := c.cc.Invoke(ctx, LittleHorse_ListMetricRuns_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LittleHorseServer is the server API for LittleHorse service.
 // All implementations must embed UnimplementedLittleHorseServer
 // for forward compatibility
@@ -1234,6 +1245,7 @@ type LittleHorseServer interface {
 	Whoami(context.Context, *emptypb.Empty) (*Principal, error)
 	// Gets the version of the LH Server.
 	GetServerVersion(context.Context, *emptypb.Empty) (*ServerVersion, error)
+	ListMetricRuns(context.Context, *ListMetricRunRequest) (*MetricRunList, error)
 	mustEmbedUnimplementedLittleHorseServer()
 }
 
@@ -1468,6 +1480,9 @@ func (UnimplementedLittleHorseServer) Whoami(context.Context, *emptypb.Empty) (*
 }
 func (UnimplementedLittleHorseServer) GetServerVersion(context.Context, *emptypb.Empty) (*ServerVersion, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetServerVersion not implemented")
+}
+func (UnimplementedLittleHorseServer) ListMetricRuns(context.Context, *ListMetricRunRequest) (*MetricRunList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListMetricRuns not implemented")
 }
 func (UnimplementedLittleHorseServer) mustEmbedUnimplementedLittleHorseServer() {}
 
@@ -2858,6 +2873,24 @@ func _LittleHorse_GetServerVersion_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_ListMetricRuns_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMetricRunRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).ListMetricRuns(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_ListMetricRuns_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).ListMetricRuns(ctx, req.(*ListMetricRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LittleHorse_ServiceDesc is the grpc.ServiceDesc for LittleHorse service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3164,6 +3197,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetServerVersion",
 			Handler:    _LittleHorse_GetServerVersion_Handler,
+		},
+		{
+			MethodName: "ListMetricRuns",
+			Handler:    _LittleHorse_ListMetricRuns_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

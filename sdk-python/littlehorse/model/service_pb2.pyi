@@ -933,3 +933,15 @@ class ServerVersion(_message.Message):
     patch_version: int
     pre_release_identifier: str
     def __init__(self, major_version: _Optional[int] = ..., minor_version: _Optional[int] = ..., patch_version: _Optional[int] = ..., pre_release_identifier: _Optional[str] = ...) -> None: ...
+
+class MetricRunList(_message.Message):
+    __slots__ = ["results"]
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_metrics_pb2.MetricRun]
+    def __init__(self, results: _Optional[_Iterable[_Union[_metrics_pb2.MetricRun, _Mapping]]] = ...) -> None: ...
+
+class ListMetricRunRequest(_message.Message):
+    __slots__ = ["metric_id"]
+    METRIC_ID_FIELD_NUMBER: _ClassVar[int]
+    metric_id: _object_id_pb2.MetricId
+    def __init__(self, metric_id: _Optional[_Union[_object_id_pb2.MetricId, _Mapping]] = ...) -> None: ...

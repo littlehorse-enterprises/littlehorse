@@ -78,8 +78,6 @@ class PartitionMetricModelTest {
             PartitionWindowedMetricModel partitionWindowed =
                     partitionMetric.getActiveWindowedMetrics().iterator().next();
             assertThat(windowedMetric.getValue()).isEqualTo(partitionWindowed.getValue());
-            assertThat(windowedMetric.getMetricId())
-                    .isEqualTo(partitionMetric.getObjectId().getMetricId());
             assertThat(windowedMetric.getWindowStart()).isEqualTo(partitionWindowed.getWindowStart());
         });
     }

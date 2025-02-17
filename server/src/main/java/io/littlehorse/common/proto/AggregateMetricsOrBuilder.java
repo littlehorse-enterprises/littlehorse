@@ -8,41 +8,56 @@ public interface AggregateMetricsOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>repeated .littlehorse.RepartitionWindowedMetric windowed_metrics = 1;</code>
+   * <code>.littlehorse.MetricId metric_id = 1;</code>
+   * @return Whether the metricId field is set.
+   */
+  boolean hasMetricId();
+  /**
+   * <code>.littlehorse.MetricId metric_id = 1;</code>
+   * @return The metricId.
+   */
+  io.littlehorse.sdk.common.proto.MetricId getMetricId();
+  /**
+   * <code>.littlehorse.MetricId metric_id = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.MetricIdOrBuilder getMetricIdOrBuilder();
+
+  /**
+   * <code>repeated .littlehorse.RepartitionWindowedMetric windowed_metrics = 2;</code>
    */
   java.util.List<io.littlehorse.common.proto.RepartitionWindowedMetric> 
       getWindowedMetricsList();
   /**
-   * <code>repeated .littlehorse.RepartitionWindowedMetric windowed_metrics = 1;</code>
+   * <code>repeated .littlehorse.RepartitionWindowedMetric windowed_metrics = 2;</code>
    */
   io.littlehorse.common.proto.RepartitionWindowedMetric getWindowedMetrics(int index);
   /**
-   * <code>repeated .littlehorse.RepartitionWindowedMetric windowed_metrics = 1;</code>
+   * <code>repeated .littlehorse.RepartitionWindowedMetric windowed_metrics = 2;</code>
    */
   int getWindowedMetricsCount();
   /**
-   * <code>repeated .littlehorse.RepartitionWindowedMetric windowed_metrics = 1;</code>
+   * <code>repeated .littlehorse.RepartitionWindowedMetric windowed_metrics = 2;</code>
    */
   java.util.List<? extends io.littlehorse.common.proto.RepartitionWindowedMetricOrBuilder> 
       getWindowedMetricsOrBuilderList();
   /**
-   * <code>repeated .littlehorse.RepartitionWindowedMetric windowed_metrics = 1;</code>
+   * <code>repeated .littlehorse.RepartitionWindowedMetric windowed_metrics = 2;</code>
    */
   io.littlehorse.common.proto.RepartitionWindowedMetricOrBuilder getWindowedMetricsOrBuilder(
       int index);
 
   /**
-   * <code>.littlehorse.TenantId tenant_id = 2;</code>
+   * <code>.littlehorse.TenantId tenant_id = 3;</code>
    * @return Whether the tenantId field is set.
    */
   boolean hasTenantId();
   /**
-   * <code>.littlehorse.TenantId tenant_id = 2;</code>
+   * <code>.littlehorse.TenantId tenant_id = 3;</code>
    * @return The tenantId.
    */
   io.littlehorse.sdk.common.proto.TenantId getTenantId();
   /**
-   * <code>.littlehorse.TenantId tenant_id = 2;</code>
+   * <code>.littlehorse.TenantId tenant_id = 3;</code>
    */
   io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder();
 }

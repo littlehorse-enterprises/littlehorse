@@ -113,8 +113,9 @@ message AggregateTaskMetrics {
 }
 
 message AggregateMetrics {
-    repeated RepartitionWindowedMetric windowed_metrics = 1;
-    TenantId tenant_id = 2;
+    MetricId metric_id = 1;
+    repeated RepartitionWindowedMetric windowed_metrics = 2;
+    TenantId tenant_id = 3;
 }
 
 message WfMetricUpdate {
@@ -259,7 +260,6 @@ message DeleteTaskWorkerGroupRequest {
 }
 
 message RepartitionWindowedMetric {
-    MetricId metric_id = 1;
-    double value = 2;
-    google.protobuf.Timestamp window_start = 3;
+    double value = 1;
+    google.protobuf.Timestamp window_start = 2;
 }

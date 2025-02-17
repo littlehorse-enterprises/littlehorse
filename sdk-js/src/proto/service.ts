@@ -33,11 +33,12 @@ import { VariableDef } from "./common_wfspec";
 import { ExternalEvent, ExternalEventDef, ExternalEventRetentionPolicy } from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { Metric } from "./metrics";
+import { Metric, MetricRun } from "./metrics";
 import { NodeRun } from "./node_run";
 import {
   ExternalEventDefId,
   ExternalEventId,
+  MetricId,
   NodeRunId,
   PrincipalId,
   ScheduledWfRunId,
@@ -1538,6 +1539,14 @@ export interface ServerVersion {
    * but rather a release candidate or experimental pre-release.
    */
   preReleaseIdentifier?: string | undefined;
+}
+
+export interface MetricRunList {
+  results: MetricRun[];
+}
+
+export interface ListMetricRunRequest {
+  metricId: MetricId | undefined;
 }
 
 function createBaseGetLatestUserTaskDefRequest(): GetLatestUserTaskDefRequest {
@@ -7770,6 +7779,98 @@ export const ServerVersion = {
   },
 };
 
+function createBaseMetricRunList(): MetricRunList {
+  return { results: [] };
+}
+
+export const MetricRunList = {
+  encode(message: MetricRunList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.results) {
+      MetricRun.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricRunList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMetricRunList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.results.push(MetricRun.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<MetricRunList>): MetricRunList {
+    return MetricRunList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MetricRunList>): MetricRunList {
+    const message = createBaseMetricRunList();
+    message.results = object.results?.map((e) => MetricRun.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseListMetricRunRequest(): ListMetricRunRequest {
+  return { metricId: undefined };
+}
+
+export const ListMetricRunRequest = {
+  encode(message: ListMetricRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.metricId !== undefined) {
+      MetricId.encode(message.metricId, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ListMetricRunRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListMetricRunRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.metricId = MetricId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ListMetricRunRequest>): ListMetricRunRequest {
+    return ListMetricRunRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ListMetricRunRequest>): ListMetricRunRequest {
+    const message = createBaseListMetricRunRequest();
+    message.metricId = (object.metricId !== undefined && object.metricId !== null)
+      ? MetricId.fromPartial(object.metricId)
+      : undefined;
+    return message;
+  },
+};
+
 export type LittleHorseDefinition = typeof LittleHorseDefinition;
 export const LittleHorseDefinition = {
   name: "LittleHorse",
@@ -8550,6 +8651,14 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    listMetricRuns: {
+      name: "ListMetricRuns",
+      requestType: ListMetricRunRequest,
+      requestStream: false,
+      responseType: MetricRunList,
+      responseStream: false,
+      options: {},
+    },
   },
 } as const;
 
@@ -8920,6 +9029,10 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   whoami(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Gets the version of the LH Server. */
   getServerVersion(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<ServerVersion>>;
+  listMetricRuns(
+    request: ListMetricRunRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<MetricRunList>>;
 }
 
 export interface LittleHorseClient<CallOptionsExt = {}> {
@@ -9298,6 +9411,10 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   whoami(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Gets the version of the LH Server. */
   getServerVersion(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<ServerVersion>;
+  listMetricRuns(
+    request: DeepPartial<ListMetricRunRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<MetricRunList>;
 }
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;

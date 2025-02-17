@@ -44,6 +44,33 @@ func toType(metricType string) lhproto.MetricType {
 		panic("Unrecognized metric type " + metricType)
 	}
 }
+
+var listMetricRuns = &cobra.Command{
+	Use:   "metricRun <wfRunId>",
+	Short: "List all MetricRun's for a given Metric Id.",
+	Long:  ``,
+	Args:  cobra.ExactArgs(2),
+	Run: func(cmd *cobra.Command, args []string) {
+		measurable := args[0]
+		metricType := args[1]
+
+		metricId := &lhproto.MetricId{
+			Measurable: toMeasurable(measurable),
+			Type:       toType(metricType),
+		}
+
+		req := &lhproto.ListMetricRunRequest{
+			MetricId: metricId,
+		}
+
+		littlehorse.PrintResp(getGlobalClient(cmd).ListMetricRuns(
+			requestContext(cmd),
+			req,
+		))
+	},
+}
+
 func init() {
 	putCmd.AddCommand(putMetricCmd)
+	listCmd.AddCommand(listMetricRuns)
 }

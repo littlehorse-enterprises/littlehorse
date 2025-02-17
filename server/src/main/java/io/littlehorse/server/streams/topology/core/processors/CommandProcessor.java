@@ -189,7 +189,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 tenantStore.put(new StoredGetable<>(partitionMetric));
                 AggregateMetricsModel current = commandsPerTenant.getOrDefault(
                         partitionMetricId.getTenantId(),
-                        new AggregateMetricsModel(partitionMetricId.getTenantId(), new ArrayList<>()));
+                        new AggregateMetricsModel(
+                                partitionMetricId.getTenantId(), partitionMetricId.getMetricId(), new ArrayList<>()));
                 current.addWindowedMetric(windowedMetrics);
                 commandsPerTenant.putIfAbsent(partitionMetricId.getTenantId(), current);
             }
@@ -206,7 +207,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             CommandProcessorOutput output = new CommandProcessorOutput(topicName, command, partitionKey);
             Record<String, CommandProcessorOutput> kafkaRecord =
                     new Record<>(partitionKey, output, System.currentTimeMillis());
-            log.info("Forwarding repartition command: {}", partitionKey);
             ctx.forward(kafkaRecord);
         }
     }

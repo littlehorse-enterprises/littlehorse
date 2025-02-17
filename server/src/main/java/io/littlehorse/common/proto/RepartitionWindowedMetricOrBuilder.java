@@ -8,38 +8,23 @@ public interface RepartitionWindowedMetricOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.MetricId metric_id = 1;</code>
-   * @return Whether the metricId field is set.
-   */
-  boolean hasMetricId();
-  /**
-   * <code>.littlehorse.MetricId metric_id = 1;</code>
-   * @return The metricId.
-   */
-  io.littlehorse.sdk.common.proto.MetricId getMetricId();
-  /**
-   * <code>.littlehorse.MetricId metric_id = 1;</code>
-   */
-  io.littlehorse.sdk.common.proto.MetricIdOrBuilder getMetricIdOrBuilder();
-
-  /**
-   * <code>double value = 2;</code>
+   * <code>double value = 1;</code>
    * @return The value.
    */
   double getValue();
 
   /**
-   * <code>.google.protobuf.Timestamp window_start = 3;</code>
+   * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return Whether the windowStart field is set.
    */
   boolean hasWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 3;</code>
+   * <code>.google.protobuf.Timestamp window_start = 2;</code>
    * @return The windowStart.
    */
   com.google.protobuf.Timestamp getWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 3;</code>
+   * <code>.google.protobuf.Timestamp window_start = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
 }

@@ -428,6 +428,11 @@ class LittleHorseStub(object):
                 request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
                 response_deserializer=service__pb2.ServerVersion.FromString,
                 _registered_method=True)
+        self.ListMetricRuns = channel.unary_unary(
+                '/littlehorse.LittleHorse/ListMetricRuns',
+                request_serializer=service__pb2.ListMetricRunRequest.SerializeToString,
+                response_deserializer=service__pb2.MetricRunList.FromString,
+                _registered_method=True)
 
 
 class LittleHorseServicer(object):
@@ -1019,6 +1024,12 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListMetricRuns(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_LittleHorseServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -1401,6 +1412,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.GetServerVersion,
                     request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                     response_serializer=service__pb2.ServerVersion.SerializeToString,
+            ),
+            'ListMetricRuns': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListMetricRuns,
+                    request_deserializer=service__pb2.ListMetricRunRequest.FromString,
+                    response_serializer=service__pb2.MetricRunList.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -3455,6 +3471,33 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/GetServerVersion',
             google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             service__pb2.ServerVersion.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListMetricRuns(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/ListMetricRuns',
+            service__pb2.ListMetricRunRequest.SerializeToString,
+            service__pb2.MetricRunList.FromString,
             options,
             channel_credentials,
             insecure,
