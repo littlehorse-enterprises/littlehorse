@@ -16,6 +16,7 @@ public class Workflow
     private Queue<Tuple<string, Action<WorkflowThread>>> _threadActions;
     private readonly string _parentWfSpecName;
     private readonly HashSet<string> _requiredTaskDefNames;
+    private readonly HashSet<string> _requiredEedNames;
     private int _defaultTaskTimeout;
     private int _defaultSimpleRetries;
     internal ExponentialBackoffRetryPolicy _defaultExponentialBackoff = null!;
@@ -30,6 +31,7 @@ public class Workflow
         _spec = new PutWfSpecRequest { Name = name };
         _threadActions = new Queue<Tuple<string, Action<WorkflowThread>>>();
         _requiredTaskDefNames = new HashSet<string>();
+        _requiredEedNames = new HashSet<string>();
     }
 
     public PutWfSpecRequest Compile()
@@ -90,6 +92,11 @@ public class Workflow
         _requiredTaskDefNames.Add(taskDefName);
     }
     
+    internal void AddExternalEventDefName(string eedName) 
+    {
+        _requiredEedNames.Add(eedName);
+    }
+    
     /// <summary>
     /// Returns the default task timeout, or null if it is not set.
     /// </summary>
@@ -139,5 +146,19 @@ public class Workflow
     internal ExponentialBackoffRetryPolicy? GetDefaultExponentialBackoffRetryPolicy() 
     {
         return _defaultExponentialBackoff!;
+    }
+    
+    /// <summary>
+    /// Returns the names of all `ExternalEventDef`s used by this workflow. Includes
+    /// ExternalEventDefs used for Interrupts or for EXTERNAL_EVENT nodes.
+    /// 
+    /// </summary>
+    /// <returns>
+    /// A Set of Strings containing the names of all `ExternalEventDef`s used by this workflow.
+    /// </returns>
+    public HashSet<string> GetRequiredExternalEventDefNames()
+    {
+        _compiledWorkflow ??= CompileWorkflowDetails();
+        return _requiredEedNames;
     }
 }
