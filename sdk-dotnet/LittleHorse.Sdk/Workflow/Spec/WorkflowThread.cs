@@ -4,6 +4,25 @@ using LittleHorse.Sdk.Helper;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
+internal static class Constants
+{
+    internal static readonly Dictionary<Node.NodeOneofCase, string> NodeTypes = new Dictionary<Node.NodeOneofCase, string>
+    {
+        { Node.NodeOneofCase.Entrypoint, "ENTRYPOINT" },
+        { Node.NodeOneofCase.Exit, "EXIT" },
+        { Node.NodeOneofCase.Task, "TASK" },
+        { Node.NodeOneofCase.None, "NONE" },
+        { Node.NodeOneofCase.ExternalEvent, "EXTERNAL_EVENT" },
+        { Node.NodeOneofCase.StartThread, "START_THREAD" },
+        { Node.NodeOneofCase.Nop, "NOP" },
+        { Node.NodeOneofCase.Sleep, "SLEEP" },
+        { Node.NodeOneofCase.UserTask, "USER_TASK" },
+        { Node.NodeOneofCase.StartMultipleThreads, "START_MULTIPLE_THREADS" },
+        { Node.NodeOneofCase.ThrowEvent, "THROW_EVENT" },
+        { Node.NodeOneofCase.WaitForCondition, "WAIT_FOR_CONDITION" }
+    };
+}
+
 public class WorkflowThread
 {
     private Workflow _parent;
@@ -119,6 +138,9 @@ public class WorkflowThread
             case Node.NodeOneofCase.Nop:
                 node.Nop = (NopNode) subNode;
                 break;
+            case Node.NodeOneofCase.ExternalEvent:
+                node.ExternalEvent = (ExternalEventNode) subNode;
+                break;
             case Node.NodeOneofCase.Exit:
                 node.Exit = (ExitNode) subNode;
                 break;
@@ -134,7 +156,7 @@ public class WorkflowThread
     
     private string GetNodeName(string name, Node.NodeOneofCase type) 
     {
-        return $"{_spec.Nodes.Count}-{name}-{type.ToString().ToUpper()}";
+        return $"{_spec.Nodes.Count}-{name}-{Constants.NodeTypes[type]}";
     }
     
     public WfRunVariable AddVariable(string name, Object typeOrDefaultVal) 
@@ -146,6 +168,20 @@ public class WorkflowThread
         return wfRunVariable;
     }
     
+    /// <summary>
+    /// Adds a TASK node to the ThreadSpec.
+    /// 
+    /// </summary>
+    /// <param name="taskName">
+    /// It is the name of the TaskDef to execute.
+    /// </param>
+    /// <param name="args">
+    /// It is the input parameters to pass into the Task Run. If the type of arg is a
+    /// `WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+    /// library will attempt to cast the provided argument to a LittleHorse VariableValue and
+    /// pass that literal value in.
+    /// </param>
+    /// <returns>A NodeOutput for that TASK node.</returns>
     public NodeOutput Execute(string taskName, params object[] args) 
     {
         CheckIfWorkflowThreadIsActive();
@@ -156,8 +192,8 @@ public class WorkflowThread
         
         return new NodeOutput(nodeName, this);
     }
-    
-    public VariableAssignment AssignVariable(Object variable) 
+
+    private VariableAssignment AssignVariable(Object variable) 
     {
         CheckIfWorkflowThreadIsActive();
         return AssignVariableHelper(variable);
@@ -184,6 +220,28 @@ public class WorkflowThread
         }
 
         return taskNode;
+    }
+    
+    /// <summary>
+    /// Adds an EXTERNAL_EVENT node which blocks until an 'ExternalEvent' of the specified type
+    /// arrives.
+    /// </summary>
+    /// <param name="externalEventDefName">
+    /// It is the type of ExternalEvent to wait for.
+    /// </param>
+    /// <returns>A NodeOutput for this event.</returns>
+    public NodeOutput WaitForEvent(string externalEventDefName) 
+    {
+        CheckIfWorkflowThreadIsActive();
+        var waitNode = new ExternalEventNode
+        {
+            ExternalEventDefId = new ExternalEventDefId { Name = externalEventDefName }
+        };
+
+        _parent.AddExternalEventDefName(externalEventDefName);
+        var nodeName = AddNode(externalEventDefName, Node.NodeOneofCase.ExternalEvent, waitNode);
+        
+        return new NodeOutput(nodeName, this);
     }
     
     /// <summary>
@@ -397,18 +455,18 @@ public class WorkflowThread
     /// `WfRunVariable` which determines the right hand side of the expression, or a `NodeOutput`
     /// (which allows you to use the output of a Node Run to mutate variables).
     /// </param>
-    public void Mutate(WfRunVariable lhsVar, VariableMutationType type, object rhs)
+    public void Mutate(WfRunVariable lhs, VariableMutationType type, object rhs)
     {
         CheckIfWorkflowThreadIsActive();
         var mutation = new VariableMutation
         {
-            LhsName = lhsVar.Name,
+            LhsName = lhs.Name,
             Operation = type,
             RhsAssignment = AssignVariableHelper(rhs)
         };
-        if (lhsVar.JsonPath != null)
+        if (lhs.JsonPath != null)
         {
-            mutation.LhsJsonPath = lhsVar.JsonPath;
+            mutation.LhsJsonPath = lhs.JsonPath;
         }
 
         _variableMutations.Enqueue(mutation);
