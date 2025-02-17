@@ -22,6 +22,7 @@ internal static class Constants
         { Node.NodeOneofCase.WaitForCondition, "WAIT_FOR_CONDITION" }
     };
 }
+
 public class WorkflowThread
 {
     private Workflow _parent;
