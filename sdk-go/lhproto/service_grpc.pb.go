@@ -27,6 +27,7 @@ const (
 	LittleHorse_GetExternalEventDef_FullMethodName     = "/littlehorse.LittleHorse/GetExternalEventDef"
 	LittleHorse_PutWorkflowEventDef_FullMethodName     = "/littlehorse.LittleHorse/PutWorkflowEventDef"
 	LittleHorse_PutWfSpec_FullMethodName               = "/littlehorse.LittleHorse/PutWfSpec"
+	LittleHorse_PutMetric_FullMethodName               = "/littlehorse.LittleHorse/PutMetric"
 	LittleHorse_GetWfSpec_FullMethodName               = "/littlehorse.LittleHorse/GetWfSpec"
 	LittleHorse_GetLatestWfSpec_FullMethodName         = "/littlehorse.LittleHorse/GetLatestWfSpec"
 	LittleHorse_MigrateWfSpec_FullMethodName           = "/littlehorse.LittleHorse/MigrateWfSpec"
@@ -95,6 +96,7 @@ const (
 	LittleHorse_GetPrincipal_FullMethodName            = "/littlehorse.LittleHorse/GetPrincipal"
 	LittleHorse_Whoami_FullMethodName                  = "/littlehorse.LittleHorse/Whoami"
 	LittleHorse_GetServerVersion_FullMethodName        = "/littlehorse.LittleHorse/GetServerVersion"
+	LittleHorse_ListMetricRuns_FullMethodName          = "/littlehorse.LittleHorse/ListMetricRuns"
 )
 
 // LittleHorseClient is the client API for LittleHorse service.
@@ -115,6 +117,8 @@ type LittleHorseClient interface {
 	PutWorkflowEventDef(ctx context.Context, in *PutWorkflowEventDefRequest, opts ...grpc.CallOption) (*WorkflowEventDef, error)
 	// Creates a WfSpec.
 	PutWfSpec(ctx context.Context, in *PutWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error)
+	// Creates a new metric
+	PutMetric(ctx context.Context, in *PutMetricRequest, opts ...grpc.CallOption) (*Metric, error)
 	// Gets a WfSpec.
 	GetWfSpec(ctx context.Context, in *WfSpecId, opts ...grpc.CallOption) (*WfSpec, error)
 	// Returns the latest WfSpec with a specified name (and optionally a specified Major Version).
@@ -305,6 +309,7 @@ type LittleHorseClient interface {
 	Whoami(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Principal, error)
 	// Gets the version of the LH Server.
 	GetServerVersion(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ServerVersion, error)
+	ListMetricRuns(ctx context.Context, in *ListMetricRunRequest, opts ...grpc.CallOption) (*MetricRunList, error)
 }
 
 type littleHorseClient struct {
@@ -372,6 +377,15 @@ func (c *littleHorseClient) PutWorkflowEventDef(ctx context.Context, in *PutWork
 func (c *littleHorseClient) PutWfSpec(ctx context.Context, in *PutWfSpecRequest, opts ...grpc.CallOption) (*WfSpec, error) {
 	out := new(WfSpec)
 	err := c.cc.Invoke(ctx, LittleHorse_PutWfSpec_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) PutMetric(ctx context.Context, in *PutMetricRequest, opts ...grpc.CallOption) (*Metric, error) {
+	out := new(Metric)
+	err := c.cc.Invoke(ctx, LittleHorse_PutMetric_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1012,6 +1026,15 @@ func (c *littleHorseClient) GetServerVersion(ctx context.Context, in *emptypb.Em
 	return out, nil
 }
 
+func (c *littleHorseClient) ListMetricRuns(ctx context.Context, in *ListMetricRunRequest, opts ...grpc.CallOption) (*MetricRunList, error) {
+	out := new(MetricRunList)
+	err := c.cc.Invoke(ctx, LittleHorse_ListMetricRuns_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LittleHorseServer is the server API for LittleHorse service.
 // All implementations must embed UnimplementedLittleHorseServer
 // for forward compatibility
@@ -1030,6 +1053,8 @@ type LittleHorseServer interface {
 	PutWorkflowEventDef(context.Context, *PutWorkflowEventDefRequest) (*WorkflowEventDef, error)
 	// Creates a WfSpec.
 	PutWfSpec(context.Context, *PutWfSpecRequest) (*WfSpec, error)
+	// Creates a new metric
+	PutMetric(context.Context, *PutMetricRequest) (*Metric, error)
 	// Gets a WfSpec.
 	GetWfSpec(context.Context, *WfSpecId) (*WfSpec, error)
 	// Returns the latest WfSpec with a specified name (and optionally a specified Major Version).
@@ -1220,6 +1245,7 @@ type LittleHorseServer interface {
 	Whoami(context.Context, *emptypb.Empty) (*Principal, error)
 	// Gets the version of the LH Server.
 	GetServerVersion(context.Context, *emptypb.Empty) (*ServerVersion, error)
+	ListMetricRuns(context.Context, *ListMetricRunRequest) (*MetricRunList, error)
 	mustEmbedUnimplementedLittleHorseServer()
 }
 
@@ -1247,6 +1273,9 @@ func (UnimplementedLittleHorseServer) PutWorkflowEventDef(context.Context, *PutW
 }
 func (UnimplementedLittleHorseServer) PutWfSpec(context.Context, *PutWfSpecRequest) (*WfSpec, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutWfSpec not implemented")
+}
+func (UnimplementedLittleHorseServer) PutMetric(context.Context, *PutMetricRequest) (*Metric, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutMetric not implemented")
 }
 func (UnimplementedLittleHorseServer) GetWfSpec(context.Context, *WfSpecId) (*WfSpec, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetWfSpec not implemented")
@@ -1452,6 +1481,9 @@ func (UnimplementedLittleHorseServer) Whoami(context.Context, *emptypb.Empty) (*
 func (UnimplementedLittleHorseServer) GetServerVersion(context.Context, *emptypb.Empty) (*ServerVersion, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetServerVersion not implemented")
 }
+func (UnimplementedLittleHorseServer) ListMetricRuns(context.Context, *ListMetricRunRequest) (*MetricRunList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListMetricRuns not implemented")
+}
 func (UnimplementedLittleHorseServer) mustEmbedUnimplementedLittleHorseServer() {}
 
 // UnsafeLittleHorseServer may be embedded to opt out of forward compatibility for this service.
@@ -1587,6 +1619,24 @@ func _LittleHorse_PutWfSpec_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).PutWfSpec(ctx, req.(*PutWfSpecRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_PutMetric_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutMetricRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).PutMetric(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_PutMetric_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).PutMetric(ctx, req.(*PutMetricRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2823,6 +2873,24 @@ func _LittleHorse_GetServerVersion_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_ListMetricRuns_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMetricRunRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).ListMetricRuns(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_ListMetricRuns_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).ListMetricRuns(ctx, req.(*ListMetricRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LittleHorse_ServiceDesc is the grpc.ServiceDesc for LittleHorse service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2857,6 +2925,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PutWfSpec",
 			Handler:    _LittleHorse_PutWfSpec_Handler,
+		},
+		{
+			MethodName: "PutMetric",
+			Handler:    _LittleHorse_PutMetric_Handler,
 		},
 		{
 			MethodName: "GetWfSpec",
@@ -3125,6 +3197,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetServerVersion",
 			Handler:    _LittleHorse_GetServerVersion_Handler,
+		},
+		{
+			MethodName: "ListMetricRuns",
+			Handler:    _LittleHorse_ListMetricRuns_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

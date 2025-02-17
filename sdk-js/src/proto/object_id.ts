@@ -6,7 +6,17 @@
 
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
-import { MetricsWindowLength, metricsWindowLengthFromJSON, metricsWindowLengthToNumber } from "./common_enums";
+import {
+  MeasurableObject,
+  measurableObjectFromJSON,
+  measurableObjectToNumber,
+  MetricsWindowLength,
+  metricsWindowLengthFromJSON,
+  metricsWindowLengthToNumber,
+  MetricType,
+  metricTypeFromJSON,
+  metricTypeToNumber,
+} from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
 
 /** The ID of a WfSpec. */
@@ -216,6 +226,16 @@ export interface TenantId {
 /** ID for a ScheduledWfRun */
 export interface ScheduledWfRunId {
   id: string;
+}
+
+export interface MetricId {
+  measurable: MeasurableObject;
+  type: MetricType;
+}
+
+export interface MetricRunId {
+  metricId: MetricId | undefined;
+  windowStart: string | undefined;
 }
 
 function createBaseWfSpecId(): WfSpecId {
@@ -1246,6 +1266,120 @@ export const ScheduledWfRunId = {
   fromPartial(object: DeepPartial<ScheduledWfRunId>): ScheduledWfRunId {
     const message = createBaseScheduledWfRunId();
     message.id = object.id ?? "";
+    return message;
+  },
+};
+
+function createBaseMetricId(): MetricId {
+  return { measurable: MeasurableObject.WORKFLOW, type: MetricType.COUNT };
+}
+
+export const MetricId = {
+  encode(message: MetricId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.measurable !== MeasurableObject.WORKFLOW) {
+      writer.uint32(8).int32(measurableObjectToNumber(message.measurable));
+    }
+    if (message.type !== MetricType.COUNT) {
+      writer.uint32(16).int32(metricTypeToNumber(message.type));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMetricId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.measurable = measurableObjectFromJSON(reader.int32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.type = metricTypeFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<MetricId>): MetricId {
+    return MetricId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MetricId>): MetricId {
+    const message = createBaseMetricId();
+    message.measurable = object.measurable ?? MeasurableObject.WORKFLOW;
+    message.type = object.type ?? MetricType.COUNT;
+    return message;
+  },
+};
+
+function createBaseMetricRunId(): MetricRunId {
+  return { metricId: undefined, windowStart: undefined };
+}
+
+export const MetricRunId = {
+  encode(message: MetricRunId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.metricId !== undefined) {
+      MetricId.encode(message.metricId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.windowStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricRunId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMetricRunId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.metricId = MetricId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<MetricRunId>): MetricRunId {
+    return MetricRunId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MetricRunId>): MetricRunId {
+    const message = createBaseMetricRunId();
+    message.metricId = (object.metricId !== undefined && object.metricId !== null)
+      ? MetricId.fromPartial(object.metricId)
+      : undefined;
+    message.windowStart = object.windowStart ?? undefined;
     return message;
   },
 };

@@ -95,6 +95,7 @@ message MetadataCommand {
         // TODO: DeleteTenant
 
         DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;
+        PutMetricRequest put_metric = 17;
     }
 }
 
@@ -109,6 +110,12 @@ message AggregateTaskMetrics {
     TaskDefId task_def_id = 1;
     TenantId tenant_id = 2;
     repeated TaskMetricUpdate metric_updates = 3;
+}
+
+message AggregateMetrics {
+    MetricId metric_id = 1;
+    repeated RepartitionWindowedMetric windowed_metrics = 2;
+    TenantId tenant_id = 3;
 }
 
 message WfMetricUpdate {
@@ -168,6 +175,7 @@ message RepartitionCommandPb {
         RemoveRemoteTagPb remove_remote_tag = 6;
         AggregateWfMetrics aggregate_wf_metrics = 7;
         AggregateTaskMetrics aggregate_task_metrics = 8;
+        AggregateMetrics aggregate_metrics = 9;
     }
 }
 
@@ -249,4 +257,9 @@ message LHTimerPb {
 
 message DeleteTaskWorkerGroupRequest {
     TaskDefId id = 1;
+}
+
+message RepartitionWindowedMetric {
+    double value = 1;
+    google.protobuf.Timestamp window_start = 2;
 }

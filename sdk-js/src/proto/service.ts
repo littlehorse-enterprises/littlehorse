@@ -13,9 +13,15 @@ import {
   LHStatus,
   lHStatusFromJSON,
   lHStatusToNumber,
+  MeasurableObject,
+  measurableObjectFromJSON,
+  measurableObjectToNumber,
   MetricsWindowLength,
   metricsWindowLengthFromJSON,
   metricsWindowLengthToNumber,
+  MetricType,
+  metricTypeFromJSON,
+  metricTypeToNumber,
   TaskStatus,
   taskStatusFromJSON,
   taskStatusToNumber,
@@ -27,10 +33,12 @@ import { VariableDef } from "./common_wfspec";
 import { ExternalEvent, ExternalEventDef, ExternalEventRetentionPolicy } from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
+import { Metric, MetricRun } from "./metrics";
 import { NodeRun } from "./node_run";
 import {
   ExternalEventDefId,
   ExternalEventId,
+  MetricId,
   NodeRunId,
   PrincipalId,
   ScheduledWfRunId,
@@ -166,6 +174,11 @@ export interface PutWfSpecRequest {
 export interface PutWfSpecRequest_ThreadSpecsEntry {
   key: string;
   value: ThreadSpec | undefined;
+}
+
+export interface PutMetricRequest {
+  measurable: MeasurableObject;
+  type: MetricType;
 }
 
 /** Creates a TaskDef. */
@@ -1528,6 +1541,14 @@ export interface ServerVersion {
   preReleaseIdentifier?: string | undefined;
 }
 
+export interface MetricRunList {
+  results: MetricRun[];
+}
+
+export interface ListMetricRunRequest {
+  metricId: MetricId | undefined;
+}
+
 function createBaseGetLatestUserTaskDefRequest(): GetLatestUserTaskDefRequest {
   return { name: "" };
 }
@@ -1749,6 +1770,62 @@ export const PutWfSpecRequest_ThreadSpecsEntry = {
     message.value = (object.value !== undefined && object.value !== null)
       ? ThreadSpec.fromPartial(object.value)
       : undefined;
+    return message;
+  },
+};
+
+function createBasePutMetricRequest(): PutMetricRequest {
+  return { measurable: MeasurableObject.WORKFLOW, type: MetricType.COUNT };
+}
+
+export const PutMetricRequest = {
+  encode(message: PutMetricRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.measurable !== MeasurableObject.WORKFLOW) {
+      writer.uint32(8).int32(measurableObjectToNumber(message.measurable));
+    }
+    if (message.type !== MetricType.COUNT) {
+      writer.uint32(16).int32(metricTypeToNumber(message.type));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PutMetricRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePutMetricRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.measurable = measurableObjectFromJSON(reader.int32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.type = metricTypeFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<PutMetricRequest>): PutMetricRequest {
+    return PutMetricRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PutMetricRequest>): PutMetricRequest {
+    const message = createBasePutMetricRequest();
+    message.measurable = object.measurable ?? MeasurableObject.WORKFLOW;
+    message.type = object.type ?? MetricType.COUNT;
     return message;
   },
 };
@@ -7702,6 +7779,98 @@ export const ServerVersion = {
   },
 };
 
+function createBaseMetricRunList(): MetricRunList {
+  return { results: [] };
+}
+
+export const MetricRunList = {
+  encode(message: MetricRunList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.results) {
+      MetricRun.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricRunList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMetricRunList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.results.push(MetricRun.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<MetricRunList>): MetricRunList {
+    return MetricRunList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MetricRunList>): MetricRunList {
+    const message = createBaseMetricRunList();
+    message.results = object.results?.map((e) => MetricRun.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseListMetricRunRequest(): ListMetricRunRequest {
+  return { metricId: undefined };
+}
+
+export const ListMetricRunRequest = {
+  encode(message: ListMetricRunRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.metricId !== undefined) {
+      MetricId.encode(message.metricId, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ListMetricRunRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListMetricRunRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.metricId = MetricId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ListMetricRunRequest>): ListMetricRunRequest {
+    return ListMetricRunRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ListMetricRunRequest>): ListMetricRunRequest {
+    const message = createBaseListMetricRunRequest();
+    message.metricId = (object.metricId !== undefined && object.metricId !== null)
+      ? MetricId.fromPartial(object.metricId)
+      : undefined;
+    return message;
+  },
+};
+
 export type LittleHorseDefinition = typeof LittleHorseDefinition;
 export const LittleHorseDefinition = {
   name: "LittleHorse",
@@ -7767,6 +7936,15 @@ export const LittleHorseDefinition = {
       requestType: PutWfSpecRequest,
       requestStream: false,
       responseType: WfSpec,
+      responseStream: false,
+      options: {},
+    },
+    /** Creates a new metric */
+    putMetric: {
+      name: "PutMetric",
+      requestType: PutMetricRequest,
+      requestStream: false,
+      responseType: Metric,
       responseStream: false,
       options: {},
     },
@@ -8473,6 +8651,14 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    listMetricRuns: {
+      name: "ListMetricRuns",
+      requestType: ListMetricRunRequest,
+      requestStream: false,
+      responseType: MetricRunList,
+      responseStream: false,
+      options: {},
+    },
   },
 } as const;
 
@@ -8500,6 +8686,8 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   ): Promise<DeepPartial<WorkflowEventDef>>;
   /** Creates a WfSpec. */
   putWfSpec(request: PutWfSpecRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfSpec>>;
+  /** Creates a new metric */
+  putMetric(request: PutMetricRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Metric>>;
   /** Gets a WfSpec. */
   getWfSpec(request: WfSpecId, context: CallContext & CallContextExt): Promise<DeepPartial<WfSpec>>;
   /** Returns the latest WfSpec with a specified name (and optionally a specified Major Version). */
@@ -8841,6 +9029,10 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   whoami(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<Principal>>;
   /** Gets the version of the LH Server. */
   getServerVersion(request: Empty, context: CallContext & CallContextExt): Promise<DeepPartial<ServerVersion>>;
+  listMetricRuns(
+    request: ListMetricRunRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<MetricRunList>>;
 }
 
 export interface LittleHorseClient<CallOptionsExt = {}> {
@@ -8867,6 +9059,8 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   ): Promise<WorkflowEventDef>;
   /** Creates a WfSpec. */
   putWfSpec(request: DeepPartial<PutWfSpecRequest>, options?: CallOptions & CallOptionsExt): Promise<WfSpec>;
+  /** Creates a new metric */
+  putMetric(request: DeepPartial<PutMetricRequest>, options?: CallOptions & CallOptionsExt): Promise<Metric>;
   /** Gets a WfSpec. */
   getWfSpec(request: DeepPartial<WfSpecId>, options?: CallOptions & CallOptionsExt): Promise<WfSpec>;
   /** Returns the latest WfSpec with a specified name (and optionally a specified Major Version). */
@@ -9217,6 +9411,10 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   whoami(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<Principal>;
   /** Gets the version of the LH Server. */
   getServerVersion(request: DeepPartial<Empty>, options?: CallOptions & CallOptionsExt): Promise<ServerVersion>;
+  listMetricRuns(
+    request: DeepPartial<ListMetricRunRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<MetricRunList>;
 }
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;

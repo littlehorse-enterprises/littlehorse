@@ -442,3 +442,75 @@ export function lHErrorTypeToNumber(object: LHErrorType): number {
       return -1;
   }
 }
+
+export enum MeasurableObject {
+  WORKFLOW = "WORKFLOW",
+  TASK = "TASK",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function measurableObjectFromJSON(object: any): MeasurableObject {
+  switch (object) {
+    case 0:
+    case "WORKFLOW":
+      return MeasurableObject.WORKFLOW;
+    case 1:
+    case "TASK":
+      return MeasurableObject.TASK;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return MeasurableObject.UNRECOGNIZED;
+  }
+}
+
+export function measurableObjectToNumber(object: MeasurableObject): number {
+  switch (object) {
+    case MeasurableObject.WORKFLOW:
+      return 0;
+    case MeasurableObject.TASK:
+      return 1;
+    case MeasurableObject.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
+export enum MetricType {
+  COUNT = "COUNT",
+  AVG = "AVG",
+  RATIO = "RATIO",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function metricTypeFromJSON(object: any): MetricType {
+  switch (object) {
+    case 0:
+    case "COUNT":
+      return MetricType.COUNT;
+    case 1:
+    case "AVG":
+      return MetricType.AVG;
+    case 2:
+    case "RATIO":
+      return MetricType.RATIO;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return MetricType.UNRECOGNIZED;
+  }
+}
+
+export function metricTypeToNumber(object: MetricType): number {
+  switch (object) {
+    case MetricType.COUNT:
+      return 0;
+    case MetricType.AVG:
+      return 1;
+    case MetricType.RATIO:
+      return 2;
+    case MetricType.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
