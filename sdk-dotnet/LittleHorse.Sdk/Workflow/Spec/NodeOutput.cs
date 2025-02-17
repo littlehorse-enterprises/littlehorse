@@ -23,4 +23,11 @@ public class NodeOutput
         
         return nodeOutput;
     }
+    
+    public NodeOutput WithTimeout(int timeoutSeconds) 
+    {
+        Parent.AddTimeoutToExtEvt(this, timeoutSeconds);
+        
+        return this;
+    }
 }

@@ -522,4 +522,27 @@ public class WorkflowThread
 
         return variableAssignment;
     }
+    
+    internal void AddTimeoutToExtEvt(NodeOutput node, int timeoutSeconds) {
+        CheckIfWorkflowThreadIsActive();
+        Node newNode = FindNode(node.NodeName);
+
+        var timeoutValue = new VariableAssignment
+        {
+            LiteralValue = new VariableValue { Int = timeoutSeconds }
+        };
+
+        if (newNode.NodeCase == Node.NodeOneofCase.Task)
+        {
+            newNode.Task.TimeoutSeconds = timeoutSeconds;
+        } 
+        else if (newNode.NodeCase == Node.NodeOneofCase.ExternalEvent) 
+        {
+            newNode.ExternalEvent.TimeoutSeconds = timeoutValue;
+        } 
+        else 
+        {
+            throw new Exception("Timeouts are only supported on ExternalEvent and Task nodes.");
+        }
+    }
 }
