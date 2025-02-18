@@ -182,7 +182,7 @@ public class WorkflowThread
     /// pass that literal value in.
     /// </param>
     /// <returns>A NodeOutput for that TASK node.</returns>
-    public NodeOutput Execute(string taskName, params object[] args) 
+    public TaskNodeOutput Execute(string taskName, params object[] args) 
     {
         CheckIfWorkflowThreadIsActive();
         _parent.AddTaskDefName(taskName);
@@ -190,7 +190,7 @@ public class WorkflowThread
             new TaskNode { TaskDefId = new TaskDefId { Name = taskName } }, args);
         string nodeName = AddNode(taskName, Node.NodeOneofCase.Task, taskNode);
         
-        return new NodeOutput(nodeName, this);
+        return new TaskNodeOutput(nodeName, this);
     }
 
     private VariableAssignment AssignVariable(Object variable) 
@@ -523,7 +523,8 @@ public class WorkflowThread
         return variableAssignment;
     }
     
-    internal void AddTimeoutToExtEvt(NodeOutput node, int timeoutSeconds) {
+    internal void AddTimeoutToExtEvt(NodeOutput node, int timeoutSeconds) 
+    {
         CheckIfWorkflowThreadIsActive();
         Node newNode = FindNode(node.NodeName);
 
@@ -544,5 +545,32 @@ public class WorkflowThread
         {
             throw new Exception("Timeouts are only supported on ExternalEvent and Task nodes.");
         }
+    }
+    
+    internal void OverrideTaskExponentialBackoffPolicy(TaskNodeOutput node, ExponentialBackoffRetryPolicy policy)
+    {
+        var newNode = CheckTaskNode(node);
+
+        newNode.Task.ExponentialBackoff = policy;
+    }
+
+    internal void OverrideTaskRetries(TaskNodeOutput node, int retries) 
+    {
+        var newNode = CheckTaskNode(node);
+
+        newNode.Task.Retries = retries;
+    }
+    
+    private Node CheckTaskNode(TaskNodeOutput node)
+    {
+        CheckIfWorkflowThreadIsActive();
+        Node newNode = FindNode(node.NodeName);
+        
+        if (newNode.NodeCase != Node.NodeOneofCase.Task) 
+        {
+            throw new InvalidOperationException("Impossible to not have task node here");
+        }
+
+        return newNode;
     }
 }

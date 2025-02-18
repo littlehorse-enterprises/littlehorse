@@ -156,18 +156,19 @@ public class WorkflowThreadTest
     }
     
     [Fact]
-    public void WfThread_WithExternalEvent_ShouldCompileItInTheWorkflowThread()
+    public void WfThread_WithExternalEvent_ShouldCompile()
     {
         var numberOfExitNodes = 1;
         var numberOfEntrypointNodes = 1;
         var numberOfExternalEvents = 1;
         var numberOfTasks = 1;
         var workflowName = "TestWorkflow";
+        var timeoutInSeconds = 30;
         var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
         void EntryPointAction(WorkflowThread wf)
         {
             WfRunVariable name = wf.DeclareStr("name");
-            name.Assign(wf.WaitForEvent("name-event"));
+            name.Assign(wf.WaitForEvent("name-event").WithTimeout(timeoutInSeconds));
             wf.Execute("greet", name);
         }
         var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
@@ -188,7 +189,8 @@ public class WorkflowThreadTest
         {
             ExternalEvent = new ExternalEventNode
             {
-                ExternalEventDefId = new ExternalEventDefId { Name = "name-event" }
+                ExternalEventDefId = new ExternalEventDefId { Name = "name-event" },
+                TimeoutSeconds = new VariableAssignment { LiteralValue = new VariableValue { Int = timeoutInSeconds }}
             },
             OutgoingEdges =
             {
