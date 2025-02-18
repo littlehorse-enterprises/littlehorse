@@ -60,4 +60,10 @@ public interface AggregateMetricsOrBuilder extends
    * <code>.littlehorse.TenantId tenant_id = 3;</code>
    */
   io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder();
+
+  /**
+   * <code>int32 partition_id = 4;</code>
+   * @return The partitionId.
+   */
+  int getPartitionId();
 }

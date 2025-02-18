@@ -19,6 +19,7 @@ import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
 import "metrics.proto";
+import "google/protobuf/duration.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -336,6 +337,7 @@ message PutWfSpecRequest {
 message PutMetricRequest {
   MeasurableObject measurable = 1;
   MetricType type = 2;
+  google.protobuf.Duration window_length = 3;
 }
 
 // This enum controls the behavior of a PutWfSpecRequest when a WfSpec with the same

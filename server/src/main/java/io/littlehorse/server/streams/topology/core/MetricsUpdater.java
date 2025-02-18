@@ -1,8 +1,7 @@
 package io.littlehorse.server.streams.topology.core;
 
-import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.PartitionMetricsModel;
-import io.littlehorse.common.model.TaskStatusChangedModel;
+import io.littlehorse.common.model.getable.MetadataId;
 import io.littlehorse.common.model.getable.global.metrics.MetricModel;
 import io.littlehorse.common.model.getable.global.metrics.PartitionMetricInventoryModel;
 import io.littlehorse.common.model.getable.global.metrics.PartitionMetricModel;
@@ -13,14 +12,15 @@ import io.littlehorse.sdk.common.proto.MeasurableObject;
 import io.littlehorse.sdk.common.proto.Metric;
 import io.littlehorse.sdk.common.proto.MetricType;
 import io.littlehorse.sdk.common.proto.PartitionMetric;
+import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.GetableUpdates.GetableStatusUpdate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -44,51 +44,15 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
     @Override
     public void listen(GetableStatusUpdate statusUpdate) {
         if (statusUpdate instanceof GetableUpdates.WfRunStatusUpdate wfRunEvent) {
-            StoredGetable<Metric, MetricModel> storedGetable = metadataStore.get(
-                    new MetricIdModel(MeasurableObject.WORKFLOW, MetricType.COUNT).getStoreableKey(),
-                    StoredGetable.class);
-            if (storedGetable != null) {
-                MetricModel metric = storedGetable.getStoredObject();
-                if (metric != null) {
-                    if (Objects.isNull(wfRunEvent.getPreviousStatus())
-                            && wfRunEvent.getNewStatus().equals(LHStatus.RUNNING)) {
-                        log.info("Updating metrics for {}", metric);
-                        StoredGetable<PartitionMetric, PartitionMetricModel> getable = tenantStore.get(
-                                new PartitionMetricIdModel(metric.getObjectId(), statusUpdate.getTenantId())
-                                        .getStoreableKey(),
-                                StoredGetable.class);
-                        if (getable == null) {
-                            getable = new StoredGetable<>(new PartitionMetricModel(
-                                    metric.getObjectId(), metric.getWindowLength(), statusUpdate.getTenantId()));
-                        }
-                        PartitionMetricInventoryModel partitionMetricInventory = clusterScopedCoreStore.get(
-                                PartitionMetricInventoryModel.METRIC_INVENTORY_STORE_KEY,
-                                PartitionMetricInventoryModel.class);
-                        if (partitionMetricInventory == null) {
-                            log.info("Creating new partition metric inventory");
-                            partitionMetricInventory = new PartitionMetricInventoryModel();
-                        }
-                        PartitionMetricModel partitionMetric = getable.getStoredObject();
-                        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
-                        boolean added = partitionMetricInventory.addMetric(partitionMetric.getObjectId());
-                        if (added) {
-                            clusterScopedCoreStore.put(partitionMetricInventory);
-                        }
-                        tenantStore.put(new StoredGetable<>(partitionMetric));
-                    }
-                }
-            }
-
+            maybeIncrementCountMetric(
+                    wfRunEvent,
+                    () -> wfRunEvent.getNewStatus().equals(LHStatus.COMPLETED),
+                    new MetricIdModel(MeasurableObject.WORKFLOW, MetricType.COUNT));
         } else if (statusUpdate instanceof GetableUpdates.TaskRunStatusUpdate taskUpdate) {
-            TaskStatusChangedModel taskStatusChanged =
-                    new TaskStatusChangedModel(taskUpdate.getPreviousStatus(), taskUpdate.getNewStatus());
-            currentAggregateCommand()
-                    .addMetric(
-                            taskUpdate.getTaskDefId(),
-                            taskUpdate.getTenantId(),
-                            taskStatusChanged,
-                            taskUpdate.getCreationDate(),
-                            taskUpdate.getFirstEventLatency());
+            maybeIncrementCountMetric(
+                    taskUpdate,
+                    () -> taskUpdate.getNewStatus().equals(TaskStatus.TASK_SUCCESS),
+                    new MetricIdModel(MeasurableObject.TASK, MetricType.COUNT));
         } else {
             throw new IllegalArgumentException("Status Update %s not supported yet"
                     .formatted(statusUpdate.getClass().getSimpleName()));
@@ -96,13 +60,33 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
         dirtyState = true;
     }
 
-    private PartitionMetricsModel currentAggregateCommand() {
-        if (aggregateModel == null) {
-            aggregateModel = Optional.ofNullable(
-                            metadataStore.get(LHConstants.PARTITION_METRICS_KEY, PartitionMetricsModel.class))
-                    .orElse(new PartitionMetricsModel());
+    private <T extends GetableStatusUpdate> void maybeIncrementCountMetric(
+            T statusUpdate, Supplier<Boolean> condition, MetadataId<?, ?, ?> metadataId) {
+        if (condition.get()) {
+            Supplier<Optional<StoredGetable<Metric, MetricModel>>> metricSupplier =
+                    () -> Optional.ofNullable(metadataStore.get(metadataId.getStoreableKey(), StoredGetable.class));
+            metricSupplier.get().map(StoredGetable::getStoredObject).ifPresent(metric -> {
+                StoredGetable<PartitionMetric, PartitionMetricModel> getable = tenantStore.get(
+                        new PartitionMetricIdModel(metric.getObjectId(), statusUpdate.getTenantId()).getStoreableKey(),
+                        StoredGetable.class);
+                if (getable == null) {
+                    getable = new StoredGetable<>(new PartitionMetricModel(
+                            metric.getObjectId(), metric.getWindowLength(), statusUpdate.getTenantId()));
+                }
+                PartitionMetricInventoryModel partitionMetricInventory = clusterScopedCoreStore.get(
+                        PartitionMetricInventoryModel.METRIC_INVENTORY_STORE_KEY, PartitionMetricInventoryModel.class);
+                if (partitionMetricInventory == null) {
+                    partitionMetricInventory = new PartitionMetricInventoryModel();
+                }
+                PartitionMetricModel partitionMetric = getable.getStoredObject();
+                partitionMetric.incrementCurrentWindow(LocalDateTime.now());
+                boolean added = partitionMetricInventory.addMetric(partitionMetric.getObjectId());
+                if (added) {
+                    clusterScopedCoreStore.put(partitionMetricInventory);
+                }
+                tenantStore.put(new StoredGetable<>(partitionMetric));
+            });
         }
-        return aggregateModel;
     }
 
     public void maybePersistState() {}

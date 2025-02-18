@@ -30,6 +30,18 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricRun_descriptor;
   }
 
+  @SuppressWarnings({"rawtypes"})
+  @java.lang.Override
+  protected com.google.protobuf.MapField internalGetMapField(
+      int number) {
+    switch (number) {
+      case 5:
+        return internalGetValuePerPartition();
+      default:
+        throw new RuntimeException(
+            "Invalid map field number: " + number);
+    }
+  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -101,6 +113,83 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
 
+  public static final int VALUE_PER_PARTITION_FIELD_NUMBER = 5;
+  private static final class ValuePerPartitionDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.Integer, java.lang.Double> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.Integer, java.lang.Double>newDefaultInstance(
+                io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricRun_ValuePerPartitionEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.INT32,
+                0,
+                com.google.protobuf.WireFormat.FieldType.DOUBLE,
+                0D);
+  }
+  @SuppressWarnings("serial")
+  private com.google.protobuf.MapField<
+      java.lang.Integer, java.lang.Double> valuePerPartition_;
+  private com.google.protobuf.MapField<java.lang.Integer, java.lang.Double>
+  internalGetValuePerPartition() {
+    if (valuePerPartition_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          ValuePerPartitionDefaultEntryHolder.defaultEntry);
+    }
+    return valuePerPartition_;
+  }
+  public int getValuePerPartitionCount() {
+    return internalGetValuePerPartition().getMap().size();
+  }
+  /**
+   * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+   */
+  @java.lang.Override
+  public boolean containsValuePerPartition(
+      int key) {
+
+    return internalGetValuePerPartition().getMap().containsKey(key);
+  }
+  /**
+   * Use {@link #getValuePerPartitionMap()} instead.
+   */
+  @java.lang.Override
+  @java.lang.Deprecated
+  public java.util.Map<java.lang.Integer, java.lang.Double> getValuePerPartition() {
+    return getValuePerPartitionMap();
+  }
+  /**
+   * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+   */
+  @java.lang.Override
+  public java.util.Map<java.lang.Integer, java.lang.Double> getValuePerPartitionMap() {
+    return internalGetValuePerPartition().getMap();
+  }
+  /**
+   * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+   */
+  @java.lang.Override
+  public double getValuePerPartitionOrDefault(
+      int key,
+      double defaultValue) {
+
+    java.util.Map<java.lang.Integer, java.lang.Double> map =
+        internalGetValuePerPartition().getMap();
+    return map.containsKey(key) ? map.get(key) : defaultValue;
+  }
+  /**
+   * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+   */
+  @java.lang.Override
+  public double getValuePerPartitionOrThrow(
+      int key) {
+
+    java.util.Map<java.lang.Integer, java.lang.Double> map =
+        internalGetValuePerPartition().getMap();
+    if (!map.containsKey(key)) {
+      throw new java.lang.IllegalArgumentException();
+    }
+    return map.get(key);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -124,6 +213,12 @@ private static final long serialVersionUID = 0L;
     if (createdAt_ != null) {
       output.writeMessage(4, getCreatedAt());
     }
+    com.google.protobuf.GeneratedMessageV3
+      .serializeIntegerMapTo(
+        output,
+        internalGetValuePerPartition(),
+        ValuePerPartitionDefaultEntryHolder.defaultEntry,
+        5);
     getUnknownFields().writeTo(output);
   }
 
@@ -144,6 +239,16 @@ private static final long serialVersionUID = 0L;
     if (createdAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getCreatedAt());
+    }
+    for (java.util.Map.Entry<java.lang.Integer, java.lang.Double> entry
+         : internalGetValuePerPartition().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Double>
+      valuePerPartition__ = ValuePerPartitionDefaultEntryHolder.defaultEntry.newBuilderForType()
+          .setKey(entry.getKey())
+          .setValue(entry.getValue())
+          .build();
+      size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, valuePerPartition__);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -173,6 +278,8 @@ private static final long serialVersionUID = 0L;
       if (!getCreatedAt()
           .equals(other.getCreatedAt())) return false;
     }
+    if (!internalGetValuePerPartition().equals(
+        other.internalGetValuePerPartition())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -194,6 +301,10 @@ private static final long serialVersionUID = 0L;
     if (hasCreatedAt()) {
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
+    }
+    if (!internalGetValuePerPartition().getMap().isEmpty()) {
+      hash = (37 * hash) + VALUE_PER_PARTITION_FIELD_NUMBER;
+      hash = (53 * hash) + internalGetValuePerPartition().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -304,6 +415,28 @@ private static final long serialVersionUID = 0L;
       return io.littlehorse.sdk.common.proto.Metrics.internal_static_littlehorse_MetricRun_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 5:
+          return internalGetValuePerPartition();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMutableMapField(
+        int number) {
+      switch (number) {
+        case 5:
+          return internalGetMutableValuePerPartition();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -337,6 +470,7 @@ private static final long serialVersionUID = 0L;
         createdAtBuilder_.dispose();
         createdAtBuilder_ = null;
       }
+      internalGetMutableValuePerPartition().clear();
       return this;
     }
 
@@ -382,6 +516,10 @@ private static final long serialVersionUID = 0L;
         result.createdAt_ = createdAtBuilder_ == null
             ? createdAt_
             : createdAtBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.valuePerPartition_ = internalGetValuePerPartition();
+        result.valuePerPartition_.makeImmutable();
       }
     }
 
@@ -438,6 +576,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
       }
+      internalGetMutableValuePerPartition().mergeFrom(
+          other.internalGetValuePerPartition());
+      bitField0_ |= 0x00000008;
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -483,6 +624,15 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 34
+            case 42: {
+              com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Double>
+              valuePerPartition__ = input.readMessage(
+                  ValuePerPartitionDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              internalGetMutableValuePerPartition().getMutableMap().put(
+                  valuePerPartition__.getKey(), valuePerPartition__.getValue());
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -768,6 +918,131 @@ private static final long serialVersionUID = 0L;
         createdAt_ = null;
       }
       return createdAtBuilder_;
+    }
+
+    private com.google.protobuf.MapField<
+        java.lang.Integer, java.lang.Double> valuePerPartition_;
+    private com.google.protobuf.MapField<java.lang.Integer, java.lang.Double>
+        internalGetValuePerPartition() {
+      if (valuePerPartition_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            ValuePerPartitionDefaultEntryHolder.defaultEntry);
+      }
+      return valuePerPartition_;
+    }
+    private com.google.protobuf.MapField<java.lang.Integer, java.lang.Double>
+        internalGetMutableValuePerPartition() {
+      if (valuePerPartition_ == null) {
+        valuePerPartition_ = com.google.protobuf.MapField.newMapField(
+            ValuePerPartitionDefaultEntryHolder.defaultEntry);
+      }
+      if (!valuePerPartition_.isMutable()) {
+        valuePerPartition_ = valuePerPartition_.copy();
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return valuePerPartition_;
+    }
+    public int getValuePerPartitionCount() {
+      return internalGetValuePerPartition().getMap().size();
+    }
+    /**
+     * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+     */
+    @java.lang.Override
+    public boolean containsValuePerPartition(
+        int key) {
+
+      return internalGetValuePerPartition().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getValuePerPartitionMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.Integer, java.lang.Double> getValuePerPartition() {
+      return getValuePerPartitionMap();
+    }
+    /**
+     * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+     */
+    @java.lang.Override
+    public java.util.Map<java.lang.Integer, java.lang.Double> getValuePerPartitionMap() {
+      return internalGetValuePerPartition().getMap();
+    }
+    /**
+     * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+     */
+    @java.lang.Override
+    public double getValuePerPartitionOrDefault(
+        int key,
+        double defaultValue) {
+
+      java.util.Map<java.lang.Integer, java.lang.Double> map =
+          internalGetValuePerPartition().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+     */
+    @java.lang.Override
+    public double getValuePerPartitionOrThrow(
+        int key) {
+
+      java.util.Map<java.lang.Integer, java.lang.Double> map =
+          internalGetValuePerPartition().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+    public Builder clearValuePerPartition() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      internalGetMutableValuePerPartition().getMutableMap()
+          .clear();
+      return this;
+    }
+    /**
+     * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+     */
+    public Builder removeValuePerPartition(
+        int key) {
+
+      internalGetMutableValuePerPartition().getMutableMap()
+          .remove(key);
+      return this;
+    }
+    /**
+     * Use alternate mutation accessors instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.Integer, java.lang.Double>
+        getMutableValuePerPartition() {
+      bitField0_ |= 0x00000008;
+      return internalGetMutableValuePerPartition().getMutableMap();
+    }
+    /**
+     * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+     */
+    public Builder putValuePerPartition(
+        int key,
+        double value) {
+
+
+      internalGetMutableValuePerPartition().getMutableMap()
+          .put(key, value);
+      bitField0_ |= 0x00000008;
+      return this;
+    }
+    /**
+     * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+     */
+    public Builder putAllValuePerPartition(
+        java.util.Map<java.lang.Integer, java.lang.Double> values) {
+      internalGetMutableValuePerPartition().getMutableMap()
+          .putAll(values);
+      bitField0_ |= 0x00000008;
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

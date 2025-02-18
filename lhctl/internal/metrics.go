@@ -4,7 +4,9 @@ import (
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 	"github.com/spf13/cobra"
+	"google.golang.org/protobuf/types/known/durationpb"
 	"strings"
+	"time"
 )
 
 var putMetricCmd = &cobra.Command{
@@ -13,9 +15,12 @@ var putMetricCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		measurable := args[0]
 		metricType := args[1]
+		duration := args[2]
+		windowLength, _ := time.ParseDuration(duration)
 		putMetricReq := &lhproto.PutMetricRequest{
-			Measurable: toMeasurable(measurable),
-			Type:       toType(metricType),
+			Measurable:   toMeasurable(measurable),
+			Type:         toType(metricType),
+			WindowLength: durationpb.New(windowLength),
 		}
 
 		response, err := getGlobalClient(cmd).PutMetric(requestContext(cmd), putMetricReq)

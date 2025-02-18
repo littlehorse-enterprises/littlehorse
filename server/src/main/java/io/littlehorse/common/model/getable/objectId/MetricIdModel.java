@@ -12,7 +12,9 @@ import io.littlehorse.sdk.common.proto.MetricId;
 import io.littlehorse.sdk.common.proto.MetricType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
+import lombok.Getter;
 
+@Getter
 public class MetricIdModel extends MetadataId<MetricId, Metric, MetricModel> {
 
     private MeasurableObject measurable;

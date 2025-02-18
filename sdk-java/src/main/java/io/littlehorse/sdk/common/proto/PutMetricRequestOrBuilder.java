@@ -28,4 +28,19 @@ public interface PutMetricRequestOrBuilder extends
    * @return The type.
    */
   io.littlehorse.sdk.common.proto.MetricType getType();
+
+  /**
+   * <code>.google.protobuf.Duration window_length = 3;</code>
+   * @return Whether the windowLength field is set.
+   */
+  boolean hasWindowLength();
+  /**
+   * <code>.google.protobuf.Duration window_length = 3;</code>
+   * @return The windowLength.
+   */
+  com.google.protobuf.Duration getWindowLength();
+  /**
+   * <code>.google.protobuf.Duration window_length = 3;</code>
+   */
+  com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder();
 }

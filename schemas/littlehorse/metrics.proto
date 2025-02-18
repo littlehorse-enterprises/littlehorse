@@ -39,4 +39,5 @@ message MetricRun {
   MetricRunId id = 1;
   double value = 2;
   google.protobuf.Timestamp created_at = 4;
+  map<int32, double> value_per_partition = 5;
 }

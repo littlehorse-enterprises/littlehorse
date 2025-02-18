@@ -47,11 +47,20 @@ class PartitionMetricId(_message.Message):
     def __init__(self, id: _Optional[_Union[_object_id_pb2.MetricId, _Mapping]] = ..., tenant_id: _Optional[_Union[_object_id_pb2.TenantId, _Mapping]] = ...) -> None: ...
 
 class MetricRun(_message.Message):
-    __slots__ = ["id", "value", "created_at"]
+    __slots__ = ["id", "value", "created_at", "value_per_partition"]
+    class ValuePerPartitionEntry(_message.Message):
+        __slots__ = ["key", "value"]
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: int
+        value: float
+        def __init__(self, key: _Optional[int] = ..., value: _Optional[float] = ...) -> None: ...
     ID_FIELD_NUMBER: _ClassVar[int]
     VALUE_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
+    VALUE_PER_PARTITION_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.MetricRunId
     value: float
     created_at: _timestamp_pb2.Timestamp
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.MetricRunId, _Mapping]] = ..., value: _Optional[float] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    value_per_partition: _containers.ScalarMap[int, float]
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.MetricRunId, _Mapping]] = ..., value: _Optional[float] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., value_per_partition: _Optional[_Mapping[int, float]] = ...) -> None: ...

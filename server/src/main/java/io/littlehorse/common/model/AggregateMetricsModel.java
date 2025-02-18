@@ -14,6 +14,7 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.MetricRun;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
+import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,14 +28,19 @@ public class AggregateMetricsModel extends LHSerializable<AggregateMetrics> impl
     private TenantIdModel tenantId;
     private MetricIdModel metricId;
     private List<RepartitionWindowedMetricModel> windowedMetrics = new ArrayList<>();
+    private Integer partitionId;
 
     public AggregateMetricsModel() {}
 
     public AggregateMetricsModel(
-            TenantIdModel tenantId, MetricIdModel metricId, List<RepartitionWindowedMetricModel> windowedMetrics) {
+            TenantIdModel tenantId,
+            MetricIdModel metricId,
+            List<RepartitionWindowedMetricModel> windowedMetrics,
+            Integer partitionId) {
         this.windowedMetrics = windowedMetrics;
         this.tenantId = tenantId;
         this.metricId = metricId;
+        this.partitionId = partitionId;
     }
 
     @Override
@@ -46,6 +52,7 @@ public class AggregateMetricsModel extends LHSerializable<AggregateMetrics> impl
         return AggregateMetrics.newBuilder()
                 .setMetricId(metricId.toProto())
                 .addAllWindowedMetrics(windowedMetricsPb)
+                .setPartitionId(partitionId)
                 .setTenantId(tenantId.toProto());
     }
 
@@ -57,6 +64,7 @@ public class AggregateMetricsModel extends LHSerializable<AggregateMetrics> impl
                 .toList();
         this.tenantId = LHSerializable.fromProto(p.getTenantId(), TenantIdModel.class, context);
         this.metricId = LHSerializable.fromProto(p.getMetricId(), MetricIdModel.class, context);
+        this.partitionId = p.getPartitionId();
     }
 
     public List<RepartitionWindowedMetricModel> getWindowedMetrics() {
@@ -85,9 +93,11 @@ public class AggregateMetricsModel extends LHSerializable<AggregateMetrics> impl
                             new MetricRunModel(new MetricRunIdModel(metricId, windowedMetric.getWindowStart())));
                 }
                 MetricRunModel metricRun = storedGetable.getStoredObject();
-                metricRun.mergePartitionMetric(windowedMetric);
+                metricRun.mergePartitionMetric(windowedMetric, partitionId);
                 repartitionedStore.put(storedGetable);
-                log.info("Persisted metric run: {}", metricRun);
+                var s = storedGetable.toProto().build();
+                StoredGetable<MetricRun, MetricRunModel> storedGetable1 = (StoredGetable<MetricRun, MetricRunModel>)
+                        LHSerializable.fromProto(s, StoredGetable.class, new BackgroundContext());
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);

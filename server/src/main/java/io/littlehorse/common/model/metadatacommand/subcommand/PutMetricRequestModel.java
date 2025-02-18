@@ -4,7 +4,6 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.getable.global.metrics.MetricModel;
 import io.littlehorse.common.model.getable.objectId.MetricIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.MeasurableObject;
 import io.littlehorse.sdk.common.proto.Metric;
@@ -18,23 +17,29 @@ public class PutMetricRequestModel extends MetadataSubCommand<PutMetricRequest> 
 
     private MeasurableObject measurable;
     private MetricType metricType;
+    private Duration windowLength;
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         PutMetricRequest p = (PutMetricRequest) proto;
         this.measurable = p.getMeasurable();
         this.metricType = p.getType();
+        this.windowLength = Duration.ofSeconds(p.getWindowLength().getSeconds());
     }
 
     @Override
     public PutMetricRequest.Builder toProto() {
-        return PutMetricRequest.newBuilder().setMeasurable(measurable).setType(metricType);
+        return PutMetricRequest.newBuilder()
+                .setMeasurable(measurable)
+                .setType(metricType)
+                .setWindowLength(com.google.protobuf.Duration.newBuilder()
+                        .setSeconds(windowLength.getSeconds())
+                        .build());
     }
 
     @Override
     public Metric process(MetadataCommandExecution executionContext) {
-        String id = LHUtil.generateGuid();
-        MetricModel metricModel = new MetricModel(new MetricIdModel(measurable, metricType), Duration.ofMinutes(1));
+        MetricModel metricModel = new MetricModel(new MetricIdModel(measurable, metricType), windowLength);
         executionContext.metadataManager().put(metricModel);
         return metricModel.toProto().build();
     }

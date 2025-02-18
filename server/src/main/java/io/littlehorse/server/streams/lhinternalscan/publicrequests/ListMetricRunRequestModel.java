@@ -8,6 +8,7 @@ import io.littlehorse.common.model.getable.core.metrics.MetricRunModel;
 import io.littlehorse.common.model.getable.objectId.MetricIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
@@ -29,6 +30,11 @@ public class ListMetricRunRequestModel
     @Override
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.METRIC_RUN;
+    }
+
+    @Override
+    public ScanResultTypePb getResultType() {
+        return ScanResultTypePb.OBJECT;
     }
 
     @Override

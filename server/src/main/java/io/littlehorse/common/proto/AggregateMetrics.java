@@ -132,6 +132,17 @@ private static final long serialVersionUID = 0L;
     return tenantId_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
   }
 
+  public static final int PARTITION_ID_FIELD_NUMBER = 4;
+  private int partitionId_ = 0;
+  /**
+   * <code>int32 partition_id = 4;</code>
+   * @return The partitionId.
+   */
+  @java.lang.Override
+  public int getPartitionId() {
+    return partitionId_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -155,6 +166,9 @@ private static final long serialVersionUID = 0L;
     if (tenantId_ != null) {
       output.writeMessage(3, getTenantId());
     }
+    if (partitionId_ != 0) {
+      output.writeInt32(4, partitionId_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -175,6 +189,10 @@ private static final long serialVersionUID = 0L;
     if (tenantId_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getTenantId());
+    }
+    if (partitionId_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(4, partitionId_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -203,6 +221,8 @@ private static final long serialVersionUID = 0L;
       if (!getTenantId()
           .equals(other.getTenantId())) return false;
     }
+    if (getPartitionId()
+        != other.getPartitionId()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -226,6 +246,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
       hash = (53 * hash) + getTenantId().hashCode();
     }
+    hash = (37 * hash) + PARTITION_ID_FIELD_NUMBER;
+    hash = (53 * hash) + getPartitionId();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -374,6 +396,7 @@ private static final long serialVersionUID = 0L;
         tenantIdBuilder_.dispose();
         tenantIdBuilder_ = null;
       }
+      partitionId_ = 0;
       return this;
     }
 
@@ -429,6 +452,9 @@ private static final long serialVersionUID = 0L;
         result.tenantId_ = tenantIdBuilder_ == null
             ? tenantId_
             : tenantIdBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.partitionId_ = partitionId_;
       }
     }
 
@@ -508,6 +534,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasTenantId()) {
         mergeTenantId(other.getTenantId());
       }
+      if (other.getPartitionId() != 0) {
+        setPartitionId(other.getPartitionId());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -561,6 +590,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 32: {
+              partitionId_ = input.readInt32();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 32
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1054,6 +1088,38 @@ private static final long serialVersionUID = 0L;
         tenantId_ = null;
       }
       return tenantIdBuilder_;
+    }
+
+    private int partitionId_ ;
+    /**
+     * <code>int32 partition_id = 4;</code>
+     * @return The partitionId.
+     */
+    @java.lang.Override
+    public int getPartitionId() {
+      return partitionId_;
+    }
+    /**
+     * <code>int32 partition_id = 4;</code>
+     * @param value The partitionId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPartitionId(int value) {
+
+      partitionId_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 partition_id = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPartitionId() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      partitionId_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

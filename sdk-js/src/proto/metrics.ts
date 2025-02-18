@@ -37,6 +37,12 @@ export interface MetricRun {
   id: MetricRunId | undefined;
   value: number;
   createdAt: string | undefined;
+  valuePerPartition: { [key: number]: number };
+}
+
+export interface MetricRun_ValuePerPartitionEntry {
+  key: number;
+  value: number;
 }
 
 function createBaseMetric(): Metric {
@@ -303,7 +309,7 @@ export const PartitionMetricId = {
 };
 
 function createBaseMetricRun(): MetricRun {
-  return { id: undefined, value: 0, createdAt: undefined };
+  return { id: undefined, value: 0, createdAt: undefined, valuePerPartition: {} };
 }
 
 export const MetricRun = {
@@ -317,6 +323,9 @@ export const MetricRun = {
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(34).fork()).ldelim();
     }
+    Object.entries(message.valuePerPartition).forEach(([key, value]) => {
+      MetricRun_ValuePerPartitionEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).ldelim();
+    });
     return writer;
   },
 
@@ -348,6 +357,16 @@ export const MetricRun = {
 
           message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          const entry5 = MetricRun_ValuePerPartitionEntry.decode(reader, reader.uint32());
+          if (entry5.value !== undefined) {
+            message.valuePerPartition[entry5.key] = entry5.value;
+          }
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -365,6 +384,71 @@ export const MetricRun = {
     message.id = (object.id !== undefined && object.id !== null) ? MetricRunId.fromPartial(object.id) : undefined;
     message.value = object.value ?? 0;
     message.createdAt = object.createdAt ?? undefined;
+    message.valuePerPartition = Object.entries(object.valuePerPartition ?? {}).reduce<{ [key: number]: number }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[globalThis.Number(key)] = globalThis.Number(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    return message;
+  },
+};
+
+function createBaseMetricRun_ValuePerPartitionEntry(): MetricRun_ValuePerPartitionEntry {
+  return { key: 0, value: 0 };
+}
+
+export const MetricRun_ValuePerPartitionEntry = {
+  encode(message: MetricRun_ValuePerPartitionEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== 0) {
+      writer.uint32(8).int32(message.key);
+    }
+    if (message.value !== 0) {
+      writer.uint32(17).double(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricRun_ValuePerPartitionEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMetricRun_ValuePerPartitionEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int32();
+          continue;
+        case 2:
+          if (tag !== 17) {
+            break;
+          }
+
+          message.value = reader.double();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<MetricRun_ValuePerPartitionEntry>): MetricRun_ValuePerPartitionEntry {
+    return MetricRun_ValuePerPartitionEntry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MetricRun_ValuePerPartitionEntry>): MetricRun_ValuePerPartitionEntry {
+    const message = createBaseMetricRun_ValuePerPartitionEntry();
+    message.key = object.key ?? 0;
+    message.value = object.value ?? 0;
     return message;
   },
 };

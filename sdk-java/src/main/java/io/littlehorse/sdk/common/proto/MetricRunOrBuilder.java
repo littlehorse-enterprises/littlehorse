@@ -42,4 +42,36 @@ public interface MetricRunOrBuilder extends
    * <code>.google.protobuf.Timestamp created_at = 4;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
+
+  /**
+   * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+   */
+  int getValuePerPartitionCount();
+  /**
+   * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+   */
+  boolean containsValuePerPartition(
+      int key);
+  /**
+   * Use {@link #getValuePerPartitionMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.Integer, java.lang.Double>
+  getValuePerPartition();
+  /**
+   * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+   */
+  java.util.Map<java.lang.Integer, java.lang.Double>
+  getValuePerPartitionMap();
+  /**
+   * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+   */
+  double getValuePerPartitionOrDefault(
+      int key,
+      double defaultValue);
+  /**
+   * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+   */
+  double getValuePerPartitionOrThrow(
+      int key);
 }
