@@ -573,4 +573,65 @@ public class WorkflowThread
 
         return newNode;
     }
+    
+    /// <summary>
+    /// Attaches an Error Handler to the specified NodeOutput, allowing it to manage specific types of errors
+    /// as defined by the 'error' parameter. If 'error' is set to null, the handler will catch all errors.
+    /// </summary>
+    /// <param name="node">
+    /// The NodeOutput instance to which the Error Handler will be attached.
+    /// </param>
+    /// <param name="error">
+    /// The type of error that the handler will manage.
+    /// </param>
+    /// <param name="handler">
+    /// A ThreadFunction defining a ThreadSpec that specifies how to handle the error.
+    /// </param>
+    public void HandleError(NodeOutput node, LHErrorType error, Action<WorkflowThread> handler)
+    {
+        CheckIfWorkflowThreadIsActive();
+        var handlerDef = BuildFailureHandlerDef(node, 
+            error.ToString(), 
+            handler);
+        handlerDef.SpecificFailure = error.ToString();
+        AddFailureHandlerDef(handlerDef, node);
+    }
+    
+    /// <summary>
+    /// Attaches an Error Handler to the specified NodeOutput, allowing it to manage any types of errors.
+    /// 
+    /// </summary>
+    /// <param name="node">
+    /// TThe NodeOutput instance to which the Error Handler will be attached.
+    /// </param>
+    /// <param name="handler">
+    /// A ThreadFunction defining a ThreadSpec that specifies how to handle the error.
+    /// </param>
+    public void HandleError(NodeOutput node, Action<WorkflowThread> handler)
+    {
+        CheckIfWorkflowThreadIsActive();
+        var handlerDef = BuildFailureHandlerDef(node, 
+            "FAILURE_TYPE_ERROR", 
+            handler);
+        handlerDef.AnyFailureOfType = FailureHandlerDef.Types.LHFailureType.FailureTypeError;
+        AddFailureHandlerDef(handlerDef, node);
+    }
+    
+    private FailureHandlerDef BuildFailureHandlerDef(NodeOutput node, string error, Action<WorkflowThread> handler) 
+    {
+        string threadName = $"exn-handler-{node.NodeName}-{error}";
+
+        threadName = _parent.AddSubThread(threadName, handler);
+        
+        return new FailureHandlerDef { HandlerSpecName = threadName };
+    }
+    
+    private void AddFailureHandlerDef(FailureHandlerDef handlerDef, NodeOutput node)
+    {
+        // Add the failure handler to the most recent node
+        Node lastNode = FindNode(node.NodeName);
+
+        lastNode.FailureHandlers.Add(handlerDef);
+        //_spec.Nodes.Add(node.NodeName, lastNode);
+    }
 }
