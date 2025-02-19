@@ -8,19 +8,7 @@ import { WfRunId } from 'littlehorse-client/proto'
 type Props = { params: { ids: string[]; tenantId: string } }
 
 export default async function Page({ params: { ids, tenantId } }: Props) {
-  let wfRunId: WfRunId;
-  if (ids[1]) {
-    wfRunId = {
-      id: ids[1],
-      parentWfRunId: {
-        id: ids[0],
-      }
-    }
-  } else {
-    wfRunId = {
-      id: ids[0],
-    }
-  }
+  const wfRunId: WfRunId = ids.reduce((wfRunId, id, i) => (i === 0 ? { id } : { id, parentWfRunId: wfRunId }), {} as WfRunId);
 
   try {
     return <WfRun wfRunId={wfRunId} tenantId={tenantId} />
