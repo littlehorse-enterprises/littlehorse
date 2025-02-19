@@ -590,10 +590,11 @@ public class WorkflowThread
     public void HandleError(NodeOutput node, LHErrorType error, Action<WorkflowThread> handler)
     {
         CheckIfWorkflowThreadIsActive();
+        var errorFormatted = error.ToString().ToUpper();
         var handlerDef = BuildFailureHandlerDef(node, 
-            error.ToString(), 
+            errorFormatted, 
             handler);
-        handlerDef.SpecificFailure = error.ToString();
+        handlerDef.SpecificFailure = errorFormatted;
         AddFailureHandlerDef(handlerDef, node);
     }
     
@@ -602,7 +603,7 @@ public class WorkflowThread
     /// 
     /// </summary>
     /// <param name="node">
-    /// TThe NodeOutput instance to which the Error Handler will be attached.
+    /// The NodeOutput instance to which the Error Handler will be attached.
     /// </param>
     /// <param name="handler">
     /// A ThreadFunction defining a ThreadSpec that specifies how to handle the error.
@@ -615,6 +616,49 @@ public class WorkflowThread
             handler);
         handlerDef.AnyFailureOfType = FailureHandlerDef.Types.LHFailureType.FailureTypeError;
         AddFailureHandlerDef(handlerDef, node);
+    }
+    
+    /// <summary>
+    /// Adds an EXIT node with a Failure defined. This causes a ThreadRun to fail, and the resulting
+    /// Failure has the specified value, name, and human-readable message.
+    /// </summary>
+    /// <param name="output">
+    /// It is a literal value (cast to VariableValue by the Library) or a WfRunVariable.
+    ///     The assigned value is the payload of the resulting Failure, which can be accessed by any
+    ///     Failure Handler ThreadRuns.
+    /// </param>
+    /// <param name="failureName">
+    /// It is the name of the failure to throw.
+    /// </param>
+    /// <param name="message">
+    /// It is a human-readable message.
+    /// </param>
+    public void Fail(object? output, string failureName, string? message)
+    {
+        CheckIfWorkflowThreadIsActive();
+        var failureDef = new FailureDef();
+        if (output != null) failureDef.Content = AssignVariable(output);
+        if (message != null) failureDef.Message = message;
+        failureDef.FailureName = failureName;
+
+        ExitNode exitNode = new ExitNode { FailureDef = failureDef };
+
+        AddNode(failureName, Node.NodeOneofCase.Exit, exitNode);
+    }
+    
+    /// <summary>
+    /// Adds an EXIT node with a Failure defined. This causes a ThreadRun to fail, and the resulting
+    /// Failure has the specified name and human-readable message.
+    /// </summary>
+    /// <param name="failureName">
+    /// It is the name of the failure to throw.
+    /// </param>
+    /// <param name="message">
+    /// It is a human-readable message.
+    /// </param>
+    public void Fail(string failureName, string message) 
+    {
+        Fail(null, failureName, message);
     }
     
     private FailureHandlerDef BuildFailureHandlerDef(NodeOutput node, string error, Action<WorkflowThread> handler) 
