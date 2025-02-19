@@ -6,23 +6,23 @@ import { FC, useCallback } from 'react'
 import { Details } from './Details'
 import { Variables } from './Variables'
 import { useWfRun } from '@/app/hooks/useWfRun'
-import { WfRunVariableAccessLevel } from 'littlehorse-client/proto'
+import { WfRunId, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { isExternal } from 'util/types'
 
-export const WfRun: FC<{ id: string, tenantId: string }> = ({ id, tenantId }) => {
+export const WfRun: FC<{ wfRunId: WfRunId, tenantId: string }> = ({ wfRunId, tenantId }) => {
   const searchParams = useSearchParams()
   const threadRunNumber = Number(searchParams.get('threadRunNumber'))
-  const { wfRunData, isLoading, isError } = useWfRun({ id: id, tenantId })
-  const { wfRunData: parentWfRunData } = useWfRun({ id: wfRunData?.wfRun?.id?.parentWfRunId?.id ?? '', tenantId })
+  const { wfRunData, isLoading, isError } = useWfRun({ wfRunId, tenantId })
+  const { wfRunData: parentWfRunData } = useWfRun({ wfRunId: wfRunData?.wfRun?.id?.parentWfRunId ?? { id: '', parentWfRunId: undefined }, tenantId })
 
   if (!wfRunData) return null
   const { wfRun, wfSpec, nodeRuns, variables } = wfRunData;
 
   if (!wfRun) return null
-  if (!wfRun.id?.parentWfRunId || !parentWfRunData) return null
 
   const variableDefs = wfSpec.threadSpecs[wfRun.threadRuns[threadRunNumber].threadSpecName].variableDefs;
   const inheritedVariables = variableDefs.filter(vD => vD.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR).map(vD => {
+    if (!wfRun.id?.parentWfRunId || !parentWfRunData) return null
     return parentWfRunData.variables.find(v => v.id?.name === vD.varDef?.name)!
   });
 
@@ -37,7 +37,8 @@ export const WfRun: FC<{ id: string, tenantId: string }> = ({ id, tenantId }) =>
 
       <Variables
         variableDefs={wfSpec.threadSpecs[wfRun.threadRuns[threadRunNumber].threadSpecName].variableDefs}
-        variables={variables.filter(v => v.id?.threadRunNumber == Number(searchParams.get('threadRunNumber'))).concat(inheritedVariables)}
+        variables={variables.filter(v => v.id?.threadRunNumber == Number(searchParams.get('threadRunNumber')))}
+        inheritedVariables={inheritedVariables}
       />
     </div>
   )
