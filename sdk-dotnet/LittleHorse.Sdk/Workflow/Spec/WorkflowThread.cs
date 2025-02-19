@@ -632,6 +632,5 @@ public class WorkflowThread
         Node lastNode = FindNode(node.NodeName);
 
         lastNode.FailureHandlers.Add(handlerDef);
-        //_spec.Nodes.Add(node.NodeName, lastNode);
     }
 }
