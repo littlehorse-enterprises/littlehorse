@@ -30,6 +30,12 @@ message OutputTopicRecord {
         // Records an update to a WfRun which is treated as an "Entity", with
         // the public variables of the WfRun treated as fields in the Entity.
         WfRunEntityRecord wf_run_entity = 5;
+
+        // Updates about a user task run.
+        UserTaskRunUpdateRecord user_task_run = 6;
+
+        // Updates about a specific Variable changing.
+        VariableUpdateRecord variable_update = 7;
     }
 }
 
@@ -59,6 +65,59 @@ message WfRunEntityRecord {
     // The current status of the WfRun.
     LHStatus status = 1;
 
-    // The public Variablesi n the entrypoint ThreadRun
+    // Denotes the reason that this `WfRunEntityRecord` was recorded to the
+    // Output Topic.
+    enum UpdateReason {
+        // Recorded because the `WfRun` was started.
+        WFRUN_STARTED = 0;
+
+        // Recorded because a public variable was changed.
+        VARIABLE_CHANGED = 1;
+
+        // Recorded because the status of the `WfRun` was changed.
+        WFRUN_STATUS_CHANGED = 2;
+    }
+
+    // The public Variables in the entrypoint ThreadRun
     map<String, Variable> public_variables = 2;
+
+    // The reason(s) for this update.
+    repeated UpdateReason update_reasons = 3;
+}
+
+// Represents a snapshot of a UserTaskRun being updated. Used in the Output Topic
+// to allow exporting information about User Tasks into external systems.
+message UserTaskRunUpdateRecord {
+    // The current snapshot of the UserTaskRun.
+    UserTaskRun user_task_run = 1;
+
+    // Denotes the reason for a UserTaskRunUpdateReason to be recorded to the Output
+    // Topic.
+    enum UserTaskRunUpdateReason {
+        // UserTaskRun was created.
+        USER_TASK_CREATED = 0;
+
+        // UserTaskRun was assigned.
+        USER_TASK_ASSIGNED = 1;
+
+        // UserTaskRun was saved.
+        USER_TASK_SAVED = 2;
+
+        // UserTaskRun was canceled.
+        USER_TASK_CANCELED = 3;
+
+        // UserTaskRun was completed.
+        USER_TASK_COMPLETED = 4;
+    }
+
+    // The reason(s) for the UserTaskRunUpdateRecord to be recorded into the Output
+    // Topic.
+    repeated UserTaskRunUpdateReason reasons = 2;
+}
+
+// Represents a snapshot of an individual Variable being updated. Used in the Output
+// Topic to allow exporting information for specific Variables to external systems.
+message VariableUpdateRecord {
+    // The cuurrent snapshot of the Variable in question.
+    Variable current_variable = 1;
 }
