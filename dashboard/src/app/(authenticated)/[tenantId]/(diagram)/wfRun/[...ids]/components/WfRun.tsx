@@ -1,20 +1,19 @@
 'use client'
 import { Diagram } from '@/app/(authenticated)/[tenantId]/(diagram)/components/Diagram'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
-import { useSearchParams } from 'next/navigation'
-import { FC, useCallback } from 'react'
-import { Details } from './Details'
-import { Variables } from './Variables'
 import { useWfRun } from '@/app/hooks/useWfRun'
 import { WfRunId, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
-import { isExternal } from 'util/types'
+import { useSearchParams } from 'next/navigation'
+import { FC } from 'react'
+import { Details } from './Details'
+import { Variables } from './Variables'
 
 export const WfRun: FC<{ ids: string[], tenantId: string }> = ({ ids, tenantId }) => {
   const wfRunId = ids.reduce((wfRunId, id, i) => (i === 0 ? { id } : { id, parentWfRunId: wfRunId }), {} as WfRunId);
 
   const searchParams = useSearchParams()
   const threadRunNumber = Number(searchParams.get('threadRunNumber'))
-  const { wfRunData, isLoading, isError } = useWfRun({ wfRunId, tenantId })
+  const { wfRunData } = useWfRun({ wfRunId, tenantId })
   const { wfRunData: parentWfRunData } = useWfRun({ wfRunId: wfRunData?.wfRun?.id?.parentWfRunId ?? { id: '', parentWfRunId: undefined }, tenantId })
 
   if (!wfRunData) return null
