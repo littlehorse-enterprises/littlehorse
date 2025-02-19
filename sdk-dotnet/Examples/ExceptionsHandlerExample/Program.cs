@@ -1,6 +1,7 @@
 ﻿using ExceptionsHandler;
 using LittleHorse.Sdk;
 using LittleHorse.Sdk.Worker;
+using LittleHorse.Sdk.Workflow.Spec;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -46,6 +47,24 @@ public abstract class Program
         return workers;
     }
     
+    private static Workflow GetWorkflow()
+    {
+        void MyEntryPoint(WorkflowThread wf)
+        {
+            NodeOutput node = wf.Execute("fail");
+            wf.HandleError(
+                node,
+                handler =>
+                {
+                    handler.Execute("my-task");
+                }
+            );
+            wf.Execute("my-task");
+        }
+        
+        return new Workflow("example-exception-handler", MyEntryPoint);
+    }
+    
     static void Main(string[] args)
     {
         SetupApplication();
@@ -58,6 +77,9 @@ public abstract class Program
             {
                 worker.RegisterTaskDef();
             }
+            
+            var workflow = GetWorkflow();
+            workflow.RegisterWfSpec(config.GetGrpcClientInstance());
             
             Thread.Sleep(300);
 

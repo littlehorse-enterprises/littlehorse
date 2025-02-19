@@ -1,4 +1,5 @@
 using LittleHorse.Sdk.Common.Proto;
+using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Helper;
 using Microsoft.Extensions.Logging;
 
@@ -51,7 +52,7 @@ public class Workflow
         _logger!.LogInformation(LHMappingHelper.ProtoToJson(client.PutWfSpec(Compile())));
     }
 
-    private string AddSubThread(string subThreadName, Action<WorkflowThread> subThreadAction) 
+    internal string AddSubThread(string subThreadName, Action<WorkflowThread> subThreadAction) 
     {
         foreach (var threadPair in _threadActions)
         {
