@@ -37,7 +37,7 @@ export const WfRun: FC<{ ids: string[], tenantId: string }> = ({ ids, tenantId }
       <Diagram spec={wfSpec} wfRun={wfRun} nodeRuns={nodeRuns} />
 
       <Variables
-        variableDefs={wfSpec.threadSpecs[wfRun.threadRuns[threadRunNumber].threadSpecName].variableDefs}
+        variableDefs={variableDefs}
         variables={variables.filter(v => v.id?.threadRunNumber == Number(searchParams.get('threadRunNumber')))}
         inheritedVariables={inheritedVariables}
       />
