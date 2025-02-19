@@ -8,7 +8,6 @@ import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWith
 import { Fade } from '../Fade'
 import { NodeDetails } from '../NodeDetails'
 
-import { NodeRunsList } from '../../NodeRunsList'
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 
 const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
@@ -18,7 +17,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>
-        <DiagramDataGroup label="WorkflowEvent">
+        <DiagramDataGroup label={nodeRun ? "WorkflowEvent" : "WorkflowEventDef"}>
           <div>
             <div>
               <div className="flex items-center gap-1 text-nowrap">
