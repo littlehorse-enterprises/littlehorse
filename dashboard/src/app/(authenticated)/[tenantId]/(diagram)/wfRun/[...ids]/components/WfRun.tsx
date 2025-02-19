@@ -10,7 +10,8 @@ import { WfRunId, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { isExternal } from 'util/types'
 
 export const WfRun: FC<{ ids: string[], tenantId: string }> = ({ ids, tenantId }) => {
-  const wfRunId: WfRunId = ids.reduce((wfRunId, id, i) => (i === 0 ? { id } : { id, parentWfRunId: wfRunId }), {} as WfRunId);
+  const wfRunId = ids.reduce((wfRunId, id, i) => (i === 0 ? { id } : { id, parentWfRunId: wfRunId }), {} as WfRunId);
+
   const searchParams = useSearchParams()
   const threadRunNumber = Number(searchParams.get('threadRunNumber'))
   const { wfRunData, isLoading, isError } = useWfRun({ wfRunId, tenantId })
