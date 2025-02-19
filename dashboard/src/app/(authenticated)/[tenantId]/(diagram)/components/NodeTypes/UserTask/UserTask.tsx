@@ -1,16 +1,14 @@
 import { UserTaskDefDetails } from '@/app/(authenticated)/[tenantId]/(diagram)/components/NodeTypes/UserTask/UserTaskDefDetails'
-import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
-import { ExternalLinkIcon, EyeIcon, UserIcon } from 'lucide-react'
+import { UserIcon } from 'lucide-react'
+import { useParams, useRouter } from 'next/navigation'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
+import { ExternalLinkButton } from '../../ExternalLinkButton'
 import { NodeRunsList } from '../../NodeRunsList'
+import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 import { Fade } from '../Fade'
 import { NodeProps } from '../index'
 import { NodeDetails } from '../NodeDetails'
-import { useParams, useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { ExternalLinkButton } from '../../ExternalLinkButton'
-import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 
 const Node: FC<NodeProps> = ({ data, selected }) => {
   const router = useRouter()
@@ -22,7 +20,7 @@ const Node: FC<NodeProps> = ({ data, selected }) => {
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>
-        <DiagramDataGroup label="UserTask">
+        <DiagramDataGroup label={nodeRun ? "UserTaskRun" : "UserTaskDef"}>
           <div className="flex flex-col">
             <ExternalLinkButton href={`/userTaskDef/${userTask.userTaskDefName}`} label={userTask.userTaskDefName} />
             {nodeRun && (
