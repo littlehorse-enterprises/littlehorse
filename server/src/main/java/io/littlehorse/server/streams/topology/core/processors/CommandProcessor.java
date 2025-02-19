@@ -175,7 +175,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         PartitionMetricInventoryModel metricInventory = clusterStore.get(
                 PartitionMetricInventoryModel.METRIC_INVENTORY_STORE_KEY, PartitionMetricInventoryModel.class);
         if (metricInventory != null) {
-            Map<TenantIdModel, AggregateMetricsModel> commandsPerTenant = new HashMap<>();
+            Map<TenantIdModel, List<AggregateMetricsModel>> commandsPerTenant = new HashMap<>();
             for (PartitionMetricIdModel partitionMetricId : metricInventory.getMetrics()) {
                 TenantScopedStore tenantStore = TenantScopedStore.newInstance(
                         nativeStore, partitionMetricId.getTenantId(), new BackgroundContext());
@@ -187,17 +187,20 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 List<RepartitionWindowedMetricModel> windowedMetrics =
                         partitionMetric.buildRepartitionCommand(LocalDateTime.now());
                 tenantStore.put(new StoredGetable<>(partitionMetric));
-                AggregateMetricsModel current = commandsPerTenant.getOrDefault(
+                List<AggregateMetricsModel> metricsPerTenant =
+                        commandsPerTenant.getOrDefault(partitionMetricId.getTenantId(), new ArrayList<>());
+                AggregateMetricsModel current = new AggregateMetricsModel(
                         partitionMetricId.getTenantId(),
-                        new AggregateMetricsModel(
-                                partitionMetricId.getTenantId(),
-                                partitionMetricId.getMetricId(),
-                                new ArrayList<>(),
-                                ctx.taskId().partition()));
+                        partitionMetricId.getMetricId(),
+                        new ArrayList<>(),
+                        ctx.taskId().partition());
                 current.addWindowedMetric(windowedMetrics);
-                commandsPerTenant.putIfAbsent(partitionMetricId.getTenantId(), current);
+                metricsPerTenant.add(current);
+                commandsPerTenant.putIfAbsent(partitionMetricId.getTenantId(), metricsPerTenant);
             }
-            forwardRepartitionCommands(commandsPerTenant.values());
+            forwardRepartitionCommands(commandsPerTenant.values().stream()
+                    .flatMap(Collection::stream)
+                    .toList());
         }
     }
 
