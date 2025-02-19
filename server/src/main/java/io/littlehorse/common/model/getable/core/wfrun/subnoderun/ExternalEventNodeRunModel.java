@@ -18,6 +18,7 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventNodeRun;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -84,8 +85,13 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
     }
 
     @Override
-    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) {
+    public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) throws NodeFailureException {
         if (externalEventId != null) return true;
+
+        if (timedOut) {
+            FailureModel failure = new FailureModel("ExternalEvent did not arrive in time", LHErrorType.TIMEOUT.name());
+            throw new NodeFailureException(failure);
+        }
 
         NodeModel node = nodeRun.getNode();
         ExternalEventNodeModel eNode = node.getExternalEventNode();
@@ -165,7 +171,6 @@ public class ExternalEventNodeRunModel extends SubNodeRun<ExternalEventNodeRun> 
             return;
         }
 
-        // This is leaking the logic of the
         timedOut = true;
     }
 
