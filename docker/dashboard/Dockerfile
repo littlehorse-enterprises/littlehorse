@@ -1,4 +1,4 @@
-FROM ghcr.io/littlehorse-enterprises/alpine-nginx-nodejs/nginx-nodejs:main as runner
+FROM ghcr.io/littlehorse-enterprises/alpine-nginx-nodejs/nginx-nodejs:v1 as runner
 ENV NODE_ENV production
 
 RUN apk add --no-cache uuidgen
