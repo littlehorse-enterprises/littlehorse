@@ -2,9 +2,9 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 
 public class NodeOutput
 {
-    public string NodeName { get; set; }
-    public WorkflowThread Parent { get; set; }
-    public string? JsonPath { get; set; }
+    public string NodeName { get; private set; }
+    public WorkflowThread Parent { get; private set; }
+    public string? JsonPath { get; private set; }
 
     public NodeOutput(string nodeName, WorkflowThread parent)
     {
@@ -22,5 +22,12 @@ public class NodeOutput
         JsonPath = path;
         
         return nodeOutput;
+    }
+    
+    public NodeOutput WithTimeout(int timeoutSeconds) 
+    {
+        Parent.AddTimeoutToExtEvt(this, timeoutSeconds);
+        
+        return this;
     }
 }
