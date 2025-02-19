@@ -5,6 +5,8 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
+import io.littlehorse.sdk.common.proto.Failure;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
@@ -26,6 +28,9 @@ public class ExternalEventTest {
     public static final String EVT_NAME = "basic-test-event";
     public static final String IGNORED_EVT_NAME = "not-a-real-event-kenobi";
 
+    @LHWorkflow("external-event-timeout")
+    public Workflow timeoutEvent;
+
     @LHWorkflow("basic-external-event")
     public Workflow basicExternalEvent;
 
@@ -39,6 +44,25 @@ public class ExternalEventTest {
             thread.mutate(evtOutput, VariableMutationType.ASSIGN, thread.waitForEvent(EVT_NAME));
             thread.execute("basic-external-event-task", evtOutput);
         });
+    }
+
+    @LHWorkflow("external-event-timeout")
+    public Workflow getTimeoutWorkflow() {
+        return Workflow.newWorkflow("external-event-timeout", wf -> {
+            wf.waitForEvent(EVT_NAME).timeout(1);
+        });
+    }
+
+    @Test
+    void shouldTimeoutIfNoEvent() {
+        verifier.prepareRun(timeoutEvent)
+                .waitForStatus(LHStatus.ERROR)
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    Failure failure = nodeRun.getFailures(0);
+                    Assertions.assertThat(failure.getFailureName()).isEqualTo(LHErrorType.TIMEOUT.toString());
+                    Assertions.assertThat(failure.getMessage().toLowerCase()).contains("arrive in time");
+                })
+                .start();
     }
 
     @Test
