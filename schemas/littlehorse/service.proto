@@ -18,6 +18,8 @@ import "task_def.proto";
 import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
+import "metrics.proto";
+import "google/protobuf/duration.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -45,6 +47,9 @@ service LittleHorse {
 
   // Creates a WfSpec.
   rpc PutWfSpec(PutWfSpecRequest) returns (WfSpec) {}
+
+  // Creates a new metric
+  rpc PutMetric(PutMetricRequest) returns (Metric) {}
 
   // Gets a WfSpec.
   rpc GetWfSpec(WfSpecId) returns (WfSpec) {}
@@ -292,6 +297,8 @@ service LittleHorse {
 
   // Gets the version of the LH Server.
   rpc GetServerVersion(google.protobuf.Empty) returns (ServerVersion) {}
+
+  rpc ListMetricRuns(ListMetricRunRequest) returns (MetricRunList) {}
 }
 
 // Returns the UserTaskDef with a given name and the highest version number.
@@ -325,6 +332,12 @@ message PutWfSpecRequest {
   // breaking changes to the WfSpec, prevent any changes to the WfSpec, or allow
   // all changes to the WfSpec.
   AllowedUpdateType allowed_updates = 10;
+}
+
+message PutMetricRequest {
+  MeasurableObject measurable = 1;
+  MetricType type = 2;
+  google.protobuf.Duration window_length = 3;
 }
 
 // This enum controls the behavior of a PutWfSpecRequest when a WfSpec with the same
@@ -1440,4 +1453,13 @@ message ServerVersion {
   // Prerelease Identifier. If this is set, then the server is NOT a production release
   // but rather a release candidate or experimental pre-release.
   optional string pre_release_identifier = 4;
+}
+
+
+message MetricRunList {
+  repeated MetricRun results = 1;
+}
+
+message ListMetricRunRequest {
+  MetricId metric_id = 1;
 }

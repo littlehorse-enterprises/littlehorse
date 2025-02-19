@@ -140,3 +140,14 @@ enum LHErrorType {
   // An unexpected LittleHorse Internal error occurred. This is not expected to happen.
   INTERNAL_ERROR = 8;
 }
+
+enum MeasurableObject {
+  WORKFLOW = 0;
+  TASK = 1;
+}
+
+enum MetricType {
+  COUNT = 0;
+  AVG = 1;
+  RATIO = 2;
+}
