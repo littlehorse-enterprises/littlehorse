@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"reflect"
 	"strconv"
-	"strings"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 )
@@ -50,7 +49,7 @@ func StrToVarVal(input string, varType lhproto.VariableType) (*lhproto.VariableV
 
 	case lhproto.VariableType_BOOL:
 		var tmp bool
-		tmp, err = strconv.ParseBool(strings.TrimSpace(input))
+		tmp, err = strconv.ParseBool(input)
 		if err == nil {
 			out.Value = &lhproto.VariableValue_Bool{Bool: tmp}
 		}

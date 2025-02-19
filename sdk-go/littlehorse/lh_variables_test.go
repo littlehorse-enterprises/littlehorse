@@ -1,9 +1,10 @@
 package littlehorse_test
 
 import (
+	"testing"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
-	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
