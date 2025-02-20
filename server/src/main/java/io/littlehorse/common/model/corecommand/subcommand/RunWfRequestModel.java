@@ -99,6 +99,10 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec");
         }
 
+        if (!LHUtil.isValidLHName(id)) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "WfRunId must be a valid hostname");
+        }
+
         // TODO: Add WfRun Start Metrics
 
         WfRunModel oldWfRun = getableManager.get(new WfRunIdModel(id));

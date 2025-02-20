@@ -591,6 +591,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
     public void runWf(RunWfRequest req, StreamObserver<WfRun> ctx) {
+        if (req.getWfSpecName().equals("")) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required parameter 'wf_spec_name'");
+        }
+
+        if (!req.getId().equals("") && !LHUtil.isValidLHName(req.getId())) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "WfRunId must be a valid hostname");
+        }
+
         RunWfRequestModel reqModel = LHSerializable.fromProto(req, RunWfRequestModel.class, requestContext());
         processCommand(new CommandModel(reqModel), ctx, WfRun.class, true);
     }
