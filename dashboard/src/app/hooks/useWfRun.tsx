@@ -1,8 +1,7 @@
 "use client";
-import useSWR from "swr";
-import { getWfRun, WfRunResponse } from "../actions/getWfRun";
-import { useState } from "react";
 import { WfRunId } from "littlehorse-client/proto";
+import useSWR from "swr";
+import { getWfRun } from "../actions/getWfRun";
 
 type Props = {
     wfRunId: WfRunId
@@ -10,16 +9,13 @@ type Props = {
 }
 
 export function useWfRun({ wfRunId, tenantId }: Props) {
-    const [dataCache, setDataCache] = useState<WfRunResponse | null>(null)
-
-    const { error, isLoading } = useSWR(`wfRun/${tenantId}/${wfRunId.id}/${wfRunId.parentWfRunId?.id}`, async () => {
-        if (!wfRunId.id) return dataCache
-        const data = await getWfRun({ wfRunId, tenantId })
-        setDataCache(data)
+    const { data, error, isLoading } = useSWR(`wfRun/${tenantId}/${wfRunId.id}/${wfRunId.parentWfRunId?.id}`, async () => {
+        if (!wfRunId.id) return
+        return await getWfRun({ wfRunId, tenantId })
     })
 
     return {
-        wfRunData: dataCache,
+        wfRunData: data,
         isLoading,
         isError: error
     }
