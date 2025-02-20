@@ -13,9 +13,6 @@ import {
   LHStatus,
   lHStatusFromJSON,
   lHStatusToNumber,
-  MeasurableObject,
-  measurableObjectFromJSON,
-  measurableObjectToNumber,
   MetricsWindowLength,
   metricsWindowLengthFromJSON,
   metricsWindowLengthToNumber,
@@ -178,7 +175,6 @@ export interface PutWfSpecRequest_ThreadSpecsEntry {
 }
 
 export interface PutMetricRequest {
-  measurable: MeasurableObject;
   type: MetricType;
   windowLength: Duration | undefined;
 }
@@ -1777,14 +1773,11 @@ export const PutWfSpecRequest_ThreadSpecsEntry = {
 };
 
 function createBasePutMetricRequest(): PutMetricRequest {
-  return { measurable: MeasurableObject.WORKFLOW, type: MetricType.COUNT, windowLength: undefined };
+  return { type: MetricType.COUNT, windowLength: undefined };
 }
 
 export const PutMetricRequest = {
   encode(message: PutMetricRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.measurable !== MeasurableObject.WORKFLOW) {
-      writer.uint32(8).int32(measurableObjectToNumber(message.measurable));
-    }
     if (message.type !== MetricType.COUNT) {
       writer.uint32(16).int32(metricTypeToNumber(message.type));
     }
@@ -1801,13 +1794,6 @@ export const PutMetricRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          if (tag !== 8) {
-            break;
-          }
-
-          message.measurable = measurableObjectFromJSON(reader.int32());
-          continue;
         case 2:
           if (tag !== 16) {
             break;
@@ -1836,7 +1822,6 @@ export const PutMetricRequest = {
   },
   fromPartial(object: DeepPartial<PutMetricRequest>): PutMetricRequest {
     const message = createBasePutMetricRequest();
-    message.measurable = object.measurable ?? MeasurableObject.WORKFLOW;
     message.type = object.type ?? MetricType.COUNT;
     message.windowLength = (object.windowLength !== undefined && object.windowLength !== null)
       ? Duration.fromPartial(object.windowLength)

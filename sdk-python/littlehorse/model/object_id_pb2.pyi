@@ -150,13 +150,37 @@ class ScheduledWfRunId(_message.Message):
     id: str
     def __init__(self, id: _Optional[str] = ...) -> None: ...
 
+class NodeReference(_message.Message):
+    __slots__ = ["thread_spec", "node_type", "node_position"]
+    THREAD_SPEC_FIELD_NUMBER: _ClassVar[int]
+    NODE_TYPE_FIELD_NUMBER: _ClassVar[int]
+    NODE_POSITION_FIELD_NUMBER: _ClassVar[int]
+    thread_spec: ThreadSpecReference
+    node_type: str
+    node_position: int
+    def __init__(self, thread_spec: _Optional[_Union[ThreadSpecReference, _Mapping]] = ..., node_type: _Optional[str] = ..., node_position: _Optional[int] = ...) -> None: ...
+
+class ThreadSpecReference(_message.Message):
+    __slots__ = ["wf_spec_id", "thread_number"]
+    WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
+    THREAD_NUMBER_FIELD_NUMBER: _ClassVar[int]
+    wf_spec_id: WfSpecId
+    thread_number: int
+    def __init__(self, wf_spec_id: _Optional[_Union[WfSpecId, _Mapping]] = ..., thread_number: _Optional[int] = ...) -> None: ...
+
 class MetricId(_message.Message):
-    __slots__ = ["measurable", "type"]
-    MEASURABLE_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["object", "node", "wf_spec_id", "thread_spec", "type"]
+    OBJECT_FIELD_NUMBER: _ClassVar[int]
+    NODE_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
+    THREAD_SPEC_FIELD_NUMBER: _ClassVar[int]
     TYPE_FIELD_NUMBER: _ClassVar[int]
-    measurable: _common_enums_pb2.MeasurableObject
+    object: _common_enums_pb2.MeasurableObject
+    node: NodeReference
+    wf_spec_id: WfSpecId
+    thread_spec: ThreadSpecReference
     type: _common_enums_pb2.MetricType
-    def __init__(self, measurable: _Optional[_Union[_common_enums_pb2.MeasurableObject, str]] = ..., type: _Optional[_Union[_common_enums_pb2.MetricType, str]] = ...) -> None: ...
+    def __init__(self, object: _Optional[_Union[_common_enums_pb2.MeasurableObject, str]] = ..., node: _Optional[_Union[NodeReference, _Mapping]] = ..., wf_spec_id: _Optional[_Union[WfSpecId, _Mapping]] = ..., thread_spec: _Optional[_Union[ThreadSpecReference, _Mapping]] = ..., type: _Optional[_Union[_common_enums_pb2.MetricType, str]] = ...) -> None: ...
 
 class MetricRunId(_message.Message):
     __slots__ = ["metric_id", "window_start"]

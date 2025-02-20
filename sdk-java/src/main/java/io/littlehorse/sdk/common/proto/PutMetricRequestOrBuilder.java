@@ -8,17 +8,6 @@ public interface PutMetricRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.MeasurableObject measurable = 1;</code>
-   * @return The enum numeric value on the wire for measurable.
-   */
-  int getMeasurableValue();
-  /**
-   * <code>.littlehorse.MeasurableObject measurable = 1;</code>
-   * @return The measurable.
-   */
-  io.littlehorse.sdk.common.proto.MeasurableObject getMeasurable();
-
-  /**
    * <code>.littlehorse.MetricType type = 2;</code>
    * @return The enum numeric value on the wire for type.
    */

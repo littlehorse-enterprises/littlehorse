@@ -228,8 +228,22 @@ export interface ScheduledWfRunId {
   id: string;
 }
 
+export interface NodeReference {
+  threadSpec: ThreadSpecReference | undefined;
+  nodeType?: string | undefined;
+  nodePosition?: number | undefined;
+}
+
+export interface ThreadSpecReference {
+  wfSpecId: WfSpecId | undefined;
+  threadNumber?: number | undefined;
+}
+
 export interface MetricId {
-  measurable: MeasurableObject;
+  object?: MeasurableObject | undefined;
+  node?: NodeReference | undefined;
+  wfSpecId?: WfSpecId | undefined;
+  threadSpec?: ThreadSpecReference | undefined;
   type: MetricType;
 }
 
@@ -1270,17 +1284,153 @@ export const ScheduledWfRunId = {
   },
 };
 
+function createBaseNodeReference(): NodeReference {
+  return { threadSpec: undefined, nodeType: undefined, nodePosition: undefined };
+}
+
+export const NodeReference = {
+  encode(message: NodeReference, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.threadSpec !== undefined) {
+      ThreadSpecReference.encode(message.threadSpec, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.nodeType !== undefined) {
+      writer.uint32(18).string(message.nodeType);
+    }
+    if (message.nodePosition !== undefined) {
+      writer.uint32(24).int32(message.nodePosition);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): NodeReference {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseNodeReference();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.threadSpec = ThreadSpecReference.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.nodeType = reader.string();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.nodePosition = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<NodeReference>): NodeReference {
+    return NodeReference.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<NodeReference>): NodeReference {
+    const message = createBaseNodeReference();
+    message.threadSpec = (object.threadSpec !== undefined && object.threadSpec !== null)
+      ? ThreadSpecReference.fromPartial(object.threadSpec)
+      : undefined;
+    message.nodeType = object.nodeType ?? undefined;
+    message.nodePosition = object.nodePosition ?? undefined;
+    return message;
+  },
+};
+
+function createBaseThreadSpecReference(): ThreadSpecReference {
+  return { wfSpecId: undefined, threadNumber: undefined };
+}
+
+export const ThreadSpecReference = {
+  encode(message: ThreadSpecReference, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpecId !== undefined) {
+      WfSpecId.encode(message.wfSpecId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.threadNumber !== undefined) {
+      writer.uint32(16).int32(message.threadNumber);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ThreadSpecReference {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseThreadSpecReference();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.threadNumber = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ThreadSpecReference>): ThreadSpecReference {
+    return ThreadSpecReference.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ThreadSpecReference>): ThreadSpecReference {
+    const message = createBaseThreadSpecReference();
+    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
+      ? WfSpecId.fromPartial(object.wfSpecId)
+      : undefined;
+    message.threadNumber = object.threadNumber ?? undefined;
+    return message;
+  },
+};
+
 function createBaseMetricId(): MetricId {
-  return { measurable: MeasurableObject.WORKFLOW, type: MetricType.COUNT };
+  return { object: undefined, node: undefined, wfSpecId: undefined, threadSpec: undefined, type: MetricType.COUNT };
 }
 
 export const MetricId = {
   encode(message: MetricId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.measurable !== MeasurableObject.WORKFLOW) {
-      writer.uint32(8).int32(measurableObjectToNumber(message.measurable));
+    if (message.object !== undefined) {
+      writer.uint32(8).int32(measurableObjectToNumber(message.object));
+    }
+    if (message.node !== undefined) {
+      NodeReference.encode(message.node, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.wfSpecId !== undefined) {
+      WfSpecId.encode(message.wfSpecId, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.threadSpec !== undefined) {
+      ThreadSpecReference.encode(message.threadSpec, writer.uint32(34).fork()).ldelim();
     }
     if (message.type !== MetricType.COUNT) {
-      writer.uint32(16).int32(metricTypeToNumber(message.type));
+      writer.uint32(40).int32(metricTypeToNumber(message.type));
     }
     return writer;
   },
@@ -1297,10 +1447,31 @@ export const MetricId = {
             break;
           }
 
-          message.measurable = measurableObjectFromJSON(reader.int32());
+          message.object = measurableObjectFromJSON(reader.int32());
           continue;
         case 2:
-          if (tag !== 16) {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.node = NodeReference.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.threadSpec = ThreadSpecReference.decode(reader, reader.uint32());
+          continue;
+        case 5:
+          if (tag !== 40) {
             break;
           }
 
@@ -1320,7 +1491,16 @@ export const MetricId = {
   },
   fromPartial(object: DeepPartial<MetricId>): MetricId {
     const message = createBaseMetricId();
-    message.measurable = object.measurable ?? MeasurableObject.WORKFLOW;
+    message.object = object.object ?? undefined;
+    message.node = (object.node !== undefined && object.node !== null)
+      ? NodeReference.fromPartial(object.node)
+      : undefined;
+    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
+      ? WfSpecId.fromPartial(object.wfSpecId)
+      : undefined;
+    message.threadSpec = (object.threadSpec !== undefined && object.threadSpec !== null)
+      ? ThreadSpecReference.fromPartial(object.threadSpec)
+      : undefined;
     message.type = object.type ?? MetricType.COUNT;
     return message;
   },

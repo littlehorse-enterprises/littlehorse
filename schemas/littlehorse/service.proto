@@ -335,7 +335,7 @@ message PutWfSpecRequest {
 }
 
 message PutMetricRequest {
-  MeasurableObject measurable = 1;
+
   MetricType type = 2;
   google.protobuf.Duration window_length = 3;
 }

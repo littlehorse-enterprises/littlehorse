@@ -16,7 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private PutMetricRequest() {
-    measurable_ = 0;
     type_ = 0;
   }
 
@@ -38,24 +37,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutMetricRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.sdk.common.proto.PutMetricRequest.class, io.littlehorse.sdk.common.proto.PutMetricRequest.Builder.class);
-  }
-
-  public static final int MEASURABLE_FIELD_NUMBER = 1;
-  private int measurable_ = 0;
-  /**
-   * <code>.littlehorse.MeasurableObject measurable = 1;</code>
-   * @return The enum numeric value on the wire for measurable.
-   */
-  @java.lang.Override public int getMeasurableValue() {
-    return measurable_;
-  }
-  /**
-   * <code>.littlehorse.MeasurableObject measurable = 1;</code>
-   * @return The measurable.
-   */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.MeasurableObject getMeasurable() {
-    io.littlehorse.sdk.common.proto.MeasurableObject result = io.littlehorse.sdk.common.proto.MeasurableObject.forNumber(measurable_);
-    return result == null ? io.littlehorse.sdk.common.proto.MeasurableObject.UNRECOGNIZED : result;
   }
 
   public static final int TYPE_FIELD_NUMBER = 2;
@@ -116,9 +97,6 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (measurable_ != io.littlehorse.sdk.common.proto.MeasurableObject.WORKFLOW.getNumber()) {
-      output.writeEnum(1, measurable_);
-    }
     if (type_ != io.littlehorse.sdk.common.proto.MetricType.COUNT.getNumber()) {
       output.writeEnum(2, type_);
     }
@@ -134,10 +112,6 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (measurable_ != io.littlehorse.sdk.common.proto.MeasurableObject.WORKFLOW.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(1, measurable_);
-    }
     if (type_ != io.littlehorse.sdk.common.proto.MetricType.COUNT.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(2, type_);
@@ -161,7 +135,6 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.PutMetricRequest other = (io.littlehorse.sdk.common.proto.PutMetricRequest) obj;
 
-    if (measurable_ != other.measurable_) return false;
     if (type_ != other.type_) return false;
     if (hasWindowLength() != other.hasWindowLength()) return false;
     if (hasWindowLength()) {
@@ -179,8 +152,6 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + MEASURABLE_FIELD_NUMBER;
-    hash = (53 * hash) + measurable_;
     hash = (37 * hash) + TYPE_FIELD_NUMBER;
     hash = (53 * hash) + type_;
     if (hasWindowLength()) {
@@ -318,7 +289,6 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      measurable_ = 0;
       type_ = 0;
       windowLength_ = null;
       if (windowLengthBuilder_ != null) {
@@ -359,12 +329,9 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.PutMetricRequest result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.measurable_ = measurable_;
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
         result.type_ = type_;
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
+      if (((from_bitField0_ & 0x00000002) != 0)) {
         result.windowLength_ = windowLengthBuilder_ == null
             ? windowLength_
             : windowLengthBuilder_.build();
@@ -415,9 +382,6 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.PutMetricRequest other) {
       if (other == io.littlehorse.sdk.common.proto.PutMetricRequest.getDefaultInstance()) return this;
-      if (other.measurable_ != 0) {
-        setMeasurableValue(other.getMeasurableValue());
-      }
       if (other.type_ != 0) {
         setTypeValue(other.getTypeValue());
       }
@@ -450,21 +414,16 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
-            case 8: {
-              measurable_ = input.readEnum();
-              bitField0_ |= 0x00000001;
-              break;
-            } // case 8
             case 16: {
               type_ = input.readEnum();
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000001;
               break;
             } // case 16
             case 26: {
               input.readMessage(
                   getWindowLengthFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000002;
               break;
             } // case 26
             default: {
@@ -484,59 +443,6 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private int measurable_ = 0;
-    /**
-     * <code>.littlehorse.MeasurableObject measurable = 1;</code>
-     * @return The enum numeric value on the wire for measurable.
-     */
-    @java.lang.Override public int getMeasurableValue() {
-      return measurable_;
-    }
-    /**
-     * <code>.littlehorse.MeasurableObject measurable = 1;</code>
-     * @param value The enum numeric value on the wire for measurable to set.
-     * @return This builder for chaining.
-     */
-    public Builder setMeasurableValue(int value) {
-      measurable_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.MeasurableObject measurable = 1;</code>
-     * @return The measurable.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.MeasurableObject getMeasurable() {
-      io.littlehorse.sdk.common.proto.MeasurableObject result = io.littlehorse.sdk.common.proto.MeasurableObject.forNumber(measurable_);
-      return result == null ? io.littlehorse.sdk.common.proto.MeasurableObject.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.littlehorse.MeasurableObject measurable = 1;</code>
-     * @param value The measurable to set.
-     * @return This builder for chaining.
-     */
-    public Builder setMeasurable(io.littlehorse.sdk.common.proto.MeasurableObject value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      bitField0_ |= 0x00000001;
-      measurable_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.MeasurableObject measurable = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearMeasurable() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      measurable_ = 0;
-      onChanged();
-      return this;
-    }
-
     private int type_ = 0;
     /**
      * <code>.littlehorse.MetricType type = 2;</code>
@@ -552,7 +458,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setTypeValue(int value) {
       type_ = value;
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -574,7 +480,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000001;
       type_ = value.getNumber();
       onChanged();
       return this;
@@ -584,7 +490,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearType() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000001);
       type_ = 0;
       onChanged();
       return this;
@@ -598,7 +504,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the windowLength field is set.
      */
     public boolean hasWindowLength() {
-      return ((bitField0_ & 0x00000004) != 0);
+      return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <code>.google.protobuf.Duration window_length = 3;</code>
@@ -623,7 +529,7 @@ private static final long serialVersionUID = 0L;
       } else {
         windowLengthBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -637,7 +543,7 @@ private static final long serialVersionUID = 0L;
       } else {
         windowLengthBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -646,7 +552,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeWindowLength(com.google.protobuf.Duration value) {
       if (windowLengthBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0) &&
+        if (((bitField0_ & 0x00000002) != 0) &&
           windowLength_ != null &&
           windowLength_ != com.google.protobuf.Duration.getDefaultInstance()) {
           getWindowLengthBuilder().mergeFrom(value);
@@ -656,7 +562,7 @@ private static final long serialVersionUID = 0L;
       } else {
         windowLengthBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -664,7 +570,7 @@ private static final long serialVersionUID = 0L;
      * <code>.google.protobuf.Duration window_length = 3;</code>
      */
     public Builder clearWindowLength() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000002);
       windowLength_ = null;
       if (windowLengthBuilder_ != null) {
         windowLengthBuilder_.dispose();
@@ -677,7 +583,7 @@ private static final long serialVersionUID = 0L;
      * <code>.google.protobuf.Duration window_length = 3;</code>
      */
     public com.google.protobuf.Duration.Builder getWindowLengthBuilder() {
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return getWindowLengthFieldBuilder().getBuilder();
     }

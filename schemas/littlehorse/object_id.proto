@@ -194,9 +194,25 @@ message ScheduledWfRunId {
   string id = 1;
 }
 
+message NodeReference {
+  ThreadSpecReference thread_spec = 1;
+  optional string node_type = 2;
+  optional int32 node_position = 3;
+}
+
+message ThreadSpecReference {
+  WfSpecId wf_spec_id = 1;
+  optional int32 thread_number = 2;
+}
+
 message MetricId {
-  MeasurableObject measurable = 1;
-  MetricType type = 2;
+  oneof reference {
+    MeasurableObject object = 1;
+    NodeReference node = 2;
+    WfSpecId wf_spec_id = 3;
+    ThreadSpecReference thread_spec = 4;
+  }
+  MetricType type = 5;
 }
 
 message MetricRunId {

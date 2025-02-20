@@ -63,14 +63,12 @@ class PutWfSpecRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., thread_specs: _Optional[_Mapping[str, _wf_spec_pb2.ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[_wf_spec_pb2.WorkflowRetentionPolicy, _Mapping]] = ..., parent_wf_spec: _Optional[_Union[_wf_spec_pb2.WfSpec.ParentWfSpecReference, _Mapping]] = ..., allowed_updates: _Optional[_Union[AllowedUpdateType, str]] = ...) -> None: ...
 
 class PutMetricRequest(_message.Message):
-    __slots__ = ["measurable", "type", "window_length"]
-    MEASURABLE_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["type", "window_length"]
     TYPE_FIELD_NUMBER: _ClassVar[int]
     WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
-    measurable: _common_enums_pb2.MeasurableObject
     type: _common_enums_pb2.MetricType
     window_length: _duration_pb2.Duration
-    def __init__(self, measurable: _Optional[_Union[_common_enums_pb2.MeasurableObject, str]] = ..., type: _Optional[_Union[_common_enums_pb2.MetricType, str]] = ..., window_length: _Optional[_Union[_duration_pb2.Duration, _Mapping]] = ...) -> None: ...
+    def __init__(self, type: _Optional[_Union[_common_enums_pb2.MetricType, str]] = ..., window_length: _Optional[_Union[_duration_pb2.Duration, _Mapping]] = ...) -> None: ...
 
 class PutTaskDefRequest(_message.Message):
     __slots__ = ["name", "input_vars", "output_schema"]

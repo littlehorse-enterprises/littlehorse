@@ -1088,19 +1088,142 @@ func (x *ScheduledWfRunId) GetId() string {
 	return ""
 }
 
+type NodeReference struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ThreadSpec   *ThreadSpecReference `protobuf:"bytes,1,opt,name=thread_spec,json=threadSpec,proto3" json:"thread_spec,omitempty"`
+	NodeType     *string              `protobuf:"bytes,2,opt,name=node_type,json=nodeType,proto3,oneof" json:"node_type,omitempty"`
+	NodePosition *int32               `protobuf:"varint,3,opt,name=node_position,json=nodePosition,proto3,oneof" json:"node_position,omitempty"`
+}
+
+func (x *NodeReference) Reset() {
+	*x = NodeReference{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_object_id_proto_msgTypes[18]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *NodeReference) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NodeReference) ProtoMessage() {}
+
+func (x *NodeReference) ProtoReflect() protoreflect.Message {
+	mi := &file_object_id_proto_msgTypes[18]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NodeReference.ProtoReflect.Descriptor instead.
+func (*NodeReference) Descriptor() ([]byte, []int) {
+	return file_object_id_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *NodeReference) GetThreadSpec() *ThreadSpecReference {
+	if x != nil {
+		return x.ThreadSpec
+	}
+	return nil
+}
+
+func (x *NodeReference) GetNodeType() string {
+	if x != nil && x.NodeType != nil {
+		return *x.NodeType
+	}
+	return ""
+}
+
+func (x *NodeReference) GetNodePosition() int32 {
+	if x != nil && x.NodePosition != nil {
+		return *x.NodePosition
+	}
+	return 0
+}
+
+type ThreadSpecReference struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	WfSpecId     *WfSpecId `protobuf:"bytes,1,opt,name=wf_spec_id,json=wfSpecId,proto3" json:"wf_spec_id,omitempty"`
+	ThreadNumber *int32    `protobuf:"varint,2,opt,name=thread_number,json=threadNumber,proto3,oneof" json:"thread_number,omitempty"`
+}
+
+func (x *ThreadSpecReference) Reset() {
+	*x = ThreadSpecReference{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_object_id_proto_msgTypes[19]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ThreadSpecReference) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ThreadSpecReference) ProtoMessage() {}
+
+func (x *ThreadSpecReference) ProtoReflect() protoreflect.Message {
+	mi := &file_object_id_proto_msgTypes[19]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ThreadSpecReference.ProtoReflect.Descriptor instead.
+func (*ThreadSpecReference) Descriptor() ([]byte, []int) {
+	return file_object_id_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *ThreadSpecReference) GetWfSpecId() *WfSpecId {
+	if x != nil {
+		return x.WfSpecId
+	}
+	return nil
+}
+
+func (x *ThreadSpecReference) GetThreadNumber() int32 {
+	if x != nil && x.ThreadNumber != nil {
+		return *x.ThreadNumber
+	}
+	return 0
+}
+
 type MetricId struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Measurable MeasurableObject `protobuf:"varint,1,opt,name=measurable,proto3,enum=littlehorse.MeasurableObject" json:"measurable,omitempty"`
-	Type       MetricType       `protobuf:"varint,2,opt,name=type,proto3,enum=littlehorse.MetricType" json:"type,omitempty"`
+	// Types that are assignable to Reference:
+	//	*MetricId_Object
+	//	*MetricId_Node
+	//	*MetricId_WfSpecId
+	//	*MetricId_ThreadSpec
+	Reference isMetricId_Reference `protobuf_oneof:"reference"`
+	Type      MetricType           `protobuf:"varint,5,opt,name=type,proto3,enum=littlehorse.MetricType" json:"type,omitempty"`
 }
 
 func (x *MetricId) Reset() {
 	*x = MetricId{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_object_id_proto_msgTypes[18]
+		mi := &file_object_id_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1113,7 +1236,7 @@ func (x *MetricId) String() string {
 func (*MetricId) ProtoMessage() {}
 
 func (x *MetricId) ProtoReflect() protoreflect.Message {
-	mi := &file_object_id_proto_msgTypes[18]
+	mi := &file_object_id_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1126,14 +1249,42 @@ func (x *MetricId) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MetricId.ProtoReflect.Descriptor instead.
 func (*MetricId) Descriptor() ([]byte, []int) {
-	return file_object_id_proto_rawDescGZIP(), []int{18}
+	return file_object_id_proto_rawDescGZIP(), []int{20}
 }
 
-func (x *MetricId) GetMeasurable() MeasurableObject {
-	if x != nil {
-		return x.Measurable
+func (m *MetricId) GetReference() isMetricId_Reference {
+	if m != nil {
+		return m.Reference
+	}
+	return nil
+}
+
+func (x *MetricId) GetObject() MeasurableObject {
+	if x, ok := x.GetReference().(*MetricId_Object); ok {
+		return x.Object
 	}
 	return MeasurableObject_WORKFLOW
+}
+
+func (x *MetricId) GetNode() *NodeReference {
+	if x, ok := x.GetReference().(*MetricId_Node); ok {
+		return x.Node
+	}
+	return nil
+}
+
+func (x *MetricId) GetWfSpecId() *WfSpecId {
+	if x, ok := x.GetReference().(*MetricId_WfSpecId); ok {
+		return x.WfSpecId
+	}
+	return nil
+}
+
+func (x *MetricId) GetThreadSpec() *ThreadSpecReference {
+	if x, ok := x.GetReference().(*MetricId_ThreadSpec); ok {
+		return x.ThreadSpec
+	}
+	return nil
 }
 
 func (x *MetricId) GetType() MetricType {
@@ -1142,6 +1293,34 @@ func (x *MetricId) GetType() MetricType {
 	}
 	return MetricType_COUNT
 }
+
+type isMetricId_Reference interface {
+	isMetricId_Reference()
+}
+
+type MetricId_Object struct {
+	Object MeasurableObject `protobuf:"varint,1,opt,name=object,proto3,enum=littlehorse.MeasurableObject,oneof"`
+}
+
+type MetricId_Node struct {
+	Node *NodeReference `protobuf:"bytes,2,opt,name=node,proto3,oneof"`
+}
+
+type MetricId_WfSpecId struct {
+	WfSpecId *WfSpecId `protobuf:"bytes,3,opt,name=wf_spec_id,json=wfSpecId,proto3,oneof"`
+}
+
+type MetricId_ThreadSpec struct {
+	ThreadSpec *ThreadSpecReference `protobuf:"bytes,4,opt,name=thread_spec,json=threadSpec,proto3,oneof"`
+}
+
+func (*MetricId_Object) isMetricId_Reference() {}
+
+func (*MetricId_Node) isMetricId_Reference() {}
+
+func (*MetricId_WfSpecId) isMetricId_Reference() {}
+
+func (*MetricId_ThreadSpec) isMetricId_Reference() {}
 
 type MetricRunId struct {
 	state         protoimpl.MessageState
@@ -1155,7 +1334,7 @@ type MetricRunId struct {
 func (x *MetricRunId) Reset() {
 	*x = MetricRunId{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_object_id_proto_msgTypes[19]
+		mi := &file_object_id_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1168,7 +1347,7 @@ func (x *MetricRunId) String() string {
 func (*MetricRunId) ProtoMessage() {}
 
 func (x *MetricRunId) ProtoReflect() protoreflect.Message {
-	mi := &file_object_id_proto_msgTypes[19]
+	mi := &file_object_id_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1181,7 +1360,7 @@ func (x *MetricRunId) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MetricRunId.ProtoReflect.Descriptor instead.
 func (*MetricRunId) Descriptor() ([]byte, []int) {
-	return file_object_id_proto_rawDescGZIP(), []int{19}
+	return file_object_id_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *MetricRunId) GetMetricId() *MetricId {
@@ -1318,14 +1497,46 @@ var file_object_id_proto_rawDesc = []byte{
 	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x22, 0x0a, 0x10, 0x53,
 	0x63, 0x68, 0x65, 0x64, 0x75, 0x6c, 0x65, 0x64, 0x57, 0x66, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x12,
 	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22,
-	0x76, 0x0a, 0x08, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x49, 0x64, 0x12, 0x3d, 0x0a, 0x0a, 0x6d,
-	0x65, 0x61, 0x73, 0x75, 0x72, 0x61, 0x62, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32,
-	0x1d, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4d, 0x65,
-	0x61, 0x73, 0x75, 0x72, 0x61, 0x62, 0x6c, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x0a,
-	0x6d, 0x65, 0x61, 0x73, 0x75, 0x72, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x2b, 0x0a, 0x04, 0x74, 0x79,
-	0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x17, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c,
-	0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x54, 0x79, 0x70,
-	0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x22, 0x80, 0x01, 0x0a, 0x0b, 0x4d, 0x65, 0x74, 0x72,
+	0xbe, 0x01, 0x0a, 0x0d, 0x4e, 0x6f, 0x64, 0x65, 0x52, 0x65, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63,
+	0x65, 0x12, 0x41, 0x0a, 0x0b, 0x74, 0x68, 0x72, 0x65, 0x61, 0x64, 0x5f, 0x73, 0x70, 0x65, 0x63,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68,
+	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x54, 0x68, 0x72, 0x65, 0x61, 0x64, 0x53, 0x70, 0x65, 0x63, 0x52,
+	0x65, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63, 0x65, 0x52, 0x0a, 0x74, 0x68, 0x72, 0x65, 0x61, 0x64,
+	0x53, 0x70, 0x65, 0x63, 0x12, 0x20, 0x0a, 0x09, 0x6e, 0x6f, 0x64, 0x65, 0x5f, 0x74, 0x79, 0x70,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x48, 0x00, 0x52, 0x08, 0x6e, 0x6f, 0x64, 0x65, 0x54,
+	0x79, 0x70, 0x65, 0x88, 0x01, 0x01, 0x12, 0x28, 0x0a, 0x0d, 0x6e, 0x6f, 0x64, 0x65, 0x5f, 0x70,
+	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x48, 0x01, 0x52,
+	0x0c, 0x6e, 0x6f, 0x64, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x88, 0x01, 0x01,
+	0x42, 0x0c, 0x0a, 0x0a, 0x5f, 0x6e, 0x6f, 0x64, 0x65, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x42, 0x10,
+	0x0a, 0x0e, 0x5f, 0x6e, 0x6f, 0x64, 0x65, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e,
+	0x22, 0x86, 0x01, 0x0a, 0x13, 0x54, 0x68, 0x72, 0x65, 0x61, 0x64, 0x53, 0x70, 0x65, 0x63, 0x52,
+	0x65, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63, 0x65, 0x12, 0x33, 0x0a, 0x0a, 0x77, 0x66, 0x5f, 0x73,
+	0x70, 0x65, 0x63, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x6c,
+	0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x57, 0x66, 0x53, 0x70, 0x65,
+	0x63, 0x49, 0x64, 0x52, 0x08, 0x77, 0x66, 0x53, 0x70, 0x65, 0x63, 0x49, 0x64, 0x12, 0x28, 0x0a,
+	0x0d, 0x74, 0x68, 0x72, 0x65, 0x61, 0x64, 0x5f, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x05, 0x48, 0x00, 0x52, 0x0c, 0x74, 0x68, 0x72, 0x65, 0x61, 0x64, 0x4e, 0x75,
+	0x6d, 0x62, 0x65, 0x72, 0x88, 0x01, 0x01, 0x42, 0x10, 0x0a, 0x0e, 0x5f, 0x74, 0x68, 0x72, 0x65,
+	0x61, 0x64, 0x5f, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x22, 0xab, 0x02, 0x0a, 0x08, 0x4d, 0x65,
+	0x74, 0x72, 0x69, 0x63, 0x49, 0x64, 0x12, 0x37, 0x0a, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1d, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68,
+	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4d, 0x65, 0x61, 0x73, 0x75, 0x72, 0x61, 0x62, 0x6c, 0x65, 0x4f,
+	0x62, 0x6a, 0x65, 0x63, 0x74, 0x48, 0x00, 0x52, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x12,
+	0x30, 0x0a, 0x04, 0x6e, 0x6f, 0x64, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e,
+	0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4e, 0x6f, 0x64, 0x65,
+	0x52, 0x65, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63, 0x65, 0x48, 0x00, 0x52, 0x04, 0x6e, 0x6f, 0x64,
+	0x65, 0x12, 0x35, 0x0a, 0x0a, 0x77, 0x66, 0x5f, 0x73, 0x70, 0x65, 0x63, 0x5f, 0x69, 0x64, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f,
+	0x72, 0x73, 0x65, 0x2e, 0x57, 0x66, 0x53, 0x70, 0x65, 0x63, 0x49, 0x64, 0x48, 0x00, 0x52, 0x08,
+	0x77, 0x66, 0x53, 0x70, 0x65, 0x63, 0x49, 0x64, 0x12, 0x43, 0x0a, 0x0b, 0x74, 0x68, 0x72, 0x65,
+	0x61, 0x64, 0x5f, 0x73, 0x70, 0x65, 0x63, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e,
+	0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x54, 0x68, 0x72, 0x65,
+	0x61, 0x64, 0x53, 0x70, 0x65, 0x63, 0x52, 0x65, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63, 0x65, 0x48,
+	0x00, 0x52, 0x0a, 0x74, 0x68, 0x72, 0x65, 0x61, 0x64, 0x53, 0x70, 0x65, 0x63, 0x12, 0x2b, 0x0a,
+	0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x17, 0x2e, 0x6c, 0x69,
+	0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63,
+	0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x42, 0x0b, 0x0a, 0x09, 0x72, 0x65,
+	0x66, 0x65, 0x72, 0x65, 0x6e, 0x63, 0x65, 0x22, 0x80, 0x01, 0x0a, 0x0b, 0x4d, 0x65, 0x74, 0x72,
 	0x69, 0x63, 0x52, 0x75, 0x6e, 0x49, 0x64, 0x12, 0x32, 0x0a, 0x09, 0x6d, 0x65, 0x74, 0x72, 0x69,
 	0x63, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x6c, 0x69, 0x74,
 	0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x49,
@@ -1354,7 +1565,7 @@ func file_object_id_proto_rawDescGZIP() []byte {
 	return file_object_id_proto_rawDescData
 }
 
-var file_object_id_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
+var file_object_id_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_object_id_proto_goTypes = []interface{}{
 	(*WfSpecId)(nil),              // 0: littlehorse.WfSpecId
 	(*TaskDefId)(nil),             // 1: littlehorse.TaskDefId
@@ -1374,12 +1585,14 @@ var file_object_id_proto_goTypes = []interface{}{
 	(*PrincipalId)(nil),           // 15: littlehorse.PrincipalId
 	(*TenantId)(nil),              // 16: littlehorse.TenantId
 	(*ScheduledWfRunId)(nil),      // 17: littlehorse.ScheduledWfRunId
-	(*MetricId)(nil),              // 18: littlehorse.MetricId
-	(*MetricRunId)(nil),           // 19: littlehorse.MetricRunId
-	(*timestamppb.Timestamp)(nil), // 20: google.protobuf.Timestamp
-	(MetricsWindowLength)(0),      // 21: littlehorse.MetricsWindowLength
-	(MeasurableObject)(0),         // 22: littlehorse.MeasurableObject
-	(MetricType)(0),               // 23: littlehorse.MetricType
+	(*NodeReference)(nil),         // 18: littlehorse.NodeReference
+	(*ThreadSpecReference)(nil),   // 19: littlehorse.ThreadSpecReference
+	(*MetricId)(nil),              // 20: littlehorse.MetricId
+	(*MetricRunId)(nil),           // 21: littlehorse.MetricRunId
+	(*timestamppb.Timestamp)(nil), // 22: google.protobuf.Timestamp
+	(MetricsWindowLength)(0),      // 23: littlehorse.MetricsWindowLength
+	(MeasurableObject)(0),         // 24: littlehorse.MeasurableObject
+	(MetricType)(0),               // 25: littlehorse.MetricType
 }
 var file_object_id_proto_depIdxs = []int32{
 	1,  // 0: littlehorse.TaskWorkerGroupId.task_def_id:type_name -> littlehorse.TaskDefId
@@ -1392,21 +1605,26 @@ var file_object_id_proto_depIdxs = []int32{
 	4,  // 7: littlehorse.WorkflowEventId.workflow_event_def_id:type_name -> littlehorse.WorkflowEventDefId
 	8,  // 8: littlehorse.TaskRunId.wf_run_id:type_name -> littlehorse.WfRunId
 	8,  // 9: littlehorse.UserTaskRunId.wf_run_id:type_name -> littlehorse.WfRunId
-	20, // 10: littlehorse.TaskDefMetricsId.window_start:type_name -> google.protobuf.Timestamp
-	21, // 11: littlehorse.TaskDefMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
+	22, // 10: littlehorse.TaskDefMetricsId.window_start:type_name -> google.protobuf.Timestamp
+	23, // 11: littlehorse.TaskDefMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
 	1,  // 12: littlehorse.TaskDefMetricsId.task_def_id:type_name -> littlehorse.TaskDefId
-	20, // 13: littlehorse.WfSpecMetricsId.window_start:type_name -> google.protobuf.Timestamp
-	21, // 14: littlehorse.WfSpecMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
+	22, // 13: littlehorse.WfSpecMetricsId.window_start:type_name -> google.protobuf.Timestamp
+	23, // 14: littlehorse.WfSpecMetricsId.window_type:type_name -> littlehorse.MetricsWindowLength
 	0,  // 15: littlehorse.WfSpecMetricsId.wf_spec_id:type_name -> littlehorse.WfSpecId
-	22, // 16: littlehorse.MetricId.measurable:type_name -> littlehorse.MeasurableObject
-	23, // 17: littlehorse.MetricId.type:type_name -> littlehorse.MetricType
-	18, // 18: littlehorse.MetricRunId.metric_id:type_name -> littlehorse.MetricId
-	20, // 19: littlehorse.MetricRunId.window_start:type_name -> google.protobuf.Timestamp
-	20, // [20:20] is the sub-list for method output_type
-	20, // [20:20] is the sub-list for method input_type
-	20, // [20:20] is the sub-list for extension type_name
-	20, // [20:20] is the sub-list for extension extendee
-	0,  // [0:20] is the sub-list for field type_name
+	19, // 16: littlehorse.NodeReference.thread_spec:type_name -> littlehorse.ThreadSpecReference
+	0,  // 17: littlehorse.ThreadSpecReference.wf_spec_id:type_name -> littlehorse.WfSpecId
+	24, // 18: littlehorse.MetricId.object:type_name -> littlehorse.MeasurableObject
+	18, // 19: littlehorse.MetricId.node:type_name -> littlehorse.NodeReference
+	0,  // 20: littlehorse.MetricId.wf_spec_id:type_name -> littlehorse.WfSpecId
+	19, // 21: littlehorse.MetricId.thread_spec:type_name -> littlehorse.ThreadSpecReference
+	25, // 22: littlehorse.MetricId.type:type_name -> littlehorse.MetricType
+	20, // 23: littlehorse.MetricRunId.metric_id:type_name -> littlehorse.MetricId
+	22, // 24: littlehorse.MetricRunId.window_start:type_name -> google.protobuf.Timestamp
+	25, // [25:25] is the sub-list for method output_type
+	25, // [25:25] is the sub-list for method input_type
+	25, // [25:25] is the sub-list for extension type_name
+	25, // [25:25] is the sub-list for extension extendee
+	0,  // [0:25] is the sub-list for field type_name
 }
 
 func init() { file_object_id_proto_init() }
@@ -1633,7 +1851,7 @@ func file_object_id_proto_init() {
 			}
 		}
 		file_object_id_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MetricId); i {
+			switch v := v.(*NodeReference); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1645,6 +1863,30 @@ func file_object_id_proto_init() {
 			}
 		}
 		file_object_id_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ThreadSpecReference); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_object_id_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MetricId); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_object_id_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MetricRunId); i {
 			case 0:
 				return &v.state
@@ -1658,13 +1900,21 @@ func file_object_id_proto_init() {
 		}
 	}
 	file_object_id_proto_msgTypes[8].OneofWrappers = []interface{}{}
+	file_object_id_proto_msgTypes[18].OneofWrappers = []interface{}{}
+	file_object_id_proto_msgTypes[19].OneofWrappers = []interface{}{}
+	file_object_id_proto_msgTypes[20].OneofWrappers = []interface{}{
+		(*MetricId_Object)(nil),
+		(*MetricId_Node)(nil),
+		(*MetricId_WfSpecId)(nil),
+		(*MetricId_ThreadSpec)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_object_id_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   20,
+			NumMessages:   22,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

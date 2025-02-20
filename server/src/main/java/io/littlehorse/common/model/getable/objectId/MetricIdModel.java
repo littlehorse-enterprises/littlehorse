@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.MetadataId;
 import io.littlehorse.common.model.getable.global.metrics.MetricModel;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -17,26 +18,65 @@ import lombok.Getter;
 @Getter
 public class MetricIdModel extends MetadataId<MetricId, Metric, MetricModel> {
 
-    private MeasurableObject measurable;
+    private MeasurableObject object;
+    private NodeReferenceModel nodeReference;
+    private WfSpecIdModel wfSpecId;
+    private ThreadSpecReferenceModel threadSpecReference;
     private MetricType metricType;
 
     public MetricIdModel() {}
 
-    public MetricIdModel(MeasurableObject measurable, MetricType type) {
-        this.measurable = measurable;
+    public MetricIdModel(MeasurableObject object, MetricType type) {
+        this.object = object;
+        this.metricType = type;
+    }
+
+    public MetricIdModel(NodeReferenceModel nodeReference, MetricType type) {
+        this.nodeReference = nodeReference;
+        this.metricType = type;
+    }
+
+    public MetricIdModel(WfSpecIdModel wfSpecId, MetricType type) {
+        this.wfSpecId = wfSpecId;
+        this.metricType = type;
+    }
+
+    public MetricIdModel(ThreadSpecReferenceModel threadSpecReference, MetricType type) {
+        this.threadSpecReference = threadSpecReference;
         this.metricType = type;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         MetricId p = (MetricId) proto;
-        this.measurable = p.getMeasurable();
+        this.object = p.hasObject() ? p.getObject() : null;
+        this.nodeReference =
+                p.hasNode() ? LHSerializable.fromProto(p.getNode(), NodeReferenceModel.class, context) : null;
+        this.threadSpecReference = p.hasThreadSpec()
+                ? LHSerializable.fromProto(p.getThreadSpec(), ThreadSpecReferenceModel.class, context)
+                : null;
+        this.wfSpecId =
+                p.hasWfSpecId() ? LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context) : null;
         this.metricType = p.getType();
     }
 
     @Override
     public MetricId.Builder toProto() {
-        return MetricId.newBuilder().setMeasurable(measurable).setType(metricType);
+        MetricId.Builder out = MetricId.newBuilder();
+        if (object != null) {
+            out.setObject(object);
+        }
+        if (nodeReference != null) {
+            out.setNode(nodeReference.toProto());
+        }
+        if (threadSpecReference != null) {
+            out.setThreadSpec(threadSpecReference.toProto());
+        }
+        if (wfSpecId != null) {
+            out.setWfSpecId(wfSpecId.toProto());
+        }
+        out.setType(metricType);
+        return out;
     }
 
     @Override
