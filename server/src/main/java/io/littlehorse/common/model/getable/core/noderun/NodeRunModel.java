@@ -37,7 +37,9 @@ import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.GetableUpdates;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -432,6 +434,11 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     public boolean checkIfProcessingCompleted(ProcessorExecutionContext processorContext) throws NodeFailureException {
         boolean completed;
         try {
+            Duration latency = Duration.between(arrivalTime.toInstant(), new Date().toInstant());
+            processorContext
+                    .getableUpdates()
+                    .dispatch(new GetableUpdates.NodeRunCompleteUpdate(
+                            processorContext.authorization().tenantId(), getNodeType(), latency));
             completed = getSubNodeRun().checkIfProcessingCompleted(processorContext);
         } catch (NodeFailureException exn) {
             failures.add(exn.getFailure());

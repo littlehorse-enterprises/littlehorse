@@ -44,7 +44,7 @@ if [[ ${dashboard} = true ]]; then
     npm install
     npm run build
     cd ..
-    docker build -t littlehorse/lh-dashboard:latest -f docker/dashboard/Dockerfile .
+    docker build -t littlehorse/lh-dashboard:latest --platform linux/amd64,linux/arm64 -f docker/dashboard/Dockerfile .
 fi
 
 if [[ ${canary} = true ]]; then
@@ -56,7 +56,7 @@ fi
 if [[ ${server} = true ]]; then
     echo "Building lh-server"
     ./gradlew server:shadowJar -x test -x spotlessJavaCheck
-    docker build -t littlehorse/lh-server:latest -f docker/server/Dockerfile .
+    docker build --platform linux/amd64,linux/arm64 -t littlehorse/lh-server:latest -f docker/server/Dockerfile .
 fi
 
 if [[ ${standalone} = true ]]; then

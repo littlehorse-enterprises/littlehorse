@@ -49,10 +49,21 @@ private static final long serialVersionUID = 0L;
     return value_;
   }
 
-  public static final int WINDOW_START_FIELD_NUMBER = 2;
+  public static final int NUMBER_OF_SAMPLES_FIELD_NUMBER = 2;
+  private double numberOfSamples_ = 0D;
+  /**
+   * <code>double number_of_samples = 2;</code>
+   * @return The numberOfSamples.
+   */
+  @java.lang.Override
+  public double getNumberOfSamples() {
+    return numberOfSamples_;
+  }
+
+  public static final int WINDOW_START_FIELD_NUMBER = 3;
   private com.google.protobuf.Timestamp windowStart_;
   /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>.google.protobuf.Timestamp window_start = 3;</code>
    * @return Whether the windowStart field is set.
    */
   @java.lang.Override
@@ -60,7 +71,7 @@ private static final long serialVersionUID = 0L;
     return windowStart_ != null;
   }
   /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>.google.protobuf.Timestamp window_start = 3;</code>
    * @return The windowStart.
    */
   @java.lang.Override
@@ -68,7 +79,7 @@ private static final long serialVersionUID = 0L;
     return windowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : windowStart_;
   }
   /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>.google.protobuf.Timestamp window_start = 3;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder() {
@@ -92,8 +103,11 @@ private static final long serialVersionUID = 0L;
     if (java.lang.Double.doubleToRawLongBits(value_) != 0) {
       output.writeDouble(1, value_);
     }
+    if (java.lang.Double.doubleToRawLongBits(numberOfSamples_) != 0) {
+      output.writeDouble(2, numberOfSamples_);
+    }
     if (windowStart_ != null) {
-      output.writeMessage(2, getWindowStart());
+      output.writeMessage(3, getWindowStart());
     }
     getUnknownFields().writeTo(output);
   }
@@ -108,9 +122,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeDoubleSize(1, value_);
     }
+    if (java.lang.Double.doubleToRawLongBits(numberOfSamples_) != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeDoubleSize(2, numberOfSamples_);
+    }
     if (windowStart_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getWindowStart());
+        .computeMessageSize(3, getWindowStart());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -130,6 +148,9 @@ private static final long serialVersionUID = 0L;
     if (java.lang.Double.doubleToLongBits(getValue())
         != java.lang.Double.doubleToLongBits(
             other.getValue())) return false;
+    if (java.lang.Double.doubleToLongBits(getNumberOfSamples())
+        != java.lang.Double.doubleToLongBits(
+            other.getNumberOfSamples())) return false;
     if (hasWindowStart() != other.hasWindowStart()) return false;
     if (hasWindowStart()) {
       if (!getWindowStart()
@@ -149,6 +170,9 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + VALUE_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         java.lang.Double.doubleToLongBits(getValue()));
+    hash = (37 * hash) + NUMBER_OF_SAMPLES_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        java.lang.Double.doubleToLongBits(getNumberOfSamples()));
     if (hasWindowStart()) {
       hash = (37 * hash) + WINDOW_START_FIELD_NUMBER;
       hash = (53 * hash) + getWindowStart().hashCode();
@@ -285,6 +309,7 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       value_ = 0D;
+      numberOfSamples_ = 0D;
       windowStart_ = null;
       if (windowStartBuilder_ != null) {
         windowStartBuilder_.dispose();
@@ -327,6 +352,9 @@ private static final long serialVersionUID = 0L;
         result.value_ = value_;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.numberOfSamples_ = numberOfSamples_;
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.windowStart_ = windowStartBuilder_ == null
             ? windowStart_
             : windowStartBuilder_.build();
@@ -380,6 +408,9 @@ private static final long serialVersionUID = 0L;
       if (other.getValue() != 0D) {
         setValue(other.getValue());
       }
+      if (other.getNumberOfSamples() != 0D) {
+        setNumberOfSamples(other.getNumberOfSamples());
+      }
       if (other.hasWindowStart()) {
         mergeWindowStart(other.getWindowStart());
       }
@@ -414,13 +445,18 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 9
-            case 18: {
+            case 17: {
+              numberOfSamples_ = input.readDouble();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 17
+            case 26: {
               input.readMessage(
                   getWindowStartFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000004;
               break;
-            } // case 18
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -470,18 +506,50 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private double numberOfSamples_ ;
+    /**
+     * <code>double number_of_samples = 2;</code>
+     * @return The numberOfSamples.
+     */
+    @java.lang.Override
+    public double getNumberOfSamples() {
+      return numberOfSamples_;
+    }
+    /**
+     * <code>double number_of_samples = 2;</code>
+     * @param value The numberOfSamples to set.
+     * @return This builder for chaining.
+     */
+    public Builder setNumberOfSamples(double value) {
+
+      numberOfSamples_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>double number_of_samples = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearNumberOfSamples() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      numberOfSamples_ = 0D;
+      onChanged();
+      return this;
+    }
+
     private com.google.protobuf.Timestamp windowStart_;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> windowStartBuilder_;
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      * @return Whether the windowStart field is set.
      */
     public boolean hasWindowStart() {
-      return ((bitField0_ & 0x00000002) != 0);
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      * @return The windowStart.
      */
     public com.google.protobuf.Timestamp getWindowStart() {
@@ -492,7 +560,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      */
     public Builder setWindowStart(com.google.protobuf.Timestamp value) {
       if (windowStartBuilder_ == null) {
@@ -503,12 +571,12 @@ private static final long serialVersionUID = 0L;
       } else {
         windowStartBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      */
     public Builder setWindowStart(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -517,16 +585,16 @@ private static final long serialVersionUID = 0L;
       } else {
         windowStartBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      */
     public Builder mergeWindowStart(com.google.protobuf.Timestamp value) {
       if (windowStartBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
+        if (((bitField0_ & 0x00000004) != 0) &&
           windowStart_ != null &&
           windowStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getWindowStartBuilder().mergeFrom(value);
@@ -536,15 +604,15 @@ private static final long serialVersionUID = 0L;
       } else {
         windowStartBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      */
     public Builder clearWindowStart() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000004);
       windowStart_ = null;
       if (windowStartBuilder_ != null) {
         windowStartBuilder_.dispose();
@@ -554,15 +622,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      */
     public com.google.protobuf.Timestamp.Builder getWindowStartBuilder() {
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return getWindowStartFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder() {
       if (windowStartBuilder_ != null) {
@@ -573,7 +641,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 

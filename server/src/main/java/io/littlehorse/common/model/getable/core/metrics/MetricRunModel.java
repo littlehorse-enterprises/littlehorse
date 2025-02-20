@@ -13,6 +13,7 @@ import io.littlehorse.sdk.common.proto.MetricRun;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +26,8 @@ public class MetricRunModel extends RepartitionedGetable<MetricRun> {
 
     private MetricRunIdModel metricRunId;
     private Date createdAt;
-    private double value;
+    private Long count;
+    private Duration latencyAvg;
     private Map<Integer, Double> valuePerPartition = new HashMap<>();
 
     public MetricRunModel() {}
@@ -40,17 +42,28 @@ public class MetricRunModel extends RepartitionedGetable<MetricRun> {
         MetricRun p = (MetricRun) proto;
         this.metricRunId = LHSerializable.fromProto(p.getId(), MetricRunIdModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
-        this.value = p.getValue();
+        switch (p.getValueCase()) {
+            case COUNT -> this.count = p.getCount();
+            case LATENCY_AVG -> this.latencyAvg = Duration.ofMillis(p.getLatencyAvg());
+            default -> throw new IllegalStateException("Unexpected value: " + p.getValueCase());
+        }
         this.valuePerPartition = new HashMap<>(p.getValuePerPartitionMap());
     }
 
     @Override
     public MetricRun.Builder toProto() {
-        return MetricRun.newBuilder()
+        MetricRun.Builder out = MetricRun.newBuilder()
                 .setId(metricRunId.toProto())
                 .setCreatedAt(LHUtil.fromDate(createdAt))
-                .putAllValuePerPartition(valuePerPartition)
-                .setValue(value);
+                .putAllValuePerPartition(valuePerPartition);
+        if (count != null) {
+            out.setCount(count);
+        } else if (latencyAvg != null) {
+            out.setLatencyAvg(latencyAvg.toMillis());
+        } else {
+            throw new IllegalStateException("Unexpected metric value");
+        }
+        return out;
     }
 
     @Override
@@ -79,11 +92,34 @@ public class MetricRunModel extends RepartitionedGetable<MetricRun> {
     }
 
     public void mergePartitionMetric(RepartitionWindowedMetricModel repartitionMetric, Integer partition) {
-        valuePerPartition.put(partition, repartitionMetric.getValue());
+        double val = 0;
+        switch (metricRunId.getMetricId().getMetricType()) {
+            case COUNT -> val = valuePerPartition.values().stream()
+                    .mapToDouble(val2 -> val2)
+                    .sum();
+            case LATENCY -> {
+                val = repartitionMetric.getValue() / repartitionMetric.getNumberOfSamples();
+            }
+        }
+
+        valuePerPartition.put(partition, val);
         sumPartitionValues();
     }
 
     private void sumPartitionValues() {
-        value = valuePerPartition.values().stream().mapToDouble(val -> val).sum();
+        switch (metricRunId.getMetricId().getMetricType()) {
+            case COUNT -> count =
+                    valuePerPartition.values().stream().mapToLong(Math::round).sum();
+            case LATENCY -> {
+                double latency = valuePerPartition.values().stream()
+                        .mapToLong(Math::round)
+                        .average()
+                        .orElse(0);
+                this.latencyAvg = Duration.ofNanos(Math.round(latency));
+                log.info("Sum latency avg: {}", latencyAvg.toMillis());
+            }
+            default -> throw new IllegalStateException(
+                    "Unexpected value: " + metricRunId.getMetricId().getMetricType());
+        }
     }
 }

@@ -27,4 +27,10 @@ public interface PartitionWindowedMetricOrBuilder extends
    * <code>.google.protobuf.Timestamp window_start = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
+
+  /**
+   * <code>int64 number_of_samples = 3;</code>
+   * @return The numberOfSamples.
+   */
+  long getNumberOfSamples();
 }

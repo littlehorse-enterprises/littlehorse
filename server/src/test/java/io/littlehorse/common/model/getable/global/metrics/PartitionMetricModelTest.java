@@ -28,9 +28,9 @@ class PartitionMetricModelTest {
     void shouldGroupSamplesInASingleWindow() {
         PartitionMetricModel partitionMetric =
                 new PartitionMetricModel(workflowRunningMetricId, Duration.ofMinutes(1), testTenantId);
-        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
-        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
-        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
+        partitionMetric.incrementCurrentWindow(LocalDateTime.now(), 1);
+        partitionMetric.incrementCurrentWindow(LocalDateTime.now(), 1);
+        partitionMetric.incrementCurrentWindow(LocalDateTime.now(), 1);
         Set<PartitionWindowedMetricModel> activeWindows = partitionMetric.getActiveWindowedMetrics();
         assertThat(activeWindows).hasSize(1).allSatisfy(windowedMetric -> assertThat(windowedMetric.getValue())
                 .isEqualTo(3.0));
@@ -42,11 +42,11 @@ class PartitionMetricModelTest {
                 new PartitionMetricModel(workflowRunningMetricId, Duration.ofMinutes(1), testTenantId);
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime later = now.plusMinutes(2);
-        partitionMetric.incrementCurrentWindow(now);
-        partitionMetric.incrementCurrentWindow(now);
-        partitionMetric.incrementCurrentWindow(now);
-        partitionMetric.incrementCurrentWindow(later);
-        partitionMetric.incrementCurrentWindow(later);
+        partitionMetric.incrementCurrentWindow(now, 1);
+        partitionMetric.incrementCurrentWindow(now, 1);
+        partitionMetric.incrementCurrentWindow(now, 1);
+        partitionMetric.incrementCurrentWindow(later, 1);
+        partitionMetric.incrementCurrentWindow(later, 1);
         StoredGetable<PartitionMetric, PartitionMetricModel> storedGetable = new StoredGetable<>(partitionMetric);
         tenantScopedStore.put(storedGetable);
         partitionMetric = (PartitionMetricModel) tenantScopedStore
@@ -64,13 +64,13 @@ class PartitionMetricModelTest {
     void shouldBuildRepartitionCommand() {
         PartitionMetricModel partitionMetric =
                 new PartitionMetricModel(workflowRunningMetricId, Duration.ofMinutes(1), testTenantId);
-        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
-        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
-        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
-        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
-        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
-        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
-        partitionMetric.incrementCurrentWindow(LocalDateTime.now());
+        partitionMetric.incrementCurrentWindow(LocalDateTime.now(), 1);
+        partitionMetric.incrementCurrentWindow(LocalDateTime.now(), 1);
+        partitionMetric.incrementCurrentWindow(LocalDateTime.now(), 1);
+        partitionMetric.incrementCurrentWindow(LocalDateTime.now(), 1);
+        partitionMetric.incrementCurrentWindow(LocalDateTime.now(), 1);
+        partitionMetric.incrementCurrentWindow(LocalDateTime.now(), 1);
+        partitionMetric.incrementCurrentWindow(LocalDateTime.now(), 1);
         List<RepartitionWindowedMetricModel> windowedMetrics =
                 partitionMetric.buildRepartitionCommand(LocalDateTime.now());
         assertThat(windowedMetrics).isNotEmpty();
@@ -89,14 +89,14 @@ class PartitionMetricModelTest {
         LocalDateTime instant3 = instant2.plusDays(2);
         PartitionMetricModel partitionMetric =
                 new PartitionMetricModel(workflowRunningMetricId, Duration.ofMinutes(1), testTenantId);
-        partitionMetric.incrementCurrentWindow(instant1);
-        partitionMetric.incrementCurrentWindow(instant1);
+        partitionMetric.incrementCurrentWindow(instant1, 1);
+        partitionMetric.incrementCurrentWindow(instant1, 1);
         List<RepartitionWindowedMetricModel> windowedMetrics1 = partitionMetric.buildRepartitionCommand(instant1);
-        partitionMetric.incrementCurrentWindow(instant2);
-        partitionMetric.incrementCurrentWindow(instant2);
+        partitionMetric.incrementCurrentWindow(instant2, 1);
+        partitionMetric.incrementCurrentWindow(instant2, 1);
         List<RepartitionWindowedMetricModel> windowedMetrics2 = partitionMetric.buildRepartitionCommand(instant2);
-        partitionMetric.incrementCurrentWindow(instant3);
-        partitionMetric.incrementCurrentWindow(instant3);
+        partitionMetric.incrementCurrentWindow(instant3, 1);
+        partitionMetric.incrementCurrentWindow(instant3, 1);
         List<RepartitionWindowedMetricModel> windowedMetrics3 = partitionMetric.buildRepartitionCommand(instant3);
 
         assertThat(windowedMetrics1).hasSize(1);

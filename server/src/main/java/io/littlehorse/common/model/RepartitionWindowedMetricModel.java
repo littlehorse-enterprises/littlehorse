@@ -13,13 +13,15 @@ import lombok.Getter;
 public class RepartitionWindowedMetricModel extends LHSerializable<RepartitionWindowedMetric> {
 
     private double value;
+    private double numberOfSamples;
     private Date windowStart;
 
     public RepartitionWindowedMetricModel() {}
 
-    public RepartitionWindowedMetricModel(double value, Date windowStart) {
+    public RepartitionWindowedMetricModel(double value, double numberOfSamples, Date windowStart) {
         this.value = value;
         this.windowStart = windowStart;
+        this.numberOfSamples = numberOfSamples;
     }
 
     @Override
@@ -27,11 +29,15 @@ public class RepartitionWindowedMetricModel extends LHSerializable<RepartitionWi
         RepartitionWindowedMetric p = (RepartitionWindowedMetric) proto;
         this.value = p.getValue();
         this.windowStart = LHUtil.fromProtoTs(p.getWindowStart());
+        this.numberOfSamples = p.getNumberOfSamples();
     }
 
     @Override
     public RepartitionWindowedMetric.Builder toProto() {
-        return RepartitionWindowedMetric.newBuilder().setValue(value).setWindowStart(LHUtil.fromDate(windowStart));
+        return RepartitionWindowedMetric.newBuilder()
+                .setValue(value)
+                .setWindowStart(LHUtil.fromDate(windowStart))
+                .setNumberOfSamples(numberOfSamples);
     }
 
     @Override

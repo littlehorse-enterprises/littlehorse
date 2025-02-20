@@ -14,7 +14,6 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.MetricRun;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
-import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -95,9 +94,6 @@ public class AggregateMetricsModel extends LHSerializable<AggregateMetrics> impl
                 MetricRunModel metricRun = storedGetable.getStoredObject();
                 metricRun.mergePartitionMetric(windowedMetric, partitionId);
                 repartitionedStore.put(storedGetable);
-                var s = storedGetable.toProto().build();
-                StoredGetable<MetricRun, MetricRunModel> storedGetable1 = (StoredGetable<MetricRun, MetricRunModel>)
-                        LHSerializable.fromProto(s, StoredGetable.class, new BackgroundContext());
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);

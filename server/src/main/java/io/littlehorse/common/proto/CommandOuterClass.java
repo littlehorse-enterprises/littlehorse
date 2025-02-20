@@ -348,10 +348,11 @@ public final class CommandOuterClass {
       "ipal_id\030\006 \001(\0132\030.littlehorse.PrincipalIdH" +
       "\001\210\001\001B\014\n\n_tenant_idB\017\n\r_principal_id\"B\n\034D" +
       "eleteTaskWorkerGroupRequest\022\"\n\002id\030\001 \001(\0132" +
-      "\026.littlehorse.TaskDefId\"\\\n\031RepartitionWi" +
-      "ndowedMetric\022\r\n\005value\030\001 \001(\001\0220\n\014window_st" +
-      "art\030\002 \001(\0132\032.google.protobuf.TimestampB\037\n" +
-      "\033io.littlehorse.common.protoP\001b\006proto3"
+      "\026.littlehorse.TaskDefId\"w\n\031RepartitionWi" +
+      "ndowedMetric\022\r\n\005value\030\001 \001(\001\022\031\n\021number_of" +
+      "_samples\030\002 \001(\001\0220\n\014window_start\030\003 \001(\0132\032.g" +
+      "oogle.protobuf.TimestampB\037\n\033io.littlehor" +
+      "se.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -540,7 +541,7 @@ public final class CommandOuterClass {
     internal_static_littlehorse_RepartitionWindowedMetric_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_RepartitionWindowedMetric_descriptor,
-        new java.lang.String[] { "Value", "WindowStart", });
+        new java.lang.String[] { "Value", "NumberOfSamples", "WindowStart", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.Service.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();

@@ -12,7 +12,9 @@ import io.littlehorse.sdk.common.proto.MetricRunId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.Optional;
+import lombok.Getter;
 
+@Getter
 public class MetricRunIdModel extends RepartitionedId<MetricRunId, MetricRun, MetricRunModel> {
 
     private MetricIdModel metricId;

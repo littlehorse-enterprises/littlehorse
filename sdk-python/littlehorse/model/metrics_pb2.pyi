@@ -31,12 +31,14 @@ class PartitionMetric(_message.Message):
     def __init__(self, id: _Optional[_Union[PartitionMetricId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., active_windows: _Optional[_Iterable[_Union[PartitionWindowedMetric, _Mapping]]] = ..., window_length: _Optional[_Union[_duration_pb2.Duration, _Mapping]] = ...) -> None: ...
 
 class PartitionWindowedMetric(_message.Message):
-    __slots__ = ["value", "window_start"]
+    __slots__ = ["value", "window_start", "number_of_samples"]
     VALUE_FIELD_NUMBER: _ClassVar[int]
     WINDOW_START_FIELD_NUMBER: _ClassVar[int]
+    NUMBER_OF_SAMPLES_FIELD_NUMBER: _ClassVar[int]
     value: float
     window_start: _timestamp_pb2.Timestamp
-    def __init__(self, value: _Optional[float] = ..., window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    number_of_samples: int
+    def __init__(self, value: _Optional[float] = ..., window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., number_of_samples: _Optional[int] = ...) -> None: ...
 
 class PartitionMetricId(_message.Message):
     __slots__ = ["id", "tenant_id"]
@@ -47,7 +49,7 @@ class PartitionMetricId(_message.Message):
     def __init__(self, id: _Optional[_Union[_object_id_pb2.MetricId, _Mapping]] = ..., tenant_id: _Optional[_Union[_object_id_pb2.TenantId, _Mapping]] = ...) -> None: ...
 
 class MetricRun(_message.Message):
-    __slots__ = ["id", "value", "created_at", "value_per_partition"]
+    __slots__ = ["id", "count", "latency_avg", "created_at", "value_per_partition"]
     class ValuePerPartitionEntry(_message.Message):
         __slots__ = ["key", "value"]
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -56,11 +58,13 @@ class MetricRun(_message.Message):
         value: float
         def __init__(self, key: _Optional[int] = ..., value: _Optional[float] = ...) -> None: ...
     ID_FIELD_NUMBER: _ClassVar[int]
-    VALUE_FIELD_NUMBER: _ClassVar[int]
+    COUNT_FIELD_NUMBER: _ClassVar[int]
+    LATENCY_AVG_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     VALUE_PER_PARTITION_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.MetricRunId
-    value: float
+    count: int
+    latency_avg: int
     created_at: _timestamp_pb2.Timestamp
     value_per_partition: _containers.ScalarMap[int, float]
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.MetricRunId, _Mapping]] = ..., value: _Optional[float] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., value_per_partition: _Optional[_Mapping[int, float]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.MetricRunId, _Mapping]] = ..., count: _Optional[int] = ..., latency_avg: _Optional[int] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., value_per_partition: _Optional[_Mapping[int, float]] = ...) -> None: ...

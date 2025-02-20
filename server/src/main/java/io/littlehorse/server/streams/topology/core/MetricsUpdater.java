@@ -47,12 +47,20 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
             maybeIncrementCountMetric(
                     wfRunEvent,
                     () -> wfRunEvent.getNewStatus().equals(LHStatus.COMPLETED),
-                    new MetricIdModel(MeasurableObject.WORKFLOW, MetricType.COUNT));
+                    new MetricIdModel(MeasurableObject.WORKFLOW, MetricType.COUNT),
+                    1);
         } else if (statusUpdate instanceof GetableUpdates.TaskRunStatusUpdate taskUpdate) {
             maybeIncrementCountMetric(
                     taskUpdate,
                     () -> taskUpdate.getNewStatus().equals(TaskStatus.TASK_SUCCESS),
-                    new MetricIdModel(MeasurableObject.TASK, MetricType.COUNT));
+                    new MetricIdModel(MeasurableObject.TASK, MetricType.COUNT),
+                    1);
+        } else if (statusUpdate instanceof GetableUpdates.NodeRunCompleteUpdate nodeRunCompleteUpdate) {
+            maybeIncrementCountMetric(
+                    nodeRunCompleteUpdate,
+                    () -> true,
+                    new MetricIdModel(MeasurableObject.TASK, MetricType.LATENCY),
+                    nodeRunCompleteUpdate.getLatency().getNano());
         } else {
             throw new IllegalArgumentException("Status Update %s not supported yet"
                     .formatted(statusUpdate.getClass().getSimpleName()));
@@ -61,7 +69,7 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
     }
 
     private <T extends GetableStatusUpdate> void maybeIncrementCountMetric(
-            T statusUpdate, Supplier<Boolean> condition, MetadataId<?, ?, ?> metadataId) {
+            T statusUpdate, Supplier<Boolean> condition, MetadataId<?, ?, ?> metadataId, double value) {
         if (condition.get()) {
             Supplier<Optional<StoredGetable<Metric, MetricModel>>> metricSupplier =
                     () -> Optional.ofNullable(metadataStore.get(metadataId.getStoreableKey(), StoredGetable.class));
@@ -79,7 +87,7 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
                     partitionMetricInventory = new PartitionMetricInventoryModel();
                 }
                 PartitionMetricModel partitionMetric = getable.getStoredObject();
-                partitionMetric.incrementCurrentWindow(LocalDateTime.now());
+                partitionMetric.incrementCurrentWindow(LocalDateTime.now(), value);
                 boolean added = partitionMetricInventory.addMetric(partitionMetric.getObjectId());
                 if (added) {
                     clusterScopedCoreStore.put(partitionMetricInventory);

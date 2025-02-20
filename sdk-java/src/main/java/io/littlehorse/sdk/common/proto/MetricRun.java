@@ -50,6 +50,48 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.MetricRun.class, io.littlehorse.sdk.common.proto.MetricRun.Builder.class);
   }
 
+  private int valueCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object value_;
+  public enum ValueCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    COUNT(2),
+    LATENCY_AVG(3),
+    VALUE_NOT_SET(0);
+    private final int value;
+    private ValueCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static ValueCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static ValueCase forNumber(int value) {
+      switch (value) {
+        case 2: return COUNT;
+        case 3: return LATENCY_AVG;
+        case 0: return VALUE_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public ValueCase
+  getValueCase() {
+    return ValueCase.forNumber(
+        valueCase_);
+  }
+
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.MetricRunId id_;
   /**
@@ -76,15 +118,46 @@ private static final long serialVersionUID = 0L;
     return id_ == null ? io.littlehorse.sdk.common.proto.MetricRunId.getDefaultInstance() : id_;
   }
 
-  public static final int VALUE_FIELD_NUMBER = 2;
-  private double value_ = 0D;
+  public static final int COUNT_FIELD_NUMBER = 2;
   /**
-   * <code>double value = 2;</code>
-   * @return The value.
+   * <code>int64 count = 2;</code>
+   * @return Whether the count field is set.
    */
   @java.lang.Override
-  public double getValue() {
-    return value_;
+  public boolean hasCount() {
+    return valueCase_ == 2;
+  }
+  /**
+   * <code>int64 count = 2;</code>
+   * @return The count.
+   */
+  @java.lang.Override
+  public long getCount() {
+    if (valueCase_ == 2) {
+      return (java.lang.Long) value_;
+    }
+    return 0L;
+  }
+
+  public static final int LATENCY_AVG_FIELD_NUMBER = 3;
+  /**
+   * <code>int64 latency_avg = 3;</code>
+   * @return Whether the latencyAvg field is set.
+   */
+  @java.lang.Override
+  public boolean hasLatencyAvg() {
+    return valueCase_ == 3;
+  }
+  /**
+   * <code>int64 latency_avg = 3;</code>
+   * @return The latencyAvg.
+   */
+  @java.lang.Override
+  public long getLatencyAvg() {
+    if (valueCase_ == 3) {
+      return (java.lang.Long) value_;
+    }
+    return 0L;
   }
 
   public static final int CREATED_AT_FIELD_NUMBER = 4;
@@ -207,8 +280,13 @@ private static final long serialVersionUID = 0L;
     if (id_ != null) {
       output.writeMessage(1, getId());
     }
-    if (java.lang.Double.doubleToRawLongBits(value_) != 0) {
-      output.writeDouble(2, value_);
+    if (valueCase_ == 2) {
+      output.writeInt64(
+          2, (long)((java.lang.Long) value_));
+    }
+    if (valueCase_ == 3) {
+      output.writeInt64(
+          3, (long)((java.lang.Long) value_));
     }
     if (createdAt_ != null) {
       output.writeMessage(4, getCreatedAt());
@@ -232,9 +310,15 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getId());
     }
-    if (java.lang.Double.doubleToRawLongBits(value_) != 0) {
+    if (valueCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
-        .computeDoubleSize(2, value_);
+        .computeInt64Size(
+            2, (long)((java.lang.Long) value_));
+    }
+    if (valueCase_ == 3) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(
+            3, (long)((java.lang.Long) value_));
     }
     if (createdAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
@@ -270,9 +354,6 @@ private static final long serialVersionUID = 0L;
       if (!getId()
           .equals(other.getId())) return false;
     }
-    if (java.lang.Double.doubleToLongBits(getValue())
-        != java.lang.Double.doubleToLongBits(
-            other.getValue())) return false;
     if (hasCreatedAt() != other.hasCreatedAt()) return false;
     if (hasCreatedAt()) {
       if (!getCreatedAt()
@@ -280,6 +361,19 @@ private static final long serialVersionUID = 0L;
     }
     if (!internalGetValuePerPartition().equals(
         other.internalGetValuePerPartition())) return false;
+    if (!getValueCase().equals(other.getValueCase())) return false;
+    switch (valueCase_) {
+      case 2:
+        if (getCount()
+            != other.getCount()) return false;
+        break;
+      case 3:
+        if (getLatencyAvg()
+            != other.getLatencyAvg()) return false;
+        break;
+      case 0:
+      default:
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -295,9 +389,6 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId().hashCode();
     }
-    hash = (37 * hash) + VALUE_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-        java.lang.Double.doubleToLongBits(getValue()));
     if (hasCreatedAt()) {
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
@@ -305,6 +396,20 @@ private static final long serialVersionUID = 0L;
     if (!internalGetValuePerPartition().getMap().isEmpty()) {
       hash = (37 * hash) + VALUE_PER_PARTITION_FIELD_NUMBER;
       hash = (53 * hash) + internalGetValuePerPartition().hashCode();
+    }
+    switch (valueCase_) {
+      case 2:
+        hash = (37 * hash) + COUNT_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getCount());
+        break;
+      case 3:
+        hash = (37 * hash) + LATENCY_AVG_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getLatencyAvg());
+        break;
+      case 0:
+      default:
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -464,13 +569,14 @@ private static final long serialVersionUID = 0L;
         idBuilder_.dispose();
         idBuilder_ = null;
       }
-      value_ = 0D;
       createdAt_ = null;
       if (createdAtBuilder_ != null) {
         createdAtBuilder_.dispose();
         createdAtBuilder_ = null;
       }
       internalGetMutableValuePerPartition().clear();
+      valueCase_ = 0;
+      value_ = null;
       return this;
     }
 
@@ -498,6 +604,7 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.MetricRun buildPartial() {
       io.littlehorse.sdk.common.proto.MetricRun result = new io.littlehorse.sdk.common.proto.MetricRun(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
@@ -509,18 +616,20 @@ private static final long serialVersionUID = 0L;
             ? id_
             : idBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.value_ = value_;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
+      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.createdAt_ = createdAtBuilder_ == null
             ? createdAt_
             : createdAtBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
+      if (((from_bitField0_ & 0x00000010) != 0)) {
         result.valuePerPartition_ = internalGetValuePerPartition();
         result.valuePerPartition_.makeImmutable();
       }
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.MetricRun result) {
+      result.valueCase_ = valueCase_;
+      result.value_ = this.value_;
     }
 
     @java.lang.Override
@@ -570,15 +679,25 @@ private static final long serialVersionUID = 0L;
       if (other.hasId()) {
         mergeId(other.getId());
       }
-      if (other.getValue() != 0D) {
-        setValue(other.getValue());
-      }
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
       }
       internalGetMutableValuePerPartition().mergeFrom(
           other.internalGetValuePerPartition());
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
+      switch (other.getValueCase()) {
+        case COUNT: {
+          setCount(other.getCount());
+          break;
+        }
+        case LATENCY_AVG: {
+          setLatencyAvg(other.getLatencyAvg());
+          break;
+        }
+        case VALUE_NOT_SET: {
+          break;
+        }
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -612,16 +731,21 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 17: {
-              value_ = input.readDouble();
-              bitField0_ |= 0x00000002;
+            case 16: {
+              value_ = input.readInt64();
+              valueCase_ = 2;
               break;
-            } // case 17
+            } // case 16
+            case 24: {
+              value_ = input.readInt64();
+              valueCase_ = 3;
+              break;
+            } // case 24
             case 34: {
               input.readMessage(
                   getCreatedAtFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000008;
               break;
             } // case 34
             case 42: {
@@ -630,7 +754,7 @@ private static final long serialVersionUID = 0L;
                   ValuePerPartitionDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               internalGetMutableValuePerPartition().getMutableMap().put(
                   valuePerPartition__.getKey(), valuePerPartition__.getValue());
-              bitField0_ |= 0x00000008;
+              bitField0_ |= 0x00000010;
               break;
             } // case 42
             default: {
@@ -648,6 +772,21 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int valueCase_ = 0;
+    private java.lang.Object value_;
+    public ValueCase
+        getValueCase() {
+      return ValueCase.forNumber(
+          valueCase_);
+    }
+
+    public Builder clearValue() {
+      valueCase_ = 0;
+      value_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
     private io.littlehorse.sdk.common.proto.MetricRunId id_;
@@ -769,35 +908,87 @@ private static final long serialVersionUID = 0L;
       return idBuilder_;
     }
 
-    private double value_ ;
     /**
-     * <code>double value = 2;</code>
-     * @return The value.
+     * <code>int64 count = 2;</code>
+     * @return Whether the count field is set.
      */
-    @java.lang.Override
-    public double getValue() {
-      return value_;
+    public boolean hasCount() {
+      return valueCase_ == 2;
     }
     /**
-     * <code>double value = 2;</code>
-     * @param value The value to set.
+     * <code>int64 count = 2;</code>
+     * @return The count.
+     */
+    public long getCount() {
+      if (valueCase_ == 2) {
+        return (java.lang.Long) value_;
+      }
+      return 0L;
+    }
+    /**
+     * <code>int64 count = 2;</code>
+     * @param value The count to set.
      * @return This builder for chaining.
      */
-    public Builder setValue(double value) {
+    public Builder setCount(long value) {
 
+      valueCase_ = 2;
       value_ = value;
-      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>double value = 2;</code>
+     * <code>int64 count = 2;</code>
      * @return This builder for chaining.
      */
-    public Builder clearValue() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      value_ = 0D;
+    public Builder clearCount() {
+      if (valueCase_ == 2) {
+        valueCase_ = 0;
+        value_ = null;
+        onChanged();
+      }
+      return this;
+    }
+
+    /**
+     * <code>int64 latency_avg = 3;</code>
+     * @return Whether the latencyAvg field is set.
+     */
+    public boolean hasLatencyAvg() {
+      return valueCase_ == 3;
+    }
+    /**
+     * <code>int64 latency_avg = 3;</code>
+     * @return The latencyAvg.
+     */
+    public long getLatencyAvg() {
+      if (valueCase_ == 3) {
+        return (java.lang.Long) value_;
+      }
+      return 0L;
+    }
+    /**
+     * <code>int64 latency_avg = 3;</code>
+     * @param value The latencyAvg to set.
+     * @return This builder for chaining.
+     */
+    public Builder setLatencyAvg(long value) {
+
+      valueCase_ = 3;
+      value_ = value;
       onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 latency_avg = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearLatencyAvg() {
+      if (valueCase_ == 3) {
+        valueCase_ = 0;
+        value_ = null;
+        onChanged();
+      }
       return this;
     }
 
@@ -809,7 +1000,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the createdAt field is set.
      */
     public boolean hasCreatedAt() {
-      return ((bitField0_ & 0x00000004) != 0);
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <code>.google.protobuf.Timestamp created_at = 4;</code>
@@ -834,7 +1025,7 @@ private static final long serialVersionUID = 0L;
       } else {
         createdAtBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -848,7 +1039,7 @@ private static final long serialVersionUID = 0L;
       } else {
         createdAtBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -857,7 +1048,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
       if (createdAtBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0) &&
+        if (((bitField0_ & 0x00000008) != 0) &&
           createdAt_ != null &&
           createdAt_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getCreatedAtBuilder().mergeFrom(value);
@@ -867,7 +1058,7 @@ private static final long serialVersionUID = 0L;
       } else {
         createdAtBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -875,7 +1066,7 @@ private static final long serialVersionUID = 0L;
      * <code>.google.protobuf.Timestamp created_at = 4;</code>
      */
     public Builder clearCreatedAt() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000008);
       createdAt_ = null;
       if (createdAtBuilder_ != null) {
         createdAtBuilder_.dispose();
@@ -888,7 +1079,7 @@ private static final long serialVersionUID = 0L;
      * <code>.google.protobuf.Timestamp created_at = 4;</code>
      */
     public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return getCreatedAtFieldBuilder().getBuilder();
     }
@@ -939,7 +1130,7 @@ private static final long serialVersionUID = 0L;
       if (!valuePerPartition_.isMutable()) {
         valuePerPartition_ = valuePerPartition_.copy();
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       onChanged();
       return valuePerPartition_;
     }
@@ -997,7 +1188,7 @@ private static final long serialVersionUID = 0L;
       return map.get(key);
     }
     public Builder clearValuePerPartition() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000010);
       internalGetMutableValuePerPartition().getMutableMap()
           .clear();
       return this;
@@ -1018,7 +1209,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Deprecated
     public java.util.Map<java.lang.Integer, java.lang.Double>
         getMutableValuePerPartition() {
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       return internalGetMutableValuePerPartition().getMutableMap();
     }
     /**
@@ -1031,7 +1222,7 @@ private static final long serialVersionUID = 0L;
 
       internalGetMutableValuePerPartition().getMutableMap()
           .put(key, value);
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       return this;
     }
     /**
@@ -1041,7 +1232,7 @@ private static final long serialVersionUID = 0L;
         java.util.Map<java.lang.Integer, java.lang.Double> values) {
       internalGetMutableValuePerPartition().getMutableMap()
           .putAll(values);
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       return this;
     }
     @java.lang.Override

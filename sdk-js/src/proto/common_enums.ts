@@ -480,6 +480,7 @@ export enum MetricType {
   COUNT = "COUNT",
   AVG = "AVG",
   RATIO = "RATIO",
+  LATENCY = "LATENCY",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -494,6 +495,9 @@ export function metricTypeFromJSON(object: any): MetricType {
     case 2:
     case "RATIO":
       return MetricType.RATIO;
+    case 3:
+    case "LATENCY":
+      return MetricType.LATENCY;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -509,6 +513,8 @@ export function metricTypeToNumber(object: MetricType): number {
       return 1;
     case MetricType.RATIO:
       return 2;
+    case MetricType.LATENCY:
+      return 3;
     case MetricType.UNRECOGNIZED:
     default:
       return -1;

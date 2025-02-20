@@ -20,6 +20,10 @@ public enum MetricType
    * <code>RATIO = 2;</code>
    */
   RATIO(2),
+  /**
+   * <code>LATENCY = 3;</code>
+   */
+  LATENCY(3),
   UNRECOGNIZED(-1),
   ;
 
@@ -35,6 +39,10 @@ public enum MetricType
    * <code>RATIO = 2;</code>
    */
   public static final int RATIO_VALUE = 2;
+  /**
+   * <code>LATENCY = 3;</code>
+   */
+  public static final int LATENCY_VALUE = 3;
 
 
   public final int getNumber() {
@@ -64,6 +72,7 @@ public enum MetricType
       case 0: return COUNT;
       case 1: return AVG;
       case 2: return RATIO;
+      case 3: return LATENCY;
       default: return null;
     }
   }

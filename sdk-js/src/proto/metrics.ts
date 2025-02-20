@@ -5,6 +5,7 @@
 // source: metrics.proto
 
 /* eslint-disable */
+import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Duration } from "./google/protobuf/duration";
 import { Timestamp } from "./google/protobuf/timestamp";
@@ -26,6 +27,7 @@ export interface PartitionMetric {
 export interface PartitionWindowedMetric {
   value: number;
   windowStart: string | undefined;
+  numberOfSamples: number;
 }
 
 export interface PartitionMetricId {
@@ -35,7 +37,8 @@ export interface PartitionMetricId {
 
 export interface MetricRun {
   id: MetricRunId | undefined;
-  value: number;
+  count?: number | undefined;
+  latencyAvg?: number | undefined;
   createdAt: string | undefined;
   valuePerPartition: { [key: number]: number };
 }
@@ -195,7 +198,7 @@ export const PartitionMetric = {
 };
 
 function createBasePartitionWindowedMetric(): PartitionWindowedMetric {
-  return { value: 0, windowStart: undefined };
+  return { value: 0, windowStart: undefined, numberOfSamples: 0 };
 }
 
 export const PartitionWindowedMetric = {
@@ -205,6 +208,9 @@ export const PartitionWindowedMetric = {
     }
     if (message.windowStart !== undefined) {
       Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(18).fork()).ldelim();
+    }
+    if (message.numberOfSamples !== 0) {
+      writer.uint32(24).int64(message.numberOfSamples);
     }
     return writer;
   },
@@ -230,6 +236,13 @@ export const PartitionWindowedMetric = {
 
           message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.numberOfSamples = longToNumber(reader.int64() as Long);
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -246,6 +259,7 @@ export const PartitionWindowedMetric = {
     const message = createBasePartitionWindowedMetric();
     message.value = object.value ?? 0;
     message.windowStart = object.windowStart ?? undefined;
+    message.numberOfSamples = object.numberOfSamples ?? 0;
     return message;
   },
 };
@@ -309,7 +323,7 @@ export const PartitionMetricId = {
 };
 
 function createBaseMetricRun(): MetricRun {
-  return { id: undefined, value: 0, createdAt: undefined, valuePerPartition: {} };
+  return { id: undefined, count: undefined, latencyAvg: undefined, createdAt: undefined, valuePerPartition: {} };
 }
 
 export const MetricRun = {
@@ -317,8 +331,11 @@ export const MetricRun = {
     if (message.id !== undefined) {
       MetricRunId.encode(message.id, writer.uint32(10).fork()).ldelim();
     }
-    if (message.value !== 0) {
-      writer.uint32(17).double(message.value);
+    if (message.count !== undefined) {
+      writer.uint32(16).int64(message.count);
+    }
+    if (message.latencyAvg !== undefined) {
+      writer.uint32(24).int64(message.latencyAvg);
     }
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(34).fork()).ldelim();
@@ -344,11 +361,18 @@ export const MetricRun = {
           message.id = MetricRunId.decode(reader, reader.uint32());
           continue;
         case 2:
-          if (tag !== 17) {
+          if (tag !== 16) {
             break;
           }
 
-          message.value = reader.double();
+          message.count = longToNumber(reader.int64() as Long);
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.latencyAvg = longToNumber(reader.int64() as Long);
           continue;
         case 4:
           if (tag !== 34) {
@@ -382,7 +406,8 @@ export const MetricRun = {
   fromPartial(object: DeepPartial<MetricRun>): MetricRun {
     const message = createBaseMetricRun();
     message.id = (object.id !== undefined && object.id !== null) ? MetricRunId.fromPartial(object.id) : undefined;
-    message.value = object.value ?? 0;
+    message.count = object.count ?? undefined;
+    message.latencyAvg = object.latencyAvg ?? undefined;
     message.createdAt = object.createdAt ?? undefined;
     message.valuePerPartition = Object.entries(object.valuePerPartition ?? {}).reduce<{ [key: number]: number }>(
       (acc, [key, value]) => {
@@ -472,4 +497,19 @@ function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
   return new globalThis.Date(millis).toISOString();
+}
+
+function longToNumber(long: Long): number {
+  if (long.gt(globalThis.Number.MAX_SAFE_INTEGER)) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  if (long.lt(globalThis.Number.MIN_SAFE_INTEGER)) {
+    throw new globalThis.Error("Value is smaller than Number.MIN_SAFE_INTEGER");
+  }
+  return long.toNumber();
+}
+
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }

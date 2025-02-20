@@ -4,7 +4,9 @@ import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.TaskStatus;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,12 +36,8 @@ public class GetableUpdates {
     }
 
     public static GetableStatusUpdate createEndEvent(
-            WfSpecIdModel wfSpecId,
-            TenantIdModel tenantId,
-            LHStatus previousStatus,
-            LHStatus newStatus,
-            Date wfRunStartDate) {
-        return new WfRunStatusUpdate(wfSpecId, tenantId, previousStatus, newStatus, wfRunStartDate);
+            WfSpecIdModel wfSpecId, TenantIdModel tenantId, LHStatus previousStatus, LHStatus newStatus) {
+        return new WfRunStatusUpdate(wfSpecId, tenantId, previousStatus, newStatus);
     }
 
     public static TaskRunStatusUpdate create(
@@ -52,18 +50,10 @@ public class GetableUpdates {
 
         private final Date creationDate;
         private final TenantIdModel tenantId;
-        private final long firstEventLatency;
 
         public GetableStatusUpdate(TenantIdModel tenantId) {
             this.creationDate = new Date();
             this.tenantId = tenantId;
-            this.firstEventLatency = 0;
-        }
-
-        public GetableStatusUpdate(TenantIdModel tenantId, Date firstEventDate) {
-            this.creationDate = new Date();
-            this.tenantId = tenantId;
-            this.firstEventLatency = System.currentTimeMillis() - firstEventDate.getTime();
         }
     }
 
@@ -76,18 +66,6 @@ public class GetableUpdates {
         public WfRunStatusUpdate(
                 WfSpecIdModel wfSpecId, TenantIdModel tenantId, LHStatus previousStatus, LHStatus newStatus) {
             super(tenantId);
-            this.previousStatus = previousStatus;
-            this.wfSpecId = wfSpecId;
-            this.newStatus = Objects.requireNonNull(newStatus);
-        }
-
-        public WfRunStatusUpdate(
-                WfSpecIdModel wfSpecId,
-                TenantIdModel tenantId,
-                LHStatus previousStatus,
-                LHStatus newStatus,
-                Date wfRunStartDate) {
-            super(tenantId, wfRunStartDate);
             this.previousStatus = previousStatus;
             this.wfSpecId = wfSpecId;
             this.newStatus = Objects.requireNonNull(newStatus);
@@ -106,6 +84,18 @@ public class GetableUpdates {
             this.taskDefId = taskDefId;
             this.previousStatus = previousStatus;
             this.newStatus = newStatus;
+        }
+    }
+
+    @Getter
+    public static class NodeRunCompleteUpdate extends GetableStatusUpdate {
+        private final Duration latency;
+        private final Node.NodeCase nodeType;
+
+        public NodeRunCompleteUpdate(TenantIdModel tenantId, Node.NodeCase nodeType, Duration latency) {
+            super(tenantId);
+            this.latency = latency;
+            this.nodeType = nodeType;
         }
     }
 

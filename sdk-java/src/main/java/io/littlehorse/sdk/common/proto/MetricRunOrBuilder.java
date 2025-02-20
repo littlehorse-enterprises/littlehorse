@@ -23,10 +23,26 @@ public interface MetricRunOrBuilder extends
   io.littlehorse.sdk.common.proto.MetricRunIdOrBuilder getIdOrBuilder();
 
   /**
-   * <code>double value = 2;</code>
-   * @return The value.
+   * <code>int64 count = 2;</code>
+   * @return Whether the count field is set.
    */
-  double getValue();
+  boolean hasCount();
+  /**
+   * <code>int64 count = 2;</code>
+   * @return The count.
+   */
+  long getCount();
+
+  /**
+   * <code>int64 latency_avg = 3;</code>
+   * @return Whether the latencyAvg field is set.
+   */
+  boolean hasLatencyAvg();
+  /**
+   * <code>int64 latency_avg = 3;</code>
+   * @return The latencyAvg.
+   */
+  long getLatencyAvg();
 
   /**
    * <code>.google.protobuf.Timestamp created_at = 4;</code>
@@ -74,4 +90,6 @@ public interface MetricRunOrBuilder extends
    */
   double getValuePerPartitionOrThrow(
       int key);
+
+  io.littlehorse.sdk.common.proto.MetricRun.ValueCase getValueCase();
 }

@@ -16,11 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 public class PartitionWindowedMetricModel extends LHSerializable<PartitionWindowedMetric>
         implements Comparable<PartitionWindowedMetricModel> {
     private double value;
+    private long numberOfSamples;
     private LocalDateTime windowStart;
 
     public PartitionWindowedMetricModel() {}
 
     public PartitionWindowedMetricModel(double initialValue, long currentTimeMillis, Duration windowLength) {
+        this.numberOfSamples = 0L;
         this.value = initialValue;
         this.windowStart = LocalDateTime.ofInstant(
                 LHUtil.getWindowStart(currentTimeMillis, windowLength).toInstant(), ZoneId.systemDefault());
@@ -32,6 +34,7 @@ public class PartitionWindowedMetricModel extends LHSerializable<PartitionWindow
         this.windowStart =
                 LocalDateTime.ofInstant(LHUtil.fromProtoTs(p.getWindowStart()).toInstant(), ZoneId.systemDefault());
         this.value = p.getValue();
+        this.numberOfSamples = p.getNumberOfSamples();
     }
 
     @Override
@@ -39,7 +42,8 @@ public class PartitionWindowedMetricModel extends LHSerializable<PartitionWindow
         return PartitionWindowedMetric.newBuilder()
                 .setValue(value)
                 .setWindowStart(LHUtil.fromDate(
-                        Date.from(windowStart.atZone(ZoneId.systemDefault()).toInstant())));
+                        Date.from(windowStart.atZone(ZoneId.systemDefault()).toInstant())))
+                .setNumberOfSamples(numberOfSamples);
     }
 
     @Override
@@ -58,8 +62,9 @@ public class PartitionWindowedMetricModel extends LHSerializable<PartitionWindow
         return elapsed > windowLength.toMillis();
     }
 
-    public void increment() {
-        value++;
+    public void increment(double increment) {
+        numberOfSamples++;
+        value = value + increment;
     }
 
     public double getValue() {
@@ -68,5 +73,9 @@ public class PartitionWindowedMetricModel extends LHSerializable<PartitionWindow
 
     Date getWindowStart() {
         return Date.from(windowStart.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    public long getNumberOfSamples() {
+        return numberOfSamples;
     }
 }

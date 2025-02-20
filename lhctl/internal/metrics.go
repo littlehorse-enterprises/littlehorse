@@ -45,6 +45,8 @@ func toType(metricType string) lhproto.MetricType {
 		return lhproto.MetricType_COUNT
 	} else if strings.ToLower(metricType) == "ratio" {
 		return lhproto.MetricType_RATIO
+	} else if strings.ToLower(metricType) == "latency" {
+		return lhproto.MetricType_LATENCY
 	} else {
 		panic("Unrecognized metric type " + metricType)
 	}

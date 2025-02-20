@@ -70,6 +70,7 @@ class MetricType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     COUNT: _ClassVar[MetricType]
     AVG: _ClassVar[MetricType]
     RATIO: _ClassVar[MetricType]
+    LATENCY: _ClassVar[MetricType]
 STARTING: LHStatus
 RUNNING: LHStatus
 COMPLETED: LHStatus
@@ -113,3 +114,4 @@ TASK: MeasurableObject
 COUNT: MetricType
 AVG: MetricType
 RATIO: MetricType
+LATENCY: MetricType

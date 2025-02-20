@@ -75,6 +75,17 @@ private static final long serialVersionUID = 0L;
     return windowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : windowStart_;
   }
 
+  public static final int NUMBER_OF_SAMPLES_FIELD_NUMBER = 3;
+  private long numberOfSamples_ = 0L;
+  /**
+   * <code>int64 number_of_samples = 3;</code>
+   * @return The numberOfSamples.
+   */
+  @java.lang.Override
+  public long getNumberOfSamples() {
+    return numberOfSamples_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -95,6 +106,9 @@ private static final long serialVersionUID = 0L;
     if (windowStart_ != null) {
       output.writeMessage(2, getWindowStart());
     }
+    if (numberOfSamples_ != 0L) {
+      output.writeInt64(3, numberOfSamples_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -111,6 +125,10 @@ private static final long serialVersionUID = 0L;
     if (windowStart_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getWindowStart());
+    }
+    if (numberOfSamples_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(3, numberOfSamples_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -135,6 +153,8 @@ private static final long serialVersionUID = 0L;
       if (!getWindowStart()
           .equals(other.getWindowStart())) return false;
     }
+    if (getNumberOfSamples()
+        != other.getNumberOfSamples()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -153,6 +173,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + WINDOW_START_FIELD_NUMBER;
       hash = (53 * hash) + getWindowStart().hashCode();
     }
+    hash = (37 * hash) + NUMBER_OF_SAMPLES_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getNumberOfSamples());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -290,6 +313,7 @@ private static final long serialVersionUID = 0L;
         windowStartBuilder_.dispose();
         windowStartBuilder_ = null;
       }
+      numberOfSamples_ = 0L;
       return this;
     }
 
@@ -330,6 +354,9 @@ private static final long serialVersionUID = 0L;
         result.windowStart_ = windowStartBuilder_ == null
             ? windowStart_
             : windowStartBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.numberOfSamples_ = numberOfSamples_;
       }
     }
 
@@ -383,6 +410,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasWindowStart()) {
         mergeWindowStart(other.getWindowStart());
       }
+      if (other.getNumberOfSamples() != 0L) {
+        setNumberOfSamples(other.getNumberOfSamples());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -421,6 +451,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
+            case 24: {
+              numberOfSamples_ = input.readInt64();
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 24
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -587,6 +622,38 @@ private static final long serialVersionUID = 0L;
         windowStart_ = null;
       }
       return windowStartBuilder_;
+    }
+
+    private long numberOfSamples_ ;
+    /**
+     * <code>int64 number_of_samples = 3;</code>
+     * @return The numberOfSamples.
+     */
+    @java.lang.Override
+    public long getNumberOfSamples() {
+      return numberOfSamples_;
+    }
+    /**
+     * <code>int64 number_of_samples = 3;</code>
+     * @param value The numberOfSamples to set.
+     * @return This builder for chaining.
+     */
+    public Builder setNumberOfSamples(long value) {
+
+      numberOfSamples_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 number_of_samples = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearNumberOfSamples() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      numberOfSamples_ = 0L;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

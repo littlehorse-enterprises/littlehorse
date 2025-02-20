@@ -150,4 +150,5 @@ enum MetricType {
   COUNT = 0;
   AVG = 1;
   RATIO = 2;
+  LATENCY = 3;
 }

@@ -18,25 +18,25 @@ import lombok.Getter;
 public class MetricIdModel extends MetadataId<MetricId, Metric, MetricModel> {
 
     private MeasurableObject measurable;
-    private MetricType type;
+    private MetricType metricType;
 
     public MetricIdModel() {}
 
     public MetricIdModel(MeasurableObject measurable, MetricType type) {
         this.measurable = measurable;
-        this.type = type;
+        this.metricType = type;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         MetricId p = (MetricId) proto;
         this.measurable = p.getMeasurable();
-        this.type = p.getType();
+        this.metricType = p.getType();
     }
 
     @Override
     public MetricId.Builder toProto() {
-        return MetricId.newBuilder().setMeasurable(measurable).setType(type);
+        return MetricId.newBuilder().setMeasurable(measurable).setType(metricType);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class MetricIdModel extends MetadataId<MetricId, Metric, MetricModel> {
 
     @Override
     public String toString() {
-        return LHUtil.getCompositeId(measurable.toString(), type.toString());
+        return LHUtil.getCompositeId(measurable.toString(), metricType.toString());
     }
 
     @Override
@@ -54,7 +54,7 @@ public class MetricIdModel extends MetadataId<MetricId, Metric, MetricModel> {
         MeasurableObject measurable = MeasurableObject.valueOf(storeKey.split("/")[0]);
         MetricType type = MetricType.valueOf(storeKey.split("/")[1]);
         this.measurable = measurable;
-        this.type = type;
+        this.metricType = type;
     }
 
     @Override
@@ -64,6 +64,6 @@ public class MetricIdModel extends MetadataId<MetricId, Metric, MetricModel> {
 
     @Override
     public Optional<String> getPartitionKey() {
-        return Optional.of(LHUtil.getCompositeId(measurable.toString(), type.toString()));
+        return Optional.of(LHUtil.getCompositeId(measurable.toString(), metricType.toString()));
     }
 }

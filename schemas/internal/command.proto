@@ -262,5 +262,6 @@ message DeleteTaskWorkerGroupRequest {
 
 message RepartitionWindowedMetric {
     double value = 1;
-    google.protobuf.Timestamp window_start = 2;
+    double number_of_samples = 2;
+    google.protobuf.Timestamp window_start = 3;
 }
