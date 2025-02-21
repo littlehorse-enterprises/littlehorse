@@ -1,6 +1,9 @@
 package io.littlehorse.canary.metronome;
 
+import static io.littlehorse.canary.metronome.MetronomeRunWfExecutor.GRPC_STATUS_PREFIX;
+
 import com.google.protobuf.util.Timestamps;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.canary.metronome.internal.BeatProducer;
 import io.littlehorse.canary.metronome.internal.LocalRepository;
 import io.littlehorse.canary.proto.Attempt;
@@ -105,8 +108,15 @@ public class MetronomeGetWfRunExecutor {
             return lhClient.getCanaryWfRun(id);
         } catch (Exception e) {
             log.error("Error executing getWfRun {}", e.getMessage(), e);
-            producer.sendFuture(
-                    id, BeatType.GET_WF_RUN_REQUEST, BeatStatus.ERROR.name(), Duration.between(start, Instant.now()));
+
+            String status = BeatStatus.CLIENT_ERROR.name();
+
+            if (e instanceof StatusRuntimeException statusException) {
+                status = GRPC_STATUS_PREFIX.formatted(
+                        statusException.getStatus().getCode().name());
+            }
+
+            producer.sendFuture(id, BeatType.GET_WF_RUN_REQUEST, status, Duration.between(start, Instant.now()));
             return null;
         }
     }

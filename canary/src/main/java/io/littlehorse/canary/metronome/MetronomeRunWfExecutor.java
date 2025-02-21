@@ -3,6 +3,8 @@ package io.littlehorse.canary.metronome;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import io.grpc.StatusException;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.canary.metronome.internal.BeatProducer;
 import io.littlehorse.canary.metronome.internal.LocalRepository;
 import io.littlehorse.canary.proto.BeatStatus;
@@ -27,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MetronomeRunWfExecutor {
 
+    public static final String GRPC_STATUS_PREFIX = "GRPC_%s";
     private final BeatProducer producer;
     private final ScheduledExecutorService mainExecutor;
     private final ExecutorService requestsExecutor;
@@ -126,7 +129,20 @@ public class MetronomeRunWfExecutor {
         public void onFailure(final Throwable t) {
             lhClient.incrementWfRunCountMetric();
             log.error("Error executing runWf {}", t.getMessage(), t);
-            sendMetricBeat(wfRunId, startedAt, BeatStatus.ERROR.name());
+
+            String status = BeatStatus.CLIENT_ERROR.name();
+
+            if (t instanceof StatusRuntimeException statusException) {
+                status = GRPC_STATUS_PREFIX.formatted(
+                        statusException.getStatus().getCode().name());
+            }
+
+            if (t instanceof StatusException statusException) {
+                status = GRPC_STATUS_PREFIX.formatted(
+                        statusException.getStatus().getCode().name());
+            }
+
+            sendMetricBeat(wfRunId, startedAt, status);
         }
     }
 }

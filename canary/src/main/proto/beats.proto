@@ -16,7 +16,7 @@ enum BeatType {
 
 enum BeatStatus {
   OK = 0;
-  ERROR = 1;
+  CLIENT_ERROR = 1;
 }
 
 message BeatKey {
