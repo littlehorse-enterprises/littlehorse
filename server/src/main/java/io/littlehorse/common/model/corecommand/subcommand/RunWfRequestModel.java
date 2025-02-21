@@ -93,14 +93,18 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
 
     @Override
     public WfRun process(ProcessorExecutionContext processorContext, LHServerConfig config) {
+        if (wfSpecName.equals("")) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument 'wf_spec_name'");
+        }
+
+        if ((id != null && id.equals("")) || !LHUtil.isValidLHName(id)) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Optional argument 'id' must be a valid hostname");
+        }
+        
         GetableManager getableManager = processorContext.getableManager();
         WfSpecModel spec = processorContext.service().getWfSpec(wfSpecName, majorVersion, revision);
         if (spec == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find specified WfSpec");
-        }
-
-        if (!LHUtil.isValidLHName(id)) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "WfRunId must be a valid hostname");
         }
 
         // TODO: Add WfRun Start Metrics
