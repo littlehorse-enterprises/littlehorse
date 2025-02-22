@@ -35,6 +35,7 @@ public class MetronomeRunWfExecutor {
     private final ScheduledExecutorService mainExecutor;
     private final ExecutorService requestsExecutor;
     private final LHClient lhClient;
+    private final Duration frequency;
     private final int runs;
     private final LocalRepository repository;
     private final int sampleRate;
@@ -51,6 +52,7 @@ public class MetronomeRunWfExecutor {
             final LocalRepository repository) {
         this.producer = producer;
         this.lhClient = lhClient;
+        this.frequency = frequency;
         this.runs = runs;
         this.repository = repository;
         this.sampleRate = sampleRate;
@@ -59,11 +61,13 @@ public class MetronomeRunWfExecutor {
 
         mainExecutor = Executors.newSingleThreadScheduledExecutor();
         ShutdownHook.add("Metronome: RunWf Main Executor Thread", () -> closeExecutor(mainExecutor));
-        mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency.toMillis(), TimeUnit.MILLISECONDS);
 
         requestsExecutor = Executors.newFixedThreadPool(threads);
         ShutdownHook.add("Metronome: RunWf Request Executor Thread", () -> closeExecutor(requestsExecutor));
+    }
 
+    public void start() {
+        mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency.toMillis(), TimeUnit.MILLISECONDS);
         log.info("RunWf Metronome Started");
     }
 
@@ -115,7 +119,6 @@ public class MetronomeRunWfExecutor {
 
         @Override
         public void onSuccess(final WfRun result) {
-            lhClient.incrementWfRunCountMetric();
             if (isSampleIteration) {
                 final Beat beat = Beat.builder(BeatType.WF_RUN_REQUEST)
                         .id(wfRunId)
@@ -129,7 +132,6 @@ public class MetronomeRunWfExecutor {
 
         @Override
         public void onFailure(final Throwable t) {
-            lhClient.incrementWfRunCountMetric();
             log.error("Error executing runWf {}", t.getMessage(), t);
 
             final BeatStatus.BeatStatusBuilder statusBuilder = BeatStatus.builder(BeatStatus.Code.ERROR)

@@ -29,8 +29,10 @@ public class Aggregator implements MeterBinder {
 
         kafkaStreams = new KafkaStreams(metricsTopology.toTopology(), new StreamsConfig(kafkaStreamsConfig));
         ShutdownHook.add("Aggregator Topology", kafkaStreams);
-        kafkaStreams.start();
+    }
 
+    public void start() {
+        kafkaStreams.start();
         log.info("Aggregator Started");
     }
 

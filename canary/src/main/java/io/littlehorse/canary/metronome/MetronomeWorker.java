@@ -17,15 +17,17 @@ import lombok.extern.slf4j.Slf4j;
 public class MetronomeWorker {
 
     private final BeatProducer producer;
+    private final LHTaskWorker worker;
 
     public MetronomeWorker(final BeatProducer producer, final LHConfig lhConfig) {
         this.producer = producer;
-
-        final LHTaskWorker worker = new LHTaskWorker(this, MetronomeWorkflow.TASK_NAME, lhConfig);
+        this.worker = new LHTaskWorker(this, MetronomeWorkflow.TASK_NAME, lhConfig);
         ShutdownHook.add("Metronome: LH Task Worker", worker);
+    }
+
+    public void start() {
         worker.registerTaskDef();
         worker.start();
-
         log.info("Worker Started");
     }
 

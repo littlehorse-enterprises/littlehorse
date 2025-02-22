@@ -27,6 +27,7 @@ public class MetronomeGetWfRunExecutor {
     private final ExecutorService requestsExecutor;
     private final BeatProducer producer;
     private final LHClient lhClient;
+    private final Duration frequency;
     private final LocalRepository repository;
     private final long retries;
 
@@ -39,16 +40,19 @@ public class MetronomeGetWfRunExecutor {
             final LocalRepository repository) {
         this.producer = producer;
         this.lhClient = lhClient;
+        this.frequency = frequency;
         this.repository = repository;
         this.retries = retries;
 
         mainExecutor = Executors.newSingleThreadScheduledExecutor();
         ShutdownHook.add("Metronome: GetWfRun  Main Executor Thread", () -> closeExecutor(mainExecutor));
-        mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency.toMillis(), TimeUnit.MILLISECONDS);
 
         requestsExecutor = Executors.newFixedThreadPool(threads);
         ShutdownHook.add("Metronome: GetWfRun  Request Executor Thread", () -> closeExecutor(requestsExecutor));
+    }
 
+    public void start() {
+        mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency.toMillis(), TimeUnit.MILLISECONDS);
         log.info("GetWfRun Metronome Started");
     }
 
@@ -65,32 +69,33 @@ public class MetronomeGetWfRunExecutor {
     }
 
     private void executeRun(final String id, final Attempt attempt) {
-        // exist if it gets exhausted
+        // exit if it gets exhausted
         if (attempt.getAttempt() >= retries) {
             exhaustedRetries(id);
             return;
         }
 
-        // update retry number
+        // update attempt number
         updateAttempt(id, attempt);
 
         final Instant start = Instant.now();
         final LHStatus status = getCurrentStatus(id);
         final Instant end = Instant.now();
 
+        // exit is error
         if (status == null) {
             return;
         }
 
         log.debug("GetWfRun {} {}", id, status);
 
-        // check if wf run was successful
+        // check if wf run was successful and exit
         if (status.equals(LHStatus.COMPLETED)) {
             sendSuccessfulWfRun(id, status, Duration.between(start, end));
             return;
         }
 
-        // this status is not expected, send error
+        // this status was not expected, send beat error
         log.error("GetWfRun returns error {} {}", id, status);
         sendErrorWfRun(id, status);
     }

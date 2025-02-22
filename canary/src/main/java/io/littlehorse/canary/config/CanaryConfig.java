@@ -177,7 +177,7 @@ public class CanaryConfig implements Config {
     }
 
     public boolean isWorkflowCreationEnabled() {
-        return Boolean.parseBoolean(getConfig(WORKFLOW_CREATION_ENABLE));
+        return isMetronomeEnabled() && Boolean.parseBoolean(getConfig(WORKFLOW_CREATION_ENABLE));
     }
 
     public String getWorkflowName() {
