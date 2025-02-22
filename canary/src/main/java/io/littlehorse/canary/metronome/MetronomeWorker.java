@@ -34,15 +34,24 @@ public class MetronomeWorker {
     @LHTaskMethod(MetronomeWorkflow.TASK_NAME)
     public void executeTask(final long startTime, final boolean sampleIteration, final WorkerContext context)
             throws ExecutionException, InterruptedException {
-        final String id = "%s/%s".formatted(context.getIdempotencyKey(), context.getAttemptNumber());
-        log.debug("Executing task {} {}", MetronomeWorkflow.TASK_NAME, id);
+        log.debug(
+                "Executing task {} {}/{}",
+                MetronomeWorkflow.TASK_NAME,
+                context.getIdempotencyKey(),
+                context.getAttemptNumber());
+
         if (sampleIteration) {
+            final String id = "%s/%s".formatted(context.getIdempotencyKey(), context.getAttemptNumber());
             final Duration latency = Duration.between(Instant.ofEpochMilli(startTime), Instant.now());
-            final Beat beat = Beat.builder(BeatType.TASK_RUN_EXECUTION)
-                    .id(id)
-                    .latency(latency)
-                    .build();
-            producer.send(beat).get();
+            sendBeat(id, latency);
         }
+    }
+
+    private void sendBeat(final String id, final Duration latency) throws InterruptedException, ExecutionException {
+        final Beat beat = Beat.builder(BeatType.TASK_RUN_EXECUTION)
+                .id(id)
+                .latency(latency)
+                .build();
+        producer.send(beat).get();
     }
 }

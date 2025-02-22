@@ -30,7 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MetronomeRunWfExecutor {
 
-    public static final String GRPC_STATUS_PREFIX = "GRPC_%s";
     private final BeatProducer producer;
     private final ScheduledExecutorService mainExecutor;
     private final ExecutorService requestsExecutor;
@@ -119,15 +118,15 @@ public class MetronomeRunWfExecutor {
 
         @Override
         public void onSuccess(final WfRun result) {
-            if (isSampleIteration) {
-                final Beat beat = Beat.builder(BeatType.WF_RUN_REQUEST)
-                        .id(wfRunId)
-                        .latency(Duration.between(startedAt, Instant.now()))
-                        .status(BeatStatus.builder(BeatStatus.Code.OK).build())
-                        .build();
-                producer.send(beat);
-                repository.save(wfRunId, 0);
-            }
+            if (!isSampleIteration) return;
+
+            final Beat beat = Beat.builder(BeatType.WF_RUN_REQUEST)
+                    .id(wfRunId)
+                    .latency(Duration.between(startedAt, Instant.now()))
+                    .status(BeatStatus.builder(BeatStatus.Code.OK).build())
+                    .build();
+            producer.send(beat);
+            repository.save(wfRunId, 0);
         }
 
         @Override
