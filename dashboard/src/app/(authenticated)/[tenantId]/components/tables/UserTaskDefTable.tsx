@@ -1,4 +1,3 @@
-import { Separator } from '@/components/ui/separator'
 import { UserTaskDefId } from 'littlehorse-client/proto'
 import { TagIcon } from 'lucide-react'
 import { FC, Fragment } from 'react'
@@ -6,7 +5,7 @@ import { SearchResultProps } from '.'
 import LinkWithTenant from '../LinkWithTenant'
 
 export const UserTaskDefTable: FC<SearchResultProps> = ({ pages = [] }) => {
-  if (pages.length === 0) {
+  if (pages.every(page => page.results.length === 0)) {
     return <div className="flex min-h-[360px] items-center justify-center text-center italic">No UserTaskDefs</div>
   }
 
