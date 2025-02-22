@@ -3,7 +3,9 @@ package io.littlehorse.canary;
 import io.littlehorse.canary.aggregator.Aggregator;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.ConfigLoader;
+import io.littlehorse.canary.infra.ShutdownHook;
 import io.littlehorse.canary.kafka.TopicCreator;
+import io.littlehorse.canary.littlehorse.LHClient;
 import io.littlehorse.canary.metronome.MetronomeGetWfRunExecutor;
 import io.littlehorse.canary.metronome.MetronomeRunWfExecutor;
 import io.littlehorse.canary.metronome.MetronomeWorker;
@@ -12,8 +14,6 @@ import io.littlehorse.canary.metronome.internal.BeatProducer;
 import io.littlehorse.canary.metronome.internal.LocalRepository;
 import io.littlehorse.canary.prometheus.PrometheusExporter;
 import io.littlehorse.canary.prometheus.PrometheusServerExporter;
-import io.littlehorse.canary.util.LHClient;
-import io.littlehorse.canary.util.ShutdownHook;
 import io.littlehorse.sdk.common.config.LHConfig;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -38,6 +38,7 @@ public class Main {
         latch.await();
     }
 
+    // TODO: refactor this code
     private static void initialize(final String[] args) throws IOException {
         // dependencies
         final CanaryConfig canaryConfig = args.length > 0 ? ConfigLoader.load(Paths.get(args[0])) : ConfigLoader.load();
@@ -81,7 +82,8 @@ public class Main {
 
                 // register wf
                 if (canaryConfig.isWorkflowCreationEnabled()) {
-                    new MetronomeWorkflow(lhClient, canaryConfig.getWorkflowName());
+                    new MetronomeWorkflow(
+                            lhClient, canaryConfig.getWorkflowName(), canaryConfig.getWorkflowRetention());
                 }
 
                 final LocalRepository repository = new LocalRepository(canaryConfig.getMetronomeDataPath());

@@ -1,6 +1,5 @@
 package io.littlehorse.canary.aggregator.topology;
 
-import com.google.common.base.Strings;
 import io.littlehorse.canary.aggregator.internal.BeatTimeExtractor;
 import io.littlehorse.canary.aggregator.serdes.ProtobufSerdes;
 import io.littlehorse.canary.proto.*;
@@ -39,9 +38,9 @@ public class MetricsTopology {
 
         // build latency metric stream
         final KStream<MetricKey, MetricValue> latencyMetricsStream = beatsStream
-                // remove GET_WF_RUN_EXHAUSTED_RETRIES
-                .filterNot(MetricsTopology::isExhaustedRetries)
-                // remove the id
+                // remove messages without latency
+                .filterNot(MetricsTopology::hasLatency)
+                // remove id
                 .groupBy(
                         MetricsTopology::removeWfId, Grouped.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.BeatValue()))
                 // reset aggregator every minute
@@ -57,7 +56,7 @@ public class MetricsTopology {
 
         // build count metric stream
         final KStream<MetricKey, MetricValue> countMetricStream = beatsStream
-                // remove the id
+                // remove id
                 .groupBy(
                         MetricsTopology::removeWfId, Grouped.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.BeatValue()))
                 // count all
@@ -112,8 +111,8 @@ public class MetricsTopology {
         return MetricValue.newBuilder().build();
     }
 
-    private static boolean isExhaustedRetries(final BeatKey key, final BeatValue value) {
-        return key.getType().equals(BeatType.GET_WF_RUN_EXHAUSTED_RETRIES);
+    private static boolean hasLatency(final BeatKey key, final BeatValue value) {
+        return value.hasLatency();
     }
 
     private static boolean selectDuplicatedTaskRun(final BeatKey key, final Long value) {
@@ -159,8 +158,8 @@ public class MetricsTopology {
     }
 
     private static KeyValue<MetricKey, MetricValue> mapBeatToMetricCount(final BeatKey key, final Long count) {
-        final String metricIdPrefix = key.getType().toString().toLowerCase();
-        return KeyValue.pair(buildMetricKey(key, metricIdPrefix), mapLongToMetricValue(count));
+        final String metricNamePrefix = key.getType().toString().toLowerCase();
+        return KeyValue.pair(buildMetricKey(key, metricNamePrefix), mapLongToMetricValue(count));
     }
 
     private static Consumed<BeatKey, BeatValue> initializeSerdes() {
@@ -178,27 +177,19 @@ public class MetricsTopology {
 
     private static KeyValue<MetricKey, MetricValue> mapBeatToMetricLatency(
             final BeatKey key, final AverageAggregator value) {
-        final String metricIdPrefix = key.getType().toString().toLowerCase();
-        return KeyValue.pair(buildMetricKey(key, metricIdPrefix), mapAvgToMetricValue(value.getAvg(), value.getMax()));
+        final String metricNamePrefix = key.getType().toString().toLowerCase();
+        return KeyValue.pair(
+                buildMetricKey(key, metricNamePrefix), mapAvgToMetricValue(value.getAvg(), value.getMax()));
     }
 
-    private static MetricKey buildMetricKey(final BeatKey key, final String id) {
-        final MetricKey.Builder builder = MetricKey.newBuilder()
+    private static MetricKey buildMetricKey(final BeatKey key, final String name) {
+        return MetricKey.newBuilder()
                 .setServerVersion(key.getServerVersion())
                 .setServerPort(key.getServerPort())
                 .setServerHost(key.getServerHost())
-                .setId("canary_%s".formatted(id));
-
-        if (key.hasStatus() && !Strings.isNullOrEmpty(key.getStatus())) {
-            builder.addTags(
-                    Tag.newBuilder().setKey("status").setValue(key.getStatus().toLowerCase()));
-        }
-
-        if (key.getTagsCount() > 0) {
-            builder.addAllTags(key.getTagsList());
-        }
-
-        return builder.build();
+                .setName("canary_%s".formatted(name))
+                .addAllTags(key.getTagsList())
+                .build();
     }
 
     private Materialized<BeatKey, AverageAggregator, WindowStore<Bytes, byte[]>> initializeLatencyStore(
@@ -219,7 +210,6 @@ public class MetricsTopology {
                 .setServerVersion(key.getServerVersion())
                 .setServerHost(key.getServerHost())
                 .setServerPort(key.getServerPort())
-                .setStatus(key.getStatus())
                 .addAllTags(key.getTagsList())
                 .build();
     }

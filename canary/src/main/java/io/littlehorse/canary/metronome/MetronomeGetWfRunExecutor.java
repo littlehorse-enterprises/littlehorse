@@ -1,18 +1,16 @@
 package io.littlehorse.canary.metronome;
 
-import static io.littlehorse.canary.metronome.MetronomeRunWfExecutor.GRPC_STATUS_PREFIX;
-
 import com.google.protobuf.util.Timestamps;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.canary.infra.ShutdownHook;
+import io.littlehorse.canary.littlehorse.LHClient;
 import io.littlehorse.canary.metronome.internal.BeatProducer;
 import io.littlehorse.canary.metronome.internal.LocalRepository;
+import io.littlehorse.canary.metronome.model.Beat;
+import io.littlehorse.canary.metronome.model.BeatStatus;
 import io.littlehorse.canary.proto.Attempt;
-import io.littlehorse.canary.proto.BeatStatus;
 import io.littlehorse.canary.proto.BeatType;
-import io.littlehorse.canary.util.LHClient;
-import io.littlehorse.canary.util.ShutdownHook;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.WfRun;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
@@ -24,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class MetronomeGetWfRunExecutor {
+    public static final String EXHAUSTED_RETRIES = "EXHAUSTED_RETRIES";
     private final ScheduledExecutorService mainExecutor;
     private final ExecutorService requestsExecutor;
     private final BeatProducer producer;
@@ -66,31 +65,79 @@ public class MetronomeGetWfRunExecutor {
     }
 
     private void executeRun(final String id, final Attempt attempt) {
+        // exist if it gets exhausted
         if (attempt.getAttempt() >= retries) {
-            repository.delete(id);
-            producer.sendFuture(id, BeatType.GET_WF_RUN_EXHAUSTED_RETRIES);
+            exhaustedRetries(id);
             return;
         }
 
+        // update retry number
         updateAttempt(id, attempt);
 
         final Instant start = Instant.now();
-        final WfRun currentStatus = getCurrentStatus(id, start);
+        final LHStatus status = getCurrentStatus(id);
+        final Instant end = Instant.now();
 
-        if (currentStatus == null) {
+        if (status == null) {
             return;
         }
 
-        producer.sendFuture(
-                id,
-                BeatType.GET_WF_RUN_REQUEST,
-                currentStatus.getStatus().name(),
-                Duration.between(start, Instant.now()));
+        log.debug("GetWfRun {} {}", id, status);
 
-        log.debug("GetWfRun {} {}", id, currentStatus.getStatus());
-        if (currentStatus.getStatus().equals(LHStatus.COMPLETED)) {
-            repository.delete(id);
+        // check if wf run was successful
+        if (status.equals(LHStatus.COMPLETED)) {
+            sendSuccessfulWfRun(id, status, Duration.between(start, end));
+            return;
         }
+
+        // this status is not expected, send error
+        log.error("GetWfRun returns error {} {}", id, status);
+        sendErrorWfRun(id, status);
+    }
+
+    private void sendErrorWfRun(final String id, final LHStatus status) {
+        final BeatStatus beatStatus = BeatStatus.builder(BeatStatus.Code.ERROR)
+                .source(BeatStatus.Source.WORKFLOW)
+                .reason(status.name())
+                .build();
+
+        final Beat beat = Beat.builder(BeatType.GET_WF_RUN_REQUEST)
+                .id(id)
+                .status(beatStatus)
+                .build();
+
+        producer.send(beat);
+    }
+
+    private void sendSuccessfulWfRun(final String id, final LHStatus currentStatus, final Duration latency) {
+        final BeatStatus beatStatus = BeatStatus.builder(BeatStatus.Code.OK)
+                .source(BeatStatus.Source.WORKFLOW)
+                .reason(currentStatus.name())
+                .build();
+
+        final Beat beat = Beat.builder(BeatType.GET_WF_RUN_REQUEST)
+                .id(id)
+                .latency(latency)
+                .status(beatStatus)
+                .build();
+
+        producer.send(beat);
+        repository.delete(id);
+    }
+
+    private void exhaustedRetries(final String id) {
+        repository.delete(id);
+
+        final BeatStatus beatStatus = BeatStatus.builder(BeatStatus.Code.ERROR)
+                .reason(EXHAUSTED_RETRIES)
+                .build();
+
+        final Beat beat = Beat.builder(BeatType.GET_WF_RUN_REQUEST)
+                .id(id)
+                .status(beatStatus)
+                .build();
+
+        producer.send(beat);
     }
 
     private void updateAttempt(final String id, final Attempt attempt) {
@@ -103,20 +150,27 @@ public class MetronomeGetWfRunExecutor {
                         .build());
     }
 
-    private WfRun getCurrentStatus(final String id, final Instant start) {
+    private LHStatus getCurrentStatus(final String id) {
         try {
-            return lhClient.getCanaryWfRun(id);
+            return lhClient.getCanaryWfRun(id).getStatus();
         } catch (Exception e) {
             log.error("Error executing getWfRun {}", e.getMessage(), e);
 
-            String status = BeatStatus.CLIENT_ERROR.name();
+            final BeatStatus.BeatStatusBuilder statusBuilder = BeatStatus.builder(BeatStatus.Code.ERROR)
+                    .reason(e.getClass().getSimpleName());
 
             if (e instanceof StatusRuntimeException statusException) {
-                status = GRPC_STATUS_PREFIX.formatted(
-                        statusException.getStatus().getCode().name());
+                statusBuilder
+                        .source(BeatStatus.Source.GRPC)
+                        .reason(statusException.getStatus().getCode().name());
             }
 
-            producer.sendFuture(id, BeatType.GET_WF_RUN_REQUEST, status, Duration.between(start, Instant.now()));
+            final Beat beat = Beat.builder(BeatType.GET_WF_RUN_REQUEST)
+                    .id(id)
+                    .status(statusBuilder.build())
+                    .build();
+
+            producer.send(beat);
             return null;
         }
     }

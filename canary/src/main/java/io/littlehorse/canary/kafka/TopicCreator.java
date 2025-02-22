@@ -1,7 +1,7 @@
 package io.littlehorse.canary.kafka;
 
 import io.littlehorse.canary.CanaryException;
-import io.littlehorse.canary.util.ShutdownHook;
+import io.littlehorse.canary.infra.ShutdownHook;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;

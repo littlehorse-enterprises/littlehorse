@@ -5,12 +5,13 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.grpc.StatusException;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.canary.infra.ShutdownHook;
+import io.littlehorse.canary.littlehorse.LHClient;
 import io.littlehorse.canary.metronome.internal.BeatProducer;
 import io.littlehorse.canary.metronome.internal.LocalRepository;
-import io.littlehorse.canary.proto.BeatStatus;
+import io.littlehorse.canary.metronome.model.Beat;
+import io.littlehorse.canary.metronome.model.BeatStatus;
 import io.littlehorse.canary.proto.BeatType;
-import io.littlehorse.canary.util.LHClient;
-import io.littlehorse.canary.util.ShutdownHook;
 import io.littlehorse.sdk.common.proto.WfRun;
 import java.time.Duration;
 import java.time.Instant;
@@ -81,10 +82,6 @@ public class MetronomeRunWfExecutor {
         Futures.addCallback(future, new MetronomeCallback(wfId, start, isSampleIteration), requestsExecutor);
     }
 
-    private void sendMetricBeat(final String wfId, final Instant start, final String status) {
-        producer.sendFuture(wfId, BeatType.WF_RUN_REQUEST, status, Duration.between(start, Instant.now()));
-    }
-
     private void scheduledRun() {
         log.trace("Executing run wf metronome");
         final HashSet<Integer> sample = createSampleRuns();
@@ -120,7 +117,12 @@ public class MetronomeRunWfExecutor {
         public void onSuccess(final WfRun result) {
             lhClient.incrementWfRunCountMetric();
             if (isSampleIteration) {
-                sendMetricBeat(wfRunId, startedAt, BeatStatus.OK.name());
+                final Beat beat = Beat.builder(BeatType.WF_RUN_REQUEST)
+                        .id(wfRunId)
+                        .latency(Duration.between(startedAt, Instant.now()))
+                        .status(BeatStatus.builder(BeatStatus.Code.OK).build())
+                        .build();
+                producer.send(beat);
                 repository.save(wfRunId, 0);
             }
         }
@@ -130,19 +132,28 @@ public class MetronomeRunWfExecutor {
             lhClient.incrementWfRunCountMetric();
             log.error("Error executing runWf {}", t.getMessage(), t);
 
-            String status = BeatStatus.CLIENT_ERROR.name();
+            final BeatStatus.BeatStatusBuilder statusBuilder = BeatStatus.builder(BeatStatus.Code.ERROR)
+                    .reason(t.getClass().getSimpleName());
 
             if (t instanceof StatusRuntimeException statusException) {
-                status = GRPC_STATUS_PREFIX.formatted(
-                        statusException.getStatus().getCode().name());
+                statusBuilder
+                        .source(BeatStatus.Source.GRPC)
+                        .reason(statusException.getStatus().getCode().name());
             }
 
             if (t instanceof StatusException statusException) {
-                status = GRPC_STATUS_PREFIX.formatted(
-                        statusException.getStatus().getCode().name());
+                statusBuilder
+                        .source(BeatStatus.Source.GRPC)
+                        .reason(statusException.getStatus().getCode().name());
             }
 
-            sendMetricBeat(wfRunId, startedAt, status);
+            final Beat beat = Beat.builder(BeatType.WF_RUN_REQUEST)
+                    .id(wfRunId)
+                    .latency(Duration.between(startedAt, Instant.now()))
+                    .status(statusBuilder.build())
+                    .build();
+
+            producer.send(beat);
         }
     }
 }

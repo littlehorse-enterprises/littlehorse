@@ -14,7 +14,7 @@ class CanaryConfigTest {
     public static final String EXPECTED_VALUE = "test";
 
     @Test
-    void toMapMustCreateCopy() {
+    void shouldCreateCopyOfInputMap() {
         Map<String, Object> input = Map.of(KEY, EXPECTED_VALUE);
         CanaryConfig canaryConfig = new CanaryConfig(input);
 
@@ -24,7 +24,7 @@ class CanaryConfigTest {
     }
 
     @Test
-    void filterMap() {
+    void shouldFilterInvalidConfigurations() {
         Map<String, Object> input = Map.of(KEY, EXPECTED_VALUE, "not.a.valid.key", "to be filtered");
         CanaryConfig canaryConfig = new CanaryConfig(input);
 
@@ -34,7 +34,7 @@ class CanaryConfigTest {
     }
 
     @Test
-    void getCommonTags() {
+    void shouldParseCommonTags() {
         Map<String, Object> input = Map.of(
                 "lh.canary.metrics.common.tags.application_id", "my_id",
                 "lh.canary.metrics.common.tags.extra", "extra_tag");
@@ -47,7 +47,7 @@ class CanaryConfigTest {
     }
 
     @Test
-    void getMetronomeExtraTags() {
+    void shouldParseMetronomeExtraTags() {
         Map<String, Object> input = Map.of("lh.canary.metronome.beat.extra.tags.my_tag", "extra_tag");
 
         CanaryConfig canaryConfig = new CanaryConfig(input);
@@ -58,7 +58,7 @@ class CanaryConfigTest {
     }
 
     @Test
-    void getEmptyMetronomeExtraTags() {
+    void shouldInitializeMetronomeExtraTags() {
         CanaryConfig canaryConfig = new CanaryConfig(Map.of());
 
         Map<String, String> output = canaryConfig.getMetronomeBeatExtraTags();
@@ -68,7 +68,7 @@ class CanaryConfigTest {
     }
 
     @Test
-    void throwsExceptionIfConfigurationIsNotFound() {
+    void shouldThrowExceptionIfConfigurationIsNotFound() {
         CanaryConfig canaryConfig = new CanaryConfig(Map.of());
 
         IllegalArgumentException result =

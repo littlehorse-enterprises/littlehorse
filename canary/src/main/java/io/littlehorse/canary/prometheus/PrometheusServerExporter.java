@@ -3,7 +3,7 @@ package io.littlehorse.canary.prometheus;
 import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 import io.javalin.http.Context;
-import io.littlehorse.canary.util.ShutdownHook;
+import io.littlehorse.canary.infra.ShutdownHook;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

@@ -21,19 +21,13 @@ class LocalRepositoryTest {
     }
 
     @Test
-    void save() {
+    void shouldSaveAttemptRecord() {
         String id = UUID.randomUUID().toString();
-        Attempt attempt = newAttempt(9);
+        Attempt attempt =
+                Attempt.newBuilder().setAttempt(9).setStart(Timestamps.now()).build();
 
         repository.save(id, attempt);
 
         assertThat(repository.get(id)).isEqualTo(attempt);
-    }
-
-    private static Attempt newAttempt(int attempt) {
-        return Attempt.newBuilder()
-                .setAttempt(attempt)
-                .setStart(Timestamps.now())
-                .build();
     }
 }

@@ -1,4 +1,4 @@
-package io.littlehorse.canary.util;
+package io.littlehorse.canary.infra;
 
 import lombok.extern.slf4j.Slf4j;
 

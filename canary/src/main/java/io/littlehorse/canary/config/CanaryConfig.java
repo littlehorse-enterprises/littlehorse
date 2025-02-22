@@ -21,6 +21,7 @@ public class CanaryConfig implements Config {
     public static final String WORKFLOW_CREATION_ENABLE = "workflow.creation.enable";
     public static final String WORKFLOW_VERSION = "workflow.version";
     public static final String WORKFLOW_REVISION = "workflow.revision";
+    public static final String WORKFLOW_RETENTION_MS = "workflow.retention.ms";
 
     public static final String METRONOME_ENABLE = "metronome.enable";
     public static final String METRONOME_RUN_FREQUENCY_MS = "metronome.run.frequency.ms";
@@ -121,6 +122,10 @@ public class CanaryConfig implements Config {
 
     public Duration getAggregatorExportFrequency() {
         return Duration.ofMillis(Long.parseLong(getConfig(AGGREGATOR_EXPORT_FREQUENCY_MS)));
+    }
+
+    public Duration getWorkflowRetention() {
+        return Duration.ofMillis(Long.parseLong(getConfig(WORKFLOW_RETENTION_MS)));
     }
 
     public Duration getMetronomeRunFrequency() {

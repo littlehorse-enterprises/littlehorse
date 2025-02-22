@@ -1,4 +1,4 @@
-package io.littlehorse.canary.util;
+package io.littlehorse.canary.littlehorse;
 
 import static io.littlehorse.canary.metronome.MetronomeWorkflow.SAMPLE_ITERATION_VARIABLE;
 import static io.littlehorse.canary.metronome.MetronomeWorkflow.START_TIME_VARIABLE;

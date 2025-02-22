@@ -4,7 +4,7 @@ import static io.littlehorse.canary.aggregator.topology.MetricsTopology.METRICS_
 
 import io.littlehorse.canary.aggregator.prometheus.MetricStoreExporter;
 import io.littlehorse.canary.aggregator.topology.MetricsTopology;
-import io.littlehorse.canary.util.ShutdownHook;
+import io.littlehorse.canary.infra.ShutdownHook;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import java.time.Duration;

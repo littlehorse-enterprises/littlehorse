@@ -1,6 +1,6 @@
 package io.littlehorse.canary.prometheus;
 
-import io.littlehorse.canary.util.ShutdownHook;
+import io.littlehorse.canary.infra.ShutdownHook;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.prometheusmetrics.PrometheusConfig;

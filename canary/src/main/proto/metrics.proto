@@ -8,7 +8,7 @@ message MetricKey {
   string server_host = 1;
   int32 server_port = 2;
   string server_version = 3;
-  string id = 4;
+  string name = 4;
   repeated Tag tags = 5;
 }
 
