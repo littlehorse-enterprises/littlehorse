@@ -17,7 +17,6 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.TaskMetadata;
 import org.apache.kafka.streams.ThreadMetadata;
 import org.apache.kafka.streams.processor.TaskId;
-import org.jetbrains.annotations.NotNull;
 
 @Slf4j
 public class InstanceState implements MeterBinder, KafkaStreams.StateListener, Closeable {
@@ -43,7 +42,7 @@ public class InstanceState implements MeterBinder, KafkaStreams.StateListener, C
     }
 
     @Override
-    public void bindTo(@NotNull MeterRegistry registry) {
+    public void bindTo(MeterRegistry registry) {
         Gauge.builder(METRIC_NAME + "_global", activeTaskBySubTopology, value -> {
                     return value.getOrDefault(GLOBAL_SUB_TOPOLOGY_ID, 0);
                 })

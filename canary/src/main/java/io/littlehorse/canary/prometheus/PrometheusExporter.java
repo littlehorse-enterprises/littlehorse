@@ -1,13 +1,18 @@
 package io.littlehorse.canary.prometheus;
 
+import io.javalin.http.ContentType;
+import io.javalin.http.Context;
+import io.javalin.http.Handler;
 import io.littlehorse.canary.infra.ShutdownHook;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.prometheusmetrics.PrometheusConfig;
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
-public class PrometheusExporter {
+@Slf4j
+public class PrometheusExporter implements Handler {
 
     private final PrometheusMeterRegistry prometheusRegistry;
 
@@ -26,7 +31,9 @@ public class PrometheusExporter {
         measurable.bindTo(prometheusRegistry);
     }
 
-    public String scrape() {
-        return prometheusRegistry.scrape();
+    @Override
+    public void handle(final Context ctx) {
+        log.trace("Processing metrics request");
+        ctx.contentType(ContentType.PLAIN).result(prometheusRegistry.scrape());
     }
 }

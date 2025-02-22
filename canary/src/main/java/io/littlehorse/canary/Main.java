@@ -1,9 +1,11 @@
 package io.littlehorse.canary;
 
+import io.javalin.http.HandlerType;
 import io.littlehorse.canary.aggregator.Aggregator;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.ConfigLoader;
 import io.littlehorse.canary.infra.ShutdownHook;
+import io.littlehorse.canary.infra.WebServer;
 import io.littlehorse.canary.kafka.TopicCreator;
 import io.littlehorse.canary.littlehorse.LHClient;
 import io.littlehorse.canary.metronome.MetronomeGetWfRunExecutor;
@@ -13,7 +15,6 @@ import io.littlehorse.canary.metronome.MetronomeWorkflow;
 import io.littlehorse.canary.metronome.internal.BeatProducer;
 import io.littlehorse.canary.metronome.internal.LocalRepository;
 import io.littlehorse.canary.prometheus.PrometheusExporter;
-import io.littlehorse.canary.prometheus.PrometheusServerExporter;
 import io.littlehorse.sdk.common.config.LHConfig;
 import java.nio.file.Paths;
 import java.util.List;
@@ -90,6 +91,7 @@ public class Main {
 
     private static void registerWorkflow(final CanaryConfig config, final LHClient lhClient) {
         if (!config.isWorkflowCreationEnabled()) return;
+
         final MetronomeWorkflow workflow =
                 new MetronomeWorkflow(lhClient, config.getWorkflowName(), config.getWorkflowRetention());
         workflow.register();
@@ -98,12 +100,15 @@ public class Main {
     private static void startMetronomeWorker(
             final CanaryConfig config, final BeatProducer producer, final LHConfig lhConfig) {
         if (!config.isMetronomeWorkerEnabled()) return;
+
         final MetronomeWorker worker = new MetronomeWorker(producer, lhConfig);
         worker.start();
     }
 
     private static void startWebServer(final CanaryConfig config, final PrometheusExporter prometheusExporter) {
-        new PrometheusServerExporter(config.getMetricsPort(), config.getMetricsPath(), prometheusExporter);
+        final WebServer webServer = new WebServer(config.getMetricsPort());
+        webServer.addHandler(HandlerType.GET, config.getMetricsPath(), prometheusExporter);
+        webServer.start();
     }
 
     private static void startAggregator(final CanaryConfig config, final PrometheusExporter prometheusExporter) {
