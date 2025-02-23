@@ -84,7 +84,7 @@ export const TaskDetails: FC<{
                 </Entry>
               }
               <Entry label="Worker Log Output:">
-                <div className={"bg-gray-300 rounded-lg text-center border border-black max-w-52 text-nowrap min-h-5"} >
+                <div className={"bg-gray-300 rounded-lg text-center border border-black w-full text-nowrap min-h-5"} >
                   <OverflowText text={taskRunData.attempts[taskAttemptIndex].logOutput?.str ?? "-"} className="text-xs" variant={resultString === "ERROR" ? "error" : undefined} />
                 </div>
               </Entry>
