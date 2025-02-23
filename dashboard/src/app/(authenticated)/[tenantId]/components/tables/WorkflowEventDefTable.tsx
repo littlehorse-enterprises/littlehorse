@@ -3,6 +3,7 @@ import { useParams } from 'next/navigation'
 import { FC, Fragment } from 'react'
 import { SearchResultProps } from '.'
 import LinkWithTenant from '../LinkWithTenant'
+import { SelectionLink } from '../SelectionLink'
 
 export const WorkflowEventDefTable: FC<SearchResultProps> = ({ pages = [] }) => {
   const { tenantId } = useParams()
@@ -16,11 +17,9 @@ export const WorkflowEventDefTable: FC<SearchResultProps> = ({ pages = [] }) => 
       {pages.map((page, i) => (
         <Fragment key={i}>
           {page.results.map(({ name }: WorkflowEventDefId) => (
-            <div key={name} className="my-2 flex gap-2">
-              <LinkWithTenant className="underline hover:no-underline" href={`/workflowEventDef/${name}`}>
-                {name}
-              </LinkWithTenant>
-            </div>
+            <SelectionLink key={name} href={`/workflowEventDef/${name}`}>
+              <p className="group">{name}</p>
+            </SelectionLink>
           ))}
         </Fragment>
       ))}

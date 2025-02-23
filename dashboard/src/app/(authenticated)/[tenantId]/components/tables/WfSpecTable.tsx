@@ -1,12 +1,11 @@
 import { getLatestWfSpecs } from '@/app/actions/getLatestWfSpec'
-import { Separator } from '@/components/ui/separator'
 import { WfSpecData } from '@/types'
-import { TagIcon } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
-import { FC, Fragment, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { SearchResultProps } from '.'
 import { SelectionLink } from '../SelectionLink'
 
+import VersionTag from '../VersionTag'
 export const WfSpecTable: FC<SearchResultProps> = ({ pages = [] }) => {
   const router = useRouter()
   const tenantId = useParams().tenantId as string
@@ -25,16 +24,10 @@ export const WfSpecTable: FC<SearchResultProps> = ({ pages = [] }) => {
     <div className="py-4">
       <div className="flex max-h-[600px] flex-col overflow-auto">
         {wfSpecs.map(wfSpec => (
-          <Fragment key={wfSpec.name}>
-            <SelectionLink href={`/wfSpec/${wfSpec.name}/${wfSpec.latestVersion}`}>
-              <p className="group">{wfSpec.name}</p>
-              <div className="flex items-center gap-2 rounded bg-blue-200 px-2 font-mono text-sm text-gray-500">
-                <TagIcon className="h-4 w-4 fill-none stroke-gray-500 stroke-1" />
-                Latest: v{wfSpec.latestVersion}
-              </div>
-            </SelectionLink>
-            <Separator />
-          </Fragment>
+          <SelectionLink key={wfSpec.name} href={`/wfSpec/${wfSpec.name}/${wfSpec.latestVersion}`}>
+            <p className="group">{wfSpec.name}</p>
+            <VersionTag label={`Latest: v${wfSpec.latestVersion}`} />
+          </SelectionLink>
         ))}
       </div>
     </div>
