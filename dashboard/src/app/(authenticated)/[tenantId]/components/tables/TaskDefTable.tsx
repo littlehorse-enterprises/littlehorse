@@ -2,7 +2,6 @@ import { TaskDefId } from 'littlehorse-client/proto'
 import { useParams } from 'next/navigation'
 import { FC, Fragment } from 'react'
 import { SearchResultProps } from '.'
-import { useParams } from 'next/navigation'
 import { SelectionLink } from '../SelectionLink'
 
 export const TaskDefTable: FC<SearchResultProps> = ({ pages = [] }) => {
