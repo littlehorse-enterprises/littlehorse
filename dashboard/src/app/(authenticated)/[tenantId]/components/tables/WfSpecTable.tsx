@@ -16,7 +16,7 @@ export const WfSpecTable: FC<SearchResultProps> = ({ pages = [] }) => {
     getLatestWfSpecs(tenantId, wfSpecNames).then(setWfSpecs)
   }, [pages, tenantId])
 
-  if (pages.length === 0) {
+  if (pages.every(page => page.results.length === 0)) {
     return <div className="flex min-h-[360px] items-center justify-center text-center italic">No WfSpecs</div>
   }
 
