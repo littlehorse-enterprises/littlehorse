@@ -1,5 +1,6 @@
 ﻿using ExternalEventExample;
 using LittleHorse.Sdk;
+using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Worker;
 using LittleHorse.Sdk.Workflow.Spec;
 using Microsoft.Extensions.DependencyInjection;
@@ -62,6 +63,7 @@ public abstract class Program
         {
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var config = GetLHConfig(args, loggerFactory);
+            var client = config.GetGrpcClientInstance();
             var taskWorkers = GetTaskWorkers(config);
             foreach (var worker in taskWorkers)
             {
@@ -69,6 +71,17 @@ public abstract class Program
             }
             
             var workflow = GetWorkflow();
+            
+            // Register external event if it does not exist
+            HashSet<string> externalEventNames = workflow.GetRequiredExternalEventDefNames();
+
+            foreach (var externalEventName in externalEventNames)
+            {
+                Console.WriteLine($"Registering external event {externalEventName}");
+            
+                client.PutExternalEventDef(new PutExternalEventDefRequest { Name = externalEventName });
+            }
+            
             workflow.RegisterWfSpec(config.GetGrpcClientInstance());
             
             Thread.Sleep(300);
