@@ -22,7 +22,7 @@ public class PutMetricRequestModel extends MetadataSubCommand<PutMetricRequest> 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         PutMetricRequest p = (PutMetricRequest) proto;
-        this.measurable = p.getMeasurable();
+//        this.measurable = p.getMeasurable();
         this.metricType = p.getType();
         this.windowLength = Duration.ofSeconds(p.getWindowLength().getSeconds());
     }
@@ -30,7 +30,7 @@ public class PutMetricRequestModel extends MetadataSubCommand<PutMetricRequest> 
     @Override
     public PutMetricRequest.Builder toProto() {
         return PutMetricRequest.newBuilder()
-                .setMeasurable(measurable)
+//                .setMeasurable(measurable)
                 .setType(metricType)
                 .setWindowLength(com.google.protobuf.Duration.newBuilder()
                         .setSeconds(windowLength.getSeconds())

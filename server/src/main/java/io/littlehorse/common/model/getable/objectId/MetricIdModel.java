@@ -23,32 +23,38 @@ public class MetricIdModel extends MetadataId<MetricId, Metric, MetricModel> {
     private WfSpecIdModel wfSpecId;
     private ThreadSpecReferenceModel threadSpecReference;
     private MetricType metricType;
+    private MetricId.ReferenceCase referenceCase;
 
     public MetricIdModel() {}
 
     public MetricIdModel(MeasurableObject object, MetricType type) {
         this.object = object;
         this.metricType = type;
+        this.referenceCase = MetricId.ReferenceCase.OBJECT;
     }
 
     public MetricIdModel(NodeReferenceModel nodeReference, MetricType type) {
         this.nodeReference = nodeReference;
         this.metricType = type;
+        this.referenceCase = MetricId.ReferenceCase.NODE;
     }
 
     public MetricIdModel(WfSpecIdModel wfSpecId, MetricType type) {
         this.wfSpecId = wfSpecId;
         this.metricType = type;
+        this.referenceCase = MetricId.ReferenceCase.WF_SPEC_ID;
     }
 
     public MetricIdModel(ThreadSpecReferenceModel threadSpecReference, MetricType type) {
         this.threadSpecReference = threadSpecReference;
         this.metricType = type;
+        this.referenceCase = MetricId.ReferenceCase.REFERENCE_NOT_SET;
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         MetricId p = (MetricId) proto;
+        this.referenceCase = p.getReferenceCase();
         this.object = p.hasObject() ? p.getObject() : null;
         this.nodeReference =
                 p.hasNode() ? LHSerializable.fromProto(p.getNode(), NodeReferenceModel.class, context) : null;
@@ -86,15 +92,31 @@ public class MetricIdModel extends MetadataId<MetricId, Metric, MetricModel> {
 
     @Override
     public String toString() {
-        return LHUtil.getCompositeId(measurable.toString(), metricType.toString());
+        return switch (referenceCase) {
+            case OBJECT -> LHUtil.getCompositeId(String.valueOf(referenceCase.getNumber()), String.valueOf(object.getNumber()), metricType.toString());
+            case WF_SPEC_ID ->LHUtil.getCompositeId(String.valueOf(referenceCase.getNumber()), wfSpecId.toString(), metricType.toString());
+            case THREAD_SPEC -> LHUtil.getCompositeId(String.valueOf(referenceCase.getNumber()), threadSpecReference.toString(), metricType.toString());
+            case NODE -> LHUtil.getCompositeId(String.valueOf(referenceCase.getNumber()), nodeReference.toString(), metricType.toString());
+            default -> throw new IllegalStateException("Unexpected value: " + referenceCase);
+        };
     }
 
     @Override
     public void initFromString(String storeKey) {
-        MeasurableObject measurable = MeasurableObject.valueOf(storeKey.split("/")[0]);
-        MetricType type = MetricType.valueOf(storeKey.split("/")[1]);
-        this.measurable = measurable;
-        this.metricType = type;
+        String[] parts = storeKey.split("/");
+        this.referenceCase = MetricId.ReferenceCase.forNumber(Integer.parseInt(parts[0]));
+        switch (referenceCase) {
+            case OBJECT -> {
+                this.object = MeasurableObject.forNumber(Integer.parseInt(parts[1]));
+                this.metricType = MetricType.valueOf(parts[2]);
+            }
+            case WF_SPEC_ID -> {
+                this.wfSpecId = new WfSpecIdModel();
+                this.wfSpecId.initFromString(storeKey.substring(parts[0].length() + 1, storeKey.indexOf(parts[parts.length - 1]) - 1));
+                this.metricType = MetricType.valueOf(parts[parts.length - 1]);
+            }
+            case null, default -> throw new IllegalStateException("Unexpected value: " + referenceCase);
+        }
     }
 
     @Override
@@ -104,6 +126,6 @@ public class MetricIdModel extends MetadataId<MetricId, Metric, MetricModel> {
 
     @Override
     public Optional<String> getPartitionKey() {
-        return Optional.of(LHUtil.getCompositeId(measurable.toString(), metricType.toString()));
+        return Optional.of(this.toString());
     }
 }
