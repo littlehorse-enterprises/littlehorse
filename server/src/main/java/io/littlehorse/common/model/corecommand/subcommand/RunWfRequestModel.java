@@ -100,7 +100,7 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         if ((id != null && id.equals("")) || !LHUtil.isValidLHName(id)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Optional argument 'id' must be a valid hostname");
         }
-        
+
         GetableManager getableManager = processorContext.getableManager();
         WfSpecModel spec = processorContext.service().getWfSpec(wfSpecName, majorVersion, revision);
         if (spec == null) {
