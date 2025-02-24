@@ -80,6 +80,8 @@ public class MetronomeGetWfRunExecutor {
     }
 
     private void executeRun(final String id, final Attempt attempt) {
+        log.debug("GetWfRun {}", id);
+
         // exit if it gets exhausted
         if (attempt.getAttempt() >= retries) {
             sendExhaustedRetries(id);
@@ -93,8 +95,6 @@ public class MetronomeGetWfRunExecutor {
         final Instant start = Instant.now();
         final LHStatus status = lhClient.getCanaryWfRun(id).getStatus();
         final Duration latency = Duration.between(start, Instant.now());
-
-        log.debug("GetWfRun {} {}", id, status);
 
         // send beat and exit
         sendBeat(id, status, latency);
@@ -140,13 +140,13 @@ public class MetronomeGetWfRunExecutor {
     }
 
     private void updateAttempt(final String id, final Attempt attempt) {
-        repository.save(
-                id,
-                Attempt.newBuilder()
-                        .setStart(attempt.getStart())
-                        .setLastAttempt(Timestamps.now())
-                        .setAttempt(attempt.getAttempt() + 1)
-                        .build());
+        final Attempt newAttempt = Attempt.newBuilder()
+                .setStart(attempt.getStart())
+                .setLastAttempt(Timestamps.now())
+                .setAttempt(attempt.getAttempt() + 1)
+                .build();
+        log.debug("GetWfRun {} Retry {}", id, newAttempt.getAttempt());
+        repository.save(id, newAttempt);
     }
 
     private void sendError(final String id, final Exception e) {
