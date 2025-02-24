@@ -1,11 +1,11 @@
 'use client'
-import { FC, useEffect, useRef, useState } from 'react'
-import { cn } from '@/components/utils'
-import { Button } from '@/components/ui/button'
-import { ChevronRight } from 'lucide-react'
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
-import { CopyButton } from './CopyButton'
 import { tryFormatAsJson } from '@/app/utils/tryFormatAsJson'
+import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
+import { cn } from '@/components/utils'
+import { ChevronRight } from 'lucide-react'
+import { FC, useEffect, useRef, useState } from 'react'
+import { CopyButton } from './CopyButton'
 
 type OverflowTextProps = {
   text: string
@@ -37,7 +37,7 @@ export const OverflowText: FC<OverflowTextProps> = ({ text, className, variant }
               className
             )}
           >
-            <span className="truncate">{formattedText}</span>
+            <span className="truncate font-code">{formattedText}</span>
             <div className="flex flex-shrink-0 items-center gap-1 text-xs text-muted-foreground text-nowrap">
               View
               <ChevronRight className="h-4 w-4 opacity-50" />
@@ -51,14 +51,14 @@ export const OverflowText: FC<OverflowTextProps> = ({ text, className, variant }
               'bg-status-failed text-red-500': variant === 'error',
             })}
           >
-            <div className="max-w-full whitespace-pre-wrap break-words p-4">{formattedText}</div>
+            <div className="max-w-full whitespace-pre-wrap break-words p-4 font-code">{formattedText}</div>
           </div>
         </DialogContent>
       </Dialog>
     )
   }
   return (
-    <div ref={textRef} className={cn(className, "flex items-center justify-center h-full")}>
+    <div ref={textRef} className={cn(className, "flex items-center justify-center h-full font-code")}>
       {formattedText}
     </div>
   )
