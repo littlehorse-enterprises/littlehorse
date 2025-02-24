@@ -91,16 +91,18 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         return true;
     }
 
+    private boolean isIdValid() {
+        return (!id.equals("") && LHUtil.isValidLHName(id));
+    }
+
     @Override
     public WfRun process(ProcessorExecutionContext processorContext, LHServerConfig config) {
         if (wfSpecName.equals("")) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument 'wf_spec_name'");
         }
 
-        if (id != null) {
-            if ((id.equals("") || !LHUtil.isValidLHName(id))) {
-                throw new LHApiException(Status.INVALID_ARGUMENT, "Optional argument 'id' must be a valid hostname");
-            }
+        if (id != null && !this.isIdValid()) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Optional argument 'id' must be a valid hostname");
         }
 
         GetableManager getableManager = processorContext.getableManager();
