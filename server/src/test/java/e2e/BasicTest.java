@@ -26,9 +26,6 @@ public class BasicTest {
     @LHWorkflow("test-basic")
     private Workflow basicWf;
 
-    private LHConfig config;
-    private LittleHorseBlockingStub client;
-
     private WorkflowVerifier verifier;
 
     @Test
