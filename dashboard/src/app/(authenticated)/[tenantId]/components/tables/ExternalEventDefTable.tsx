@@ -1,10 +1,10 @@
 import { ExternalEventDefId } from 'littlehorse-client/proto'
-import LinkWithTenant from '../LinkWithTenant'
 import { FC, Fragment } from 'react'
 import { SearchResultProps } from '.'
+import { SelectionLink } from '../SelectionLink'
 
 export const ExternalEventDefTable: FC<SearchResultProps> = ({ pages = [] }) => {
-  if (pages.length === 0) {
+  if (pages.every(page => page.results.length === 0)) {
     return <div className="flex min-h-[360px] items-center justify-center text-center italic">No ExternalEventDefs</div>
   }
 
@@ -13,11 +13,9 @@ export const ExternalEventDefTable: FC<SearchResultProps> = ({ pages = [] }) => 
       {pages.map((page, i) => (
         <Fragment key={i}>
           {page.results.map(({ name }: ExternalEventDefId) => (
-            <div key={name} className="my-2 flex gap-2">
-              <LinkWithTenant className="underline hover:no-underline" href={`/externalEventDef/${name}`}>
-                {name}
-              </LinkWithTenant>
-            </div>
+            <SelectionLink key={name} href={`/externalEventDef/${name}`}>
+              <p className="group">{name}</p>
+            </SelectionLink>
           ))}
         </Fragment>
       ))}

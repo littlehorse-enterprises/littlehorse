@@ -1,20 +1,22 @@
-import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import {
   DropdownMenu,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { signOut } from 'next-auth/react'
-import { FC, Fragment } from 'react'
+import { FC } from 'react'
 function classNames(...classes: Array<string | boolean>) {
   return classes.filter(Boolean).join(' ')
 }
 
 export const Principal: FC = () => {
   const { user } = useWhoAmI()
+  const isAuthEnabled = process.env.LHD_OAUTH_ENABLED === 'true'
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="inline-flex w-full justify-center gap-x-1.5 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm">
@@ -25,9 +27,11 @@ export const Principal: FC = () => {
       <DropdownMenuContent className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
         <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => signOut()} className="block w-full px-4 py-2 text-left text-sm">
-          Sign out
-        </DropdownMenuItem>
+        {isAuthEnabled && (
+          <DropdownMenuItem onClick={() => signOut()} className="block w-full px-4 py-2 text-left text-sm">
+            Sign out
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )
