@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 public class MetronomeGetWfRunExecutor {
     public static final String EXHAUSTED_RETRIES = "EXHAUSTED_RETRIES";
     private final ScheduledExecutorService mainExecutor;
-    private final ExecutorService requestsExecutor;
     private final BeatProducer producer;
     private final LHClient lhClient;
     private final Duration frequency;
@@ -35,7 +34,6 @@ public class MetronomeGetWfRunExecutor {
             final BeatProducer producer,
             final LHClient lhClient,
             final Duration frequency,
-            final int threads,
             final int retries,
             final LocalRepository repository) {
         this.producer = producer;
@@ -46,13 +44,20 @@ public class MetronomeGetWfRunExecutor {
 
         mainExecutor = Executors.newSingleThreadScheduledExecutor();
         ShutdownHook.add("Metronome: GetWfRun  Main Executor Thread", () -> closeExecutor(mainExecutor));
-
-        requestsExecutor = Executors.newFixedThreadPool(threads);
-        ShutdownHook.add("Metronome: GetWfRun  Request Executor Thread", () -> closeExecutor(requestsExecutor));
     }
 
     public void start() {
-        mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency.toMillis(), TimeUnit.MILLISECONDS);
+        mainExecutor.scheduleAtFixedRate(
+                () -> {
+                    try {
+                        scheduledRun();
+                    } catch (Exception e) {
+                        log.error("Error when executing workflow run", e);
+                    }
+                },
+                0,
+                frequency.toMillis(),
+                TimeUnit.MILLISECONDS);
         log.info("GetWfRun Metronome Started");
     }
 
@@ -62,62 +67,52 @@ public class MetronomeGetWfRunExecutor {
     }
 
     private void scheduledRun() {
-        log.trace("Executing GetWfRun metronome");
+        log.debug("Executing GetWfRun metronome");
         final Instant searchCriteria = Instant.now().minus(Duration.ofMinutes(1));
         final Map<String, Attempt> attempts = repository.getAttemptsBefore(searchCriteria);
-        attempts.forEach(this::executeRun);
+        attempts.forEach((id, attempt) -> {
+            try {
+                executeRun(id, attempt);
+            } catch (Exception e) {
+                sendError(id, e);
+            }
+        });
     }
 
     private void executeRun(final String id, final Attempt attempt) {
         // exit if it gets exhausted
         if (attempt.getAttempt() >= retries) {
-            exhaustedRetries(id);
+            sendExhaustedRetries(id);
             return;
         }
 
         // update attempt number
         updateAttempt(id, attempt);
 
+        // get status
         final Instant start = Instant.now();
-        final LHStatus status = getCurrentStatus(id);
-        final Instant end = Instant.now();
-
-        // exit is error
-        if (status == null) {
-            return;
-        }
+        final LHStatus status = lhClient.getCanaryWfRun(id).getStatus();
+        final Duration latency = Duration.between(start, Instant.now());
 
         log.debug("GetWfRun {} {}", id, status);
 
-        // check if wf run was successful and exit
+        // send beat and exit
+        sendBeat(id, status, latency);
+
         if (status.equals(LHStatus.COMPLETED)) {
-            sendSuccessfulWfRun(id, status, Duration.between(start, end));
+            repository.delete(id);
             return;
         }
 
-        // this status was not expected, send beat error
-        log.error("GetWfRun returns error {} {}", id, status);
-        sendErrorWfRun(id, status);
+        // log in case of error
+        log.error("GetWfRun returns workflow error {} {}", id, status);
     }
 
-    private void sendErrorWfRun(final String id, final LHStatus status) {
-        final BeatStatus beatStatus = BeatStatus.builder(BeatStatus.Code.ERROR)
+    private void sendBeat(final String id, final LHStatus status, final Duration latency) {
+        final BeatStatus beatStatus = BeatStatus.builder(
+                        status.equals(LHStatus.COMPLETED) ? BeatStatus.Code.OK : BeatStatus.Code.ERROR)
                 .source(BeatStatus.Source.WORKFLOW)
                 .reason(status.name())
-                .build();
-
-        final Beat beat = Beat.builder(BeatType.GET_WF_RUN_REQUEST)
-                .id(id)
-                .status(beatStatus)
-                .build();
-
-        producer.send(beat);
-    }
-
-    private void sendSuccessfulWfRun(final String id, final LHStatus currentStatus, final Duration latency) {
-        final BeatStatus beatStatus = BeatStatus.builder(BeatStatus.Code.OK)
-                .source(BeatStatus.Source.WORKFLOW)
-                .reason(currentStatus.name())
                 .build();
 
         final Beat beat = Beat.builder(BeatType.GET_WF_RUN_REQUEST)
@@ -127,10 +122,9 @@ public class MetronomeGetWfRunExecutor {
                 .build();
 
         producer.send(beat);
-        repository.delete(id);
     }
 
-    private void exhaustedRetries(final String id) {
+    private void sendExhaustedRetries(final String id) {
         repository.delete(id);
 
         final BeatStatus beatStatus = BeatStatus.builder(BeatStatus.Code.ERROR)
@@ -155,28 +149,23 @@ public class MetronomeGetWfRunExecutor {
                         .build());
     }
 
-    private LHStatus getCurrentStatus(final String id) {
-        try {
-            return lhClient.getCanaryWfRun(id).getStatus();
-        } catch (Exception e) {
-            log.error("Error executing getWfRun {}", e.getMessage(), e);
+    private void sendError(final String id, final Exception e) {
+        log.error("Error executing getWfRun {}", e.getMessage(), e);
 
-            final BeatStatus.BeatStatusBuilder statusBuilder = BeatStatus.builder(BeatStatus.Code.ERROR)
-                    .reason(e.getClass().getSimpleName());
+        final BeatStatus.BeatStatusBuilder statusBuilder =
+                BeatStatus.builder(BeatStatus.Code.ERROR).reason(e.getClass().getSimpleName());
 
-            if (e instanceof StatusRuntimeException statusException) {
-                statusBuilder
-                        .source(BeatStatus.Source.GRPC)
-                        .reason(statusException.getStatus().getCode().name());
-            }
-
-            final Beat beat = Beat.builder(BeatType.GET_WF_RUN_REQUEST)
-                    .id(id)
-                    .status(statusBuilder.build())
-                    .build();
-
-            producer.send(beat);
-            return null;
+        if (e instanceof StatusRuntimeException statusException) {
+            statusBuilder
+                    .source(BeatStatus.Source.GRPC)
+                    .reason(statusException.getStatus().getCode().name());
         }
+
+        final Beat beat = Beat.builder(BeatType.GET_WF_RUN_REQUEST)
+                .id(id)
+                .status(statusBuilder.build())
+                .build();
+
+        producer.send(beat);
     }
 }

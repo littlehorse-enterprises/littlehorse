@@ -33,7 +33,7 @@ public class PrometheusExporter implements Handler {
 
     @Override
     public void handle(final Context ctx) {
-        log.trace("Processing metrics request");
+        log.debug("Processing metrics request");
         ctx.contentType(ContentType.PLAIN).result(prometheusRegistry.scrape());
     }
 }

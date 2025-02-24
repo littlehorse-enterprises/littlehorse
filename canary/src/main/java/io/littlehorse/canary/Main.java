@@ -48,8 +48,10 @@ public class Main {
         if (!config.isMetronomeEnabled() && !config.isMetronomeWorkerEnabled()) return;
 
         final LHConfig lhConfig = new LHConfig(config.toLittleHorseConfig().toMap());
+
         final LHClient lhClient = new LHClient(
                 lhConfig, config.getWorkflowName(), config.getWorkflowVersion(), config.getWorkflowRevision());
+
         final BeatProducer producer = new BeatProducer(
                 lhConfig.getApiBootstrapHost(),
                 lhConfig.getApiBootstrapPort(),
@@ -75,17 +77,12 @@ public class Main {
                 config.getMetronomeRunFrequency(),
                 config.getMetronomeRunThreads(),
                 config.getMetronomeRunRequests(),
-                config.getMetronomeSampleRate(),
+                config.getMetronomeSamplePercentage(),
                 repository);
         runWfExecutor.start();
 
         final MetronomeGetWfRunExecutor getWfRunExecutor = new MetronomeGetWfRunExecutor(
-                producer,
-                lhClient,
-                config.getMetronomeGetFrequency(),
-                config.getMetronomeGetThreads(),
-                config.getMetronomeGetRetries(),
-                repository);
+                producer, lhClient, config.getMetronomeGetFrequency(), config.getMetronomeGetRetries(), repository);
         getWfRunExecutor.start();
     }
 

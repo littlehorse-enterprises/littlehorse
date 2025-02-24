@@ -38,8 +38,6 @@ public class MetronomeRunWfExecutor {
     private final int runs;
     private final LocalRepository repository;
     private final int sampleRate;
-    private final boolean sampleDataEnabled;
-    private final int sampleSize;
 
     public MetronomeRunWfExecutor(
             final BeatProducer producer,
@@ -55,14 +53,20 @@ public class MetronomeRunWfExecutor {
         this.runs = runs;
         this.repository = repository;
         this.sampleRate = sampleRate;
-        this.sampleDataEnabled = sampleRate > 0;
-        this.sampleSize = (int) (runs * (sampleRate / 100.0));
 
         mainExecutor = Executors.newSingleThreadScheduledExecutor();
         ShutdownHook.add("Metronome: RunWf Main Executor Thread", () -> closeExecutor(mainExecutor));
 
         requestsExecutor = Executors.newFixedThreadPool(threads);
         ShutdownHook.add("Metronome: RunWf Request Executor Thread", () -> closeExecutor(requestsExecutor));
+    }
+
+    public int getSampleSize() {
+        return (int) (runs * (sampleRate / 100.0));
+    }
+
+    public boolean isSamplingEnabled() {
+        return sampleRate > 0;
     }
 
     public void start() {
@@ -86,7 +90,7 @@ public class MetronomeRunWfExecutor {
     }
 
     private void scheduledRun() {
-        log.trace("Executing run wf metronome");
+        log.debug("Executing run wf metronome");
         final HashSet<Integer> sample = createSampleRuns();
         for (int i = 0; i < runs; i++) {
             final boolean isSampleIteration = sample.contains(i);
@@ -95,13 +99,13 @@ public class MetronomeRunWfExecutor {
     }
 
     private HashSet<Integer> createSampleRuns() {
-        if (!sampleDataEnabled) {
+        if (!isSamplingEnabled()) {
             return new HashSet<>();
         }
         final List<Integer> range =
                 new ArrayList<>(IntStream.range(0, runs).boxed().toList());
         Collections.shuffle(range);
-        final List<Integer> sample = range.subList(0, sampleSize);
+        final List<Integer> sample = range.subList(0, getSampleSize());
         return new HashSet<>(sample);
     }
 

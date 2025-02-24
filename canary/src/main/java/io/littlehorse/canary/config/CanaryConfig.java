@@ -27,7 +27,7 @@ public class CanaryConfig implements Config {
     public static final String METRONOME_RUN_FREQUENCY_MS = "metronome.run.frequency.ms";
     public static final String METRONOME_RUN_THREADS = "metronome.run.threads";
     public static final String METRONOME_RUN_REQUESTS = "metronome.run.requests";
-    public static final String METRONOME_RUN_SAMPLE_RATE = "metronome.run.sample.rate";
+    public static final String METRONOME_RUN_SAMPLE_PERCENTAGE = "metronome.run.sample.percentage";
     public static final String METRONOME_GET_FREQUENCY_MS = "metronome.get.frequency.ms";
     public static final String METRONOME_GET_THREADS = "metronome.get.threads";
     public static final String METRONOME_GET_RETRIES = "metronome.get.retries";
@@ -140,8 +140,8 @@ public class CanaryConfig implements Config {
         return Integer.parseInt(getConfig(METRONOME_RUN_REQUESTS));
     }
 
-    public int getMetronomeSampleRate() {
-        return Integer.parseInt(getConfig(METRONOME_RUN_SAMPLE_RATE));
+    public int getMetronomeSamplePercentage() {
+        return Integer.parseInt(getConfig(METRONOME_RUN_SAMPLE_PERCENTAGE));
     }
 
     public Duration getMetronomeGetFrequency() {

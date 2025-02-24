@@ -52,7 +52,7 @@ public class BeatProducer {
 
         return producer.send(record, (metadata, exception) -> {
             if (exception == null) {
-                log.trace("Producing message {}", beatKey.getType());
+                log.debug("Producing message {}", beatKey.getType());
             } else {
                 log.error("Producing message {}", beatKey.getType(), exception);
             }

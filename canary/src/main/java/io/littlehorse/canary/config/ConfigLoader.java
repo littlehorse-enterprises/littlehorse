@@ -1,7 +1,5 @@
 package io.littlehorse.canary.config;
 
-import static io.littlehorse.canary.config.CanaryConfig.LH_CANARY_PREFIX;
-
 import com.google.common.collect.Streams;
 import io.smallrye.config.PropertiesConfigSource;
 import io.smallrye.config.SmallRyeConfig;
@@ -86,6 +84,6 @@ public class ConfigLoader {
     }
 
     private static Map<String, String> defaultValues() {
-        return Map.of(LH_CANARY_PREFIX + CanaryConfig.METRONOME_RUN_SAMPLE_RATE, "100");
+        return Map.of();
     }
 }
