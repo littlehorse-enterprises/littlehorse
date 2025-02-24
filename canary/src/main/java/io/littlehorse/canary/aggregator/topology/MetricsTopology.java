@@ -39,7 +39,7 @@ public class MetricsTopology {
         // build latency metric stream
         final KStream<MetricKey, MetricValue> latencyMetricsStream = beatsStream
                 // remove messages without latency
-                .filterNot(MetricsTopology::hasLatency)
+                .filter(MetricsTopology::hasLatency)
                 // remove id
                 .groupBy(
                         MetricsTopology::removeWfId, Grouped.with(ProtobufSerdes.BeatKey(), ProtobufSerdes.BeatValue()))

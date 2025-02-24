@@ -21,11 +21,8 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.test.TestRecord;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-// TODO: remove this
-@Disabled("Work in progress")
 class MetricsTopologyTest {
 
     public static final String HOST_1 = "localhost";
@@ -112,6 +109,7 @@ class MetricsTopologyTest {
             Long latency,
             String beatStatus,
             Map<String, String> tags) {
+
         BeatKey.Builder keyBuilder = BeatKey.newBuilder()
                 .setServerHost(host)
                 .setServerPort(port)
@@ -120,7 +118,8 @@ class MetricsTopologyTest {
         BeatValue.Builder valueBuilder = BeatValue.newBuilder().setTime(Timestamps.now());
 
         if (beatStatus != null) {
-            //            keyBuilder.setStatus(beatStatus);
+            keyBuilder.addTags(
+                    Tag.newBuilder().setKey("status").setValue(beatStatus).build());
         }
 
         if (tags != null) {
@@ -167,7 +166,7 @@ class MetricsTopologyTest {
     }
 
     @Test
-    void calculateCountAndLatencyForWfRunRequest() {
+    void shouldCalculateCountAndLatencyForWfRunRequest() {
         BeatType expectedType = BeatType.WF_RUN_REQUEST;
         String expectedTypeName = expectedType.name().toLowerCase();
 
@@ -180,7 +179,7 @@ class MetricsTopologyTest {
     }
 
     @Test
-    void includeBeatTagsIntoMetrics() {
+    void shouldIncludeBeatTagsIntoMetrics() {
         BeatType expectedType = BeatType.WF_RUN_REQUEST;
         String expectedTypeName = expectedType.name().toLowerCase();
         Map<String, String> expectedTags = Map.of("my_tag", "value");
@@ -196,20 +195,22 @@ class MetricsTopologyTest {
     }
 
     @Test
-    void calculateCountForExhaustedRetries() {
-        // TODO: this
-        //        BeatType expectedType = BeatType.GET_WF_RUN_EXHAUSTED_RETRIES;
-        //        String expectedTypeName = expectedType.name().toLowerCase();
+    void shouldCalculateCountForExhaustedRetries() {
+        BeatType expectedType = BeatType.GET_WF_RUN_REQUEST;
+        String expectedTypeName = expectedType.name().toLowerCase();
+        Map<String, String> reason = Map.of("reason", "canary_exhausted_retries");
 
-        //        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), null));
-        //        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), null));
-        //        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), null));
-        //
-        //        assertThat(store.get(newMetricKey("canary_" + expectedTypeName))).isEqualTo(newMetricValue(3.));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), null, "error", reason));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), null, "error", reason));
+        inputTopic.pipeInput(newBeat(expectedType, getRandomId(), null, "error", reason));
+
+        assertThat(getCount()).isEqualTo(1);
+        assertThat(store.get(newMetricKey("canary_" + expectedTypeName, "error", reason)))
+                .isEqualTo(newMetricValue(3.));
     }
 
     @Test
-    void calculateCountAndLatencyForWfRunRequestForTwoStatus() {
+    void shouldCalculateCountAndLatencyForWfRunRequestForTwoStatus() {
         BeatType expectedType = BeatType.WF_RUN_REQUEST;
         String expectedTypeName = expectedType.name().toLowerCase();
 
@@ -230,7 +231,7 @@ class MetricsTopologyTest {
     }
 
     @Test
-    void calculateCountAndLatencyForGetWfRunRequest() {
+    void shouldCalculateCountAndLatencyForGetWfRunRequest() {
         BeatType expectedType = BeatType.GET_WF_RUN_REQUEST;
         String expectedTypeName = expectedType.name().toLowerCase();
 
@@ -244,7 +245,7 @@ class MetricsTopologyTest {
     }
 
     @Test
-    void calculateCountAndLatencyForTaskRunWithNoDuplicated() {
+    void shouldCalculateCountAndLatencyForTaskRunWithNoDuplicated() {
         BeatType expectedType = BeatType.TASK_RUN_EXECUTION;
         String expectedTypeName = expectedType.name().toLowerCase();
 
@@ -257,7 +258,7 @@ class MetricsTopologyTest {
     }
 
     @Test
-    void calculateCountAndLatencyForTaskRunWithDuplicated() {
+    void shouldCalculateCountAndLatencyForTaskRunWithDuplicated() {
         BeatType expectedType = BeatType.TASK_RUN_EXECUTION;
         String expectedTypeName = expectedType.name().toLowerCase();
         String expectedUniqueId = getRandomId();
@@ -272,7 +273,7 @@ class MetricsTopologyTest {
     }
 
     @Test
-    void calculateCountAndLatencyForTaskRunWithTwoDuplicated() {
+    void shouldCalculateCountAndLatencyForTaskRunWithTwoDuplicated() {
         BeatType expectedType = BeatType.TASK_RUN_EXECUTION;
         String expectedTypeName = expectedType.name().toLowerCase();
         String expectedUniqueId1 = getRandomId();
@@ -292,7 +293,7 @@ class MetricsTopologyTest {
     }
 
     @Test
-    void calculateCountAndLatencyForTaskRunWithDuplicatedAndTwoServers() {
+    void shouldCalculateCountAndLatencyForTaskRunWithDuplicatedAndTwoServers() {
         BeatType expectedType = BeatType.TASK_RUN_EXECUTION;
         String expectedTypeName = expectedType.name().toLowerCase();
         String expectedUniqueId = getRandomId();
