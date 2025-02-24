@@ -1,5 +1,6 @@
 package io.littlehorse.server;
 
+import com.google.common.base.Strings;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
@@ -591,7 +592,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
     public void runWf(RunWfRequest req, StreamObserver<WfRun> ctx) {
-        if (req.getWfSpecName().equals("")) {
+        if (Strings.isNullOrEmpty(req.getWfSpecName())) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument 'wf_spec_name'");
         }
 
