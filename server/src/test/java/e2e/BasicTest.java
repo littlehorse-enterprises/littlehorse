@@ -1,6 +1,6 @@
 package e2e;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
@@ -50,15 +50,12 @@ public class BasicTest {
 
     @Test
     public void runWfShouldFailWithInvalidId() {
-        StatusRuntimeException caught = null;
-        try {
+        StatusRuntimeException caught = assertThrows(StatusRuntimeException.class, () -> {
             verifier.prepareRun(basicWf)
                     .waitForStatus(LHStatus.COMPLETED)
                     .start(WfRunId.newBuilder().setId("my_workflow").build());
-        } catch (StatusRuntimeException exn) {
-            caught = exn;
-        }
-        assertNotNull(caught);
+        });
+
         Assertions.assertThat(caught.getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT);
     }
 
