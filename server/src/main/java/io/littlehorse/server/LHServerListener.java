@@ -595,8 +595,10 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument 'wf_spec_name'");
         }
 
-        if ((req.hasId() && req.getId().equals("")) || !LHUtil.isValidLHName(req.getId())) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Optional argument 'id' must be a valid hostname");
+        if (req.hasId()) {
+            if (req.getId().equals("") || !LHUtil.isValidLHName(req.getId())) {
+                throw new LHApiException(Status.INVALID_ARGUMENT, "Optional argument 'id' must be a valid hostname");
+            }
         }
 
         RunWfRequestModel reqModel = LHSerializable.fromProto(req, RunWfRequestModel.class, requestContext());
