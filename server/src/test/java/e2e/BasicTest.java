@@ -1,7 +1,13 @@
 package e2e;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -9,6 +15,7 @@ import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WithWorkers;
 import io.littlehorse.test.WorkflowVerifier;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @LHTest
@@ -20,6 +27,7 @@ public class BasicTest {
     private Workflow basicWf;
 
     private LHConfig config;
+    private LittleHorseBlockingStub client;
 
     private WorkflowVerifier verifier;
 
@@ -38,6 +46,20 @@ public class BasicTest {
             thread.execute("five");
             thread.execute("seven");
         });
+    }
+
+    @Test
+    public void runWfShouldFailWithInvalidId() {
+        StatusRuntimeException caught = null;
+        try {
+            verifier.prepareRun(basicWf)
+                    .waitForStatus(LHStatus.COMPLETED)
+                    .start(WfRunId.newBuilder().setId("my_workflow").build());
+        } catch (StatusRuntimeException exn) {
+            caught = exn;
+        }
+        assertNotNull(caught);
+        Assertions.assertThat(caught.getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT);
     }
 
     public Object basicWorker() {
