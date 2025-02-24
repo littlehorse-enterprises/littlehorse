@@ -661,9 +661,10 @@ public class WorkflowThread
         Fail(null, failureName, message);
     }
     
-    private FailureHandlerDef BuildFailureHandlerDef(NodeOutput node, string error, Action<WorkflowThread> handler) 
+    private FailureHandlerDef BuildFailureHandlerDef(NodeOutput node, string error, Action<WorkflowThread> handler)
     {
-        string threadName = $"exn-handler-{node.NodeName}-{error}";
+        string suffix = !string.IsNullOrEmpty(error) ? $"-{error}" : string.Empty;
+        string threadName = $"exn-handler-{node.NodeName}{suffix}";
 
         threadName = _parent.AddSubThread(threadName, handler);
         
@@ -692,7 +693,7 @@ public class WorkflowThread
     /// <param name="handler">
     /// A ThreadFunction defining a ThreadSpec that specifies how to handle the exception.
     /// </param>
-    void HandleException(NodeOutput node, String exceptionName, Action<WorkflowThread> handler)
+    public void HandleException(NodeOutput node, String exceptionName, Action<WorkflowThread> handler)
     {
         CheckIfWorkflowThreadIsActive();
         var handlerDef = BuildFailureHandlerDef(node, exceptionName, handler);
@@ -710,10 +711,10 @@ public class WorkflowThread
     /// <param name="handler">
     /// A ThreadFunction defining a ThreadSpec that specifies how to handle the exception.
     /// </param>
-    void HandleException(NodeOutput node, Action<WorkflowThread> handler)
+    public void HandleException(NodeOutput node, Action<WorkflowThread> handler)
     {
         CheckIfWorkflowThreadIsActive();
-        var handlerDef = BuildFailureHandlerDef(node, "", handler);
+        var handlerDef = BuildFailureHandlerDef(node, null!, handler);
         handlerDef.AnyFailureOfType = FailureHandlerDef.Types.LHFailureType.FailureTypeException;
         AddFailureHandlerDef(handlerDef, node);
     }
@@ -728,7 +729,7 @@ public class WorkflowThread
     /// <param name="handler">
     /// A ThreadFunction defining a ThreadSpec that specifies how to handle the error.
     /// </param>
-    void HandleAnyFailure(NodeOutput node, Action<WorkflowThread> handler)
+    public void HandleAnyFailure(NodeOutput node, Action<WorkflowThread> handler)
     {
         CheckIfWorkflowThreadIsActive();
         var handlerDef = BuildFailureHandlerDef(node, "any-failure", handler);
