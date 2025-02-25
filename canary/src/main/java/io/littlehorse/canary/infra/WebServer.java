@@ -14,7 +14,7 @@ public class WebServer {
     public WebServer(final int webPort) {
         this.webPort = webPort;
         this.server = Javalin.create();
-        ShutdownHook.add("Prometheus Exporter: Web Server", server::stop);
+        ShutdownHook.add("Web Server", server::stop);
     }
 
     public void addHandler(final HandlerType type, final String path, final Handler handler) {
