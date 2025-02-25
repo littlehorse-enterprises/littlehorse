@@ -9,9 +9,9 @@ from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Opti
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class ScheduledWfRun(_message.Message):
-    __slots__ = ["id", "wf_spec_id", "variables", "parent_wf_run_id", "cron_expression", "created_at"]
+    __slots__ = ("id", "wf_spec_id", "variables", "parent_wf_run_id", "cron_expression", "created_at")
     class VariablesEntry(_message.Message):
-        __slots__ = ["key", "value"]
+        __slots__ = ("key", "value")
         KEY_FIELD_NUMBER: _ClassVar[int]
         VALUE_FIELD_NUMBER: _ClassVar[int]
         key: str

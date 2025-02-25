@@ -15,7 +15,6 @@ import io.grpc.ServerInterceptors;
 import io.grpc.ServerMethodDefinition;
 import io.grpc.ServerServiceDefinition;
 import io.grpc.Status;
-import io.grpc.internal.NoopServerCall;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHConstants;
@@ -254,12 +253,7 @@ public class RequestAuthorizerTest {
                 (ServerMethodDefinition<Object, Object>) Iterables.get(intercept.getMethods(), 0);
         final int numberOfRequests = 10_000;
         Consumer<String> submitCall = principalId -> {
-            ServerCall<Object, Object> stubCall = new NoopServerCall<>() {
-                @Override
-                public MethodDescriptor<Object, Object> getMethodDescriptor() {
-                    return mockCall.getMethodDescriptor();
-                }
-            };
+            ServerCall<Object, Object> stubCall = new FakeServerCall();
             final Metadata mockMetadata = new Metadata();
             mockMetadata.put(LHServerInterceptor.CLIENT_ID, principalId);
             PrincipalModel newPrincipal = new PrincipalModel();
@@ -314,9 +308,36 @@ public class RequestAuthorizerTest {
                 String principalId =
                         contextKey.get().authorization().principalId().toString();
                 assertThat(principalId).isEqualTo(headers.get(LHServerInterceptor.CLIENT_ID));
-                return new NoopServerCall.NoopServerCallListener<>();
+                return new FakeServerCall.FakeServerCallListener<>();
             });
         }
         return definitionBuilder.build();
+    }
+
+    private class FakeServerCall extends ServerCall<Object, Object> {
+
+        public static class FakeServerCallListener<T> extends ServerCall.Listener<T> {}
+
+        @Override
+        public void request(int numMessages) {}
+
+        @Override
+        public void sendHeaders(Metadata headers) {}
+
+        @Override
+        public void sendMessage(Object message) {}
+
+        @Override
+        public void close(Status status, Metadata trailers) {}
+
+        @Override
+        public boolean isCancelled() {
+            return false;
+        }
+
+        @Override
+        public MethodDescriptor<Object, Object> getMethodDescriptor() {
+            return mockCall.getMethodDescriptor();
+        }
     }
 }

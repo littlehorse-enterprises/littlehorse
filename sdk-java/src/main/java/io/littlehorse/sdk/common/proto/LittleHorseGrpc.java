@@ -5,7 +5,7 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
 /**
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.57.2)",
+    value = "by gRPC proto compiler (version 1.70.0)",
     comments = "Source: service.proto")
 @io.grpc.stub.annotations.GrpcGenerated
 public final class LittleHorseGrpc {
@@ -2355,6 +2355,21 @@ public final class LittleHorseGrpc {
   }
 
   /**
+   * Creates a new blocking-style stub that supports all types of calls on the service
+   */
+  public static LittleHorseBlockingV2Stub newBlockingV2Stub(
+      io.grpc.Channel channel) {
+    io.grpc.stub.AbstractStub.StubFactory<LittleHorseBlockingV2Stub> factory =
+      new io.grpc.stub.AbstractStub.StubFactory<LittleHorseBlockingV2Stub>() {
+        @java.lang.Override
+        public LittleHorseBlockingV2Stub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+          return new LittleHorseBlockingV2Stub(channel, callOptions);
+        }
+      };
+    return LittleHorseBlockingV2Stub.newStub(factory, channel);
+  }
+
+  /**
    * Creates a new blocking-style stub that supports unary and streaming output calls on the service
    */
   public static LittleHorseBlockingStub newBlockingStub(
@@ -4072,6 +4087,814 @@ public final class LittleHorseGrpc {
 
   /**
    * A stub to allow clients to do synchronous rpc calls to service LittleHorse.
+   */
+  public static final class LittleHorseBlockingV2Stub
+      extends io.grpc.stub.AbstractBlockingStub<LittleHorseBlockingV2Stub> {
+    private LittleHorseBlockingV2Stub(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      super(channel, callOptions);
+    }
+
+    @java.lang.Override
+    protected LittleHorseBlockingV2Stub build(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      return new LittleHorseBlockingV2Stub(channel, callOptions);
+    }
+
+    /**
+     * <pre>
+     * Creates a TaskDef.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.TaskDef putTaskDef(io.littlehorse.sdk.common.proto.PutTaskDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutTaskDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a TaskDef.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.TaskDef getTaskDef(io.littlehorse.sdk.common.proto.TaskDefId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetTaskDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets the registered task worker group associated with a specific TaskDef.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.TaskWorkerGroup getTaskWorkerGroup(io.littlehorse.sdk.common.proto.TaskDefId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetTaskWorkerGroupMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Creates an ExternalEventDef.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventDef putExternalEventDef(io.littlehorse.sdk.common.proto.PutExternalEventDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutExternalEventDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets an ExternalEventDef.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventDef getExternalEventDef(io.littlehorse.sdk.common.proto.ExternalEventDefId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetExternalEventDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Creates a WorkflowEventDef.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEventDef putWorkflowEventDef(io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutWorkflowEventDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Creates a WfSpec.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpec putWfSpec(io.littlehorse.sdk.common.proto.PutWfSpecRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutWfSpecMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a WfSpec.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpec getWfSpec(io.littlehorse.sdk.common.proto.WfSpecId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetWfSpecMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Returns the latest WfSpec with a specified name (and optionally a specified Major Version).
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpec getLatestWfSpec(io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetLatestWfSpecMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Migrates all WfRun's from one version of a WfSpec onto a newer version of the
+     * same WfSpec. This is useful for long-running WfRun's (eg. a 60-day marketing campaign) where
+     * you must update WfRun's that are in the RUNNING state rather than allowing them to run to
+     * completion.
+     * As of 0.7.2, this feature is only partially implemented.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpec migrateWfSpec(io.littlehorse.sdk.common.proto.MigrateWfSpecRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getMigrateWfSpecMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Creates a UserTaskDef.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskDef putUserTaskDef(io.littlehorse.sdk.common.proto.PutUserTaskDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutUserTaskDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a specific UserTaskDef.
+     * This RPC is highly useful for applications built around
+     * User Tasks. For example, a UI that dynamically displays form fields based on the User Task
+     * might first receive a UserTaskRun, then use that UserTaskRun to look up the UserTaskDef.
+     * The frontend would inspect the UserTaskDef and display a form field on the browser page
+     * for each field in the UserTaskDef.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskDef getUserTaskDef(io.littlehorse.sdk.common.proto.UserTaskDefId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetUserTaskDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Returns the most recent UserTaskDef with a specific name.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskDef getLatestUserTaskDef(io.littlehorse.sdk.common.proto.GetLatestUserTaskDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetLatestUserTaskDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Runs a WfSpec to create a WfRun.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WfRun runWf(io.littlehorse.sdk.common.proto.RunWfRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getRunWfMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Schedule repeated WfRun based on a cron expression
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.ScheduledWfRun scheduleWf(io.littlehorse.sdk.common.proto.ScheduleWfRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getScheduleWfMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for existing schedules
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.ScheduledWfRunIdList searchScheduledWfRun(io.littlehorse.sdk.common.proto.SearchScheduledWfRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchScheduledWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Find a specific ScheduledWfRun
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.ScheduledWfRun getScheduledWfRun(io.littlehorse.sdk.common.proto.ScheduledWfRunId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetScheduledWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a WfRun. Although useful for development and debugging, this RPC is not often
+     * used by applications.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WfRun getWfRun(io.littlehorse.sdk.common.proto.WfRunId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Loads a specific UserTaskRun. It includes information about to whom the UserTask is
+     * currently assigned, history of assignments and reassignments, and any context for that
+     * UserTaskRun which is specific to the WfRun.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskRun getUserTaskRun(io.littlehorse.sdk.common.proto.UserTaskRunId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetUserTaskRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Change the ownership of a UserTaskRun to a new userId, userGroup, or both. The
+     * action will be reflected in your next call to SearchUserTaskRun. This RPC is useful for
+     * applications that are using User Tasks to build an internal task-list and wish to
+     * administer the tasks.
+     * </pre>
+     */
+    public com.google.protobuf.Empty assignUserTaskRun(io.littlehorse.sdk.common.proto.AssignUserTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getAssignUserTaskRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Completes a UserTaskRun. Includes the results of the UserTaskRun, the UserTaskRun Id, and
+     * the userId of the user who completes the UserTaskRun. Results in the UserTask NodeRun being
+     * completed, and unblocks the associated ThreadRun in the WfRun.
+     * This RPC is highly useful for applications built around a WfSpec that uses USER_TASK nodes.
+     * </pre>
+     */
+    public com.google.protobuf.Empty completeUserTaskRun(io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getCompleteUserTaskRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Cancels a UserTaskRun. This will result in an EXCEPTION being propagated to the WfRun.
+     * </pre>
+     */
+    public com.google.protobuf.Empty cancelUserTaskRun(io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getCancelUserTaskRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Saves the results of a UserTaskRun and logs who saved the content.&lt;br/&gt;
+     * &lt;li&gt; Throws FAILED_PRECONDITION if the UserTaskRun is in the `DONE` or `CANCELLED` state.&lt;/li&gt;
+     * &lt;li&gt; If `policy` is set to `FAIL_IF_CLAIMED_BY_OTHER`, returns `FAILED_PRECONDITION` if the
+     * `user_id` field of the `UserTaskRun` does not match the `user_id` of the request.&lt;/li&gt;
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskRun saveUserTaskRunProgress(io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSaveUserTaskRunProgressMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Lists all UserTaskRun's for a specific WfRun. Can be useful when using a WfRun
+     * to model an entity.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskRunList listUserTaskRuns(io.littlehorse.sdk.common.proto.ListUserTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getListUserTaskRunsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a specific NodeRun.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.NodeRun getNodeRun(io.littlehorse.sdk.common.proto.NodeRunId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetNodeRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Lists all NodeRun's for a specific WfRun.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.NodeRunList listNodeRuns(io.littlehorse.sdk.common.proto.ListNodeRunsRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getListNodeRunsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a specific TaskRun.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.TaskRun getTaskRun(io.littlehorse.sdk.common.proto.TaskRunId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetTaskRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Lists all TaskRun's for a specific WfRun.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.TaskRunList listTaskRuns(io.littlehorse.sdk.common.proto.ListTaskRunsRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getListTaskRunsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Get the value of a specific Variable. When using a WfRun to model an entity, this
+     * RPC is useful for retrieving information. It is equivalent to looking up the value of a
+     * column for a specific row in a SQL table.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.Variable getVariable(io.littlehorse.sdk.common.proto.VariableId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetVariableMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * List all Variables from a WfRun.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.VariableList listVariables(io.littlehorse.sdk.common.proto.ListVariablesRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getListVariablesMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Post an ExternalEvent. This RPC is highly useful for
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEvent putExternalEvent(io.littlehorse.sdk.common.proto.PutExternalEventRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutExternalEventMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Get a specific ExternalEvent.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEvent getExternalEvent(io.littlehorse.sdk.common.proto.ExternalEventId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetExternalEventMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Waits for a WorkflowEvent to be thrown by a given WfRun. Returns immediately if a matching
+     * WorkflowEvent has already been thrown; throws a DEADLINE_EXCEEDED error if the WorkflowEvent
+     * is not thrown before the deadline specified by the client.
+     * To specify the deadline, the client should use GRPC deadlines.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEvent awaitWorkflowEvent(io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getAwaitWorkflowEventMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Get a specific WorkflowEventDef.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEventDef getWorkflowEventDef(io.littlehorse.sdk.common.proto.WorkflowEventDefId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetWorkflowEventDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Get a specific WorkflowEvent.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEvent getWorkflowEvent(io.littlehorse.sdk.common.proto.WorkflowEventId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetWorkflowEventMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * List ExternalEvent's for a specific WfRun.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventList listExternalEvents(io.littlehorse.sdk.common.proto.ListExternalEventsRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getListExternalEventsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * List WorkflowEvent's for a specific WfRun.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEventList listWorkflowEvents(io.littlehorse.sdk.common.proto.ListWorkflowEventsRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getListWorkflowEventsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for WfRun's. This RPC is highly useful for applications that store data
+     * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WfRunIdList searchWfRun(io.littlehorse.sdk.common.proto.SearchWfRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for NodeRun's. This RPC is useful for monitoring and finding bugs in
+     * your workflows or Task Workers.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.NodeRunIdList searchNodeRun(io.littlehorse.sdk.common.proto.SearchNodeRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchNodeRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for TaskRun's. This RPC is useful for finding bugs in your Task Workers.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.TaskRunIdList searchTaskRun(io.littlehorse.sdk.common.proto.SearchTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchTaskRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for UserTaskRun's. This RPC is highly useful for applications that connect
+     * human end-users to LittleHorse: it enables you to find all tasks assigned to a specific
+     * person or group of people.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskRunIdList searchUserTaskRun(io.littlehorse.sdk.common.proto.SearchUserTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchUserTaskRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for Variable's. This RPC is highly useful for applications that store data
+     * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.VariableIdList searchVariable(io.littlehorse.sdk.common.proto.SearchVariableRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchVariableMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for ExternalEvent's.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventIdList searchExternalEvent(io.littlehorse.sdk.common.proto.SearchExternalEventRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchExternalEventMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for WorkflowEvents's.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEventIdList searchWorkflowEvent(io.littlehorse.sdk.common.proto.SearchWorkflowEventRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchWorkflowEventMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for TaskDef's.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.TaskDefIdList searchTaskDef(io.littlehorse.sdk.common.proto.SearchTaskDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchTaskDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for UserTaskDef's.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskDefIdList searchUserTaskDef(io.littlehorse.sdk.common.proto.SearchUserTaskDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchUserTaskDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for WfSpec's.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecIdList searchWfSpec(io.littlehorse.sdk.common.proto.SearchWfSpecRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchWfSpecMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for ExternalEventDef's.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.ExternalEventDefIdList searchExternalEventDef(io.littlehorse.sdk.common.proto.SearchExternalEventDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchExternalEventDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for WorkflowEventDef's.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowEventDefIdList searchWorkflowEventDef(io.littlehorse.sdk.common.proto.SearchWorkflowEventDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchWorkflowEventDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Search for all available TenantIds for current Principal
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.TenantIdList searchTenant(io.littlehorse.sdk.common.proto.SearchTenantRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchTenantMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.PrincipalIdList searchPrincipal(io.littlehorse.sdk.common.proto.SearchPrincipalRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchPrincipalMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Used by the Task Worker to:
+     * 1. Tell the LH Server that the Task Worker has joined the Task Worker Group.
+     * 2. Receive the assignemnt of LH Server's to poll from.
+     * Generally, you won't use this request manually.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.RegisterTaskWorkerResponse registerTaskWorker(io.littlehorse.sdk.common.proto.RegisterTaskWorkerRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getRegisterTaskWorkerMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Used by Task Workers to listen for TaskRuns on the Task Queue. Generally, you won't
+     * use this RPC manually.
+     * </pre>
+     */
+    @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/10918")
+    public io.grpc.stub.BlockingClientCall<io.littlehorse.sdk.common.proto.PollTaskRequest, io.littlehorse.sdk.common.proto.PollTaskResponse>
+        pollTask() {
+      return io.grpc.stub.ClientCalls.blockingBidiStreamingCall(
+          getChannel(), getPollTaskMethod(), getCallOptions());
+    }
+
+    /**
+     * <pre>
+     * Used by Task Workers to report the result of a TaskRun. Generally, you won't use
+     * this rpc manually.
+     * </pre>
+     */
+    public com.google.protobuf.Empty reportTask(io.littlehorse.sdk.common.proto.ReportTaskRun request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getReportTaskMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Move a WfRun or a specific ThreadRun in that WfRun to the HALTED state.
+     * </pre>
+     */
+    public com.google.protobuf.Empty stopWfRun(io.littlehorse.sdk.common.proto.StopWfRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getStopWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Resumes a WfRun or a specific ThreadRun of a WfRun.
+     * </pre>
+     */
+    public com.google.protobuf.Empty resumeWfRun(io.littlehorse.sdk.common.proto.ResumeWfRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getResumeWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Rescues a failed ThreadRun (in the ERROR state only) by restarting it from
+     * the point of failure. Useful if a bug in Task Worker implementation caused
+     * a WfRun to fail and you did not have a FailureHandler for that NodeRun.
+     * The specified `ThreadRun` must be in a state where it's latest `NodeRun` is: &lt;br/&gt;
+     * - In the `ERROR` state.&lt;br/&gt;
+     * - Has no `FailureHandler` `ThreadRun`s &lt;br/&gt;
+     * - The parent `ThreadRun`, or any parent of the parent, has not handled the `Failure`
+     * yet.
+     * If that is not true, then the `ThreadRun` cannot be rescued and the request
+     * will return `FAILED_PRECONDITION`.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WfRun rescueThreadRun(io.littlehorse.sdk.common.proto.RescueThreadRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getRescueThreadRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes a WfRun. The WfRun cannot be in the RUNNING state.
+     * </pre>
+     */
+    public com.google.protobuf.Empty deleteWfRun(io.littlehorse.sdk.common.proto.DeleteWfRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes a TaskDef.
+     * </pre>
+     */
+    public com.google.protobuf.Empty deleteTaskDef(io.littlehorse.sdk.common.proto.DeleteTaskDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteTaskDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes a WfSpec.
+     * </pre>
+     */
+    public com.google.protobuf.Empty deleteWfSpec(io.littlehorse.sdk.common.proto.DeleteWfSpecRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteWfSpecMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes a UserTaskDef.
+     * </pre>
+     */
+    public com.google.protobuf.Empty deleteUserTaskDef(io.littlehorse.sdk.common.proto.DeleteUserTaskDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteUserTaskDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes an ExternalEventDef.
+     * </pre>
+     */
+    public com.google.protobuf.Empty deleteExternalEventDef(io.littlehorse.sdk.common.proto.DeleteExternalEventDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteExternalEventDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.google.protobuf.Empty deleteWorkflowEventDef(io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteWorkflowEventDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes a `Principal`. Fails with `FAILED_PRECONDITION` if the specified `Principal`
+     * is the last remaining `Principal` with admin permissions. Admin permissions are defined
+     * as having the `global_acls` of `ALL_ACTIONS` over the `ACL_ALL_RESOURCES` scope.
+     * </pre>
+     */
+    public com.google.protobuf.Empty deletePrincipal(io.littlehorse.sdk.common.proto.DeletePrincipalRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeletePrincipalMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Deletes a scheduled run and prevents any further associated WfRun from being executed.
+     * </pre>
+     */
+    public com.google.protobuf.Empty deleteScheduledWfRun(io.littlehorse.sdk.common.proto.DeleteScheduledWfRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteScheduledWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Returns TaskDef Metrics for a specific TaskDef and a specific time window.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.TaskDefMetrics getTaskDefMetricsWindow(io.littlehorse.sdk.common.proto.TaskDefMetricsQueryRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetTaskDefMetricsWindowMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Returns WfSpec Metrics for a specific WfSpec and a specific time window.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WfSpecMetrics getWfSpecMetricsWindow(io.littlehorse.sdk.common.proto.WfSpecMetricsQueryRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetWfSpecMetricsWindowMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Returns a list of TaskDef Metrics Windows.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.ListTaskMetricsResponse listTaskDefMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getListTaskDefMetricsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Returns a list of WfSpec Metrics Windows.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.ListWfMetricsResponse listWfSpecMetrics(io.littlehorse.sdk.common.proto.ListWfMetricsRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getListWfSpecMetricsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Creates another Tenant in the LH Server.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.Tenant putTenant(io.littlehorse.sdk.common.proto.PutTenantRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutTenantMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Gets a Tenant from the LH Server.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.Tenant getTenant(io.littlehorse.sdk.common.proto.TenantId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetTenantMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Creates an Principal.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.Principal putPrincipal(io.littlehorse.sdk.common.proto.PutPrincipalRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutPrincipalMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.sdk.common.proto.Principal getPrincipal(io.littlehorse.sdk.common.proto.PrincipalId request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetPrincipalMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Returns the Principal of the caller.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.Principal whoami(com.google.protobuf.Empty request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getWhoamiMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets the version of the LH Server.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.ServerVersion getServerVersion(com.google.protobuf.Empty request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetServerVersionMethod(), getCallOptions(), request);
+    }
+  }
+
+  /**
+   * A stub to allow clients to do limited synchronous rpc calls to service LittleHorse.
    */
   public static final class LittleHorseBlockingStub
       extends io.grpc.stub.AbstractBlockingStub<LittleHorseBlockingStub> {
