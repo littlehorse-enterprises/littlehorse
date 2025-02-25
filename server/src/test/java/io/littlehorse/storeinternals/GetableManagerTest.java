@@ -50,7 +50,6 @@ import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -147,7 +146,6 @@ public class GetableManagerTest {
         assertThat(storedTaskRunModel).isNull();
     }
 
-    @NotNull
     private List<String> getAllKeys(KeyValueStore<String, Bytes> store) {
         KeyValueIterator<String, Bytes> all = store.all();
         List<String> keys = new LinkedList<>();
