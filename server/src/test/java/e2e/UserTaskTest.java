@@ -7,6 +7,7 @@ import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
+import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.ListUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
@@ -40,6 +41,7 @@ import io.littlehorse.test.WorkflowVerifier;
 import io.littlehorse.test.internal.TestExecutionContext;
 import io.littlehorse.test.internal.step.SearchResultCaptor;
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import org.assertj.core.api.Assertions;
@@ -70,6 +72,9 @@ public class UserTaskTest {
 
     @LHWorkflow("worker-context-receives-user-details")
     private Workflow workerContextReceivesUserDetails;
+
+    @LHWorkflow("user-task-assignment")
+    private Workflow userTaskAssignment;
 
     @LHUserTaskForm(USER_TASK_DEF_NAME)
     private MyForm myForm = new MyForm();
@@ -324,6 +329,22 @@ public class UserTaskTest {
     }
 
     @Test
+    void shouldValidateUserIdOrUserGroup() {
+        workflowVerifier
+                .prepareRun(userTaskAssignment)
+                .waitForStatus(ERROR)
+                .waitForNodeRunStatus(0, 1, ERROR)
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    List<Failure> failures = nodeRun.getFailuresList();
+                    Assertions.assertThat(failures).hasSize(1);
+                    Failure nodeFailure = failures.get(0);
+                    Assertions.assertThat(nodeFailure.getFailureName()).isEqualTo("VAR_ERROR");
+                    Assertions.assertThat(nodeFailure.getMessage()).isEqualTo("Invalid user task assignment");
+                })
+                .start();
+    }
+
+    @Test
     void verifyWorkerContextHasUserIdOrUserGroup() {
         workflowVerifier
                 .prepareRun(workerContextReceivesUserDetails)
@@ -421,6 +442,15 @@ public class UserTaskTest {
             entrypointThread.handleException(formOutput, "no-response", userTaskCanceledHandler -> {
                 userTaskCanceledHandler.execute("user-task-canceled");
             });
+        });
+    }
+
+    @LHWorkflow("user-task-assignment")
+    public Workflow buildUserTaskAssignmentWorkflow() {
+        return new WorkflowImpl("user-task-assignment", wf -> {
+            WfRunVariable userId = wf.declareStr("userId");
+            WfRunVariable userGroup = wf.declareStr("userGroup");
+            wf.assignUserTask(USER_TASK_DEF_NAME, userId, userGroup);
         });
     }
 
