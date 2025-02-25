@@ -154,7 +154,6 @@ public class MetronomeRunWfExecutor {
 
             final Beat beat = Beat.builder(BeatType.WF_RUN_REQUEST)
                     .id(wfRunId)
-                    .latency(Duration.between(startedAt, Instant.now()))
                     .status(statusBuilder.build())
                     .build();
 
