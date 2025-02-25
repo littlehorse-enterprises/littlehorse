@@ -30,9 +30,9 @@ public class Main {
             final CanaryConfig config = args.length > 0 ? ConfigLoader.load(Paths.get(args[0])) : ConfigLoader.load();
             final PrometheusExporter exporter = new PrometheusExporter(config.getCommonTags());
 
-            createTopics(config);
-            startMetronome(config);
-            startAggregator(config, exporter);
+            maybeCreateTopics(config);
+            maybeStartMetronome(config);
+            maybeStartAggregator(config, exporter);
             startWebServer(config, exporter);
         } catch (Exception e) {
             log.error("Error starting application", e);
@@ -44,7 +44,7 @@ public class Main {
         latch.await();
     }
 
-    private static void startMetronome(final CanaryConfig config) {
+    private static void maybeStartMetronome(final CanaryConfig config) {
         if (!config.isMetronomeEnabled() && !config.isMetronomeWorkerEnabled()) return;
 
         final LHConfig lhConfig = new LHConfig(config.toLittleHorseConfig().toMap());
@@ -60,12 +60,12 @@ public class Main {
                 config.toKafkaConfig().toMap(),
                 config.getMetronomeBeatExtraTags());
 
-        startMetronomeWorker(config, producer, lhConfig);
-        registerWorkflow(config, lhClient);
-        startMetronomeExecutors(config, producer, lhClient);
+        maybeStartMetronomeWorker(config, producer, lhConfig);
+        maybeRegisterWorkflow(config, lhClient);
+        maybeStartMetronomeExecutors(config, producer, lhClient);
     }
 
-    private static void startMetronomeExecutors(
+    private static void maybeStartMetronomeExecutors(
             final CanaryConfig config, final BeatProducer producer, final LHClient lhClient) {
         if (!config.isMetronomeEnabled()) return;
 
@@ -86,7 +86,7 @@ public class Main {
         getWfRunExecutor.start();
     }
 
-    private static void registerWorkflow(final CanaryConfig config, final LHClient lhClient) {
+    private static void maybeRegisterWorkflow(final CanaryConfig config, final LHClient lhClient) {
         if (!config.isWorkflowCreationEnabled()) return;
 
         final MetronomeWorkflow workflow =
@@ -94,7 +94,7 @@ public class Main {
         workflow.register();
     }
 
-    private static void startMetronomeWorker(
+    private static void maybeStartMetronomeWorker(
             final CanaryConfig config, final BeatProducer producer, final LHConfig lhConfig) {
         if (!config.isMetronomeWorkerEnabled()) return;
 
@@ -108,7 +108,7 @@ public class Main {
         webServer.start();
     }
 
-    private static void startAggregator(final CanaryConfig config, final PrometheusExporter prometheusExporter) {
+    private static void maybeStartAggregator(final CanaryConfig config, final PrometheusExporter prometheusExporter) {
         if (!config.isAggregatorEnabled()) return;
 
         final Aggregator aggregator = new Aggregator(
@@ -121,7 +121,7 @@ public class Main {
         aggregator.start();
     }
 
-    private static void createTopics(final CanaryConfig config) {
+    private static void maybeCreateTopics(final CanaryConfig config) {
         if (!config.isTopicCreationEnabled()) return;
 
         final NewTopic topic =
