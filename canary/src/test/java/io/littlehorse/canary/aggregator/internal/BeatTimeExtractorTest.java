@@ -17,7 +17,7 @@ class BeatTimeExtractorTest {
     }
 
     @Test
-    void returnDefaultTimeIfMetadataIsNotPresent() {
+    void shouldReturnDefaultTimeIfMetadataIsNotPresent() {
         BeatTimeExtractor extractor = new BeatTimeExtractor();
 
         long expectedTime = faker.number().randomNumber();
@@ -28,7 +28,7 @@ class BeatTimeExtractorTest {
     }
 
     @Test
-    void returnTheRightTimestamp() {
+    void shouldExtractTimestampFromValue() {
         BeatTimeExtractor extractor = new BeatTimeExtractor();
 
         long expectedTime = faker.number().randomNumber();
@@ -43,7 +43,7 @@ class BeatTimeExtractorTest {
     }
 
     @Test
-    void returnDefaultTimeIfWrongClassWassPassed() {
+    void shouldReturnDefaultTimeIfWrongClassWasPassed() {
         BeatTimeExtractor extractor = new BeatTimeExtractor();
 
         long expectedTime = faker.number().randomNumber();

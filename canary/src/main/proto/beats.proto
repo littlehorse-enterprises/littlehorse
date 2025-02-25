@@ -11,12 +11,6 @@ enum BeatType {
   WF_RUN_REQUEST = 0;
   GET_WF_RUN_REQUEST = 1;
   TASK_RUN_EXECUTION = 2;
-  GET_WF_RUN_EXHAUSTED_RETRIES = 3;
-}
-
-enum BeatStatus {
-  OK = 0;
-  ERROR = 1;
 }
 
 message BeatKey {
@@ -24,9 +18,8 @@ message BeatKey {
   int32 server_port = 2;
   string server_version = 3;
   BeatType type = 4;
-  optional string status = 5;
-  optional string id = 6;
-  repeated Tag tags = 7;
+  optional string id = 5;
+  repeated Tag tags = 6;
 }
 
 message BeatValue {
