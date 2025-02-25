@@ -3,12 +3,15 @@ package io.littlehorse.canary.metronome;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import io.grpc.StatusException;
+import io.grpc.StatusRuntimeException;
+import io.littlehorse.canary.infra.ShutdownHook;
+import io.littlehorse.canary.littlehorse.LHClient;
 import io.littlehorse.canary.metronome.internal.BeatProducer;
 import io.littlehorse.canary.metronome.internal.LocalRepository;
-import io.littlehorse.canary.proto.BeatStatus;
+import io.littlehorse.canary.metronome.model.Beat;
+import io.littlehorse.canary.metronome.model.BeatStatus;
 import io.littlehorse.canary.proto.BeatType;
-import io.littlehorse.canary.util.LHClient;
-import io.littlehorse.canary.util.ShutdownHook;
 import io.littlehorse.sdk.common.proto.WfRun;
 import java.time.Duration;
 import java.time.Instant;
@@ -31,11 +34,10 @@ public class MetronomeRunWfExecutor {
     private final ScheduledExecutorService mainExecutor;
     private final ExecutorService requestsExecutor;
     private final LHClient lhClient;
+    private final Duration frequency;
     private final int runs;
     private final LocalRepository repository;
     private final int sampleRate;
-    private final boolean sampleDataEnabled;
-    private final int sampleSize;
 
     public MetronomeRunWfExecutor(
             final BeatProducer producer,
@@ -47,19 +49,28 @@ public class MetronomeRunWfExecutor {
             final LocalRepository repository) {
         this.producer = producer;
         this.lhClient = lhClient;
+        this.frequency = frequency;
         this.runs = runs;
         this.repository = repository;
         this.sampleRate = sampleRate;
-        this.sampleDataEnabled = sampleRate > 0;
-        this.sampleSize = (int) (runs * (sampleRate / 100.0));
 
         mainExecutor = Executors.newSingleThreadScheduledExecutor();
         ShutdownHook.add("Metronome: RunWf Main Executor Thread", () -> closeExecutor(mainExecutor));
-        mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency.toMillis(), TimeUnit.MILLISECONDS);
 
         requestsExecutor = Executors.newFixedThreadPool(threads);
         ShutdownHook.add("Metronome: RunWf Request Executor Thread", () -> closeExecutor(requestsExecutor));
+    }
 
+    public int getSampleSize() {
+        return (int) (runs * (sampleRate / 100.0));
+    }
+
+    public boolean isSamplingEnabled() {
+        return sampleRate > 0;
+    }
+
+    public void start() {
+        mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency.toMillis(), TimeUnit.MILLISECONDS);
         log.info("RunWf Metronome Started");
     }
 
@@ -78,12 +89,8 @@ public class MetronomeRunWfExecutor {
         Futures.addCallback(future, new MetronomeCallback(wfId, start, isSampleIteration), requestsExecutor);
     }
 
-    private void sendMetricBeat(final String wfId, final Instant start, final String status) {
-        producer.sendFuture(wfId, BeatType.WF_RUN_REQUEST, status, Duration.between(start, Instant.now()));
-    }
-
     private void scheduledRun() {
-        log.trace("Executing run wf metronome");
+        log.debug("Executing run wf metronome");
         final HashSet<Integer> sample = createSampleRuns();
         for (int i = 0; i < runs; i++) {
             final boolean isSampleIteration = sample.contains(i);
@@ -92,13 +99,13 @@ public class MetronomeRunWfExecutor {
     }
 
     private HashSet<Integer> createSampleRuns() {
-        if (!sampleDataEnabled) {
+        if (!isSamplingEnabled()) {
             return new HashSet<>();
         }
         final List<Integer> range =
                 new ArrayList<>(IntStream.range(0, runs).boxed().toList());
         Collections.shuffle(range);
-        final List<Integer> sample = range.subList(0, sampleSize);
+        final List<Integer> sample = range.subList(0, getSampleSize());
         return new HashSet<>(sample);
     }
 
@@ -115,18 +122,42 @@ public class MetronomeRunWfExecutor {
 
         @Override
         public void onSuccess(final WfRun result) {
-            lhClient.incrementWfRunCountMetric();
-            if (isSampleIteration) {
-                sendMetricBeat(wfRunId, startedAt, BeatStatus.OK.name());
-                repository.save(wfRunId, 0);
-            }
+            if (!isSampleIteration) return;
+
+            final Beat beat = Beat.builder(BeatType.WF_RUN_REQUEST)
+                    .id(wfRunId)
+                    .latency(Duration.between(startedAt, Instant.now()))
+                    .status(BeatStatus.builder(BeatStatus.Code.OK).build())
+                    .build();
+            producer.send(beat);
+            repository.save(wfRunId, 0);
         }
 
         @Override
         public void onFailure(final Throwable t) {
-            lhClient.incrementWfRunCountMetric();
             log.error("Error executing runWf {}", t.getMessage(), t);
-            sendMetricBeat(wfRunId, startedAt, BeatStatus.ERROR.name());
+
+            final BeatStatus.BeatStatusBuilder statusBuilder = BeatStatus.builder(BeatStatus.Code.ERROR)
+                    .reason(t.getClass().getSimpleName());
+
+            if (t instanceof StatusRuntimeException statusException) {
+                statusBuilder
+                        .source(BeatStatus.Source.GRPC)
+                        .reason(statusException.getStatus().getCode().name());
+            }
+
+            if (t instanceof StatusException statusException) {
+                statusBuilder
+                        .source(BeatStatus.Source.GRPC)
+                        .reason(statusException.getStatus().getCode().name());
+            }
+
+            final Beat beat = Beat.builder(BeatType.WF_RUN_REQUEST)
+                    .id(wfRunId)
+                    .status(statusBuilder.build())
+                    .build();
+
+            producer.send(beat);
         }
     }
 }

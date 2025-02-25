@@ -23,7 +23,7 @@ class ConfigLoaderTest {
 
     @Test
     @ClearEnvironmentVariable(key = ENV_VARIABLE_NAME)
-    void loadFromFile() throws IOException {
+    void shouldLoadConfigurationsFromFile() throws IOException {
         Path configPath = createTemporaryProperties();
 
         CanaryConfig canaryConfig = ConfigLoader.load(configPath);
@@ -33,7 +33,7 @@ class ConfigLoaderTest {
 
     @Test
     @SetEnvironmentVariable(key = ENV_VARIABLE_NAME, value = EXPECTED_ENV_VALUE)
-    void overwriteFileConfigWithEnvConfigs() throws IOException {
+    void shouldOverwriteFileConfigWithEnvConfigs() throws IOException {
         Path configPath = createTemporaryProperties();
 
         CanaryConfig canaryConfig = ConfigLoader.load(configPath);
@@ -43,7 +43,7 @@ class ConfigLoaderTest {
 
     @Test
     @ClearEnvironmentVariable(key = ENV_VARIABLE_NAME)
-    void loadFromPropertiesObject() {
+    void shouldLoadFromPropertiesObject() {
         Properties properties = new Properties();
         properties.put(KEY, EXPECTED_PROPERTIES_VALUE);
 
@@ -54,7 +54,7 @@ class ConfigLoaderTest {
 
     @Test
     @SetEnvironmentVariable(key = ENV_VARIABLE_NAME, value = EXPECTED_ENV_VALUE)
-    void overwritePropertiesWithEnvConfigs() {
+    void shouldOverwritePropertiesWithEnvConfigs() {
         Properties properties = new Properties();
         properties.put(EXPECTED_KEY, EXPECTED_PROPERTIES_VALUE);
 

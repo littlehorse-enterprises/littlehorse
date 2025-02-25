@@ -661,9 +661,10 @@ public class WorkflowThread
         Fail(null, failureName, message);
     }
     
-    private FailureHandlerDef BuildFailureHandlerDef(NodeOutput node, string error, Action<WorkflowThread> handler) 
+    private FailureHandlerDef BuildFailureHandlerDef(NodeOutput node, string error, Action<WorkflowThread> handler)
     {
-        string threadName = $"exn-handler-{node.NodeName}-{error}";
+        string suffix = !string.IsNullOrEmpty(error) ? $"-{error}" : string.Empty;
+        string threadName = $"exn-handler-{node.NodeName}{suffix}";
 
         threadName = _parent.AddSubThread(threadName, handler);
         
@@ -676,5 +677,62 @@ public class WorkflowThread
         Node lastNode = FindNode(node.NodeName);
 
         lastNode.FailureHandlers.Add(handlerDef);
+    }
+    
+    /// <summary>
+    /// Attaches an Exception Handler to the specified NodeOutput, enabling it to handle specific
+    /// types of exceptions as defined by the 'exceptionName' parameter. If 'exceptionName' is null,
+    /// the handler will catch all exceptions.
+    /// </summary>
+    /// <param name="node">
+    /// The NodeOutput instance to which the Exception Handler will be attached.
+    /// </param>
+    /// <param name="exceptionName">
+    /// The name of the specific exception to handle. If set to null, the handler will catch all exceptions.
+    /// </param>
+    /// <param name="handler">
+    /// A ThreadFunction defining a ThreadSpec that specifies how to handle the exception.
+    /// </param>
+    public void HandleException(NodeOutput node, String exceptionName, Action<WorkflowThread> handler)
+    {
+        CheckIfWorkflowThreadIsActive();
+        var handlerDef = BuildFailureHandlerDef(node, exceptionName, handler);
+        handlerDef.SpecificFailure = exceptionName;
+        AddFailureHandlerDef(handlerDef, node);
+    }
+    
+    /// <summary>
+    /// Attaches an Exception Handler to the specified NodeOutput, enabling it to handle any
+    /// types of exceptions.
+    /// </summary>
+    /// <param name="node">
+    /// The NodeOutput instance to which the Exception Handler will be attached.
+    /// </param>
+    /// <param name="handler">
+    /// A ThreadFunction defining a ThreadSpec that specifies how to handle the exception.
+    /// </param>
+    public void HandleException(NodeOutput node, Action<WorkflowThread> handler)
+    {
+        CheckIfWorkflowThreadIsActive();
+        var handlerDef = BuildFailureHandlerDef(node, null!, handler);
+        handlerDef.AnyFailureOfType = FailureHandlerDef.Types.LHFailureType.FailureTypeException;
+        AddFailureHandlerDef(handlerDef, node);
+    }
+
+    /// <summary>
+    /// Attaches a Failure Handler to the specified NodeOutput, allowing it manages any type of errors or exceptions.
+    /// types of exceptions.
+    /// </summary>
+    /// <param name="node">
+    /// The NodeOutput instance to which the Error Handler will be attached.
+    /// </param>
+    /// <param name="handler">
+    /// A ThreadFunction defining a ThreadSpec that specifies how to handle the error.
+    /// </param>
+    public void HandleAnyFailure(NodeOutput node, Action<WorkflowThread> handler)
+    {
+        CheckIfWorkflowThreadIsActive();
+        var handlerDef = BuildFailureHandlerDef(node, "any-failure", handler);
+        AddFailureHandlerDef(handlerDef, node);
     }
 }

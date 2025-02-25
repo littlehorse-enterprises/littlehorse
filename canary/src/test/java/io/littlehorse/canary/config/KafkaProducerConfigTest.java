@@ -4,28 +4,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
-@Slf4j
 class KafkaProducerConfigTest {
 
     public static final String EXPECTED_KEY = "bootstrap.servers";
     public static final String EXPECTED_VALUE = "localhost:9092";
 
     @Test
-    void toMapMustCreateCopy() {
+    void shouldCreateCopyOfInputMap() {
         Map<String, Object> input = Map.of("kafka." + EXPECTED_KEY, EXPECTED_VALUE);
         KafkaConfig kafkaAdminConfig = new KafkaConfig(input);
 
         Map<String, Object> output = kafkaAdminConfig.toMap();
-        log.info("Configs: {}", output);
 
         assertThat(output).isNotSameAs(input);
     }
 
     @Test
-    void filterMap() {
+    void shouldFilterInvalidConfigurations() {
         Map<String, Object> input =
                 Map.of("kafka." + EXPECTED_KEY, EXPECTED_VALUE, "not.a.valid.key", "To be filtered");
         KafkaConfig kafkaAdminConfig = new KafkaConfig(input);
@@ -36,7 +33,7 @@ class KafkaProducerConfigTest {
     }
 
     @Test
-    void mustKeepKafkaConfigs() {
+    void shouldKeepKafkaConfigs() {
         Map<String, Object> input = Map.of(
                 "kafka.key.serializer", "org.apache.kafka.common.serialization.StringSerializer",
                 "kafka.value.serializer", "org.apache.kafka.common.serialization.BytesSerializer",
@@ -53,7 +50,6 @@ class KafkaProducerConfigTest {
         KafkaConfig kafkaAdminConfig = new KafkaConfig(input);
 
         Map<String, Object> output = kafkaAdminConfig.toMap();
-        log.info("Configs: {}", output);
 
         assertThat(output).isEqualTo(expected);
     }
