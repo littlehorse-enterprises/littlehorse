@@ -8,19 +8,19 @@ public interface PartitionMetricIdOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.MetricId id = 1;</code>
+   * <code>.littlehorse.MetricSpecId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
-   * <code>.littlehorse.MetricId id = 1;</code>
+   * <code>.littlehorse.MetricSpecId id = 1;</code>
    * @return The id.
    */
-  io.littlehorse.sdk.common.proto.MetricId getId();
+  io.littlehorse.sdk.common.proto.MetricSpecId getId();
   /**
-   * <code>.littlehorse.MetricId id = 1;</code>
+   * <code>.littlehorse.MetricSpecId id = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.MetricIdOrBuilder getIdOrBuilder();
+  io.littlehorse.sdk.common.proto.MetricSpecIdOrBuilder getIdOrBuilder();
 
   /**
    * <code>.littlehorse.TenantId tenant_id = 2;</code>

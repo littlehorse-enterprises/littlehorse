@@ -39,9 +39,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int ID_FIELD_NUMBER = 1;
-  private io.littlehorse.sdk.common.proto.MetricId id_;
+  private io.littlehorse.sdk.common.proto.MetricSpecId id_;
   /**
-   * <code>.littlehorse.MetricId id = 1;</code>
+   * <code>.littlehorse.MetricSpecId id = 1;</code>
    * @return Whether the id field is set.
    */
   @java.lang.Override
@@ -49,19 +49,19 @@ private static final long serialVersionUID = 0L;
     return id_ != null;
   }
   /**
-   * <code>.littlehorse.MetricId id = 1;</code>
+   * <code>.littlehorse.MetricSpecId id = 1;</code>
    * @return The id.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.MetricId getId() {
-    return id_ == null ? io.littlehorse.sdk.common.proto.MetricId.getDefaultInstance() : id_;
+  public io.littlehorse.sdk.common.proto.MetricSpecId getId() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.MetricSpecId.getDefaultInstance() : id_;
   }
   /**
-   * <code>.littlehorse.MetricId id = 1;</code>
+   * <code>.littlehorse.MetricSpecId id = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.MetricIdOrBuilder getIdOrBuilder() {
-    return id_ == null ? io.littlehorse.sdk.common.proto.MetricId.getDefaultInstance() : id_;
+  public io.littlehorse.sdk.common.proto.MetricSpecIdOrBuilder getIdOrBuilder() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.MetricSpecId.getDefaultInstance() : id_;
   }
 
   public static final int TENANT_ID_FIELD_NUMBER = 2;
@@ -464,31 +464,31 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.MetricId id_;
+    private io.littlehorse.sdk.common.proto.MetricSpecId id_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.MetricId, io.littlehorse.sdk.common.proto.MetricId.Builder, io.littlehorse.sdk.common.proto.MetricIdOrBuilder> idBuilder_;
+        io.littlehorse.sdk.common.proto.MetricSpecId, io.littlehorse.sdk.common.proto.MetricSpecId.Builder, io.littlehorse.sdk.common.proto.MetricSpecIdOrBuilder> idBuilder_;
     /**
-     * <code>.littlehorse.MetricId id = 1;</code>
+     * <code>.littlehorse.MetricSpecId id = 1;</code>
      * @return Whether the id field is set.
      */
     public boolean hasId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.littlehorse.MetricId id = 1;</code>
+     * <code>.littlehorse.MetricSpecId id = 1;</code>
      * @return The id.
      */
-    public io.littlehorse.sdk.common.proto.MetricId getId() {
+    public io.littlehorse.sdk.common.proto.MetricSpecId getId() {
       if (idBuilder_ == null) {
-        return id_ == null ? io.littlehorse.sdk.common.proto.MetricId.getDefaultInstance() : id_;
+        return id_ == null ? io.littlehorse.sdk.common.proto.MetricSpecId.getDefaultInstance() : id_;
       } else {
         return idBuilder_.getMessage();
       }
     }
     /**
-     * <code>.littlehorse.MetricId id = 1;</code>
+     * <code>.littlehorse.MetricSpecId id = 1;</code>
      */
-    public Builder setId(io.littlehorse.sdk.common.proto.MetricId value) {
+    public Builder setId(io.littlehorse.sdk.common.proto.MetricSpecId value) {
       if (idBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -502,10 +502,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.MetricId id = 1;</code>
+     * <code>.littlehorse.MetricSpecId id = 1;</code>
      */
     public Builder setId(
-        io.littlehorse.sdk.common.proto.MetricId.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.MetricSpecId.Builder builderForValue) {
       if (idBuilder_ == null) {
         id_ = builderForValue.build();
       } else {
@@ -516,13 +516,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.MetricId id = 1;</code>
+     * <code>.littlehorse.MetricSpecId id = 1;</code>
      */
-    public Builder mergeId(io.littlehorse.sdk.common.proto.MetricId value) {
+    public Builder mergeId(io.littlehorse.sdk.common.proto.MetricSpecId value) {
       if (idBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0) &&
           id_ != null &&
-          id_ != io.littlehorse.sdk.common.proto.MetricId.getDefaultInstance()) {
+          id_ != io.littlehorse.sdk.common.proto.MetricSpecId.getDefaultInstance()) {
           getIdBuilder().mergeFrom(value);
         } else {
           id_ = value;
@@ -535,7 +535,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.MetricId id = 1;</code>
+     * <code>.littlehorse.MetricSpecId id = 1;</code>
      */
     public Builder clearId() {
       bitField0_ = (bitField0_ & ~0x00000001);
@@ -548,33 +548,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.MetricId id = 1;</code>
+     * <code>.littlehorse.MetricSpecId id = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.MetricId.Builder getIdBuilder() {
+    public io.littlehorse.sdk.common.proto.MetricSpecId.Builder getIdBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
       return getIdFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.MetricId id = 1;</code>
+     * <code>.littlehorse.MetricSpecId id = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.MetricIdOrBuilder getIdOrBuilder() {
+    public io.littlehorse.sdk.common.proto.MetricSpecIdOrBuilder getIdOrBuilder() {
       if (idBuilder_ != null) {
         return idBuilder_.getMessageOrBuilder();
       } else {
         return id_ == null ?
-            io.littlehorse.sdk.common.proto.MetricId.getDefaultInstance() : id_;
+            io.littlehorse.sdk.common.proto.MetricSpecId.getDefaultInstance() : id_;
       }
     }
     /**
-     * <code>.littlehorse.MetricId id = 1;</code>
+     * <code>.littlehorse.MetricSpecId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.MetricId, io.littlehorse.sdk.common.proto.MetricId.Builder, io.littlehorse.sdk.common.proto.MetricIdOrBuilder> 
+        io.littlehorse.sdk.common.proto.MetricSpecId, io.littlehorse.sdk.common.proto.MetricSpecId.Builder, io.littlehorse.sdk.common.proto.MetricSpecIdOrBuilder> 
         getIdFieldBuilder() {
       if (idBuilder_ == null) {
         idBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.MetricId, io.littlehorse.sdk.common.proto.MetricId.Builder, io.littlehorse.sdk.common.proto.MetricIdOrBuilder>(
+            io.littlehorse.sdk.common.proto.MetricSpecId, io.littlehorse.sdk.common.proto.MetricSpecId.Builder, io.littlehorse.sdk.common.proto.MetricSpecIdOrBuilder>(
                 getId(),
                 getParentForChildren(),
                 isClean());

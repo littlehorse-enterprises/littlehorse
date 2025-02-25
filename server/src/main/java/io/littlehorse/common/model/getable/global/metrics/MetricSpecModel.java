@@ -4,11 +4,11 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.MetadataGetable;
-import io.littlehorse.common.model.getable.objectId.MetricIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.Metric;
+import io.littlehorse.sdk.common.proto.MetricSpec;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -18,17 +18,17 @@ import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 
-public class MetricModel extends MetadataGetable<Metric> {
+public class MetricSpecModel extends MetadataGetable<MetricSpec> {
 
-    private MetricIdModel id;
+    private MetricSpecIdModel id;
     private Date createdAt;
 
     @Getter
     private Duration windowLength;
 
-    public MetricModel() {}
+    public MetricSpecModel() {}
 
-    public MetricModel(MetricIdModel id, Duration windowLength) {
+    public MetricSpecModel(MetricSpecIdModel id, Duration windowLength) {
         this.id = id;
         this.createdAt = new Date();
         this.windowLength = windowLength;
@@ -36,15 +36,15 @@ public class MetricModel extends MetadataGetable<Metric> {
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
-        Metric p = (Metric) proto;
-        this.id = LHSerializable.fromProto(p.getId(), MetricIdModel.class, context);
+        MetricSpec p = (MetricSpec) proto;
+        this.id = LHSerializable.fromProto(p.getId(), MetricSpecIdModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         this.windowLength = Duration.ofSeconds(p.getWindowLength().getSeconds());
     }
 
     @Override
-    public Metric.Builder toProto() {
-        return Metric.newBuilder()
+    public MetricSpec.Builder toProto() {
+        return MetricSpec.newBuilder()
                 .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(createdAt))
                 .setWindowLength(com.google.protobuf.Duration.newBuilder()
@@ -53,7 +53,7 @@ public class MetricModel extends MetadataGetable<Metric> {
     }
 
     @Override
-    public MetricIdModel getObjectId() {
+    public MetricSpecIdModel getObjectId() {
         return id;
     }
 
@@ -73,7 +73,7 @@ public class MetricModel extends MetadataGetable<Metric> {
     }
 
     @Override
-    public Class<Metric> getProtoBaseClass() {
-        return Metric.class;
+    public Class<MetricSpec> getProtoBaseClass() {
+        return MetricSpec.class;
     }
 }

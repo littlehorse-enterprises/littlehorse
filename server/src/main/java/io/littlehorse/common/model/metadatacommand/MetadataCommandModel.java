@@ -11,7 +11,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefR
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWorkflowEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
-import io.littlehorse.common.model.metadatacommand.subcommand.PutMetricRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutMetricSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
@@ -51,7 +51,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private DeletePrincipalRequestModel deletePrincipal;
     private PutTenantRequestModel putTenant;
     private PutWorkflowEventDefRequestModel putWorkflowEventDef;
-    private PutMetricRequestModel putMetric;
+    private PutMetricSpecRequestModel putMetric;
 
     public MetadataCommandModel() {
         super();
@@ -185,7 +185,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                         p.getWorkflowEventDef(), PutWorkflowEventDefRequestModel.class, context);
                 break;
             case PUT_METRIC:
-                putMetric = LHSerializable.fromProto(p.getPutMetric(), PutMetricRequestModel.class, context);
+                putMetric = LHSerializable.fromProto(p.getPutMetric(), PutMetricSpecRequestModel.class, context);
                 break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
@@ -269,9 +269,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         } else if (cls.equals(PutWorkflowEventDefRequestModel.class)) {
             type = MetadataCommandCase.WORKFLOW_EVENT_DEF;
             putWorkflowEventDef = (PutWorkflowEventDefRequestModel) cmd;
-        } else if (cls.equals(PutMetricRequestModel.class)) {
+        } else if (cls.equals(PutMetricSpecRequestModel.class)) {
             type = MetadataCommandCase.PUT_METRIC;
-            putMetric = (PutMetricRequestModel) cmd;
+            putMetric = (PutMetricSpecRequestModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

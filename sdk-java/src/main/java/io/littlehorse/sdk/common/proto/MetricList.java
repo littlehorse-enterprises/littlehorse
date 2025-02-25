@@ -4,18 +4,18 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.MetricRunList}
+ * Protobuf type {@code littlehorse.MetricList}
  */
-public final class MetricRunList extends
+public final class MetricList extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.MetricRunList)
-    MetricRunListOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.MetricList)
+    MetricListOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use MetricRunList.newBuilder() to construct.
-  private MetricRunList(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use MetricList.newBuilder() to construct.
+  private MetricList(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private MetricRunList() {
+  private MetricList() {
     results_ = java.util.Collections.emptyList();
   }
 
@@ -23,59 +23,59 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new MetricRunList();
+    return new MetricList();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_MetricRunList_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_MetricList_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_MetricRunList_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_MetricList_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.MetricRunList.class, io.littlehorse.sdk.common.proto.MetricRunList.Builder.class);
+            io.littlehorse.sdk.common.proto.MetricList.class, io.littlehorse.sdk.common.proto.MetricList.Builder.class);
   }
 
   public static final int RESULTS_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.MetricRun> results_;
+  private java.util.List<io.littlehorse.sdk.common.proto.Metric> results_;
   /**
-   * <code>repeated .littlehorse.MetricRun results = 1;</code>
+   * <code>repeated .littlehorse.Metric results = 1;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.MetricRun> getResultsList() {
+  public java.util.List<io.littlehorse.sdk.common.proto.Metric> getResultsList() {
     return results_;
   }
   /**
-   * <code>repeated .littlehorse.MetricRun results = 1;</code>
+   * <code>repeated .littlehorse.Metric results = 1;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.MetricRunOrBuilder> 
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.MetricOrBuilder> 
       getResultsOrBuilderList() {
     return results_;
   }
   /**
-   * <code>repeated .littlehorse.MetricRun results = 1;</code>
+   * <code>repeated .littlehorse.Metric results = 1;</code>
    */
   @java.lang.Override
   public int getResultsCount() {
     return results_.size();
   }
   /**
-   * <code>repeated .littlehorse.MetricRun results = 1;</code>
+   * <code>repeated .littlehorse.Metric results = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.MetricRun getResults(int index) {
+  public io.littlehorse.sdk.common.proto.Metric getResults(int index) {
     return results_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.MetricRun results = 1;</code>
+   * <code>repeated .littlehorse.Metric results = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.MetricRunOrBuilder getResultsOrBuilder(
+  public io.littlehorse.sdk.common.proto.MetricOrBuilder getResultsOrBuilder(
       int index) {
     return results_.get(index);
   }
@@ -120,10 +120,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.MetricRunList)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.MetricList)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.MetricRunList other = (io.littlehorse.sdk.common.proto.MetricRunList) obj;
+    io.littlehorse.sdk.common.proto.MetricList other = (io.littlehorse.sdk.common.proto.MetricList) obj;
 
     if (!getResultsList()
         .equals(other.getResultsList())) return false;
@@ -147,44 +147,44 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.MetricRunList parseFrom(
+  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.MetricRunList parseFrom(
+  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.MetricRunList parseFrom(
+  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.MetricRunList parseFrom(
+  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.MetricRunList parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.MetricRunList parseFrom(
+  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.MetricRunList parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.MetricRunList parseFrom(
+  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -192,26 +192,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.MetricRunList parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.MetricList parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.MetricRunList parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.MetricList parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.MetricRunList parseFrom(
+  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.MetricRunList parseFrom(
+  public static io.littlehorse.sdk.common.proto.MetricList parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -224,7 +224,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.MetricRunList prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.MetricList prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -240,26 +240,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.MetricRunList}
+   * Protobuf type {@code littlehorse.MetricList}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.MetricRunList)
-      io.littlehorse.sdk.common.proto.MetricRunListOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.MetricList)
+      io.littlehorse.sdk.common.proto.MetricListOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_MetricRunList_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_MetricList_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_MetricRunList_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_MetricList_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.MetricRunList.class, io.littlehorse.sdk.common.proto.MetricRunList.Builder.class);
+              io.littlehorse.sdk.common.proto.MetricList.class, io.littlehorse.sdk.common.proto.MetricList.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.MetricRunList.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.MetricList.newBuilder()
     private Builder() {
 
     }
@@ -286,17 +286,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_MetricRunList_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_MetricList_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.MetricRunList getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.MetricRunList.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.MetricList getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.MetricList.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.MetricRunList build() {
-      io.littlehorse.sdk.common.proto.MetricRunList result = buildPartial();
+    public io.littlehorse.sdk.common.proto.MetricList build() {
+      io.littlehorse.sdk.common.proto.MetricList result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -304,15 +304,15 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.MetricRunList buildPartial() {
-      io.littlehorse.sdk.common.proto.MetricRunList result = new io.littlehorse.sdk.common.proto.MetricRunList(this);
+    public io.littlehorse.sdk.common.proto.MetricList buildPartial() {
+      io.littlehorse.sdk.common.proto.MetricList result = new io.littlehorse.sdk.common.proto.MetricList(this);
       buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.MetricRunList result) {
+    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.MetricList result) {
       if (resultsBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0)) {
           results_ = java.util.Collections.unmodifiableList(results_);
@@ -324,7 +324,7 @@ private static final long serialVersionUID = 0L;
       }
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.MetricRunList result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.MetricList result) {
       int from_bitField0_ = bitField0_;
     }
 
@@ -362,16 +362,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.MetricRunList) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.MetricRunList)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.MetricList) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.MetricList)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.MetricRunList other) {
-      if (other == io.littlehorse.sdk.common.proto.MetricRunList.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.MetricList other) {
+      if (other == io.littlehorse.sdk.common.proto.MetricList.getDefaultInstance()) return this;
       if (resultsBuilder_ == null) {
         if (!other.results_.isEmpty()) {
           if (results_.isEmpty()) {
@@ -425,9 +425,9 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              io.littlehorse.sdk.common.proto.MetricRun m =
+              io.littlehorse.sdk.common.proto.Metric m =
                   input.readMessage(
-                      io.littlehorse.sdk.common.proto.MetricRun.parser(),
+                      io.littlehorse.sdk.common.proto.Metric.parser(),
                       extensionRegistry);
               if (resultsBuilder_ == null) {
                 ensureResultsIsMutable();
@@ -454,22 +454,22 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.util.List<io.littlehorse.sdk.common.proto.MetricRun> results_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.Metric> results_ =
       java.util.Collections.emptyList();
     private void ensureResultsIsMutable() {
       if (!((bitField0_ & 0x00000001) != 0)) {
-        results_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.MetricRun>(results_);
+        results_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.Metric>(results_);
         bitField0_ |= 0x00000001;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.MetricRun, io.littlehorse.sdk.common.proto.MetricRun.Builder, io.littlehorse.sdk.common.proto.MetricRunOrBuilder> resultsBuilder_;
+        io.littlehorse.sdk.common.proto.Metric, io.littlehorse.sdk.common.proto.Metric.Builder, io.littlehorse.sdk.common.proto.MetricOrBuilder> resultsBuilder_;
 
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.MetricRun> getResultsList() {
+    public java.util.List<io.littlehorse.sdk.common.proto.Metric> getResultsList() {
       if (resultsBuilder_ == null) {
         return java.util.Collections.unmodifiableList(results_);
       } else {
@@ -477,7 +477,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
     public int getResultsCount() {
       if (resultsBuilder_ == null) {
@@ -487,9 +487,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.MetricRun getResults(int index) {
+    public io.littlehorse.sdk.common.proto.Metric getResults(int index) {
       if (resultsBuilder_ == null) {
         return results_.get(index);
       } else {
@@ -497,10 +497,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
     public Builder setResults(
-        int index, io.littlehorse.sdk.common.proto.MetricRun value) {
+        int index, io.littlehorse.sdk.common.proto.Metric value) {
       if (resultsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -514,10 +514,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
     public Builder setResults(
-        int index, io.littlehorse.sdk.common.proto.MetricRun.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.Metric.Builder builderForValue) {
       if (resultsBuilder_ == null) {
         ensureResultsIsMutable();
         results_.set(index, builderForValue.build());
@@ -528,9 +528,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
-    public Builder addResults(io.littlehorse.sdk.common.proto.MetricRun value) {
+    public Builder addResults(io.littlehorse.sdk.common.proto.Metric value) {
       if (resultsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -544,10 +544,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
     public Builder addResults(
-        int index, io.littlehorse.sdk.common.proto.MetricRun value) {
+        int index, io.littlehorse.sdk.common.proto.Metric value) {
       if (resultsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -561,10 +561,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
     public Builder addResults(
-        io.littlehorse.sdk.common.proto.MetricRun.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.Metric.Builder builderForValue) {
       if (resultsBuilder_ == null) {
         ensureResultsIsMutable();
         results_.add(builderForValue.build());
@@ -575,10 +575,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
     public Builder addResults(
-        int index, io.littlehorse.sdk.common.proto.MetricRun.Builder builderForValue) {
+        int index, io.littlehorse.sdk.common.proto.Metric.Builder builderForValue) {
       if (resultsBuilder_ == null) {
         ensureResultsIsMutable();
         results_.add(index, builderForValue.build());
@@ -589,10 +589,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
     public Builder addAllResults(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.MetricRun> values) {
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.Metric> values) {
       if (resultsBuilder_ == null) {
         ensureResultsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -604,7 +604,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
     public Builder clearResults() {
       if (resultsBuilder_ == null) {
@@ -617,7 +617,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
     public Builder removeResults(int index) {
       if (resultsBuilder_ == null) {
@@ -630,16 +630,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.MetricRun.Builder getResultsBuilder(
+    public io.littlehorse.sdk.common.proto.Metric.Builder getResultsBuilder(
         int index) {
       return getResultsFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.MetricRunOrBuilder getResultsOrBuilder(
+    public io.littlehorse.sdk.common.proto.MetricOrBuilder getResultsOrBuilder(
         int index) {
       if (resultsBuilder_ == null) {
         return results_.get(index);  } else {
@@ -647,9 +647,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.MetricRunOrBuilder> 
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.MetricOrBuilder> 
          getResultsOrBuilderList() {
       if (resultsBuilder_ != null) {
         return resultsBuilder_.getMessageOrBuilderList();
@@ -658,33 +658,33 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.MetricRun.Builder addResultsBuilder() {
+    public io.littlehorse.sdk.common.proto.Metric.Builder addResultsBuilder() {
       return getResultsFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.MetricRun.getDefaultInstance());
+          io.littlehorse.sdk.common.proto.Metric.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.MetricRun.Builder addResultsBuilder(
+    public io.littlehorse.sdk.common.proto.Metric.Builder addResultsBuilder(
         int index) {
       return getResultsFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.MetricRun.getDefaultInstance());
+          index, io.littlehorse.sdk.common.proto.Metric.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.MetricRun results = 1;</code>
+     * <code>repeated .littlehorse.Metric results = 1;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.MetricRun.Builder> 
+    public java.util.List<io.littlehorse.sdk.common.proto.Metric.Builder> 
          getResultsBuilderList() {
       return getResultsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.MetricRun, io.littlehorse.sdk.common.proto.MetricRun.Builder, io.littlehorse.sdk.common.proto.MetricRunOrBuilder> 
+        io.littlehorse.sdk.common.proto.Metric, io.littlehorse.sdk.common.proto.Metric.Builder, io.littlehorse.sdk.common.proto.MetricOrBuilder> 
         getResultsFieldBuilder() {
       if (resultsBuilder_ == null) {
         resultsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.MetricRun, io.littlehorse.sdk.common.proto.MetricRun.Builder, io.littlehorse.sdk.common.proto.MetricRunOrBuilder>(
+            io.littlehorse.sdk.common.proto.Metric, io.littlehorse.sdk.common.proto.Metric.Builder, io.littlehorse.sdk.common.proto.MetricOrBuilder>(
                 results_,
                 ((bitField0_ & 0x00000001) != 0),
                 getParentForChildren(),
@@ -706,23 +706,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.MetricRunList)
+    // @@protoc_insertion_point(builder_scope:littlehorse.MetricList)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.MetricRunList)
-  private static final io.littlehorse.sdk.common.proto.MetricRunList DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.MetricList)
+  private static final io.littlehorse.sdk.common.proto.MetricList DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.MetricRunList();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.MetricList();
   }
 
-  public static io.littlehorse.sdk.common.proto.MetricRunList getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.MetricList getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<MetricRunList>
-      PARSER = new com.google.protobuf.AbstractParser<MetricRunList>() {
+  private static final com.google.protobuf.Parser<MetricList>
+      PARSER = new com.google.protobuf.AbstractParser<MetricList>() {
     @java.lang.Override
-    public MetricRunList parsePartialFrom(
+    public MetricList parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -741,17 +741,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<MetricRunList> parser() {
+  public static com.google.protobuf.Parser<MetricList> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<MetricRunList> getParserForType() {
+  public com.google.protobuf.Parser<MetricList> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.MetricRunList getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.MetricList getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

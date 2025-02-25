@@ -70,7 +70,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecReques
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWorkflowEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.MigrateWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
-import io.littlehorse.common.model.metadatacommand.subcommand.PutMetricRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutMetricSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestModel;
@@ -105,7 +105,7 @@ import io.littlehorse.sdk.common.proto.ExternalEventList;
 import io.littlehorse.sdk.common.proto.GetLatestUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ListExternalEventsRequest;
-import io.littlehorse.sdk.common.proto.ListMetricRunRequest;
+import io.littlehorse.sdk.common.proto.ListMetricsRequest;
 import io.littlehorse.sdk.common.proto.ListNodeRunsRequest;
 import io.littlehorse.sdk.common.proto.ListTaskMetricsRequest;
 import io.littlehorse.sdk.common.proto.ListTaskMetricsResponse;
@@ -116,8 +116,8 @@ import io.littlehorse.sdk.common.proto.ListWfMetricsRequest;
 import io.littlehorse.sdk.common.proto.ListWfMetricsResponse;
 import io.littlehorse.sdk.common.proto.ListWorkflowEventsRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseImplBase;
-import io.littlehorse.sdk.common.proto.Metric;
-import io.littlehorse.sdk.common.proto.MetricRunList;
+import io.littlehorse.sdk.common.proto.MetricList;
+import io.littlehorse.sdk.common.proto.MetricSpec;
 import io.littlehorse.sdk.common.proto.MigrateWfSpecRequest;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRunId;
@@ -130,7 +130,7 @@ import io.littlehorse.sdk.common.proto.PrincipalId;
 import io.littlehorse.sdk.common.proto.PrincipalIdList;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.common.proto.PutExternalEventRequest;
-import io.littlehorse.sdk.common.proto.PutMetricRequest;
+import io.littlehorse.sdk.common.proto.PutMetricSpecRequest;
 import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutTenantRequest;
@@ -207,7 +207,7 @@ import io.littlehorse.server.streams.CommandSender;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanReply;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListExternalEventsRequestModel;
-import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListMetricRunRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListMetricsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListNodeRunsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskMetricsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskRunsRequestModel;
@@ -231,7 +231,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfSpecR
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowEventDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListExternalEventsReply;
-import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListMetricRunReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListMetricReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListNodeRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskMetricsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTaskRunsReply;
@@ -564,9 +564,10 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    public void putMetric(PutMetricRequest req, StreamObserver<Metric> ctx) {
-        PutMetricRequestModel reqModel = LHSerializable.fromProto(req, PutMetricRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, Metric.class, true);
+    public void putMetricSpec(PutMetricSpecRequest req, StreamObserver<MetricSpec> ctx) {
+        PutMetricSpecRequestModel reqModel =
+                LHSerializable.fromProto(req, PutMetricSpecRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, MetricSpec.class, true);
     }
 
     @Override
@@ -904,10 +905,9 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    public void listMetricRuns(ListMetricRunRequest req, StreamObserver<MetricRunList> ctx) {
-        ListMetricRunRequestModel lnr =
-                LHSerializable.fromProto(req, ListMetricRunRequestModel.class, requestContext());
-        handleScan(lnr, ctx, ListMetricRunReply.class);
+    public void listMetrics(ListMetricsRequest req, StreamObserver<MetricList> ctx) {
+        ListMetricsRequestModel lnr = LHSerializable.fromProto(req, ListMetricsRequestModel.class, requestContext());
+        handleScan(lnr, ctx, ListMetricReply.class);
     }
 
     @Override

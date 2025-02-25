@@ -433,11 +433,14 @@ func (LHErrorType) EnumDescriptor() ([]byte, []int) {
 	return file_common_enums_proto_rawDescGZIP(), []int{5}
 }
 
+// This enum is all the LittleHorse types that can be measured
 type MeasurableObject int32
 
 const (
+	// Measures metrics related to WfSpec
 	MeasurableObject_WORKFLOW MeasurableObject = 0
-	MeasurableObject_TASK     MeasurableObject = 1
+	// Measures metrics related to tasks
+	MeasurableObject_TASK MeasurableObject = 1
 )
 
 // Enum value maps for MeasurableObject.

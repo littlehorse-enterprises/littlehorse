@@ -247,19 +247,19 @@ public interface MetadataCommandOrBuilder extends
   io.littlehorse.sdk.common.proto.DeleteWorkflowEventDefRequestOrBuilder getDeleteWorkflowEventDefOrBuilder();
 
   /**
-   * <code>.littlehorse.PutMetricRequest put_metric = 17;</code>
+   * <code>.littlehorse.PutMetricSpecRequest put_metric = 17;</code>
    * @return Whether the putMetric field is set.
    */
   boolean hasPutMetric();
   /**
-   * <code>.littlehorse.PutMetricRequest put_metric = 17;</code>
+   * <code>.littlehorse.PutMetricSpecRequest put_metric = 17;</code>
    * @return The putMetric.
    */
-  io.littlehorse.sdk.common.proto.PutMetricRequest getPutMetric();
+  io.littlehorse.sdk.common.proto.PutMetricSpecRequest getPutMetric();
   /**
-   * <code>.littlehorse.PutMetricRequest put_metric = 17;</code>
+   * <code>.littlehorse.PutMetricSpecRequest put_metric = 17;</code>
    */
-  io.littlehorse.sdk.common.proto.PutMetricRequestOrBuilder getPutMetricOrBuilder();
+  io.littlehorse.sdk.common.proto.PutMetricSpecRequestOrBuilder getPutMetricOrBuilder();
 
   io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
 }

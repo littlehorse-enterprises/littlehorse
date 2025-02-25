@@ -228,18 +228,44 @@ export interface ScheduledWfRunId {
   id: string;
 }
 
+/**
+ * Reference to a `NodeSpec` which can be measured for metrics collection. It contains
+ * fields to specify the reference at various levels of granularity, such as by ThreadSpec
+ * Node type, or node position
+ */
 export interface NodeReference {
-  threadSpec: ThreadSpecReference | undefined;
-  nodeType?: string | undefined;
+  /** References to the ThreadSpec where the node belongs. */
+  threadSpec:
+    | ThreadSpecReference
+    | undefined;
+  /**
+   * Specifies the type of node (e.g UserTaskNode, TaskNode, etc.). If set to null,
+   * any node type is implied
+   */
+  nodeType?:
+    | string
+    | undefined;
+  /**
+   * Indicates the position of the node within the specific thread. If set to null,
+   * any node within the thread is implied
+   */
   nodePosition?: number | undefined;
 }
 
+/** Reference to a specific thread within a WfSpec */
 export interface ThreadSpecReference {
-  wfSpecId: WfSpecId | undefined;
+  /** References to a specific WfSpec */
+  wfSpecId:
+    | WfSpecId
+    | undefined;
+  /**
+   * Represents a thread run number within a WfRun. If set to null,
+   * any thread run is implied
+   */
   threadNumber?: number | undefined;
 }
 
-export interface MetricId {
+export interface MetricSpecId {
   object?: MeasurableObject | undefined;
   node?: NodeReference | undefined;
   wfSpecId?: WfSpecId | undefined;
@@ -247,8 +273,8 @@ export interface MetricId {
   type: MetricType;
 }
 
-export interface MetricRunId {
-  metricId: MetricId | undefined;
+export interface MetricId {
+  metricSpecId: MetricSpecId | undefined;
   windowStart: string | undefined;
 }
 
@@ -1411,12 +1437,12 @@ export const ThreadSpecReference = {
   },
 };
 
-function createBaseMetricId(): MetricId {
+function createBaseMetricSpecId(): MetricSpecId {
   return { object: undefined, node: undefined, wfSpecId: undefined, threadSpec: undefined, type: MetricType.COUNT };
 }
 
-export const MetricId = {
-  encode(message: MetricId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MetricSpecId = {
+  encode(message: MetricSpecId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.object !== undefined) {
       writer.uint32(8).int32(measurableObjectToNumber(message.object));
     }
@@ -1435,10 +1461,10 @@ export const MetricId = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MetricId {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricSpecId {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMetricId();
+    const message = createBaseMetricSpecId();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1486,11 +1512,11 @@ export const MetricId = {
     return message;
   },
 
-  create(base?: DeepPartial<MetricId>): MetricId {
-    return MetricId.fromPartial(base ?? {});
+  create(base?: DeepPartial<MetricSpecId>): MetricSpecId {
+    return MetricSpecId.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<MetricId>): MetricId {
-    const message = createBaseMetricId();
+  fromPartial(object: DeepPartial<MetricSpecId>): MetricSpecId {
+    const message = createBaseMetricSpecId();
     message.object = object.object ?? undefined;
     message.node = (object.node !== undefined && object.node !== null)
       ? NodeReference.fromPartial(object.node)
@@ -1506,14 +1532,14 @@ export const MetricId = {
   },
 };
 
-function createBaseMetricRunId(): MetricRunId {
-  return { metricId: undefined, windowStart: undefined };
+function createBaseMetricId(): MetricId {
+  return { metricSpecId: undefined, windowStart: undefined };
 }
 
-export const MetricRunId = {
-  encode(message: MetricRunId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.metricId !== undefined) {
-      MetricId.encode(message.metricId, writer.uint32(10).fork()).ldelim();
+export const MetricId = {
+  encode(message: MetricId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.metricSpecId !== undefined) {
+      MetricSpecId.encode(message.metricSpecId, writer.uint32(10).fork()).ldelim();
     }
     if (message.windowStart !== undefined) {
       Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(18).fork()).ldelim();
@@ -1521,10 +1547,10 @@ export const MetricRunId = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MetricRunId {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricId {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMetricRunId();
+    const message = createBaseMetricId();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1533,7 +1559,7 @@ export const MetricRunId = {
             break;
           }
 
-          message.metricId = MetricId.decode(reader, reader.uint32());
+          message.metricSpecId = MetricSpecId.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
@@ -1551,13 +1577,13 @@ export const MetricRunId = {
     return message;
   },
 
-  create(base?: DeepPartial<MetricRunId>): MetricRunId {
-    return MetricRunId.fromPartial(base ?? {});
+  create(base?: DeepPartial<MetricId>): MetricId {
+    return MetricId.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<MetricRunId>): MetricRunId {
-    const message = createBaseMetricRunId();
-    message.metricId = (object.metricId !== undefined && object.metricId !== null)
-      ? MetricId.fromPartial(object.metricId)
+  fromPartial(object: DeepPartial<MetricId>): MetricId {
+    const message = createBaseMetricId();
+    message.metricSpecId = (object.metricSpecId !== undefined && object.metricSpecId !== null)
+      ? MetricSpecId.fromPartial(object.metricSpecId)
       : undefined;
     message.windowStart = object.windowStart ?? undefined;
     return message;

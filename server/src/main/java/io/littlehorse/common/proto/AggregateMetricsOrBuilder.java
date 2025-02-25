@@ -8,19 +8,19 @@ public interface AggregateMetricsOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.littlehorse.MetricId metric_id = 1;</code>
-   * @return Whether the metricId field is set.
+   * <code>.littlehorse.MetricSpecId metric_spec_id = 1;</code>
+   * @return Whether the metricSpecId field is set.
    */
-  boolean hasMetricId();
+  boolean hasMetricSpecId();
   /**
-   * <code>.littlehorse.MetricId metric_id = 1;</code>
-   * @return The metricId.
+   * <code>.littlehorse.MetricSpecId metric_spec_id = 1;</code>
+   * @return The metricSpecId.
    */
-  io.littlehorse.sdk.common.proto.MetricId getMetricId();
+  io.littlehorse.sdk.common.proto.MetricSpecId getMetricSpecId();
   /**
-   * <code>.littlehorse.MetricId metric_id = 1;</code>
+   * <code>.littlehorse.MetricSpecId metric_spec_id = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.MetricIdOrBuilder getMetricIdOrBuilder();
+  io.littlehorse.sdk.common.proto.MetricSpecIdOrBuilder getMetricSpecIdOrBuilder();
 
   /**
    * <code>repeated .littlehorse.RepartitionWindowedMetric windowed_metrics = 2;</code>

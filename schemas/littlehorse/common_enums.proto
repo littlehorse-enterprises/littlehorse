@@ -141,8 +141,11 @@ enum LHErrorType {
   INTERNAL_ERROR = 8;
 }
 
+// This enum is all the LittleHorse types that can be measured
 enum MeasurableObject {
+  // Measures metrics related to WfSpec
   WORKFLOW = 0;
+  // Measures metrics related to tasks
   TASK = 1;
 }
 

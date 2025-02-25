@@ -8,26 +8,48 @@ public interface ThreadSpecReferenceOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * References to a specific WfSpec
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return Whether the wfSpecId field is set.
    */
   boolean hasWfSpecId();
   /**
+   * <pre>
+   * References to a specific WfSpec
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    * @return The wfSpecId.
    */
   io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
+   * <pre>
+   * References to a specific WfSpec
+   * </pre>
+   *
    * <code>.littlehorse.WfSpecId wf_spec_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
 
   /**
+   * <pre>
+   * Represents a thread run number within a WfRun. If set to null,
+   * any thread run is implied
+   * </pre>
+   *
    * <code>optional int32 thread_number = 2;</code>
    * @return Whether the threadNumber field is set.
    */
   boolean hasThreadNumber();
   /**
+   * <pre>
+   * Represents a thread run number within a WfRun. If set to null,
+   * any thread run is implied
+   * </pre>
+   *
    * <code>optional int32 thread_number = 2;</code>
    * @return The threadNumber.
    */

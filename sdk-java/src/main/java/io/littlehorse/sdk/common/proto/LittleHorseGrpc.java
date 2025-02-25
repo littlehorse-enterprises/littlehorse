@@ -232,35 +232,35 @@ public final class LittleHorseGrpc {
     return getPutWfSpecMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMetricRequest,
-      io.littlehorse.sdk.common.proto.Metric> getPutMetricMethod;
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMetricSpecRequest,
+      io.littlehorse.sdk.common.proto.MetricSpec> getPutMetricSpecMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "PutMetric",
-      requestType = io.littlehorse.sdk.common.proto.PutMetricRequest.class,
-      responseType = io.littlehorse.sdk.common.proto.Metric.class,
+      fullMethodName = SERVICE_NAME + '/' + "PutMetricSpec",
+      requestType = io.littlehorse.sdk.common.proto.PutMetricSpecRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricSpec.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMetricRequest,
-      io.littlehorse.sdk.common.proto.Metric> getPutMetricMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMetricRequest, io.littlehorse.sdk.common.proto.Metric> getPutMetricMethod;
-    if ((getPutMetricMethod = LittleHorseGrpc.getPutMetricMethod) == null) {
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMetricSpecRequest,
+      io.littlehorse.sdk.common.proto.MetricSpec> getPutMetricSpecMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutMetricSpecRequest, io.littlehorse.sdk.common.proto.MetricSpec> getPutMetricSpecMethod;
+    if ((getPutMetricSpecMethod = LittleHorseGrpc.getPutMetricSpecMethod) == null) {
       synchronized (LittleHorseGrpc.class) {
-        if ((getPutMetricMethod = LittleHorseGrpc.getPutMetricMethod) == null) {
-          LittleHorseGrpc.getPutMetricMethod = getPutMetricMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutMetricRequest, io.littlehorse.sdk.common.proto.Metric>newBuilder()
+        if ((getPutMetricSpecMethod = LittleHorseGrpc.getPutMetricSpecMethod) == null) {
+          LittleHorseGrpc.getPutMetricSpecMethod = getPutMetricSpecMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutMetricSpecRequest, io.littlehorse.sdk.common.proto.MetricSpec>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutMetric"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutMetricSpec"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.PutMetricRequest.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.PutMetricSpecRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.Metric.getDefaultInstance()))
-              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutMetric"))
+                  io.littlehorse.sdk.common.proto.MetricSpec.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutMetricSpec"))
               .build();
         }
       }
     }
-    return getPutMetricMethod;
+    return getPutMetricSpecMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.WfSpecId,
@@ -2371,35 +2371,66 @@ public final class LittleHorseGrpc {
     return getGetServerVersionMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricRunRequest,
-      io.littlehorse.sdk.common.proto.MetricRunList> getListMetricRunsMethod;
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricSpecRequest,
+      io.littlehorse.sdk.common.proto.MetricSpecList> getListMetricSpecsMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "ListMetricRuns",
-      requestType = io.littlehorse.sdk.common.proto.ListMetricRunRequest.class,
-      responseType = io.littlehorse.sdk.common.proto.MetricRunList.class,
+      fullMethodName = SERVICE_NAME + '/' + "ListMetricSpecs",
+      requestType = io.littlehorse.sdk.common.proto.ListMetricSpecRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricSpecList.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricRunRequest,
-      io.littlehorse.sdk.common.proto.MetricRunList> getListMetricRunsMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricRunRequest, io.littlehorse.sdk.common.proto.MetricRunList> getListMetricRunsMethod;
-    if ((getListMetricRunsMethod = LittleHorseGrpc.getListMetricRunsMethod) == null) {
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricSpecRequest,
+      io.littlehorse.sdk.common.proto.MetricSpecList> getListMetricSpecsMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricSpecRequest, io.littlehorse.sdk.common.proto.MetricSpecList> getListMetricSpecsMethod;
+    if ((getListMetricSpecsMethod = LittleHorseGrpc.getListMetricSpecsMethod) == null) {
       synchronized (LittleHorseGrpc.class) {
-        if ((getListMetricRunsMethod = LittleHorseGrpc.getListMetricRunsMethod) == null) {
-          LittleHorseGrpc.getListMetricRunsMethod = getListMetricRunsMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListMetricRunRequest, io.littlehorse.sdk.common.proto.MetricRunList>newBuilder()
+        if ((getListMetricSpecsMethod = LittleHorseGrpc.getListMetricSpecsMethod) == null) {
+          LittleHorseGrpc.getListMetricSpecsMethod = getListMetricSpecsMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListMetricSpecRequest, io.littlehorse.sdk.common.proto.MetricSpecList>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListMetricRuns"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListMetricSpecs"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.ListMetricRunRequest.getDefaultInstance()))
+                  io.littlehorse.sdk.common.proto.ListMetricSpecRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.sdk.common.proto.MetricRunList.getDefaultInstance()))
-              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListMetricRuns"))
+                  io.littlehorse.sdk.common.proto.MetricSpecList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListMetricSpecs"))
               .build();
         }
       }
     }
-    return getListMetricRunsMethod;
+    return getListMetricSpecsMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricsRequest,
+      io.littlehorse.sdk.common.proto.MetricList> getListMetricsMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ListMetrics",
+      requestType = io.littlehorse.sdk.common.proto.ListMetricsRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricsRequest,
+      io.littlehorse.sdk.common.proto.MetricList> getListMetricsMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListMetricsRequest, io.littlehorse.sdk.common.proto.MetricList> getListMetricsMethod;
+    if ((getListMetricsMethod = LittleHorseGrpc.getListMetricsMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getListMetricsMethod = LittleHorseGrpc.getListMetricsMethod) == null) {
+          LittleHorseGrpc.getListMetricsMethod = getListMetricsMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListMetricsRequest, io.littlehorse.sdk.common.proto.MetricList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListMetrics"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.ListMetricsRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.MetricList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListMetrics"))
+              .build();
+        }
+      }
+    }
+    return getListMetricsMethod;
   }
 
   /**
@@ -2522,12 +2553,12 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Creates a new metric
+     * Creates a new metric spec
      * </pre>
      */
-    default void putMetric(io.littlehorse.sdk.common.proto.PutMetricRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Metric> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutMetricMethod(), responseObserver);
+    default void putMetricSpec(io.littlehorse.sdk.common.proto.PutMetricSpecRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpec> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutMetricSpecMethod(), responseObserver);
     }
 
     /**
@@ -3251,9 +3282,19 @@ public final class LittleHorseGrpc {
 
     /**
      */
-    default void listMetricRuns(io.littlehorse.sdk.common.proto.ListMetricRunRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricRunList> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListMetricRunsMethod(), responseObserver);
+    default void listMetricSpecs(io.littlehorse.sdk.common.proto.ListMetricSpecRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpecList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListMetricSpecsMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * List the latest metrics for a given MetricSpecId
+     * </pre>
+     */
+    default void listMetrics(io.littlehorse.sdk.common.proto.ListMetricsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListMetricsMethod(), responseObserver);
     }
   }
 
@@ -3363,13 +3404,13 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Creates a new metric
+     * Creates a new metric spec
      * </pre>
      */
-    public void putMetric(io.littlehorse.sdk.common.proto.PutMetricRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Metric> responseObserver) {
+    public void putMetricSpec(io.littlehorse.sdk.common.proto.PutMetricSpecRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpec> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getPutMetricMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getPutMetricSpecMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -4161,10 +4202,21 @@ public final class LittleHorseGrpc {
 
     /**
      */
-    public void listMetricRuns(io.littlehorse.sdk.common.proto.ListMetricRunRequest request,
-        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricRunList> responseObserver) {
+    public void listMetricSpecs(io.littlehorse.sdk.common.proto.ListMetricSpecRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpecList> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getListMetricRunsMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getListMetricSpecsMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * List the latest metrics for a given MetricSpecId
+     * </pre>
+     */
+    public void listMetrics(io.littlehorse.sdk.common.proto.ListMetricsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getListMetricsMethod(), getCallOptions()), request, responseObserver);
     }
   }
 
@@ -4256,12 +4308,12 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Creates a new metric
+     * Creates a new metric spec
      * </pre>
      */
-    public io.littlehorse.sdk.common.proto.Metric putMetric(io.littlehorse.sdk.common.proto.PutMetricRequest request) {
+    public io.littlehorse.sdk.common.proto.MetricSpec putMetricSpec(io.littlehorse.sdk.common.proto.PutMetricSpecRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getPutMetricMethod(), getCallOptions(), request);
+          getChannel(), getPutMetricSpecMethod(), getCallOptions(), request);
     }
 
     /**
@@ -4974,9 +5026,19 @@ public final class LittleHorseGrpc {
 
     /**
      */
-    public io.littlehorse.sdk.common.proto.MetricRunList listMetricRuns(io.littlehorse.sdk.common.proto.ListMetricRunRequest request) {
+    public io.littlehorse.sdk.common.proto.MetricSpecList listMetricSpecs(io.littlehorse.sdk.common.proto.ListMetricSpecRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getListMetricRunsMethod(), getCallOptions(), request);
+          getChannel(), getListMetricSpecsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * List the latest metrics for a given MetricSpecId
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.MetricList listMetrics(io.littlehorse.sdk.common.proto.ListMetricsRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getListMetricsMethod(), getCallOptions(), request);
     }
   }
 
@@ -5075,13 +5137,13 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Creates a new metric
+     * Creates a new metric spec
      * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Metric> putMetric(
-        io.littlehorse.sdk.common.proto.PutMetricRequest request) {
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricSpec> putMetricSpec(
+        io.littlehorse.sdk.common.proto.PutMetricSpecRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getPutMetricMethod(), getCallOptions()), request);
+          getChannel().newCall(getPutMetricSpecMethod(), getCallOptions()), request);
     }
 
     /**
@@ -5861,10 +5923,21 @@ public final class LittleHorseGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricRunList> listMetricRuns(
-        io.littlehorse.sdk.common.proto.ListMetricRunRequest request) {
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricSpecList> listMetricSpecs(
+        io.littlehorse.sdk.common.proto.ListMetricSpecRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getListMetricRunsMethod(), getCallOptions()), request);
+          getChannel().newCall(getListMetricSpecsMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * List the latest metrics for a given MetricSpecId
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricList> listMetrics(
+        io.littlehorse.sdk.common.proto.ListMetricsRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getListMetricsMethod(), getCallOptions()), request);
     }
   }
 
@@ -5875,7 +5948,7 @@ public final class LittleHorseGrpc {
   private static final int METHODID_GET_EXTERNAL_EVENT_DEF = 4;
   private static final int METHODID_PUT_WORKFLOW_EVENT_DEF = 5;
   private static final int METHODID_PUT_WF_SPEC = 6;
-  private static final int METHODID_PUT_METRIC = 7;
+  private static final int METHODID_PUT_METRIC_SPEC = 7;
   private static final int METHODID_GET_WF_SPEC = 8;
   private static final int METHODID_GET_LATEST_WF_SPEC = 9;
   private static final int METHODID_MIGRATE_WF_SPEC = 10;
@@ -5943,8 +6016,9 @@ public final class LittleHorseGrpc {
   private static final int METHODID_GET_PRINCIPAL = 72;
   private static final int METHODID_WHOAMI = 73;
   private static final int METHODID_GET_SERVER_VERSION = 74;
-  private static final int METHODID_LIST_METRIC_RUNS = 75;
-  private static final int METHODID_POLL_TASK = 76;
+  private static final int METHODID_LIST_METRIC_SPECS = 75;
+  private static final int METHODID_LIST_METRICS = 76;
+  private static final int METHODID_POLL_TASK = 77;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -5991,9 +6065,9 @@ public final class LittleHorseGrpc {
           serviceImpl.putWfSpec((io.littlehorse.sdk.common.proto.PutWfSpecRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfSpec>) responseObserver);
           break;
-        case METHODID_PUT_METRIC:
-          serviceImpl.putMetric((io.littlehorse.sdk.common.proto.PutMetricRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Metric>) responseObserver);
+        case METHODID_PUT_METRIC_SPEC:
+          serviceImpl.putMetricSpec((io.littlehorse.sdk.common.proto.PutMetricSpecRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpec>) responseObserver);
           break;
         case METHODID_GET_WF_SPEC:
           serviceImpl.getWfSpec((io.littlehorse.sdk.common.proto.WfSpecId) request,
@@ -6263,9 +6337,13 @@ public final class LittleHorseGrpc {
           serviceImpl.getServerVersion((com.google.protobuf.Empty) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ServerVersion>) responseObserver);
           break;
-        case METHODID_LIST_METRIC_RUNS:
-          serviceImpl.listMetricRuns((io.littlehorse.sdk.common.proto.ListMetricRunRequest) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricRunList>) responseObserver);
+        case METHODID_LIST_METRIC_SPECS:
+          serviceImpl.listMetricSpecs((io.littlehorse.sdk.common.proto.ListMetricSpecRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricSpecList>) responseObserver);
+          break;
+        case METHODID_LIST_METRICS:
+          serviceImpl.listMetrics((io.littlehorse.sdk.common.proto.ListMetricsRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricList>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -6338,12 +6416,12 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.WfSpec>(
                 service, METHODID_PUT_WF_SPEC)))
         .addMethod(
-          getPutMetricMethod(),
+          getPutMetricSpecMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.PutMetricRequest,
-              io.littlehorse.sdk.common.proto.Metric>(
-                service, METHODID_PUT_METRIC)))
+              io.littlehorse.sdk.common.proto.PutMetricSpecRequest,
+              io.littlehorse.sdk.common.proto.MetricSpec>(
+                service, METHODID_PUT_METRIC_SPEC)))
         .addMethod(
           getGetWfSpecMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -6821,12 +6899,19 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.ServerVersion>(
                 service, METHODID_GET_SERVER_VERSION)))
         .addMethod(
-          getListMetricRunsMethod(),
+          getListMetricSpecsMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              io.littlehorse.sdk.common.proto.ListMetricRunRequest,
-              io.littlehorse.sdk.common.proto.MetricRunList>(
-                service, METHODID_LIST_METRIC_RUNS)))
+              io.littlehorse.sdk.common.proto.ListMetricSpecRequest,
+              io.littlehorse.sdk.common.proto.MetricSpecList>(
+                service, METHODID_LIST_METRIC_SPECS)))
+        .addMethod(
+          getListMetricsMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.ListMetricsRequest,
+              io.littlehorse.sdk.common.proto.MetricList>(
+                service, METHODID_LIST_METRICS)))
         .build();
   }
 
@@ -6882,7 +6967,7 @@ public final class LittleHorseGrpc {
               .addMethod(getGetExternalEventDefMethod())
               .addMethod(getPutWorkflowEventDefMethod())
               .addMethod(getPutWfSpecMethod())
-              .addMethod(getPutMetricMethod())
+              .addMethod(getPutMetricSpecMethod())
               .addMethod(getGetWfSpecMethod())
               .addMethod(getGetLatestWfSpecMethod())
               .addMethod(getMigrateWfSpecMethod())
@@ -6951,7 +7036,8 @@ public final class LittleHorseGrpc {
               .addMethod(getGetPrincipalMethod())
               .addMethod(getWhoamiMethod())
               .addMethod(getGetServerVersionMethod())
-              .addMethod(getListMetricRunsMethod())
+              .addMethod(getListMetricSpecsMethod())
+              .addMethod(getListMetricsMethod())
               .build();
         }
       }

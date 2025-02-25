@@ -48,13 +48,12 @@ public class ThreadSpecReferenceModel extends LHSerializable<ThreadSpecReference
 
     @Override
     public String toString() {
-        if(threadNumber != null ) {
+        if (threadNumber != null) {
             return LHUtil.getCompositeId(wfSpecId.toString(), threadNumber.toString());
         } else {
             return LHUtil.getCompositeId(wfSpecId.toString());
         }
     }
 
-    public void initFromKeyString(String keyString) {
-    }
+    public void initFromKeyString(String keyString) {}
 }

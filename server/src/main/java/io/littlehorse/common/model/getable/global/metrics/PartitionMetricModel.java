@@ -5,7 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.RepartitionWindowedMetricModel;
-import io.littlehorse.common.model.getable.objectId.MetricIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.PartitionMetricIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -36,7 +36,7 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
 
     public PartitionMetricModel() {}
 
-    public PartitionMetricModel(MetricIdModel metricId, Duration windowLength, TenantIdModel tenantId) {
+    public PartitionMetricModel(MetricSpecIdModel metricId, Duration windowLength, TenantIdModel tenantId) {
         this.id = new PartitionMetricIdModel(metricId, tenantId);
         this.createdAt = new Date();
         this.activeWindowedMetrics = new TreeSet<>();
@@ -96,6 +96,7 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
     }
 
     public void incrementCurrentWindow(LocalDateTime currentTime, double increment) {
+        log.info("increment current window");
         currentWindow(currentTime).increment(increment);
     }
 

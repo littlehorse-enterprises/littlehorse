@@ -4,6 +4,12 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * Reference to a `NodeSpec` which can be measured for metrics collection. It contains
+ * fields to specify the reference at various levels of granularity, such as by ThreadSpec
+ * Node type, or node position
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.NodeReference}
  */
 public final class NodeReference extends
@@ -43,6 +49,10 @@ private static final long serialVersionUID = 0L;
   public static final int THREAD_SPEC_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.ThreadSpecReference threadSpec_;
   /**
+   * <pre>
+   * References to the ThreadSpec where the node belongs.
+   * </pre>
+   *
    * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
    * @return Whether the threadSpec field is set.
    */
@@ -51,6 +61,10 @@ private static final long serialVersionUID = 0L;
     return threadSpec_ != null;
   }
   /**
+   * <pre>
+   * References to the ThreadSpec where the node belongs.
+   * </pre>
+   *
    * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
    * @return The threadSpec.
    */
@@ -59,6 +73,10 @@ private static final long serialVersionUID = 0L;
     return threadSpec_ == null ? io.littlehorse.sdk.common.proto.ThreadSpecReference.getDefaultInstance() : threadSpec_;
   }
   /**
+   * <pre>
+   * References to the ThreadSpec where the node belongs.
+   * </pre>
+   *
    * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
    */
   @java.lang.Override
@@ -70,6 +88,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object nodeType_ = "";
   /**
+   * <pre>
+   * Specifies the type of node (e.g UserTaskNode, TaskNode, etc.). If set to null,
+   * any node type is implied
+   * </pre>
+   *
    * <code>optional string node_type = 2;</code>
    * @return Whether the nodeType field is set.
    */
@@ -78,6 +101,11 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
+   * <pre>
+   * Specifies the type of node (e.g UserTaskNode, TaskNode, etc.). If set to null,
+   * any node type is implied
+   * </pre>
+   *
    * <code>optional string node_type = 2;</code>
    * @return The nodeType.
    */
@@ -95,6 +123,11 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * Specifies the type of node (e.g UserTaskNode, TaskNode, etc.). If set to null,
+   * any node type is implied
+   * </pre>
+   *
    * <code>optional string node_type = 2;</code>
    * @return The bytes for nodeType.
    */
@@ -116,6 +149,11 @@ private static final long serialVersionUID = 0L;
   public static final int NODE_POSITION_FIELD_NUMBER = 3;
   private int nodePosition_ = 0;
   /**
+   * <pre>
+   * Indicates the position of the node within the specific thread. If set to null,
+   * any node within the thread is implied
+   * </pre>
+   *
    * <code>optional int32 node_position = 3;</code>
    * @return Whether the nodePosition field is set.
    */
@@ -124,6 +162,11 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * Indicates the position of the node within the specific thread. If set to null,
+   * any node within the thread is implied
+   * </pre>
+   *
    * <code>optional int32 node_position = 3;</code>
    * @return The nodePosition.
    */
@@ -326,6 +369,12 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Reference to a `NodeSpec` which can be measured for metrics collection. It contains
+   * fields to specify the reference at various levels of granularity, such as by ThreadSpec
+   * Node type, or node position
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.NodeReference}
    */
   public static final class Builder extends
@@ -535,6 +584,10 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.sdk.common.proto.ThreadSpecReference, io.littlehorse.sdk.common.proto.ThreadSpecReference.Builder, io.littlehorse.sdk.common.proto.ThreadSpecReferenceOrBuilder> threadSpecBuilder_;
     /**
+     * <pre>
+     * References to the ThreadSpec where the node belongs.
+     * </pre>
+     *
      * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
      * @return Whether the threadSpec field is set.
      */
@@ -542,6 +595,10 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
+     * <pre>
+     * References to the ThreadSpec where the node belongs.
+     * </pre>
+     *
      * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
      * @return The threadSpec.
      */
@@ -553,6 +610,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * References to the ThreadSpec where the node belongs.
+     * </pre>
+     *
      * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
      */
     public Builder setThreadSpec(io.littlehorse.sdk.common.proto.ThreadSpecReference value) {
@@ -569,6 +630,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * References to the ThreadSpec where the node belongs.
+     * </pre>
+     *
      * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
      */
     public Builder setThreadSpec(
@@ -583,6 +648,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * References to the ThreadSpec where the node belongs.
+     * </pre>
+     *
      * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
      */
     public Builder mergeThreadSpec(io.littlehorse.sdk.common.proto.ThreadSpecReference value) {
@@ -602,6 +671,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * References to the ThreadSpec where the node belongs.
+     * </pre>
+     *
      * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
      */
     public Builder clearThreadSpec() {
@@ -615,6 +688,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * References to the ThreadSpec where the node belongs.
+     * </pre>
+     *
      * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadSpecReference.Builder getThreadSpecBuilder() {
@@ -623,6 +700,10 @@ private static final long serialVersionUID = 0L;
       return getThreadSpecFieldBuilder().getBuilder();
     }
     /**
+     * <pre>
+     * References to the ThreadSpec where the node belongs.
+     * </pre>
+     *
      * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.ThreadSpecReferenceOrBuilder getThreadSpecOrBuilder() {
@@ -634,6 +715,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * References to the ThreadSpec where the node belongs.
+     * </pre>
+     *
      * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -652,6 +737,11 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object nodeType_ = "";
     /**
+     * <pre>
+     * Specifies the type of node (e.g UserTaskNode, TaskNode, etc.). If set to null,
+     * any node type is implied
+     * </pre>
+     *
      * <code>optional string node_type = 2;</code>
      * @return Whether the nodeType field is set.
      */
@@ -659,6 +749,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     * <pre>
+     * Specifies the type of node (e.g UserTaskNode, TaskNode, etc.). If set to null,
+     * any node type is implied
+     * </pre>
+     *
      * <code>optional string node_type = 2;</code>
      * @return The nodeType.
      */
@@ -675,6 +770,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies the type of node (e.g UserTaskNode, TaskNode, etc.). If set to null,
+     * any node type is implied
+     * </pre>
+     *
      * <code>optional string node_type = 2;</code>
      * @return The bytes for nodeType.
      */
@@ -692,6 +792,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * Specifies the type of node (e.g UserTaskNode, TaskNode, etc.). If set to null,
+     * any node type is implied
+     * </pre>
+     *
      * <code>optional string node_type = 2;</code>
      * @param value The nodeType to set.
      * @return This builder for chaining.
@@ -705,6 +810,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies the type of node (e.g UserTaskNode, TaskNode, etc.). If set to null,
+     * any node type is implied
+     * </pre>
+     *
      * <code>optional string node_type = 2;</code>
      * @return This builder for chaining.
      */
@@ -715,6 +825,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Specifies the type of node (e.g UserTaskNode, TaskNode, etc.). If set to null,
+     * any node type is implied
+     * </pre>
+     *
      * <code>optional string node_type = 2;</code>
      * @param value The bytes for nodeType to set.
      * @return This builder for chaining.
@@ -731,6 +846,11 @@ private static final long serialVersionUID = 0L;
 
     private int nodePosition_ ;
     /**
+     * <pre>
+     * Indicates the position of the node within the specific thread. If set to null,
+     * any node within the thread is implied
+     * </pre>
+     *
      * <code>optional int32 node_position = 3;</code>
      * @return Whether the nodePosition field is set.
      */
@@ -739,6 +859,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     * <pre>
+     * Indicates the position of the node within the specific thread. If set to null,
+     * any node within the thread is implied
+     * </pre>
+     *
      * <code>optional int32 node_position = 3;</code>
      * @return The nodePosition.
      */
@@ -747,6 +872,11 @@ private static final long serialVersionUID = 0L;
       return nodePosition_;
     }
     /**
+     * <pre>
+     * Indicates the position of the node within the specific thread. If set to null,
+     * any node within the thread is implied
+     * </pre>
+     *
      * <code>optional int32 node_position = 3;</code>
      * @param value The nodePosition to set.
      * @return This builder for chaining.
@@ -759,6 +889,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * Indicates the position of the node within the specific thread. If set to null,
+     * any node within the thread is implied
+     * </pre>
+     *
      * <code>optional int32 node_position = 3;</code>
      * @return This builder for chaining.
      */

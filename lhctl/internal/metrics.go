@@ -17,13 +17,15 @@ var putMetricCmd = &cobra.Command{
 		metricType := args[1]
 		duration := args[2]
 		windowLength, _ := time.ParseDuration(duration)
-		putMetricReq := &lhproto.PutMetricRequest{
-			Measurable:   toMeasurable(measurable),
+		putMetricReq := &lhproto.PutMetricSpecRequest{
 			Type:         toType(metricType),
 			WindowLength: durationpb.New(windowLength),
 		}
+		putMetricReq.Reference = &lhproto.PutMetricSpecRequest_Object{
+			Object: toMeasurable(measurable),
+		}
 
-		response, err := getGlobalClient(cmd).PutMetric(requestContext(cmd), putMetricReq)
+		response, err := getGlobalClient(cmd).PutMetricSpec(requestContext(cmd), putMetricReq)
 		littlehorse.PrintResp(response, err)
 	},
 }
@@ -61,16 +63,18 @@ var listMetricRuns = &cobra.Command{
 		measurable := args[0]
 		metricType := args[1]
 
-		metricId := &lhproto.MetricId{
-			Measurable: toMeasurable(measurable),
-			Type:       toType(metricType),
+		metricId := &lhproto.MetricSpecId{
+			Type: toType(metricType),
+		}
+		metricId.Reference = &lhproto.MetricSpecId_Object{
+			Object: toMeasurable(measurable),
 		}
 
-		req := &lhproto.ListMetricRunRequest{
-			MetricId: metricId,
+		req := &lhproto.ListMetricsRequest{
+			MetricSpecId: metricId,
 		}
 
-		littlehorse.PrintResp(getGlobalClient(cmd).ListMetricRuns(
+		littlehorse.PrintResp(getGlobalClient(cmd).ListMetrics(
 			requestContext(cmd),
 			req,
 		))

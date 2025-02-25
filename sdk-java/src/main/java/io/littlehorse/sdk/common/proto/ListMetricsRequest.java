@@ -4,64 +4,80 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.ListMetricRunRequest}
+ * <pre>
+ * List the latest metrics for a given MetricSpecId
+ * </pre>
+ *
+ * Protobuf type {@code littlehorse.ListMetricsRequest}
  */
-public final class ListMetricRunRequest extends
+public final class ListMetricsRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.ListMetricRunRequest)
-    ListMetricRunRequestOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.ListMetricsRequest)
+    ListMetricsRequestOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use ListMetricRunRequest.newBuilder() to construct.
-  private ListMetricRunRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use ListMetricsRequest.newBuilder() to construct.
+  private ListMetricsRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private ListMetricRunRequest() {
+  private ListMetricsRequest() {
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new ListMetricRunRequest();
+    return new ListMetricsRequest();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListMetricRunRequest_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListMetricsRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListMetricRunRequest_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListMetricsRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.ListMetricRunRequest.class, io.littlehorse.sdk.common.proto.ListMetricRunRequest.Builder.class);
+            io.littlehorse.sdk.common.proto.ListMetricsRequest.class, io.littlehorse.sdk.common.proto.ListMetricsRequest.Builder.class);
   }
 
-  public static final int METRIC_ID_FIELD_NUMBER = 1;
-  private io.littlehorse.sdk.common.proto.MetricId metricId_;
+  public static final int METRIC_SPEC_ID_FIELD_NUMBER = 1;
+  private io.littlehorse.sdk.common.proto.MetricSpecId metricSpecId_;
   /**
-   * <code>.littlehorse.MetricId metric_id = 1;</code>
-   * @return Whether the metricId field is set.
+   * <pre>
+   * Filters by metric id
+   * </pre>
+   *
+   * <code>.littlehorse.MetricSpecId metric_spec_id = 1;</code>
+   * @return Whether the metricSpecId field is set.
    */
   @java.lang.Override
-  public boolean hasMetricId() {
-    return metricId_ != null;
+  public boolean hasMetricSpecId() {
+    return metricSpecId_ != null;
   }
   /**
-   * <code>.littlehorse.MetricId metric_id = 1;</code>
-   * @return The metricId.
+   * <pre>
+   * Filters by metric id
+   * </pre>
+   *
+   * <code>.littlehorse.MetricSpecId metric_spec_id = 1;</code>
+   * @return The metricSpecId.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.MetricId getMetricId() {
-    return metricId_ == null ? io.littlehorse.sdk.common.proto.MetricId.getDefaultInstance() : metricId_;
+  public io.littlehorse.sdk.common.proto.MetricSpecId getMetricSpecId() {
+    return metricSpecId_ == null ? io.littlehorse.sdk.common.proto.MetricSpecId.getDefaultInstance() : metricSpecId_;
   }
   /**
-   * <code>.littlehorse.MetricId metric_id = 1;</code>
+   * <pre>
+   * Filters by metric id
+   * </pre>
+   *
+   * <code>.littlehorse.MetricSpecId metric_spec_id = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.MetricIdOrBuilder getMetricIdOrBuilder() {
-    return metricId_ == null ? io.littlehorse.sdk.common.proto.MetricId.getDefaultInstance() : metricId_;
+  public io.littlehorse.sdk.common.proto.MetricSpecIdOrBuilder getMetricSpecIdOrBuilder() {
+    return metricSpecId_ == null ? io.littlehorse.sdk.common.proto.MetricSpecId.getDefaultInstance() : metricSpecId_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -78,8 +94,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (metricId_ != null) {
-      output.writeMessage(1, getMetricId());
+    if (metricSpecId_ != null) {
+      output.writeMessage(1, getMetricSpecId());
     }
     getUnknownFields().writeTo(output);
   }
@@ -90,9 +106,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (metricId_ != null) {
+    if (metricSpecId_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getMetricId());
+        .computeMessageSize(1, getMetricSpecId());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -104,15 +120,15 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.ListMetricRunRequest)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.ListMetricsRequest)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.ListMetricRunRequest other = (io.littlehorse.sdk.common.proto.ListMetricRunRequest) obj;
+    io.littlehorse.sdk.common.proto.ListMetricsRequest other = (io.littlehorse.sdk.common.proto.ListMetricsRequest) obj;
 
-    if (hasMetricId() != other.hasMetricId()) return false;
-    if (hasMetricId()) {
-      if (!getMetricId()
-          .equals(other.getMetricId())) return false;
+    if (hasMetricSpecId() != other.hasMetricSpecId()) return false;
+    if (hasMetricSpecId()) {
+      if (!getMetricSpecId()
+          .equals(other.getMetricSpecId())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -125,53 +141,53 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasMetricId()) {
-      hash = (37 * hash) + METRIC_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getMetricId().hashCode();
+    if (hasMetricSpecId()) {
+      hash = (37 * hash) + METRIC_SPEC_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getMetricSpecId().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.ListMetricRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.ListMetricsRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.ListMetricsRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.ListMetricsRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.ListMetricsRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricRunRequest parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.ListMetricsRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.ListMetricsRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricRunRequest parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.ListMetricsRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.ListMetricsRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -179,26 +195,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.ListMetricRunRequest parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.ListMetricsRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.ListMetricRunRequest parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.ListMetricsRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.ListMetricsRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.ListMetricRunRequest parseFrom(
+  public static io.littlehorse.sdk.common.proto.ListMetricsRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -211,7 +227,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.ListMetricRunRequest prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.ListMetricsRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -227,26 +243,30 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.ListMetricRunRequest}
+   * <pre>
+   * List the latest metrics for a given MetricSpecId
+   * </pre>
+   *
+   * Protobuf type {@code littlehorse.ListMetricsRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.ListMetricRunRequest)
-      io.littlehorse.sdk.common.proto.ListMetricRunRequestOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.ListMetricsRequest)
+      io.littlehorse.sdk.common.proto.ListMetricsRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListMetricRunRequest_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListMetricsRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListMetricRunRequest_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListMetricsRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.ListMetricRunRequest.class, io.littlehorse.sdk.common.proto.ListMetricRunRequest.Builder.class);
+              io.littlehorse.sdk.common.proto.ListMetricsRequest.class, io.littlehorse.sdk.common.proto.ListMetricsRequest.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.ListMetricRunRequest.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.ListMetricsRequest.newBuilder()
     private Builder() {
 
     }
@@ -260,10 +280,10 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      metricId_ = null;
-      if (metricIdBuilder_ != null) {
-        metricIdBuilder_.dispose();
-        metricIdBuilder_ = null;
+      metricSpecId_ = null;
+      if (metricSpecIdBuilder_ != null) {
+        metricSpecIdBuilder_.dispose();
+        metricSpecIdBuilder_ = null;
       }
       return this;
     }
@@ -271,17 +291,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListMetricRunRequest_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_ListMetricsRequest_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ListMetricRunRequest getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.ListMetricRunRequest.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.ListMetricsRequest getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.ListMetricsRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ListMetricRunRequest build() {
-      io.littlehorse.sdk.common.proto.ListMetricRunRequest result = buildPartial();
+    public io.littlehorse.sdk.common.proto.ListMetricsRequest build() {
+      io.littlehorse.sdk.common.proto.ListMetricsRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -289,19 +309,19 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ListMetricRunRequest buildPartial() {
-      io.littlehorse.sdk.common.proto.ListMetricRunRequest result = new io.littlehorse.sdk.common.proto.ListMetricRunRequest(this);
+    public io.littlehorse.sdk.common.proto.ListMetricsRequest buildPartial() {
+      io.littlehorse.sdk.common.proto.ListMetricsRequest result = new io.littlehorse.sdk.common.proto.ListMetricsRequest(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.ListMetricRunRequest result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.ListMetricsRequest result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.metricId_ = metricIdBuilder_ == null
-            ? metricId_
-            : metricIdBuilder_.build();
+        result.metricSpecId_ = metricSpecIdBuilder_ == null
+            ? metricSpecId_
+            : metricSpecIdBuilder_.build();
       }
     }
 
@@ -339,18 +359,18 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.ListMetricRunRequest) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.ListMetricRunRequest)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.ListMetricsRequest) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.ListMetricsRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.ListMetricRunRequest other) {
-      if (other == io.littlehorse.sdk.common.proto.ListMetricRunRequest.getDefaultInstance()) return this;
-      if (other.hasMetricId()) {
-        mergeMetricId(other.getMetricId());
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.ListMetricsRequest other) {
+      if (other == io.littlehorse.sdk.common.proto.ListMetricsRequest.getDefaultInstance()) return this;
+      if (other.hasMetricSpecId()) {
+        mergeMetricSpecId(other.getMetricSpecId());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -380,7 +400,7 @@ private static final long serialVersionUID = 0L;
               break;
             case 10: {
               input.readMessage(
-                  getMetricIdFieldBuilder().getBuilder(),
+                  getMetricSpecIdFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
@@ -402,123 +422,159 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private io.littlehorse.sdk.common.proto.MetricId metricId_;
+    private io.littlehorse.sdk.common.proto.MetricSpecId metricSpecId_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.MetricId, io.littlehorse.sdk.common.proto.MetricId.Builder, io.littlehorse.sdk.common.proto.MetricIdOrBuilder> metricIdBuilder_;
+        io.littlehorse.sdk.common.proto.MetricSpecId, io.littlehorse.sdk.common.proto.MetricSpecId.Builder, io.littlehorse.sdk.common.proto.MetricSpecIdOrBuilder> metricSpecIdBuilder_;
     /**
-     * <code>.littlehorse.MetricId metric_id = 1;</code>
-     * @return Whether the metricId field is set.
+     * <pre>
+     * Filters by metric id
+     * </pre>
+     *
+     * <code>.littlehorse.MetricSpecId metric_spec_id = 1;</code>
+     * @return Whether the metricSpecId field is set.
      */
-    public boolean hasMetricId() {
+    public boolean hasMetricSpecId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.littlehorse.MetricId metric_id = 1;</code>
-     * @return The metricId.
+     * <pre>
+     * Filters by metric id
+     * </pre>
+     *
+     * <code>.littlehorse.MetricSpecId metric_spec_id = 1;</code>
+     * @return The metricSpecId.
      */
-    public io.littlehorse.sdk.common.proto.MetricId getMetricId() {
-      if (metricIdBuilder_ == null) {
-        return metricId_ == null ? io.littlehorse.sdk.common.proto.MetricId.getDefaultInstance() : metricId_;
+    public io.littlehorse.sdk.common.proto.MetricSpecId getMetricSpecId() {
+      if (metricSpecIdBuilder_ == null) {
+        return metricSpecId_ == null ? io.littlehorse.sdk.common.proto.MetricSpecId.getDefaultInstance() : metricSpecId_;
       } else {
-        return metricIdBuilder_.getMessage();
+        return metricSpecIdBuilder_.getMessage();
       }
     }
     /**
-     * <code>.littlehorse.MetricId metric_id = 1;</code>
+     * <pre>
+     * Filters by metric id
+     * </pre>
+     *
+     * <code>.littlehorse.MetricSpecId metric_spec_id = 1;</code>
      */
-    public Builder setMetricId(io.littlehorse.sdk.common.proto.MetricId value) {
-      if (metricIdBuilder_ == null) {
+    public Builder setMetricSpecId(io.littlehorse.sdk.common.proto.MetricSpecId value) {
+      if (metricSpecIdBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        metricId_ = value;
+        metricSpecId_ = value;
       } else {
-        metricIdBuilder_.setMessage(value);
+        metricSpecIdBuilder_.setMessage(value);
       }
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.MetricId metric_id = 1;</code>
+     * <pre>
+     * Filters by metric id
+     * </pre>
+     *
+     * <code>.littlehorse.MetricSpecId metric_spec_id = 1;</code>
      */
-    public Builder setMetricId(
-        io.littlehorse.sdk.common.proto.MetricId.Builder builderForValue) {
-      if (metricIdBuilder_ == null) {
-        metricId_ = builderForValue.build();
+    public Builder setMetricSpecId(
+        io.littlehorse.sdk.common.proto.MetricSpecId.Builder builderForValue) {
+      if (metricSpecIdBuilder_ == null) {
+        metricSpecId_ = builderForValue.build();
       } else {
-        metricIdBuilder_.setMessage(builderForValue.build());
+        metricSpecIdBuilder_.setMessage(builderForValue.build());
       }
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.MetricId metric_id = 1;</code>
+     * <pre>
+     * Filters by metric id
+     * </pre>
+     *
+     * <code>.littlehorse.MetricSpecId metric_spec_id = 1;</code>
      */
-    public Builder mergeMetricId(io.littlehorse.sdk.common.proto.MetricId value) {
-      if (metricIdBuilder_ == null) {
+    public Builder mergeMetricSpecId(io.littlehorse.sdk.common.proto.MetricSpecId value) {
+      if (metricSpecIdBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0) &&
-          metricId_ != null &&
-          metricId_ != io.littlehorse.sdk.common.proto.MetricId.getDefaultInstance()) {
-          getMetricIdBuilder().mergeFrom(value);
+          metricSpecId_ != null &&
+          metricSpecId_ != io.littlehorse.sdk.common.proto.MetricSpecId.getDefaultInstance()) {
+          getMetricSpecIdBuilder().mergeFrom(value);
         } else {
-          metricId_ = value;
+          metricSpecId_ = value;
         }
       } else {
-        metricIdBuilder_.mergeFrom(value);
+        metricSpecIdBuilder_.mergeFrom(value);
       }
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.MetricId metric_id = 1;</code>
+     * <pre>
+     * Filters by metric id
+     * </pre>
+     *
+     * <code>.littlehorse.MetricSpecId metric_spec_id = 1;</code>
      */
-    public Builder clearMetricId() {
+    public Builder clearMetricSpecId() {
       bitField0_ = (bitField0_ & ~0x00000001);
-      metricId_ = null;
-      if (metricIdBuilder_ != null) {
-        metricIdBuilder_.dispose();
-        metricIdBuilder_ = null;
+      metricSpecId_ = null;
+      if (metricSpecIdBuilder_ != null) {
+        metricSpecIdBuilder_.dispose();
+        metricSpecIdBuilder_ = null;
       }
       onChanged();
       return this;
     }
     /**
-     * <code>.littlehorse.MetricId metric_id = 1;</code>
+     * <pre>
+     * Filters by metric id
+     * </pre>
+     *
+     * <code>.littlehorse.MetricSpecId metric_spec_id = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.MetricId.Builder getMetricIdBuilder() {
+    public io.littlehorse.sdk.common.proto.MetricSpecId.Builder getMetricSpecIdBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
-      return getMetricIdFieldBuilder().getBuilder();
+      return getMetricSpecIdFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.MetricId metric_id = 1;</code>
+     * <pre>
+     * Filters by metric id
+     * </pre>
+     *
+     * <code>.littlehorse.MetricSpecId metric_spec_id = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.MetricIdOrBuilder getMetricIdOrBuilder() {
-      if (metricIdBuilder_ != null) {
-        return metricIdBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.MetricSpecIdOrBuilder getMetricSpecIdOrBuilder() {
+      if (metricSpecIdBuilder_ != null) {
+        return metricSpecIdBuilder_.getMessageOrBuilder();
       } else {
-        return metricId_ == null ?
-            io.littlehorse.sdk.common.proto.MetricId.getDefaultInstance() : metricId_;
+        return metricSpecId_ == null ?
+            io.littlehorse.sdk.common.proto.MetricSpecId.getDefaultInstance() : metricSpecId_;
       }
     }
     /**
-     * <code>.littlehorse.MetricId metric_id = 1;</code>
+     * <pre>
+     * Filters by metric id
+     * </pre>
+     *
+     * <code>.littlehorse.MetricSpecId metric_spec_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.MetricId, io.littlehorse.sdk.common.proto.MetricId.Builder, io.littlehorse.sdk.common.proto.MetricIdOrBuilder> 
-        getMetricIdFieldBuilder() {
-      if (metricIdBuilder_ == null) {
-        metricIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.MetricId, io.littlehorse.sdk.common.proto.MetricId.Builder, io.littlehorse.sdk.common.proto.MetricIdOrBuilder>(
-                getMetricId(),
+        io.littlehorse.sdk.common.proto.MetricSpecId, io.littlehorse.sdk.common.proto.MetricSpecId.Builder, io.littlehorse.sdk.common.proto.MetricSpecIdOrBuilder> 
+        getMetricSpecIdFieldBuilder() {
+      if (metricSpecIdBuilder_ == null) {
+        metricSpecIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.MetricSpecId, io.littlehorse.sdk.common.proto.MetricSpecId.Builder, io.littlehorse.sdk.common.proto.MetricSpecIdOrBuilder>(
+                getMetricSpecId(),
                 getParentForChildren(),
                 isClean());
-        metricId_ = null;
+        metricSpecId_ = null;
       }
-      return metricIdBuilder_;
+      return metricSpecIdBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
@@ -533,23 +589,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.ListMetricRunRequest)
+    // @@protoc_insertion_point(builder_scope:littlehorse.ListMetricsRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.ListMetricRunRequest)
-  private static final io.littlehorse.sdk.common.proto.ListMetricRunRequest DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.ListMetricsRequest)
+  private static final io.littlehorse.sdk.common.proto.ListMetricsRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.ListMetricRunRequest();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.ListMetricsRequest();
   }
 
-  public static io.littlehorse.sdk.common.proto.ListMetricRunRequest getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.ListMetricsRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<ListMetricRunRequest>
-      PARSER = new com.google.protobuf.AbstractParser<ListMetricRunRequest>() {
+  private static final com.google.protobuf.Parser<ListMetricsRequest>
+      PARSER = new com.google.protobuf.AbstractParser<ListMetricsRequest>() {
     @java.lang.Override
-    public ListMetricRunRequest parsePartialFrom(
+    public ListMetricsRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -568,17 +624,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<ListMetricRunRequest> parser() {
+  public static com.google.protobuf.Parser<ListMetricsRequest> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<ListMetricRunRequest> getParserForType() {
+  public com.google.protobuf.Parser<ListMetricsRequest> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ListMetricRunRequest getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.ListMetricsRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

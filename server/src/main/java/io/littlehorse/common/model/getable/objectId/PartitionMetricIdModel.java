@@ -16,12 +16,12 @@ import lombok.Getter;
 @Getter
 public class PartitionMetricIdModel extends CoreObjectId<PartitionMetricId, PartitionMetric, PartitionMetricModel> {
 
-    private MetricIdModel metricId;
+    private MetricSpecIdModel metricId;
     private TenantIdModel tenantId;
 
     public PartitionMetricIdModel() {}
 
-    public PartitionMetricIdModel(MetricIdModel partitionMetricId, TenantIdModel tenantId) {
+    public PartitionMetricIdModel(MetricSpecIdModel partitionMetricId, TenantIdModel tenantId) {
         this.metricId = partitionMetricId;
         this.tenantId = tenantId;
     }
@@ -34,7 +34,7 @@ public class PartitionMetricIdModel extends CoreObjectId<PartitionMetricId, Part
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         PartitionMetricId partitionMetricId = (PartitionMetricId) proto;
-        this.metricId = LHSerializable.fromProto(partitionMetricId.getId(), MetricIdModel.class, context);
+        this.metricId = LHSerializable.fromProto(partitionMetricId.getId(), MetricSpecIdModel.class, context);
         this.tenantId = LHSerializable.fromProto(partitionMetricId.getTenantId(), TenantIdModel.class, context);
     }
 
@@ -51,7 +51,7 @@ public class PartitionMetricIdModel extends CoreObjectId<PartitionMetricId, Part
     @Override
     public void initFromString(String storeKey) {
         String[] keyParts = storeKey.split("/");
-        this.metricId = new MetricIdModel();
+        this.metricId = new MetricSpecIdModel();
         this.metricId.initFromString(keyParts[0]);
         this.tenantId = new TenantIdModel();
         this.tenantId.initFromString(keyParts[1]);

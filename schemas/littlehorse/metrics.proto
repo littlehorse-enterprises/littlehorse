@@ -12,8 +12,8 @@ option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 
-message Metric {
-  MetricId id = 1;
+message MetricSpec {
+  MetricSpecId id = 1;
   google.protobuf.Timestamp created_at = 2;
   google.protobuf.Duration window_length = 3;
 }
@@ -32,16 +32,21 @@ message PartitionWindowedMetric {
 }
 
 message PartitionMetricId {
-   MetricId id = 1;
+   MetricSpecId id = 1;
    TenantId tenant_id = 2;
 }
 
-message MetricRun {
-  MetricRunId id = 1;
+// Metric value for a given MetricId
+message Metric {
+  // Unique id of the metric value
+  MetricId id = 1;
   oneof value {
+    // represents the value for a count-based metric
     int64 count = 2;
+    // represents the average latency for a latency-based metric
     int64 latency_avg = 3;
   }
+  // Indicates when the metric was created
   google.protobuf.Timestamp created_at = 4;
   map<int32, double> value_per_partition = 5;
 }

@@ -5,11 +5,11 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.RepartitionWindowedMetricModel;
 import io.littlehorse.common.model.RepartitionedGetable;
-import io.littlehorse.common.model.getable.objectId.MetricRunIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.MetricRun;
+import io.littlehorse.sdk.common.proto.Metric;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -22,25 +22,25 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MetricRunModel extends RepartitionedGetable<MetricRun> {
+public class MetricModel extends RepartitionedGetable<Metric> {
 
-    private MetricRunIdModel metricRunId;
+    private MetricIdModel metricRunId;
     private Date createdAt;
     private Long count;
     private Duration latencyAvg;
     private Map<Integer, Double> valuePerPartition = new HashMap<>();
 
-    public MetricRunModel() {}
+    public MetricModel() {}
 
-    public MetricRunModel(MetricRunIdModel metricRunId) {
+    public MetricModel(MetricIdModel metricRunId) {
         this.metricRunId = metricRunId;
         this.createdAt = new Date();
     }
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
-        MetricRun p = (MetricRun) proto;
-        this.metricRunId = LHSerializable.fromProto(p.getId(), MetricRunIdModel.class, context);
+        Metric p = (Metric) proto;
+        this.metricRunId = LHSerializable.fromProto(p.getId(), MetricIdModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         switch (p.getValueCase()) {
             case COUNT -> this.count = p.getCount();
@@ -51,8 +51,8 @@ public class MetricRunModel extends RepartitionedGetable<MetricRun> {
     }
 
     @Override
-    public MetricRun.Builder toProto() {
-        MetricRun.Builder out = MetricRun.newBuilder()
+    public Metric.Builder toProto() {
+        Metric.Builder out = Metric.newBuilder()
                 .setId(metricRunId.toProto())
                 .setCreatedAt(LHUtil.fromDate(createdAt))
                 .putAllValuePerPartition(valuePerPartition);
@@ -67,8 +67,8 @@ public class MetricRunModel extends RepartitionedGetable<MetricRun> {
     }
 
     @Override
-    public Class<MetricRun> getProtoBaseClass() {
-        return MetricRun.class;
+    public Class<Metric> getProtoBaseClass() {
+        return Metric.class;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class MetricRunModel extends RepartitionedGetable<MetricRun> {
     }
 
     @Override
-    public MetricRunIdModel getObjectId() {
+    public MetricIdModel getObjectId() {
         return metricRunId;
     }
 
@@ -93,10 +93,8 @@ public class MetricRunModel extends RepartitionedGetable<MetricRun> {
 
     public void mergePartitionMetric(RepartitionWindowedMetricModel repartitionMetric, Integer partition) {
         double val = 0;
-        switch (metricRunId.getMetricId().getMetricType()) {
-            case COUNT -> val = valuePerPartition.values().stream()
-                    .mapToDouble(val2 -> val2)
-                    .sum();
+        switch (metricRunId.getMetricSpecId().getMetricType()) {
+            case COUNT -> val = repartitionMetric.getValue();
             case LATENCY -> {
                 val = repartitionMetric.getValue() / repartitionMetric.getNumberOfSamples();
             }
@@ -107,7 +105,7 @@ public class MetricRunModel extends RepartitionedGetable<MetricRun> {
     }
 
     private void sumPartitionValues() {
-        switch (metricRunId.getMetricId().getMetricType()) {
+        switch (metricRunId.getMetricSpecId().getMetricType()) {
             case COUNT -> count =
                     valuePerPartition.values().stream().mapToLong(Math::round).sum();
             case LATENCY -> {
@@ -119,7 +117,7 @@ public class MetricRunModel extends RepartitionedGetable<MetricRun> {
                 log.info("Sum latency avg: {}", latencyAvg.toMillis());
             }
             default -> throw new IllegalStateException(
-                    "Unexpected value: " + metricRunId.getMetricId().getMetricType());
+                    "Unexpected value: " + metricRunId.getMetricSpecId().getMetricType());
         }
     }
 }

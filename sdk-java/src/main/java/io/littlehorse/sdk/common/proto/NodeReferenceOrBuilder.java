@@ -8,31 +8,58 @@ public interface NodeReferenceOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * References to the ThreadSpec where the node belongs.
+   * </pre>
+   *
    * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
    * @return Whether the threadSpec field is set.
    */
   boolean hasThreadSpec();
   /**
+   * <pre>
+   * References to the ThreadSpec where the node belongs.
+   * </pre>
+   *
    * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
    * @return The threadSpec.
    */
   io.littlehorse.sdk.common.proto.ThreadSpecReference getThreadSpec();
   /**
+   * <pre>
+   * References to the ThreadSpec where the node belongs.
+   * </pre>
+   *
    * <code>.littlehorse.ThreadSpecReference thread_spec = 1;</code>
    */
   io.littlehorse.sdk.common.proto.ThreadSpecReferenceOrBuilder getThreadSpecOrBuilder();
 
   /**
+   * <pre>
+   * Specifies the type of node (e.g UserTaskNode, TaskNode, etc.). If set to null,
+   * any node type is implied
+   * </pre>
+   *
    * <code>optional string node_type = 2;</code>
    * @return Whether the nodeType field is set.
    */
   boolean hasNodeType();
   /**
+   * <pre>
+   * Specifies the type of node (e.g UserTaskNode, TaskNode, etc.). If set to null,
+   * any node type is implied
+   * </pre>
+   *
    * <code>optional string node_type = 2;</code>
    * @return The nodeType.
    */
   java.lang.String getNodeType();
   /**
+   * <pre>
+   * Specifies the type of node (e.g UserTaskNode, TaskNode, etc.). If set to null,
+   * any node type is implied
+   * </pre>
+   *
    * <code>optional string node_type = 2;</code>
    * @return The bytes for nodeType.
    */
@@ -40,11 +67,21 @@ public interface NodeReferenceOrBuilder extends
       getNodeTypeBytes();
 
   /**
+   * <pre>
+   * Indicates the position of the node within the specific thread. If set to null,
+   * any node within the thread is implied
+   * </pre>
+   *
    * <code>optional int32 node_position = 3;</code>
    * @return Whether the nodePosition field is set.
    */
   boolean hasNodePosition();
   /**
+   * <pre>
+   * Indicates the position of the node within the specific thread. If set to null,
+   * any node within the thread is implied
+   * </pre>
+   *
    * <code>optional int32 node_position = 3;</code>
    * @return The nodePosition.
    */

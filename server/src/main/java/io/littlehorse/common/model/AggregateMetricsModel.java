@@ -2,16 +2,16 @@ package io.littlehorse.common.model;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.model.getable.core.metrics.MetricRunModel;
+import io.littlehorse.common.model.getable.core.metrics.MetricModel;
 import io.littlehorse.common.model.getable.objectId.MetricIdModel;
-import io.littlehorse.common.model.getable.objectId.MetricRunIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.common.proto.AggregateMetrics;
 import io.littlehorse.common.proto.RepartitionWindowedMetric;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.MetricRun;
+import io.littlehorse.sdk.common.proto.Metric;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -25,7 +25,7 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 public class AggregateMetricsModel extends LHSerializable<AggregateMetrics> implements RepartitionSubCommand {
 
     private TenantIdModel tenantId;
-    private MetricIdModel metricId;
+    private MetricSpecIdModel metricId;
     private List<RepartitionWindowedMetricModel> windowedMetrics = new ArrayList<>();
     private Integer partitionId;
 
@@ -33,7 +33,7 @@ public class AggregateMetricsModel extends LHSerializable<AggregateMetrics> impl
 
     public AggregateMetricsModel(
             TenantIdModel tenantId,
-            MetricIdModel metricId,
+            MetricSpecIdModel metricId,
             List<RepartitionWindowedMetricModel> windowedMetrics,
             Integer partitionId) {
         this.windowedMetrics = windowedMetrics;
@@ -49,7 +49,7 @@ public class AggregateMetricsModel extends LHSerializable<AggregateMetrics> impl
                 .map(RepartitionWindowedMetric.Builder::build)
                 .toList();
         return AggregateMetrics.newBuilder()
-                .setMetricId(metricId.toProto())
+                .setMetricSpecId(metricId.toProto())
                 .addAllWindowedMetrics(windowedMetricsPb)
                 .setPartitionId(partitionId)
                 .setTenantId(tenantId.toProto());
@@ -62,7 +62,7 @@ public class AggregateMetricsModel extends LHSerializable<AggregateMetrics> impl
                 .map(pb -> LHSerializable.fromProto(pb, RepartitionWindowedMetricModel.class, context))
                 .toList();
         this.tenantId = LHSerializable.fromProto(p.getTenantId(), TenantIdModel.class, context);
-        this.metricId = LHSerializable.fromProto(p.getMetricId(), MetricIdModel.class, context);
+        this.metricId = LHSerializable.fromProto(p.getMetricSpecId(), MetricSpecIdModel.class, context);
         this.partitionId = p.getPartitionId();
     }
 
@@ -83,15 +83,15 @@ public class AggregateMetricsModel extends LHSerializable<AggregateMetrics> impl
     public void process(TenantScopedStore repartitionedStore, ProcessorContext<Void, Void> ctx) {
         try {
             for (RepartitionWindowedMetricModel windowedMetric : windowedMetrics) {
-                StoredGetable<MetricRun, MetricRunModel> storedGetable =
-                        (StoredGetable<MetricRun, MetricRunModel>) repartitionedStore.get(
-                                new MetricRunIdModel(metricId, windowedMetric.getWindowStart()).getStoreableKey(),
+                StoredGetable<Metric, MetricModel> storedGetable =
+                        (StoredGetable<Metric, MetricModel>) repartitionedStore.get(
+                                new MetricIdModel(metricId, windowedMetric.getWindowStart()).getStoreableKey(),
                                 StoredGetable.class);
                 if (storedGetable == null) {
                     storedGetable = new StoredGetable<>(
-                            new MetricRunModel(new MetricRunIdModel(metricId, windowedMetric.getWindowStart())));
+                            new MetricModel(new MetricIdModel(metricId, windowedMetric.getWindowStart())));
                 }
-                MetricRunModel metricRun = storedGetable.getStoredObject();
+                MetricModel metricRun = storedGetable.getStoredObject();
                 metricRun.mergePartitionMetric(windowedMetric, partitionId);
                 repartitionedStore.put(storedGetable);
             }

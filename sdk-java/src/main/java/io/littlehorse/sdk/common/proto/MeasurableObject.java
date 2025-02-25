@@ -4,15 +4,27 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * This enum is all the LittleHorse types that can be measured
+ * </pre>
+ *
  * Protobuf enum {@code littlehorse.MeasurableObject}
  */
 public enum MeasurableObject
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
+   * <pre>
+   * Measures metrics related to WfSpec
+   * </pre>
+   *
    * <code>WORKFLOW = 0;</code>
    */
   WORKFLOW(0),
   /**
+   * <pre>
+   * Measures metrics related to tasks
+   * </pre>
+   *
    * <code>TASK = 1;</code>
    */
   TASK(1),
@@ -20,10 +32,18 @@ public enum MeasurableObject
   ;
 
   /**
+   * <pre>
+   * Measures metrics related to WfSpec
+   * </pre>
+   *
    * <code>WORKFLOW = 0;</code>
    */
   public static final int WORKFLOW_VALUE = 0;
   /**
+   * <pre>
+   * Measures metrics related to tasks
+   * </pre>
+   *
    * <code>TASK = 1;</code>
    */
   public static final int TASK_VALUE = 1;

@@ -8,47 +8,128 @@ public interface MetricOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <pre>
+   * Unique id of the metric value
+   * </pre>
+   *
    * <code>.littlehorse.MetricId id = 1;</code>
    * @return Whether the id field is set.
    */
   boolean hasId();
   /**
+   * <pre>
+   * Unique id of the metric value
+   * </pre>
+   *
    * <code>.littlehorse.MetricId id = 1;</code>
    * @return The id.
    */
   io.littlehorse.sdk.common.proto.MetricId getId();
   /**
+   * <pre>
+   * Unique id of the metric value
+   * </pre>
+   *
    * <code>.littlehorse.MetricId id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.MetricIdOrBuilder getIdOrBuilder();
 
   /**
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * <pre>
+   * represents the value for a count-based metric
+   * </pre>
+   *
+   * <code>int64 count = 2;</code>
+   * @return Whether the count field is set.
+   */
+  boolean hasCount();
+  /**
+   * <pre>
+   * represents the value for a count-based metric
+   * </pre>
+   *
+   * <code>int64 count = 2;</code>
+   * @return The count.
+   */
+  long getCount();
+
+  /**
+   * <pre>
+   * represents the average latency for a latency-based metric
+   * </pre>
+   *
+   * <code>int64 latency_avg = 3;</code>
+   * @return Whether the latencyAvg field is set.
+   */
+  boolean hasLatencyAvg();
+  /**
+   * <pre>
+   * represents the average latency for a latency-based metric
+   * </pre>
+   *
+   * <code>int64 latency_avg = 3;</code>
+   * @return The latencyAvg.
+   */
+  long getLatencyAvg();
+
+  /**
+   * <pre>
+   * Indicates when the metric was created
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 4;</code>
    * @return Whether the createdAt field is set.
    */
   boolean hasCreatedAt();
   /**
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * <pre>
+   * Indicates when the metric was created
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 4;</code>
    * @return The createdAt.
    */
   com.google.protobuf.Timestamp getCreatedAt();
   /**
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * <pre>
+   * Indicates when the metric was created
+   * </pre>
+   *
+   * <code>.google.protobuf.Timestamp created_at = 4;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
-   * <code>.google.protobuf.Duration window_length = 3;</code>
-   * @return Whether the windowLength field is set.
+   * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
    */
-  boolean hasWindowLength();
+  int getValuePerPartitionCount();
   /**
-   * <code>.google.protobuf.Duration window_length = 3;</code>
-   * @return The windowLength.
+   * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
    */
-  com.google.protobuf.Duration getWindowLength();
+  boolean containsValuePerPartition(
+      int key);
   /**
-   * <code>.google.protobuf.Duration window_length = 3;</code>
+   * Use {@link #getValuePerPartitionMap()} instead.
    */
-  com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder();
+  @java.lang.Deprecated
+  java.util.Map<java.lang.Integer, java.lang.Double>
+  getValuePerPartition();
+  /**
+   * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+   */
+  java.util.Map<java.lang.Integer, java.lang.Double>
+  getValuePerPartitionMap();
+  /**
+   * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+   */
+  double getValuePerPartitionOrDefault(
+      int key,
+      double defaultValue);
+  /**
+   * <code>map&lt;int32, double&gt; value_per_partition = 5;</code>
+   */
+  double getValuePerPartitionOrThrow(
+      int key);
+
+  io.littlehorse.sdk.common.proto.Metric.ValueCase getValueCase();
 }

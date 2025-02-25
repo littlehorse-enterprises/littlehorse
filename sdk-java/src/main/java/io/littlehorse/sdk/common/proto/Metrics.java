@@ -15,10 +15,10 @@ public final class Metrics {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_Metric_descriptor;
+    internal_static_littlehorse_MetricSpec_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_Metric_fieldAccessorTable;
+      internal_static_littlehorse_MetricSpec_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_PartitionMetric_descriptor;
   static final 
@@ -35,15 +35,15 @@ public final class Metrics {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_PartitionMetricId_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_MetricRun_descriptor;
+    internal_static_littlehorse_Metric_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_MetricRun_fieldAccessorTable;
+      internal_static_littlehorse_Metric_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_MetricRun_ValuePerPartitionEntry_descriptor;
+    internal_static_littlehorse_Metric_ValuePerPartitionEntry_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_littlehorse_MetricRun_ValuePerPartitionEntry_fieldAccessorTable;
+      internal_static_littlehorse_Metric_ValuePerPartitionEntry_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -55,31 +55,31 @@ public final class Metrics {
     java.lang.String[] descriptorData = {
       "\n\rmetrics.proto\022\013littlehorse\032\037google/pro" +
       "tobuf/timestamp.proto\032\036google/protobuf/d" +
-      "uration.proto\032\017object_id.proto\"\215\001\n\006Metri" +
-      "c\022!\n\002id\030\001 \001(\0132\025.littlehorse.MetricId\022.\n\n" +
-      "created_at\030\002 \001(\0132\032.google.protobuf.Times" +
-      "tamp\0220\n\rwindow_length\030\003 \001(\0132\031.google.pro" +
-      "tobuf.Duration\"\335\001\n\017PartitionMetric\022*\n\002id" +
-      "\030\001 \001(\0132\036.littlehorse.PartitionMetricId\022." +
-      "\n\ncreated_at\030\002 \001(\0132\032.google.protobuf.Tim" +
-      "estamp\022<\n\016active_windows\030\003 \003(\0132$.littleh" +
-      "orse.PartitionWindowedMetric\0220\n\rwindow_l" +
-      "ength\030\004 \001(\0132\031.google.protobuf.Duration\"u" +
-      "\n\027PartitionWindowedMetric\022\r\n\005value\030\001 \001(\001" +
-      "\0220\n\014window_start\030\002 \001(\0132\032.google.protobuf" +
-      ".Timestamp\022\031\n\021number_of_samples\030\003 \001(\003\"`\n" +
-      "\021PartitionMetricId\022!\n\002id\030\001 \001(\0132\025.littleh" +
-      "orse.MetricId\022(\n\ttenant_id\030\002 \001(\0132\025.littl" +
-      "ehorse.TenantId\"\230\002\n\tMetricRun\022$\n\002id\030\001 \001(" +
-      "\0132\030.littlehorse.MetricRunId\022\017\n\005count\030\002 \001" +
-      "(\003H\000\022\025\n\013latency_avg\030\003 \001(\003H\000\022.\n\ncreated_a" +
-      "t\030\004 \001(\0132\032.google.protobuf.Timestamp\022J\n\023v" +
-      "alue_per_partition\030\005 \003(\0132-.littlehorse.M" +
-      "etricRun.ValuePerPartitionEntry\0328\n\026Value" +
-      "PerPartitionEntry\022\013\n\003key\030\001 \001(\005\022\r\n\005value\030" +
-      "\002 \001(\001:\0028\001B\007\n\005valueBM\n\037io.littlehorse.sdk" +
-      ".common.protoP\001Z\t.;lhproto\252\002\034LittleHorse" +
-      ".Sdk.Common.Protob\006proto3"
+      "uration.proto\032\017object_id.proto\"\225\001\n\nMetri" +
+      "cSpec\022%\n\002id\030\001 \001(\0132\031.littlehorse.MetricSp" +
+      "ecId\022.\n\ncreated_at\030\002 \001(\0132\032.google.protob" +
+      "uf.Timestamp\0220\n\rwindow_length\030\003 \001(\0132\031.go" +
+      "ogle.protobuf.Duration\"\335\001\n\017PartitionMetr" +
+      "ic\022*\n\002id\030\001 \001(\0132\036.littlehorse.PartitionMe" +
+      "tricId\022.\n\ncreated_at\030\002 \001(\0132\032.google.prot" +
+      "obuf.Timestamp\022<\n\016active_windows\030\003 \003(\0132$" +
+      ".littlehorse.PartitionWindowedMetric\0220\n\r" +
+      "window_length\030\004 \001(\0132\031.google.protobuf.Du" +
+      "ration\"u\n\027PartitionWindowedMetric\022\r\n\005val" +
+      "ue\030\001 \001(\001\0220\n\014window_start\030\002 \001(\0132\032.google." +
+      "protobuf.Timestamp\022\031\n\021number_of_samples\030" +
+      "\003 \001(\003\"d\n\021PartitionMetricId\022%\n\002id\030\001 \001(\0132\031" +
+      ".littlehorse.MetricSpecId\022(\n\ttenant_id\030\002" +
+      " \001(\0132\025.littlehorse.TenantId\"\217\002\n\006Metric\022!" +
+      "\n\002id\030\001 \001(\0132\025.littlehorse.MetricId\022\017\n\005cou" +
+      "nt\030\002 \001(\003H\000\022\025\n\013latency_avg\030\003 \001(\003H\000\022.\n\ncre" +
+      "ated_at\030\004 \001(\0132\032.google.protobuf.Timestam" +
+      "p\022G\n\023value_per_partition\030\005 \003(\0132*.littleh" +
+      "orse.Metric.ValuePerPartitionEntry\0328\n\026Va" +
+      "luePerPartitionEntry\022\013\n\003key\030\001 \001(\005\022\r\n\005val" +
+      "ue\030\002 \001(\001:\0028\001B\007\n\005valueBM\n\037io.littlehorse." +
+      "sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleHo" +
+      "rse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -88,11 +88,11 @@ public final class Metrics {
           com.google.protobuf.DurationProto.getDescriptor(),
           io.littlehorse.sdk.common.proto.ObjectId.getDescriptor(),
         });
-    internal_static_littlehorse_Metric_descriptor =
+    internal_static_littlehorse_MetricSpec_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_littlehorse_Metric_fieldAccessorTable = new
+    internal_static_littlehorse_MetricSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_Metric_descriptor,
+        internal_static_littlehorse_MetricSpec_descriptor,
         new java.lang.String[] { "Id", "CreatedAt", "WindowLength", });
     internal_static_littlehorse_PartitionMetric_descriptor =
       getDescriptor().getMessageTypes().get(1);
@@ -112,17 +112,17 @@ public final class Metrics {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_PartitionMetricId_descriptor,
         new java.lang.String[] { "Id", "TenantId", });
-    internal_static_littlehorse_MetricRun_descriptor =
+    internal_static_littlehorse_Metric_descriptor =
       getDescriptor().getMessageTypes().get(4);
-    internal_static_littlehorse_MetricRun_fieldAccessorTable = new
+    internal_static_littlehorse_Metric_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_MetricRun_descriptor,
+        internal_static_littlehorse_Metric_descriptor,
         new java.lang.String[] { "Id", "Count", "LatencyAvg", "CreatedAt", "ValuePerPartition", "Value", });
-    internal_static_littlehorse_MetricRun_ValuePerPartitionEntry_descriptor =
-      internal_static_littlehorse_MetricRun_descriptor.getNestedTypes().get(0);
-    internal_static_littlehorse_MetricRun_ValuePerPartitionEntry_fieldAccessorTable = new
+    internal_static_littlehorse_Metric_ValuePerPartitionEntry_descriptor =
+      internal_static_littlehorse_Metric_descriptor.getNestedTypes().get(0);
+    internal_static_littlehorse_Metric_ValuePerPartitionEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_littlehorse_MetricRun_ValuePerPartitionEntry_descriptor,
+        internal_static_littlehorse_Metric_ValuePerPartitionEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     com.google.protobuf.TimestampProto.getDescriptor();
     com.google.protobuf.DurationProto.getDescriptor();

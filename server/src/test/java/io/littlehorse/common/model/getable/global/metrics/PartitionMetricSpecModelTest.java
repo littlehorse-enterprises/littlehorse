@@ -3,7 +3,7 @@ package io.littlehorse.common.model.getable.global.metrics;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.common.model.RepartitionWindowedMetricModel;
-import io.littlehorse.common.model.getable.objectId.MetricIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.proto.MeasurableObject;
 import io.littlehorse.sdk.common.proto.MetricType;
@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-class PartitionMetricModelTest {
+class PartitionMetricSpecModelTest {
 
-    private final MetricIdModel workflowRunningMetricId =
-            new MetricIdModel(MeasurableObject.WORKFLOW, MetricType.COUNT);
+    private final MetricSpecIdModel workflowRunningMetricId =
+            new MetricSpecIdModel(MeasurableObject.WORKFLOW, MetricType.COUNT);
     private final TestTenantScopedStore tenantScopedStore = new TestTenantScopedStore();
     private final TenantIdModel testTenantId = new TenantIdModel("test");
 

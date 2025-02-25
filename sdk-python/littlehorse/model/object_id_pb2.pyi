@@ -168,7 +168,7 @@ class ThreadSpecReference(_message.Message):
     thread_number: int
     def __init__(self, wf_spec_id: _Optional[_Union[WfSpecId, _Mapping]] = ..., thread_number: _Optional[int] = ...) -> None: ...
 
-class MetricId(_message.Message):
+class MetricSpecId(_message.Message):
     __slots__ = ["object", "node", "wf_spec_id", "thread_spec", "type"]
     OBJECT_FIELD_NUMBER: _ClassVar[int]
     NODE_FIELD_NUMBER: _ClassVar[int]
@@ -182,10 +182,10 @@ class MetricId(_message.Message):
     type: _common_enums_pb2.MetricType
     def __init__(self, object: _Optional[_Union[_common_enums_pb2.MeasurableObject, str]] = ..., node: _Optional[_Union[NodeReference, _Mapping]] = ..., wf_spec_id: _Optional[_Union[WfSpecId, _Mapping]] = ..., thread_spec: _Optional[_Union[ThreadSpecReference, _Mapping]] = ..., type: _Optional[_Union[_common_enums_pb2.MetricType, str]] = ...) -> None: ...
 
-class MetricRunId(_message.Message):
-    __slots__ = ["metric_id", "window_start"]
-    METRIC_ID_FIELD_NUMBER: _ClassVar[int]
+class MetricId(_message.Message):
+    __slots__ = ["metric_spec_id", "window_start"]
+    METRIC_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     WINDOW_START_FIELD_NUMBER: _ClassVar[int]
-    metric_id: MetricId
+    metric_spec_id: MetricSpecId
     window_start: _timestamp_pb2.Timestamp
-    def __init__(self, metric_id: _Optional[_Union[MetricId, _Mapping]] = ..., window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    def __init__(self, metric_spec_id: _Optional[_Union[MetricSpecId, _Mapping]] = ..., window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...

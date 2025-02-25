@@ -443,8 +443,11 @@ export function lHErrorTypeToNumber(object: LHErrorType): number {
   }
 }
 
+/** This enum is all the LittleHorse types that can be measured */
 export enum MeasurableObject {
+  /** WORKFLOW - Measures metrics related to WfSpec */
   WORKFLOW = "WORKFLOW",
+  /** TASK - Measures metrics related to tasks */
   TASK = "TASK",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
