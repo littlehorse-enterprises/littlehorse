@@ -16,7 +16,7 @@ class LittleHorseConfigTest {
         public static final String EXPECTED_LHW_VALUE = "MY-ID-123";
 
         @Test
-        void toMapMustCreateCopy() {
+        void shouldCreateCopyOfInputMap() {
             Map<String, Object> input = Map.of(INPUT_LHW_KEY, EXPECTED_LHW_VALUE);
             LittleHorseConfig littleHorseConfig = new LittleHorseConfig(input);
 
@@ -26,7 +26,7 @@ class LittleHorseConfigTest {
         }
 
         @Test
-        void filterMapForLHW() {
+        void shouldFilterInvalidConfigurations() {
             Map<String, Object> input = Map.of(INPUT_LHW_KEY, EXPECTED_LHW_VALUE, "not.a.valid.key", "To be filtered");
             LittleHorseConfig littleHorseConfig = new LittleHorseConfig(input);
 
@@ -43,7 +43,7 @@ class LittleHorseConfigTest {
         public static final String EXPECTED_LHC_VALUE = "localhost";
 
         @Test
-        void toMapMustCreateCopy() {
+        void shouldCreateCopyOfInputMap() {
             Map<String, Object> input = Map.of(INPUT_LHC_KEY, EXPECTED_LHC_VALUE);
             LittleHorseConfig littleHorseConfig = new LittleHorseConfig(input);
 
@@ -53,7 +53,7 @@ class LittleHorseConfigTest {
         }
 
         @Test
-        void filterMapForLHC() {
+        void shouldFilterInvalidConfigurations() {
             Map<String, Object> input = Map.of(INPUT_LHC_KEY, EXPECTED_LHC_VALUE, "not.a.valid.key", "To be filtered");
             LittleHorseConfig littleHorseConfig = new LittleHorseConfig(input);
 

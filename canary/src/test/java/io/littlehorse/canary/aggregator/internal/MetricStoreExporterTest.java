@@ -128,7 +128,7 @@ class MetricStoreExporterTest {
                 .setServerHost(host)
                 .setServerPort(2023)
                 .setServerVersion("test")
-                .setId("my_metric")
+                .setName("my_metric")
                 .addAllTags(tags)
                 .build();
     }

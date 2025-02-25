@@ -1,5 +1,6 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
+import com.google.common.base.Strings;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
@@ -91,8 +92,20 @@ public class RunWfRequestModel extends CoreSubCommand<RunWfRequest> {
         return true;
     }
 
+    private boolean isIdValid() {
+        return (!id.equals("") && LHUtil.isValidLHName(id));
+    }
+
     @Override
     public WfRun process(ProcessorExecutionContext processorContext, LHServerConfig config) {
+        if (Strings.isNullOrEmpty(wfSpecName)) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument 'wf_spec_name'");
+        }
+
+        if (id != null && !this.isIdValid()) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Optional argument 'id' must be a valid hostname");
+        }
+
         GetableManager getableManager = processorContext.getableManager();
         WfSpecModel spec = processorContext.service().getWfSpec(wfSpecName, majorVersion, revision);
         if (spec == null) {

@@ -1,9 +1,9 @@
 package io.littlehorse.canary.aggregator.prometheus;
 
 import com.google.common.util.concurrent.AtomicDouble;
+import io.littlehorse.canary.infra.ShutdownHook;
 import io.littlehorse.canary.proto.MetricKey;
 import io.littlehorse.canary.proto.MetricValue;
-import io.littlehorse.canary.util.ShutdownHook;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -53,7 +53,7 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
     }
 
     private static String toMetricId(final MetricKey key, final String suffix) {
-        return "%s_%s".formatted(key.getId(), suffix);
+        return "%s_%s".formatted(key.getName(), suffix);
     }
 
     @Override
