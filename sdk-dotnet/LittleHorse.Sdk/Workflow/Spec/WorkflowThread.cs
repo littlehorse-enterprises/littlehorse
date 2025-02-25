@@ -25,7 +25,7 @@ internal static class Constants
 
 public class WorkflowThread
 {
-    private Workflow _parent;
+    public Workflow Parent { get; private set; }
     private ThreadSpec _spec;
     public string LastNodeName;
     private bool _isActive;
@@ -35,7 +35,7 @@ public class WorkflowThread
     
     public WorkflowThread(Workflow parent, Action<WorkflowThread> action)
     {
-        _parent = parent;
+        Parent = parent;
         _spec = new ThreadSpec();
         _wfRunVariables = new List<WfRunVariable>();
         _variableMutations = new Queue<VariableMutation>();
@@ -185,7 +185,7 @@ public class WorkflowThread
     public TaskNodeOutput Execute(string taskName, params object[] args) 
     {
         CheckIfWorkflowThreadIsActive();
-        _parent.AddTaskDefName(taskName);
+        Parent.AddTaskDefName(taskName);
         var taskNode = CreateTaskNode(
             new TaskNode { TaskDefId = new TaskDefId { Name = taskName } }, args);
         string nodeName = AddNode(taskName, Node.NodeOneofCase.Task, taskNode);
@@ -206,17 +206,17 @@ public class WorkflowThread
             taskNode.Variables.Add(AssignVariable(arg));
         }
 
-        if (_parent.GetDefaultTaskTimeout() != 0)
+        if (Parent.GetDefaultTaskTimeout() != 0)
         {
-            taskNode.TimeoutSeconds = _parent.GetDefaultTaskTimeout();
+            taskNode.TimeoutSeconds = Parent.GetDefaultTaskTimeout();
         }
 
-        taskNode.Retries = _parent.GetDefaultSimpleRetries();
+        taskNode.Retries = Parent.GetDefaultSimpleRetries();
 
-        if (_parent.GetDefaultExponentialBackoffRetryPolicy() != null)
+        if (Parent.GetDefaultExponentialBackoffRetryPolicy() != null)
         {
             taskNode.ExponentialBackoff = 
-                _parent.GetDefaultExponentialBackoffRetryPolicy();
+                Parent.GetDefaultExponentialBackoffRetryPolicy();
         }
 
         return taskNode;
@@ -238,7 +238,7 @@ public class WorkflowThread
             ExternalEventDefId = new ExternalEventDefId { Name = externalEventDefName }
         };
 
-        _parent.AddExternalEventDefName(externalEventDefName);
+        Parent.AddExternalEventDefName(externalEventDefName);
         var nodeName = AddNode(externalEventDefName, Node.NodeOneofCase.ExternalEvent, waitNode);
         
         return new NodeOutput(nodeName, this);
@@ -666,7 +666,7 @@ public class WorkflowThread
         string suffix = !string.IsNullOrEmpty(error) ? $"-{error}" : string.Empty;
         string threadName = $"exn-handler-{node.NodeName}{suffix}";
 
-        threadName = _parent.AddSubThread(threadName, handler);
+        threadName = Parent.AddSubThread(threadName, handler);
         
         return new FailureHandlerDef { HandlerSpecName = threadName };
     }
@@ -734,5 +734,30 @@ public class WorkflowThread
         CheckIfWorkflowThreadIsActive();
         var handlerDef = BuildFailureHandlerDef(node, "any-failure", handler);
         AddFailureHandlerDef(handlerDef, node);
+    }
+    
+    /// <summary>
+    /// Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.
+    /// </summary>
+    /// <param name="threadsToWaitFor">
+    /// Set of SpawnedThread objects returned one or more calls to spawnThread.
+    /// </param>
+    /// <returns>A NodeOutput that can be used for timeouts or exception handling. </returns>
+    public WaitForThreadsNodeOutput WaitForThreads(SpawnedThreads threadsToWaitFor)
+    {
+        return null;
+    }
+    
+    public void AddFailureHandlerOnWaitForThreadsNode(WaitForThreadsNodeOutput node, FailureHandlerDef handler) {
+        CheckIfWorkflowThreadIsActive();
+        var currentNode = FindNode(node.NodeName);
+
+        if (currentNode.NodeCase != Node.NodeOneofCase.WaitForThreads) {
+            throw new InvalidOperationException("This should only be a WAIT_FOR_THREADS node");
+        }
+
+        var subBuilder = currentNode.WaitForThreads;
+        subBuilder.PerThreadFailureHandlers.Add(handler);
+        currentNode.WaitForThreads = subBuilder;
     }
 }
