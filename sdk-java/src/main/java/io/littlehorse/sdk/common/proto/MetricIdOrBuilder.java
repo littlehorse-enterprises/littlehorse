@@ -23,17 +23,32 @@ public interface MetricIdOrBuilder extends
   io.littlehorse.sdk.common.proto.MetricSpecIdOrBuilder getMetricSpecIdOrBuilder();
 
   /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>.google.protobuf.Duration window_length = 2;</code>
+   * @return Whether the windowLength field is set.
+   */
+  boolean hasWindowLength();
+  /**
+   * <code>.google.protobuf.Duration window_length = 2;</code>
+   * @return The windowLength.
+   */
+  com.google.protobuf.Duration getWindowLength();
+  /**
+   * <code>.google.protobuf.Duration window_length = 2;</code>
+   */
+  com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder();
+
+  /**
+   * <code>.google.protobuf.Timestamp window_start = 3;</code>
    * @return Whether the windowStart field is set.
    */
   boolean hasWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>.google.protobuf.Timestamp window_start = 3;</code>
    * @return The windowStart.
    */
   com.google.protobuf.Timestamp getWindowStart();
   /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>.google.protobuf.Timestamp window_start = 3;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
 }

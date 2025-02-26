@@ -17,6 +17,7 @@ import {
   metricTypeFromJSON,
   metricTypeToNumber,
 } from "./common_enums";
+import { Duration } from "./google/protobuf/duration";
 import { Timestamp } from "./google/protobuf/timestamp";
 
 /** The ID of a WfSpec. */
@@ -275,6 +276,7 @@ export interface MetricSpecId {
 
 export interface MetricId {
   metricSpecId: MetricSpecId | undefined;
+  windowLength: Duration | undefined;
   windowStart: string | undefined;
 }
 
@@ -1533,7 +1535,7 @@ export const MetricSpecId = {
 };
 
 function createBaseMetricId(): MetricId {
-  return { metricSpecId: undefined, windowStart: undefined };
+  return { metricSpecId: undefined, windowLength: undefined, windowStart: undefined };
 }
 
 export const MetricId = {
@@ -1541,8 +1543,11 @@ export const MetricId = {
     if (message.metricSpecId !== undefined) {
       MetricSpecId.encode(message.metricSpecId, writer.uint32(10).fork()).ldelim();
     }
+    if (message.windowLength !== undefined) {
+      Duration.encode(message.windowLength, writer.uint32(18).fork()).ldelim();
+    }
     if (message.windowStart !== undefined) {
-      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(18).fork()).ldelim();
+      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -1566,6 +1571,13 @@ export const MetricId = {
             break;
           }
 
+          message.windowLength = Duration.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
       }
@@ -1584,6 +1596,9 @@ export const MetricId = {
     const message = createBaseMetricId();
     message.metricSpecId = (object.metricSpecId !== undefined && object.metricSpecId !== null)
       ? MetricSpecId.fromPartial(object.metricSpecId)
+      : undefined;
+    message.windowLength = (object.windowLength !== undefined && object.windowLength !== null)
+      ? Duration.fromPartial(object.windowLength)
       : undefined;
     message.windowStart = object.windowStart ?? undefined;
     return message;

@@ -14,7 +14,7 @@ import { MetricId, MetricSpecId, TenantId } from "./object_id";
 export interface MetricSpec {
   id: MetricSpecId | undefined;
   createdAt: string | undefined;
-  windowLength: Duration | undefined;
+  windowLengths: Duration[];
 }
 
 export interface PartitionMetric {
@@ -60,7 +60,7 @@ export interface Metric_ValuePerPartitionEntry {
 }
 
 function createBaseMetricSpec(): MetricSpec {
-  return { id: undefined, createdAt: undefined, windowLength: undefined };
+  return { id: undefined, createdAt: undefined, windowLengths: [] };
 }
 
 export const MetricSpec = {
@@ -71,8 +71,8 @@ export const MetricSpec = {
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
     }
-    if (message.windowLength !== undefined) {
-      Duration.encode(message.windowLength, writer.uint32(26).fork()).ldelim();
+    for (const v of message.windowLengths) {
+      Duration.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -103,7 +103,7 @@ export const MetricSpec = {
             break;
           }
 
-          message.windowLength = Duration.decode(reader, reader.uint32());
+          message.windowLengths.push(Duration.decode(reader, reader.uint32()));
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -121,9 +121,7 @@ export const MetricSpec = {
     const message = createBaseMetricSpec();
     message.id = (object.id !== undefined && object.id !== null) ? MetricSpecId.fromPartial(object.id) : undefined;
     message.createdAt = object.createdAt ?? undefined;
-    message.windowLength = (object.windowLength !== undefined && object.windowLength !== null)
-      ? Duration.fromPartial(object.windowLength)
-      : undefined;
+    message.windowLengths = object.windowLengths?.map((e) => Duration.fromPartial(e)) || [];
     return message;
   },
 };

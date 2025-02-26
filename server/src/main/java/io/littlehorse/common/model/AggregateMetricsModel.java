@@ -85,11 +85,16 @@ public class AggregateMetricsModel extends LHSerializable<AggregateMetrics> impl
             for (RepartitionWindowedMetricModel windowedMetric : windowedMetrics) {
                 StoredGetable<Metric, MetricModel> storedGetable =
                         (StoredGetable<Metric, MetricModel>) repartitionedStore.get(
-                                new MetricIdModel(metricId, windowedMetric.getWindowStart()).getStoreableKey(),
+                                new MetricIdModel(
+                                                metricId,
+                                                windowedMetric.getWindowStart(),
+                                                windowedMetric.getWindowLength())
+                                        .getStoreableKey(),
                                 StoredGetable.class);
                 if (storedGetable == null) {
-                    storedGetable = new StoredGetable<>(
-                            new MetricModel(new MetricIdModel(metricId, windowedMetric.getWindowStart())));
+                    log.info("creating new metric on partition {}, partition KEY {}", ctx.taskId(), getPartitionKey());
+                    storedGetable = new StoredGetable<>(new MetricModel(new MetricIdModel(
+                            metricId, windowedMetric.getWindowStart(), windowedMetric.getWindowLength())));
                 }
                 MetricModel metricRun = storedGetable.getStoredObject();
                 metricRun.mergePartitionMetric(windowedMetric, partitionId);

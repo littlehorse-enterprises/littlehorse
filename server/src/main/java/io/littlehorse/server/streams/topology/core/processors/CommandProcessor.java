@@ -207,7 +207,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private void forwardRepartitionCommands(Collection<AggregateMetricsModel> repartitionSubCommands) {
         String topicName = config.getRepartitionTopicName();
         for (RepartitionSubCommand repartitionSubCommand : repartitionSubCommands) {
-            log.info("Forwarding repartition subcommand: {}", repartitionSubCommand);
             String partitionKey = repartitionSubCommand.getPartitionKey();
             RepartitionCommand command = new RepartitionCommand(
                     repartitionSubCommand, new Date(), UUID.randomUUID().toString());

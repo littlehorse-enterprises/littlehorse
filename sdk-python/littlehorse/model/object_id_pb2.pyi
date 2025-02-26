@@ -1,5 +1,6 @@
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 import littlehorse.model.common_enums_pb2 as _common_enums_pb2
+from google.protobuf import duration_pb2 as _duration_pb2
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional, Union as _Union
@@ -183,9 +184,11 @@ class MetricSpecId(_message.Message):
     def __init__(self, object: _Optional[_Union[_common_enums_pb2.MeasurableObject, str]] = ..., node: _Optional[_Union[NodeReference, _Mapping]] = ..., wf_spec_id: _Optional[_Union[WfSpecId, _Mapping]] = ..., thread_spec: _Optional[_Union[ThreadSpecReference, _Mapping]] = ..., type: _Optional[_Union[_common_enums_pb2.MetricType, str]] = ...) -> None: ...
 
 class MetricId(_message.Message):
-    __slots__ = ["metric_spec_id", "window_start"]
+    __slots__ = ["metric_spec_id", "window_length", "window_start"]
     METRIC_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
+    WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
     WINDOW_START_FIELD_NUMBER: _ClassVar[int]
     metric_spec_id: MetricSpecId
+    window_length: _duration_pb2.Duration
     window_start: _timestamp_pb2.Timestamp
-    def __init__(self, metric_spec_id: _Optional[_Union[MetricSpecId, _Mapping]] = ..., window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    def __init__(self, metric_spec_id: _Optional[_Union[MetricSpecId, _Mapping]] = ..., window_length: _Optional[_Union[_duration_pb2.Duration, _Mapping]] = ..., window_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...

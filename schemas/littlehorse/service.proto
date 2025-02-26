@@ -1492,4 +1492,6 @@ message MetricList {
 message ListMetricsRequest {
   // Filters by metric id
   MetricSpecId metric_spec_id = 1;
+  // Filters by window length
+  google.protobuf.Duration window_length = 2;
 }

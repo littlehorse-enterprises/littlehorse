@@ -41,10 +41,19 @@ public class PutMetricSpecRequestModel extends MetadataSubCommand<PutMetricSpecR
 
     @Override
     public MetricSpec process(MetadataCommandExecution executionContext) {
-        MetricSpecModel metricModel = new MetricSpecModel(new MetricSpecIdModel(measurable, metricType), windowLength);
-        log.info("putting {}", metricModel.getObjectId().getStoreableKey());
-        executionContext.metadataManager().put(metricModel);
-        return metricModel.toProto().build();
+        MetricSpecModel storedMetricSpec =
+                executionContext.metadataManager().get(new MetricSpecIdModel(measurable, metricType));
+        if (storedMetricSpec == null) {
+            MetricSpecModel metricModel =
+                    new MetricSpecModel(new MetricSpecIdModel(measurable, metricType), windowLength);
+            log.info("putting {}", metricModel.getObjectId().getStoreableKey());
+            executionContext.metadataManager().put(metricModel);
+            return metricModel.toProto().build();
+        } else {
+            storedMetricSpec.addWindowLength(windowLength);
+            executionContext.metadataManager().put(storedMetricSpec);
+            return storedMetricSpec.toProto().build();
+        }
     }
 
     @Override

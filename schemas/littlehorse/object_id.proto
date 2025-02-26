@@ -4,6 +4,7 @@ package littlehorse;
 
 import "google/protobuf/timestamp.proto";
 import "common_enums.proto";
+import "google/protobuf/duration.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -229,5 +230,6 @@ message MetricSpecId {
 
 message MetricId {
   MetricSpecId metric_spec_id = 1;
-  google.protobuf.Timestamp window_start = 2;
+  google.protobuf.Duration window_length = 2;
+  google.protobuf.Timestamp window_start = 3;
 }

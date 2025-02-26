@@ -33,4 +33,19 @@ public interface RepartitionWindowedMetricOrBuilder extends
    * <code>.google.protobuf.Timestamp window_start = 3;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
+
+  /**
+   * <code>.google.protobuf.Duration window_length = 4;</code>
+   * @return Whether the windowLength field is set.
+   */
+  boolean hasWindowLength();
+  /**
+   * <code>.google.protobuf.Duration window_length = 4;</code>
+   * @return The windowLength.
+   */
+  com.google.protobuf.Duration getWindowLength();
+  /**
+   * <code>.google.protobuf.Duration window_length = 4;</code>
+   */
+  com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder();
 }

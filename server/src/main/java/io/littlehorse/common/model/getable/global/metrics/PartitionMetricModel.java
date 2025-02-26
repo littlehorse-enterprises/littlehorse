@@ -96,7 +96,6 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
     }
 
     public void incrementCurrentWindow(LocalDateTime currentTime, double increment) {
-        log.info("increment current window");
         currentWindow(currentTime).increment(increment);
     }
 
@@ -130,6 +129,9 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
 
     private RepartitionWindowedMetricModel toRepartitionMetric(PartitionWindowedMetricModel windowedMetric) {
         return new RepartitionWindowedMetricModel(
-                windowedMetric.getValue(), windowedMetric.getNumberOfSamples(), windowedMetric.getWindowStart());
+                windowedMetric.getValue(),
+                windowedMetric.getNumberOfSamples(),
+                windowedMetric.getWindowStart(),
+                windowLength);
     }
 }

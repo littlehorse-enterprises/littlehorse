@@ -13,9 +13,10 @@ _sym_db = _symbol_database.Default()
 
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 import littlehorse.model.common_enums_pb2 as common__enums__pb2
+from google.protobuf import duration_pb2 as google_dot_protobuf_dot_duration__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fobject_id.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x12\x63ommon_enums.proto\"A\n\x08WfSpecId\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x15\n\rmajor_version\x18\x02 \x01(\x05\x12\x10\n\x08revision\x18\x03 \x01(\x05\"\x19\n\tTaskDefId\x12\x0c\n\x04name\x18\x01 \x01(\t\"\"\n\x12\x45xternalEventDefId\x12\x0c\n\x04name\x18\x01 \x01(\t\".\n\rUserTaskDefId\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0f\n\x07version\x18\x02 \x01(\x05\"\"\n\x12WorkflowEventDefId\x12\x0c\n\x04name\x18\x01 \x01(\t\"@\n\x11TaskWorkerGroupId\x12+\n\x0btask_def_id\x18\x01 \x01(\x0b\x32\x16.littlehorse.TaskDefId\"^\n\nVariableId\x12\'\n\twf_run_id\x18\x01 \x01(\x0b\x32\x14.littlehorse.WfRunId\x12\x19\n\x11thread_run_number\x18\x02 \x01(\x05\x12\x0c\n\x04name\x18\x03 \x01(\t\"\x88\x01\n\x0f\x45xternalEventId\x12\'\n\twf_run_id\x18\x01 \x01(\x0b\x32\x14.littlehorse.WfRunId\x12>\n\x15\x65xternal_event_def_id\x18\x02 \x01(\x0b\x32\x1f.littlehorse.ExternalEventDefId\x12\x0c\n\x04guid\x18\x03 \x01(\t\"_\n\x07WfRunId\x12\n\n\x02id\x18\x01 \x01(\t\x12\x33\n\x10parent_wf_run_id\x18\x02 \x01(\x0b\x32\x14.littlehorse.WfRunIdH\x00\x88\x01\x01\x42\x13\n\x11_parent_wf_run_id\"a\n\tNodeRunId\x12\'\n\twf_run_id\x18\x01 \x01(\x0b\x32\x14.littlehorse.WfRunId\x12\x19\n\x11thread_run_number\x18\x02 \x01(\x05\x12\x10\n\x08position\x18\x03 \x01(\x05\"\x8a\x01\n\x0fWorkflowEventId\x12\'\n\twf_run_id\x18\x01 \x01(\x0b\x32\x14.littlehorse.WfRunId\x12>\n\x15workflow_event_def_id\x18\x02 \x01(\x0b\x32\x1f.littlehorse.WorkflowEventDefId\x12\x0e\n\x06number\x18\x03 \x01(\x05\"G\n\tTaskRunId\x12\'\n\twf_run_id\x18\x01 \x01(\x0b\x32\x14.littlehorse.WfRunId\x12\x11\n\ttask_guid\x18\x02 \x01(\t\"P\n\rUserTaskRunId\x12\'\n\twf_run_id\x18\x01 \x01(\x0b\x32\x14.littlehorse.WfRunId\x12\x16\n\x0euser_task_guid\x18\x02 \x01(\t\"\xa8\x01\n\x10TaskDefMetricsId\x12\x30\n\x0cwindow_start\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x35\n\x0bwindow_type\x18\x02 \x01(\x0e\x32 .littlehorse.MetricsWindowLength\x12+\n\x0btask_def_id\x18\x03 \x01(\x0b\x32\x16.littlehorse.TaskDefId\"\xa5\x01\n\x0fWfSpecMetricsId\x12\x30\n\x0cwindow_start\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x35\n\x0bwindow_type\x18\x02 \x01(\x0e\x32 .littlehorse.MetricsWindowLength\x12)\n\nwf_spec_id\x18\x03 \x01(\x0b\x32\x15.littlehorse.WfSpecId\"\x19\n\x0bPrincipalId\x12\n\n\x02id\x18\x01 \x01(\t\"\x16\n\x08TenantId\x12\n\n\x02id\x18\x01 \x01(\t\"\x1e\n\x10ScheduledWfRunId\x12\n\n\x02id\x18\x01 \x01(\t\"\x9a\x01\n\rNodeReference\x12\x35\n\x0bthread_spec\x18\x01 \x01(\x0b\x32 .littlehorse.ThreadSpecReference\x12\x16\n\tnode_type\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x1a\n\rnode_position\x18\x03 \x01(\x05H\x01\x88\x01\x01\x42\x0c\n\n_node_typeB\x10\n\x0e_node_position\"n\n\x13ThreadSpecReference\x12)\n\nwf_spec_id\x18\x01 \x01(\x0b\x32\x15.littlehorse.WfSpecId\x12\x1a\n\rthread_number\x18\x02 \x01(\x05H\x00\x88\x01\x01\x42\x10\n\x0e_thread_number\"\x85\x02\n\x0cMetricSpecId\x12/\n\x06object\x18\x01 \x01(\x0e\x32\x1d.littlehorse.MeasurableObjectH\x00\x12*\n\x04node\x18\x02 \x01(\x0b\x32\x1a.littlehorse.NodeReferenceH\x00\x12+\n\nwf_spec_id\x18\x03 \x01(\x0b\x32\x15.littlehorse.WfSpecIdH\x00\x12\x37\n\x0bthread_spec\x18\x04 \x01(\x0b\x32 .littlehorse.ThreadSpecReferenceH\x00\x12%\n\x04type\x18\x05 \x01(\x0e\x32\x17.littlehorse.MetricTypeB\x0b\n\treference\"o\n\x08MetricId\x12\x31\n\x0emetric_spec_id\x18\x01 \x01(\x0b\x32\x19.littlehorse.MetricSpecId\x12\x30\n\x0cwindow_start\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.TimestampBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fobject_id.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x12\x63ommon_enums.proto\x1a\x1egoogle/protobuf/duration.proto\"A\n\x08WfSpecId\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x15\n\rmajor_version\x18\x02 \x01(\x05\x12\x10\n\x08revision\x18\x03 \x01(\x05\"\x19\n\tTaskDefId\x12\x0c\n\x04name\x18\x01 \x01(\t\"\"\n\x12\x45xternalEventDefId\x12\x0c\n\x04name\x18\x01 \x01(\t\".\n\rUserTaskDefId\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0f\n\x07version\x18\x02 \x01(\x05\"\"\n\x12WorkflowEventDefId\x12\x0c\n\x04name\x18\x01 \x01(\t\"@\n\x11TaskWorkerGroupId\x12+\n\x0btask_def_id\x18\x01 \x01(\x0b\x32\x16.littlehorse.TaskDefId\"^\n\nVariableId\x12\'\n\twf_run_id\x18\x01 \x01(\x0b\x32\x14.littlehorse.WfRunId\x12\x19\n\x11thread_run_number\x18\x02 \x01(\x05\x12\x0c\n\x04name\x18\x03 \x01(\t\"\x88\x01\n\x0f\x45xternalEventId\x12\'\n\twf_run_id\x18\x01 \x01(\x0b\x32\x14.littlehorse.WfRunId\x12>\n\x15\x65xternal_event_def_id\x18\x02 \x01(\x0b\x32\x1f.littlehorse.ExternalEventDefId\x12\x0c\n\x04guid\x18\x03 \x01(\t\"_\n\x07WfRunId\x12\n\n\x02id\x18\x01 \x01(\t\x12\x33\n\x10parent_wf_run_id\x18\x02 \x01(\x0b\x32\x14.littlehorse.WfRunIdH\x00\x88\x01\x01\x42\x13\n\x11_parent_wf_run_id\"a\n\tNodeRunId\x12\'\n\twf_run_id\x18\x01 \x01(\x0b\x32\x14.littlehorse.WfRunId\x12\x19\n\x11thread_run_number\x18\x02 \x01(\x05\x12\x10\n\x08position\x18\x03 \x01(\x05\"\x8a\x01\n\x0fWorkflowEventId\x12\'\n\twf_run_id\x18\x01 \x01(\x0b\x32\x14.littlehorse.WfRunId\x12>\n\x15workflow_event_def_id\x18\x02 \x01(\x0b\x32\x1f.littlehorse.WorkflowEventDefId\x12\x0e\n\x06number\x18\x03 \x01(\x05\"G\n\tTaskRunId\x12\'\n\twf_run_id\x18\x01 \x01(\x0b\x32\x14.littlehorse.WfRunId\x12\x11\n\ttask_guid\x18\x02 \x01(\t\"P\n\rUserTaskRunId\x12\'\n\twf_run_id\x18\x01 \x01(\x0b\x32\x14.littlehorse.WfRunId\x12\x16\n\x0euser_task_guid\x18\x02 \x01(\t\"\xa8\x01\n\x10TaskDefMetricsId\x12\x30\n\x0cwindow_start\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x35\n\x0bwindow_type\x18\x02 \x01(\x0e\x32 .littlehorse.MetricsWindowLength\x12+\n\x0btask_def_id\x18\x03 \x01(\x0b\x32\x16.littlehorse.TaskDefId\"\xa5\x01\n\x0fWfSpecMetricsId\x12\x30\n\x0cwindow_start\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x35\n\x0bwindow_type\x18\x02 \x01(\x0e\x32 .littlehorse.MetricsWindowLength\x12)\n\nwf_spec_id\x18\x03 \x01(\x0b\x32\x15.littlehorse.WfSpecId\"\x19\n\x0bPrincipalId\x12\n\n\x02id\x18\x01 \x01(\t\"\x16\n\x08TenantId\x12\n\n\x02id\x18\x01 \x01(\t\"\x1e\n\x10ScheduledWfRunId\x12\n\n\x02id\x18\x01 \x01(\t\"\x9a\x01\n\rNodeReference\x12\x35\n\x0bthread_spec\x18\x01 \x01(\x0b\x32 .littlehorse.ThreadSpecReference\x12\x16\n\tnode_type\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x1a\n\rnode_position\x18\x03 \x01(\x05H\x01\x88\x01\x01\x42\x0c\n\n_node_typeB\x10\n\x0e_node_position\"n\n\x13ThreadSpecReference\x12)\n\nwf_spec_id\x18\x01 \x01(\x0b\x32\x15.littlehorse.WfSpecId\x12\x1a\n\rthread_number\x18\x02 \x01(\x05H\x00\x88\x01\x01\x42\x10\n\x0e_thread_number\"\x85\x02\n\x0cMetricSpecId\x12/\n\x06object\x18\x01 \x01(\x0e\x32\x1d.littlehorse.MeasurableObjectH\x00\x12*\n\x04node\x18\x02 \x01(\x0b\x32\x1a.littlehorse.NodeReferenceH\x00\x12+\n\nwf_spec_id\x18\x03 \x01(\x0b\x32\x15.littlehorse.WfSpecIdH\x00\x12\x37\n\x0bthread_spec\x18\x04 \x01(\x0b\x32 .littlehorse.ThreadSpecReferenceH\x00\x12%\n\x04type\x18\x05 \x01(\x0e\x32\x17.littlehorse.MetricTypeB\x0b\n\treference\"\xa1\x01\n\x08MetricId\x12\x31\n\x0emetric_spec_id\x18\x01 \x01(\x0b\x32\x19.littlehorse.MetricSpecId\x12\x30\n\rwindow_length\x18\x02 \x01(\x0b\x32\x19.google.protobuf.Duration\x12\x30\n\x0cwindow_start\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.TimestampBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -24,48 +25,48 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'\n\037io.littlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Proto'
-  _globals['_WFSPECID']._serialized_start=85
-  _globals['_WFSPECID']._serialized_end=150
-  _globals['_TASKDEFID']._serialized_start=152
-  _globals['_TASKDEFID']._serialized_end=177
-  _globals['_EXTERNALEVENTDEFID']._serialized_start=179
-  _globals['_EXTERNALEVENTDEFID']._serialized_end=213
-  _globals['_USERTASKDEFID']._serialized_start=215
-  _globals['_USERTASKDEFID']._serialized_end=261
-  _globals['_WORKFLOWEVENTDEFID']._serialized_start=263
-  _globals['_WORKFLOWEVENTDEFID']._serialized_end=297
-  _globals['_TASKWORKERGROUPID']._serialized_start=299
-  _globals['_TASKWORKERGROUPID']._serialized_end=363
-  _globals['_VARIABLEID']._serialized_start=365
-  _globals['_VARIABLEID']._serialized_end=459
-  _globals['_EXTERNALEVENTID']._serialized_start=462
-  _globals['_EXTERNALEVENTID']._serialized_end=598
-  _globals['_WFRUNID']._serialized_start=600
-  _globals['_WFRUNID']._serialized_end=695
-  _globals['_NODERUNID']._serialized_start=697
-  _globals['_NODERUNID']._serialized_end=794
-  _globals['_WORKFLOWEVENTID']._serialized_start=797
-  _globals['_WORKFLOWEVENTID']._serialized_end=935
-  _globals['_TASKRUNID']._serialized_start=937
-  _globals['_TASKRUNID']._serialized_end=1008
-  _globals['_USERTASKRUNID']._serialized_start=1010
-  _globals['_USERTASKRUNID']._serialized_end=1090
-  _globals['_TASKDEFMETRICSID']._serialized_start=1093
-  _globals['_TASKDEFMETRICSID']._serialized_end=1261
-  _globals['_WFSPECMETRICSID']._serialized_start=1264
-  _globals['_WFSPECMETRICSID']._serialized_end=1429
-  _globals['_PRINCIPALID']._serialized_start=1431
-  _globals['_PRINCIPALID']._serialized_end=1456
-  _globals['_TENANTID']._serialized_start=1458
-  _globals['_TENANTID']._serialized_end=1480
-  _globals['_SCHEDULEDWFRUNID']._serialized_start=1482
-  _globals['_SCHEDULEDWFRUNID']._serialized_end=1512
-  _globals['_NODEREFERENCE']._serialized_start=1515
-  _globals['_NODEREFERENCE']._serialized_end=1669
-  _globals['_THREADSPECREFERENCE']._serialized_start=1671
-  _globals['_THREADSPECREFERENCE']._serialized_end=1781
-  _globals['_METRICSPECID']._serialized_start=1784
-  _globals['_METRICSPECID']._serialized_end=2045
-  _globals['_METRICID']._serialized_start=2047
-  _globals['_METRICID']._serialized_end=2158
+  _globals['_WFSPECID']._serialized_start=117
+  _globals['_WFSPECID']._serialized_end=182
+  _globals['_TASKDEFID']._serialized_start=184
+  _globals['_TASKDEFID']._serialized_end=209
+  _globals['_EXTERNALEVENTDEFID']._serialized_start=211
+  _globals['_EXTERNALEVENTDEFID']._serialized_end=245
+  _globals['_USERTASKDEFID']._serialized_start=247
+  _globals['_USERTASKDEFID']._serialized_end=293
+  _globals['_WORKFLOWEVENTDEFID']._serialized_start=295
+  _globals['_WORKFLOWEVENTDEFID']._serialized_end=329
+  _globals['_TASKWORKERGROUPID']._serialized_start=331
+  _globals['_TASKWORKERGROUPID']._serialized_end=395
+  _globals['_VARIABLEID']._serialized_start=397
+  _globals['_VARIABLEID']._serialized_end=491
+  _globals['_EXTERNALEVENTID']._serialized_start=494
+  _globals['_EXTERNALEVENTID']._serialized_end=630
+  _globals['_WFRUNID']._serialized_start=632
+  _globals['_WFRUNID']._serialized_end=727
+  _globals['_NODERUNID']._serialized_start=729
+  _globals['_NODERUNID']._serialized_end=826
+  _globals['_WORKFLOWEVENTID']._serialized_start=829
+  _globals['_WORKFLOWEVENTID']._serialized_end=967
+  _globals['_TASKRUNID']._serialized_start=969
+  _globals['_TASKRUNID']._serialized_end=1040
+  _globals['_USERTASKRUNID']._serialized_start=1042
+  _globals['_USERTASKRUNID']._serialized_end=1122
+  _globals['_TASKDEFMETRICSID']._serialized_start=1125
+  _globals['_TASKDEFMETRICSID']._serialized_end=1293
+  _globals['_WFSPECMETRICSID']._serialized_start=1296
+  _globals['_WFSPECMETRICSID']._serialized_end=1461
+  _globals['_PRINCIPALID']._serialized_start=1463
+  _globals['_PRINCIPALID']._serialized_end=1488
+  _globals['_TENANTID']._serialized_start=1490
+  _globals['_TENANTID']._serialized_end=1512
+  _globals['_SCHEDULEDWFRUNID']._serialized_start=1514
+  _globals['_SCHEDULEDWFRUNID']._serialized_end=1544
+  _globals['_NODEREFERENCE']._serialized_start=1547
+  _globals['_NODEREFERENCE']._serialized_end=1701
+  _globals['_THREADSPECREFERENCE']._serialized_start=1703
+  _globals['_THREADSPECREFERENCE']._serialized_end=1813
+  _globals['_METRICSPECID']._serialized_start=1816
+  _globals['_METRICSPECID']._serialized_end=2077
+  _globals['_METRICID']._serialized_start=2080
+  _globals['_METRICID']._serialized_end=2241
 # @@protoc_insertion_point(module_scope)

@@ -16,6 +16,8 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Getter;
 
 public class MetricSpecModel extends MetadataGetable<MetricSpec> {
@@ -24,14 +26,14 @@ public class MetricSpecModel extends MetadataGetable<MetricSpec> {
     private Date createdAt;
 
     @Getter
-    private Duration windowLength;
+    private Set<Duration> windowLengths;
 
     public MetricSpecModel() {}
 
     public MetricSpecModel(MetricSpecIdModel id, Duration windowLength) {
         this.id = id;
         this.createdAt = new Date();
-        this.windowLength = windowLength;
+        this.windowLengths = Set.of(windowLength);
     }
 
     @Override
@@ -39,17 +41,28 @@ public class MetricSpecModel extends MetadataGetable<MetricSpec> {
         MetricSpec p = (MetricSpec) proto;
         this.id = LHSerializable.fromProto(p.getId(), MetricSpecIdModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
-        this.windowLength = Duration.ofSeconds(p.getWindowLength().getSeconds());
+        this.windowLengths = p.getWindowLengthsList().stream()
+                .map(com.google.protobuf.Duration::getSeconds)
+                .map(Duration::ofSeconds)
+                .collect(Collectors.toSet());
     }
 
     @Override
     public MetricSpec.Builder toProto() {
+        List<com.google.protobuf.Duration> protoDurations = this.windowLengths.stream()
+                .map(Duration::getSeconds)
+                .map(seconds -> com.google.protobuf.Duration.newBuilder()
+                        .setSeconds(seconds)
+                        .build())
+                .toList();
         return MetricSpec.newBuilder()
                 .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(createdAt))
-                .setWindowLength(com.google.protobuf.Duration.newBuilder()
-                        .setSeconds(this.windowLength.getSeconds())
-                        .build());
+                .addAllWindowLengths(protoDurations);
+    }
+
+    public void addWindowLength(Duration windowLength) {
+        this.windowLengths.add(windowLength);
     }
 
     @Override

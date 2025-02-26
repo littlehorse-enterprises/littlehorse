@@ -58,10 +58,11 @@ var listMetricRuns = &cobra.Command{
 	Use:   "metricRun <wfRunId>",
 	Short: "List all MetricRun's for a given Metric Id.",
 	Long:  ``,
-	Args:  cobra.ExactArgs(2),
+	Args:  cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 		measurable := args[0]
 		metricType := args[1]
+		windowLength, _ := time.ParseDuration(args[2])
 
 		metricId := &lhproto.MetricSpecId{
 			Type: toType(metricType),
@@ -72,6 +73,7 @@ var listMetricRuns = &cobra.Command{
 
 		req := &lhproto.ListMetricsRequest{
 			MetricSpecId: metricId,
+			WindowLength: durationpb.New(windowLength),
 		}
 
 		littlehorse.PrintResp(getGlobalClient(cmd).ListMetrics(

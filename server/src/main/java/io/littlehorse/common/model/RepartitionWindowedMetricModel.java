@@ -6,6 +6,7 @@ import io.littlehorse.common.proto.RepartitionWindowedMetric;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.time.Duration;
 import java.util.Date;
 import lombok.Getter;
 
@@ -15,13 +16,16 @@ public class RepartitionWindowedMetricModel extends LHSerializable<RepartitionWi
     private double value;
     private double numberOfSamples;
     private Date windowStart;
+    private Duration windowLength;
 
     public RepartitionWindowedMetricModel() {}
 
-    public RepartitionWindowedMetricModel(double value, double numberOfSamples, Date windowStart) {
+    public RepartitionWindowedMetricModel(
+            double value, double numberOfSamples, Date windowStart, Duration windowLength) {
         this.value = value;
         this.windowStart = windowStart;
         this.numberOfSamples = numberOfSamples;
+        this.windowLength = windowLength;
     }
 
     @Override
@@ -30,6 +34,7 @@ public class RepartitionWindowedMetricModel extends LHSerializable<RepartitionWi
         this.value = p.getValue();
         this.windowStart = LHUtil.fromProtoTs(p.getWindowStart());
         this.numberOfSamples = p.getNumberOfSamples();
+        this.windowLength = Duration.ofSeconds(p.getWindowLength().getSeconds());
     }
 
     @Override
@@ -37,7 +42,10 @@ public class RepartitionWindowedMetricModel extends LHSerializable<RepartitionWi
         return RepartitionWindowedMetric.newBuilder()
                 .setValue(value)
                 .setWindowStart(LHUtil.fromDate(windowStart))
-                .setNumberOfSamples(numberOfSamples);
+                .setNumberOfSamples(numberOfSamples)
+                .setWindowLength(com.google.protobuf.Duration.newBuilder()
+                        .setSeconds(windowLength.getSeconds())
+                        .build());
     }
 
     @Override

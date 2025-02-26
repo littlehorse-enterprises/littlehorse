@@ -9,14 +9,14 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class MetricSpec(_message.Message):
-    __slots__ = ["id", "created_at", "window_length"]
+    __slots__ = ["id", "created_at", "window_lengths"]
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
-    WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
+    WINDOW_LENGTHS_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.MetricSpecId
     created_at: _timestamp_pb2.Timestamp
-    window_length: _duration_pb2.Duration
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.MetricSpecId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., window_length: _Optional[_Union[_duration_pb2.Duration, _Mapping]] = ...) -> None: ...
+    window_lengths: _containers.RepeatedCompositeFieldContainer[_duration_pb2.Duration]
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.MetricSpecId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., window_lengths: _Optional[_Iterable[_Union[_duration_pb2.Duration, _Mapping]]] = ...) -> None: ...
 
 class PartitionMetric(_message.Message):
     __slots__ = ["id", "created_at", "active_windows", "window_length"]

@@ -15,7 +15,7 @@ option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 message MetricSpec {
   MetricSpecId id = 1;
   google.protobuf.Timestamp created_at = 2;
-  google.protobuf.Duration window_length = 3;
+  repeated google.protobuf.Duration window_lengths = 3;
 }
 
 message PartitionMetric {

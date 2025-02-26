@@ -1589,7 +1589,11 @@ export interface MetricList {
 /** List the latest metrics for a given MetricSpecId */
 export interface ListMetricsRequest {
   /** Filters by metric id */
-  metricSpecId: MetricSpecId | undefined;
+  metricSpecId:
+    | MetricSpecId
+    | undefined;
+  /** Filters by window length */
+  windowLength: Duration | undefined;
 }
 
 function createBaseGetLatestUserTaskDefRequest(): GetLatestUserTaskDefRequest {
@@ -8032,13 +8036,16 @@ export const MetricList = {
 };
 
 function createBaseListMetricsRequest(): ListMetricsRequest {
-  return { metricSpecId: undefined };
+  return { metricSpecId: undefined, windowLength: undefined };
 }
 
 export const ListMetricsRequest = {
   encode(message: ListMetricsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.metricSpecId !== undefined) {
       MetricSpecId.encode(message.metricSpecId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.windowLength !== undefined) {
+      Duration.encode(message.windowLength, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -8057,6 +8064,13 @@ export const ListMetricsRequest = {
 
           message.metricSpecId = MetricSpecId.decode(reader, reader.uint32());
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.windowLength = Duration.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -8073,6 +8087,9 @@ export const ListMetricsRequest = {
     const message = createBaseListMetricsRequest();
     message.metricSpecId = (object.metricSpecId !== undefined && object.metricSpecId !== null)
       ? MetricSpecId.fromPartial(object.metricSpecId)
+      : undefined;
+    message.windowLength = (object.windowLength !== undefined && object.windowLength !== null)
+      ? Duration.fromPartial(object.windowLength)
       : undefined;
     return message;
   },

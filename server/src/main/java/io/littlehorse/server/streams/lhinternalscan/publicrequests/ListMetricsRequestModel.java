@@ -20,12 +20,14 @@ import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListMetricReply;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.time.Duration;
 
 public class ListMetricsRequestModel
         extends PublicScanRequest<ListMetricsRequest, MetricList, Metric, MetricModel, ListMetricReply> {
 
     private MetricSpecIdModel metricId;
     private TenantIdModel tenantId;
+    private Duration windowLength;
 
     @Override
     public GetableClassEnum getObjectType() {
@@ -50,7 +52,8 @@ public class ListMetricsRequestModel
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException {
         return ObjectIdScanBoundaryStrategy.fromPrefix(
-                LHUtil.getCompositeId(tenantId.toString(), metricId.toString()), metricId.toString());
+                LHUtil.getCompositeId(tenantId.toString(), metricId.toString()),
+                LHUtil.getCompositeId(metricId.toString(), String.valueOf(windowLength.getSeconds())));
     }
 
     @Override
@@ -63,6 +66,7 @@ public class ListMetricsRequestModel
         ListMetricsRequest p = (ListMetricsRequest) proto;
         this.tenantId = context.authorization().tenantId();
         this.metricId = LHSerializable.fromProto(p.getMetricSpecId(), MetricSpecIdModel.class, context);
+        this.windowLength = Duration.ofSeconds(p.getWindowLength().getSeconds());
     }
 
     @Override

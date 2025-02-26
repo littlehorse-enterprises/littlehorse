@@ -64,10 +64,36 @@ private static final long serialVersionUID = 0L;
     return metricSpecId_ == null ? io.littlehorse.sdk.common.proto.MetricSpecId.getDefaultInstance() : metricSpecId_;
   }
 
-  public static final int WINDOW_START_FIELD_NUMBER = 2;
+  public static final int WINDOW_LENGTH_FIELD_NUMBER = 2;
+  private com.google.protobuf.Duration windowLength_;
+  /**
+   * <code>.google.protobuf.Duration window_length = 2;</code>
+   * @return Whether the windowLength field is set.
+   */
+  @java.lang.Override
+  public boolean hasWindowLength() {
+    return windowLength_ != null;
+  }
+  /**
+   * <code>.google.protobuf.Duration window_length = 2;</code>
+   * @return The windowLength.
+   */
+  @java.lang.Override
+  public com.google.protobuf.Duration getWindowLength() {
+    return windowLength_ == null ? com.google.protobuf.Duration.getDefaultInstance() : windowLength_;
+  }
+  /**
+   * <code>.google.protobuf.Duration window_length = 2;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder() {
+    return windowLength_ == null ? com.google.protobuf.Duration.getDefaultInstance() : windowLength_;
+  }
+
+  public static final int WINDOW_START_FIELD_NUMBER = 3;
   private com.google.protobuf.Timestamp windowStart_;
   /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>.google.protobuf.Timestamp window_start = 3;</code>
    * @return Whether the windowStart field is set.
    */
   @java.lang.Override
@@ -75,7 +101,7 @@ private static final long serialVersionUID = 0L;
     return windowStart_ != null;
   }
   /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>.google.protobuf.Timestamp window_start = 3;</code>
    * @return The windowStart.
    */
   @java.lang.Override
@@ -83,7 +109,7 @@ private static final long serialVersionUID = 0L;
     return windowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : windowStart_;
   }
   /**
-   * <code>.google.protobuf.Timestamp window_start = 2;</code>
+   * <code>.google.protobuf.Timestamp window_start = 3;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder() {
@@ -107,8 +133,11 @@ private static final long serialVersionUID = 0L;
     if (metricSpecId_ != null) {
       output.writeMessage(1, getMetricSpecId());
     }
+    if (windowLength_ != null) {
+      output.writeMessage(2, getWindowLength());
+    }
     if (windowStart_ != null) {
-      output.writeMessage(2, getWindowStart());
+      output.writeMessage(3, getWindowStart());
     }
     getUnknownFields().writeTo(output);
   }
@@ -123,9 +152,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getMetricSpecId());
     }
+    if (windowLength_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, getWindowLength());
+    }
     if (windowStart_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getWindowStart());
+        .computeMessageSize(3, getWindowStart());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -147,6 +180,11 @@ private static final long serialVersionUID = 0L;
       if (!getMetricSpecId()
           .equals(other.getMetricSpecId())) return false;
     }
+    if (hasWindowLength() != other.hasWindowLength()) return false;
+    if (hasWindowLength()) {
+      if (!getWindowLength()
+          .equals(other.getWindowLength())) return false;
+    }
     if (hasWindowStart() != other.hasWindowStart()) return false;
     if (hasWindowStart()) {
       if (!getWindowStart()
@@ -166,6 +204,10 @@ private static final long serialVersionUID = 0L;
     if (hasMetricSpecId()) {
       hash = (37 * hash) + METRIC_SPEC_ID_FIELD_NUMBER;
       hash = (53 * hash) + getMetricSpecId().hashCode();
+    }
+    if (hasWindowLength()) {
+      hash = (37 * hash) + WINDOW_LENGTH_FIELD_NUMBER;
+      hash = (53 * hash) + getWindowLength().hashCode();
     }
     if (hasWindowStart()) {
       hash = (37 * hash) + WINDOW_START_FIELD_NUMBER;
@@ -307,6 +349,11 @@ private static final long serialVersionUID = 0L;
         metricSpecIdBuilder_.dispose();
         metricSpecIdBuilder_ = null;
       }
+      windowLength_ = null;
+      if (windowLengthBuilder_ != null) {
+        windowLengthBuilder_.dispose();
+        windowLengthBuilder_ = null;
+      }
       windowStart_ = null;
       if (windowStartBuilder_ != null) {
         windowStartBuilder_.dispose();
@@ -351,6 +398,11 @@ private static final long serialVersionUID = 0L;
             : metricSpecIdBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.windowLength_ = windowLengthBuilder_ == null
+            ? windowLength_
+            : windowLengthBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.windowStart_ = windowStartBuilder_ == null
             ? windowStart_
             : windowStartBuilder_.build();
@@ -404,6 +456,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasMetricSpecId()) {
         mergeMetricSpecId(other.getMetricSpecId());
       }
+      if (other.hasWindowLength()) {
+        mergeWindowLength(other.getWindowLength());
+      }
       if (other.hasWindowStart()) {
         mergeWindowStart(other.getWindowStart());
       }
@@ -442,11 +497,18 @@ private static final long serialVersionUID = 0L;
             } // case 10
             case 18: {
               input.readMessage(
-                  getWindowStartFieldBuilder().getBuilder(),
+                  getWindowLengthFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000002;
               break;
             } // case 18
+            case 26: {
+              input.readMessage(
+                  getWindowStartFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -583,18 +645,137 @@ private static final long serialVersionUID = 0L;
       return metricSpecIdBuilder_;
     }
 
+    private com.google.protobuf.Duration windowLength_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Duration, com.google.protobuf.Duration.Builder, com.google.protobuf.DurationOrBuilder> windowLengthBuilder_;
+    /**
+     * <code>.google.protobuf.Duration window_length = 2;</code>
+     * @return Whether the windowLength field is set.
+     */
+    public boolean hasWindowLength() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>.google.protobuf.Duration window_length = 2;</code>
+     * @return The windowLength.
+     */
+    public com.google.protobuf.Duration getWindowLength() {
+      if (windowLengthBuilder_ == null) {
+        return windowLength_ == null ? com.google.protobuf.Duration.getDefaultInstance() : windowLength_;
+      } else {
+        return windowLengthBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.google.protobuf.Duration window_length = 2;</code>
+     */
+    public Builder setWindowLength(com.google.protobuf.Duration value) {
+      if (windowLengthBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        windowLength_ = value;
+      } else {
+        windowLengthBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Duration window_length = 2;</code>
+     */
+    public Builder setWindowLength(
+        com.google.protobuf.Duration.Builder builderForValue) {
+      if (windowLengthBuilder_ == null) {
+        windowLength_ = builderForValue.build();
+      } else {
+        windowLengthBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Duration window_length = 2;</code>
+     */
+    public Builder mergeWindowLength(com.google.protobuf.Duration value) {
+      if (windowLengthBuilder_ == null) {
+        if (((bitField0_ & 0x00000002) != 0) &&
+          windowLength_ != null &&
+          windowLength_ != com.google.protobuf.Duration.getDefaultInstance()) {
+          getWindowLengthBuilder().mergeFrom(value);
+        } else {
+          windowLength_ = value;
+        }
+      } else {
+        windowLengthBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Duration window_length = 2;</code>
+     */
+    public Builder clearWindowLength() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      windowLength_ = null;
+      if (windowLengthBuilder_ != null) {
+        windowLengthBuilder_.dispose();
+        windowLengthBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Duration window_length = 2;</code>
+     */
+    public com.google.protobuf.Duration.Builder getWindowLengthBuilder() {
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return getWindowLengthFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.google.protobuf.Duration window_length = 2;</code>
+     */
+    public com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder() {
+      if (windowLengthBuilder_ != null) {
+        return windowLengthBuilder_.getMessageOrBuilder();
+      } else {
+        return windowLength_ == null ?
+            com.google.protobuf.Duration.getDefaultInstance() : windowLength_;
+      }
+    }
+    /**
+     * <code>.google.protobuf.Duration window_length = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Duration, com.google.protobuf.Duration.Builder, com.google.protobuf.DurationOrBuilder> 
+        getWindowLengthFieldBuilder() {
+      if (windowLengthBuilder_ == null) {
+        windowLengthBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Duration, com.google.protobuf.Duration.Builder, com.google.protobuf.DurationOrBuilder>(
+                getWindowLength(),
+                getParentForChildren(),
+                isClean());
+        windowLength_ = null;
+      }
+      return windowLengthBuilder_;
+    }
+
     private com.google.protobuf.Timestamp windowStart_;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> windowStartBuilder_;
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      * @return Whether the windowStart field is set.
      */
     public boolean hasWindowStart() {
-      return ((bitField0_ & 0x00000002) != 0);
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      * @return The windowStart.
      */
     public com.google.protobuf.Timestamp getWindowStart() {
@@ -605,7 +786,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      */
     public Builder setWindowStart(com.google.protobuf.Timestamp value) {
       if (windowStartBuilder_ == null) {
@@ -616,12 +797,12 @@ private static final long serialVersionUID = 0L;
       } else {
         windowStartBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      */
     public Builder setWindowStart(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -630,16 +811,16 @@ private static final long serialVersionUID = 0L;
       } else {
         windowStartBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      */
     public Builder mergeWindowStart(com.google.protobuf.Timestamp value) {
       if (windowStartBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
+        if (((bitField0_ & 0x00000004) != 0) &&
           windowStart_ != null &&
           windowStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getWindowStartBuilder().mergeFrom(value);
@@ -649,15 +830,15 @@ private static final long serialVersionUID = 0L;
       } else {
         windowStartBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      */
     public Builder clearWindowStart() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000004);
       windowStart_ = null;
       if (windowStartBuilder_ != null) {
         windowStartBuilder_.dispose();
@@ -667,15 +848,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      */
     public com.google.protobuf.Timestamp.Builder getWindowStartBuilder() {
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return getWindowStartFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder() {
       if (windowStartBuilder_ != null) {
@@ -686,7 +867,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp window_start = 2;</code>
+     * <code>.google.protobuf.Timestamp window_start = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 

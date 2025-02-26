@@ -33,4 +33,31 @@ public interface ListMetricsRequestOrBuilder extends
    * <code>.littlehorse.MetricSpecId metric_spec_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.MetricSpecIdOrBuilder getMetricSpecIdOrBuilder();
+
+  /**
+   * <pre>
+   * Filters by window length
+   * </pre>
+   *
+   * <code>.google.protobuf.Duration window_length = 2;</code>
+   * @return Whether the windowLength field is set.
+   */
+  boolean hasWindowLength();
+  /**
+   * <pre>
+   * Filters by window length
+   * </pre>
+   *
+   * <code>.google.protobuf.Duration window_length = 2;</code>
+   * @return The windowLength.
+   */
+  com.google.protobuf.Duration getWindowLength();
+  /**
+   * <pre>
+   * Filters by window length
+   * </pre>
+   *
+   * <code>.google.protobuf.Duration window_length = 2;</code>
+   */
+  com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder();
 }

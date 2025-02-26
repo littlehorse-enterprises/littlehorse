@@ -18,6 +18,7 @@ import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.GetableUpdates.GetableStatusUpdate;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -74,26 +75,30 @@ public class MetricsUpdater implements GetableUpdates.GetableStatusListener {
             Supplier<Optional<StoredGetable<MetricSpec, MetricSpecModel>>> metricSupplier =
                     () -> Optional.ofNullable(metadataStore.get(metadataId.getStoreableKey(), StoredGetable.class));
             metricSupplier.get().map(StoredGetable::getStoredObject).ifPresent(metric -> {
-                StoredGetable<PartitionMetric, PartitionMetricModel> getable = tenantStore.get(
-                        new PartitionMetricIdModel(metric.getObjectId(), statusUpdate.getTenantId()).getStoreableKey(),
-                        StoredGetable.class);
-                if (getable == null) {
-                    getable = new StoredGetable<>(new PartitionMetricModel(
-                            metric.getObjectId(), metric.getWindowLength(), statusUpdate.getTenantId()));
+                for (Duration windowLength : metric.getWindowLengths()) {
+                    StoredGetable<PartitionMetric, PartitionMetricModel> getable = tenantStore.get(
+                            new PartitionMetricIdModel(metric.getObjectId(), statusUpdate.getTenantId())
+                                    .getStoreableKey(),
+                            StoredGetable.class);
+                    if (getable == null) {
+                        getable = new StoredGetable<>(new PartitionMetricModel(
+                                metric.getObjectId(), windowLength, statusUpdate.getTenantId()));
+                    }
+                    PartitionMetricInventoryModel partitionMetricInventory = clusterScopedCoreStore.get(
+                            PartitionMetricInventoryModel.METRIC_INVENTORY_STORE_KEY,
+                            PartitionMetricInventoryModel.class);
+                    if (partitionMetricInventory == null) {
+                        partitionMetricInventory = new PartitionMetricInventoryModel();
+                    }
+                    PartitionMetricModel partitionMetric = getable.getStoredObject();
+                    partitionMetric.incrementCurrentWindow(LocalDateTime.now(), value);
+                    boolean added = partitionMetricInventory.addMetric(partitionMetric.getObjectId());
+                    if (added) {
+                        log.info("added partition metric");
+                        clusterScopedCoreStore.put(partitionMetricInventory);
+                    }
+                    tenantStore.put(new StoredGetable<>(partitionMetric));
                 }
-                PartitionMetricInventoryModel partitionMetricInventory = clusterScopedCoreStore.get(
-                        PartitionMetricInventoryModel.METRIC_INVENTORY_STORE_KEY, PartitionMetricInventoryModel.class);
-                if (partitionMetricInventory == null) {
-                    partitionMetricInventory = new PartitionMetricInventoryModel();
-                }
-                PartitionMetricModel partitionMetric = getable.getStoredObject();
-                partitionMetric.incrementCurrentWindow(LocalDateTime.now(), value);
-                boolean added = partitionMetricInventory.addMetric(partitionMetric.getObjectId());
-                if (added) {
-                    log.info("added partition metric");
-                    clusterScopedCoreStore.put(partitionMetricInventory);
-                }
-                tenantStore.put(new StoredGetable<>(partitionMetric));
             });
         }
     }

@@ -35,6 +35,7 @@ public class MetricModel extends RepartitionedGetable<Metric> {
     public MetricModel(MetricIdModel metricRunId) {
         this.metricRunId = metricRunId;
         this.createdAt = new Date();
+        log.info("creating new metric");
     }
 
     @Override
@@ -114,7 +115,6 @@ public class MetricModel extends RepartitionedGetable<Metric> {
                         .average()
                         .orElse(0);
                 this.latencyAvg = Duration.ofNanos(Math.round(latency));
-                log.info("Sum latency avg: {}", latencyAvg.toMillis());
             }
             default -> throw new IllegalStateException(
                     "Unexpected value: " + metricRunId.getMetricSpecId().getMetricType());

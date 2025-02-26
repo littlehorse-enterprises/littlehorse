@@ -38,17 +38,26 @@ public interface MetricSpecOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
-   * <code>.google.protobuf.Duration window_length = 3;</code>
-   * @return Whether the windowLength field is set.
+   * <code>repeated .google.protobuf.Duration window_lengths = 3;</code>
    */
-  boolean hasWindowLength();
+  java.util.List<com.google.protobuf.Duration> 
+      getWindowLengthsList();
   /**
-   * <code>.google.protobuf.Duration window_length = 3;</code>
-   * @return The windowLength.
+   * <code>repeated .google.protobuf.Duration window_lengths = 3;</code>
    */
-  com.google.protobuf.Duration getWindowLength();
+  com.google.protobuf.Duration getWindowLengths(int index);
   /**
-   * <code>.google.protobuf.Duration window_length = 3;</code>
+   * <code>repeated .google.protobuf.Duration window_lengths = 3;</code>
    */
-  com.google.protobuf.DurationOrBuilder getWindowLengthOrBuilder();
+  int getWindowLengthsCount();
+  /**
+   * <code>repeated .google.protobuf.Duration window_lengths = 3;</code>
+   */
+  java.util.List<? extends com.google.protobuf.DurationOrBuilder> 
+      getWindowLengthsOrBuilderList();
+  /**
+   * <code>repeated .google.protobuf.Duration window_lengths = 3;</code>
+   */
+  com.google.protobuf.DurationOrBuilder getWindowLengthsOrBuilder(
+      int index);
 }
