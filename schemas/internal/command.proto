@@ -5,6 +5,7 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
 import "service.proto";
 import "object_id.proto";
 import "common_wfspec.proto";
@@ -95,6 +96,7 @@ message MetadataCommand {
         // TODO: DeleteTenant
 
         DeleteWorkflowEventDefRequest delete_workflow_event_def = 16;
+        PutMetricSpecRequest put_metric = 17;
     }
 }
 
@@ -109,6 +111,13 @@ message AggregateTaskMetrics {
     TaskDefId task_def_id = 1;
     TenantId tenant_id = 2;
     repeated TaskMetricUpdate metric_updates = 3;
+}
+
+message AggregateMetrics {
+    MetricSpecId metric_spec_id = 1;
+    repeated RepartitionWindowedMetric windowed_metrics = 2;
+    TenantId tenant_id = 3;
+    int32 partition_id = 4;
 }
 
 message WfMetricUpdate {
@@ -168,6 +177,7 @@ message RepartitionCommandPb {
         RemoveRemoteTagPb remove_remote_tag = 6;
         AggregateWfMetrics aggregate_wf_metrics = 7;
         AggregateTaskMetrics aggregate_task_metrics = 8;
+        AggregateMetrics aggregate_metrics = 9;
     }
 }
 
@@ -249,4 +259,11 @@ message LHTimerPb {
 
 message DeleteTaskWorkerGroupRequest {
     TaskDefId id = 1;
+}
+
+message RepartitionWindowedMetric {
+    double value = 1;
+    double number_of_samples = 2;
+    google.protobuf.Timestamp window_start = 3;
+    google.protobuf.Duration window_length = 4;
 }

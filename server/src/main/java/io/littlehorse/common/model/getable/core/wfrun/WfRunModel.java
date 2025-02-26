@@ -584,7 +584,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
                     wfSpecId, processorContext.authorization().tenantId(), this.status, status);
         } else {
             statusChanged = GetableUpdates.createEndEvent(
-                    wfSpecId, processorContext.authorization().tenantId(), this.status, status, startTime);
+                    wfSpecId, processorContext.authorization().tenantId(), this.status, status);
         }
         this.status = status;
         processorContext.getableUpdates().dispatch(statusChanged);
