@@ -11,7 +11,7 @@ public class SpawnedThreadsIterator: SpawnedThreads
        _internalStartedThreadVar = internalStartedThreadVar;
         if (_internalStartedThreadVar.Type != VariableType.JsonArr) 
         {
-            throw new ArgumentException("Only support for json arrays");
+            throw new ArgumentException("Only support for json arrays.");
         }
     }
     

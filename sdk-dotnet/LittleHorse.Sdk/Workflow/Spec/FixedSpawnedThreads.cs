@@ -14,12 +14,13 @@ public class FixedSpawnedThreads: SpawnedThreads
     public WaitForThreadsNode BuildNode()
     {
         var waitNode = new WaitForThreadsNode();
+        var threads = new List<WaitForThreadsNode.Types.ThreadToWaitFor>();
         foreach (var spawnedThread in _spawnedThreads)
         {
             WfRunVariable threadNumberVariable = spawnedThread.GetThreadNumberVariable();
             if (threadNumberVariable.Type != VariableType.Int) 
             {
-                throw new ArgumentException("Only int variables are supported");
+                throw new ArgumentException("Only int variables are supported.");
             }
             var variableAssignment = new VariableAssignment();
             if (threadNumberVariable.JsonPath != null) 
@@ -31,10 +32,11 @@ public class FixedSpawnedThreads: SpawnedThreads
             {
                 ThreadRunNumber = variableAssignment
             };
-            waitNode.Threads.Threads.Add(threadToWaitFor);
+            
+            threads.Add(threadToWaitFor);
         }
         
-       
+        waitNode.Threads = new WaitForThreadsNode.Types.ThreadsToWaitFor { Threads = { threads } };
         return waitNode;
     }
 }
