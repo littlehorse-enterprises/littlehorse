@@ -19,13 +19,14 @@ internal static class Constants
         { Node.NodeOneofCase.UserTask, "USER_TASK" },
         { Node.NodeOneofCase.StartMultipleThreads, "START_MULTIPLE_THREADS" },
         { Node.NodeOneofCase.ThrowEvent, "THROW_EVENT" },
-        { Node.NodeOneofCase.WaitForCondition, "WAIT_FOR_CONDITION" }
+        { Node.NodeOneofCase.WaitForCondition, "WAIT_FOR_CONDITION" },
+        { Node.NodeOneofCase.WaitForThreads, "WAIT_FOR_THREADS" }
     };
 }
 
 public class WorkflowThread
 {
-    private Workflow _parent;
+    public Workflow Parent { get; private set; }
     private ThreadSpec _spec;
     public string LastNodeName;
     private bool _isActive;
@@ -35,7 +36,7 @@ public class WorkflowThread
     
     public WorkflowThread(Workflow parent, Action<WorkflowThread> action)
     {
-        _parent = parent;
+        Parent = parent;
         _spec = new ThreadSpec();
         _wfRunVariables = new List<WfRunVariable>();
         _variableMutations = new Queue<VariableMutation>();
@@ -115,7 +116,8 @@ public class WorkflowThread
         
         edge.VariableMutations.AddRange(CollectVariableMutations());
         
-        if (_lastNodeCondition != null) {
+        if (_lastNodeCondition != null) 
+        {
             edge.Condition = _lastNodeCondition;
             _lastNodeCondition = null;
         }
@@ -143,6 +145,12 @@ public class WorkflowThread
                 break;
             case Node.NodeOneofCase.Exit:
                 node.Exit = (ExitNode) subNode;
+                break;
+            case Node.NodeOneofCase.StartThread:
+                node.StartThread = (StartThreadNode) subNode;
+                break;
+            case Node.NodeOneofCase.WaitForThreads:
+                node.WaitForThreads = (WaitForThreadsNode) subNode;
                 break;
             case Node.NodeOneofCase.None:
                 throw new InvalidOperationException("Not possible");
@@ -185,7 +193,7 @@ public class WorkflowThread
     public TaskNodeOutput Execute(string taskName, params object[] args) 
     {
         CheckIfWorkflowThreadIsActive();
-        _parent.AddTaskDefName(taskName);
+        Parent.AddTaskDefName(taskName);
         var taskNode = CreateTaskNode(
             new TaskNode { TaskDefId = new TaskDefId { Name = taskName } }, args);
         string nodeName = AddNode(taskName, Node.NodeOneofCase.Task, taskNode);
@@ -206,17 +214,17 @@ public class WorkflowThread
             taskNode.Variables.Add(AssignVariable(arg));
         }
 
-        if (_parent.GetDefaultTaskTimeout() != 0)
+        if (Parent.GetDefaultTaskTimeout() != 0)
         {
-            taskNode.TimeoutSeconds = _parent.GetDefaultTaskTimeout();
+            taskNode.TimeoutSeconds = Parent.GetDefaultTaskTimeout();
         }
 
-        taskNode.Retries = _parent.GetDefaultSimpleRetries();
+        taskNode.Retries = Parent.GetDefaultSimpleRetries();
 
-        if (_parent.GetDefaultExponentialBackoffRetryPolicy() != null)
+        if (Parent.GetDefaultExponentialBackoffRetryPolicy() != null)
         {
             taskNode.ExponentialBackoff = 
-                _parent.GetDefaultExponentialBackoffRetryPolicy();
+                Parent.GetDefaultExponentialBackoffRetryPolicy();
         }
 
         return taskNode;
@@ -238,7 +246,7 @@ public class WorkflowThread
             ExternalEventDefId = new ExternalEventDefId { Name = externalEventDefName }
         };
 
-        _parent.AddExternalEventDefName(externalEventDefName);
+        Parent.AddExternalEventDefName(externalEventDefName);
         var nodeName = AddNode(externalEventDefName, Node.NodeOneofCase.ExternalEvent, waitNode);
         
         return new NodeOutput(nodeName, this);
@@ -666,7 +674,7 @@ public class WorkflowThread
         string suffix = !string.IsNullOrEmpty(error) ? $"-{error}" : string.Empty;
         string threadName = $"exn-handler-{node.NodeName}{suffix}";
 
-        threadName = _parent.AddSubThread(threadName, handler);
+        threadName = Parent.AddSubThread(threadName, handler);
         
         return new FailureHandlerDef { HandlerSpecName = threadName };
     }
@@ -734,5 +742,74 @@ public class WorkflowThread
         CheckIfWorkflowThreadIsActive();
         var handlerDef = BuildFailureHandlerDef(node, "any-failure", handler);
         AddFailureHandlerDef(handlerDef, node);
+    }
+    
+    /// <summary>
+    /// Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.
+    /// </summary>
+    /// <param name="threadsToWaitFor">
+    /// Set of SpawnedThread objects returned one or more calls to spawnThread.
+    /// </param>
+    /// <returns>A NodeOutput that can be used for timeouts or exception handling. </returns>
+    public WaitForThreadsNodeOutput WaitForThreads(SpawnedThreads threadsToWaitFor)
+    {
+        CheckIfWorkflowThreadIsActive();
+        WaitForThreadsNode waitNode = threadsToWaitFor.BuildNode();
+        string nodeName = AddNode("threads", Node.NodeOneofCase.WaitForThreads, waitNode);
+        return new WaitForThreadsNodeOutput(nodeName, this, _spec);
+    }
+    
+    /// <summary>
+    /// Adds a SPAWN_THREAD node to the ThreadSpec, which spawns a Child ThreadRun whose ThreadSpec
+    /// is determined by the provided ThreadFunc.
+    /// </summary>
+    /// <param name="threadFunc">
+    /// It is a ThreadFunc (can be a lambda function) that defines the logic for the child ThreadRun to execute.
+    /// </param>
+    /// <param name="inputVars">
+    /// It is a Dictionary of all the input variables to set for the child ThreadRun. If
+    ///     you don't need to set any input variables, leave this null.
+    /// </param>
+    /// <returns>A handle to the resulting SpawnedThread, which can be used in ThreadBuilder::WaitForThread()</returns>
+    public SpawnedThread SpawnThread(Action<WorkflowThread> threadFunc, string threadName, 
+        Dictionary<string, object>? inputVars)
+    {
+        CheckIfWorkflowThreadIsActive();
+        if (inputVars == null) 
+        {
+            inputVars = new Dictionary<string, object>();
+        }
+        var subThreadName = Parent.AddSubThread(threadName, threadFunc);
+
+        var variableAssignments = new Dictionary<string, VariableAssignment>();
+        foreach (var inputVar in inputVars)
+        {
+            variableAssignments.Add(inputVar.Key, AssignVariable(inputVar.Value));
+        }
+
+        var startThread = new StartThreadNode { ThreadSpecName = subThreadName, Variables = { variableAssignments } };
+
+        string nodeName = AddNode(subThreadName, Node.NodeOneofCase.StartThread, startThread);
+        WfRunVariable internalStartedThreadVar = AddVariable(nodeName, VariableType.Int);
+
+        // The output of a StartThreadNode is just an integer containing the name
+        // of the thread.
+        Mutate(internalStartedThreadVar, VariableMutationType.Assign, new NodeOutput(nodeName, this));
+
+        return new SpawnedThread(this, subThreadName, internalStartedThreadVar);
+    }
+    
+    public void AddFailureHandlerOnWaitForThreadsNode(WaitForThreadsNodeOutput node, FailureHandlerDef handler) {
+        CheckIfWorkflowThreadIsActive();
+        var currentNode = FindNode(node.NodeName);
+
+        if (currentNode.NodeCase != Node.NodeOneofCase.WaitForThreads) 
+        {
+            throw new InvalidOperationException("This should only be a WAIT_FOR_THREADS node");
+        }
+
+        var subBuilder = currentNode.WaitForThreads;
+        subBuilder.PerThreadFailureHandlers.Add(handler);
+        currentNode.WaitForThreads = subBuilder;
     }
 }
