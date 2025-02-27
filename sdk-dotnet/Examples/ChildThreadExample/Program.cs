@@ -59,7 +59,7 @@ public abstract class Program
             NodeOutput customerSupportRequest = wf.WaitForEvent("customer-support-request");
 
             WfRunVariable channel = wf.DeclareStr("channel");
-            channel.Assign(wf.WaitForEvent("customer-support-request").WithJsonPath("$.channel"));
+            channel.Assign(customerSupportRequest.WithJsonPath("$.channel"));
             wf.DoIf(wf.Condition(channel, Comparator.Equals, "WEBPAGE"),
                 ifThread =>
                     ifThread.Execute("save-request-form-data"),
