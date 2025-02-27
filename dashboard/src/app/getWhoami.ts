@@ -1,6 +1,8 @@
 import lhConfig from '@/lhConfig'
 import { ACLAction, ACLResource, Principal, ServerACLs } from 'littlehorse-client/proto'
 import { getServerSession } from 'next-auth'
+import { redirect } from 'next/navigation'
+import { ClientError, Status } from 'nice-grpc-common'
 import { WhoAmI } from '../types'
 import { authOptions } from './api/auth/[...nextauth]/authOptions'
 
@@ -8,7 +10,18 @@ const getWhoAmI = async (): Promise<WhoAmI> => {
   const session = await getServerSession(authOptions)
   const client = lhConfig.getClient(session?.accessToken)
 
-  const { id, perTenantAcls, globalAcls } = await client.whoami({})
+  let principal: Principal
+  try {
+    principal = await client.whoami({})
+  } catch (error: unknown) {
+    if (error instanceof ClientError && error.code === Status.UNAUTHENTICATED) {
+      redirect('/api/auth/signin')
+    } else {
+      throw error
+    }
+  }
+
+  const { id, perTenantAcls, globalAcls } = principal
 
   const tenants = getTenants({ perTenantAcls, globalAcls })
 
