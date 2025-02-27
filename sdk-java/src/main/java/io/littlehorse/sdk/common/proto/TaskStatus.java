@@ -46,7 +46,7 @@ public enum TaskStatus
   TASK_FAILED(3),
   /**
    * <pre>
-   * Task Worker did not report a result in time.
+   * Task Worker did not report a result in time 
    * </pre>
    *
    * <code>TASK_TIMEOUT = 4;</code>
@@ -54,12 +54,12 @@ public enum TaskStatus
   TASK_TIMEOUT(4),
   /**
    * <pre>
-   * Task Worker reported that it was unable to serialize the output of the TaskRun.
+   * The output of the TaskRun was unable to be serialized or deserialized.
    * </pre>
    *
-   * <code>TASK_OUTPUT_SERIALIZING_ERROR = 5;</code>
+   * <code>TASK_OUTPUT_SERDE_ERROR = 5;</code>
    */
-  TASK_OUTPUT_SERIALIZING_ERROR(5),
+  TASK_OUTPUT_SERDE_ERROR(5),
   /**
    * <pre>
    * Task Worker was unable to deserialize the input variables into appropriate language-specific
@@ -124,7 +124,7 @@ public enum TaskStatus
   public static final int TASK_FAILED_VALUE = 3;
   /**
    * <pre>
-   * Task Worker did not report a result in time.
+   * Task Worker did not report a result in time 
    * </pre>
    *
    * <code>TASK_TIMEOUT = 4;</code>
@@ -132,12 +132,12 @@ public enum TaskStatus
   public static final int TASK_TIMEOUT_VALUE = 4;
   /**
    * <pre>
-   * Task Worker reported that it was unable to serialize the output of the TaskRun.
+   * The output of the TaskRun was unable to be serialized or deserialized.
    * </pre>
    *
-   * <code>TASK_OUTPUT_SERIALIZING_ERROR = 5;</code>
+   * <code>TASK_OUTPUT_SERDE_ERROR = 5;</code>
    */
-  public static final int TASK_OUTPUT_SERIALIZING_ERROR_VALUE = 5;
+  public static final int TASK_OUTPUT_SERDE_ERROR_VALUE = 5;
   /**
    * <pre>
    * Task Worker was unable to deserialize the input variables into appropriate language-specific
@@ -196,7 +196,7 @@ public enum TaskStatus
       case 2: return TASK_SUCCESS;
       case 3: return TASK_FAILED;
       case 4: return TASK_TIMEOUT;
-      case 5: return TASK_OUTPUT_SERIALIZING_ERROR;
+      case 5: return TASK_OUTPUT_SERDE_ERROR;
       case 6: return TASK_INPUT_VAR_SUB_ERROR;
       case 8: return TASK_EXCEPTION;
       case 9: return TASK_PENDING;

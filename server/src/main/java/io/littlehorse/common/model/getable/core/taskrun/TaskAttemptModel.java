@@ -132,7 +132,7 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
                 return LHConstants.TASK_FAILURE;
             case TASK_TIMEOUT:
                 return LHConstants.TIMEOUT;
-            case TASK_OUTPUT_SERIALIZING_ERROR:
+            case TASK_OUTPUT_SERDE_ERROR:
                 return LHConstants.VAR_MUTATION_ERROR;
             case TASK_INPUT_VAR_SUB_ERROR:
                 return LHConstants.VAR_SUB_ERROR;
@@ -158,8 +158,8 @@ public class TaskAttemptModel extends LHSerializable<TaskAttempt> {
                 return "Task execution failed";
             case TASK_TIMEOUT:
                 return "Task timed out";
-            case TASK_OUTPUT_SERIALIZING_ERROR:
-                return "Failed serializing Task Output";
+            case TASK_OUTPUT_SERDE_ERROR:
+                return "Failed serializing or deserializing Task Output";
             case TASK_INPUT_VAR_SUB_ERROR:
                 return "Failed calculating Task Input Variables";
             case TASK_RUNNING:
