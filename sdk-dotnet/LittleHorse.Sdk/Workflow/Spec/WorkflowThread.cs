@@ -19,7 +19,8 @@ internal static class Constants
         { Node.NodeOneofCase.UserTask, "USER_TASK" },
         { Node.NodeOneofCase.StartMultipleThreads, "START_MULTIPLE_THREADS" },
         { Node.NodeOneofCase.ThrowEvent, "THROW_EVENT" },
-        { Node.NodeOneofCase.WaitForCondition, "WAIT_FOR_CONDITION" }
+        { Node.NodeOneofCase.WaitForCondition, "WAIT_FOR_CONDITION" },
+        { Node.NodeOneofCase.WaitForThreads, "WAIT_FOR_THREADS" }
     };
 }
 
@@ -115,7 +116,8 @@ public class WorkflowThread
         
         edge.VariableMutations.AddRange(CollectVariableMutations());
         
-        if (_lastNodeCondition != null) {
+        if (_lastNodeCondition != null) 
+        {
             edge.Condition = _lastNodeCondition;
             _lastNodeCondition = null;
         }
@@ -143,6 +145,12 @@ public class WorkflowThread
                 break;
             case Node.NodeOneofCase.Exit:
                 node.Exit = (ExitNode) subNode;
+                break;
+            case Node.NodeOneofCase.StartThread:
+                node.StartThread = (StartThreadNode) subNode;
+                break;
+            case Node.NodeOneofCase.WaitForThreads:
+                node.WaitForThreads = (WaitForThreadsNode) subNode;
                 break;
             case Node.NodeOneofCase.None:
                 throw new InvalidOperationException("Not possible");
@@ -745,14 +753,58 @@ public class WorkflowThread
     /// <returns>A NodeOutput that can be used for timeouts or exception handling. </returns>
     public WaitForThreadsNodeOutput WaitForThreads(SpawnedThreads threadsToWaitFor)
     {
-        return null;
+        CheckIfWorkflowThreadIsActive();
+        WaitForThreadsNode waitNode = threadsToWaitFor.BuildNode();
+        string nodeName = AddNode("threads", Node.NodeOneofCase.WaitForThreads, waitNode);
+        return new WaitForThreadsNodeOutput(nodeName, this, _spec);
+    }
+    
+    /// <summary>
+    /// Adds a SPAWN_THREAD node to the ThreadSpec, which spawns a Child ThreadRun whose ThreadSpec
+    /// is determined by the provided ThreadFunc.
+    /// </summary>
+    /// <param name="threadFunc">
+    /// It is a ThreadFunc (can be a lambda function) that defines the logic for the child ThreadRun to execute.
+    /// </param>
+    /// <param name="inputVars">
+    /// It is a Dictionary of all the input variables to set for the child ThreadRun. If
+    ///     you don't need to set any input variables, leave this null.
+    /// </param>
+    /// <returns>A handle to the resulting SpawnedThread, which can be used in ThreadBuilder::WaitForThread()</returns>
+    public SpawnedThread SpawnThread(Action<WorkflowThread> threadFunc, string threadName, 
+        Dictionary<string, object>? inputVars)
+    {
+        CheckIfWorkflowThreadIsActive();
+        if (inputVars == null) 
+        {
+            inputVars = new Dictionary<string, object>();
+        }
+        var subThreadName = Parent.AddSubThread(threadName, threadFunc);
+
+        var variableAssignments = new Dictionary<string, VariableAssignment>();
+        foreach (var inputVar in inputVars)
+        {
+            variableAssignments.Add(inputVar.Key, AssignVariable(inputVar.Value));
+        }
+
+        var startThread = new StartThreadNode { ThreadSpecName = subThreadName, Variables = { variableAssignments } };
+
+        string nodeName = AddNode(subThreadName, Node.NodeOneofCase.StartThread, startThread);
+        WfRunVariable internalStartedThreadVar = AddVariable(nodeName, VariableType.Int);
+
+        // The output of a StartThreadNode is just an integer containing the name
+        // of the thread.
+        Mutate(internalStartedThreadVar, VariableMutationType.Assign, new NodeOutput(nodeName, this));
+
+        return new SpawnedThread(this, subThreadName, internalStartedThreadVar);
     }
     
     public void AddFailureHandlerOnWaitForThreadsNode(WaitForThreadsNodeOutput node, FailureHandlerDef handler) {
         CheckIfWorkflowThreadIsActive();
         var currentNode = FindNode(node.NodeName);
 
-        if (currentNode.NodeCase != Node.NodeOneofCase.WaitForThreads) {
+        if (currentNode.NodeCase != Node.NodeOneofCase.WaitForThreads) 
+        {
             throw new InvalidOperationException("This should only be a WAIT_FOR_THREADS node");
         }
 
