@@ -19,6 +19,7 @@ public class NodeOutput
             throw new Exception("Cannot use jsonpath() twice on same node!");
         }
         var nodeOutput = new NodeOutput(NodeName, Parent);
+        nodeOutput.JsonPath = path;
         JsonPath = path;
         
         return nodeOutput;
