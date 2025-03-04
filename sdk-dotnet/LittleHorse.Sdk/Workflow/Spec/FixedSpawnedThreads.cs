@@ -17,26 +17,12 @@ public class FixedSpawnedThreads: SpawnedThreads
         var threads = new List<WaitForThreadsNode.Types.ThreadToWaitFor>();
         foreach (var spawnedThread in _spawnedThreads)
         {
-            WfRunVariable threadNumberVariable = spawnedThread.GetThreadNumberVariable();
-            if (threadNumberVariable.Type != VariableType.Int) 
-            {
-                throw new ArgumentException("Only int variables are supported.");
-            }
-            var variableAssignment = new VariableAssignment();
-            if (threadNumberVariable.JsonPath != null) 
-            {
-                variableAssignment.JsonPath = threadNumberVariable.JsonPath;
-            }
-            variableAssignment.VariableName = threadNumberVariable.Name;
-            var threadToWaitFor = new WaitForThreadsNode.Types.ThreadToWaitFor
-            {
-                ThreadRunNumber = variableAssignment
-            };
-            
+            var threadToWaitFor = spawnedThread.BuildThreadToWaitFor();
             threads.Add(threadToWaitFor);
         }
         
         waitNode.Threads = new WaitForThreadsNode.Types.ThreadsToWaitFor { Threads = { threads } };
+        
         return waitNode;
     }
 }

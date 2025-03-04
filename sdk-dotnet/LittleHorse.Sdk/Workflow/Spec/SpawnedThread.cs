@@ -1,3 +1,6 @@
+using LittleHorse.Sdk.Common.Proto;
+using static LittleHorse.Sdk.Common.Proto.WaitForThreadsNode.Types;
+
 namespace LittleHorse.Sdk.Workflow.Spec;
 
 public class SpawnedThread
@@ -16,5 +19,21 @@ public class SpawnedThread
     public WfRunVariable GetThreadNumberVariable() 
     {
         return _internalThreadVar;
+    }
+
+    internal ThreadToWaitFor BuildThreadToWaitFor()
+    {
+        if (_internalThreadVar.Type != VariableType.Int) 
+        {
+            throw new ArgumentException("Only int variables are supported.");
+        }
+        
+        var variableAssignment = Parent.AssignVariableHelper(_internalThreadVar);
+        var threadToWaitFor = new ThreadToWaitFor
+        {
+            ThreadRunNumber = variableAssignment
+        };
+
+        return threadToWaitFor;
     }
 }

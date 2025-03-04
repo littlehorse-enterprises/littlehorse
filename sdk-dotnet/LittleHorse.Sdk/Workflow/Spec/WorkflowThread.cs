@@ -799,7 +799,7 @@ public class WorkflowThread
         return new SpawnedThread(this, subThreadName, internalStartedThreadVar);
     }
     
-    public void AddFailureHandlerOnWaitForThreadsNode(WaitForThreadsNodeOutput node, FailureHandlerDef handler) {
+    internal void AddFailureHandlerOnWaitForThreadsNode(WaitForThreadsNodeOutput node, FailureHandlerDef handler) {
         CheckIfWorkflowThreadIsActive();
         var currentNode = FindNode(node.NodeName);
 
