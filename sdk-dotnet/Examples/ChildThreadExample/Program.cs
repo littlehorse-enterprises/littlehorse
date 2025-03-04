@@ -38,14 +38,9 @@ public abstract class Program
         MyWorker executable = new MyWorker();
         var workers = new List<LHTaskWorker<MyWorker>>
         {
-            new(executable, "save-request-form-data", config),
-            new(executable, "validate-identification", config),
-            new(executable, "send-otp-by-email", config),
-            new(executable, "send-otp-by-sms", config),
-            new(executable, "check-otp", config),
-            new(executable, "choose-option", config),
-            new(executable, "fill-client-information-zendesk", config),
-            new(executable, "create-ticket", config)
+            new(executable, "parent-task-1", config),
+            new(executable, "child-task", config),
+            new(executable, "parent-task-2", config)
         };
         
         return workers;
@@ -55,36 +50,26 @@ public abstract class Program
     {
         void MyEntryPoint(WorkflowThread wf)
         {
-            var request = wf.DeclareJsonObj("request-data");
-            NodeOutput customerSupportRequest = wf.WaitForEvent("customer-support-request");
-
-            WfRunVariable channel = wf.DeclareStr("channel");
-            channel.Assign(customerSupportRequest.WithJsonPath("$.channel"));
-            wf.DoIf(wf.Condition(channel, Comparator.Equals, "WEBPAGE"),
-                ifThread =>
-                    ifThread.Execute("save-request-form-data"),
-                elseThread => elseThread.DoIf(wf.Condition(channel, Comparator.Equals, "WHATSAPP"),
-                    ifThread =>
+            var parentVar = wf.DeclareInt("parent-var");
+            parentVar.Assign(wf.Execute("parent-task-1", parentVar));
+            SpawnedThread childThread = wf.SpawnThread(child =>
+                {
+                    var childVar = child.DeclareInt("child-var");
+                    child.Execute("child-task", childVar);
+                },
+                "spawned-thread",
+                new Dictionary<string, object>
+                {
                     {
-                        ifThread.Execute("validate-identification");
-                        var sendOtpByEmailThread = ifThread.SpawnThread(subThread => subThread.Execute("send-otp-by-email"),
-                            "otp-by-email", null);
-                        var sendOtpBySmsThread = ifThread.SpawnThread(subThread => subThread.Execute("send-otp-by-sms"),
-                            "otp-by-sms", null);
-                        ifThread.WaitForThreads(SpawnedThreads.Of(sendOtpByEmailThread, sendOtpBySmsThread));
-                        ifThread.Execute("check-otp");
-                        ifThread.Execute("choose-option");
-                    },
-                    elseThread => elseThread.DoIf(wf.Condition(channel, Comparator.Equals, "CALLCENTER"), 
-                        ifThread => ifThread.Execute("fill-client-information-zendesk")
-                        )
-                    )
-            );
-            wf.Execute("create-ticket");
+                        "child-var", parentVar
+                    }
+                });
+            wf.WaitForThreads(SpawnedThreads.Of(childThread));
 
+            wf.Execute("parent-task-2");
         }
         
-        return new Workflow("example-customer-support-requests", MyEntryPoint);
+        return new Workflow("example-child-thread", MyEntryPoint);
     }
 
     static void Main(string[] args)
@@ -102,16 +87,6 @@ public abstract class Program
             }
 
             var workflow = GetWorkflow();
-            
-            // Register external event if it does not exist
-            HashSet<string> externalEventNames = workflow.GetRequiredExternalEventDefNames();
-
-            foreach (var externalEventName in externalEventNames)
-            {
-                Console.WriteLine($"Registering external event {externalEventName}");
-            
-                client.PutExternalEventDef(new PutExternalEventDefRequest { Name = externalEventName });
-            }
             
             workflow.RegisterWfSpec(client);
             
