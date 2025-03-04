@@ -29,14 +29,14 @@ public class WaitForThreadsNodeOutput: NodeOutput
         string threadName = $"exn-handler-{NodeName}-" +
                             $"{(exceptionName != null ? exceptionName : LHFailureType.FailureTypeException)}";
         threadName = Parent.Parent.AddSubThread(threadName, handler);
-        var handlerDef = GetFailureHandlerDef(threadName, exceptionName, LHFailureType.FailureTypeException);
+        var handlerDef = BuildFailureHandlerDef(threadName, exceptionName, LHFailureType.FailureTypeException);
 
         Parent.AddFailureHandlerOnWaitForThreadsNode(this, handlerDef);
 
         return this;
     }
 
-    private FailureHandlerDef GetFailureHandlerDef(string threadName, string? failureName, LHFailureType failureType)
+    private FailureHandlerDef BuildFailureHandlerDef(string threadName, string? failureName, LHFailureType failureType)
     {
         var handlerDef = new FailureHandlerDef { HandlerSpecName = threadName };
         if (failureName != null) 
@@ -66,7 +66,7 @@ public class WaitForThreadsNodeOutput: NodeOutput
     {
         string threadName = $"error-handler-{NodeName}-{(error != null ? error : LHFailureType.FailureTypeError)}";
         threadName = Parent.Parent.AddSubThread(threadName, handler);
-        var handlerDef = GetFailureHandlerDef(threadName, error?.ToString(), LHFailureType.FailureTypeError);
+        var handlerDef = BuildFailureHandlerDef(threadName, error?.ToString(), LHFailureType.FailureTypeError);
         Parent.AddFailureHandlerOnWaitForThreadsNode(this, handlerDef);
 
         return this;
