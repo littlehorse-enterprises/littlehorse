@@ -28,7 +28,7 @@ internal static class LHConstants
         { "VarSubError", "VAR_SUB_ERROR" },
         { "VarMutationError", "VAR_MUTATION_ERROR" },
         { "UserTaskCancelled", "USER_TASK_CANCELLED" },
-        { "LHErrorType.Timeout", "TIMEOUT" },
+        { "Timeout", "TIMEOUT" },
         { "TaskFailure", "TASK_FAILURE" },
         { "VarError", "VAR_ERROR" },
         { "TaskError", "TASK_ERROR" },
@@ -40,4 +40,6 @@ internal static class LHConstants
         { LHFailureType.FailureTypeError, "FAILURE_TYPE_ERROR" },
         { LHFailureType.FailureTypeException, "FAILURE_TYPE_EXCEPTION" }
     };
+    
+    internal static readonly string AnyFailure = "any_failure";
 }

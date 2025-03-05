@@ -1,6 +1,5 @@
 using System;
 using LittleHorse.Sdk.Common.Proto;
-using LittleHorse.Sdk.Helper;
 using LittleHorse.Sdk.Workflow.Spec;
 using Moq;
 using Xunit;
@@ -31,18 +30,29 @@ public class WorkflowThreadTest
         var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
         var workflowThread = new WorkflowThread(mockWorkflow.Object, Entrypoint);
 
-        var wfThreadCompiled = workflowThread.Compile();
+        var actualSpec = workflowThread.Compile();
         
-        var actualResult = LHMappingHelper.ProtoToJson(wfThreadCompiled);
-        var expectedResult =
-            "{ \"nodes\": { \"0-entrypoint-ENTRYPOINT\": { \"outgoingEdges\": [ { \"sinkNodeName\":" +
-            " \"1-exit-EXIT\", \"variableMutations\": [ ] } ], " +
-            "\"failureHandlers\": [ ], \"entrypoint\": { } }, " +
-            "\"1-exit-EXIT\": { \"outgoingEdges\": [ ], \"failureHandlers\": [ ], " +
-            "\"exit\": { } } }, \"variableDefs\": [ ], \"interruptDefs\": [ ] }";
+        var expectedSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-exit-EXIT" }
+            }
+        };
+        
+        var exitNode = new Node
+        {
+            Exit = new ExitNode()
+        };
+        
+        expectedSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedSpec.Nodes.Add("1-exit-EXIT", exitNode);
+        
         var expectedNumberOfNodes = 2;
-        Assert.Equal(expectedNumberOfNodes, wfThreadCompiled.Nodes.Count);
-        Assert.Equal(expectedResult, actualResult);
+        Assert.Equal(expectedNumberOfNodes, actualSpec.Nodes.Count);
+        Assert.Equal(expectedSpec, actualSpec);
     }
 
     [Fact]
@@ -59,23 +69,52 @@ public class WorkflowThreadTest
 
         var workflowThread = new WorkflowThread(mockParentWorkflow.Object, AddVariablesAction);
         
-        var wfThreadCompiled = workflowThread.Compile();
+        var actualSpec = workflowThread.Compile();
         
-        var actualResult = LHMappingHelper.ProtoToJson(wfThreadCompiled);
-        var expectedResult = "{ \"nodes\": { \"0-entrypoint-ENTRYPOINT\": { \"outgoingEdges\": " +
-                             "[ { \"sinkNodeName\": \"1-exit-EXIT\", \"variableMutations\": [ ] } ], " +
-                             "\"failureHandlers\": [ ], \"entrypoint\": { } }, \"1-exit-EXIT\": { \"outgoingEdges\": [ ], " +
-                             "\"failureHandlers\": [ ], \"exit\": { } } }, \"variableDefs\": [ { \"varDef\": " +
-                             "{ \"type\": \"STR\", \"name\": \"str-test-variable\", \"maskedValue\": false }, " +
-                             "\"required\": false, \"searchable\": false, \"jsonIndexes\": [ ], \"accessLevel\": " +
-                             "\"PRIVATE_VAR\" }, { \"varDef\": { \"type\": \"INT\", \"name\": \"int-test-variable\", " +
-                             "\"defaultValue\": { \"int\": \"5\" }, \"maskedValue\": false }, " +
-                             "\"required\": false, \"searchable\": false, \"jsonIndexes\": [ ], " +
-                             "\"accessLevel\": \"PRIVATE_VAR\" } ], \"interruptDefs\": [ ] }";
+        var expectedSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-exit-EXIT" }
+            }
+        };
+        
+        var exitNode = new Node
+        {
+            Exit = new ExitNode()
+        };
+        
+        var strVarDef = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "str-test-variable",
+                Type = VariableType.Str
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        
+        var intVarDef = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "int-test-variable",
+                Type = VariableType.Int,
+                DefaultValue = new VariableValue {Int = 5}
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        
+        expectedSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedSpec.Nodes.Add("1-exit-EXIT", exitNode);
+        expectedSpec.VariableDefs.Add(strVarDef);
+        expectedSpec.VariableDefs.Add(intVarDef);
         
         var expectedNumberOfNodes = 2;
-        Assert.Equal(expectedNumberOfNodes, wfThreadCompiled.Nodes.Count);
-        Assert.Equal(expectedResult, actualResult);
+        Assert.Equal(expectedNumberOfNodes, actualSpec.Nodes.Count);
+        Assert.Equal(expectedSpec, actualSpec);
     }
     
     [Fact]
@@ -137,22 +176,50 @@ public class WorkflowThreadTest
         }
         var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
         
-        var wfThreadCompiled = workflowThread.Compile();
+        var actualSpec = workflowThread.Compile();
         
-        var actualResult = LHMappingHelper.ProtoToJson(wfThreadCompiled);
-        var expectedResult =
-            "{ \"nodes\": { \"0-entrypoint-ENTRYPOINT\": { \"outgoingEdges\": [ { \"sinkNodeName\": " +
-            "\"1-test-task-name-TASK\", \"variableMutations\": [ ] } ], \"failureHandlers\": [ ], \"entrypoint\": " +
-            "{ } }, \"1-test-task-name-TASK\": { \"outgoingEdges\": [ { \"sinkNodeName\": \"2-exit-EXIT\", " +
-            "\"variableMutations\": [ ] } ], \"failureHandlers\": [ ], \"task\": { \"taskDefId\": { \"name\": " +
-            "\"test-task-name\" }, \"timeoutSeconds\": 0, \"retries\": 0, \"variables\": [ { \"variableName\": " +
-            "\"str-test-variable\" } ] } }, \"2-exit-EXIT\": { \"outgoingEdges\": [ ], \"failureHandlers\": [ ], " +
-            "\"exit\": { } } }, \"variableDefs\": [ { \"varDef\": { \"type\": \"STR\", \"name\": \"str-test-variable\", " +
-            "\"maskedValue\": false }, \"required\": false, \"searchable\": false, \"jsonIndexes\": [ ], " +
-            "\"accessLevel\": \"PRIVATE_VAR\" } ], \"interruptDefs\": [ ] }";
+        var expectedSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-test-task-name-TASK" }
+            }
+        };
+
+        var taskNode = new Node
+        {
+            Task = new TaskNode
+            {
+                TaskDefId = new TaskDefId { Name = "test-task-name" },
+                Variables = { new VariableAssignment { VariableName = "str-test-variable" } }
+            },
+            OutgoingEdges = { new Edge { SinkNodeName = "2-exit-EXIT" } }
+        };
+        
+        var exitNode = new Node
+        {
+            Exit = new ExitNode()
+        };
+        
+        var threadVarDef = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "str-test-variable",
+                Type = VariableType.Str
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        expectedSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedSpec.Nodes.Add("1-test-task-name-TASK", taskNode);
+        expectedSpec.Nodes.Add("2-exit-EXIT", exitNode);
+        expectedSpec.VariableDefs.Add(threadVarDef);
+        
         var expectedNumberOfNodes = 3;
-        Assert.Equal(expectedNumberOfNodes, wfThreadCompiled.Nodes.Count);
-        Assert.Equal(expectedResult, actualResult);
+        Assert.Equal(expectedNumberOfNodes, actualSpec.Nodes.Count);
+        Assert.Equal(expectedSpec, actualSpec);
     }
     
     [Fact]

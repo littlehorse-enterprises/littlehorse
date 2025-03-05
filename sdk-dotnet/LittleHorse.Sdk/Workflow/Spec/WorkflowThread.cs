@@ -1,6 +1,7 @@
 using Google.Protobuf;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Helper;
+using static LittleHorse.Sdk.Common.Proto.FailureHandlerDef.Types;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
@@ -578,7 +579,7 @@ public class WorkflowThread
     public void HandleError(NodeOutput node, LHErrorType error, Action<WorkflowThread> handler)
     {
         CheckIfWorkflowThreadIsActive();
-        var errorFormatted = error.ToString();
+        var errorFormatted = LHConstants.ErrorTypes[error.ToString()];
         var handlerDef = BuildFailureHandlerDef(node, 
             errorFormatted, 
             handler);
@@ -600,9 +601,9 @@ public class WorkflowThread
     {
         CheckIfWorkflowThreadIsActive();
         var handlerDef = BuildFailureHandlerDef(node, 
-            "FAILURE_TYPE_ERROR", 
+            LHConstants.FailureTypes[LHFailureType.FailureTypeError], 
             handler);
-        handlerDef.AnyFailureOfType = FailureHandlerDef.Types.LHFailureType.FailureTypeError;
+        handlerDef.AnyFailureOfType = LHFailureType.FailureTypeError;
         AddFailureHandlerDef(handlerDef, node);
     }
     
@@ -651,7 +652,7 @@ public class WorkflowThread
     
     private FailureHandlerDef BuildFailureHandlerDef(NodeOutput node, string error, Action<WorkflowThread> handler)
     {
-        string suffix = !string.IsNullOrEmpty(error) ? $"-{error.ToUpper()}" : string.Empty;
+        string suffix = !string.IsNullOrEmpty(error) ? $"-{error}" : string.Empty;
         string threadName = $"exn-handler-{node.NodeName}{suffix}";
 
         threadName = Parent.AddSubThread(threadName, handler);
@@ -703,7 +704,7 @@ public class WorkflowThread
     {
         CheckIfWorkflowThreadIsActive();
         var handlerDef = BuildFailureHandlerDef(node, null!, handler);
-        handlerDef.AnyFailureOfType = FailureHandlerDef.Types.LHFailureType.FailureTypeException;
+        handlerDef.AnyFailureOfType = LHFailureType.FailureTypeException;
         AddFailureHandlerDef(handlerDef, node);
     }
 
@@ -720,7 +721,7 @@ public class WorkflowThread
     public void HandleAnyFailure(NodeOutput node, Action<WorkflowThread> handler)
     {
         CheckIfWorkflowThreadIsActive();
-        var handlerDef = BuildFailureHandlerDef(node, "any_failure", handler);
+        var handlerDef = BuildFailureHandlerDef(node, LHConstants.AnyFailure, handler);
         AddFailureHandlerDef(handlerDef, node);
     }
     
