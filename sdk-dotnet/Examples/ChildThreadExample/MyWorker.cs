@@ -16,7 +16,7 @@ public class MyWorker
     {
         Console.WriteLine("Executing child-task");
         
-        return "hi there, input was: " + input;
+        return $"hi there, input was: {input}";
     }
     
     [LHTaskMethod("parent-task-2")]

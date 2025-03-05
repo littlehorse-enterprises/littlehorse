@@ -1,6 +1,5 @@
 ﻿using ChildThreadExample;
 using LittleHorse.Sdk;
-using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Worker;
 using LittleHorse.Sdk.Workflow.Spec;
 using Microsoft.Extensions.DependencyInjection;
