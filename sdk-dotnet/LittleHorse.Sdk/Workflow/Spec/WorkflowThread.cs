@@ -598,7 +598,7 @@ public class WorkflowThread
     public void HandleError(NodeOutput node, LHErrorType error, Action<WorkflowThread> handler)
     {
         CheckIfWorkflowThreadIsActive();
-        var errorFormatted = error.ToString().ToUpper();
+        var errorFormatted = error.ToString();
         var handlerDef = BuildFailureHandlerDef(node, 
             errorFormatted, 
             handler);
@@ -671,7 +671,7 @@ public class WorkflowThread
     
     private FailureHandlerDef BuildFailureHandlerDef(NodeOutput node, string error, Action<WorkflowThread> handler)
     {
-        string suffix = !string.IsNullOrEmpty(error) ? $"-{error}" : string.Empty;
+        string suffix = !string.IsNullOrEmpty(error) ? $"-{error.ToUpper()}" : string.Empty;
         string threadName = $"exn-handler-{node.NodeName}{suffix}";
 
         threadName = Parent.AddSubThread(threadName, handler);
@@ -701,7 +701,7 @@ public class WorkflowThread
     /// <param name="handler">
     /// A ThreadFunction defining a ThreadSpec that specifies how to handle the exception.
     /// </param>
-    public void HandleException(NodeOutput node, String exceptionName, Action<WorkflowThread> handler)
+    public void HandleException(NodeOutput node, string exceptionName, Action<WorkflowThread> handler)
     {
         CheckIfWorkflowThreadIsActive();
         var handlerDef = BuildFailureHandlerDef(node, exceptionName, handler);
@@ -790,11 +790,11 @@ public class WorkflowThread
         var startThread = new StartThreadNode { ThreadSpecName = subThreadName, Variables = { variableAssignments } };
 
         string nodeName = AddNode(subThreadName, Node.NodeOneofCase.StartThread, startThread);
-        WfRunVariable internalStartedThreadVar = AddVariable(nodeName, VariableType.Int);
+        WfRunVariable internalStartedThreadVar = DeclareInt(nodeName);
 
         // The output of a StartThreadNode is just an integer containing the name
         // of the thread.
-        Mutate(internalStartedThreadVar, VariableMutationType.Assign, new NodeOutput(nodeName, this));
+        internalStartedThreadVar.Assign(new NodeOutput(nodeName, this));
 
         return new SpawnedThread(this, subThreadName, internalStartedThreadVar);
     }

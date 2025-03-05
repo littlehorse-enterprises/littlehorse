@@ -82,7 +82,7 @@ public class WaitForThreadsNodeOutput: NodeOutput
     /// <returns>This WaitForThreadsNodeOutput. </returns>
     public WaitForThreadsNodeOutput HandleAnyFailureOnChild(Action<WorkflowThread> handler)
     {
-        string threadName = "failure-handler-" +NodeName + "-ANY_FAILURE";
+        string threadName = "failure-handler-" +NodeName + "-ANY-FAILURE";
         threadName = Parent.Parent.AddSubThread(threadName, handler);
         var handlerDef = new FailureHandlerDef { HandlerSpecName = threadName };
         Parent.AddFailureHandlerOnWaitForThreadsNode(this, handlerDef);
