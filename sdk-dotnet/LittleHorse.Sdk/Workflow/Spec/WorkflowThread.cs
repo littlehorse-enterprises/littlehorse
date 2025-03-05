@@ -4,26 +4,6 @@ using LittleHorse.Sdk.Helper;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
-internal static class Constants
-{
-    internal static readonly Dictionary<Node.NodeOneofCase, string> NodeTypes = new Dictionary<Node.NodeOneofCase, string>
-    {
-        { Node.NodeOneofCase.Entrypoint, "ENTRYPOINT" },
-        { Node.NodeOneofCase.Exit, "EXIT" },
-        { Node.NodeOneofCase.Task, "TASK" },
-        { Node.NodeOneofCase.None, "NONE" },
-        { Node.NodeOneofCase.ExternalEvent, "EXTERNAL_EVENT" },
-        { Node.NodeOneofCase.StartThread, "START_THREAD" },
-        { Node.NodeOneofCase.Nop, "NOP" },
-        { Node.NodeOneofCase.Sleep, "SLEEP" },
-        { Node.NodeOneofCase.UserTask, "USER_TASK" },
-        { Node.NodeOneofCase.StartMultipleThreads, "START_MULTIPLE_THREADS" },
-        { Node.NodeOneofCase.ThrowEvent, "THROW_EVENT" },
-        { Node.NodeOneofCase.WaitForCondition, "WAIT_FOR_CONDITION" },
-        { Node.NodeOneofCase.WaitForThreads, "WAIT_FOR_THREADS" }
-    };
-}
-
 public class WorkflowThread
 {
     public Workflow Parent { get; private set; }
@@ -164,7 +144,7 @@ public class WorkflowThread
     
     private string GetNodeName(string name, Node.NodeOneofCase type) 
     {
-        return $"{_spec.Nodes.Count}-{name}-{Constants.NodeTypes[type]}";
+        return $"{_spec.Nodes.Count}-{name}-{LHConstants.NodeTypes[type]}";
     }
     
     public WfRunVariable AddVariable(string name, Object typeOrDefaultVal) 
@@ -740,7 +720,7 @@ public class WorkflowThread
     public void HandleAnyFailure(NodeOutput node, Action<WorkflowThread> handler)
     {
         CheckIfWorkflowThreadIsActive();
-        var handlerDef = BuildFailureHandlerDef(node, "any-failure", handler);
+        var handlerDef = BuildFailureHandlerDef(node, "any_failure", handler);
         AddFailureHandlerDef(handlerDef, node);
     }
     
@@ -756,7 +736,7 @@ public class WorkflowThread
         CheckIfWorkflowThreadIsActive();
         WaitForThreadsNode waitNode = threadsToWaitFor.BuildNode();
         string nodeName = AddNode("threads", Node.NodeOneofCase.WaitForThreads, waitNode);
-        return new WaitForThreadsNodeOutput(nodeName, this, _spec);
+        return new WaitForThreadsNodeOutput(nodeName, this);
     }
     
     /// <summary>
@@ -765,6 +745,9 @@ public class WorkflowThread
     /// </summary>
     /// <param name="threadFunc">
     /// It is a ThreadFunc (can be a lambda function) that defines the logic for the child ThreadRun to execute.
+    /// </param>
+    /// <param name="threadName">
+    /// It is the name of the child thread spec.
     /// </param>
     /// <param name="inputVars">
     /// It is a Dictionary of all the input variables to set for the child ThreadRun. If
@@ -775,10 +758,7 @@ public class WorkflowThread
         Dictionary<string, object>? inputVars)
     {
         CheckIfWorkflowThreadIsActive();
-        if (inputVars == null) 
-        {
-            inputVars = new Dictionary<string, object>();
-        }
+        inputVars ??= new Dictionary<string, object>();
         var subThreadName = Parent.AddSubThread(threadName, threadFunc);
 
         var variableAssignments = new Dictionary<string, VariableAssignment>();
@@ -787,7 +767,11 @@ public class WorkflowThread
             variableAssignments.Add(inputVar.Key, AssignVariable(inputVar.Value));
         }
 
-        var startThread = new StartThreadNode { ThreadSpecName = subThreadName, Variables = { variableAssignments } };
+        var startThread = new StartThreadNode
+        {
+            ThreadSpecName = subThreadName,
+            Variables = { variableAssignments }
+        };
 
         string nodeName = AddNode(subThreadName, Node.NodeOneofCase.StartThread, startThread);
         WfRunVariable internalStartedThreadVar = DeclareInt(nodeName);
@@ -799,7 +783,8 @@ public class WorkflowThread
         return new SpawnedThread(this, subThreadName, internalStartedThreadVar);
     }
     
-    internal void AddFailureHandlerOnWaitForThreadsNode(WaitForThreadsNodeOutput node, FailureHandlerDef handler) {
+    internal void AddFailureHandlerOnWaitForThreadsNode(WaitForThreadsNodeOutput node, FailureHandlerDef handler) 
+    {
         CheckIfWorkflowThreadIsActive();
         var currentNode = FindNode(node.NodeName);
 

@@ -5,12 +5,10 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 
 public class WaitForThreadsNodeOutput: NodeOutput
 {
-    private readonly ThreadSpec _threadSpec;
     
-    public WaitForThreadsNodeOutput(string nodeName, WorkflowThread parent, ThreadSpec threadSpec)
+    public WaitForThreadsNodeOutput(string nodeName, WorkflowThread parent)
         : base(nodeName, parent)
     {
-        _threadSpec = threadSpec;
     }
     
     /// <summary>
@@ -27,7 +25,7 @@ public class WaitForThreadsNodeOutput: NodeOutput
     public WaitForThreadsNodeOutput HandleExceptionOnChild(string? exceptionName, Action<WorkflowThread> handler)
     {
         string threadName = $"exn-handler-{NodeName}-" +
-                            $"{(exceptionName != null ? exceptionName : LHFailureType.FailureTypeException)}";
+                            $"{exceptionName ?? LHConstants.FailureTypes[LHFailureType.FailureTypeException]}";
         threadName = Parent.Parent.AddSubThread(threadName, handler);
         var handlerDef = BuildFailureHandlerDef(threadName, exceptionName, LHFailureType.FailureTypeException);
 
@@ -39,7 +37,7 @@ public class WaitForThreadsNodeOutput: NodeOutput
     private FailureHandlerDef BuildFailureHandlerDef(string threadName, string? failureName, LHFailureType failureType)
     {
         var handlerDef = new FailureHandlerDef { HandlerSpecName = threadName };
-        if (failureName != null) 
+        if (!string.IsNullOrEmpty(failureName)) 
         {
             handlerDef.SpecificFailure = failureName;
         } 
@@ -64,9 +62,11 @@ public class WaitForThreadsNodeOutput: NodeOutput
     /// <returns>This WaitForThreadsNodeOutput. </returns>
     public WaitForThreadsNodeOutput HandleErrorOnChild(LHErrorType? error, Action<WorkflowThread> handler)
     {
-        string threadName = $"error-handler-{NodeName}-{(error != null ? error : LHFailureType.FailureTypeError)}";
+        string failureName = error != null ? LHConstants.ErrorTypes[error.ToString()!] : string.Empty;
+        string threadName = $"error-handler-{NodeName}-" +
+                            $"{(error != null ? failureName : LHConstants.FailureTypes[LHFailureType.FailureTypeError])}";
         threadName = Parent.Parent.AddSubThread(threadName, handler);
-        var handlerDef = BuildFailureHandlerDef(threadName, error?.ToString(), LHFailureType.FailureTypeError);
+        var handlerDef = BuildFailureHandlerDef(threadName, failureName, LHFailureType.FailureTypeError);
         Parent.AddFailureHandlerOnWaitForThreadsNode(this, handlerDef);
 
         return this;
@@ -82,7 +82,7 @@ public class WaitForThreadsNodeOutput: NodeOutput
     /// <returns>This WaitForThreadsNodeOutput. </returns>
     public WaitForThreadsNodeOutput HandleAnyFailureOnChild(Action<WorkflowThread> handler)
     {
-        string threadName = "failure-handler-" +NodeName + "-ANY-FAILURE";
+        string threadName = "failure-handler-" +NodeName + "-ANY_FAILURE";
         threadName = Parent.Parent.AddSubThread(threadName, handler);
         var handlerDef = new FailureHandlerDef { HandlerSpecName = threadName };
         Parent.AddFailureHandlerOnWaitForThreadsNode(this, handlerDef);
