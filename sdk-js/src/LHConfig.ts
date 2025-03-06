@@ -1,8 +1,8 @@
+import { readFileSync } from 'fs'
 import { Channel, ChannelCredentials, Client, Metadata, createChannel, createClientFactory } from 'nice-grpc'
 import { LittleHorseDefinition } from './proto/service'
-import getPropertiesFile from './utils/getPropertiesFile'
 import getPropertiesArgs, { ConfigArgs } from './utils/getPropertiesArgs'
-import { readFileSync } from 'fs'
+import getPropertiesFile from './utils/getPropertiesFile'
 
 export const CONFIG_NAMES = [
   'LHC_API_HOST',
@@ -32,7 +32,7 @@ export class LHConfig {
   private caCert?: string
   private channel: Channel
 
-  private constructor(config: Config) {
+  public constructor(config?: Config) {
     const mergedConfig = { ...DEFAULT_CONFIG, ...config } as Config
     this.apiHost = mergedConfig.LHC_API_HOST
     this.apiPort = mergedConfig.LHC_API_PORT

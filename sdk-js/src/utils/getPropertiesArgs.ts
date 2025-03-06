@@ -1,6 +1,4 @@
-import { readFileSync } from 'fs'
-import { resolve } from 'path'
-import { CONFIG_NAMES, Config, ConfigName } from '../LHConfig'
+import { Config, ConfigName } from '../LHConfig'
 
 export type ConfigArgs = {
   apiHost: string
