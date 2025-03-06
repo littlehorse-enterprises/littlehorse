@@ -755,8 +755,8 @@ public class WorkflowThread
     ///     you don't need to set any input variables, leave this null.
     /// </param>
     /// <returns>A handle to the resulting SpawnedThread, which can be used in ThreadBuilder::WaitForThread()</returns>
-    public SpawnedThread SpawnThread(Action<WorkflowThread> threadFunc, string threadName, 
-        Dictionary<string, object>? inputVars)
+    public SpawnedThread SpawnThread(string threadName, Action<WorkflowThread> threadFunc, 
+        Dictionary<string, object>? inputVars=null)
     {
         CheckIfWorkflowThreadIsActive();
         inputVars ??= new Dictionary<string, object>();

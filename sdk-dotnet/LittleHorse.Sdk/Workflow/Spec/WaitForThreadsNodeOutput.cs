@@ -5,7 +5,6 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 
 public class WaitForThreadsNodeOutput: NodeOutput
 {
-    
     public WaitForThreadsNodeOutput(string nodeName, WorkflowThread parent)
         : base(nodeName, parent)
     {

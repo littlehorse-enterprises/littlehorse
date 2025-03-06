@@ -317,4 +317,230 @@ public class WorkflowThreadTest
         Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
         Assert.Equal(expectedSpec, compiledWfThread);
     }
+
+    [Fact]
+    public void WorkflowThread_WaitingManyChildThreads_ShouldCompile()
+    {
+        var numberOfExitNodes = 1;
+        var numberOfEntrypointNodes = 1;
+        var numberOfStartThreadNodes = 3;
+        var numberOfWaitForThreadsNodes = 1;
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        void EntryPointAction(WorkflowThread wf)
+        {
+            var childThread1 = wf.SpawnThread("child-thread-1", thread => thread.Execute("any-task"));
+            var childThread2 = wf.SpawnThread("child-thread-2", thread => thread.Execute("any-task"));
+            var childThread3 = wf.SpawnThread("child-thread-3", thread => thread.Execute("any-task"));
+            wf.WaitForThreads(SpawnedThreads.Of(childThread1, childThread2, childThread3));
+        }
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        
+        var compiledWfThread = workflowThread.Compile();
+        
+        var expectedThreadSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-child-thread-1-START_THREAD" }
+            }
+        };
+
+        var childThread1 = new Node
+        {
+            StartThread = new StartThreadNode
+            {
+                ThreadSpecName = "child-thread-1"
+            },
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-child-thread-2-START_THREAD",
+                    VariableMutations =
+                    {
+                        new VariableMutation
+                        {
+                            LhsName = "1-child-thread-1-START_THREAD",
+                            RhsAssignment = new VariableAssignment
+                            {
+                                NodeOutput = new VariableAssignment.Types.NodeOutputReference
+                                {
+                                    NodeName = "1-child-thread-1-START_THREAD"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        
+        var childThread2 = new Node
+        {
+            StartThread = new StartThreadNode
+            {
+                ThreadSpecName = "child-thread-2"
+            },
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "3-child-thread-3-START_THREAD",
+                    VariableMutations =
+                    {
+                        new VariableMutation
+                        {
+                            LhsName = "2-child-thread-2-START_THREAD",
+                            RhsAssignment = new VariableAssignment
+                            {
+                                NodeOutput = new VariableAssignment.Types.NodeOutputReference
+                                {
+                                    NodeName = "2-child-thread-2-START_THREAD"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        
+        var childThread3 = new Node
+        {
+            StartThread = new StartThreadNode
+            {
+                ThreadSpecName = "child-thread-3"
+            },
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "4-threads-WAIT_FOR_THREADS",
+                    VariableMutations =
+                    {
+                        new VariableMutation
+                        {
+                            LhsName = "3-child-thread-3-START_THREAD",
+                            RhsAssignment = new VariableAssignment
+                            {
+                                NodeOutput = new VariableAssignment.Types.NodeOutputReference
+                                {
+                                    NodeName = "3-child-thread-3-START_THREAD"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        var waitForThreads = new Node
+        {
+            WaitForThreads = new WaitForThreadsNode
+            {
+                Threads = new WaitForThreadsNode.Types.ThreadsToWaitFor
+                {
+                    Threads =
+                    {
+                        new WaitForThreadsNode.Types.ThreadToWaitFor
+                        {
+                            ThreadRunNumber = new VariableAssignment { VariableName = "1-child-thread-1-START_THREAD" }
+                        },
+                        new WaitForThreadsNode.Types.ThreadToWaitFor
+                        {
+                            ThreadRunNumber = new VariableAssignment { VariableName = "2-child-thread-2-START_THREAD" }
+                        },
+                        new WaitForThreadsNode.Types.ThreadToWaitFor
+                        {
+                            ThreadRunNumber = new VariableAssignment { VariableName = "3-child-thread-3-START_THREAD" }
+                        }
+                    }
+                }
+            },
+            OutgoingEdges = { new Edge { SinkNodeName = "5-exit-EXIT" } }
+        };
+        
+        var exit = new Node {Exit = new ExitNode()};
+
+        var threadVarDef1 = new ThreadVarDef
+        {
+            VarDef = new VariableDef { Name = "1-child-thread-1-START_THREAD", Type = VariableType.Int },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        
+        var threadVarDef2 = new ThreadVarDef
+        {
+            VarDef = new VariableDef { Name = "2-child-thread-2-START_THREAD", Type = VariableType.Int },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        
+        var threadVarDef3 = new ThreadVarDef
+        {
+            VarDef = new VariableDef { Name = "3-child-thread-3-START_THREAD", Type = VariableType.Int },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+
+        expectedThreadSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedThreadSpec.Nodes.Add("1-child-thread-1-START_THREAD", childThread1);
+        expectedThreadSpec.Nodes.Add("2-child-thread-2-START_THREAD", childThread2);
+        expectedThreadSpec.Nodes.Add("3-child-thread-3-START_THREAD", childThread3);
+        expectedThreadSpec.Nodes.Add("4-threads-WAIT_FOR_THREADS", waitForThreads);
+        expectedThreadSpec.Nodes.Add("5-exit-EXIT", exit);
+        expectedThreadSpec.VariableDefs.Add(threadVarDef1);
+        expectedThreadSpec.VariableDefs.Add(threadVarDef2);
+        expectedThreadSpec.VariableDefs.Add(threadVarDef3);
+        
+        var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfStartThreadNodes + numberOfWaitForThreadsNodes + 
+                                    numberOfExitNodes;
+        Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
+        Assert.Equal(expectedThreadSpec, compiledWfThread);
+    }
+
+    [Fact]
+    public void WorkflowThread_WaitingNoChildThreads_ShouldCompile()
+    {
+        var numberOfExitNodes = 1;
+        var numberOfEntrypointNodes = 1;
+        var numberOfWaitForThreadsNodes = 1;
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        void EntryPointAction(WorkflowThread wf)
+        {
+            wf.WaitForThreads(SpawnedThreads.Of());
+        }
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        
+        var compiledWfThread = workflowThread.Compile();
+        
+        var expectedThreadSpec = new ThreadSpec();
+        
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-threads-WAIT_FOR_THREADS" }
+            }
+        };
+
+        var waitForThreads = new Node
+        {
+            WaitForThreads = new WaitForThreadsNode
+            {
+                Threads = new WaitForThreadsNode.Types.ThreadsToWaitFor()
+            },
+            OutgoingEdges = { new Edge { SinkNodeName = "2-exit-EXIT" } }
+        };
+        
+        var exit = new Node {Exit = new ExitNode()};
+        
+        expectedThreadSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedThreadSpec.Nodes.Add("1-threads-WAIT_FOR_THREADS", waitForThreads);
+        expectedThreadSpec.Nodes.Add("2-exit-EXIT", exit);
+        
+        var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfWaitForThreadsNodes + numberOfExitNodes;
+        Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
+        Assert.Equal(expectedThreadSpec, compiledWfThread);
+    }
 }
