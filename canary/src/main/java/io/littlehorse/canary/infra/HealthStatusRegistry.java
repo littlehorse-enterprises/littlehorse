@@ -19,6 +19,7 @@ public class HealthStatusRegistry {
                 log.debug("Status for {}: {}", name, healthy ? "healthy" : "not healthy");
                 return healthy;
             } catch (Exception e) {
+                log.error("Error getting health status for {}", name, e);
                 return false;
             }
         });
