@@ -21,7 +21,7 @@ public class WaitForThreadsNodeOutput: NodeOutput
     /// The WorkflowThread defining the failure handler
     /// </param>
     /// <returns>This WaitForThreadsNodeOutput </returns>
-    public WaitForThreadsNodeOutput HandleExceptionOnChild(string? exceptionName, Action<WorkflowThread> handler)
+    public WaitForThreadsNodeOutput HandleExceptionOnChild(Action<WorkflowThread> handler, string? exceptionName=null)
     {
         string threadName = $"exn-handler-{NodeName}-" +
                             $"{exceptionName ?? LHConstants.FailureTypes[LHFailureType.FailureTypeException]}";
@@ -59,7 +59,7 @@ public class WaitForThreadsNodeOutput: NodeOutput
     /// The WorkflowThread defining the failure handler
     /// </param>
     /// <returns>This WaitForThreadsNodeOutput. </returns>
-    public WaitForThreadsNodeOutput HandleErrorOnChild(LHErrorType? error, Action<WorkflowThread> handler)
+    public WaitForThreadsNodeOutput HandleErrorOnChild(Action<WorkflowThread> handler, LHErrorType? error=null)
     {
         string failureName = error != null ? LHConstants.ErrorTypes[error.ToString()!] : string.Empty;
         string threadName = $"error-handler-{NodeName}-" +
