@@ -2,6 +2,8 @@ package io.littlehorse.canary.metronome;
 
 import com.google.protobuf.util.Timestamps;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.canary.infra.HealthStatusBinder;
+import io.littlehorse.canary.infra.HealthStatusRegistry;
 import io.littlehorse.canary.infra.ShutdownHook;
 import io.littlehorse.canary.littlehorse.LHClient;
 import io.littlehorse.canary.metronome.internal.BeatProducer;
@@ -21,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MetronomeGetWfRunExecutor {
+public class MetronomeGetWfRunExecutor implements HealthStatusBinder {
     public static final String EXHAUSTED_RETRIES = "EXHAUSTED_RETRIES";
     private final ScheduledExecutorService mainExecutor;
     private final BeatProducer producer;
@@ -167,5 +169,10 @@ public class MetronomeGetWfRunExecutor {
                 .build();
 
         producer.send(beat);
+    }
+
+    @Override
+    public void bindTo(final HealthStatusRegistry registry) {
+        registry.addStatus("metronome-get-wf-run-executor", () -> !mainExecutor.isShutdown());
     }
 }

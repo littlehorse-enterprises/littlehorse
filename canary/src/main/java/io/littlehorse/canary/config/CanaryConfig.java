@@ -45,6 +45,8 @@ public class CanaryConfig implements Config {
     public static final String METRICS_COMMON_TAGS = "metrics.common.tags";
     public static final String METRICS_COMMON_TAGS_PREFIX = "%s.".formatted(METRICS_COMMON_TAGS);
 
+    public static final String HEALTH_PATH = "health.path";
+
     private final Map<String, Object> configs;
 
     public CanaryConfig(final Map<String, Object> configs) {
@@ -194,5 +196,9 @@ public class CanaryConfig implements Config {
 
     public String getMetronomeDataPath() {
         return getConfig(METRONOME_DATA_PATH);
+    }
+
+    public String getHealthPath() {
+        return getConfig(HEALTH_PATH);
     }
 }

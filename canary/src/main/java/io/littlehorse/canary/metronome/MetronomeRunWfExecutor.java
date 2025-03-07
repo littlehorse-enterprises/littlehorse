@@ -5,6 +5,8 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.grpc.StatusException;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.canary.infra.HealthStatusBinder;
+import io.littlehorse.canary.infra.HealthStatusRegistry;
 import io.littlehorse.canary.infra.ShutdownHook;
 import io.littlehorse.canary.littlehorse.LHClient;
 import io.littlehorse.canary.metronome.internal.BeatProducer;
@@ -28,7 +30,7 @@ import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MetronomeRunWfExecutor {
+public class MetronomeRunWfExecutor implements HealthStatusBinder {
 
     private final BeatProducer producer;
     private final ScheduledExecutorService mainExecutor;
@@ -107,6 +109,12 @@ public class MetronomeRunWfExecutor {
         Collections.shuffle(range);
         final List<Integer> sample = range.subList(0, getSampleSize());
         return new HashSet<>(sample);
+    }
+
+    @Override
+    public void bindTo(final HealthStatusRegistry registry) {
+        registry.addStatus(
+                "metronome-run-wf-executor", () -> !mainExecutor.isShutdown() && !requestsExecutor.isShutdown());
     }
 
     private class MetronomeCallback implements FutureCallback<WfRun> {
