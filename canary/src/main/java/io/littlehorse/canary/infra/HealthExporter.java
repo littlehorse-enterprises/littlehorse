@@ -16,7 +16,7 @@ public class HealthExporter implements WebServiceBinder {
     @Override
     public void bindTo(final WebServiceRegistry registry) {
         registry.get(healthPath, ctx -> {
-            log.info("Processing health request");
+            log.debug("Processing health request");
             ctx.status(getStatus());
         });
     }
