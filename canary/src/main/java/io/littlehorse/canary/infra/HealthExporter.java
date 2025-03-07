@@ -21,10 +21,12 @@ public class HealthExporter implements WebServiceBinder {
         });
     }
 
-    private HttpStatus getStatus() {
-        return healthStatusRegistry.getStatuses().values().stream().allMatch(HealthStatusSupplier::isHealthy)
-                ? HttpStatus.OK
-                : HttpStatus.SERVICE_UNAVAILABLE;
+    public HttpStatus getStatus() {
+        return isHealthy() ? HttpStatus.OK : HttpStatus.SERVICE_UNAVAILABLE;
+    }
+
+    public boolean isHealthy() {
+        return healthStatusRegistry.getStatuses().values().stream().allMatch(HealthStatusSupplier::isHealthy);
     }
 
     public void addStatus(final HealthStatusBinder status) {
