@@ -1,5 +1,7 @@
 package io.littlehorse.canary.metronome;
 
+import io.littlehorse.canary.infra.HealthStatusBinder;
+import io.littlehorse.canary.infra.HealthStatusRegistry;
 import io.littlehorse.canary.infra.ShutdownHook;
 import io.littlehorse.canary.metronome.internal.BeatProducer;
 import io.littlehorse.canary.metronome.model.Beat;
@@ -14,7 +16,7 @@ import java.util.concurrent.ExecutionException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MetronomeWorker {
+public class MetronomeWorker implements HealthStatusBinder {
 
     private final BeatProducer producer;
     private final LHTaskWorker worker;
@@ -53,5 +55,10 @@ public class MetronomeWorker {
                 .latency(latency)
                 .build();
         producer.send(beat).get();
+    }
+
+    @Override
+    public void bindTo(final HealthStatusRegistry registry) {
+        registry.addStatus("metronome-worker", () -> worker.healthStatus().isHealthy());
     }
 }
