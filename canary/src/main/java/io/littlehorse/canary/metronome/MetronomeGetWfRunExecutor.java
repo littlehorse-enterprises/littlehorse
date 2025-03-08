@@ -99,13 +99,15 @@ public class MetronomeGetWfRunExecutor {
         // send beat and exit
         sendBeat(id, status, latency);
 
-        if (status.equals(LHStatus.COMPLETED)) {
-            repository.delete(id);
-            return;
+        // for debug reasons
+        if (!status.equals(LHStatus.COMPLETED)) {
+            log.error("GetWfRun returns workflow error {} {}", id, status);
         }
 
-        // log in case of error
-        log.error("GetWfRun returns workflow error {} {}", id, status);
+        // only running WFs are retryable, the others are deleted
+        if (!status.equals(LHStatus.RUNNING)) {
+            repository.delete(id);
+        }
     }
 
     private void sendBeat(final String id, final LHStatus status, final Duration latency) {
@@ -167,5 +169,6 @@ public class MetronomeGetWfRunExecutor {
                 .build();
 
         producer.send(beat);
+        repository.delete(id);
     }
 }
