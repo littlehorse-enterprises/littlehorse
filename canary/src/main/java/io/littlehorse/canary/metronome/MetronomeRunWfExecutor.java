@@ -25,6 +25,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,7 @@ public class MetronomeRunWfExecutor implements HealthStatusBinder {
     private final int runs;
     private final LocalRepository repository;
     private final int sampleRate;
+    private ScheduledFuture<?> scheduledFuture;
 
     public MetronomeRunWfExecutor(
             final BeatProducer producer,
@@ -72,7 +74,8 @@ public class MetronomeRunWfExecutor implements HealthStatusBinder {
     }
 
     public void start() {
-        mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency.toMillis(), TimeUnit.MILLISECONDS);
+        scheduledFuture =
+                mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency.toMillis(), TimeUnit.MILLISECONDS);
         log.info("RunWf Metronome Started");
     }
 
@@ -113,8 +116,11 @@ public class MetronomeRunWfExecutor implements HealthStatusBinder {
 
     @Override
     public void bindTo(final HealthStatusRegistry registry) {
-        registry.addStatus(
-                "metronome-run-wf-executor", () -> !mainExecutor.isShutdown() && !requestsExecutor.isShutdown());
+        registry.addStatus("metronome-run-wf-executor", this::isRunning);
+    }
+
+    private boolean isRunning() {
+        return scheduledFuture != null && !scheduledFuture.isDone();
     }
 
     private class MetronomeCallback implements FutureCallback<WfRun> {

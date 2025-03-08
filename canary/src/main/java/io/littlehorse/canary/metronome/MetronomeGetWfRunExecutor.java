@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,6 +32,7 @@ public class MetronomeGetWfRunExecutor implements HealthStatusBinder {
     private final Duration frequency;
     private final LocalRepository repository;
     private final long retries;
+    private ScheduledFuture<?> scheduledFuture;
 
     public MetronomeGetWfRunExecutor(
             final BeatProducer producer,
@@ -49,7 +51,7 @@ public class MetronomeGetWfRunExecutor implements HealthStatusBinder {
     }
 
     public void start() {
-        mainExecutor.scheduleAtFixedRate(
+        scheduledFuture = mainExecutor.scheduleAtFixedRate(
                 () -> {
                     try {
                         scheduledRun();
@@ -173,6 +175,10 @@ public class MetronomeGetWfRunExecutor implements HealthStatusBinder {
 
     @Override
     public void bindTo(final HealthStatusRegistry registry) {
-        registry.addStatus("metronome-get-wf-run-executor", () -> !mainExecutor.isShutdown());
+        registry.addStatus("metronome-get-wf-run-executor", this::isRunning);
+    }
+
+    private boolean isRunning() {
+        return scheduledFuture != null && !scheduledFuture.isDone();
     }
 }
