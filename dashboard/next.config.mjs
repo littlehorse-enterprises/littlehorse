@@ -25,6 +25,10 @@ const nextConfig = {
     fileLoaderRule.exclude = /\.svg$/i
     return config
   },
+  experimental: {
+    instrumentationHook: true,
+    serverComponentsExternalPackages: ['@opentelemetry/instrumentation'],
+  },
 }
 
 export default nextConfig
