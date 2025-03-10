@@ -25,4 +25,7 @@ lhctl get variable <wf_run_id> 1 INPUT  # yoda
 lhctl get variable <wf_run_id> 2 INPUT  # chewbacca
 lhctl get variable <wf_run_id> 3 INPUT  # anakin
 
+lhctl get variable <wf_run_id> 1 not-used-variable  # 1234
+lhctl get variable <wf_run_id> 2 not-used-variable  # 1234
+lhctl get variable <wf_run_id> 3 not-used-variable  # 1234
 ```

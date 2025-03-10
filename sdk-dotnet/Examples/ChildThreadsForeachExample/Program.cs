@@ -36,23 +36,23 @@ public abstract class Program
     {
         void MyEntryPoint(WorkflowThread wf)
         {
-            WfRunVariable parentVar = wf.DeclareJsonObj("approval-chain");
-            parentVar.Assign(wf.Execute("parent-task-1", parentVar));
-            SpawnedThread childThread = wf.SpawnThread("spawned-thread", 
-                child =>
+            WfRunVariable approvalChain = wf.DeclareJsonObj("approval-chain");
+            SpawnedThreads spawnedThreads = wf.SpawnThreadForEach(approvalChain.WithJsonPath("$.approvals"),
+                "spawn-threads",
+                innerThread =>
                 {
-                    var childVar = child.DeclareInt("child-var");
-                    child.Execute("child-task", childVar);
+                    innerThread.DeclareInt("not-used-variable");
+                    WfRunVariable inputVariable = innerThread.DeclareJsonObj(WorkflowThread.HandlerInputVar);
+                    innerThread.Execute("task-executor", inputVariable.WithJsonPath("$.user"));
                 },
                 new Dictionary<string, object>
                 {
                     {
-                        "child-var", parentVar
+                        "not-used-variable", 1234
                     }
                 });
-            wf.WaitForThreads(SpawnedThreads.Of(childThread));
-
-            wf.Execute("parent-task-2");
+            wf.WaitForThreads(spawnedThreads);
+            wf.Execute("task-executor", approvalChain.WithJsonPath("$.description"));
         }
         
         return new Workflow("spawn-parallel-threads-from-json-arr-variable", MyEntryPoint);
@@ -66,7 +66,7 @@ public abstract class Program
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             var config = GetLHConfig(args, loggerFactory);
             var client = config.GetGrpcClientInstance();
-            var worker = new LHTaskWorker<MyWorker>(new MyWorker(), "parent-task-1", config);
+            var worker = new LHTaskWorker<MyWorker>(new MyWorker(), "task-executor", config);
             worker.RegisterTaskDef();
 
             var workflow = GetWorkflow();
