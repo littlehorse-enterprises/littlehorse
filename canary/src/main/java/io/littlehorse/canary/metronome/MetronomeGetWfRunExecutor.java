@@ -46,6 +46,10 @@ public class MetronomeGetWfRunExecutor {
         ShutdownHook.add("Metronome: GetWfRun  Main Executor Thread", () -> closeExecutor(mainExecutor));
     }
 
+    private boolean isRetriesEnabled() {
+        return retries > 0;
+    }
+
     public void start() {
         mainExecutor.scheduleAtFixedRate(
                 () -> {
@@ -82,14 +86,17 @@ public class MetronomeGetWfRunExecutor {
     private void executeRun(final String id, final Attempt attempt) {
         log.debug("GetWfRun {}", id);
 
-        // exit if it gets exhausted
-        if (attempt.getAttempt() >= retries) {
-            sendExhaustedRetries(id);
-            return;
-        }
+        if (isRetriesEnabled()) {
+            // exit if it gets exhausted
+            // attempt 1 does not count
+            if (attempt.getAttempt() > retries) {
+                sendExhaustedRetries(id);
+                return;
+            }
 
-        // update attempt number
-        updateAttempt(id, attempt);
+            // update attempt number
+            updateAttempt(id, attempt);
+        }
 
         // get status
         final Instant start = Instant.now();
@@ -107,7 +114,8 @@ public class MetronomeGetWfRunExecutor {
         }
 
         // only running WFs are retryable, the others are deleted
-        if (!LHStatus.RUNNING.equals(status)) {
+        // if retries are disabled delete all wf runs
+        if (!LHStatus.RUNNING.equals(status) || !isRetriesEnabled()) {
             repository.delete(id);
         }
 
