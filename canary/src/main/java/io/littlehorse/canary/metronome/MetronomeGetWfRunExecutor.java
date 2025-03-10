@@ -98,21 +98,22 @@ public class MetronomeGetWfRunExecutor {
 
         // send beat and exit
         sendBeat(id, status, latency);
-
-        // for debug reasons
-        if (!status.equals(LHStatus.COMPLETED)) {
-            log.error("GetWfRun returns workflow error {} {}", id, status);
-        }
     }
 
     private void sendBeat(final String id, final LHStatus status, final Duration latency) {
+        // for debug reasons
+        if (!LHStatus.COMPLETED.equals(status)) {
+            log.error("GetWfRun returns workflow error {} {}", id, status);
+        }
+
         // only running WFs are retryable, the others are deleted
-        if (!status.equals(LHStatus.RUNNING)) {
+        if (!LHStatus.RUNNING.equals(status)) {
             repository.delete(id);
         }
 
-        final BeatStatus beatStatus = BeatStatus.builder(
-                        status.equals(LHStatus.COMPLETED) ? BeatStatus.Code.OK : BeatStatus.Code.ERROR)
+        final BeatStatus.Code beatStatusCode =
+                LHStatus.COMPLETED.equals(status) ? BeatStatus.Code.OK : BeatStatus.Code.ERROR;
+        final BeatStatus beatStatus = BeatStatus.builder(beatStatusCode)
                 .source(BeatStatus.Source.WORKFLOW)
                 .reason(status.name())
                 .build();
@@ -127,6 +128,9 @@ public class MetronomeGetWfRunExecutor {
     }
 
     private void sendExhaustedRetries(final String id) {
+        log.error("Exhausted retries getWfRun {}", id);
+
+        // delete because it reaches the max attempt
         repository.delete(id);
 
         final BeatStatus beatStatus = BeatStatus.builder(BeatStatus.Code.ERROR)
@@ -142,7 +146,9 @@ public class MetronomeGetWfRunExecutor {
     }
 
     private void sendError(final String id, final Exception e) {
-        log.error("Error executing getWfRun {}", e.getMessage(), e);
+        log.error("Error executing getWfRun {}", id, e);
+
+        // delete because error is not retryable
         repository.delete(id);
 
         final BeatStatus.BeatStatusBuilder statusBuilder =
