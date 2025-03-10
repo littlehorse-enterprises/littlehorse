@@ -12,19 +12,19 @@ public interface PutMetricSpecRequestOrBuilder extends
    * Defines how the metric will be computed and collected
    * </pre>
    *
-   * <code>.littlehorse.MetricType type = 1;</code>
-   * @return The enum numeric value on the wire for type.
+   * <code>.littlehorse.AggregationType aggregation_type = 1;</code>
+   * @return The enum numeric value on the wire for aggregationType.
    */
-  int getTypeValue();
+  int getAggregationTypeValue();
   /**
    * <pre>
    * Defines how the metric will be computed and collected
    * </pre>
    *
-   * <code>.littlehorse.MetricType type = 1;</code>
-   * @return The type.
+   * <code>.littlehorse.AggregationType aggregation_type = 1;</code>
+   * @return The aggregationType.
    */
-  io.littlehorse.sdk.common.proto.MetricType getType();
+  io.littlehorse.sdk.common.proto.AggregationType getAggregationType();
 
   /**
    * <pre>

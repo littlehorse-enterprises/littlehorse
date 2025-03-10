@@ -10,6 +10,9 @@ import { type CallContext, type CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
 import { DeletePrincipalRequest, Principal, PutPrincipalRequest, PutTenantRequest, Tenant } from "./acls";
 import {
+  AggregationType,
+  aggregationTypeFromJSON,
+  aggregationTypeToNumber,
   LHStatus,
   lHStatusFromJSON,
   lHStatusToNumber,
@@ -19,12 +22,12 @@ import {
   MetricsWindowLength,
   metricsWindowLengthFromJSON,
   metricsWindowLengthToNumber,
-  MetricType,
-  metricTypeFromJSON,
-  metricTypeToNumber,
   TaskStatus,
   taskStatusFromJSON,
   taskStatusToNumber,
+  UserTaskRunStatus,
+  userTaskRunStatusFromJSON,
+  userTaskRunStatusToNumber,
   VariableType,
   variableTypeFromJSON,
   variableTypeToNumber,
@@ -68,9 +71,6 @@ import {
   UserTaskDef,
   UserTaskField,
   UserTaskRun,
-  UserTaskRunStatus,
-  userTaskRunStatusFromJSON,
-  userTaskRunStatusToNumber,
 } from "./user_tasks";
 import { Variable, VariableValue } from "./variable";
 import { WfRun } from "./wf_run";
@@ -182,7 +182,7 @@ export interface PutWfSpecRequest_ThreadSpecsEntry {
 /** Creates a MetricSpec. This configuration specifies how the server will collect and measure metrics. */
 export interface PutMetricSpecRequest {
   /** Defines how the metric will be computed and collected */
-  type: MetricType;
+  aggregationType: AggregationType;
   /** Refers to a specific LittleHorse object */
   object?:
     | MeasurableObject
@@ -1823,7 +1823,7 @@ export const PutWfSpecRequest_ThreadSpecsEntry = {
 
 function createBasePutMetricSpecRequest(): PutMetricSpecRequest {
   return {
-    type: MetricType.COUNT,
+    aggregationType: AggregationType.COUNT,
     object: undefined,
     node: undefined,
     wfSpecId: undefined,
@@ -1834,8 +1834,8 @@ function createBasePutMetricSpecRequest(): PutMetricSpecRequest {
 
 export const PutMetricSpecRequest = {
   encode(message: PutMetricSpecRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.type !== MetricType.COUNT) {
-      writer.uint32(8).int32(metricTypeToNumber(message.type));
+    if (message.aggregationType !== AggregationType.COUNT) {
+      writer.uint32(8).int32(aggregationTypeToNumber(message.aggregationType));
     }
     if (message.object !== undefined) {
       writer.uint32(16).int32(measurableObjectToNumber(message.object));
@@ -1867,7 +1867,7 @@ export const PutMetricSpecRequest = {
             break;
           }
 
-          message.type = metricTypeFromJSON(reader.int32());
+          message.aggregationType = aggregationTypeFromJSON(reader.int32());
           continue;
         case 2:
           if (tag !== 16) {
@@ -1918,7 +1918,7 @@ export const PutMetricSpecRequest = {
   },
   fromPartial(object: DeepPartial<PutMetricSpecRequest>): PutMetricSpecRequest {
     const message = createBasePutMetricSpecRequest();
-    message.type = object.type ?? MetricType.COUNT;
+    message.aggregationType = object.aggregationType ?? AggregationType.COUNT;
     message.object = object.object ?? undefined;
     message.node = (object.node !== undefined && object.node !== null)
       ? NodeReference.fromPartial(object.node)

@@ -18,8 +18,8 @@ var putMetricCmd = &cobra.Command{
 		duration := args[2]
 		windowLength, _ := time.ParseDuration(duration)
 		putMetricReq := &lhproto.PutMetricSpecRequest{
-			Type:         toType(metricType),
-			WindowLength: durationpb.New(windowLength),
+			AggregationType: toType(metricType),
+			WindowLength:    durationpb.New(windowLength),
 		}
 		putMetricReq.Reference = &lhproto.PutMetricSpecRequest_Object{
 			Object: toMeasurable(measurable),
@@ -40,15 +40,15 @@ func toMeasurable(measurable string) lhproto.MeasurableObject {
 	}
 }
 
-func toType(metricType string) lhproto.MetricType {
+func toType(metricType string) lhproto.AggregationType {
 	if strings.ToLower(metricType) == "avg" {
-		return lhproto.MetricType_AVG
+		return lhproto.AggregationType_AVG
 	} else if strings.ToLower(metricType) == "count" {
-		return lhproto.MetricType_COUNT
+		return lhproto.AggregationType_COUNT
 	} else if strings.ToLower(metricType) == "ratio" {
-		return lhproto.MetricType_RATIO
+		return lhproto.AggregationType_RATIO
 	} else if strings.ToLower(metricType) == "latency" {
-		return lhproto.MetricType_LATENCY
+		return lhproto.AggregationType_LATENCY
 	} else {
 		panic("Unrecognized metric type " + metricType)
 	}
@@ -61,11 +61,13 @@ var listMetricRuns = &cobra.Command{
 	Args:  cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 		measurable := args[0]
-		metricType := args[1]
+		object := args[1]
 		windowLength, _ := time.ParseDuration(args[2])
 
 		metricId := &lhproto.MetricSpecId{
-			Type: toType(metricType),
+			Reference: &lhproto.MetricSpecId_Object{
+				Object: toMeasurable(object),
+			},
 		}
 		metricId.Reference = &lhproto.MetricSpecId_Object{
 			Object: toMeasurable(measurable),

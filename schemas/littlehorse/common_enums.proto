@@ -149,9 +149,24 @@ enum MeasurableObject {
   TASK = 1;
 }
 
-enum MetricType {
+enum AggregationType {
   COUNT = 0;
   AVG = 1;
   RATIO = 2;
   LATENCY = 3;
+}
+
+// The status that a UserTaskRun can be in.
+enum UserTaskRunStatus {
+  // Not assigned to a specific user yet.
+  UNASSIGNED = 0;
+
+  // Assigned to a specific user, but not completed or cancelled yet.
+  ASSIGNED = 1;
+
+  // Done.
+  DONE = 3;
+
+  // Cancelled.
+  CANCELLED = 4;
 }

@@ -89,9 +89,9 @@ public enum GetableClassEnum
    */
   PARTITION_METRIC(19),
   /**
-   * <code>METRIC_RUN = 20;</code>
+   * <code>METRIC_SPEC = 20;</code>
    */
-  METRIC_RUN(20),
+  METRIC_SPEC(20),
   UNRECOGNIZED(-1),
   ;
 
@@ -176,9 +176,9 @@ public enum GetableClassEnum
    */
   public static final int PARTITION_METRIC_VALUE = 19;
   /**
-   * <code>METRIC_RUN = 20;</code>
+   * <code>METRIC_SPEC = 20;</code>
    */
-  public static final int METRIC_RUN_VALUE = 20;
+  public static final int METRIC_SPEC_VALUE = 20;
 
 
   public final int getNumber() {
@@ -225,7 +225,7 @@ public enum GetableClassEnum
       case 17: return SCHEDULED_WF_RUN;
       case 18: return METRIC;
       case 19: return PARTITION_METRIC;
-      case 20: return METRIC_RUN;
+      case 20: return METRIC_SPEC;
       default: return null;
     }
   }

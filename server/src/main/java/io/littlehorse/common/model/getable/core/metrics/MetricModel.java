@@ -94,7 +94,7 @@ public class MetricModel extends RepartitionedGetable<Metric> {
 
     public void mergePartitionMetric(RepartitionWindowedMetricModel repartitionMetric, Integer partition) {
         double val = 0;
-        switch (metricRunId.getMetricSpecId().getMetricType()) {
+        switch (metricRunId.getAggregationType()) {
             case COUNT -> val = repartitionMetric.getValue();
             case LATENCY -> {
                 val = repartitionMetric.getValue() / repartitionMetric.getNumberOfSamples();
@@ -106,7 +106,7 @@ public class MetricModel extends RepartitionedGetable<Metric> {
     }
 
     private void sumPartitionValues() {
-        switch (metricRunId.getMetricSpecId().getMetricType()) {
+        switch (metricRunId.getAggregationType()) {
             case COUNT -> count =
                     valuePerPartition.values().stream().mapToLong(Math::round).sum();
             case LATENCY -> {
@@ -116,8 +116,7 @@ public class MetricModel extends RepartitionedGetable<Metric> {
                         .orElse(0);
                 this.latencyAvg = Duration.ofNanos(Math.round(latency));
             }
-            default -> throw new IllegalStateException(
-                    "Unexpected value: " + metricRunId.getMetricSpecId().getMetricType());
+            default -> throw new IllegalStateException("Unexpected value: " + metricRunId.getAggregationType());
         }
     }
 }

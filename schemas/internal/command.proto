@@ -118,6 +118,7 @@ message AggregateMetrics {
     repeated RepartitionWindowedMetric windowed_metrics = 2;
     TenantId tenant_id = 3;
     int32 partition_id = 4;
+    AggregationType aggregation_type = 5;
 }
 
 message WfMetricUpdate {

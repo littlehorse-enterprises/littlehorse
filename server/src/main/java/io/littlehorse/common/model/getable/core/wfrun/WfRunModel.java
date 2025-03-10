@@ -40,10 +40,11 @@ import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfSpecId;
+import io.littlehorse.server.metrics.GetableStatusUpdate;
+import io.littlehorse.server.metrics.GetableUpdates;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.GetableUpdates;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -418,6 +419,10 @@ public class WfRunModel extends CoreGetable<WfRun> {
         // for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
         //     threadRunsUseMeCarefully.get(i).advance(time);
         // }
+        ProcessorExecutionContext processorExecutionContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
+        if(processorExecutionContext == null) {
+            throw new IllegalStateException("Invalid operation from this context");
+        }
 
         boolean statusChanged = true;
         // We repeatedly advance each thread until we have a run wherein the entire
@@ -429,8 +434,11 @@ public class WfRunModel extends CoreGetable<WfRun> {
             for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
                 ThreadRunModel thread = threadRunsUseMeCarefully.get(i);
                 statusChanged = thread.advance(time) || statusChanged;
+
+                thread.recordMetrics(processorExecutionContext);
             }
         }
+        recordMetrics(processorExecutionContext);
 
         // Now we remove any old threadruns according to the retention policy
         for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
@@ -441,6 +449,13 @@ public class WfRunModel extends CoreGetable<WfRun> {
                     removeThreadRun(thread);
                 }
             }
+        }
+    }
+
+    private void recordMetrics(ProcessorExecutionContext processorExecutionContext) {
+        GetableStatusUpdate update;
+        while ((update = processorExecutionContext.getableUpdates().getUpdatesForWfRunId(id).poll()) != null) {
+            // sensor.record(update)
         }
     }
 
@@ -578,7 +593,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
 
     public void transitionTo(LHStatus status) {
         ProcessorExecutionContext processorContext = executionContext.castOnSupport(ProcessorExecutionContext.class);
-        GetableUpdates.GetableStatusUpdate statusChanged;
+        GetableStatusUpdate statusChanged;
         if (Objects.equals(status, LHStatus.COMPLETED)) {
             statusChanged = GetableUpdates.create(
                     wfSpecId, processorContext.authorization().tenantId(), this.status, status);
@@ -587,7 +602,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
                     wfSpecId, processorContext.authorization().tenantId(), this.status, status);
         }
         this.status = status;
-        processorContext.getableUpdates().dispatch(statusChanged);
+//        processorContext.getableUpdates().app(statusChanged);
 
         WorkflowRetentionPolicyModel retentionPolicy = getWfSpec().getRetentionPolicy();
         if (retentionPolicy != null && isTerminated()) {

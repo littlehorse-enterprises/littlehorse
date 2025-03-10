@@ -66,4 +66,15 @@ public interface AggregateMetricsOrBuilder extends
    * @return The partitionId.
    */
   int getPartitionId();
+
+  /**
+   * <code>.littlehorse.AggregationType aggregation_type = 5;</code>
+   * @return The enum numeric value on the wire for aggregationType.
+   */
+  int getAggregationTypeValue();
+  /**
+   * <code>.littlehorse.AggregationType aggregation_type = 5;</code>
+   * @return The aggregationType.
+   */
+  io.littlehorse.sdk.common.proto.AggregationType getAggregationType();
 }

@@ -180,11 +180,9 @@ public final class UserTasks {
       "\030\002 \001(\tH\001\210\001\001\022\030\n\013new_user_id\030\003 \001(\tH\002\210\001\001\022\033\n" +
       "\016new_user_group\030\004 \001(\tH\003\210\001\001B\016\n\014_old_user_" +
       "idB\021\n\017_old_user_groupB\016\n\014_new_user_idB\021\n" +
-      "\017_new_user_groupB\007\n\005event*J\n\021UserTaskRun" +
-      "Status\022\016\n\nUNASSIGNED\020\000\022\014\n\010ASSIGNED\020\001\022\010\n\004" +
-      "DONE\020\003\022\r\n\tCANCELLED\020\004BM\n\037io.littlehorse." +
-      "sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleHo" +
-      "rse.Sdk.Common.Protob\006proto3"
+      "\017_new_user_groupB\007\n\005eventBM\n\037io.littleho" +
+      "rse.sdk.common.protoP\001Z\t.;lhproto\252\002\034Litt" +
+      "leHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

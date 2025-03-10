@@ -17,6 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private AggregateMetrics() {
     windowedMetrics_ = java.util.Collections.emptyList();
+    aggregationType_ = 0;
   }
 
   @java.lang.Override
@@ -143,6 +144,24 @@ private static final long serialVersionUID = 0L;
     return partitionId_;
   }
 
+  public static final int AGGREGATION_TYPE_FIELD_NUMBER = 5;
+  private int aggregationType_ = 0;
+  /**
+   * <code>.littlehorse.AggregationType aggregation_type = 5;</code>
+   * @return The enum numeric value on the wire for aggregationType.
+   */
+  @java.lang.Override public int getAggregationTypeValue() {
+    return aggregationType_;
+  }
+  /**
+   * <code>.littlehorse.AggregationType aggregation_type = 5;</code>
+   * @return The aggregationType.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.AggregationType getAggregationType() {
+    io.littlehorse.sdk.common.proto.AggregationType result = io.littlehorse.sdk.common.proto.AggregationType.forNumber(aggregationType_);
+    return result == null ? io.littlehorse.sdk.common.proto.AggregationType.UNRECOGNIZED : result;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -169,6 +188,9 @@ private static final long serialVersionUID = 0L;
     if (partitionId_ != 0) {
       output.writeInt32(4, partitionId_);
     }
+    if (aggregationType_ != io.littlehorse.sdk.common.proto.AggregationType.COUNT.getNumber()) {
+      output.writeEnum(5, aggregationType_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -193,6 +215,10 @@ private static final long serialVersionUID = 0L;
     if (partitionId_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(4, partitionId_);
+    }
+    if (aggregationType_ != io.littlehorse.sdk.common.proto.AggregationType.COUNT.getNumber()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(5, aggregationType_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -223,6 +249,7 @@ private static final long serialVersionUID = 0L;
     }
     if (getPartitionId()
         != other.getPartitionId()) return false;
+    if (aggregationType_ != other.aggregationType_) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -248,6 +275,8 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + PARTITION_ID_FIELD_NUMBER;
     hash = (53 * hash) + getPartitionId();
+    hash = (37 * hash) + AGGREGATION_TYPE_FIELD_NUMBER;
+    hash = (53 * hash) + aggregationType_;
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -397,6 +426,7 @@ private static final long serialVersionUID = 0L;
         tenantIdBuilder_ = null;
       }
       partitionId_ = 0;
+      aggregationType_ = 0;
       return this;
     }
 
@@ -455,6 +485,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.partitionId_ = partitionId_;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.aggregationType_ = aggregationType_;
       }
     }
 
@@ -537,6 +570,9 @@ private static final long serialVersionUID = 0L;
       if (other.getPartitionId() != 0) {
         setPartitionId(other.getPartitionId());
       }
+      if (other.aggregationType_ != 0) {
+        setAggregationTypeValue(other.getAggregationTypeValue());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -595,6 +631,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 32
+            case 40: {
+              aggregationType_ = input.readEnum();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1118,6 +1159,59 @@ private static final long serialVersionUID = 0L;
     public Builder clearPartitionId() {
       bitField0_ = (bitField0_ & ~0x00000008);
       partitionId_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int aggregationType_ = 0;
+    /**
+     * <code>.littlehorse.AggregationType aggregation_type = 5;</code>
+     * @return The enum numeric value on the wire for aggregationType.
+     */
+    @java.lang.Override public int getAggregationTypeValue() {
+      return aggregationType_;
+    }
+    /**
+     * <code>.littlehorse.AggregationType aggregation_type = 5;</code>
+     * @param value The enum numeric value on the wire for aggregationType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setAggregationTypeValue(int value) {
+      aggregationType_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.AggregationType aggregation_type = 5;</code>
+     * @return The aggregationType.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.AggregationType getAggregationType() {
+      io.littlehorse.sdk.common.proto.AggregationType result = io.littlehorse.sdk.common.proto.AggregationType.forNumber(aggregationType_);
+      return result == null ? io.littlehorse.sdk.common.proto.AggregationType.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.littlehorse.AggregationType aggregation_type = 5;</code>
+     * @param value The aggregationType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setAggregationType(io.littlehorse.sdk.common.proto.AggregationType value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000010;
+      aggregationType_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.AggregationType aggregation_type = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearAggregationType() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      aggregationType_ = 0;
       onChanged();
       return this;
     }

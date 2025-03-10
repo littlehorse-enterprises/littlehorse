@@ -50,7 +50,7 @@ enum GetableClassEnum {
     SCHEDULED_WF_RUN = 17;
     METRIC = 18;
     PARTITION_METRIC = 19;
-    METRIC_RUN = 20;
+    METRIC_SPEC = 20;
 }
 
 message AttributePb {

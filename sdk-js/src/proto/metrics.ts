@@ -7,6 +7,20 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import {
+  AggregationType,
+  aggregationTypeFromJSON,
+  aggregationTypeToNumber,
+  LHStatus,
+  lHStatusFromJSON,
+  lHStatusToNumber,
+  TaskStatus,
+  taskStatusFromJSON,
+  taskStatusToNumber,
+  UserTaskRunStatus,
+  userTaskRunStatusFromJSON,
+  userTaskRunStatusToNumber,
+} from "./common_enums";
 import { Duration } from "./google/protobuf/duration";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { MetricId, MetricSpecId, TenantId } from "./object_id";
@@ -15,6 +29,25 @@ export interface MetricSpec {
   id: MetricSpecId | undefined;
   createdAt: string | undefined;
   windowLengths: Duration[];
+  aggregateAs: AggregationType[];
+  lhStatusRanges: LHStatusRange[];
+  taskStatusRanges: LHStatusRange[];
+  userTaskStatusRanges: UserTaskRunStatusRange[];
+}
+
+export interface LHStatusRange {
+  starts: LHStatus;
+  ends: LHStatus;
+}
+
+export interface TaskRunStatusRange {
+  starts: TaskStatus;
+  ends: TaskStatus;
+}
+
+export interface UserTaskRunStatusRange {
+  starts: UserTaskRunStatus;
+  ends: UserTaskRunStatus;
 }
 
 export interface PartitionMetric {
@@ -22,6 +55,7 @@ export interface PartitionMetric {
   createdAt: string | undefined;
   activeWindows: PartitionWindowedMetric[];
   windowLength: Duration | undefined;
+  aggregationType: AggregationType;
 }
 
 export interface PartitionWindowedMetric {
@@ -33,6 +67,7 @@ export interface PartitionWindowedMetric {
 export interface PartitionMetricId {
   id: MetricSpecId | undefined;
   tenantId: TenantId | undefined;
+  aggregationType: AggregationType;
 }
 
 /** Metric value for a given MetricId */
@@ -60,7 +95,15 @@ export interface Metric_ValuePerPartitionEntry {
 }
 
 function createBaseMetricSpec(): MetricSpec {
-  return { id: undefined, createdAt: undefined, windowLengths: [] };
+  return {
+    id: undefined,
+    createdAt: undefined,
+    windowLengths: [],
+    aggregateAs: [],
+    lhStatusRanges: [],
+    taskStatusRanges: [],
+    userTaskStatusRanges: [],
+  };
 }
 
 export const MetricSpec = {
@@ -73,6 +116,20 @@ export const MetricSpec = {
     }
     for (const v of message.windowLengths) {
       Duration.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    writer.uint32(34).fork();
+    for (const v of message.aggregateAs) {
+      writer.int32(aggregationTypeToNumber(v));
+    }
+    writer.ldelim();
+    for (const v of message.lhStatusRanges) {
+      LHStatusRange.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
+    for (const v of message.taskStatusRanges) {
+      LHStatusRange.encode(v!, writer.uint32(50).fork()).ldelim();
+    }
+    for (const v of message.userTaskStatusRanges) {
+      UserTaskRunStatusRange.encode(v!, writer.uint32(58).fork()).ldelim();
     }
     return writer;
   },
@@ -105,6 +162,44 @@ export const MetricSpec = {
 
           message.windowLengths.push(Duration.decode(reader, reader.uint32()));
           continue;
+        case 4:
+          if (tag === 32) {
+            message.aggregateAs.push(aggregationTypeFromJSON(reader.int32()));
+
+            continue;
+          }
+
+          if (tag === 34) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.aggregateAs.push(aggregationTypeFromJSON(reader.int32()));
+            }
+
+            continue;
+          }
+
+          break;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.lhStatusRanges.push(LHStatusRange.decode(reader, reader.uint32()));
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.taskStatusRanges.push(LHStatusRange.decode(reader, reader.uint32()));
+          continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.userTaskStatusRanges.push(UserTaskRunStatusRange.decode(reader, reader.uint32()));
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -122,12 +217,190 @@ export const MetricSpec = {
     message.id = (object.id !== undefined && object.id !== null) ? MetricSpecId.fromPartial(object.id) : undefined;
     message.createdAt = object.createdAt ?? undefined;
     message.windowLengths = object.windowLengths?.map((e) => Duration.fromPartial(e)) || [];
+    message.aggregateAs = object.aggregateAs?.map((e) => e) || [];
+    message.lhStatusRanges = object.lhStatusRanges?.map((e) => LHStatusRange.fromPartial(e)) || [];
+    message.taskStatusRanges = object.taskStatusRanges?.map((e) => LHStatusRange.fromPartial(e)) || [];
+    message.userTaskStatusRanges = object.userTaskStatusRanges?.map((e) => UserTaskRunStatusRange.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseLHStatusRange(): LHStatusRange {
+  return { starts: LHStatus.STARTING, ends: LHStatus.STARTING };
+}
+
+export const LHStatusRange = {
+  encode(message: LHStatusRange, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.starts !== LHStatus.STARTING) {
+      writer.uint32(8).int32(lHStatusToNumber(message.starts));
+    }
+    if (message.ends !== LHStatus.STARTING) {
+      writer.uint32(16).int32(lHStatusToNumber(message.ends));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): LHStatusRange {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLHStatusRange();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.starts = lHStatusFromJSON(reader.int32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.ends = lHStatusFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<LHStatusRange>): LHStatusRange {
+    return LHStatusRange.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<LHStatusRange>): LHStatusRange {
+    const message = createBaseLHStatusRange();
+    message.starts = object.starts ?? LHStatus.STARTING;
+    message.ends = object.ends ?? LHStatus.STARTING;
+    return message;
+  },
+};
+
+function createBaseTaskRunStatusRange(): TaskRunStatusRange {
+  return { starts: TaskStatus.TASK_SCHEDULED, ends: TaskStatus.TASK_SCHEDULED };
+}
+
+export const TaskRunStatusRange = {
+  encode(message: TaskRunStatusRange, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.starts !== TaskStatus.TASK_SCHEDULED) {
+      writer.uint32(8).int32(taskStatusToNumber(message.starts));
+    }
+    if (message.ends !== TaskStatus.TASK_SCHEDULED) {
+      writer.uint32(16).int32(taskStatusToNumber(message.ends));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TaskRunStatusRange {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTaskRunStatusRange();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.starts = taskStatusFromJSON(reader.int32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.ends = taskStatusFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<TaskRunStatusRange>): TaskRunStatusRange {
+    return TaskRunStatusRange.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<TaskRunStatusRange>): TaskRunStatusRange {
+    const message = createBaseTaskRunStatusRange();
+    message.starts = object.starts ?? TaskStatus.TASK_SCHEDULED;
+    message.ends = object.ends ?? TaskStatus.TASK_SCHEDULED;
+    return message;
+  },
+};
+
+function createBaseUserTaskRunStatusRange(): UserTaskRunStatusRange {
+  return { starts: UserTaskRunStatus.UNASSIGNED, ends: UserTaskRunStatus.UNASSIGNED };
+}
+
+export const UserTaskRunStatusRange = {
+  encode(message: UserTaskRunStatusRange, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.starts !== UserTaskRunStatus.UNASSIGNED) {
+      writer.uint32(8).int32(userTaskRunStatusToNumber(message.starts));
+    }
+    if (message.ends !== UserTaskRunStatus.UNASSIGNED) {
+      writer.uint32(16).int32(userTaskRunStatusToNumber(message.ends));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserTaskRunStatusRange {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserTaskRunStatusRange();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.starts = userTaskRunStatusFromJSON(reader.int32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.ends = userTaskRunStatusFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<UserTaskRunStatusRange>): UserTaskRunStatusRange {
+    return UserTaskRunStatusRange.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<UserTaskRunStatusRange>): UserTaskRunStatusRange {
+    const message = createBaseUserTaskRunStatusRange();
+    message.starts = object.starts ?? UserTaskRunStatus.UNASSIGNED;
+    message.ends = object.ends ?? UserTaskRunStatus.UNASSIGNED;
     return message;
   },
 };
 
 function createBasePartitionMetric(): PartitionMetric {
-  return { id: undefined, createdAt: undefined, activeWindows: [], windowLength: undefined };
+  return {
+    id: undefined,
+    createdAt: undefined,
+    activeWindows: [],
+    windowLength: undefined,
+    aggregationType: AggregationType.COUNT,
+  };
 }
 
 export const PartitionMetric = {
@@ -143,6 +416,9 @@ export const PartitionMetric = {
     }
     if (message.windowLength !== undefined) {
       Duration.encode(message.windowLength, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.aggregationType !== AggregationType.COUNT) {
+      writer.uint32(40).int32(aggregationTypeToNumber(message.aggregationType));
     }
     return writer;
   },
@@ -182,6 +458,13 @@ export const PartitionMetric = {
 
           message.windowLength = Duration.decode(reader, reader.uint32());
           continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.aggregationType = aggregationTypeFromJSON(reader.int32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -202,6 +485,7 @@ export const PartitionMetric = {
     message.windowLength = (object.windowLength !== undefined && object.windowLength !== null)
       ? Duration.fromPartial(object.windowLength)
       : undefined;
+    message.aggregationType = object.aggregationType ?? AggregationType.COUNT;
     return message;
   },
 };
@@ -274,7 +558,7 @@ export const PartitionWindowedMetric = {
 };
 
 function createBasePartitionMetricId(): PartitionMetricId {
-  return { id: undefined, tenantId: undefined };
+  return { id: undefined, tenantId: undefined, aggregationType: AggregationType.COUNT };
 }
 
 export const PartitionMetricId = {
@@ -284,6 +568,9 @@ export const PartitionMetricId = {
     }
     if (message.tenantId !== undefined) {
       TenantId.encode(message.tenantId, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.aggregationType !== AggregationType.COUNT) {
+      writer.uint32(24).int32(aggregationTypeToNumber(message.aggregationType));
     }
     return writer;
   },
@@ -309,6 +596,13 @@ export const PartitionMetricId = {
 
           message.tenantId = TenantId.decode(reader, reader.uint32());
           continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.aggregationType = aggregationTypeFromJSON(reader.int32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -327,6 +621,7 @@ export const PartitionMetricId = {
     message.tenantId = (object.tenantId !== undefined && object.tenantId !== null)
       ? TenantId.fromPartial(object.tenantId)
       : undefined;
+    message.aggregationType = object.aggregationType ?? AggregationType.COUNT;
     return message;
   },
 };

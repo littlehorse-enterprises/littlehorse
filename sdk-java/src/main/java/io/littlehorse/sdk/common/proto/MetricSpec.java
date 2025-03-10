@@ -17,6 +17,10 @@ private static final long serialVersionUID = 0L;
   }
   private MetricSpec() {
     windowLengths_ = java.util.Collections.emptyList();
+    aggregateAs_ = java.util.Collections.emptyList();
+    lhStatusRanges_ = java.util.Collections.emptyList();
+    taskStatusRanges_ = java.util.Collections.emptyList();
+    userTaskStatusRanges_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -132,6 +136,187 @@ private static final long serialVersionUID = 0L;
     return windowLengths_.get(index);
   }
 
+  public static final int AGGREGATE_AS_FIELD_NUMBER = 4;
+  @SuppressWarnings("serial")
+  private java.util.List<java.lang.Integer> aggregateAs_;
+  private static final com.google.protobuf.Internal.ListAdapter.Converter<
+      java.lang.Integer, io.littlehorse.sdk.common.proto.AggregationType> aggregateAs_converter_ =
+          new com.google.protobuf.Internal.ListAdapter.Converter<
+              java.lang.Integer, io.littlehorse.sdk.common.proto.AggregationType>() {
+            public io.littlehorse.sdk.common.proto.AggregationType convert(java.lang.Integer from) {
+              io.littlehorse.sdk.common.proto.AggregationType result = io.littlehorse.sdk.common.proto.AggregationType.forNumber(from);
+              return result == null ? io.littlehorse.sdk.common.proto.AggregationType.UNRECOGNIZED : result;
+            }
+          };
+  /**
+   * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
+   * @return A list containing the aggregateAs.
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.sdk.common.proto.AggregationType> getAggregateAsList() {
+    return new com.google.protobuf.Internal.ListAdapter<
+        java.lang.Integer, io.littlehorse.sdk.common.proto.AggregationType>(aggregateAs_, aggregateAs_converter_);
+  }
+  /**
+   * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
+   * @return The count of aggregateAs.
+   */
+  @java.lang.Override
+  public int getAggregateAsCount() {
+    return aggregateAs_.size();
+  }
+  /**
+   * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
+   * @param index The index of the element to return.
+   * @return The aggregateAs at the given index.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.AggregationType getAggregateAs(int index) {
+    return aggregateAs_converter_.convert(aggregateAs_.get(index));
+  }
+  /**
+   * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
+   * @return A list containing the enum numeric values on the wire for aggregateAs.
+   */
+  @java.lang.Override
+  public java.util.List<java.lang.Integer>
+  getAggregateAsValueList() {
+    return aggregateAs_;
+  }
+  /**
+   * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
+   * @param index The index of the value to return.
+   * @return The enum numeric value on the wire of aggregateAs at the given index.
+   */
+  @java.lang.Override
+  public int getAggregateAsValue(int index) {
+    return aggregateAs_.get(index);
+  }
+  private int aggregateAsMemoizedSerializedSize;
+
+  public static final int LH_STATUS_RANGES_FIELD_NUMBER = 5;
+  @SuppressWarnings("serial")
+  private java.util.List<io.littlehorse.sdk.common.proto.LHStatusRange> lhStatusRanges_;
+  /**
+   * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.sdk.common.proto.LHStatusRange> getLhStatusRangesList() {
+    return lhStatusRanges_;
+  }
+  /**
+   * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder> 
+      getLhStatusRangesOrBuilderList() {
+    return lhStatusRanges_;
+  }
+  /**
+   * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+   */
+  @java.lang.Override
+  public int getLhStatusRangesCount() {
+    return lhStatusRanges_.size();
+  }
+  /**
+   * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.LHStatusRange getLhStatusRanges(int index) {
+    return lhStatusRanges_.get(index);
+  }
+  /**
+   * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder getLhStatusRangesOrBuilder(
+      int index) {
+    return lhStatusRanges_.get(index);
+  }
+
+  public static final int TASK_STATUS_RANGES_FIELD_NUMBER = 6;
+  @SuppressWarnings("serial")
+  private java.util.List<io.littlehorse.sdk.common.proto.LHStatusRange> taskStatusRanges_;
+  /**
+   * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.sdk.common.proto.LHStatusRange> getTaskStatusRangesList() {
+    return taskStatusRanges_;
+  }
+  /**
+   * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder> 
+      getTaskStatusRangesOrBuilderList() {
+    return taskStatusRanges_;
+  }
+  /**
+   * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+   */
+  @java.lang.Override
+  public int getTaskStatusRangesCount() {
+    return taskStatusRanges_.size();
+  }
+  /**
+   * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.LHStatusRange getTaskStatusRanges(int index) {
+    return taskStatusRanges_.get(index);
+  }
+  /**
+   * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder getTaskStatusRangesOrBuilder(
+      int index) {
+    return taskStatusRanges_.get(index);
+  }
+
+  public static final int USER_TASK_STATUS_RANGES_FIELD_NUMBER = 7;
+  @SuppressWarnings("serial")
+  private java.util.List<io.littlehorse.sdk.common.proto.UserTaskRunStatusRange> userTaskStatusRanges_;
+  /**
+   * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.sdk.common.proto.UserTaskRunStatusRange> getUserTaskStatusRangesList() {
+    return userTaskStatusRanges_;
+  }
+  /**
+   * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskRunStatusRangeOrBuilder> 
+      getUserTaskStatusRangesOrBuilderList() {
+    return userTaskStatusRanges_;
+  }
+  /**
+   * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+   */
+  @java.lang.Override
+  public int getUserTaskStatusRangesCount() {
+    return userTaskStatusRanges_.size();
+  }
+  /**
+   * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskRunStatusRange getUserTaskStatusRanges(int index) {
+    return userTaskStatusRanges_.get(index);
+  }
+  /**
+   * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskRunStatusRangeOrBuilder getUserTaskStatusRangesOrBuilder(
+      int index) {
+    return userTaskStatusRanges_.get(index);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -146,6 +331,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    getSerializedSize();
     if (id_ != null) {
       output.writeMessage(1, getId());
     }
@@ -154,6 +340,22 @@ private static final long serialVersionUID = 0L;
     }
     for (int i = 0; i < windowLengths_.size(); i++) {
       output.writeMessage(3, windowLengths_.get(i));
+    }
+    if (getAggregateAsList().size() > 0) {
+      output.writeUInt32NoTag(34);
+      output.writeUInt32NoTag(aggregateAsMemoizedSerializedSize);
+    }
+    for (int i = 0; i < aggregateAs_.size(); i++) {
+      output.writeEnumNoTag(aggregateAs_.get(i));
+    }
+    for (int i = 0; i < lhStatusRanges_.size(); i++) {
+      output.writeMessage(5, lhStatusRanges_.get(i));
+    }
+    for (int i = 0; i < taskStatusRanges_.size(); i++) {
+      output.writeMessage(6, taskStatusRanges_.get(i));
+    }
+    for (int i = 0; i < userTaskStatusRanges_.size(); i++) {
+      output.writeMessage(7, userTaskStatusRanges_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -175,6 +377,30 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < windowLengths_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, windowLengths_.get(i));
+    }
+    {
+      int dataSize = 0;
+      for (int i = 0; i < aggregateAs_.size(); i++) {
+        dataSize += com.google.protobuf.CodedOutputStream
+          .computeEnumSizeNoTag(aggregateAs_.get(i));
+      }
+      size += dataSize;
+      if (!getAggregateAsList().isEmpty()) {  size += 1;
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32SizeNoTag(dataSize);
+      }aggregateAsMemoizedSerializedSize = dataSize;
+    }
+    for (int i = 0; i < lhStatusRanges_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, lhStatusRanges_.get(i));
+    }
+    for (int i = 0; i < taskStatusRanges_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, taskStatusRanges_.get(i));
+    }
+    for (int i = 0; i < userTaskStatusRanges_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, userTaskStatusRanges_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -203,6 +429,13 @@ private static final long serialVersionUID = 0L;
     }
     if (!getWindowLengthsList()
         .equals(other.getWindowLengthsList())) return false;
+    if (!aggregateAs_.equals(other.aggregateAs_)) return false;
+    if (!getLhStatusRangesList()
+        .equals(other.getLhStatusRangesList())) return false;
+    if (!getTaskStatusRangesList()
+        .equals(other.getTaskStatusRangesList())) return false;
+    if (!getUserTaskStatusRangesList()
+        .equals(other.getUserTaskStatusRangesList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -225,6 +458,22 @@ private static final long serialVersionUID = 0L;
     if (getWindowLengthsCount() > 0) {
       hash = (37 * hash) + WINDOW_LENGTHS_FIELD_NUMBER;
       hash = (53 * hash) + getWindowLengthsList().hashCode();
+    }
+    if (getAggregateAsCount() > 0) {
+      hash = (37 * hash) + AGGREGATE_AS_FIELD_NUMBER;
+      hash = (53 * hash) + aggregateAs_.hashCode();
+    }
+    if (getLhStatusRangesCount() > 0) {
+      hash = (37 * hash) + LH_STATUS_RANGES_FIELD_NUMBER;
+      hash = (53 * hash) + getLhStatusRangesList().hashCode();
+    }
+    if (getTaskStatusRangesCount() > 0) {
+      hash = (37 * hash) + TASK_STATUS_RANGES_FIELD_NUMBER;
+      hash = (53 * hash) + getTaskStatusRangesList().hashCode();
+    }
+    if (getUserTaskStatusRangesCount() > 0) {
+      hash = (37 * hash) + USER_TASK_STATUS_RANGES_FIELD_NUMBER;
+      hash = (53 * hash) + getUserTaskStatusRangesList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -374,6 +623,29 @@ private static final long serialVersionUID = 0L;
         windowLengthsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000004);
+      aggregateAs_ = java.util.Collections.emptyList();
+      bitField0_ = (bitField0_ & ~0x00000008);
+      if (lhStatusRangesBuilder_ == null) {
+        lhStatusRanges_ = java.util.Collections.emptyList();
+      } else {
+        lhStatusRanges_ = null;
+        lhStatusRangesBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000010);
+      if (taskStatusRangesBuilder_ == null) {
+        taskStatusRanges_ = java.util.Collections.emptyList();
+      } else {
+        taskStatusRanges_ = null;
+        taskStatusRangesBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000020);
+      if (userTaskStatusRangesBuilder_ == null) {
+        userTaskStatusRanges_ = java.util.Collections.emptyList();
+      } else {
+        userTaskStatusRanges_ = null;
+        userTaskStatusRangesBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000040);
       return this;
     }
 
@@ -415,6 +687,38 @@ private static final long serialVersionUID = 0L;
         result.windowLengths_ = windowLengths_;
       } else {
         result.windowLengths_ = windowLengthsBuilder_.build();
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        aggregateAs_ = java.util.Collections.unmodifiableList(aggregateAs_);
+        bitField0_ = (bitField0_ & ~0x00000008);
+      }
+      result.aggregateAs_ = aggregateAs_;
+      if (lhStatusRangesBuilder_ == null) {
+        if (((bitField0_ & 0x00000010) != 0)) {
+          lhStatusRanges_ = java.util.Collections.unmodifiableList(lhStatusRanges_);
+          bitField0_ = (bitField0_ & ~0x00000010);
+        }
+        result.lhStatusRanges_ = lhStatusRanges_;
+      } else {
+        result.lhStatusRanges_ = lhStatusRangesBuilder_.build();
+      }
+      if (taskStatusRangesBuilder_ == null) {
+        if (((bitField0_ & 0x00000020) != 0)) {
+          taskStatusRanges_ = java.util.Collections.unmodifiableList(taskStatusRanges_);
+          bitField0_ = (bitField0_ & ~0x00000020);
+        }
+        result.taskStatusRanges_ = taskStatusRanges_;
+      } else {
+        result.taskStatusRanges_ = taskStatusRangesBuilder_.build();
+      }
+      if (userTaskStatusRangesBuilder_ == null) {
+        if (((bitField0_ & 0x00000040) != 0)) {
+          userTaskStatusRanges_ = java.util.Collections.unmodifiableList(userTaskStatusRanges_);
+          bitField0_ = (bitField0_ & ~0x00000040);
+        }
+        result.userTaskStatusRanges_ = userTaskStatusRanges_;
+      } else {
+        result.userTaskStatusRanges_ = userTaskStatusRangesBuilder_.build();
       }
     }
 
@@ -508,6 +812,94 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
+      if (!other.aggregateAs_.isEmpty()) {
+        if (aggregateAs_.isEmpty()) {
+          aggregateAs_ = other.aggregateAs_;
+          bitField0_ = (bitField0_ & ~0x00000008);
+        } else {
+          ensureAggregateAsIsMutable();
+          aggregateAs_.addAll(other.aggregateAs_);
+        }
+        onChanged();
+      }
+      if (lhStatusRangesBuilder_ == null) {
+        if (!other.lhStatusRanges_.isEmpty()) {
+          if (lhStatusRanges_.isEmpty()) {
+            lhStatusRanges_ = other.lhStatusRanges_;
+            bitField0_ = (bitField0_ & ~0x00000010);
+          } else {
+            ensureLhStatusRangesIsMutable();
+            lhStatusRanges_.addAll(other.lhStatusRanges_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.lhStatusRanges_.isEmpty()) {
+          if (lhStatusRangesBuilder_.isEmpty()) {
+            lhStatusRangesBuilder_.dispose();
+            lhStatusRangesBuilder_ = null;
+            lhStatusRanges_ = other.lhStatusRanges_;
+            bitField0_ = (bitField0_ & ~0x00000010);
+            lhStatusRangesBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getLhStatusRangesFieldBuilder() : null;
+          } else {
+            lhStatusRangesBuilder_.addAllMessages(other.lhStatusRanges_);
+          }
+        }
+      }
+      if (taskStatusRangesBuilder_ == null) {
+        if (!other.taskStatusRanges_.isEmpty()) {
+          if (taskStatusRanges_.isEmpty()) {
+            taskStatusRanges_ = other.taskStatusRanges_;
+            bitField0_ = (bitField0_ & ~0x00000020);
+          } else {
+            ensureTaskStatusRangesIsMutable();
+            taskStatusRanges_.addAll(other.taskStatusRanges_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.taskStatusRanges_.isEmpty()) {
+          if (taskStatusRangesBuilder_.isEmpty()) {
+            taskStatusRangesBuilder_.dispose();
+            taskStatusRangesBuilder_ = null;
+            taskStatusRanges_ = other.taskStatusRanges_;
+            bitField0_ = (bitField0_ & ~0x00000020);
+            taskStatusRangesBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getTaskStatusRangesFieldBuilder() : null;
+          } else {
+            taskStatusRangesBuilder_.addAllMessages(other.taskStatusRanges_);
+          }
+        }
+      }
+      if (userTaskStatusRangesBuilder_ == null) {
+        if (!other.userTaskStatusRanges_.isEmpty()) {
+          if (userTaskStatusRanges_.isEmpty()) {
+            userTaskStatusRanges_ = other.userTaskStatusRanges_;
+            bitField0_ = (bitField0_ & ~0x00000040);
+          } else {
+            ensureUserTaskStatusRangesIsMutable();
+            userTaskStatusRanges_.addAll(other.userTaskStatusRanges_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.userTaskStatusRanges_.isEmpty()) {
+          if (userTaskStatusRangesBuilder_.isEmpty()) {
+            userTaskStatusRangesBuilder_.dispose();
+            userTaskStatusRangesBuilder_ = null;
+            userTaskStatusRanges_ = other.userTaskStatusRanges_;
+            bitField0_ = (bitField0_ & ~0x00000040);
+            userTaskStatusRangesBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getUserTaskStatusRangesFieldBuilder() : null;
+          } else {
+            userTaskStatusRangesBuilder_.addAllMessages(other.userTaskStatusRanges_);
+          }
+        }
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -561,6 +953,62 @@ private static final long serialVersionUID = 0L;
               }
               break;
             } // case 26
+            case 32: {
+              int tmpRaw = input.readEnum();
+              ensureAggregateAsIsMutable();
+              aggregateAs_.add(tmpRaw);
+              break;
+            } // case 32
+            case 34: {
+              int length = input.readRawVarint32();
+              int oldLimit = input.pushLimit(length);
+              while(input.getBytesUntilLimit() > 0) {
+                int tmpRaw = input.readEnum();
+                ensureAggregateAsIsMutable();
+                aggregateAs_.add(tmpRaw);
+              }
+              input.popLimit(oldLimit);
+              break;
+            } // case 34
+            case 42: {
+              io.littlehorse.sdk.common.proto.LHStatusRange m =
+                  input.readMessage(
+                      io.littlehorse.sdk.common.proto.LHStatusRange.parser(),
+                      extensionRegistry);
+              if (lhStatusRangesBuilder_ == null) {
+                ensureLhStatusRangesIsMutable();
+                lhStatusRanges_.add(m);
+              } else {
+                lhStatusRangesBuilder_.addMessage(m);
+              }
+              break;
+            } // case 42
+            case 50: {
+              io.littlehorse.sdk.common.proto.LHStatusRange m =
+                  input.readMessage(
+                      io.littlehorse.sdk.common.proto.LHStatusRange.parser(),
+                      extensionRegistry);
+              if (taskStatusRangesBuilder_ == null) {
+                ensureTaskStatusRangesIsMutable();
+                taskStatusRanges_.add(m);
+              } else {
+                taskStatusRangesBuilder_.addMessage(m);
+              }
+              break;
+            } // case 50
+            case 58: {
+              io.littlehorse.sdk.common.proto.UserTaskRunStatusRange m =
+                  input.readMessage(
+                      io.littlehorse.sdk.common.proto.UserTaskRunStatusRange.parser(),
+                      extensionRegistry);
+              if (userTaskStatusRangesBuilder_ == null) {
+                ensureUserTaskStatusRangesIsMutable();
+                userTaskStatusRanges_.add(m);
+              } else {
+                userTaskStatusRangesBuilder_.addMessage(m);
+              }
+              break;
+            } // case 58
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1054,6 +1502,866 @@ private static final long serialVersionUID = 0L;
         windowLengths_ = null;
       }
       return windowLengthsBuilder_;
+    }
+
+    private java.util.List<java.lang.Integer> aggregateAs_ =
+      java.util.Collections.emptyList();
+    private void ensureAggregateAsIsMutable() {
+      if (!((bitField0_ & 0x00000008) != 0)) {
+        aggregateAs_ = new java.util.ArrayList<java.lang.Integer>(aggregateAs_);
+        bitField0_ |= 0x00000008;
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
+     * @return A list containing the aggregateAs.
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.AggregationType> getAggregateAsList() {
+      return new com.google.protobuf.Internal.ListAdapter<
+          java.lang.Integer, io.littlehorse.sdk.common.proto.AggregationType>(aggregateAs_, aggregateAs_converter_);
+    }
+    /**
+     * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
+     * @return The count of aggregateAs.
+     */
+    public int getAggregateAsCount() {
+      return aggregateAs_.size();
+    }
+    /**
+     * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
+     * @param index The index of the element to return.
+     * @return The aggregateAs at the given index.
+     */
+    public io.littlehorse.sdk.common.proto.AggregationType getAggregateAs(int index) {
+      return aggregateAs_converter_.convert(aggregateAs_.get(index));
+    }
+    /**
+     * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
+     * @param index The index to set the value at.
+     * @param value The aggregateAs to set.
+     * @return This builder for chaining.
+     */
+    public Builder setAggregateAs(
+        int index, io.littlehorse.sdk.common.proto.AggregationType value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      ensureAggregateAsIsMutable();
+      aggregateAs_.set(index, value.getNumber());
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
+     * @param value The aggregateAs to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAggregateAs(io.littlehorse.sdk.common.proto.AggregationType value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      ensureAggregateAsIsMutable();
+      aggregateAs_.add(value.getNumber());
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
+     * @param values The aggregateAs to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAllAggregateAs(
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.AggregationType> values) {
+      ensureAggregateAsIsMutable();
+      for (io.littlehorse.sdk.common.proto.AggregationType value : values) {
+        aggregateAs_.add(value.getNumber());
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearAggregateAs() {
+      aggregateAs_ = java.util.Collections.emptyList();
+      bitField0_ = (bitField0_ & ~0x00000008);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
+     * @return A list containing the enum numeric values on the wire for aggregateAs.
+     */
+    public java.util.List<java.lang.Integer>
+    getAggregateAsValueList() {
+      return java.util.Collections.unmodifiableList(aggregateAs_);
+    }
+    /**
+     * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
+     * @param index The index of the value to return.
+     * @return The enum numeric value on the wire of aggregateAs at the given index.
+     */
+    public int getAggregateAsValue(int index) {
+      return aggregateAs_.get(index);
+    }
+    /**
+     * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
+     * @param index The index to set the value at.
+     * @param value The enum numeric value on the wire for aggregateAs to set.
+     * @return This builder for chaining.
+     */
+    public Builder setAggregateAsValue(
+        int index, int value) {
+      ensureAggregateAsIsMutable();
+      aggregateAs_.set(index, value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
+     * @param value The enum numeric value on the wire for aggregateAs to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAggregateAsValue(int value) {
+      ensureAggregateAsIsMutable();
+      aggregateAs_.add(value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.AggregationType aggregate_as = 4;</code>
+     * @param values The enum numeric values on the wire for aggregateAs to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAllAggregateAsValue(
+        java.lang.Iterable<java.lang.Integer> values) {
+      ensureAggregateAsIsMutable();
+      for (int value : values) {
+        aggregateAs_.add(value);
+      }
+      onChanged();
+      return this;
+    }
+
+    private java.util.List<io.littlehorse.sdk.common.proto.LHStatusRange> lhStatusRanges_ =
+      java.util.Collections.emptyList();
+    private void ensureLhStatusRangesIsMutable() {
+      if (!((bitField0_ & 0x00000010) != 0)) {
+        lhStatusRanges_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.LHStatusRange>(lhStatusRanges_);
+        bitField0_ |= 0x00000010;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.LHStatusRange, io.littlehorse.sdk.common.proto.LHStatusRange.Builder, io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder> lhStatusRangesBuilder_;
+
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.LHStatusRange> getLhStatusRangesList() {
+      if (lhStatusRangesBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(lhStatusRanges_);
+      } else {
+        return lhStatusRangesBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public int getLhStatusRangesCount() {
+      if (lhStatusRangesBuilder_ == null) {
+        return lhStatusRanges_.size();
+      } else {
+        return lhStatusRangesBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LHStatusRange getLhStatusRanges(int index) {
+      if (lhStatusRangesBuilder_ == null) {
+        return lhStatusRanges_.get(index);
+      } else {
+        return lhStatusRangesBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public Builder setLhStatusRanges(
+        int index, io.littlehorse.sdk.common.proto.LHStatusRange value) {
+      if (lhStatusRangesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureLhStatusRangesIsMutable();
+        lhStatusRanges_.set(index, value);
+        onChanged();
+      } else {
+        lhStatusRangesBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public Builder setLhStatusRanges(
+        int index, io.littlehorse.sdk.common.proto.LHStatusRange.Builder builderForValue) {
+      if (lhStatusRangesBuilder_ == null) {
+        ensureLhStatusRangesIsMutable();
+        lhStatusRanges_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        lhStatusRangesBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public Builder addLhStatusRanges(io.littlehorse.sdk.common.proto.LHStatusRange value) {
+      if (lhStatusRangesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureLhStatusRangesIsMutable();
+        lhStatusRanges_.add(value);
+        onChanged();
+      } else {
+        lhStatusRangesBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public Builder addLhStatusRanges(
+        int index, io.littlehorse.sdk.common.proto.LHStatusRange value) {
+      if (lhStatusRangesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureLhStatusRangesIsMutable();
+        lhStatusRanges_.add(index, value);
+        onChanged();
+      } else {
+        lhStatusRangesBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public Builder addLhStatusRanges(
+        io.littlehorse.sdk.common.proto.LHStatusRange.Builder builderForValue) {
+      if (lhStatusRangesBuilder_ == null) {
+        ensureLhStatusRangesIsMutable();
+        lhStatusRanges_.add(builderForValue.build());
+        onChanged();
+      } else {
+        lhStatusRangesBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public Builder addLhStatusRanges(
+        int index, io.littlehorse.sdk.common.proto.LHStatusRange.Builder builderForValue) {
+      if (lhStatusRangesBuilder_ == null) {
+        ensureLhStatusRangesIsMutable();
+        lhStatusRanges_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        lhStatusRangesBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public Builder addAllLhStatusRanges(
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.LHStatusRange> values) {
+      if (lhStatusRangesBuilder_ == null) {
+        ensureLhStatusRangesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, lhStatusRanges_);
+        onChanged();
+      } else {
+        lhStatusRangesBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public Builder clearLhStatusRanges() {
+      if (lhStatusRangesBuilder_ == null) {
+        lhStatusRanges_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+      } else {
+        lhStatusRangesBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public Builder removeLhStatusRanges(int index) {
+      if (lhStatusRangesBuilder_ == null) {
+        ensureLhStatusRangesIsMutable();
+        lhStatusRanges_.remove(index);
+        onChanged();
+      } else {
+        lhStatusRangesBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LHStatusRange.Builder getLhStatusRangesBuilder(
+        int index) {
+      return getLhStatusRangesFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder getLhStatusRangesOrBuilder(
+        int index) {
+      if (lhStatusRangesBuilder_ == null) {
+        return lhStatusRanges_.get(index);  } else {
+        return lhStatusRangesBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder> 
+         getLhStatusRangesOrBuilderList() {
+      if (lhStatusRangesBuilder_ != null) {
+        return lhStatusRangesBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(lhStatusRanges_);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LHStatusRange.Builder addLhStatusRangesBuilder() {
+      return getLhStatusRangesFieldBuilder().addBuilder(
+          io.littlehorse.sdk.common.proto.LHStatusRange.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LHStatusRange.Builder addLhStatusRangesBuilder(
+        int index) {
+      return getLhStatusRangesFieldBuilder().addBuilder(
+          index, io.littlehorse.sdk.common.proto.LHStatusRange.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange lh_status_ranges = 5;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.LHStatusRange.Builder> 
+         getLhStatusRangesBuilderList() {
+      return getLhStatusRangesFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.LHStatusRange, io.littlehorse.sdk.common.proto.LHStatusRange.Builder, io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder> 
+        getLhStatusRangesFieldBuilder() {
+      if (lhStatusRangesBuilder_ == null) {
+        lhStatusRangesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.LHStatusRange, io.littlehorse.sdk.common.proto.LHStatusRange.Builder, io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder>(
+                lhStatusRanges_,
+                ((bitField0_ & 0x00000010) != 0),
+                getParentForChildren(),
+                isClean());
+        lhStatusRanges_ = null;
+      }
+      return lhStatusRangesBuilder_;
+    }
+
+    private java.util.List<io.littlehorse.sdk.common.proto.LHStatusRange> taskStatusRanges_ =
+      java.util.Collections.emptyList();
+    private void ensureTaskStatusRangesIsMutable() {
+      if (!((bitField0_ & 0x00000020) != 0)) {
+        taskStatusRanges_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.LHStatusRange>(taskStatusRanges_);
+        bitField0_ |= 0x00000020;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.LHStatusRange, io.littlehorse.sdk.common.proto.LHStatusRange.Builder, io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder> taskStatusRangesBuilder_;
+
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.LHStatusRange> getTaskStatusRangesList() {
+      if (taskStatusRangesBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(taskStatusRanges_);
+      } else {
+        return taskStatusRangesBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public int getTaskStatusRangesCount() {
+      if (taskStatusRangesBuilder_ == null) {
+        return taskStatusRanges_.size();
+      } else {
+        return taskStatusRangesBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LHStatusRange getTaskStatusRanges(int index) {
+      if (taskStatusRangesBuilder_ == null) {
+        return taskStatusRanges_.get(index);
+      } else {
+        return taskStatusRangesBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public Builder setTaskStatusRanges(
+        int index, io.littlehorse.sdk.common.proto.LHStatusRange value) {
+      if (taskStatusRangesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureTaskStatusRangesIsMutable();
+        taskStatusRanges_.set(index, value);
+        onChanged();
+      } else {
+        taskStatusRangesBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public Builder setTaskStatusRanges(
+        int index, io.littlehorse.sdk.common.proto.LHStatusRange.Builder builderForValue) {
+      if (taskStatusRangesBuilder_ == null) {
+        ensureTaskStatusRangesIsMutable();
+        taskStatusRanges_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        taskStatusRangesBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public Builder addTaskStatusRanges(io.littlehorse.sdk.common.proto.LHStatusRange value) {
+      if (taskStatusRangesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureTaskStatusRangesIsMutable();
+        taskStatusRanges_.add(value);
+        onChanged();
+      } else {
+        taskStatusRangesBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public Builder addTaskStatusRanges(
+        int index, io.littlehorse.sdk.common.proto.LHStatusRange value) {
+      if (taskStatusRangesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureTaskStatusRangesIsMutable();
+        taskStatusRanges_.add(index, value);
+        onChanged();
+      } else {
+        taskStatusRangesBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public Builder addTaskStatusRanges(
+        io.littlehorse.sdk.common.proto.LHStatusRange.Builder builderForValue) {
+      if (taskStatusRangesBuilder_ == null) {
+        ensureTaskStatusRangesIsMutable();
+        taskStatusRanges_.add(builderForValue.build());
+        onChanged();
+      } else {
+        taskStatusRangesBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public Builder addTaskStatusRanges(
+        int index, io.littlehorse.sdk.common.proto.LHStatusRange.Builder builderForValue) {
+      if (taskStatusRangesBuilder_ == null) {
+        ensureTaskStatusRangesIsMutable();
+        taskStatusRanges_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        taskStatusRangesBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public Builder addAllTaskStatusRanges(
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.LHStatusRange> values) {
+      if (taskStatusRangesBuilder_ == null) {
+        ensureTaskStatusRangesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, taskStatusRanges_);
+        onChanged();
+      } else {
+        taskStatusRangesBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public Builder clearTaskStatusRanges() {
+      if (taskStatusRangesBuilder_ == null) {
+        taskStatusRanges_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+      } else {
+        taskStatusRangesBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public Builder removeTaskStatusRanges(int index) {
+      if (taskStatusRangesBuilder_ == null) {
+        ensureTaskStatusRangesIsMutable();
+        taskStatusRanges_.remove(index);
+        onChanged();
+      } else {
+        taskStatusRangesBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LHStatusRange.Builder getTaskStatusRangesBuilder(
+        int index) {
+      return getTaskStatusRangesFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder getTaskStatusRangesOrBuilder(
+        int index) {
+      if (taskStatusRangesBuilder_ == null) {
+        return taskStatusRanges_.get(index);  } else {
+        return taskStatusRangesBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder> 
+         getTaskStatusRangesOrBuilderList() {
+      if (taskStatusRangesBuilder_ != null) {
+        return taskStatusRangesBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(taskStatusRanges_);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LHStatusRange.Builder addTaskStatusRangesBuilder() {
+      return getTaskStatusRangesFieldBuilder().addBuilder(
+          io.littlehorse.sdk.common.proto.LHStatusRange.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LHStatusRange.Builder addTaskStatusRangesBuilder(
+        int index) {
+      return getTaskStatusRangesFieldBuilder().addBuilder(
+          index, io.littlehorse.sdk.common.proto.LHStatusRange.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.LHStatusRange task_status_ranges = 6;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.LHStatusRange.Builder> 
+         getTaskStatusRangesBuilderList() {
+      return getTaskStatusRangesFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.LHStatusRange, io.littlehorse.sdk.common.proto.LHStatusRange.Builder, io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder> 
+        getTaskStatusRangesFieldBuilder() {
+      if (taskStatusRangesBuilder_ == null) {
+        taskStatusRangesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.LHStatusRange, io.littlehorse.sdk.common.proto.LHStatusRange.Builder, io.littlehorse.sdk.common.proto.LHStatusRangeOrBuilder>(
+                taskStatusRanges_,
+                ((bitField0_ & 0x00000020) != 0),
+                getParentForChildren(),
+                isClean());
+        taskStatusRanges_ = null;
+      }
+      return taskStatusRangesBuilder_;
+    }
+
+    private java.util.List<io.littlehorse.sdk.common.proto.UserTaskRunStatusRange> userTaskStatusRanges_ =
+      java.util.Collections.emptyList();
+    private void ensureUserTaskStatusRangesIsMutable() {
+      if (!((bitField0_ & 0x00000040) != 0)) {
+        userTaskStatusRanges_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.UserTaskRunStatusRange>(userTaskStatusRanges_);
+        bitField0_ |= 0x00000040;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskRunStatusRange, io.littlehorse.sdk.common.proto.UserTaskRunStatusRange.Builder, io.littlehorse.sdk.common.proto.UserTaskRunStatusRangeOrBuilder> userTaskStatusRangesBuilder_;
+
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskRunStatusRange> getUserTaskStatusRangesList() {
+      if (userTaskStatusRangesBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(userTaskStatusRanges_);
+      } else {
+        return userTaskStatusRangesBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public int getUserTaskStatusRangesCount() {
+      if (userTaskStatusRangesBuilder_ == null) {
+        return userTaskStatusRanges_.size();
+      } else {
+        return userTaskStatusRangesBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskRunStatusRange getUserTaskStatusRanges(int index) {
+      if (userTaskStatusRangesBuilder_ == null) {
+        return userTaskStatusRanges_.get(index);
+      } else {
+        return userTaskStatusRangesBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public Builder setUserTaskStatusRanges(
+        int index, io.littlehorse.sdk.common.proto.UserTaskRunStatusRange value) {
+      if (userTaskStatusRangesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureUserTaskStatusRangesIsMutable();
+        userTaskStatusRanges_.set(index, value);
+        onChanged();
+      } else {
+        userTaskStatusRangesBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public Builder setUserTaskStatusRanges(
+        int index, io.littlehorse.sdk.common.proto.UserTaskRunStatusRange.Builder builderForValue) {
+      if (userTaskStatusRangesBuilder_ == null) {
+        ensureUserTaskStatusRangesIsMutable();
+        userTaskStatusRanges_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        userTaskStatusRangesBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public Builder addUserTaskStatusRanges(io.littlehorse.sdk.common.proto.UserTaskRunStatusRange value) {
+      if (userTaskStatusRangesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureUserTaskStatusRangesIsMutable();
+        userTaskStatusRanges_.add(value);
+        onChanged();
+      } else {
+        userTaskStatusRangesBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public Builder addUserTaskStatusRanges(
+        int index, io.littlehorse.sdk.common.proto.UserTaskRunStatusRange value) {
+      if (userTaskStatusRangesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureUserTaskStatusRangesIsMutable();
+        userTaskStatusRanges_.add(index, value);
+        onChanged();
+      } else {
+        userTaskStatusRangesBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public Builder addUserTaskStatusRanges(
+        io.littlehorse.sdk.common.proto.UserTaskRunStatusRange.Builder builderForValue) {
+      if (userTaskStatusRangesBuilder_ == null) {
+        ensureUserTaskStatusRangesIsMutable();
+        userTaskStatusRanges_.add(builderForValue.build());
+        onChanged();
+      } else {
+        userTaskStatusRangesBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public Builder addUserTaskStatusRanges(
+        int index, io.littlehorse.sdk.common.proto.UserTaskRunStatusRange.Builder builderForValue) {
+      if (userTaskStatusRangesBuilder_ == null) {
+        ensureUserTaskStatusRangesIsMutable();
+        userTaskStatusRanges_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        userTaskStatusRangesBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public Builder addAllUserTaskStatusRanges(
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.UserTaskRunStatusRange> values) {
+      if (userTaskStatusRangesBuilder_ == null) {
+        ensureUserTaskStatusRangesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, userTaskStatusRanges_);
+        onChanged();
+      } else {
+        userTaskStatusRangesBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public Builder clearUserTaskStatusRanges() {
+      if (userTaskStatusRangesBuilder_ == null) {
+        userTaskStatusRanges_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000040);
+        onChanged();
+      } else {
+        userTaskStatusRangesBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public Builder removeUserTaskStatusRanges(int index) {
+      if (userTaskStatusRangesBuilder_ == null) {
+        ensureUserTaskStatusRangesIsMutable();
+        userTaskStatusRanges_.remove(index);
+        onChanged();
+      } else {
+        userTaskStatusRangesBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskRunStatusRange.Builder getUserTaskStatusRangesBuilder(
+        int index) {
+      return getUserTaskStatusRangesFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskRunStatusRangeOrBuilder getUserTaskStatusRangesOrBuilder(
+        int index) {
+      if (userTaskStatusRangesBuilder_ == null) {
+        return userTaskStatusRanges_.get(index);  } else {
+        return userTaskStatusRangesBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskRunStatusRangeOrBuilder> 
+         getUserTaskStatusRangesOrBuilderList() {
+      if (userTaskStatusRangesBuilder_ != null) {
+        return userTaskStatusRangesBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(userTaskStatusRanges_);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskRunStatusRange.Builder addUserTaskStatusRangesBuilder() {
+      return getUserTaskStatusRangesFieldBuilder().addBuilder(
+          io.littlehorse.sdk.common.proto.UserTaskRunStatusRange.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskRunStatusRange.Builder addUserTaskStatusRangesBuilder(
+        int index) {
+      return getUserTaskStatusRangesFieldBuilder().addBuilder(
+          index, io.littlehorse.sdk.common.proto.UserTaskRunStatusRange.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskRunStatusRange user_task_status_ranges = 7;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskRunStatusRange.Builder> 
+         getUserTaskStatusRangesBuilderList() {
+      return getUserTaskStatusRangesFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskRunStatusRange, io.littlehorse.sdk.common.proto.UserTaskRunStatusRange.Builder, io.littlehorse.sdk.common.proto.UserTaskRunStatusRangeOrBuilder> 
+        getUserTaskStatusRangesFieldBuilder() {
+      if (userTaskStatusRangesBuilder_ == null) {
+        userTaskStatusRangesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.UserTaskRunStatusRange, io.littlehorse.sdk.common.proto.UserTaskRunStatusRange.Builder, io.littlehorse.sdk.common.proto.UserTaskRunStatusRangeOrBuilder>(
+                userTaskStatusRanges_,
+                ((bitField0_ & 0x00000040) != 0),
+                getParentForChildren(),
+                isClean());
+        userTaskStatusRanges_ = null;
+      }
+      return userTaskStatusRangesBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

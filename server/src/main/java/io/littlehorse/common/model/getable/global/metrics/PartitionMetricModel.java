@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.AggregationType;
 import io.littlehorse.sdk.common.proto.PartitionMetric;
 import io.littlehorse.sdk.common.proto.PartitionWindowedMetric;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
@@ -25,6 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -34,13 +36,21 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
     private Set<PartitionWindowedMetricModel> activeWindowedMetrics;
     private Duration windowLength;
 
+    @Getter
+    private AggregationType aggregationType;
+
     public PartitionMetricModel() {}
 
-    public PartitionMetricModel(MetricSpecIdModel metricId, Duration windowLength, TenantIdModel tenantId) {
-        this.id = new PartitionMetricIdModel(metricId, tenantId);
+    public PartitionMetricModel(
+            MetricSpecIdModel metricId,
+            Duration windowLength,
+            TenantIdModel tenantId,
+            AggregationType aggregationType) {
+        this.id = new PartitionMetricIdModel(metricId, tenantId, aggregationType);
         this.createdAt = new Date();
         this.activeWindowedMetrics = new TreeSet<>();
         this.windowLength = windowLength;
+        this.aggregationType = aggregationType;
     }
 
     @Override
@@ -75,6 +85,7 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
                 .setWindowLength(com.google.protobuf.Duration.newBuilder()
                         .setSeconds(windowLength.getSeconds())
                         .build())
+                .setAggregationType(aggregationType)
                 .addAllActiveWindows(windowedMetrics);
     }
 
@@ -88,6 +99,7 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
                         LHSerializable.fromProto(windowedMetric, PartitionWindowedMetricModel.class, context))
                 .toList());
         this.windowLength = Duration.ofSeconds(p.getWindowLength().getSeconds());
+        this.aggregationType = p.getAggregationType();
     }
 
     @Override

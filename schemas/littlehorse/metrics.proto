@@ -5,6 +5,7 @@ package littlehorse;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
 import "object_id.proto";
+import "common_enums.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -16,6 +17,25 @@ message MetricSpec {
   MetricSpecId id = 1;
   google.protobuf.Timestamp created_at = 2;
   repeated google.protobuf.Duration window_lengths = 3;
+  repeated AggregationType aggregate_as = 4;
+  repeated LHStatusRange lh_status_ranges = 5;
+  repeated LHStatusRange task_status_ranges = 6;
+  repeated UserTaskRunStatusRange user_task_status_ranges = 7;
+}
+
+message LHStatusRange {
+  LHStatus starts = 1;
+  LHStatus ends = 2;
+}
+
+message TaskRunStatusRange {
+  TaskStatus starts = 1;
+  TaskStatus ends = 2;
+}
+
+message UserTaskRunStatusRange {
+  UserTaskRunStatus starts = 1;
+  UserTaskRunStatus ends = 2;
 }
 
 message PartitionMetric {
@@ -23,6 +43,7 @@ message PartitionMetric {
   google.protobuf.Timestamp created_at = 2;
   repeated PartitionWindowedMetric active_windows = 3;
   google.protobuf.Duration window_length = 4;
+  AggregationType aggregation_type = 5;
 }
 
 message PartitionWindowedMetric {
@@ -34,6 +55,7 @@ message PartitionWindowedMetric {
 message PartitionMetricId {
    MetricSpecId id = 1;
    TenantId tenant_id = 2;
+   AggregationType aggregation_type = 3;
 }
 
 // Metric value for a given MetricId

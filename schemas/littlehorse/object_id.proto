@@ -225,11 +225,11 @@ message MetricSpecId {
     WfSpecId wf_spec_id = 3;
     ThreadSpecReference thread_spec = 4;
   }
-  MetricType type = 5;
 }
 
 message MetricId {
   MetricSpecId metric_spec_id = 1;
   google.protobuf.Duration window_length = 2;
   google.protobuf.Timestamp window_start = 3;
+  AggregationType aggregation_type = 4;
 }

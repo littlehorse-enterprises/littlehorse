@@ -31,7 +31,7 @@ public class ListMetricsRequestModel
 
     @Override
     public GetableClassEnum getObjectType() {
-        return GetableClassEnum.METRIC_RUN;
+        return GetableClassEnum.METRIC;
     }
 
     @Override

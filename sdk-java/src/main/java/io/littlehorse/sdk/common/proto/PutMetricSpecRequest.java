@@ -20,7 +20,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private PutMetricSpecRequest() {
-    type_ = 0;
+    aggregationType_ = 0;
   }
 
   @java.lang.Override
@@ -89,30 +89,30 @@ private static final long serialVersionUID = 0L;
         referenceCase_);
   }
 
-  public static final int TYPE_FIELD_NUMBER = 1;
-  private int type_ = 0;
+  public static final int AGGREGATION_TYPE_FIELD_NUMBER = 1;
+  private int aggregationType_ = 0;
   /**
    * <pre>
    * Defines how the metric will be computed and collected
    * </pre>
    *
-   * <code>.littlehorse.MetricType type = 1;</code>
-   * @return The enum numeric value on the wire for type.
+   * <code>.littlehorse.AggregationType aggregation_type = 1;</code>
+   * @return The enum numeric value on the wire for aggregationType.
    */
-  @java.lang.Override public int getTypeValue() {
-    return type_;
+  @java.lang.Override public int getAggregationTypeValue() {
+    return aggregationType_;
   }
   /**
    * <pre>
    * Defines how the metric will be computed and collected
    * </pre>
    *
-   * <code>.littlehorse.MetricType type = 1;</code>
-   * @return The type.
+   * <code>.littlehorse.AggregationType aggregation_type = 1;</code>
+   * @return The aggregationType.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.MetricType getType() {
-    io.littlehorse.sdk.common.proto.MetricType result = io.littlehorse.sdk.common.proto.MetricType.forNumber(type_);
-    return result == null ? io.littlehorse.sdk.common.proto.MetricType.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.sdk.common.proto.AggregationType getAggregationType() {
+    io.littlehorse.sdk.common.proto.AggregationType result = io.littlehorse.sdk.common.proto.AggregationType.forNumber(aggregationType_);
+    return result == null ? io.littlehorse.sdk.common.proto.AggregationType.UNRECOGNIZED : result;
   }
 
   public static final int OBJECT_FIELD_NUMBER = 2;
@@ -339,8 +339,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (type_ != io.littlehorse.sdk.common.proto.MetricType.COUNT.getNumber()) {
-      output.writeEnum(1, type_);
+    if (aggregationType_ != io.littlehorse.sdk.common.proto.AggregationType.COUNT.getNumber()) {
+      output.writeEnum(1, aggregationType_);
     }
     if (referenceCase_ == 2) {
       output.writeEnum(2, ((java.lang.Integer) reference_));
@@ -366,9 +366,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (type_ != io.littlehorse.sdk.common.proto.MetricType.COUNT.getNumber()) {
+    if (aggregationType_ != io.littlehorse.sdk.common.proto.AggregationType.COUNT.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(1, type_);
+        .computeEnumSize(1, aggregationType_);
     }
     if (referenceCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
@@ -405,7 +405,7 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.PutMetricSpecRequest other = (io.littlehorse.sdk.common.proto.PutMetricSpecRequest) obj;
 
-    if (type_ != other.type_) return false;
+    if (aggregationType_ != other.aggregationType_) return false;
     if (hasWindowLength() != other.hasWindowLength()) return false;
     if (hasWindowLength()) {
       if (!getWindowLength()
@@ -443,8 +443,8 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + type_;
+    hash = (37 * hash) + AGGREGATION_TYPE_FIELD_NUMBER;
+    hash = (53 * hash) + aggregationType_;
     if (hasWindowLength()) {
       hash = (37 * hash) + WINDOW_LENGTH_FIELD_NUMBER;
       hash = (53 * hash) + getWindowLength().hashCode();
@@ -604,7 +604,7 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      type_ = 0;
+      aggregationType_ = 0;
       if (nodeBuilder_ != null) {
         nodeBuilder_.clear();
       }
@@ -656,7 +656,7 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.PutMetricSpecRequest result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.type_ = type_;
+        result.aggregationType_ = aggregationType_;
       }
       if (((from_bitField0_ & 0x00000020) != 0)) {
         result.windowLength_ = windowLengthBuilder_ == null
@@ -726,8 +726,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.PutMetricSpecRequest other) {
       if (other == io.littlehorse.sdk.common.proto.PutMetricSpecRequest.getDefaultInstance()) return this;
-      if (other.type_ != 0) {
-        setTypeValue(other.getTypeValue());
+      if (other.aggregationType_ != 0) {
+        setAggregationTypeValue(other.getAggregationTypeValue());
       }
       if (other.hasWindowLength()) {
         mergeWindowLength(other.getWindowLength());
@@ -780,7 +780,7 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 8: {
-              type_ = input.readEnum();
+              aggregationType_ = input.readEnum();
               bitField0_ |= 0x00000001;
               break;
             } // case 8
@@ -850,29 +850,29 @@ private static final long serialVersionUID = 0L;
 
     private int bitField0_;
 
-    private int type_ = 0;
+    private int aggregationType_ = 0;
     /**
      * <pre>
      * Defines how the metric will be computed and collected
      * </pre>
      *
-     * <code>.littlehorse.MetricType type = 1;</code>
-     * @return The enum numeric value on the wire for type.
+     * <code>.littlehorse.AggregationType aggregation_type = 1;</code>
+     * @return The enum numeric value on the wire for aggregationType.
      */
-    @java.lang.Override public int getTypeValue() {
-      return type_;
+    @java.lang.Override public int getAggregationTypeValue() {
+      return aggregationType_;
     }
     /**
      * <pre>
      * Defines how the metric will be computed and collected
      * </pre>
      *
-     * <code>.littlehorse.MetricType type = 1;</code>
-     * @param value The enum numeric value on the wire for type to set.
+     * <code>.littlehorse.AggregationType aggregation_type = 1;</code>
+     * @param value The enum numeric value on the wire for aggregationType to set.
      * @return This builder for chaining.
      */
-    public Builder setTypeValue(int value) {
-      type_ = value;
+    public Builder setAggregationTypeValue(int value) {
+      aggregationType_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
@@ -882,29 +882,29 @@ private static final long serialVersionUID = 0L;
      * Defines how the metric will be computed and collected
      * </pre>
      *
-     * <code>.littlehorse.MetricType type = 1;</code>
-     * @return The type.
+     * <code>.littlehorse.AggregationType aggregation_type = 1;</code>
+     * @return The aggregationType.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.MetricType getType() {
-      io.littlehorse.sdk.common.proto.MetricType result = io.littlehorse.sdk.common.proto.MetricType.forNumber(type_);
-      return result == null ? io.littlehorse.sdk.common.proto.MetricType.UNRECOGNIZED : result;
+    public io.littlehorse.sdk.common.proto.AggregationType getAggregationType() {
+      io.littlehorse.sdk.common.proto.AggregationType result = io.littlehorse.sdk.common.proto.AggregationType.forNumber(aggregationType_);
+      return result == null ? io.littlehorse.sdk.common.proto.AggregationType.UNRECOGNIZED : result;
     }
     /**
      * <pre>
      * Defines how the metric will be computed and collected
      * </pre>
      *
-     * <code>.littlehorse.MetricType type = 1;</code>
-     * @param value The type to set.
+     * <code>.littlehorse.AggregationType aggregation_type = 1;</code>
+     * @param value The aggregationType to set.
      * @return This builder for chaining.
      */
-    public Builder setType(io.littlehorse.sdk.common.proto.MetricType value) {
+    public Builder setAggregationType(io.littlehorse.sdk.common.proto.AggregationType value) {
       if (value == null) {
         throw new NullPointerException();
       }
       bitField0_ |= 0x00000001;
-      type_ = value.getNumber();
+      aggregationType_ = value.getNumber();
       onChanged();
       return this;
     }
@@ -913,12 +913,12 @@ private static final long serialVersionUID = 0L;
      * Defines how the metric will be computed and collected
      * </pre>
      *
-     * <code>.littlehorse.MetricType type = 1;</code>
+     * <code>.littlehorse.AggregationType aggregation_type = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearType() {
+    public Builder clearAggregationType() {
       bitField0_ = (bitField0_ & ~0x00000001);
-      type_ = 0;
+      aggregationType_ = 0;
       onChanged();
       return this;
     }

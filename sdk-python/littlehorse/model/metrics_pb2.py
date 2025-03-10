@@ -14,9 +14,10 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 from google.protobuf import duration_pb2 as google_dot_protobuf_dot_duration__pb2
 import littlehorse.model.object_id_pb2 as object__id__pb2
+import littlehorse.model.common_enums_pb2 as common__enums__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rmetrics.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x0fobject_id.proto\"\x96\x01\n\nMetricSpec\x12%\n\x02id\x18\x01 \x01(\x0b\x32\x19.littlehorse.MetricSpecId\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x0ewindow_lengths\x18\x03 \x03(\x0b\x32\x19.google.protobuf.Duration\"\xdd\x01\n\x0fPartitionMetric\x12*\n\x02id\x18\x01 \x01(\x0b\x32\x1e.littlehorse.PartitionMetricId\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12<\n\x0e\x61\x63tive_windows\x18\x03 \x03(\x0b\x32$.littlehorse.PartitionWindowedMetric\x12\x30\n\rwindow_length\x18\x04 \x01(\x0b\x32\x19.google.protobuf.Duration\"u\n\x17PartitionWindowedMetric\x12\r\n\x05value\x18\x01 \x01(\x01\x12\x30\n\x0cwindow_start\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x19\n\x11number_of_samples\x18\x03 \x01(\x03\"d\n\x11PartitionMetricId\x12%\n\x02id\x18\x01 \x01(\x0b\x32\x19.littlehorse.MetricSpecId\x12(\n\ttenant_id\x18\x02 \x01(\x0b\x32\x15.littlehorse.TenantId\"\x8f\x02\n\x06Metric\x12!\n\x02id\x18\x01 \x01(\x0b\x32\x15.littlehorse.MetricId\x12\x0f\n\x05\x63ount\x18\x02 \x01(\x03H\x00\x12\x15\n\x0blatency_avg\x18\x03 \x01(\x03H\x00\x12.\n\ncreated_at\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12G\n\x13value_per_partition\x18\x05 \x03(\x0b\x32*.littlehorse.Metric.ValuePerPartitionEntry\x1a\x38\n\x16ValuePerPartitionEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\x42\x07\n\x05valueBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rmetrics.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x0fobject_id.proto\x1a\x12\x63ommon_enums.proto\"\xfe\x02\n\nMetricSpec\x12%\n\x02id\x18\x01 \x01(\x0b\x32\x19.littlehorse.MetricSpecId\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x0ewindow_lengths\x18\x03 \x03(\x0b\x32\x19.google.protobuf.Duration\x12\x32\n\x0c\x61ggregate_as\x18\x04 \x03(\x0e\x32\x1c.littlehorse.AggregationType\x12\x34\n\x10lh_status_ranges\x18\x05 \x03(\x0b\x32\x1a.littlehorse.LHStatusRange\x12\x36\n\x12task_status_ranges\x18\x06 \x03(\x0b\x32\x1a.littlehorse.LHStatusRange\x12\x44\n\x17user_task_status_ranges\x18\x07 \x03(\x0b\x32#.littlehorse.UserTaskRunStatusRange\"[\n\rLHStatusRange\x12%\n\x06starts\x18\x01 \x01(\x0e\x32\x15.littlehorse.LHStatus\x12#\n\x04\x65nds\x18\x02 \x01(\x0e\x32\x15.littlehorse.LHStatus\"d\n\x12TaskRunStatusRange\x12\'\n\x06starts\x18\x01 \x01(\x0e\x32\x17.littlehorse.TaskStatus\x12%\n\x04\x65nds\x18\x02 \x01(\x0e\x32\x17.littlehorse.TaskStatus\"v\n\x16UserTaskRunStatusRange\x12.\n\x06starts\x18\x01 \x01(\x0e\x32\x1e.littlehorse.UserTaskRunStatus\x12,\n\x04\x65nds\x18\x02 \x01(\x0e\x32\x1e.littlehorse.UserTaskRunStatus\"\x95\x02\n\x0fPartitionMetric\x12*\n\x02id\x18\x01 \x01(\x0b\x32\x1e.littlehorse.PartitionMetricId\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12<\n\x0e\x61\x63tive_windows\x18\x03 \x03(\x0b\x32$.littlehorse.PartitionWindowedMetric\x12\x30\n\rwindow_length\x18\x04 \x01(\x0b\x32\x19.google.protobuf.Duration\x12\x36\n\x10\x61ggregation_type\x18\x05 \x01(\x0e\x32\x1c.littlehorse.AggregationType\"u\n\x17PartitionWindowedMetric\x12\r\n\x05value\x18\x01 \x01(\x01\x12\x30\n\x0cwindow_start\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x19\n\x11number_of_samples\x18\x03 \x01(\x03\"\x9c\x01\n\x11PartitionMetricId\x12%\n\x02id\x18\x01 \x01(\x0b\x32\x19.littlehorse.MetricSpecId\x12(\n\ttenant_id\x18\x02 \x01(\x0b\x32\x15.littlehorse.TenantId\x12\x36\n\x10\x61ggregation_type\x18\x03 \x01(\x0e\x32\x1c.littlehorse.AggregationType\"\x8f\x02\n\x06Metric\x12!\n\x02id\x18\x01 \x01(\x0b\x32\x15.littlehorse.MetricId\x12\x0f\n\x05\x63ount\x18\x02 \x01(\x03H\x00\x12\x15\n\x0blatency_avg\x18\x03 \x01(\x03H\x00\x12.\n\ncreated_at\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12G\n\x13value_per_partition\x18\x05 \x03(\x0b\x32*.littlehorse.Metric.ValuePerPartitionEntry\x1a\x38\n\x16ValuePerPartitionEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\x42\x07\n\x05valueBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -27,16 +28,22 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._serialized_options = b'\n\037io.littlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Proto'
   _METRIC_VALUEPERPARTITIONENTRY._options = None
   _METRIC_VALUEPERPARTITIONENTRY._serialized_options = b'8\001'
-  _globals['_METRICSPEC']._serialized_start=113
-  _globals['_METRICSPEC']._serialized_end=263
-  _globals['_PARTITIONMETRIC']._serialized_start=266
-  _globals['_PARTITIONMETRIC']._serialized_end=487
-  _globals['_PARTITIONWINDOWEDMETRIC']._serialized_start=489
-  _globals['_PARTITIONWINDOWEDMETRIC']._serialized_end=606
-  _globals['_PARTITIONMETRICID']._serialized_start=608
-  _globals['_PARTITIONMETRICID']._serialized_end=708
-  _globals['_METRIC']._serialized_start=711
-  _globals['_METRIC']._serialized_end=982
-  _globals['_METRIC_VALUEPERPARTITIONENTRY']._serialized_start=917
-  _globals['_METRIC_VALUEPERPARTITIONENTRY']._serialized_end=973
+  _globals['_METRICSPEC']._serialized_start=133
+  _globals['_METRICSPEC']._serialized_end=515
+  _globals['_LHSTATUSRANGE']._serialized_start=517
+  _globals['_LHSTATUSRANGE']._serialized_end=608
+  _globals['_TASKRUNSTATUSRANGE']._serialized_start=610
+  _globals['_TASKRUNSTATUSRANGE']._serialized_end=710
+  _globals['_USERTASKRUNSTATUSRANGE']._serialized_start=712
+  _globals['_USERTASKRUNSTATUSRANGE']._serialized_end=830
+  _globals['_PARTITIONMETRIC']._serialized_start=833
+  _globals['_PARTITIONMETRIC']._serialized_end=1110
+  _globals['_PARTITIONWINDOWEDMETRIC']._serialized_start=1112
+  _globals['_PARTITIONWINDOWEDMETRIC']._serialized_end=1229
+  _globals['_PARTITIONMETRICID']._serialized_start=1232
+  _globals['_PARTITIONMETRICID']._serialized_end=1388
+  _globals['_METRIC']._serialized_start=1391
+  _globals['_METRIC']._serialized_end=1662
+  _globals['_METRIC_VALUEPERPARTITIONENTRY']._serialized_start=1597
+  _globals['_METRIC_VALUEPERPARTITIONENTRY']._serialized_end=1653
 # @@protoc_insertion_point(module_scope)

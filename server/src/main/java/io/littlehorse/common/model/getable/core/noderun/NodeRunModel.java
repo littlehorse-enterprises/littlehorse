@@ -34,10 +34,12 @@ import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
+import io.littlehorse.server.metrics.GetableStatusUpdate;
+import io.littlehorse.server.metrics.GetableUpdates;
+import io.littlehorse.server.metrics.NodeRunCompleteUpdate;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.GetableUpdates;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -437,7 +439,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             Duration latency = Duration.between(arrivalTime.toInstant(), new Date().toInstant());
             processorContext
                     .getableUpdates()
-                    .dispatch(new GetableUpdates.NodeRunCompleteUpdate(
+                    .append(id, new NodeRunCompleteUpdate(
                             processorContext.authorization().tenantId(), getNodeType(), latency));
             completed = getSubNodeRun().checkIfProcessingCompleted(processorContext);
         } catch (NodeFailureException exn) {
@@ -593,5 +595,13 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 LHErrorType.VAR_SUB_ERROR.toString());
         failures.add(invalidWfSpecFailure);
         throw new NodeFailureException(invalidWfSpecFailure);
+    }
+
+    public void recordMetrics(ProcessorExecutionContext processorContext) {
+        GetableStatusUpdate update;
+        while ((update = processorContext.getableUpdates().getUpdatesForNodeRun(id).poll()) != null) {
+            // sensor.record(update)
+            processorContext.getableUpdates().append(threadRunId);
+        }
     }
 }

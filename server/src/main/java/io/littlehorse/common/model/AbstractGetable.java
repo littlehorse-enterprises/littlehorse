@@ -25,6 +25,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.MetricIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PartitionMetricIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
@@ -107,11 +108,11 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
         } else if (cls.equals(ScheduledWfRunModel.class)) {
             return GetableClassEnum.SCHEDULED_WF_RUN;
         } else if (cls.equals(MetricSpecModel.class)) {
-            return GetableClassEnum.METRIC;
+            return GetableClassEnum.METRIC_SPEC;
         } else if (cls.equals(PartitionMetricModel.class)) {
             return GetableClassEnum.PARTITION_METRIC;
         } else if (cls.equals(MetricModel.class)) {
-            return GetableClassEnum.METRIC_RUN;
+            return GetableClassEnum.METRIC;
         } else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -155,11 +156,11 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return WorkflowEventModel.class;
             case SCHEDULED_WF_RUN:
                 return ScheduledWfRunModel.class;
-            case METRIC:
+            case METRIC_SPEC:
                 return MetricSpecModel.class;
             case PARTITION_METRIC:
                 return PartitionMetricModel.class;
-            case METRIC_RUN:
+            case METRIC:
                 return MetricModel.class;
             case UNRECOGNIZED:
                 // default:
@@ -205,11 +206,11 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return WorkflowEventIdModel.class;
             case SCHEDULED_WF_RUN:
                 return ScheduledWfRunIdModel.class;
-            case METRIC:
-                return MetricIdModel.class;
+            case METRIC_SPEC:
+                return MetricSpecIdModel.class;
             case PARTITION_METRIC:
                 return PartitionMetricIdModel.class;
-            case METRIC_RUN:
+            case METRIC:
                 return MetricIdModel.class;
             case UNRECOGNIZED:
         }

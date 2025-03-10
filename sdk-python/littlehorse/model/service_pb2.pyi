@@ -63,20 +63,20 @@ class PutWfSpecRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., thread_specs: _Optional[_Mapping[str, _wf_spec_pb2.ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[_wf_spec_pb2.WorkflowRetentionPolicy, _Mapping]] = ..., parent_wf_spec: _Optional[_Union[_wf_spec_pb2.WfSpec.ParentWfSpecReference, _Mapping]] = ..., allowed_updates: _Optional[_Union[AllowedUpdateType, str]] = ...) -> None: ...
 
 class PutMetricSpecRequest(_message.Message):
-    __slots__ = ["type", "object", "node", "wf_spec_id", "thread_spec", "window_length"]
-    TYPE_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["aggregation_type", "object", "node", "wf_spec_id", "thread_spec", "window_length"]
+    AGGREGATION_TYPE_FIELD_NUMBER: _ClassVar[int]
     OBJECT_FIELD_NUMBER: _ClassVar[int]
     NODE_FIELD_NUMBER: _ClassVar[int]
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     THREAD_SPEC_FIELD_NUMBER: _ClassVar[int]
     WINDOW_LENGTH_FIELD_NUMBER: _ClassVar[int]
-    type: _common_enums_pb2.MetricType
+    aggregation_type: _common_enums_pb2.AggregationType
     object: _common_enums_pb2.MeasurableObject
     node: _object_id_pb2.NodeReference
     wf_spec_id: _object_id_pb2.WfSpecId
     thread_spec: _object_id_pb2.ThreadSpecReference
     window_length: _duration_pb2.Duration
-    def __init__(self, type: _Optional[_Union[_common_enums_pb2.MetricType, str]] = ..., object: _Optional[_Union[_common_enums_pb2.MeasurableObject, str]] = ..., node: _Optional[_Union[_object_id_pb2.NodeReference, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., thread_spec: _Optional[_Union[_object_id_pb2.ThreadSpecReference, _Mapping]] = ..., window_length: _Optional[_Union[_duration_pb2.Duration, _Mapping]] = ...) -> None: ...
+    def __init__(self, aggregation_type: _Optional[_Union[_common_enums_pb2.AggregationType, str]] = ..., object: _Optional[_Union[_common_enums_pb2.MeasurableObject, str]] = ..., node: _Optional[_Union[_object_id_pb2.NodeReference, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., thread_spec: _Optional[_Union[_object_id_pb2.ThreadSpecReference, _Mapping]] = ..., window_length: _Optional[_Union[_duration_pb2.Duration, _Mapping]] = ...) -> None: ...
 
 class PutTaskDefRequest(_message.Message):
     __slots__ = ["name", "input_vars", "output_schema"]
@@ -354,13 +354,13 @@ class SearchUserTaskRunRequest(_message.Message):
     LATEST_START_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
-    status: _user_tasks_pb2.UserTaskRunStatus
+    status: _common_enums_pb2.UserTaskRunStatus
     user_task_def_name: str
     user_id: str
     user_group: str
     earliest_start: _timestamp_pb2.Timestamp
     latest_start: _timestamp_pb2.Timestamp
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., status: _Optional[_Union[_user_tasks_pb2.UserTaskRunStatus, str]] = ..., user_task_def_name: _Optional[str] = ..., user_id: _Optional[str] = ..., user_group: _Optional[str] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., status: _Optional[_Union[_common_enums_pb2.UserTaskRunStatus, str]] = ..., user_task_def_name: _Optional[str] = ..., user_id: _Optional[str] = ..., user_group: _Optional[str] = ..., earliest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., latest_start: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
 class UserTaskRunIdList(_message.Message):
     __slots__ = ["results", "bookmark"]

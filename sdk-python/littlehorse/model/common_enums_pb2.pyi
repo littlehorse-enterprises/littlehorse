@@ -65,12 +65,19 @@ class MeasurableObject(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     WORKFLOW: _ClassVar[MeasurableObject]
     TASK: _ClassVar[MeasurableObject]
 
-class MetricType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+class AggregationType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
-    COUNT: _ClassVar[MetricType]
-    AVG: _ClassVar[MetricType]
-    RATIO: _ClassVar[MetricType]
-    LATENCY: _ClassVar[MetricType]
+    COUNT: _ClassVar[AggregationType]
+    AVG: _ClassVar[AggregationType]
+    RATIO: _ClassVar[AggregationType]
+    LATENCY: _ClassVar[AggregationType]
+
+class UserTaskRunStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    UNASSIGNED: _ClassVar[UserTaskRunStatus]
+    ASSIGNED: _ClassVar[UserTaskRunStatus]
+    DONE: _ClassVar[UserTaskRunStatus]
+    CANCELLED: _ClassVar[UserTaskRunStatus]
 STARTING: LHStatus
 RUNNING: LHStatus
 COMPLETED: LHStatus
@@ -111,7 +118,11 @@ TASK_ERROR: LHErrorType
 INTERNAL_ERROR: LHErrorType
 WORKFLOW: MeasurableObject
 TASK: MeasurableObject
-COUNT: MetricType
-AVG: MetricType
-RATIO: MetricType
-LATENCY: MetricType
+COUNT: AggregationType
+AVG: AggregationType
+RATIO: AggregationType
+LATENCY: AggregationType
+UNASSIGNED: UserTaskRunStatus
+ASSIGNED: UserTaskRunStatus
+DONE: UserTaskRunStatus
+CANCELLED: UserTaskRunStatus

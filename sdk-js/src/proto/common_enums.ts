@@ -479,7 +479,7 @@ export function measurableObjectToNumber(object: MeasurableObject): number {
   }
 }
 
-export enum MetricType {
+export enum AggregationType {
   COUNT = "COUNT",
   AVG = "AVG",
   RATIO = "RATIO",
@@ -487,38 +487,88 @@ export enum MetricType {
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
-export function metricTypeFromJSON(object: any): MetricType {
+export function aggregationTypeFromJSON(object: any): AggregationType {
   switch (object) {
     case 0:
     case "COUNT":
-      return MetricType.COUNT;
+      return AggregationType.COUNT;
     case 1:
     case "AVG":
-      return MetricType.AVG;
+      return AggregationType.AVG;
     case 2:
     case "RATIO":
-      return MetricType.RATIO;
+      return AggregationType.RATIO;
     case 3:
     case "LATENCY":
-      return MetricType.LATENCY;
+      return AggregationType.LATENCY;
     case -1:
     case "UNRECOGNIZED":
     default:
-      return MetricType.UNRECOGNIZED;
+      return AggregationType.UNRECOGNIZED;
   }
 }
 
-export function metricTypeToNumber(object: MetricType): number {
+export function aggregationTypeToNumber(object: AggregationType): number {
   switch (object) {
-    case MetricType.COUNT:
+    case AggregationType.COUNT:
       return 0;
-    case MetricType.AVG:
+    case AggregationType.AVG:
       return 1;
-    case MetricType.RATIO:
+    case AggregationType.RATIO:
       return 2;
-    case MetricType.LATENCY:
+    case AggregationType.LATENCY:
       return 3;
-    case MetricType.UNRECOGNIZED:
+    case AggregationType.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
+/** The status that a UserTaskRun can be in. */
+export enum UserTaskRunStatus {
+  /** UNASSIGNED - Not assigned to a specific user yet. */
+  UNASSIGNED = "UNASSIGNED",
+  /** ASSIGNED - Assigned to a specific user, but not completed or cancelled yet. */
+  ASSIGNED = "ASSIGNED",
+  /** DONE - Done. */
+  DONE = "DONE",
+  /** CANCELLED - Cancelled. */
+  CANCELLED = "CANCELLED",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function userTaskRunStatusFromJSON(object: any): UserTaskRunStatus {
+  switch (object) {
+    case 0:
+    case "UNASSIGNED":
+      return UserTaskRunStatus.UNASSIGNED;
+    case 1:
+    case "ASSIGNED":
+      return UserTaskRunStatus.ASSIGNED;
+    case 3:
+    case "DONE":
+      return UserTaskRunStatus.DONE;
+    case 4:
+    case "CANCELLED":
+      return UserTaskRunStatus.CANCELLED;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return UserTaskRunStatus.UNRECOGNIZED;
+  }
+}
+
+export function userTaskRunStatusToNumber(object: UserTaskRunStatus): number {
+  switch (object) {
+    case UserTaskRunStatus.UNASSIGNED:
+      return 0;
+    case UserTaskRunStatus.ASSIGNED:
+      return 1;
+    case UserTaskRunStatus.DONE:
+      return 3;
+    case UserTaskRunStatus.CANCELLED:
+      return 4;
+    case UserTaskRunStatus.UNRECOGNIZED:
     default:
       return -1;
   }

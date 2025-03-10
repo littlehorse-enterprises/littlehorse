@@ -120,6 +120,11 @@ public final class ObjectId {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_littlehorse_MetricSpecId_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_MetricSpecId_StatusRange_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_littlehorse_MetricSpecId_StatusRange_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_MetricId_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -178,20 +183,20 @@ public final class ObjectId {
       "ypeB\020\n\016_node_position\"n\n\023ThreadSpecRefer" +
       "ence\022)\n\nwf_spec_id\030\001 \001(\0132\025.littlehorse.W" +
       "fSpecId\022\032\n\rthread_number\030\002 \001(\005H\000\210\001\001B\020\n\016_" +
-      "thread_number\"\205\002\n\014MetricSpecId\022/\n\006object" +
+      "thread_number\"\355\001\n\014MetricSpecId\022/\n\006object" +
       "\030\001 \001(\0162\035.littlehorse.MeasurableObjectH\000\022" +
       "*\n\004node\030\002 \001(\0132\032.littlehorse.NodeReferenc" +
       "eH\000\022+\n\nwf_spec_id\030\003 \001(\0132\025.littlehorse.Wf" +
       "SpecIdH\000\0227\n\013thread_spec\030\004 \001(\0132 .littleho" +
-      "rse.ThreadSpecReferenceH\000\022%\n\004type\030\005 \001(\0162" +
-      "\027.littlehorse.MetricTypeB\013\n\treference\"\241\001" +
-      "\n\010MetricId\0221\n\016metric_spec_id\030\001 \001(\0132\031.lit" +
-      "tlehorse.MetricSpecId\0220\n\rwindow_length\030\002" +
-      " \001(\0132\031.google.protobuf.Duration\0220\n\014windo" +
-      "w_start\030\003 \001(\0132\032.google.protobuf.Timestam" +
-      "pBM\n\037io.littlehorse.sdk.common.protoP\001Z\t" +
-      ".;lhproto\252\002\034LittleHorse.Sdk.Common.Proto" +
-      "b\006proto3"
+      "rse.ThreadSpecReferenceH\000\032\r\n\013StatusRange" +
+      "B\013\n\treference\"\331\001\n\010MetricId\0221\n\016metric_spe" +
+      "c_id\030\001 \001(\0132\031.littlehorse.MetricSpecId\0220\n" +
+      "\rwindow_length\030\002 \001(\0132\031.google.protobuf.D" +
+      "uration\0220\n\014window_start\030\003 \001(\0132\032.google.p" +
+      "rotobuf.Timestamp\0226\n\020aggregation_type\030\004 " +
+      "\001(\0162\034.littlehorse.AggregationTypeBM\n\037io." +
+      "littlehorse.sdk.common.protoP\001Z\t.;lhprot" +
+      "o\252\002\034LittleHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -325,13 +330,19 @@ public final class ObjectId {
     internal_static_littlehorse_MetricSpecId_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_MetricSpecId_descriptor,
-        new java.lang.String[] { "Object", "Node", "WfSpecId", "ThreadSpec", "Type", "Reference", });
+        new java.lang.String[] { "Object", "Node", "WfSpecId", "ThreadSpec", "Reference", });
+    internal_static_littlehorse_MetricSpecId_StatusRange_descriptor =
+      internal_static_littlehorse_MetricSpecId_descriptor.getNestedTypes().get(0);
+    internal_static_littlehorse_MetricSpecId_StatusRange_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_littlehorse_MetricSpecId_StatusRange_descriptor,
+        new java.lang.String[] { });
     internal_static_littlehorse_MetricId_descriptor =
       getDescriptor().getMessageTypes().get(21);
     internal_static_littlehorse_MetricId_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_MetricId_descriptor,
-        new java.lang.String[] { "MetricSpecId", "WindowLength", "WindowStart", });
+        new java.lang.String[] { "MetricSpecId", "WindowLength", "WindowStart", "AggregationType", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
     com.google.protobuf.DurationProto.getDescriptor();

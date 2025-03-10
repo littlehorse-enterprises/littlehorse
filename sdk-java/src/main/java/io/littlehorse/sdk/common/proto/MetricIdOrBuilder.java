@@ -51,4 +51,15 @@ public interface MetricIdOrBuilder extends
    * <code>.google.protobuf.Timestamp window_start = 3;</code>
    */
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
+
+  /**
+   * <code>.littlehorse.AggregationType aggregation_type = 4;</code>
+   * @return The enum numeric value on the wire for aggregationType.
+   */
+  int getAggregationTypeValue();
+  /**
+   * <code>.littlehorse.AggregationType aggregation_type = 4;</code>
+   * @return The aggregationType.
+   */
+  io.littlehorse.sdk.common.proto.AggregationType getAggregationType();
 }

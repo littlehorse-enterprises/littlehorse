@@ -179,10 +179,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             for (PartitionMetricIdModel partitionMetricId : metricInventory.getMetrics()) {
                 TenantScopedStore tenantStore = TenantScopedStore.newInstance(
                         nativeStore, partitionMetricId.getTenantId(), new BackgroundContext());
-                StoredGetable<PartitionMetric, PartitionMetricModel> storeable = tenantStore.get(
-                        new PartitionMetricIdModel(partitionMetricId.getMetricId(), partitionMetricId.getTenantId())
-                                .getStoreableKey(),
-                        StoredGetable.class);
+                StoredGetable<PartitionMetric, PartitionMetricModel> storeable =
+                        tenantStore.get(partitionMetricId.getStoreableKey(), StoredGetable.class);
                 PartitionMetricModel partitionMetric = storeable.getStoredObject();
                 List<RepartitionWindowedMetricModel> windowedMetrics =
                         partitionMetric.buildRepartitionCommand(LocalDateTime.now());
@@ -193,7 +191,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                         partitionMetricId.getTenantId(),
                         partitionMetricId.getMetricId(),
                         new ArrayList<>(),
-                        ctx.taskId().partition());
+                        ctx.taskId().partition(),
+                        partitionMetric.getAggregationType());
                 current.addWindowedMetric(windowedMetrics);
                 metricsPerTenant.add(current);
                 commandsPerTenant.putIfAbsent(partitionMetricId.getTenantId(), metricsPerTenant);

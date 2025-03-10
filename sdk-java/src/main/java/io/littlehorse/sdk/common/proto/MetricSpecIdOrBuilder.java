@@ -68,16 +68,5 @@ public interface MetricSpecIdOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.ThreadSpecReferenceOrBuilder getThreadSpecOrBuilder();
 
-  /**
-   * <code>.littlehorse.MetricType type = 5;</code>
-   * @return The enum numeric value on the wire for type.
-   */
-  int getTypeValue();
-  /**
-   * <code>.littlehorse.MetricType type = 5;</code>
-   * @return The type.
-   */
-  io.littlehorse.sdk.common.proto.MetricType getType();
-
   io.littlehorse.sdk.common.proto.MetricSpecId.ReferenceCase getReferenceCase();
 }

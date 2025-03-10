@@ -11,7 +11,6 @@ import io.littlehorse.sdk.common.proto.MeasurableObject;
 import io.littlehorse.sdk.common.proto.MetricId;
 import io.littlehorse.sdk.common.proto.MetricSpec;
 import io.littlehorse.sdk.common.proto.MetricSpecId;
-import io.littlehorse.sdk.common.proto.MetricType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 import lombok.Getter;
@@ -23,32 +22,27 @@ public class MetricSpecIdModel extends MetadataId<MetricSpecId, MetricSpec, Metr
     private NodeReferenceModel nodeReference;
     private WfSpecIdModel wfSpecId;
     private ThreadSpecReferenceModel threadSpecReference;
-    private MetricType metricType;
     private MetricSpecId.ReferenceCase referenceCase;
 
     public MetricSpecIdModel() {}
 
-    public MetricSpecIdModel(MeasurableObject object, MetricType type) {
+    public MetricSpecIdModel(MeasurableObject object) {
         this.object = object;
-        this.metricType = type;
         this.referenceCase = MetricSpecId.ReferenceCase.OBJECT;
     }
 
-    public MetricSpecIdModel(NodeReferenceModel nodeReference, MetricType type) {
+    public MetricSpecIdModel(NodeReferenceModel nodeReference) {
         this.nodeReference = nodeReference;
-        this.metricType = type;
         this.referenceCase = MetricSpecId.ReferenceCase.NODE;
     }
 
-    public MetricSpecIdModel(WfSpecIdModel wfSpecId, MetricType type) {
+    public MetricSpecIdModel(WfSpecIdModel wfSpecId) {
         this.wfSpecId = wfSpecId;
-        this.metricType = type;
         this.referenceCase = MetricSpecId.ReferenceCase.WF_SPEC_ID;
     }
 
-    public MetricSpecIdModel(ThreadSpecReferenceModel threadSpecReference, MetricType type) {
+    public MetricSpecIdModel(ThreadSpecReferenceModel threadSpecReference) {
         this.threadSpecReference = threadSpecReference;
-        this.metricType = type;
         this.referenceCase = MetricSpecId.ReferenceCase.REFERENCE_NOT_SET;
     }
 
@@ -64,7 +58,6 @@ public class MetricSpecIdModel extends MetadataId<MetricSpecId, MetricSpec, Metr
                 : null;
         this.wfSpecId =
                 p.hasWfSpecId() ? LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context) : null;
-        this.metricType = p.getType();
     }
 
     @Override
@@ -82,7 +75,6 @@ public class MetricSpecIdModel extends MetadataId<MetricSpecId, MetricSpec, Metr
         if (wfSpecId != null) {
             out.setWfSpecId(wfSpecId.toProto());
         }
-        out.setType(metricType);
         return out;
     }
 
@@ -95,15 +87,11 @@ public class MetricSpecIdModel extends MetadataId<MetricSpecId, MetricSpec, Metr
     public String toString() {
         return switch (referenceCase) {
             case OBJECT -> LHUtil.getCompositeId(
-                    String.valueOf(referenceCase.getNumber()),
-                    String.valueOf(object.getNumber()),
-                    metricType.toString());
-            case WF_SPEC_ID -> LHUtil.getCompositeId(
-                    String.valueOf(referenceCase.getNumber()), wfSpecId.toString(), metricType.toString());
+                    String.valueOf(referenceCase.getNumber()), String.valueOf(object.getNumber()));
+            case WF_SPEC_ID -> LHUtil.getCompositeId(String.valueOf(referenceCase.getNumber()), wfSpecId.toString());
             case THREAD_SPEC -> LHUtil.getCompositeId(
-                    String.valueOf(referenceCase.getNumber()), threadSpecReference.toString(), metricType.toString());
-            case NODE -> LHUtil.getCompositeId(
-                    String.valueOf(referenceCase.getNumber()), nodeReference.toString(), metricType.toString());
+                    String.valueOf(referenceCase.getNumber()), threadSpecReference.toString());
+            case NODE -> LHUtil.getCompositeId(String.valueOf(referenceCase.getNumber()), nodeReference.toString());
             default -> throw new IllegalStateException("Unexpected value: " + referenceCase);
         };
     }
@@ -115,13 +103,11 @@ public class MetricSpecIdModel extends MetadataId<MetricSpecId, MetricSpec, Metr
         switch (referenceCase) {
             case OBJECT -> {
                 this.object = MeasurableObject.forNumber(Integer.parseInt(parts[1]));
-                this.metricType = MetricType.valueOf(parts[2]);
             }
             case WF_SPEC_ID -> {
                 this.wfSpecId = new WfSpecIdModel();
                 this.wfSpecId.initFromString(
                         storeKey.substring(parts[0].length() + 1, storeKey.indexOf(parts[parts.length - 1]) - 1));
-                this.metricType = MetricType.valueOf(parts[parts.length - 1]);
             }
             default -> throw new IllegalStateException("Unexpected value: " + referenceCase);
         }

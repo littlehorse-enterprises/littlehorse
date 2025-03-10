@@ -4,9 +4,9 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf enum {@code littlehorse.MetricType}
+ * Protobuf enum {@code littlehorse.AggregationType}
  */
-public enum MetricType
+public enum AggregationType
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
    * <code>COUNT = 0;</code>
@@ -59,7 +59,7 @@ public enum MetricType
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static MetricType valueOf(int value) {
+  public static AggregationType valueOf(int value) {
     return forNumber(value);
   }
 
@@ -67,7 +67,7 @@ public enum MetricType
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static MetricType forNumber(int value) {
+  public static AggregationType forNumber(int value) {
     switch (value) {
       case 0: return COUNT;
       case 1: return AVG;
@@ -77,15 +77,15 @@ public enum MetricType
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<MetricType>
+  public static com.google.protobuf.Internal.EnumLiteMap<AggregationType>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      MetricType> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<MetricType>() {
-          public MetricType findValueByNumber(int number) {
-            return MetricType.forNumber(number);
+      AggregationType> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<AggregationType>() {
+          public AggregationType findValueByNumber(int number) {
+            return AggregationType.forNumber(number);
           }
         };
 
@@ -106,9 +106,9 @@ public enum MetricType
     return io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor().getEnumTypes().get(7);
   }
 
-  private static final MetricType[] VALUES = values();
+  private static final AggregationType[] VALUES = values();
 
-  public static MetricType valueOf(
+  public static AggregationType valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -122,10 +122,10 @@ public enum MetricType
 
   private final int value;
 
-  private MetricType(int value) {
+  private AggregationType(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:littlehorse.MetricType)
+  // @@protoc_insertion_point(enum_scope:littlehorse.AggregationType)
 }
 

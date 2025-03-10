@@ -7,15 +7,15 @@
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
 import {
+  AggregationType,
+  aggregationTypeFromJSON,
+  aggregationTypeToNumber,
   MeasurableObject,
   measurableObjectFromJSON,
   measurableObjectToNumber,
   MetricsWindowLength,
   metricsWindowLengthFromJSON,
   metricsWindowLengthToNumber,
-  MetricType,
-  metricTypeFromJSON,
-  metricTypeToNumber,
 } from "./common_enums";
 import { Duration } from "./google/protobuf/duration";
 import { Timestamp } from "./google/protobuf/timestamp";
@@ -271,13 +271,16 @@ export interface MetricSpecId {
   node?: NodeReference | undefined;
   wfSpecId?: WfSpecId | undefined;
   threadSpec?: ThreadSpecReference | undefined;
-  type: MetricType;
+}
+
+export interface MetricSpecId_StatusRange {
 }
 
 export interface MetricId {
   metricSpecId: MetricSpecId | undefined;
   windowLength: Duration | undefined;
   windowStart: string | undefined;
+  aggregationType: AggregationType;
 }
 
 function createBaseWfSpecId(): WfSpecId {
@@ -1440,7 +1443,7 @@ export const ThreadSpecReference = {
 };
 
 function createBaseMetricSpecId(): MetricSpecId {
-  return { object: undefined, node: undefined, wfSpecId: undefined, threadSpec: undefined, type: MetricType.COUNT };
+  return { object: undefined, node: undefined, wfSpecId: undefined, threadSpec: undefined };
 }
 
 export const MetricSpecId = {
@@ -1456,9 +1459,6 @@ export const MetricSpecId = {
     }
     if (message.threadSpec !== undefined) {
       ThreadSpecReference.encode(message.threadSpec, writer.uint32(34).fork()).ldelim();
-    }
-    if (message.type !== MetricType.COUNT) {
-      writer.uint32(40).int32(metricTypeToNumber(message.type));
     }
     return writer;
   },
@@ -1498,13 +1498,6 @@ export const MetricSpecId = {
 
           message.threadSpec = ThreadSpecReference.decode(reader, reader.uint32());
           continue;
-        case 5:
-          if (tag !== 40) {
-            break;
-          }
-
-          message.type = metricTypeFromJSON(reader.int32());
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1529,13 +1522,51 @@ export const MetricSpecId = {
     message.threadSpec = (object.threadSpec !== undefined && object.threadSpec !== null)
       ? ThreadSpecReference.fromPartial(object.threadSpec)
       : undefined;
-    message.type = object.type ?? MetricType.COUNT;
+    return message;
+  },
+};
+
+function createBaseMetricSpecId_StatusRange(): MetricSpecId_StatusRange {
+  return {};
+}
+
+export const MetricSpecId_StatusRange = {
+  encode(_: MetricSpecId_StatusRange, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricSpecId_StatusRange {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMetricSpecId_StatusRange();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<MetricSpecId_StatusRange>): MetricSpecId_StatusRange {
+    return MetricSpecId_StatusRange.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MetricSpecId_StatusRange>): MetricSpecId_StatusRange {
+    const message = createBaseMetricSpecId_StatusRange();
     return message;
   },
 };
 
 function createBaseMetricId(): MetricId {
-  return { metricSpecId: undefined, windowLength: undefined, windowStart: undefined };
+  return {
+    metricSpecId: undefined,
+    windowLength: undefined,
+    windowStart: undefined,
+    aggregationType: AggregationType.COUNT,
+  };
 }
 
 export const MetricId = {
@@ -1548,6 +1579,9 @@ export const MetricId = {
     }
     if (message.windowStart !== undefined) {
       Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(26).fork()).ldelim();
+    }
+    if (message.aggregationType !== AggregationType.COUNT) {
+      writer.uint32(32).int32(aggregationTypeToNumber(message.aggregationType));
     }
     return writer;
   },
@@ -1580,6 +1614,13 @@ export const MetricId = {
 
           message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.aggregationType = aggregationTypeFromJSON(reader.int32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1601,6 +1642,7 @@ export const MetricId = {
       ? Duration.fromPartial(object.windowLength)
       : undefined;
     message.windowStart = object.windowStart ?? undefined;
+    message.aggregationType = object.aggregationType ?? AggregationType.COUNT;
     return message;
   },
 };

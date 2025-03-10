@@ -16,7 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private MetricSpecId() {
-    type_ = 0;
   }
 
   @java.lang.Override
@@ -37,6 +36,403 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.ObjectId.internal_static_littlehorse_MetricSpecId_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.sdk.common.proto.MetricSpecId.class, io.littlehorse.sdk.common.proto.MetricSpecId.Builder.class);
+  }
+
+  public interface StatusRangeOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.MetricSpecId.StatusRange)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code littlehorse.MetricSpecId.StatusRange}
+   */
+  public static final class StatusRange extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:littlehorse.MetricSpecId.StatusRange)
+      StatusRangeOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use StatusRange.newBuilder() to construct.
+    private StatusRange(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private StatusRange() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new StatusRange();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.ObjectId.internal_static_littlehorse_MetricSpecId_StatusRange_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.sdk.common.proto.ObjectId.internal_static_littlehorse_MetricSpecId_StatusRange_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange.class, io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange other = (io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code littlehorse.MetricSpecId.StatusRange}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.MetricSpecId.StatusRange)
+        io.littlehorse.sdk.common.proto.MetricSpecId.StatusRangeOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.sdk.common.proto.ObjectId.internal_static_littlehorse_MetricSpecId_StatusRange_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.sdk.common.proto.ObjectId.internal_static_littlehorse_MetricSpecId_StatusRange_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange.class, io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange.Builder.class);
+      }
+
+      // Construct using io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.sdk.common.proto.ObjectId.internal_static_littlehorse_MetricSpecId_StatusRange_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange build() {
+        io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange buildPartial() {
+        io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange result = new io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange other) {
+        if (other == io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.MetricSpecId.StatusRange)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.MetricSpecId.StatusRange)
+    private static final io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange();
+    }
+
+    public static io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<StatusRange>
+        PARSER = new com.google.protobuf.AbstractParser<StatusRange>() {
+      @java.lang.Override
+      public StatusRange parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<StatusRange> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<StatusRange> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.MetricSpecId.StatusRange getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
   private int referenceCase_ = 0;
@@ -209,24 +605,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.ThreadSpecReference.getDefaultInstance();
   }
 
-  public static final int TYPE_FIELD_NUMBER = 5;
-  private int type_ = 0;
-  /**
-   * <code>.littlehorse.MetricType type = 5;</code>
-   * @return The enum numeric value on the wire for type.
-   */
-  @java.lang.Override public int getTypeValue() {
-    return type_;
-  }
-  /**
-   * <code>.littlehorse.MetricType type = 5;</code>
-   * @return The type.
-   */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.MetricType getType() {
-    io.littlehorse.sdk.common.proto.MetricType result = io.littlehorse.sdk.common.proto.MetricType.forNumber(type_);
-    return result == null ? io.littlehorse.sdk.common.proto.MetricType.UNRECOGNIZED : result;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -253,9 +631,6 @@ private static final long serialVersionUID = 0L;
     if (referenceCase_ == 4) {
       output.writeMessage(4, (io.littlehorse.sdk.common.proto.ThreadSpecReference) reference_);
     }
-    if (type_ != io.littlehorse.sdk.common.proto.MetricType.COUNT.getNumber()) {
-      output.writeEnum(5, type_);
-    }
     getUnknownFields().writeTo(output);
   }
 
@@ -281,10 +656,6 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, (io.littlehorse.sdk.common.proto.ThreadSpecReference) reference_);
     }
-    if (type_ != io.littlehorse.sdk.common.proto.MetricType.COUNT.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(5, type_);
-    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -300,7 +671,6 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.MetricSpecId other = (io.littlehorse.sdk.common.proto.MetricSpecId) obj;
 
-    if (type_ != other.type_) return false;
     if (!getReferenceCase().equals(other.getReferenceCase())) return false;
     switch (referenceCase_) {
       case 1:
@@ -333,8 +703,6 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + type_;
     switch (referenceCase_) {
       case 1:
         hash = (37 * hash) + OBJECT_FIELD_NUMBER;
@@ -495,7 +863,6 @@ private static final long serialVersionUID = 0L;
       if (threadSpecBuilder_ != null) {
         threadSpecBuilder_.clear();
       }
-      type_ = 0;
       referenceCase_ = 0;
       reference_ = null;
       return this;
@@ -532,9 +899,6 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.MetricSpecId result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.type_ = type_;
-      }
     }
 
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.MetricSpecId result) {
@@ -598,9 +962,6 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.MetricSpecId other) {
       if (other == io.littlehorse.sdk.common.proto.MetricSpecId.getDefaultInstance()) return this;
-      if (other.type_ != 0) {
-        setTypeValue(other.getTypeValue());
-      }
       switch (other.getReferenceCase()) {
         case OBJECT: {
           setObjectValue(other.getObjectValue());
@@ -675,11 +1036,6 @@ private static final long serialVersionUID = 0L;
               referenceCase_ = 4;
               break;
             } // case 34
-            case 40: {
-              type_ = input.readEnum();
-              bitField0_ |= 0x00000010;
-              break;
-            } // case 40
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1206,59 +1562,6 @@ private static final long serialVersionUID = 0L;
       referenceCase_ = 4;
       onChanged();
       return threadSpecBuilder_;
-    }
-
-    private int type_ = 0;
-    /**
-     * <code>.littlehorse.MetricType type = 5;</code>
-     * @return The enum numeric value on the wire for type.
-     */
-    @java.lang.Override public int getTypeValue() {
-      return type_;
-    }
-    /**
-     * <code>.littlehorse.MetricType type = 5;</code>
-     * @param value The enum numeric value on the wire for type to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTypeValue(int value) {
-      type_ = value;
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.MetricType type = 5;</code>
-     * @return The type.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.MetricType getType() {
-      io.littlehorse.sdk.common.proto.MetricType result = io.littlehorse.sdk.common.proto.MetricType.forNumber(type_);
-      return result == null ? io.littlehorse.sdk.common.proto.MetricType.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.littlehorse.MetricType type = 5;</code>
-     * @param value The type to set.
-     * @return This builder for chaining.
-     */
-    public Builder setType(io.littlehorse.sdk.common.proto.MetricType value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      bitField0_ |= 0x00000010;
-      type_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.MetricType type = 5;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearType() {
-      bitField0_ = (bitField0_ & ~0x00000010);
-      type_ = 0;
-      onChanged();
-      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

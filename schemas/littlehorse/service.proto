@@ -338,7 +338,7 @@ message PutWfSpecRequest {
 // Creates a MetricSpec. This configuration specifies how the server will collect and measure metrics.
 message PutMetricSpecRequest {
   // Defines how the metric will be computed and collected
-  MetricType type = 1;
+  AggregationType aggregation_type = 1;
   // Determines the entity or object for which the metric is being collected.
   oneof reference {
     // Refers to a specific LittleHorse object

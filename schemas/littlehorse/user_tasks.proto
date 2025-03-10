@@ -219,21 +219,6 @@ message UserTaskTriggerReference {
   optional string user_group = 4;
 }
 
-// The status that a UserTaskRun can be in.
-enum UserTaskRunStatus {
-  // Not assigned to a specific user yet.
-  UNASSIGNED = 0;
-
-  // Assigned to a specific user, but not completed or cancelled yet.
-  ASSIGNED = 1;
-
-  // Done.
-  DONE = 3;
-
-  // Cancelled.
-  CANCELLED = 4;
-}
-
 // This is an event stored in the audit log of a `UserTaskRun` purely for observability
 // purposes.
 message UserTaskEvent {
