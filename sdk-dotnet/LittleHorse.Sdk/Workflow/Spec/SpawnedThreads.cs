@@ -6,7 +6,8 @@ public interface SpawnedThreads
 {
     WaitForThreadsNode BuildNode();
 
-    static SpawnedThreads Of(params SpawnedThread[] threads) {
+    static SpawnedThreads Of(params SpawnedThread[] threads) 
+    {
         return new FixedSpawnedThreads(threads);
     }
 

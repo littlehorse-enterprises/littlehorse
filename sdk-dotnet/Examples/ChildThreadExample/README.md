@@ -17,6 +17,7 @@ public SpawnedThread SpawnThread(
 Let's run the example in `ChildThreadExample`
 
 ```
+dotnet build
 dotnet run
 ```
 

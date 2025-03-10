@@ -20,7 +20,7 @@ public class MyWorker
     }
     
     [LHTaskMethod("parent-task-2")]
-    public String ParentTask2() 
+    public string ParentTask2() 
     {
         Console.WriteLine("Executing parent-task-2");
         

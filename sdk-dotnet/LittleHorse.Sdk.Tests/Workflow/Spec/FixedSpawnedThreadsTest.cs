@@ -79,8 +79,8 @@ public class FixedSpawnedThreadsTest
         {
         }
         var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
-        Random random = new Random();
-        var wfRunVariable1 = new WfRunVariable("ID", "1111111111", workflowThread);
+        string nonNumberDefaultValue = "1111111111";
+        var wfRunVariable1 = new WfRunVariable("ID", nonNumberDefaultValue, workflowThread);
         var spawnedThread1 = new SpawnedThread(workflowThread, 
             "onboarding-new-app-old-clients", 
             wfRunVariable1);
