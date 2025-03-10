@@ -14,6 +14,11 @@ public class LHTaskErrorModel extends LHSerializable<LHTaskError> {
     private String message;
     private LHErrorType type;
 
+    public LHTaskErrorModel(String message, LHErrorType type) {
+        this.message = message;
+        this.type = type;
+    }
+
     @Override
     public LHTaskError.Builder toProto() {
         return LHTaskError.newBuilder().setMessage(message).setType(type);

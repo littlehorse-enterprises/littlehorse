@@ -9,6 +9,7 @@ import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
+import io.littlehorse.common.model.corecommand.failure.LHTaskErrorModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
@@ -21,6 +22,7 @@ import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
@@ -226,7 +228,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             case TASK_EXCEPTION:
             case TASK_FAILED:
             case TASK_INPUT_VAR_SUB_ERROR:
-            case TASK_OUTPUT_SERIALIZING_ERROR:
+            case TASK_OUTPUT_SERDE_ERROR:
             case TASK_SUCCESS:
             case TASK_TIMEOUT:
                 return false;
@@ -300,23 +302,31 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             attempt.setMaskedValue(true);
         }
 
-        attempt.setOutput(ce.getStdout());
-        attempt.setLogOutput(ce.getStderr());
-        attempt.setStatus(ce.getStatus());
         attempt.setEndTime(ce.getTime());
-        attempt.setError(ce.getError());
-        attempt.setException(ce.getException());
-        if (ce.getException() != null) {
-            attempt.setOutput(ce.getException().getContent());
-        }
+        attempt.setLogOutput(ce.getLogOutput());
 
-        if (ce.getStatus() == TaskStatus.TASK_SUCCESS) {
-            // Tell the WfRun that the TaskRun is done.
-            transitionTo(TaskStatus.TASK_SUCCESS);
-        } else if (shouldRetry()) {
-            scheduleRetryAtAppropriateTime();
+        if (ce.getOutput().isDeserializationErrorPresent()) {
+            attempt.setError(
+                    new LHTaskErrorModel(ce.getOutput().getDeserializationErrorMessage(), LHErrorType.VAR_SUB_ERROR));
+            attempt.setStatus(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
+            transitionTo(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
         } else {
-            transitionTo(ce.getStatus());
+            attempt.setOutput(ce.getOutput());
+            attempt.setStatus(ce.getStatus());
+            attempt.setError(ce.getError());
+            attempt.setException(ce.getException());
+            if (ce.getException() != null) {
+                attempt.setOutput(ce.getException().getContent());
+            }
+
+            if (ce.getStatus() == TaskStatus.TASK_SUCCESS) {
+                // Tell the WfRun that the TaskRun is done.
+                transitionTo(TaskStatus.TASK_SUCCESS);
+            } else if (shouldRetry()) {
+                scheduleRetryAtAppropriateTime();
+            } else {
+                transitionTo(ce.getStatus());
+            }
         }
 
         // The WfRun may need to advance.
