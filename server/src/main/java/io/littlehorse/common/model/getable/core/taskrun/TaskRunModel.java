@@ -12,12 +12,16 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskAttemptRetryReadyModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEvent;
+import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.ExponentialBackoffRetryPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
+import io.littlehorse.common.model.getable.objectId.NodeReferenceModel;
+import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
+import io.littlehorse.common.model.getable.objectId.ThreadSpecReferenceModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
@@ -25,10 +29,11 @@ import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
+import io.littlehorse.server.metrics.GetableUpdates;
+import io.littlehorse.server.metrics.TaskRunStatusUpdate;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.GetableUpdates;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -392,9 +397,13 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     private void transitionTo(TaskStatus newStatus) {
         TaskStatus previousStatus = status;
         this.status = newStatus;
+        int threadRunNumber = taskRunSource.getTaskNode().getNodeRunId().getThreadRunNumber();
+        NodeRunIdModel nodeRunId = taskRunSource.getTaskNode().getNodeRunId();
+        ThreadSpecReferenceModel threadSpecRef = new ThreadSpecReferenceModel(taskRunSource.getWfSpecId(), threadRunNumber);
+        NodeRunModel nodeRunModel = processorContext.getableManager().get(taskRunSource.getTaskNode().getNodeRunId());
+        NodeReferenceModel nodeRef = new NodeReferenceModel(threadSpecRef, nodeRunModel.getNodeType().name(), nodeRunId.getPosition());
         processorContext
                 .getableUpdates()
-                .dispatch(GetableUpdates.create(
-                        taskDefId, processorContext.authorization().tenantId(), previousStatus, newStatus));
+                .append(taskRunSource.getTaskNode().getNodeRunId(), new TaskRunStatusUpdate(taskDefId, processorContext.authorization().tenantId(), nodeRef, threadSpecRef, taskRunSource.getWfSpecId(), previousStatus, newStatus));
     }
 }

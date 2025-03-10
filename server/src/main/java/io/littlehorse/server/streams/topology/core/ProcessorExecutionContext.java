@@ -13,9 +13,11 @@ import io.littlehorse.common.proto.Command;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
+import io.littlehorse.server.metrics.GetableUpdates;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
+import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -81,11 +83,15 @@ public class ProcessorExecutionContext implements ExecutionContext {
         this.globalTaskQueueManager = globalTaskQueueManager;
         this.recordMetadata = recordHeaders;
         this.server = server;
-        this.coreStore = TenantScopedStore.newInstance(nativeCoreStore(), tenantId, this);
+        KeyValueStore<String, Bytes> nativeCoreStore = nativeCoreStore();
+        this.coreStore = TenantScopedStore.newInstance(nativeCoreStore, tenantId, this);
 
         this.authContext = this.authContextFor();
         this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
         this.eventsToThrow = new ArrayList<>();
+        this.metricsAggregator = new MetricsUpdater(
+                tenantMetadataStore, coreStore, ClusterScopedStore.newInstance(nativeCoreStore, this));
+        this.getableUpdates().subscribe(metricsAggregator);
     }
 
     /**
@@ -139,6 +145,9 @@ public class ProcessorExecutionContext implements ExecutionContext {
      * decide when to call this method
      */
     public void endExecution() {
+        if (metricsAggregator != null) {
+            metricsAggregator.maybePersistState();
+        }
         if (storageManager != null) {
             storageManager.commit();
         }
@@ -146,9 +155,7 @@ public class ProcessorExecutionContext implements ExecutionContext {
             currentTaskManager.forwardPendingTimers();
             currentTaskManager.forwardPendingTasks();
         }
-        if (metricsAggregator != null) {
-            metricsAggregator.maybePersistState();
-        }
+
         for (WorkflowEventModel event : eventsToThrow) {
             server.onEventThrown(event);
         }
@@ -179,7 +186,6 @@ public class ProcessorExecutionContext implements ExecutionContext {
     public GetableUpdates getableUpdates() {
         if (getableUpdates == null) {
             getableUpdates = new GetableUpdates();
-            // TODO: enable metrics here
         }
         return getableUpdates;
     }

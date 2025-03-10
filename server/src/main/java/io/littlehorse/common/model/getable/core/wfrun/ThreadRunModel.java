@@ -43,6 +43,7 @@ import io.littlehorse.sdk.common.proto.ThreadRun;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
+import io.littlehorse.server.metrics.GetableStatusUpdate;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.text.MessageFormat;
@@ -515,6 +516,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             }
 
             boolean canAdvance = currentNR.checkIfProcessingCompleted(processorContext);
+            currentNR.recordMetrics(processorContext);
 
             if (!canAdvance) {
                 // then we're still waiting on the NodeRun, nothing happened.
@@ -941,6 +943,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         return null;
+    }
+
+    public void recordMetrics(ProcessorExecutionContext processorExecutionContext) {
+        GetableStatusUpdate update;
+        while ((update = processorExecutionContext.getableUpdates().getUpdatesForThreadRunNumber(wfRun.getId(), number).poll()) != null) {
+            // sensor.record(update)
+            processorContext.getableUpdates().append(wfRun.getId(), update);
+        }
     }
 
     /**
