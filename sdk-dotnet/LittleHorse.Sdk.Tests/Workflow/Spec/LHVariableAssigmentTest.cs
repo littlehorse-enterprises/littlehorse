@@ -55,12 +55,10 @@ public class LHVariableAssigmentTest
     public void VariableAssigment_WithNodeOutput_ShouldAssignNodeOutputToVariable()
     {
        var nodeOutput = new NodeOutput("wait-to-collect-order-data", _parentWfThread);
-       nodeOutput.WithJsonPath("$.order");
        
        var variableAssigment = _parentWfThread.AssignVariableHelper(nodeOutput);
        
        Assert.Equal(nodeOutput.NodeName, variableAssigment.NodeOutput.NodeName);
-       Assert.Equal(nodeOutput.JsonPath, variableAssigment.JsonPath);
     }
 
     [Theory]

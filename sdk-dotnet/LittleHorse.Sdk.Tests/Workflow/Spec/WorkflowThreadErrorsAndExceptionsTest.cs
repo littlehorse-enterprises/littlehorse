@@ -85,8 +85,8 @@ public class WorkflowThreadErrorsAndExceptionsTest
         var expectedSpec = GetExpectedThreadSpec(
             new FailureHandlerDef
             {
-                HandlerSpecName = "exn-handler-1-fail-TASK-TIMEOUT",
-                SpecificFailure = "TIMEOUT"
+                HandlerSpecName = $"exn-handler-1-fail-TASK-{LHConstants.ErrorTypes[LHErrorType.Timeout.ToString()]}",
+                SpecificFailure = LHConstants.ErrorTypes[LHErrorType.Timeout.ToString()]
             });
 
         var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfExitNodes + numberOfTasks;
@@ -102,13 +102,14 @@ public class WorkflowThreadErrorsAndExceptionsTest
         var numberOfTasks = 2;
         var workflowName = "TestWorkflow";
         var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        var exceptionName = "any-business-exception";
 
         void EntryPointAction(WorkflowThread wf)
         {
             NodeOutput node = wf.Execute("fail");
             wf.HandleException(
                 node,
-                "any-business-exception",
+                exceptionName,
                 handler =>
                 {
                     handler.Execute("my-task");
@@ -123,8 +124,8 @@ public class WorkflowThreadErrorsAndExceptionsTest
         var expectedSpec = GetExpectedThreadSpec(
             new FailureHandlerDef
             {
-                HandlerSpecName = "exn-handler-1-fail-TASK-any-business-exception",
-                SpecificFailure = "any-business-exception"
+                HandlerSpecName = $"exn-handler-1-fail-TASK-{exceptionName}",
+                SpecificFailure = exceptionName
             });
 
         var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfExitNodes + numberOfTasks;
@@ -197,7 +198,7 @@ public class WorkflowThreadErrorsAndExceptionsTest
         var expectedSpec = GetExpectedThreadSpec(
             new FailureHandlerDef
             {
-                HandlerSpecName = "exn-handler-1-fail-TASK-any-failure",
+                HandlerSpecName = $"exn-handler-1-fail-TASK-{LHConstants.AnyFailure}",
             });
 
         var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfExitNodes + numberOfTasks;
