@@ -59,6 +59,6 @@ public class MetronomeWorker implements HealthStatusBinder {
 
     @Override
     public void bindTo(final HealthStatusRegistry registry) {
-        registry.addStatus("metronome-worker", () -> worker.healthStatus().isHealthy());
+        registry.addStatus("metronome-worker", () -> !worker.isClosed());
     }
 }
