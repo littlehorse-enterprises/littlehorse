@@ -1,7 +1,7 @@
 package io.littlehorse.server.streams.lhinternalscan;
 
 import com.google.protobuf.ByteString;
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -26,8 +26,8 @@ public abstract class PublicScanReply<RP extends Message, OP extends Message, OJ
         results = new ArrayList<>();
     }
 
-    public GeneratedMessageV3.Builder<?> toProto() {
-        Class<? extends GeneratedMessageV3> base = getProtoBaseClass();
+    public GeneratedMessage.Builder<?> toProto() {
+        Class<? extends GeneratedMessage> base = getProtoBaseClass();
         Class<OP> resCls = getResultProtoClass();
 
         RP.Builder builder;
@@ -47,12 +47,12 @@ public abstract class PublicScanReply<RP extends Message, OP extends Message, OJ
         } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException exn) {
             throw new RuntimeException(exn);
         }
-        return (GeneratedMessageV3.Builder<?>) builder;
+        return (GeneratedMessage.Builder<?>) builder;
     }
 
     @Override
     public void initFrom(Message p, ExecutionContext context) {
-        Class<? extends GeneratedMessageV3> baseCls = getProtoBaseClass();
+        Class<? extends GeneratedMessage> baseCls = getProtoBaseClass();
 
         try {
             Method hasBm = baseCls.getDeclaredMethod("hasBookmark");
