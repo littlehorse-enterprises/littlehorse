@@ -15,9 +15,7 @@ public class HealthStatusRegistry {
         // prevents any error
         statuses.put(name, () -> {
             try {
-                final boolean healthy = supplier.isHealthy();
-                log.debug("Status for {}: {}", name, healthy ? "healthy" : "not healthy");
-                return healthy;
+                return supplier.isHealthy();
             } catch (Exception e) {
                 log.error("Error getting health status for {}", name, e);
                 return false;
