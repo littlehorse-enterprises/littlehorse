@@ -38,12 +38,12 @@ public abstract class Program
         {
             WfRunVariable parentVar = wf.DeclareJsonObj("approval-chain");
             parentVar.Assign(wf.Execute("parent-task-1", parentVar));
-            SpawnedThread childThread = wf.SpawnThread(child =>
+            SpawnedThread childThread = wf.SpawnThread("spawned-thread", 
+                child =>
                 {
                     var childVar = child.DeclareInt("child-var");
                     child.Execute("child-task", childVar);
                 },
-                "spawned-thread",
                 new Dictionary<string, object>
                 {
                     {
