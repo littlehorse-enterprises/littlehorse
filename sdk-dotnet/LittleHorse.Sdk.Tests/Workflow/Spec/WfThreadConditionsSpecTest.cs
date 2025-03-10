@@ -1,6 +1,5 @@
 using System;
 using LittleHorse.Sdk.Common.Proto;
-using LittleHorse.Sdk.Helper;
 using LittleHorse.Sdk.Workflow.Spec;
 using Moq;
 using Xunit;
@@ -24,8 +23,8 @@ public class WfThreadDoIfTest
     public void WfThread_WithIfStatement_ShouldCompileAnSpecAddingATaskNode()
     {
         var workflowName = "TestWorkflow";
-        var leftHandSide = 20;
-        var RightHandSide = 10;
+        const int leftHandSide = 20;
+        const int rightHandSide = 10;
         var numberOfNopNodes = 2;
         var numberOfTasks = 1;
         var numberOfExitNodes = 1;
@@ -33,41 +32,101 @@ public class WfThreadDoIfTest
         void Entrypoint(WorkflowThread thread)
         {
             thread.DoIf(
-                thread.Condition(leftHandSide, Comparator.GreaterThan, RightHandSide),
+                thread.Condition(leftHandSide, Comparator.GreaterThan, rightHandSide),
                 ifThread => ifThread.Execute("task"));
         }
         var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
         var wfThread = new WorkflowThread(mockWorkflow.Object, Entrypoint);
         
-        var compiledWfThread = wfThread.Compile();
+        var actualSpec = wfThread.Compile();
         
-        var actualSpec = LHMappingHelper.ProtoToJson(compiledWfThread);
-        var expectedSpec =
-            "{ \"nodes\": { \"0-entrypoint-ENTRYPOINT\": { \"outgoingEdges\": [ { \"sinkNodeName\": " +
-            "\"1-nop-NOP\", \"variableMutations\": [ ] } ], \"failureHandlers\": [ ], \"entrypoint\": " +
-            "{ } }, \"1-nop-NOP\": { \"outgoingEdges\": [ { \"sinkNodeName\": \"2-task-TASK\", \"condition\": " +
-            "{ \"comparator\": \"GREATER_THAN\", \"left\": { \"literalValue\": { \"int\": \"20\" } }, \"right\": " +
-            "{ \"literalValue\": { \"int\": \"10\" } } }, \"variableMutations\": [ ] }, { \"sinkNodeName\": " +
-            "\"3-nop-NOP\", \"condition\": { \"comparator\": \"LESS_THAN_EQ\", \"left\": { \"literalValue\": " +
-            "{ \"int\": \"20\" } }, \"right\": { \"literalValue\": { \"int\": \"10\" } } }, \"variableMutations\":" +
-            " [ ] } ], \"failureHandlers\": [ ], \"nop\": { } }, \"2-task-TASK\": { \"outgoingEdges\": " +
-            "[ { \"sinkNodeName\": \"3-nop-NOP\", \"variableMutations\": [ ] } ], \"failureHandlers\": [ ]," +
-            " \"task\": { \"taskDefId\": { \"name\": \"task\" }, \"timeoutSeconds\": 0, \"retries\": 0, " +
-            "\"variables\": [ ] } }, \"3-nop-NOP\": { \"outgoingEdges\": [ { \"sinkNodeName\": \"4-exit-EXIT\", " +
-            "\"variableMutations\": [ ] } ], \"failureHandlers\": [ ], \"nop\": { } }, \"4-exit-EXIT\": " +
-            "{ \"outgoingEdges\": [ ], \"failureHandlers\": [ ], \"exit\": { } } }, \"variableDefs\": [ ]," +
-            " \"interruptDefs\": [ ] }";
+        var expectedSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-nop-NOP" }
+            }
+        };
+
+        var nop1Node = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-task-TASK",
+                    Condition = new EdgeCondition
+                    {
+                        Comparator = Comparator.GreaterThan,
+                        Left = new VariableAssignment { LiteralValue = new VariableValue { Int = leftHandSide } },
+                        Right = new VariableAssignment { LiteralValue = new VariableValue { Int = rightHandSide } }
+                    }
+                },
+                new Edge
+                {
+                    SinkNodeName = "3-nop-NOP",
+                    Condition = new EdgeCondition
+                    {
+                        Comparator = Comparator.LessThanEq,
+                        Left = new VariableAssignment { LiteralValue = new VariableValue { Int = leftHandSide } },
+                        Right = new VariableAssignment { LiteralValue = new VariableValue { Int = rightHandSide } }
+                    }
+                }
+            }
+        };
+
+        var taskNode = new Node
+        {
+            Task = new TaskNode
+            {
+                TaskDefId = new TaskDefId { Name = "task" }
+            },
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "3-nop-NOP"
+                }
+            }
+        };
+
+        var nop3Node = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "4-exit-EXIT"
+                }
+            }
+        };
+
+        var exitNode = new Node
+        {
+            Exit = new ExitNode(),
+        };
+        
+        expectedSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedSpec.Nodes.Add("1-nop-NOP", nop1Node);
+        expectedSpec.Nodes.Add("2-task-TASK", taskNode);
+        expectedSpec.Nodes.Add("3-nop-NOP", nop3Node);
+        expectedSpec.Nodes.Add("4-exit-EXIT", exitNode);
+        
         var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfExitNodes + numberOfNopNodes + numberOfTasks;
 
-        Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
-        Assert.Contains(expectedSpec, actualSpec!);
+        Assert.Equal(expectedNumberOfNodes, actualSpec.Nodes.Count);
+        Assert.Equal(expectedSpec, actualSpec);
     }
 
     [Fact]
-    public void WfThread_WithIfElseStatement_ShouldCompileAnSpecAddingATaskNodesBothStatements()
+    public void WfThread_WithIfElseStatement_ShouldCompileAnSpecAddingTaskNodesBothStatements()
     {
-        var leftHandSide = 1;
-        var RightHandSide = 0;
+        const int leftHandSide = 1;
+        const int rightHandSide = 0;
         var numberOfNopNodes = 2;
         var numberOfTasks = 2;
         var numberOfExitNodes = 1;
@@ -75,7 +134,7 @@ public class WfThreadDoIfTest
         void Entrypoint(WorkflowThread thread)
         {
             thread.DoIf(
-                thread.Condition(leftHandSide, Comparator.LessThan, RightHandSide),
+                thread.Condition(leftHandSide, Comparator.LessThan, rightHandSide),
                 ifThread => ifThread.Execute("task-a"),
                 elseThread => elseThread.Execute("task-b"));
         }
@@ -83,31 +142,103 @@ public class WfThreadDoIfTest
         var mockWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>("test-workflow", _action);
         var wfThread = new WorkflowThread(mockWorkflow.Object, Entrypoint);
         
-        var compiledWfThread = wfThread.Compile();
+        var actualSpec = wfThread.Compile();
+        
+        var expectedSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-nop-NOP" }
+            }
+        };
+
+        var nop1Node = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-task-a-TASK",
+                    Condition = new EdgeCondition
+                    {
+                        Comparator = Comparator.LessThan,
+                        Left = new VariableAssignment { LiteralValue = new VariableValue { Int = leftHandSide } },
+                        Right = new VariableAssignment { LiteralValue = new VariableValue { Int = rightHandSide } }
+                    }
+                },
+                new Edge
+                {
+                    SinkNodeName = "3-task-b-TASK",
+                    Condition = new EdgeCondition
+                    {
+                        Comparator = Comparator.GreaterThanEq,
+                        Left = new VariableAssignment { LiteralValue = new VariableValue { Int = leftHandSide } },
+                        Right = new VariableAssignment { LiteralValue = new VariableValue { Int = rightHandSide } }
+                    }
+                }
+            }
+        };
+
+        var taskA = new Node
+        {
+            Task = new TaskNode
+            {
+                TaskDefId = new TaskDefId { Name = "task-a" }
+            },
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "4-nop-NOP"
+                }
+            }
+        };
+        
+        var taskB = new Node
+        {
+            Task = new TaskNode
+            {
+                TaskDefId = new TaskDefId { Name = "task-b" }
+            },
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "4-nop-NOP"
+                }
+            }
+        };
+
+        var nop4Node = new Node
+        {
+            Nop = new NopNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "5-exit-EXIT"
+                }
+            }
+        };
+
+        var exitNode = new Node
+        {
+            Exit = new ExitNode(),
+        };
+        
+        expectedSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedSpec.Nodes.Add("1-nop-NOP", nop1Node);
+        expectedSpec.Nodes.Add("2-task-a-TASK", taskA);
+        expectedSpec.Nodes.Add("3-task-b-TASK", taskB);
+        expectedSpec.Nodes.Add("4-nop-NOP", nop4Node);
+        expectedSpec.Nodes.Add("5-exit-EXIT", exitNode);
         
         var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfExitNodes + numberOfNopNodes + numberOfTasks;
-        var actualSpec = LHMappingHelper.ProtoToJson(compiledWfThread);
-        var expectedSpec = "{ \"nodes\": { \"0-entrypoint-ENTRYPOINT\": { \"outgoingEdges\": [ " +
-                           "{ \"sinkNodeName\": \"1-nop-NOP\", \"variableMutations\": [ ] } ], \"failureHandlers\":" +
-                           " [ ], \"entrypoint\": { } }, \"1-nop-NOP\": { \"outgoingEdges\": [ { \"sinkNodeName\":" +
-                           " \"2-task-a-TASK\", \"condition\": { \"comparator\": \"LESS_THAN\", \"left\":" +
-                           " { \"literalValue\": { \"int\": \"1\" } }, \"right\": { \"literalValue\": { \"int\": " +
-                           "\"0\" } } }, \"variableMutations\": [ ] }, { \"sinkNodeName\": \"3-task-b-TASK\", " +
-                           "\"condition\": { \"comparator\": \"GREATER_THAN_EQ\", \"left\": { \"literalValue\": " +
-                           "{ \"int\": \"1\" } }, \"right\": { \"literalValue\": { \"int\": \"0\" } } }, " +
-                           "\"variableMutations\": [ ] } ], \"failureHandlers\": [ ], \"nop\": { } }, " +
-                           "\"2-task-a-TASK\": { \"outgoingEdges\": [ { \"sinkNodeName\": \"4-nop-NOP\", " +
-                           "\"variableMutations\": [ ] } ], \"failureHandlers\": [ ], \"task\": { \"taskDefId\": " +
-                           "{ \"name\": \"task-a\" }, \"timeoutSeconds\": 0, \"retries\": 0, \"variables\": [ ] } }, " +
-                           "\"3-task-b-TASK\": { \"outgoingEdges\": [ { \"sinkNodeName\": \"4-nop-NOP\", " +
-                           "\"variableMutations\": [ ] } ], \"failureHandlers\": [ ], \"task\": { \"taskDefId\": " +
-                           "{ \"name\": \"task-b\" }, \"timeoutSeconds\": 0, \"retries\": 0, \"variables\": [ ] } }, " +
-                           "\"4-nop-NOP\": { \"outgoingEdges\": [ { \"sinkNodeName\": \"5-exit-EXIT\", " +
-                           "\"variableMutations\": [ ] } ], \"failureHandlers\": [ ], \"nop\": { } }, " +
-                           "\"5-exit-EXIT\": { \"outgoingEdges\": [ ], \"failureHandlers\": [ ], \"exit\": { } } }, " +
-                           "\"variableDefs\": [ ], \"interruptDefs\": [ ] }";
         
-        Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
+        Assert.Equal(expectedNumberOfNodes, actualSpec.Nodes.Count);
         Assert.Equal(expectedSpec, actualSpec);
     }
 
