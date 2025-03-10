@@ -2,6 +2,8 @@ package io.littlehorse.canary.metronome;
 
 import com.google.protobuf.util.Timestamps;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.canary.infra.HealthStatusBinder;
+import io.littlehorse.canary.infra.HealthStatusRegistry;
 import io.littlehorse.canary.infra.ShutdownHook;
 import io.littlehorse.canary.littlehorse.LHClient;
 import io.littlehorse.canary.metronome.internal.BeatProducer;
@@ -17,11 +19,12 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MetronomeGetWfRunExecutor {
+public class MetronomeGetWfRunExecutor implements HealthStatusBinder {
     public static final String EXHAUSTED_RETRIES = "EXHAUSTED_RETRIES";
     private final ScheduledExecutorService mainExecutor;
     private final BeatProducer producer;
@@ -29,6 +32,7 @@ public class MetronomeGetWfRunExecutor {
     private final Duration frequency;
     private final LocalRepository repository;
     private final long retries;
+    private ScheduledFuture<?> scheduledFuture;
 
     public MetronomeGetWfRunExecutor(
             final BeatProducer producer,
@@ -51,7 +55,7 @@ public class MetronomeGetWfRunExecutor {
     }
 
     public void start() {
-        mainExecutor.scheduleAtFixedRate(
+        scheduledFuture = mainExecutor.scheduleAtFixedRate(
                 () -> {
                     try {
                         scheduledRun();
@@ -174,6 +178,15 @@ public class MetronomeGetWfRunExecutor {
                 .build();
 
         producer.send(beat);
+    }
+
+    @Override
+    public void bindTo(final HealthStatusRegistry registry) {
+        registry.addStatus("metronome-get-wf-run-executor", this::isRunning);
+    }
+
+    private boolean isRunning() {
+        return scheduledFuture != null && !scheduledFuture.isDone();
     }
 
     private void updateAttempt(final String id, final Attempt attempt) {
