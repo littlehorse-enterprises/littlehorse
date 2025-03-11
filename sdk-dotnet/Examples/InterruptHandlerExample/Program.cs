@@ -48,12 +48,14 @@ public abstract class Program
     {
         void MyEntryPoint(WorkflowThread wf)
         {
+            // Register an interrupt handler
             wf.RegisterInterruptHandler(
                 "interruption-event",
                 handler =>
                 {
                     handler.Execute("some-task");
                 });
+            // Do some work that takes a while
             wf.SleepSeconds(30);
             wf.Execute("my-task");
         }
