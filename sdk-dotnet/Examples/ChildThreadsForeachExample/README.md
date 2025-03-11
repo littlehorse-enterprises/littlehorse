@@ -5,6 +5,7 @@ In this example you will see how to spawn multiples threads base on a INPUT json
 Let's run the example in `SpawnThreadForEachExample`
 
 ```
+dotnet build
 dotnet run
 ```
 
