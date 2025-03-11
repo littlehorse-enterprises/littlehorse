@@ -33,6 +33,12 @@ message Principal {
     ServerACLs global_acls = 4;
 }
 
+// Configurations for the Output Topic of a certain Tenant.
+message OutputTopicConfig {
+    // Set to true if the Output Topic is enabled.
+    bool enabled = 1;
+}
+
 // A Tenant is a logically isolated environment within LittleHorse. All workflows and
 // associated data (WfSpec, WfRun, TaskDef, TaskRun, NodeRun, etc) are scoped to within
 // a Tenant.
@@ -44,6 +50,9 @@ message Tenant {
 
     // The time at which the Tenant was created.
     google.protobuf.Timestamp created_at = 2;
+
+    // Configurations related to the Output Topic.
+    optional OutputTopicConfig output_topic = 3;
 }
 
 // List of ACL's for LittleHorse
@@ -162,8 +171,13 @@ message DeletePrincipalRequest {
   PrincipalId id = 1;
 }
 
+// Creates a Tenant in the LH Server.
 message PutTenantRequest {
+    // The ID of the Tenant to create.
     string id = 1;
+
+    // Configures the behavior of the Output Topic for this Tenant.
+    optional OutputTopicConfig output_topic_config = 2;
 }
 
 // DeleteTenant not yet supported.
