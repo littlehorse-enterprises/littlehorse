@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalEventExample", "Exa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChildThreadExample", "Examples\ChildThreadExample\ChildThreadExample.csproj", "{27C6D952-2801-4BFE-8FA3-BE55F6C0988E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChildThreadsForeachExample", "Examples\ChildThreadsForeachExample\ChildThreadsForeachExample.csproj", "{A7DD637B-1C09-4136-BBA4-15C928EF5506}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +82,10 @@ Global
 		{27C6D952-2801-4BFE-8FA3-BE55F6C0988E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27C6D952-2801-4BFE-8FA3-BE55F6C0988E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27C6D952-2801-4BFE-8FA3-BE55F6C0988E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7DD637B-1C09-4136-BBA4-15C928EF5506}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7DD637B-1C09-4136-BBA4-15C928EF5506}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7DD637B-1C09-4136-BBA4-15C928EF5506}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7DD637B-1C09-4136-BBA4-15C928EF5506}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{88CB23B3-1174-45F5-9F72-46AB57BAB661} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
@@ -91,5 +97,6 @@ Global
 		{DEA03A93-461C-48BC-A218-9C75313DC210} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
 		{A4E72882-F71E-4269-B011-03CBFDA86E07} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
 		{27C6D952-2801-4BFE-8FA3-BE55F6C0988E} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
+		{A7DD637B-1C09-4136-BBA4-15C928EF5506} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
 	EndGlobalSection
 EndGlobal

@@ -8,12 +8,18 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 public class WorkflowThread
 {
     public Workflow Parent { get; private set; }
-    private ThreadSpec _spec;
+    private readonly ThreadSpec _spec;
     public string LastNodeName;
-    private bool _isActive;
-    private List<WfRunVariable> _wfRunVariables;
+    private readonly bool _isActive;
+    private readonly List<WfRunVariable> _wfRunVariables;
     private EdgeCondition? _lastNodeCondition;
     private readonly Queue<VariableMutation> _variableMutations;
+    
+    /// <summary>
+    /// This is the reserved Variable Name that can be used as a WfRunVariable in an Interrupt
+    /// Handler or Exception Handler thread.
+    /// </summary>
+    public const string HandlerInputVar = "INPUT";
     
     public WorkflowThread(Workflow parent, Action<WorkflowThread> action)
     {
@@ -129,6 +135,9 @@ public class WorkflowThread
                 break;
             case Node.NodeOneofCase.StartThread:
                 node.StartThread = (StartThreadNode) subNode;
+                break;
+            case Node.NodeOneofCase.StartMultipleThreads:
+                node.StartMultipleThreads = (StartMultipleThreadsNode) subNode;
                 break;
             case Node.NodeOneofCase.WaitForThreads:
                 node.WaitForThreads = (WaitForThreadsNode) subNode;
@@ -797,5 +806,49 @@ public class WorkflowThread
         var subBuilder = currentNode.WaitForThreads;
         subBuilder.PerThreadFailureHandlers.Add(handler);
         currentNode.WaitForThreads = subBuilder;
+    }
+    
+    /// <summary>
+    /// Given a WfRunVariable of type JSON_ARR, this function iterates over each object in that list
+    /// and creates a Child ThreadRun for each item. The list item is provided as an input variable
+    /// to the Child ThreadRun with the name `INPUT`.
+    /// </summary>
+    /// <param name="arrVar">
+    /// It is a WfRunVariable of type JSON_ARR that we iterate over.
+    /// </param>
+    /// <param name="threadName">
+    /// It is the name to assign to the created ThreadSpec.
+    /// </param>
+    /// <param name="threadFunc">
+    /// It is the function that defines the ThreadSpec.
+    /// </param>
+    /// <param name="inputVars">
+    /// It is a dictionary of input variables to pass to each child ThreadRun in addition
+    ///     to the list item.
+    /// </param>
+    /// <returns>a SpawnedThreads handle which we can use to wait for all child threads.</returns>
+    public SpawnedThreads SpawnThreadForEach(
+        WfRunVariable arrVar, string threadName, Action<WorkflowThread> threadFunc, 
+        Dictionary<string, object>? inputVars = null)
+    {
+        CheckIfWorkflowThreadIsActive();
+        string finalThreadName = Parent.AddSubThread(threadName, threadFunc);
+        var startMultiplesThreadNode = new StartMultipleThreadsNode
+        {
+            ThreadSpecName = finalThreadName,
+            Iterable = AssignVariable(arrVar)
+        };
+
+        if (inputVars != null)
+            foreach (var inputVar in inputVars)
+            {
+                startMultiplesThreadNode.Variables.Add(inputVar.Key, AssignVariable(inputVar.Value));
+            }
+
+        string nodeName = AddNode(threadName, Node.NodeOneofCase.StartMultipleThreads, startMultiplesThreadNode);
+        WfRunVariable internalStartedThreadVar = DeclareJsonArr(nodeName);
+        internalStartedThreadVar.Assign(new NodeOutput(nodeName, this));
+
+        return new SpawnedThreadsIterator(internalStartedThreadVar);
     }
 }
