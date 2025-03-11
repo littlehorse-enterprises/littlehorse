@@ -1,11 +1,10 @@
-﻿using ChildThreadsForeachExample;
-using LittleHorse.Sdk;
+﻿using LittleHorse.Sdk;
 using LittleHorse.Sdk.Worker;
 using LittleHorse.Sdk.Workflow.Spec;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace ConditionalsExample;
+namespace ChildThreadsForeachExample;
 
 public abstract class Program
 {
