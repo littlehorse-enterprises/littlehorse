@@ -77,6 +77,14 @@ namespace LittleHorse.Sdk {
                 return _inputVariables.LHC_API_PORT;
             }
         }
+        
+        public string? TenantId
+        {
+            get
+            {
+                return _inputVariables.LHC_TENANT_ID;
+            }
+        }
         public string BootstrapProtocol
         {
             get
@@ -148,7 +156,16 @@ namespace LittleHorse.Sdk {
             var httpHandler = new HttpClientHandler();
             var address = $"{BootstrapProtocol}://{host}:{port}";
             httpHandler.ServerCertificateCustomValidationCallback = ServerCertificateCustomValidation;
-
+            
+            var tenantCredentials = CallCredentials.FromInterceptor((context, metadata) =>
+            {
+                if (TenantId != null && TenantId.Length > 0)
+                {
+                    metadata.Add("tenantid", TenantId);
+                }
+                return Task.CompletedTask;
+            });
+            
             if (_inputVariables.LHC_CLIENT_CERT != null && _inputVariables.LHC_CLIENT_KEY != null)
             {
                 var cert = 
@@ -160,12 +177,16 @@ namespace LittleHorse.Sdk {
 
             if (IsOAuth)
             {
-                return CreateGrpcChannelWithOauthCredentials(address, httpHandler);
+                return CreateGrpcChannelWithOauthCredentials(address, httpHandler, tenantCredentials);
             }
 
+            
+            
             return GrpcChannel.ForAddress(address, new GrpcChannelOptions
             {
-                HttpHandler = httpHandler
+                HttpHandler = httpHandler,
+                Credentials = ChannelCredentials.Create(ChannelCredentials.Insecure, tenantCredentials),
+                UnsafeUseInsecureChannelCallCredentials = true
             });
         }
 
@@ -184,7 +205,7 @@ namespace LittleHorse.Sdk {
             return certChainBuilder;
         }
 
-        private GrpcChannel CreateGrpcChannelWithOauthCredentials(string address, HttpClientHandler httpHandler)
+        private GrpcChannel CreateGrpcChannelWithOauthCredentials(string address, HttpClientHandler httpHandler, CallCredentials tenantCredentials)
         {
             InitializeOAuth();
 
@@ -202,7 +223,7 @@ namespace LittleHorse.Sdk {
             return GrpcChannel.ForAddress(address, new GrpcChannelOptions
             {
                 HttpHandler = httpHandler,
-                Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
+                Credentials = ChannelCredentials.Create(new SslCredentials(), CallCredentials.Compose(credentials, tenantCredentials))
             });
         }
 
