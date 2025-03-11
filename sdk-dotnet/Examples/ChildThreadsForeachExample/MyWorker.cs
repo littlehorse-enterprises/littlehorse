@@ -1,6 +1,6 @@
 using LittleHorse.Sdk.Worker;
 
-namespace SpawnThreadForEachExample;
+namespace ChildThreadsForeachExample;
 
 public class MyWorker
 {
