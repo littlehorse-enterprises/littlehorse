@@ -145,6 +145,9 @@ public class WorkflowThread
             case Node.NodeOneofCase.Sleep:
                 node.Sleep = (SleepNode) subNode;
                 break;
+            case Node.NodeOneofCase.WaitForCondition:
+                node.WaitForCondition = (WaitForConditionNode) subNode;
+                break;
             case Node.NodeOneofCase.None:
                 throw new InvalidOperationException("Not possible");
         }
@@ -896,5 +899,28 @@ public class WorkflowThread
         CheckIfWorkflowThreadIsActive();
         var sleepNode = new SleepNode { RawSeconds = AssignVariable(seconds) };
         AddNode("sleep", Node.NodeOneofCase.Sleep, sleepNode);
+    }
+    
+    /// <summary>
+    /// Adds a WAIT_FOR_CONDITION node which blocks until the provided boolean condition
+    /// evaluates to true.
+    /// </summary>
+    /// <param name="condition">
+    /// It is the condition to wait for.
+    /// </param>
+    /// <returns>A handle to the NodeOutput, which may only be used for error handling since 
+    /// the output of this node is empty.
+    /// </returns>
+    public WaitForConditionNodeOutput WaitForCondition(WorkflowCondition condition)
+    {
+        CheckIfWorkflowThreadIsActive();
+        WaitForConditionNode waitNode = new WaitForConditionNode
+        {
+            Condition = condition.Compile()
+        };
+
+        string nodeName = AddNode("wait-for-condition", Node.NodeOneofCase.WaitForCondition, waitNode);
+        
+        return new WaitForConditionNodeOutput(nodeName, this);
     }
 }

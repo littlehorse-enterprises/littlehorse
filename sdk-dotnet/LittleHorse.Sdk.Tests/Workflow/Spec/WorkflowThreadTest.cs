@@ -621,4 +621,83 @@ public class WorkflowThreadTest
         Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
         Assert.Equal(expectedThreadSpec, compiledWfThread);
     }
+
+    [Fact]
+    public void WorkflowThread_WaitForConditionNode_ShouldCompile()
+    {
+        var numberOfExitNodes = 1;
+        var numberOfEntrypointNodes = 1;
+        var numberOfWaitForConditionsNodes = 1;
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        void EntryPointAction(WorkflowThread wf)
+        {
+            WfRunVariable counter = wf.DeclareInt("counter").WithDefault(2);
+
+            wf.WaitForCondition(wf.Condition(counter, Comparator.Equals, 0));
+
+            // Interrupt handler which mutates the parent variable
+            wf.RegisterInterruptHandler("change-counter-event", handler =>
+            {
+                handler.Mutate(counter, VariableMutationType.Subtract, 1);
+            });
+        }
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        
+        var compiledWfThread = workflowThread.Compile();
+        
+        var expectedThreadSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-wait-for-condition-WAIT_FOR_CONDITION" }
+            }
+        };
+        
+        var waitForConditionNode = new Node
+        {
+            WaitForCondition = new WaitForConditionNode
+            {
+                Condition = new EdgeCondition
+                {
+                    Left = new VariableAssignment { VariableName = "counter" },
+                    Comparator = Comparator.Equals,
+                    Right = new VariableAssignment { LiteralValue = new VariableValue { Int = 0 } }
+                }
+            },
+            OutgoingEdges = { new Edge { SinkNodeName = "2-exit-EXIT" } }
+        };
+        
+        var exit = new Node { Exit = new ExitNode() };
+
+        var threadVarDefs = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "counter",
+                Type = VariableType.Int,
+                DefaultValue = new VariableValue { Int = 2 }
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+
+        var interruptDef = new InterruptDef
+        {
+            ExternalEventDefId = new ExternalEventDefId { Name = "change-counter-event" },
+            HandlerSpecName = "interrupt-change-counter-event"
+        };
+        
+        expectedThreadSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedThreadSpec.Nodes.Add("1-wait-for-condition-WAIT_FOR_CONDITION", waitForConditionNode);
+        expectedThreadSpec.Nodes.Add("2-exit-EXIT", exit);
+        expectedThreadSpec.VariableDefs.Add(threadVarDefs);
+        expectedThreadSpec.InterruptDefs.Add(interruptDef);
+        
+        var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfWaitForConditionsNodes
+                                    + numberOfExitNodes;
+        Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
+        Assert.Equal(expectedThreadSpec, compiledWfThread);
+    }
 }
