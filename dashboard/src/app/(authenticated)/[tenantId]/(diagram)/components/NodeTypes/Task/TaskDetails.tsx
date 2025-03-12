@@ -49,6 +49,7 @@ export const TaskDetails: FC<{
   })
 
   if (!taskNode || (!taskDef && !nodeRun?.task?.taskRunId)) return null
+  taskRunData?.attempts.sort((a, b) => (new Date(b.startTime ?? 0).getTime() - new Date(a.startTime ?? 0).getTime()))
 
   const message = taskRunData?.attempts[taskAttemptIndex].error?.message ?? taskRunData?.attempts[taskAttemptIndex].exception?.message ?? String(getVariableValue(taskRunData?.attempts[taskAttemptIndex].output)) ?? undefined
   const resultString = taskRunData?.attempts[taskAttemptIndex].error ? "ERROR" : taskRunData?.attempts[taskAttemptIndex].exception ? "EXCEPTION" : taskRunData?.attempts[taskAttemptIndex].output ? "OUTPUT" : undefined

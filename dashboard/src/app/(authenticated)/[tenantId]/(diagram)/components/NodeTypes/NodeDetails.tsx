@@ -12,6 +12,7 @@ import { Status } from './DataGroupComponents/Status'
 type Props = PropsWithChildren<{ nodeRunList: NodeRun[] | undefined, nodeRunsIndex?: number, setNodeRunsIndex?: (index: number) => void }>
 
 export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, setNodeRunsIndex }) => {
+  nodeRunList?.sort((a, b) => new Date(b.arrivalTime ?? 0).getTime() - new Date(a.arrivalTime ?? 0).getTime())
   const [nodeRunsIndexInternal, setNodeRunsIndexInternal] = useState(nodeRunsIndex ?? 0);
 
   const contextNodeId = useNodeId()
