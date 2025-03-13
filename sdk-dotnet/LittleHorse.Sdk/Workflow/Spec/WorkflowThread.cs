@@ -148,6 +148,9 @@ public class WorkflowThread
             case Node.NodeOneofCase.WaitForCondition:
                 node.WaitForCondition = (WaitForConditionNode) subNode;
                 break;
+            case Node.NodeOneofCase.ThrowEvent:
+                node.ThrowEvent = (ThrowEventNode) subNode;
+                break;
             case Node.NodeOneofCase.None:
                 throw new InvalidOperationException("Not possible");
         }
@@ -922,5 +925,31 @@ public class WorkflowThread
         string nodeName = AddNode("wait-for-condition", Node.NodeOneofCase.WaitForCondition, waitNode);
         
         return new WaitForConditionNodeOutput(nodeName, this);
+    }
+    
+    /// <summary>
+    /// EXPERIMENTAL: Makes the active ThreadSpec throw a WorkflowEvent with a specific WorkflowEventDef
+    /// and provided content.
+    /// </summary>
+    /// <param name="workflowEventDefName">
+    /// It is the name of the WorkflowEvent to throw.
+    /// </param>
+    /// <param name="content">
+    /// It is the content of the WorkflowEvent that is thrown.
+    /// </param>
+    public void ThrowEvent(string workflowEventDefName, object content)
+    {
+        CheckIfWorkflowThreadIsActive();
+        Parent.AddWorkflowEventDefName(workflowEventDefName);
+        var node = new ThrowEventNode
+        {
+            EventDefId = new WorkflowEventDefId
+            {
+                Name = workflowEventDefName
+            },
+            Content = AssignVariable(content)
+        };
+        
+        AddNode("throw-" + workflowEventDefName, Node.NodeOneofCase.ThrowEvent, node);
     }
 }
