@@ -700,4 +700,98 @@ public class WorkflowThreadTest
         Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
         Assert.Equal(expectedThreadSpec, compiledWfThread);
     }
+
+    [Fact]
+    public void WorkflowThread_ThrowingManyEvents_ShouldCompile()
+    {
+        var numberOfExitNodes = 1;
+        var numberOfEntrypointNodes = 1;
+        var numberOfThrowEventNodes = 3;
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        void EntryPointAction(WorkflowThread wf)
+        {
+            WfRunVariable eventInput = wf.DeclareStr("input");
+            WfRunVariable eventPayload = wf.DeclareJsonObj("complex-data");
+
+            wf.ThrowEvent("one-event", eventInput);
+            wf.ThrowEvent("other-event", eventPayload);
+            wf.ThrowEvent("another-event", "any-content");
+        }
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        
+        var compiledWfThread = workflowThread.Compile();
+        
+        var expectedThreadSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-throw-one-event-THROW_EVENT" }
+            }
+        };
+        
+        var throwEventNode1 = new Node
+        {
+            ThrowEvent = new ThrowEventNode
+            {
+                EventDefId = new WorkflowEventDefId { Name = "one-event" },
+                Content = new VariableAssignment { VariableName = "input" }
+            },
+            OutgoingEdges = { new Edge { SinkNodeName = "2-throw-other-event-THROW_EVENT" } }
+        };
+        
+        var throwEventNode2 = new Node
+        {
+            ThrowEvent = new ThrowEventNode
+            {
+                EventDefId = new WorkflowEventDefId { Name = "other-event" },
+                Content = new VariableAssignment { VariableName = "complex-data" }
+            },
+            OutgoingEdges = { new Edge { SinkNodeName = "3-throw-another-event-THROW_EVENT" } }
+        };
+        
+        var throwEventNode3 = new Node
+        {
+            ThrowEvent = new ThrowEventNode
+            {
+                EventDefId = new WorkflowEventDefId { Name = "another-event" },
+                Content = new VariableAssignment { LiteralValue = new VariableValue { Str = "any-content" } }
+            },
+            OutgoingEdges = { new Edge { SinkNodeName = "4-exit-EXIT" } }
+        };
+        
+        var exit = new Node { Exit = new ExitNode() };
+        
+        var threadVarDef1 = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "input",
+                Type = VariableType.Str
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        var threadVarDef2 = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "complex-data"
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        expectedThreadSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedThreadSpec.Nodes.Add("1-throw-one-event-THROW_EVENT", throwEventNode1);
+        expectedThreadSpec.Nodes.Add("2-throw-other-event-THROW_EVENT", throwEventNode2);
+        expectedThreadSpec.Nodes.Add("3-throw-another-event-THROW_EVENT", throwEventNode3);
+        expectedThreadSpec.Nodes.Add("4-exit-EXIT", exit);
+        expectedThreadSpec.VariableDefs.Add(threadVarDef1);
+        expectedThreadSpec.VariableDefs.Add(threadVarDef2);
+        
+        var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfThrowEventNodes
+                                                            + numberOfExitNodes;
+        Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
+        Assert.Equal(expectedThreadSpec, compiledWfThread);
+    }
 }
