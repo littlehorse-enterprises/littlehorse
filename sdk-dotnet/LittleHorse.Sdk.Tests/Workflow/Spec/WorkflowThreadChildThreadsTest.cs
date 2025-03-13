@@ -229,4 +229,94 @@ public class WorkflowThreadChildThreadsTest
         Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
         Assert.Equal(expectedThreadSpec, compiledWfThread);
     }
+    
+    [Fact]
+    public void SpawnThreadsForEach_WithInputJsonArrayWfRunVariable_ShouldCompileSuccessfully()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        var numberOfStartMultipleThreads = 1;
+        var numberOfEntrypointNodes = 1;
+        var numberOfExitNodes = 1;
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            WfRunVariable options = wf.DeclareJsonArr("options-available");
+            SpawnedThreads spawnedThreads = wf.SpawnThreadForEach(options,
+                "spawn-threads",
+                innerThread =>
+                {
+                    innerThread.Execute("option-validator");
+                });
+        }
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        
+        var compiledWfThread = workflowThread.Compile();
+        
+        var expectedThreadSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-spawn-threads-START_MULTIPLE_THREADS" }
+            }
+        };
+
+        var multipleThreads = new Node
+        {
+            StartMultipleThreads = new StartMultipleThreadsNode
+            {
+                ThreadSpecName = "spawn-threads",
+                Iterable = new VariableAssignment
+                {
+                    VariableName = "options-available"
+                }
+            },
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-exit-EXIT",
+                    VariableMutations =
+                    {
+                        new VariableMutation
+                        {
+                            LhsName = "1-spawn-threads-START_MULTIPLE_THREADS",
+                            RhsAssignment = new VariableAssignment
+                            {
+                                NodeOutput = new VariableAssignment.Types.NodeOutputReference
+                                {
+                                    NodeName = "1-spawn-threads-START_MULTIPLE_THREADS",
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        
+        var exit = new Node {Exit = new ExitNode()};
+        
+        var threadVarDef1 = new ThreadVarDef
+        {
+            VarDef = new VariableDef { Name = "options-available", Type = VariableType.JsonArr },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        var threadVarDef2 = new ThreadVarDef
+        {
+            VarDef = new VariableDef { Name = "1-spawn-threads-START_MULTIPLE_THREADS", Type = VariableType.JsonArr },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        
+        expectedThreadSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedThreadSpec.Nodes.Add("1-spawn-threads-START_MULTIPLE_THREADS", multipleThreads);
+        expectedThreadSpec.Nodes.Add("2-exit-EXIT", exit);
+        expectedThreadSpec.VariableDefs.Add(threadVarDef1);
+        expectedThreadSpec.VariableDefs.Add(threadVarDef2);
+        
+        var expectedNumberOfNodes = numberOfStartMultipleThreads + numberOfEntrypointNodes + numberOfExitNodes;
+        Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
+        Assert.Equal(expectedThreadSpec, compiledWfThread);
+    }
 }

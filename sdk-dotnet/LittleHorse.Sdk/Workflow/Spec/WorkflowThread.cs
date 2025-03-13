@@ -8,12 +8,18 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 public class WorkflowThread
 {
     public Workflow Parent { get; private set; }
-    private ThreadSpec _spec;
+    private readonly ThreadSpec _spec;
     public string LastNodeName;
-    private bool _isActive;
-    private List<WfRunVariable> _wfRunVariables;
+    private readonly bool _isActive;
+    private readonly List<WfRunVariable> _wfRunVariables;
     private EdgeCondition? _lastNodeCondition;
     private readonly Queue<VariableMutation> _variableMutations;
+    
+    /// <summary>
+    /// This is the reserved Variable Name that can be used as a WfRunVariable in an Interrupt
+    /// Handler or Exception Handler thread.
+    /// </summary>
+    public const string HandlerInputVar = "INPUT";
     
     public WorkflowThread(Workflow parent, Action<WorkflowThread> action)
     {
@@ -130,8 +136,14 @@ public class WorkflowThread
             case Node.NodeOneofCase.StartThread:
                 node.StartThread = (StartThreadNode) subNode;
                 break;
+            case Node.NodeOneofCase.StartMultipleThreads:
+                node.StartMultipleThreads = (StartMultipleThreadsNode) subNode;
+                break;
             case Node.NodeOneofCase.WaitForThreads:
                 node.WaitForThreads = (WaitForThreadsNode) subNode;
+                break;
+            case Node.NodeOneofCase.Sleep:
+                node.Sleep = (SleepNode) subNode;
                 break;
             case Node.NodeOneofCase.None:
                 throw new InvalidOperationException("Not possible");
@@ -797,5 +809,92 @@ public class WorkflowThread
         var subBuilder = currentNode.WaitForThreads;
         subBuilder.PerThreadFailureHandlers.Add(handler);
         currentNode.WaitForThreads = subBuilder;
+    }
+    
+    /// <summary>
+    /// Given a WfRunVariable of type JSON_ARR, this function iterates over each object in that list
+    /// and creates a Child ThreadRun for each item. The list item is provided as an input variable
+    /// to the Child ThreadRun with the name `INPUT`.
+    /// </summary>
+    /// <param name="arrVar">
+    /// It is a WfRunVariable of type JSON_ARR that we iterate over.
+    /// </param>
+    /// <param name="threadName">
+    /// It is the name to assign to the created ThreadSpec.
+    /// </param>
+    /// <param name="threadFunc">
+    /// It is the function that defines the ThreadSpec.
+    /// </param>
+    /// <param name="inputVars">
+    /// It is a dictionary of input variables to pass to each child ThreadRun in addition
+    ///     to the list item.
+    /// </param>
+    /// <returns>a SpawnedThreads handle which we can use to wait for all child threads.</returns>
+    public SpawnedThreads SpawnThreadForEach(
+        WfRunVariable arrVar, string threadName, Action<WorkflowThread> threadFunc, 
+        Dictionary<string, object>? inputVars = null)
+    {
+        CheckIfWorkflowThreadIsActive();
+        string finalThreadName = Parent.AddSubThread(threadName, threadFunc);
+        var startMultiplesThreadNode = new StartMultipleThreadsNode
+        {
+            ThreadSpecName = finalThreadName,
+            Iterable = AssignVariable(arrVar)
+        };
+
+        if (inputVars != null)
+            foreach (var inputVar in inputVars)
+            {
+                startMultiplesThreadNode.Variables.Add(inputVar.Key, AssignVariable(inputVar.Value));
+            }
+
+        string nodeName = AddNode(threadName, Node.NodeOneofCase.StartMultipleThreads, startMultiplesThreadNode);
+        WfRunVariable internalStartedThreadVar = DeclareJsonArr(nodeName);
+        internalStartedThreadVar.Assign(new NodeOutput(nodeName, this));
+
+        return new SpawnedThreadsIterator(internalStartedThreadVar);
+    }
+    
+    /// <summary>
+    /// Registers an Interrupt Handler, such that when an ExternalEvent arrives with the specified
+    /// type, this ThreadRun is interrupted.
+    /// </summary>
+    /// <param name="interruptName">
+    /// The name of the ExternalEventDef to listen for.
+    /// </param>
+    /// <param name="handler">
+    /// A Thread Function defining a ThreadSpec to use to handle the Interrupt.
+    /// </param>
+    /// <returns>A NodeOutput that can be used for timeouts or exception handling. </returns>
+    public void RegisterInterruptHandler(string interruptName, Action<WorkflowThread> handler)
+    {
+        CheckIfWorkflowThreadIsActive();
+        string threadName = "interrupt-" + interruptName;
+        Parent.AddSubThread(threadName, handler);
+        Parent.AddExternalEventDefName(interruptName);
+
+        _spec.InterruptDefs.Add(
+            new InterruptDef
+            {
+                ExternalEventDefId = new ExternalEventDefId { Name = interruptName },
+                HandlerSpecName = threadName
+            }
+        );
+    }
+    
+    /// <summary>
+    /// Adds a SLEEP node which makes the ThreadRun sleep for a specified number of seconds.
+    /// 
+    /// </summary>
+    /// <param name="seconds">
+    /// It is either an integer representing the number of seconds to sleep for, or it is 
+    /// a WfRunVariable which evaluates to a VariableTypePb.INT specifying the number of seconds 
+    /// to sleep for.
+    /// </param>
+    public void SleepSeconds(object seconds)
+    {
+        CheckIfWorkflowThreadIsActive();
+        var sleepNode = new SleepNode { RawSeconds = AssignVariable(seconds) };
+        AddNode("sleep", Node.NodeOneofCase.Sleep, sleepNode);
     }
 }
