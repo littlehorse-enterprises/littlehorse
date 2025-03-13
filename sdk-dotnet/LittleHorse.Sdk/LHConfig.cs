@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿using System.Net;
+using Grpc.Core;
 using Grpc.Net.Client;
 using LittleHorse.Sdk.Authentication;
 using LittleHorse.Sdk.Utils;
@@ -21,6 +22,7 @@ namespace LittleHorse.Sdk {
         
         private OAuthConfig? _oAuthConfig;
         private OAuthClient? _oAuthClient;
+        private const string DefaultProtocol = "PLAINTEXT";
         
         public LHConfig(ILoggerFactory? loggerFactory = null)
         {
@@ -77,6 +79,14 @@ namespace LittleHorse.Sdk {
                 return _inputVariables.LHC_API_PORT;
             }
         }
+
+        public string ApiProtocol
+        {
+            get
+            {
+                return _inputVariables.LHC_API_PROTOCOL;
+            }
+        }
         
         public string? TenantId
         {
@@ -89,7 +99,7 @@ namespace LittleHorse.Sdk {
         {
             get
             {
-                if (_inputVariables.LHC_API_PROTOCOL != "PLAIN" && _inputVariables.LHC_API_PROTOCOL != "TLS")
+                if (_inputVariables.LHC_API_PROTOCOL != "PLAINTEXT" && _inputVariables.LHC_API_PROTOCOL != "TLS")
                 {
                     throw new ArgumentException("Invalid Protocol: " + _inputVariables.LHC_API_PROTOCOL);
                 }
@@ -180,13 +190,12 @@ namespace LittleHorse.Sdk {
                 return CreateGrpcChannelWithOauthCredentials(address, httpHandler, tenantCredentials);
             }
 
-            
-            
+            var channelCredentials = ApiProtocol.Equals(DefaultProtocol) ? ChannelCredentials.Insecure : new SslCredentials();
             return GrpcChannel.ForAddress(address, new GrpcChannelOptions
             {
                 HttpHandler = httpHandler,
-                Credentials = ChannelCredentials.Create(ChannelCredentials.Insecure, tenantCredentials),
-                UnsafeUseInsecureChannelCallCredentials = true
+                Credentials = ChannelCredentials.Create(channelCredentials, tenantCredentials),
+                UnsafeUseInsecureChannelCallCredentials = channelCredentials == ChannelCredentials.Insecure
             });
         }
 

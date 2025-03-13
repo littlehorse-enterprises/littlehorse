@@ -13,19 +13,19 @@ namespace LittleHorse.Sdk
             return "client-" + Guid.NewGuid().ToString().Replace("-", "");
         }
 
-        internal string LHC_API_HOST { get; set; } = "localhost";
-        internal int LHC_API_PORT { get; set; } = 2023;
-        internal string LHC_API_PROTOCOL { get; set; } = "PLAIN";
-        internal string LHC_CLIENT_ID { get; set; } = GenerateClientId();
-        internal string? LHC_CA_CERT { get; set; }
-        internal string? LHC_CLIENT_CERT { get; set; }
-        internal string? LHC_CLIENT_KEY { get; set; }
-        internal string? LHC_OAUTH_CLIENT_ID { get; set; }
-        internal string? LHC_OAUTH_CLIENT_SECRET { get; set; }
-        internal string? LHC_OAUTH_ACCESS_TOKEN_URL { get; set; }
-        internal string? LHC_TENANT_ID { get; set; }
-        internal int LHW_NUM_WORKER_THREADS { get; set; } = 8;
-        internal string LHW_TASK_WORKER_VERSION { get; set; } = string.Empty;
+        internal string LHC_API_HOST { get; } = "localhost";
+        internal int LHC_API_PORT { get; } = 2023;
+        internal string LHC_API_PROTOCOL { get; } = "PLAINTEXT";
+        internal string LHC_CLIENT_ID { get; } = GenerateClientId();
+        internal string? LHC_CA_CERT { get; }
+        internal string? LHC_CLIENT_CERT { get; }
+        internal string? LHC_CLIENT_KEY { get; }
+        internal string? LHC_OAUTH_CLIENT_ID { get; }
+        internal string? LHC_OAUTH_CLIENT_SECRET { get; }
+        internal string? LHC_OAUTH_ACCESS_TOKEN_URL { get; }
+        internal string? LHC_TENANT_ID { get; }
+        internal int LHW_NUM_WORKER_THREADS { get; } = 8;
+        internal string LHW_TASK_WORKER_VERSION { get; } = string.Empty;
 
 
         internal LHInputVariables()
