@@ -142,6 +142,9 @@ public class WorkflowThread
             case Node.NodeOneofCase.WaitForThreads:
                 node.WaitForThreads = (WaitForThreadsNode) subNode;
                 break;
+            case Node.NodeOneofCase.Sleep:
+                node.Sleep = (SleepNode) subNode;
+                break;
             case Node.NodeOneofCase.None:
                 throw new InvalidOperationException("Not possible");
         }
@@ -850,5 +853,48 @@ public class WorkflowThread
         internalStartedThreadVar.Assign(new NodeOutput(nodeName, this));
 
         return new SpawnedThreadsIterator(internalStartedThreadVar);
+    }
+    
+    /// <summary>
+    /// Registers an Interrupt Handler, such that when an ExternalEvent arrives with the specified
+    /// type, this ThreadRun is interrupted.
+    /// </summary>
+    /// <param name="interruptName">
+    /// The name of the ExternalEventDef to listen for.
+    /// </param>
+    /// <param name="handler">
+    /// A Thread Function defining a ThreadSpec to use to handle the Interrupt.
+    /// </param>
+    /// <returns>A NodeOutput that can be used for timeouts or exception handling. </returns>
+    public void RegisterInterruptHandler(string interruptName, Action<WorkflowThread> handler)
+    {
+        CheckIfWorkflowThreadIsActive();
+        string threadName = "interrupt-" + interruptName;
+        Parent.AddSubThread(threadName, handler);
+        Parent.AddExternalEventDefName(interruptName);
+
+        _spec.InterruptDefs.Add(
+            new InterruptDef
+            {
+                ExternalEventDefId = new ExternalEventDefId { Name = interruptName },
+                HandlerSpecName = threadName
+            }
+        );
+    }
+    
+    /// <summary>
+    /// Adds a SLEEP node which makes the ThreadRun sleep for a specified number of seconds.
+    /// 
+    /// </summary>
+    /// <param name="seconds">
+    /// It is either an integer representing the number of seconds to sleep for, or it is 
+    /// a WfRunVariable which evaluates to a VariableTypePb.INT specifying the number of seconds 
+    /// to sleep for.
+    /// </param>
+    public void SleepSeconds(object seconds)
+    {
+        CheckIfWorkflowThreadIsActive();
+        var sleepNode = new SleepNode { RawSeconds = AssignVariable(seconds) };
+        AddNode("sleep", Node.NodeOneofCase.Sleep, sleepNode);
     }
 }
