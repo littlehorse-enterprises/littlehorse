@@ -13,6 +13,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
@@ -73,9 +74,14 @@ public class PutExternalEventRequestModel extends CoreSubCommand<PutExternalEven
         }
 
         if (guid == null) guid = LHUtil.generateGuid();
+        ExternalEventIdModel externalEventId = new ExternalEventIdModel(wfRunId, externalEventDefId, guid);
 
-        ExternalEventModel evt = new ExternalEventModel(
-                content, wfRunId, externalEventDefId, guid, threadRunNumber, nodeRunPosition, eventTime);
+        if (getableManager.get(externalEventId) != null) {
+            throw new LHApiException(Status.ALREADY_EXISTS, "ExternalEvent already exists");
+        }
+
+        ExternalEventModel evt =
+                new ExternalEventModel(content, externalEventId, threadRunNumber, nodeRunPosition, eventTime);
         getableManager.put(evt);
 
         Optional<Date> expirationTime = eed.getRetentionPolicy().scheduleCleanup(eventTime);

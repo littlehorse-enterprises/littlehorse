@@ -12,8 +12,10 @@ import io.littlehorse.sdk.common.proto.ExternalEventId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Optional;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
+@Slf4j
 public class ExternalEventIdModel extends CoreObjectId<ExternalEventId, ExternalEvent, ExternalEventModel> {
 
     private WfRunIdModel wfRunId;
@@ -25,7 +27,7 @@ public class ExternalEventIdModel extends CoreObjectId<ExternalEventId, External
     public ExternalEventIdModel(WfRunIdModel wfRunId, ExternalEventDefIdModel externalEventDefId, String guid) {
         this.wfRunId = wfRunId;
         this.externalEventDefId = externalEventDefId;
-        this.guid = guid;
+        this.guid = guid == null || guid.isEmpty() ? LHUtil.generateGuid() : guid;
     }
 
     public ExternalEventIdModel(String wfRunId, String externalEventDefName, String guid) {
@@ -67,6 +69,7 @@ public class ExternalEventIdModel extends CoreObjectId<ExternalEventId, External
 
     @Override
     public void initFromString(String storeKey) {
+        log.info(storeKey);
         String[] split = storeKey.split("/");
         wfRunId = (WfRunIdModel) ObjectIdModel.fromString(split[0], WfRunIdModel.class);
         externalEventDefId =
