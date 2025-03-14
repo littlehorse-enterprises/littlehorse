@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChildThreadsForeachExample"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterruptHandlerExample", "Examples\InterruptHandlerExample\InterruptHandlerExample.csproj", "{F4CE0937-29B6-4E95-97EE-D1B766D5F38B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwaitWorkflowEventExample", "Examples\AwaitWorkflowEventExample\AwaitWorkflowEventExample.csproj", "{0FA4E6DF-B4CA-47C2-B1B4-09AC8FD29D2E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,10 @@ Global
 		{F4CE0937-29B6-4E95-97EE-D1B766D5F38B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4CE0937-29B6-4E95-97EE-D1B766D5F38B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4CE0937-29B6-4E95-97EE-D1B766D5F38B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FA4E6DF-B4CA-47C2-B1B4-09AC8FD29D2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FA4E6DF-B4CA-47C2-B1B4-09AC8FD29D2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FA4E6DF-B4CA-47C2-B1B4-09AC8FD29D2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FA4E6DF-B4CA-47C2-B1B4-09AC8FD29D2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{88CB23B3-1174-45F5-9F72-46AB57BAB661} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
@@ -105,5 +111,6 @@ Global
 		{27C6D952-2801-4BFE-8FA3-BE55F6C0988E} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
 		{A7DD637B-1C09-4136-BBA4-15C928EF5506} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
 		{F4CE0937-29B6-4E95-97EE-D1B766D5F38B} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
+		{0FA4E6DF-B4CA-47C2-B1B4-09AC8FD29D2E} = {EEC3BB78-BFA5-4525-A965-4EAA3455BBAE}
 	EndGlobalSection
 EndGlobal
