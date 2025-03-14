@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
-import org.awaitility.Awaitility;
 
 /**
  * The LHTaskWorker talks to the LH Servers and executes a specified Task Method every time a Task
@@ -161,21 +160,23 @@ public class LHTaskWorker implements Closeable {
 
     private void validateTaskDefAndExecutable() throws TaskSchemaMismatchError {
         if (this.taskDef == null) {
-            // Await the TaskDef
-            Awaitility.await()
-                    .atMost(Duration.ofSeconds(2))
-                    .ignoreExceptionsMatching((exn) -> {
-                        return exn instanceof StatusRuntimeException
-                                && ((StatusRuntimeException) exn)
-                                        .getStatus()
-                                        .getCode()
-                                        .equals(Code.NOT_FOUND);
-                    })
-                    .until(() -> {
-                        this.taskDef = grpcClient.getTaskDef(
-                                TaskDefId.newBuilder().setName(taskDefName).build());
-                        return true;
-                    });
+            long start = System.currentTimeMillis();
+            long timeout = start + Duration.ofSeconds(2).toMillis();
+            do {
+                try {
+                    TaskDef taskDef = grpcClient.getTaskDef(
+                            TaskDefId.newBuilder().setName(taskDefName).build());
+                    if (taskDef != null) {
+                        this.taskDef = taskDef;
+                        break;
+                    }
+                } catch (StatusRuntimeException exn) {
+                    if (!(exn.getStatus().getCode() == Code.NOT_FOUND)) {
+                        throw exn;
+                    }
+                }
+
+            } while (System.currentTimeMillis() < timeout);
         }
 
         LHTaskSignature signature =
