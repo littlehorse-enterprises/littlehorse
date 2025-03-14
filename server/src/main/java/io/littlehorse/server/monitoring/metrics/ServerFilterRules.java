@@ -40,7 +40,6 @@ public final class ServerFilterRules {
 
             // Filter metrics to reduce
             deny("kafka_stream_state_"),
-            accept("kafka_stream_state"),
             deny("kafka_stream_task"),
             deny("kafka_stream_processor"),
             deny("kafka_producer"),
