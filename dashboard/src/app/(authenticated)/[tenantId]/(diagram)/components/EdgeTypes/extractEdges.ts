@@ -1,9 +1,9 @@
 import { getVariable } from '@/app/utils'
 import { getComparatorSymbol } from '@/app/utils/comparatorUtils'
-import { Comparator, Edge as EdgeProto, ThreadSpec } from 'littlehorse-client/proto'
+import { Edge as EdgeProto, ThreadSpec } from 'littlehorse-client/proto'
 import { Edge, MarkerType } from 'reactflow'
 
-export const extractEdges = (spec: ThreadSpec): Edge[] => {
+export const extractEdges = (spec: ThreadSpec, threadName: string): Edge[] => {
   const targetMap = new Map<string, number>()
   const sourceMap = new Map<string, number>()
   return Object.entries(spec.nodes).flatMap(([source, node]) => {
@@ -19,11 +19,12 @@ export const extractEdges = (spec: ThreadSpec): Edge[] => {
       sourceMap.set(source, sourceIndex + 1)
 
       const label = extractEdgeLabel(edge)
+
       return {
-        id,
-        source,
+        id: `${threadName}:${id}`,
+        source: `${threadName}:${source}`,
         type: 'default',
-        target: edge.sinkNodeName,
+        target: `${threadName}:${edge.sinkNodeName}`,
         label,
         data: edge,
         targetHandle: `target-${targetIndex}`,

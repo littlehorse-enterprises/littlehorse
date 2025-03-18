@@ -1,16 +1,18 @@
-import { Node as NodeProto, ThreadSpec } from 'littlehorse-client/proto'
-import { Node, NodeProps } from 'reactflow'
+import { Node as NodeProto, WfSpec } from 'littlehorse-client/proto'
+import { NodeProps } from 'reactflow'
 
-export function extractNodes(spec: ThreadSpec): Node[] {
-  return Object.entries(spec.nodes).map(([id, node]) => {
-    const type = getNodeType(node)
-    return {
-      id,
-      type,
-      data: { ...node, ...extractData(type, node) },
-      position: { x: 0, y: 0 },
-    }
-  })
+export function extractWfSpecNodes(wfSpec: WfSpec) {
+  return Object.entries(wfSpec.threadSpecs).flatMap(([threadName, threadSpec]) =>
+    Object.entries(threadSpec.nodes).map(([id, node]) => {
+      const type = getNodeType(node)
+      return {
+        id: `${threadName}:${id}`,
+        type,
+        data: { ...node, ...extractData(type, node) },
+        position: { x: 0, y: 0 },
+      }
+    })
+  )
 }
 
 const extractData = (type: NodeType, node: NodeProto) => {

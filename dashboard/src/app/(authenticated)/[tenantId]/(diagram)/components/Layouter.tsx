@@ -14,23 +14,52 @@ export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: s
   const edges = useStore(store => store.edges)
   const setNodes = useStore(store => store.setNodes)
   const { fitView } = useReactFlow()
+  console.log("Layouter nodes", nodes)
 
   const onLoad = useCallback(
     (nodes: Node[], edges: Edge[]) => {
       const dagreGraph = new dagre.graphlib.Graph()
       dagreGraph.setDefaultEdgeLabel(() => ({}))
-      dagreGraph.setGraph({ rankdir: 'LR', align: 'DR', ranksep: 100 })
-      nodes.forEach(node => {
-        dagreGraph.setNode(node.id, { width: node.width, height: node.height })
+      dagreGraph.setGraph({})
+
+      nodes.forEach((node) => {
+        if (dagreGraph.hasNode(node.id)) {
+          dagreGraph.removeNode(node.id)
+        }
       })
 
-      edges.forEach(edge => {
-        dagreGraph.setEdge(edge.source, edge.target, { width: edge.label ? EDGE_WIDTH : undefined })
+      const isHorizontal = 'LR' === 'LR'
+      dagreGraph.setGraph({
+        rankdir: isHorizontal ? 'LR' : 'TB',
+        align: 'DL',
+        ranksep: 80,
+        nodesep: 100,
+        edgesep: 50,
+        marginx: 20,
+        marginy: 20,
+        acyclicer: 'greedy',
+        ranker: 'network-simplex'
+      })
+
+      nodes.forEach((node) => {
+        dagreGraph.setNode(node.id, {
+          width: node.width,
+          height: node.height,
+          label: node.data?.label || node.id
+        })
+      })
+
+      edges.forEach((edge) => {
+        const weight = edge.source.includes('parent') || edge.target.includes('parent') ? 2 : 1;
+        dagreGraph.setEdge(edge.source, edge.target, {
+          weight: weight,
+          minlen: 1
+        })
       })
 
       dagre.layout(dagreGraph)
 
-      const layoutedNodes = nodes.map(node => {
+      const layoutedNodes = nodes.map((node) => {
         const nodeWithPosition = dagreGraph.node(node.id)
         const nodeRun = nodeRuns?.find(nodeRun => {
           return nodeRun.nodeName === node.id
@@ -44,7 +73,10 @@ export const Layouter: FC<{ nodeRuns?: NodeRun[]; nodeRunNameToBeHighlighted?: s
         return {
           ...node,
           data: { ...node.data, nodeRun, fade, nodeNeedsToBeHighlighted, nodeRunsList },
-          position: { x: nodeWithPosition.x - node.width! / 2, y: nodeWithPosition.y - node.height! / 2 },
+          position: {
+            x: nodeWithPosition.x - node.width! / 2,
+            y: nodeWithPosition.y - node.height! / 2,
+          },
           layouted: true,
         }
       })
