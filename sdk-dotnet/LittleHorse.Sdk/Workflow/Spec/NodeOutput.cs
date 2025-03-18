@@ -18,9 +18,11 @@ public class NodeOutput
         {
             throw new Exception("Cannot use jsonpath() twice on same node!");
         }
-        var nodeOutput = new NodeOutput(NodeName, Parent);
-        JsonPath = path;
-        
+        var nodeOutput = new NodeOutput(NodeName, Parent)
+        {
+            JsonPath = path
+        };
+
         return nodeOutput;
     }
     
