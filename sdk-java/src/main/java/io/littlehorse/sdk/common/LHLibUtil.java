@@ -27,6 +27,7 @@ import io.littlehorse.sdk.common.util.JsonResult;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 public class LHLibUtil {
 
@@ -247,7 +248,7 @@ public class LHLibUtil {
     }
 
     public static boolean isJSON_ARR(Class<?> cls) {
-        return cls.isArray();
+        return List.class.isAssignableFrom(cls) || cls.isArray();
     }
 
     public static VariableType javaClassToLHVarType(Class<?> cls) {
