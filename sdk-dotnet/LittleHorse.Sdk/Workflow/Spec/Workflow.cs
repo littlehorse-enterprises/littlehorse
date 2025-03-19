@@ -1,5 +1,4 @@
 using LittleHorse.Sdk.Common.Proto;
-using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Helper;
 using Microsoft.Extensions.Logging;
 
@@ -11,13 +10,14 @@ public class Workflow
 {
     private readonly ILogger<Workflow>? _logger;
     private string _name;
-    private Action<WorkflowThread> _entryPoint;
+    private readonly Action<WorkflowThread> _entryPoint;
     private PutWfSpecRequest? _compiledWorkflow;
-    private PutWfSpecRequest _spec;
-    private Queue<Tuple<string, Action<WorkflowThread>>> _threadActions;
+    private readonly PutWfSpecRequest _spec;
+    private readonly Queue<Tuple<string, Action<WorkflowThread>>> _threadActions;
     private readonly string _parentWfSpecName;
     private readonly HashSet<string> _requiredTaskDefNames;
     private readonly HashSet<string> _requiredEedNames;
+    private readonly HashSet<string> _requiredWorkflowEventDefNames;
     private int _defaultTaskTimeout;
     private int _defaultSimpleRetries;
     internal ExponentialBackoffRetryPolicy _defaultExponentialBackoff = null!;
@@ -33,6 +33,7 @@ public class Workflow
         _threadActions = new Queue<Tuple<string, Action<WorkflowThread>>>();
         _requiredTaskDefNames = new HashSet<string>();
         _requiredEedNames = new HashSet<string>();
+        _requiredWorkflowEventDefNames = new HashSet<string>();
     }
 
     public PutWfSpecRequest Compile()
@@ -161,5 +162,10 @@ public class Workflow
     {
         _compiledWorkflow ??= CompileWorkflowDetails();
         return _requiredEedNames;
+    }
+    
+    internal void AddWorkflowEventDefName(string name) 
+    {
+        _requiredWorkflowEventDefNames.Add(name);
     }
 }

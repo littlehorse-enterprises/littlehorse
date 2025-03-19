@@ -46,6 +46,10 @@ public class MetronomeGetWfRunExecutor {
         ShutdownHook.add("Metronome: GetWfRun  Main Executor Thread", () -> closeExecutor(mainExecutor));
     }
 
+    private boolean isRetriesEnabled() {
+        return retries > 0;
+    }
+
     public void start() {
         mainExecutor.scheduleAtFixedRate(
                 () -> {
@@ -82,14 +86,17 @@ public class MetronomeGetWfRunExecutor {
     private void executeRun(final String id, final Attempt attempt) {
         log.debug("GetWfRun {}", id);
 
-        // exit if it gets exhausted
-        if (attempt.getAttempt() >= retries) {
-            sendExhaustedRetries(id);
-            return;
-        }
+        if (isRetriesEnabled()) {
+            // exit if it gets exhausted
+            // attempt 1 does not count
+            if (attempt.getAttempt() > retries) {
+                sendExhaustedRetries(id);
+                return;
+            }
 
-        // update attempt number
-        updateAttempt(id, attempt);
+            // update attempt number
+            updateAttempt(id, attempt);
+        }
 
         // get status
         final Instant start = Instant.now();
@@ -98,19 +105,23 @@ public class MetronomeGetWfRunExecutor {
 
         // send beat and exit
         sendBeat(id, status, latency);
-
-        if (status.equals(LHStatus.COMPLETED)) {
-            repository.delete(id);
-            return;
-        }
-
-        // log in case of error
-        log.error("GetWfRun returns workflow error {} {}", id, status);
     }
 
     private void sendBeat(final String id, final LHStatus status, final Duration latency) {
-        final BeatStatus beatStatus = BeatStatus.builder(
-                        status.equals(LHStatus.COMPLETED) ? BeatStatus.Code.OK : BeatStatus.Code.ERROR)
+        // for debug reasons
+        if (!LHStatus.COMPLETED.equals(status)) {
+            log.error("GetWfRun returns workflow error {} {}", id, status);
+        }
+
+        // only running WFs are retryable, the others are deleted
+        // if retries are disabled delete all wf runs
+        if (!LHStatus.RUNNING.equals(status) || !isRetriesEnabled()) {
+            repository.delete(id);
+        }
+
+        final BeatStatus.Code beatStatusCode =
+                LHStatus.COMPLETED.equals(status) ? BeatStatus.Code.OK : BeatStatus.Code.ERROR;
+        final BeatStatus beatStatus = BeatStatus.builder(beatStatusCode)
                 .source(BeatStatus.Source.WORKFLOW)
                 .reason(status.name())
                 .build();
@@ -125,6 +136,9 @@ public class MetronomeGetWfRunExecutor {
     }
 
     private void sendExhaustedRetries(final String id) {
+        log.error("Exhausted retries getWfRun {}", id);
+
+        // delete because it reaches the max attempt
         repository.delete(id);
 
         final BeatStatus beatStatus = BeatStatus.builder(BeatStatus.Code.ERROR)
@@ -139,18 +153,11 @@ public class MetronomeGetWfRunExecutor {
         producer.send(beat);
     }
 
-    private void updateAttempt(final String id, final Attempt attempt) {
-        final Attempt newAttempt = Attempt.newBuilder()
-                .setStart(attempt.getStart())
-                .setLastAttempt(Timestamps.now())
-                .setAttempt(attempt.getAttempt() + 1)
-                .build();
-        log.debug("GetWfRun {} Retry {}", id, newAttempt.getAttempt());
-        repository.save(id, newAttempt);
-    }
-
     private void sendError(final String id, final Exception e) {
-        log.error("Error executing getWfRun {}", e.getMessage(), e);
+        log.error("Error executing getWfRun {}", id, e);
+
+        // delete because error is not retryable
+        repository.delete(id);
 
         final BeatStatus.BeatStatusBuilder statusBuilder =
                 BeatStatus.builder(BeatStatus.Code.ERROR).reason(e.getClass().getSimpleName());
@@ -167,5 +174,15 @@ public class MetronomeGetWfRunExecutor {
                 .build();
 
         producer.send(beat);
+    }
+
+    private void updateAttempt(final String id, final Attempt attempt) {
+        final Attempt newAttempt = Attempt.newBuilder()
+                .setStart(attempt.getStart())
+                .setLastAttempt(Timestamps.now())
+                .setAttempt(attempt.getAttempt() + 1)
+                .build();
+        log.debug("GetWfRun {} Retry {}", id, newAttempt.getAttempt());
+        repository.save(id, newAttempt);
     }
 }

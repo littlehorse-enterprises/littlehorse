@@ -40,7 +40,11 @@ export const FormInput: FC<FormFieldProp> = props => {
         {...register(name, {
           required: required ? `${name} is required` : false,
           setValueAs: (value: string) => {
-            return type === VariableType.INT || type === VariableType.DOUBLE ? parseFloat(value) || undefined : value
+            if (type === VariableType.INT || type === VariableType.DOUBLE) {
+              const parsed = parseFloat(value)
+              return Number.isNaN(parsed) ? undefined : parsed
+            }
+            return value
           },
         })}
       />
