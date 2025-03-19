@@ -62,8 +62,13 @@ public class LHLibUtilTest {
     }
 
     @Test
-    void shouldConvertJavaArrayClassToLHJsonArr() {
+    void shouldConvertJavaStringArrayClassToLHJsonArr() {
         Assertions.assertThat(LHLibUtil.javaClassToLHVarType(String[].class)).isEqualTo(VariableType.JSON_ARR);
+    }
+
+    @Test
+    void shouldConvertJavaPojoArrayClassToLHJsonArr() {
+        Assertions.assertThat(LHLibUtil.javaClassToLHVarType(Book[].class)).isEqualTo(VariableType.JSON_ARR);
     }
 
     @Test
