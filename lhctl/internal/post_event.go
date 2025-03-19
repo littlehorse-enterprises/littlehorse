@@ -86,8 +86,12 @@ lhctl postEvent <wfRunId> <externalEventName>
 			ExternalEventDefId: &lhproto.ExternalEventDefId{Name: eedName},
 			Content:            content,
 			Guid:               &guid,
-			ThreadRunNumber:    &threadRunNumber,
-			NodeRunPosition:    &nodeRunNumber,
+		}
+		if threadRunNumber != -1 {
+			req.ThreadRunNumber = &threadRunNumber
+		}
+		if nodeRunNumber != -1 {
+			req.NodeRunPosition = &nodeRunNumber
 		}
 
 		littlehorse.PrintResp(
