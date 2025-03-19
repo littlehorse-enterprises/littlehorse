@@ -4,15 +4,8 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 
 public class UserTaskOutput : NodeOutput
 {
-    private VariableAssignment _notes;
-    
     public UserTaskOutput(string nodeName, WorkflowThread parent): base(nodeName, parent)
     {
-    }
-    
-    public VariableAssignment GetNotes()
-    {
-        return _notes;
     }
 
     private void AddNotes(object notes) 
@@ -21,17 +14,14 @@ public class UserTaskOutput : NodeOutput
         
         Node node = Parent.FindNode(NodeName);
         node.UserTask.Notes =  notesParsed;
-        Parent.Compile().Nodes.Add(NodeName, node);
     }
 
     private void AddOnCancellationException(object exceptionName) 
     {
         VariableAssignment exceptionNameParsed = Parent.AssignVariableHelper(exceptionName);
 
-        // get the Node
         Node node = Parent.FindNode(NodeName);
         node.UserTask.OnCancellationExceptionName = exceptionNameParsed;
-        Parent.Compile().Nodes.Add(NodeName, node);
     }
 
     public UserTaskOutput WithNotes(string notes) 
