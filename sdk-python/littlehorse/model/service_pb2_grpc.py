@@ -6,6 +6,7 @@ import warnings
 import littlehorse.model.acls_pb2 as acls__pb2
 import littlehorse.model.external_event_pb2 as external__event__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
+import littlehorse.model.metrics_pb2 as metrics__pb2
 import littlehorse.model.node_run_pb2 as node__run__pb2
 import littlehorse.model.object_id_pb2 as object__id__pb2
 import littlehorse.model.scheduled_wf_run_pb2 as scheduled__wf__run__pb2
@@ -81,6 +82,11 @@ class LittleHorseStub(object):
                 '/littlehorse.LittleHorse/PutWfSpec',
                 request_serializer=service__pb2.PutWfSpecRequest.SerializeToString,
                 response_deserializer=wf__spec__pb2.WfSpec.FromString,
+                _registered_method=True)
+        self.PutMetricSpec = channel.unary_unary(
+                '/littlehorse.LittleHorse/PutMetricSpec',
+                request_serializer=service__pb2.PutMetricSpecRequest.SerializeToString,
+                response_deserializer=metrics__pb2.MetricSpec.FromString,
                 _registered_method=True)
         self.GetWfSpec = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetWfSpec',
@@ -422,6 +428,16 @@ class LittleHorseStub(object):
                 request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
                 response_deserializer=service__pb2.ServerVersion.FromString,
                 _registered_method=True)
+        self.ListMetricSpecs = channel.unary_unary(
+                '/littlehorse.LittleHorse/ListMetricSpecs',
+                request_serializer=service__pb2.ListMetricSpecRequest.SerializeToString,
+                response_deserializer=service__pb2.MetricSpecList.FromString,
+                _registered_method=True)
+        self.ListMetrics = channel.unary_unary(
+                '/littlehorse.LittleHorse/ListMetrics',
+                request_serializer=service__pb2.ListMetricsRequest.SerializeToString,
+                response_deserializer=service__pb2.MetricList.FromString,
+                _registered_method=True)
 
 
 class LittleHorseServicer(object):
@@ -471,6 +487,13 @@ class LittleHorseServicer(object):
 
     def PutWfSpec(self, request, context):
         """Creates a WfSpec.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PutMetricSpec(self, request, context):
+        """Creates a new metric spec
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1006,6 +1029,19 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListMetricSpecs(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListMetrics(self, request, context):
+        """List the latest metrics for a given MetricSpecId
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_LittleHorseServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -1043,6 +1079,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.PutWfSpec,
                     request_deserializer=service__pb2.PutWfSpecRequest.FromString,
                     response_serializer=wf__spec__pb2.WfSpec.SerializeToString,
+            ),
+            'PutMetricSpec': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutMetricSpec,
+                    request_deserializer=service__pb2.PutMetricSpecRequest.FromString,
+                    response_serializer=metrics__pb2.MetricSpec.SerializeToString,
             ),
             'GetWfSpec': grpc.unary_unary_rpc_method_handler(
                     servicer.GetWfSpec,
@@ -1384,6 +1425,16 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                     response_serializer=service__pb2.ServerVersion.SerializeToString,
             ),
+            'ListMetricSpecs': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListMetricSpecs,
+                    request_deserializer=service__pb2.ListMetricSpecRequest.FromString,
+                    response_serializer=service__pb2.MetricSpecList.SerializeToString,
+            ),
+            'ListMetrics': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListMetrics,
+                    request_deserializer=service__pb2.ListMetricsRequest.FromString,
+                    response_serializer=service__pb2.MetricList.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
             'littlehorse.LittleHorse', rpc_method_handlers)
@@ -1574,6 +1625,33 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/PutWfSpec',
             service__pb2.PutWfSpecRequest.SerializeToString,
             wf__spec__pb2.WfSpec.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PutMetricSpec(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/PutMetricSpec',
+            service__pb2.PutMetricSpecRequest.SerializeToString,
+            metrics__pb2.MetricSpec.FromString,
             options,
             channel_credentials,
             insecure,
@@ -3410,6 +3488,60 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/GetServerVersion',
             google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             service__pb2.ServerVersion.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListMetricSpecs(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/ListMetricSpecs',
+            service__pb2.ListMetricSpecRequest.SerializeToString,
+            service__pb2.MetricSpecList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListMetrics(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/ListMetrics',
+            service__pb2.ListMetricsRequest.SerializeToString,
+            service__pb2.MetricList.FromString,
             options,
             channel_credentials,
             insecure,

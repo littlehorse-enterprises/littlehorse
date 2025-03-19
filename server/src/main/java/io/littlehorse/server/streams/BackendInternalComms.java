@@ -729,6 +729,7 @@ public class BackendInternalComms implements Closeable {
 
         String endKey = req.boundedObjectIdScan.getEndObjectId() + "~";
         String startKey;
+        log.info("query on partition key {} number {}", req.partitionKey, partition);
         if (partBookmark == null) {
             startKey = StoredGetable.getRocksDBKey(req.boundedObjectIdScan.getStartObjectId(), req.getObjectType());
         } else {
