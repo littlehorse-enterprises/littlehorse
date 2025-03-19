@@ -543,4 +543,255 @@ public class WorkflowThreadTest
         Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
         Assert.Equal(expectedThreadSpec, compiledWfThread);
     }
+
+    [Fact]
+    public void WorkflowThread_WithInterruptDefAndSleepNode_ShouldCompile()
+    {
+        var numberOfExitNodes = 1;
+        var numberOfEntrypointNodes = 1;
+        var numberOfTaskNodesInMainThread = 1;
+        var numberOfSleepNodes = 1;
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        void EntryPointAction(WorkflowThread wf)
+        {
+            wf.RegisterInterruptHandler(
+                "interruption-event",
+                handler =>
+                {
+                    handler.Execute("some-task");
+                });
+            wf.SleepSeconds(30);
+            wf.Execute("my-task");
+        }
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        
+        var compiledWfThread = workflowThread.Compile();
+        
+        var expectedThreadSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-sleep-SLEEP" }
+            }
+        };
+
+        var sleepNode = new Node
+        {
+            Sleep = new SleepNode
+            {
+                RawSeconds = new VariableAssignment
+                {
+                    LiteralValue = new VariableValue { Int = 30 }
+                }
+            },
+            OutgoingEdges = { new Edge { SinkNodeName = "2-my-task-TASK" } }
+        };
+
+        var taskNode = new Node
+        {
+            Task = new TaskNode
+            {
+                TaskDefId = new TaskDefId
+                {
+                    Name = "my-task"
+                }
+            },
+            OutgoingEdges = { new Edge { SinkNodeName = "3-exit-EXIT" } }
+        };
+        
+        var exit = new Node { Exit = new ExitNode() };
+
+        var interruptDef = new InterruptDef
+        {
+            ExternalEventDefId = new ExternalEventDefId { Name = "interruption-event" },
+            HandlerSpecName = "interrupt-interruption-event"
+        };
+        
+        expectedThreadSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedThreadSpec.Nodes.Add("1-sleep-SLEEP", sleepNode);
+        expectedThreadSpec.Nodes.Add("2-my-task-TASK", taskNode);
+        expectedThreadSpec.Nodes.Add("3-exit-EXIT", exit);
+        expectedThreadSpec.InterruptDefs.Add(interruptDef);
+        
+        var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfSleepNodes + numberOfTaskNodesInMainThread
+                                    + numberOfExitNodes;
+        Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
+        Assert.Equal(expectedThreadSpec, compiledWfThread);
+    }
+
+    [Fact]
+    public void WorkflowThread_WaitForConditionNode_ShouldCompile()
+    {
+        var numberOfExitNodes = 1;
+        var numberOfEntrypointNodes = 1;
+        var numberOfWaitForConditionsNodes = 1;
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        void EntryPointAction(WorkflowThread wf)
+        {
+            WfRunVariable counter = wf.DeclareInt("counter").WithDefault(2);
+
+            wf.WaitForCondition(wf.Condition(counter, Comparator.Equals, 0));
+
+            // Interrupt handler which mutates the parent variable
+            wf.RegisterInterruptHandler("change-counter-event", handler =>
+            {
+                handler.Mutate(counter, VariableMutationType.Subtract, 1);
+            });
+        }
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        
+        var compiledWfThread = workflowThread.Compile();
+        
+        var expectedThreadSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-wait-for-condition-WAIT_FOR_CONDITION" }
+            }
+        };
+        
+        var waitForConditionNode = new Node
+        {
+            WaitForCondition = new WaitForConditionNode
+            {
+                Condition = new EdgeCondition
+                {
+                    Left = new VariableAssignment { VariableName = "counter" },
+                    Comparator = Comparator.Equals,
+                    Right = new VariableAssignment { LiteralValue = new VariableValue { Int = 0 } }
+                }
+            },
+            OutgoingEdges = { new Edge { SinkNodeName = "2-exit-EXIT" } }
+        };
+        
+        var exit = new Node { Exit = new ExitNode() };
+
+        var threadVarDefs = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "counter",
+                Type = VariableType.Int,
+                DefaultValue = new VariableValue { Int = 2 }
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+
+        var interruptDef = new InterruptDef
+        {
+            ExternalEventDefId = new ExternalEventDefId { Name = "change-counter-event" },
+            HandlerSpecName = "interrupt-change-counter-event"
+        };
+        
+        expectedThreadSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedThreadSpec.Nodes.Add("1-wait-for-condition-WAIT_FOR_CONDITION", waitForConditionNode);
+        expectedThreadSpec.Nodes.Add("2-exit-EXIT", exit);
+        expectedThreadSpec.VariableDefs.Add(threadVarDefs);
+        expectedThreadSpec.InterruptDefs.Add(interruptDef);
+        
+        var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfWaitForConditionsNodes
+                                    + numberOfExitNodes;
+        Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
+        Assert.Equal(expectedThreadSpec, compiledWfThread);
+    }
+
+    [Fact]
+    public void WorkflowThread_ThrowingManyEvents_ShouldCompile()
+    {
+        var numberOfExitNodes = 1;
+        var numberOfEntrypointNodes = 1;
+        var numberOfThrowEventNodes = 3;
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+        void EntryPointAction(WorkflowThread wf)
+        {
+            WfRunVariable eventInput = wf.DeclareStr("input");
+            WfRunVariable eventPayload = wf.DeclareJsonObj("complex-data");
+
+            wf.ThrowEvent("one-event", eventInput);
+            wf.ThrowEvent("other-event", eventPayload);
+            wf.ThrowEvent("another-event", "any-content");
+        }
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        
+        var compiledWfThread = workflowThread.Compile();
+        
+        var expectedThreadSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-throw-one-event-THROW_EVENT" }
+            }
+        };
+        
+        var throwEventNode1 = new Node
+        {
+            ThrowEvent = new ThrowEventNode
+            {
+                EventDefId = new WorkflowEventDefId { Name = "one-event" },
+                Content = new VariableAssignment { VariableName = "input" }
+            },
+            OutgoingEdges = { new Edge { SinkNodeName = "2-throw-other-event-THROW_EVENT" } }
+        };
+        
+        var throwEventNode2 = new Node
+        {
+            ThrowEvent = new ThrowEventNode
+            {
+                EventDefId = new WorkflowEventDefId { Name = "other-event" },
+                Content = new VariableAssignment { VariableName = "complex-data" }
+            },
+            OutgoingEdges = { new Edge { SinkNodeName = "3-throw-another-event-THROW_EVENT" } }
+        };
+        
+        var throwEventNode3 = new Node
+        {
+            ThrowEvent = new ThrowEventNode
+            {
+                EventDefId = new WorkflowEventDefId { Name = "another-event" },
+                Content = new VariableAssignment { LiteralValue = new VariableValue { Str = "any-content" } }
+            },
+            OutgoingEdges = { new Edge { SinkNodeName = "4-exit-EXIT" } }
+        };
+        
+        var exit = new Node { Exit = new ExitNode() };
+        
+        var threadVarDef1 = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "input",
+                Type = VariableType.Str
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        var threadVarDef2 = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "complex-data"
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        expectedThreadSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedThreadSpec.Nodes.Add("1-throw-one-event-THROW_EVENT", throwEventNode1);
+        expectedThreadSpec.Nodes.Add("2-throw-other-event-THROW_EVENT", throwEventNode2);
+        expectedThreadSpec.Nodes.Add("3-throw-another-event-THROW_EVENT", throwEventNode3);
+        expectedThreadSpec.Nodes.Add("4-exit-EXIT", exit);
+        expectedThreadSpec.VariableDefs.Add(threadVarDef1);
+        expectedThreadSpec.VariableDefs.Add(threadVarDef2);
+        
+        var expectedNumberOfNodes = numberOfEntrypointNodes + numberOfThrowEventNodes
+                                                            + numberOfExitNodes;
+        Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
+        Assert.Equal(expectedThreadSpec, compiledWfThread);
+    }
 }

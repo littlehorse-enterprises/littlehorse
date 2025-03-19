@@ -142,6 +142,15 @@ public class WorkflowThread
             case Node.NodeOneofCase.WaitForThreads:
                 node.WaitForThreads = (WaitForThreadsNode) subNode;
                 break;
+            case Node.NodeOneofCase.Sleep:
+                node.Sleep = (SleepNode) subNode;
+                break;
+            case Node.NodeOneofCase.WaitForCondition:
+                node.WaitForCondition = (WaitForConditionNode) subNode;
+                break;
+            case Node.NodeOneofCase.ThrowEvent:
+                node.ThrowEvent = (ThrowEventNode) subNode;
+                break;
             case Node.NodeOneofCase.None:
                 throw new InvalidOperationException("Not possible");
         }
@@ -850,5 +859,97 @@ public class WorkflowThread
         internalStartedThreadVar.Assign(new NodeOutput(nodeName, this));
 
         return new SpawnedThreadsIterator(internalStartedThreadVar);
+    }
+    
+    /// <summary>
+    /// Registers an Interrupt Handler, such that when an ExternalEvent arrives with the specified
+    /// type, this ThreadRun is interrupted.
+    /// </summary>
+    /// <param name="interruptName">
+    /// The name of the ExternalEventDef to listen for.
+    /// </param>
+    /// <param name="handler">
+    /// A Thread Function defining a ThreadSpec to use to handle the Interrupt.
+    /// </param>
+    /// <returns>A NodeOutput that can be used for timeouts or exception handling. </returns>
+    public void RegisterInterruptHandler(string interruptName, Action<WorkflowThread> handler)
+    {
+        CheckIfWorkflowThreadIsActive();
+        string threadName = "interrupt-" + interruptName;
+        Parent.AddSubThread(threadName, handler);
+        Parent.AddExternalEventDefName(interruptName);
+
+        _spec.InterruptDefs.Add(
+            new InterruptDef
+            {
+                ExternalEventDefId = new ExternalEventDefId { Name = interruptName },
+                HandlerSpecName = threadName
+            }
+        );
+    }
+    
+    /// <summary>
+    /// Adds a SLEEP node which makes the ThreadRun sleep for a specified number of seconds.
+    /// 
+    /// </summary>
+    /// <param name="seconds">
+    /// It is either an integer representing the number of seconds to sleep for, or it is 
+    /// a WfRunVariable which evaluates to a VariableTypePb.INT specifying the number of seconds 
+    /// to sleep for.
+    /// </param>
+    public void SleepSeconds(object seconds)
+    {
+        CheckIfWorkflowThreadIsActive();
+        var sleepNode = new SleepNode { RawSeconds = AssignVariable(seconds) };
+        AddNode("sleep", Node.NodeOneofCase.Sleep, sleepNode);
+    }
+    
+    /// <summary>
+    /// Adds a WAIT_FOR_CONDITION node which blocks until the provided boolean condition
+    /// evaluates to true.
+    /// </summary>
+    /// <param name="condition">
+    /// It is the condition to wait for.
+    /// </param>
+    /// <returns>A handle to the NodeOutput, which may only be used for error handling since 
+    /// the output of this node is empty.
+    /// </returns>
+    public WaitForConditionNodeOutput WaitForCondition(WorkflowCondition condition)
+    {
+        CheckIfWorkflowThreadIsActive();
+        WaitForConditionNode waitNode = new WaitForConditionNode
+        {
+            Condition = condition.Compile()
+        };
+
+        string nodeName = AddNode("wait-for-condition", Node.NodeOneofCase.WaitForCondition, waitNode);
+        
+        return new WaitForConditionNodeOutput(nodeName, this);
+    }
+    
+    /// <summary>
+    /// EXPERIMENTAL: Makes the active ThreadSpec throw a WorkflowEvent with a specific WorkflowEventDef
+    /// and provided content.
+    /// </summary>
+    /// <param name="workflowEventDefName">
+    /// It is the name of the WorkflowEvent to throw.
+    /// </param>
+    /// <param name="content">
+    /// It is the content of the WorkflowEvent that is thrown.
+    /// </param>
+    public void ThrowEvent(string workflowEventDefName, object content)
+    {
+        CheckIfWorkflowThreadIsActive();
+        Parent.AddWorkflowEventDefName(workflowEventDefName);
+        var node = new ThrowEventNode
+        {
+            EventDefId = new WorkflowEventDefId
+            {
+                Name = workflowEventDefName
+            },
+            Content = AssignVariable(content)
+        };
+        
+        AddNode("throw-" + workflowEventDefName, Node.NodeOneofCase.ThrowEvent, node);
     }
 }
