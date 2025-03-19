@@ -170,10 +170,13 @@ public class LHTaskWorker implements Closeable {
                         this.taskDef = taskDef;
                         break;
                     }
+                    Thread.sleep(10);
                 } catch (StatusRuntimeException exn) {
                     if (!(exn.getStatus().getCode() == Code.NOT_FOUND)) {
                         throw exn;
                     }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
 
             } while (System.currentTimeMillis() < timeout);
