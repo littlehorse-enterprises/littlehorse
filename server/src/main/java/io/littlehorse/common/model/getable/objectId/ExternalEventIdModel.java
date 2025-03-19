@@ -69,7 +69,6 @@ public class ExternalEventIdModel extends CoreObjectId<ExternalEventId, External
 
     @Override
     public void initFromString(String storeKey) {
-        log.info(storeKey);
         String[] split = storeKey.split("/");
         wfRunId = (WfRunIdModel) ObjectIdModel.fromString(split[0], WfRunIdModel.class);
         externalEventDefId =
