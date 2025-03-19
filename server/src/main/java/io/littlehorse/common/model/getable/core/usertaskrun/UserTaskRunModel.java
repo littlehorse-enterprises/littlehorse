@@ -237,6 +237,10 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> {
                     ? null
                     : thread.assignVariable(node.getUserGroup()).asStr().getStrVal();
 
+            if (newUserId == null && newUserGroup == null) {
+                throw new NodeFailureException(new FailureModel("Invalid user task assignment", LHConstants.VAR_ERROR));
+            }
+
             // Set owners and schedule all on-assignment hooks
             this.assignTo(newUserId, newUserGroup, true);
 
