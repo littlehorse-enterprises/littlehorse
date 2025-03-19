@@ -601,7 +601,7 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
         GetableStatusUpdate update;
         while ((update = processorContext.getableUpdates().getUpdatesForNodeRun(id).poll()) != null) {
             // sensor.record(update)
-            processorContext.getableUpdates().append(threadRunId);
+            processorContext.getableUpdates().append(id.getWfRunId(), getThreadRunNumber(), update);
         }
     }
 }

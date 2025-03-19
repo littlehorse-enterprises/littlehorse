@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;

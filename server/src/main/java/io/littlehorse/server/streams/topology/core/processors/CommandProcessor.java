@@ -192,7 +192,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                         partitionMetricId.getMetricId(),
                         new ArrayList<>(),
                         ctx.taskId().partition(),
-                        partitionMetric.getAggregationType());
+                        partitionMetric.getObjectId().getAggregationType());
                 current.addWindowedMetric(windowedMetrics);
                 metricsPerTenant.add(current);
                 commandsPerTenant.putIfAbsent(partitionMetricId.getTenantId(), metricsPerTenant);

@@ -28,6 +28,7 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -42,6 +43,7 @@ import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.metrics.GetableStatusUpdate;
 import io.littlehorse.server.metrics.GetableUpdates;
+import io.littlehorse.server.metrics.Sensor;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -666,5 +668,10 @@ public class WfRunModel extends CoreGetable<WfRun> {
         // child threads, so we need to signal to the other threads that they might
         // want to wake up. Ding Ding Ding! Get out of bed.
         advance(time);
+    }
+
+    private Sensor sensor() {
+        MetricSpecIdModel wfSpecMetricId = new MetricSpecIdModel(wfSpecId);
+        return new Sensor(Set.of(wfSpecMetricId),  executionContext.castOnSupport(ProcessorExecutionContext.class));
     }
 }

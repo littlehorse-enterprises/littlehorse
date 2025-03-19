@@ -29,7 +29,9 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssign
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.ThreadSpecReferenceModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
@@ -44,6 +46,7 @@ import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.metrics.GetableStatusUpdate;
+import io.littlehorse.server.metrics.Sensor;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
 import java.text.MessageFormat;
@@ -53,6 +56,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -948,9 +953,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public void recordMetrics(ProcessorExecutionContext processorExecutionContext) {
         GetableStatusUpdate update;
         while ((update = processorExecutionContext.getableUpdates().getUpdatesForThreadRunNumber(wfRun.getId(), number).poll()) != null) {
-            // sensor.record(update)
+            sensor().record(update);
             processorContext.getableUpdates().append(wfRun.getId(), update);
         }
+    }
+
+    private Sensor sensor() {
+        MetricSpecIdModel wfSpecMetricId = new MetricSpecIdModel(new ThreadSpecReferenceModel(wfSpecId, number));
+        return new Sensor(Set.of(wfSpecMetricId),  executionContext.castOnSupport(ProcessorExecutionContext.class));
     }
 
     /**

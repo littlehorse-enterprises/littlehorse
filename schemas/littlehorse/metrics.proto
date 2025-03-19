@@ -43,7 +43,6 @@ message PartitionMetric {
   google.protobuf.Timestamp created_at = 2;
   repeated PartitionWindowedMetric active_windows = 3;
   google.protobuf.Duration window_length = 4;
-  AggregationType aggregation_type = 5;
 }
 
 message PartitionWindowedMetric {

@@ -36,21 +36,14 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
     private Set<PartitionWindowedMetricModel> activeWindowedMetrics;
     private Duration windowLength;
 
-    @Getter
-    private AggregationType aggregationType;
 
     public PartitionMetricModel() {}
 
-    public PartitionMetricModel(
-            MetricSpecIdModel metricId,
-            Duration windowLength,
-            TenantIdModel tenantId,
-            AggregationType aggregationType) {
-        this.id = new PartitionMetricIdModel(metricId, tenantId, aggregationType);
+    public PartitionMetricModel(PartitionMetricIdModel partitionId, Duration windowLength) {
+        this.id = partitionId;
         this.createdAt = new Date();
         this.activeWindowedMetrics = new TreeSet<>();
         this.windowLength = windowLength;
-        this.aggregationType = aggregationType;
     }
 
     @Override
@@ -85,7 +78,6 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
                 .setWindowLength(com.google.protobuf.Duration.newBuilder()
                         .setSeconds(windowLength.getSeconds())
                         .build())
-                .setAggregationType(aggregationType)
                 .addAllActiveWindows(windowedMetrics);
     }
 
@@ -99,7 +91,6 @@ public class PartitionMetricModel extends CoreGetable<PartitionMetric> {
                         LHSerializable.fromProto(windowedMetric, PartitionWindowedMetricModel.class, context))
                 .toList());
         this.windowLength = Duration.ofSeconds(p.getWindowLength().getSeconds());
-        this.aggregationType = p.getAggregationType();
     }
 
     @Override

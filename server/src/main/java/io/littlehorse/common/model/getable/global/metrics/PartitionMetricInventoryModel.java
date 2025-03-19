@@ -12,6 +12,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import lombok.Getter;
 
@@ -20,6 +21,8 @@ public class PartitionMetricInventoryModel extends Storeable<PartitionMetricInve
     public static final String METRIC_INVENTORY_STORE_KEY = "metricInventory";
 
     private final String key;
+
+    private final AtomicBoolean metricAdded = new AtomicBoolean(false);
 
     @Getter
     private Set<PartitionMetricIdModel> metrics = new HashSet<>();
@@ -65,7 +68,11 @@ public class PartitionMetricInventoryModel extends Storeable<PartitionMetricInve
      * Adds new metric to this partition
      * @return true if the metrics didn't exist before
      */
-    public boolean addMetric(PartitionMetricIdModel metric) {
-        return metrics.add(metric);
+    public void addMetric(PartitionMetricIdModel metric) {
+        metricAdded.set(metrics.add(metric));
+    }
+
+    public boolean metricAdded() {
+        return metricAdded.get();
     }
 }
