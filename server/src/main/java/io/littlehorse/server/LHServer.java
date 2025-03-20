@@ -40,8 +40,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.common.header.Headers;
@@ -63,7 +63,7 @@ public class LHServer {
     private Context.Key<RequestExecutionContext> contextKey = Context.key("executionContextKey");
     private final MetadataCache metadataCache;
     private final CoreStoreProvider coreStoreProvider;
-    private final ScheduledExecutorService networkThreadpool;
+    private final ExecutorService networkThreadpool;
     private final List<LHServerListener> listeners;
     private final CommandSender commandSender;
 
@@ -74,7 +74,7 @@ public class LHServer {
     public LHServer(LHServerConfig config) throws LHMisconfigurationException {
         this.metadataCache = new MetadataCache();
         this.config = config;
-        this.networkThreadpool = Executors.newScheduledThreadPool(config.getNumNetworkThreads());
+        this.networkThreadpool = Executors.newVirtualThreadPerTaskExecutor();
         this.taskQueueManager = new TaskQueueManager(this, LHConstants.MAX_TASKRUNS_IN_ONE_TASKQUEUE);
 
         // Kafka Streams Setup
