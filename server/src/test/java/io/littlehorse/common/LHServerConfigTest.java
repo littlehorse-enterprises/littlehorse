@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.server.auth.AuthorizationProtocol;
 import io.littlehorse.server.auth.OAuthConfig;
@@ -22,17 +21,13 @@ import java.util.UUID;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
-public class LHConfigTest {
+public class LHServerConfigTest {
 
     private static final String LHS_LISTENERS_AUTHENTICATION_MAP = "LHS_LISTENERS_AUTHENTICATION_MAP";
     private static final String LHS_LISTENERS_PROTOCOL_MAP = "LHS_LISTENERS_PROTOCOL_MAP";
     private static final String LHS_LISTENERS = "LHS_LISTENERS";
     private static final String LHS_ADVERTISED_LISTENERS = "LHS_ADVERTISED_LISTENERS";
-
-    public static final String LHW_TASK_WORKER_VERSION = "LHW_TASK_WORKER_VERSION";
-    public static final String RANDOM_VERSION = "v1.0.2";
 
     Faker faker = new Faker();
 
@@ -656,27 +651,6 @@ public class LHConfigTest {
             assertThatThrownBy(() -> config.getMTLSConfiguration("TEST"))
                     .isExactlyInstanceOf(LHMisconfigurationException.class)
                     .hasMessage("Invalid configuration: File location specified on LHS_LISTENER_TEST_CERT is invalid");
-        }
-    }
-
-    @Nested
-    class GetTenant {
-        @Test
-        void shouldUseDefaultTenantByDefault() {
-            LHConfig defaultConfig = new LHConfig(Map.of());
-            assertThat(defaultConfig.getTenantId().getId()).isEqualTo("default");
-        }
-    }
-
-    @Nested
-    class Builder {
-
-        @Test
-        @SetEnvironmentVariable(key = LHW_TASK_WORKER_VERSION, value = RANDOM_VERSION)
-        void shouldReadEnvWithBuilder() {
-            LHConfig lhConfig = LHConfig.newBuilder().loadFromEnvVariables().build();
-
-            assertThat(lhConfig.getTaskWorkerVersion()).isEqualTo(RANDOM_VERSION);
         }
     }
 }
