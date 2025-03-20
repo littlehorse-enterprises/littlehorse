@@ -52,7 +52,7 @@ public abstract class Program
                 userId,
                 "testGroup"
             );
-            wf.ReleaseToGroupOnDeadline(formOutput, 120);
+            wf.ReleaseToGroupOnDeadline(formOutput, 60);
             
             wf.HandleAnyFailure(
                 formOutput,
@@ -87,7 +87,7 @@ public abstract class Program
                 financeUserTaskOutput,
                 "test-eduwer",
                 null,
-                120
+                60
             );
 
             isApproved.Assign(financeUserTaskOutput.WithJsonPath("$.IsApproved"));

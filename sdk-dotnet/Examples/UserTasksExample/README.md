@@ -48,7 +48,7 @@ We check the status of the `WfRun` and see that it's running:
 lhctl get wfRun <wf_run_id>
 ```
 
-Note that there is only one `ThreadRun` in the `WfRun`, and the current `NodeRun` position is `1`. If you recall our `WfRun`, we've arrived at a User Task Run, and it should be assigned to `anakin`, but if the assigned user does not complete the task in less than 2 minutes, then the task will be released to `testGroup` group.
+Note that there is only one `ThreadRun` in the `WfRun`, and the current `NodeRun` position is `1`. If you recall our `WfRun`, we've arrived at a User Task Run, and it should be assigned to `anakin`, but if the assigned user does not complete the task in less than 1 minute, then the task will be released to `testGroup` group.
 
 #### Find the User Task
 
