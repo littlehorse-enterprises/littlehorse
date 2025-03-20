@@ -79,7 +79,7 @@ EOF
 }
 
 run() {
-    docker run --rm -v $(pwd)/img:/badge-maker/img $DOCKER_IMAGE_NAME badge-generator.js
+    docker run --rm -v $(pwd)/img:/badge-maker/img -u $(id -u) $DOCKER_IMAGE_NAME badge-generator.js
 }
 
 verify_dependencies
