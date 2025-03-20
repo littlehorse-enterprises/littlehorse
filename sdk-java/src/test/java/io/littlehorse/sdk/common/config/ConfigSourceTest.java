@@ -86,5 +86,6 @@ class ConfigSourceTest {
 
         assertThat(configSource.toProperties().size()).isGreaterThan(1);
         assertThat(configSource.toProperties().get(LHW_TASK_WORKER_VERSION)).isEqualTo(EXPECTED_VERSION);
+        assertThat(configSource.toProperties().get("RANDOM_VAR")).isEqualTo("RANDOM_VALUE");
     }
 }
