@@ -10,11 +10,11 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
     const type = getNodeType(node)
     if (type === 'START_THREAD') {
       const startedThreadSpecName = node.startThread?.threadSpecName ?? ''
-      const sourceId = `${threadName}:${id}`
-      const targetId = `${startedThreadSpecName}:0-entrypoint-ENTRYPOINT`
+      const sourceId = `${id}:${threadName}`
+      const targetId = `0-entrypoint-ENTRYPOINT:${startedThreadSpecName}`
 
       edges.push({
-        id: `${sourceId}>${targetId}`,
+        id: `${sourceId}>${targetId}:${threadName}`,
         source: sourceId,
         sourceHandle: 'bottom-0',
         target: targetId,
@@ -35,8 +35,8 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
         const sortedNodes = Object.entries(waitingThreadSpec.nodes).sort(([id, _], [id2, __]) => id.localeCompare(id2))
         const exitNodeId = sortedNodes[sortedNodes.length - 1][0]
 
-        const sourceId = `${waitingThreadSpecName}:${exitNodeId}`
-        const targetId = `${threadName}:${id}`
+        const sourceId = `${exitNodeId}:${waitingThreadSpecName}`
+        const targetId = `${id}:${threadName}`
         edges.push({
           id: `${sourceId}>${targetId}`,
           source: sourceId,

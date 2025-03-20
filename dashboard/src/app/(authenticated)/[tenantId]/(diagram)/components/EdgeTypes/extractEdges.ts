@@ -21,9 +21,9 @@ export const extractEdges = (spec: ThreadSpec, threadName: string): Edge[] => {
       const label = extractEdgeLabel(edge)
       return {
         id,
-        source: `${threadName}:${source}`,
+        source: `${source}:${threadName}`,
         type: 'default',
-        target: `${threadName}:${edge.sinkNodeName}`,
+        target: `${edge.sinkNodeName}:${threadName}`,
         label,
         data: edge,
         targetHandle: `target-${targetIndex}`,

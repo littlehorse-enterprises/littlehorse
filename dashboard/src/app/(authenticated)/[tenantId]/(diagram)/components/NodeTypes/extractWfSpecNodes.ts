@@ -6,7 +6,7 @@ export function extractWfSpecNodes(wfSpec: WfSpec) {
     Object.entries(threadSpec.nodes).map(([id, node]) => {
       const type = getNodeType(node)
       return {
-        id: `${threadName}:${id}`,
+        id: `${id}:${threadName}`,
         type,
         data: { ...node, ...extractData(type, node) },
         position: { x: 0, y: 0 },
