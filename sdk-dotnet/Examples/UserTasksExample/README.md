@@ -224,4 +224,4 @@ Let's execute the `UserTaskRun`.
 
 ```
 
-Now depending on whether you typed `true` or `false` (if you know Star Wars, you know that the correct answer is `false`), you should see some output in the logs of the process `./gradlew example-user-tasks:run`.
+Now depending on whether you typed `true` or `false` (if you know Star Wars, you know that the correct answer is `false`), you should see some output in the logs of the process `dotnet run`.

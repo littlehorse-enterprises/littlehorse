@@ -46,7 +46,6 @@ public abstract class Program
             WfRunVariable userId = wf.DeclareStr("user-id");
             WfRunVariable itRequest = wf.DeclareJsonObj("it-request");
             WfRunVariable isApproved = wf.DeclareBool("is-approved");
-
             // Get the IT Request
             UserTaskOutput formOutput = wf.AssignUserTask(
                 ItRequestForm,
@@ -54,9 +53,6 @@ public abstract class Program
                 "testGroup"
             );
             wf.ReleaseToGroupOnDeadline(formOutput, 120);
-
-            wf.CancelUserTaskRunAfter(formOutput, 180);
-            wf.CancelUserTaskRunAfterAssignment(formOutput, 180);
             
             wf.HandleAnyFailure(
                 formOutput,

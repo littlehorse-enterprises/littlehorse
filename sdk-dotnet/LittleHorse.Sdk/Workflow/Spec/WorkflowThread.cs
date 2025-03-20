@@ -10,7 +10,7 @@ public class WorkflowThread
 {
     public Workflow Parent { get; private set; }
     private readonly ThreadSpec _spec;
-    public string LastNodeName;
+    public string LastNodeName { get; private set; }
     private readonly bool _isActive;
     private readonly List<WfRunVariable> _wfRunVariables;
     private EdgeCondition? _lastNodeCondition;
@@ -1205,11 +1205,11 @@ public class WorkflowThread
         if (!LastNodeName.Equals(userTaskOutput.NodeName)) {
             throw new InvalidOperationException("Tried to edit a stale User Task node!");
         }
-        if (!currentNode.UserTask.UserId.IsInitialized()) 
+        if (currentNode.UserTask.UserId == null) 
         {
-            throw new InvalidOperationException("The User Task is not assigned to any user");
+            throw new InvalidOperationException("The User Task is not assigned to any user.");
         }
-        if (!currentNode.UserTask.UserGroup.IsInitialized()) 
+        if (currentNode.UserTask.UserGroup == null) 
         {
             throw new InvalidOperationException("The User Task is assigned to a user without a group.");
         }
@@ -1256,6 +1256,12 @@ public class WorkflowThread
     {
         CheckIfWorkflowThreadIsActive();
         Node currentNode = FindNode(LastNodeName);
+        
+        if (userId == null && userGroup == null)
+        {
+            throw new ArgumentException("userId or userGroup is required.");
+        }
+        
         if (!LastNodeName.Equals(userTask.NodeName)) 
         {
             throw new InvalidOperationException("Tried to edit a stale User Task node!");
