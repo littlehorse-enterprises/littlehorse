@@ -170,7 +170,7 @@ public class WorkflowThread
         return $"{_spec.Nodes.Count}-{name}-{LHConstants.NodeTypes[type]}";
     }
     
-    public WfRunVariable AddVariable(string name, Object typeOrDefaultVal) 
+    public WfRunVariable AddVariable(string name, object typeOrDefaultVal) 
     {
         CheckIfWorkflowThreadIsActive();
         var wfRunVariable = new WfRunVariable(name, typeOrDefaultVal, this);
@@ -987,7 +987,7 @@ public class WorkflowThread
     ///  library will attempt to cast the provided argument to a LittleHorse VariableValue and
     ///  pass that literal value in.
     /// </param>
-    public void ScheduleReminderTask(UserTaskOutput userTask, int delaySeconds, String taskDefName, params object[] args)
+    public void ScheduleReminderTask(UserTaskOutput userTask, int delaySeconds, string taskDefName, params object[] args)
     {
         ScheduleTaskAfterHelper(userTask, delaySeconds, taskDefName, UTHook.OnArrival, args);
     }
@@ -1011,7 +1011,7 @@ public class WorkflowThread
     ///  pass that literal value in.
     /// </param>
     public void ScheduleReminderTask(
-        UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, params object[] args)
+        UserTaskOutput userTask, WfRunVariable delaySeconds, string taskDefName, params object[] args)
     {
         ScheduleTaskAfterHelper(userTask, delaySeconds, taskDefName, UTHook.OnArrival, args);
     }
@@ -1063,7 +1063,7 @@ public class WorkflowThread
     ///  pass that literal value in.
     /// </param>
     public void ScheduleReminderTaskOnAssignment(
-        UserTaskOutput userTask, WfRunVariable delaySeconds, String taskDefName, params object[] args)
+        UserTaskOutput userTask, WfRunVariable delaySeconds, string taskDefName, params object[] args)
     {
         ScheduleTaskAfterHelper(userTask, delaySeconds, taskDefName, UTHook.OnTaskAssigned, args);
     }
@@ -1087,7 +1087,7 @@ public class WorkflowThread
     ///  pass that literal value in.
     /// </param>
     public void ScheduleReminderTaskOnAssignment(
-        UserTaskOutput userTask, int delaySeconds, String taskDefName, params object[] args)
+        UserTaskOutput userTask, int delaySeconds, string taskDefName, params object[] args)
     {
         ScheduleTaskAfterHelper(userTask, delaySeconds, taskDefName, UTHook.OnTaskAssigned, args);
     }
@@ -1196,7 +1196,7 @@ public class WorkflowThread
     /// </param>
     /// <param name="deadlineSeconds">
     /// Time in seconds after which the UserTask will be automatically
-    /// reassigned to the UserGroup. Can be either String or WfRunVariable.
+    /// reassigned to the UserGroup. Can be either string or WfRunVariable.
     /// </param>
     public void ReleaseToGroupOnDeadline(UserTaskOutput userTaskOutput, object deadlineSeconds)
     {
