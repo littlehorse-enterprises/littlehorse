@@ -55,6 +55,14 @@ const badges = [
         color: 'gray',
         logoBase64: logo
     }
+},
+{
+    name: 'blue',
+    format: {
+        message: 'LittleHorse',
+        color: 'blue',
+        logoBase64: logo
+    }
 }
 ]
 
