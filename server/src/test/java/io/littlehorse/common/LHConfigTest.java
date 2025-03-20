@@ -22,6 +22,7 @@ import java.util.UUID;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 public class LHConfigTest {
 
@@ -29,6 +30,9 @@ public class LHConfigTest {
     private static final String LHS_LISTENERS_PROTOCOL_MAP = "LHS_LISTENERS_PROTOCOL_MAP";
     private static final String LHS_LISTENERS = "LHS_LISTENERS";
     private static final String LHS_ADVERTISED_LISTENERS = "LHS_ADVERTISED_LISTENERS";
+
+    public static final String LHW_TASK_WORKER_VERSION = "LHW_TASK_WORKER_VERSION";
+    public static final String RANDOM_VERSION = "v1.0.2";
 
     Faker faker = new Faker();
 
@@ -655,9 +659,24 @@ public class LHConfigTest {
         }
     }
 
-    @Test
-    void shouldUseDefaultTenantByDefault() {
-        LHConfig defaultConfig = new LHConfig(Map.of());
-        assertThat(defaultConfig.getTenantId().getId()).isEqualTo("default");
+    @Nested
+    class GetTenant {
+        @Test
+        void shouldUseDefaultTenantByDefault() {
+            LHConfig defaultConfig = new LHConfig(Map.of());
+            assertThat(defaultConfig.getTenantId().getId()).isEqualTo("default");
+        }
+    }
+
+    @Nested
+    class Builder {
+
+        @Test
+        @SetEnvironmentVariable(key = LHW_TASK_WORKER_VERSION, value = RANDOM_VERSION)
+        void shouldReadEnvWithBuilder() {
+            LHConfig lhConfig = LHConfig.newBuilder().loadFromEnvVariables().build();
+
+            assertThat(lhConfig.getTaskWorkerVersion()).isEqualTo(RANDOM_VERSION);
+        }
     }
 }
