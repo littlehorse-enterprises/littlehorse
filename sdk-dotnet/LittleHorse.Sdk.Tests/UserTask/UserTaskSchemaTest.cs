@@ -38,38 +38,38 @@ public class UserTaskSchemaTest
         [UserTaskField(
             DisplayName = "Complete Name", 
             Description = "Your names and last names.")]
-        public string Name;
+        public string Name = "";
     
         [UserTaskField(
             DisplayName = "are you student?", 
             Description = "Enter true or false if you are studying.")]
-        public bool IsStudent;
+        public bool IsStudent = false;
         
         [UserTaskField(
             DisplayName = "Age", 
             Description = "Enter your age.")]
-        public int Age;
+        public int Age = 0;
     }
     
     class TestWithNoSupportedTypesForm1
     {
-        [UserTaskField(
+        [field: UserTaskField(
             DisplayName = "Any display name")]
-        public JsonArray Field;
+        public JsonArray Field = new JsonArray();
     }
     
     class TestWithNoSupportedTypesForm2
     {
         [UserTaskField(
             DisplayName = "Any display name")]
-        public JsonObject Field;
+        public JsonObject Field = new JsonObject();
     }
     
     class TestWithNoSupportedTypesForm3
     {
         [UserTaskField(
             DisplayName = "Any display name")]
-        public byte[] Field;
+        public byte[] Field = new byte[] {};
     }
     
     class CustomData

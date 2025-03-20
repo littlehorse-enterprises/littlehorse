@@ -1030,7 +1030,7 @@ public class WorkflowThread
         };
         
         if (!LastNodeName.Equals(userTask.NodeName)) {
-            throw new Exception("Tried to edit a stale User Task node!");
+            throw new InvalidOperationException("Tried to edit a stale User Task node!");
         }
 
         Node node = FindNode(LastNodeName);
@@ -1129,7 +1129,7 @@ public class WorkflowThread
 
         if (!LastNodeName.Equals(userTask.NodeName)) 
         {
-            throw new Exception("Tried to edit a stale User Task node!");
+            throw new InvalidOperationException("Tried to edit a stale User Task node!");
         }
         Node node = FindNode(LastNodeName);
         var newUtAction = new UTActionTrigger
@@ -1202,7 +1202,8 @@ public class WorkflowThread
     {
         CheckIfWorkflowThreadIsActive();
         Node currentNode = FindNode(LastNodeName);
-        if (!LastNodeName.Equals(userTaskOutput.NodeName)) {
+        if (!LastNodeName.Equals(userTaskOutput.NodeName)) 
+        {
             throw new InvalidOperationException("Tried to edit a stale User Task node!");
         }
         if (currentNode.UserTask.UserId == null) 

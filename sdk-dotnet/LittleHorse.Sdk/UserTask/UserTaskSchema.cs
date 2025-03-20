@@ -14,17 +14,14 @@ public class UserTaskSchema
     {
         _taskObject = taskObject;
         _userTaskDefName = userTaskDefName;
-        _compiled = null;
     }
 
-    public PutUserTaskDefRequest Compile() 
+    public PutUserTaskDefRequest Compile()
     {
-        if (_compiled == null) CompileHelper();
-
-        return _compiled;
+        return _compiled ??= CompileHelper();
     }
     
-    private void CompileHelper() 
+    private PutUserTaskDefRequest CompileHelper() 
     {
         var putUserTaskDefRequest = new PutUserTaskDefRequest();
         Type taskObjectType = _taskObject.GetType();
@@ -60,6 +57,6 @@ public class UserTaskSchema
         }
         
         putUserTaskDefRequest.Name = _userTaskDefName;
-        _compiled = putUserTaskDefRequest;
+        return putUserTaskDefRequest;
     }
 }
