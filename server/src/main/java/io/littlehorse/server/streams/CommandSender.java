@@ -17,7 +17,7 @@ import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.POSTStreamObserver;
 import java.time.Duration;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ExecutorService;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.common.header.Headers;
 
@@ -25,14 +25,14 @@ public class CommandSender {
 
     private final BackendInternalComms internalComms;
     private final Duration successDurationTimeout;
-    private final ScheduledExecutorService networkThreadpool;
+    private final ExecutorService networkThreadpool;
     private final LHProducer commandProducer;
     private final LHProducer taskClaimProducer;
     private final LHServerConfig serverConfig;
 
     public CommandSender(
             BackendInternalComms internalComms,
-            ScheduledExecutorService networkThreadpool,
+            ExecutorService networkThreadpool,
             LHProducer commandProducer,
             LHProducer taskClaimProducer,
             long streamsSessionTimeout,

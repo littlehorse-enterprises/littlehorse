@@ -32,7 +32,7 @@ import org.mockito.ArgumentCaptor;
 class ProducerCommandCallbackTest {
 
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-    private final AsyncWaiters commandWaiters = new AsyncWaiters(executor);
+    private final AsyncWaiters commandWaiters = new AsyncWaiters();
     private final StreamObserver<WaitForCommandResponse> responseObserver = mock();
     private final AbstractCommand<?> command = mock(AbstractCommand.class);
     private final KafkaStreams coreStreams = mock();

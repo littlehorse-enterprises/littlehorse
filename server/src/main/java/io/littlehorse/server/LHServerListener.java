@@ -261,7 +261,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
@@ -282,7 +282,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     private final BackendInternalComms internalComms;
     private final MetadataCache metadataCache;
     private final CoreStoreProvider coreStoreProvider;
-    private final ScheduledExecutorService networkThreadpool;
+    private final ExecutorService networkThreadpool;
     private final String listenerName;
     private final CommandSender commandSender;
 
@@ -296,7 +296,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             ServerListenerConfig listenerConfig,
             TaskQueueManager taskQueueManager,
             BackendInternalComms internalComms,
-            ScheduledExecutorService networkThreadPool,
+            ExecutorService networkThreadPool,
             CoreStoreProvider coreStoreProvider,
             MetadataCache metadataCache,
             List<ServerInterceptor> interceptors,
