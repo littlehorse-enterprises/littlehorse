@@ -20,7 +20,7 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 public class LHConfigTest {
 
     public static final String LHW_TASK_WORKER_VERSION = "LHW_TASK_WORKER_VERSION";
-    public static final String RANDOM_VERSION = "v1.0.2";
+    public static final String EXPECTED_VERSION = "v1.0.2";
 
     Faker faker = new Faker();
 
@@ -114,15 +114,15 @@ public class LHConfigTest {
     }
 
     @Test
-    @SetEnvironmentVariable(key = LHW_TASK_WORKER_VERSION, value = RANDOM_VERSION)
+    @SetEnvironmentVariable(key = LHW_TASK_WORKER_VERSION, value = EXPECTED_VERSION)
     void shouldReadEnvWithBuilder() {
         LHConfig lhConfig = LHConfig.newBuilder().loadFromEnvVariables().build();
 
-        assertThat(lhConfig.getTaskWorkerVersion()).isEqualTo(RANDOM_VERSION);
+        assertThat(lhConfig.getTaskWorkerVersion()).isEqualTo(EXPECTED_VERSION);
     }
 
     @Test
-    @SetEnvironmentVariable(key = LHW_TASK_WORKER_VERSION, value = RANDOM_VERSION)
+    @SetEnvironmentVariable(key = LHW_TASK_WORKER_VERSION, value = EXPECTED_VERSION)
     void shouldLoadFileFirstAndThenTheEnvVariables() throws IOException {
         Properties expected = new Properties();
         expected.put(LHW_TASK_WORKER_VERSION, "VALUE FROM FILE");
@@ -134,6 +134,6 @@ public class LHConfigTest {
                 .loadFromEnvVariables()
                 .build();
 
-        assertThat(lhConfig.getTaskWorkerVersion()).isEqualTo(RANDOM_VERSION);
+        assertThat(lhConfig.getTaskWorkerVersion()).isEqualTo(EXPECTED_VERSION);
     }
 }
