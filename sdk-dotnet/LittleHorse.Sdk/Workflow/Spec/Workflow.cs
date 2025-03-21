@@ -193,7 +193,7 @@ public class Workflow
     /// <returns>
     /// This Workflow.
     /// </returns>
-    public Workflow WithDefaultThreadRetentionPolicy(ThreadRetentionPolicy policy)
+    public Workflow WithDefaultThreadRetentionPolicy(ThreadRetentionPolicy? policy)
     {
         _defaultThreadRetentionPolicy = policy;
         
