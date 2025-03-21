@@ -27,40 +27,29 @@ public class KafkaStreamsConfig implements Config {
     private final Map<String, Object> configs;
 
     public KafkaStreamsConfig(final Map<String, Object> configs) {
-
-        //        StreamsConfig.clientTagPrefix()
-        //        StreamsConfig.topicPrefix()
-
         final List<Predicate<Map.Entry<String, Object>>> filters = List.of(
-                entry -> KAFKA_STREAMS_CONFIGS.names().contains(entry.getKey()),
-                entry -> entry.getKey().startsWith(PRODUCER_PREFIX)
-                        && KAFKA_PRODUCER_CONFIGS
-                                .names()
-                                .contains(entry.getKey().substring(PRODUCER_PREFIX.length())),
-                entry -> entry.getKey().startsWith(CONSUMER_PREFIX)
-                        && KAFKA_CONSUME_CONFIGS.names().contains(entry.getKey().substring(CONSUMER_PREFIX.length())),
-                entry -> entry.getKey().startsWith(MAIN_CONSUMER_PREFIX)
-                        && KAFKA_CONSUME_CONFIGS
-                                .names()
-                                .contains(entry.getKey().substring(MAIN_CONSUMER_PREFIX.length())),
-                entry -> entry.getKey().startsWith(RESTORE_CONSUMER_PREFIX)
-                        && KAFKA_CONSUME_CONFIGS
-                                .names()
-                                .contains(entry.getKey().substring(RESTORE_CONSUMER_PREFIX.length())),
-                entry -> entry.getKey().startsWith(GLOBAL_CONSUMER_PREFIX)
-                        && KAFKA_CONSUME_CONFIGS
-                                .names()
-                                .contains(entry.getKey().substring(GLOBAL_CONSUMER_PREFIX.length())),
-                entry -> entry.getKey().startsWith(ADMIN_CLIENT_PREFIX)
-                        && KAFKA_ADMIN_CONFIGS
-                                .names()
-                                .contains(entry.getKey().substring(ADMIN_CLIENT_PREFIX.length())));
+                isKafkaStreamsConfig(),
+                isValidConfig(PRODUCER_PREFIX, KAFKA_PRODUCER_CONFIGS),
+                isValidConfig(CONSUMER_PREFIX, KAFKA_CONSUME_CONFIGS),
+                isValidConfig(MAIN_CONSUMER_PREFIX, KAFKA_CONSUME_CONFIGS),
+                isValidConfig(RESTORE_CONSUMER_PREFIX, KAFKA_CONSUME_CONFIGS),
+                isValidConfig(GLOBAL_CONSUMER_PREFIX, KAFKA_CONSUME_CONFIGS),
+                isValidConfig(ADMIN_CLIENT_PREFIX, KAFKA_ADMIN_CONFIGS));
 
         this.configs = configs.entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(KAFKA_PREFIX))
                 .map(entry -> Map.entry(entry.getKey().substring(KAFKA_PREFIX.length()), entry.getValue()))
                 .filter(entry -> filters.stream().anyMatch(entryPredicate -> entryPredicate.test(entry)))
                 .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private static Predicate<Map.Entry<String, Object>> isValidConfig(final String prefix, final ConfigDef configDef) {
+        return entry -> entry.getKey().startsWith(prefix)
+                && configDef.names().contains(entry.getKey().substring(prefix.length()));
+    }
+
+    private static Predicate<Map.Entry<String, Object>> isKafkaStreamsConfig() {
+        return entry -> KAFKA_STREAMS_CONFIGS.names().contains(entry.getKey());
     }
 
     @Override
