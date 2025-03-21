@@ -15,7 +15,7 @@ public class WorkflowThread
     private readonly List<WfRunVariable> _wfRunVariables;
     private EdgeCondition? _lastNodeCondition;
     private readonly Queue<VariableMutation> _variableMutations;
-    private ThreadRetentionPolicy _retentionPolicy;
+    private ThreadRetentionPolicy? _retentionPolicy;
     
     /// <summary>
     /// This is the reserved Variable Name that can be used as a WfRunVariable in an Interrupt
@@ -180,7 +180,7 @@ public class WorkflowThread
         return wfRunVariable;
     }
     
-    private ThreadRetentionPolicy GetRetentionPolicy() 
+    private ThreadRetentionPolicy? GetRetentionPolicy() 
     {
         if (_retentionPolicy == null) 
             return Parent.GetDefaultThreadRetentionPolicy();

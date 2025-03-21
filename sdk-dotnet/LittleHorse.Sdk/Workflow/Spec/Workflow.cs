@@ -21,8 +21,8 @@ public class Workflow
     private int _defaultTaskTimeout;
     private int _defaultSimpleRetries;
     internal ExponentialBackoffRetryPolicy _defaultExponentialBackoff = null!;
-    private ThreadRetentionPolicy _defaultThreadRetentionPolicy;
-    private WorkflowRetentionPolicy _wfRetentionPolicy;
+    private ThreadRetentionPolicy? _defaultThreadRetentionPolicy;
+    private WorkflowRetentionPolicy? _wfRetentionPolicy;
 
     public Workflow(string name, Action<WorkflowThread> entryPoint)
     {
@@ -176,7 +176,7 @@ public class Workflow
         _requiredWorkflowEventDefNames.Add(name);
     }
     
-    internal ThreadRetentionPolicy GetDefaultThreadRetentionPolicy() 
+    internal ThreadRetentionPolicy? GetDefaultThreadRetentionPolicy() 
     {
         return _defaultThreadRetentionPolicy;
     }
