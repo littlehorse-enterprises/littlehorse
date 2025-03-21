@@ -66,10 +66,29 @@ public class LHVariableAssigmentTest
     [InlineData(5)]
     [InlineData(true)]
     [InlineData(7.892)]
-    public void VariableAssigment_WithNotDefinedObject_ShouldAssignObjectAsDefaultVariable(object notDefinedObject)
+    public void VariableAssigment_WithNotDefinedObject_ShouldAssignObjectAsLiteralValue(object notDefinedObject)
     {
         var variableAssigment = _parentWfThread.AssignVariableHelper(notDefinedObject);
         
         Assert.Contains(notDefinedObject.ToString()!.ToLower(), variableAssigment.LiteralValue.ToString().ToLower());
+    }
+    
+    [Fact]
+    public void VariableAssigment_WithFormattedStringValue_ShouldAssignFormatAndArgs()
+    {
+        object[] args = { 4, "Hello World!" };
+        var formatString = "This is {} try of {}";
+        var lhFormatString = new LHFormatString(_parentWfThread, "This is {} try of {}", args);
+       
+        var variableAssigment = _parentWfThread.AssignVariableHelper(lhFormatString);
+        
+        var expectedVariableAssigned = new VariableAssignment { LiteralValue = new VariableValue { Str = formatString } };
+        VariableAssignment[] expectedArgsAssigned =
+        {
+            new() { LiteralValue = new VariableValue { Int = (int)args[0] } },
+            new() { LiteralValue = new VariableValue { Str = (string)args[1] } }
+        };
+        Assert.Equal(expectedVariableAssigned, variableAssigment.FormatString.Format);
+        Assert.Equal(expectedArgsAssigned, variableAssigment.FormatString.Args);
     }
 }

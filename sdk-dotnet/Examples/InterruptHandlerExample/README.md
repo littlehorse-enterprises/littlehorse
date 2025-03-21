@@ -1,18 +1,19 @@
 ## Running InterruptHandlerExample
 
 This example shows how to interrupt a workflow execution.
-You need to register and interrupt handler with thread.registerInterruptHandler.
+You need to register and interrupt handler with thread.RegisterInterruptHandler.
 
 In this example the parent thread sleeps 30 sec, we can interrupt it while it's sleeping,
 and it creates a child thread. When an interruption is received the workflow executes the task:
 "some-task", if the task fails the whole workflow fails.
 
-This workflow sleeps for 30 seconds for us to have time to post to the interruption event before the workflow finishes. 
+In order for the Interrupt to happen, the parent thread needs to be sleeping.
 
-Let's run the example in `InterruptHandlerExample.java`
+Let's run the example in `InterruptHandlerExample`
 
 ```
-./gradlew example-interrupt-handler:run
+dotnet build
+dotnet run
 ```
 
 In another terminal, use `lhctl` to run the workflow:
