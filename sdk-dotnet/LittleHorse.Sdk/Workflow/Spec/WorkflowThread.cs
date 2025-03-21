@@ -15,6 +15,7 @@ public class WorkflowThread
     private readonly List<WfRunVariable> _wfRunVariables;
     private EdgeCondition? _lastNodeCondition;
     private readonly Queue<VariableMutation> _variableMutations;
+    private ThreadRetentionPolicy _retentionPolicy;
     
     /// <summary>
     /// This is the reserved Variable Name that can be used as a WfRunVariable in an Interrupt
@@ -43,8 +44,8 @@ public class WorkflowThread
             AddNode("exit", Node.NodeOneofCase.Exit, new ExitNode());
         }
         _isActive = false;
-
-        // TODO: Take into account the retention policy
+        
+        _spec.RetentionPolicy = GetRetentionPolicy();
     }
 
     public ThreadSpec Compile()
@@ -179,6 +180,25 @@ public class WorkflowThread
         return wfRunVariable;
     }
     
+    private ThreadRetentionPolicy GetRetentionPolicy() {
+        if (_retentionPolicy == null) 
+            return Parent.GetDefaultThreadRetentionPolicy();
+
+        return _retentionPolicy;
+    }
+    
+    /// <summary>
+    /// Overrides the retention policy for all ThreadRun's of this ThreadSpec in the
+    /// WfRun.
+    /// </summary>
+    /// <param name="policy">
+    /// It is the Thread Retention Policy.
+    /// </param>
+    public void WithRetentionPolicy(ThreadRetentionPolicy policy)
+    {
+        _retentionPolicy = policy;
+    }
+    
     /// <summary>
     /// Adds a TASK node to the ThreadSpec.
     /// 
@@ -203,6 +223,54 @@ public class WorkflowThread
         
         return new TaskNodeOutput(nodeName, this);
     }
+    
+    /// <summary>
+    /// Adds a TASK node to the ThreadSpec.
+    /// 
+    /// </summary>
+    /// <param name="taskName">
+    /// A WfRunVariable containing the name of the TaskDef to execute.
+    /// </param>
+    /// <param name="args">
+    /// The input parameters to pass into the Task Run. If the type of arg is a
+    /// `WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+    /// library will attempt to cast the provided argument to a LittleHorse VariableValue and
+    /// pass that literal value in.
+    /// </param>
+    /// <returns>A NodeOutput for that TASK node.</returns>
+    public TaskNodeOutput Execute(WfRunVariable taskName, params object[] args)
+    {
+        CheckIfWorkflowThreadIsActive();
+        TaskNode taskNode = CreateTaskNode(
+            new TaskNode { DynamicTask = AssignVariableHelper(taskName) }, args);
+        string nodeName = AddNode(taskName.Name, Node.NodeOneofCase.Task, taskNode);
+        
+        return new TaskNodeOutput(nodeName, this);
+    }
+    
+    /// <summary>
+    /// Adds a TASK node to the ThreadSpec.
+    /// 
+    /// </summary>
+    /// <param name="taskName">
+    /// An LHFormatString containing the name of the TaskDef to execute.
+    /// </param>
+    /// <param name="args">
+    /// The input parameters to pass into the Task Run. If the type of arg is a
+    /// `WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+    /// library will attempt to cast the provided argument to a LittleHorse VariableValue and
+    /// pass that literal value in.
+    /// </param>
+    /// <returns>A NodeOutput for that TASK node.</returns>
+    public TaskNodeOutput Execute(LHFormatString taskName, params object[] args)
+    {
+        CheckIfWorkflowThreadIsActive();
+        TaskNode taskNode = CreateTaskNode(
+            new TaskNode { DynamicTask = AssignVariableHelper(taskName) }, args);
+        string nodeName = AddNode(taskName.Format, Node.NodeOneofCase.Task, taskNode);
+
+        return new TaskNodeOutput(nodeName, this);
+    }
 
     private VariableAssignment AssignVariable(object variable) 
     {
@@ -214,7 +282,7 @@ public class WorkflowThread
     {
         foreach (var arg in args)
         {
-            taskNode.Variables.Add(AssignVariable(arg));
+            taskNode.Variables.Add(AssignVariableHelper(arg));
         }
 
         if (Parent.GetDefaultTaskTimeout() != 0)
