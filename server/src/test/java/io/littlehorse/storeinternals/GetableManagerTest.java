@@ -19,6 +19,7 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefMode
 import io.littlehorse.common.model.getable.global.wfspec.variable.JsonIndexModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -50,7 +51,6 @@ import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -147,7 +147,6 @@ public class GetableManagerTest {
         assertThat(storedTaskRunModel).isNull();
     }
 
-    @NotNull
     private List<String> getAllKeys(KeyValueStore<String, Bytes> store) {
         KeyValueIterator<String, Bytes> all = store.all();
         List<String> keys = new LinkedList<>();
@@ -371,7 +370,11 @@ public class GetableManagerTest {
         int threadRunNumber = 1;
         int nodeRunPosition = 2;
         ExternalEventModel event = new ExternalEventModel(
-                content, wfRunId, externalEventDefId, guid, threadRunNumber, nodeRunPosition, new Date());
+                content,
+                new ExternalEventIdModel(wfRunId, externalEventDefId, guid),
+                threadRunNumber,
+                nodeRunPosition,
+                new Date());
         getableManager.put(event);
         if (!useInMemoryBuffer) {
             getableManager.commit();
@@ -392,9 +395,17 @@ public class GetableManagerTest {
         int threadRunNumber = 1;
         int nodeRunPosition = 2;
         ExternalEventModel expectedEvent = new ExternalEventModel(
-                content, wfRunId, externalEventDefId, "expectedEvent", threadRunNumber, nodeRunPosition, new Date(1));
+                content,
+                new ExternalEventIdModel(wfRunId, externalEventDefId, "expectedEvent"),
+                threadRunNumber,
+                nodeRunPosition,
+                new Date(1));
         ExternalEventModel olderEvent = new ExternalEventModel(
-                content, wfRunId, externalEventDefId, "olderEvent", threadRunNumber, ++nodeRunPosition, new Date());
+                content,
+                new ExternalEventIdModel(wfRunId, externalEventDefId, "olderEvent"),
+                threadRunNumber,
+                ++nodeRunPosition,
+                new Date());
         getableManager.put(expectedEvent);
         getableManager.put(olderEvent);
         getableManager.commit();

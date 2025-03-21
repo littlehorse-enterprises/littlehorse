@@ -1,6 +1,5 @@
 using System;
 using LittleHorse.Sdk.Common.Proto;
-using LittleHorse.Sdk.Helper;
 using LittleHorse.Sdk.Workflow.Spec;
 using Moq;
 using Xunit;
@@ -59,13 +58,16 @@ public class WfRunVariableTest
         const VariableType expectedType = VariableType.Str;
         var wfRunVariable = new WfRunVariable("test-var", expectedType, _parentWfThread);
         
-        var compiledWfRunVariable = wfRunVariable.Compile();
+        var actualVarDef = wfRunVariable.Compile();
         
-        var actualResult = LHMappingHelper.ProtoToJson(compiledWfRunVariable);
-        var expectedResult =
-            "{ \"varDef\": { \"type\": \"STR\", \"name\": \"test-var\", \"maskedValue\": false }," +
-            " \"required\": false, \"searchable\": false, \"jsonIndexes\": [ ], \"accessLevel\": \"PRIVATE_VAR\" }";
         
-        Assert.Equal(expectedResult, actualResult);
+        var varDef = new VariableDef { Type = expectedType, Name = wfRunVariable.Name };
+        var expectedVarDef = new ThreadVarDef
+        {
+            VarDef = varDef,
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        
+        Assert.Equal(expectedVarDef, actualVarDef);
     }
 }

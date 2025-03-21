@@ -10,12 +10,14 @@ public class Workflow
 {
     private readonly ILogger<Workflow>? _logger;
     private string _name;
-    private Action<WorkflowThread> _entryPoint;
+    private readonly Action<WorkflowThread> _entryPoint;
     private PutWfSpecRequest? _compiledWorkflow;
-    private PutWfSpecRequest _spec;
-    private Queue<Tuple<string, Action<WorkflowThread>>> _threadActions;
+    private readonly PutWfSpecRequest _spec;
+    private readonly Queue<Tuple<string, Action<WorkflowThread>>> _threadActions;
     private readonly string _parentWfSpecName;
     private readonly HashSet<string> _requiredTaskDefNames;
+    private readonly HashSet<string> _requiredEedNames;
+    private readonly HashSet<string> _requiredWorkflowEventDefNames;
     private int _defaultTaskTimeout;
     private int _defaultSimpleRetries;
     internal ExponentialBackoffRetryPolicy _defaultExponentialBackoff = null!;
@@ -30,6 +32,8 @@ public class Workflow
         _spec = new PutWfSpecRequest { Name = name };
         _threadActions = new Queue<Tuple<string, Action<WorkflowThread>>>();
         _requiredTaskDefNames = new HashSet<string>();
+        _requiredEedNames = new HashSet<string>();
+        _requiredWorkflowEventDefNames = new HashSet<string>();
     }
 
     public PutWfSpecRequest Compile()
@@ -49,7 +53,7 @@ public class Workflow
         _logger!.LogInformation(LHMappingHelper.ProtoToJson(client.PutWfSpec(Compile())));
     }
 
-    private string AddSubThread(string subThreadName, Action<WorkflowThread> subThreadAction) 
+    internal string AddSubThread(string subThreadName, Action<WorkflowThread> subThreadAction) 
     {
         foreach (var threadPair in _threadActions)
         {
@@ -88,6 +92,11 @@ public class Workflow
     internal void AddTaskDefName(string taskDefName) 
     {
         _requiredTaskDefNames.Add(taskDefName);
+    }
+    
+    internal void AddExternalEventDefName(string eedName) 
+    {
+        _requiredEedNames.Add(eedName);
     }
     
     /// <summary>
@@ -139,5 +148,24 @@ public class Workflow
     internal ExponentialBackoffRetryPolicy? GetDefaultExponentialBackoffRetryPolicy() 
     {
         return _defaultExponentialBackoff!;
+    }
+    
+    /// <summary>
+    /// Returns the names of all `ExternalEventDef`s used by this workflow. Includes
+    /// ExternalEventDefs used for Interrupts or for EXTERNAL_EVENT nodes.
+    /// 
+    /// </summary>
+    /// <returns>
+    /// A Set of Strings containing the names of all `ExternalEventDef`s used by this workflow.
+    /// </returns>
+    public HashSet<string> GetRequiredExternalEventDefNames()
+    {
+        _compiledWorkflow ??= CompileWorkflowDetails();
+        return _requiredEedNames;
+    }
+    
+    internal void AddWorkflowEventDefName(string name) 
+    {
+        _requiredWorkflowEventDefNames.Add(name);
     }
 }

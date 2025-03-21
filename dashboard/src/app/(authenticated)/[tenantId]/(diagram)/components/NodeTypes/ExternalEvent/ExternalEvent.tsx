@@ -8,7 +8,6 @@ import { NodeProps } from '..'
 import { Fade } from '../Fade'
 import { NodeDetails } from '../NodeDetails'
 
-import { NodeRunsList } from '../../NodeRunsList'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 
@@ -19,7 +18,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>
-        <DiagramDataGroup label="ExternalEvent">
+        <DiagramDataGroup label={nodeRun ? "ExternalEvent" : "ExternalEventDef"}>
           <div>
             <div>
               <div className="flex gap-1 text-nowrap">

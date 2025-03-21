@@ -1,13 +1,14 @@
 import { WorkflowEventDefId } from 'littlehorse-client/proto'
+import { useParams } from 'next/navigation'
 import { FC, Fragment } from 'react'
 import { SearchResultProps } from '.'
-import { useParams } from 'next/navigation'
 import LinkWithTenant from '../LinkWithTenant'
+import { SelectionLink } from '../SelectionLink'
 
 export const WorkflowEventDefTable: FC<SearchResultProps> = ({ pages = [] }) => {
   const { tenantId } = useParams()
 
-  if (pages.length === 0) {
+  if (pages.every(page => page.results.length === 0)) {
     return <div className="flex min-h-[360px] items-center justify-center text-center italic">No WorkflowEventDefs</div>
   }
 
@@ -16,11 +17,9 @@ export const WorkflowEventDefTable: FC<SearchResultProps> = ({ pages = [] }) => 
       {pages.map((page, i) => (
         <Fragment key={i}>
           {page.results.map(({ name }: WorkflowEventDefId) => (
-            <div key={name} className="my-2 flex gap-2">
-              <LinkWithTenant className="underline hover:no-underline" href={`/workflowEventDef/${name}`}>
-                {name}
-              </LinkWithTenant>
-            </div>
+            <SelectionLink key={name} href={`/workflowEventDef/${name}`}>
+              <p className="group">{name}</p>
+            </SelectionLink>
           ))}
         </Fragment>
       ))}

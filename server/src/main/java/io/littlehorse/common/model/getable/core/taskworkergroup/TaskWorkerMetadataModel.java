@@ -10,7 +10,6 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.*;
 import java.util.stream.Collectors;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 public class TaskWorkerMetadataModel extends LHSerializable<TaskWorkerMetadata>
         implements Comparable<TaskWorkerMetadataModel> {
@@ -49,7 +48,7 @@ public class TaskWorkerMetadataModel extends LHSerializable<TaskWorkerMetadata>
     }
 
     @Override
-    public int compareTo(@NotNull TaskWorkerMetadataModel o) {
+    public int compareTo(TaskWorkerMetadataModel o) {
         if (taskWorkerId == null) return -1;
         return taskWorkerId.compareTo(o.taskWorkerId);
     }

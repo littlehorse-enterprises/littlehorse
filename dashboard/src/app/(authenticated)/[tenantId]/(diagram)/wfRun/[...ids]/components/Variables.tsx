@@ -7,6 +7,7 @@ import { OverflowText } from '../../../../components/OverflowText'
 type VariablesProps = {
   variableDefs: ThreadVarDef[]
   variables: Variable[]
+  inheritedVariables: (Variable | null)[]
 }
 
 const accessLevels: { [key in WfRunVariableAccessLevel]: string } = {
@@ -16,8 +17,10 @@ const accessLevels: { [key in WfRunVariableAccessLevel]: string } = {
   UNRECOGNIZED: '',
 }
 
-export const Variables: FC<VariablesProps> = ({ variableDefs, variables }) => {
+export const Variables: FC<VariablesProps> = ({ variableDefs, variables, inheritedVariables }) => {
   if (variableDefs.length === 0) return <></>
+
+  const allVariables = [...variables, ...inheritedVariables]
 
   return (
     <div className="">
@@ -34,7 +37,7 @@ export const Variables: FC<VariablesProps> = ({ variableDefs, variables }) => {
             <OverflowText
               className="max-w-96"
               text={
-                getVariableValue(variables.find(v => v.id?.name === variable.varDef?.name)?.value)?.toString() ?? ''
+                getVariableValue(allVariables.find(v => v?.id?.name === variable.varDef?.name)?.value)?.toString() ?? ''
               }
             />
           </span>
