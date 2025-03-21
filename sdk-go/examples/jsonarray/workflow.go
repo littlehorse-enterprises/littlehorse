@@ -1,7 +1,6 @@
 package jsonarray
 
 import (
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 )
 
@@ -30,6 +29,6 @@ func AddUpList(inputs *[]InputData) int {
 }
 
 func MyWorkflowAdd(wf *littlehorse.WorkflowThread) {
-	inputVar := wf.AddVariable("input", lhproto.VariableType_JSON_ARR)
+	inputVar := wf.DeclareJsonArr("input")
 	wf.Execute(TaskDefName, inputVar)
 }

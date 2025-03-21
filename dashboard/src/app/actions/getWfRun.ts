@@ -4,7 +4,7 @@ import { lhClient } from '@/app/lhClient'
 import { NodeRun, ThreadRun, Variable, WfRun, WfRunId, WfSpec } from 'littlehorse-client/proto'
 
 type Props = {
-  ids: string[]
+  wfRunId: WfRunId
   tenantId: string
 }
 
@@ -16,12 +16,9 @@ export type WfRunResponse = {
   nodeRuns: NodeRun[]
   variables: Variable[]
 }
-export const getWfRun = async ({ ids, tenantId }: Props): Promise<WfRunResponse> => {
+export const getWfRun = async ({ wfRunId, tenantId }: Props): Promise<WfRunResponse> => {
   const client = await lhClient({ tenantId })
-  const wfRunId = ids
-    .reverse()
-    .reduceRight<WfRunId | undefined>((parentWfRunId, id) => ({ id, parentWfRunId }), undefined)
-  const wfRun = await client.getWfRun(wfRunId!)
+  const wfRun = await client.getWfRun(wfRunId)
   const [wfSpec, { results: nodeRuns }, { results: variables }] = await Promise.all([
     client.getWfSpec({ ...wfRun.wfSpecId }),
     client.listNodeRuns({

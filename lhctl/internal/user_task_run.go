@@ -366,9 +366,9 @@ func promptFor(prompt string, varType lhproto.VariableType) (*lhproto.VariableVa
 	reader := bufio.NewReader(os.Stdin)
 
 	// Read the entire line of text entered by the user
-	// The returned line will include the newline character '\n', so we'll trim it.
+	// The returned line will include newline characters such as '\n', so we'll trim it.
 	userInput, _ := reader.ReadString('\n')
-	return littlehorse.StrToVarVal(userInput[:len(userInput)-1], varType)
+	return littlehorse.StrToVarVal(strings.TrimSpace(userInput), varType)
 }
 
 func getUserTaskDef(

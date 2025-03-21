@@ -47,6 +47,20 @@ const config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        status: {
+          running: 'theme("colors.blue.300")',
+          success: 'theme("colors.green.300")',
+          failed: 'theme("colors.red.300")',
+          exception: 'theme("colors.orange.300")',
+          halting: 'theme("colors.purple.300")',
+        },
+        chart: {
+          '1': 'hsl(var(--chart-1))',
+          '2': 'hsl(var(--chart-2))',
+          '3': 'hsl(var(--chart-3))',
+          '4': 'hsl(var(--chart-4))',
+          '5': 'hsl(var(--chart-5))',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -74,6 +88,9 @@ const config = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+      },
+      fontFamily: {
+        code: ['Fira Code', 'sans-serif'],
       },
     },
   },

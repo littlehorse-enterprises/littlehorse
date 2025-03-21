@@ -1,6 +1,5 @@
 package io.littlehorse.server.monitoring;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -33,7 +32,8 @@ public final class StandbyStoresOnInstance {
      * @param currentOffset batch end offset
      * @param endOffset topic partition end offset
      */
-    public void recordOffsets(TopicPartition topicPartition, final long currentOffset, final long endOffset) {
+    public synchronized void recordOffsets(
+            TopicPartition topicPartition, final long currentOffset, final long endOffset) {
         StandbyTopicPartitionMetrics newMetric =
                 new StandbyTopicPartitionMetrics(topicPartition, currentOffset, endOffset);
         partitions.remove(newMetric);
@@ -44,8 +44,7 @@ public final class StandbyStoresOnInstance {
      * Calculates the total lag across all partitions in the store
      * @return sum of lag values for all partitions.
      */
-    @JsonProperty("totalLag")
-    public long totalLag() {
+    public synchronized long totalLag() {
         return partitions.stream()
                 .map(StandbyTopicPartitionMetrics::getCurrentLag)
                 .map(lag -> Math.max(0, lag)) // ignore sentinel values (-1)
@@ -58,12 +57,11 @@ public final class StandbyStoresOnInstance {
      *
      * @return The number of registered partitions for this store.
      */
-    @JsonProperty("numberOfRegisteredPartitions")
-    public int registeredPartitions() {
+    public synchronized int registeredPartitions() {
         return partitions.size();
     }
 
-    public Optional<StandbyTopicPartitionMetrics> lagInfoForPartition(int partition) {
+    public synchronized Optional<StandbyTopicPartitionMetrics> lagInfoForPartition(int partition) {
         return partitions.stream()
                 .filter(standbyTopicPartitionMetrics -> standbyTopicPartitionMetrics.getPartition() == partition)
                 .findFirst();
@@ -76,7 +74,7 @@ public final class StandbyStoresOnInstance {
      * @param endOffset partition end offset
      * @param reason standby suspension reason
      */
-    public void suspendPartition(
+    public synchronized void suspendPartition(
             final TopicPartition topicPartition,
             final long currentOffset,
             final long endOffset,

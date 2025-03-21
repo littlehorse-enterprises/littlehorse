@@ -1,10 +1,9 @@
 package io.littlehorse.canary.config;
 
-import org.apache.kafka.clients.admin.AdminClientConfig;
-import org.apache.kafka.common.config.ConfigDef;
-
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.common.config.ConfigDef;
 
 public class KafkaAdminConfig implements Config {
     public static final ConfigDef KAFKA_ADMIN_CONFIGS = AdminClientConfig.configDef();
@@ -27,5 +26,4 @@ public class KafkaAdminConfig implements Config {
     public String toString() {
         return configs.toString();
     }
-
 }

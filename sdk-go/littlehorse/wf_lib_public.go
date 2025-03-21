@@ -104,7 +104,7 @@ func (n *NodeOutput) JsonPath(path string) NodeOutput {
 	return n.jsonPathImpl(path)
 }
 
-func (n *NodeOutput) Timeout(timeout int) *NodeOutput {
+func (n *NodeOutput) Timeout(timeout int64) *NodeOutput {
 	n.thread.addTimeoutToExtEvt(n, timeout)
 	return n
 }
@@ -199,6 +199,10 @@ func (t *TaskNodeOutput) WithRetries(retries int32) *TaskNodeOutput {
 
 func (t *TaskNodeOutput) WithExponentialBackoff(policy *lhproto.ExponentialBackoffRetryPolicy) *TaskNodeOutput {
 	return t.withExponentialBackoffImpl(policy)
+}
+
+func (w *WfRunVariable) WithDefault(defaultValue interface{}) *WfRunVariable {
+	return w.withDefaultImpl(defaultValue)
 }
 
 func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
@@ -341,6 +345,34 @@ func (w *WfRunVariable) RemoveKey(key interface{}) LHExpression {
 	}
 }
 
+func (t *WorkflowThread) DeclareBool(name string) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_BOOL)
+}
+
+func (t *WorkflowThread) DeclareInt(name string) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_INT)
+}
+
+func (t *WorkflowThread) DeclareStr(name string) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_STR)
+}
+
+func (t *WorkflowThread) DeclareDouble(name string) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_DOUBLE)
+}
+
+func (t *WorkflowThread) DeclareBytes(name string) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_BYTES)
+}
+
+func (t *WorkflowThread) DeclareJsonArr(name string) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_JSON_ARR)
+}
+
+func (t *WorkflowThread) DeclareJsonObj(name string) *WfRunVariable {
+	return t.addVariable(name, lhproto.VariableType_JSON_OBJ)
+}
+
 func (l *LHWorkflow) WithRetentionPolicy(policy *lhproto.WorkflowRetentionPolicy) *LHWorkflow {
 	l.spec.RetentionPolicy = policy
 	return l
@@ -358,7 +390,7 @@ func (l *LHWorkflow) WithUpdateType(updateType lhproto.AllowedUpdateType) *LHWor
 func (t *WorkflowThread) AddVariable(
 	name string, varType lhproto.VariableType,
 ) *WfRunVariable {
-	return t.addVariable(name, varType, nil)
+	return t.addVariable(name, varType)
 }
 
 func (t *WorkflowThread) Add(lhs interface{}, rhs interface{}) LHExpression {
@@ -432,7 +464,9 @@ func (t *WorkflowThread) WithRetentionPolicy(policy *lhproto.ThreadRetentionPoli
 func (t *WorkflowThread) AddVariableWithDefault(
 	name string, varType lhproto.VariableType, defaultValue interface{},
 ) *WfRunVariable {
-	return t.addVariable(name, varType, defaultValue)
+	tempVar := t.addVariable(name, varType)
+	tempVar.withDefaultImpl(defaultValue)
+	return tempVar
 }
 
 func (t *WorkflowThread) Execute(taskDefName interface{}, args ...interface{}) *TaskNodeOutput {

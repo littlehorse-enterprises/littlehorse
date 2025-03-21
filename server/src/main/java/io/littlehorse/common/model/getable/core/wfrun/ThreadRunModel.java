@@ -589,6 +589,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                     child.getCurrentNodeRun().maybeHalt(processorContext);
                 }
             }
+            getCurrentNodeRun().setStatus(failure.getStatus());
             failWithoutGrace(failure, endTime);
         } else {
             handleFailure(failure, handlerOption.get());

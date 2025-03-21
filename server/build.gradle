@@ -70,9 +70,8 @@ dependencies {
     testImplementation project(":test-utils-container")
 
     // JSON and YAML processing
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2'
     implementation 'com.jayway.jsonpath:json-path:2.9.0'
+    implementation 'com.google.code.gson:gson:2.12.1'
 
     // To run scheduled wfs
     implementation 'com.cronutils:cron-utils:9.2.1'

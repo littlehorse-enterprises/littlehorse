@@ -5,6 +5,7 @@ using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
 using LittleHorse.Sdk.Utils;
 using LittleHorse.Sdk.Worker;
+using Newtonsoft.Json.Linq;
 using TaskStatus = LittleHorse.Sdk.Common.Proto.TaskStatus;
 using Type = System.Type;
 
@@ -92,7 +93,7 @@ namespace LittleHorse.Sdk.Helper
             {
                 var jsonStr = JsonHandler.ObjectSerializeToJson(obj);
 
-                if (obj is IEnumerable)
+                if (obj is IList)
                 {
                     result.JsonArr = jsonStr;
                 }
@@ -133,7 +134,11 @@ namespace LittleHorse.Sdk.Helper
             try
             {
                 var jsonFormatter = new JsonFormatter(new JsonFormatter.Settings(true));
-                return jsonFormatter.Format(o);
+                string json = jsonFormatter.Format(o);
+                var jObject = JObject.Parse(json);
+                var orderedJObject = new JObject(jObject.Properties().OrderBy(p => p.Name));
+                
+                return orderedJObject.ToString();
             }
             catch (InvalidProtocolBufferException ex)
             {

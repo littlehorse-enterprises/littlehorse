@@ -12,7 +12,7 @@ const ExitNode: FC<NodeProps> = ({ data }) => {
   return (
     <Fade fade={fade} status={failureDef ? LHStatus.EXCEPTION : undefined}>
       {failureDef && (
-        <NodeDetails>
+        <NodeDetails nodeRunList={data.nodeRunsList}>
           <div className="mb-2 flex gap-1 text-nowrap">
             <h3 className="font-bold">FailureDef</h3>
             {failureDef.failureName}

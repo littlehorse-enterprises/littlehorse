@@ -1,5 +1,4 @@
 using LittleHorse.Sdk.Common.Proto;
-using LittleHorse.Sdk.Helper;
 using LittleHorse.Sdk.Workflow.Spec;
 using Xunit;
 
@@ -22,20 +21,49 @@ public class WorkflowTest
         }
         var workflow = new Sdk.Workflow.Spec.Workflow(wfName, Entrypoint);
 
-        var result = workflow.Compile();
+        var actualResult = workflow.Compile();
 
-        var actualResult = LHMappingHelper.ProtoToJson(result);
-        var expectedResult = "{ \"name\": \"example-basic\", \"threadSpecs\": { \"entrypoint\": " +
-                             "{ \"nodes\": { \"0-entrypoint-ENTRYPOINT\": { \"outgoingEdges\": " +
-                             "[ { \"sinkNodeName\": \"1-exit-Exit\", \"variableMutations\": [ ] } ], " +
-                             "\"failureHandlers\": [ ], \"entrypoint\": { } }, \"1-exit-Exit\": { \"outgoingEdges\": " +
-                             "[ ], \"failureHandlers\": [ ], \"exit\": { } } }, \"variableDefs\": [ { \"varDef\": " +
-                             "{ \"type\": \"STR\", \"name\": \"input-name\", \"maskedValue\": false }, \"required\": " +
-                             "false, \"searchable\": false, \"jsonIndexes\": [ ], \"accessLevel\": " +
-                             "\"PRIVATE_VAR\" } ], \"interruptDefs\": [ ] } }, \"entrypointThreadName\": " +
-                             "\"entrypoint\", \"allowedUpdates\": \"ALL_UPDATES\" }";
+        var wfSpecRequest = new PutWfSpecRequest
+        {
+            Name = wfName,
+            EntrypointThreadName = "entrypoint"
+        };
+        var threadSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "1-exit-EXIT"
+                }
+            }
+        };
+
+        var exitNode = new Node
+        {
+            Exit = new ExitNode()
+        };
+
+        var threadVarDef = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Type = VariableType.Str,
+                Name = "input-name"
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        
+        threadSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        threadSpec.Nodes.Add("1-exit-EXIT", exitNode);
+        threadSpec.VariableDefs.Add(threadVarDef);
+        
+        wfSpecRequest.ThreadSpecs.Add("entrypoint", threadSpec);
+        
         var expectedQuantityOfNodes = 2;
-        Assert.Equal(expectedQuantityOfNodes, result.ThreadSpecs["entrypoint"].Nodes.Count);
-        Assert.Equal(expectedResult, actualResult);
+        Assert.Equal(expectedQuantityOfNodes, actualResult.ThreadSpecs["entrypoint"].Nodes.Count);
+        Assert.Equal(wfSpecRequest, actualResult);
     }
 }

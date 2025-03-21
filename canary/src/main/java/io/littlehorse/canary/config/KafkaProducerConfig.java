@@ -1,10 +1,9 @@
 package io.littlehorse.canary.config;
 
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.config.ConfigDef;
-
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.config.ConfigDef;
 
 public class KafkaProducerConfig implements Config {
     public static final ConfigDef KAFKA_PRODUCER_CONFIGS = ProducerConfig.configDef();
@@ -27,5 +26,4 @@ public class KafkaProducerConfig implements Config {
     public String toString() {
         return configs.toString();
     }
-
 }

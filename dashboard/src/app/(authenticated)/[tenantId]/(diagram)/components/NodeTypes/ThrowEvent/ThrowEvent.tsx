@@ -8,7 +8,7 @@ import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWith
 import { Fade } from '../Fade'
 import { NodeDetails } from '../NodeDetails'
 
-import { NodeRunsList } from '../../NodeRunsList'
+import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
 
 const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   if (!data.throwEvent) return null
@@ -16,23 +16,22 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   const { fade, throwEvent: throwEventNode, nodeNeedsToBeHighlighted, nodeRun } = data
   return (
     <>
-      <NodeDetails>
-        <div>
+      <NodeDetails nodeRunList={data.nodeRunsList}>
+        <DiagramDataGroup label={nodeRun ? "WorkflowEvent" : "WorkflowEventDef"}>
           <div>
-            <div className="flex items-center gap-1 text-nowrap">
-              <h3 className="font-bold">WorkflowEventDef</h3>
-              <LinkWithTenant
-                className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
-                target="_blank"
-                href={`/workflowEventDef/${throwEventNode.eventDefId?.name}`}
-              >
-                {throwEventNode.eventDefId?.name} <ExternalLinkIcon className="h-4 w-4" />
-              </LinkWithTenant>
+            <div>
+              <div className="flex items-center gap-1 text-nowrap">
+                <LinkWithTenant
+                  className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
+                  target="_blank"
+                  href={`/workflowEventDef/${throwEventNode.eventDefId?.name}`}
+                >
+                  {throwEventNode.eventDefId?.name} <ExternalLinkIcon className="h-4 w-4" />
+                </LinkWithTenant>
+              </div>
             </div>
           </div>
-
-          <NodeRunsList nodeRuns={data.nodeRunsList} />
-        </div>
+        </DiagramDataGroup>
       </NodeDetails>
       <Fade fade={fade} status={data.nodeRun?.status}>
         <div className="relative cursor-pointer items-center justify-center text-xs">

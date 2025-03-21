@@ -1,11 +1,9 @@
 package io.littlehorse.canary.config;
 
-import org.apache.kafka.common.config.ConfigDef;
-import org.apache.kafka.common.config.SslConfigs;
-import org.apache.kafka.streams.StreamsConfig;
-
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.kafka.common.config.ConfigDef;
+import org.apache.kafka.streams.StreamsConfig;
 
 public class KafkaStreamsConfig implements Config {
     public static final ConfigDef KAFKA_STREAMS_CONFIGS = StreamsConfig.configDef();
@@ -31,7 +29,7 @@ public class KafkaStreamsConfig implements Config {
         return configs.toString();
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         KAFKA_STREAMS_CONFIGS.withClientSaslSupport().withClientSslSupport();
         System.out.println(KAFKA_STREAMS_CONFIGS.names());
     }

@@ -2,7 +2,9 @@ package io.littlehorse.storeinternals;
 
 import static org.mockito.Mockito.mock;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.ToNumberPolicy;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
@@ -21,6 +23,7 @@ import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,16 +62,18 @@ public class JsonVariableStorageManagerTest {
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
     private GetableManager getableManager;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private static Gson gson = new GsonBuilder()
+            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .create();
 
     @BeforeEach
     public void setup() throws Exception {
         initializeDependencies();
 
         // JSON_OBJ test
+        String content = Files.readString(Paths.get("./src/test/resources/json-variables-example.json"));
         @SuppressWarnings("unchecked")
-        Map<String, Object> map = objectMapper.readValue(
-                Paths.get("./src/test/resources/json-variables-example.json").toFile(), Map.class);
+        Map<String, Object> map = gson.fromJson(content, Map.class);
 
         VariableModel jsonObjVariable = TestUtil.variable("wfrun-id");
         jsonObjVariable.getId().setName("testVariable");

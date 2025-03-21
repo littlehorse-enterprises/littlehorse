@@ -1,6 +1,5 @@
 package io.littlehorse.server.monitoring.health;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.littlehorse.common.LHServerConfig;
 import lombok.Data;
 import org.apache.kafka.common.TopicPartition;
@@ -33,7 +32,6 @@ public class InProgressRestoration {
         this.endOffset = endOffset;
     }
 
-    @JsonIgnore
     public long getRemaining() {
         return endOffset - currentOffset;
     }

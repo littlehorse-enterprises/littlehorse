@@ -26,6 +26,7 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
+import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
@@ -228,9 +229,8 @@ public class TestUtil {
     public static ExternalEventModel externalEvent() {
         ExternalEventModel externalEvent = new ExternalEventModel(
                 variableValue(),
-                new WfRunIdModel("0000000"),
-                new ExternalEventDefIdModel("test-name"),
-                "0000001",
+                new ExternalEventIdModel(
+                        new WfRunIdModel("0000000"), new ExternalEventDefIdModel("test-name"), "0000001"),
                 null,
                 null,
                 null);
@@ -240,9 +240,8 @@ public class TestUtil {
     public static ExternalEventModel externalEvent(String wfRunId) {
         ExternalEventModel externalEvent = new ExternalEventModel(
                 variableValue(),
-                new WfRunIdModel(wfRunId),
-                new ExternalEventDefIdModel("test-name"),
-                "0000001",
+                new ExternalEventIdModel(
+                        new WfRunIdModel(wfRunId), new ExternalEventDefIdModel("test-name"), "0000001"),
                 null,
                 null,
                 null);
