@@ -180,7 +180,8 @@ public class WorkflowThread
         return wfRunVariable;
     }
     
-    private ThreadRetentionPolicy GetRetentionPolicy() {
+    private ThreadRetentionPolicy GetRetentionPolicy() 
+    {
         if (_retentionPolicy == null) 
             return Parent.GetDefaultThreadRetentionPolicy();
 
