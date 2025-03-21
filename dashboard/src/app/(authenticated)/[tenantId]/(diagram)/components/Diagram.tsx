@@ -156,7 +156,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
         >
           <Controls />
         </ReactFlow>
-        <Layouter nodeRuns={threadNodeRuns} nodeRunNameToBeHighlighted={nodeRunNameToBeHighlighted} />
+        <Layouter wfRun={wfRun} nodeRunNameToBeHighlighted={nodeRunNameToBeHighlighted} />
       </div>
     </ThreadProvider>
   )
