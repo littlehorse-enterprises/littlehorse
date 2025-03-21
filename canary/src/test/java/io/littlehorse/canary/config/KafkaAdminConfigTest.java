@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
-class KafkaProducerConfigTest {
+class KafkaAdminConfigTest {
 
     @Test
     void shouldKeepKafkaSecurityConfigs() {
@@ -21,18 +21,14 @@ class KafkaProducerConfigTest {
                 "kafka.sasl.kerberos.service.name", "service",
                 "not.a.key", "not.a.value");
         Map<String, Object> expected = Map.of(
-                "key.serializer", "org.apache.kafka.common.serialization.StringSerializer",
-                "value.serializer", "org.apache.kafka.common.serialization.BytesSerializer",
-                "acks", "all",
                 "client.id", "id",
-                "enable.idempotence", "true",
                 "sasl.kerberos.service.name", "service",
                 "ssl.keystore.password", "pay-password",
                 "bootstrap.servers", "localhost",
                 "security.protocol", "SSL");
-        KafkaProducerConfig kafkaProducerConfig = new KafkaProducerConfig(input);
+        KafkaAdminConfig kafkaAdminConfig = new KafkaAdminConfig(input);
 
-        Map<String, Object> output = kafkaProducerConfig.toMap();
+        Map<String, Object> output = kafkaAdminConfig.toMap();
 
         assertThat(output).isEqualTo(expected);
     }

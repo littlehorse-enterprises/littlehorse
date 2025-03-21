@@ -6,13 +6,14 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.ConfigDef;
 
 public class KafkaProducerConfig implements Config {
-    public static final ConfigDef KAFKA_PRODUCER_CONFIGS = ProducerConfig.configDef();
+    private static final ConfigDef KAFKA_PRODUCER_CONFIGS = ProducerConfig.configDef();
+    private static final String KAFKA_PREFIX = "kafka.";
     private final Map<String, Object> configs;
 
     public KafkaProducerConfig(final Map<String, Object> configs) {
         this.configs = configs.entrySet().stream()
-                .filter(entry -> entry.getKey().startsWith("kafka."))
-                .map(entry -> Map.entry(entry.getKey().substring(6), entry.getValue()))
+                .filter(entry -> entry.getKey().startsWith(KAFKA_PREFIX))
+                .map(entry -> Map.entry(entry.getKey().substring(KAFKA_PREFIX.length()), entry.getValue()))
                 .filter(entry -> KAFKA_PRODUCER_CONFIGS.names().contains(entry.getKey()))
                 .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
     }
