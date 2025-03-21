@@ -794,4 +794,261 @@ public class WorkflowThreadTest
         Assert.Equal(expectedNumberOfNodes, compiledWfThread.Nodes.Count);
         Assert.Equal(expectedThreadSpec, compiledWfThread);
     }
+
+    [Fact]
+    public void WorkflowThread_WithNullDefaultRetentionPolicyInParent_ShouldCompileWithoutRetentionPolicyInThread()
+    {
+        var workflowName = "TestWorkflow";
+        var workflow = new Sdk.Workflow.Spec.Workflow(workflowName, _action);
+        workflow.WithDefaultThreadRetentionPolicy(null);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            wf.Execute("any-task-name");
+        }
+
+        var workflowThread = new WorkflowThread(workflow, EntryPointAction);
+
+        var compiledWfThread = workflowThread.Compile();
+        
+        Assert.Null(compiledWfThread.RetentionPolicy);
+    }
+    
+    [Fact]
+    public void WorkflowThread_WithRetentionPolicyInThread_ShouldCompile()
+    {
+        var workflowName = "TestWorkflow";
+        var workflow = new Sdk.Workflow.Spec.Workflow(workflowName, _action);
+        var secondsRetentionPolicy = 120;
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            wf.WithRetentionPolicy(new ThreadRetentionPolicy
+            {
+                SecondsAfterThreadTermination = secondsRetentionPolicy
+            });
+        }
+
+        var workflowThread = new WorkflowThread(workflow, EntryPointAction);
+
+        var compiledWfThread = workflowThread.Compile();
+        
+        Assert.Null(workflow.GetDefaultThreadRetentionPolicy());
+        Assert.Equal(secondsRetentionPolicy, compiledWfThread.RetentionPolicy.SecondsAfterThreadTermination);
+    }
+    
+    [Fact]
+    public void WorkflowThread_WitDefaultRetentionPolicyInParent_ShouldCompileWithRetentionPolicyInThread()
+    {
+        var workflowName = "TestWorkflow";
+        var workflow = new Sdk.Workflow.Spec.Workflow(workflowName, _action);
+        var secondsRetentionPolicy = 120;
+        workflow.WithDefaultThreadRetentionPolicy(new ThreadRetentionPolicy 
+            { SecondsAfterThreadTermination = secondsRetentionPolicy });
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            wf.Execute("any-task-name");
+        }
+
+        var workflowThread = new WorkflowThread(workflow, EntryPointAction);
+
+        var compiledWfThread = workflowThread.Compile();
+        
+        Assert.Equal(workflow.GetDefaultThreadRetentionPolicy(), compiledWfThread.RetentionPolicy);
+        Assert.Equal(secondsRetentionPolicy, compiledWfThread.RetentionPolicy.SecondsAfterThreadTermination);
+    }
+    
+    [Fact]
+    public void WorkflowThread_WithWfRunVariableAsTaskNameAndArgsInExecuteTask_ShouldCompile()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            WfRunVariable taskDef = wf.DeclareStr("task-name");
+            WfRunVariable input1 = wf.DeclareStr("input");
+            WfRunVariable input2 = wf.DeclareJsonObj("complex-data");
+            
+            wf.Execute(taskDef, input1, input2);
+        }
+
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+
+        var compiledWfThread = workflowThread.Compile();
+
+        var expectedThreadSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-task-name-TASK" }
+            }
+        };
+
+        var task = new Node
+        {
+            Task = new TaskNode
+            {
+                Variables =
+                {
+                    new VariableAssignment { VariableName = "input" },
+                    new VariableAssignment { VariableName = "complex-data" }
+                },
+                DynamicTask = new VariableAssignment { VariableName = "task-name" }
+            },
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-exit-EXIT"
+                }
+            }
+        };
+        
+        var exit = new Node { Exit = new ExitNode() };
+        var threadVarDef1 = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "task-name",
+                Type = VariableType.Str
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        var threadVarDef2 = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "input",
+                Type = VariableType.Str
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        var threadVarDef3 = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "complex-data",
+                Type = VariableType.JsonObj
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        
+        expectedThreadSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedThreadSpec.Nodes.Add("1-task-name-TASK", task);
+        expectedThreadSpec.Nodes.Add("2-exit-EXIT", exit);
+        expectedThreadSpec.VariableDefs.Add(threadVarDef1);
+        expectedThreadSpec.VariableDefs.Add(threadVarDef2);
+        expectedThreadSpec.VariableDefs.Add(threadVarDef3);
+        var numberOfNodes = 3;
+        
+        Assert.Equal(numberOfNodes, compiledWfThread.Nodes.Count);
+        Assert.Equal(expectedThreadSpec, compiledWfThread);
+    }
+    
+    [Fact]
+    public void WorkflowThread_WithFormattedStringAsTaskNameAndArgsInExecuteTask_ShouldCompile()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Sdk.Workflow.Spec.Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            WfRunVariable taskDef = wf.DeclareStr("task-name");
+            WfRunVariable input1 = wf.DeclareStr("input");
+            WfRunVariable input2 = wf.DeclareJsonObj("complex-data");
+            
+            wf.Execute(wf.Format("prefix-{}-suffix", taskDef), input1, input2);
+        }
+
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+
+        var compiledWfThread = workflowThread.Compile();
+
+        var expectedThreadSpec = new ThreadSpec();
+        var entrypoint = new Node
+        {
+            Entrypoint = new EntrypointNode(),
+            OutgoingEdges =
+            {
+                new Edge { SinkNodeName = "1-prefix-{}-suffix-TASK" }
+            }
+        };
+
+        var task = new Node
+        {
+            Task = new TaskNode
+            {
+                Variables =
+                {
+                    new VariableAssignment { VariableName = "input" },
+                    new VariableAssignment { VariableName = "complex-data" }
+                },
+                DynamicTask = new VariableAssignment
+                {
+                    FormatString = new VariableAssignment.Types.FormatString
+                    {
+                        Format = new VariableAssignment
+                        {
+                            LiteralValue = new VariableValue { Str = "prefix-{}-suffix" }
+                        },
+                        Args =
+                        {
+                            new VariableAssignment { VariableName = "task-name" }
+                        }
+                    }
+                }
+            },
+            OutgoingEdges =
+            {
+                new Edge
+                {
+                    SinkNodeName = "2-exit-EXIT"
+                }
+            }
+        };
+        
+        var exit = new Node { Exit = new ExitNode() };
+        var threadVarDef1 = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "task-name",
+                Type = VariableType.Str
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        var threadVarDef2 = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "input",
+                Type = VariableType.Str
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        var threadVarDef3 = new ThreadVarDef
+        {
+            VarDef = new VariableDef
+            {
+                Name = "complex-data",
+                Type = VariableType.JsonObj
+            },
+            AccessLevel = WfRunVariableAccessLevel.PrivateVar
+        };
+        
+        expectedThreadSpec.Nodes.Add("0-entrypoint-ENTRYPOINT", entrypoint);
+        expectedThreadSpec.Nodes.Add("1-prefix-{}-suffix-TASK", task);
+        expectedThreadSpec.Nodes.Add("2-exit-EXIT", exit);
+        expectedThreadSpec.VariableDefs.Add(threadVarDef1);
+        expectedThreadSpec.VariableDefs.Add(threadVarDef2);
+        expectedThreadSpec.VariableDefs.Add(threadVarDef3);
+        var numberOfNodes = 3;
+        
+        Assert.Equal(numberOfNodes, compiledWfThread.Nodes.Count);
+        Assert.Equal(expectedThreadSpec, compiledWfThread);
+    }
 }
