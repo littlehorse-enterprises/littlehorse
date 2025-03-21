@@ -71,7 +71,7 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, s
   return (
     <div style={wrapperStyle} className="flex gap-4 justify-center drop-shadow mb-6 items-start select-none">
       {nodeRunList && nodeRunList[nodeRunsIndexInternal] && (
-        <DiagramDataGroup label={nodeRunList.length > 1 ? `NodeRun #${nodeRunsIndexInternal}` : "NodeRun"} >
+        <DiagramDataGroup label={"NodeRun"} index={nodeRunsIndexInternal} indexes={nodeRunList.length} >
           <DiagramDataGroupIndexer index={nodeRunsIndexInternal} setIndex={setNodeRunsIndexInternal} indexes={nodeRunList.length} />
           <Entry label="Status:">
             <Status status={nodeRunList[nodeRunsIndexInternal].status} />
