@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿using System.Net;
+using Grpc.Core;
 using Grpc.Net.Client;
 using LittleHorse.Sdk.Authentication;
 using LittleHorse.Sdk.Utils;
@@ -21,6 +22,7 @@ namespace LittleHorse.Sdk {
         
         private OAuthConfig? _oAuthConfig;
         private OAuthClient? _oAuthClient;
+        private const string DefaultProtocol = "PLAINTEXT";
         
         public LHConfig(ILoggerFactory? loggerFactory = null)
         {
@@ -77,11 +79,27 @@ namespace LittleHorse.Sdk {
                 return _inputVariables.LHC_API_PORT;
             }
         }
+
+        public string ApiProtocol
+        {
+            get
+            {
+                return _inputVariables.LHC_API_PROTOCOL;
+            }
+        }
+        
+        public string? TenantId
+        {
+            get
+            {
+                return _inputVariables.LHC_TENANT_ID;
+            }
+        }
         public string BootstrapProtocol
         {
             get
             {
-                if (_inputVariables.LHC_API_PROTOCOL != "PLAIN" && _inputVariables.LHC_API_PROTOCOL != "TLS")
+                if (_inputVariables.LHC_API_PROTOCOL != "PLAINTEXT" && _inputVariables.LHC_API_PROTOCOL != "TLS")
                 {
                     throw new ArgumentException("Invalid Protocol: " + _inputVariables.LHC_API_PROTOCOL);
                 }
@@ -148,7 +166,16 @@ namespace LittleHorse.Sdk {
             var httpHandler = new HttpClientHandler();
             var address = $"{BootstrapProtocol}://{host}:{port}";
             httpHandler.ServerCertificateCustomValidationCallback = ServerCertificateCustomValidation;
-
+            
+            var tenantCredentials = CallCredentials.FromInterceptor((context, metadata) =>
+            {
+                if (TenantId != null && TenantId.Length > 0)
+                {
+                    metadata.Add("tenantid", TenantId);
+                }
+                return Task.CompletedTask;
+            });
+            
             if (_inputVariables.LHC_CLIENT_CERT != null && _inputVariables.LHC_CLIENT_KEY != null)
             {
                 var cert = 
@@ -160,12 +187,15 @@ namespace LittleHorse.Sdk {
 
             if (IsOAuth)
             {
-                return CreateGrpcChannelWithOauthCredentials(address, httpHandler);
+                return CreateGrpcChannelWithOauthCredentials(address, httpHandler, tenantCredentials);
             }
 
+            var channelCredentials = ApiProtocol.Equals(DefaultProtocol) ? ChannelCredentials.Insecure : new SslCredentials();
             return GrpcChannel.ForAddress(address, new GrpcChannelOptions
             {
-                HttpHandler = httpHandler
+                HttpHandler = httpHandler,
+                Credentials = ChannelCredentials.Create(channelCredentials, tenantCredentials),
+                UnsafeUseInsecureChannelCallCredentials = channelCredentials == ChannelCredentials.Insecure
             });
         }
 
@@ -184,7 +214,7 @@ namespace LittleHorse.Sdk {
             return certChainBuilder;
         }
 
-        private GrpcChannel CreateGrpcChannelWithOauthCredentials(string address, HttpClientHandler httpHandler)
+        private GrpcChannel CreateGrpcChannelWithOauthCredentials(string address, HttpClientHandler httpHandler, CallCredentials tenantCredentials)
         {
             InitializeOAuth();
 
@@ -202,7 +232,7 @@ namespace LittleHorse.Sdk {
             return GrpcChannel.ForAddress(address, new GrpcChannelOptions
             {
                 HttpHandler = httpHandler,
-                Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
+                Credentials = ChannelCredentials.Create(new SslCredentials(), CallCredentials.Compose(credentials, tenantCredentials))
             });
         }
 
