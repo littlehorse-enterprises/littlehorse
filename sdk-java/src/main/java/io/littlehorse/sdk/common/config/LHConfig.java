@@ -120,14 +120,14 @@ public class LHConfig extends ConfigBase {
     private OAuthConfig oauthConfig;
     private OAuthCredentialsProvider oauthCredentialsProvider;
 
-    /** Creates an LHClientConfig. Loads default values for config from env vars. */
+    /** Creates an LHConfig. Loads default values for config from env vars. */
     public LHConfig() {
         super();
         createdChannels = new HashMap<>();
     }
 
     /**
-     * Creates an LHClientConfig with provided config values.
+     * Creates an LHConfig with provided config values.
      *
      * @param props configuration values.
      */
@@ -137,17 +137,17 @@ public class LHConfig extends ConfigBase {
     }
 
     /**
-     * Creates an LHClientConfig with config props in a specified .properties file.
+     * Creates an LHConfig with config props in a specified .properties file.
      *
      * @param propLocation the location of the .properties file.
      */
     public LHConfig(Path propLocation) {
-        super(propLocation.toString());
+        super(propLocation);
         createdChannels = new HashMap<>();
     }
 
     /**
-     * Creates an LHClientConfig with config props in a specified .properties file.
+     * Creates an LHConfig with config props in a specified .properties file.
      *
      * @param propLocation the location of the .properties file.
      */
@@ -156,8 +156,61 @@ public class LHConfig extends ConfigBase {
         createdChannels = new HashMap<>();
     }
 
+    private LHConfig(ConfigSource configSource) {
+        super(configSource);
+        createdChannels = new HashMap<>();
+    }
+
+    public static LHConfigBuilder newBuilder() {
+        return new LHConfigBuilder();
+    }
+
+    public static class LHConfigBuilder {
+
+        private final ConfigSource configSource = ConfigSource.newSource();
+
+        public LHConfigBuilder loadFromMap(Map<?, ?> map) {
+            configSource.loadFromMap(map);
+            return this;
+        }
+
+        public LHConfigBuilder loadFromConfigSource(ConfigSource configSource) {
+            configSource.loadFromConfigSource(configSource);
+            return this;
+        }
+
+        public LHConfigBuilder loadFromProperties(Properties properties) {
+            configSource.loadFromProperties(properties);
+            return this;
+        }
+
+        public LHConfigBuilder loadFromPropertiesFile(Path path) {
+            configSource.loadFromPropertiesFile(path);
+            return this;
+        }
+
+        public LHConfigBuilder loadFromPropertiesFile(String path) {
+            configSource.loadFromPropertiesFile(path);
+            return this;
+        }
+
+        public LHConfigBuilder loadFromPropertiesFile(File file) {
+            configSource.loadFromPropertiesFile(file);
+            return this;
+        }
+
+        public LHConfigBuilder loadFromEnvVariables() {
+            configSource.loadFromEnvVariables();
+            return this;
+        }
+
+        public LHConfig build() {
+            return new LHConfig(configSource);
+        }
+    }
+
     /**
-     * Creates an LHClientConfig with provided config values.
+     * Creates an LHConfig with provided config values.
      *
      * @param configs configuration values.
      */
