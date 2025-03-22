@@ -16,9 +16,9 @@ docker build -q --tag ${DOCKER_IMAGE_NAME} -f - "${SCRIPT_DIR}" <<EOF
 
 FROM ubuntu:22.04
 
-ENV PROTOC_VERSION           29.3
-ENV PROTO_GEN_JAVA           1.70.0
-ENV PROTO_GEN_PYTHON         1.70.0
+ENV PROTOC_VERSION           30.1
+ENV PROTO_GEN_JAVA           1.71.0
+ENV PROTO_GEN_PYTHON         1.71.0
 ENV PROTO_GEN_GO             1.31.0
 ENV PROTO_GEN_GO_GRPC        1.3.0
 ENV PROTO_GEN_JS             1.178.0

@@ -18,7 +18,7 @@ import littlehorse.model.wf_run_pb2 as wf__run__pb2
 import littlehorse.model.wf_spec_pb2 as wf__spec__pb2
 import littlehorse.model.workflow_event_pb2 as workflow__event__pb2
 
-GRPC_GENERATED_VERSION = '1.70.0'
+GRPC_GENERATED_VERSION = '1.71.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 

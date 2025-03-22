@@ -18,12 +18,10 @@ classifiers = [
 ]
 requires-python = ">=3.10,<3.14"
 dependencies = [
-    # the server is using protobuf 29.3 (local-dev/Dockerfile), in python it is 5.29.3
-    "protobuf==5.29.3",
-    "grpcio==1.70.0",
-    # other utilities
+    "protobuf==6.30.1",
+    "grpcio==1.71.0",
     "jproperties>=2.1,<2.2",
-    "authlib>=1.4,<1.5",
+    "authlib>=1.5,<1.6",
     "requests>=2.32,<2.33"
 ]
 
@@ -59,10 +57,8 @@ warn_return_any = false
 disallow_subclassing_any = false
 
 [tool.poetry.group.dev.dependencies]
-# types should match with the actual version in the dependencies section
-types-protobuf = "~4.23"
-types-requests = "~2.32"
-# next are tools for development
+types-protobuf = "*"
+types-requests = "*"
 mypy = "*"
 black = "*"
 ruff = "*"
