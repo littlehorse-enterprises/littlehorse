@@ -234,7 +234,7 @@ export interface PutExternalEventRequest {
     | ExternalEventDefId
     | undefined;
   /**
-   * Note that an ExternalEventDefId is a three-part ID:
+   * Note that an ExternalEventId is a three-part ID:
    * 1. WfRunId
    * 2. ExternalEventDef Name
    * 3. A guid

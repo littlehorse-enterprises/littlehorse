@@ -1,8 +1,6 @@
 package io.littlehorse.sdk.common.config;
 
-import io.littlehorse.sdk.common.exception.ConfigurationFileException;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Properties;
 import lombok.extern.slf4j.Slf4j;
@@ -12,35 +10,39 @@ public abstract class ConfigBase {
 
     protected Properties props;
 
+    public ConfigBase(ConfigSource configSource) {
+        this.props = ConfigSource.newSource(getEnvKeyPrefixes())
+                .loadFromConfigSource(configSource)
+                .toProperties();
+    }
+
     public ConfigBase(String propLocation) {
-        log.info("Loading config from {}", propLocation);
-        props = new Properties();
-        try {
-            props.load(new FileInputStream(propLocation));
-        } catch (IOException e) {
-            throw new ConfigurationFileException(e);
-        }
+        this.props = ConfigSource.newSource(getEnvKeyPrefixes())
+                .loadFromPropertiesFile(propLocation)
+                .toProperties();
+    }
+
+    public ConfigBase(Path propLocation) {
+        this.props = ConfigSource.newSource(getEnvKeyPrefixes())
+                .loadFromPropertiesFile(propLocation)
+                .toProperties();
     }
 
     public ConfigBase(Properties props) {
-        this.props = props;
+        this.props = ConfigSource.newSource(getEnvKeyPrefixes())
+                .loadFromProperties(props)
+                .toProperties();
     }
 
     public ConfigBase(Map<String, Object> configs) {
-        props = new Properties();
-        props.putAll(configs);
+        this.props =
+                ConfigSource.newSource(getEnvKeyPrefixes()).loadFromMap(configs).toProperties();
     }
 
     public ConfigBase() {
-        props = new Properties();
-        log.info("Loading default config from environment");
-        for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
-            for (String prefix : getEnvKeyPrefixes()) {
-                if (entry.getKey().startsWith(prefix)) {
-                    props.setProperty(entry.getKey(), entry.getValue());
-                }
-            }
-        }
+        this.props = ConfigSource.newSource(getEnvKeyPrefixes())
+                .loadFromEnvVariables()
+                .toProperties();
     }
 
     protected abstract String[] getEnvKeyPrefixes();

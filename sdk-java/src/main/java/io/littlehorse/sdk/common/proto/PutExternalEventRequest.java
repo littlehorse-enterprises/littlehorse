@@ -129,7 +129,7 @@ private static final long serialVersionUID = 0L;
   private volatile java.lang.Object guid_ = "";
   /**
    * <pre>
-   * Note that an ExternalEventDefId is a three-part ID:
+   * Note that an ExternalEventId is a three-part ID:
    * 1. WfRunId
    * 2. ExternalEventDef Name
    * 3. A guid
@@ -146,7 +146,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Note that an ExternalEventDefId is a three-part ID:
+   * Note that an ExternalEventId is a three-part ID:
    * 1. WfRunId
    * 2. ExternalEventDef Name
    * 3. A guid
@@ -172,7 +172,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Note that an ExternalEventDefId is a three-part ID:
+   * Note that an ExternalEventId is a three-part ID:
    * 1. WfRunId
    * 2. ExternalEventDef Name
    * 3. A guid
@@ -1092,7 +1092,7 @@ private static final long serialVersionUID = 0L;
     private java.lang.Object guid_ = "";
     /**
      * <pre>
-     * Note that an ExternalEventDefId is a three-part ID:
+     * Note that an ExternalEventId is a three-part ID:
      * 1. WfRunId
      * 2. ExternalEventDef Name
      * 3. A guid
@@ -1108,7 +1108,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Note that an ExternalEventDefId is a three-part ID:
+     * Note that an ExternalEventId is a three-part ID:
      * 1. WfRunId
      * 2. ExternalEventDef Name
      * 3. A guid
@@ -1133,7 +1133,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Note that an ExternalEventDefId is a three-part ID:
+     * Note that an ExternalEventId is a three-part ID:
      * 1. WfRunId
      * 2. ExternalEventDef Name
      * 3. A guid
@@ -1159,7 +1159,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Note that an ExternalEventDefId is a three-part ID:
+     * Note that an ExternalEventId is a three-part ID:
      * 1. WfRunId
      * 2. ExternalEventDef Name
      * 3. A guid
@@ -1181,7 +1181,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Note that an ExternalEventDefId is a three-part ID:
+     * Note that an ExternalEventId is a three-part ID:
      * 1. WfRunId
      * 2. ExternalEventDef Name
      * 3. A guid
@@ -1200,7 +1200,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Note that an ExternalEventDefId is a three-part ID:
+     * Note that an ExternalEventId is a three-part ID:
      * 1. WfRunId
      * 2. ExternalEventDef Name
      * 3. A guid
