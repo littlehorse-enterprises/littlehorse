@@ -1,6 +1,6 @@
 package io.littlehorse.server.streams.storeinternals.index;
 
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.proto.TagsCachePb;
@@ -61,7 +61,7 @@ public class CachedTag extends LHSerializable<TagsCachePb.CachedTagPb> {
     }
 
     @Override
-    public Class<? extends GeneratedMessageV3> getProtoBaseClass() {
+    public Class<? extends GeneratedMessage> getProtoBaseClass() {
         return null;
     }
 }
