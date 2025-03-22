@@ -239,6 +239,18 @@ public class LHTaskWorker implements Closeable {
         }
     }
 
+    /**
+     * Tests if this worker is alive. A worker is alive if it has been started and has not yet terminated.
+     * @return true if this thread is not alive; false otherwise.
+     */
+    public boolean isClosed() {
+        return manager.isClosed();
+    }
+
+    /**
+     * Determine if a worker is healthy. A worker could be running but not healthy.
+     * @return LHTaskWorkerHealth
+     */
     public LHTaskWorkerHealth healthStatus() {
         if (manager == null) {
             throw new IllegalStateException("Worker not started");

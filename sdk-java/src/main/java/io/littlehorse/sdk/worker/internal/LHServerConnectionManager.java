@@ -44,6 +44,10 @@ public class LHServerConnectionManager {
         this.taskDef = taskDef;
     }
 
+    public boolean isClosed() {
+        return !rebalanceThread.isAlive();
+    }
+
     public void start() {
         rebalanceThread.start();
     }
