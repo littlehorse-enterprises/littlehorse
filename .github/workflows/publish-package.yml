@@ -1,0 +1,13 @@
+name: publish-package
+run-name: Test workflow
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - ci/publish-package
+permissions:
+  packages: write
+  contents: read
+jobs:
+  publish-docker:
+    uses: ./.github/workflows/publish-docker.yml

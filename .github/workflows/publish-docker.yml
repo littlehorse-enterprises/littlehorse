@@ -27,8 +27,19 @@ jobs:
         if: inputs.tag != ''
         run: sed -i "s/version=.*/version=${{ inputs.tag }}/g" gradle.properties
 
+      - name: Add Snapshot id
+        if: inputs.tag == ''
+        run: sed -i "s/version=.*/version=0.0.0-${GITHUB_SHA::7}/g" gradle.properties
+
       - name: Tests and Build
         run: ./gradlew server:test server:shadowJar
+
+      - name: Publish package
+        run: ./gradlew server:publish
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
       - uses: actions/upload-artifact@v4
         with:
