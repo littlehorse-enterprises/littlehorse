@@ -2,6 +2,7 @@ using Google.Protobuf;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Helper;
 using static LittleHorse.Sdk.Common.Proto.FailureHandlerDef.Types;
+using static LittleHorse.Sdk.Common.Proto.UTActionTrigger.Types;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
@@ -9,11 +10,12 @@ public class WorkflowThread
 {
     public Workflow Parent { get; private set; }
     private readonly ThreadSpec _spec;
-    public string LastNodeName;
+    public string LastNodeName { get; private set; }
     private readonly bool _isActive;
     private readonly List<WfRunVariable> _wfRunVariables;
     private EdgeCondition? _lastNodeCondition;
     private readonly Queue<VariableMutation> _variableMutations;
+    private ThreadRetentionPolicy? _retentionPolicy;
     
     /// <summary>
     /// This is the reserved Variable Name that can be used as a WfRunVariable in an Interrupt
@@ -42,8 +44,8 @@ public class WorkflowThread
             AddNode("exit", Node.NodeOneofCase.Exit, new ExitNode());
         }
         _isActive = false;
-
-        // TODO: Take into account the retention policy
+        
+        _spec.RetentionPolicy = GetRetentionPolicy();
     }
 
     public ThreadSpec Compile()
@@ -71,7 +73,7 @@ public class WorkflowThread
         return _spec.Nodes[LastNodeName];
     }
     
-    private Node FindNode(string nodeName)
+    internal Node FindNode(string nodeName)
     {
         if (!_spec.Nodes.TryGetValue(nodeName, out var node))
         {
@@ -151,6 +153,9 @@ public class WorkflowThread
             case Node.NodeOneofCase.ThrowEvent:
                 node.ThrowEvent = (ThrowEventNode) subNode;
                 break;
+            case Node.NodeOneofCase.UserTask:
+                node.UserTask = (UserTaskNode) subNode;
+                break;
             case Node.NodeOneofCase.None:
                 throw new InvalidOperationException("Not possible");
         }
@@ -166,13 +171,33 @@ public class WorkflowThread
         return $"{_spec.Nodes.Count}-{name}-{LHConstants.NodeTypes[type]}";
     }
     
-    public WfRunVariable AddVariable(string name, Object typeOrDefaultVal) 
+    public WfRunVariable AddVariable(string name, object typeOrDefaultVal) 
     {
         CheckIfWorkflowThreadIsActive();
         var wfRunVariable = new WfRunVariable(name, typeOrDefaultVal, this);
         _wfRunVariables.Add(wfRunVariable);
         
         return wfRunVariable;
+    }
+    
+    private ThreadRetentionPolicy? GetRetentionPolicy() 
+    {
+        if (_retentionPolicy == null) 
+            return Parent.GetDefaultThreadRetentionPolicy();
+
+        return _retentionPolicy;
+    }
+    
+    /// <summary>
+    /// Overrides the retention policy for all ThreadRun's of this ThreadSpec in the
+    /// WfRun.
+    /// </summary>
+    /// <param name="policy">
+    /// It is the Thread Retention Policy.
+    /// </param>
+    public void WithRetentionPolicy(ThreadRetentionPolicy policy)
+    {
+        _retentionPolicy = policy;
     }
     
     /// <summary>
@@ -199,8 +224,56 @@ public class WorkflowThread
         
         return new TaskNodeOutput(nodeName, this);
     }
+    
+    /// <summary>
+    /// Adds a TASK node to the ThreadSpec.
+    /// 
+    /// </summary>
+    /// <param name="taskName">
+    /// A WfRunVariable containing the name of the TaskDef to execute.
+    /// </param>
+    /// <param name="args">
+    /// The input parameters to pass into the Task Run. If the type of arg is a
+    /// `WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+    /// library will attempt to cast the provided argument to a LittleHorse VariableValue and
+    /// pass that literal value in.
+    /// </param>
+    /// <returns>A NodeOutput for that TASK node.</returns>
+    public TaskNodeOutput Execute(WfRunVariable taskName, params object[] args)
+    {
+        CheckIfWorkflowThreadIsActive();
+        TaskNode taskNode = CreateTaskNode(
+            new TaskNode { DynamicTask = AssignVariableHelper(taskName) }, args);
+        string nodeName = AddNode(taskName.Name, Node.NodeOneofCase.Task, taskNode);
+        
+        return new TaskNodeOutput(nodeName, this);
+    }
+    
+    /// <summary>
+    /// Adds a TASK node to the ThreadSpec.
+    /// 
+    /// </summary>
+    /// <param name="taskName">
+    /// An LHFormatString containing the name of the TaskDef to execute.
+    /// </param>
+    /// <param name="args">
+    /// The input parameters to pass into the Task Run. If the type of arg is a
+    /// `WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+    /// library will attempt to cast the provided argument to a LittleHorse VariableValue and
+    /// pass that literal value in.
+    /// </param>
+    /// <returns>A NodeOutput for that TASK node.</returns>
+    public TaskNodeOutput Execute(LHFormatString taskName, params object[] args)
+    {
+        CheckIfWorkflowThreadIsActive();
+        TaskNode taskNode = CreateTaskNode(
+            new TaskNode { DynamicTask = AssignVariableHelper(taskName) }, args);
+        string nodeName = AddNode(taskName.Format, Node.NodeOneofCase.Task, taskNode);
 
-    private VariableAssignment AssignVariable(Object variable) 
+        return new TaskNodeOutput(nodeName, this);
+    }
+
+    private VariableAssignment AssignVariable(object variable) 
     {
         CheckIfWorkflowThreadIsActive();
         return AssignVariableHelper(variable);
@@ -210,7 +283,7 @@ public class WorkflowThread
     {
         foreach (var arg in args)
         {
-            taskNode.Variables.Add(AssignVariable(arg));
+            taskNode.Variables.Add(AssignVariableHelper(arg));
         }
 
         if (Parent.GetDefaultTaskTimeout() != 0)
@@ -433,13 +506,17 @@ public class WorkflowThread
             Condition = condition.Compile()
         });
     }
-    
+
     /// <summary>
     /// Returns a WorkflowCondition used in `WorkflowThread::doIf()`
     /// </summary>
     /// <param name="lhs">
     /// It is either a literal value (which the Library casts to a Variable Value) or a
     /// `WfRunVariable` representing the LHS of the expression.
+    /// </param>
+    /// <param name="comparator">
+    /// It is a Comparator defining the comparator, for example,
+    /// `ComparatorType.Equals`.
     /// </param>
     /// <param name="rhs">
     /// It is either a literal value (which the Library casts to a Variable Value) or a
@@ -515,12 +592,20 @@ public class WorkflowThread
         {
             variableAssignment.Expression = new VariableAssignment.Types.Expression
             {
-                Lhs = AssignVariable(expr.Lhs),
+                Lhs = AssignVariableHelper(expr.Lhs),
                 Operation = expr.Operation,
-                Rhs = AssignVariable(expr.Rhs),
+                Rhs = AssignVariableHelper(expr.Rhs),
             };
         }
-        // TODO: Add else if condition to format strings
+        else if (value.GetType() == typeof(LHFormatString)) 
+        {
+            var format = (LHFormatString) value;
+            variableAssignment.FormatString = new VariableAssignment.Types.FormatString
+            {
+                Format = AssignVariableHelper(format.Format),
+                Args = { format.Args }
+            };
+        }
         else
         {
             VariableValue defVal = LHMappingHelper.ObjectToVariableValue(value);
@@ -951,5 +1036,346 @@ public class WorkflowThread
         };
         
         AddNode("throw-" + workflowEventDefName, Node.NodeOneofCase.ThrowEvent, node);
+    }
+    
+    /// <summary>
+    /// Adds a Reminder Task to a User Task Node.
+    /// </summary>
+    /// <param name="userTask">
+    /// It is a reference to the UserTaskNode that we schedule the action after.
+    /// </param>
+    /// <param name="delaySeconds">
+    /// It is the delay time after which the Task should be executed.
+    /// </param>
+    /// <param name="taskDefName">
+    /// The name of the TaskDef to execute.
+    /// </param>
+    /// <param name="args">
+    /// The input parameters to pass into the Task Run. If the type of arg is a 
+    /// `WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+    ///  library will attempt to cast the provided argument to a LittleHorse VariableValue and
+    ///  pass that literal value in.
+    /// </param>
+    public void ScheduleReminderTask(UserTaskOutput userTask, int delaySeconds, string taskDefName, params object[] args)
+    {
+        ScheduleTaskAfterHelper(userTask, delaySeconds, taskDefName, UTHook.OnArrival, args);
+    }
+    
+    /// <summary>
+    /// Adds a Reminder Task to a User Task Node.
+    /// </summary>
+    /// <param name="userTask">
+    /// It is a reference to the UserTaskNode that we schedule the action after.
+    /// </param>
+    /// <param name="delaySeconds">
+    /// It is the delay time after which the Task should be executed.
+    /// </param>
+    /// <param name="taskDefName">
+    /// The name of the TaskDef to execute.
+    /// </param>
+    /// <param name="args">
+    /// The input parameters to pass into the Task Run. If the type of arg is a 
+    /// `WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+    ///  library will attempt to cast the provided argument to a LittleHorse VariableValue and
+    ///  pass that literal value in.
+    /// </param>
+    public void ScheduleReminderTask(
+        UserTaskOutput userTask, WfRunVariable delaySeconds, string taskDefName, params object[] args)
+    {
+        ScheduleTaskAfterHelper(userTask, delaySeconds, taskDefName, UTHook.OnArrival, args);
+    }
+    
+    private void ScheduleTaskAfterHelper(
+        UserTaskOutput userTask, object delaySeconds, string taskDefName, UTHook utHook, params object[] args) 
+    {
+        CheckIfWorkflowThreadIsActive();
+        VariableAssignment delaySecondsParsed = AssignVariableHelper(delaySeconds);
+        TaskNode taskNode = CreateTaskNode(
+            new TaskNode { TaskDefId = new TaskDefId { Name = taskDefName } }, args);
+        Parent.AddTaskDefName(taskDefName);
+        UTATask utaTask = new UTATask
+        {
+            Task = taskNode
+        };
+        
+        if (!LastNodeName.Equals(userTask.NodeName)) {
+            throw new InvalidOperationException("Tried to edit a stale User Task node!");
+        }
+
+        Node node = FindNode(LastNodeName);
+        var newUtAction = new UTActionTrigger
+        {
+            Task = utaTask,
+            Hook = utHook,
+            DelaySeconds = delaySecondsParsed
+        };
+        node.UserTask.Actions.Add(newUtAction);
+        // TODO LH-334: return a modified child class of NodeOutput which lets us mutate variables
+    }
+
+    /// <summary>
+    /// Adds a task reminder once a user is assigned to UserTask.
+    /// </summary>
+    /// <param name="userTask">
+    /// It is a reference to the UserTaskNode that we schedule the action after.
+    /// </param>
+    /// <param name="delaySeconds">
+    /// It is the delay time after which the Task should be executed.
+    /// </param>
+    /// <param name="taskDefName">
+    /// The name of the TaskDef to execute.
+    /// </param>
+    /// <param name="args">
+    /// The input parameters to pass into the Task Run. If the type of arg is a 
+    /// ``WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+    ///  library will attempt to cast the provided argument to a LittleHorse VariableValue and
+    ///  pass that literal value in.
+    /// </param>
+    public void ScheduleReminderTaskOnAssignment(
+        UserTaskOutput userTask, WfRunVariable delaySeconds, string taskDefName, params object[] args)
+    {
+        ScheduleTaskAfterHelper(userTask, delaySeconds, taskDefName, UTHook.OnTaskAssigned, args);
+    }
+    
+    /// <summary>
+    /// Adds a task reminder once a user is assigned to UserTask.
+    /// </summary>
+    /// <param name="userTask">
+    /// It is a reference to the UserTaskNode that we schedule the action after.
+    /// </param>
+    /// <param name="delaySeconds">
+    /// It is the delay time after which the Task should be executed.
+    /// </param>
+    /// <param name="taskDefName">
+    /// The name of the TaskDef to execute.
+    /// </param>
+    /// <param name="args">
+    /// The input parameters to pass into the Task Run. If the type of arg is a 
+    /// ``WfRunVariable`, then that WfRunVariable is passed in as the argument; otherwise, the
+    ///  library will attempt to cast the provided argument to a LittleHorse VariableValue and
+    ///  pass that literal value in.
+    /// </param>
+    public void ScheduleReminderTaskOnAssignment(
+        UserTaskOutput userTask, int delaySeconds, string taskDefName, params object[] args)
+    {
+        ScheduleTaskAfterHelper(userTask, delaySeconds, taskDefName, UTHook.OnTaskAssigned, args);
+    }
+    
+    /// <summary>
+    /// Cancels a User Task Run if it exceeds a specified deadline.
+    /// </summary>
+    /// <param name="userTask">
+    /// It is a reference to the UserTaskNode that will be canceled after the deadline
+    /// </param>
+    /// <param name="delaySeconds">
+    /// It is the delay time after which the User Task Run should be canceled
+    /// </param>
+    public void CancelUserTaskRunAfter(UserTaskOutput userTask, object delaySeconds)
+    {
+        ScheduleUserTaskCancellationAfterDeadline(userTask, delaySeconds, UTHook.OnArrival);
+    }
+    
+    /// <summary>
+    /// Cancels a User Task Run if it exceeds a specified deadline after it is assigned
+    /// </summary>
+    /// <param name="userTask">
+    /// It is a reference to the UserTaskNode that will be canceled after the deadline
+    /// </param>
+    /// <param name="delaySeconds">
+    /// It is the delay time after which the User Task Run should be canceled
+    /// </param>
+    public void CancelUserTaskRunAfterAssignment(UserTaskOutput userTask, object delaySeconds)
+    {
+        ScheduleUserTaskCancellationAfterDeadline(userTask, delaySeconds, UTHook.OnTaskAssigned);
+    }
+    
+    private void ScheduleUserTaskCancellationAfterDeadline(
+        UserTaskOutput userTask, object delaySeconds, UTHook hook) 
+    {
+        CheckIfWorkflowThreadIsActive();
+        VariableAssignment delaySecondsParsed = AssignVariableHelper(delaySeconds);
+        var utaCancel = new UTACancel();
+
+        if (!LastNodeName.Equals(userTask.NodeName)) 
+        {
+            throw new InvalidOperationException("Tried to edit a stale User Task node!");
+        }
+        Node node = FindNode(LastNodeName);
+        var newUtAction = new UTActionTrigger
+        {
+            Cancel = utaCancel,
+            Hook = hook,
+            DelaySeconds = delaySecondsParsed
+        };
+        node.UserTask.Actions.Add(newUtAction);
+    }
+    
+    /// <summary>
+    /// Adds a User Task Node, and assigns it to a specific user
+    /// </summary>
+    /// <param name="userTaskDefName">
+    /// It is the UserTaskDef to assign.
+    /// </param>
+    /// <param name="userId">
+    /// It is the user id to assign it to. Can be either string or WfRunVariable.
+    /// Can be null if userGroup is not null.
+    /// </param>
+    /// <param name="userGroup">
+    /// It is the user group to assign it to. Can be either string or WfRunVariable.
+    /// Can be null if userId is not null.
+    /// </param>
+    /// <returns>A NodeOutput</returns>
+    public UserTaskOutput AssignUserTask(string userTaskDefName, object? userId, object? userGroup)
+    {
+        CheckIfWorkflowThreadIsActive();
+        if (userId == null && userGroup == null)
+        {
+            throw new ArgumentException("userId or userGroup is required.");
+        }
+        
+        var utNode = new UserTaskNode
+        {
+            UserTaskDefName = userTaskDefName
+        };
+        
+        if (userId != null) 
+        {
+            VariableAssignment userIdAssn = AssignVariableHelper(userId);
+            utNode.UserId = userIdAssn;
+        }
+
+        if (userGroup != null) 
+        {
+            VariableAssignment userGroupAssn = AssignVariableHelper(userGroup);
+            utNode.UserGroup = userGroupAssn;
+        }
+
+        // TODO LH-313: Return a special subclass of NodeOutputImpl that allows for adding trigger actions
+        string nodeName = AddNode(userTaskDefName, Node.NodeOneofCase.UserTask, utNode);
+        return new UserTaskOutput(nodeName, this);
+    }
+    
+    /// <summary>
+    /// Schedule Reassignment of a UserTask to a userGroup upon reaching the Deadline. This method is
+    /// used to schedule the reassignment of a UserTask to a userGroup when the specified UserTask
+    /// user assignment reaches its deadline in seconds.
+    /// </summary>
+    /// <param name="userTaskOutput">
+    /// The NodeOutput that is currently assigned to a UserGroup.
+    /// </param>
+    /// <param name="deadlineSeconds">
+    /// Time in seconds after which the UserTask will be automatically
+    /// reassigned to the UserGroup. Can be either string or WfRunVariable.
+    /// </param>
+    public void ReleaseToGroupOnDeadline(UserTaskOutput userTaskOutput, object deadlineSeconds)
+    {
+        CheckIfWorkflowThreadIsActive();
+        Node currentNode = FindNode(LastNodeName);
+        if (!LastNodeName.Equals(userTaskOutput.NodeName)) 
+        {
+            throw new InvalidOperationException("Tried to edit a stale User Task node!");
+        }
+        if (currentNode.UserTask.UserId == null) 
+        {
+            throw new InvalidOperationException("The User Task is not assigned to any user.");
+        }
+        if (currentNode.UserTask.UserGroup == null) 
+        {
+            throw new InvalidOperationException("The User Task is assigned to a user without a group.");
+        }
+        
+        VariableAssignment userGroup = currentNode.UserTask.UserGroup;
+        ReassignToGroupOnDeadline(userGroup, currentNode, deadlineSeconds);
+    }
+    
+    private void ReassignToGroupOnDeadline(VariableAssignment userGroup, Node currentNode, object deadlineSeconds)
+    {
+        var reassignPb = new UTAReassign
+        {
+            UserGroup = userGroup
+        };
+        var actionTrigger = new UTActionTrigger
+        {
+            Reassign = reassignPb,
+            Hook = UTHook.OnTaskAssigned,
+            DelaySeconds = AssignVariableHelper(deadlineSeconds)
+        };
+        currentNode.UserTask.Actions.Add(actionTrigger);
+    }
+    
+    /// <summary>
+    /// Schedules the reassignment of a User Task to a specified userId and/or userGroup after
+    /// a specified expiration.
+    /// </summary>
+    /// <param name="userTask">
+    /// It is the userTask to reschedule.
+    /// </param>
+    /// <param name="userId">
+    /// It is the userId to which the task should be assigned. Must be either WfRunVariable
+    /// or string. Can be null if userGroup not null.
+    /// </param>
+    /// <param name="userGroup">
+    /// It is the userGroup to which the task should be reassigned. Must be either
+    /// WfRunVariable or string. Can be null if userId not null.
+    /// </param>
+    /// <param name="deadlineSeconds">
+    /// It is the expiration time after which the UserTask should be reassigned.
+    /// Can be either WfRunVariable or string.
+    /// </param>
+    public void ReassignUserTask(UserTaskOutput userTask, object? userId, object? userGroup, object deadlineSeconds)
+    {
+        CheckIfWorkflowThreadIsActive();
+        Node currentNode = FindNode(LastNodeName);
+        
+        if (userId == null && userGroup == null)
+        {
+            throw new ArgumentException("userId or userGroup is required.");
+        }
+        
+        if (!LastNodeName.Equals(userTask.NodeName)) 
+        {
+            throw new InvalidOperationException("Tried to edit a stale User Task node!");
+        }
+
+        var reassignment = new UTAReassign
+        {
+            UserId = AssignVariableHelper(userId!)
+        };
+            
+        if (userGroup != null) 
+        {
+            reassignment.UserGroup = AssignVariableHelper(userGroup);
+        }
+        if (userId != null) 
+        {
+            reassignment.UserId = AssignVariableHelper(userId);
+        }
+
+        var actionTrigger = new UTActionTrigger
+        {
+            Reassign = reassignment,
+            Hook = UTHook.OnTaskAssigned,
+            DelaySeconds = AssignVariableHelper(deadlineSeconds)
+        };
+        currentNode.UserTask.Actions.Add(actionTrigger);
+    }
+    
+    /// <summary>
+    /// Creates a formatted string using WfRunVariables as arguments.
+    ///
+    /// Example:
+    /// Format("Hello there, {0}, today is {1}", name, dayOfWeek);
+    /// 
+    /// </summary>
+    /// <param name="format">
+    /// It is the format string.
+    /// </param>
+    /// <param name="args">
+    /// They are the format args.
+    /// or string. Can be null if userGroup not null.
+    /// </param>
+    public LHFormatString Format(string format, params WfRunVariable[] args)
+    {
+        return new LHFormatString(this, format, args);
     }
 }

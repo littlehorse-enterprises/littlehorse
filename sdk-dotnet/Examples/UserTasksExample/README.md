@@ -19,19 +19,20 @@ This example mimics a common Corporate workflow in which some employee requests 
 
 ### Running the Example
 
-Let's take it slow and run the exmaple step-by-step so that we can see exactly what's going on.
+Let's take it slow and run the example step-by-step so that we can see exactly what's going on.
 
 **As a PreRequisite, get a running copy of the LittleHorse Server, as in the [Java Quickstart](../../docs/QUICKSTART_JAVA.md).**
 
 #### Deploy It
 
-First, run the `UserTasksExample.java` application to:
+First, run the `UserTasksExample` application to:
 * Deploy your `TaskDef`, `UserTaskDef`s, and `WfSpec`
-* Start the `LHTaskWorker` which sends fake "emails".
+* Start the `EmailSender` task worker which sends fake "emails".
 
 
 ```
-./gradlew example-user-tasks:run
+dotnet build
+dotnet run
 ```
 
 #### Start the Workflow
@@ -47,7 +48,7 @@ We check the status of the `WfRun` and see that it's running:
 lhctl get wfRun <wf_run_id>
 ```
 
-Note that there is only one `ThreadRun` in the `WfRun`, and the current `NodeRun` position is `1`. If you recall our `WfSpec`, we've arrived at a User Task Run, and it should be assigned to `anakin`, but if the assigned user does not complete the task in less than 1 minute, then the task will be released to `testGroup` group.
+Note that there is only one `ThreadRun` in the `WfRun`, and the current `NodeRun` position is `1`. If you recall our `WfRun`, we've arrived at a User Task Run, and it should be assigned to `anakin`, but if the assigned user does not complete the task in less than 1 minute, then the task will be released to `testGroup` group.
 
 #### Find the User Task
 
@@ -74,7 +75,7 @@ The second option to find the UserTaskRun's ID is to check the `NodeRun`. Recall
 lhctl get nodeRun <wfRunId> 0 1
 ```
 
-You should see in `$.result.userTask.userTaskRunId` the same ID that resulted from all of the searches above.
+You should see in `$.result.userTask.userTaskRunId` the same ID that resulted from all the searches above.
 
 #### Execute the User Task Run
 
@@ -160,61 +161,57 @@ Now look at the `UserTaskRun` and note its status:
 
 ```
 ->lhctl get userTaskRun <wfRunId> <userTaskGuid>
-->lhctl get userTaskRun b1810249cef64555ad5bb34534132477 af50671a0c904b008d9bfd9ed92c6df3
+->lhctl get userTaskRun a406153687d846fea339855149576aac 5414a9c058364717a237871e30d9cbeb
 {
   "id":  {
-    "wfRunId":  "b1810249cef64555ad5bb34534132477",
-    "userTaskGuid":  "af50671a0c904b008d9bfd9ed92c6df3"
+    "wfRunId":  {
+      "id":  "a406153687d846fea339855149576aac"
+    },
+    "userTaskGuid":  "5414a9c058364717a237871e30d9cbeb"
   },
   "userTaskDefId":  {
     "name":  "approve-it-request",
     "version":  0
   },
-  "results":  [],
+  "userId":  "mace",
+  "results":  {},
   "status":  "ASSIGNED",
   "events":  [
     {
-      "time":  "2023-08-30T19:24:52.866Z",
-      "reassigned":  {
-        "newUserGroup":  {
-          "id":  "finance"
-        }
+      "time":  "2025-03-18T21:40:21.770Z",
+      "assigned":  {
+        "newUserGroup":  "finance"
       }
     },
     {
-      "time":  "2023-08-30T19:24:55.715Z",
+      "time":  "2025-03-18T21:40:23.982Z",
       "taskExecuted":  {
         "taskRun":  {
-          "wfRunId":  "b1810249cef64555ad5bb34534132477",
-          "taskGuid":  "3514a3d59d70463393fb71ce106adc2e"
+          "wfRunId":  {
+            "id":  "a406153687d846fea339855149576aac"
+          },
+          "taskGuid":  "d9f6ae202aad443995107ae1e92562b6"
         }
       }
     },
     {
-      "time":  "2023-08-30T19:29:30.412Z",
-      "reassigned":  {
-        "newUser":  {
-          "id":  "mace",
-          "userGroup":  {
-            "id":  "finance"
-          }
-        }
+      "time":  "2025-03-18T21:43:05.276Z",
+      "assigned":  {
+        "oldUserGroup":  "finance",
+        "newUserId":  "mace"
       }
     }
   ],
-  "notes":  "User anakin is requesting to buy item qwe.\nJustification: asf",
-  "scheduledTime":  "2023-08-30T19:24:52.847Z",
+  "notes":  "User anakin is requesting to buy item the rank of master.\nJustification: it's not fair to be on this council and not be a Master!",
+  "scheduledTime":  "2025-03-18T21:40:21.772Z",
   "nodeRunId":  {
-    "wfRunId":  "b1810249cef64555ad5bb34534132477",
+    "wfRunId":  {
+      "id":  "a406153687d846fea339855149576aac"
+    },
     "threadRunNumber":  0,
     "position":  2
   },
-  "user":  {
-    "id":  "mace",
-    "userGroup":  {
-      "id":  "finance"
-    }
-  }
+  "epoch":  2
 }
 ```
 
@@ -227,4 +224,4 @@ Let's execute the `UserTaskRun`.
 
 ```
 
-Now depending on whether you typed `true` or `false` (if you know Star Wars, you know that the correct answer is `false`), you should see some output in the logs of the process `./gradlew example-user-tasks:run`.
+Now depending on whether you typed `true` or `false` (if you know Star Wars, you know that the correct answer is `false`), you should see some output in the logs of the process `dotnet run`.
