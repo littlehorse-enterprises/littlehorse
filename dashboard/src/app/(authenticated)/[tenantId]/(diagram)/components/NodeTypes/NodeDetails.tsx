@@ -1,4 +1,5 @@
 'use client'
+import sortNodeRunsByLatest from '@/app/utils/sortNodeRunsByLatest'
 import { NodeRun } from 'littlehorse-client/proto'
 import React, { CSSProperties, FC, PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import { internalsSymbol, useNodeId, useStore } from 'reactflow'
@@ -12,7 +13,7 @@ import { Status } from './DataGroupComponents/Status'
 type Props = PropsWithChildren<{ nodeRunList: NodeRun[] | undefined, nodeRunsIndex?: number, setNodeRunsIndex?: (index: number) => void }>
 
 export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, setNodeRunsIndex }) => {
-  nodeRunList?.sort((a, b) => new Date(b.arrivalTime ?? 0).getTime() - new Date(a.arrivalTime ?? 0).getTime())
+  nodeRunList = sortNodeRunsByLatest(nodeRunList);
   const [nodeRunsIndexInternal, setNodeRunsIndexInternal] = useState(nodeRunsIndex ?? 0);
 
   const contextNodeId = useNodeId()
