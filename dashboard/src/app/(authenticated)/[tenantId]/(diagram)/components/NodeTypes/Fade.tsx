@@ -1,6 +1,6 @@
-import { LHStatus } from 'littlehorse-client/proto'
-import { FC, PropsWithChildren } from 'react'
-import { StatusPin } from './StatusPin'
+import { LHStatus } from 'littlehorse-client/proto';
+import { FC, PropsWithChildren } from 'react';
+import { StatusPin } from './StatusPin';
 
 type Props = PropsWithChildren<{ fade?: boolean; status?: LHStatus }>
 export const Fade: FC<Props> = ({ fade, status, children }) => {
