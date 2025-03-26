@@ -1,11 +1,13 @@
 package io.littlehorse.canary;
 
-import io.javalin.http.HandlerType;
 import io.littlehorse.canary.aggregator.Aggregator;
 import io.littlehorse.canary.config.CanaryConfig;
 import io.littlehorse.canary.config.ConfigLoader;
+import io.littlehorse.canary.infra.HealthExporter;
+import io.littlehorse.canary.infra.PrometheusExporter;
 import io.littlehorse.canary.infra.ShutdownHook;
 import io.littlehorse.canary.infra.WebServer;
+import io.littlehorse.canary.infra.WebServiceBinder;
 import io.littlehorse.canary.kafka.TopicCreator;
 import io.littlehorse.canary.littlehorse.LHClient;
 import io.littlehorse.canary.metronome.MetronomeGetWfRunExecutor;
@@ -14,7 +16,6 @@ import io.littlehorse.canary.metronome.MetronomeWorker;
 import io.littlehorse.canary.metronome.MetronomeWorkflow;
 import io.littlehorse.canary.metronome.internal.BeatProducer;
 import io.littlehorse.canary.metronome.internal.LocalRepository;
-import io.littlehorse.canary.prometheus.PrometheusExporter;
 import io.littlehorse.sdk.common.config.LHConfig;
 import java.nio.file.Paths;
 import java.util.List;
@@ -28,12 +29,7 @@ public class Main {
     public static void main(final String[] args) throws InterruptedException {
         try {
             final CanaryConfig config = args.length > 0 ? ConfigLoader.load(Paths.get(args[0])) : ConfigLoader.load();
-            final PrometheusExporter exporter = new PrometheusExporter(config.getCommonTags());
-
-            maybeCreateTopics(config);
-            maybeStartMetronome(config);
-            maybeStartAggregator(config, exporter);
-            startWebServer(config, exporter);
+            initialize(config);
         } catch (Exception e) {
             log.error("Error starting application", e);
             System.exit(-1);
@@ -44,7 +40,18 @@ public class Main {
         latch.await();
     }
 
-    private static void maybeStartMetronome(final CanaryConfig config) {
+    private static void initialize(final CanaryConfig config) {
+        final PrometheusExporter prometheusExporter =
+                new PrometheusExporter(config.getMetricsPath(), config.getCommonTags());
+        final HealthExporter healthExporter = new HealthExporter(config.getHealthPath());
+
+        maybeCreateTopics(config);
+        maybeStartMetronome(config, healthExporter);
+        maybeStartAggregator(config, prometheusExporter, healthExporter);
+        startWebServer(config, prometheusExporter, healthExporter);
+    }
+
+    private static void maybeStartMetronome(final CanaryConfig config, final HealthExporter healthExporter) {
         if (!config.isMetronomeEnabled() && !config.isMetronomeWorkerEnabled()) return;
 
         final LHConfig lhConfig = new LHConfig(config.toLittleHorseConfig().toMap());
@@ -60,13 +67,16 @@ public class Main {
                 config.toKafkaConfig().toMap(),
                 config.getMetronomeBeatExtraTags());
 
-        maybeStartMetronomeWorker(config, producer, lhConfig);
+        maybeStartMetronomeWorker(config, producer, lhConfig, healthExporter);
         maybeRegisterWorkflow(config, lhClient);
-        maybeStartMetronomeExecutors(config, producer, lhClient);
+        maybeStartMetronomeExecutors(config, producer, lhClient, healthExporter);
     }
 
     private static void maybeStartMetronomeExecutors(
-            final CanaryConfig config, final BeatProducer producer, final LHClient lhClient) {
+            final CanaryConfig config,
+            final BeatProducer producer,
+            final LHClient lhClient,
+            final HealthExporter healthExporter) {
         if (!config.isMetronomeEnabled()) return;
 
         final LocalRepository repository = new LocalRepository(config.getMetronomeDataPath());
@@ -79,10 +89,12 @@ public class Main {
                 config.getMetronomeRunRequests(),
                 config.getMetronomeSamplePercentage(),
                 repository);
+        healthExporter.addStatus(runWfExecutor);
         runWfExecutor.start();
 
         final MetronomeGetWfRunExecutor getWfRunExecutor = new MetronomeGetWfRunExecutor(
                 producer, lhClient, config.getMetronomeGetFrequency(), config.getMetronomeGetRetries(), repository);
+        healthExporter.addStatus(getWfRunExecutor);
         getWfRunExecutor.start();
     }
 
@@ -95,20 +107,27 @@ public class Main {
     }
 
     private static void maybeStartMetronomeWorker(
-            final CanaryConfig config, final BeatProducer producer, final LHConfig lhConfig) {
+            final CanaryConfig config,
+            final BeatProducer producer,
+            final LHConfig lhConfig,
+            final HealthExporter healthExporter) {
         if (!config.isMetronomeWorkerEnabled()) return;
 
         final MetronomeWorker worker = new MetronomeWorker(producer, lhConfig);
+        healthExporter.addStatus(worker);
         worker.start();
     }
 
-    private static void startWebServer(final CanaryConfig config, final PrometheusExporter prometheusExporter) {
+    private static void startWebServer(final CanaryConfig config, final WebServiceBinder... services) {
         final WebServer webServer = new WebServer(config.getMetricsPort());
-        webServer.addHandler(HandlerType.GET, config.getMetricsPath(), prometheusExporter);
+        webServer.addServices(services);
         webServer.start();
     }
 
-    private static void maybeStartAggregator(final CanaryConfig config, final PrometheusExporter prometheusExporter) {
+    private static void maybeStartAggregator(
+            final CanaryConfig config,
+            final PrometheusExporter prometheusExporter,
+            final HealthExporter healthExporter) {
         if (!config.isAggregatorEnabled()) return;
 
         final Aggregator aggregator = new Aggregator(
@@ -118,6 +137,7 @@ public class Main {
                 config.getAggregatorExportFrequency());
 
         prometheusExporter.addMeasurable(aggregator);
+        healthExporter.addStatus(aggregator);
         aggregator.start();
     }
 

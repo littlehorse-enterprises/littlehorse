@@ -4,6 +4,8 @@ import static io.littlehorse.canary.aggregator.topology.MetricsTopology.METRICS_
 
 import io.littlehorse.canary.aggregator.prometheus.MetricStoreExporter;
 import io.littlehorse.canary.aggregator.topology.MetricsTopology;
+import io.littlehorse.canary.infra.HealthStatusBinder;
+import io.littlehorse.canary.infra.HealthStatusRegistry;
 import io.littlehorse.canary.infra.ShutdownHook;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
@@ -14,7 +16,7 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
 
 @Slf4j
-public class Aggregator implements MeterBinder {
+public class Aggregator implements MeterBinder, HealthStatusBinder {
 
     private final KafkaStreams kafkaStreams;
     private final Duration exportFrequency;
@@ -41,5 +43,10 @@ public class Aggregator implements MeterBinder {
         final MetricStoreExporter prometheusMetricStoreExporter =
                 new MetricStoreExporter(kafkaStreams, METRICS_STORE, exportFrequency);
         prometheusMetricStoreExporter.bindTo(registry);
+    }
+
+    @Override
+    public void bindTo(final HealthStatusRegistry registry) {
+        registry.addStatus("aggregator", () -> kafkaStreams.state().isRunningOrRebalancing());
     }
 }
