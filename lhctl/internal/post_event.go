@@ -6,6 +6,7 @@ package internal
 import (
 	"errors"
 	"log"
+	"strconv"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
@@ -40,6 +41,23 @@ lhctl postEvent <wfRunId> <externalEventName>
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		wfRunIdStr, eedName := args[0], args[1]
+		guid := cmd.Flag("guid").Value.String()
+		threadRunNumber := int32(-1)
+		nodeRunNumber := int32(-1)
+		if cmd.Flag("threadRunNumber").Changed {
+			threadRunFlag, err := strconv.ParseInt(cmd.Flag("threadRunNumber").Value.String(), 10, 32)
+			if err != nil {
+				panic("Must provide a valid threadRunNumber")
+			}
+			threadRunNumber = int32(threadRunFlag)
+		}
+		if cmd.Flag("nodeRunNumber").Changed {
+			nodeRunFlag, err := strconv.ParseInt(cmd.Flag("nodeRunNumber").Value.String(), 10, 32)
+			if err != nil {
+				panic("Must provide a valid nodeRunNumber")
+			}
+			nodeRunNumber = int32(nodeRunFlag)
+		}
 
 		wfRunId := littlehorse.StrToWfRunId(wfRunIdStr)
 
@@ -67,6 +85,13 @@ lhctl postEvent <wfRunId> <externalEventName>
 			WfRunId:            wfRunId,
 			ExternalEventDefId: &lhproto.ExternalEventDefId{Name: eedName},
 			Content:            content,
+			Guid:               &guid,
+		}
+		if threadRunNumber != -1 {
+			req.ThreadRunNumber = &threadRunNumber
+		}
+		if nodeRunNumber != -1 {
+			req.NodeRunPosition = &nodeRunNumber
 		}
 
 		littlehorse.PrintResp(

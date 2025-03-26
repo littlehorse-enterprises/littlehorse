@@ -1,4 +1,5 @@
 'use client'
+import sortNodeRunsByLatest from '@/app/utils/sortNodeRunsByLatest'
 import { NodeRun } from 'littlehorse-client/proto'
 import React, { CSSProperties, FC, PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import { internalsSymbol, useNodeId, useStore } from 'reactflow'
@@ -12,6 +13,7 @@ import { Status } from './DataGroupComponents/Status'
 type Props = PropsWithChildren<{ nodeRunList: NodeRun[] | undefined, nodeRunsIndex?: number, setNodeRunsIndex?: (index: number) => void }>
 
 export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, setNodeRunsIndex }) => {
+  nodeRunList = sortNodeRunsByLatest(nodeRunList);
   const [nodeRunsIndexInternal, setNodeRunsIndexInternal] = useState(nodeRunsIndex ?? 0);
 
   const contextNodeId = useNodeId()
@@ -70,7 +72,7 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, s
   return (
     <div style={wrapperStyle} className="flex gap-4 justify-center drop-shadow mb-6 items-start select-none">
       {nodeRunList && nodeRunList[nodeRunsIndexInternal] && (
-        <DiagramDataGroup label={nodeRunList.length > 1 ? `NodeRun #${nodeRunsIndexInternal}` : "NodeRun"} >
+        <DiagramDataGroup label={"NodeRun"} index={nodeRunsIndexInternal} indexes={nodeRunList.length} >
           <DiagramDataGroupIndexer index={nodeRunsIndexInternal} setIndex={setNodeRunsIndexInternal} indexes={nodeRunList.length} />
           <Entry label="Status:">
             <Status status={nodeRunList[nodeRunsIndexInternal].status} />
