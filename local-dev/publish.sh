@@ -42,7 +42,7 @@ publish_maven() {
     export ORG_GRADLE_PROJECT_ossrhUsername="$ossrhUsername"
     export ORG_GRADLE_PROJECT_ossrhPassword="$ossrhPassword"
 
-    ./gradlew sdk-java:publish test-utils:publish test-utils-container:publish
+    ./gradlew sdk-java:publish test-utils:publish test-utils-container:publish canary:publish server:publish
 }
 
 case $1 in
