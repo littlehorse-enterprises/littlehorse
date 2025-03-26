@@ -5,6 +5,8 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.grpc.StatusException;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.canary.infra.HealthStatusBinder;
+import io.littlehorse.canary.infra.HealthStatusRegistry;
 import io.littlehorse.canary.infra.ShutdownHook;
 import io.littlehorse.canary.littlehorse.LHClient;
 import io.littlehorse.canary.metronome.internal.BeatProducer;
@@ -23,12 +25,13 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MetronomeRunWfExecutor {
+public class MetronomeRunWfExecutor implements HealthStatusBinder {
 
     private final BeatProducer producer;
     private final ScheduledExecutorService mainExecutor;
@@ -38,6 +41,7 @@ public class MetronomeRunWfExecutor {
     private final int runs;
     private final LocalRepository repository;
     private final int sampleRate;
+    private ScheduledFuture<?> scheduledFuture;
 
     public MetronomeRunWfExecutor(
             final BeatProducer producer,
@@ -70,7 +74,8 @@ public class MetronomeRunWfExecutor {
     }
 
     public void start() {
-        mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency.toMillis(), TimeUnit.MILLISECONDS);
+        scheduledFuture =
+                mainExecutor.scheduleAtFixedRate(this::scheduledRun, 0, frequency.toMillis(), TimeUnit.MILLISECONDS);
         log.info("RunWf Metronome Started");
     }
 
@@ -107,6 +112,15 @@ public class MetronomeRunWfExecutor {
         Collections.shuffle(range);
         final List<Integer> sample = range.subList(0, getSampleSize());
         return new HashSet<>(sample);
+    }
+
+    @Override
+    public void bindTo(final HealthStatusRegistry registry) {
+        registry.addStatus("metronome-run-wf-executor", this::isRunning);
+    }
+
+    private boolean isRunning() {
+        return scheduledFuture != null && !scheduledFuture.isDone();
     }
 
     private class MetronomeCallback implements FutureCallback<WfRun> {
