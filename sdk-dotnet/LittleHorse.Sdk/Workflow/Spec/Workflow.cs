@@ -349,4 +349,29 @@ public class Workflow
             throw new Exception($"Cannot compile wfSpec: {exn.Message}");
         }
     }
+    
+    /// <summary>
+    /// Writes out the PutWfSpecRequest in JSON form in a directory.
+    /// </summary>
+    /// <param name="directory">
+    /// It is the location to save the resources.
+    /// </param>
+    public void CompileAndSaveToDisk(string directory) 
+    {
+        PutWfSpecRequest wf = Compile();
+        string wfFileName = wf.Name + "-wfspec.json";
+        _logger!.LogInformation($"Saving WfSpec to {wfFileName}");
+        SaveProtoToFile(directory, wfFileName, wf);
+    }
+
+    private void SaveProtoToFile(string directory, string fileName, IMessage content) 
+    {
+        var parentPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../.."));
+        var directoryPath = Path.Combine(parentPath, directory);
+        Directory.CreateDirectory(directoryPath);
+        string filePath = Path.Combine(directoryPath, fileName);
+        string? json = LHMappingHelper.ProtoToJson(content);
+        
+        File.WriteAllText(filePath, json);
+    }
 }
