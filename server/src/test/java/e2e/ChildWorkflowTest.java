@@ -1,6 +1,5 @@
 package e2e;
 
-import static org.junit.Assert.assertNotNull;
 
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
@@ -22,6 +21,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @LHTest(externalEventNames = {"child-workflow-event"})
 public class ChildWorkflowTest {
@@ -62,7 +63,7 @@ public class ChildWorkflowTest {
         } catch (StatusRuntimeException exn) {
             caught = exn;
         }
-        assertNotNull(caught);
+        assertThat(caught).isNotNull();
         Assertions.assertEquals(caught.getStatus().getCode(), Code.INVALID_ARGUMENT);
 
         cleanupParentChild(parentChild);
