@@ -172,3 +172,8 @@ signing {
 
     sign publishing.publications.mavenJava
 }
+
+javadoc {
+    excludes = []
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+}
