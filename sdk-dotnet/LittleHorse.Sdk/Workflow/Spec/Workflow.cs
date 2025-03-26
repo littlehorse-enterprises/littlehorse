@@ -21,6 +21,8 @@ public class Workflow
     private int _defaultTaskTimeout;
     private int _defaultSimpleRetries;
     internal ExponentialBackoffRetryPolicy _defaultExponentialBackoff = null!;
+    private ThreadRetentionPolicy? _defaultThreadRetentionPolicy;
+    private WorkflowRetentionPolicy? _wfRetentionPolicy;
 
     public Workflow(string name, Action<WorkflowThread> entryPoint)
     {
@@ -79,6 +81,11 @@ public class Workflow
             Action<WorkflowThread> threadAction = nextThreadAction.Item2;
             var wfThread = new WorkflowThread(this, threadAction);
             _spec.ThreadSpecs.Add(actionName, wfThread.Compile());
+        }
+        
+        if (_wfRetentionPolicy != null) 
+        {
+            _spec.RetentionPolicy = _wfRetentionPolicy;
         }
         
         if (!string.IsNullOrEmpty(_parentWfSpecName))
@@ -167,5 +174,47 @@ public class Workflow
     internal void AddWorkflowEventDefName(string name) 
     {
         _requiredWorkflowEventDefNames.Add(name);
+    }
+    
+    internal ThreadRetentionPolicy? GetDefaultThreadRetentionPolicy() 
+    {
+        return _defaultThreadRetentionPolicy;
+    }
+    
+    /// <summary>
+    /// Sets the retention policy for all ThreadRun's belong to this WfSpec.
+    /// 
+    /// Note that each Thread can override the configured Retention Policy by
+    /// using WorkflowThread#withRetentionPolicy.
+    /// </summary>
+    /// <param name="policy">
+    /// It is the Workflow Retention Policy.
+    /// </param>
+    /// <returns>
+    /// This Workflow.
+    /// </returns>
+    public Workflow WithDefaultThreadRetentionPolicy(ThreadRetentionPolicy? policy)
+    {
+        _defaultThreadRetentionPolicy = policy;
+        
+        return this;
+    }
+    
+    /// <summary>
+    /// Sets the retention policy for all WfRun's created by this WfSpec.
+    /// 
+    /// using WorkflowThread#withRetentionPolicy.
+    /// </summary>
+    /// <param name="policy">
+    /// It is the Workflow Retention Policy.
+    /// </param>
+    /// <returns>
+    /// This Workflow.
+    /// </returns>
+    public Workflow WithRetentionPolicy(WorkflowRetentionPolicy policy) 
+    {
+        _wfRetentionPolicy = policy;
+        
+        return this;
     }
 }
