@@ -19,7 +19,7 @@ namespace LittleHorse.Sdk.Tests.Utils
         [Fact]
         public void ValueConverter_WhenStringIsEmpty_ShouldReturnZero()
         {
-            string value = String.Empty;
+            string value = string.Empty;
             
             var convertedValue = IntegerConverter.FromString(value);
             
