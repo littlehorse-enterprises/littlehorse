@@ -360,9 +360,9 @@ public class Workflow
     {
         PutWfSpecRequest wf = Compile();
         string wfFileName = wf.Name + LHConstants.SuffixCompiledWfFileName;
-        _logger!.LogInformation($"Saving WfSpec to {wfFileName}");
         try
         {
+            _logger!.LogInformation($"Saving WfSpec to {wfFileName}");
             SaveProtoToFile(directory, wfFileName, wf);
         }
         catch (Exception e)
