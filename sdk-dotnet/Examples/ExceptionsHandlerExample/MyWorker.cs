@@ -41,7 +41,7 @@ namespace ExceptionsHandler
         [LHTaskMethod("technical-failure")]
         public void FailForTechnicalReason()
         {
-            String message = null!;
+            string message = null!;
             int result = message.Length;
             Console.WriteLine(result);
         }

@@ -156,7 +156,7 @@ namespace LittleHorse.Sdk.Worker
         /// <returns>
         /// @return an idempotency key.
         /// </returns>
-        public String GetIdempotencyKey() 
+        public string GetIdempotencyKey() 
         {
             return LHTaskHelper.ParseTaskRunIdToString(GetTaskRunId());
         }
