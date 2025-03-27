@@ -1,6 +1,7 @@
 package io.littlehorse.sdk.common;
 
 import io.littlehorse.sdk.common.proto.TaskRunId;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import java.util.ArrayList;
@@ -58,6 +59,21 @@ public class LHLibUtilTest {
                 .build();
 
         Assertions.assertThat(LHLibUtil.wfRunIdToString(id)).isEqualTo(parentId + "_" + childId);
+    }
+
+    @Test
+    void shouldConvertJavaStringArrayClassToLHJsonArr() {
+        Assertions.assertThat(LHLibUtil.javaClassToLHVarType(String[].class)).isEqualTo(VariableType.JSON_ARR);
+    }
+
+    @Test
+    void shouldConvertJavaPojoArrayClassToLHJsonArr() {
+        Assertions.assertThat(LHLibUtil.javaClassToLHVarType(Book[].class)).isEqualTo(VariableType.JSON_ARR);
+    }
+
+    @Test
+    void shouldConvertJavaPojoClassToLHJsonObj() {
+        Assertions.assertThat(LHLibUtil.javaClassToLHVarType(Book.class)).isEqualTo(VariableType.JSON_OBJ);
     }
 
     @Test

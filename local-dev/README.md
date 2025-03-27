@@ -259,7 +259,6 @@ LHS_LISTENER_MTLS_CERT=local-dev/certs/server/server.crt LHS_LISTENER_MTLS_KEY=l
 6. Set up your LittleHorse Worker configuration file:
 ```
 LHW_TASK_WORKER_VERSION=local.dev
-LHW_SERVER_CONNECT_LISTENER=MTLS
 LHC_API_HOST=localhost
 LHC_API_PORT=2023
 LHC_API_PROTOCOL=TLS

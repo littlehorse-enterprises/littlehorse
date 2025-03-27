@@ -1,9 +1,9 @@
 package io.littlehorse.canary.aggregator.prometheus;
 
 import com.google.common.util.concurrent.AtomicDouble;
+import io.littlehorse.canary.infra.ShutdownHook;
 import io.littlehorse.canary.proto.MetricKey;
 import io.littlehorse.canary.proto.MetricValue;
-import io.littlehorse.canary.util.ShutdownHook;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -53,7 +53,7 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
     }
 
     private static String toMetricId(final MetricKey key, final String suffix) {
-        return "%s_%s".formatted(key.getId(), suffix);
+        return "%s_%s".formatted(key.getName(), suffix);
     }
 
     @Override
@@ -112,9 +112,9 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
                                         .register(registry)
                                         .getId();
                                 cachedMeters.put(metric, new CachedMeter(meterId, newMeter));
-                                log.info("Metric {} added", metric);
+                                log.info("Metric {} added with tags {}", metric.getId(), metric.getTags());
                             } else {
-                                log.debug("Updating existing metric {}", metric.getId());
+                                log.debug("Updating existing metric {} with tags {}", metric.getId(), metric.getTags());
                                 cachedMeter.getMeter().set(metric.getValue());
                             }
                         });
@@ -124,15 +124,19 @@ public class MetricStoreExporter implements MeterBinder, AutoCloseable {
         final List<PrometheusMetric> metricsToRemove = cachedMeters.keySet().stream()
                 .filter(metricKey -> !foundMetrics.contains(metricKey))
                 .toList();
+
         // to avoid ConcurrentModificationException
-        metricsToRemove.forEach(metricKey -> {
-            final CachedMeter cachedMeter = cachedMeters.remove(metricKey);
+        metricsToRemove.forEach(metric -> {
+            final CachedMeter cachedMeter = cachedMeters.remove(metric);
             final boolean wasRemovedFromRegistry = registry.remove(cachedMeter.getId()) != null;
 
             if (wasRemovedFromRegistry) {
-                log.info("Metric {} removed", metricKey);
+                log.info("Metric {} removed with tags {}", metric.getId(), metric.getTags());
             } else {
-                log.warn("It was not possible to remove metric '{}', not present at the MeterRegistry", metricKey);
+                log.warn(
+                        "It was not possible to remove metric {} with tags {}, not present at the MeterRegistry",
+                        metric.getId(),
+                        metric.getTags());
             }
         });
     }

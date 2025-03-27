@@ -1,22 +1,22 @@
 'use client'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
+import { OverflowText } from '@/app/(authenticated)/[tenantId]/components/OverflowText'
 import { getTaskDef } from '@/app/(authenticated)/[tenantId]/taskDef/[name]/getTaskDef'
-import { getVariable, getVariableValue } from '@/app/utils'
+import { getVariableValue } from '@/app/utils'
 import { useQuery } from '@tanstack/react-query'
 import { NodeRun, TaskNode } from 'littlehorse-client/proto'
 import { ExternalLinkIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { FC, useState } from 'react'
-import { NodeDetails } from '../NodeDetails'
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
+import { DiagramDataGroupIndexer } from '../DataGroupComponents/DiagramDataGroupIndexer'
 import { Duration } from '../DataGroupComponents/Duration'
 import { Entry } from '../DataGroupComponents/Entry'
-import { Status } from '../DataGroupComponents/Status'
-import { getTaskRun } from './getTaskRun'
-import { DiagramDataGroupIndexer } from '../DataGroupComponents/DiagramDataGroupIndexer'
 import { Result } from '../DataGroupComponents/Result'
-import { OverflowText } from '@/app/(authenticated)/[tenantId]/components/OverflowText'
+import { Status } from '../DataGroupComponents/Status'
 import { ViewVariableAssignments, ViewVariables } from '../DataGroupComponents/Variables'
+import { NodeDetails } from '../NodeDetails'
+import { getTaskRun } from './getTaskRun'
 
 export const TaskDetails: FC<{
   taskNode?: TaskNode
@@ -49,6 +49,7 @@ export const TaskDetails: FC<{
   })
 
   if (!taskNode || (!taskDef && !nodeRun?.task?.taskRunId)) return null
+  taskRunData?.attempts.sort((a, b) => (new Date(b.startTime ?? 0).getTime() - new Date(a.startTime ?? 0).getTime()))
 
   const message = taskRunData?.attempts[taskAttemptIndex].error?.message ?? taskRunData?.attempts[taskAttemptIndex].exception?.message ?? String(getVariableValue(taskRunData?.attempts[taskAttemptIndex].output)) ?? undefined
   const resultString = taskRunData?.attempts[taskAttemptIndex].error ? "ERROR" : taskRunData?.attempts[taskAttemptIndex].exception ? "EXCEPTION" : taskRunData?.attempts[taskAttemptIndex].output ? "OUTPUT" : undefined
@@ -73,7 +74,7 @@ export const TaskDetails: FC<{
               </Entry>
             </DiagramDataGroup>
 
-            <DiagramDataGroup label={taskRunData.attempts.length > 1 ? `TaskAttempt #${taskAttemptIndex}` : "TaskAttempt"} from="TaskRun">
+            <DiagramDataGroup label={"TaskAttempt"} index={taskAttemptIndex} indexes={taskRunData.attempts.length} from="TaskRun">
               <DiagramDataGroupIndexer index={taskAttemptIndex} setIndex={setTaskAttemptIndex} indexes={taskRunData.attempts.length} />
               <Entry label="Status:">
                 <Status status={taskRunData.attempts[taskAttemptIndex].status} />
@@ -84,7 +85,7 @@ export const TaskDetails: FC<{
                 </Entry>
               }
               <Entry label="Worker Log Output:">
-                <div className={"bg-gray-300 rounded-lg text-center border border-black max-w-52 text-nowrap min-h-5"} >
+                <div className={"bg-gray-300 rounded-lg text-center border border-black w-full text-nowrap min-h-5"} >
                   <OverflowText text={taskRunData.attempts[taskAttemptIndex].logOutput?.str ?? "-"} className="text-xs" variant={resultString === "ERROR" ? "error" : undefined} />
                 </div>
               </Entry>

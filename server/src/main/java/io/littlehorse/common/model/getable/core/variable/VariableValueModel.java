@@ -218,7 +218,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             VariableMutationType operation, VariableValueModel rhs, VariableType typeToCoerceTo) throws LHVarSubError {
 
         if (operation == VariableMutationType.ASSIGN) {
-            return rhs.coerceToType(typeToCoerceTo);
+            if (rhs.isNull()) {
+                return new VariableValueModel();
+            } else {
+                return rhs.coerceToType(typeToCoerceTo);
+            }
         }
 
         if (operation == VariableMutationType.ADD) {

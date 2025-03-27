@@ -21,12 +21,13 @@ public class CanaryConfig implements Config {
     public static final String WORKFLOW_CREATION_ENABLE = "workflow.creation.enable";
     public static final String WORKFLOW_VERSION = "workflow.version";
     public static final String WORKFLOW_REVISION = "workflow.revision";
+    public static final String WORKFLOW_RETENTION_MS = "workflow.retention.ms";
 
     public static final String METRONOME_ENABLE = "metronome.enable";
     public static final String METRONOME_RUN_FREQUENCY_MS = "metronome.run.frequency.ms";
     public static final String METRONOME_RUN_THREADS = "metronome.run.threads";
     public static final String METRONOME_RUN_REQUESTS = "metronome.run.requests";
-    public static final String METRONOME_RUN_SAMPLE_RATE = "metronome.run.sample.rate";
+    public static final String METRONOME_RUN_SAMPLE_PERCENTAGE = "metronome.run.sample.percentage";
     public static final String METRONOME_GET_FREQUENCY_MS = "metronome.get.frequency.ms";
     public static final String METRONOME_GET_THREADS = "metronome.get.threads";
     public static final String METRONOME_GET_RETRIES = "metronome.get.retries";
@@ -43,6 +44,8 @@ public class CanaryConfig implements Config {
     public static final String METRICS_PATH = "metrics.path";
     public static final String METRICS_COMMON_TAGS = "metrics.common.tags";
     public static final String METRICS_COMMON_TAGS_PREFIX = "%s.".formatted(METRICS_COMMON_TAGS);
+
+    public static final String HEALTH_PATH = "health.path";
 
     private final Map<String, Object> configs;
 
@@ -123,6 +126,10 @@ public class CanaryConfig implements Config {
         return Duration.ofMillis(Long.parseLong(getConfig(AGGREGATOR_EXPORT_FREQUENCY_MS)));
     }
 
+    public Duration getWorkflowRetention() {
+        return Duration.ofMillis(Long.parseLong(getConfig(WORKFLOW_RETENTION_MS)));
+    }
+
     public Duration getMetronomeRunFrequency() {
         return Duration.ofMillis(Long.parseLong(getConfig(METRONOME_RUN_FREQUENCY_MS)));
     }
@@ -135,8 +142,8 @@ public class CanaryConfig implements Config {
         return Integer.parseInt(getConfig(METRONOME_RUN_REQUESTS));
     }
 
-    public int getMetronomeSampleRate() {
-        return Integer.parseInt(getConfig(METRONOME_RUN_SAMPLE_RATE));
+    public int getMetronomeSamplePercentage() {
+        return Integer.parseInt(getConfig(METRONOME_RUN_SAMPLE_PERCENTAGE));
     }
 
     public Duration getMetronomeGetFrequency() {
@@ -172,7 +179,7 @@ public class CanaryConfig implements Config {
     }
 
     public boolean isWorkflowCreationEnabled() {
-        return Boolean.parseBoolean(getConfig(WORKFLOW_CREATION_ENABLE));
+        return isMetronomeEnabled() && Boolean.parseBoolean(getConfig(WORKFLOW_CREATION_ENABLE));
     }
 
     public String getWorkflowName() {
@@ -189,5 +196,9 @@ public class CanaryConfig implements Config {
 
     public String getMetronomeDataPath() {
         return getConfig(METRONOME_DATA_PATH);
+    }
+
+    public String getHealthPath() {
+        return getConfig(HEALTH_PATH);
     }
 }

@@ -1,20 +1,19 @@
 'use client'
-import { Separator } from '@/components/ui/separator'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { CSSProperties, FC, PropsWithChildren, ReactNode, useEffect, useMemo, useState } from 'react'
+import sortNodeRunsByLatest from '@/app/utils/sortNodeRunsByLatest'
+import { NodeRun } from 'littlehorse-client/proto'
+import React, { CSSProperties, FC, PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import { internalsSymbol, useNodeId, useStore } from 'reactflow'
 import { DiagramDataGroup } from './DataGroupComponents/DiagramDataGroup'
-import React from 'react'
-import { NodeRun, TaskRun } from 'littlehorse-client/proto'
+import { DiagramDataGroupIndexer } from './DataGroupComponents/DiagramDataGroupIndexer'
 import { Duration } from './DataGroupComponents/Duration'
 import { Entry } from './DataGroupComponents/Entry'
 import { ErrorMessage } from './DataGroupComponents/ErrorMessage'
 import { Status } from './DataGroupComponents/Status'
-import { DiagramDataGroupIndexer } from './DataGroupComponents/DiagramDataGroupIndexer'
 
 type Props = PropsWithChildren<{ nodeRunList: NodeRun[] | undefined, nodeRunsIndex?: number, setNodeRunsIndex?: (index: number) => void }>
 
 export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, setNodeRunsIndex }) => {
+  nodeRunList = sortNodeRunsByLatest(nodeRunList);
   const [nodeRunsIndexInternal, setNodeRunsIndexInternal] = useState(nodeRunsIndex ?? 0);
 
   const contextNodeId = useNodeId()
@@ -43,7 +42,7 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, s
     if (nodeRunsIndex !== undefined && setNodeRunsIndex !== undefined) {
       setNodeRunsIndex(nodeRunsIndexInternal);
     }
-  }, [nodeRunsIndexInternal, setNodeRunsIndex]);
+  }, [nodeRunsIndex, nodeRunsIndexInternal, setNodeRunsIndex]);
 
   const zIndex: number = Math.max(...nodes.map(node => (node[internalsSymbol]?.z || 1) + 10))
   if (!selectedNode) {
@@ -70,15 +69,10 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, s
     return [];
   }) as React.ReactElement[];
 
-
-  if (!nodeRunList || nodeRunList.length === 0) {
-    return null;
-  }
-
   return (
     <div style={wrapperStyle} className="flex gap-4 justify-center drop-shadow mb-6 items-start select-none">
-      {nodeRunList && (
-        <DiagramDataGroup label={nodeRunList.length > 1 ? `NodeRun #${nodeRunsIndexInternal}` : "NodeRun"} >
+      {nodeRunList && nodeRunList[nodeRunsIndexInternal] && (
+        <DiagramDataGroup label={"NodeRun"} index={nodeRunsIndexInternal} indexes={nodeRunList.length} >
           <DiagramDataGroupIndexer index={nodeRunsIndexInternal} setIndex={setNodeRunsIndexInternal} indexes={nodeRunList.length} />
           <Entry label="Status:">
             <Status status={nodeRunList[nodeRunsIndexInternal].status} />
@@ -91,6 +85,8 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, s
           </Entry>
         </DiagramDataGroup>
       )}
+      <div>
+      </div>
       {diagramDataGroups.map((element, i) => (
         <span key={i}>
           {element}

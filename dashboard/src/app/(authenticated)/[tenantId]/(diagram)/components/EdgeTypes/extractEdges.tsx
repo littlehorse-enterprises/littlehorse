@@ -50,7 +50,7 @@ export const Conditions: Record<Comparator, string> = {
   [Comparator.GREATER_THAN]: '>',
   [Comparator.LESS_THAN_EQ]: '<=',
   [Comparator.GREATER_THAN_EQ]: '>=',
-  [Comparator.EQUALS]: '=',
+  [Comparator.EQUALS]: '==',
   [Comparator.NOT_EQUALS]: '!=',
   [Comparator.IN]: 'IN',
   [Comparator.NOT_IN]: 'NOT IN',
