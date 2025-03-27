@@ -79,7 +79,6 @@ export const WfRuns: FC<WfSpec> = spec => {
 
   const isPending = !data && !error
   const hasNextPage = !!(data && data[data.length - 1]?.bookmarkAsString)
-  console.log(resolvedWfRuns)
 
   return (
     <div className="mb-4 flex flex-col">
