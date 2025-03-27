@@ -112,7 +112,7 @@ namespace LittleHorse.Sdk.Worker
         {
             var returnType = LHMappingHelper.DotNetTypeToLHVariableType(TaskMethod.ReturnType);
             var maskedValue = false;
-            String outputSchemaVarName = "output";
+            string outputSchemaVarName = "output";
 
             if (TaskMethod.GetCustomAttribute(typeof(LHTypeAttribute)) is LHTypeAttribute lhType) {
                 maskedValue = lhType!.Masked;
