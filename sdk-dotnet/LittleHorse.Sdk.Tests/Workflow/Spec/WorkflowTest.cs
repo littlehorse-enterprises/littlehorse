@@ -97,7 +97,7 @@ public class WorkflowTest
         }
         var workflow = new Sdk.Workflow.Spec.Workflow(wfName, Entrypoint);
         
-        var exception = Assert.Throws<Exception>(() => workflow.CompileAndSaveToDisk(directory: null));
+        var exception = Assert.Throws<Exception>(() => workflow.CompileAndSaveToDisk(directory: null!));
             
         Assert.Contains($"Something occurred trying to save file {fileName} to disk", exception.Message);
     }
