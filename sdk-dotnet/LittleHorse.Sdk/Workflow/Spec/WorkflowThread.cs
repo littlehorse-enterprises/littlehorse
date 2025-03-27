@@ -171,6 +171,20 @@ public class WorkflowThread
         return $"{_spec.Nodes.Count}-{name}-{LHConstants.NodeTypes[type]}";
     }
     
+    /// <summary>
+    /// Defines a Variable in the `ThreadSpec` and returns a handle to it.
+    /// 
+    /// </summary>
+    /// <param name="name">
+    /// The name of the variable.
+    /// </param>
+    /// <param name="typeOrDefaultVal">
+    /// It is either the type of the variable, from the `VariableType` enum,
+    /// or an object representing the default value of the Variable. If an object (or primitive)
+    /// is provided, the Task Worker Library casts the provided value to a VariableValue and sets
+    /// that as the default.
+    /// </param>
+    /// <returns>A handle to the created WfRunVariable.</returns>
     public WfRunVariable AddVariable(string name, object typeOrDefaultVal) 
     {
         CheckIfWorkflowThreadIsActive();
@@ -477,7 +491,17 @@ public class WorkflowThread
             });
         }
     }
-
+    
+    /// <summary>
+    /// Conditionally executes some workflow code; equivalent to an while() statement in programming.
+    /// </summary>
+    /// <param name="condition">
+    /// It is the WorkflowCondition to be satisfied.
+    /// </param>
+    /// <param name="whileThread">
+    /// It is the block of ThreadFunc code to be executed while the provided
+    /// WorkflowCondition is satisfied.
+    /// </param>
     public void DoWhile(WorkflowCondition condition, Action<WorkflowThread> whileThread)
     {
         CheckIfWorkflowThreadIsActive();
@@ -844,6 +868,18 @@ public class WorkflowThread
     }
     
     /// <summary>
+    /// Adds an EXIT node with no Failure defined. This causes the ThreadRun to complete gracefully.
+    /// It is equivalent to putting a call to `return;` early in your function.
+    /// </summary>
+    public void Complete() 
+    {
+        CheckIfWorkflowThreadIsActive();
+        var exitNode = new ExitNode();
+        
+        AddNode("complete", Node.NodeOneofCase.Exit, exitNode);
+    }
+    
+    /// <summary>
     /// Adds a SPAWN_THREAD node to the ThreadSpec, which spawns a Child ThreadRun whose ThreadSpec
     /// is determined by the provided ThreadFunc.
     /// </summary>
@@ -986,6 +1022,21 @@ public class WorkflowThread
     {
         CheckIfWorkflowThreadIsActive();
         var sleepNode = new SleepNode { RawSeconds = AssignVariable(seconds) };
+        AddNode("sleep", Node.NodeOneofCase.Sleep, sleepNode);
+    }
+    
+    /// <summary>
+    /// Adds a SLEEP node which makes the ThreadRun sleep until a specified timestamp, provided as an
+    /// INT WfRunVariable (note that INT in LH is a 64-bit integer).
+    /// </summary>
+    /// <param name="timestamp">
+    /// a WfRunVariable which evaluates to a VariableTypePb.INT specifying the epoch
+    /// timestamp (in milliseconds) to wait for.
+    /// </param>
+    public void SleepUntil(WfRunVariable timestamp)
+    {
+        CheckIfWorkflowThreadIsActive();
+        var sleepNode = new SleepNode { Timestamp = AssignVariable(timestamp) };
         AddNode("sleep", Node.NodeOneofCase.Sleep, sleepNode);
     }
     

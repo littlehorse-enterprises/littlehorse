@@ -25,7 +25,7 @@ public class LHVariableAssigmentTest
         var variableAssigment = _parentWfThread.AssignVariableHelper(null);
         
         Assert.Equal(VariableValue.ValueOneofCase.None, variableAssigment.LiteralValue.ValueCase);
-        Assert.Equal(String.Empty, variableAssigment.VariableName);
+        Assert.Equal(string.Empty, variableAssigment.VariableName);
     }
     
     [Fact]
@@ -36,7 +36,7 @@ public class LHVariableAssigmentTest
         var variableAssigment = _parentWfThread.AssignVariableHelper(wfRunVariable);
         
         Assert.Equal(wfRunVariable.Name, variableAssigment.VariableName);
-        Assert.Equal(String.Empty, variableAssigment.JsonPath);
+        Assert.Equal(string.Empty, variableAssigment.JsonPath);
     }
     
     [Fact]

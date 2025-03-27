@@ -1,3 +1,4 @@
+'use client'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +16,6 @@ function classNames(...classes: Array<string | boolean>) {
 
 export const Principal: FC = () => {
   const { user } = useWhoAmI()
-  const isAuthEnabled = process.env.LHD_OAUTH_ENABLED === 'true'
 
   return (
     <DropdownMenu>
@@ -27,11 +27,9 @@ export const Principal: FC = () => {
       <DropdownMenuContent className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
         <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {isAuthEnabled && (
-          <DropdownMenuItem onClick={() => signOut()} className="block w-full px-4 py-2 text-left text-sm">
-            Sign out
-          </DropdownMenuItem>
-        )}
+        <DropdownMenuItem onClick={() => signOut()} className="block w-full px-4 py-2 text-left text-sm">
+          Sign out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

@@ -46,7 +46,7 @@ public class WfRunVariable
         }
     }
     
-    private void SetDefaultValue(Object defaultVal) 
+    private void SetDefaultValue(object defaultVal) 
     {
         try 
         {
@@ -102,7 +102,7 @@ public class WfRunVariable
         return this;
     }
     
-    public WfRunVariable WithDefault(Object defaultVal) 
+    public WfRunVariable WithDefault(object defaultVal) 
     {
         SetDefaultValue(defaultVal);
 
