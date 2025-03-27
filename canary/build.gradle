@@ -6,6 +6,8 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'io.freefair.lombok' version '8.4'
     id 'com.google.protobuf' version '0.9.4'
+    id 'maven-publish'
+    id 'signing'
 }
 
 repositories {
@@ -102,4 +104,76 @@ checkstyle {
 
 tasks.withType(Checkstyle).configureEach {
     exclude('**io/littlehorse/canary/proto**')
+}
+
+task javadocJar(type: Jar) {
+    archiveClassifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "ossrh"
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username = findProperty('ossrhUsername')
+                password = findProperty('ossrhPassword')
+            }
+        }
+    }
+
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = group
+            artifactId = 'littlehorse-canary'
+            version = version
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = 'LittleHorse Canary'
+                description = 'LittleHorse Canary, Synthetic Monitoring Tool'
+                url = 'https://github.com/littlehorse-enterprises/littlehorse'
+                licenses {
+                    license {
+                        name = 'Server Side Public License, Version 1'
+                        url = 'https://spdx.org/licenses/SSPL-1.0.html'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'LittleHorse Engineering'
+                        email = 'engineering@littlehorse.io'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/littlehorse-enterprises/littlehorse'
+                    connection = 'scm:git://github.com/littlehorse-enterprises/littlehorse.git'
+                    developerConnection = 'scm:git:ssh://github.com/littlehorse-enterprises/littlehorse.git'
+                }
+                packaging = 'jar'
+            }
+        }
+    }
+}
+
+signing {
+    required { gradle.taskGraph.hasTask("publish") }
+
+    def signingKey = findProperty("signingKey")
+    def signingPassword = findProperty("signingPassword")
+    useInMemoryPgpKeys(signingKey, signingPassword)
+
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    excludes = []
+    options.memberLevel = JavadocMemberLevel.PUBLIC
 }

@@ -32,7 +32,7 @@ public class VariableMappingTest
             , typeof(sbyte), typeof(byte), typeof(short), typeof(ushort)
             , typeof(int), typeof(uint), typeof(long) 
             , typeof(ulong), typeof(nint), typeof(nuint), typeof(float), typeof(double)
-            , typeof(String), typeof(bool), typeof(byte[]), typeof(List<string>)
+            , typeof(string), typeof(bool), typeof(byte[]), typeof(List<string>)
             , typeof(List<object>), typeof(List<string>), typeof(List<int>)
         };
 

@@ -1,6 +1,6 @@
 package e2e;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
@@ -62,7 +62,7 @@ public class ChildWorkflowTest {
         } catch (StatusRuntimeException exn) {
             caught = exn;
         }
-        assertNotNull(caught);
+        assertThat(caught).isNotNull();
         Assertions.assertEquals(caught.getStatus().getCode(), Code.INVALID_ARGUMENT);
 
         cleanupParentChild(parentChild);
