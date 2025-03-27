@@ -1,5 +1,6 @@
 package e2e;
 
+import static org.assertj.core.api.Assertions.assertThat;
 
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
@@ -21,8 +22,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @LHTest(externalEventNames = {"child-workflow-event"})
 public class ChildWorkflowTest {

@@ -1,5 +1,7 @@
 package e2e;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
@@ -29,8 +31,6 @@ import java.util.Date;
 import java.util.List;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @LHTest(externalEventNames = {WfRunDeletionTest.COMPLETE_WFRUN_EVT, WfRunDeletionTest.IGNORED_EVT})
 public class WfRunDeletionTest {
@@ -70,7 +70,8 @@ public class WfRunDeletionTest {
                 .build());
 
         assertThat(searchResult.getResultsList().stream()
-                .anyMatch(candidate -> candidate.getId().equals(id.getId()))).isTrue();
+                        .anyMatch(candidate -> candidate.getId().equals(id.getId())))
+                .isTrue();
 
         // Delete the WfRun
         client.deleteWfRun(DeleteWfRunRequest.newBuilder().setId(id).build());
@@ -81,13 +82,15 @@ public class WfRunDeletionTest {
                 .setEarliestStart(oneMinuteAgo)
                 .build());
         assertThat(!searchResult.getResultsList().stream()
-                .anyMatch(candidate -> candidate.getId().equals(id.getId()))).isTrue();
+                        .anyMatch(candidate -> candidate.getId().equals(id.getId())))
+                .isTrue();
 
         // Obviously we shouldn't be able to find the WfRun
         assertThat(LHTestExceptionUtil.throwsNotFound(() -> {
-            client.getWfRun(id);
-            return null;
-        })).isTrue();
+                    client.getWfRun(id);
+                    return null;
+                }))
+                .isTrue();
     }
 
     @Test
@@ -110,9 +113,10 @@ public class WfRunDeletionTest {
         // Verify that all of the NodeRuns are gone;
         for (NodeRun nodeRun : nodeRuns) {
             assertThat(LHTestExceptionUtil.throwsNotFound(() -> {
-                client.getNodeRun(nodeRun.getId());
-                return null;
-            })).isTrue();
+                        client.getNodeRun(nodeRun.getId());
+                        return null;
+                    }))
+                    .isTrue();
         }
     }
 
@@ -171,14 +175,16 @@ public class WfRunDeletionTest {
 
         // Verify that the ExternalEvents are gone.
         assertThat(LHTestExceptionUtil.throwsNotFound(() -> {
-            client.getExternalEvent(firstEvtId);
-            return null;
-        })).isTrue();
+                    client.getExternalEvent(firstEvtId);
+                    return null;
+                }))
+                .isTrue();
 
         assertThat(LHTestExceptionUtil.throwsNotFound(() -> {
-            client.getExternalEvent(secondEvtId);
-            return null;
-        })).isTrue();
+                    client.getExternalEvent(secondEvtId);
+                    return null;
+                }))
+                .isTrue();
     }
 
     @Test
@@ -200,9 +206,10 @@ public class WfRunDeletionTest {
 
         // Verify that the TaskRun is gone.
         assertThat(LHTestExceptionUtil.throwsNotFound(() -> {
-            client.getTaskRun(taskRunId);
-            return null;
-        })).isTrue();
+                    client.getTaskRun(taskRunId);
+                    return null;
+                }))
+                .isTrue();
     }
 
     @LHTaskMethod("pedro-task-test")

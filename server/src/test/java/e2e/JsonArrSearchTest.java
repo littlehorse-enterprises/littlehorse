@@ -1,5 +1,6 @@
 package e2e;
 
+import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
@@ -16,8 +17,6 @@ import io.littlehorse.test.internal.step.SearchResultCaptor;
 import java.util.List;
 import java.util.function.Function;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests that we can index and search JSON_ARR variables properly.
