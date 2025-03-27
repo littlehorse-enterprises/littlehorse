@@ -34,7 +34,7 @@ import org.testcontainers.utility.DockerImageName;
  *             .build();
  * </pre></blockquote>
  */
-class LittleHorseContainer extends GenericContainer<LittleHorseContainer> {
+public class LittleHorseContainer extends GenericContainer<LittleHorseContainer> {
 
     private static final String LHS_INTERNAL_ADVERTISED_HOST = "LHS_INTERNAL_ADVERTISED_HOST";
     private static final String LHS_INSTANCE_ID = "LHS_INSTANCE_ID";
@@ -54,7 +54,7 @@ class LittleHorseContainer extends GenericContainer<LittleHorseContainer> {
      *
      * @param littlehorseImage Example: "ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest"
      */
-    LittleHorseContainer(final String littlehorseImage) {
+    public LittleHorseContainer(final String littlehorseImage) {
         this(DockerImageName.parse(littlehorseImage));
     }
 
@@ -63,7 +63,7 @@ class LittleHorseContainer extends GenericContainer<LittleHorseContainer> {
      *
      * @param littlehorseImage Example: {@code DockerImageName.parse("ghcr.io/littlehorse-enterprises/littlehorse/lh-server:latest")}
      */
-    LittleHorseContainer(final DockerImageName littlehorseImage) {
+    public LittleHorseContainer(final DockerImageName littlehorseImage) {
         super(littlehorseImage);
         littlehorseImage.assertCompatibleWith(DEFAULT_IMAGE_NAME);
         this.withExposedPorts(DEFAULT_INTERNAL_PORT)
