@@ -60,7 +60,7 @@ namespace LittleHorse.Sdk.Authentication
             return response;
         }
 
-        private Boolean ValidateRequiredTokenFields(Dictionary<string, object> tokenApiFields)
+        private bool ValidateRequiredTokenFields(Dictionary<string, object> tokenApiFields)
         {
             return !(string.IsNullOrEmpty(tokenApiFields["access_token"].ToString())
                     && string.IsNullOrEmpty(tokenApiFields["expires_in"].ToString()));

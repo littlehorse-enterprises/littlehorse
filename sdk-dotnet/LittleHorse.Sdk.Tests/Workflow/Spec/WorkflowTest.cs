@@ -1,3 +1,4 @@
+using System;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Workflow.Spec;
 using Xunit;
@@ -17,7 +18,7 @@ public class WorkflowTest
         var wfName = "example-basic";
         void Entrypoint(WorkflowThread wf)
         {
-            wf.AddVariable("input-name", VariableType.Str);
+            wf.DeclareStr("input-name");
         }
         var workflow = new Sdk.Workflow.Spec.Workflow(wfName, Entrypoint);
 
@@ -65,5 +66,57 @@ public class WorkflowTest
         var expectedQuantityOfNodes = 2;
         Assert.Equal(expectedQuantityOfNodes, actualResult.ThreadSpecs["entrypoint"].Nodes.Count);
         Assert.Equal(wfSpecRequest, actualResult);
+    }
+
+    [Fact]
+    public void WorkflowCompiled_WithJsonFormat_ShouldSaveFileInDirectoryLocatedInBaseFolder()
+    {
+        void Entrypoint(WorkflowThread wf)
+        {
+        }
+        var wfName = "example-basic";
+        string fileName = wfName + LHConstants.SuffixCompiledWfFileName;
+        var workflow = new Sdk.Workflow.Spec.Workflow(wfName, Entrypoint);
+        
+        string directory = "Test";
+        workflow.CompileAndSaveToDisk(directory);
+        string actualContent = TestUtils.GetContentFromFilePath(directory, fileName);
+        
+        Assert.False(string.IsNullOrWhiteSpace(actualContent));
+        
+        TestUtils.RemoveDirectory(directory);
+    }
+    
+    [Fact]
+    public void WorkflowCompiled_WithNullDirectory_ShouldThrowAnException()
+    {
+        var wfName = "example-basic";
+        string fileName = wfName + LHConstants.SuffixCompiledWfFileName;
+        void Entrypoint(WorkflowThread wf)
+        {
+        }
+        var workflow = new Sdk.Workflow.Spec.Workflow(wfName, Entrypoint);
+        
+        var exception = Assert.Throws<Exception>(() => workflow.CompileAndSaveToDisk(directory: null));
+            
+        Assert.Contains($"Something occurred trying to save file {fileName} to disk", exception.Message);
+    }
+    
+    [Fact]
+    public void WorkflowCompiled_WithEmptyDirectoryName_ShouldSaveFileInBaseFolder()
+    {
+        void Entrypoint(WorkflowThread wf)
+        {
+        }
+        var wfName = "example-basic";
+        string fileName = wfName + LHConstants.SuffixCompiledWfFileName;
+        var workflow = new Sdk.Workflow.Spec.Workflow(wfName, Entrypoint);
+        
+        workflow.CompileAndSaveToDisk(directory: string.Empty);
+        string actualContent = TestUtils.GetContentFromFilePath(directory: string.Empty, fileName);
+        
+        Assert.False(string.IsNullOrWhiteSpace(actualContent));
+        
+        TestUtils.RemoveFile(fileName);
     }
 }

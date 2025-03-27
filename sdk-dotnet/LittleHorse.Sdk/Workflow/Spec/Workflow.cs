@@ -60,7 +60,7 @@ public class Workflow
     /// </param>
     public void RegisterWfSpec(LittleHorseClient client)
     {
-        _logger!.LogInformation(LHMappingHelper.ProtoToJson(client.PutWfSpec(Compile())));
+        _logger!.LogInformation($"Created wfSpec:\n{LHMappingHelper.ProtoToJson(client.PutWfSpec(Compile()))}");
     }
 
     internal string AddSubThread(string subThreadName, Action<WorkflowThread> subThreadAction) 
@@ -359,9 +359,16 @@ public class Workflow
     public void CompileAndSaveToDisk(string directory) 
     {
         PutWfSpecRequest wf = Compile();
-        string wfFileName = wf.Name + "-wfspec.json";
+        string wfFileName = wf.Name + LHConstants.SuffixCompiledWfFileName;
         _logger!.LogInformation($"Saving WfSpec to {wfFileName}");
-        SaveProtoToFile(directory, wfFileName, wf);
+        try
+        {
+            SaveProtoToFile(directory, wfFileName, wf);
+        }
+        catch (Exception e)
+        {
+            throw new Exception($"Something occurred trying to save file {wfFileName} to disk", e);
+        }
     }
 
     private void SaveProtoToFile(string directory, string fileName, IMessage content) 

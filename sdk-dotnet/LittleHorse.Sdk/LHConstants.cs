@@ -42,4 +42,6 @@ internal static class LHConstants
     };
     
     internal static readonly string AnyFailure = "any_failure";
+
+    internal static readonly string SuffixCompiledWfFileName = "-wfspec.json";
 }
