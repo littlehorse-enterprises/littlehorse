@@ -42,7 +42,7 @@ publishing {
             artifact javadocJar
             pom {
                 name = 'LittleHorse Client'
-                description = 'LittleHorse is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications'
+                description = 'LittleHorse Client'
                 url = 'https://github.com/littlehorse-enterprises/littlehorse'
                 licenses {
                     license {
