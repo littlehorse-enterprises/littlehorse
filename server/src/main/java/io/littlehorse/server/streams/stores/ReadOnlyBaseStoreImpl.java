@@ -1,6 +1,6 @@
 package io.littlehorse.server.streams.stores;
 
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
@@ -61,7 +61,7 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
             return getMetadataObject(keyToLookFor, cls);
         } else {
             // time to get things from the store
-            GeneratedMessageV3 stored = getFromNativeStore(keyToLookFor, cls);
+            GeneratedMessage stored = getFromNativeStore(keyToLookFor, cls);
             if (stored == null) {
                 return null;
             }
@@ -78,7 +78,7 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
                 // we already know that the store does not contain this key
                 return null;
             }
-            GeneratedMessageV3 storedProto = getFromNativeStore(keyToLookFor, clazz);
+            GeneratedMessage storedProto = getFromNativeStore(keyToLookFor, clazz);
             if (storedProto != null) {
                 StoredGetable<U, MetadataGetable<U>> storedGetable =
                         LHSerializable.fromProto(storedProto, StoredGetable.class, executionContext);
@@ -96,7 +96,7 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
         this.metadataCache = metadataCache;
     }
 
-    private <U extends Message, T extends Storeable<U>> GeneratedMessageV3 getFromNativeStore(
+    private <U extends Message, T extends Storeable<U>> GeneratedMessage getFromNativeStore(
             String keyToLookFor, Class<T> cls) {
         Bytes raw = nativeStore.get(keyToLookFor);
 
