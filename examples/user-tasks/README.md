@@ -47,7 +47,7 @@ We check the status of the `WfRun` and see that it's running:
 lhctl get wfRun <wf_run_id>
 ```
 
-Note that there is only one `ThreadRun` in the `WfRun`, and the current `NodeRun` position is `1`. If you recall our `WfSpec`, we've arrived at a User Task Run, and it should be assigned to `anakin`.
+Note that there is only one `ThreadRun` in the `WfRun`, and the current `NodeRun` position is `1`. If you recall our `WfSpec`, we've arrived at a User Task Run, and it should be assigned to `anakin`, but if the assigned user does not complete the task in less than 1 minute, then the task will be released to `testGroup` group.
 
 #### Find the User Task
 
@@ -109,10 +109,8 @@ Please enter the response for this field (STR): the rank of master
 Field:  Request Justification
 Why you need this request.
 Please enter the response for this field (STR): it's not fair to be on this council and not be a Master!
-completing userTaskRun!
-{
-  "code":  "OK"
-}
+Saving userTaskRun progress!
+{}
 ```
 
 Now let's get the `userTaskRun` again:

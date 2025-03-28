@@ -53,7 +53,43 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
-        run: ./gradlew sdk-java:publish test-utils:publish test-utils-container:publish -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
+          ORG_GRADLE_PROJECT_ossrhUsername: ${{ secrets.OSSRH_USERNAME }}
+          ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.OSSRH_PASSWORD }}
+        run: ./gradlew sdk-java:publish test-utils:publish test-utils-container:publish
+
+      - name: Information
+        run: echo "::warning title=Do not forget to release the java package at Maven Central::Login at https://s01.oss.sonatype.org/"
+
+  publish-java-server:
+    runs-on: ubuntu-latest
+    needs:
+      - publish-docker
+      - prepare
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "corretto"
+          java-version: "21"
+
+      - name: Dump version
+        env:
+          TAG: ${{ needs.prepare.outputs.tag }}
+        run: sed -i "s/version=.*/version=${TAG}/g" gradle.properties
+
+      - name: Tests
+        run: ./gradlew server:test canary:test
+
+      - name: Publish
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
+          ORG_GRADLE_PROJECT_ossrhUsername: ${{ secrets.OSSRH_USERNAME }}
+          ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.OSSRH_PASSWORD }}
+        run: ./gradlew server:publish canary:publish
 
       - name: Information
         run: echo "::warning title=Do not forget to release the java package at Maven Central::Login at https://s01.oss.sonatype.org/"
@@ -190,6 +226,7 @@ jobs:
     needs:
       - build-lhctl
       - publish-java-libraries
+      - publish-java-server
       - publish-sdk-python
       - publish-sdk-js
       - publish-sdk-dotnet

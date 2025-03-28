@@ -248,7 +248,7 @@ public class LHLibUtil {
     }
 
     public static boolean isJSON_ARR(Class<?> cls) {
-        return List.class.isAssignableFrom(cls);
+        return List.class.isAssignableFrom(cls) || cls.isArray();
     }
 
     public static VariableType javaClassToLHVarType(Class<?> cls) {

@@ -5,25 +5,25 @@ namespace ConditionalsExample;
 public class MyWorker
 {
     [LHTaskMethod("task-a")]
-    public String TaskA() {
+    public string TaskA() {
         Console.WriteLine("Executing task-a");
         return "hello there A";
     }
 
     [LHTaskMethod("task-b")]
-    public String TaskB() {
+    public string TaskB() {
         Console.WriteLine("Executing task-b");
         return "hello there B";
     }
 
     [LHTaskMethod("task-c")]
-    public String TaskC() {
+    public string TaskC() {
         Console.WriteLine("Executing task-c");
         return "hello there C";
     }
 
     [LHTaskMethod("task-d")]
-    public String TaskD() {
+    public string TaskD() {
         Console.WriteLine("Executing task-d");
         return "hello there D";
     }

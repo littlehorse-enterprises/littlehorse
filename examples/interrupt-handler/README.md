@@ -7,7 +7,7 @@ In this example the parent thread sleeps 30 sec, we can interrupt it while it's 
 and it creates a child thread. When an interruption is received the workflow executes the task:
 "some-task", if the task fails the whole workflow fails.
 
-In order for the Interrupt to happen, the parent thread needs to be sleeping.
+This workflow sleeps for 30 seconds for us to have time to post to the interruption event before the workflow finishes. 
 
 Let's run the example in `InterruptHandlerExample.java`
 
