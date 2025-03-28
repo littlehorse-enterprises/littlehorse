@@ -36,7 +36,7 @@ class TestLHConfig(unittest.TestCase):
         config = LHConfig()
 
         self.assertDictEqual(
-            config.configs,
+            config._configs,
             {"LHC_VARIABLE": "my-lhc-variable", "LHW_VARIABLE": "my-lhw-variable"},
         )
 
@@ -58,13 +58,80 @@ class TestLHConfig(unittest.TestCase):
         config.load(temp_config_file_path)
 
         self.assertDictEqual(
-            config.configs,
+            config._configs,
             {
                 "LHC_VARIABLE": "my-lhc-variable-from-env",
                 "LHC_VARIABLE_2": "my-lhc-variable-2-from-env",
                 "LHW_VARIABLE": "my-lhw-variable-from-env",
                 "LHC_VARIABLE_FROM_FILE": "my-lhc-variable-from-file",
                 "LHW_VARIABLE_FROM_FILE": "my-lhw-variable-from-file",
+            },
+        )
+
+    def test_load_from_file_and_dict(self):
+        os.environ["LHC_VARIABLE"] = "my-lhc-variable-from-env"
+        os.environ["LHC_VARIABLE_2"] = "my-lhc-variable-2-from-env"
+
+        temp_config_file_path = f"/tmp/sdk-python-test-{uuid.uuid4()}.config"
+
+        with open(temp_config_file_path, "w") as file_input:
+            file_input.write("LHC_VARIABLE=my-lhc-variable-from-file\n")
+            file_input.write("LHW_VARIABLE=my-lhw-variable-from-file\n")
+            file_input.write("NOT_A_VALUE=random\n")
+            file_input.write("LHC_VARIABLE_FROM_FILE=my-lhc-variable-from-file\n")
+            file_input.write("LHW_VARIABLE_FROM_FILE=my-lhw-variable-from-file\n")
+
+        dict_input = {
+            "LHW_VARIABLE": "my-lhw-variable-from-dict",
+        }
+
+        config = LHConfig()
+        config.load(temp_config_file_path)
+        config.load(dict_input)
+
+        self.assertDictEqual(
+            config._configs,
+            {
+                "LHC_VARIABLE": "my-lhc-variable-from-env",
+                "LHC_VARIABLE_2": "my-lhc-variable-2-from-env",
+                "LHW_VARIABLE": "my-lhw-variable-from-dict",
+                "LHC_VARIABLE_FROM_FILE": "my-lhc-variable-from-file",
+                "LHW_VARIABLE_FROM_FILE": "my-lhw-variable-from-file",
+            },
+        )
+
+    def test_load_from_dict(self):
+        dict_input = {
+            "LHC_VARIABLE": "my-lhc-variable-from-dict",
+            "LHC_VARIABLE_2": "my-lhc-variable-2-from-dict",
+            "LHW_VARIABLE": "my-lhw-variable-from-dict",
+            "NOT_VALID": "not-valid",
+        }
+
+        config = LHConfig()
+        config.load(dict_input)
+
+        self.assertDictEqual(
+            config._configs,
+            {
+                "LHC_VARIABLE": "my-lhc-variable-from-dict",
+                "LHC_VARIABLE_2": "my-lhc-variable-2-from-dict",
+                "LHW_VARIABLE": "my-lhw-variable-from-dict",
+            },
+        )
+
+    def test_load_from_int_dict(self):
+        dict_input = {
+            "LHC_MY_INT_VARIABLE": 100,
+        }
+
+        config = LHConfig()
+        config.load(dict_input)
+
+        self.assertDictEqual(
+            config._configs,
+            {
+                "LHC_MY_INT_VARIABLE": "100",
             },
         )
 

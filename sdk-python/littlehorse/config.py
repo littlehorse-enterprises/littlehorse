@@ -71,37 +71,53 @@ class LHConfig:
     _log = logging.getLogger("LHConfig")
 
     def __init__(self) -> None:
-        self.configs = {
-            key.upper(): value
-            for key, value in os.environ.items()
-            if key.startswith(PREFIXES)
-        }
+        """
+        Load the configuration from environment variables by default.
+        """
+        self._configs: dict[str, str] = {}
         self._opened_channels: dict[ChannelId, Channel] = {}
+        self.load()
 
     def __str__(self) -> str:
         return "\n".join(
             [
                 f"{key}={'******' if 'SECRET' in key or 'PASSWORD' in key else value}"
-                for key, value in self.configs.items()
+                for key, value in self._configs.items()
             ]
         )
 
-    def load(self, file_path: Union[str, Path]) -> None:
-        """Loads configurations from properties file.
+    def load(self, source: Optional[Union[str, Path, dict[str, Any]]] = None) -> None:
+        """Loads configurations from a source dictionary or properties file.
+        Environment variables have higher precedence than the loaded by this method.
 
         Args:
-            file_path (Union[str, Path]): Path to the properties file.
+            source (Union[str, Path, dict[str, Any]]): Dictionary or path to the properties file.
         """
-        properties = Properties()
-        properties.load(read_binary(file_path), "utf-8")
 
-        new_configs = {
-            key.upper(): value.data
-            for key, value in properties.items()
+        new_configs = {}
+
+        configs_from_env = {
+            key.upper(): value
+            for key, value in os.environ.items()
             if key.startswith(PREFIXES)
         }
 
-        self.configs = new_configs | self.configs
+        if isinstance(source, dict):
+            new_configs = {
+                key.upper(): str(value)
+                for key, value in source.items()
+                if key.startswith(PREFIXES)
+            }
+        elif isinstance(source, Path) or isinstance(source, str):
+            properties = Properties()
+            properties.load(read_binary(source), "utf-8")
+            new_configs = {
+                key.upper(): value.data
+                for key, value in properties.items()
+                if key.startswith(PREFIXES)
+            }
+
+        self._configs = self._configs | new_configs | configs_from_env
 
     def get(self, key: str) -> Optional[str]:
         """Gets a configuration.
@@ -112,7 +128,7 @@ class LHConfig:
         Returns:
             Optional[str]: Configuration value or None if it does not exit.
         """
-        return self.configs.get(key)
+        return self._configs.get(key)
 
     def get_or_set_default(self, key: str, default: str) -> str:
         """Gets a configuration, or return a default instead. If the configuration
@@ -126,10 +142,10 @@ class LHConfig:
         Returns:
             str: The configuration's value, or the given default value.
         """
-        value = self.configs.get(key)
+        value = self._configs.get(key)
 
         if value is None:
-            self.configs[key] = default
+            self._configs[key] = default
             return default
 
         return value
