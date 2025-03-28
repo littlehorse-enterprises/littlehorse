@@ -1,7 +1,10 @@
 import unittest
 import os
+from pathlib import Path
 from unittest.mock import ANY, mock_open, patch
 import uuid
+
+from parameterized import parameterized
 
 from littlehorse.config import LHConfig
 
@@ -40,14 +43,18 @@ class TestLHConfig(unittest.TestCase):
             {"LHC_VARIABLE": "my-lhc-variable", "LHW_VARIABLE": "my-lhw-variable"},
         )
 
-    def test_load_from_file(self):
+    @parameterized.expand(
+        [
+            (f"/tmp/sdk-python-test-{uuid.uuid4()}.config"),
+            (Path(f"/tmp/sdk-python-test-{uuid.uuid4()}.config")),
+        ]
+    )
+    def test_load_from_file(self, path):
         os.environ["LHC_VARIABLE"] = "my-lhc-variable-from-env"
         os.environ["LHC_VARIABLE_2"] = "my-lhc-variable-2-from-env"
         os.environ["LHW_VARIABLE"] = "my-lhw-variable-from-env"
 
-        temp_config_file_path = f"/tmp/sdk-python-test-{uuid.uuid4()}.config"
-
-        with open(temp_config_file_path, "w") as file_input:
+        with open(path, "w") as file_input:
             file_input.write("LHC_VARIABLE=my-lhc-variable-from-file\n")
             file_input.write("LHW_VARIABLE=my-lhw-variable-from-file\n")
             file_input.write("NOT_A_VALUE=random\n")
@@ -55,7 +62,7 @@ class TestLHConfig(unittest.TestCase):
             file_input.write("LHW_VARIABLE_FROM_FILE=my-lhw-variable-from-file\n")
 
         config = LHConfig()
-        config.load(temp_config_file_path)
+        config.load(path)
 
         self.assertDictEqual(
             config._configs,

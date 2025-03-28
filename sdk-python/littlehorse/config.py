@@ -88,7 +88,7 @@ class LHConfig:
 
     def load(self, source: Optional[Union[str, Path, dict[str, Any]]] = None) -> None:
         """Loads configurations from a source dictionary or properties file.
-        Environment variables have higher precedence than the loaded by this method.
+        Environment variables have higher precedence than the configurations loaded by this method.
 
         Args:
             source (Union[str, Path, dict[str, Any]]): Dictionary or path to the properties file.
@@ -108,7 +108,7 @@ class LHConfig:
                 for key, value in source.items()
                 if key.startswith(PREFIXES)
             }
-        elif isinstance(source, Path) or isinstance(source, str):
+        elif isinstance(source, (Path, str)):
             properties = Properties()
             properties.load(read_binary(source), "utf-8")
             new_configs = {
