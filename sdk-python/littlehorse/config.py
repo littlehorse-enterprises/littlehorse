@@ -62,8 +62,16 @@ class ChannelId:
         return str(vars(self))
 
 
+def _read_env_variables() -> dict[str, str]:
+    return {
+        key.upper(): value
+        for key, value in os.environ.items()
+        if key.startswith(PREFIXES)
+    }
+
+
 class LHConfig:
-    """Littlehorse Client/Worker configuration.
+    """LittleHorse Client/Worker configuration.
     A property configured using an environment property
     overrides the value provided using a worker.config file.
     """
@@ -74,9 +82,8 @@ class LHConfig:
         """
         Load the configuration from environment variables by default.
         """
-        self._configs: dict[str, str] = {}
+        self._configs: dict[str, str] = _read_env_variables()
         self._opened_channels: dict[ChannelId, Channel] = {}
-        self.load()
 
     def __str__(self) -> str:
         return "\n".join(
@@ -86,21 +93,13 @@ class LHConfig:
             ]
         )
 
-    def load(self, source: Optional[Union[str, Path, dict[str, Any]]] = None) -> None:
+    def load(self, source: Union[str, Path, dict[str, Any]]) -> None:
         """Loads configurations from a source dictionary or properties file.
         Environment variables have higher precedence than the configurations loaded by this method.
 
         Args:
-            source Optional[Union[str, Path, dict[str, Any]]]: Dictionary or path to the properties file.
+            source Union[str, Path, dict[str, Any]]: Dictionary or path to the properties file.
         """
-
-        new_configs = {}
-
-        configs_from_env = {
-            key.upper(): value
-            for key, value in os.environ.items()
-            if key.startswith(PREFIXES)
-        }
 
         if isinstance(source, dict):
             new_configs = {
@@ -116,8 +115,10 @@ class LHConfig:
                 for key, value in properties.items()
                 if key.startswith(PREFIXES)
             }
+        else:
+            raise ValueError(f"Invalid type {type(source)}")
 
-        self._configs = self._configs | new_configs | configs_from_env
+        self._configs = self._configs | new_configs | _read_env_variables()
 
     def get(self, key: str) -> Optional[str]:
         """Gets a configuration.

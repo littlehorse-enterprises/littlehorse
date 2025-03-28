@@ -4,12 +4,15 @@ from pathlib import Path
 from unittest.mock import ANY, mock_open, patch
 import uuid
 
+from faker import Faker
 from parameterized import parameterized
 
 from littlehorse.config import LHConfig
 
 
 class TestLHConfig(unittest.TestCase):
+    faker = Faker()
+
     def tearDown(self):
         os.environ.clear()
 
@@ -45,8 +48,8 @@ class TestLHConfig(unittest.TestCase):
 
     @parameterized.expand(
         [
-            (f"/tmp/sdk-python-test-{uuid.uuid4()}.config"),
-            (Path(f"/tmp/sdk-python-test-{uuid.uuid4()}.config")),
+            f"/tmp/sdk-python-test-{uuid.uuid4()}.config",
+            Path(f"/tmp/sdk-python-test-{uuid.uuid4()}.config"),
         ]
     )
     def test_load_from_file(self, path):
@@ -141,6 +144,13 @@ class TestLHConfig(unittest.TestCase):
                 "LHC_MY_INT_VARIABLE": "100",
             },
         )
+
+    def test_throws_error_if_it_sis_not_the_right_type(self):
+        with self.assertRaises(Exception) as context:
+            config = LHConfig()
+            config.load(self.faker.random_int())
+
+        self.assertTrue("Invalid type <class 'int'>" in str(context.exception))
 
     def test_get_or_default(self):
         os.environ["LHC_VARIABLE"] = "my-lhc-variable"
