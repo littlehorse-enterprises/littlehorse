@@ -145,7 +145,7 @@ class TestLHConfig(unittest.TestCase):
             },
         )
 
-    def test_throws_error_if_it_sis_not_the_right_type(self):
+    def test_throws_error_if_it_is_not_a_valid_type(self):
         with self.assertRaises(Exception) as context:
             config = LHConfig()
             config.load(self.faker.random_int())
