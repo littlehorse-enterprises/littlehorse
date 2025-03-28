@@ -91,7 +91,7 @@ class LHConfig:
         Environment variables have higher precedence than the configurations loaded by this method.
 
         Args:
-            source (Union[str, Path, dict[str, Any]]): Dictionary or path to the properties file.
+            source Optional[Union[str, Path, dict[str, Any]]]: Dictionary or path to the properties file.
         """
 
         new_configs = {}
