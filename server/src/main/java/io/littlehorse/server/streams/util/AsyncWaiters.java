@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -34,12 +35,12 @@ public class AsyncWaiters {
     private final HashMap<WfRunIdModel, GroupOfObserversWaitingForEvent> eventWaiters;
     private final Lock eventWaiterLock = new ReentrantLock();
 
-    public AsyncWaiters(ScheduledExecutorService executor) {
+    public AsyncWaiters() {
         commandWaiters = new ConcurrentHashMap<>();
         eventWaiters = new HashMap<>();
-
-        executor.scheduleAtFixedRate(this::cleanupOldCommandWaiters, 0, 10, TimeUnit.SECONDS);
-        executor.scheduleAtFixedRate(this::cleanupOldWorkflowEventWaiters, 1, 10, TimeUnit.SECONDS);
+        ScheduledExecutorService scheduledService = Executors.newScheduledThreadPool(2);
+        scheduledService.scheduleAtFixedRate(this::cleanupOldCommandWaiters, 0, 10, TimeUnit.SECONDS);
+        scheduledService.scheduleAtFixedRate(this::cleanupOldWorkflowEventWaiters, 1, 10, TimeUnit.SECONDS);
     }
 
     public void registerObserverWaitingForCommand(
