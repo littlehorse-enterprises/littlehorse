@@ -807,6 +807,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 }
                 break;
             case NODE_OUTPUT:
+                log.debug("Using direct NodeOutput VariableAssignment is DEPRECATED! Update your WfSpec.");
+                // Possible that some of our users might already be doing this. Let's softly deprecate it and remove it
+                // in a year.
                 String nodeReferenceName = assn.getNodeOutputReference().getNodeName();
                 NodeRunModel referencedNodeRun = getMostRecentNodeRun(nodeReferenceName);
                 Optional<VariableValueModel> output = referencedNodeRun.getOutput(processorContext);

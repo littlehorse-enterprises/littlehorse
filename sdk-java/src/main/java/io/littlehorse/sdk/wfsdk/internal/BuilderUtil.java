@@ -5,6 +5,8 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
 import io.littlehorse.sdk.common.proto.VariableAssignment.NodeOutputReference;
+import io.littlehorse.sdk.wfsdk.LHFormatString;
+import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.common.proto.VariableValue;
 
 class BuilderUtil {
@@ -21,6 +23,19 @@ class BuilderUtil {
             }
             builder.setVariableName(wrv.name);
         } else if (NodeOutputImpl.class.isAssignableFrom(variable.getClass())) {
+            NodeOutputImpl nodeOutput = (NodeOutputImpl) variable;
+
+            // In order to access the output of an old NodeRun, we 
+            // Note that old PR #1125 used a (now-deprecated) server-side feature in which
+            // the Server would fetch the old NodeRun and use that output. However, this has some problems
+            // regarding performance (linear scan to find the NodeRun), and nodeRun retention (it could
+            // disappear).
+            String variableName = "INTERNAL-" + nodeOutput.nodeName;
+
+            WorkflowThreadImpl thread = nodeOutput.parent;
+            if (!thread.getWfRunVariables().stream().anyMatch(v -> v.name.equals(variableName))) {
+                nodeOutput.parent.addVariable(null, nodeOutput)
+            }
             // We can use the new `VariableAssignment` feature: NodeOutputReference
             NodeOutputImpl nodeReference = (NodeOutputImpl) variable;
 

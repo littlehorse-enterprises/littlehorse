@@ -62,7 +62,7 @@ message VariableAssignment {
     VariableValue literal_value = 3;
     // Assign a format string
     FormatString format_string = 4;
-    // Assign the value of a NodeOutput.
+    // DEPRECATED: Assign the value of a NodeOutput.
     NodeOutputReference node_output = 5;
     // Assign the value of an Expression.
     Expression expression = 6;
