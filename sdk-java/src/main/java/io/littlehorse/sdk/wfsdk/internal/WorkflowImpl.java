@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -33,18 +34,9 @@ public class WorkflowImpl extends Workflow {
         this.requiredEedNames = new HashSet<>();
     }
 
-    public Set<PutTaskDefRequest> compileTaskDefs() {
-        compileWorkflow();
-        Set<PutTaskDefRequest> out = new HashSet<>();
-        for (TaskDefBuilder tdb : taskDefBuilders.values()) {
-            out.add(tdb.toPutTaskDefRequest());
-        }
-        return out;
-    }
-
-    public PutWfSpecRequest compileWorkflow() {
+    public PutWfSpecRequest compileWorkflow(LittleHorseBlockingStub client) {
         if (compiledWorkflow == null) {
-            compiledWorkflow = compileWorkflowHelper();
+            compiledWorkflow = compileWorkflowHelper(client);
         }
         return compiledWorkflow;
     }
@@ -73,30 +65,30 @@ public class WorkflowImpl extends Workflow {
     }
 
     @Override
-    public Set<String> getRequiredTaskDefNames() {
+    public Set<String> getRequiredTaskDefNames(LittleHorseBlockingStub client) {
         if (compiledWorkflow == null) {
-            compiledWorkflow = compileWorkflowHelper();
+            compiledWorkflow = compileWorkflowHelper(client);
         }
         return requiredTaskDefNames;
     }
 
     @Override
-    public Set<String> getRequiredExternalEventDefNames() {
+    public Set<String> getRequiredExternalEventDefNames(LittleHorseBlockingStub client) {
         if (compiledWorkflow == null) {
-            compiledWorkflow = compileWorkflowHelper();
+            compiledWorkflow = compileWorkflowHelper(client);
         }
         return requiredEedNames;
     }
 
     @Override
-    public Set<String> getRequiredWorkflowEventDefNames() {
+    public Set<String> getRequiredWorkflowEventDefNames(LittleHorseBlockingStub client) {
         if (compiledWorkflow == null) {
-            compiledWorkflow = compileWorkflowHelper();
+            compiledWorkflow = compileWorkflowHelper(client);
         }
         return requiredWorkflowEventDefNames;
     }
 
-    private PutWfSpecRequest compileWorkflowHelper() {
+    private PutWfSpecRequest compileWorkflowHelper(LittleHorseBlockingStub client) {
         String entrypointThreadName = this.addSubThread("entrypoint", entrypointThread);
         spec.setEntrypointThreadName(entrypointThreadName);
 
@@ -120,15 +112,6 @@ public class WorkflowImpl extends Workflow {
 
     ThreadRetentionPolicy getDefaultThreadRetentionPolicy() {
         return defaultThreadRetentionPolicy;
-    }
-
-    public Set<Object> getTaskExecutables() {
-        compileWorkflow();
-        Set<Object> out = new HashSet<>();
-        for (TaskDefBuilder tdb : taskDefBuilders.values()) {
-            out.add(tdb.executable);
-        }
-        return out;
     }
 
     public String addSubThread(String subThreadName, ThreadFunc subThreadFunc) {
