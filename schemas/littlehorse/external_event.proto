@@ -55,6 +55,13 @@ message ExternalEventDef {
   // The retention policy for ExternalEvent's of this ExternalEventDef. This applies to the
   // ExternalEvent **only before** it is matched with a WfRun.
   ExternalEventRetentionPolicy retention_policy = 3;
+
+  // Schema that validates the content of any ExternalEvent's posted for this ExternalEventDef.
+  //
+  // It is _optional_ for compatibility purposes: ExternalEventDef's that were created
+  // before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
+  // WfSpec's nor do we validate the 
+  optional OutputSchema schema = 4;
 }
 
 // Policy to determine how long an ExternalEvent is retained after creation if it

@@ -40,8 +40,8 @@ message UserTaskField {
   // single-level JSON_OBJ. Each key is the name of the field. Must be unique.
   string name = 1;
 
-  // The type of the output. Must be a primitive type (STR, BOOL, INT, DOUBLE).
-  VariableType type = 2;
+  // The type of the output. Must be a basic primitive type (STR, BOOL, INT, DOUBLE).
+  PrimitiveType type = 2;
 
   // Optional description which can be displayed by the User Task UI application.
   // Does not affect WfRun execution.
