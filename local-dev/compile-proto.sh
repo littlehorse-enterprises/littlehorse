@@ -6,19 +6,21 @@ SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 WORK_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 PUBLIC_PROTOS=$(ls "$WORK_DIR"/schemas/littlehorse | grep -v -E "^internal")
 INTERNAL_PROTOS=$(ls "$WORK_DIR"/schemas/internal)
-docker_run="docker run --user $(id -u):$(id -g) --rm -it -v ${WORK_DIR}:/littlehorse lh-protoc:23.4"
+DOCKER_IMAGE_NAME="lh-protoc"
+
+docker_run="docker run --user $(id -u):$(id -g) --rm -it -v ${WORK_DIR}:/littlehorse ${DOCKER_IMAGE_NAME}"
 
 # compile protoc
-echo "Compiling docker image 'lh-protoc:23.4'"
-docker build -q --tag lh-protoc:23.4 -f - "${SCRIPT_DIR}" <<EOF
+echo "Compiling docker image ${DOCKER_IMAGE_NAME}"
+docker build -q --tag ${DOCKER_IMAGE_NAME} -f - "${SCRIPT_DIR}" <<EOF
 
 FROM ubuntu:22.04
 
-ENV PROTOC_VERSION           23.4
-ENV PROTO_GEN_JAVA           1.57.2
+ENV PROTOC_VERSION           30.1
+ENV PROTO_GEN_JAVA           1.71.0
+ENV PROTO_GEN_PYTHON         1.71.0
 ENV PROTO_GEN_GO             1.31.0
 ENV PROTO_GEN_GO_GRPC        1.3.0
-ENV PROTO_GEN_PYTHON         1.69.0
 ENV PROTO_GEN_JS             1.178.0
 
 ENV GOBIN /usr/local/bin

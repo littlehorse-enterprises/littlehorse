@@ -4,12 +4,13 @@ import littlehorse.model.object_id_pb2 as _object_id_pb2
 import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional, Union as _Union
+from collections.abc import Mapping as _Mapping
+from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class WorkflowEvent(_message.Message):
-    __slots__ = ["id", "content", "created_at", "node_run_id"]
+    __slots__ = ("id", "content", "created_at", "node_run_id")
     ID_FIELD_NUMBER: _ClassVar[int]
     CONTENT_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
@@ -21,7 +22,7 @@ class WorkflowEvent(_message.Message):
     def __init__(self, id: _Optional[_Union[_object_id_pb2.WorkflowEventId, _Mapping]] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., node_run_id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ...) -> None: ...
 
 class WorkflowEventDef(_message.Message):
-    __slots__ = ["id", "created_at", "type"]
+    __slots__ = ("id", "created_at", "type")
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     TYPE_FIELD_NUMBER: _ClassVar[int]
