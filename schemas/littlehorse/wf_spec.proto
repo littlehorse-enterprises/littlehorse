@@ -88,7 +88,7 @@ message JsonIndex {
   string field_path = 1;
 
   // Is the type of the field we are indexing.
-  VariableType field_type = 2;
+  PrimitiveType field_type = 2;
 }
 
 // Determines the Access Level for a Variable in a ThreadSpec/WfSpec.

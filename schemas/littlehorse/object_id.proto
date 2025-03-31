@@ -44,8 +44,11 @@ message TaskDefId {
 
 // ID for ExternalEventDef
 message ExternalEventDefId {
-  // ExternalEventDef's are uniquedly identified by their name.
+  // ExternalEventDef's are uniquedly identified by their name and version.
   string name = 1;
+
+  // The version of this ExternalEventDef.
+  int32 version = 1;
 }
 
 // ID for a UserTaskDef

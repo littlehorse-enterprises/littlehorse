@@ -291,7 +291,7 @@ service LittleHorse {
   rpc Whoami(google.protobuf.Empty) returns (Principal) {}
 
   // Gets the version of the LH Server.
-  rpc GetServerVersion(google.protobuf.Empty) returns (ServerVersion) {}
+  rpc GetServerVersion(google.protobuf.Empty) returns (LittleHorseVersion) {}
 }
 
 // Returns the UserTaskDef with a given name and the highest version number.
@@ -360,7 +360,7 @@ message PutWorkflowEventDefRequest {
   string name = 1;
 
   // The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
-  VariableType type = 2;
+  TypeDefinition type = 2;
 }
 
 // Creates a UserTaskDef.
@@ -392,6 +392,9 @@ message PutExternalEventDefRequest {
   // A future version of LittleHorse will allow changing the retention_policy, which
   // will trigger a cleanup of old `ExternalEvent`s.
   ExternalEventRetentionPolicy retention_policy = 2;
+
+  // Typing information for the content of ExternalEvent's associated with this ExternalEventDef.
+  TypeDefinition content_type = 3;
 }
 
 // Request used to create an ExternalEvent.
@@ -1426,8 +1429,8 @@ message GetLatestWfSpecRequest {
 }
 
 
-// The version of the LH Server according to Semantic Versioning
-message ServerVersion {
+// The version of LittleHorse according to Semantic Versioning
+message LittleHorseVersion {
   // Server Major Version
   int32 major_version = 1;
 
