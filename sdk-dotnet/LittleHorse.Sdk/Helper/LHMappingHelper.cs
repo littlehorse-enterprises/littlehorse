@@ -238,7 +238,8 @@ namespace LittleHorse.Sdk.Helper
         
         internal static LHErrorType GetFailureCodeFor(TaskStatus status)
         {
-            switch (status) {
+            switch (status) 
+            {
                 case TaskStatus.TaskFailed:
                     return LHErrorType.TaskFailure;
                 case TaskStatus.TaskTimeout:

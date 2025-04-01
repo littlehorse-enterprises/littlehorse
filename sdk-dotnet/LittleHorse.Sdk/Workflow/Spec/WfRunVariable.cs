@@ -58,6 +58,12 @@ public class WfRunVariable
         }
     }
     
+    /// <summary>
+    /// Compile this into Protobuf objects.
+    /// </summary>
+    /// <returns>
+    /// The ThreadVarDef
+    /// </returns>
     public ThreadVarDef Compile() 
     {
         VariableDef varDef = new VariableDef
@@ -84,24 +90,55 @@ public class WfRunVariable
         return threadVarDef;
     }
     
+    /// <summary>
+    /// Marks the Variable as "Searchable", which creates an Index on the Variable
+    /// in the LH Data Store.
+    /// </summary>
+    /// <returns>
+    /// Same WfRunVariable instance
+    /// </returns>
     public WfRunVariable Searchable() 
     {
         _searchable = true;
         return this;
     }
     
+    /// <summary>
+    /// Marks a WfRunVariable to show masked values
+    /// </summary>
+    /// <returns>
+    /// Same WfRunVariable instance
+    /// </returns>
     public WfRunVariable Masked()
     {
         _masked = true;
         return this;
     }
     
+    /// <summary>
+    /// Marks the variable as "Required", meaning that the ThreadSpec cannot be
+    /// started without this variable being provided as input. For Entrypoint
+    /// ThreadSpec's, this also triggers the WfSpec Required Variable Compatibility
+    /// Rules.
+    /// </summary>
+    /// <returns>
+    /// A WfRunVariable.
+    /// </returns>
     public WfRunVariable Required() 
     {
         _required = true;
         return this;
     }
     
+    /// <summary>
+    /// Sets the default value for this WfRunVariable.
+    /// </summary>
+    /// /// <param name="defaultVal">
+    /// It is the default value for this variable.
+    /// </param>
+    /// <returns>
+    /// This WfRunVariable.
+    /// </returns>
     public WfRunVariable WithDefault(object defaultVal) 
     {
         SetDefaultValue(defaultVal);
@@ -114,6 +151,18 @@ public class WfRunVariable
         return this;
     }
     
+    /// <summary>
+    /// Valid only for output of the JSON_OBJ or JSON_ARR types. Returns a new WfRunVariable handle
+    /// which points to Json element referred to by the json path.
+    ///
+    /// Can only be called once--you can't call node.jsonPath().jsonPath().
+    /// </summary>
+    /// <param name="path">
+    /// It is the json path to evaluate.
+    /// </param>
+    /// <returns>
+    /// A WfRunVariable.
+    /// </returns>
     public WfRunVariable WithJsonPath(string path) 
     {
         if (JsonPath != null)
