@@ -178,7 +178,7 @@ jobs:
       - name: Build Dashboard
         working-directory: ./dashboard
         run: |
-          npm i
+          npm install --verbose
           npm run test
 
   tests-sdk-dotnet:
