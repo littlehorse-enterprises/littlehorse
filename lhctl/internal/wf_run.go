@@ -53,8 +53,8 @@ Returns a list of ObjectId's that can be passed into 'lhctl get wfRun'.
 	`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-                wfSpecName := args[0]
-                statusRaw, _ := cmd.Flags().GetString("status")
+    wfSpecName := args[0]
+    statusRaw, _ := cmd.Flags().GetString("status")
 		majorVersionRaw, _ := cmd.Flags().GetInt32("majorVersion")
 		revisionRaw, _ := cmd.Flags().GetInt32("revision")
 
@@ -104,8 +104,8 @@ var stopWfRunCmd = &cobra.Command{
 	Short: "Stop a Workflow Run.",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-                wfRunId := args[0]
-                trn, _ := cmd.Flags().GetInt32("threadRunNumber")
+    wfRunId := args[0]
+    trn, _ := cmd.Flags().GetInt32("threadRunNumber")
 
 		littlehorse.PrintResp(getGlobalClient(cmd).StopWfRun(
 			requestContext(cmd),
@@ -122,7 +122,7 @@ var resumeWfRunCmd = &cobra.Command{
 	Short: "Stop a Workflow Run.",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-                wfRunId := args[0]
+    wfRunId := args[0]
 		trn, _ := cmd.Flags().GetInt32("threadRunNumber")
 
 		littlehorse.PrintResp(getGlobalClient(cmd).ResumeWfRun(
@@ -140,8 +140,8 @@ var deleteWfRunCmd = &cobra.Command{
 	Short: "Delete a Workflow Run.",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-                wfRunId := args[0]
-                littlehorse.PrintResp(getGlobalClient(cmd).DeleteWfRun(
+      wfRunId := args[0]
+      littlehorse.PrintResp(getGlobalClient(cmd).DeleteWfRun(
 			requestContext(cmd),
 			&lhproto.DeleteWfRunRequest{
 				Id: &lhproto.WfRunId{
@@ -157,7 +157,7 @@ var deleteScheduledWfRun = &cobra.Command{
 	Short: "Delete a Scheduled Workflow Run.",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-                wfRunId := args[0]
+    wfRunId := args[0]
 		littlehorse.PrintResp(getGlobalClient(cmd).DeleteScheduledWfRun(
 			requestContext(cmd),
 			&lhproto.DeleteScheduledWfRunRequest{
@@ -290,7 +290,7 @@ var searchScheduledWfsCmd = &cobra.Command{
 		} else {
 			revision = &raw
 		}
-                wfSpecName := args[0]
+    wfSpecName := args[0]
 		req := &lhproto.SearchScheduledWfRunRequest{
 			WfSpecName:   wfSpecName,
 			MajorVersion: majorVersion,
