@@ -42,6 +42,7 @@
     "cmdk": "^1.0.0",
     "cron-parser": "^4.9.0",
     "dagre": "^0.8.5",
+    "eslint": "^9.23.0",
     "littlehorse-client": "file://../sdk-js",
     "lucide-react": "^0.379.0",
     "next": "^14.2.4",
