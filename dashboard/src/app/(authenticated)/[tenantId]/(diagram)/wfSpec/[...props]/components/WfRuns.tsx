@@ -36,17 +36,17 @@ export const WfRuns: FC<WfSpec> = spec => {
 
   const getKey = (pageIndex: number, previousPageData: PaginatedWfRunIdList | null) => {
     if (previousPageData && !previousPageData.bookmarkAsString) return null // reached the end
-    return ['wfRun', status, tenantId, limit, startTime, previousPageData?.bookmarkAsString]
+    return ['wfRun', status, tenantId, limit, startTime, previousPageData?.bookmarkAsString, spec.id!.name, spec.id!.majorVersion, spec.id!.revision]
   }
 
   const { data, error, size, setSize } = useSWRInfinite<PaginatedWfRunIdList>(
     getKey,
     async (key) => {
-      const [, status, tenantId, limit, startTime, bookmarkAsString] = key
+      const [, status, tenantId, limit, startTime, bookmarkAsString, wfSpecName, wfSpecMajorVersion, wfSpecRevision] = key
       return await searchWfRun({
-        wfSpecName: spec.id!.name,
-        wfSpecMajorVersion: spec.id!.majorVersion,
-        wfSpecRevision: spec.id!.revision,
+        wfSpecName,
+        wfSpecMajorVersion,
+        wfSpecRevision,
         variableFilters: [],
         limit,
         status: status === 'ALL' ? undefined : status,
