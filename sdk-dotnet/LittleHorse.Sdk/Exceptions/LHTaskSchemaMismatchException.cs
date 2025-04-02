@@ -5,10 +5,14 @@
     /// </summary>
     public class LHTaskSchemaMismatchException : Exception
     {
+        ///<summary>
+        /// Empty Constructor of the Exception which contains differences between TaskDef registered
+        /// and current LHTaskMethod signature.
+        /// </summary>
         public LHTaskSchemaMismatchException() { }
 
         ///<summary>
-        /// Empty Constructor of the Exception which contains differences between TaskDef registered
+        /// Constructor of the Exception which contains differences between TaskDef registered
         /// and current LHTaskMethod signature.
         /// </summary>
         /// <param name="message"> A custom message.</param>

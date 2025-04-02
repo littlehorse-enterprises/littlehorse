@@ -3,7 +3,7 @@ using LittleHorse.Sdk.Common.Proto;
 
 namespace LittleHorse.Sdk.Helper
 {
-    public static class LHTaskHelper
+    internal static class LHTaskHelper
     {
         internal static WfRunId? GetWfRunId(TaskRunSource taskRunSource)
         {
