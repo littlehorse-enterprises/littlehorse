@@ -5,7 +5,7 @@ import { resumeWfRun } from '@/app/actions/resumeWfRun'
 import { stopWfRun } from '@/app/actions/stopWfRun'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import { LHStatus, NodeRun, WfRun, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, NodeRun, ThreadSpec, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
 import { ReadonlyURLSearchParams, useParams, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -47,6 +47,8 @@ const determineDefaultThreadRun = (
 }
 
 export const Diagram: FC<Props> = ({ spec, wfRun }) => {
+  console.log('wfRun', wfRun)
+  console.log('spec', spec)
   const tenantId = useParams().tenantId as string
   const currentThread = wfRun
     ? wfRun.threadRuns[wfRun.greatestThreadrunNumber].threadSpecName
@@ -59,14 +61,15 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
   let threadToShowByDefault = determineDefaultThreadRun(currentThread, wfRun, threadRunNumberFromRedirection, spec)
 
   const [thread, setThread] = useState<ThreadType>(threadToShowByDefault)
+  console.log('thread', thread)
 
-  const threadSpec = useMemo(() => {
-    if (thread === undefined) return spec.threadSpecs[spec.entrypointThreadName]
-    return spec.threadSpecs[thread.name]
+  const threadSpec: ThreadSpecWithName = useMemo(() => {
+    if (thread === undefined) return { name: spec.entrypointThreadName, threadSpec: spec.threadSpecs[spec.entrypointThreadName] }
+    return { name: thread.name, threadSpec: spec.threadSpecs[thread.name] }
   }, [spec, thread])
 
-  const [edges, setEdges] = useEdgesState(extractWfSpecEdges(spec))
-  const [nodes, setNodes] = useNodesState(extractWfSpecNodes(spec))
+  const [edges, setEdges] = useEdgesState(extractWfSpecEdges(spec, threadSpec))
+  const [nodes, setNodes] = useNodesState(extractWfSpecNodes(spec, threadSpec))
 
   const threadNodeRuns = useMemo(() => {
     if (!wfRun) return
@@ -76,8 +79,8 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
   const updateGraph = useCallback(() => {
     const { name } = thread
     const threadSpec = spec.threadSpecs[name]
-    const nodes = extractWfSpecNodes(spec)
-    const edges = extractWfSpecEdges(spec)
+    const nodes = extractWfSpecNodes(spec, { name, threadSpec })
+    const edges = extractWfSpecEdges(spec, { name, threadSpec })
     setNodes(nodes)
     setEdges(edges)
   }, [spec.threadSpecs, thread, setNodes, setEdges])
@@ -160,4 +163,9 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
       </div>
     </ThreadProvider>
   )
+}
+
+export type ThreadSpecWithName = {
+  name: string
+  threadSpec: ThreadSpec
 }

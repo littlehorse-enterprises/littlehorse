@@ -2,6 +2,7 @@ import { ThreadSpec, WfSpec } from 'littlehorse-client/proto'
 import { Edge, MarkerType } from 'reactflow'
 import { getNodeType } from '../NodeTypes/extractWfSpecNodes'
 import { extractEdges } from './extractEdges'
+import { ThreadSpecWithName } from '../Diagram'
 
 function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string, wfSpec: WfSpec): Edge[] {
   const edges: Edge[] = []
@@ -51,7 +52,7 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
   return edges
 }
 
-export function extractWfSpecEdges(wfSpec: WfSpec): Edge[] {
+export function extractWfSpecEdges(wfSpec: WfSpec, threadSpec: ThreadSpecWithName): Edge[] {
   extractThreadConnectionEdges(wfSpec.threadSpecs[wfSpec.entrypointThreadName], wfSpec.entrypointThreadName, wfSpec)
   return [
     ...Object.entries(wfSpec.threadSpecs).flatMap(([threadName, threadSpec]) => {
