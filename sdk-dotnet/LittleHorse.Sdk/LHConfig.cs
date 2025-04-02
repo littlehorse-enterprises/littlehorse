@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Grpc.Core;
+﻿using Grpc.Core;
 using Grpc.Net.Client;
 using LittleHorse.Sdk.Authentication;
 using LittleHorse.Sdk.Utils;
@@ -11,7 +10,10 @@ using LittleHorse.Sdk.Common.Proto;
 using static LittleHorse.Sdk.Common.Proto.LittleHorse;
 
 namespace LittleHorse.Sdk {
-
+    
+    /// <summary>
+    /// This class is used to configure a LHClient.
+    /// </summary>
     public class LHConfig
     {
         private ILogger<LHConfig>? _logger;
@@ -24,6 +26,13 @@ namespace LittleHorse.Sdk {
         private OAuthClient? _oAuthClient;
         private const string DefaultProtocol = "PLAINTEXT";
         
+        /// <summary>
+        /// Creates a LHConfig that loads values from environmental variables.
+        /// This is the default constructor which could be initialized such as <c>new LHConfig();</c>
+        /// 
+        /// </summary>
+        /// <param name="loggerFactory">Optional parameter that allow to propagate logs configs from parent apps.
+        /// </param>
         public LHConfig(ILoggerFactory? loggerFactory = null)
         {
             LHLoggerFactoryProvider.Initialize(loggerFactory);
@@ -32,6 +41,13 @@ namespace LittleHorse.Sdk {
             _createdChannels = new Dictionary<string, LittleHorseClient>();
         }
         
+        /// <summary>
+        /// Creates a LHConfig that loads values from a file which contains LH configs.
+        /// <example>new LHConfig("file-path");</example>
+        /// </summary>
+        /// <param name="configOptionsFilePath">It is the file location where the LH config options are placed.</param>
+        /// <param name="loggerFactory">Optional parameter that allow to propagate logs configs from parent apps.
+        /// </param>
         public LHConfig(string configOptionsFilePath, ILoggerFactory? loggerFactory = null)
         {
             LHLoggerFactoryProvider.Initialize(loggerFactory);
@@ -40,6 +56,12 @@ namespace LittleHorse.Sdk {
             _createdChannels = new Dictionary<string, LittleHorseClient>();
         }
         
+        /// <summary>
+        /// Creates a LHConfig that loads values from arguments being added from an app initialization.
+        /// </summary>
+        /// <param name="configArgs">A dictionary of arguments with LH config options.</param>
+        /// <param name="loggerFactory">Optional parameter that allow to propagate logs configs from parent apps.
+        /// </param>
         public LHConfig(Dictionary<string, string> configArgs, ILoggerFactory? loggerFactory = null)
         {
             LHLoggerFactoryProvider.Initialize(loggerFactory);
@@ -48,6 +70,12 @@ namespace LittleHorse.Sdk {
             _createdChannels = new Dictionary<string, LittleHorseClient>();
         }
 
+        /// <summary>
+        /// The WorkerId retrieves the task worker ID from the configuration properties.
+        /// If the task worker ID is not set in the properties,
+        /// it generates a default value in the format worker-<UUID> and sets it in the properties.
+        /// The method then returns the task worker ID as a string.
+        /// </summary>
         public string? WorkerId
         {
             get

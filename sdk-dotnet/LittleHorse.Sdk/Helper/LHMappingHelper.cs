@@ -12,7 +12,7 @@ using Type = System.Type;
 namespace LittleHorse.Sdk.Helper
 {
     /// <summary>
-    /// Helper class to transform LittleHorse objects into Dotnet objects
+    /// Helper class to handle transformations of LittleHorse or dotnet objects.
     /// </summary>
     public static class LHMappingHelper
     {
