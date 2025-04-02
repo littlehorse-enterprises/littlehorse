@@ -25,10 +25,7 @@ export const ScheduledWfRuns = (spec: WfSpec) => {
     })
   }
 
-  const { data: scheduledWfRuns, error } = useSWR(
-    ['scheduledWfRuns', spec.id, tenantId],
-    fetchScheduledWfRuns
-  )
+  const { data: scheduledWfRuns, error } = useSWR(['scheduledWfRuns', spec.id, tenantId], fetchScheduledWfRuns)
 
   const isLoading = !scheduledWfRuns && !error
 

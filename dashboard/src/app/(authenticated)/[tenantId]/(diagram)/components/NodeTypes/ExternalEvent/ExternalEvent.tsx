@@ -10,37 +10,36 @@ import { NodeDetails } from '../NodeDetails'
 
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { DiagramDataGroup } from '../DataGroupComponents/DiagramDataGroup'
+import PostEvent from './PostEvent'
 
 const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   if (!data.externalEvent) return null
 
   const { fade, externalEvent: externalEventNode, nodeNeedsToBeHighlighted, nodeRun } = data
+  externalEventNode.externalEventDefId?.name
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>
-        <DiagramDataGroup label={nodeRun ? "ExternalEvent" : "ExternalEventDef"}>
+        <DiagramDataGroup label={nodeRun ? 'ExternalEvent' : 'ExternalEventDef'}>
           <div>
-            <div>
-              <div className="flex gap-1 text-nowrap">
-                <LinkWithTenant
-                  className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
-                  target="_blank"
-                  href={`/externalEventDef/${externalEventNode.externalEventDefId?.name}`}
-                >
-                  {externalEventNode.externalEventDefId?.name} <ExternalLinkIcon className="h-4 w-4" />
-                </LinkWithTenant>
-              </div>
-              {
-                <div className="flex gap-2 text-nowrap">
-                  <div className="flex items-center justify-center">
-                    Timeout:
-                    {externalEventNode.timeoutSeconds
-                      ? formatTime(getVariableValue(externalEventNode.timeoutSeconds.literalValue) as number)
-                      : 'N/A'}
-                  </div>
-                </div>
-              }
+            <div className="flex gap-1 text-nowrap">
+              <LinkWithTenant
+                className="flex items-center justify-center gap-1 text-blue-500 hover:underline"
+                target="_blank"
+                href={`/externalEventDef/${externalEventNode.externalEventDefId?.name}`}
+              >
+                {externalEventNode.externalEventDefId?.name} <ExternalLinkIcon className="h-4 w-4" />
+              </LinkWithTenant>
             </div>
+            <div className="flex gap-2 text-nowrap">
+              <div className="flex items-center justify-center">
+                Timeout:{' '}
+                {externalEventNode.timeoutSeconds
+                  ? formatTime(getVariableValue(externalEventNode.timeoutSeconds.literalValue) as number)
+                  : 'N/A'}
+              </div>
+            </div>
+            {nodeRun && !nodeRun.externalEvent?.eventTime && <PostEvent nodeRun={nodeRun} />}
           </div>
         </DiagramDataGroup>
       </NodeDetails>

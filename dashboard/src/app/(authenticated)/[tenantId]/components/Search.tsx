@@ -21,13 +21,10 @@ export const Search: FC<{}> = () => {
     return ['search', type, tenantId, limit, prefix, previousPageData?.bookmark]
   }
 
-  const { data, error, size, setSize } = useSWRInfinite<SearchResponse>(
-    getKey,
-    async (key) => {
-      const [, type, tenantId, limit, prefix, bookmark] = key
-      return search({ type, limit, prefix, bookmark, tenantId })
-    },
-  )
+  const { data, error, size, setSize } = useSWRInfinite<SearchResponse>(getKey, async key => {
+    const [, type, tenantId, limit, prefix, bookmark] = key
+    return search({ type, limit, prefix, bookmark, tenantId })
+  })
 
   const isPending = !data && !error
   const hasNextPage = !!(data && data[data.length - 1]?.bookmark)
@@ -48,7 +45,12 @@ export const Search: FC<{}> = () => {
           {type === 'WorkflowEventDef' && <WorkflowEventDefTable pages={data} />}
         </div>
       )}
-      <SearchFooter currentLimit={limit} setLimit={setLimit} hasNextPage={hasNextPage} fetchNextPage={() => setSize(size + 1)} />
+      <SearchFooter
+        currentLimit={limit}
+        setLimit={setLimit}
+        hasNextPage={hasNextPage}
+        fetchNextPage={() => setSize(size + 1)}
+      />
     </div>
   )
 }
