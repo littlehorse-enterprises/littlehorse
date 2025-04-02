@@ -34,7 +34,12 @@ export const TaskDef: FC<Props> = ({ spec }) => {
   const [wfSpecLimit, setWfSpecLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
   const taskDefName = spec.id?.name || ''
 
-  const { isPending: wfSpecsIsPending, data: wfSpecsData, hasNextPage: wfSpecsHasNextPage, fetchNextPage: wfSpecsFetchNextPage } = useInfiniteQuery({
+  const {
+    isPending: wfSpecsIsPending,
+    data: wfSpecsData,
+    hasNextPage: wfSpecsHasNextPage,
+    fetchNextPage: wfSpecsFetchNextPage,
+  } = useInfiniteQuery({
     queryKey: ['wfSpecs', tenantId, limit, taskDefName],
     initialPageParam: undefined,
     getNextPageParam: (lastPage: PaginatedWfSpecList) => lastPage.bookmarkAsString,
@@ -73,18 +78,20 @@ export const TaskDef: FC<Props> = ({ spec }) => {
           <h2 className="text-2xl font-bold">WfSpec Usage:</h2>
           {wfSpecsData && (
             <div className="flex max-h-[200px] flex-col overflow-auto">
-              {wfSpecsData.pages.flatMap(page => page.results).map(wfSpec => (
-                <Fragment key={wfSpec.name}>
-                  <SelectionLink href={`/wfSpec/${wfSpec.name}/${wfSpec.majorVersion}.${wfSpec.revision}`}>
-                    <p className="group">{wfSpec.name}</p>
-                    <div className="flex items-center gap-2 rounded bg-blue-200 px-2 font-mono text-sm text-gray-500">
-                      <TagIcon className="h-4 w-4 fill-none stroke-gray-500 stroke-1" />v{wfSpec.majorVersion}.
-                      {wfSpec.revision}
-                    </div>
-                  </SelectionLink>
-                  <Separator />
-                </Fragment>
-              ))}
+              {wfSpecsData.pages
+                .flatMap(page => page.results)
+                .map(wfSpec => (
+                  <Fragment key={wfSpec.name}>
+                    <SelectionLink href={`/wfSpec/${wfSpec.name}/${wfSpec.majorVersion}.${wfSpec.revision}`}>
+                      <p className="group">{wfSpec.name}</p>
+                      <div className="flex items-center gap-2 rounded bg-blue-200 px-2 font-mono text-sm text-gray-500">
+                        <TagIcon className="h-4 w-4 fill-none stroke-gray-500 stroke-1" />v{wfSpec.majorVersion}.
+                        {wfSpec.revision}
+                      </div>
+                    </SelectionLink>
+                    <Separator />
+                  </Fragment>
+                ))}
               <div className="mt-6">
                 <SearchFooter
                   currentLimit={wfSpecLimit}
@@ -97,15 +104,14 @@ export const TaskDef: FC<Props> = ({ spec }) => {
           )}
         </div>
 
-        <Separator orientation="vertical" className="mx-4 h-92" />
+        <Separator orientation="vertical" className="h-92 mx-4" />
 
         <div className="flex-[2.5]">
           <h2 className="text-2xl font-bold">Related Task Run&apos;s:</h2>
-          <div className="mb-5 flex flex-col w-full items-start justify-between">
-
-            <div className="flex justify-around w-full gap-5">
+          <div className="mb-5 flex w-full flex-col items-start justify-between">
+            <div className="flex w-full justify-around gap-5">
               <select
-                className="rounded border px-2 py-2 max-w-72"
+                className="max-w-72 rounded border px-2 py-2"
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                   setSelectedStatus(e.target.value as TaskStatus)
                 }}
@@ -118,7 +124,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                   ))}
               </select>
               <div className="flex items-center justify-between gap-1">
-                <Label className="font-bold text-right">Created after:</Label>
+                <Label className="text-right font-bold">Created after:</Label>
                 <Input
                   type="datetime-local"
                   value={createdAfter}
@@ -128,7 +134,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
               </div>
 
               <div className="flex items-center justify-between gap-1">
-                <Label className="font-bold text-right">Created before:</Label>
+                <Label className="text-right font-bold">Created before:</Label>
                 <Input
                   type="datetime-local"
                   value={createdBefore}
@@ -142,7 +148,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                 <RefreshCwIcon className="h-8 w-8 animate-spin text-blue-500" />
               </div>
             ) : (
-              <div className="flex min-h-[360px] flex-col gap-4 w-full">
+              <div className="flex min-h-[360px] w-full flex-col gap-4">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -169,7 +175,9 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                                 </TableCell>
                                 <TableCell>{taskRun.id?.taskGuid}</TableCell>
 
-                                <TableCell>{taskRun.scheduledAt ? utcToLocalDateTime(taskRun.scheduledAt) : 'N/A'}</TableCell>
+                                <TableCell>
+                                  {taskRun.scheduledAt ? utcToLocalDateTime(taskRun.scheduledAt) : 'N/A'}
+                                </TableCell>
                               </TableRow>
                             )
                           })
@@ -196,12 +204,9 @@ export const TaskDef: FC<Props> = ({ spec }) => {
             />
           </div>
 
-
           <hr className="mt-6" />
         </div>
       </div>
-
-
     </>
   )
 }

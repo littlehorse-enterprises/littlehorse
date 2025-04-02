@@ -2,7 +2,7 @@ import { getVariableValue, utcToLocalDateTime } from '@/app/utils'
 import { cn } from '@/components/utils'
 import { useQuery } from '@tanstack/react-query'
 import { ClipboardIcon, RefreshCwIcon } from 'lucide-react'
-import { getExternalEvent } from '../../NodeTypes/ExternalEvent/getExternalEvent'
+import { getExternalEvent } from '../../NodeTypes/ExternalEvent/actions'
 import { AccordionNode } from './AccordionContent'
 import { FC } from 'react'
 
