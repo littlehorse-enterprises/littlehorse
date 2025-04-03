@@ -1,7 +1,7 @@
 ﻿namespace LittleHorse.Sdk.Exceptions
 {
     ///<summary>
-    /// Maps Exception that contains object substitutions, parsing or conversion problems. 
+    /// Maps an Exception that contains object substitutions, parsing or conversion problems. 
     /// </summary>
     public class LHInputVarSubstitutionException : Exception
     {

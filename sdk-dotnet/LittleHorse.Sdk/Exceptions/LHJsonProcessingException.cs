@@ -1,7 +1,7 @@
 namespace LittleHorse.Sdk.Exceptions;
 
 ///<summary>
-/// Maps Exception that contains jsons serialization or deserialization errors. 
+/// Maps an Exception that contains jsons serialization or deserialization errors. 
 /// </summary>
 public class LHJsonProcessingException: Exception
 {

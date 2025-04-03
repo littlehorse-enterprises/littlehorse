@@ -71,10 +71,7 @@ namespace LittleHorse.Sdk {
         }
 
         /// <summary>
-        /// The WorkerId retrieves the task worker ID from the configuration properties.
-        /// If the task worker ID is not set in the properties,
-        /// it generates a default value in the format worker-<UUID> and sets it in the properties.
-        /// The method then returns the task worker ID as a string.
+        /// Retrieves the task worker ID from the configuration properties,
         /// </summary>
         public string? WorkerId
         {
@@ -84,15 +81,25 @@ namespace LittleHorse.Sdk {
             }
         }
 
+        /// <summary>
+        /// Retrieves the task worker version from the configuration properties.
+        /// </summary>
         public string? TaskWorkerVersion
         {
             get { return _inputVariables.LHW_TASK_WORKER_VERSION; }
         }
 
+        /// <summary>
+        /// Retrieves the number of worker threads from the configuration properties.
+        /// </summary>
         public int WorkerThreads
         {
             get { return _inputVariables.LHW_NUM_WORKER_THREADS; }
         }
+        
+        /// <summary>
+        /// Retrieves the bootstrap host from the configuration properties.
+        /// </summary>
         public string BootstrapHost
         {
             get
@@ -100,6 +107,10 @@ namespace LittleHorse.Sdk {
                 return _inputVariables.LHC_API_HOST;
             }
         }
+        
+        /// <summary>
+        /// Retrieves the bootstrap server port from the configuration properties.
+        /// </summary>
         public int BootstrapPort
         {
             get
@@ -108,6 +119,9 @@ namespace LittleHorse.Sdk {
             }
         }
 
+        /// <summary>
+        /// Retrieves the API protocol from the configuration properties.
+        /// </summary>
         public string ApiProtocol
         {
             get
@@ -116,6 +130,9 @@ namespace LittleHorse.Sdk {
             }
         }
         
+        /// <summary>
+        /// Retrieves the TenantId from the configuration properties.
+        /// </summary>
         public string? TenantId
         {
             get
@@ -123,6 +140,13 @@ namespace LittleHorse.Sdk {
                 return _inputVariables.LHC_TENANT_ID;
             }
         }
+        
+        /// <summary>
+        /// Retrieves the Bootstrap protocol from the configuration properties.
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        /// Throws an exception when <c>LHC_API_PROTOCOL</c> is different from <c>PLAINTEXT</c> or <c>TLS</c>
+        /// </exception>
         public string BootstrapProtocol
         {
             get
@@ -135,6 +159,10 @@ namespace LittleHorse.Sdk {
             }
         }
 
+        /// <summary>
+        /// Retrieves the Bootstrap server url.
+        /// <example>https://localhost:2023</example>
+        /// </summary>
         public string BootstrapServer
         {
             get
@@ -163,11 +191,21 @@ namespace LittleHorse.Sdk {
             }
         }
 
+        /// <summary>
+        /// Retrieves the LittleHorse Grpc client connected to a boostrap server.
+        /// </summary>
+        /// <returns>A LittleHorseClient</returns>
         public LittleHorseClient GetGrpcClientInstance()
         {
             return GetGrpcClientInstance(BootstrapHost, BootstrapPort);
         }
 
+        /// <summary>
+        /// Retrieves the LittleHorse Grpc client connected to a specific channel.
+        /// </summary>
+        /// <param name="host">Host value</param>
+        /// <param name="port">Port value</param>
+        /// <returns>A LittleHorseClient</returns>
         [MethodImpl(MethodImplOptions.Synchronized)]
         public LittleHorseClient GetGrpcClientInstance(string host, int port)
         {
@@ -264,6 +302,11 @@ namespace LittleHorse.Sdk {
             });
         }
 
+        /// <summary>
+        /// Retrieves a specific TaskDef searched by its Name.
+        /// </summary>
+        /// <param name="taskDefName">The name of the TaskDef</param>
+        /// <returns>A TaskDef</returns>
         public TaskDef GetTaskDef(string taskDefName)
         {
             try

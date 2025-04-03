@@ -1,7 +1,7 @@
 ﻿namespace LittleHorse.Sdk.Exceptions
 {
     ///<summary>
-    /// Maps Exception that contains serialization or deserialization of objects in LH context.
+    /// Maps an Exception that contains serialization or deserialization of objects in LH context.
     /// </summary>
     public class LHSerdeException : Exception
     {

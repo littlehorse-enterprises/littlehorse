@@ -1,7 +1,7 @@
 ﻿namespace LittleHorse.Sdk.Exceptions
 {
     ///<summary>
-    /// Maps Exception that contains problems with LH clients configurations. 
+    /// Maps an Exception that contains problems with LH clients configurations. 
     /// </summary>
     public class LHMisconfigurationException : Exception
     {
