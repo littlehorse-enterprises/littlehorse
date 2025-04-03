@@ -47,8 +47,6 @@ const determineDefaultThreadRun = (
 }
 
 export const Diagram: FC<Props> = ({ spec, wfRun }) => {
-  console.log('wfRun', wfRun)
-  console.log('spec', spec)
   const tenantId = useParams().tenantId as string
   const currentThread = wfRun
     ? wfRun.threadRuns[wfRun.greatestThreadrunNumber].threadSpecName
@@ -61,7 +59,6 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
   let threadToShowByDefault = determineDefaultThreadRun(currentThread, wfRun, threadRunNumberFromRedirection, spec)
 
   const [thread, setThread] = useState<ThreadType>(threadToShowByDefault)
-  console.log('thread', thread)
 
   const threadSpec: ThreadSpecWithName = useMemo(() => {
     if (thread === undefined) return { name: spec.entrypointThreadName, threadSpec: spec.threadSpecs[spec.entrypointThreadName] }

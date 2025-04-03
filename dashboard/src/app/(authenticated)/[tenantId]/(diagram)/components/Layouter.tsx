@@ -44,7 +44,7 @@ export const Layouter: FC<{ wfRun?: WfRun & { threadRuns: ThreadRunWithNodeRuns[
           return nodeRun.nodeName === nodeName
         })
 
-        const fade = threadRun?.nodeRuns !== undefined && nodeRun === undefined
+        const fade = threadRun?.nodeRuns && !nodeRun || (wfRun && !threadRun)
         const nodeNeedsToBeHighlighted = nodeName === nodeRunNameToBeHighlighted
 
         return {
