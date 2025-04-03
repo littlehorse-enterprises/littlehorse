@@ -1,17 +1,18 @@
 import { Node as NodeProto, WfSpec } from 'littlehorse-client/proto'
-import { NodeProps } from 'reactflow'
+import { Node, NodeProps } from 'reactflow'
 import { ThreadSpecWithName } from '../Diagram'
 // move this to the original extractNodes.ts file
 export function extractWfSpecNodes(wfSpec: WfSpec, threadSpec: ThreadSpecWithName) {
-  extractNodes(wfSpec, threadSpec)
-
-  return Object.entries(threadSpec.threadSpec.nodes).map(([id, node]) => extractNode(id, node, threadSpec))
+  // TODO: move this to the original extractNodes.ts file
+  return extractNodes(wfSpec, threadSpec)
 }
 
 function extractNodes(wfSpec: WfSpec, threadSpec: ThreadSpecWithName) {
   const reactFlowNodes: Node[] = []
   Object.entries(threadSpec.threadSpec.nodes).forEach(([id, node]) => {
     const reactFlowNode = extractNode(id, node, threadSpec)
+    reactFlowNodes.push(reactFlowNode)
+
     if (reactFlowNode.type === 'START_THREAD') {
       const startedThreadSpecName = node.startThread?.threadSpecName
       if (startedThreadSpecName === undefined) return
@@ -26,7 +27,7 @@ function extractNodes(wfSpec: WfSpec, threadSpec: ThreadSpecWithName) {
   return reactFlowNodes
 }
 
-function extractNode(id: string, node: NodeProto, threadSpec: ThreadSpecWithName) {
+function extractNode(id: string, node: NodeProto, threadSpec: ThreadSpecWithName): Node {
   const type = getNodeType(node)
   return {
     id: `${id}:${threadSpec.name}`,
@@ -36,8 +37,6 @@ function extractNode(id: string, node: NodeProto, threadSpec: ThreadSpecWithName
   }
 }
 
-const extractData = (type: NodeType, node: NodeProto) => {}
-
 export type NodeRunTypeList = Exclude<
   NodeType,
   'ENTRYPOINT' | 'NOP' | 'EXIT' | 'UNKNOWN_NODE_TYPE' | 'START_MULTIPLE_THREADS'
@@ -45,6 +44,32 @@ export type NodeRunTypeList = Exclude<
 
 type NodeObj = {
   [key in keyof Omit<NodeProto, 'outgoingEdges' | 'failureHandlers'>]: unknown
+}
+const extractData = (type: NodeType, node: NodeProto) => {
+  switch (type) {
+    case 'ENTRYPOINT':
+      return node.entrypoint
+    case 'EXIT':
+      return node.exit
+    case 'TASK':
+      return node.task
+    case 'EXTERNAL_EVENT':
+      return node.externalEvent
+    case 'START_THREAD':
+      return node.startThread
+    case 'WAIT_FOR_THREADS':
+      return node.waitForThreads
+    case 'NOP':
+      return node.nop
+    case 'SLEEP':
+      return node.sleep
+    case 'USER_TASK':
+      return node.userTask
+    case 'START_MULTIPLE_THREADS':
+      return node.startMultipleThreads
+    case 'THROW_EVENT':
+      return node.throwEvent
+  }
 }
 export type NodeType =
   | 'ENTRYPOINT'

@@ -77,10 +77,8 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
   }, [thread, wfRun])
 
   const updateGraph = useCallback(() => {
-    const { name } = thread
-    const threadSpec = spec.threadSpecs[name]
-    const nodes = extractWfSpecNodes(spec, { name, threadSpec })
-    const edges = extractWfSpecEdges(spec, { name, threadSpec })
+    const nodes = extractWfSpecNodes(spec, threadSpec)
+    const edges = extractWfSpecEdges(spec, threadSpec)
     setNodes(nodes)
     setEdges(edges)
   }, [spec.threadSpecs, thread, setNodes, setEdges])
