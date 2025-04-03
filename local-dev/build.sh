@@ -56,7 +56,7 @@ fi
 if [[ ${server} = true ]]; then
     echo "Building lh-server"
     ./gradlew server:shadowJar -x test -x spotlessJavaCheck
-    docker build -t littlehorse/lh-server:latest -f docker/server/Dockerfile .
+    docker build -t littlehorse/lh-server:latest --platform linux/amd64 -f docker/server/Dockerfile .
 fi
 
 if [[ ${standalone} = true ]]; then

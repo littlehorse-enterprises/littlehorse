@@ -15,6 +15,9 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+
 @Slf4j
 public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> {
 
@@ -37,6 +40,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
     private CoreStoreProvider coreStoreProvider;
     private final MetadataCache metadataCache;
     private LHServerConfig config;
+    private final ExecutorService requestScheduler;
 
     public PollTaskRequestObserver(
             StreamObserver<PollTaskResponse> responseObserver,
@@ -46,7 +50,8 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
             CoreStoreProvider coreStoreProvider,
             MetadataCache metadataCache,
             LHServerConfig config,
-            RequestExecutionContext requestContext) {
+            RequestExecutionContext requestContext,
+            ExecutorService requestExecutor) {
         this.responseObserver = responseObserver;
         this.taskQueueManager = manager;
         this.principalId = principalId;
@@ -56,6 +61,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
         this.config = config;
         this.clientId = null;
         this.requestContext = requestContext;
+        this.requestScheduler = requestExecutor;
     }
 
     public String getTaskWorkerVersion() {
@@ -86,21 +92,23 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskRequest> 
 
     @Override
     public void onNext(PollTaskRequest req) {
-        if (clientId == null) {
-            clientId = req.getClientId();
-        }
-        RequestExecutionContext requestContext = getFreshExecutionContext();
-        if (taskDefId == null) {
+        requestScheduler.submit(() -> {
+            if (clientId == null) {
+                clientId = req.getClientId();
+            }
+            RequestExecutionContext requestContext = getFreshExecutionContext();
+            if (taskDefId == null) {
+                taskDefId = LHSerializable.fromProto(req.getTaskDefId(), TaskDefIdModel.class, requestContext);
+            } else if (!taskDefId.getName().equals(req.getTaskDefId().getName())) {
+                log.error("TaskDefName not null: {} but doesnt match {}", taskDefId, req.getTaskDefId());
+            }
+
             taskDefId = LHSerializable.fromProto(req.getTaskDefId(), TaskDefIdModel.class, requestContext);
-        } else if (!taskDefId.getName().equals(req.getTaskDefId().getName())) {
-            log.error("TaskDefName not null: {} but doesnt match {}", taskDefId, req.getTaskDefId());
-        }
+            clientId = req.getClientId();
+            taskWorkerVersion = req.getTaskWorkerVersion();
 
-        taskDefId = LHSerializable.fromProto(req.getTaskDefId(), TaskDefIdModel.class, requestContext);
-        clientId = req.getClientId();
-        taskWorkerVersion = req.getTaskWorkerVersion();
-
-        taskQueueManager.onPollRequest(this, tenantId, requestContext);
+            taskQueueManager.onPollRequest(this, tenantId, requestContext);
+        });
     }
 
     @Override

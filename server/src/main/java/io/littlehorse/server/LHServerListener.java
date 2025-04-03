@@ -261,7 +261,9 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
@@ -282,9 +284,10 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     private final BackendInternalComms internalComms;
     private final MetadataCache metadataCache;
     private final CoreStoreProvider coreStoreProvider;
-    private final ExecutorService networkThreadpool;
     private final String listenerName;
     private final CommandSender commandSender;
+    private final ExecutorService requestScheduler = Executors.newVirtualThreadPerTaskExecutor();
+
 
     private Server grpcListener;
 
@@ -309,7 +312,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         this.metadataCache = metadataCache;
         this.serverConfig = listenerConfig.getConfig();
         this.taskQueueManager = taskQueueManager;
-        this.networkThreadpool = networkThreadPool;
         this.coreStoreProvider = coreStoreProvider;
         this.internalComms = internalComms;
         this.listenerName = listenerConfig.getName();
@@ -592,18 +594,21 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
     public void runWf(RunWfRequest req, StreamObserver<WfRun> ctx) {
-        if (Strings.isNullOrEmpty(req.getWfSpecName())) {
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument 'wf_spec_name'");
-        }
-
-        if (req.hasId()) {
-            if (req.getId().equals("") || !LHUtil.isValidLHName(req.getId())) {
-                throw new LHApiException(Status.INVALID_ARGUMENT, "Optional argument 'id' must be a valid hostname");
+        requestScheduler.submit(new RequestTask(requestContext(), executionContext -> {
+            if (Strings.isNullOrEmpty(req.getWfSpecName())) {
+                throw new LHApiException(Status.INVALID_ARGUMENT, "Missing required argument 'wf_spec_name'");
             }
-        }
 
-        RunWfRequestModel reqModel = LHSerializable.fromProto(req, RunWfRequestModel.class, requestContext());
-        processCommand(new CommandModel(reqModel), ctx, WfRun.class, true);
+            if (req.hasId()) {
+                if (req.getId().equals("") || !LHUtil.isValidLHName(req.getId())) {
+                    throw new LHApiException(Status.INVALID_ARGUMENT, "Optional argument 'id' must be a valid hostname");
+                }
+            }
+
+            RunWfRequestModel reqModel = LHSerializable.fromProto(req, RunWfRequestModel.class, executionContext);
+            processCommand(new CommandModel(reqModel), ctx, WfRun.class, true, executionContext);
+        }));
+
     }
 
     @Override
@@ -625,7 +630,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 coreStoreProvider,
                 metadataCache,
                 serverConfig,
-                requestContext());
+                requestContext(), requestScheduler);
     }
 
     @Override
@@ -652,37 +657,39 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.WRITE_METADATA)
     public void reportTask(ReportTaskRun req, StreamObserver<Empty> ctx) {
-        // There is no need to wait for the ReportTaskRun to actually be processed, because
-        // we would just return a google.protobuf.Empty anyways. All we need to do is wait for
-        // the Command to be persisted into Kafka.
-        ReportTaskRunModel reqModel = LHSerializable.fromProto(req, ReportTaskRunModel.class, requestContext());
+        requestScheduler.submit(new RequestTask(requestContext(), executionContext -> {
+            // There is no need to wait for the ReportTaskRun to actually be processed, because
+            // we would just return a google.protobuf.Empty anyways. All we need to do is wait for
+            // the Command to be persisted into Kafka.
+            ReportTaskRunModel reqModel = LHSerializable.fromProto(req, ReportTaskRunModel.class, executionContext);
 
-        TenantIdModel tenantId = requestContext().authorization().tenantId();
-        PrincipalIdModel principalId = requestContext().authorization().principalId();
-        Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
+            TenantIdModel tenantId = executionContext.authorization().tenantId();
+            PrincipalIdModel principalId = executionContext.authorization().principalId();
+            Headers commandMetadata = HeadersUtil.metadataHeadersFor(tenantId, principalId);
 
-        CommandModel command = new CommandModel(reqModel, new Date());
+            CommandModel command = new CommandModel(reqModel, new Date());
 
-        Callback kafkaProducerCallback = (meta, exn) -> {
-            try {
-                if (exn == null) {
-                    ctx.onNext(Empty.getDefaultInstance());
-                    ctx.onCompleted();
-                } else {
-                    ctx.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
+            Callback kafkaProducerCallback = (meta, exn) -> {
+                try {
+                    if (exn == null) {
+                        ctx.onNext(Empty.getDefaultInstance());
+                        ctx.onCompleted();
+                    } else {
+                        ctx.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording command to Kafka"));
+                    }
+                } catch (IllegalStateException e) {
+                    log.debug("Call already closed");
                 }
-            } catch (IllegalStateException e) {
-                log.debug("Call already closed");
-            }
-        };
+            };
 
-        LHProducer producer = internalComms.getCommandProducer();
-        producer.send(
-                command.getPartitionKey(),
-                command,
-                command.getTopic(serverConfig),
-                kafkaProducerCallback,
-                commandMetadata.toArray());
+            LHProducer producer = internalComms.getCommandProducer();
+            producer.send(
+                    command.getPartitionKey(),
+                    command,
+                    command.getTopic(serverConfig),
+                    kafkaProducerCallback,
+                    commandMetadata.toArray());
+        }));
     }
 
     @Override
@@ -1114,11 +1121,22 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             Class<RC> responseCls,
             boolean shouldCompleteStream) {
         RequestExecutionContext requestContext = requestContext();
-        if (responseObserver instanceof ServerCallStreamObserver<RC> serverCall) {
-            serverCall.setOnCancelHandler(() -> {
-                // If this observer event has already closed, Async Waiters might attempt to finish it.
-            });
-        }
+        commandSender.doSend(
+                command,
+                responseObserver,
+                responseCls,
+                shouldCompleteStream,
+                requestContext.authorization().principalId(),
+                requestContext.authorization().tenantId(),
+                requestContext);
+    }
+
+    private <AC extends Message, RC extends Message> void processCommand(
+            AbstractCommand<AC> command,
+            StreamObserver<RC> responseObserver,
+            Class<RC> responseCls,
+            boolean shouldCompleteStream,
+            RequestExecutionContext requestContext) {
         commandSender.doSend(
                 command,
                 responseObserver,

@@ -40,6 +40,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +75,7 @@ public class LHServer {
     public LHServer(LHServerConfig config) throws LHMisconfigurationException {
         this.metadataCache = new MetadataCache();
         this.config = config;
-        this.networkThreadpool = Executors.newVirtualThreadPerTaskExecutor();
+        this.networkThreadpool = Executors.newScheduledThreadPool(config.getNumNetworkThreads());
         this.taskQueueManager = new TaskQueueManager(this, LHConstants.MAX_TASKRUNS_IN_ONE_TASKQUEUE);
 
         // Kafka Streams Setup
