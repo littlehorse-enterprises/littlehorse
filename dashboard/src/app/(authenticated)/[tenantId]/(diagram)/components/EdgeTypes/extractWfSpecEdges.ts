@@ -54,9 +54,7 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
 
 export function extractWfSpecEdges(wfSpec: WfSpec, threadSpec: ThreadSpecWithName): Edge[] {
   return [
-    ...Object.entries(wfSpec.threadSpecs).flatMap(([threadName, threadSpec]) => {
-      return extractEdges(threadSpec, threadName)
-    }),
+    ...extractEdges(wfSpec, threadSpec),
     ...Object.entries(wfSpec.threadSpecs).flatMap(([threadName, threadSpec]) => {
       return extractThreadConnectionEdges(threadSpec, threadName, wfSpec)
     }),

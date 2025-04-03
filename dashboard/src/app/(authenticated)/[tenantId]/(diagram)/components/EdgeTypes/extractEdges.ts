@@ -1,13 +1,28 @@
 import { getVariable } from '@/app/utils'
 import { getComparatorSymbol } from '@/app/utils/comparatorUtils'
-import { Edge as EdgeProto, ThreadSpec } from 'littlehorse-client/proto'
+import { Edge as EdgeProto, WfSpec } from 'littlehorse-client/proto'
 import { Edge, MarkerType } from 'reactflow'
+import { ThreadSpecWithName } from '../Diagram'
+import { getNodeType } from '../NodeTypes/extractWfSpecNodes'
 
-export const extractEdges = (spec: ThreadSpec, threadName: string): Edge[] => {
+export const extractEdges = (wfSpec: WfSpec, threadSpecWithName: ThreadSpecWithName): Edge[] => {
+  const edges: Edge[] = []
+
   const targetMap = new Map<string, number>()
   const sourceMap = new Map<string, number>()
-  return Object.entries(spec.nodes).flatMap(([source, node]) => {
-    return node.outgoingEdges.map(edge => {
+  Object.entries(threadSpecWithName.threadSpec.nodes).forEach(([source, node]) => {
+    if (getNodeType(node) === 'START_THREAD') {
+      const startThreadNodeName = node.startThread?.threadSpecName
+      if (!startThreadNodeName) return
+
+      const moreEdges = extractEdges(wfSpec, {
+        name: startThreadNodeName,
+        threadSpec: wfSpec.threadSpecs[startThreadNodeName],
+      })
+      edges.push(...moreEdges)
+    }
+
+    node.outgoingEdges.forEach(edge => {
       const sourceIndex = sourceMap.get(source) ?? 0
       let targetIndex = targetMap.get(edge.sinkNodeName) ?? 0
       const sourceTarget = sourceMap.get(edge.sinkNodeName) ?? 0
@@ -19,11 +34,11 @@ export const extractEdges = (spec: ThreadSpec, threadName: string): Edge[] => {
       sourceMap.set(source, sourceIndex + 1)
 
       const label = extractEdgeLabel(edge)
-      return {
+      edges.push({
         id,
-        source: `${source}:${threadName}`,
+        source: `${source}:${threadSpecWithName.name}`,
         type: 'default',
-        target: `${edge.sinkNodeName}:${threadName}`,
+        target: `${edge.sinkNodeName}:${threadSpecWithName.name}`,
         label,
         data: edge,
         targetHandle: `target-${targetIndex}`,
@@ -32,10 +47,10 @@ export const extractEdges = (spec: ThreadSpec, threadName: string): Edge[] => {
           type: MarkerType.ArrowClosed,
         },
         animated: true,
-        arrowHeadType: 'arrowclosed',
-      }
+      })
     })
   })
+  return edges
 }
 
 const extractEdgeLabel = ({ condition }: EdgeProto) => {
