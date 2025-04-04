@@ -3,7 +3,6 @@ package io.littlehorse.container;
 import static io.littlehorse.container.LittleHorseCluster.LHC_API_HOST;
 import static io.littlehorse.container.LittleHorseCluster.LHC_API_PORT;
 
-import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.PortBinding;
 import java.util.Objects;
 import java.util.Properties;
@@ -173,10 +172,5 @@ public class LittleHorseContainer extends GenericContainer<LittleHorseContainer>
         properties.put(LHC_API_HOST, getApiHost());
         properties.put(LHC_API_PORT, getApiPort());
         return properties;
-    }
-
-    @Override
-    protected void containerIsStarting(InspectContainerResponse containerInfo) {
-        super.containerIsStarting(containerInfo);
     }
 }
