@@ -17,7 +17,7 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
   return (
     <>
       <NodeDetails nodeRunList={data.nodeRunsList}>
-        <DiagramDataGroup label={nodeRun ? "WorkflowEvent" : "WorkflowEventDef"}>
+        <DiagramDataGroup label={nodeRun ? 'WorkflowEvent' : 'WorkflowEventDef'}>
           <div>
             <div>
               <div className="flex items-center gap-1 text-nowrap">

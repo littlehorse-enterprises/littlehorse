@@ -49,10 +49,20 @@ export const TaskDetails: FC<{
   })
 
   if (!taskNode || (!taskDef && !nodeRun?.task?.taskRunId)) return null
-  taskRunData?.attempts.sort((a, b) => (new Date(b.startTime ?? 0).getTime() - new Date(a.startTime ?? 0).getTime()))
+  taskRunData?.attempts.sort((a, b) => new Date(b.startTime ?? 0).getTime() - new Date(a.startTime ?? 0).getTime())
 
-  const message = taskRunData?.attempts[taskAttemptIndex].error?.message ?? taskRunData?.attempts[taskAttemptIndex].exception?.message ?? String(getVariableValue(taskRunData?.attempts[taskAttemptIndex].output)) ?? undefined
-  const resultString = taskRunData?.attempts[taskAttemptIndex].error ? "ERROR" : taskRunData?.attempts[taskAttemptIndex].exception ? "EXCEPTION" : taskRunData?.attempts[taskAttemptIndex].output ? "OUTPUT" : undefined
+  const message =
+    taskRunData?.attempts[taskAttemptIndex].error?.message ??
+    taskRunData?.attempts[taskAttemptIndex].exception?.message ??
+    String(getVariableValue(taskRunData?.attempts[taskAttemptIndex].output)) ??
+    undefined
+  const resultString = taskRunData?.attempts[taskAttemptIndex].error
+    ? 'ERROR'
+    : taskRunData?.attempts[taskAttemptIndex].exception
+      ? 'EXCEPTION'
+      : taskRunData?.attempts[taskAttemptIndex].output
+        ? 'OUTPUT'
+        : undefined
 
   return (
     <NodeDetails nodeRunList={nodeRunsList} nodeRunsIndex={nodeRunsIndex} setNodeRunsIndex={setNodeRunsIndex}>
@@ -63,46 +73,58 @@ export const TaskDetails: FC<{
               <Entry label="Status:">
                 <Status status={taskRunData.status} />
               </Entry>
-              <Entry label="Timeout:">
-                {taskRunData.timeoutSeconds}
-              </Entry>
-              <Entry label="Max Attempts:">
-                {taskRunData.totalAttempts}
-              </Entry>
+              <Entry label="Timeout:">{taskRunData.timeoutSeconds}</Entry>
+              <Entry label="Max Attempts:">{taskRunData.totalAttempts}</Entry>
               <Entry label="Input Variables:">
                 <ViewVariables variables={taskRunData.inputVariables} />
               </Entry>
             </DiagramDataGroup>
 
-            <DiagramDataGroup label={"TaskAttempt"} index={taskAttemptIndex} indexes={taskRunData.attempts.length} from="TaskRun">
-              <DiagramDataGroupIndexer index={taskAttemptIndex} setIndex={setTaskAttemptIndex} indexes={taskRunData.attempts.length} />
+            <DiagramDataGroup
+              label={'TaskAttempt'}
+              index={taskAttemptIndex}
+              indexes={taskRunData.attempts.length}
+              from="TaskRun"
+            >
+              <DiagramDataGroupIndexer
+                index={taskAttemptIndex}
+                setIndex={setTaskAttemptIndex}
+                indexes={taskRunData.attempts.length}
+              />
               <Entry label="Status:">
                 <Status status={taskRunData.attempts[taskAttemptIndex].status} />
               </Entry>
-              {message && resultString &&
+              {message && resultString && (
                 <Entry label="Result:">
-                  <Result resultString={resultString} resultMessage={message} variant={resultString === "ERROR" ? "error" : undefined} />
+                  <Result
+                    resultString={resultString}
+                    resultMessage={message}
+                    variant={resultString === 'ERROR' ? 'error' : undefined}
+                  />
                 </Entry>
-              }
+              )}
               <Entry label="Worker Log Output:">
-                <div className={"bg-gray-300 rounded-lg text-center border border-black w-full text-nowrap min-h-5"} >
-                  <OverflowText text={taskRunData.attempts[taskAttemptIndex].logOutput?.str ?? "-"} className="text-xs" variant={resultString === "ERROR" ? "error" : undefined} />
+                <div className={'min-h-5 w-full text-nowrap rounded-lg border border-black bg-gray-300 text-center'}>
+                  <OverflowText
+                    text={taskRunData.attempts[taskAttemptIndex].logOutput?.str ?? '-'}
+                    className="text-xs"
+                    variant={resultString === 'ERROR' ? 'error' : undefined}
+                  />
                 </div>
               </Entry>
               <Entry separator>
-                <Duration arrival={taskRunData.attempts[taskAttemptIndex].startTime} ended={taskRunData.attempts[taskAttemptIndex].endTime} />
+                <Duration
+                  arrival={taskRunData.attempts[taskAttemptIndex].startTime}
+                  ended={taskRunData.attempts[taskAttemptIndex].endTime}
+                />
               </Entry>
             </DiagramDataGroup>
           </>
         ) : null
       ) : (
         <DiagramDataGroup label="TaskDef">
-          <Entry label="Retries">
-            {taskNode?.retries}
-          </Entry>
-          <Entry label="Timeout">
-            {taskNode?.timeoutSeconds}
-          </Entry>
+          <Entry label="Retries">{taskNode?.retries}</Entry>
+          <Entry label="Timeout">{taskNode?.timeoutSeconds}</Entry>
           <Entry label="Variables">
             <ViewVariableAssignments variables={taskNode?.variables} />
           </Entry>
