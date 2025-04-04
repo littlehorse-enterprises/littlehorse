@@ -30,7 +30,8 @@ public class MismatchedConditionException extends LHTestException {
 
     @Override
     public String toString() {
-        return "Expected value %s but got %s on step %s, WfRun %s"
-                .formatted(expectedValue, evaluatedValue, stepId, LHLibUtil.wfRunIdToString(wfRunId));
+        return String.format(
+                "Expected value %s but got %s on step %s, WfRun %s",
+                expectedValue, evaluatedValue, stepId, LHLibUtil.wfRunIdToString(wfRunId));
     }
 }
