@@ -4,16 +4,16 @@ using LittleHorse.Sdk.Exceptions;
 
 namespace LittleHorse.Sdk.Authentication
 {
-    public class OAuthClient
+    internal class OAuthClient
     {
         private OAuthConfig _oAuthConfig;
 
-        public OAuthClient(OAuthConfig oAuthConfig)
+        internal OAuthClient(OAuthConfig oAuthConfig)
         {
             _oAuthConfig = oAuthConfig;
         }
 
-        public async Task<TokenInfo> GetAccessTokenAsync()
+        internal async Task<TokenInfo> GetAccessTokenAsync()
         {
             var tokenResponseFromApi = await GetTokenResponseFromApi();
             var responseTokenApiAsString = await tokenResponseFromApi.Content.ReadAsStringAsync();

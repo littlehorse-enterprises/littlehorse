@@ -1,12 +1,12 @@
 ﻿namespace LittleHorse.Sdk.Authentication
 {
-    public class OAuthConfig
+    internal class OAuthConfig
     {
-        public string ClientId { get; init; }
-        public string ClientSecret { get; init; }
-        public Uri TokenEndpointURI { get; init; }
+        internal string ClientId { get; init; }
+        internal string ClientSecret { get; init; }
+        internal Uri TokenEndpointURI { get; init; }
 
-        public OAuthConfig(string? clientId, string? clientSecret, string? tokenEndpointUrl)
+        internal OAuthConfig(string? clientId, string? clientSecret, string? tokenEndpointUrl)
         {
             if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret) || string.IsNullOrEmpty(tokenEndpointUrl))
             {
