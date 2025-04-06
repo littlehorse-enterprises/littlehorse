@@ -5,6 +5,7 @@ package littlehorse;
 import "google/protobuf/timestamp.proto";
 import "variable.proto";
 import "object_id.proto";
+import "common_wfspec.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -61,7 +62,7 @@ message ExternalEventDef {
   // It is _optional_ for compatibility purposes: ExternalEventDef's that were created
   // before 0.13.2 will not have a schema. For those `ExternalEventDef`s, we do not validate
   // WfSpec's nor do we validate the 
-  optional OutputSchema schema = 4;
+  optional PedroReturnType type_information = 4;
 }
 
 // Policy to determine how long an ExternalEvent is retained after creation if it

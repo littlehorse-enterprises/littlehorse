@@ -48,7 +48,7 @@ message ExternalEventDefId {
   string name = 1;
 
   // The version of this ExternalEventDef.
-  int32 version = 1;
+  int32 version = 2;
 }
 
 // ID for a UserTaskDef

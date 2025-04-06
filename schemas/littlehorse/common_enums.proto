@@ -122,29 +122,29 @@ enum PrimitiveType {
   // used transparently to the user. For example, the Java Task Worker SDK can
   // inspect your method signature and automatically deserialize an input variable
   // into a POJO.
-  JSON_OBJ = 0;
+  JSON_OBJ_T = 0;
 
   // The `JSON_ARR` variable allows you to store collections of objects as a JSON
   // array. The behavior is similar to the `JSON_OBJ` variable type.
-  JSON_ARR = 1;
+  JSON_ARR_T = 1;
 
   // The `DOUBLE` variable type is a 64-bit floating point number. It can
   // be cast to an `INT`.
-  DOUBLE = 2;
+  DOUBLE_T = 2;
 
   // Boolean denotes a simple boolean switch.
-  BOOL = 3;
+  BOOL_T = 3;
 
   // The `STR` variable type is stored as a String. `INT`, `DOUBLE`,
   // and `BOOL` variables can be cast to a `STR`.
-  STR = 4;
+  STR_T = 4;
 
   // The `INT` variable type is stored as a 64-bit integer. The
   // `INT` can be cast to a `DOUBLE`.
-  INT = 5;
+  INT_T = 5;
 
   // The `BYTES` variable type allows you to store an arbitrary byte string.
-  BYTES = 6;
+  BYTES_T = 6;
 }
 
 // This enum is all of the types of technical failure that can occur in a WfRun.

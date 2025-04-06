@@ -166,15 +166,23 @@ message VariableDef {
 // Defines the type of a value in LittleHorse. Can be used for Task Parameters,
 // Task return types, External Event types, ThreadSpec variables, etc.
 message TypeDefinition {
-  // The basic type of the value. If unset, this TypeDefinition is equivalent to `void`
-  // in Java or `NoneType` in Python.
-  optional PrimitiveType type = 1;
+  // The basic type of the value. Will become a `oneof` once StructDef's and Struct's
+  // are implemented according to issue #880.
+  PrimitiveType type = 1;
 
   // For compatibility purposes.
   reserved 2, 3;
 
   // Set to true if values of this type contain sensitive information and must be masked.
   bool masked = 4;
+}
+
+// Utility used among metadata objects to define their output type. For example, used in
+// TaskDef and ExternalEventDef to represent the output.
+message PedroReturnType {
+  // The type of the output. If it is not present, it is interpred as the output type
+  // being void: the TaskRun output/ExternalEvent/WorkflowEvent is always empty / NULL.
+  optional TypeDefinition return_type = 1;
 }
 
 // Operator for comparing two values to create a boolean expression.

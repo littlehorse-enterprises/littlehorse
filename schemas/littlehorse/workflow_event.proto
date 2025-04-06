@@ -5,7 +5,7 @@ package littlehorse;
 import "google/protobuf/timestamp.proto";
 import "variable.proto";
 import "object_id.proto";
-import "common_enums.proto";
+import "common_wfspec.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -41,5 +41,5 @@ message WorkflowEventDef {
   google.protobuf.Timestamp created_at = 2;
 
   // The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
-  TypeDefinition type = 3;
+  PedroReturnType return_type = 3;
 }
