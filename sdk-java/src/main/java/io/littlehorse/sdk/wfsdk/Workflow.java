@@ -167,39 +167,42 @@ public abstract class Workflow {
      *
      * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
      */
-    public abstract PutWfSpecRequest compileWorkflow();
+    public abstract PutWfSpecRequest compileWorkflow(LittleHorseBlockingStub client);
 
     /**
      * Returns the names of all `TaskDef`s used by this workflow.
      *
+     * @param client is a GRPC client that LittleHorse can use when compiling the WfSpec.
      * @return a Set of Strings containing the names of all `TaskDef`s used by this workflow.
      */
-    public abstract Set<String> getRequiredTaskDefNames();
+    public abstract Set<String> getRequiredTaskDefNames(LittleHorseBlockingStub client);
 
     /**
      * Returns the names of all `ExternalEventDef`s used by this workflow. Includes
      * ExternalEventDefs used for Interrupts or for EXTERNAL_EVENT nodes.
      *
+     * @param client is a GRPC client that LittleHorse can use when compiling the WfSpec.
      * @return a Set of Strings containing the names of all `ExternalEventDef`s used by this
      *     workflow.
      */
-    public abstract Set<String> getRequiredExternalEventDefNames();
+    public abstract Set<String> getRequiredExternalEventDefNames(LittleHorseBlockingStub client);
 
     /**
      * Returns the names of all `WorkflowEventDef`s used by this workflow.
      *
+     * @param client is a GRPC client that LittleHorse can use when compiling the WfSpec.
      * @return a Set of Strings containing the names of all `WorkflowEventDef`s thrown by this
      *      workflow.
      */
-    public abstract Set<String> getRequiredWorkflowEventDefNames();
+    public abstract Set<String> getRequiredWorkflowEventDefNames(LittleHorseBlockingStub client);
 
     /**
      * Returns the associated PutWfSpecRequest in JSON form.
-     *
+     * @param client is a GRPC client that can be used to fetch information about TaskDefs.
      * @return the associated PutWfSpecRequest in JSON form.
      */
-    public String compileWfToJson() {
-        PutWfSpecRequest wfSpec = compileWorkflow();
+    public String compileWfToJson(LittleHorseBlockingStub client) {
+        PutWfSpecRequest wfSpec = compileWorkflow(client);
         try {
             return JsonFormat.printer().includingDefaultValueFields().print(wfSpec);
         } catch (InvalidProtocolBufferException exn) {
@@ -257,19 +260,20 @@ public abstract class Workflow {
      * Deploys the WfSpec object to the LH Server. Registering the WfSpec via
      * Workflow::registerWfSpec() is the same as client.putWfSpec(workflow.compileWorkflow()).
      *
-     * @param client is an LHClient.
+     * @param client is a GRPC client that can be used to fetch metadata from the LH Server.
      */
     public void registerWfSpec(LittleHorseBlockingStub client) {
-        log.info("Creating wfSpec:\n {}", LHLibUtil.protoToJson(client.putWfSpec(compileWorkflow())));
+        log.info("Creating wfSpec:\n {}", LHLibUtil.protoToJson(client.putWfSpec(compileWorkflow(client))));
     }
 
     /**
      * Writes out the PutWfSpecRequest in JSON form in a directory.
      *
+     * @param client is a GRPC client that can be used to fetch metadata from the LH Server.
      * @param directory is the location to save the resources.
      */
-    public void compileAndSaveToDisk(String directory) {
-        PutWfSpecRequest wf = compileWorkflow();
+    public void compileAndSaveToDisk(LittleHorseBlockingStub client, String directory) {
+        PutWfSpecRequest wf = compileWorkflow(client);
         String wfFileName = wf.getName() + "-wfspec.json";
         log.info("Saving WfSpec to {}", wfFileName);
         saveProtoToFile(directory, wfFileName, wf);
