@@ -6,9 +6,7 @@ import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
-import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
-import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
@@ -48,15 +46,12 @@ public class ExternalEventModel extends CoreGetable<ExternalEvent> {
      */
     public ExternalEventModel(
             VariableValueModel content,
-            WfRunIdModel wfRunId,
-            ExternalEventDefIdModel externalEventDefId,
-            String guid,
+            ExternalEventIdModel id,
             Integer threadRunNumber,
             Integer nodeRunPosition,
             Date createdAt) {
         this.content = content;
-        if (guid == null) guid = LHUtil.generateGuid();
-        this.id = new ExternalEventIdModel(wfRunId, externalEventDefId, guid);
+        this.id = id;
         this.createdAt = createdAt;
         this.threadRunNumber = threadRunNumber;
         this.nodeRunPosition = nodeRunPosition;

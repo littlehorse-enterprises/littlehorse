@@ -29,7 +29,7 @@ namespace LittleHorse.Sdk.Helper
             return output.ToString();
         }
         
-        internal static String ParseTaskRunIdToString(TaskRunId taskRunId) {
+        internal static string ParseTaskRunIdToString(TaskRunId taskRunId) {
             return ParseWfRunIdToString(taskRunId.WfRunId) + "/" + taskRunId.TaskGuid;
         }
     }

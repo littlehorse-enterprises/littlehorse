@@ -1,15 +1,18 @@
 'use client'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
+import { SelectionLink } from '@/app/(authenticated)/[tenantId]/components/SelectionLink'
+import { getWfRun, WfRunResponse } from '@/app/actions/getWfRun'
 import { SEARCH_DEFAULT_LIMIT, TIME_RANGES, TimeRange } from '@/app/constants'
 import { concatWfRunIds } from '@/app/utils'
-import useSWRInfinite from 'swr/infinite'
-import { WfSpec, lHStatusFromJSON } from 'littlehorse-client/proto'
+import { cn } from '@/lib/utils'
+import { lHStatusFromJSON, WfSpec } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
 import { useParams, useSearchParams } from 'next/navigation'
-import { FC, Fragment, useMemo, useState } from 'react'
+import { FC, Fragment, useEffect, useMemo, useState } from 'react'
+import useSWRInfinite from 'swr/infinite'
+import { statusColors } from '../../../wfRun/[...ids]/components/Details'
 import { PaginatedWfRunIdList, searchWfRun } from '../actions/searchWfRun'
 import { WfRunsHeader } from './WfRunsHeader'
-import { SelectionLink } from '@/app/(authenticated)/[tenantId]/components/SelectionLink'
 
 export const WfRuns: FC<WfSpec> = spec => {
   const searchParams = useSearchParams()
@@ -17,6 +20,7 @@ export const WfRuns: FC<WfSpec> = spec => {
   const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
   const [window, setWindow] = useState<TimeRange>(TIME_RANGES[0])
   const tenantId = useParams().tenantId as string
+  const [resolvedWfRuns, setResolvedWfRuns] = useState<Record<string, WfRunResponse>>({})
 
   const startTime = useMemo(() => {
     if (window === -1) return undefined
@@ -32,26 +36,54 @@ export const WfRuns: FC<WfSpec> = spec => {
 
   const getKey = (pageIndex: number, previousPageData: PaginatedWfRunIdList | null) => {
     if (previousPageData && !previousPageData.bookmarkAsString) return null // reached the end
-    return ['wfRun', status, tenantId, limit, startTime, previousPageData?.bookmarkAsString]
+    return [
+      'wfRun',
+      status,
+      tenantId,
+      limit,
+      startTime,
+      previousPageData?.bookmarkAsString,
+      spec.id!.name,
+      spec.id!.majorVersion,
+      spec.id!.revision,
+    ]
   }
 
-  const { data, error, size, setSize } = useSWRInfinite<PaginatedWfRunIdList>(
-    getKey,
-    async (key) => {
-      const [, status, tenantId, limit, startTime, bookmarkAsString] = key
-      return await searchWfRun({
-        wfSpecName: spec.id!.name,
-        wfSpecMajorVersion: spec.id!.majorVersion,
-        wfSpecRevision: spec.id!.revision,
-        variableFilters: [],
-        limit,
-        status: status === 'ALL' ? undefined : status,
-        tenantId,
-        bookmarkAsString,
-        ...startTime,
-      })
-    }
-  )
+  const { data, error, size, setSize } = useSWRInfinite<PaginatedWfRunIdList>(getKey, async key => {
+    const [, status, tenantId, limit, startTime, bookmarkAsString, wfSpecName, wfSpecMajorVersion, wfSpecRevision] = key
+    return await searchWfRun({
+      wfSpecName,
+      wfSpecMajorVersion,
+      wfSpecRevision,
+      variableFilters: [],
+      limit,
+      status: status === 'ALL' ? undefined : status,
+      tenantId,
+      bookmarkAsString,
+      ...startTime,
+    })
+  })
+
+  const wfRunPromises = useMemo(() => {
+    return (
+      data?.flatMap(page =>
+        page.results.map(wfRunId => ({
+          wfRunId: wfRunId.id,
+          promise: getWfRun({ wfRunId, tenantId }),
+        }))
+      ) ?? []
+    )
+  }, [data, tenantId])
+
+  useEffect(() => {
+    wfRunPromises.forEach(async ({ wfRunId, promise }) => {
+      const data = await promise
+      setResolvedWfRuns(prev => ({
+        ...prev,
+        [wfRunId]: data,
+      }))
+    })
+  }, [wfRunPromises])
 
   const isPending = !data && !error
   const hasNextPage = !!(data && data[data.length - 1]?.bookmarkAsString)
@@ -70,13 +102,27 @@ export const WfRuns: FC<WfSpec> = spec => {
               {page.results.map(wfRunId => (
                 <SelectionLink key={wfRunId.id} href={`/wfRun/${concatWfRunIds(wfRunId)}`}>
                   <p>{wfRunId.id}</p>
+                  <span className={cn('ml-2 rounded px-2', statusColors[resolvedWfRuns[wfRunId.id]?.wfRun.status])}>
+                    {`${resolvedWfRuns[wfRunId.id]?.wfRun.status}`}
+                  </span>
+                  <span className="ml-2 rounded bg-gray-200 px-2">
+                    Started:{' '}
+                    {resolvedWfRuns[wfRunId.id]?.wfRun.startTime
+                      ? new Date(resolvedWfRuns[wfRunId.id]?.wfRun.startTime!).toLocaleString()
+                      : ''}
+                  </span>
                 </SelectionLink>
               ))}
             </Fragment>
           ))}
         </div>
       )}
-      <SearchFooter currentLimit={limit} setLimit={setLimit} hasNextPage={hasNextPage} fetchNextPage={() => setSize(size + 1)} />
+      <SearchFooter
+        currentLimit={limit}
+        setLimit={setLimit}
+        hasNextPage={hasNextPage}
+        fetchNextPage={() => setSize(size + 1)}
+      />
     </div>
   )
 }

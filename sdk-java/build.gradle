@@ -5,8 +5,10 @@ plugins {
     id 'com.diffplug.spotless' version '6.25.0'
 }
 
-sourceCompatibility=11
-targetCompatibility=11
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
 
 task javadocJar(type: Jar) {
     archiveClassifier = 'javadoc'
@@ -40,7 +42,7 @@ publishing {
             artifact javadocJar
             pom {
                 name = 'LittleHorse Client'
-                description = 'LittleHorse is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications'
+                description = 'LittleHorse Client'
                 url = 'https://github.com/littlehorse-enterprises/littlehorse'
                 licenses {
                     license {
@@ -93,7 +95,6 @@ dependencies {
 
     // Utils
     implementation 'org.apache.commons:commons-lang3:3.12.0'
-    implementation 'org.awaitility:awaitility:4.2.0'
 
     // OAuth
     implementation 'com.nimbusds:oauth2-oidc-sdk:11.20.1'
@@ -119,6 +120,10 @@ dependencies {
 
     // Mocking
     testImplementation 'org.mockito:mockito-core:5.11.0'
+
+    // Tests
+    testImplementation 'org.awaitility:awaitility:4.2.0'
+
 }
 
 // This is required so that we can use the Reflection API to determine the names

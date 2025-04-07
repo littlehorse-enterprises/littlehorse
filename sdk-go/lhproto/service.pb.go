@@ -708,7 +708,7 @@ type PutExternalEventRequest struct {
 	WfRunId *WfRunId `protobuf:"bytes,1,opt,name=wf_run_id,json=wfRunId,proto3" json:"wf_run_id,omitempty"`
 	// The ID of the ExternalEventDef that this event implements.
 	ExternalEventDefId *ExternalEventDefId `protobuf:"bytes,2,opt,name=external_event_def_id,json=externalEventDefId,proto3" json:"external_event_def_id,omitempty"`
-	// Note that an ExternalEventDefId is a three-part ID:
+	// Note that an ExternalEventId is a three-part ID:
 	// 1. WfRunId
 	// 2. ExternalEventDef Name
 	// 3. A guid

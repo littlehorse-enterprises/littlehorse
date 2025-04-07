@@ -43,7 +43,7 @@ public class LHMappingHelperTest
     [Fact]
     public void LHHelper_WithSystemStringVariableType_ShouldReturnLHVariableStrType()
     {
-        var type = typeof(String);
+        var type = typeof(string);
         
         var result = LHMappingHelper.DotNetTypeToLHVariableType(type);
         

@@ -1,7 +1,6 @@
 import { AuthOptions } from 'next-auth'
 import { Provider } from 'next-auth/providers/index'
 import KeycloakProvider from 'next-auth/providers/keycloak'
-import { signOut } from 'next-auth/react'
 
 const providers: Provider[] = []
 
@@ -29,6 +28,7 @@ export const authOptions: AuthOptions = {
           ...token,
           accessToken: account.access_token,
           expiresAt: account.expires_at,
+          idToken: account.id_token,
         }
       }
       return token
@@ -38,7 +38,14 @@ export const authOptions: AuthOptions = {
       return {
         ...session,
         accessToken: token.accessToken,
+        idToken: token.idToken,
       }
+    },
+  },
+  events: {
+    signOut: async ({ token }: any) => {
+      const url = `${process.env.KEYCLOAK_ISSUER_URI}/protocol/openid-connect/logout?id_token_hint=${token.idToken}`
+      await fetch(url, { method: 'GET', headers: { Accept: 'application/json' } })
     },
   },
 }

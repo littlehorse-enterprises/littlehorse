@@ -4,15 +4,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import net.datafaker.Faker;
+import org.assertj.core.util.Files;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
-public class LHClientConfigTest {
+public class LHConfigTest {
+
+    public static final String LHW_TASK_WORKER_VERSION = "LHW_TASK_WORKER_VERSION";
+    public static final String EXPECTED_VERSION = "v1.0.2";
 
     Faker faker = new Faker();
 
@@ -97,5 +105,35 @@ public class LHClientConfigTest {
         List<String> keys =
                 Arrays.stream(LHConfig.ConfigKeys.values()).map(Enum::name).collect(Collectors.toList());
         assertThat(LHConfig.configNames()).containsExactlyInAnyOrderElementsOf(keys);
+    }
+
+    @Test
+    void shouldUseDefaultTenantByDefault() {
+        LHConfig defaultConfig = new LHConfig(Map.of());
+        assertThat(defaultConfig.getTenantId().getId()).isEqualTo("default");
+    }
+
+    @Test
+    @SetEnvironmentVariable(key = LHW_TASK_WORKER_VERSION, value = EXPECTED_VERSION)
+    void shouldReadEnvWithBuilder() {
+        LHConfig lhConfig = LHConfig.newBuilder().loadFromEnvVariables().build();
+
+        assertThat(lhConfig.getTaskWorkerVersion()).isEqualTo(EXPECTED_VERSION);
+    }
+
+    @Test
+    @SetEnvironmentVariable(key = LHW_TASK_WORKER_VERSION, value = EXPECTED_VERSION)
+    void shouldLoadFileFirstAndThenTheEnvVariables() throws IOException {
+        Properties expected = new Properties();
+        expected.put(LHW_TASK_WORKER_VERSION, "VALUE FROM FILE");
+        File temporaryFile = Files.newTemporaryFile();
+        expected.store(new FileWriter(temporaryFile), "tests");
+
+        LHConfig lhConfig = LHConfig.newBuilder()
+                .loadFromPropertiesFile(temporaryFile)
+                .loadFromEnvVariables()
+                .build();
+
+        assertThat(lhConfig.getTaskWorkerVersion()).isEqualTo(EXPECTED_VERSION);
     }
 }
