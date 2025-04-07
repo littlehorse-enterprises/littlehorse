@@ -13,6 +13,9 @@ namespace LittleHorse.Sdk.Worker
         private DateTime? _scheduleDateTime;
         private ScheduledTask _scheduleTask;
 
+        /// <summary>
+        /// The current logOutput.
+        /// </summary>
         public string? LogOutput { get; private set; }
 
         /// <summary>
