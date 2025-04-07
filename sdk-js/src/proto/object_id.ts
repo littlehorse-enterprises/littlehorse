@@ -6,7 +6,18 @@
 
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
-import { MetricsWindowLength, metricsWindowLengthFromJSON, metricsWindowLengthToNumber } from "./common_enums";
+import {
+  AggregationType,
+  aggregationTypeFromJSON,
+  aggregationTypeToNumber,
+  MeasurableObject,
+  measurableObjectFromJSON,
+  measurableObjectToNumber,
+  MetricsWindowLength,
+  metricsWindowLengthFromJSON,
+  metricsWindowLengthToNumber,
+} from "./common_enums";
+import { Duration } from "./google/protobuf/duration";
 import { Timestamp } from "./google/protobuf/timestamp";
 
 /** The ID of a WfSpec. */
@@ -216,6 +227,60 @@ export interface TenantId {
 /** ID for a ScheduledWfRun */
 export interface ScheduledWfRunId {
   id: string;
+}
+
+/**
+ * Reference to a `NodeSpec` which can be measured for metrics collection. It contains
+ * fields to specify the reference at various levels of granularity, such as by ThreadSpec
+ * Node type, or node position
+ */
+export interface NodeReference {
+  /** References to the ThreadSpec where the node belongs. */
+  threadSpec:
+    | ThreadSpecReference
+    | undefined;
+  /**
+   * Specifies the type of node (e.g UserTaskNode, TaskNode, etc.). If set to null,
+   * any node type is implied
+   */
+  nodeType?:
+    | string
+    | undefined;
+  /**
+   * Indicates the position of the node within the specific thread. If set to null,
+   * any node within the thread is implied
+   */
+  nodePosition?: number | undefined;
+}
+
+/** Reference to a specific thread within a WfSpec */
+export interface ThreadSpecReference {
+  /** References to a specific WfSpec */
+  wfSpecId:
+    | WfSpecId
+    | undefined;
+  /**
+   * Represents a thread run number within a WfRun. If set to null,
+   * any thread run is implied
+   */
+  threadNumber?: number | undefined;
+}
+
+export interface MetricSpecId {
+  object?: MeasurableObject | undefined;
+  node?: NodeReference | undefined;
+  wfSpecId?: WfSpecId | undefined;
+  threadSpec?: ThreadSpecReference | undefined;
+}
+
+export interface MetricSpecId_StatusRange {
+}
+
+export interface MetricId {
+  metricSpecId: MetricSpecId | undefined;
+  windowLength: Duration | undefined;
+  windowStart: string | undefined;
+  aggregationType: AggregationType;
 }
 
 function createBaseWfSpecId(): WfSpecId {
@@ -1246,6 +1311,338 @@ export const ScheduledWfRunId = {
   fromPartial(object: DeepPartial<ScheduledWfRunId>): ScheduledWfRunId {
     const message = createBaseScheduledWfRunId();
     message.id = object.id ?? "";
+    return message;
+  },
+};
+
+function createBaseNodeReference(): NodeReference {
+  return { threadSpec: undefined, nodeType: undefined, nodePosition: undefined };
+}
+
+export const NodeReference = {
+  encode(message: NodeReference, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.threadSpec !== undefined) {
+      ThreadSpecReference.encode(message.threadSpec, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.nodeType !== undefined) {
+      writer.uint32(18).string(message.nodeType);
+    }
+    if (message.nodePosition !== undefined) {
+      writer.uint32(24).int32(message.nodePosition);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): NodeReference {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseNodeReference();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.threadSpec = ThreadSpecReference.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.nodeType = reader.string();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.nodePosition = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<NodeReference>): NodeReference {
+    return NodeReference.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<NodeReference>): NodeReference {
+    const message = createBaseNodeReference();
+    message.threadSpec = (object.threadSpec !== undefined && object.threadSpec !== null)
+      ? ThreadSpecReference.fromPartial(object.threadSpec)
+      : undefined;
+    message.nodeType = object.nodeType ?? undefined;
+    message.nodePosition = object.nodePosition ?? undefined;
+    return message;
+  },
+};
+
+function createBaseThreadSpecReference(): ThreadSpecReference {
+  return { wfSpecId: undefined, threadNumber: undefined };
+}
+
+export const ThreadSpecReference = {
+  encode(message: ThreadSpecReference, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.wfSpecId !== undefined) {
+      WfSpecId.encode(message.wfSpecId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.threadNumber !== undefined) {
+      writer.uint32(16).int32(message.threadNumber);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ThreadSpecReference {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseThreadSpecReference();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.threadNumber = reader.int32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<ThreadSpecReference>): ThreadSpecReference {
+    return ThreadSpecReference.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ThreadSpecReference>): ThreadSpecReference {
+    const message = createBaseThreadSpecReference();
+    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
+      ? WfSpecId.fromPartial(object.wfSpecId)
+      : undefined;
+    message.threadNumber = object.threadNumber ?? undefined;
+    return message;
+  },
+};
+
+function createBaseMetricSpecId(): MetricSpecId {
+  return { object: undefined, node: undefined, wfSpecId: undefined, threadSpec: undefined };
+}
+
+export const MetricSpecId = {
+  encode(message: MetricSpecId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.object !== undefined) {
+      writer.uint32(8).int32(measurableObjectToNumber(message.object));
+    }
+    if (message.node !== undefined) {
+      NodeReference.encode(message.node, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.wfSpecId !== undefined) {
+      WfSpecId.encode(message.wfSpecId, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.threadSpec !== undefined) {
+      ThreadSpecReference.encode(message.threadSpec, writer.uint32(34).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricSpecId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMetricSpecId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.object = measurableObjectFromJSON(reader.int32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.node = NodeReference.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.wfSpecId = WfSpecId.decode(reader, reader.uint32());
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.threadSpec = ThreadSpecReference.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<MetricSpecId>): MetricSpecId {
+    return MetricSpecId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MetricSpecId>): MetricSpecId {
+    const message = createBaseMetricSpecId();
+    message.object = object.object ?? undefined;
+    message.node = (object.node !== undefined && object.node !== null)
+      ? NodeReference.fromPartial(object.node)
+      : undefined;
+    message.wfSpecId = (object.wfSpecId !== undefined && object.wfSpecId !== null)
+      ? WfSpecId.fromPartial(object.wfSpecId)
+      : undefined;
+    message.threadSpec = (object.threadSpec !== undefined && object.threadSpec !== null)
+      ? ThreadSpecReference.fromPartial(object.threadSpec)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseMetricSpecId_StatusRange(): MetricSpecId_StatusRange {
+  return {};
+}
+
+export const MetricSpecId_StatusRange = {
+  encode(_: MetricSpecId_StatusRange, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricSpecId_StatusRange {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMetricSpecId_StatusRange();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<MetricSpecId_StatusRange>): MetricSpecId_StatusRange {
+    return MetricSpecId_StatusRange.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MetricSpecId_StatusRange>): MetricSpecId_StatusRange {
+    const message = createBaseMetricSpecId_StatusRange();
+    return message;
+  },
+};
+
+function createBaseMetricId(): MetricId {
+  return {
+    metricSpecId: undefined,
+    windowLength: undefined,
+    windowStart: undefined,
+    aggregationType: AggregationType.COUNT,
+  };
+}
+
+export const MetricId = {
+  encode(message: MetricId, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.metricSpecId !== undefined) {
+      MetricSpecId.encode(message.metricSpecId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.windowLength !== undefined) {
+      Duration.encode(message.windowLength, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.windowStart !== undefined) {
+      Timestamp.encode(toTimestamp(message.windowStart), writer.uint32(26).fork()).ldelim();
+    }
+    if (message.aggregationType !== AggregationType.COUNT) {
+      writer.uint32(32).int32(aggregationTypeToNumber(message.aggregationType));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MetricId {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMetricId();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.metricSpecId = MetricSpecId.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.windowLength = Duration.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.windowStart = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.aggregationType = aggregationTypeFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  create(base?: DeepPartial<MetricId>): MetricId {
+    return MetricId.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MetricId>): MetricId {
+    const message = createBaseMetricId();
+    message.metricSpecId = (object.metricSpecId !== undefined && object.metricSpecId !== null)
+      ? MetricSpecId.fromPartial(object.metricSpecId)
+      : undefined;
+    message.windowLength = (object.windowLength !== undefined && object.windowLength !== null)
+      ? Duration.fromPartial(object.windowLength)
+      : undefined;
+    message.windowStart = object.windowStart ?? undefined;
+    message.aggregationType = object.aggregationType ?? AggregationType.COUNT;
     return message;
   },
 };

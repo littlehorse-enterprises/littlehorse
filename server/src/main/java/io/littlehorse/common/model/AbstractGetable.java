@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.metrics.MetricModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupModel;
@@ -16,12 +17,17 @@ import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.metrics.MetricSpecModel;
+import io.littlehorse.common.model.getable.global.metrics.PartitionMetricModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricIdModel;
+import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.PartitionMetricIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.ScheduledWfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
@@ -101,6 +107,12 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.WORKFLOW_EVENT;
         } else if (cls.equals(ScheduledWfRunModel.class)) {
             return GetableClassEnum.SCHEDULED_WF_RUN;
+        } else if (cls.equals(MetricSpecModel.class)) {
+            return GetableClassEnum.METRIC_SPEC;
+        } else if (cls.equals(PartitionMetricModel.class)) {
+            return GetableClassEnum.PARTITION_METRIC;
+        } else if (cls.equals(MetricModel.class)) {
+            return GetableClassEnum.METRIC;
         } else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -144,6 +156,12 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return WorkflowEventModel.class;
             case SCHEDULED_WF_RUN:
                 return ScheduledWfRunModel.class;
+            case METRIC_SPEC:
+                return MetricSpecModel.class;
+            case PARTITION_METRIC:
+                return PartitionMetricModel.class;
+            case METRIC:
+                return MetricModel.class;
             case UNRECOGNIZED:
                 // default:
         }
@@ -188,6 +206,12 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return WorkflowEventIdModel.class;
             case SCHEDULED_WF_RUN:
                 return ScheduledWfRunIdModel.class;
+            case METRIC_SPEC:
+                return MetricSpecIdModel.class;
+            case PARTITION_METRIC:
+                return PartitionMetricIdModel.class;
+            case METRIC:
+                return MetricIdModel.class;
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");

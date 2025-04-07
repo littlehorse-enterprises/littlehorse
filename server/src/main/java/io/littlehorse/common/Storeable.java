@@ -54,6 +54,8 @@ public abstract class Storeable<T extends Message> extends LHSerializable<T> {
                 return StoreableType.INITIALIZATION_LOG;
             case "WfRunStoredInventoryModel":
                 return StoreableType.WFRUN_STORED_INVENTORY;
+            case "PartitionMetricInventoryModel":
+                return StoreableType.METRIC_PARTITION_INVENTORY;
         }
         throw new IllegalArgumentException("Unrecognized Storeable class: " + cls);
     }
