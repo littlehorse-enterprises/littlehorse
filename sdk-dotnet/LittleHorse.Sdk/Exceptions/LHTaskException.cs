@@ -2,22 +2,18 @@ using LittleHorse.Sdk.Common.Proto;
 
 namespace LittleHorse.Sdk.Exceptions;
 
-///<summary>
-/// Maps an Exception that contains a client specific error in Task Method.
+/// <summary>
+/// Maps an Exception that contains a client specific error in a Task Method.
 /// </summary>
 public class LHTaskException: Exception
 {
-    ///<summary>
-    /// The name of the exception.
-    /// </summary>
+    /// <value>Property <c>Name</c> represents the name of the exception.</value>
     public string Name { get; }
-
-    ///<summary>
-    /// The content of the exception in LH language.
-    /// </summary>
+    
+    /// <value>Property <c>Content</c> represents the content of the exception in LH language.</value>
     public VariableValue Content { get; }
     
-    ///<summary>
+    /// <summary>
     /// Constructor of the Exception which contains a problem in Task Method.
     /// </summary>
     /// <param name="name"> The name of the exception.</param>
@@ -28,7 +24,7 @@ public class LHTaskException: Exception
         Content = new VariableValue();
     }
 
-    ///<summary>
+    /// <summary>
     /// Constructor of the Exception which contains a problem in Task Method.
     /// </summary>
     /// <param name="name"> The name of the exception.</param>

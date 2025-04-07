@@ -12,6 +12,10 @@ using TaskStatus = LittleHorse.Sdk.Common.Proto.TaskStatus;
 
 namespace LittleHorse.Sdk.Worker.Internal
 {
+    /// <summary>
+    /// Represents a connection to the LH server for a specific task type.
+    /// </summary>
+    /// <typeparam name="T">The type of the task.</typeparam>
     public class LHServerConnection<T> : IDisposable
     {
         private const int REPORT_TASK_RETRIES_INTERVAL_SECONDS = 2;
@@ -27,8 +31,14 @@ namespace LittleHorse.Sdk.Worker.Internal
         private SemaphoreSlim _reportTaskSemaphore;
         private readonly LHTask<T> _task;
 
-        public LHHostInfo HostInfo => _hostInfo;
+        internal LHHostInfo HostInfo => _hostInfo;
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="LHServerConnection{T}"/> class.
+        /// </summary>
+        /// <param name="connectionManager">Object to handle all available server connections.</param>
+        /// <param name="hostInfo">Information of the current host.</param>
+        /// <param name="task">Prepares a task method to be executed by the server.</param>
         public LHServerConnection(LHServerConnectionManager<T> connectionManager, LHHostInfo hostInfo, LHTask<T> task)
         {
             _connectionManager = connectionManager;
@@ -40,6 +50,9 @@ namespace LittleHorse.Sdk.Worker.Internal
             _task = task;
         }
 
+        /// <summary>
+        /// Starts a new async task which will poll the server for tasks to execute.
+        /// </summary>
         public void Start()
         {
             _running = true;
@@ -94,6 +107,9 @@ namespace LittleHorse.Sdk.Worker.Internal
             await readTask;
         }
 
+        /// <summary>
+        /// This method ensures that all resources are properly released when the connection is no longer needed.
+        /// </summary>
         public void Dispose()
         {
             _running = false;
@@ -102,6 +118,12 @@ namespace LittleHorse.Sdk.Worker.Internal
             _reportTaskSemaphore = new SemaphoreSlim(_connectionManager.Config.WorkerThreads);
         }
 
+        /// <summary>
+        /// This method checks if the current connection is the same as the specified host and port.
+        /// </summary>
+        /// <param name="host">Host to be verified.</param>
+        /// <param name="port">Port to be verified.</param>
+        /// <returns></returns>
         public bool IsSame(string host, int port)
         {
             return _hostInfo.Host.Equals(host) && _hostInfo.Port == port;

@@ -133,7 +133,7 @@ public class WfRunVariable
     /// <summary>
     /// Sets the default value for this WfRunVariable.
     /// </summary>
-    /// /// <param name="defaultVal">
+    /// <param name="defaultVal">
     /// It is the default value for this variable.
     /// </param>
     /// <returns>

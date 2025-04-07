@@ -312,7 +312,7 @@ namespace LittleHorse.Sdk {
             try
             {
                 var client = GetGrpcClientInstance();
-                var taskDefId = new TaskDefId()
+                var taskDefId = new TaskDefId
                 {
                     Name = taskDefName
                 };
