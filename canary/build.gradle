@@ -138,7 +138,7 @@ publishing {
             artifact javadocJar
             pom {
                 name = 'LittleHorse Canary'
-                description = 'LittleHorse Canary, Synthetic Monitoring Tool'
+                description = 'LittleHorse Canary is a Synthetic Monitoring Tool'
                 url = 'https://github.com/littlehorse-enterprises/littlehorse'
                 licenses {
                     license {
