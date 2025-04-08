@@ -3,7 +3,7 @@ import { NodeRun, UserTaskNode } from 'littlehorse-client/proto'
 import { ChevronDownIcon } from 'lucide-react'
 import { FC } from 'react'
 import { statusColors } from '../../../wfRun/[...ids]/components/Details'
-import { getNodeType } from '../../NodeTypes/extractNodes'
+import { getNodeType } from '../../NodeTypes/extractAllNodes'
 import { AccordionComponents } from './AccordionContent'
 
 export const AccordionItem: FC<{ node: NodeRun; userTaskNode?: UserTaskNode }> = ({ node, userTaskNode }) => {

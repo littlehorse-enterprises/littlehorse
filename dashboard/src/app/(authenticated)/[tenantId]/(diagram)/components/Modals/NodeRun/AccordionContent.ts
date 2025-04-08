@@ -1,6 +1,6 @@
 import { NodeRun, UserTaskNode } from 'littlehorse-client/proto'
 import { FC } from 'react'
-import { NodeType } from '../../NodeTypes/extractNodes'
+import { NodeType } from '../../NodeTypes/extractAllNodes'
 import {
   ExternalEventDefDetail,
   SleepDefDetail,
