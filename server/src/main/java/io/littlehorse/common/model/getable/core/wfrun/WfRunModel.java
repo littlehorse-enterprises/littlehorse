@@ -457,7 +457,7 @@ public class WfRunModel extends CoreGetable<WfRun> {
     private void recordMetrics(ProcessorExecutionContext processorExecutionContext) {
         GetableStatusUpdate update;
         while ((update = processorExecutionContext.getableUpdates().getUpdatesForWfRunId(id).poll()) != null) {
-            // sensor.record(update)
+            sensor().record(update);
         }
     }
 

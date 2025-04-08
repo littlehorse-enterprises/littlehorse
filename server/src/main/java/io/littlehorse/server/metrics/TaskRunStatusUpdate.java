@@ -21,8 +21,7 @@ public class TaskRunStatusUpdate extends GetableStatusUpdate {
 
 
     public TaskRunStatusUpdate(
-            TaskDefIdModel taskDefId, TenantIdModel tenantId, NodeReferenceModel nodeReference, ThreadSpecReferenceModel threadSpecReference, WfSpecIdModel wfSpecId, TaskStatus previousStatus, TaskStatus newStatus) {
-        super(tenantId);
+            TaskDefIdModel taskDefId, WfSpecIdModel wfSpecId, TaskStatus previousStatus, TaskStatus newStatus) {
         this.taskDefId = taskDefId;
         this.previousStatus = previousStatus;
         this.newStatus = newStatus;

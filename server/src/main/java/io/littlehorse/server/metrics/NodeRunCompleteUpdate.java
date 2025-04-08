@@ -14,7 +14,6 @@ public class NodeRunCompleteUpdate extends GetableStatusUpdate {
     private final Node.NodeCase nodeType;
 
     public NodeRunCompleteUpdate(TenantIdModel tenantId, Node.NodeCase nodeType, Duration latency) {
-        super(tenantId);
         this.latency = latency;
         this.nodeType = nodeType;
     }

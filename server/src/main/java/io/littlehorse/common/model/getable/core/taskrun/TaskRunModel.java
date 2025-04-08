@@ -25,6 +25,8 @@ import io.littlehorse.common.model.getable.objectId.ThreadSpecReferenceModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.NodeRun;
+import io.littlehorse.sdk.common.proto.SearchNodeRunRequest;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
@@ -397,13 +399,11 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
     private void transitionTo(TaskStatus newStatus) {
         TaskStatus previousStatus = status;
         this.status = newStatus;
-        int threadRunNumber = taskRunSource.getTaskNode().getNodeRunId().getThreadRunNumber();
-        NodeRunIdModel nodeRunId = taskRunSource.getTaskNode().getNodeRunId();
-        ThreadSpecReferenceModel threadSpecRef = new ThreadSpecReferenceModel(taskRunSource.getWfSpecId(), threadRunNumber);
-        NodeRunModel nodeRunModel = processorContext.getableManager().get(taskRunSource.getTaskNode().getNodeRunId());
-        NodeReferenceModel nodeRef = new NodeReferenceModel(threadSpecRef, nodeRunModel.getNodeType().name(), nodeRunId.getPosition());
-        processorContext
-                .getableUpdates()
-                .append(taskRunSource.getTaskNode().getNodeRunId(), new TaskRunStatusUpdate(taskDefId, processorContext.authorization().tenantId(), nodeRef, threadSpecRef, taskRunSource.getWfSpecId(), previousStatus, newStatus));
+        // This condition metrics for tasks that are triggered by a UserTaskRunNode
+        if (taskRunSource.getTaskNode() != null) {
+            processorContext
+                    .getableUpdates()
+                    .append(taskRunSource.getTaskNode().getNodeRunId(), new TaskRunStatusUpdate(taskDefId, taskRunSource.getWfSpecId(), previousStatus, newStatus));
+        }
     }
 }

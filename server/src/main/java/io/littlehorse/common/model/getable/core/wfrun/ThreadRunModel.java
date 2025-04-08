@@ -92,6 +92,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     private ExecutionContext executionContext;
     // Only contains value in Processor execution context.
     private ProcessorExecutionContext processorContext;
+    private Sensor sensor;
 
     public ThreadRunModel() {}
 
@@ -959,8 +960,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     private Sensor sensor() {
-        MetricSpecIdModel wfSpecMetricId = new MetricSpecIdModel(new ThreadSpecReferenceModel(wfSpecId, number));
-        return new Sensor(Set.of(wfSpecMetricId),  executionContext.castOnSupport(ProcessorExecutionContext.class));
+        if(sensor == null) {
+            MetricSpecIdModel wfSpecMetricId = new MetricSpecIdModel(new ThreadSpecReferenceModel(wfSpecId, number));
+            return new Sensor(Set.of(wfSpecMetricId),  executionContext.castOnSupport(ProcessorExecutionContext.class));
+        }
+        return sensor;
     }
 
     /**

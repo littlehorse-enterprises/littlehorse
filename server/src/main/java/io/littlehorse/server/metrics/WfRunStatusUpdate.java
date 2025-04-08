@@ -19,7 +19,6 @@ public class WfRunStatusUpdate extends GetableStatusUpdate {
 
     public WfRunStatusUpdate(
             WfSpecIdModel wfSpecId, TenantIdModel tenantId, LHStatus previousStatus, LHStatus newStatus) {
-        super(tenantId);
         this.previousStatus = previousStatus;
         this.wfSpecId = wfSpecId;
         this.newStatus = Objects.requireNonNull(newStatus);

@@ -42,15 +42,15 @@ public class GetableUpdates {
 
 
     public ArrayDeque<GetableStatusUpdate> getUpdatesForNodeRun(NodeRunIdModel nodeRunId) {
-        return getableUpdatesByNodeRun.get(nodeRunId);
+        return getableUpdatesByNodeRun.getOrDefault(nodeRunId, new ArrayDeque<>());
     }
 
     public ArrayDeque<GetableStatusUpdate> getUpdatesForWfRunId(WfRunIdModel wfRunId) {
-        return getableUpdatesByWfRunId.get(wfRunId);
+        return getableUpdatesByWfRunId.getOrDefault(wfRunId, new ArrayDeque<>());
     }
 
     public ArrayDeque<GetableStatusUpdate> getUpdatesForThreadRunNumber(WfRunIdModel wfRunId, int threadRunNumber) {
-        return getableUpdatesByThreadRunNumber.get(new WfRunIdAndThreadRunNumber(wfRunId, threadRunNumber));
+        return getableUpdatesByThreadRunNumber.getOrDefault(new WfRunIdAndThreadRunNumber(wfRunId, threadRunNumber), new ArrayDeque<>());
     }
 
     public static GetableStatusUpdate create(

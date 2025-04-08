@@ -9,19 +9,13 @@ import java.util.List;
 public abstract class GetableStatusUpdate {
 
     private final Date creationDate;
-    private final TenantIdModel tenantId;
 
-    public GetableStatusUpdate(TenantIdModel tenantId) {
+    public GetableStatusUpdate() {
         this.creationDate = new Date();
-        this.tenantId = tenantId;
     }
 
     public Date getCreationDate() {
         return creationDate;
-    }
-
-    public TenantIdModel getTenantId() {
-        return tenantId;
     }
 
     public abstract List<MetricSpecIdModel> toMetricId();

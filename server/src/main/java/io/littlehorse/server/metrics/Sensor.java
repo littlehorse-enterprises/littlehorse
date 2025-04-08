@@ -4,6 +4,7 @@ import io.littlehorse.common.model.getable.global.metrics.MetricSpecModel;
 import io.littlehorse.common.model.getable.global.metrics.PartitionMetricModel;
 import io.littlehorse.common.model.getable.objectId.MetricSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.PartitionMetricIdModel;
+import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.sdk.common.proto.AggregationType;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.ProcessorExecutionContext;
@@ -20,6 +21,7 @@ public class Sensor {
     private final Set<MetricSpecModel> metrics;
     private final ProcessorExecutionContext processorContext;
     private final GetableManager getableManager;
+    private final TenantIdModel tenantId;
 
     public Sensor(final Set<MetricSpecIdModel> metricIds, final ProcessorExecutionContext processorContext) {
         this.processorContext = processorContext;
@@ -28,6 +30,7 @@ public class Sensor {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
         this.getableManager = processorContext.getableManager();
+        this.tenantId = processorContext.authorization().tenantId();
     }
 
     public void record(GetableStatusUpdate statusUpdate) {
@@ -35,7 +38,7 @@ public class Sensor {
             for (AggregationType aggregationType : metricSpec.getAggregateAs()) {
                 for (Duration windowLength : metricSpec.getWindowLengths()) {
                     PartitionMetricIdModel partitionId = new PartitionMetricIdModel(
-                            metricSpec.getObjectId(), statusUpdate.getTenantId(), aggregationType);
+                            metricSpec.getObjectId(), tenantId, aggregationType);
                     PartitionMetricModel partitionMetric = Optional.ofNullable(getableManager.get(partitionId)).orElse(new PartitionMetricModel(
                                 partitionId,
                                 windowLength

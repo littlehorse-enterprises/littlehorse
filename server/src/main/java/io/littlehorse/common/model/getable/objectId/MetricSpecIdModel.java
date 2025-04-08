@@ -43,7 +43,7 @@ public class MetricSpecIdModel extends MetadataId<MetricSpecId, MetricSpec, Metr
 
     public MetricSpecIdModel(ThreadSpecReferenceModel threadSpecReference) {
         this.threadSpecReference = threadSpecReference;
-        this.referenceCase = MetricSpecId.ReferenceCase.REFERENCE_NOT_SET;
+        this.referenceCase = MetricSpecId.ReferenceCase.THREAD_SPEC;
     }
 
     @Override
@@ -107,7 +107,7 @@ public class MetricSpecIdModel extends MetadataId<MetricSpecId, MetricSpec, Metr
             case WF_SPEC_ID -> {
                 this.wfSpecId = new WfSpecIdModel();
                 this.wfSpecId.initFromString(
-                        storeKey.substring(parts[0].length() + 1, storeKey.indexOf(parts[parts.length - 1]) - 1));
+                        storeKey.substring(parts[0].length() + 1));
             }
             default -> throw new IllegalStateException("Unexpected value: " + referenceCase);
         }
