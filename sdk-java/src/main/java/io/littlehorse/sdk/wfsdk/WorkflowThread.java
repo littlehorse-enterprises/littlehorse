@@ -7,7 +7,7 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import java.io.Serializable;
 import java.util.Map;
 
-/** This interface is what is used to define the logic of a ThreaSpec in a ThreadFunc. */
+/** This interface is what is used to define the logic of a ThreadSpec in a ThreadFunc. */
 public interface WorkflowThread {
     /**
      * This is the reserved Variable Name that can be used as a WfRunVariable in an Interrupt

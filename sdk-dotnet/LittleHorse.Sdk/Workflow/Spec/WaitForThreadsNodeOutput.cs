@@ -14,6 +14,11 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 /// </summary>
 public class WaitForThreadsNodeOutput: NodeOutput
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WaitForThreadsNodeOutput"/> class.
+    /// </summary>
+    /// <param name="nodeName">The specified node name.</param>
+    /// <param name="parent">The workflow thread where the WaitForThreadsNodeOutput belongs to.</param>
     public WaitForThreadsNodeOutput(string nodeName, WorkflowThread parent)
         : base(nodeName, parent)
     {

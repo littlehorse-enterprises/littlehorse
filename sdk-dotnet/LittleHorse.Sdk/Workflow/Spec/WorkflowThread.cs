@@ -6,22 +6,33 @@ using static LittleHorse.Sdk.Common.Proto.UTActionTrigger.Types;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
+/// <summary>
+/// This class is used to define the logic of a ThreadSpec in a ThreadFunc. 
+/// </summary>
 public class WorkflowThread
 {
+    /// <value>
+    /// The parent workflow of this thread.
+    /// </value>
     public Workflow Parent { get; private set; }
-    private readonly ThreadSpec _spec;
+    
+    /// <value>
+    /// The name of the last node in the thread.
+    /// </value>
     public string LastNodeName { get; private set; }
-    private readonly bool _isActive;
-    private readonly List<WfRunVariable> _wfRunVariables;
-    private EdgeCondition? _lastNodeCondition;
-    private readonly Queue<VariableMutation> _variableMutations;
-    private ThreadRetentionPolicy? _retentionPolicy;
     
     /// <summary>
     /// This is the reserved Variable Name that can be used as a WfRunVariable in an Interrupt
     /// Handler or Exception Handler thread.
     /// </summary>
     public const string HandlerInputVar = "INPUT";
+    
+    private readonly ThreadSpec _spec;
+    private readonly bool _isActive;
+    private readonly List<WfRunVariable> _wfRunVariables;
+    private EdgeCondition? _lastNodeCondition;
+    private readonly Queue<VariableMutation> _variableMutations;
+    private ThreadRetentionPolicy? _retentionPolicy;
     
     internal WorkflowThread(Workflow parent, Action<WorkflowThread> action)
     {

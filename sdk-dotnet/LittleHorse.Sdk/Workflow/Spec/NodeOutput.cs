@@ -6,10 +6,28 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 /// </summary>
 public class NodeOutput
 {
+    /// <value>
+    /// The node name of the output.
+    /// </value>
     public string NodeName { get; private set; }
+    
+    /// <value>
+    /// The workflow thread that this output belongs to.
+    /// </value>
     public WorkflowThread Parent { get; private set; }
+    
+    /// <value>
+    /// The Json path to the output. This is valid only for JSON_OBJ or JSON_ARR types.
+    /// </value>
     public string? JsonPath { get; private set; }
 
+    
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NodeOutput"/> class with the specified node name
+    /// and parent workflow thread.
+    /// </summary>
+    /// <param name="nodeName">The node name.</param>
+    /// <param name="parent">The workflow thread that this output belongs to.</param>
     public NodeOutput(string nodeName, WorkflowThread parent)
     {
         NodeName = nodeName;

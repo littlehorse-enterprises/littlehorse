@@ -2,8 +2,16 @@ using LittleHorse.Sdk.Common.Proto;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
+/// <summary>
+/// Represents the output of a TaskNode.
+/// </summary>
 public class TaskNodeOutput : NodeOutput
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TaskNodeOutput"/> class.
+    /// </summary>
+    /// <param name="nodeName">The specified node name.</param>
+    /// <param name="parent">The workflow thread where the task output belongs to.</param>
     public TaskNodeOutput(string nodeName, WorkflowThread parent) : base(nodeName, parent)
     {
     }

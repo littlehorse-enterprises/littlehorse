@@ -4,20 +4,42 @@ using LittleHorse.Sdk.Helper;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
+/// <summary>
+/// A WfRunVariable is a handle on a Variable in a WfSpec.
+/// </summary>
 public class WfRunVariable
 {
-    public string Name;
+    /// <value>
+    /// The name of this WfRunVariable.
+    /// </value>
+    public string Name { get; private set; }
+
+    /// <value>
+    /// Gets the Type of this WfRunVariable.
+    /// </value>
+    public VariableType Type { get; private set; }
+    
+    /// <value>
+    /// Gets the JsonPath of this WfRunVariable that is JSON_OBJ or JSON_ARR types.
+    /// </value>
+    public string? JsonPath { get; private set; }
+    
     private WorkflowThread _parent;
     private readonly object _typeOrDefaultVal;
     private WfRunVariableAccessLevel _accessLevel;
-    public VariableType Type;
     private VariableValue? _defaultValue;
     private bool _required;
     private bool _searchable;
     private bool _masked;
     private readonly List<JsonIndex> _jsonIndexes;
-    public string? JsonPath { get; private set; }
     
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WfRunVariable"/> class.
+    /// </summary>
+    /// <param name="name">The name of the wfRunVariable.</param>
+    /// <param name="typeOrDefaultVal">The  variable type or a default value (literal value).</param>
+    /// <param name="parent">The workflow thread where the user task output belongs to.</param>
+    /// <exception cref="InvalidOperationException">Throws an exception when typeOrDefault param is null.</exception>
     public WfRunVariable(string name, object typeOrDefaultVal, WorkflowThread parent)
     {
         Name = name;
