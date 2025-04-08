@@ -52,7 +52,7 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
   return edges
 }
 
-export function extractWfSpecEdges(wfSpec: WfSpec, threadSpec: ThreadSpecWithName): Edge[] {
+export function extractAllEdges(wfSpec: WfSpec, threadSpec: ThreadSpecWithName): Edge[] {
   return [
     ...extractEdges(wfSpec, threadSpec),
     ...Object.entries(wfSpec.threadSpecs).flatMap(([threadName, threadSpec]) => {

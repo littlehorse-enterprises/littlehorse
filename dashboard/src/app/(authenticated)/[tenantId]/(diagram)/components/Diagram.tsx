@@ -13,10 +13,10 @@ import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'
 import 'reactflow/dist/base.css'
 import { ThreadProvider, ThreadType } from '../context'
 import { edgeTypes } from './EdgeTypes'
-import { extractWfSpecEdges } from './EdgeTypes/extractWfSpecEdges'
+import { extractAllEdges } from './EdgeTypes/extractAllEdges'
 import { Layouter } from './Layouter'
 import nodeTypes from './NodeTypes'
-import { extractWfSpecNodes } from './NodeTypes/extractWfSpecNodes'
+import { extractAllNodes } from './NodeTypes/extractWfSpecNodes'
 import { ThreadPanel } from './ThreadPanel'
 
 type Props = {
@@ -65,17 +65,17 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
     return { name: thread.name, threadSpec: spec.threadSpecs[thread.name] }
   }, [spec, thread])
 
-  const [edges, setEdges] = useEdgesState(extractWfSpecEdges(spec, threadSpec))
-  const [nodes, setNodes] = useNodesState(extractWfSpecNodes(spec, threadSpec))
+  const [edges, setEdges] = useEdgesState(extractAllEdges(spec, threadSpec))
+  const [nodes, setNodes] = useNodesState(extractAllNodes(spec, threadSpec))
 
-  const threadNodeRuns = useMemo(() => {
-    if (!wfRun) return
-    return wfRun.threadRuns[thread.number].nodeRuns
-  }, [thread, wfRun])
+  // const threadNodeRuns = useMemo(() => {
+  //   if (!wfRun) return
+  //   return wfRun.threadRuns[thread.number].nodeRuns
+  // }, [thread, wfRun])
 
   const updateGraph = useCallback(() => {
-    const nodes = extractWfSpecNodes(spec, threadSpec)
-    const edges = extractWfSpecEdges(spec, threadSpec)
+    const nodes = extractAllNodes(spec, threadSpec)
+    const edges = extractAllEdges(spec, threadSpec)
     setNodes(nodes)
     setEdges(edges)
   }, [spec.threadSpecs, thread, setNodes, setEdges])
