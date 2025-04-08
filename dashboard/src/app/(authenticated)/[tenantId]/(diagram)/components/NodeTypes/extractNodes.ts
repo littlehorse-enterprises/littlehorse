@@ -2,19 +2,7 @@ import { Node as NodeProto, ThreadSpec, WfSpec } from 'littlehorse-client/proto'
 import { Node, NodeProps } from 'reactflow'
 import { ThreadSpecWithName } from '../Diagram'
 
-export const extractNodes = (spec: ThreadSpec): Node[] => {
-  return Object.entries(spec.nodes).map(([id, node]) => {
-    const type = getNodeType(node)
-    return {
-      id,
-      type,
-      data: { ...node, ...extractData(type, node) },
-      position: { x: 0, y: 0 },
-    }
-  })
-}
-
-export function extractAllNodes(wfSpec: WfSpec, threadSpec: ThreadSpecWithName) {
+export function extractNodes(wfSpec: WfSpec, threadSpec: ThreadSpecWithName) {
   const reactFlowNodes: Node[] = []
   Object.entries(threadSpec.threadSpec.nodes).forEach(([id, node]) => {
     const reactFlowNode = extractNode(id, node, threadSpec)
@@ -24,7 +12,7 @@ export function extractAllNodes(wfSpec: WfSpec, threadSpec: ThreadSpecWithName) 
       const startedThreadSpecName = node.startThread?.threadSpecName
       if (startedThreadSpecName === undefined) return
 
-      const moreNodes = extractAllNodes(wfSpec, {
+      const moreNodes = extractNodes(wfSpec, {
         name: startedThreadSpecName,
         threadSpec: wfSpec.threadSpecs[startedThreadSpecName],
       })

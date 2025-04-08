@@ -13,10 +13,10 @@ import ReactFlow, { Controls, useEdgesState, useNodesState } from 'reactflow'
 import 'reactflow/dist/base.css'
 import { ThreadProvider, ThreadType } from '../context'
 import { edgeTypes } from './EdgeTypes'
-import { extractAllEdges } from './EdgeTypes/extractEdges'
+import { extractEdges } from './EdgeTypes/extractEdges'
 import { Layouter } from './Layouter'
 import nodeTypes from './NodeTypes'
-import { extractAllNodes } from './NodeTypes/extractNodes'
+import { extractNodes } from './NodeTypes/extractNodes'
 import { ThreadPanel } from './ThreadPanel'
 
 type Props = {
@@ -65,8 +65,8 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
     return { name: thread.name, threadSpec: spec.threadSpecs[thread.name] }
   }, [spec, thread])
 
-  const [edges, setEdges] = useEdgesState(extractAllEdges(spec, threadSpec))
-  const [nodes, setNodes] = useNodesState(extractAllNodes(spec, threadSpec))
+  const [edges, setEdges] = useEdgesState(extractEdges(spec, threadSpec))
+  const [nodes, setNodes] = useNodesState(extractNodes(spec, threadSpec))
 
   // const threadNodeRuns = useMemo(() => {
   //   if (!wfRun) return
@@ -74,8 +74,8 @@ export const Diagram: FC<Props> = ({ spec, wfRun }) => {
   // }, [thread, wfRun])
 
   const updateGraph = useCallback(() => {
-    const nodes = extractAllNodes(spec, threadSpec)
-    const edges = extractAllEdges(spec, threadSpec)
+    const nodes = extractNodes(spec, threadSpec)
+    const edges = extractEdges(spec, threadSpec)
     setNodes(nodes)
     setEdges(edges)
   }, [spec.threadSpecs, thread, setNodes, setEdges])

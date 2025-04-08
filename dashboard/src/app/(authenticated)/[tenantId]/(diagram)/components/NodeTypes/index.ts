@@ -11,7 +11,7 @@ import { StartThread } from './StartThread'
 import { Task } from './Task'
 import { UserTask } from './UserTask/UserTask'
 import { WaitForThreads } from './WaitForThreads'
-import { NodeType } from './extractAllNodes'
+import { NodeType } from './extractNodes'
 import { ThrowEvent } from './ThrowEvent'
 import { WaitForCondition } from './WaitForCondition'
 

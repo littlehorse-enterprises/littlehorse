@@ -5,7 +5,7 @@ import { Edge, MarkerType } from 'reactflow'
 import { ThreadSpecWithName } from '../Diagram'
 import { getNodeType } from '../NodeTypes/extractNodes'
 
-const extractEdges = (wfSpec: WfSpec, threadSpecWithName: ThreadSpecWithName): Edge[] => {
+const extractEdgesFromThreadSpec = (wfSpec: WfSpec, threadSpecWithName: ThreadSpecWithName): Edge[] => {
   const edges: Edge[] = []
 
   const targetMap = new Map<string, number>()
@@ -15,7 +15,7 @@ const extractEdges = (wfSpec: WfSpec, threadSpecWithName: ThreadSpecWithName): E
       const startThreadNodeName = node.startThread?.threadSpecName
       if (!startThreadNodeName) return
 
-      const moreEdges = extractEdges(wfSpec, {
+      const moreEdges = extractEdgesFromThreadSpec(wfSpec, {
         name: startThreadNodeName,
         threadSpec: wfSpec.threadSpecs[startThreadNodeName],
       })
@@ -108,9 +108,9 @@ function extractThreadConnectionEdges(threadSpec: ThreadSpec, threadName: string
   return edges
 }
 
-export function extractAllEdges(wfSpec: WfSpec, threadSpec: ThreadSpecWithName): Edge[] {
+export function extractEdges(wfSpec: WfSpec, threadSpec: ThreadSpecWithName): Edge[] {
   return [
-    ...extractEdges(wfSpec, threadSpec),
+    ...extractEdgesFromThreadSpec(wfSpec, threadSpec),
     ...Object.entries(wfSpec.threadSpecs).flatMap(([threadName, threadSpec]) => {
       return extractThreadConnectionEdges(threadSpec, threadName, wfSpec)
     }),

@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Modal, NodeRuns } from '../../../context'
 import { useModal } from '../../../hooks/useModal'
 import { TaskLink } from '../../NodeTypes/Task/TaskDetails'
-import { getNodeType } from '../../NodeTypes/extractAllNodes'
+import { getNodeType } from '../../NodeTypes/extractNodes'
 import * as Accordion from '@radix-ui/react-accordion'
 import { AccordionItem } from './AccordionItem'
 
