@@ -3,7 +3,7 @@ import { getComparatorSymbol } from '@/app/utils/comparatorUtils'
 import { Edge as EdgeProto, ThreadSpec, WfSpec } from 'littlehorse-client/proto'
 import { Edge, MarkerType } from 'reactflow'
 import { ThreadSpecWithName } from '../Diagram'
-import { getNodeType } from '../NodeTypes/extractWfSpecNodes'
+import { getNodeType } from '../NodeTypes/extractNodes'
 
 const extractEdges = (wfSpec: WfSpec, threadSpecWithName: ThreadSpecWithName): Edge[] => {
   const edges: Edge[] = []

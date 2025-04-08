@@ -1,5 +1,6 @@
-import { Node as NodeProto, ThreadSpec } from 'littlehorse-client/proto'
+import { Node as NodeProto, ThreadSpec, WfSpec } from 'littlehorse-client/proto'
 import { Node, NodeProps } from 'reactflow'
+import { ThreadSpecWithName } from '../Diagram'
 
 export const extractNodes = (spec: ThreadSpec): Node[] => {
   return Object.entries(spec.nodes).map(([id, node]) => {
@@ -11,6 +12,45 @@ export const extractNodes = (spec: ThreadSpec): Node[] => {
       position: { x: 0, y: 0 },
     }
   })
+}
+
+export function extractAllNodes(wfSpec: WfSpec, threadSpec: ThreadSpecWithName) {
+  const reactFlowNodes: Node[] = []
+  Object.entries(threadSpec.threadSpec.nodes).forEach(([id, node]) => {
+    const reactFlowNode = extractNode(id, node, threadSpec)
+    reactFlowNodes.push(reactFlowNode)
+
+    if (reactFlowNode.type === 'START_THREAD') {
+      const startedThreadSpecName = node.startThread?.threadSpecName
+      if (startedThreadSpecName === undefined) return
+
+      const moreNodes = extractAllNodes(wfSpec, {
+        name: startedThreadSpecName,
+        threadSpec: wfSpec.threadSpecs[startedThreadSpecName],
+      })
+      reactFlowNodes.push(...moreNodes)
+    }
+  })
+  return reactFlowNodes
+}
+
+function extractNode(id: string, node: NodeProto, threadSpec: ThreadSpecWithName): Node {
+  const type = getNodeType(node)
+  return {
+    id: `${id}:${threadSpec.name}`,
+    type,
+    data: { ...node, ...extractData(type, node) },
+    position: { x: 0, y: 0 },
+  }
+}
+
+export type NodeRunTypeList = Exclude<
+  NodeType,
+  'ENTRYPOINT' | 'NOP' | 'EXIT' | 'UNKNOWN_NODE_TYPE' | 'START_MULTIPLE_THREADS'
+>
+
+type NodeObj = {
+  [key in keyof Omit<NodeProto, 'outgoingEdges' | 'failureHandlers'>]: unknown
 }
 
 const extractData = (type: NodeType, node: NodeProto) => {
@@ -37,17 +77,11 @@ const extractData = (type: NodeType, node: NodeProto) => {
       return node.startMultipleThreads
     case 'THROW_EVENT':
       return node.throwEvent
+    case 'WAIT_FOR_CONDITION':
+      return node.waitForCondition
   }
 }
 
-export type NodeRunTypeList = Exclude<
-  NodeType,
-  'ENTRYPOINT' | 'NOP' | 'EXIT' | 'UNKNOWN_NODE_TYPE' | 'START_MULTIPLE_THREADS'
->
-
-type NodeObj = {
-  [key in keyof Omit<NodeProto, 'outgoingEdges' | 'failureHandlers'>]: unknown
-}
 export type NodeType =
   | 'ENTRYPOINT'
   | 'EXIT'
@@ -62,6 +96,7 @@ export type NodeType =
   | 'THROW_EVENT'
   | 'UNKNOWN_NODE_TYPE'
   | 'WAIT_FOR_CONDITION'
+
 export const getNodeType = (node: NodeObj): NodeType => {
   if (node['exit'] !== undefined) return 'EXIT'
   if (node['task'] !== undefined) return 'TASK'

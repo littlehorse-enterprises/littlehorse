@@ -16,7 +16,7 @@ import { edgeTypes } from './EdgeTypes'
 import { extractAllEdges } from './EdgeTypes/extractAllEdges'
 import { Layouter } from './Layouter'
 import nodeTypes from './NodeTypes'
-import { extractAllNodes } from './NodeTypes/extractWfSpecNodes'
+import { extractAllNodes } from './NodeTypes/extractNodes'
 import { ThreadPanel } from './ThreadPanel'
 
 type Props = {
