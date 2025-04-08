@@ -1,21 +1,17 @@
 'use client'
 
-import { ScheduledWfRunIdList, WfSpec } from 'littlehorse-client/proto'
-import { getScheduleWfSpec } from '../actions/getScheduleWfSpec'
 import { SelectionLink } from '@/app/(authenticated)/[tenantId]/components/SelectionLink'
-import { ScheduledWfRun } from 'littlehorse-client/proto'
-import { FUTURE_TIME_RANGES, SEARCH_DEFAULT_LIMIT, TimeRange } from '@/app/constants'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ClockIcon } from 'lucide-react'
-import { useEffect, useState, useMemo } from 'react'
-import { getCronTimeWindow } from '@/app/utils/getCronTimeWindow'
-import { parseExpression } from 'cron-parser'
+import { FUTURE_TIME_RANGES, TimeRange } from '@/app/constants'
 import { utcToLocalDateTime } from '@/app/utils'
-import { SearchVariableDialog } from './SearchVariableDialog'
-import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
-import { useParams, useSearchParams } from 'next/navigation'
-import { RefreshCwIcon } from 'lucide-react'
+import { getCronTimeWindow } from '@/app/utils/getCronTimeWindow'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { parseExpression } from 'cron-parser'
+import { WfSpec } from 'littlehorse-client/proto'
+import { ClockIcon, RefreshCwIcon } from 'lucide-react'
+import { useParams } from 'next/navigation'
+import { useMemo, useState } from 'react'
 import useSWR from 'swr'
+import { getScheduleWfSpec } from '../actions/getScheduleWfSpec'
 
 export const ScheduledWfRuns = (spec: WfSpec) => {
   const [currentWindow, setWindow] = useState<TimeRange>(-1)
@@ -29,10 +25,7 @@ export const ScheduledWfRuns = (spec: WfSpec) => {
     })
   }
 
-  const { data: scheduledWfRuns, error } = useSWR(
-    ['scheduledWfRuns', spec.id, tenantId],
-    fetchScheduledWfRuns
-  )
+  const { data: scheduledWfRuns, error } = useSWR(['scheduledWfRuns', spec.id, tenantId], fetchScheduledWfRuns)
 
   const isLoading = !scheduledWfRuns && !error
 

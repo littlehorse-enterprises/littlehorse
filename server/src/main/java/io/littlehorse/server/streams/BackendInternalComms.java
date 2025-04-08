@@ -311,11 +311,7 @@ public class BackendInternalComms implements Closeable {
         LHHostInfo desiredHost = advertisedHostsForHost.getHostsOrDefault(listenerName, null);
         if (desiredHost == null) {
             String message = String.format(
-                    """
-                            Unknown listener name %s. Check LHS_ADVERTISED_LISTENERS on
-                            LH Server and check the LHW_SERVER_CONNECT_LISTENER config on task worker.
-                            """,
-                    listenerName);
+                    "Unknown listener name %s. Check LHS_ADVERTISED_LISTENERS on LH Server.", listenerName);
             throw new LHApiException(Status.INVALID_ARGUMENT, message);
         }
 

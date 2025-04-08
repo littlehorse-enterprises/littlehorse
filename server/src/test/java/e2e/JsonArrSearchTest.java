@@ -1,6 +1,6 @@
 package e2e;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
@@ -69,21 +69,21 @@ public class JsonArrSearchTest {
                 .filter(variableId -> variableId.getWfRunId().getId().equals(id.getId()))
                 .toList()
                 .size();
-        assertEquals(matches, 1);
+        assertThat(matches).isEqualTo(1);
 
         VariableIdList fdsaVars = fdsaVariableList.getValue().get();
         matches = fdsaVars.getResultsList().stream()
                 .filter(variableId -> variableId.getWfRunId().getId().equals(id.getId()))
                 .toList()
                 .size();
-        assertEquals(matches, 1);
+        assertThat(matches).isEqualTo(1);
 
         VariableIdList emptyVars = emptyVariableList.getValue().get();
         matches = emptyVars.getResultsList().stream()
                 .filter(variableId -> variableId.getWfRunId().getId().equals(id.getId()))
                 .toList()
                 .size();
-        assertEquals(matches, 0);
+        assertThat(matches).isZero();
     }
 
     @LHWorkflow("json-arr-idx")

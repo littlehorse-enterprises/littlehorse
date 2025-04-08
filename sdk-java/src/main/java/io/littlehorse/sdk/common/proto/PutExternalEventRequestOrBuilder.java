@@ -63,7 +63,7 @@ public interface PutExternalEventRequestOrBuilder extends
 
   /**
    * <pre>
-   * Note that an ExternalEventDefId is a three-part ID:
+   * Note that an ExternalEventId is a three-part ID:
    * 1. WfRunId
    * 2. ExternalEventDef Name
    * 3. A guid
@@ -77,7 +77,7 @@ public interface PutExternalEventRequestOrBuilder extends
   boolean hasGuid();
   /**
    * <pre>
-   * Note that an ExternalEventDefId is a three-part ID:
+   * Note that an ExternalEventId is a three-part ID:
    * 1. WfRunId
    * 2. ExternalEventDef Name
    * 3. A guid
@@ -91,7 +91,7 @@ public interface PutExternalEventRequestOrBuilder extends
   java.lang.String getGuid();
   /**
    * <pre>
-   * Note that an ExternalEventDefId is a three-part ID:
+   * Note that an ExternalEventId is a three-part ID:
    * 1. WfRunId
    * 2. ExternalEventDef Name
    * 3. A guid

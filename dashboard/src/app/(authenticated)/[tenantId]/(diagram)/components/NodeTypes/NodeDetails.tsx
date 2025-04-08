@@ -1,4 +1,5 @@
 'use client'
+import sortNodeRunsByLatest from '@/app/utils/sortNodeRunsByLatest'
 import { NodeRun } from 'littlehorse-client/proto'
 import React, { CSSProperties, FC, PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import { internalsSymbol, useNodeId, useStore } from 'reactflow'
@@ -9,10 +10,15 @@ import { Entry } from './DataGroupComponents/Entry'
 import { ErrorMessage } from './DataGroupComponents/ErrorMessage'
 import { Status } from './DataGroupComponents/Status'
 
-type Props = PropsWithChildren<{ nodeRunList: NodeRun[] | undefined, nodeRunsIndex?: number, setNodeRunsIndex?: (index: number) => void }>
+type Props = PropsWithChildren<{
+  nodeRunList: NodeRun[] | undefined
+  nodeRunsIndex?: number
+  setNodeRunsIndex?: (index: number) => void
+}>
 
 export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, setNodeRunsIndex }) => {
-  const [nodeRunsIndexInternal, setNodeRunsIndexInternal] = useState(nodeRunsIndex ?? 0);
+  nodeRunList = sortNodeRunsByLatest(nodeRunList)
+  const [nodeRunsIndexInternal, setNodeRunsIndexInternal] = useState(nodeRunsIndex ?? 0)
 
   const contextNodeId = useNodeId()
   const nodes = useStore(state => state.getNodes())
@@ -38,9 +44,9 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, s
 
   useEffect(() => {
     if (nodeRunsIndex !== undefined && setNodeRunsIndex !== undefined) {
-      setNodeRunsIndex(nodeRunsIndexInternal);
+      setNodeRunsIndex(nodeRunsIndexInternal)
     }
-  }, [nodeRunsIndex, nodeRunsIndexInternal, setNodeRunsIndex]);
+  }, [nodeRunsIndex, nodeRunsIndexInternal, setNodeRunsIndex])
 
   const zIndex: number = Math.max(...nodes.map(node => (node[internalsSymbol]?.z || 1) + 10))
   if (!selectedNode) {
@@ -57,21 +63,25 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, s
   const diagramDataGroups = React.Children.toArray(children).flatMap(child => {
     if (React.isValidElement(child)) {
       if (child.type === DiagramDataGroup) {
-        return [child];
+        return [child]
       } else if (child.type === React.Fragment) {
         return React.Children.toArray(child.props.children).filter(
           fragmentChild => React.isValidElement(fragmentChild) && fragmentChild.type === DiagramDataGroup
-        );
+        )
       }
     }
-    return [];
-  }) as React.ReactElement[];
+    return []
+  }) as React.ReactElement[]
 
   return (
-    <div style={wrapperStyle} className="flex gap-4 justify-center drop-shadow mb-6 items-start select-none">
+    <div style={wrapperStyle} className="mb-6 flex select-none items-start justify-center gap-4 drop-shadow">
       {nodeRunList && nodeRunList[nodeRunsIndexInternal] && (
-        <DiagramDataGroup label={nodeRunList.length > 1 ? `NodeRun #${nodeRunsIndexInternal}` : "NodeRun"} >
-          <DiagramDataGroupIndexer index={nodeRunsIndexInternal} setIndex={setNodeRunsIndexInternal} indexes={nodeRunList.length} />
+        <DiagramDataGroup label={'NodeRun'} index={nodeRunsIndexInternal} indexes={nodeRunList.length}>
+          <DiagramDataGroupIndexer
+            index={nodeRunsIndexInternal}
+            setIndex={setNodeRunsIndexInternal}
+            indexes={nodeRunList.length}
+          />
           <Entry label="Status:">
             <Status status={nodeRunList[nodeRunsIndexInternal].status} />
           </Entry>
@@ -79,16 +89,16 @@ export const NodeDetails: FC<Props> = ({ children, nodeRunList, nodeRunsIndex, s
             <ErrorMessage errorMessage={nodeRunList[nodeRunsIndexInternal].errorMessage} />
           </Entry>
           <Entry separator>
-            <Duration arrival={nodeRunList[nodeRunsIndexInternal].arrivalTime} ended={nodeRunList[nodeRunsIndexInternal].endTime} />
+            <Duration
+              arrival={nodeRunList[nodeRunsIndexInternal].arrivalTime}
+              ended={nodeRunList[nodeRunsIndexInternal].endTime}
+            />
           </Entry>
         </DiagramDataGroup>
       )}
-      <div>
-      </div>
+      <div></div>
       {diagramDataGroups.map((element, i) => (
-        <span key={i}>
-          {element}
-        </span>
+        <span key={i}>{element}</span>
       ))}
     </div>
   )
