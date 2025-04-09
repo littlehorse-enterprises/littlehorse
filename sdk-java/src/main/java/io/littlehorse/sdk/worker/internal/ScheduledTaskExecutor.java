@@ -97,8 +97,6 @@ public class ScheduledTaskExecutor {
             taskResult.setLogOutput(VariableValue.newBuilder().setStr(wc.getLogOutput()));
         }
         taskResult.setTime(LHLibUtil.fromDate(new Date()));
-        taskResult.setOutput(VariableValue.newBuilder().setJsonObj("Test").build()).build();
-        
         return taskResult.build();
     }
 
