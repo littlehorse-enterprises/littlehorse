@@ -20,6 +20,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -68,10 +69,10 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     jsonArrVal = LHUtil.strToJsonArr(p.getJsonArr());
                     deserializationErrorPresent = false;
                 } catch (JsonSyntaxException jsonSyntaxException) {
-                    System.out.println("Failed");
                     jsonStr = p.getJsonArr();
                     this.deserializationErrorMessage = "Error deserializing JSON Arr";
                     this.deserializationErrorPresent = true;
+                    jsonArrVal = new ArrayList<Object>();
                 }
                 break;
             case JSON_OBJ:
@@ -82,6 +83,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     jsonStr = p.getJsonObj();
                     this.deserializationErrorMessage = "Error deserializing JSON Obj";
                     this.deserializationErrorPresent = true;
+                    jsonObjVal = new HashMap<String, Object>();
                 }
                 break;
             case DOUBLE:
