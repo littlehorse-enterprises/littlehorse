@@ -97,7 +97,7 @@ public class LHExpression
     /// Valid only for JSON_ARR expressions.
     /// </summary>
     /// <param name="index">The index at which to remove the <c>other</c>.</param>
-    /// <returns>An expression whose value is this expression with the `other` removed
+    /// <returns>An expression whose value is this expression with the <c>other</c> removed
     /// at the specified <c>index</c>.</returns>
     public LHExpression RemoveIndex(int index) 
     {

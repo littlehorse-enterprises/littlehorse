@@ -4,7 +4,7 @@ using static LittleHorse.Sdk.Common.Proto.FailureHandlerDef.Types;
 namespace LittleHorse.Sdk.Workflow.Spec;
 
 /// <summary>
-/// The `WaitForThreadsNodeOutput` class represents a specialized NodeOutput
+/// The <c>WaitForThreadsNodeOutput</c> class represents a specialized NodeOutput
 /// used to manage parallel thread executions and control their behavior during
 /// workflow execution.
 ///

@@ -44,7 +44,7 @@ namespace LittleHorse.Sdk.Worker
         /// Returns the NodeRun ID for the Task that was just scheduled.
         /// </summary>
         /// <returns>
-        /// @return a `NodeRunIdPb` protobuf class with the ID from the executed NodeRun.
+        /// A <c>NodeRunIdPb</c> protobuf class with the ID from the executed NodeRun.
         /// </returns>
         public NodeRunId? GetNodeRunId() 
         {
@@ -63,7 +63,7 @@ namespace LittleHorse.Sdk.Worker
         /// returns zero. If this is the first retry, returns 1, and so on.
         /// </summary>
         /// <returns>
-        /// @return the attempt number of the NodeRun that's being executed.
+        /// The attempt number of the NodeRun that's being executed.
         /// </returns>
         public int GetAttemptNumber() 
         {
@@ -76,7 +76,7 @@ namespace LittleHorse.Sdk.Worker
         /// when (now() - getScheduledTime()) is above some threshold, etc.
         /// </summary>
         /// <returns>
-        /// @return the time at which the current NodeRun was scheduled.
+        /// The time at which the current NodeRun was scheduled.
         /// </returns>
         public DateTime? GetScheduledTime() 
         {
@@ -104,7 +104,7 @@ namespace LittleHorse.Sdk.Worker
         /// Returns the TaskRunId of this TaskRun.
         /// </summary>
         /// <returns>
-        /// @return the associated TaskRunId.
+        /// The associated TaskRunId.
         /// </returns>
         public TaskRunId GetTaskRunId() 
         {
@@ -125,7 +125,7 @@ namespace LittleHorse.Sdk.Worker
         ///   user id.
         /// </summary>
         /// <returns>
-        /// @return the id of the user that the associated UserTask is assigned to.
+        ///The id of the user that the associated UserTask is assigned to.
         /// </returns>
         public string? GetUserId()
         {
@@ -143,7 +143,7 @@ namespace LittleHorse.Sdk.Worker
         ///   associated User Group
         /// </summary>
         /// <returns>
-        /// @return the id of the User Group that the associated UserTask is assigned to.
+        ///The id of the User Group that the associated UserTask is assigned to.
         /// </returns>
         public string? GetUserGroup() {
             UserTaskTriggerReference? uttr = GetUserTaskTrigger();
@@ -157,7 +157,7 @@ namespace LittleHorse.Sdk.Worker
         /// TaskRun Retries.
         /// </summary>
         /// <returns>
-        /// @return an idempotency key.
+        /// An idempotency key.
         /// </returns>
         public string GetIdempotencyKey() 
         {

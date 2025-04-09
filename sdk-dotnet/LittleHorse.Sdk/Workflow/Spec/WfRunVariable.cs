@@ -177,7 +177,7 @@ public class WfRunVariable
     /// Valid only for output of the JSON_OBJ or JSON_ARR types. Returns a new WfRunVariable handle
     /// which points to Json element referred to by the json path.
     ///
-    /// Can only be called once--you can't call node.jsonPath().jsonPath().
+    /// Can only be called once. You can't call node.WithJsonPath().WithJsonPath().
     /// </summary>
     /// <param name="path">
     /// It is the json path to evaluate.

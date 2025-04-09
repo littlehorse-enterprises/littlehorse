@@ -4,7 +4,7 @@ namespace LittleHorse.Sdk.Workflow.Spec;
 
 /// <summary>
 /// A WorkflowCondition is a representation of a boolean expression. It is used as the first
-/// parameter to <c>hreadBuilder::DoIf()</c>.
+/// parameter to <c>workflowThread.DoIf()</c>.
 /// </summary>
 public class WorkflowCondition
 {
