@@ -7,8 +7,10 @@ plugins {
     id 'com.diffplug.spotless' version '6.25.0'
 }
 
-sourceCompatibility=21
-targetCompatibility=21
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
 
 task javadocJar(type: Jar) {
     archiveClassifier = 'javadoc'
@@ -52,7 +54,7 @@ publishing {
             artifact javadocJar
             pom {
                 name = 'LittleHorse Server'
-                description = 'LittleHorse Server'
+                description = 'LittleHorse Server. LittleHorse is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications.'
                 url = 'https://github.com/littlehorse-enterprises/littlehorse'
                 licenses {
                     license {

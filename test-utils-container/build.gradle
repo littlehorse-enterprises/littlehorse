@@ -24,11 +24,8 @@ dependencies {
 }
 
 java {
-    sourceCompatibility=11
-    targetCompatibility=11
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 test {

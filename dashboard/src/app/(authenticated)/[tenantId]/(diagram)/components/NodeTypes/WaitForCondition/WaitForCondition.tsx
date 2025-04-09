@@ -74,4 +74,3 @@ const Node: FC<NodeProps<NodeProto>> = ({ data }) => {
 }
 
 export const WaitForCondition = memo(Node)
-
