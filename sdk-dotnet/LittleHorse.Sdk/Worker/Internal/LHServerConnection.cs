@@ -12,11 +12,15 @@ using TaskStatus = LittleHorse.Sdk.Common.Proto.TaskStatus;
 
 namespace LittleHorse.Sdk.Worker.Internal
 {
-    public class LHServerConnection<T> : IDisposable
+    /// <summary>
+    /// Represents a connection to the LH server for a specific task type.
+    /// </summary>
+    /// <typeparam name="T">The type of the task.</typeparam>
+    internal class LHServerConnection<T> : IDisposable
     {
-        private const int REPORT_TASK_RETRIES_INTERVAL_SECONDS = 2;
-        private const int MAX_REPORT_RETRIES = 15;
-        private const int POLLTASK_SLEEP_TIME = 5000;
+        private const int ReportTaskRetriesIntervalSeconds = 2;
+        private const int MaxReportRetries = 15;
+        private const int PolltaskSleepTime = 5000;
         
         private readonly LHServerConnectionManager<T> _connectionManager;
         private readonly LHHostInfo _hostInfo;
@@ -27,9 +31,15 @@ namespace LittleHorse.Sdk.Worker.Internal
         private SemaphoreSlim _reportTaskSemaphore;
         private readonly LHTask<T> _task;
 
-        public LHHostInfo HostInfo => _hostInfo;
+        internal LHHostInfo HostInfo => _hostInfo;
 
-        public LHServerConnection(LHServerConnectionManager<T> connectionManager, LHHostInfo hostInfo, LHTask<T> task)
+        /// <summary>
+        /// Creates a new instance of the <see cref="LHServerConnection{T}"/> class.
+        /// </summary>
+        /// <param name="connectionManager">Object to handle all available server connections.</param>
+        /// <param name="hostInfo">Information of the current host.</param>
+        /// <param name="task">Prepares a task method to be executed by the server.</param>
+        internal LHServerConnection(LHServerConnectionManager<T> connectionManager, LHHostInfo hostInfo, LHTask<T> task)
         {
             _connectionManager = connectionManager;
             _hostInfo = hostInfo;
@@ -40,7 +50,10 @@ namespace LittleHorse.Sdk.Worker.Internal
             _task = task;
         }
 
-        public void Start()
+        /// <summary>
+        /// Starts a new async task which will poll the server for tasks to execute.
+        /// </summary>
+        internal void Start()
         {
             _running = true;
             Task.Run(RequestMoreWorkAsync);
@@ -74,7 +87,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                      else
                      {
                          _logger?.LogError("Didn't successfully claim task, likely due to a server crash.");
-                         Thread.Sleep(POLLTASK_SLEEP_TIME);
+                         Thread.Sleep(PolltaskSleepTime);
                      }
                      _reportTaskSemaphore.Release();
 
@@ -94,6 +107,9 @@ namespace LittleHorse.Sdk.Worker.Internal
             await readTask;
         }
 
+        /// <summary>
+        /// This method ensures that all resources are properly released when the connection is no longer needed.
+        /// </summary>
         public void Dispose()
         {
             _running = false;
@@ -102,7 +118,13 @@ namespace LittleHorse.Sdk.Worker.Internal
             _reportTaskSemaphore = new SemaphoreSlim(_connectionManager.Config.WorkerThreads);
         }
 
-        public bool IsSame(string host, int port)
+        /// <summary>
+        /// This method checks if the current connection is the same as the specified host and port.
+        /// </summary>
+        /// <param name="host">Host to be verified.</param>
+        /// <param name="port">Port to be verified.</param>
+        /// <returns></returns>
+        internal bool IsSame(string host, int port)
         {
             return _hostInfo.Host.Equals(host) && _hostInfo.Port == port;
         }
@@ -125,7 +147,7 @@ namespace LittleHorse.Sdk.Worker.Internal
 
         private async Task ReportTaskWithRetries(ReportTaskRun result, WfRunId? wfRunId)
         {
-            const int maxRetries = MAX_REPORT_RETRIES;
+            const int maxRetries = MaxReportRetries;
             int retriesLeft = maxRetries;
 
             _logger?.LogDebug($"Starting task reporting for wfRun {wfRunId?.Id} and " +
@@ -135,7 +157,7 @@ namespace LittleHorse.Sdk.Worker.Internal
                 .Handle<Exception>()
                 .WaitAndRetry(
                     retryCount: maxRetries,
-                    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(REPORT_TASK_RETRIES_INTERVAL_SECONDS),
+                    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(ReportTaskRetriesIntervalSeconds),
                     onRetry: (exception, timeSpan, retryCount, context) =>
                     {
                         retriesLeft--;

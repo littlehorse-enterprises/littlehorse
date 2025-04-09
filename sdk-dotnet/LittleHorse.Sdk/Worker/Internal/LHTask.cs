@@ -5,7 +5,7 @@ using static LittleHorse.Sdk.Common.Proto.LittleHorse;
 
 namespace LittleHorse.Sdk.Worker.Internal;
 
-public class LHTask<T>
+internal class LHTask<T>
 {
     private TaskDef? _taskDef;
     private MethodInfo? _taskMethod;
@@ -15,13 +15,13 @@ public class LHTask<T>
     private readonly T _executable;
     private readonly LittleHorseClient _lhClient;
 
-    public MethodInfo? TaskMethod => _taskMethod;
-    public List<VariableMapping> TaskMethodMappings => _taskMethodMappings;
-    public T Executable => _executable;
+    internal MethodInfo? TaskMethod => _taskMethod;
+    internal List<VariableMapping> TaskMethodMappings => _taskMethodMappings;
+    internal T Executable => _executable;
     public string TaskDefName => _taskDefName;
-    public TaskDef? TaskDef => _taskDef;
+    internal TaskDef? TaskDef => _taskDef;
     
-    public LHTask(T executable, string taskDefName, LittleHorseClient lhClient)
+    internal LHTask(T executable, string taskDefName, LittleHorseClient lhClient)
     {
         _taskDefName = taskDefName;
         _executable = executable;

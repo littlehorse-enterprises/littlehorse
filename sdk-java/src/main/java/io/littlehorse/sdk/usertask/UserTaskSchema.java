@@ -6,17 +6,33 @@ import io.littlehorse.sdk.common.proto.UserTaskField;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.lang.reflect.Field;
 
+/**
+ * Represents the schema for a user task.
+ */
 public class UserTaskSchema {
 
     private PutUserTaskDefRequest compiled;
     private Object taskObject;
     private String userTaskDefName;
 
+    /**
+     * Constructs a UserTaskSchema with the specified task object and user task definition name.
+     *
+     * @param taskObject the task object
+     * @param userTaskDefName the name of the user task definition
+     */
     public UserTaskSchema(Object taskObject, String userTaskDefName) {
         this.taskObject = taskObject;
         this.userTaskDefName = userTaskDefName;
     }
 
+    /**
+     * Compiles the user task schema into a PutUserTaskDefRequest.
+     * - Fields in task object should be primitive types.
+     * - If field has not set a `DisplayName`, it will assign the field name.
+     * - Fields in user task form are `required` by default.
+     * @return the compiled PutUserTaskDefRequest
+     */
     public PutUserTaskDefRequest compile() {
         if (compiled == null) compileHelper();
 

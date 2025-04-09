@@ -4,18 +4,33 @@ using LittleHorse.Sdk.Helper;
 
 namespace LittleHorse.Sdk.UserTask;
 
+/// <summary>
+/// Represents the schema for a user task.
+/// </summary>
 public class UserTaskSchema
 {
     private PutUserTaskDefRequest? _compiled;
     private readonly object _taskObject;
     private readonly string _userTaskDefName;
     
+    /// <summary>
+    /// Constructs a UserTaskSchema with the specified task object and user task definition name.
+    /// </summary>
+    /// <param name="taskObject">The task object</param>
+    /// <param name="userTaskDefName">The name of the user task definition</param>
     public UserTaskSchema(object taskObject, string userTaskDefName) 
     {
         _taskObject = taskObject;
         _userTaskDefName = userTaskDefName;
     }
-
+    
+    /// <summary>
+    /// Compiles the user task schema into a PutUserTaskDefRequest.
+    /// - Fields in task object should be primitive types.
+    /// - If field has not set a <c>DisplayName</c>, it will assign the field name.
+    /// - Fields in user task form are <c>required</c> by default.
+    /// </summary>
+    /// <returns>The compiled PutUserTaskDefRequest</returns>
     public PutUserTaskDefRequest Compile()
     {
         return _compiled ??= CompileHelper();
@@ -45,14 +60,11 @@ public class UserTaskSchema
             {
                 userTaskField.Description = userTaskFieldAttribute.Description;
             }
-            
-            if (!string.IsNullOrEmpty(userTaskFieldAttribute.DisplayName)) 
-            {
-                userTaskField.DisplayName = userTaskFieldAttribute.DisplayName;
-            }
-            
-            userTaskField.DisplayName = !string.IsNullOrEmpty(userTaskFieldAttribute.DisplayName) ? userTaskFieldAttribute.DisplayName : field.Name;
-            
+
+            userTaskField.DisplayName = !string.IsNullOrEmpty(userTaskFieldAttribute.DisplayName) ? 
+                userTaskFieldAttribute.DisplayName : field.Name;
+            userTaskField.Required = userTaskFieldAttribute.Required;
+
             putUserTaskDefRequest.Fields.Add(userTaskField);
         }
         

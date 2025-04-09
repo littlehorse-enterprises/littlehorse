@@ -3,8 +3,22 @@ using static LittleHorse.Sdk.Common.Proto.FailureHandlerDef.Types;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
+/// <summary>
+/// The <c>WaitForThreadsNodeOutput</c> class represents a specialized NodeOutput
+/// used to manage parallel thread executions and control their behavior during
+/// workflow execution.
+///
+/// When using this interface, you can set a policy that determines how the
+/// node should handle waiting for threads' parallel executions:
+/// 
+/// </summary>
 public class WaitForThreadsNodeOutput: NodeOutput
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WaitForThreadsNodeOutput"/> class.
+    /// </summary>
+    /// <param name="nodeName">The specified node name.</param>
+    /// <param name="parent">The workflow thread where the WaitForThreadsNodeOutput belongs to.</param>
     public WaitForThreadsNodeOutput(string nodeName, WorkflowThread parent)
         : base(nodeName, parent)
     {
@@ -17,7 +31,7 @@ public class WaitForThreadsNodeOutput: NodeOutput
     /// <param name="exceptionName">
     /// It is the exception name
     /// </param>
-    /// /// <param name="handler">
+    /// <param name="handler">
     /// The WorkflowThread defining the failure handler
     /// </param>
     /// <returns>This WaitForThreadsNodeOutput </returns>

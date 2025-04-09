@@ -23,8 +23,15 @@ namespace LittleHorse.Sdk.Worker
         private readonly LittleHorseClient _lhClient;
         private readonly LHTask<T> _task;
 
+        /// <value>Property <c>TaskDefName</c> represents the name of the TaskDef.</value>
         public string TaskDefName => _task.TaskDefName;
 
+        /// <summary>
+        /// Constructor of the LHTaskWorker.
+        /// </summary>
+        /// <param name="executable">Custom class where customer business logic will be added.</param>
+        /// <param name="taskDefName">The name of the task.</param>
+        /// <param name="config">The LH configuration object.</param>
         public LHTaskWorker(T executable, string taskDefName, LHConfig config)
         {
             _config = config;

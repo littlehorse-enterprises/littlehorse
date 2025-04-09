@@ -2,6 +2,10 @@ using LittleHorse.Sdk.Common.Proto;
 
 namespace LittleHorse.Sdk.Workflow.Spec;
 
+/// <summary>
+/// A WorkflowCondition is a representation of a boolean expression. It is used as the first
+/// parameter to <c>workflowThread.DoIf()</c>.
+/// </summary>
 public class WorkflowCondition
 {
     private readonly VariableAssignment _leftHandSide;
