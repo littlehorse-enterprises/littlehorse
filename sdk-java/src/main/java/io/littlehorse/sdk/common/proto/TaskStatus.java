@@ -46,7 +46,7 @@ public enum TaskStatus
   TASK_FAILED(3),
   /**
    * <pre>
-   * Task Worker did not report a result in time 
+   * Task Worker did not report a result in time.
    * </pre>
    *
    * <code>TASK_TIMEOUT = 4;</code>
@@ -124,7 +124,7 @@ public enum TaskStatus
   public static final int TASK_FAILED_VALUE = 3;
   /**
    * <pre>
-   * Task Worker did not report a result in time 
+   * Task Worker did not report a result in time.
    * </pre>
    *
    * <code>TASK_TIMEOUT = 4;</code>

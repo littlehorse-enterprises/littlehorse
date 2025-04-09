@@ -158,7 +158,7 @@ const (
 	TaskStatus_TASK_SUCCESS TaskStatus = 2
 	// Task Worker reported a technical failure while attempting to execute the TaskRun
 	TaskStatus_TASK_FAILED TaskStatus = 3
-	// Task Worker did not report a result in time
+	// Task Worker did not report a result in time.
 	TaskStatus_TASK_TIMEOUT TaskStatus = 4
 	// The output of the TaskRun was unable to be serialized or deserialized.
 	TaskStatus_TASK_OUTPUT_SERDE_ERROR TaskStatus = 5

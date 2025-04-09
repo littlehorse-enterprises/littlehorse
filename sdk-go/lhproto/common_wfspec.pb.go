@@ -818,7 +818,7 @@ type TaskNode struct {
 	// - TASK_FAILED: the Task Worker reported an unexpected *technical* ERROR when executing
 	//   the Task Function.
 	//
-	// Other result codes are not retryable (including TASK_OUTPUT_SERIALIZING_ERROR,
+	// Other result codes are not retryable (including TASK_OUTPUT_SERDE_ERROR,
 	// TASK_INPUT_VAR_SUB_ERROR, and TASK_EXCEPTION).
 	Retries int32 `protobuf:"varint,3,opt,name=retries,proto3" json:"retries,omitempty"`
 	// If this field is set, then retries will use Exponential Backoff.

@@ -142,7 +142,7 @@ export enum TaskStatus {
   TASK_SUCCESS = "TASK_SUCCESS",
   /** TASK_FAILED - Task Worker reported a technical failure while attempting to execute the TaskRun */
   TASK_FAILED = "TASK_FAILED",
-  /** TASK_TIMEOUT - Task Worker did not report a result in time */
+  /** TASK_TIMEOUT - Task Worker did not report a result in time. */
   TASK_TIMEOUT = "TASK_TIMEOUT",
   /** TASK_OUTPUT_SERDE_ERROR - The output of the TaskRun was unable to be serialized or deserialized. */
   TASK_OUTPUT_SERDE_ERROR = "TASK_OUTPUT_SERDE_ERROR",
