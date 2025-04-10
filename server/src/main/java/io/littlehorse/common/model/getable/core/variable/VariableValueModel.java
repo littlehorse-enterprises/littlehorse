@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +47,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
     @Getter(AccessLevel.NONE)
     private String deserializationError;
+
     private String jsonStr;
 
     public static VariableValueModel fromProto(VariableValue proto, ExecutionContext context) {

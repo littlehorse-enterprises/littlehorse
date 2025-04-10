@@ -305,9 +305,10 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
         attempt.setEndTime(taskRunReport.getTime());
         attempt.setLogOutput(taskRunReport.getLogOutput());
 
-        if (taskRunReport.getOutput() != null && taskRunReport.getOutput().getDeserializationError().isPresent()) {
-            attempt.setError(
-                    new LHTaskErrorModel(taskRunReport.getOutput().getDeserializationError().get(), LHErrorType.VAR_SUB_ERROR));
+        if (taskRunReport.getOutput() != null
+                && taskRunReport.getOutput().getDeserializationError().isPresent()) {
+            attempt.setError(new LHTaskErrorModel(
+                    taskRunReport.getOutput().getDeserializationError().get(), LHErrorType.VAR_SUB_ERROR));
             attempt.setStatus(TaskStatus.TASK_OUTPUT_SERDE_ERROR);
             attempt.setOutput(taskRunReport.getOutput());
             attempt.setException(taskRunReport.getException());
