@@ -16,6 +16,7 @@ public class WorkflowThread
     private EdgeCondition? _lastNodeCondition;
     private readonly Queue<VariableMutation> _variableMutations;
     private ThreadRetentionPolicy? _retentionPolicy;
+    private bool _isInterruptionThread;
     
     /// <summary>
     /// This is the reserved Variable Name that can be used as a WfRunVariable in an Interrupt
@@ -35,6 +36,7 @@ public class WorkflowThread
         var entrypointNodeName = "0-entrypoint-ENTRYPOINT";
         LastNodeName = entrypointNodeName;
         _spec.Nodes.Add(entrypointNodeName, entrypointNode);
+        _isInterruptionThread = false;
         _isActive = true;
         action.Invoke(this);
 
@@ -565,7 +567,11 @@ public class WorkflowThread
     /// </param>
     public void Mutate(WfRunVariable lhs, VariableMutationType type, object rhs)
     {
-        CheckIfWorkflowThreadIsActive();
+        if (!_isInterruptionThread)
+        {
+            CheckIfWorkflowThreadIsActive();
+        }
+        
         var mutation = new VariableMutation
         {
             LhsName = lhs.Name,
@@ -999,6 +1005,7 @@ public class WorkflowThread
         string threadName = "interrupt-" + interruptName;
         Parent.AddSubThread(threadName, handler);
         Parent.AddExternalEventDefName(interruptName);
+        _isInterruptionThread = true;
 
         _spec.InterruptDefs.Add(
             new InterruptDef
