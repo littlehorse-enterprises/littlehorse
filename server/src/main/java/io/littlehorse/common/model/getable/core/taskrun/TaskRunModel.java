@@ -296,7 +296,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> {
             return;
         }
         TaskDefModel taskDef = executionContext.metadataManager().get(taskDefId);
-        
+
         Optional<TypeDefinitionModel> returnType = taskDef.getReturnType().getOutputType();
         if (returnType.isPresent() && returnType.get().isMasked()) {
             attempt.setMaskedValue(true);

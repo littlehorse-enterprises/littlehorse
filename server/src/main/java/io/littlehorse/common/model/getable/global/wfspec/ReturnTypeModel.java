@@ -1,14 +1,12 @@
 package io.littlehorse.common.model.getable.global.wfspec;
 
-import java.util.Objects;
-import java.util.Optional;
-
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 

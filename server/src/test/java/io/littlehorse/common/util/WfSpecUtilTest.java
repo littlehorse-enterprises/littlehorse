@@ -22,7 +22,9 @@ public class WfSpecUtilTest {
             String name = "test";
             String entrypointThreadName = "thread";
             ThreadVarDef.Builder variable = ThreadVarDef.newBuilder()
-                    .setVarDef(VariableDef.newBuilder().setName("variable").setType(TypeDefinition.newBuilder().setType(VariableType.STR)));
+                    .setVarDef(VariableDef.newBuilder()
+                            .setName("variable")
+                            .setType(TypeDefinition.newBuilder().setType(VariableType.STR)));
             WfSpec originalSpec = WfSpec.newBuilder()
                     .setId(WfSpecId.newBuilder()
                             .setName(name)
@@ -116,8 +118,9 @@ public class WfSpecUtilTest {
                             .setRevision(3))
                     .setCreatedAt(LHUtil.fromDate(new java.util.Date()))
                     .addFrozenVariables(ThreadVarDef.newBuilder()
-                            .setVarDef(
-                                    VariableDef.newBuilder().setName("variable").setType(TypeDefinition.newBuilder().setType(VariableType.STR))))
+                            .setVarDef(VariableDef.newBuilder()
+                                    .setName("variable")
+                                    .setType(TypeDefinition.newBuilder().setType(VariableType.STR))))
                     .setEntrypointThreadName(entrypointThreadName)
                     .build();
             WfSpec copySpec = WfSpec.newBuilder()
@@ -147,7 +150,9 @@ public class WfSpecUtilTest {
             String name = "test";
             String entrypointThreadName = "thread";
             ThreadVarDef.Builder variable = ThreadVarDef.newBuilder()
-                    .setVarDef(VariableDef.newBuilder().setName("variable").setType(TypeDefinition.newBuilder().setType(VariableType.STR)))
+                    .setVarDef(VariableDef.newBuilder()
+                            .setName("variable")
+                            .setType(TypeDefinition.newBuilder().setType(VariableType.STR)))
                     .setRequired(true);
             ThreadSpec threadSpec =
                     ThreadSpec.newBuilder().addVariableDefs(variable).build();
@@ -182,7 +187,9 @@ public class WfSpecUtilTest {
         String name = "test";
         String entrypointThreadName = "thread";
         ThreadVarDef.Builder variable = ThreadVarDef.newBuilder()
-                .setVarDef(VariableDef.newBuilder().setName("variable").setType(TypeDefinition.newBuilder().setType(VariableType.STR)));
+                .setVarDef(VariableDef.newBuilder()
+                        .setName("variable")
+                        .setType(TypeDefinition.newBuilder().setType(VariableType.STR)));
         ThreadSpec threadSpec = ThreadSpec.newBuilder()
                 .addVariableDefs(variable.setRequired(true))
                 .build();

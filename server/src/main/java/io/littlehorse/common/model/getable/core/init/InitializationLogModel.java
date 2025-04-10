@@ -52,7 +52,8 @@ public class InitializationLogModel extends Storeable<InitializationLog> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         InitializationLog il = (InitializationLog) proto;
-        this.initLittleHorseVersion = LittleHorseVersionModel.fromProto(il.getInitVersion(), LittleHorseVersionModel.class, context);
+        this.initLittleHorseVersion =
+                LittleHorseVersionModel.fromProto(il.getInitVersion(), LittleHorseVersionModel.class, context);
         this.initTime = LHUtil.fromProtoTs(il.getInitTime());
         this.initAnonymousPrincipal =
                 PrincipalModel.fromProto(il.getInitAnonymousPrincipal(), PrincipalModel.class, context);

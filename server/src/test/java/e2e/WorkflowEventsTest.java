@@ -73,7 +73,8 @@ public class WorkflowEventsTest {
 
     @LHWorkflowEvent
     public final PutWorkflowEventDefRequest eventDef = PutWorkflowEventDefRequest.newBuilder()
-            .setContentType(ReturnType.newBuilder().setReturnType(TypeDefinition.newBuilder().setType(VariableType.STR)))
+            .setContentType(ReturnType.newBuilder()
+                    .setReturnType(TypeDefinition.newBuilder().setType(VariableType.STR)))
             .setName("user-created")
             .build();
 }
