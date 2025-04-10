@@ -24,6 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -43,14 +46,18 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
     private ExecutionContext context;
 
-    private boolean deserializationErrorPresent = false;
-    private String deserializationErrorMessage;
+    @Getter(AccessLevel.NONE)
+    private String deserializationError;
     private String jsonStr;
 
     public static VariableValueModel fromProto(VariableValue proto, ExecutionContext context) {
         VariableValueModel out = new VariableValueModel();
         out.initFrom(proto, context);
         return out;
+    }
+
+    public Optional<String> getDeserializationError() {
+        return Optional.ofNullable(deserializationError);
     }
 
     @Override
@@ -67,22 +74,18 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             case JSON_ARR:
                 try {
                     jsonArrVal = LHUtil.strToJsonArr(p.getJsonArr());
-                    deserializationErrorPresent = false;
                 } catch (JsonSyntaxException jsonSyntaxException) {
                     jsonStr = p.getJsonArr();
-                    this.deserializationErrorMessage = "Error deserializing JSON Arr";
-                    this.deserializationErrorPresent = true;
+                    this.deserializationError = "Error deserializing JSON Arr";
                     jsonArrVal = new ArrayList<Object>();
                 }
                 break;
             case JSON_OBJ:
                 try {
                     jsonObjVal = LHUtil.strToJsonObj(p.getJsonObj());
-                    deserializationErrorPresent = false;
                 } catch (JsonSyntaxException jsonSyntaxException) {
                     jsonStr = p.getJsonObj();
-                    this.deserializationErrorMessage = "Error deserializing JSON Obj";
-                    this.deserializationErrorPresent = true;
+                    this.deserializationError = "Error deserializing JSON Obj";
                     jsonObjVal = new HashMap<String, Object>();
                 }
                 break;
@@ -171,7 +174,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         switch (type) {
             case JSON_ARR:
                 if (jsonArrVal != null) {
-                    if (this.deserializationErrorPresent) {
+                    if (this.deserializationError != null) {
                         out.setJsonArr((this.jsonStr));
                     } else {
                         out.setJsonArr(LHUtil.objToString(jsonArrVal));
@@ -179,7 +182,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 }
                 break;
             case JSON_OBJ:
-                if (this.deserializationErrorPresent) {
+                if (this.deserializationError != null) {
                     out.setJsonObj(this.jsonStr);
                 } else if (jsonObjVal != null) {
                     out.setJsonObj(LHUtil.objToString(jsonObjVal));
