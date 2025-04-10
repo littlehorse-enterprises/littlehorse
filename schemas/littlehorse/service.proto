@@ -361,7 +361,7 @@ message PutWorkflowEventDefRequest {
   string name = 1;
 
   // The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
-  TypeDefinition type = 2;
+  ReturnType content_type = 2;
 }
 
 // Creates a UserTaskDef.

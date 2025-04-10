@@ -21,11 +21,11 @@ class WorkflowEvent(_message.Message):
     def __init__(self, id: _Optional[_Union[_object_id_pb2.WorkflowEventId, _Mapping]] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., node_run_id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ...) -> None: ...
 
 class WorkflowEventDef(_message.Message):
-    __slots__ = ["id", "created_at", "return_type"]
+    __slots__ = ["id", "created_at", "content_type"]
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
-    RETURN_TYPE_FIELD_NUMBER: _ClassVar[int]
+    CONTENT_TYPE_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.WorkflowEventDefId
     created_at: _timestamp_pb2.Timestamp
-    return_type: _common_wfspec_pb2.ReturnType
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., return_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ...) -> None: ...
+    content_type: _common_wfspec_pb2.ReturnType
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]] = ..., created_at: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., content_type: _Optional[_Union[_common_wfspec_pb2.ReturnType, _Mapping]] = ...) -> None: ...

@@ -134,8 +134,10 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             throws LHVarSubError {
         VariableValueModel lhsVal = getLhsValue(thread, txnCache);
         VariableValueModel rhsVal = getRhsValue(thread, txnCache, nodeOutput);
+
+        // This will need to be refactored once we introduce Structs.
         VariableType lhsRealType =
-                thread.getThreadSpec().getVarDef(lhsName).getVarDef().getType();
+                thread.getThreadSpec().getVarDef(lhsName).getVarDef().getType().getType();
 
         try {
             // NOTE Part 2: see below

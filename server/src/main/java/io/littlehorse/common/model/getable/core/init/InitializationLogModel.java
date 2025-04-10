@@ -20,7 +20,7 @@ import java.util.Date;
 
 public class InitializationLogModel extends Storeable<InitializationLog> {
 
-    private ServerVersionModel initServerVersion;
+    private LittleHorseVersionModel initLittleHorseVersion;
     private Date initTime;
     private PrincipalModel initAnonymousPrincipal;
     private TenantModel initDefaultTenant;
@@ -29,12 +29,12 @@ public class InitializationLogModel extends Storeable<InitializationLog> {
     public InitializationLogModel() {}
 
     public InitializationLogModel(
-            ServerVersionModel initServerVersion,
+            LittleHorseVersionModel initLittleHorseVersion,
             Date initTime,
             PrincipalModel initAnonymousPrincipal,
             TenantModel initDefaultTenant,
             String obiWan) {
-        this.initServerVersion = initServerVersion;
+        this.initLittleHorseVersion = initLittleHorseVersion;
         this.initTime = initTime;
         this.initAnonymousPrincipal = initAnonymousPrincipal;
         this.initDefaultTenant = initDefaultTenant;
@@ -43,7 +43,7 @@ public class InitializationLogModel extends Storeable<InitializationLog> {
     @Override
     public Builder<InitializationLog.Builder> toProto() {
         return InitializationLog.newBuilder()
-                .setInitVersion(initServerVersion.toProto())
+                .setInitVersion(initLittleHorseVersion.toProto())
                 .setInitTime(LHUtil.fromDate(initTime))
                 .setInitAnonymousPrincipal(initAnonymousPrincipal.toProto())
                 .setInitDefaultTenant(initDefaultTenant.toProto());
@@ -52,7 +52,7 @@ public class InitializationLogModel extends Storeable<InitializationLog> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeError {
         InitializationLog il = (InitializationLog) proto;
-        this.initServerVersion = ServerVersionModel.fromProto(il.getInitVersion(), ServerVersionModel.class, context);
+        this.initLittleHorseVersion = LittleHorseVersionModel.fromProto(il.getInitVersion(), LittleHorseVersionModel.class, context);
         this.initTime = LHUtil.fromProtoTs(il.getInitTime());
         this.initAnonymousPrincipal =
                 PrincipalModel.fromProto(il.getInitAnonymousPrincipal(), PrincipalModel.class, context);

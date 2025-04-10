@@ -108,18 +108,18 @@ class VariableMutation(_message.Message):
     def __init__(self, lhs_name: _Optional[str] = ..., lhs_json_path: _Optional[str] = ..., operation: _Optional[_Union[VariableMutationType, str]] = ..., rhs_assignment: _Optional[_Union[VariableAssignment, _Mapping]] = ..., literal_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., node_output: _Optional[_Union[VariableMutation.NodeOutputSource, _Mapping]] = ...) -> None: ...
 
 class VariableDef(_message.Message):
-    __slots__ = ["primitive_type", "name", "default_value", "masked_value", "type"]
-    PRIMITIVE_TYPE_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["deprecated_type", "name", "default_value", "deprecated_masked_value", "type"]
+    DEPRECATED_TYPE_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
     DEFAULT_VALUE_FIELD_NUMBER: _ClassVar[int]
-    MASKED_VALUE_FIELD_NUMBER: _ClassVar[int]
+    DEPRECATED_MASKED_VALUE_FIELD_NUMBER: _ClassVar[int]
     TYPE_FIELD_NUMBER: _ClassVar[int]
-    primitive_type: _common_enums_pb2.VariableType
+    deprecated_type: _common_enums_pb2.VariableType
     name: str
     default_value: _variable_pb2.VariableValue
-    masked_value: bool
+    deprecated_masked_value: bool
     type: TypeDefinition
-    def __init__(self, primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked_value: bool = ..., type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
+    def __init__(self, deprecated_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., name: _Optional[str] = ..., default_value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., deprecated_masked_value: bool = ..., type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class TypeDefinition(_message.Message):
     __slots__ = ["type", "masked"]

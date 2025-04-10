@@ -126,55 +126,55 @@ public final class CommonWfspec {
       "\013node_output\030\006 \001(\0132..littlehorse.Variabl" +
       "eMutation.NodeOutputSourceH\000\0326\n\020NodeOutp" +
       "utSource\022\025\n\010jsonpath\030\n \001(\tH\000\210\001\001B\013\n\t_json" +
-      "pathB\013\n\trhs_valueB\020\n\016_lhs_json_path\"\225\002\n\013" +
-      "VariableDef\0226\n\016primitive_type\030\001 \001(\0162\031.li" +
-      "ttlehorse.VariableTypeH\000\210\001\001\022\014\n\004name\030\002 \001(" +
-      "\t\0226\n\rdefault_value\030\003 \001(\0132\032.littlehorse.V" +
-      "ariableValueH\001\210\001\001\022\031\n\014masked_value\030\004 \001(\010H" +
-      "\002\210\001\001\022.\n\004type\030\005 \001(\0132\033.littlehorse.TypeDef" +
-      "initionH\003\210\001\001B\021\n\017_primitive_typeB\020\n\016_defa" +
-      "ult_valueB\017\n\r_masked_valueB\007\n\005_type\"U\n\016T" +
-      "ypeDefinition\022\'\n\004type\030\001 \001(\0162\031.littlehors" +
-      "e.VariableType\022\016\n\006masked\030\004 \001(\010J\004\010\002\020\003J\004\010\003" +
-      "\020\004\"S\n\nReturnType\0225\n\013return_type\030\001 \001(\0132\033." +
-      "littlehorse.TypeDefinitionH\000\210\001\001B\016\n\014_retu" +
-      "rn_type\"\357\004\n\017UTActionTrigger\0224\n\004task\030\001 \001(" +
-      "\0132$.littlehorse.UTActionTrigger.UTATaskH" +
-      "\000\0228\n\006cancel\030\002 \001(\0132&.littlehorse.UTAction" +
-      "Trigger.UTACancelH\000\022<\n\010reassign\030\003 \001(\0132(." +
-      "littlehorse.UTActionTrigger.UTAReassignH" +
-      "\000\0226\n\rdelay_seconds\030\005 \001(\0132\037.littlehorse.V" +
-      "ariableAssignment\0221\n\004hook\030\006 \001(\0162#.little" +
-      "horse.UTActionTrigger.UTHook\032\013\n\tUTACance" +
-      "l\032`\n\007UTATask\022#\n\004task\030\001 \001(\0132\025.littlehorse" +
-      ".TaskNode\0220\n\tmutations\030\002 \003(\0132\035.littlehor" +
-      "se.VariableMutation\032\231\001\n\013UTAReassign\0225\n\007u" +
-      "ser_id\030\001 \001(\0132\037.littlehorse.VariableAssig" +
-      "nmentH\000\210\001\001\0228\n\nuser_group\030\002 \001(\0132\037.littleh" +
-      "orse.VariableAssignmentH\001\210\001\001B\n\n\010_user_id" +
-      "B\r\n\013_user_group\".\n\006UTHook\022\016\n\nON_ARRIVAL\020" +
-      "\000\022\024\n\020ON_TASK_ASSIGNED\020\001B\010\n\006action\"c\n\035Exp" +
-      "onentialBackoffRetryPolicy\022\030\n\020base_inter" +
-      "val_ms\030\001 \001(\005\022\024\n\014max_delay_ms\030\002 \001(\003\022\022\n\nmu" +
-      "ltiplier\030\003 \001(\002\"\311\002\n\010TaskNode\022-\n\013task_def_" +
-      "id\030\001 \001(\0132\026.littlehorse.TaskDefIdH\000\0227\n\014dy" +
-      "namic_task\030\006 \001(\0132\037.littlehorse.VariableA" +
-      "ssignmentH\000\022\027\n\017timeout_seconds\030\002 \001(\005\022\017\n\007" +
-      "retries\030\003 \001(\005\022L\n\023exponential_backoff\030\005 \001" +
-      "(\0132*.littlehorse.ExponentialBackoffRetry" +
-      "PolicyH\001\210\001\001\0222\n\tvariables\030\004 \003(\0132\037.littleh" +
-      "orse.VariableAssignmentB\021\n\017task_to_execu" +
-      "teB\026\n\024_exponential_backoff*\230\001\n\024VariableM" +
-      "utationType\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTE" +
-      "ND\020\002\022\014\n\010SUBTRACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVI" +
-      "DE\020\005\022\025\n\021REMOVE_IF_PRESENT\020\006\022\020\n\014REMOVE_IN" +
-      "DEX\020\007\022\016\n\nREMOVE_KEY\020\010*\204\001\n\nComparator\022\r\n\t" +
-      "LESS_THAN\020\000\022\020\n\014GREATER_THAN\020\001\022\020\n\014LESS_TH" +
-      "AN_EQ\020\002\022\023\n\017GREATER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004" +
-      "\022\016\n\nNOT_EQUALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007BM\n\037" +
-      "io.littlehorse.sdk.common.protoP\001Z\t.;lhp" +
-      "roto\252\002\034LittleHorse.Sdk.Common.Protob\006pro" +
-      "to3"
+      "pathB\013\n\trhs_valueB\020\n\016_lhs_json_path\"\255\002\n\013" +
+      "VariableDef\0227\n\017deprecated_type\030\001 \001(\0162\031.l" +
+      "ittlehorse.VariableTypeH\000\210\001\001\022\014\n\004name\030\002 \001" +
+      "(\t\0226\n\rdefault_value\030\003 \001(\0132\032.littlehorse." +
+      "VariableValueH\001\210\001\001\022$\n\027deprecated_masked_" +
+      "value\030\004 \001(\010H\002\210\001\001\022.\n\004type\030\005 \001(\0132\033.littleh" +
+      "orse.TypeDefinitionH\003\210\001\001B\022\n\020_deprecated_" +
+      "typeB\020\n\016_default_valueB\032\n\030_deprecated_ma" +
+      "sked_valueB\007\n\005_type\"U\n\016TypeDefinition\022\'\n" +
+      "\004type\030\001 \001(\0162\031.littlehorse.VariableType\022\016" +
+      "\n\006masked\030\004 \001(\010J\004\010\002\020\003J\004\010\003\020\004\"S\n\nReturnType" +
+      "\0225\n\013return_type\030\001 \001(\0132\033.littlehorse.Type" +
+      "DefinitionH\000\210\001\001B\016\n\014_return_type\"\357\004\n\017UTAc" +
+      "tionTrigger\0224\n\004task\030\001 \001(\0132$.littlehorse." +
+      "UTActionTrigger.UTATaskH\000\0228\n\006cancel\030\002 \001(" +
+      "\0132&.littlehorse.UTActionTrigger.UTACance" +
+      "lH\000\022<\n\010reassign\030\003 \001(\0132(.littlehorse.UTAc" +
+      "tionTrigger.UTAReassignH\000\0226\n\rdelay_secon" +
+      "ds\030\005 \001(\0132\037.littlehorse.VariableAssignmen" +
+      "t\0221\n\004hook\030\006 \001(\0162#.littlehorse.UTActionTr" +
+      "igger.UTHook\032\013\n\tUTACancel\032`\n\007UTATask\022#\n\004" +
+      "task\030\001 \001(\0132\025.littlehorse.TaskNode\0220\n\tmut" +
+      "ations\030\002 \003(\0132\035.littlehorse.VariableMutat" +
+      "ion\032\231\001\n\013UTAReassign\0225\n\007user_id\030\001 \001(\0132\037.l" +
+      "ittlehorse.VariableAssignmentH\000\210\001\001\0228\n\nus" +
+      "er_group\030\002 \001(\0132\037.littlehorse.VariableAss" +
+      "ignmentH\001\210\001\001B\n\n\010_user_idB\r\n\013_user_group\"" +
+      ".\n\006UTHook\022\016\n\nON_ARRIVAL\020\000\022\024\n\020ON_TASK_ASS" +
+      "IGNED\020\001B\010\n\006action\"c\n\035ExponentialBackoffR" +
+      "etryPolicy\022\030\n\020base_interval_ms\030\001 \001(\005\022\024\n\014" +
+      "max_delay_ms\030\002 \001(\003\022\022\n\nmultiplier\030\003 \001(\002\"\311" +
+      "\002\n\010TaskNode\022-\n\013task_def_id\030\001 \001(\0132\026.littl" +
+      "ehorse.TaskDefIdH\000\0227\n\014dynamic_task\030\006 \001(\013" +
+      "2\037.littlehorse.VariableAssignmentH\000\022\027\n\017t" +
+      "imeout_seconds\030\002 \001(\005\022\017\n\007retries\030\003 \001(\005\022L\n" +
+      "\023exponential_backoff\030\005 \001(\0132*.littlehorse" +
+      ".ExponentialBackoffRetryPolicyH\001\210\001\001\0222\n\tv" +
+      "ariables\030\004 \003(\0132\037.littlehorse.VariableAss" +
+      "ignmentB\021\n\017task_to_executeB\026\n\024_exponenti" +
+      "al_backoff*\230\001\n\024VariableMutationType\022\n\n\006A" +
+      "SSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002\022\014\n\010SUBTRACT" +
+      "\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021REMOVE_I" +
+      "F_PRESENT\020\006\022\020\n\014REMOVE_INDEX\020\007\022\016\n\nREMOVE_" +
+      "KEY\020\010*\204\001\n\nComparator\022\r\n\tLESS_THAN\020\000\022\020\n\014G" +
+      "REATER_THAN\020\001\022\020\n\014LESS_THAN_EQ\020\002\022\023\n\017GREAT" +
+      "ER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_EQUALS\020\005" +
+      "\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007BM\n\037io.littlehorse.s" +
+      "dk.common.protoP\001Z\t.;lhproto\252\002\034LittleHor" +
+      "se.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -224,7 +224,7 @@ public final class CommonWfspec {
     internal_static_littlehorse_VariableDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_VariableDef_descriptor,
-        new java.lang.String[] { "PrimitiveType", "Name", "DefaultValue", "MaskedValue", "Type", "PrimitiveType", "DefaultValue", "MaskedValue", "Type", });
+        new java.lang.String[] { "DeprecatedType", "Name", "DefaultValue", "DeprecatedMaskedValue", "Type", "DeprecatedType", "DefaultValue", "DeprecatedMaskedValue", "Type", });
     internal_static_littlehorse_TypeDefinition_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_littlehorse_TypeDefinition_fieldAccessorTable = new

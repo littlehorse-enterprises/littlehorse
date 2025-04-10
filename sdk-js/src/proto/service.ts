@@ -20,7 +20,7 @@ import {
   taskStatusFromJSON,
   taskStatusToNumber,
 } from "./common_enums";
-import { ReturnType, TypeDefinition, VariableDef } from "./common_wfspec";
+import { ReturnType, VariableDef } from "./common_wfspec";
 import { ExternalEvent, ExternalEventDef, ExternalEventRetentionPolicy } from "./external_event";
 import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
@@ -183,7 +183,7 @@ export interface PutWorkflowEventDefRequest {
   /** The name of the resulting WorkflowEventDef. */
   name: string;
   /** The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef. */
-  type: TypeDefinition | undefined;
+  contentType: ReturnType | undefined;
 }
 
 /** Creates a UserTaskDef. */
@@ -1824,7 +1824,7 @@ export const PutTaskDefRequest = {
 };
 
 function createBasePutWorkflowEventDefRequest(): PutWorkflowEventDefRequest {
-  return { name: "", type: undefined };
+  return { name: "", contentType: undefined };
 }
 
 export const PutWorkflowEventDefRequest = {
@@ -1832,8 +1832,8 @@ export const PutWorkflowEventDefRequest = {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
-    if (message.type !== undefined) {
-      TypeDefinition.encode(message.type, writer.uint32(18).fork()).ldelim();
+    if (message.contentType !== undefined) {
+      ReturnType.encode(message.contentType, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -1857,7 +1857,7 @@ export const PutWorkflowEventDefRequest = {
             break;
           }
 
-          message.type = TypeDefinition.decode(reader, reader.uint32());
+          message.contentType = ReturnType.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1874,8 +1874,8 @@ export const PutWorkflowEventDefRequest = {
   fromPartial(object: DeepPartial<PutWorkflowEventDefRequest>): PutWorkflowEventDefRequest {
     const message = createBasePutWorkflowEventDefRequest();
     message.name = object.name ?? "";
-    message.type = (object.type !== undefined && object.type !== null)
-      ? TypeDefinition.fromPartial(object.type)
+    message.contentType = (object.contentType !== undefined && object.contentType !== null)
+      ? ReturnType.fromPartial(object.contentType)
       : undefined;
     return message;
   },

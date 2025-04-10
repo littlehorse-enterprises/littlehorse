@@ -41,5 +41,5 @@ message WorkflowEventDef {
   google.protobuf.Timestamp created_at = 2;
 
   // The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
-  ReturnType return_type = 3;
+  ReturnType content_type = 3;
 }

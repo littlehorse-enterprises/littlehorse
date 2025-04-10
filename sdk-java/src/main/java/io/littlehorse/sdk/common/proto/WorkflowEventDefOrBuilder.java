@@ -66,25 +66,25 @@ public interface WorkflowEventDefOrBuilder extends
    * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
    * </pre>
    *
-   * <code>.littlehorse.ReturnType return_type = 3;</code>
-   * @return Whether the returnType field is set.
+   * <code>.littlehorse.ReturnType content_type = 3;</code>
+   * @return Whether the contentType field is set.
    */
-  boolean hasReturnType();
+  boolean hasContentType();
   /**
    * <pre>
    * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
    * </pre>
    *
-   * <code>.littlehorse.ReturnType return_type = 3;</code>
-   * @return The returnType.
+   * <code>.littlehorse.ReturnType content_type = 3;</code>
+   * @return The contentType.
    */
-  io.littlehorse.sdk.common.proto.ReturnType getReturnType();
+  io.littlehorse.sdk.common.proto.ReturnType getContentType();
   /**
    * <pre>
    * The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef.
    * </pre>
    *
-   * <code>.littlehorse.ReturnType return_type = 3;</code>
+   * <code>.littlehorse.ReturnType content_type = 3;</code>
    */
-  io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getReturnTypeOrBuilder();
+  io.littlehorse.sdk.common.proto.ReturnTypeOrBuilder getContentTypeOrBuilder();
 }

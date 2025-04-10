@@ -20,7 +20,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private VariableDef() {
-    primitiveType_ = 0;
+    deprecatedType_ = 0;
     name_ = "";
   }
 
@@ -45,8 +45,8 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  public static final int PRIMITIVE_TYPE_FIELD_NUMBER = 1;
-  private int primitiveType_ = 0;
+  public static final int DEPRECATED_TYPE_FIELD_NUMBER = 1;
+  private int deprecatedType_ = 0;
   /**
    * <pre>
    * DEPRECATED: The Type of the variable.
@@ -56,10 +56,10 @@ private static final long serialVersionUID = 0L;
    * it going forward. To be removed in the first 2026 release.
    * </pre>
    *
-   * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
-   * @return Whether the primitiveType field is set.
+   * <code>optional .littlehorse.VariableType deprecated_type = 1;</code>
+   * @return Whether the deprecatedType field is set.
    */
-  @java.lang.Override public boolean hasPrimitiveType() {
+  @java.lang.Override public boolean hasDeprecatedType() {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
@@ -71,11 +71,11 @@ private static final long serialVersionUID = 0L;
    * it going forward. To be removed in the first 2026 release.
    * </pre>
    *
-   * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
-   * @return The enum numeric value on the wire for primitiveType.
+   * <code>optional .littlehorse.VariableType deprecated_type = 1;</code>
+   * @return The enum numeric value on the wire for deprecatedType.
    */
-  @java.lang.Override public int getPrimitiveTypeValue() {
-    return primitiveType_;
+  @java.lang.Override public int getDeprecatedTypeValue() {
+    return deprecatedType_;
   }
   /**
    * <pre>
@@ -86,11 +86,11 @@ private static final long serialVersionUID = 0L;
    * it going forward. To be removed in the first 2026 release.
    * </pre>
    *
-   * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
-   * @return The primitiveType.
+   * <code>optional .littlehorse.VariableType deprecated_type = 1;</code>
+   * @return The deprecatedType.
    */
-  @java.lang.Override public io.littlehorse.sdk.common.proto.VariableType getPrimitiveType() {
-    io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(primitiveType_);
+  @java.lang.Override public io.littlehorse.sdk.common.proto.VariableType getDeprecatedType() {
+    io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(deprecatedType_);
     return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
   }
 
@@ -185,8 +185,8 @@ private static final long serialVersionUID = 0L;
     return defaultValue_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : defaultValue_;
   }
 
-  public static final int MASKED_VALUE_FIELD_NUMBER = 4;
-  private boolean maskedValue_ = false;
+  public static final int DEPRECATED_MASKED_VALUE_FIELD_NUMBER = 4;
+  private boolean deprecatedMaskedValue_ = false;
   /**
    * <pre>
    * DEPRECATED: If true, the variable value will show as a masked string.
@@ -196,11 +196,11 @@ private static final long serialVersionUID = 0L;
    * it going forward. To be removed in the first 2026 release.
    * </pre>
    *
-   * <code>optional bool masked_value = 4;</code>
-   * @return Whether the maskedValue field is set.
+   * <code>optional bool deprecated_masked_value = 4;</code>
+   * @return Whether the deprecatedMaskedValue field is set.
    */
   @java.lang.Override
-  public boolean hasMaskedValue() {
+  public boolean hasDeprecatedMaskedValue() {
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
@@ -212,12 +212,12 @@ private static final long serialVersionUID = 0L;
    * it going forward. To be removed in the first 2026 release.
    * </pre>
    *
-   * <code>optional bool masked_value = 4;</code>
-   * @return The maskedValue.
+   * <code>optional bool deprecated_masked_value = 4;</code>
+   * @return The deprecatedMaskedValue.
    */
   @java.lang.Override
-  public boolean getMaskedValue() {
-    return maskedValue_;
+  public boolean getDeprecatedMaskedValue() {
+    return deprecatedMaskedValue_;
   }
 
   public static final int TYPE_FIELD_NUMBER = 5;
@@ -282,7 +282,7 @@ private static final long serialVersionUID = 0L;
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeEnum(1, primitiveType_);
+      output.writeEnum(1, deprecatedType_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
@@ -291,7 +291,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(3, getDefaultValue());
     }
     if (((bitField0_ & 0x00000004) != 0)) {
-      output.writeBool(4, maskedValue_);
+      output.writeBool(4, deprecatedMaskedValue_);
     }
     if (((bitField0_ & 0x00000008) != 0)) {
       output.writeMessage(5, getType());
@@ -307,7 +307,7 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(1, primitiveType_);
+        .computeEnumSize(1, deprecatedType_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
@@ -318,7 +318,7 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(4, maskedValue_);
+        .computeBoolSize(4, deprecatedMaskedValue_);
     }
     if (((bitField0_ & 0x00000008) != 0)) {
       size += com.google.protobuf.CodedOutputStream
@@ -339,9 +339,9 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.VariableDef other = (io.littlehorse.sdk.common.proto.VariableDef) obj;
 
-    if (hasPrimitiveType() != other.hasPrimitiveType()) return false;
-    if (hasPrimitiveType()) {
-      if (primitiveType_ != other.primitiveType_) return false;
+    if (hasDeprecatedType() != other.hasDeprecatedType()) return false;
+    if (hasDeprecatedType()) {
+      if (deprecatedType_ != other.deprecatedType_) return false;
     }
     if (!getName()
         .equals(other.getName())) return false;
@@ -350,10 +350,10 @@ private static final long serialVersionUID = 0L;
       if (!getDefaultValue()
           .equals(other.getDefaultValue())) return false;
     }
-    if (hasMaskedValue() != other.hasMaskedValue()) return false;
-    if (hasMaskedValue()) {
-      if (getMaskedValue()
-          != other.getMaskedValue()) return false;
+    if (hasDeprecatedMaskedValue() != other.hasDeprecatedMaskedValue()) return false;
+    if (hasDeprecatedMaskedValue()) {
+      if (getDeprecatedMaskedValue()
+          != other.getDeprecatedMaskedValue()) return false;
     }
     if (hasType() != other.hasType()) return false;
     if (hasType()) {
@@ -371,9 +371,9 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasPrimitiveType()) {
-      hash = (37 * hash) + PRIMITIVE_TYPE_FIELD_NUMBER;
-      hash = (53 * hash) + primitiveType_;
+    if (hasDeprecatedType()) {
+      hash = (37 * hash) + DEPRECATED_TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + deprecatedType_;
     }
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
@@ -381,10 +381,10 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + DEFAULT_VALUE_FIELD_NUMBER;
       hash = (53 * hash) + getDefaultValue().hashCode();
     }
-    if (hasMaskedValue()) {
-      hash = (37 * hash) + MASKED_VALUE_FIELD_NUMBER;
+    if (hasDeprecatedMaskedValue()) {
+      hash = (37 * hash) + DEPRECATED_MASKED_VALUE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getMaskedValue());
+          getDeprecatedMaskedValue());
     }
     if (hasType()) {
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
@@ -532,14 +532,14 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      primitiveType_ = 0;
+      deprecatedType_ = 0;
       name_ = "";
       defaultValue_ = null;
       if (defaultValueBuilder_ != null) {
         defaultValueBuilder_.dispose();
         defaultValueBuilder_ = null;
       }
-      maskedValue_ = false;
+      deprecatedMaskedValue_ = false;
       type_ = null;
       if (typeBuilder_ != null) {
         typeBuilder_.dispose();
@@ -580,7 +580,7 @@ private static final long serialVersionUID = 0L;
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.primitiveType_ = primitiveType_;
+        result.deprecatedType_ = deprecatedType_;
         to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
@@ -593,7 +593,7 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000002;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.maskedValue_ = maskedValue_;
+        result.deprecatedMaskedValue_ = deprecatedMaskedValue_;
         to_bitField0_ |= 0x00000004;
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
@@ -649,8 +649,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.VariableDef other) {
       if (other == io.littlehorse.sdk.common.proto.VariableDef.getDefaultInstance()) return this;
-      if (other.hasPrimitiveType()) {
-        setPrimitiveType(other.getPrimitiveType());
+      if (other.hasDeprecatedType()) {
+        setDeprecatedType(other.getDeprecatedType());
       }
       if (!other.getName().isEmpty()) {
         name_ = other.name_;
@@ -660,8 +660,8 @@ private static final long serialVersionUID = 0L;
       if (other.hasDefaultValue()) {
         mergeDefaultValue(other.getDefaultValue());
       }
-      if (other.hasMaskedValue()) {
-        setMaskedValue(other.getMaskedValue());
+      if (other.hasDeprecatedMaskedValue()) {
+        setDeprecatedMaskedValue(other.getDeprecatedMaskedValue());
       }
       if (other.hasType()) {
         mergeType(other.getType());
@@ -693,7 +693,7 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 8: {
-              primitiveType_ = input.readEnum();
+              deprecatedType_ = input.readEnum();
               bitField0_ |= 0x00000001;
               break;
             } // case 8
@@ -710,7 +710,7 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 26
             case 32: {
-              maskedValue_ = input.readBool();
+              deprecatedMaskedValue_ = input.readBool();
               bitField0_ |= 0x00000008;
               break;
             } // case 32
@@ -738,7 +738,7 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private int primitiveType_ = 0;
+    private int deprecatedType_ = 0;
     /**
      * <pre>
      * DEPRECATED: The Type of the variable.
@@ -748,10 +748,10 @@ private static final long serialVersionUID = 0L;
      * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
-     * @return Whether the primitiveType field is set.
+     * <code>optional .littlehorse.VariableType deprecated_type = 1;</code>
+     * @return Whether the deprecatedType field is set.
      */
-    @java.lang.Override public boolean hasPrimitiveType() {
+    @java.lang.Override public boolean hasDeprecatedType() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
@@ -763,11 +763,11 @@ private static final long serialVersionUID = 0L;
      * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
-     * @return The enum numeric value on the wire for primitiveType.
+     * <code>optional .littlehorse.VariableType deprecated_type = 1;</code>
+     * @return The enum numeric value on the wire for deprecatedType.
      */
-    @java.lang.Override public int getPrimitiveTypeValue() {
-      return primitiveType_;
+    @java.lang.Override public int getDeprecatedTypeValue() {
+      return deprecatedType_;
     }
     /**
      * <pre>
@@ -778,12 +778,12 @@ private static final long serialVersionUID = 0L;
      * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
-     * @param value The enum numeric value on the wire for primitiveType to set.
+     * <code>optional .littlehorse.VariableType deprecated_type = 1;</code>
+     * @param value The enum numeric value on the wire for deprecatedType to set.
      * @return This builder for chaining.
      */
-    public Builder setPrimitiveTypeValue(int value) {
-      primitiveType_ = value;
+    public Builder setDeprecatedTypeValue(int value) {
+      deprecatedType_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
@@ -797,12 +797,12 @@ private static final long serialVersionUID = 0L;
      * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
-     * @return The primitiveType.
+     * <code>optional .littlehorse.VariableType deprecated_type = 1;</code>
+     * @return The deprecatedType.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableType getPrimitiveType() {
-      io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(primitiveType_);
+    public io.littlehorse.sdk.common.proto.VariableType getDeprecatedType() {
+      io.littlehorse.sdk.common.proto.VariableType result = io.littlehorse.sdk.common.proto.VariableType.forNumber(deprecatedType_);
       return result == null ? io.littlehorse.sdk.common.proto.VariableType.UNRECOGNIZED : result;
     }
     /**
@@ -814,16 +814,16 @@ private static final long serialVersionUID = 0L;
      * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
-     * @param value The primitiveType to set.
+     * <code>optional .littlehorse.VariableType deprecated_type = 1;</code>
+     * @param value The deprecatedType to set.
      * @return This builder for chaining.
      */
-    public Builder setPrimitiveType(io.littlehorse.sdk.common.proto.VariableType value) {
+    public Builder setDeprecatedType(io.littlehorse.sdk.common.proto.VariableType value) {
       if (value == null) {
         throw new NullPointerException();
       }
       bitField0_ |= 0x00000001;
-      primitiveType_ = value.getNumber();
+      deprecatedType_ = value.getNumber();
       onChanged();
       return this;
     }
@@ -836,12 +836,12 @@ private static final long serialVersionUID = 0L;
      * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
+     * <code>optional .littlehorse.VariableType deprecated_type = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearPrimitiveType() {
+    public Builder clearDeprecatedType() {
       bitField0_ = (bitField0_ & ~0x00000001);
-      primitiveType_ = 0;
+      deprecatedType_ = 0;
       onChanged();
       return this;
     }
@@ -1111,7 +1111,7 @@ private static final long serialVersionUID = 0L;
       return defaultValueBuilder_;
     }
 
-    private boolean maskedValue_ ;
+    private boolean deprecatedMaskedValue_ ;
     /**
      * <pre>
      * DEPRECATED: If true, the variable value will show as a masked string.
@@ -1121,11 +1121,11 @@ private static final long serialVersionUID = 0L;
      * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>optional bool masked_value = 4;</code>
-     * @return Whether the maskedValue field is set.
+     * <code>optional bool deprecated_masked_value = 4;</code>
+     * @return Whether the deprecatedMaskedValue field is set.
      */
     @java.lang.Override
-    public boolean hasMaskedValue() {
+    public boolean hasDeprecatedMaskedValue() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
@@ -1137,12 +1137,12 @@ private static final long serialVersionUID = 0L;
      * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>optional bool masked_value = 4;</code>
-     * @return The maskedValue.
+     * <code>optional bool deprecated_masked_value = 4;</code>
+     * @return The deprecatedMaskedValue.
      */
     @java.lang.Override
-    public boolean getMaskedValue() {
-      return maskedValue_;
+    public boolean getDeprecatedMaskedValue() {
+      return deprecatedMaskedValue_;
     }
     /**
      * <pre>
@@ -1153,13 +1153,13 @@ private static final long serialVersionUID = 0L;
      * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>optional bool masked_value = 4;</code>
-     * @param value The maskedValue to set.
+     * <code>optional bool deprecated_masked_value = 4;</code>
+     * @param value The deprecatedMaskedValue to set.
      * @return This builder for chaining.
      */
-    public Builder setMaskedValue(boolean value) {
+    public Builder setDeprecatedMaskedValue(boolean value) {
 
-      maskedValue_ = value;
+      deprecatedMaskedValue_ = value;
       bitField0_ |= 0x00000008;
       onChanged();
       return this;
@@ -1173,12 +1173,12 @@ private static final long serialVersionUID = 0L;
      * it going forward. To be removed in the first 2026 release.
      * </pre>
      *
-     * <code>optional bool masked_value = 4;</code>
+     * <code>optional bool deprecated_masked_value = 4;</code>
      * @return This builder for chaining.
      */
-    public Builder clearMaskedValue() {
+    public Builder clearDeprecatedMaskedValue() {
       bitField0_ = (bitField0_ & ~0x00000008);
-      maskedValue_ = false;
+      deprecatedMaskedValue_ = false;
       onChanged();
       return this;
     }

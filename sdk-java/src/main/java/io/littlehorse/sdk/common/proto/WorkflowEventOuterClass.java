@@ -41,13 +41,13 @@ public final class WorkflowEventOuterClass {
       "\032.littlehorse.VariableValue\022.\n\ncreated_a" +
       "t\030\003 \001(\0132\032.google.protobuf.Timestamp\022+\n\013n" +
       "ode_run_id\030\004 \001(\0132\026.littlehorse.NodeRunId" +
-      "\"\235\001\n\020WorkflowEventDef\022+\n\002id\030\001 \001(\0132\037.litt" +
+      "\"\236\001\n\020WorkflowEventDef\022+\n\002id\030\001 \001(\0132\037.litt" +
       "lehorse.WorkflowEventDefId\022.\n\ncreated_at" +
-      "\030\002 \001(\0132\032.google.protobuf.Timestamp\022,\n\013re" +
-      "turn_type\030\003 \001(\0132\027.littlehorse.ReturnType" +
-      "BM\n\037io.littlehorse.sdk.common.protoP\001Z\t." +
-      ";lhproto\252\002\034LittleHorse.Sdk.Common.Protob" +
-      "\006proto3"
+      "\030\002 \001(\0132\032.google.protobuf.Timestamp\022-\n\014co" +
+      "ntent_type\030\003 \001(\0132\027.littlehorse.ReturnTyp" +
+      "eBM\n\037io.littlehorse.sdk.common.protoP\001Z\t" +
+      ".;lhproto\252\002\034LittleHorse.Sdk.Common.Proto" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -68,7 +68,7 @@ public final class WorkflowEventOuterClass {
     internal_static_littlehorse_WorkflowEventDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_WorkflowEventDef_descriptor,
-        new java.lang.String[] { "Id", "CreatedAt", "ReturnType", });
+        new java.lang.String[] { "Id", "CreatedAt", "ContentType", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();

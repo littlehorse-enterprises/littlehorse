@@ -16,10 +16,10 @@ public interface VariableDefOrBuilder extends
    * it going forward. To be removed in the first 2026 release.
    * </pre>
    *
-   * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
-   * @return Whether the primitiveType field is set.
+   * <code>optional .littlehorse.VariableType deprecated_type = 1;</code>
+   * @return Whether the deprecatedType field is set.
    */
-  boolean hasPrimitiveType();
+  boolean hasDeprecatedType();
   /**
    * <pre>
    * DEPRECATED: The Type of the variable.
@@ -29,10 +29,10 @@ public interface VariableDefOrBuilder extends
    * it going forward. To be removed in the first 2026 release.
    * </pre>
    *
-   * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
-   * @return The enum numeric value on the wire for primitiveType.
+   * <code>optional .littlehorse.VariableType deprecated_type = 1;</code>
+   * @return The enum numeric value on the wire for deprecatedType.
    */
-  int getPrimitiveTypeValue();
+  int getDeprecatedTypeValue();
   /**
    * <pre>
    * DEPRECATED: The Type of the variable.
@@ -42,10 +42,10 @@ public interface VariableDefOrBuilder extends
    * it going forward. To be removed in the first 2026 release.
    * </pre>
    *
-   * <code>optional .littlehorse.VariableType primitive_type = 1;</code>
-   * @return The primitiveType.
+   * <code>optional .littlehorse.VariableType deprecated_type = 1;</code>
+   * @return The deprecatedType.
    */
-  io.littlehorse.sdk.common.proto.VariableType getPrimitiveType();
+  io.littlehorse.sdk.common.proto.VariableType getDeprecatedType();
 
   /**
    * <pre>
@@ -109,10 +109,10 @@ public interface VariableDefOrBuilder extends
    * it going forward. To be removed in the first 2026 release.
    * </pre>
    *
-   * <code>optional bool masked_value = 4;</code>
-   * @return Whether the maskedValue field is set.
+   * <code>optional bool deprecated_masked_value = 4;</code>
+   * @return Whether the deprecatedMaskedValue field is set.
    */
-  boolean hasMaskedValue();
+  boolean hasDeprecatedMaskedValue();
   /**
    * <pre>
    * DEPRECATED: If true, the variable value will show as a masked string.
@@ -122,10 +122,10 @@ public interface VariableDefOrBuilder extends
    * it going forward. To be removed in the first 2026 release.
    * </pre>
    *
-   * <code>optional bool masked_value = 4;</code>
-   * @return The maskedValue.
+   * <code>optional bool deprecated_masked_value = 4;</code>
+   * @return The deprecatedMaskedValue.
    */
-  boolean getMaskedValue();
+  boolean getDeprecatedMaskedValue();
 
   /**
    * <pre>

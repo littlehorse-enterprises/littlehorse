@@ -47,7 +47,7 @@ export interface WorkflowEventDef {
     | string
     | undefined;
   /** The type of 'content' thrown with a WorkflowEvent based on this WorkflowEventDef. */
-  returnType: ReturnType | undefined;
+  contentType: ReturnType | undefined;
 }
 
 function createBaseWorkflowEvent(): WorkflowEvent {
@@ -133,7 +133,7 @@ export const WorkflowEvent = {
 };
 
 function createBaseWorkflowEventDef(): WorkflowEventDef {
-  return { id: undefined, createdAt: undefined, returnType: undefined };
+  return { id: undefined, createdAt: undefined, contentType: undefined };
 }
 
 export const WorkflowEventDef = {
@@ -144,8 +144,8 @@ export const WorkflowEventDef = {
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(18).fork()).ldelim();
     }
-    if (message.returnType !== undefined) {
-      ReturnType.encode(message.returnType, writer.uint32(26).fork()).ldelim();
+    if (message.contentType !== undefined) {
+      ReturnType.encode(message.contentType, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -176,7 +176,7 @@ export const WorkflowEventDef = {
             break;
           }
 
-          message.returnType = ReturnType.decode(reader, reader.uint32());
+          message.contentType = ReturnType.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -196,8 +196,8 @@ export const WorkflowEventDef = {
       ? WorkflowEventDefId.fromPartial(object.id)
       : undefined;
     message.createdAt = object.createdAt ?? undefined;
-    message.returnType = (object.returnType !== undefined && object.returnType !== null)
-      ? ReturnType.fromPartial(object.returnType)
+    message.contentType = (object.contentType !== undefined && object.contentType !== null)
+      ? ReturnType.fromPartial(object.contentType)
       : undefined;
     return message;
   },

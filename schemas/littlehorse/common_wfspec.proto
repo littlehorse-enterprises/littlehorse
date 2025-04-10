@@ -139,7 +139,7 @@ message VariableDef {
   // After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
   // We retain this field for compatibility purposes but clients should not use
   // it going forward. To be removed in the first 2026 release.
-  optional VariableType primitive_type = 1;
+  optional VariableType deprecated_type = 1;
 
   // The name of the variable.
   string name = 2;
@@ -154,7 +154,7 @@ message VariableDef {
   // After 0.13.2, this has been replaced by the nested `TypeDefinition` field.
   // We retain this field for compatibility purposes but clients should not use
   // it going forward. To be removed in the first 2026 release.
-  optional bool masked_value = 4;
+  optional bool deprecated_masked_value = 4;
 
   // Type Information for this variable.
   //
